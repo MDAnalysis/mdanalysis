@@ -24,6 +24,13 @@ shared memory, matrices of conformational distance between the structures
 stored in an Ensemble. A class to compute an RMSD matrix in such a way is also
 available.
 
+:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
+:Year: 2015--2016
+:Copyright: GNU Public License v3
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
+
+.. versionadded:: 0.14.0
+
 """
 
 from multiprocessing import Process, Array, cpu_count, Value, RawValue

@@ -151,6 +151,7 @@ from multiprocessing import cpu_count
 from .utils import *
 from scipy.stats import gaussian_kde
 from random import randint
+import sys
 
 # Silence deprecation warnings - scipy problem
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -1091,7 +1092,6 @@ def hes(ensembles,
 
     """
 
-
     logging.info("Chosen metric: Harmonic similarity")
     if cov_estimator == "shrinkage":
         covariance_estimator = EstimatorShrinkage()
@@ -1172,6 +1172,8 @@ def hes(ensembles,
 
     else:
         details = None
+
+    values = numpy.array((values))
 
     return values, details
 
@@ -1405,13 +1407,13 @@ def ces(ensembles,
 
             return (avgs, stds)
 
-        values = {}
+        values = []
         kwds = {}
         for i, p in enumerate(preferences):
             if ccs[i].clusters == None:
                 continue
             else:
-                values[p] = numpy.zeros((out_matrix_eln, out_matrix_eln))
+                values.append(numpy.zeros((out_matrix_eln, out_matrix_eln)))
 
                 for pair in pairs_indeces:
                     # Calculate dJS
@@ -1420,11 +1422,10 @@ def ces(ensembles,
                                                               pair[0] + 1,
                                                               ensembles[pair[1]],
                                                               pair[1] + 1)
-                    values[p][pair[0], pair[1]] = this_val
-                    values[p][pair[1], pair[0]] = this_val
+                    values[-1][pair[0], pair[1]] = this_val
+                    values[-1][pair[1], pair[0]] = this_val
 
             if details:
-                print "doing ", p
                 kwds['centroids_pref%.3f' % p] = numpy.array(
                     [c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array(
@@ -1438,6 +1439,7 @@ def ces(ensembles,
     else:
         details = None
 
+    values = numpy.array(values)
     return values, details
 
 
@@ -1687,7 +1689,7 @@ def dres(ensembles,
 
         return (avgs, stds)
 
-    values = {}
+    values = []
 
     for i in range(len(dimensions)):
         stresses_perdim[dimensions[i]] = []
@@ -1702,7 +1704,7 @@ def dres(ensembles,
 
     for ndim in dimensions:
 
-        values[ndim] = numpy.zeros((len(ensembles), len(ensembles)))
+        values.append(numpy.zeros((len(ensembles), len(ensembles))))
 
         embedded_spaces = embedded_spaces_perdim[ndim]
         embedded_stresses = stresses_perdim[ndim]
@@ -1720,8 +1722,8 @@ def dres(ensembles,
                                                     resamples[pair[0]],
                                                     kdes[pair[1]],
                                                     resamples[pair[1]])
-            values[ndim][pair[0], pair[1]] = this_value
-            values[ndim][pair[1], pair[0]] = this_value
+            values[-1][pair[0], pair[1]] = this_value
+            values[-1][pair[1], pair[0]] = this_value
 
         if details:
             kwds["stress_%ddims" % ndim] = numpy.array([embedded_stress])
@@ -1732,6 +1734,8 @@ def dres(ensembles,
         details = numpy.array(kwds)
     else:
         details = None
+
+    values = numpy.array(values)
 
     return values, details
 
@@ -1790,21 +1794,23 @@ def ces_convergence(original_ensemble,
     ccs = [ClustersCollection(clusters[1], metadata=metadata) for clusters in
            results]
 
-    out = {}
+    out = []
 
     for i, p in enumerate(preferences):
         if ccs[i].clusters == None:
             continue
-        out[p] = numpy.zeros(len(ensembles))
+        out.append(numpy.zeros(len(ensembles)))
         for j in range(0, len(ensembles)):
-            out[p][j] = cumulative_clustering_ensemble_similarity(
+            out[-1][j] = cumulative_clustering_ensemble_similarity(
                 ccs[i],
                 ensembles[ -1],
                 len(ensembles) + 1,
                 ensembles[j],
                 j + 1)
 
+    out = numpy.array(out)
     return out
+
 
 
 def dres_convergence(original_ensemble,
@@ -1884,7 +1890,7 @@ def dres_convergence(original_ensemble,
 
     embedded_spaces_perdim = {}
     stresses_perdim = {}
-    out = {}
+    out = []
 
     for i in range(len(dimensions)):
         stresses_perdim[dimensions[i]] = []
@@ -1899,7 +1905,7 @@ def dres_convergence(original_ensemble,
 
     for ndim in dimensions:
 
-        out[ndim] = numpy.zeros(out_matrix_eln)
+        out.append(numpy.zeros(out_matrix_eln))
 
         embedded_spaces = embedded_spaces_perdim[ndim]
         embedded_stresses = stresses_perdim[ndim]
@@ -1914,9 +1920,10 @@ def dres_convergence(original_ensemble,
             nsamples=nsamples)
 
         for j in range(0, out_matrix_eln):
-            out[ndim][j] = dimred_ensemble_similarity(kdes[-1],
+            out[-1][j] = dimred_ensemble_similarity(kdes[-1],
                                                       resamples[-1],
                                                       kdes[j],
                                                       resamples[j])
 
+    out = numpy.array(out)
     return out

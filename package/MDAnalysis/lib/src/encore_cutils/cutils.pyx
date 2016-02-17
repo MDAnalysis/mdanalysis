@@ -15,6 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #cython embedsignature=True
+
+"""
+Mixed Cython utils for ENCORE
+
+:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
+:Year: 2015--2016
+:Copyright: GNU Public License v3
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github                       """
+
 import numpy as np
 cimport numpy as np
 import cython

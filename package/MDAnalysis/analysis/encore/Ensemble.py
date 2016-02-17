@@ -25,6 +25,12 @@ xtc and dcd, as well as experimental multiple-conformation pdb files, i.e.
 those coming from NMR structure resoltion experiments.
 
 .. autoclass:: Ensemble
+:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
+:Year: 2015--2016
+:Copyright: GNU Public License v3
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
+
+.. versionadded:: 0.14.0
 
 """
 
@@ -365,16 +371,3 @@ class Ensemble:
                                                                    coordinates[
                                                                        i][:])))
 
-            # import matplotlib.pyplot as plt
-            # from mpl_toolkits.mplot3d import Axes3D
-            # fig = plt.figure()
-            # ax = fig.gca(projection='3d')
-            # i= self.coordinates[-1]
-            # print "ref", numpy.average(reference_coordinates, axis=0)
-            # print "-1",  numpy.average(self.coordinates[-1],axis=0)
-            # ax.plot(i[:,0], i[:,1], i[:,2], color='black')
-            # ax.plot(reference_coordinates[:,0], reference_coordinates[:,1],
-            #   reference_coordinates[:,2], color='red')
-            # fig.show()
-            # from time import sleep
-            # sleep(15)

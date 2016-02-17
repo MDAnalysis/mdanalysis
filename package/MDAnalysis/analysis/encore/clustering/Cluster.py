@@ -20,6 +20,14 @@ Ensemble representation --- :mod:`MDAnalysis.analysis.ensemble.ensemble`
 
 The module contains the Cluster and ClusterCollection classes which are
 designed to store results from clustering algorithms.
+
+:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
+:Year: 2015--2016
+:Copyright: GNU Public License v3
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
+
+.. versionadded:: 0.14.0
+
 """
 
 import numpy as np

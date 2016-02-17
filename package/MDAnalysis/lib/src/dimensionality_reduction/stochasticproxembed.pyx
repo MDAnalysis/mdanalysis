@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Cython wrapper for the C implementation of the Stochastic Proximity Embedding dimensionality reduction algorithm.
+
+:Author: Matteo Tiberti, Wouter Boomsma
+:Year: 2015--2016
+:Copyright: GNU Public License v3
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github                       """
+
 import logging
 import numpy
 cimport numpy
