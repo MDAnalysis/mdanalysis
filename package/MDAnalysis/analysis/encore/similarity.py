@@ -1184,7 +1184,8 @@ def ces(ensembles,
         convergence=50,
         damping=0.9,
         noise=True,
-        mode="ap",
+        clustering_mode="ap",
+        similarity_mode="minusrmsd",
         similarity_matrix=None,
         cluster_collections=None,
         estimate_error=False,
@@ -1229,9 +1230,11 @@ def ces(ensembles,
         noise : bool, optional
             Apply noise to similarity matrix (default is True).
 
-        mode : str, optional
+        clustering_mode : str, optional
             Choice of clustering algorithm. Only Affinity Propagation,`ap`,
             is implemented so far (default).
+
+
 
         similarity_matrix : XXX
 
@@ -1310,15 +1313,17 @@ def ces(ensembles,
     if similarity_matrix:
         confdistmatrix = similarity_matrix
     else:
+        kwargs['similarity_mode'] = similarity_mode
         if not estimate_error:
             confdistmatrix = get_similarity_matrix(ensembles, **kwargs)
         else:
             confdistmatrix = get_similarity_matrix(
                 ensembles,
                 bootstrapping_samples=bootstrapping_samples,
-                bootstrap_matrix=True)
+                bootstrap_matrix=True,
+                **kwargs)
 
-    if mode == "ap":
+    if clustering_mode == "ap":
 
         preferences = map(float, preference_values)
 
@@ -1444,6 +1449,7 @@ def ces(ensembles,
 
 
 def dres(ensembles,
+         conf_dist_mode="rmsd",
          conf_dist_matrix=None,
          mode='vanilla',
          dimensions=[3],
@@ -1584,13 +1590,15 @@ def dres(ensembles,
     if conf_dist_matrix:
         confdistmatrix = conf_dist_matrix
     else:
+        kwargs['similarity_mode'] = conf_dist_mode
         if not estimate_error:
             confdistmatrix = get_similarity_matrix(ensembles, **kwargs)
         else:
             confdistmatrix = get_similarity_matrix(
                 ensembles,
                 bootstrapping_samples=bootstrapping_samples,
-                bootstrap_matrix=True)
+                bootstrap_matrix=True,
+                **kwargs)
 
     dimensions = map(int, dimensions)
 
@@ -1742,6 +1750,7 @@ def dres(ensembles,
 
 def ces_convergence(original_ensemble,
                     window_size,
+                    similarity_mode="minusrmsd",
                     preference_values=[1.0],
                     max_iterations=500,
                     convergence=50,
@@ -1754,6 +1763,7 @@ def ces_convergence(original_ensemble,
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
 
+    kwargs['similarity_mode'] = similarity_mode
     confdistmatrix = get_similarity_matrix([original_ensemble], **kwargs)
 
     ensemble_assignment = []
@@ -1794,6 +1804,7 @@ def ces_convergence(original_ensemble,
     ccs = [ClustersCollection(clusters[1], metadata=metadata) for clusters in
            results]
 
+    
     out = []
 
     for i, p in enumerate(preferences):
@@ -1815,6 +1826,7 @@ def ces_convergence(original_ensemble,
 
 def dres_convergence(original_ensemble,
                      window_size,
+                     conf_dist_mode='rmsd',
                      mode='vanilla',
                      dimensions=[3],
                      maxlam=2.0,
@@ -1832,6 +1844,7 @@ def dres_convergence(original_ensemble,
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
 
+    kwargs['similarity_mode'] = conf_dist_mode
     confdistmatrix = get_similarity_matrix([original_ensemble], **kwargs)
 
     ensemble_assignment = []
