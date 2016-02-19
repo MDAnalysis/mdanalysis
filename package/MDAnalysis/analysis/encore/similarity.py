@@ -74,53 +74,56 @@ two ensemble objects are first created and then used for calculation: ::
 
     >>> ens1 = Ensemble(topology=PDB_small, trajectory=DCD)
     >>> ens2 = Ensemble(topology=PDB_small, trajectory=DCD2)
-    >>> HES = hes([ens1, ens2])
-    >>> print hes
-    (array([ [0.000, 13946090],
-            [13946090, 0.000] ])) 
+    >>> print hes([ens1, ens2])
+    13946090.5764
 
-
-In the Harmonic Ensemble Similarity measurement no upper bound exists and the
-measurement can therefore best be used for relative comparison between multiple
-ensembles.
+HES can assume any non-negative value, i.e. no upper bound exists and the
+measurement can therefore be used as an absolute scale.
 
 The calculation of the Clustering Ensemble Similarity (:func:`ces`)
-is computationally more  expensive due to the calculation of the RMSD matrix.
-To decrease the computations the :class:`Ensemble` object can be initialized
-by only loading every nth frame from the trajectory using the parameter
-`frame_interval`. Additionally, by saving the calculated (negative)
-RMSD matrix using the `save_matrix` parameter, the computational costs
-can be reduced for future calculations of e.g. different settings or
-for dimensional reduction calculations: ::
+is computationally more expensive. It is based on the Affinity Propagation
+clustering algorithm that in turns requires a similarity matrix between
+the frames the ensembles are made of (By default we use -RMSD; therefore
+a full RMSD matrix between each pairs of elements needs to be computed.)
+To decrease the computational load the :class:`Ensemble` object can be 
+initialized by only loading every nth frame from the trajectory using the 
+parameter `frame_interval`. Additionally, by saving the calculated 
+ matrix using the `save_matrix` parameter, the computational cost
+can be reduced for future calculations using e.g. different parameters
+for the clustering algorithm, or can be reused for DRES: ::
 
     >>> ens1 = Ensemble(topology = PDB_small, trajectory = DCD, frame_interval=3)
     >>> ens2 = Ensemble(topology = PDB_small, trajectory = DCD2, frame_interval=3)
-    >>> CES  = ces([ens1, ens2], save = "minusrmsd.npz")
-    >>> print CES
-    (array[[[ 0.          0.08093055]
-            [ 0.08093055  0.        ]]])
-
-For both the functions :func:`ces`
-and :func:`dres`, the similarity is evaluated using the Jensen-Shannon 
-divergence resulting in an upper bound of ln(2) which indicates no similarity
-between the ensembles and a lower bound of 0.0 signifying two identical 
-ensembles.
+    >>> print ces([ens1, ens2], save_matrix = "minusrmsd.npz")
+    0.55392484    
 
 In the above example the negative RMSD-matrix was saved as minusrmsd.npz and
 can now be used as an input in further calculations of the
 Dimensional Reduction Ensemble Similarity (:func:`dres`), thereby reducing the 
-computational costs. In the example the dimensions are reduced to 3: ::
+computational cost. DRES is based on the estimation of the probability density in 
+a dimensionally-reduced conformational space of the ensembles, obtained from 
+the original space using the Stochastic proximity embedding algorithm.
+As SPE requires the distance matrix calculated on the original space, we 
+can reuse the previously-calculated -RMSD matrix with sign changed.
+In the following example the dimensions are reduced to 3: ::
 
-    >>> DRES = dres([ens1, ens2], dimensions=[3], load="minusrmsd.npz", change_sign=True)
-    >>> print DRES
-    (array([[[ 0.        ,  0.66783918],
-             [ 0.66783918,  0.        ]]]))
+    >>> print dres([ens1, ens2], dimensions = 3, load_matrix = "minusrmsd.npz", change_sign = True)
+    0.648772821
 
-Due to the stocastic nature of the dimensional reduction in :func:`dres`, two
+Due to the stocastic nature of SPE, two
 identical ensembles will not necessarily result in an exact 0.0 estimate of 
 the similarity but will be very close. For the same reason, calculating the 
-similarity with the :func:`dres` twice will not result in two identical
-numbers but instead small differences.  
+similarity with the :func:`dres` twice will not result in 
+necessarily identical values. 
+
+It should be noted that both in :func:`ces` and :func:`dres` 
+the similarity is evaluated using the Jensen-Shannon 
+divergence resulting in an upper bound of ln(2), which indicates no similarity
+between the ensembles and a lower bound of 0.0 signifying two identical 
+ensembles. Therefore using CES and DRES ensembles can be compared in a more relative sense
+respect to HES, i.e. they can be used to understand whether 
+ensemble A is closer to ensemble B respect to C, but absolute 
+values are less meaningful as they also depend on the chosen parameters.
 
 
 Functions
@@ -798,9 +801,9 @@ def bootstrapped_matrix(matrix, ensemble_assignment):
 
 def get_similarity_matrix(ensembles,
                           similarity_mode="minusrmsd",
-                          load=None,
-                          change_sign=None,
-                          save=None,
+                          load_matrix=None,
+                          change_sign=False,
+                          save_matrix=None,
                           superimpose=True,
                           superimposition_subset="name CA",
                           mass_weighted=True,
@@ -808,11 +811,19 @@ def get_similarity_matrix(ensembles,
                           bootstrapping_samples=100,
                           np=1):
     """
-    Retrieves the similarity (RMSD) matrix.
+    Retrieves or calculates the similarity or conformational distance (RMSD) matrix.
+    The similarity matrix is calculated between all the frames of all the 
+    encore.Ensemble objects given as input. The order of the matrix elements depends on
+    the order of the coordinates of the ensembles AND on the order of the 
+    input ensembles themselves, therefore the ordering of the input list is significant.
 
     The similarity matrix can either be calculated from input Ensembles or
-    loaded from an input numpy binary file. If a dissimilarity matrix is
-    loaded the signs can be changed by the option `change_sign`.
+    loaded from an input numpy binary file. The signs of the elements of 
+    the loaded matrix elements can be inverted using by the option `change_sign`.
+
+    Please notice that the .npz file does not contain a bidimensional array,
+    but a flattened representation that is meant to represent the elements of 
+    an encore.utils.TriangularMatrix object.
 
 
     Parameters
@@ -821,19 +832,20 @@ def get_similarity_matrix(ensembles,
             List of ensembles
 
         similarity_mode : str, optional
-            whether input matrix is dissmilarity matrix (minus RMSD) or
-            similarity matrix (RMSD). Default is "minusrmsd".
+            whether input matrix is smilarity matrix (minus RMSD) or
+            a conformational distance matrix (RMSD). Accepted values 
+            are "minusrmsd" and "rmsd".
         
-        load : str, optional
+        load_matrix : str, optional
             Load similarity/dissimilarity matrix from numpy binary file instead
             of calculating it (default is None). A filename is required.
 
         change_sign : bool, optional
-            Change the sign of the elements of loaded matrix (default is None).
+            Change the sign of the elements of loaded matrix (default is False).
             Useful to switch between similarity/distance matrix.
 
-        save : bool, optional
-            Save calculated matrix as numpy binary file (default None). A
+        save_matrix : bool, optional
+            Save calculated matrix as numpy binary file (default is None). A
             filename is required.
 
         superimpose : bool, optional
@@ -860,7 +872,13 @@ def get_similarity_matrix(ensembles,
 
     Returns
     -------
-        confdistmatrix : XXX
+        confdistmatrix : encore.utils.TriangularMatrix or list of encore.utils.TriangularMatrix
+            Conformational distance or similarity matrix. If bootstrap_matrix
+            is true, bootstrapping_samples matrixes are bootstrapped from the
+            original one and they are returned as a list.
+            
+    
+
 
     """
 
@@ -976,21 +994,27 @@ def get_similarity_matrix(ensembles,
 def prepare_ensembles_for_convergence_increasing_window(ensembles,
                                                         window_size):
     """
-    XXX describe XXX
+    Generate ensembles to be fed to ces_convergence or dres_convergence
+    from a single ensemble. Basically, the different slices the algorithm
+    needs are generated here.
 
     Parameters
     ----------
 
-        ensembles : list
-            List of input ensembles for convergence estimation
+        ensembles : encore.Ensemble object
+            Input ensemble
 
-        window_size : XXX
-            XXX
+        window_size : int
+            size of the window (in number of frames) to be used
 
     Returns
     -------
 
-        tmp_ensembles : XXX    
+        tmp_ensembles : 
+            the original ensemble is divided into ensembles, each being
+            a window_size-long slice of the original ensemble. The last
+            ensemble will be bigger if the length of the input ensemble
+            is not exactly divisible by window_size.
     
     """
 
@@ -1063,7 +1087,7 @@ def hes(ensembles,
 
     Returns
     -------
-        hes : numpy.array
+        hes : numpy.array (bidimensional)
             Harmonic similarity measurements between each pair of ensembles.
 
 
@@ -1088,7 +1112,6 @@ def hes(ensembles,
     the ensemble, and the covariance matrix is calculated by default using a
     shrinkage estimate method (or by a maximum-likelihood method, optionally).
 
-
     In the Harmonic Ensemble Similarity measurement no upper bound exists and
     the measurement can therefore best be used for relative comparison between
     multiple ensembles.
@@ -1103,12 +1126,10 @@ def hes(ensembles,
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
 
-        >>> ens1 = Ensemble(topology=PDB_small,trajectory=DCD)
-        >>> ens2 = Ensemble(topology=PDB_small,trajectory=DCD)
-        >>> HES = hes( [ens1,ens2] )
-        >>> print HES
-        [ [ 0.000, 7049.550], [7049.550, 0.000] ]
-
+    >>> ens1 = Ensemble(topology=PDB_small, trajectory=DCD)
+    >>> ens2 = Ensemble(topology=PDB_small, trajectory=DCD2)
+    >>> print hes([ens1, ens2])
+    13946090.5764
 
 
     """
@@ -1187,6 +1208,9 @@ def hes(ensembles,
         values[i, j] = value
         values[j, i] = value
 
+    if values.shape[0] == 2:
+        values = values[0,1]
+        
     # Save details as required
     if details:
         kwds = {}
@@ -1198,6 +1222,8 @@ def hes(ensembles,
     else:
         details = None
 
+
+        
     return values, details
 
 
@@ -1230,9 +1256,9 @@ def ces(ensembles,
         ensembles : list
             List of ensemble objects for similarity measurements
 
-        preference_values : list, optional
+        preference_values : float or iterable of floats, optional
             Preference parameter used in the Affinity Propagation algorithm for
-            clustering  (default [-1.0]). A high preference value results in
+            clustering  (default -1.0). A high preference value results in
             many clusters, a low preference will result in fewer numbers of
             clusters. Inputting a list of different preference values results
             in multiple calculations of the CES, one for each preference
@@ -1258,11 +1284,7 @@ def ces(ensembles,
             Choice of clustering algorithm. Only Affinity Propagation,`ap`,
             is implemented so far (default).
 
-
-
-        similarity_matrix : XXX
-
-        cluster_collections : XXX
+        similarity_matrix : By default, 
 
         estimate_error :  bool, optional
             Whether to perform error estimation (default is False).
