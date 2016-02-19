@@ -394,3 +394,20 @@ def trm_indeces_nodiag(n):
     for i in xrange(1, n):
         for j in xrange(i):
             yield (i, j)
+
+def trm_indeces_diag(n):
+    """generate (i,j) indeces of a triangular matrix of n rows (or columns),
+    with diagonal 
+
+    Parameters
+        ----------
+
+            `n` : int
+                        Matrix size
+"""
+
+    for i in xrange(0, n):
+        for j in xrange(i+1):
+            yield (i, j)
+
+

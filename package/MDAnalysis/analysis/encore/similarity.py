@@ -1027,7 +1027,8 @@ def hes(ensembles,
         mass_weighted=True,
         details=False,
         estimate_error=False,
-        bootstrapping_runs=100, ):
+        bootstrapping_runs=100,
+        calc_diagonal=False):
     """
 
     Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
@@ -1126,7 +1127,11 @@ def hes(ensembles,
         return None
 
     out_matrix_eln = len(ensembles)
-    pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
+
+    if calc_diagonal:
+        pairs_indeces = list(trm_indeces_diag(out_matrix_eln))
+    else:
+        pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
     xs = []
     sigmas = []
 
@@ -1152,8 +1157,8 @@ def hes(ensembles,
                 values[j, i] = value
             data.append(values)
         outs = numpy.array(data)
-        avgs = np.average(data, axis=0)
-        stds = np.std(data, axis=0)
+        avgs = numpy.average(data, axis=0)
+        stds = numpy.std(data, axis=0)
 
         return (avgs, stds)
 
@@ -1193,13 +1198,11 @@ def hes(ensembles,
     else:
         details = None
 
-    values = numpy.array((values))
-
     return values, details
 
 
 def ces(ensembles,
-        preference_values=[-1.0],
+        preference_values=-1.0,
         max_iterations=500,
         convergence=50,
         damping=0.9,
@@ -1212,6 +1215,7 @@ def ces(ensembles,
         bootstrapping_samples=100,
         details=False,
         np=1,
+        calc_diagonal=False,
         **kwargs):
     """
 
@@ -1314,12 +1318,19 @@ def ces(ensembles,
             (array([[[ 0.          0.55392484]
                      [ 0.55392484  0.        ]]])
 
-
-
-
-
     """
 
+
+    if not hasattr(preference_values, '__iter__'):
+        preference_values = [preference_values]
+        full_output = False
+    else:
+        full_output = True
+    try:
+        preference_values = numpy.array(preference_values, dtype=numpy.float)
+    except:
+        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
+        
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
@@ -1329,7 +1340,11 @@ def ces(ensembles,
     metadata = {'ensemble': ensemble_assignment}
 
     out_matrix_eln = len(ensembles)
-    pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
+
+    if calc_diagonal:
+        pairs_indeces = list(trm_indeces_diag(out_matrix_eln))
+    else:
+        pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
 
     if similarity_matrix:
         confdistmatrix = similarity_matrix
@@ -1460,12 +1475,19 @@ def ces(ensembles,
                     kwds["cluster%d_pref%.3f" % (cln + 1, p)] = numpy.array(
                         cluster.elements)
 
+    if full_output:
+        values = numpy.array(values).swapaxes(0, 2)
+    else:
+        if len(ensembles) == 2:
+            values = values[0][0, 1]
+        else:
+            values = values[0]
+    
     if details:
         details = numpy.array(kwds)
     else:
         details = None
 
-    values = numpy.array(values)
     return values, details
 
 
@@ -1485,6 +1507,7 @@ def dres(ensembles,
          bootstrapping_samples=100,
          details=False,
          np=1,
+         calc_diagonal = False,
          **kwargs):
     """
 
@@ -1604,12 +1627,24 @@ def dres(ensembles,
 
     """
 
+    if not hasattr(dimensions, '__iter__'):
+        dimensions = [dimensions]
+        full_output = False
+    else:
+        full_output = True
+    try:
+        dimensions = numpy.array(dimensions, dtype=numpy.int)
+    except:
+        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
 
-    dimensions = numpy.array(dimensions, dtype=numpy.int)
     stressfreq = -1
 
     out_matrix_eln = len(ensembles)
-    pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
+
+    if calc_diagonal:
+        pairs_indeces = list(trm_indeces_diag(out_matrix_eln))
+    else:
+        pairs_indeces = list(trm_indeces_nodiag(out_matrix_eln))
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
@@ -1769,12 +1804,18 @@ def dres(ensembles,
             for en, e in enumerate(embedded_ensembles):
                 kwds["ensemble%d_%ddims" % (en, ndim)] = e
 
+    if full_output:
+        values = numpy.array(values).swapaxes(0, 2)
+    else:
+        if len(ensembles) == 2:
+            values = values[0][0, 1]
+        else:
+            values = values[0]
+
     if details:
         details = numpy.array(kwds)
     else:
         details = None
-
-    values = numpy.array(values)
 
     return values, details
 
@@ -1849,6 +1890,16 @@ def ces_convergence(original_ensemble,
 
    """
 
+    if not hasattr(preference_values, '__iter__'):
+        preferences = [preference_values]
+        full_output = False
+    else:
+        full_output = True
+    try:
+        preferences = numpy.array(preference_values, dtype=numpy.float)
+    except:
+        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
+
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
 
@@ -1908,7 +1959,7 @@ def ces_convergence(original_ensemble,
                 ensembles[j],
                 j + 1)
 
-    out = numpy.array(out)
+    out = numpy.array(out).T
     return out
 
 
@@ -2099,5 +2150,5 @@ def dres_convergence(original_ensemble,
                                                       kdes[j],
                                                       resamples[j])
 
-    out = numpy.array(out)
+    out = numpy.array(out).T
     return out
