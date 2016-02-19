@@ -35,6 +35,7 @@ Enhancement
   * LinearDensity analysis module added, which allows to compute linear mass
     and charge density profiles along the three cartesian axes of the cell.
     Works for orthorombic, fixed volume cells only. (Issue #670)
+  * Trajectories can now be sliced using a boolean array (Issue #725)
 
 Changes
 
@@ -63,7 +64,7 @@ Fixes
   * Fixed Type Error in qcprot.pyx when no rotation can be fond (Issue #705)
   * Fixed cyzone selection failing in orthogonal systems (Issue #710)
   * Fixed Error in calculation of average grid density (Issue #716)
-
+  * Fixed indexing an AtomGroup using a list of bools now working (Issue #729)
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra
