@@ -17,6 +17,8 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
   * 0.14.0
 
+    - Added the cleanup plugin (--with-mda_cleanup) to delete offset files
+      after tests have run (Issue 669)
     - Made memleak testing python 3 compliant (Issue 662). It may be a moot
       point since python 3.4 now cleverly deals with leaks.
 

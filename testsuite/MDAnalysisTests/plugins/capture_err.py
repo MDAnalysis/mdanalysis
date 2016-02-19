@@ -46,13 +46,13 @@ class CaptureStdErr(Plugin):
         self._buf = None
 
     def options(self, parser, env):
-        """Register commandline options
+        """Registers the commandline option, defaulting to enabled.
         """
         parser.add_option(
             "--no-errorcapture", action="store_false",
             default=not env.get(self.env_opt), dest="capture_error",
             help="Don't capture stderr (any stderr output "
-            "will be printed immediately) [NOSE_NO_ERRORCAPTURE]")
+            "will be printed immediately) [{}]".format(self.env_opt))
 
     def configure(self, options, conf):
         """Configure plugin. Plugin is enabled by default.
