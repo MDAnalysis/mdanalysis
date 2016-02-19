@@ -24,7 +24,8 @@ import sys
 try:
     from scipy.stats import gaussian_kde
 except ImportError:
-    raise ImportError("Couldn't import the scipy package, which is a requirement for ENCORE.")
+    raise ImportError("Couldn't import the scipy package, which is a "
+                      "requirement for ENCORE.")
 import time
 import optparse
 import copy

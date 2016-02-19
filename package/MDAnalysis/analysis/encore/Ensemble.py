@@ -70,7 +70,7 @@ class Ensemble:
      although it must refer to the same topology.
 
     Attributes
-	----------
+    ----------
 
     topology_filename : str
         Topology file name.
@@ -112,8 +112,8 @@ class Ensemble:
          be used for 3D superimposition.
 
 
-	Examples
-	--------
+    Examples
+    --------
 
 	The examples show how to use ENCORE to initiate an Ensemble object.
 	The topology- and trajectory files are obtained from the MDAnalysis
@@ -146,8 +146,8 @@ class Ensemble:
         Constructor for the Ensemble class. See the module description for more
         details.
 
-	Parameters
-	----------
+    Parameters
+    ----------
 
         universe: MDAnalysis.Universe
             If universe is specified, topology and trajectory will be ignored
@@ -219,7 +219,7 @@ class Ensemble:
         Get a set of coordinates from Universe.
 
         Parameters
-		----------
+        ----------
 
         subset_selection_string : None or str
             Selection string that selects the universe atoms whose coordinates
@@ -228,7 +228,7 @@ class Ensemble:
             atom_selection_string will be considered.
 
         Returns
-		-------
+        -------
 
         coordinates : (x,N,3) numpy array
             The requested array of coordinates.
@@ -275,7 +275,7 @@ class Ensemble:
          structure.
 
         Parameters
-		----------
+        ----------
 
         reference : None or MDAnalysis.Universe
             Reference structure on which those belonging to the Ensemble will

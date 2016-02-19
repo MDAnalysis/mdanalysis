@@ -69,7 +69,8 @@ class EstimatorML:
             coordinates_offset = coordinates - reference_coordinates
 
             # Calculate covariance manually
-            coordinates_cov = numpy.zeros((coordinates.shape[1], coordinates.shape[1]))
+            coordinates_cov = numpy.zeros((coordinates.shape[1],
+                                           coordinates.shape[1]))
             for frame in coordinates_offset:
                 coordinates_cov += numpy.outer(frame, frame)
             coordinates_cov /= coordinates.shape[0]
@@ -85,10 +86,12 @@ class EstimatorShrinkage:
     """
     Shrinkage estimator of the covariance matrix using the method described in
 
-    Improved Estimation of the Covariance Matrix of Stock Returns With an Application
-    to Portfolio Selection. Ledoit, O.; Wolf, M., Journal of Empirical Finance, 10, 5, 2003
+    Improved Estimation of the Covariance Matrix of Stock Returns With an
+    Application to Portfolio Selection. Ledoit, O.; Wolf, M., Journal of
+    Empirical Finance, 10, 5, 2003
 
-    This implementation is based on the matlab code made available by Olivier Ledoit on
+    This implementation is based on the matlab code made available by Olivier
+    Ledoit on
     his website:
 
     http://www.ledoit.net/ole2_abstract.htm
@@ -105,7 +108,8 @@ class EstimatorShrinkage:
 		----------
 
         shrinkage_parameter : float
-            Makes it possible to set the shrinkage parameter explicitly, rather than having it estimated automatically.
+            Makes it possible to set the shrinkage parameter explicitly, 
+            rather than having it estimated automatically.
         """
         self.shrinkage_parameter = shrinkage_parameter
 
@@ -142,7 +146,8 @@ class EstimatorShrinkage:
         xmkt = numpy.average(x, axis=1)
 
         # Call maximum likelihood estimator (note the additional column)
-        sample = EstimatorML()(numpy.hstack([x,xmkt[:,numpy.newaxis]]), 0) * (t-1)/float(t)
+        sample = EstimatorML()(numpy.hstack([x,xmkt[:,numpy.newaxis]]), 0) \
+                 * (t-1)/float(t)
 
         # Split covariance matrix into components
         covmkt = sample[0:n,n]
@@ -160,11 +165,15 @@ class EstimatorShrinkage:
             c = numpy.linalg.norm(sample - prior, ord='fro')**2
 
             y = x**2
-            p=1/float(t)*numpy.sum(numpy.dot(numpy.transpose(y),y))-numpy.sum(numpy.sum(sample**2))
-            rdiag=1/float(t)*numpy.sum(numpy.sum(y**2))-numpy.sum(numpy.diag(sample)**2)
+            p=1/float(t)*numpy.sum(numpy.dot(numpy.transpose(y),y))\
+              -numpy.sum(numpy.sum(sample**2))
+            rdiag=1/float(t)*numpy.sum(numpy.sum(y**2))\
+                  -numpy.sum(numpy.diag(sample)**2)
             z = x * numpy.repeat(xmkt[:,numpy.newaxis], n, axis=1)
-            v1 = 1/float(t) * numpy.dot(numpy.transpose(y),z) - numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)*sample
-            roff1 = (numpy.sum(v1*numpy.transpose(numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)))/varmkt -
+            v1 = 1/float(t) * numpy.dot(numpy.transpose(y),z) \
+                 - numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)*sample
+            roff1 = (numpy.sum(
+                v1*numpy.transpose(numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)))/varmkt -
                      numpy.sum(numpy.diag(v1)*covmkt)/varmkt)
             v3 = 1/float(t)*numpy.dot(numpy.transpose(z),z) - varmkt*sample
             roff3 = (numpy.sum(v3*numpy.outer(covmkt, covmkt))/varmkt**2 - 
@@ -200,13 +209,15 @@ def covariance_matrix(ensemble,
         The structural ensemble
 
     estimator : MLEstimator or ShrinkageEstimator object
-        Which estimator type to use (maximum likelihood, shrinkage). This object is required to have a __call__ function defined.
+        Which estimator type to use (maximum likelihood, shrinkage). This 
+        object is required to have a __call__ function defined.
 
     mass_weighted : bool
         Whether to do a mass-weighted analysis
 
     reference : MDAnalysis.Universe object
-        Use the distances to a specific reference structure rather than the distance to the mean.
+        Use the distances to a specific reference structure rather than the 
+        distance to the mean.
 
     Returns
 	-------
@@ -229,7 +240,8 @@ def covariance_matrix(ensemble,
     if reference:
 
         # Select the same atoms in reference structure
-        reference_atom_selection = reference.select_atoms(ensemble.get_atom_selection_string())
+        reference_atom_selection = reference.select_atoms(
+            ensemble.get_atom_selection_string())
         reference_coordinates = reference_atom_selection.atoms.coordinates()
 
         # Flatten reference coordinates 
@@ -257,26 +269,50 @@ if __name__ == "__main__":
     parser = optparse.OptionParser(usage=usage)
     
     parser.add_option("--topology", dest="topology_filename", default="",
-                      help="Path to a topology file (supported formats: PDB,PSF,CRD,GRO)")
-    parser.add_option("--trajectory", dest="trajectory_filename", action="callback", type="string", nargs=0, default=[],
+                      help="Path to a topology file (supported formats: "
+                           "PDB,PSF,CRD,GRO)")
+    parser.add_option("--trajectory",
+                      dest="trajectory_filename",
+                      action="callback",
+                      type="string",
+                      nargs=0,
+                      default=[],
                       callback=utils.vararg_callback,
                       metavar="TRAJECTORY_FILENAME(S)",
                       help="Add trajectory filenames")
-    parser.add_option("--atom-selection", dest="atom_selection_string", default="(name CA)",
+    parser.add_option("--atom-selection",
+                      dest="atom_selection_string",
+                      default="(name CA)",
                       help="CHARMM-style atom selection")
-    parser.add_option("--mass-weighted-analysis", dest="mass_weighted_analysis", action="store_true", default=False,
-                      help="Use mass-weighting in the calculation of the covariance matrix.")
-    parser.add_option("--no-align", dest="no_align", action="store_true", default=False,
-                      help="Do not superimpose structures before calculating covariance.")
+    parser.add_option("--mass-weighted-analysis",
+                      dest="mass_weighted_analysis",
+                      action="store_true",
+                      default=False,
+                      help="Use mass-weighting in the calculation of the "
+                           "covariance matrix.")
+    parser.add_option("--no-align", dest="no_align",
+                      action="store_true",
+                      default=False,
+                      help="Do not superimpose structures before calculating "
+                           "covariance.")
     parser.add_option("--frame-interval", dest="frame_interval", default=1,
                       help="The interval between frames used for the analysis")
-    parser.add_option("--use-distance-to-reference", dest="use_distance_to_reference", action="store_true", default=False,
-                      help="Whether to use the distance to the reference structure rather than the distance to the average structure when calculating covariance matrix.")
+    parser.add_option("--use-distance-to-reference",
+                      dest="use_distance_to_reference",
+                      action="store_true",
+                      default=False,
+                      help="Whether to use the distance to the reference "
+                           "structure rather than the distance to the average"
+                           " structure when calculating covariance matrix.")
     parser.add_option("--output", dest="output_filename", default="", 
                       help="Output file for covariance matrix")
-    parser.add_option("--covariance-estimator", type="choice", dest="covariance_estimator", default="shrinkage",
+    parser.add_option("--covariance-estimator",
+                      type="choice",
+                      dest="covariance_estimator",
+                      default="shrinkage",
                       choices=["ml","shrinkage"],
-                      help="Type of estimator (maximum likelihood (ml) or shrinkage")
+                      help="Type of estimator (maximum likelihood (ml) "
+                           "or shrinkage")
     (options, args) = parser.parse_args()
 
     if not options.trajectory_filename or not options.topology_filename:

@@ -18,8 +18,7 @@
 Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity`
 =================================================================================
 
-:Author: Matteo Tiberti, Wouter Boomsma,  Elena Papaleo, Tone Bengtsen, Kresten
-Lindorff-Larsen
+:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015-2016
 :Copyright: GNU Public License v3
 
@@ -70,21 +69,22 @@ examples first execute: ::
     >>> from MDAnalysis.tests.datafiles import PDB_small, DCD, DCD2
 
 
-To calculate the :func:`harmonic_ensemble_similarity`
+To calculate the Harmonic Ensemble Similarity (:func:`hes`)
 two ensemble objects are first created and then used for calculation: ::
 
     >>> ens1 = Ensemble(topology=PDB_small, trajectory=DCD)
     >>> ens2 = Ensemble(topology=PDB_small, trajectory=DCD2)
-    >>> HES = harmonic_ensemble_similarity([ens1, ens2])
-    >>> print HES
-    [ [0.000, 7049.550], [7049.550, 0.000] ]
+    >>> HES = hes([ens1, ens2])
+    >>> print hes
+    (array([ [0.000, 13946090],
+            [13946090, 0.000] ])) 
 
 
 In the Harmonic Ensemble Similarity measurement no upper bound exists and the
 measurement can therefore best be used for relative comparison between multiple
 ensembles.
 
-The calculation of the :func:`clustering_ensemble_similarity`
+The calculation of the Clustering Ensemble Similarity (:func:`ces`)
 is computationally more  expensive due to the calculation of the RMSD matrix.
 To decrease the computations the :class:`Ensemble` object can be initialized
 by only loading every nth frame from the trajectory using the parameter
@@ -95,31 +95,32 @@ for dimensional reduction calculations: ::
 
     >>> ens1 = Ensemble(topology = PDB_small, trajectory = DCD, frame_interval=3)
     >>> ens2 = Ensemble(topology = PDB_small, trajectory = DCD2, frame_interval=3)
-    >>> CES  = ces([ens1, ens2], save = minusrmsd.npz)
+    >>> CES  = ces([ens1, ens2], save = "minusrmsd.npz")
     >>> print CES
-    [ [0.0, 0.260], [0.260, 0.0] ]
+    (array[[[ 0.          0.08093055]
+            [ 0.08093055  0.        ]]])
 
-For both the functions :func:`clustering_ensemble_similarity`
-and :func:`dimred_ensemble_similarity`,
-the similarity is evaluated using the Jensen-Shannon divergence resulting in
-an upper bound of ln(2) which indicates no similarity between the ensembles
-nd a lower bound of 0.0 signifying two identical ensembles.
-
-In the example the function is called using the abbreviation
-:func:`ces`. Similarly, abbreviations exist for calling
-the two other functions by using :func:`hes` and :func:`dres`.
+For both the functions :func:`ces`
+and :func:`dres`, the similarity is evaluated using the Jensen-Shannon 
+divergence resulting in an upper bound of ln(2) which indicates no similarity
+between the ensembles and a lower bound of 0.0 signifying two identical 
+ensembles.
 
 In the above example the negative RMSD-matrix was saved as minusrmsd.npz and
 can now be used as an input in further calculations of the
-:func:`dimred_ensemble_similarity`, thereby reducing the computational costs.
-In the example the dimensions are reduced to 3: ::
+Dimensional Reduction Ensemble Similarity (:func:`dres`), thereby reducing the 
+computational costs. In the example the dimensions are reduced to 3: ::
 
-    >>> DRES = dres([ens1, ens2], dimensions=3, load=minusrmsd.npz, change-matrix-sign)
-
+    >>> DRES = dres([ens1, ens2], dimensions=[3], load="minusrmsd.npz", change_sign=True)
     >>> print DRES
-    [ [ 0.000, 0.254], [0.254, 0.000] ]
+    (array([[[ 0.        ,  0.66783918],
+             [ 0.66783918,  0.        ]]]))
 
-
+Due to the stocastic nature of the dimensional reduction in :func:`dres`, two
+identical ensembles will not necessarily result in an exact 0.0 estimate of 
+the similarity but will be very close. For the same reason, calculating the 
+similarity with the :func:`dres` twice will not result in two identical
+numbers but instead small differences.  
 
 
 Functions
@@ -974,6 +975,25 @@ def get_similarity_matrix(ensembles,
 
 def prepare_ensembles_for_convergence_increasing_window(ensembles,
                                                         window_size):
+    """
+    XXX describe XXX
+
+    Parameters
+    ----------
+
+        ensembles : list
+            List of input ensembles for convergence estimation
+
+        window_size : XXX
+            XXX
+
+    Returns
+    -------
+
+        tmp_ensembles : XXX    
+    
+    """
+
     ens_size = ensembles.coordinates.shape[0]
 
     rest_slices = ens_size / window_size
@@ -1287,11 +1307,12 @@ def ces(ensembles,
     Here the simplest case of just two :class:`Ensemble`s used for comparison
     are illustrated: ::
 
-        >>> ens1 = Ensemble(topology=topology_file.pdb, trajectory=traj1.xtc)
-        >>> ens2 = Ensemble(topology=topology_file.pdb, trajectory=traj2.dcd)
+        >>> ens1 = Ensemble( topology = PDB_small, trajectory = DCD)
+        >>> ens2 = Ensemble(topology = PDB_small, trajectory = DCD2)
         >>> CES = ces([ens1,ens2])
         >>> print CES
-        [ [0.0, 0.2], [0.2, 0.0 ] ]
+            (array([[[ 0.          0.55392484]
+                     [ 0.55392484  0.        ]]])
 
 
 
@@ -1541,15 +1562,25 @@ def dres(ensembles,
 
     Notes
     -----
-    In the Jensen-Shannon divergence the upper bound of ln(2) signifies
-    no similarity between the two ensembles, the lower bound, 0.0,
-    signifies identical ensembles.
-
-    To calculate to DRES the method first projects the ensembles into lower
+    To calculate the similarity the method first projects the ensembles into lower
     dimensions by using the Stochastic Proximity Embedding algorithm. A
     gaussian kernel-based density estimation method is then used to estimate
     the probability density for each ensemble which is then used to estimate
     the Jensen-shannon divergence between each pair of ensembles.
+
+
+    In the Jensen-Shannon divergence the upper bound of ln(2) signifies
+    no similarity between the two ensembles, the lower bound, 0.0,
+    signifies identical ensembles. However, due to the stocastic nature of 
+    the dimensional reduction in :func:`dres`, two identical ensembles will 
+    not necessarily result in an exact 0.0 estimate of the similarity but 
+    will be very close. For the same reason, calculating the similarity with
+    the :func:`dres` twice will not result in two identical numbers but 
+    instead small differences.  
+
+
+
+
 
     Example
     -------
@@ -1563,11 +1594,11 @@ def dres(ensembles,
 
 
         >>> ens1 = Ensemble(topology=PDB_small,trajectory=DCD)
-        >>> ens2 = Ensemble(topology=PDB_small,trajectory=DCD)
+        >>> ens2 = Ensemble(topology=PDB_small,trajectory=DCD2)
         >>> DRES = dres([ens1,ens2])
         >>> print DRES
-        [ [0.0, 0.2], [0.2, 0.0 ] ]
-
+           (array( [[[ 0.          0.67383396]
+                 [ 0.67383396  0.        ]]]
 
 
 
@@ -1760,6 +1791,64 @@ def ces_convergence(original_ensemble,
                     load_matrix=None,
                     np=1,
                     **kwargs):
+
+    """ 
+    Use the Clustering comparison measure to evaluate the convergence of the ensemble/trajectory
+
+
+    Parameters
+    ----------
+
+        window_size : XXX
+            Size of window  XXX
+
+        preference_values : list , optional
+            Preference parameter used in the Affinity Propagation algorithm for
+            clustering  (default [-1.0]). A high preference value results in
+            many clusters, a low preference will result in fewer numbers of
+            clusters. Inputting a list of different preference values results
+            in multiple calculations of the CES, one for each preference
+            clustering.
+
+        max_iterations : int, optional
+            Parameter in the Affinity Propagation for
+            clustering (default is 500).
+
+        convergence : int, optional
+            Minimum number of unchanging iterations to achieve convergence
+            (default is 50). Parameter in the Affinity Propagation for
+            clustering.
+
+        damping : float, optional
+            Damping factor (default is 0.9). Parameter in the Affinity
+            Propagation for clustering.
+
+        noise : bool, optional
+            Apply noise to similarity matrix (default is True).
+
+        save_matrix : bool, optional
+            Save calculated matrix as numpy binary file (default None). A
+            filename is required.
+
+        load_matrix : str, optional
+            Load similarity/dissimilarity matrix from numpy binary file instead
+            of calculating it (default is None). A filename is required.
+
+        np : int, optional
+            Maximum number of cores to be used (default is 1).
+
+        kwargs : XXX
+
+    
+
+    Returns
+    -------
+
+        out : XXX
+
+
+   """
+
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
 
@@ -1841,6 +1930,78 @@ def dres_convergence(original_ensemble,
                      details=False,
                      np=1,
                      **kwargs):
+
+    """
+    Use the Dimensional Reduction comparison measure to evaluate the convergence of the ensemble/trajectory.
+
+    Parameters
+    ----------
+
+        original_ensemble : XXX
+
+        window_size : XXX
+
+        mode : str, opt
+            Which algorithm to use for dimensional reduction. Three options:
+                - Stochastic Proximity Embedding (`vanilla`)  (default)
+                - Random Neighborhood Stochastic Proximity Embedding (`rn`)
+                - k-Nearest Neighbor Stochastic Proximity Embedding (`knn`)
+
+        dimensions  : int, optional
+            Number of dimensions for reduction (default is 3)
+
+        maxlam : float, optional
+            Starting lambda learning rate parameter (default is 2.0). Parameter
+            for Stochastic Proximity Embedding calculations.
+
+        minlam : float, optional
+            Final lambda learning rate (default is 0.1). Parameter
+            for Stochastic Proximity Embedding calculations.
+
+        ncycle  :  int, optional
+            Number of cycles per run (default is 100). At the end of every
+            cycle, lambda is changed.
+
+        nstep  : int, optional
+            Number of steps per cycle (default is 10000)
+
+        neighborhood_cutoff  : float, optional
+            Neighborhood cutoff (default is 1.5).
+
+        kn  : int, optional
+            Number of neighbours to be considered (default is 100)
+
+        nsamples : int, optional
+            Number of samples to be drawn from the ensembles (default is 1000).
+            Parameter used in Kernel Density Estimates (KDE) from embedded
+            spaces.
+
+        estimate_error  :  bool, optional
+            Whether to perform error estimation (default is False)
+
+        bootstrapping_samples  :  int, optional
+            Number of bootstrapping runs XXX (default is 100).
+
+        details  : bool, optional
+            XXX  (default is False)
+
+        np  : int, optional
+            Maximum number of cores to be used (default is 1).
+
+        kwargs : XXX
+
+
+    Returns:
+    --------
+
+        out : XXX
+            XXX
+
+
+
+
+    """
+
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
 
