@@ -1208,9 +1208,6 @@ def hes(ensembles,
         values[i, j] = value
         values[j, i] = value
 
-    if values.shape[0] == 2:
-        values = values[0,1]
-        
     # Save details as required
     if details:
         kwds = {}
@@ -1222,8 +1219,6 @@ def hes(ensembles,
     else:
         details = None
 
-
-        
     return values, details
 
 
@@ -1500,10 +1495,7 @@ def ces(ensembles,
     if full_output:
         values = numpy.array(values).swapaxes(0, 2)
     else:
-        if len(ensembles) == 2:
-            values = values[0][0, 1]
-        else:
-            values = values[0]
+        values = values[0]
     
     if details:
         details = numpy.array(kwds)
@@ -1517,7 +1509,7 @@ def dres(ensembles,
          conf_dist_mode="rmsd",
          conf_dist_matrix=None,
          mode='vanilla',
-         dimensions=[3],
+         dimensions=3,
          maxlam=2.0,
          minlam=0.1,
          ncycle=100,
@@ -1829,10 +1821,7 @@ def dres(ensembles,
     if full_output:
         values = numpy.array(values).swapaxes(0, 2)
     else:
-        if len(ensembles) == 2:
-            values = values[0][0, 1]
-        else:
-            values = values[0]
+        values = values[0]
 
     if details:
         details = numpy.array(kwds)

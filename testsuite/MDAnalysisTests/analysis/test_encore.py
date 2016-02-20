@@ -62,22 +62,21 @@ class TestEncore(TestCase):
         results, details = encore.hes([self.ens1, self.ens1])
         result_value = results[0,1]
         expected_value = 0.
-        assert_almost_equal(results[0, 1], expected_value,
+        assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     @dec.slow
     def test_hes(self):
         results, details = encore.hes([self.ens1, self.ens2])
-        result_value = results[0, 1]
+        result_value = results[0,1]
         expected_value = 13946090.576
-        assert_almost_equal(results[0, 1], expected_value, decimal=2,
-                            err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. "
-                                    "Expected {1:f}.".format(result_value, expected_value))
+        assert_almost_equal(result_value, expected_value, decimal=2,
+                            err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     @dec.slow
     def test_ces_to_self(self):
         results, details = encore.ces([self.ens1, self.ens1])
-        result_value = results[0,0,1]
+        result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
@@ -85,7 +84,7 @@ class TestEncore(TestCase):
     @dec.slow
     def test_ces(self):
         results, details = encore.ces([self.ens1, self.ens2])
-        result_value = results[0,0,1]
+        result_value = results[0,1]
         expected_value = 0.55392
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {}. Expected {}.".format(result_value, expected_value))
@@ -93,18 +92,16 @@ class TestEncore(TestCase):
     @dec.slow
     def test_dres_to_self(self):
         results, details = encore.dres([self.ens1, self.ens1])
-        result_value = results[0,0,1]
+        result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value, decimal=2,
-                            err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}"
-                            .format(result_value))
+                            err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     @dec.slow
     def test_dres(self):
         results, details = encore.dres([self.ens1, self.ens2])
-        result_value = results[0,0,1]
+        result_value = results[0,1]
         expected_value = 0.68
         assert_almost_equal(result_value, expected_value, decimal=1,
-                            err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. "
-                                    "Expected {1:f}.".format(result_value, expected_value))
+                            err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
