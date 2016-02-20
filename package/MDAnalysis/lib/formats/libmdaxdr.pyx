@@ -51,11 +51,11 @@ cdef extern from 'include/xdrfile_trr.h':
 
 
 cdef extern from 'include/xtc_seek.h':
-    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
+    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
 
 
 cdef extern from 'include/trr_seek.h':
-    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
+    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
 
 
 cdef enum:
@@ -195,7 +195,7 @@ cdef class _XDRFile:
             if not exists(self.fname):
                 raise IOError('File does not exist: {}'.format(self.fname))
 
-            return_code, self.n_atoms = self._calc_natoms(fname);
+            return_code, self.n_atoms = self._calc_natoms(fname)
 
             if return_code != EOK:
                 raise IOError('XDR read error = {}'.format(
@@ -381,7 +381,7 @@ cdef class TRRFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise RuntimeError("TRR couldn't calculate offsets. "
                                "XDR error = {}".format(error_message[ok]))
@@ -594,7 +594,7 @@ cdef class XTCFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise RuntimeError("XTC couldn't calculate offsets. "
                                "XDR error = {}".format(error_message[ok]))
