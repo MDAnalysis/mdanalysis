@@ -922,10 +922,10 @@ def get_similarity_matrix(ensembles,
         return None
 
     # Load the matrix if required
-    if load:
-        logging.info("        Loading similarity matrix from: %s" % load)
+    if load_matrix:
+        logging.info("        Loading similarity matrix from: %s" % load_matrix)
         confdistmatrix = TriangularMatrix(
-            size=joined_ensemble.coordinates.shape[0], loadfile=load)
+            size=joined_ensemble.coordinates.shape[0], loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
             logging.info("        %s : %s" % (
@@ -973,8 +973,8 @@ def get_similarity_matrix(ensembles,
 
         logging.info("    Done!")
 
-        if save:
-            confdistmatrix.savez(save)
+        if save_matrix:
+            confdistmatrix.savez(save_matrix)
 
     if bootstrap_matrix:
         bs_args = [tuple([confdistmatrix, ensemble_assignment]) for i in
