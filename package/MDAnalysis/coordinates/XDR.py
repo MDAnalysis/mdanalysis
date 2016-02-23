@@ -112,10 +112,15 @@ class XDRBaseReader(base.Reader):
             return
 
         data = read_numpy_offsets(fname)
+        ctime_ok = size_ok = n_atoms_ok = False
 
-        ctime_ok = getctime(self.filename) == data['ctime']
-        size_ok = getsize(self.filename) == data['size']
-        n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+        try:
+            ctime_ok = getctime(self.filename) == data['ctime']
+            size_ok = getsize(self.filename) == data['size']
+            n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+        except KeyError:
+            # we tripped over some old offset formated file
+            pass
 
         if not (ctime_ok and size_ok and n_atoms_ok):
             warnings.warn("Reload offsets from trajectory\n "
