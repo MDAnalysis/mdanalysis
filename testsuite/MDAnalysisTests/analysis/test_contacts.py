@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import MDAnalysis
 import MDAnalysis.analysis.contacts
+from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis import SelectionError
 
 from numpy.testing import (TestCase, dec,
@@ -37,6 +38,38 @@ from MDAnalysisTests.datafiles import (
 )
 
 from MDAnalysisTests import executable_not_found, parser_not_found
+
+
+
+def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
+    """
+        Reference implementation for testing
+    """    
+    # reference groups A and B from selection strings
+    refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
+
+    # 2D float array, reference distances (r0)
+    dref = distance_array(refA.positions, refB.positions)
+
+    # 2D bool array, select reference distances that are less than the cutoff radius
+    mask = dref < radius
+    #print("ref has {:d} contacts within {:.2f}".format(mask.sum(), radius))
+
+    # group A and B in a trajectory
+    grA, grB = u.select_atoms(selA), u.select_atoms(selB)
+    results = []
+
+
+    for ts in u.trajectory:
+        d = distance_array(grA.positions, grB.positions)
+        r, r0 = d[mask], dref[mask]
+        x = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+        # average/normalize and append to results
+        results.append(( ts.time, x.sum()/mask.sum() ))
+
+    #results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
+    return results
 
 class TestContactAnalysis1(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -144,7 +177,7 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
-        results = zip(*MDAnalysis.analysis.contacts.best_hummer_q(f, u, sel, sel))[1]
+        results = zip(*best_hummer_q(f, u, sel, sel))[1]
 
         assert_almost_equal(zip(*q.timeseries)[1], results)
 
@@ -161,5 +194,5 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
-        results = zip(*MDAnalysis.analysis.contacts.best_hummer_q(f, u, sel, sel)) [1]
+        results = zip(*best_hummer_q(f, u, sel, sel)) [1]
         assert_almost_equal(zip(*q.timeseries)[1], results)        
