@@ -815,6 +815,19 @@ class _GromacsReader_offsets(TestCase):
                      'seek failed, recalculating offsets and retrying')
 
     @dec.slow
+    def test_unsupported_format(self):
+        fname = XDR.offsets_filename(self.traj)
+        saved_offsets = XDR.read_numpy_offsets(fname)
+
+        idx_frame = 3
+        saved_offsets.pop('n_atoms')
+        np.savez(fname, **saved_offsets)
+
+        # ok as long as this doesn't throw
+        reader = self._reader(self.traj)
+        reader[idx_frame]
+
+    @dec.slow
     def test_persistent_offsets_readonly(self):
         os.remove(XDR.offsets_filename(self.traj))
         assert_equal(os.path.exists(
