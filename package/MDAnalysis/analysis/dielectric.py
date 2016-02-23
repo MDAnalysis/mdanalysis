@@ -128,6 +128,9 @@ def compute_dielectric(positions, charges, volume, temperature):
     # Dipole moment of the selection
     # 4.8032 converts to debye
     dipole = np.add.reduce(np.multiply(positions, charges[:, None])) * 4.8032
+
+    # Compute outer product - useful if matrix rotation
+    # is needed in future development of the code
     dipole2 = np.outer(dipole, dipole)
 
     # alpha = Debye_to_CA**2/(eps0*boltz*temp*ang_to_m)
