@@ -268,6 +268,8 @@ class ContactAnalysis1(object):
 
         The timeseries is written to a file *outfile* and is also accessible as
         the attribute :attr:`ContactAnalysis1.timeseries`.
+
+        .. deprecated: 0.14.0
         """
 
         # XX or should I use as input
@@ -280,7 +282,7 @@ class ContactAnalysis1(object):
         # - make this selection based on qavg
         from os.path import splitext
         
-        warnings.warn("class ContactAnalysis1 will be deprecated, use Contacts instead", DeprecationWarning)
+        warnings.warn("ContactAnalysis1 is deprecated and will be removed in 1.0/. Use Contacts instead.", DeprecationWarning)
 
         self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
         self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
@@ -536,29 +538,48 @@ class ContactAnalysis1(object):
             savefig(filename)
 
 
-def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
-    """Calculate fraction of native contacts (Q) between two groups 
-    defined by selection strings selA and selB. 
+def best_hummer_q(r, r0, beta=5.0, lambda_constant=1.8):
+    """Calculate the Best-Hummer fraction of native contacts (Q)
 
-    Reference distances are taken from Univere ref. 
-    Distances are taken from trajecotry in Universe u.
+    A soft-cutoff contacts analysis
 
     Parameters
     ----------
-    ref: Universe
-        reference Universe from which the reference distances will be taken
-    u: Universe
-        Universe from which the distance timeseries will be taken
-    selA: string
-        selection string for group A
-    selB: string
-        selection string for group B
-    radius: float, optional (4.5 Angstroms)
-        distance cutoff for defining reference contacts (Angstroms)
-    beta: float, optional (5 Angstroms^-1)
-        temperature-like, steepness of the shift function for contacts (1/Angstroms)
-    lambda_constant: float, optional (1.8 unitless)
-        tolerance, contact is formed when r < r0*lambda_constant (unitless)
+    r: array
+      Contact distances at time t 
+    r0: array
+      Contact distances at time t=0, reference distances
+    beta: float (default 5.0 Angstrom)
+      Softness of the switching function
+    lambda_constant: float (default 1.8, unitless)
+      Reference distance tolerance
+
+    Returns
+    -------
+    Q : float
+      Fraction of native contacts
+    result : array
+      Intermediate, r-r0 array transformed by the switching function
+    """
+    result = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+    return result.sum() / len(r0), result
+
+
+class Contacts(AnalysisBase):
+    """Calculate fraction of native contacts (Q) from a trajectory
+
+    Inputs
+    ------
+    Two string selections for the contacting AtomGroups, 
+    the groups could be protein-lipid or protein-protein. 
+
+    Use two reference AtomGroups to obtain reference distances (r0)
+    for the cotacts. 
+
+    Methods available
+    -----------------
+    Supports either hard-cutoff or soft-cutoff (Best-Hummer like) contacts. 
 
     Returns
     -------
@@ -584,10 +605,17 @@ def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8)
         u = Universe("conf_protein.gro", "traj_protein.xtc")
         Q = calculate_contacts(u, ref, "protein and resid 75-92 and not name H* and segid A", "protein and resid 75-92 and not name H* and segid B")
 
-    Note
-    ----
+    Parater choices
+    ---------------
+    There are recommendations and not strict orders. 
+    These parameters should be insensitive to small changes. 
     * For all-atom simulations, radius = 4.5 A and lambda_constant = 1.8 (unitless)
     * For coarse-grained simulations, radius = 6.0 A and lambda_constant = 1.5 (unitless)
+
+    Additional
+    ----------
+    Supports writing and reading the analysis results to and from a text file. 
+    Supports simple plotting operations, for exploratory data analysis. 
 
     Reference
     ---------
@@ -607,52 +635,8 @@ def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8)
     * :math:`\beta=5 \unicode{x212B}^{-1},
     * :math:`\lambda=1.8` for all-atom simulations
 
-    """    
-    # reference groups A and B from selection strings
-    refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
 
-    # 2D float array, reference distances (r0)
-    dref = distance_array(refA.positions, refB.positions)
-
-    # 2D bool array, select reference distances that are less than the cutoff radius
-    mask = dref < radius
-    #print("ref has {:d} contacts within {:.2f}".format(mask.sum(), radius))
-
-    # group A and B in a trajectory
-    grA, grB = u.select_atoms(selA), u.select_atoms(selB)
-    results = []
-
-
-    for ts in u.trajectory:
-        d = distance_array(grA.positions, grB.positions)
-        r, r0 = d[mask], dref[mask]
-        x = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
-
-        # average/normalize and append to results
-        results.append(( ts.time, x.sum()/mask.sum() ))
-
-    #results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
-    return results
-
-# JD: this *has* be usable without initializing the Contacts class, just to read-in the data
-# JD: so either a staticmethod or outside of the class
-def load(self, filename):
-    """Load the data file."""
-    records = []
-    with openany(filename) as data:
-        for line in data:
-            if line.startswith('#'):
-                continue
-            records.append(map(float, line.split()))
-    self.timeseries = np.array(records).T
-    try:
-        self.qavg = np.loadtxt(self.outarray)
-    except IOError as err:
-        if err.errno != errno.ENOENT:
-            raise
-
-class Contacts(AnalysisBase):
-    """Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory"""
+    """
     def __init__(self, u, selection, refgroup, method="cutoff", radius=4.5, outfile=None,
                  start=None, stop=None, step=None, **kwargs):
         """Calculate the persistence length for polymer chains
@@ -693,7 +677,7 @@ class Contacts(AnalysisBase):
         # check method
         if not method in ("cutoff", "best-hummer"): 
             raise ValueError("method has to be 'cutoff' or 'best-hummer'")
-        self.method = method
+        self._method = method
 
         # method-specific parameters
         if method == "best-hummer":
@@ -721,6 +705,22 @@ class Contacts(AnalysisBase):
         self.timeseries = []
         self.outfile = outfile
 
+    @staticmethod
+    def load(self, filename):
+        """Load the data file."""
+        records = []
+        with openany(filename) as data:
+            for line in data:
+                if line.startswith('#'):
+                    continue
+                records.append(map(float, line.split()))
+        self.timeseries = np.array(records).T
+        try:
+            self.qavg = np.loadtxt(self.outarray)
+        except IOError as err:
+            if err.errno != errno.ENOENT:
+                raise
+
     def _single_frame(self):
         grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
 
@@ -731,17 +731,18 @@ class Contacts(AnalysisBase):
         # r, r0 are 1D array
         r, r0 = d[mask], r0[mask]
 
-        if self.method == "cutoff":
+        if self._method == "cutoff":
             y = r <= r0
-        elif self.method == "best-hummer":
-            y = 1/(1 + np.exp(self.beta*(r - self.lambda_constant * r0)))
+            y = float(y.sum())/mask.sum()
+        elif self._method == "best-hummer":
+            y, _ = best_hummer_q(r, r0, self.beta, self.lambda_constant)
         else:
-            raise Exception("Unknown method type, has to be 'cutoff' or 'best-hummer'")
+            raise ValueError("Unknown method type, has to be 'cutoff' or 'best-hummer'")
 
         cm = np.zeros((grA.positions.shape[0], grB.positions.shape[0]))
         cm[mask] = y
         self.contact_matrix.append(cm)
-        self.timeseries.append((self._ts.frame , float(y.sum())/mask.sum(), mask.sum()))
+        self.timeseries.append((self._ts.frame , y, mask.sum()))
 
     def _conclude(self):
         """Finalise the timeseries you've gathered.

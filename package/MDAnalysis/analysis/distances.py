@@ -37,6 +37,11 @@ from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 
 import logging
 
+try:
+    from scipy import sparse      
+except ImportError:
+    sparse = None
+
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
@@ -54,8 +59,6 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     '''
-    
-    from scipy import sparse      
 
     if returntype == "numpy":
         adj = (distance_array(coord, coord, box=box) < cutoff)
