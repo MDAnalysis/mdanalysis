@@ -706,7 +706,7 @@ class Contacts(AnalysisBase):
         self.outfile = outfile
 
     @staticmethod
-    def load(self, filename):
+    def load(filename):
         """Load the data file."""
         records = []
         with openany(filename) as data:
@@ -757,17 +757,27 @@ class Contacts(AnalysisBase):
             for frame, q1, n1 in self.timeseries:
                 f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))            
 
-    def qarray(self, d, out=None):
+    def contact_matrix(self, d, out=None):
         """Return distance array with True for contacts.
 
-        *d* is the matrix of distances. The method uses the value of
-        :attr:`ContactAnalysis1.radius` to determine if a ``distance < radius``
-        is considered a contact.
+        Parameters
+        ----------
+        d : array
+            is the matrix of distances. The method uses the value of
+            `ContactAnalysis1.radius` to determine if a ``distance < radius``
+            is considered a contact.
+        out: array (optional)
+            If `out` is supplied as a pre-allocated array of the correct
+            shape then it is filled instead of allocating a new one in
+            order to increase performance.
 
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
+        Returns
+        -------
+        array 
+            boolean array of which contacts are formed
 
+        Note
+        ----
         This method is typically only used internally.
         """
         if out:
@@ -776,15 +786,25 @@ class Contacts(AnalysisBase):
             out = (d <= self.radius)            
         return out
 
-    def qN(self, q, out=None):
+    def fraction_native(q, out=None):
         """Calculate native contacts relative to reference state.
 
-        *q* is the matrix of contacts (e.g. :attr:`~ContactAnalysis1.q`).
+        Parameters
+        ----------
+        q: array
+            is the matrix of contacts (e.g. `ContactAnalysis1.q`).
+        out: array
+            If *out* is supplied as a pre-allocated array of the correct
+            shape then it is filled instead of allocating a new one in
+            order to increase performance.
 
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
+        Returns
+        -------
+        array
+            Fraction of native contacts (Q) calculated from a contact matrix
 
+        Note
+        ----
         This method is typically only used internally.
         """
         if out:
@@ -797,11 +817,14 @@ class Contacts(AnalysisBase):
     def plot(self, filename=None, **kwargs):
         """Plot q(t).
 
-        .. function:: ContactAnalysis1.plot([filename, ...])
-
-        If *filename* is supplied then the figure is also written to file (the
-        suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`pylab.plot`.
+        Parameters
+        ----------
+        filename : str
+            If `filename` is supplied then the figure is also written to file (the
+            suffix determines the file type, e.g. pdf, png, eps, ...). All other
+            keyword arguments are passed on to `pylab.plot`.
+        **kwargs
+            Arbitrary keyword arguments for the plotting function            
         """
         if not self.timeseries :
             raise ValueError("No timeseries data; do 'Contacts.run()' first.")
@@ -824,13 +847,16 @@ class Contacts(AnalysisBase):
 
 
     def plot_qavg(self, filename=None, **kwargs):
-        """Plot :attr:`Contacts.qavg`, the matrix of average contacts.
+        """Plot `Contacts.qavg`, the matrix of average contacts.
 
-        .. function:: Contacts.plot_qavg([filename, ...])
-
-        If *filename* is supplied then the figure is also written to file (the
-        suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`pylab.imshow`.
+        Parameters
+        ----------
+        filename : str
+            If `filename` is supplied then the figure is also written to file (the
+            suffix determines the file type, e.g. pdf, png, eps, ...). All other
+            keyword arguments are passed on to `pylab.imshow`.
+        **kwargs
+            Arbitrary keyword arguments for the plotting function
         """
         if not self.contact_matrix :
             raise ValueError("No timeseries data; do 'Contacts.run()' first.")
