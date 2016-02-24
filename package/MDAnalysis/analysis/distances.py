@@ -64,6 +64,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         adj = (distance_array(coord, coord, box=box) < cutoff)
         return adj
     elif returntype == "sparse":
+        if sparse is None: raise ImportError("contact_matrix function requires the scipy package to be installed")
         # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         if box is not None:

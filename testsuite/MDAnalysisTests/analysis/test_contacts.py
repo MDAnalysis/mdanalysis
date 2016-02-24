@@ -164,7 +164,8 @@ class TestContactAnalysis1(TestCase):
 
         assert_almost_equal(Q.mean(),  0.0, decimal=1)
 
-    def test_villin_folded(self):
+    @staticmethod
+    def test_villin_folded():
 
         # one folded, one unfolded
         f = MDAnalysis.Universe(contacts_villin_folded)
@@ -181,7 +182,8 @@ class TestContactAnalysis1(TestCase):
 
         assert_almost_equal(zip(*q.timeseries)[1], results)
 
-    def test_villin_unfolded(self):
+    @staticmethod
+    def test_villin_unfolded():
 
         # both folded
         f = MDAnalysis.Universe(contacts_villin_folded)
