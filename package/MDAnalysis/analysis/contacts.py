@@ -173,9 +173,9 @@ class ContactAnalysis(object):
 
     The analysis of the trajectory is performed with the
     :meth:`ContactAnalysis.run` method. The result is stored in
-    :attr:`ContactAnalysis.timeseries`. It is a numpy array which contains the
-    frame number at index 0, q1 and q2 at index 1 and 2, and the total number
-    of contacts in 3 and 4. ::
+    :attr:`ContactAnalysis.timeseries`. It is a numpy array which
+    contains the frame number at index 0, q1 and q2 at index 1 and 2,
+    and the total number of contacts in 3 and 4. ::
 
         frame  q1 q2  n1 n2
 
@@ -457,7 +457,6 @@ class ContactAnalysis(object):
 # If ContactAnalysis is enhanced to accept two references then this should be even easier.
 # It might also be worthwhile making a simpler class that just does the q calculation
 # and use it for both reference and trajectory data.
-
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
@@ -1077,7 +1076,6 @@ class Contacts(AnalysisBase):
             for frame, q1, n1 in self.timeseries:
                 f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
 
-<<<<<<< 0b318502a33fc222a7621937cfc96541788ce84d
     def contact_matrix(self, d, out=None):
         """Return distance array with True for contacts.
 
@@ -1100,31 +1098,6 @@ class Contacts(AnalysisBase):
         Note
         ----
         This method is typically only used internally.
-=======
-    def qarray(self, d, out=None):
-        """Return array with ``True`` for contacts.
-
-        Note
-        ----
-        This method is typically only used internally.
-
-        Arguments
-        ---------
-        d : array
-          2D array of distances. The method uses the value of
-          :attr:`radius` to determine if a ``distance < radius``
-          is considered a contact.
-        out : array, optional
-          If `out` is supplied as a pre-allocated array of the correct
-          shape then it is filled instead of allocating a new one in
-          order to increase performance.
-
-        Returns
-        -------
-        array
-           contact matrix
-
->>>>>>> doc string upgrades in analysis.contacts
         """
         if out:
             out[:] = (d <= self.radius)
@@ -1135,7 +1108,6 @@ class Contacts(AnalysisBase):
     def fraction_native(q, out=None):
         """Calculate native contacts relative to reference state.
 
-<<<<<<< 0b318502a33fc222a7621937cfc96541788ce84d
         Parameters
         ----------
         q: array
@@ -1147,35 +1119,14 @@ class Contacts(AnalysisBase):
 
         Returns
         -------
-        array
-            Fraction of native contacts (Q) calculated from a contact matrix
-
-        Note
-        ----
-        This method is typically only used internally.
-=======
-        Note
-        ----
-        This method is typically only used internally.
-
-        Arguments
-        ---------
-        q : array
-          contact matrix (see :meth:`Contacts.qarray`)
-        out : array, optional
-          If `out` is supplied as a pre-allocated array of the correct
-          shape then it will contain the contact matrix relative
-          to the reference state, i.e. only those contacts that
-          are also seen in the reference state.
-
-        Returns
-        -------
         contacts : integer
            total number of contacts
         fraction : float
-           fraction of contacts relative to the reference state
+           Fraction of native contacts (Q) calculated from a contact matrix
 
->>>>>>> doc string upgrades in analysis.contacts
+        Note
+        ----
+        This method is typically only used internally.
         """
         if out:
             np.logical_and(q, self.mask, out)
@@ -1185,7 +1136,6 @@ class Contacts(AnalysisBase):
         return contacts, float(contacts) / self.mask.sum()
 
     def plot(self, filename=None, **kwargs):
-<<<<<<< 0b318502a33fc222a7621937cfc96541788ce84d
         """Plot q(t).
 
         Parameters
@@ -1196,19 +1146,6 @@ class Contacts(AnalysisBase):
             keyword arguments are passed on to `pylab.plot`.
         **kwargs
             Arbitrary keyword arguments for the plotting function
-=======
-        """Plot the time series of fractional native contacts.
-
-        Arguments
-        ---------
-        filename : string, optional
-           If `filename` is supplied then the figure is also written
-           to file (the suffix determines the file type, e.g. pdf,
-           png, eps, ...).
-        **kwargs
-           All other keyword arguments are passed on to
-           :func:`matplotlib.pyplot.plot`.
->>>>>>> doc string upgrades in analysis.contacts
         """
         if not self.timeseries :
             raise ValueError("No timeseries data; do 'Contacts.run()' first.")
@@ -1230,7 +1167,6 @@ class Contacts(AnalysisBase):
             fig.show()
 
     def plot_qavg(self, filename=None, **kwargs):
-<<<<<<< 0b318502a33fc222a7621937cfc96541788ce84d
         """Plot `Contacts.qavg`, the matrix of average contacts.
 
         Parameters
@@ -1241,21 +1177,6 @@ class Contacts(AnalysisBase):
             keyword arguments are passed on to `pylab.imshow`.
         **kwargs
             Arbitrary keyword arguments for the plotting function
-=======
-        """Plot the matrix of average contacts.
-
-        Convenience function to plot :attr:`qavg`.
-
-        Arguments
-        ---------
-        filename : string, optional
-           If `filename` is supplied then the figure is also written
-           to file (the suffix determines the file type, e.g. pdf,
-           png, eps, ...).
-        **kwargs
-           All other keyword arguments are passed on to
-           :func:`matplotlib.pyplot.imshow`.
->>>>>>> doc string upgrades in analysis.contacts
         """
         if not self.contact_matrix :
             raise ValueError("No timeseries data; do 'Contacts.run()' first.")
