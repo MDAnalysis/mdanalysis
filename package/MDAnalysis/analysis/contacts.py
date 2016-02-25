@@ -1077,7 +1077,7 @@ class Contacts(AnalysisBase):
             for frame, q1, n1 in self.timeseries:
                 f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
 
-    def qarray(self, d, out=None):
+    def contact_matrix(self, d, out=None):
         """Return array with ``True`` for contacts.
 
         Note
@@ -1099,7 +1099,6 @@ class Contacts(AnalysisBase):
         -------
         array
            contact matrix
-
         """
         if out:
             out[:] = (d <= self.radius)
@@ -1107,7 +1106,7 @@ class Contacts(AnalysisBase):
             out = (d <= self.radius)
         return out
 
-    def qN(self, q, out=None):
+    def fraction_native(q, out=None):
         """Calculate native contacts relative to reference state.
 
         Note
@@ -1130,7 +1129,6 @@ class Contacts(AnalysisBase):
            total number of contacts
         fraction : float
            fraction of contacts relative to the reference state
-
         """
         if out:
             np.logical_and(q, self.mask, out)
@@ -1148,7 +1146,7 @@ class Contacts(AnalysisBase):
            If `filename` is supplied then the figure is also written
            to file (the suffix determines the file type, e.g. pdf,
            png, eps, ...).
-        **kwargs
+        kwargs : optional
            All other keyword arguments are passed on to
            :func:`matplotlib.pyplot.plot`.
         """

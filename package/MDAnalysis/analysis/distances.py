@@ -97,12 +97,9 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         return adj
     elif returntype == "sparse":
         if sparse is None:
-            # hack: if we are running with minimal dependencies then scipy was
-            #       not imported and we have to bail here (see scipy import at top)
-            raise ImportError("For sparse matrix functionality you need to "
-                              "import scipy.")
-        # Initialize square List of Lists matrix of dimensions equal to number
-        # of coordinates passed
+           raise ImportError("contact_matrix function requires the scipy "
+                             "package to be installed")
+        # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         if box is not None:
             # with PBC
@@ -122,9 +119,8 @@ def dist(A, B, offset=0):
     also add a constant offset to the resids which facilitates
     comparison with PDB numbering.
 
-    Arguments
-    ---------
-
+    Parameters
+    ----------
     A, B: AtomGroup instances
        :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
        same number of atoms
@@ -171,7 +167,6 @@ def between(group, A, B, distance):
 
     Parameters
     ----------
-
     group : AtomGroup
         Find members of `group` that are between `A` and `B`
     A, B : AtomGroups
