@@ -952,15 +952,9 @@ class Contacts(AnalysisBase):
         records = []
         with openany(filename) as data:
             for line in data:
-                if line.startswith('#'):
-                    continue
+                if line.startswith('#'): continue
                 records.append(map(float, line.split()))
-        self.timeseries = np.array(records).T
-        try:
-            self.qavg = np.loadtxt(self.outarray)
-        except IOError as err:
-            if err.errno != errno.ENOENT:
-                raise
+        return np.array(records)
 
     def _single_frame(self):
         grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
