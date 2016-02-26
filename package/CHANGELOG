@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/16 jandom
+  
+  * 0.15.0
+
+Changes
+  
+  * Generalized contact analysis class added. (Issue #702)
+
 ??/??/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
          manuel.nuno.melo, Balasubra, Saxenauts
 
