@@ -86,7 +86,7 @@ authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua
     Grossar, Benjamin Hall, Joe Jordan, Max Linke, Jinju Lu, Robert
     McGibbon, Alex Nesterenko, Manuel Nuno Melo, Hai Nguyen,
     Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl,
+    Paul Rigor, Utkarsh Saxena, Sean L. Seyler, Andy Somogyi, Lukas Stelzl,
     Gorman Stock, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein"""
 project = u'MDAnalysis'
