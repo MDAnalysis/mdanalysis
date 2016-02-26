@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
-         manuel.nuno.melo, Balasubra
+         manuel.nuno.melo, Balasubra, Saxenauts
 
   * 0.14.0
 
@@ -50,7 +50,7 @@ Changes
     before trying to deduce the format from file extension. (Issue #712)
 
 Fixes
-
+  * Syntax error corrected in psa.py (Issue #738)
   * XDR file seeking and telling working again for large files (Issue #677).
   * ContactAnalysis1 run method now starts at frame index 0 by default (Issue #624)
   * Fixed PrimitivePDBWriter alignment of the atom name. (Issue #639 and #647)
