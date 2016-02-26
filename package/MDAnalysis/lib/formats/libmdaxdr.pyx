@@ -538,10 +538,6 @@ cdef class TRRFile(_XDRFile):
                 raise ValueError('Previous frames forces contained {} atoms. You '
                                  'are trying to write {} atoms.'.format(
                                      self.n_atoms, forces.shape[0]))
-            if not np.allclose(self.box, box, rtol=0, atol=1e-2):
-                raise ValueError('Previous frames contained {} box. You '
-                                 'are trying to write {} box.'.format(
-                                     self.box, box))
 
         return_code = write_trr(self.xfp, self.n_atoms, step, time,
                                        _lambda, <matrix> box_ptr,
@@ -702,10 +698,6 @@ cdef class XTCFile(_XDRFile):
                 raise ValueError('Previous frames contained {} atoms. You '
                                  'are trying to write {} atoms.'.format(
                                      self.n_atoms, xyz.shape[1]))
-            if not np.allclose(self.box, box, rtol=0, atol=1e-2):
-                raise ValueError('Previous frames contained {} box. You '
-                                 'are trying to write {} box.'.format(
-                                     self.box, box))
             if self.precision != precision:
                 raise ValueError('Previous frames used precision of {}. You '
                                  'are trying to use {}'.format(

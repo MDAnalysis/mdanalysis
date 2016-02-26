@@ -181,18 +181,28 @@ def test_write_xtc():
             assert prec == 1000.0
 
 
-@raises(ValueError)
 @run_in_tempdir()
-def test_write_different_box_xtc():
+def test_different_box_xtc():
+    fname = 'foo.xtc'
+    orig_box = None
     with XTCFile(XTC_multi_frame) as f_in:
-        with XTCFile('foo.xtc', 'w') as f_out:
+        with XTCFile(fname, 'w') as f_out:
             assert 0 == f_out.n_atoms
             frame = f_in.read()
             f_out.write(frame.x, frame.box, frame.step,
                         frame.time, frame.prec)
+            orig_box = frame.box
             box = frame.box + 1
             f_out.write(frame.x, box, frame.step,
                         frame.time, frame.prec)
+
+    with XTCFile(fname) as xtc:
+        assert_equal(len(xtc), 2)
+        frame_1 = xtc.read()
+        frame_2 = xtc.read()
+
+        assert_array_almost_equal(frame_1.box, orig_box)
+        assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
 @raises(ValueError)
@@ -317,19 +327,29 @@ def test_write_different_natoms():
                         frame.time, frame.lmbda, natoms - 1)
 
 
-@raises(ValueError)
 @run_in_tempdir()
 def test_write_different_box_trr():
+    fname = 'foo.trr'
+    orig_box = None
     with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
+        with TRRFile(fname, 'w') as f_out:
             assert 0 == f_out.n_atoms
             frame = f_in.read()
             natoms = frame.x.shape[0]
             f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
                         frame.time, frame.lmbda, natoms)
+            orig_box = frame.box
             box = frame.box + 1
             f_out.write(frame.x, frame.v, frame.f, box, frame.step,
                         frame.time, frame.lmbda, natoms)
+
+    with TRRFile(fname) as trr:
+        assert_equal(len(trr), 2)
+        frame_1 = trr.read()
+        frame_2 = trr.read()
+
+        assert_array_almost_equal(frame_1.box, orig_box)
+        assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
 @raises(ValueError)

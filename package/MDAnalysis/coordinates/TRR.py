@@ -15,7 +15,7 @@
 #
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
-from ..lib.mdamath import triclinic_vectors
+from ..lib.mdamath import triclinic_vectors, triclinic_box
 
 
 class TRRWriter(XDRBaseWriter):
@@ -115,6 +115,10 @@ class TRRReader(XDRBaseReader):
         ts.has_positions = frame.hasx
         ts.has_velocities = frame.hasv
         ts.has_forces = frame.hasf
+        ts.dimensions = triclinic_box(*frame.box)
+
+        if self.convert_units:
+            self.convert_pos_from_native(ts.dimensions[:3])
 
         if ts.has_positions:
             if self._sub is not None:
