@@ -140,11 +140,7 @@ class XDRBaseReader(base.Reader):
                          offsets=offsets, size=size, ctime=ctime,
                          n_atoms=self._xdr.n_atoms)
             except Exception as e:
-                try:
-                    warnings.warn("Couldn't save offsets because: {}".format(
-                        e.message))
-                except AttributeError:
-                    warnings.warn("Couldn't save offsets because: {}".format(e))
+                warnings.warn("Couldn't save offsets because: {}".format(e))
 
     def rewind(self):
         """Read the first frame again"""
