@@ -111,6 +111,7 @@ class BaseReference(object):
         # default for the numpy test functions
         self.prec = 6
         self.container_format = False
+        self.changing_dimensions = False
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
@@ -130,7 +131,10 @@ class BaseReference(object):
         self.jump_to_frame.positions = 2 ** 3 * self.first_frame.positions
         self.jump_to_frame.frame = 3
 
-        self.dimensions = np.array([80, 80, 80, 60, 60, 90], dtype=np.float32)
+        self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85],
+                                   dtype=np.float32)
+        self.dimensions_second_frame = np.array([82.1, 83.2, 84.3, 75.1, 80.1,
+                                                 85.1], dtype=np.float32)
         self.volume = mda.lib.mdamath.box_volume(self.dimensions)
         self.time = 0
         self.dt = 1
@@ -215,15 +219,29 @@ class BaseReaderTest(object):
     def test_total_time(self):
         assert_equal(self.reader.totaltime, self.ref.totaltime)
 
-    def test_dimensions(self):
+    def test_first_dimensions(self):
+        self.reader.rewind()
         assert_array_almost_equal(self.reader.ts.dimensions,
                                   self.ref.dimensions,
                                   decimal=self.ref.prec)
 
+    def test_changing_dimensions(self):
+        if self.ref.changing_dimensions:
+            self.reader.rewind()
+            assert_array_almost_equal(self.reader.ts.dimensions,
+                                      self.ref.dimensions,
+                                      decimal=self.ref.prec)
+            self.reader[1]
+            assert_array_almost_equal(self.reader.ts.dimensions,
+                                      self.ref.dimensions_second_frame,
+                                      decimal=self.ref.prec)
+
     def test_volume(self):
         self.reader.rewind()
         vol = self.reader.ts.volume
-        assert_array_almost_equal(vol, self.ref.volume)
+        # Here we can only be sure about the numbers upto the decimal point due
+        # to floating point impressions.
+        assert_almost_equal(vol, self.ref.volume, 0)
 
     def test_iter(self):
         for i, ts in enumerate(self.reader):
@@ -246,6 +264,22 @@ class BaseWriterTest(object):
             for ts in self.reader:
                 W.write(ts)
         self._check_copy(outfile)
+
+    def test_write_different_box(self):
+        if self.ref.changing_dimensions:
+            outfile = self.tmp_file('write-dimensions-test')
+            with self.ref.writer(outfile, self.reader.n_atoms) as W:
+                for ts in self.reader:
+                    ts.dimensions[:3] += 1
+                    W.write(ts)
+
+            written = self.ref.reader(outfile)
+
+            for ts_ref, ts_w in zip(self.reader, written):
+                ts_ref.dimensions[:3] += 1
+                assert_array_almost_equal(ts_ref.dimensions,
+                                          ts_w.dimensions,
+                                          decimal=self.ref.prec)
 
     def test_write_trajectory_atomgroup(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)

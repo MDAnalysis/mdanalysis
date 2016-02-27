@@ -96,7 +96,7 @@ class XDRBaseReader(base.Reader):
         self.ts.dt = dt
         self.ts.dimensions = triclinic_box(*frame.box)
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._unitcell[:3])
+            self.convert_pos_from_native(self.ts.dimensions[:3])
 
     def close(self):
         """close reader"""

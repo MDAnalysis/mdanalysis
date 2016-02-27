@@ -621,6 +621,7 @@ class XTCReference(BaseReference):
         self.writer = mda.coordinates.XTC.XTCWriter
         self.ext = 'xtc'
         self.prec = 3
+        self.changing_dimensions = True
 
 
 class TestXTCReader_2(BaseReaderTest):
@@ -656,6 +657,7 @@ class TRRReference(BaseReference):
         super(TRRReference, self).__init__()
         self.trajectory = COORDINATES_TRR
         self.topology = COORDINATES_TOPOLOGY
+        self.changing_dimensions = True
         self.reader = mda.coordinates.TRR.TRRReader
         self.writer = mda.coordinates.TRR.TRRWriter
         self.ext = 'xtc'

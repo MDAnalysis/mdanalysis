@@ -15,7 +15,7 @@
 #
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
-from ..lib.mdamath import triclinic_vectors
+from ..lib.mdamath import triclinic_vectors, triclinic_box
 
 
 class XTCWriter(XDRBaseWriter):
@@ -69,8 +69,8 @@ class XTCWriter(XDRBaseWriter):
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
 
         box = triclinic_vectors(dimensions)
-        # libmdaxdr will multiply the coordinates by precision. This means for a
-        # precision of 3 decimal places we need to pass 1000.0 to the xdr
+        # libmdaxdr will multiply the coordinates by precision. This means for
+        # a precision of 3 decimal places we need to pass 1000.0 to the xdr
         # library.
         precision = 10.0 ** self.precision
         self._xdr.write(xyz, box, step, time, precision)
@@ -106,6 +106,7 @@ class XTCReader(XDRBaseReader):
         ts.frame = self._frame
         ts.time = frame.time
         ts.data['step'] = frame.step
+        ts.dimensions = triclinic_box(*frame.box)
 
         if self._sub is not None:
             ts.positions = frame.x[self._sub]
@@ -113,5 +114,6 @@ class XTCReader(XDRBaseReader):
             ts.positions = frame.x
         if self.convert_units:
             self.convert_pos_from_native(ts.positions)
+            self.convert_pos_from_native(ts.dimensions[:3])
 
         return ts
