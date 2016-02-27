@@ -131,9 +131,10 @@ class BaseReference(object):
         self.jump_to_frame.positions = 2 ** 3 * self.first_frame.positions
         self.jump_to_frame.frame = 3
 
-        self.dimensions = np.array([80, 80, 80, 60, 60, 90], dtype=np.float32)
-        self.dimensions_second_frame = np.array([81, 81, 81, 60, 60, 90],
-                                                dtype=np.float32)
+        self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85],
+                                   dtype=np.float32)
+        self.dimensions_second_frame = np.array([82.1, 83.2, 84.3, 75.1, 80.1,
+                                                 85.1], dtype=np.float32)
         self.volume = mda.lib.mdamath.box_volume(self.dimensions)
         self.time = 0
         self.dt = 1
@@ -238,7 +239,9 @@ class BaseReaderTest(object):
     def test_volume(self):
         self.reader.rewind()
         vol = self.reader.ts.volume
-        assert_array_almost_equal(vol, self.ref.volume)
+        # Here we can only be sure about the numbers upto the decimal point due
+        # to floating point impressions.
+        assert_almost_equal(vol, self.ref.volume, 0)
 
     def test_iter(self):
         for i, ts in enumerate(self.reader):
