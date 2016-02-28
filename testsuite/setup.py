@@ -51,7 +51,7 @@ if sys.version_info[:2] < (2, 7):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.14.0-dev0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.14.0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
