@@ -1,0 +1,33 @@
+package:
+  name: tempdir
+  version: "0.7.1"
+
+source:
+  fn: tempdir-0.7.1.tar.gz
+  url: https://pypi.python.org/packages/source/t/tempdir/tempdir-0.7.1.tar.gz
+  md5: 4076f2d7fa9306c77f7b16a5f2e4c154
+
+build:
+  noarch_python: True
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+
+test:
+  # Python imports
+  imports:
+    - tempdir
+
+about:
+  home: https://bitbucket.org/another_thomas/tempdir
+  license: MIT License
+  summary: 'Tempdirs are temporary directories, based on tempfile.mkdtemp'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
