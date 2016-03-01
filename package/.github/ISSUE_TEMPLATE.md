@@ -16,4 +16,4 @@ u = mda.Universe(top, trj)
 ```
 
 ### Currently version of MDAnalysis:
-(run 'python -c "import MDAnalysis as mda; print(mda.__version__)"')
+(run `python -c "import MDAnalysis as mda; print(mda.__version__)"`)
