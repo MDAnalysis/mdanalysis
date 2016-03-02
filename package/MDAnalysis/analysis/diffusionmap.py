@@ -22,19 +22,24 @@ Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`
 :Year: 2016
 :Copyright: GNU Public License v3
 
-BETTER
-The module contains functions to fit a target structure to a reference
-structure. They use the fast QCP algorithm to calculate the root mean
-square distance (RMSD) between two coordinate sets [Theobald2005]_ and
-the rotation matrix *R* that minimizes the RMSD [Liu2010]_. (Please
-cite these references when using this module.).
+The module contains the non-linear dimension reduction method diffusion map.
+The diffusion map allows to get a quick estimate of the slowest collective 
+coordinates for a trajectory. This non-linear dimension reduction method 
+assumes that the trajectory is long enough to represents a probability 
+distribution of as protein close to the equilibrium. Further the diffusion map 
+assumes that the diffusion coefficients are constant. The eigenvectors with the 
+largest eigenvalues are the slowest collective coordinates. The complexity of 
+the diffusion map is O(N^2), where N is the number of frames in the trajectory. 
+Instead of a single trajectory a sample of protein structures can be used. 
+The sample should be equiblibrated, at least locally.  Different weights can be used. 
+The order of the sampled structures in the trajectory is irrelevant.
 
-Typically, one selects a group of atoms (such as the C-alphas),
-calculates the RMSD and transformation matrix, and applys the
-transformation to the current frame of a trajectory to obtain the
-rotated structure. The :func:`alignto` and :func:`rms_fit_trj`
-functions can be used to do this for individual frames and
-trajectories respectively.
+More details how the correst slowest collective coordinates can be calculated.in:
+[1] Nadler, B, Lafon, S, Coifman, R. R, & Kevrekidis, I. G. (2013) Diffusion maps, 
+spectral clustering and reaction coordinates of dynamical systems. Applied and 
+Computational Harmonic Analysis 21, 113–127.
+[2] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C. (2013) Determi- nation 
+of reaction coordinates via locally scaled diffusion map. Journal of Chemical Physics.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension reduction.
 
@@ -46,7 +51,11 @@ Diffusion Map tutorial
 
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
-:data:`~MDAnalysis.tests.datafiles.DCD`). First load all modules and test data ::
+:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that these test data 
+aren't representing a sample from the equilibrium. This violates a basic 
+assumption of the diffusion map and the results shouldn't be interpreted for this reason. 
+This tutorial shows how to use the diffusionmap function.
+First load all modules and test data ::
 
    >>> import MDAnalysis
    >>> import numpy as np
@@ -54,32 +63,19 @@ The example uses files provided as part of the MDAnalysis test suite
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
    >>> from MDAnalysis.tests.datafiles import PSF,DCD
 
-
 In the simplest case, we can simply calculate the diffusion map from one trajectory :func:`diffusionmap`::
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
    >>> eg,ev=diffusionmap.diffusionmap(u)
 
-Since o(N^2) long trajectories take too long, increase stride
-
-weight
-
-plot
-
-intro
-
-what eg, ev do
-eg should after several steps fall off to 0
-ev[i,:] is the ith slowest eigenvector, this can be used to dimension reduction
-
-Other stuff in paper
-
+To see how the two slowest collective coordinates how the Other stuff in paper
 
    >>> import matplotlib.pyplot as plt
-   >>> plt.plot(eg[:10])
-   >>> plt.title('diffusion map eigenvalues')
-   >>> plt.xlabel("eigenvalue")
-   >>> plt.ylabel("index of eigenvalue")
+   >>> import matplotlib.pyplot as plt
+   >>> plt.scatter(ev[:,1],ev[:,2])
+   >>> plt.title('diffusion map')
+   >>> plt.xlabel("slowest collective coordinate")
+   >>> plt.ylabel("second slowest collective coordinate")
    >>> plt.show()
 
 
@@ -120,91 +116,41 @@ import MDAnalysis.analysis.rms as rms
 logger = logging.getLogger('MDAnalysis.analysis.diffusionmap')
 
 
-def diffusionmap(u, distance='rmsd', type_epsilon='average', stride=1):#, select="all", mass_weighted=False,subselection=None, tol_mass=0.1, strict=False):
-    """Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.
+def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
+    """ Non-linear dimension reduction method diffusion map
+    
+    The dimension reduction is done in the following way:
 
-    The superposition is done in the following way:
-
-    1. A rotation matrix is computed that minimizes the RMSD between
-       the coordinates of `mobile.select_atoms(sel1)` and
-       `reference.select_atoms(sel2)`; before the rotation, *mobile* is
-       translated so that its center of geometry (or center of mass)
-       coincides with the one of *reference*. (See below for explanation of
-       how *sel1* and *sel2* are derived from *select*.)
-
-    2. All atoms in :class:`~MDAnalysis.core.AtomGroup.Universe` that
-       contains *mobile* are shifted and rotated. (See below for how
-       to change this behavior through the *subselection* keyword.)
-
-    The *mobile* and *reference* atom groups can be constructed so that they
-    already match atom by atom. In this case, *select* should be set to "all"
-    (or ``None``) so that no further selections are applied to *mobile* and
-    *reference*, therefore preserving the exact atom ordering (see
-    :ref:`ordered-selections-label`).
-
-    .. Warning:: The atom order for *mobile* and *reference* is *only*
-       preserved when *select* is either "all" or ``None``. In any other case,
-       a new selection will be made that will sort the resulting AtomGroup by
-       index and therefore destroy the correspondence between the two groups. **It
-       is safest not to mix ordered AtomGroups with selection strings.**
+    1. A RMSD between each every pair of frames is calculated.
+    2. The normalized kernel is obtain as in [1] and [2].
+    3. The eigenvalues and eigenvectors of the normalized kernel are the output.
 
     :Arguments:
-      *mobile*
-         structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-         or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
-      *reference*
-         reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-         or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
+      *u*
+         trajectory :class:`~MDAnalysis.core.AtomGroup.Universe`
+         The trajectory can be a long trajectory 
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
-            selections in *mobile* and *reference*; or
-         2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
-            (the :func:`fasta2select` function returns such a
-            dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
-         3.  tuple ``(sel1, sel2)``
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` 
+         This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
+      *epsilon* : float 
+          Specifies the epsilon used for the diffusion map. More information in [1] and [2] 
+          With 'average' the average of the RMSD to the k-nearest-neighbor will be used.  
+      *k* : specifies the k for the k-nearest-neighbor is average epsilon is used.
+      *weight* : None or numpy array of the same length as the trajectory
+         With 'None' the weight of each frame of the trajectory will be the same.
+         If order of the weights has to be the same as the order of framesin the trajectory.
 
-         When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
-         a list of selection strings (to generate a AtomGroup with defined atom order as
-         described under :ref:`ordered-selections-label`).
-      *mass_weighted* : boolean
-         ``True`` uses the masses :meth:`reference.masses` as weights for the
-         RMSD fit.
-      *tol_mass*
-         Reject match if the atomic masses for matched atoms differ by more than
-         *tol_mass* [0.1]
-      *strict*
-         ``True``
-             Will raise :exc:`SelectioError` if a single atom does not
-             match between the two selections.
-         ``False`` [default]
-             Will try to prepare a matching selection by dropping
-             residues with non-matching atoms. See :func:`get_matching_atoms`
-             for details.
-      *subselection*
-         Apply the transformation only to this selection.
-
-         ``None`` [default]
-             Apply to `mobile.universe.atoms` (i.e. all atoms in the
-             context of the selection from *mobile* such as the rest of a
-             protein, ligands and the surrounding water)
-         *selection-string*
-             Apply to `mobile.select_atoms(selection-string)`
-         :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-             Apply to the arbitrary group of atoms
 
     :Returns: eigenvalues, eigenvectors 
+    the second and higher eigenvectors ev[i+1,:] represent the i-th slowest collective coordinates.
 
     """
 
     frames=u.trajectory
-    ref_atoms = u.select_atoms('all')
+    ref_atoms = u.select_atoms(select)
     nframes=len(frames)
     natoms = ref_atoms.n_atoms
-
-        #define data
-
-    #mobile_atoms = u.atoms
 
     rmsd_matrix=np.zeros((nframes,nframes), dtype=np.float64)
     epsilon=np.zeros((nframes,), dtype=np.float64)
@@ -216,40 +162,35 @@ def diffusionmap(u, distance='rmsd', type_epsilon='average', stride=1):#, select
     type_epsilon='average'
     if weight==None:
       weights=np.full((nframes,),1)
-
+    else:
+      if weight.shape[0]!=nframes:
+        raise ValueError("The weight should have the same length as the trajectroy")
+      else:
+        weights=weight
 
     for i in range(nframes):
        logger.info("calculating rmsd from structure "+str(i)+" to all")
        i_ref=np.copy(u.trajectory[i].positions-ref_atoms.center_of_mass())
-       #i_ref, ref_atoms.center_of_mass()#=i_ref-ref_atoms.center_of_mass()
-       #ref_atoms.center_of_mass()
        for j in range(nframes):
          j_ref=np.copy(u.trajectory[j].positions-ref_atoms.center_of_mass())
          rmsd_matrix[i,j] = qcp.CalcRMSDRotationalMatrix(i_ref.T.astype(np.float64), j_ref.T.astype(np.float64), natoms, rot, weight)
-         #print i,j,rmsd_matrix[i,j]
 
-    #print rmsd_matrix[:10,:10]  
-    #print rmsd_matrix.max() 
-       #all_traj=u.trajectory[0]
-       #current_ref=u.trajectory[-1]
-       #rmsd_matrix[i,:] = rms.rmsd(u2.atoms.coordinates(),u.atoms.coordinates())
-
-    #calculate epsilons (average)
-    #rmsd_matrix[0,np.argsort(rmsd_matrix[0,:])[10]]
+    #calculate epsilons 
     for i in range(nframes):
       #np.argsort(rmsd_matrix[i,:])#[10]]
-      epsilon[i]=rmsd_matrix[i,np.argsort(rmsd_matrix[i,:])[10]]
+      epsilon[i]=rmsd_matrix[i,np.argsort(rmsd_matrix[i,:])[k]]
 
-    if type_epsilon=='average':
+    if epsilon=='average':
       epsilon=np.full((nframes,),epsilon.mean())
+    else:
+      epsilon=np.full((nframes,),epsilon)
 
     logger.info("epsilon: "+str(epsilon))
 
-    #calculate exponetial to get 
+    #calculate normalized kernel
     for i in range(nframes):
       kernel2[i,:]=np.exp(-rmsd_matrix[i,:]**2/(epsilon[i]*epsilon[:]))
 
-    #normalisation
     p_vector = np.zeros((nframes,))
     d_vector = np.zeros((nframes,))
     for i in range(nframes):
@@ -265,9 +206,10 @@ def diffusionmap(u, distance='rmsd', type_epsilon='average', stride=1):#, select
 
     kernel2 /= np.sqrt(d_vector[:,np.newaxis].dot(d_vector[np.newaxis]))
 
+    #eigenvalues and eigenvector are the collective coordinates
     eg, ev=np.linalg.eig(kernel2)
 
     if np.abs(eg[0]-1)>1.0e-14:
-      raise ValueError("Lowest eigenvalue should be 1")
+      raise ValueError("Lowest eigenvalue should be 1 up to numeric precision")
 
     return eg, ev
