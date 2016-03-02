@@ -75,8 +75,10 @@ two ensemble objects are first created and then used for calculation: ::
     >>> ens1 = Ensemble(topology=PDB_small, trajectory=DCD)
     >>> ens2 = Ensemble(topology=PDB_small, trajectory=DCD2)
     >>> print hes([ens1, ens2])
-    13946090.5764
+    (array([[        0.        ,  13946090.57640726],
+            [ 13946090.57640726,         0.        ]]), None)
 
+Here None is returned in the array as the default details parameter is False. 
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
 
@@ -95,7 +97,9 @@ for the clustering algorithm, or can be reused for DRES: ::
     >>> ens1 = Ensemble(topology = PDB_small, trajectory = DCD, frame_interval=3)
     >>> ens2 = Ensemble(topology = PDB_small, trajectory = DCD2, frame_interval=3)
     >>> print ces([ens1, ens2], save_matrix = "minusrmsd.npz")
-    0.55392484    
+    (array([[ 0.        ,  0.08093055],
+           [ 0.08093055,  0.        ]]), None)
+
 
 In the above example the negative RMSD-matrix was saved as minusrmsd.npz and
 can now be used as an input in further calculations of the
@@ -108,7 +112,8 @@ can reuse the previously-calculated -RMSD matrix with sign changed.
 In the following example the dimensions are reduced to 3: ::
 
     >>> print dres([ens1, ens2], dimensions = 3, load_matrix = "minusrmsd.npz", change_sign = True)
-    0.648772821
+    (array([[ 0.        ,  0.68108127],
+           [ 0.68108127,  0.        ]]), None)
 
 Due to the stocastic nature of SPE, two
 identical ensembles will not necessarily result in an exact 0.0 estimate of 
@@ -1129,9 +1134,11 @@ def hes(ensembles,
     >>> ens1 = Ensemble(topology=PDB_small, trajectory=DCD)
     >>> ens2 = Ensemble(topology=PDB_small, trajectory=DCD2)
     >>> print hes([ens1, ens2])
-    13946090.5764
+    (array([[        0.        ,  13946090.57640726],
+           [ 13946090.57640726,         0.        ]]), None)
 
 
+    Here None is returned in the array as no details has been requested. 
     """
 
     logging.info("Chosen metric: Harmonic similarity")
@@ -1333,7 +1340,11 @@ def ces(ensembles,
         >>> CES = ces([ens1,ens2])
         >>> print CES
             (array([[[ 0.          0.55392484]
-                     [ 0.55392484  0.        ]]])
+                     [ 0.55392484  0.        ]]],None)
+
+
+
+    Here None is returned in the array as no details has been requested.
 
     """
 
@@ -1635,9 +1646,10 @@ def dres(ensembles,
         >>> DRES = dres([ens1,ens2])
         >>> print DRES
            (array( [[[ 0.          0.67383396]
-                 [ 0.67383396  0.        ]]]
+                 [ 0.67383396  0.        ]], None]
 
-
+    
+    Here None is returned in the array as no details has been requested.
 
     """
 
