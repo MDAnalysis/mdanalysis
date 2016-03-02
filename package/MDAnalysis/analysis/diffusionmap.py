@@ -160,7 +160,7 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
     rot= np.zeros(9, dtype=np.float64)
     weight=None
     type_epsilon='average'
-    if weight==None:
+    if weight is None:
       weights=np.full((nframes,),1)
     else:
       if weight.shape[0]!=nframes:
