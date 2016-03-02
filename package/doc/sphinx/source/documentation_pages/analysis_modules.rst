@@ -109,4 +109,10 @@ Volumetric analysis
    analysis/lineardensity
    analysis/waterdynamics
 
+Non-linear dimension reduction
+===================
 
+.. toctree::
+   :maxdepth: 1
+
+   analysis/diffusionmap
