@@ -24,7 +24,7 @@ Cython wrapper for the C implementation of the Affinity Perturbation clustering 
 :Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 """
-from encore.utils import TriangularMatrix
+from ..utils import TriangularMatrix
 import logging
 import numpy
 cimport numpy
