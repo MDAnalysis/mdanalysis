@@ -51,6 +51,30 @@ class TestAtom_ForceVelocity(TestCase):
         assert_equal(self.a.velocity, ref)
         assert_equal(self.u.atoms.velocities[0], ref)
 
+    def test_pos_iteration(self):
+        ag = self.u.atoms[[0]]
+
+        val = np.array([self.a.position for ts in self.u.trajectory])
+        ref = np.array([ag.positions[0] for ts in self.u.trajectory])
+
+        assert_array_equal(val, ref)
+
+    def test_vel_iteration(self):
+        ag = self.u.atoms[[0]]
+
+        val = np.array([self.a.velocity for ts in self.u.trajectory])
+        ref = np.array([ag.velocities[0] for ts in self.u.trajectory])
+
+        assert_array_equal(val, ref)
+
+    def test_for_iteration(self):
+        ag = self.u.atoms[[0]]
+
+        val = np.array([self.a.force for ts in self.u.trajectory])
+        ref = np.array([ag.forces[0] for ts in self.u.trajectory])
+
+        assert_array_equal(val, ref)
+
 
 class TestGROVelocities(TestCase):
     def setUp(self):
