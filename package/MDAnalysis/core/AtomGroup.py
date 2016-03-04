@@ -569,7 +569,7 @@ class Atom(object):
 
         :Returns: a (3,) shape numpy array
         """
-        return self.universe.coord.positions[self.index]  # internal numbering starts at 0
+        return self.universe.coord.positions[self.index].copy()
 
     @position.setter
     def position(self, coords):
@@ -578,7 +578,7 @@ class Atom(object):
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
             a single scalar if you should want to set all coordinates to the same value.
         """
-        self.universe.coord.positions[self.index, :] = coords  # internal numbering starts at 0
+        self.universe.coord.positions[self.index, :] = coords
 
     @property
     def velocity(self):
@@ -594,7 +594,7 @@ class Atom(object):
         # TODO: Remove error checking here (and all similar below)
         # and add to Timestep
         try:
-            return self.universe.coord.velocities[self.index]
+            return self.universe.coord.velocities[self.index].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -656,7 +656,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            return self.universe.coord.forces[self.index]
+            return self.universe.coord.forces[self.index].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 

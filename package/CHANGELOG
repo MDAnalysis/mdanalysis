@@ -13,12 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 jandom
+??/??/16 jandom, richardjgowers
 
-  * 0.14.1
+  * 0.15.0
 
 Fixes
 
+ * Fixed Atom.position/velocity/force returning a view onto Timestep array
+   (Issue #755)
 
 Changes
 
