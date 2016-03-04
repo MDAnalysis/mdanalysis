@@ -74,7 +74,7 @@ class TestEncore(TestCase):
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     @dec.slow
-    def test_ces_to_self(self):
+    def atest_ces_to_self(self):
         results, details = encore.ces([self.ens1, self.ens1])
         result_value = results[0,1]
         expected_value = 0.
@@ -105,3 +105,62 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
+    @dec.slow
+    def test_ces_convergence(self):
+        results, details = encore.ces([self.ens1, self.ens2])
+        result_value = results[0,1]
+        expected_value = 0.68
+        assert_almost_equal(result_value, expected_value, decimal=1,
+                            err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
+
+    @dec.slow
+    def test_ces_convergence(self):
+        expected_values = [0.51124, 0.38618, 0.28370, 0.26927, 0.19035, 0.12918, 0.08996, 0.06434, 0.00000]
+        results = encore.ces_convergence(self.ens1, 10)
+        for i,ev in enumerate(expected_values):
+            assert_almost_equal(ev, results[i], decimal=2, 
+                                err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
+    @dec.slow
+    def test_dres_convergence(self):
+        expected_values = [0.62387, 0.55965, 0.48308, 0.39526, 0.29047, 0.18011, 0.12844, 0.06337, 0.00000]
+        #import numpy
+        results = encore.dres_convergence(self.ens1, 10)
+        for i,ev in enumerate(expected_values):
+            assert_almost_equal(ev, results[i], decimal=1, 
+                                err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
+    @dec.slow
+    def test_hes_error_estimation(self):
+        expected_average = 0.086
+        expected_stdev = 0.009
+        averages, stdevs = encore.hes([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10)
+        average = averages[0,1]
+        stdev = stdevs[0,1]
+
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected average value for bootstrapped samples in Harmonic Ensemble imilarity")
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
+    @dec.slow
+    def test_ces_error_estimation(self):
+        expected_average = 0.02
+        expected_stdev = 0.008
+        averages, stdevs = encore.ces([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10)
+        average = averages[0,1]
+        stdev = stdevs[0,1]
+
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")        
+    @dec.slow
+    def test_dres_error_estimation(self):
+        expected_average = 0.02
+        expected_stdev = 0.01
+        averages, stdevs = encore.dres([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10)
+        average = averages[0,1]
+        stdev = stdevs[0,1]
+
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected average value for bootstrapped samples in Harmonic Dim. reduction Ensemble similarity")
+        assert_almost_equal(expected_average, average, decimal=1, 
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Dim. reduction Ensemble imilarity")        
