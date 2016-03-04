@@ -161,6 +161,6 @@ class TestEncore(TestCase):
         stdev = stdevs[0,1]
 
         assert_almost_equal(expected_average, average, decimal=1, 
-                            err_msg="Unexpected average value for bootstrapped samples in Harmonic Dim. reduction Ensemble similarity")
+                            err_msg="Unexpected average value for bootstrapped samples in Dim. reduction Ensemble similarity")
         assert_almost_equal(expected_average, average, decimal=1, 
-                            err_msg="Unexpected standard daviation  for bootstrapped samples in Dim. reduction Ensemble imilarity")        
+                            err_msg="Unexpected standard daviation for bootstrapped samples in Dim. reduction Ensemble imilarity")        
