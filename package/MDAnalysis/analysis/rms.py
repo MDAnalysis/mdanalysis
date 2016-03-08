@@ -154,8 +154,8 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         subtract center of geometry before calculation. With weights given
         compute weighted average as center.
     superposition : bool (optional)
-        perform a rotational and translational superposition before calculating
-        the RMSD.
+        perform a rotational and translational superposition with the fast QCP
+        algorithm [Theobald2005]_ before calculating the RMSD
 
     Returns
     -------
@@ -556,7 +556,7 @@ class RMSF(object):
         """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows; please reference:
+        avoiding overflows and underflows [Welford1962]_.
 
         Parameters
         ----------
