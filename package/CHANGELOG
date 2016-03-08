@@ -17,6 +17,11 @@ The rules for this file:
 
   * 0.14.1
 
+API Changes
+
+  * rmsd doesn't superimpose by default anymore. The superposition
+    is controlled by the 'superposition' keyword now. (see issue #562)
+
 Fixes
 
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)

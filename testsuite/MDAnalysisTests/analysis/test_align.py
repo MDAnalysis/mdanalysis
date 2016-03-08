@@ -95,10 +95,12 @@ class TestAlign(TestCase):
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
-        rmsd = rms.rmsd(first_frame, last_frame)
-        assert_almost_equal(rms.rmsd(last_frame, first_frame), rmsd, 6,
+        rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
+        assert_almost_equal(rms.rmsd(last_frame, first_frame,
+                                     superposition=True),
+                            rmsd, 6,
                             err_msg="error: rmsd() is not symmetric")
-        assert_almost_equal(rmsd, 6.8342494129169804, 5,
+        assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
 
@@ -114,13 +116,13 @@ class TestAlign(TestCase):
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
-        self._assert_rmsd(fitted, 0, 6.92913674516568)
+        self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(self.reference.atoms.coordinates(),
-                        fitted.atoms.coordinates())
+                        fitted.atoms.coordinates(), superposition=True)
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame {0:d} of fit does not have "
                             "expected RMSD".format(frame))

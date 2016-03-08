@@ -20,13 +20,59 @@ from six.moves import range
 import MDAnalysis
 import MDAnalysis.analysis.rms
 
-from numpy.testing import TestCase, assert_almost_equal
+from numpy.testing import TestCase, assert_almost_equal, assert_equal, raises
 import numpy as np
 
 import os
 import tempdir
 
-from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray
+from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
+
+
+class TestRMSD(object):
+    def __init__(self):
+        shape = (5, 3)
+        self.a = np.arange(np.prod(shape)).reshape(shape)
+        self.b = np.arange(np.prod(shape)).reshape(shape) + 1
+
+    def test_no_center(self):
+        rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=False)
+        assert_equal(rmsd, 1.0)
+
+    def test_center(self):
+        rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=True)
+        assert_equal(rmsd, 0.0)
+
+    @staticmethod
+    def test_list():
+        a = [[0, 1, 2],
+             [3, 4, 5]]
+        b = [[1, 2, 3],
+             [4, 5, 6]]
+        rmsd = MDAnalysis.analysis.rms.rmsd(a, b, center=False)
+        assert_equal(rmsd, 1.0)
+
+    @staticmethod
+    def test_superposition():
+        u = MDAnalysis.Universe(PSF, DCD)
+        bb = u.atoms.select_atoms('backbone')
+        a = bb.positions.copy()
+        u.trajectory[-1]
+        b = bb.positions.copy()
+        rmsd = MDAnalysis.analysis.rms.rmsd(a, b, superposition=True)
+        assert_almost_equal(rmsd, 6.820321761927005)
+
+    @staticmethod
+    @raises(ValueError)
+    def test_unequal_shape():
+        a = np.ones((4, 3))
+        b = np.ones((5, 3))
+        MDAnalysis.analysis.rms.rmsd(a, b)
+
+    @raises(ValueError)
+    def test_wrong_weights(self):
+        w = np.ones(2)
+        MDAnalysis.analysis.rms.rmsd(self.a, self.b, w)
 
 
 class TestRMSF(TestCase):
