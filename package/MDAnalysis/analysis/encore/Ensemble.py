@@ -28,7 +28,7 @@ those coming from NMR structure resoltion experiments.
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015--2016
 :Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
+:Maintainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.14.0
 
@@ -39,10 +39,14 @@ import MDAnalysis.analysis
 import MDAnalysis.analysis.align
 import numpy
 import logging
+import numpy as np
+import errno
+from MDAnalysis.coordinates.array import ArrayReader
 
 
-class Ensemble:
+class Ensemble(MDAnalysis.Universe):
     """
+    A wrapper class around Universe providing
     Ensemble class designed to easily manage more than one trajectory files.
     Users can provide either a topology/trajectory(es) combination or a
     MDAnalysis.Universe object. Topology and trajectory files must have the
@@ -79,15 +83,11 @@ class Ensemble:
         Trajectory file name. If more then one are specified, it is a list of
         comma-separated names (e.g. "traj1.xtc,traj2.xtc")
 
-    universe : MDAnalysis.Universe
-        Universe object containing the original trajectory(es) and all the
-        atoms in the topology.
-
     frame_interval : int
         Keep only one frame every frame_interval (see the package or module
         description)
 
-    atom_selection_string : str
+    selection : str
         Atom selection string in the MDAnalysis format
          (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
@@ -134,13 +134,13 @@ class Ensemble:
 
     """
 
+
+
     def __init__(self,
-                 universe=None,
                  topology=None,
                  trajectory=None,
-                 atom_selection_string='(name CA)',
-                 superimposition_selection_string=None,
-                 frame_interval=1):
+                 frame_interval=1,
+                 **kwargs):
 
         """
         Constructor for the Ensemble class. See the module description for more
@@ -149,127 +149,154 @@ class Ensemble:
     Parameters
     ----------
 
-        universe: MDAnalysis.Universe
-            If universe is specified, topology and trajectory will be ignored
-
         topology : str
             Topology file name
 
-        trajectory : iterable of str
+        trajectory : iterable or str
             One or more Trajectory file name(s)
 
-        atom_selection_string : str
-
-        superimposition_selection_string : str or None
+        selection : str
+            Atom selection string in the MDAnalysis format
+            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
         frame_interval : int
-
+            Interval at which frames should be included
         """
 
-        if not universe:
 
-            # Chained trajectories cannot use TimeSeries functionality
-            # and the analysis is therefore slower - we therefore use a 
-            # single trajectory value when possible
-            if len(trajectory) == 1:
-                trajectory = trajectory[0]
-            self.universe = MDAnalysis.Universe(topology,
-                                                trajectory)
-        else:
-            self.universe = universe
+        # Chained trajectories cannot use TimeSeries functionality
+        # and the analysis is therefore slower - we therefore use a
+        # single trajectory value when possible
+        if len(trajectory) == 1:
+            trajectory = trajectory[0]
+        MDAnalysis.Universe.__init__(self, topology, trajectory,
+                                     **kwargs)
 
-        # Use one frame every frame_interval
-        self.frame_interval = frame_interval
 
-        # Set the attributes for the atom set on which calculation will be
-        # performed
-        self.atom_selection_string = atom_selection_string
-        self.atom_selection = self.universe.select_atoms(
-            self.atom_selection_string)
-        self.coordinates = None
-        self.coordinates = self.get_coordinates(
-            subset_selection_string=self.atom_selection_string)
+        if kwargs.get('format', None) != ArrayReader:
 
-        # Set the attributes for the atom set on which fitting will be
-        # performed. Fitting and calculation may be performed on two
-        # non-overlapping sets. This is optional.
-        if superimposition_selection_string:
-            self.superimposition_selection_string \
-                = superimposition_selection_string
-            self.superimposition_selection = self.universe.select_atoms(
-                superimposition_selection_string)
-            self.superimposition_coordinates = self.get_coordinates(
-                subset_selection_string=self.superimposition_selection_string)
-        else:
-            self.superimposition_selection_string = self.atom_selection_string
-            self.superimposition_selection = self.atom_selection
-            self.superimposition_coordinates = numpy.copy(self.coordinates)
+            # Try to extract coordinates using Timeseries object
+            # This is significantly faster, but only implemented for certain
+            # trajectory file formats
+            try:
+                # frame_interval already takes into account
+                coordinates = self.universe.trajectory.timeseries(
+                    self.atoms, format='afc', skip=frame_interval)
 
-            # Save trajectories filename for future reference
-        if type(trajectory) == str:
-            self.trajectory_filename = trajectory
-        else:
-            self.trajectory_filename = ", ".join(trajectory)
+            # if the Timeseries extraction fails, fall back to a slower approach
+            except AttributeError:
+                coordinates = numpy.zeros(
+                    tuple([self.universe.trajectory.n_frames]) +
+                    self.atoms.coordinates().shape)
 
-            # Save topology filename for future reference
+                k = 0
+                for i, time_step in enumerate(self.universe.trajectory):
+                    if i%frame_interval == 0:
+                        coordinates[k] = self.atoms.coordinates(time_step)
+                        k+=1
+                coordinates = np.swapaxes(coordinates,0,1)
+
+            # Overwrite trajectory in universe with an ArrayReader
+            # object, to provide fast access and allow coordinates
+            # to be manipulated
+            self.trajectory = ArrayReader(coordinates)
+                # self._get_coordinates(frame_interval=frame_interval),
+                # format='afc')
+
+        # # Overwrite atoms selection from Universe
+        # self.atoms_selection = self.select_atoms(self.atom_selection_string)
+        #
+        # # Set the attributes for the atom set on which fitting will be
+        # # performed. Fitting and calculation may be performed on two
+        # # non-overlapping sets. This is optional.
+        # if superimposition_selection_string:
+        #     self.superimposition_selection_string \
+        #         = superimposition_selection_string
+        #     self.superimposition_selection = self.select_atoms(
+        #         superimposition_selection_string)
+        #     self.superimposition_coordinates = self.get_coordinates(
+        #         subset_selection_string=self.superimposition_selection_string)
+        # else:
+        #     self.superimposition_selection_string = self.atom_selection_string
+        #     self.superimposition_selection = self.atoms_selection
+        #     self.superimposition_coordinates = numpy.copy(self.trajectory.get_array())
+
+        # # Save trajectories filename for future reference
+        # if type(trajectory) == str:
+        #     self.trajectory_filename = trajectory
+        # else:
+        #     self.trajectory_filename = ", ".join(trajectory)
+        #
+        #     # Save topology filename for future reference
         self.topology_filename = topology
 
-    def get_coordinates(self, subset_selection_string=None):
-        """
-        Get a set of coordinates from Universe.
+    def get_coordinates(self, selection, format):
+        if selection == "":
+            # If no selection is applied, return raw array
+            return self.trajectory.get_array(format=format)
+        else:
+            return self.trajectory.timeseries(self.select_atoms(selection),
+                                              format=format)
 
-        Parameters
-        ----------
+    # def _get_coordinates(self, selection="", frame_interval=1):
+    #     """
+    #     Get a set of coordinates from Universe.
+    #
+    #     Parameters
+    #     ----------
+    #
+    #     subset_selection_string : None or str
+    #         Selection string that selects the universe atoms whose coordinates
+    #         have to be returned. The frame_interval will be automatically
+    #         applied. If the argument is None,  the atoms defined in the
+    #         atom_selection_string will be considered.
+    #
+    #     Returns
+    #     -------
+    #
+    #     coordinates : (x,N,3) numpy array
+    #         The requested array of coordinates.
+    #
+    #     """
+    #
+    #     if selection == "":
+    #         atomgroup = self.atoms
+    #     else:
+    #         atomgroup = self.select_atoms(selection)
+    #
+    #     # if not subset_selection_string:
+    #     #     subset_selection_string = self.atom_selection_string
+    #     # subset_selection = self.universe.select_atoms(subset_selection_string)
+    #
+    #     if len(atomgroup) == 0:
+    #         logging.error(
+    #             "ERROR: selection \'%s\' not found in topology."
+    #             % subset_selection_string)
+    #         exit(1)
+    #
+    #     # Try to extract coordinates using Timeseries object
+    #     # This is significantly faster, but only implemented for certain
+    #     # trajectory file formats
+    #     try:
+    #         # frame_interval already takes into account
+    #         coordinates = self.universe.trajectory.timeseries(
+    #             atomgroup, format='afc', skip=frame_interval)
+    #
+    #     # if the Timeseries extraction fails, fall back to a slower approach
+    #     except:
+    #         coordinates = numpy.zeros(
+    #             tuple([self.universe.trajectory.n_frames]) +
+    #             atomgroup.coordinates().shape)
+    #
+    #         k = 0
+    #         for i, time_step in enumerate(self.universe.trajectory):
+    #             if i%frame_interval == 0:
+    #                 coordinates[k] = atomgroup.coordinates(time_step)
+    #                 k+=1
+    #         coordinates = np.swapaxes(coordinates,0,1)
+    #     return coordinates
 
-        subset_selection_string : None or str
-            Selection string that selects the universe atoms whose coordinates
-            have to be returned. The frame_interval will be automatically
-            applied. If the argument is None,  the atoms defined in the
-            atom_selection_string will be considered.
-
-        Returns
-        -------
-
-        coordinates : (x,N,3) numpy array
-            The requested array of coordinates.
-
-        """
-
-        if not subset_selection_string:
-            subset_selection_string = self.atom_selection_string
-        subset_selection = self.universe.select_atoms(subset_selection_string)
-
-        # Try to extract coordinates using Timeseries object
-        # This is significantly faster, but only implemented for certain 
-        # trajectory file formats
-
-        if len(subset_selection) == 0:
-            logging.error(
-                "ERROR: selection \'%s\' not found in topology."
-                % subset_selection_string)
-            exit(1)
-        try:
-            subset_coordinates = self.universe.trajectory.timeseries(
-                subset_selection, skip=self.frame_interval, format='fac')
-
-        # if the Timeseries extraction fails, fall back to a slower approach
-        except:
-            n_coordinates = 0
-            k = 0
-            for i, time_step in enumerate(self.universe.trajectory):
-                if (i % self.frame_interval) == 0:
-                    n_coordinates += 1
-            subset_coordinates = numpy.zeros(
-                tuple([n_coordinates]) + subset_selection.coordinates().shape)
-
-            for i, time_step in enumerate(self.universe.trajectory):
-                if (i % self.frame_interval) == 0:
-                    subset_coordinates[k] = subset_selection.coordinates(
-                        time_step)
-                    k += 1
-        return subset_coordinates
-
-    def align(self, reference=None, weighted=True):
+    def align(self, selection="name *", reference=None, weighted=True):
         """
         Least-square superimposition of the Ensemble coordinates to a reference
          structure.
@@ -288,41 +315,32 @@ class Ensemble:
 
         """
 
-        # from matplotlib import pyplot as plt
-        # from mpl_toolkits.mplot3d import Axes3D
-        coordinates = self.coordinates
-        alignment_subset_atom_selection = self.superimposition_selection
-        alignment_subset_coordinates = self.superimposition_coordinates
+        coordinates = self.trajectory.get_array(format='fac')
 
-        # fig = plt.figure()
-        # ax = fig.gca(projection='3d')
-        # for i in self.coordinates:
-        #    print i[1]
-        #    ax.plot(i[:,0], i[:,1], i[:,2])
-        # fig.show()
-        # plt.savefig("before.pdf")
-        # plt.clf()
+        alignment_subset_selection = self.select_atoms(selection)
+        alignment_subset_coordinates = \
+            self.trajectory.timeseries(alignment_subset_selection,
+                                       format='fac')
 
+        # alignment_subset_atom_selection = self.superimposition_selection
+        # alignment_subset_coordinates = self.superimposition_coordinates
 
         if weighted:
-            alignment_subset_masses = alignment_subset_atom_selection.masses
+            alignment_subset_masses = alignment_subset_selection.masses
         else:
             alignment_subset_masses = np.ones(
-                alignment_subset_atom_selection.masses.shape[0])
+                alignment_subset_selection.masses.shape[0])
 
-        # Find center of mass of alignment subset for all frames 
+        # Find center of mass of alignment subset for all frames
         alignment_subset_coordinates_center_of_mass = numpy.average(
             alignment_subset_coordinates,
             axis=1,
             weights=alignment_subset_masses)
 
-        # print alignment_subset_coordinates_center_of_mass[0]
-        # print alignment_subset_coordinates[0]
-
         # Move both subset atoms and the other atoms to the center of mass of
         # subset atoms
-        alignment_subset_coordinates -= \
-            alignment_subset_coordinates_center_of_mass[ :, numpy.newaxis]
+        # alignment_subset_coordinates -= \
+        #     alignment_subset_coordinates_center_of_mass[ :, numpy.newaxis]
         # print alignment_subset_coordinates[0]
         coordinates -= alignment_subset_coordinates_center_of_mass[:,
                        numpy.newaxis]
@@ -332,33 +350,29 @@ class Ensemble:
         if reference:
             offset = 0
             # Select the same atoms in reference structure
-            reference_atom_selection = reference.select_atoms(
-                self.superimposition_selection_string)
+            reference_atom_selection = reference.select_atoms(selection)
             reference_coordinates = reference_atom_selection.atoms.coordinates()
-
-            if weighted:
-                reference_masses = reference_atom_selection.masses
-            else:
-                reference_masses = np.ones(
-                    reference_atom_selection.masses.shape[0])
         else:
+            reference_atom_selection = self.select_atoms(selection)
             reference_coordinates = alignment_subset_coordinates[0]
 
             # Skip the first frame, which is used as reference
             offset = 1
 
+        if weighted:
+            reference_masses = reference_atom_selection.masses
+        else:
+            reference_masses = np.ones(
+                reference_atom_selection.masses.shape[0])
+
         # Reference center of mass
         reference_center_of_mass = numpy.average(reference_coordinates, axis=0,
                                                  weights=reference_masses)
-        # print reference_center_of_mass
-        # print reference_coordinates
-
         # Move reference structure to its center of mass
         reference_coordinates -= reference_center_of_mass
-        # print reference_coordinates
 
         # Apply optimal rotations for each frame
-        for i in range(offset, len(self.coordinates)):
+        for i in range(offset, len(coordinates)):
             # Find rotation matrix on alignment subset
             rotation_matrix = MDAnalysis.analysis.align.rotation_matrix(
                 alignment_subset_coordinates[i],
@@ -366,8 +380,16 @@ class Ensemble:
                 alignment_subset_masses)[0]
 
             # Apply rotation matrix
-            self.coordinates[i][:] = numpy.transpose(numpy.dot(rotation_matrix,
-                                                               numpy.transpose(
-                                                                   coordinates[
-                                                                       i][:])))
-
+            coordinates[i][:] = numpy.transpose(numpy.dot(rotation_matrix,
+                                                          numpy.transpose(
+                                                          coordinates[i][:])))
+        # self.trajectory.set_array(self.coordinates)
+        # for k, ts in enumerate(self.trajectory[:1]):
+        #     print k, self.atoms.positions, id(self.trajectory.ts.positions)
+        #     # self.trajectory[i].positions = self.coordinates[i]
+        #     # self.atoms.set_positions(self.coordinates[i][:])
+        #     self.trajectory.ts.positions[:] = self.coordinates[i][:]
+        #     print k, "***", self.atoms.positions, id(self.trajectory.ts.positions)
+        # for k, ts in enumerate(self.trajectory[:1]):
+        #     print k, self.atoms.positions, id(self.trajectory.ts.positions)
+        # print "&&&&&&&&&&&&&", self.trajectory.ts[0]

@@ -65,8 +65,8 @@ class ConformationalDistanceMatrixGenerator:
     process is printed out. This class acts as a functor.
     """
 
-    def run(self, ensemble, ncores=None, pairwise_align=False,
-            align_subset_coordinates=None, mass_weighted=True, metadata=True):
+    def run(self, ensemble, selection="", ncores=None, pairwise_align=False,
+            mass_weighted=True, metadata=True):
         """
         Run the conformational distance matrix calculation.
 
@@ -110,7 +110,7 @@ class ConformationalDistanceMatrixGenerator:
             ncores = 1
 
         # framesn: number of frames
-        framesn = len(ensemble.coordinates)
+        framesn = len(ensemble.get_coordinates(selection, format='fac'))
 
         # Prepare metadata recarray
         if metadata:
@@ -120,7 +120,7 @@ class ConformationalDistanceMatrixGenerator:
                                ensemble.topology_filename,
                                framesn,
                                pairwise_align,
-                               ensemble.superimposition_selection_string,
+                               selection,
                                mass_weighted)],
                              dtype=[('host', object),
                                     ('user', object),
@@ -134,21 +134,27 @@ class ConformationalDistanceMatrixGenerator:
         # Prepare alignment subset coordinates as necessary
         subset_coords = None
         if pairwise_align:
-            subset_selection = ensemble.superimposition_selection
-            if align_subset_coordinates == None:
-                subset_coords = align_subset_coordinates
+            # subset_selection = ensemble.superimposition_selection
+            # if align_subset_coordinates == None:
+            #     subset_coords = align_subset_coordinates
+            # else:
+            #     subset_coords = ensemble.superimposition_coordinates
+            if selection != "":
+                subset_selection = ensemble.select_atoms(selection)
             else:
-                subset_coords = ensemble.superimposition_coordinates
+                subset_selection = ensemble.atoms
+            subset_coords = ensemble.get_coordinates(selection,
+                                                     format='fac')
 
         # Prepare masses as necessary
         subset_masses = None
 
         if mass_weighted:
-            masses = ensemble.atom_selection.masses
+            masses = ensemble.atoms.masses
             if pairwise_align:
                 subset_masses = subset_selection.masses
         else:
-            masses = ones((ensemble.coordinates[0].shape[0]))
+            masses = ones((ensemble.get_coordinates(selection)[0].shape[0]))
             if pairwise_align:
                 subset_masses = ones((subset_coords[0].shape[0]))
 
@@ -198,16 +204,19 @@ class ConformationalDistanceMatrixGenerator:
         if pairwise_align:
             workers = [Process(target=self._fitter_worker, args=(
                 tasks_per_worker[i],
-                ensemble.coordinates,
+                ensemble.get_coordinates(selection, format='fac'),
                 subset_coords,
                 masses,
                 subset_masses,
                 distmat,
                 partial_counters[i])) for i in range(ncores)]
         else:
-            workers = [Process(target=self._simple_worker, args=(
-                tasks_per_worker[i], ensemble.coordinates, masses, distmat,
-                pbar_counter)) for i in range(ncores)]
+            workers = [Process(target=self._simple_worker,
+                               args=(tasks_per_worker[i],
+                                     ensemble.get_coordinates(selection,
+                                                              format='fac'),
+                               masses, distmat,
+                               pbar_counter)) for i in range(ncores)]
 
         workers += [Process(target=self._pbar_updater,
                             args=(pbar, partial_counters, matsize))]

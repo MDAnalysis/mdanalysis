@@ -696,6 +696,7 @@ from . import TRJ
 from . import TRR
 from . import XTC
 from . import XYZ
+from . import array
 
 try:
     from . import DCD

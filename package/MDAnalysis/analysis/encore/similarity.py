@@ -148,7 +148,7 @@ import numpy
 import warnings
 import logging
 from time import sleep
-from MDAnalysis import Universe
+import MDAnalysis
 from .Ensemble import Ensemble
 from .clustering.Cluster import ClustersCollection
 from .clustering.affinityprop import AffinityPropagation
@@ -161,6 +161,7 @@ from .utils import *
 from scipy.stats import gaussian_kde
 from random import randint
 import sys
+from MDAnalysis.coordinates.array import ArrayReader
 
 # Silence deprecation warnings - scipy problem
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -234,6 +235,7 @@ def discrete_jensen_shannon_divergence(pA, pB):
 # calculate harmonic similarity
 def harmonic_ensemble_similarity(ensemble1=None,
                                  ensemble2=None,
+                                 selection="",
                                  sigma1=None,
                                  sigma2=None,
                                  x1=None,
@@ -287,8 +289,8 @@ def harmonic_ensemble_similarity(ensemble1=None,
             raise RuntimeError
 
         # Extract coordinates from ensembles
-        coordinates_system1 = ensemble1.coordinates
-        coordinates_system2 = ensemble2.coordinates
+        coordinates_system1 = ensemble1.get_coordinates(selection)
+        coordinates_system2 = ensemble2.get_coordinates(selection)
 
         # Average coordinates in the two systems
         x1 = numpy.average(coordinates_system1, axis=0).flatten()
@@ -323,7 +325,8 @@ def harmonic_ensemble_similarity(ensemble1=None,
     return d_hes
 
 
-def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id):
+def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
+                                   selection=""):
     """Clustering ensemble similarity: calculate the probability densities from
      the clusters and calculate discrete Jensen-Shannon divergence.
 
@@ -353,11 +356,13 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id):
             Jensen-Shannon divergence between the two ensembles, as calculated by
             the clustering ensemble similarity method
     """
+    ens1_coordinates = ens1.get_coordinates(selection, format='fac')
+    ens2_coordinates = ens2.get_coordinates(selection, format='fac')
     tmpA = numpy.array([numpy.where(c.metadata['ensemble'] == ens1_id)[
-                            0].shape[0] / float(ens1.coordinates.shape[0]) for
+                            0].shape[0] / float(ens1_coordinates.shape[0]) for
                         c in cc])
     tmpB = numpy.array([numpy.where(c.metadata['ensemble'] == ens2_id)[
-                            0].shape[0] / float(ens2.coordinates.shape[0]) for
+                            0].shape[0] / float(ens2_coordinates.shape[0]) for
                         c in cc])
 
     # Exclude clusters which have 0 elements in both ensembles    
@@ -368,7 +373,8 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id):
 
 
 def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
-                                              ens1_id_min=1, ens2_id_min=1):
+                                              ens1_id_min=1, ens2_id_min=1,
+                                              selection=""):
     """ Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
     merged and the dJS is calculated between the probability distributions of
@@ -805,6 +811,7 @@ def bootstrapped_matrix(matrix, ensemble_assignment):
 
 
 def get_similarity_matrix(ensembles,
+                          selection="",
                           similarity_mode="minusrmsd",
                           load_matrix=None,
                           change_sign=False,
@@ -894,22 +901,22 @@ def get_similarity_matrix(ensembles,
 
     # Define ensemble assignments as required on the joined ensemble
     for i in range(1, nensembles + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1].coordinates]
+        ensemble_assignment += [i for j in ensembles[i - 1]
+            .get_coordinates(selection, format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     # Joined ensemble
     joined_ensemble = Ensemble(topology=ensembles[0].topology_filename,
-                               trajectory=[ensembles[0].topology_filename],
-                               atom_selection_string="all",
-                               superimposition_selection_string=ensembles[
-                                   0].superimposition_selection_string)
+                               trajectory=numpy.concatenate(
+                               tuple([e.trajectory.timeseries(e.atoms) for e in ensembles]), axis=1),
+                               format=ArrayReader)
 
-    # Joined ensemble coordinates as a concatenation of single ensembles
-    # -  faster this way
-    joined_ensemble.coordinates = numpy.concatenate(
-        tuple([e.coordinates for e in ensembles]))
-    joined_ensemble.superimposition_coordinates = numpy.concatenate(
-        tuple([e.superimposition_coordinates for e in ensembles]))
+    # # Joined ensemble coordinates as a concatenation of single ensembles
+    # # -  faster this way
+    # joined_ensemble.coordinates = numpy.concatenate(
+    #     tuple([e.coordinates for e in ensembles]))
+    # joined_ensemble.superimposition_coordinates = numpy.concatenate(
+    #     tuple([e.superimposition_coordinates for e in ensembles]))
 
     # Define metadata dictionary
     metadata = {'ensemble': ensemble_assignment}
@@ -930,7 +937,7 @@ def get_similarity_matrix(ensembles,
     if load_matrix:
         logging.info("        Loading similarity matrix from: %s" % load_matrix)
         confdistmatrix = TriangularMatrix(
-            size=joined_ensemble.coordinates.shape[0], loadfile=load_matrix)
+            size=joined_ensemble.get_coordinates(selection).shape[0], loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
             logging.info("        %s : %s" % (
@@ -943,7 +950,7 @@ def get_similarity_matrix(ensembles,
             confdistmatrix.change_sign()
 
         # Check matrix size for consistency
-        if not confdistmatrix.size == joined_ensemble.coordinates.shape[0]:
+        if not confdistmatrix.size == joined_ensemble.get_coordinates(selection).shape[0]:
             logging.error(
                 "ERROR: The size of the loaded matrix and of the ensemble"
                 " do not match")
@@ -964,9 +971,8 @@ def get_similarity_matrix(ensembles,
         if superimposition_subset:
             confdistmatrix = matrix_builder(
                 joined_ensemble,
+                selection = selection,
                 pairwise_align=superimpose,
-                align_subset_coordinates=
-                                joined_ensemble.superimposition_coordinates,
                 mass_weighted=mass_weighted,
                 ncores=np)
 
@@ -996,8 +1002,9 @@ def get_similarity_matrix(ensembles,
     return confdistmatrix
 
 
-def prepare_ensembles_for_convergence_increasing_window(ensembles,
-                                                        window_size):
+def prepare_ensembles_for_convergence_increasing_window(ensemble,
+                                                        window_size,
+                                                        selection=""):
     """
     Generate ensembles to be fed to ces_convergence or dres_convergence
     from a single ensemble. Basically, the different slices the algorithm
@@ -1006,7 +1013,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensembles,
     Parameters
     ----------
 
-        ensembles : encore.Ensemble object
+        ensemble : encore.Ensemble object
             Input ensemble
 
         window_size : int
@@ -1023,7 +1030,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensembles,
     
     """
 
-    ens_size = ensembles.coordinates.shape[0]
+    ens_size = ensemble.get_coordinates(selection).shape[0]
 
     rest_slices = ens_size / window_size
     residuals = ens_size % window_size
@@ -1040,18 +1047,20 @@ def prepare_ensembles_for_convergence_increasing_window(ensembles,
     slices_n.append(slices_n[-1] + residuals + window_size)
     for s in range(len(slices_n) - 1):
         tmp_ensembles.append(Ensemble(
-            topology=ensembles.topology_filename,
-            trajectory=[ensembles.topology_filename],
-            atom_selection_string=ensembles.atom_selection_string,
-            superimposition_selection_string=ensembles.superimposition_selection_string))
+            topology=ensemble.topology_filename,
+            trajectory=ensemble.trajectory.get_array()[slices_n[s]:slices_n[s + 1], :, :]))
+            # trajectory=[ensembles.topology_filename],
+            # atom_selection_string=ensembles.atom_selection_string,
+            # superimposition_selection_string=ensembles.superimposition_selection_string))
         # print slices_n
-        tmp_ensembles[-1].coordinates = ensembles.coordinates[
-                                        slices_n[s]:slices_n[s + 1], :, :]
+        # tmp_ensembles[-1].coordinates = ensembles.coordinates[
+        #                                 slices_n[s]:slices_n[s + 1], :, :]
 
     return tmp_ensembles
 
 
 def hes(ensembles,
+        selection="name CA",
         cov_estimator="shrinkage",
         mass_weighted=True,
         details=False,
@@ -1171,16 +1180,18 @@ def hes(ensembles,
             sigmas = []
             values = numpy.zeros((out_matrix_eln, out_matrix_eln))
             for e in ensembles:
-                this_coords = bootstrap_coordinates(e.coordinates, 1)[0]
+                this_coords = bootstrap_coordinates(e.get_coordinates(selection), 1)[0]
                 xs.append(numpy.average(this_coords, axis=0).flatten())
                 sigmas.append(covariance_matrix(e,
                                                 mass_weighted=True,
-                                                estimator=covariance_estimator))
+                                                estimator=covariance_estimator,
+                                                selection=selection))
             for i, j in pairs_indeces:
                 value = harmonic_ensemble_similarity(x1=xs[i],
                                                      x2=xs[j],
                                                      sigma1=sigmas[i],
-                                                     sigma2=sigmas[j])
+                                                     sigma2=sigmas[j],
+                                                     selection=selection)
                 values[i, j] = value
                 values[j, i] = value
             data.append(values)
@@ -1197,7 +1208,7 @@ def hes(ensembles,
     for e in ensembles:
         print e
         # Extract coordinates from each ensemble
-        coordinates_system = e.coordinates
+        coordinates_system = e.get_coordinates(selection, format='fac')
 
         # Average coordinates in each system
         xs.append(numpy.average(coordinates_system, axis=0).flatten())
@@ -1205,13 +1216,15 @@ def hes(ensembles,
         # Covariance matrices in each system
         sigmas.append(covariance_matrix(e,
                                         mass_weighted=mass_weighted,
-                                        estimator=covariance_estimator))
+                                        estimator=covariance_estimator,
+                                        selection=selection))
 
     for i, j in pairs_indeces:
         value = harmonic_ensemble_similarity(x1=xs[i],
                                              x2=xs[j],
                                              sigma1=sigmas[i],
-                                             sigma2=sigmas[j])
+                                             sigma2=sigmas[j],
+                                             selection=selection)
         values[i, j] = value
         values[j, i] = value
 
@@ -1230,6 +1243,7 @@ def hes(ensembles,
 
 
 def ces(ensembles,
+        selection="name CA",
         preference_values=-1.0,
         max_iterations=500,
         convergence=50,
@@ -1335,7 +1349,7 @@ def ces(ensembles,
     Here the simplest case of just two :class:`Ensemble`s used for comparison
     are illustrated: ::
 
-        >>> ens1 = Ensemble( topology = PDB_small, trajectory = DCD)
+        >>> ens1 = Ensemble(topology = PDB_small, trajectory = DCD)
         >>> ens2 = Ensemble(topology = PDB_small, trajectory = DCD2)
         >>> CES = ces([ens1,ens2])
         >>> print CES
@@ -1362,7 +1376,9 @@ def ces(ensembles,
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1].coordinates]
+        ensemble_assignment += \
+            [i for j in ensembles[i - 1].get_coordinates(selection,
+                                                         format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -1379,10 +1395,11 @@ def ces(ensembles,
     else:
         kwargs['similarity_mode'] = similarity_mode
         if not estimate_error:
-            confdistmatrix = get_similarity_matrix(ensembles, **kwargs)
+            confdistmatrix = get_similarity_matrix(ensembles, selection=selection, **kwargs)
         else:
             confdistmatrix = get_similarity_matrix(
                 ensembles,
+                selection=selection,
                 bootstrapping_samples=bootstrapping_samples,
                 bootstrap_matrix=True,
                 **kwargs)
@@ -1466,7 +1483,8 @@ def ces(ensembles,
                                                                   pair[0] + 1,
                                                                   ensembles[
                                                                       pair[1]],
-                                                                  pair[1] + 1)
+                                                                  pair[1] + 1,
+                                                                  selection=selection)
                         values[p][-1][pair[0], pair[1]] = this_djs
                         values[p][-1][pair[1], pair[0]] = this_djs
                     k += 1
@@ -1490,7 +1508,8 @@ def ces(ensembles,
                                                               ensembles[pair[0]],
                                                               pair[0] + 1,
                                                               ensembles[pair[1]],
-                                                              pair[1] + 1)
+                                                              pair[1] + 1,
+                                                              selection=selection)
                     values[-1][pair[0], pair[1]] = this_val
                     values[-1][pair[1], pair[0]] = this_val
 
@@ -1498,7 +1517,7 @@ def ces(ensembles,
                 kwds['centroids_pref%.3f' % p] = numpy.array(
                     [c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array(
-                    [e.coordinates.shape[0] for e in ensembles])
+                    [e.get_coordinates(selection).shape[0] for e in ensembles])
                 for cln, cluster in enumerate(ccs[i]):
                     kwds["cluster%d_pref%.3f" % (cln + 1, p)] = numpy.array(
                         cluster.elements)
@@ -1517,6 +1536,7 @@ def ces(ensembles,
 
 
 def dres(ensembles,
+         selection="name CA",
          conf_dist_mode="rmsd",
          conf_dist_matrix=None,
          mode='vanilla',
@@ -1674,7 +1694,9 @@ def dres(ensembles,
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1].coordinates]
+        ensemble_assignment += \
+            [i for j in ensembles[i - 1].get_coordinates(selection,
+                                                         format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -1684,10 +1706,13 @@ def dres(ensembles,
     else:
         kwargs['similarity_mode'] = conf_dist_mode
         if not estimate_error:
-            confdistmatrix = get_similarity_matrix(ensembles, **kwargs)
+            confdistmatrix = get_similarity_matrix(ensembles,
+                                                   selection=selection,
+                                                   **kwargs)
         else:
             confdistmatrix = get_similarity_matrix(
                 ensembles,
+                selection=selection,
                 bootstrapping_samples=bootstrapping_samples,
                 bootstrap_matrix=True,
                 **kwargs)
@@ -1845,6 +1870,7 @@ def dres(ensembles,
 
 def ces_convergence(original_ensemble,
                     window_size,
+                    selection="",
                     similarity_mode="minusrmsd",
                     preference_values=[1.0],
                     max_iterations=500,
@@ -1927,11 +1953,12 @@ def ces_convergence(original_ensemble,
         original_ensemble, window_size)
 
     kwargs['similarity_mode'] = similarity_mode
-    confdistmatrix = get_similarity_matrix([original_ensemble], **kwargs)
+    confdistmatrix = get_similarity_matrix([original_ensemble],
+                                           selection=selection, **kwargs)
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1].coordinates]
+        ensemble_assignment += [i for j in ensembles[i - 1].get_coordinates(selection)]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -1980,7 +2007,8 @@ def ces_convergence(original_ensemble,
                 ensembles[ -1],
                 len(ensembles) + 1,
                 ensembles[j],
-                j + 1)
+                j + 1,
+                selection=selection)
 
     out = numpy.array(out).T
     return out
@@ -1989,6 +2017,7 @@ def ces_convergence(original_ensemble,
 
 def dres_convergence(original_ensemble,
                      window_size,
+                     selection="",
                      conf_dist_mode='rmsd',
                      mode='vanilla',
                      dimensions=[3],
@@ -2077,14 +2106,15 @@ def dres_convergence(original_ensemble,
     """
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size)
+        original_ensemble, window_size, selection=selection)
 
     kwargs['similarity_mode'] = conf_dist_mode
-    confdistmatrix = get_similarity_matrix([original_ensemble], **kwargs)
+    confdistmatrix = get_similarity_matrix([original_ensemble],
+                                           selection=selection, **kwargs)
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1].coordinates]
+        ensemble_assignment += [i for j in ensembles[i - 1].get_coordinates(selection)]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     out_matrix_eln = len(ensembles)
@@ -2169,9 +2199,10 @@ def dres_convergence(original_ensemble,
 
         for j in range(0, out_matrix_eln):
             out[-1][j] = dimred_ensemble_similarity(kdes[-1],
-                                                      resamples[-1],
-                                                      kdes[j],
-                                                      resamples[j])
+                                                    resamples[-1],
+                                                    kdes[j],
+                                                    resamples[j],
+                                                    selection=selection)
 
     out = numpy.array(out).T
     return out

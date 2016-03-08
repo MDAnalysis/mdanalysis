@@ -193,6 +193,7 @@ class EstimatorShrinkage:
     __call__ = calculate
 
 def covariance_matrix(ensemble,
+                      selection="",
                       estimator = EstimatorShrinkage(),
                       mass_weighted=True,
                       reference = None,
@@ -229,7 +230,7 @@ def covariance_matrix(ensemble,
 
     # Extract coordinates from ensemble
     # coordinates = ensemble.get_coordinates(start=start, end=end)
-    coordinates = ensemble.coordinates
+    coordinates = ensemble.get_coordinates(selection, format='fac')
 
 
     # Flatten coordinate matrix into n_frame x n_coordinates
@@ -252,7 +253,10 @@ def covariance_matrix(ensemble,
     # Optionally correct with mass-weighting
     if mass_weighted:
         # Calculate mass-weighted covariance matrix
-        masses = numpy.repeat(ensemble.atom_selection.masses, 3)
+        if selection:
+            masses = numpy.repeat(ensemble.select_atoms(selection).masses, 3)
+        else:
+            masses = numpy.repeat(ensemble.atoms.masses, 3)
         mass_matrix = numpy.sqrt(numpy.identity(len(masses))*masses)
         sigma = numpy.dot(mass_matrix, numpy.dot(sigma, mass_matrix))
 
