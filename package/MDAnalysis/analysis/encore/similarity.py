@@ -21,7 +21,7 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015-2016
 :Copyright: GNU Public License v3
-
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 The module contains implementations of similarity measures between protein
 ensembles described in [Lindorff-Larsen2009]_. The implementation and examples
@@ -1065,7 +1065,7 @@ def hes(ensembles,
         mass_weighted=True,
         details=False,
         estimate_error=False,
-        bootstrapping_runs=100,
+        bootstrapping_samples=100,
         calc_diagonal=False):
     """
 
@@ -1094,7 +1094,7 @@ def hes(ensembles,
         estimate_error : bool, optional
             Whether to perform error estimation (default is False).
 
-        bootstrapping_runs : int, optional
+        bootstrapping_samples : int, optional
             Number of times the similarity matrix will be bootstrapped (default
             is 100).
 
@@ -1174,7 +1174,7 @@ def hes(ensembles,
 
     if estimate_error:
         data = []
-        for t in range(bootstrapping_runs):
+        for t in range(bootstrapping_samples):
             logging.info("The coordinates will be bootstrapped.")
             xs = []
             sigmas = []
@@ -1195,7 +1195,6 @@ def hes(ensembles,
                 values[i, j] = value
                 values[j, i] = value
             data.append(values)
-        outs = numpy.array(data)
         avgs = numpy.average(data, axis=0)
         stds = numpy.std(data, axis=0)
 
@@ -1463,8 +1462,8 @@ def ces(ensembles,
             preferences = old_prefs
             k = 0
             values = {}
-            avgs = {}
-            stds = {}
+            avgs = []
+            stds = []
             for i, p in enumerate(preferences):
                 failed_runs = 0
                 values[p] = []
@@ -1489,11 +1488,19 @@ def ces(ensembles,
                         values[p][-1][pair[1], pair[0]] = this_djs
                     k += 1
                 outs = numpy.array(values[p])
-                avgs[p] = numpy.average(outs, axis=0)
-                stds[p] = numpy.std(outs, axis=0)
+                avgs.append( numpy.average(outs, axis=0))
+                stds.append( numpy.std(outs, axis=0))
 
-            return (avgs, stds)
+            if full_output:
+                avgs = numpy.array(avgs).swapaxes(0, 2)
+                stds = numpy.array(stds).swapaxes(0, 2)
+            else:
+                avgs = avgs[0]
+                stds = stds[0]
 
+            return avgs, stds
+
+    
         values = []
         kwds = {}
         for i, p in enumerate(preferences):
@@ -1780,8 +1787,8 @@ def dres(ensembles,
     # Sort out obtained spaces and their residual stress values
 
     if estimate_error:  # if bootstrap
-        avgs = {}
-        stds = {}
+        avgs = []
+        stds = []
         values = {}
         k = 0
         for ndim in dimensions:
@@ -1808,9 +1815,17 @@ def dres(ensembles,
                     values[ndim][-1][pair[1], pair[0]] = this_value
 
                 k += 1
-                outs = numpy.array(values[ndim])
-                avgs[ndim] = numpy.average(outs, axis=0)
-                stds[ndim] = numpy.std(outs, axis=0)
+            outs = numpy.array(values[ndim])
+            avgs.append( numpy.average(outs, axis=0))
+            stds.append( numpy.std(outs, axis=0))
+
+        if full_output:
+            avgs = numpy.array(avgs).swapaxes(0, 2)
+            stds = numpy.array(stds).swapaxes(0, 2)
+        else:
+           avgs = avgs[0]
+           stds = stds[0]
+
 
         return (avgs, stds)
 
@@ -1855,10 +1870,10 @@ def dres(ensembles,
             for en, e in enumerate(embedded_ensembles):
                 kwds["ensemble%d_%ddims" % (en, ndim)] = e
 
-    if full_output:
-        values = numpy.array(values).swapaxes(0, 2)
-    else:
-        values = values[0]
+        if full_output:
+            values = numpy.array(values).swapaxes(0, 2)
+        else:
+            values = values[0]
 
     if details:
         details = numpy.array(kwds)
@@ -1872,7 +1887,7 @@ def ces_convergence(original_ensemble,
                     window_size,
                     selection="",
                     similarity_mode="minusrmsd",
-                    preference_values=[1.0],
+                    preference_values=[-1.0],
                     max_iterations=500,
                     convergence=50,
                     damping=0.9,
