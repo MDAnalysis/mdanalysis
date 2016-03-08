@@ -21,7 +21,7 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015-2016
 :Copyright: GNU Public License v3
-
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 The module contains implementations of similarity measures between protein
 ensembles described in [Lindorff-Larsen2009]_. The implementation and examples

@@ -107,14 +107,6 @@ class TestEncore(TestCase):
 
     @dec.slow
     def test_ces_convergence(self):
-        results, details = encore.ces([self.ens1, self.ens2])
-        result_value = results[0,1]
-        expected_value = 0.68
-        assert_almost_equal(result_value, expected_value, decimal=1,
-                            err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
-
-    @dec.slow
-    def test_ces_convergence(self):
         expected_values = [0.51124, 0.38618, 0.28370, 0.26927, 0.19035, 0.12918, 0.08996, 0.06434, 0.00000]
         results = encore.ces_convergence(self.ens1, 10)
         for i,ev in enumerate(expected_values):
