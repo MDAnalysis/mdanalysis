@@ -45,20 +45,20 @@ class EstimatorML:
     """
     def calculate(self, coordinates, reference_coordinates=None):
         """
-	Parameters
-	----------
+        Parameters
+        ----------
 
-        coordinates : numpy.array
-            Flattened array of coordiantes
+            coordinates : numpy.array
+                Flattened array of coordiantes
 
-		reference_coordinates : numpy.array
-    		Optional reference to use instead of mean
+            reference_coordinates : numpy.array
+                Optional reference to use instead of mean
 
-	Returns
-	-------
+        Returns
+        -------
 
-		cov_mat : numpy.array
-            Estimate of  covariance matrix
+            cov_mat : numpy.array
+                Estimate of  covariance matrix
 
         """
 
@@ -91,9 +91,7 @@ class EstimatorShrinkage:
     Empirical Finance, 10, 5, 2003
 
     This implementation is based on the matlab code made available by Olivier
-    Ledoit on
-    his website:
-
+    Ledoit on his website:
     http://www.ledoit.net/ole2_abstract.htm
 
     The generated object acts as a functor.
@@ -107,9 +105,9 @@ class EstimatorShrinkage:
         Parameters
 		----------
 
-        shrinkage_parameter : float
-            Makes it possible to set the shrinkage parameter explicitly, 
-            rather than having it estimated automatically.
+            shrinkage_parameter : float
+                Makes it possible to set the shrinkage parameter explicitly,
+                rather than having it estimated automatically.
         """
         self.shrinkage_parameter = shrinkage_parameter
 
@@ -208,6 +206,10 @@ def covariance_matrix(ensemble,
 
     ensemble : Ensemble object
         The structural ensemble
+
+    selection : str
+        Atom selection string in the MDAnalysis format.
+        (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
     estimator : MLEstimator or ShrinkageEstimator object
         Which estimator type to use (maximum likelihood, shrinkage). This 

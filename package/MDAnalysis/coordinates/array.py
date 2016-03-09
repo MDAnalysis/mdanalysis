@@ -116,7 +116,7 @@ class ArrayReader(base.ProtoReader):
 
         kwargs.pop("n_atoms", None)
         self.ts = self._Timestep(self.n_atoms, **kwargs)
-        self.ts.frame = -1
+        # self.ts.frame = -1
         self._read_next_timestep()
 
     def set_array(self, coordinate_array, format='afc'):
@@ -142,7 +142,9 @@ class ArrayReader(base.ProtoReader):
         Return underlying array in desired column format.
         This methods has overlapping functionality with the
         timeseries method, but is slightly faster in cases
-        where no selection or filtering is required
+        where no selection or filtering is required. Another
+        difference is that get_array always returns a view of
+        the original array, while timeseries will return a copy.
 
         :Arguments:
             *format*
@@ -170,12 +172,13 @@ class ArrayReader(base.ProtoReader):
         return array
 
 
-    def rewind(self):
+    def _reopen(self):
         """Reset iteration to first frame"""
         self.ts.frame = -1
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
-        """Return a subset of coordinate data for an AtomGroup
+        """Return a subset of coordinate data for an AtomGroup. Note that
+        this is a copy of the underlying array (not a view).
 
         :Arguments:
             *asel*
@@ -210,14 +213,14 @@ class ArrayReader(base.ProtoReader):
         if ts is None:
             ts = self.ts
         ts.frame += 1
-        ts.positions = self.coordinate_array.take(self.ts.frame-1,
+        ts.positions = self.coordinate_array.take(self.ts.frame,
                                                   axis=self.format.find('f'))
         ts.time = self.ts.frame
         return ts
 
     def _read_frame(self, i):
         """read frame i"""
-        self.ts.frame = i
+        self.ts.frame = i-1
         return self._read_next_timestep()
 
     def __repr__(self):

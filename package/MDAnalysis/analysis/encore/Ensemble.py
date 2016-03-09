@@ -28,7 +28,7 @@ those coming from NMR structure resoltion experiments.
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015--2016
 :Copyright: GNU Public License v3
-:Maintainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
+:Maintainer: Wouter Boomsma <wb@bio.ku.dk>, wouterboomsma on github
 
 .. versionadded:: 0.14.0
 
@@ -38,78 +38,33 @@ import MDAnalysis
 import MDAnalysis.analysis
 import MDAnalysis.analysis.align
 import numpy
-import logging
 import numpy as np
-import errno
 from MDAnalysis.coordinates.array import ArrayReader
 
 
 class Ensemble(MDAnalysis.Universe):
     """
-    A wrapper class around Universe providing
-    Ensemble class designed to easily manage more than one trajectory files.
-    Users can provide either a topology/trajectory(es) combination or a
-    MDAnalysis.Universe object. Topology and trajectory files must have the
-    same number of atoms, and order is of course important.
+    A wrapper class around Universe providing functionality for aligning
+    all frames in a trajectory, and providing easy access to the underlying
+    array of coordinates. This class makes use of the ArrayReader
+    trajectory reader to store the entire trajectory in a numpy array, in
+    which coordinates can be manipulated upon alignment. The frame_interval
+    option makes it possible to read in a lower number of frames (e.g. with
+    frame-interval=2 only every second frame will be loaded).
 
-    While creating a new Ensemble object it is possible to load from a
-    trajectory a selected subset of atoms, using the MDAnalysis syntax for
-    selections
+    The align method takes an atom selection string, using the MDAnalysis
+    syntax for selections
     (see http://mdanalysis.googlecode.com/git/package/doc/html/ \
-    documentation_pages/selections.html for details)
-    and the atom_selection_string argument. By default all the alpha carbons
-    ("CA") are considered. It is also possible to load a lower number of frames
-     for each trajectory, by selecting only one frame every frame_interval
-     (e.g. with frame-interval=2 only every second frame will be loaded).
+    documentation_pages/selections.html for details). By default all the
+    alpha carbons ("CA") are considered. Frames in an Ensemble object can be
+    superimposed to a reference conformation using the reference argument.
 
-    Frames in an Ensemble object can be superimposed to a reference
-    conformation (see method align). By default the rotation matrix for this
-    superimposition is calculated on all the atoms of the system, as defined
-    by the atom_selection_string. However, if the
-    superimposition_selection_string is provided, that subset will be used to
-    calculate the rotation matrix, which will be applied on the whole
-    atom_selection_string. Notice that the set defined by
-     superimposition_selection_string is completely independent from the
-     atom_selection_string atoms, as it can be a subset or superset of that,
-     although it must refer to the same topology.
-
-    Attributes
+    Attributes (in addition to those found in Universe)
     ----------
 
     topology_filename : str
-        Topology file name.
+        Name of Topology file.
 
-    trajectory_filename : str
-        Trajectory file name. If more then one are specified, it is a list of
-        comma-separated names (e.g. "traj1.xtc,traj2.xtc")
-
-    frame_interval : int
-        Keep only one frame every frame_interval (see the package or module
-        description)
-
-    selection : str
-        Atom selection string in the MDAnalysis format
-         (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
-
-    atom_selection : MDAnalysis.core.AtomGroup
-        MDAnalysis atom selection, which corresponds to the selection
-        defined by atom_selection_string on universe
-
-    coordinates : (x,N,3) numpy.array
-        Array of coordinate which will be used in the calculations, where x is
-        the number of frames and N is the number of atoms. Notice that these coordinates may be different from those of universe, because of the atom_selection and frame_interval.
-
-    superimposition_selection_string : str
-	Analogous to atom_selection_string, but related to the subset of atoms that
-	will be used for 3D superimposition.
-
-    superimposition_selection : MDAnalysis.core.AtomGroup
-	Analogous to atom_selection, but related to the subset of atoms that will
-	 be used for 3D superimposition.
-
-    superimposition_coordinates : (x,N,3) numpy.array
-        Analogous to coordinates, but related to the subset of atoms that will
-         be used for 3D superimposition.
 
 
     Examples
@@ -120,16 +75,16 @@ class Ensemble(MDAnalysis.Universe):
 	test suite for a simulation of the protein AdK. To run the
 	example some imports first need to be executed: ::
 
-	    >>> from MDAnalysis import *
-	    >>> from MDAnalysis.analysis.encore.similarity import *
+	    >>> import MDAnalysis.analysis.encore as encore
 	    >>> from MDAnalysis.tests.datafiles import PDB_small, DCD
-	    >>> ens = Ensemble(topology=PDB_small,trajectory=DCD)
+	    >>> ens = encore.Ensemble(topology=PDB_small,trajectory=DCD)
 
 	In addition, to decrease the computations the :class:`Ensemble` object
 	can be initialized by only loading every nth frame from the trajectory
 	using the parameter `frame_interval`: ::
 
-	    >>> ens = Ensemble(topology=PDB_small, trajectory=DCD, frame_interval=3)
+	    >>> ens = encore.Ensemble(topology=PDB_small, trajectory=DCD,
+	                              frame_interval=3)
 
 
     """
@@ -146,21 +101,18 @@ class Ensemble(MDAnalysis.Universe):
         Constructor for the Ensemble class. See the module description for more
         details.
 
-    Parameters
-    ----------
+        Parameters
+        ----------
 
-        topology : str
-            Topology file name
+            topology : str
+                Topology file name
 
-        trajectory : iterable or str
-            One or more Trajectory file name(s)
+            trajectory : iterable or str
+                One or more Trajectory file name(s)
 
-        selection : str
-            Atom selection string in the MDAnalysis format
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+            frame_interval : int
+                Interval at which frames should be included
 
-        frame_interval : int
-            Interval at which frames should be included
         """
 
 
@@ -200,37 +152,32 @@ class Ensemble(MDAnalysis.Universe):
             # object, to provide fast access and allow coordinates
             # to be manipulated
             self.trajectory = ArrayReader(coordinates)
-                # self._get_coordinates(frame_interval=frame_interval),
-                # format='afc')
 
-        # # Overwrite atoms selection from Universe
-        # self.atoms_selection = self.select_atoms(self.atom_selection_string)
-        #
-        # # Set the attributes for the atom set on which fitting will be
-        # # performed. Fitting and calculation may be performed on two
-        # # non-overlapping sets. This is optional.
-        # if superimposition_selection_string:
-        #     self.superimposition_selection_string \
-        #         = superimposition_selection_string
-        #     self.superimposition_selection = self.select_atoms(
-        #         superimposition_selection_string)
-        #     self.superimposition_coordinates = self.get_coordinates(
-        #         subset_selection_string=self.superimposition_selection_string)
-        # else:
-        #     self.superimposition_selection_string = self.atom_selection_string
-        #     self.superimposition_selection = self.atoms_selection
-        #     self.superimposition_coordinates = numpy.copy(self.trajectory.get_array())
-
-        # # Save trajectories filename for future reference
-        # if type(trajectory) == str:
-        #     self.trajectory_filename = trajectory
-        # else:
-        #     self.trajectory_filename = ", ".join(trajectory)
-        #
-        #     # Save topology filename for future reference
         self.topology_filename = topology
 
-    def get_coordinates(self, selection, format):
+
+    def get_coordinates(self, selection="", format='afc'):
+        """
+        Convenience method for extracting array of coordinates. In cases where
+        no selection is provided, this version is slightly faster than accessing
+        the coordinates through the timeseries interface (which always takes
+        a copy of the array).
+
+        Parameters
+        ----------
+
+            selection : str
+                Atom selection string in the MDAnalysis format.
+                 (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+
+            *format*
+               the order/shape of the return data array, corresponding
+               to (a)tom, (f)rame, (c)oordinates all six combinations
+               of 'a', 'f', 'c' are allowed ie "fac" - return array
+               where the shape is (frame, number of atoms,
+               coordinates)
+
+        """
         if selection == "":
             # If no selection is applied, return raw array
             return self.trajectory.get_array(format=format)
@@ -238,65 +185,8 @@ class Ensemble(MDAnalysis.Universe):
             return self.trajectory.timeseries(self.select_atoms(selection),
                                               format=format)
 
-    # def _get_coordinates(self, selection="", frame_interval=1):
-    #     """
-    #     Get a set of coordinates from Universe.
-    #
-    #     Parameters
-    #     ----------
-    #
-    #     subset_selection_string : None or str
-    #         Selection string that selects the universe atoms whose coordinates
-    #         have to be returned. The frame_interval will be automatically
-    #         applied. If the argument is None,  the atoms defined in the
-    #         atom_selection_string will be considered.
-    #
-    #     Returns
-    #     -------
-    #
-    #     coordinates : (x,N,3) numpy array
-    #         The requested array of coordinates.
-    #
-    #     """
-    #
-    #     if selection == "":
-    #         atomgroup = self.atoms
-    #     else:
-    #         atomgroup = self.select_atoms(selection)
-    #
-    #     # if not subset_selection_string:
-    #     #     subset_selection_string = self.atom_selection_string
-    #     # subset_selection = self.universe.select_atoms(subset_selection_string)
-    #
-    #     if len(atomgroup) == 0:
-    #         logging.error(
-    #             "ERROR: selection \'%s\' not found in topology."
-    #             % subset_selection_string)
-    #         exit(1)
-    #
-    #     # Try to extract coordinates using Timeseries object
-    #     # This is significantly faster, but only implemented for certain
-    #     # trajectory file formats
-    #     try:
-    #         # frame_interval already takes into account
-    #         coordinates = self.universe.trajectory.timeseries(
-    #             atomgroup, format='afc', skip=frame_interval)
-    #
-    #     # if the Timeseries extraction fails, fall back to a slower approach
-    #     except:
-    #         coordinates = numpy.zeros(
-    #             tuple([self.universe.trajectory.n_frames]) +
-    #             atomgroup.coordinates().shape)
-    #
-    #         k = 0
-    #         for i, time_step in enumerate(self.universe.trajectory):
-    #             if i%frame_interval == 0:
-    #                 coordinates[k] = atomgroup.coordinates(time_step)
-    #                 k+=1
-    #         coordinates = np.swapaxes(coordinates,0,1)
-    #     return coordinates
 
-    def align(self, selection="name *", reference=None, weighted=True):
+    def align(self, selection="name CA", reference=None, weighted=True):
         """
         Least-square superimposition of the Ensemble coordinates to a reference
          structure.
@@ -304,14 +194,19 @@ class Ensemble(MDAnalysis.Universe):
         Parameters
         ----------
 
-        reference : None or MDAnalysis.Universe
-            Reference structure on which those belonging to the Ensemble will
-            be fitted upon.  It must have the same topology as the Ensemble
-            topology. If reference is None, the structure in the first frame of
-            the ensemble will be used as reference.
+            selection : str
+                Atom selection string in the MDAnalysis format. Default is
+                "name CA"
+                (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
-        weighted : bool
-            Whether to perform weighted superimposition or not
+            reference : None or MDAnalysis.Universe
+                Reference structure on which those belonging to the Ensemble will
+                be fitted upon.  It must have the same topology as the Ensemble
+                topology. If reference is None, the structure in the first frame of
+                the ensemble will be used as reference.
+
+            weighted : bool
+                Whether to perform weighted superimposition or not
 
         """
 
@@ -321,9 +216,6 @@ class Ensemble(MDAnalysis.Universe):
         alignment_subset_coordinates = \
             self.trajectory.timeseries(alignment_subset_selection,
                                        format='fac')
-
-        # alignment_subset_atom_selection = self.superimposition_selection
-        # alignment_subset_coordinates = self.superimposition_coordinates
 
         if weighted:
             alignment_subset_masses = alignment_subset_selection.masses
@@ -339,12 +231,8 @@ class Ensemble(MDAnalysis.Universe):
 
         # Move both subset atoms and the other atoms to the center of mass of
         # subset atoms
-        # alignment_subset_coordinates -= \
-        #     alignment_subset_coordinates_center_of_mass[ :, numpy.newaxis]
-        # print alignment_subset_coordinates[0]
         coordinates -= alignment_subset_coordinates_center_of_mass[:,
                        numpy.newaxis]
-        # print coordinates.shape
 
         # if reference: no offset
         if reference:
@@ -383,13 +271,3 @@ class Ensemble(MDAnalysis.Universe):
             coordinates[i][:] = numpy.transpose(numpy.dot(rotation_matrix,
                                                           numpy.transpose(
                                                           coordinates[i][:])))
-        # self.trajectory.set_array(self.coordinates)
-        # for k, ts in enumerate(self.trajectory[:1]):
-        #     print k, self.atoms.positions, id(self.trajectory.ts.positions)
-        #     # self.trajectory[i].positions = self.coordinates[i]
-        #     # self.atoms.set_positions(self.coordinates[i][:])
-        #     self.trajectory.ts.positions[:] = self.coordinates[i][:]
-        #     print k, "***", self.atoms.positions, id(self.trajectory.ts.positions)
-        # for k, ts in enumerate(self.trajectory[:1]):
-        #     print k, self.atoms.positions, id(self.trajectory.ts.positions)
-        # print "&&&&&&&&&&&&&", self.trajectory.ts[0]
