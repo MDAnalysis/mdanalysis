@@ -243,6 +243,28 @@ class TestPrimitivePDBWriter(TestCase):
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
+    @attr('issue')
+    def test_check_header_title_multiframe(self):
+        """Check whether HEADER and TITLE are written just once in a multi-
+        frame PDB file (Issue 741)"""
+        u = mda.Universe(PSF,DCD, permissive=True) 
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            got_header = 0
+            got_title = 0
+            for line in f:
+                if line.startswith('HEADER'):
+                    got_header += 1
+                    assert_(got_header <= 1, "There should be only one HEADER.")
+                elif line.startswith('TITLE'):
+                    got_title += 1
+                    assert_(got_title <= 1, "There should be only one TITLE.")
+
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):

@@ -655,7 +655,7 @@ class PrimitivePDBWriter(base.Writer):
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
 
-    The :class:`PrimitivePDBWriter` can be used to either a dump a coordinate
+    The :class:`PrimitivePDBWriter` can be used to either dump a coordinate
     set to a PDB file (operating as a "single frame writer", selected with the
     constructor keyword *multiframe* = ``False``, the default) or by writing a
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
@@ -808,6 +808,7 @@ class PrimitivePDBWriter(base.Writer):
 
         self.pdbfile = util.anyopen(self.filename, 'wt')  # open file on init
         self.has_END = False
+        self.first_frame_done = False
 
     def close(self):
         """Close PDB file and write END record"""
@@ -832,10 +833,15 @@ class PrimitivePDBWriter(base.Writer):
         if not self.obj or not hasattr(self.obj, 'universe'):
             self._write_pdb_title(self)
             return
+        if self.first_frame_done == True:
+            return        
 
+        self.first_frame_done = True
         u = self.obj.universe
         self.HEADER(u.trajectory)
+        
         self._write_pdb_title()
+
         self.COMPND(u.trajectory)
         try:
             # currently inconsistent: DCDReader gives a string,
