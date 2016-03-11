@@ -14,22 +14,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function
-
 import MDAnalysis
-
 import MDAnalysis.analysis.diffusionmap as diffusionmap
-from MDAnalysis import SelectionError
+from numpy.testing import (assert_almost_equal, assert_equal)
 
-from numpy.testing import (TestCase, dec,
-                           assert_almost_equal, assert_raises, assert_equal)
-import numpy as np
-from nose.plugins.attrib import attr
 
-import tempdir
-from os import path
-
-from MDAnalysisTests.datafiles import PDB,XTC
-from MDAnalysisTests import executable_not_found, parser_not_found
+from MDAnalysisTests.datafiles import PDB, XTC
 
 
 class TestDiffusionmap(object):
@@ -44,20 +34,20 @@ class TestDiffusionmap(object):
         #assert_almost_equal(self.ev[0,0], .095836037343022831)
         #faster
         u = MDAnalysis.Universe(PDB, XTC)
-        eg,ev=diffusionmap.diffusionmap(u, select='backbone', k=5)
-        self.eg=eg
-        self.ev=ev
+        eg, ev = diffusionmap.diffusionmap(u, select = 'backbone', k = 5)
+        self.eg = eg
+        self.ev = ev
        
 
     def test_eg(self):
-        assert_equal(self.eg.shape, (10,))
-        assert_almost_equal(self.eg[0], 1.0)
-        assert_almost_equal(self.eg[-1],0.03661048812801191)
+        assert_equal(self.eg.shape, (10, ))
+        assert_almost_equal(self.eg[0], 1.0, decimal=5)
+        assert_almost_equal(self.eg[-1], 0.0142, decimal = 3)
 
 
     def test_ev(self):
-        assert_equal(self.ev.shape, (10,10))
-        assert_almost_equal(self.ev[0,0], -0.30796900898350615)
+        assert_equal(self.ev.shape, (10, 10))
+        assert_almost_equal(self.ev[0, 0], -0.3019, decimal = 2)
 
 
 
