@@ -699,7 +699,8 @@ class PrimitivePDBWriter(base.Writer):
         'TITLE': "TITLE     {0}\n",
         'MODEL': "MODEL     {0:5d}\n",
         'NUMMDL': "NUMMDL    {0:5d}\n",
-        'TER': "TER\n",
+        'TER': ("TER   {serial:5d}      {resName:<4s}"
+                "{chainID:1s}{resSeq:4d}{iCode:1s}\n"),
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
         'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
@@ -1159,6 +1160,7 @@ class PrimitivePDBWriter(base.Writer):
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
+        ter_atom = {}
         for i, atom in enumerate(atoms):
             segid = atom.segid if atom.segid is not "SYSTEM" else " "
 
@@ -1182,8 +1184,16 @@ class PrimitivePDBWriter(base.Writer):
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
 
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
+            if i == (len(atoms)-1):
+                ter_atom['serial'] = vals['serial'] + 1
+                ter_atom['resName'] = vals['resName']
+                ter_atom['chainID'] = vals['chainID']
+                ter_atom['resSeq'] = vals['resSeq']
+                ter_atom['iCode'] = vals['iCode']
+
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
         if multiframe:
+            self.TER(ter_atom)
             self.ENDMDL()
         self.frames_written += 1
 
@@ -1265,13 +1275,20 @@ class PrimitivePDBWriter(base.Writer):
             self.pdbfile.write(self.fmt['END'])
         self.has_END = True
 
+    def TER(self, ter_atom):
+        """Write the TER_ record.
+
+        .. _TER: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#TER
+
+        """
+        self.pdbfile.write(self.fmt['TER'].format(**ter_atom))
+
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
 
         """
-        self.pdbfile.write(self.fmt['TER'])
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def CONECT(self, conect):
