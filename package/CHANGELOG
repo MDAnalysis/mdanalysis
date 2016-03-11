@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 jandom
+??/??/16 jandom, abhinavgupta94
 
   * 0.14.1
 
@@ -25,6 +25,7 @@ API Changes
 Fixes
 
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
+  * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
 
 Changes
 
