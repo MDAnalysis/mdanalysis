@@ -699,6 +699,7 @@ class PrimitivePDBWriter(base.Writer):
         'TITLE': "TITLE     {0}\n",
         'MODEL': "MODEL     {0:5d}\n",
         'NUMMDL': "NUMMDL    {0:5d}\n",
+        'TER': "TER\n",
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
         'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
@@ -834,7 +835,7 @@ class PrimitivePDBWriter(base.Writer):
             self._write_pdb_title(self)
             return
         if self.first_frame_done == True:
-            return        
+            return
 
         self.first_frame_done = True
         u = self.obj.universe
@@ -1270,6 +1271,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
 
         """
+        self.pdbfile.write(self.fmt['TER'])
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def CONECT(self, conect):
