@@ -381,6 +381,7 @@ if __name__ == '__main__':
           maintainer='Richard Gowers',
           maintainer_email='mdnalysis-discussion@googlegroups.com',
           url='http://www.mdanalysis.org',
+          download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=find_packages(),
