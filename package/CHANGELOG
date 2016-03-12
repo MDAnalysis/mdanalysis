@@ -38,7 +38,7 @@ Fixes
   * change_release now finds number and dev (Issue #776) 
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
   * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
-  * added TER record with its args after each frame. (Issue #734)
+  * added TER record with its args after each frame. (Issue #734) (PR #764)
 
 Changes
 

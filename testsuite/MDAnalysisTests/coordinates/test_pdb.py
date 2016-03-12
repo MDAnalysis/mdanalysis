@@ -265,6 +265,10 @@ class TestPrimitivePDBWriter(TestCase):
                     got_title += 1
                     assert_(got_title <= 1, "There should be only one TITLE.")
 
+    @attr(issue)
+    def test_check_ter_endmdl_equality(self):
+        """Check whether 
+
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):
