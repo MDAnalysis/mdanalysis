@@ -16,7 +16,7 @@
 
 from MDAnalysis.coordinates.base import Timestep, SingleFrameReader, Reader
 
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_raises
 import numpy as np
 
 """
