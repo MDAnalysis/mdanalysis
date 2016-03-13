@@ -17,7 +17,8 @@ from six.moves import range
 
 import tempdir
 import os
-from numpy.testing import *
+from numpy.testing import (assert_equal,assert_raises, assert_array_equal,
+                           assert_array_almost_equal, TestCase)     
 
 from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
 from MDAnalysis import Universe
