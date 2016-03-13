@@ -265,9 +265,33 @@ class TestPrimitivePDBWriter(TestCase):
                     got_title += 1
                     assert_(got_title <= 1, "There should be only one TITLE.")
 
-    @attr(issue)
+    @attr('issue')
     def test_check_ter_endmdl_equality(self):
-        """Check whether 
+        """Check whether TER and ENDMDL records are equal to n_frames"""
+        u = mda.Universe(PSF,DCD)
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            got_ter = 0
+            got_endmdl = 0
+            for line in f:
+                if line.startswith('TER'):
+                    got_ter += 1
+                elif line.startswith('ENDMDL'):
+                    got_endmdl += 1
+        
+        pdb = mda.Universe(self.outfile)
+        assert_equal(got_endmdl,
+                    pdb.trajectory.n_frames,
+                    err_msg = 'ENDMDL records not equal to the no of frames.')
+        
+        assert_equal(got_ter,
+                    pdb.trajectory.n_frames,
+                    err_msg = 'TER records not equal to the no of frames.')
 
 
 class TestMultiPDBReader(TestCase):
