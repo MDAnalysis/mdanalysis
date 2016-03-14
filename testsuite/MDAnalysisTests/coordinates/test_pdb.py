@@ -17,7 +17,7 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial, ALIGN)
+                                       INC_PDB, PDB_xlserial, ALIGN, PDB_full)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
@@ -266,8 +266,8 @@ class TestPrimitivePDBWriter(TestCase):
                     assert_(got_title <= 1, "There should be only one TITLE.")
 
     @attr('issue')
-    def test_check_ter_endmdl_equality(self):
-        """Check whether TER and ENDMDL records are equal to n_frames"""
+    def test_check_endmdl_equality(self):
+        """Check whether ENDMDL records are equal to n_frames"""
         u = mda.Universe(PSF,DCD)
         pdb = mda.Writer(self.outfile, multiframe=True)
         protein = u.select_atoms("protein and name CA")
@@ -276,12 +276,9 @@ class TestPrimitivePDBWriter(TestCase):
         pdb.close()
 
         with open(self.outfile) as f:
-            got_ter = 0
             got_endmdl = 0
             for line in f:
-                if line.startswith('TER'):
-                    got_ter += 1
-                elif line.startswith('ENDMDL'):
+                if line.startswith('ENDMDL'):
                     got_endmdl += 1
         
         pdb = mda.Universe(self.outfile)
@@ -289,9 +286,26 @@ class TestPrimitivePDBWriter(TestCase):
                     pdb.trajectory.n_frames,
                     err_msg = 'ENDMDL records not equal to the no of frames.')
         
-        assert_equal(got_ter,
-                    pdb.trajectory.n_frames,
-                    err_msg = 'TER records not equal to the no of frames.')
+
+        @attr('issue')
+        def test_ter_format(self):
+            """Check whether the TER records are formatted and plcaed properly"""
+            filename = mda.Universe(PDB_full)
+            pdb = mda.Writer(self.outfile, multiframe=True)
+            for ts in u.trajectory[:5]:
+                pdb.write(protein)
+            pdb.close()
+
+            with open(self.outfile) as f:
+                for i,line in enumerate(f):
+                    if line.startswith('TER'):
+                        assert_equal(line[11:], 
+                                    f[i-1][11:27],
+                                    err_msg = "TER Record data not same as "
+                                    "terminal atom.")
+                        if not f[i+1].startswith('ENDMDL'):
+                            assert_(f[i-1][21] != f[i+1][21],
+                                    'TER record placed in wrong position.')
 
 
 class TestMultiPDBReader(TestCase):

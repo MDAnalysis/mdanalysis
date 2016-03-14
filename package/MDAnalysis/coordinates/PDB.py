@@ -1160,12 +1160,13 @@ class PrimitivePDBWriter(base.Writer):
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
-        ter_atom = {}
+        prev_atom = {}
+        serial_count = 0
         for i, atom in enumerate(atoms):
             segid = atom.segid if atom.segid is not "SYSTEM" else " "
 
             vals = {}
-            vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
+            vals['serial'] = serial_count + 1
             vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
@@ -1182,17 +1183,33 @@ class PrimitivePDBWriter(base.Writer):
             vals['tempFactor'] = temp if temp is not None else 0.0
             vals['segID'] = segid[:4]
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
-
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
-            if i == (len(atoms)-1):
-                ter_atom['serial'] = vals['serial'] + 1
-                ter_atom['resName'] = vals['resName']
-                ter_atom['chainID'] = vals['chainID']
-                ter_atom['resSeq'] = vals['resSeq']
-                ter_atom['iCode'] = vals['iCode']
-
+            
+            if i == 0 :
+                prev_atom = vals.copy()
+            elif not self.bonds and vals['chainID'] != prev_atom['chainID'] and \
+                vals['chainID'] != " " and prev_atom['chainID'] != " ":
+                    end_atom = {}
+                    end_atom['serial'] = prev_atom['serial'] + 1
+                    end_atom['resName'] = prev_atom['resName']
+                    end_atom['chainID'] = prev_atom['chainID']
+                    end_atom['resSeq'] = prev_atom['resSeq']
+                    end_atom['iCode'] = prev_atom['iCode']
+                    self.TER(end_atom)
+                    serial_count += 1
+                    vals['serial'] = serial_count + 1
+    
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            prev_atom = vals.copy()
+            serial_count += 1
+
         if multiframe:
+            ter_atom = {}
+            ter_atom['serial'] = prev_atom['serial'] + 1
+            ter_atom['resName'] = prev_atom['resName']
+            ter_atom['chainID'] = prev_atom['chainID']
+            ter_atom['resSeq'] = prev_atom['resSeq']
+            ter_atom['iCode'] = prev_atom['iCode']
             self.TER(ter_atom)
             self.ENDMDL()
         self.frames_written += 1
@@ -1275,13 +1292,13 @@ class PrimitivePDBWriter(base.Writer):
             self.pdbfile.write(self.fmt['END'])
         self.has_END = True
 
-    def TER(self, ter_atom):
+    def TER(self, tatom):
         """Write the TER_ record.
 
         .. _TER: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#TER
 
         """
-        self.pdbfile.write(self.fmt['TER'].format(**ter_atom))
+        self.pdbfile.write(self.fmt['TER'].format(**tatom))
 
     def ENDMDL(self):
         """Write the ENDMDL_ record.
