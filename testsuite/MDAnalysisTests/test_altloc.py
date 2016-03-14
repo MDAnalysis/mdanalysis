@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -14,23 +14,20 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from MDAnalysis import Universe
-import tempfile
+import tempdir
 import os
-from numpy.testing import *
+from numpy.testing import TestCase, assert_equal
 from MDAnalysisTests.datafiles import PDB_full
 
 
 class TestAltloc(TestCase):
     def setUp(self):
         self.filename = PDB_full
-        fd, self.outfile = tempfile.mkstemp(suffix=".pdb")  # output is always same as input
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.pdb')
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_atomgroups(self):
         u = Universe(self.filename)

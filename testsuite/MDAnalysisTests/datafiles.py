@@ -42,8 +42,10 @@ __all__ = [
     "PDB_closed",
     "PDB_multiframe",
     "PDB_helix",
+    "PDB_conect",
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
+    "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
@@ -62,6 +64,7 @@ __all__ = [
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
+    "PRM7", "NCDFtruncoct",  # Amber (cpptrj test trajectory, see Issue 488)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
@@ -83,6 +86,7 @@ __all__ = [
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
@@ -137,10 +141,12 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
+ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
+PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
@@ -257,6 +263,10 @@ capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
+contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro.bz2")
+contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro.bz2")
+contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
+
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
 LAMMPSdata_mini = resource_filename(__name__, "data/lammps/mini.data")
@@ -298,3 +308,7 @@ Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilay
 
 # Contains one of each residue in 'nucleic' selections
 NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
+
+
+# This should be the last line: clean up namespace
+del resource_filename

@@ -79,7 +79,7 @@ class TOPParser(TopologyReader):
         :Returns: MDAnalysis internal *structure* dict.
         """
         formatversion = 10
-        with openany(self.filename) as topfile:
+        with openany(self.filename, 'rt') as topfile:
             for line in topfile:
                 if line.startswith("%FLAG ATOMIC_NUMBER"):
                     formatversion = 12
@@ -142,7 +142,7 @@ class TOPParser(TopologyReader):
 
         # Open and check top validity
         # Reading header info POINTERS
-        with openany(self.filename) as topfile:
+        with openany(self.filename, 'rt') as topfile:
             next_line = functools.partial(next, topfile)
             header = next_line()
             if header[:3] != "%VE":

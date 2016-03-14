@@ -286,7 +286,7 @@ class MOL2Writer(base.Writer):
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
         molecule[1] = "{0}\n".format(" ".join(check_sums))
-        molecule = ["@<TRIPOS>MOLECULE\n"] + molecule
+        molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
         return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
 

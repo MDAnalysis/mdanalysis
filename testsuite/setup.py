@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
@@ -52,7 +51,7 @@ if sys.version_info[:2] < (2, 7):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.14.0-dev0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.14.1-dev0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -80,10 +79,13 @@ For details see the report for `Issue 87`_.
 
     setup(name='MDAnalysisTests',
           version=RELEASE,
-          description='Python tools to support analysis of trajectories (test cases)',
+          description='MDAnalysis http://mdanalysis.org testsuite',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
+          maintainer='Richard Gowers',
+          maintainer_email='mdnalysis-discussion@googlegroups.com',
           url='http://www.mdanalysis.org',
+          download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           license='GPL 2',
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
@@ -109,6 +111,7 @@ For details see the report for `Issue 87`_.
                   'data/merge/2zmm/*.pdb',
                   'data/*.trz',
                   'data/mol2/*.mol2',
+                  'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
                   'data/capping/*.gro', 'data/capping/*.pdb',
                   'data/lammps/*.data', 'data/lammps/*.data.bz2',
                   'data/lammps/*.data2',

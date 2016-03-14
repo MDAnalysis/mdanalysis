@@ -196,6 +196,8 @@ class RefTRZ(object):
                               dtype=np.float32)
     ref_delta = 0.001
     ref_time = 0.01
+    ref_title = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678901234'
+                 'ABCDEFGHIJKLMNOPQRSTUVWXYZ12345678901234')
 
 
 class RefLAMMPSData(object):

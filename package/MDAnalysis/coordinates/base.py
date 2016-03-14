@@ -170,6 +170,9 @@ class Timestep(object):
           Whether this Timestep has velocity information [``False``]
         forces : bool, optional
           Whether this Timestep has force information [``False``]
+        reader : Reader, optional
+          A weak reference to the owning Reader.  Used for
+          when attributes require trajectory manipulation (e.g. dt)
         dt : float, optional
           The time difference between frames (ps).  If :attr:`time`
           is set, then `dt` will be ignored.
@@ -193,6 +196,11 @@ class Timestep(object):
                 self.data[att] = kwargs[att]
             except KeyError:
                 pass
+        try:
+            # do I have a hook back to the Reader?
+            self._reader = weakref.ref(kwargs['reader'])
+        except KeyError:
+            pass
 
         # Stupid hack to make it allocate first time round
         # ie we have to go from not having, to having positions
@@ -1163,9 +1171,15 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             frame = apply_limits(frame)
             return self._read_frame(frame)
         elif isinstance(frame, (list, np.ndarray)):
+            if isinstance(frame[0], (bool, np.bool_)):
+                # Avoid having list of bools
+                frame = np.asarray(frame, dtype=np.bool)
+                # Convert bool array to int array
+                frame = np.arange(len(self))[frame]
+
             def listiter(frames):
                 for f in frames:
-                    if not isinstance(f, int):
+                    if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame(apply_limits(f))
             return listiter(frame)
@@ -1241,7 +1255,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif start < 0:
             start += nframes
 
-        if stop:
+        if stop is not None:
             if stop < 0:
                 stop += nframes
             elif stop > nframes:
@@ -1249,8 +1263,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         else:
             stop = nframes if step > 0 else -1
 
-        if step > 0 and stop <= start:
+        if step > 0 and stop < start:
             raise IndexError("Stop frame is lower than start frame")
+        elif step < 0 and start < stop:
+            raise IndexError("Start frame is lower than stop frame")
         if not (0 <= start < nframes) or stop > nframes:
             raise IndexError(
                 "Frame start/stop outside of the range of the trajectory.")

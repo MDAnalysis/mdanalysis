@@ -61,7 +61,7 @@ happen only at test runtime. See Issue 344 for details.
 #  code won't be run again under coverage's watch.
 
 # Don't forget to also add your plugin to the import further ahead
-__all__ = ['memleak', 'capture_err', 'knownfailure']
+__all__ = ['memleak', 'capture_err', 'knownfailure', 'cleanup']
 
 import distutils.version
 try:
@@ -103,7 +103,7 @@ def _check_plugins_loaded():
 loaded_plugins = dict()
 
 # ADD HERE your plugin import
-from . import memleak, capture_err, knownfailure
+from . import memleak, capture_err, knownfailure, cleanup
 
 plugin_classes = []
 for plugin in __all__:
@@ -114,7 +114,7 @@ for plugin in __all__:
         plugin_classes.extend(cls)
 
 for p_class in plugin_classes:
-    if p_class.name is None: # KnownFailure doesn't implement a name...
+    if p_class.name is None: # some plugins might not implement a name
         loaded_plugins[p_class.__name__] = p_class()
     else:
         loaded_plugins[p_class.name] = p_class()

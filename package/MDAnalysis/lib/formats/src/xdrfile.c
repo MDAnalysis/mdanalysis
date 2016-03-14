@@ -41,6 +41,7 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
+#include <errno.h>
 
 /* get fixed-width types if we are using ANSI C99 */
 #ifdef HAVE_STDINT_H
@@ -2515,8 +2516,8 @@ static int xdrstdio_getlong (XDR *, int32_t *);
 static int xdrstdio_putlong (XDR *, int32_t *);
 static int xdrstdio_getbytes (XDR *, char *, unsigned int);
 static int xdrstdio_putbytes (XDR *, char *, unsigned int);
-static unsigned int xdrstdio_getpos (XDR *);
-static int xdrstdio_setpos (XDR *, unsigned int, int);
+static off_t xdrstdio_getpos (XDR *);
+static int xdrstdio_setpos (XDR *, off_t, int);
 static void xdrstdio_destroy (XDR *);
 
 /*
@@ -2598,16 +2599,22 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 }
 
 
-static unsigned int
+static off_t
 xdrstdio_getpos (XDR *xdrs)
 {
     return ftello((FILE *) xdrs->x_private);
 }
 
 static int
-xdrstdio_setpos (XDR *xdrs, unsigned int pos, int whence)
+xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
 {
-	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
+    /* A reason for failure can be filesystem limits on allocation units,
+     * before the actual off_t overflow (ext3, with a 4K clustersize,
+     * has a 16TB limit).*/
+    /* We return errno relying on the fact that it is never set to 0 on
+     * success, which means that if an error occurrs it'll never be the same
+     * as exdrOK, and xdr_seek won't be confused.*/
+	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? errno : exdrOK;
 }
 
 
@@ -2621,7 +2628,7 @@ int xdr_seek(XDRFILE *xd, int64_t pos, int whence)
 /* Seeks to position in file */
 {
     int result;
-    if ((result = xdrstdio_setpos(xd->xdr, (off_t) pos, whence)) != exdrOK)
+    if ((result = xdrstdio_setpos(xd->xdr, (off_t) pos, whence)) != 0)
         return result;
 
     return exdrOK;

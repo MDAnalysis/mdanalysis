@@ -71,15 +71,14 @@ Reads coordinates, velocities and more (see attributes of the
 .. autoclass:: TRZWriter
    :members:
 """
-
+import six
 from six.moves import range
 
-from sys import maxint
+import sys
 import warnings
 import numpy as np
 import os
 import errno
-import weakref
 
 from . import base
 from ..core import flags
@@ -163,9 +162,11 @@ class TRZReader(base.Reader):
         self._n_atoms = n_atoms
 
         self._read_trz_header()
-        self.ts = Timestep(self.n_atoms, velocities=True, forces=self.has_force,
+        self.ts = Timestep(self.n_atoms,
+                           velocities=True,
+                           forces=self.has_force,
+                           reader=self,
                            **self._ts_kwargs)
-        self.ts._reader = weakref.ref(self)
 
         # structured dtype of a single trajectory frame
         readarg = str(n_atoms) + 'f4'
@@ -221,7 +222,7 @@ class TRZReader(base.Reader):
             ('force', 'i4'),
             ('p3', 'i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
-        self.title = ''.join(data['title'][0])
+        self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
         if data['force'] == 10:
             self.has_force = False
         elif data['force'] == 20:
@@ -357,13 +358,21 @@ class TRZReader(base.Reader):
 
         .. versionadded:: 0.9.0
         """
-        maxi_l = long(maxint)
-
-        framesize = long(self._dtype.itemsize)
-        seeksize = framesize * nframes
+        # On python 2, seek has issues with long int. This is solve in python 3
+        # where there is no longer a distinction between int and long int.
+        if six.PY2:
+            framesize = long(self._dtype.itemsize)
+            seeksize = framesize * nframes
+            maxi_l = long(sys.maxint)
+        else:
+            framesize = self._dtype.itemsize
+            seeksize = framesize * nframes
+            maxi_l = seeksize + 1
 
         if seeksize > maxi_l:
             # Workaround for seek not liking long ints
+            # On python 3 this branch will never be used as we defined maxi_l
+            # greater than seeksize.
             framesize = long(framesize)
             seeksize = framesize * nframes
 
@@ -434,7 +443,8 @@ class TRZWriter(base.Writer):
 
         :Keywords:
          *title*
-          title of the trajectory
+          title of the trajectory; the title must be 80 characters or shorter,
+          a longer title raises a ValueError exception.
          *convert_units*
           units are converted to the MDAnalysis base format; ``None`` selects
           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
@@ -446,6 +456,9 @@ class TRZWriter(base.Writer):
         if n_atoms == 0:
             raise ValueError("TRZWriter: no atoms in output trajectory")
         self.n_atoms = n_atoms
+
+        if len(title) > 80:
+            raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
@@ -503,7 +516,7 @@ class TRZWriter(base.Writer):
             ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
         out = np.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
-        out['title'] = title
+        out['title'] = title + ' ' * (80 - len(title))
         out['pad3'], out['pad4'] = 4, 4
         out['nrec'] = 10
         out.tofile(self.trzfile)
@@ -516,8 +529,8 @@ class TRZWriter(base.Writer):
         # Gather data, faking it when unavailable
         data = {}
         faked_attrs = []
-        for att in ['pressure', 'pressure_tensor', 'total_energy', 'potential_energy',
-                    'kinetic_energy', 'temperature']:
+        for att in ['pressure', 'pressure_tensor', 'total_energy',
+                    'potential_energy', 'kinetic_energy', 'temperature']:
             try:
                 data[att] = ts.data[att]
             except KeyError:

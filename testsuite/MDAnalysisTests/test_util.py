@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -16,11 +16,7 @@
 from six.moves import range, StringIO
 import six
 
-import os.path
-import tempfile
-
 import numpy as np
-import numpy.random
 from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_,
                            TestCase)
@@ -32,10 +28,13 @@ from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
 
-from MDAnalysisTests.datafiles import PSF, Make_Whole
+
+from MDAnalysisTests.datafiles import Make_Whole
+
 
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
+
 
 def check_convert_aa_3to1(resname3, resname1):
     assert_equal(util.convert_aa_code(resname3), resname1)
@@ -601,7 +600,7 @@ class TestGuessFormat(object):
     compressed_extensions = ['.bz2', '.gz']
 
     def _check_get_ext(self, f, fn):
-        """Check that get ext works"""
+        """Check that get_ext works"""
         a, b = util.get_ext(fn)
 
         assert a == 'file'
@@ -678,6 +677,66 @@ class TestGuessFormat(object):
         s = StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestGetWritterFor(TestCase):
+    def test_no_arguments(self):
+        """Does ``get_writer_for`` fails as expected when provided no
+        arguments
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for)
+
+    def test_precedence(self):
+        """Make sure ``get_writer_for`` uses *format* if provided"""
+        writter = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
+        assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_missing_extension(self):
+        """Make sure ``get_writer_for`` behave as expected if *filename*
+        has no extension
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename='test', format=None)
+
+    def test_wrong_format(self):
+        """Make sure ``get_writer_for`` fails if the format is unknown"""
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      format='UNK')
+
+    def test_compressed_extension(self):
+        """Make sure ``get_writer_for`` works with compressed file file names
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.gro' + ext
+            writter = mda.coordinates.core.get_writer_for(filename=fn)
+            assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_compressed_extension_fail(self):
+        """Make sure ``get_writer_for`` fails if an unknown format is compressed
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.unk' + ext
+            assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                          filename=fn)
+
+    def test_non_sring_filename(self):
+        """Does ``get_writer_for`` fails with non string filename, no format
+        """
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename=StringIO(), format=None)
+
+    def test_multiframe_failure(self):
+        """Does ``get_writer_for`` fails with invalid format and multiframe
+        not None
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=True)
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=False)
+
+    def test_multiframe_nonsense(self):
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename='this.gro', multiframe='sandwich')
 
 
 class TestBlocksOf(object):

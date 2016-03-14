@@ -1,9 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -46,8 +46,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
+import numpy as np
 import warnings
 
 from ..core.AtomGroup import Atom
@@ -59,7 +60,9 @@ from .base import TopologyReader
 class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
-    .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
+    See Also
+    --------
+    :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
 
     .. versionadded:: 0.8
     """
@@ -68,12 +71,15 @@ class PrimitivePDBParser(TopologyReader):
     def parse(self):
         """Parse atom information from PDB file *filename*.
 
-        :Returns: MDAnalysis internal *structure* dict
+        Returns
+        -------
+        MDAnalysis internal *structure* dict
 
-        .. SeeAlso:: The *structure* dict is defined in
-                     `MDAnalysis.topology` and the file is
-                     read with
-                     :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+        See Also
+        --------
+        The *structure* dict is defined in `MDAnalysis.topology` and the file
+        is read with :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+
         """
         structure = {}
 
@@ -109,9 +115,11 @@ class PrimitivePDBParser(TopologyReader):
                     name = line[12:16].strip()
                     altLoc = line[16:17].strip()
                     resName = line[17:21].strip()
-                    chainID = line[21:22].strip()  # empty chainID is a single space ' '!
+                    # empty chainID is a single space ' '!
+                    chainID = line[21:22].strip()
                     if self.format == "XPDB":  # fugly but keeps code DRY
-                        resSeq = int(line[22:27])  # extended non-standard format used by VMD
+                        # extended non-standard format used by VMD
+                        resSeq = int(line[22:27])
                         resid = resSeq
                     else:
                         resSeq = int(line[22:26])
@@ -132,7 +140,7 @@ class PrimitivePDBParser(TopologyReader):
                     segid = segID.strip() or chainID.strip() or "SYSTEM"
 
                     elem = guess_atom_element(name)
-                    
+
                     atomtype = element or elem
                     mass = get_atom_mass(elem)
                     # charge = guess_atom_charge(name)
@@ -151,7 +159,7 @@ class PrimitivePDBParser(TopologyReader):
     def _parsebonds(self, atoms):
         # Could optimise this by saving lines in the main loop
         # then doing post processing after all Atoms have been read
-        # ie do one pass through the file only        
+        # ie do one pass through the file only
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
@@ -167,10 +175,9 @@ class PrimitivePDBParser(TopologyReader):
 
         bonds = set()
         with openany(self.filename, "r") as f:
-            lines = (line[6:].split() for line in f
-                     if line[:6] == "CONECT")
-            for bond in lines:
-                atom, atoms = int(bond[0]), map(int, bond[1:])
+            lines = (line for line in f if line[:6] == "CONECT")
+            for line in lines:
+                atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
@@ -178,3 +185,33 @@ class PrimitivePDBParser(TopologyReader):
         bonds = tuple(bonds)
 
         return bonds
+
+
+def _parse_conect(conect):
+    """parse a CONECT record from pdbs
+
+    Parameters
+    ----------
+    conect : str
+        white space striped CONECT record
+
+    Returns
+    -------
+    atom_id : int
+        atom index of bond
+    bonds : set
+        atom ids of bonded atoms
+
+    Raises
+    ------
+    RuntimeError
+        Raised if ``conect`` is not a valid CONECT record
+    """
+    atom_id = np.int(conect[6:11])
+    n_bond_atoms = len(conect[11:]) // 5
+    if len(conect[11:]) % n_bond_atoms != 0:
+        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
+                           "record: {}".format(conect))
+    bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
+                  range(n_bond_atoms))
+    return atom_id, bond_atoms

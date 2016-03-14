@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -28,7 +28,6 @@ import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
-import tempfile
 import os
 
 import tempdir
@@ -261,10 +260,10 @@ class _StreamData(object):
     }
 
     def __init__(self):
-        self.buffers = dict(
-            (name, "".join(open(fn).readlines())) for name, fn in six.iteritems(self.filenames))
-        self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
-        self.buffers['XYZ_PSF'] = """\
+        self.buffers = {name: "".join(open(fn).readlines())
+                        for name, fn in six.iteritems(self.filenames)}
+        self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
+        self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
 
       1 !NTITLE

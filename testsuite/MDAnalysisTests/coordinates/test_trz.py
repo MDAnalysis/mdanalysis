@@ -3,7 +3,7 @@ import os
 from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_almost_equal, assert_raises)
 import tempdir
 import numpy as np
 
@@ -96,6 +96,9 @@ class TestTRZReader(TestCase, RefTRZ):
         assert_almost_equal(self.trz.time, self.ref_time, self.prec,
                             "wrong time value in trz")
 
+    def test_title(self):
+        assert_equal(self.ref_title, self.trz.title, "wrong title in trz")
+
     def test_get_writer(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-trz-writer.trz'
@@ -125,13 +128,16 @@ class TestTRZWriter(TestCase, RefTRZ):
         self.prec = 3
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/test-trz-writer.trz'
+        self.outfile_long = self.tmpdir.name + '/test-trz-writer-long.trz'
         self.Writer = mda.coordinates.TRZ.TRZWriter
+        self.title_to_write = 'Test title TRZ'
 
     def tearDown(self):
         del self.universe
         del self.prec
         try:
             os.unlink(self.outfile)
+            os.unlink(self.outfile_long)
         except OSError:
             pass
         del self.Writer
@@ -139,7 +145,7 @@ class TestTRZWriter(TestCase, RefTRZ):
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.n_atoms)
+        W = self.Writer(self.outfile, t.n_atoms, title=self.title_to_write)
         self._copy_traj(W)
 
     def _copy_traj(self, writer):
@@ -148,6 +154,9 @@ class TestTRZWriter(TestCase, RefTRZ):
         writer.close()
 
         uw = mda.Universe(TRZ_psf, self.outfile)
+
+        assert_equal(uw.trajectory.title, self.title_to_write,
+                     "Title mismatch between original and written files.")
 
         for orig_ts, written_ts in zip(self.universe.trajectory,
                                        uw.trajectory):
@@ -168,6 +177,11 @@ class TestTRZWriter(TestCase, RefTRZ):
                 assert_array_almost_equal(orig_ts.data[att],
                                           written_ts.data[att], self.prec,
                                           err_msg="TS equal failed for {0!s}".format(att))
+
+    def test_long_title(self):
+        title = '*' * 81
+        assert_raises(ValueError,
+                      self.Writer, self.outfile, self.ref_n_atoms, title=title)
 
 
 class TestTRZWriter2(object):

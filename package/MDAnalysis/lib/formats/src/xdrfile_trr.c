@@ -47,30 +47,6 @@
 #define BUFSIZE 128
 #define GROMACS_MAGIC 1993
 
-typedef struct /* This struct describes the order and the	*/
-    /* sizes of the structs in a trjfile, sizes are given in bytes.	*/
-    {
-  mybool bDouble; /* Double precision?                            */
-  int ir_size;    /* Backward compatibility		        */
-  int e_size;     /* Backward compatibility		        */
-  int box_size;   /* Non zero if a box is present			*/
-  int vir_size;   /* Backward compatibility		        */
-  int pres_size;  /* Backward compatibility		        */
-  int top_size;   /* Backward compatibility		        */
-  int sym_size;   /* Backward compatibility		        */
-  int x_size;     /* Non zero if coordinates are present		*/
-  int v_size;     /* Non zero if velocities are present		*/
-  int f_size;     /* Non zero if forces are present		*/
-
-  int natoms;     /* The total number of atoms			*/
-  int step;       /* Current step number				*/
-  int nre;        /* Backward compatibility		        */
-  float tf;       /* Current time					*/
-  float lambdaf;  /* Current value of lambda			*/
-  double td;      /* Current time					*/
-  double lambdad; /* Current value of lambda			*/
-} t_trnheader;
-
 static int nFloatSize(t_trnheader *sh, int *nflsz) {
   int nflsize = 0;
 
@@ -93,7 +69,7 @@ static int nFloatSize(t_trnheader *sh, int *nflsz) {
   return exdrOK;
 }
 
-static int do_trnheader(XDRFILE *xd, mybool bRead, t_trnheader *sh) {
+int do_trnheader(XDRFILE *xd, mybool bRead, t_trnheader *sh) {
   int magic = GROMACS_MAGIC;
   int nflsz, slen, result;
   char *version = "GMX_trn_file";
@@ -431,78 +407,6 @@ int read_trr_natoms(char *fn, int *natoms) {
   return exdrOK;
 }
 
-int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes,
-                      int64_t **offsets) {
-  XDRFILE *xd;
-  t_trnheader sh;
-  float time, lambda;
-  int result, framebytes, totalframebytes;
-  int64_t filesize, frame_offset;
-
-  if ((xd = xdrfile_open(fn, "r")) == NULL)
-    return exdrFILENOTFOUND;
-  if (xdr_seek(xd, 0L, SEEK_END) != exdrOK) {
-    xdrfile_close(xd);
-    return exdrNR;
-  }
-  filesize = xdr_tell(xd);
-  if (xdr_seek(xd, 0L, SEEK_SET) != exdrOK) {
-    xdrfile_close(xd);
-    return exdrNR;
-  }
-
-  if ((result = do_trnheader(xd, 1, &sh)) != exdrOK) {
-    xdrfile_close(xd);
-    return result;
-  }
-
-  framebytes = sh.ir_size + sh.e_size + sh.box_size + sh.vir_size +
-               sh.pres_size + sh.top_size + sh.sym_size + sh.x_size +
-               sh.v_size + sh.f_size;
-
-  *est_nframes =
-      (int)(filesize / ((int64_t)(framebytes + TRR_MIN_HEADER_SIZE)) +
-            1); // add one because it'd be easy to underestimate low
-                // frame numbers.
-  *est_nframes += *est_nframes / 5;
-
-  /* Allocate memory for the frame index array */
-  if ((*offsets = malloc(sizeof(int64_t) * *est_nframes)) == NULL) {
-    xdrfile_close(xd);
-    return exdrNOMEM;
-  }
-
-  (*offsets)[0] = 0L;
-  *n_frames = 1;
-  while (1) {
-    if (xdr_seek(xd, (int64_t)(framebytes), SEEK_CUR) != exdrOK) {
-      free(*offsets);
-      xdrfile_close(xd);
-      return exdrNR;
-    }
-    frame_offset = xdr_tell(xd); /* Store it now, before we read the header */
-    if ((result = do_trnheader(xd, 1, &sh)) != exdrOK) /* Interpreting as EOF */
-      break;
-    /* Read was successful; this is another frame */
-    /* Check if we need to enlarge array */
-    if (*n_frames == *est_nframes) {
-      *est_nframes += *est_nframes / 5 + 1; // Increase in 20% stretches
-      if ((*offsets = realloc(*offsets, sizeof(int64_t) * *est_nframes)) ==
-          NULL) {
-        xdrfile_close(xd);
-        return exdrNOMEM;
-      }
-    }
-    (*offsets)[*n_frames] = frame_offset;
-    (*n_frames)++;
-    /* Calculate how much to skip this time */
-    framebytes = sh.ir_size + sh.e_size + sh.box_size + sh.vir_size +
-                 sh.pres_size + sh.top_size + sh.sym_size + sh.x_size +
-                 sh.v_size + sh.f_size;
-  }
-  xdrfile_close(xd);
-  return exdrOK;
-}
 
 int write_trr(XDRFILE *xd, int natoms, int step, float t, float lambda,
               matrix box, rvec *x, rvec *v, rvec *f) {

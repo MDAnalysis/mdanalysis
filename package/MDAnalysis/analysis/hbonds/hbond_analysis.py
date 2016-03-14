@@ -958,8 +958,8 @@ class HydrogenBondAnalysis(object):
         # build empty output table
         dtype = [
             ("time", float), ("donor_idx", int), ("acceptor_idx", int),
-            ("donor_resnm", "|S4"), ("donor_resid", int), ("donor_atom", "|S4"),
-            ("acceptor_resnm", "|S4"), ("acceptor_resid", int), ("acceptor_atom", "|S4"),
+            ("donor_resnm", "|U4"), ("donor_resid", int), ("donor_atom", "|U4"),
+            ("acceptor_resnm", "|U4"), ("acceptor_resid", int), ("acceptor_atom", "|U4"),
             ("distance", float), ("angle", float)]
         # according to Lukas' notes below, using a recarray at this stage is ineffective
         # and speedups of ~x10 can be achieved by filling a standard array, like this:
@@ -1040,8 +1040,8 @@ class HydrogenBondAnalysis(object):
         # build empty output table
         dtype = [
             ('donor_idx', int), ('acceptor_idx', int),
-            ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
-            ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+            ('donor_resnm', 'U4'), ('donor_resid', int), ('donor_heavy_atom', 'U4'), ('donor_atom', 'U4'),
+            ('acceptor_resnm', 'U4'), ('acceptor_resid', int), ('acceptor_atom', 'U4'),
             ('frequency', float)
         ]
         out = np.empty((len(hbonds),), dtype=dtype)
@@ -1095,14 +1095,14 @@ class HydrogenBondAnalysis(object):
 
         out_nrows = 0
         # count number of timesteps per key to get length of output table
-        for ts_list in hbonds.itervalues():
+        for ts_list in six.itervalues(hbonds):
             out_nrows += len(ts_list)
 
         # build empty output table
         dtype = [
             ('donor_idx', int), ('acceptor_idx', int),
-            ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
-            ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+            ('donor_resnm', 'U4'), ('donor_resid', int), ('donor_heavy_atom', 'U4'), ('donor_atom', 'U4'),
+            ('acceptor_resnm', 'U4'), ('acceptor_resid', int), ('acceptor_atom', 'U4'),
             ('time', float)]
         out = np.empty((out_nrows,), dtype=dtype)
 

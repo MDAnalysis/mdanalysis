@@ -1030,8 +1030,9 @@ class AtomGroup(object):
         elif isinstance(item, (np.ndarray, list)):
             # advanced slicing, requires array or list
             try:
-                if isinstance(item[0], np.bool_):
-                    item = np.arange(len(item))[item]
+                if isinstance(item[0], (bool, np.bool_)):
+                    item = np.asarray(item, dtype=np.bool)
+                    item = np.arange(len(self))[item]
             except IndexError:  # zero length item
                 pass
             return cls([container[i] for i in item])
@@ -3187,8 +3188,8 @@ class AtomGroup(object):
         try:
             writer = MDAnalysis.coordinates.writer(filename, **kwargs)
         except TypeError:
+            # might be selections format
             coords = False
-            pass  # might be selections format
         else:
             coords = True
 
@@ -3196,7 +3197,6 @@ class AtomGroup(object):
             SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
         except (TypeError, NotImplementedError):
             selection = False
-            pass
         else:
             writer = SelectionWriter(filename, **kwargs)
             selection = True

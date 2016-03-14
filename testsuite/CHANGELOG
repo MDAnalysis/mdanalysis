@@ -13,6 +13,23 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+??/??/16 orbeckst
+
+  * 0.15.0
+
+    - metadata update: link download_url to GitHub releases so that
+      Depsy recognizes contributors (issue #749) and added
+      @richardjgowers as maintainer
+
+02/28/16 manuel.nuno.melo
+
+  * 0.14.0
+
+    - Added the cleanup plugin (--with-mda_cleanup) to delete offset files
+      after tests have run (Issue 669)
+    - Made memleak testing python 3 compliant (Issue 662). It may be a moot
+      point since python 3.4 now cleverly deals with leaks.
+
 01/16/16 orbeckst
   * 0.13.0
 

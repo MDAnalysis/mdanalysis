@@ -20,11 +20,11 @@ from numpy.testing import assert_equal, assert_array_equal
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
 
-from MDAnalysis.lib.formats.xdrlib import TRRFile
+from MDAnalysis.lib.formats.libmdaxdr import TRRFile
 from MDAnalysisTests.datafiles import TRR_single_frame
 from MDAnalysisTests.datafiles import TRR_multi_frame
 
-from MDAnalysis.lib.formats.xdrlib import XTCFile
+from MDAnalysis.lib.formats.libmdaxdr import XTCFile
 from MDAnalysisTests.datafiles import XTC_single_frame
 from MDAnalysisTests.datafiles import XTC_multi_frame
 
@@ -36,7 +36,7 @@ class XDRFormatBaseTest(object):
 
     def test_n_atoms(self):
         f = self.xdrfile(self.single_frame)
-        assert f.n_atoms == 10
+        assert_equal(f.n_atoms, 10)
 
     @raises(IOError)
     def test_raise_not_existing(self):
@@ -46,7 +46,7 @@ class XDRFormatBaseTest(object):
     def test_open_wrong_mode(self):
         self.xdrfile('foo', 'e')
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_over_seek(self):
         with self.xdrfile(self.multi_frame) as f:
             f.seek(100)
@@ -83,13 +83,41 @@ class XDRFormatBaseTest(object):
         f = self.xdrfile(self.multi_frame)
         assert_array_equal(f.offsets, self.offsets)
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_set_offsets(self):
         f = self.xdrfile(self.multi_frame)
         f.set_offsets(np.arange(len(self.offsets)))
         assert_array_equal(f.offsets, np.arange(len(self.offsets)))
         f.seek(6)
         f.read()
+
+    @raises(OverflowError)
+    def test_seek_overflow(self):
+        f = self.xdrfile(self.multi_frame)
+        f._bytes_seek(2**65)
+
+    def test_seek_tell_all(self):
+        f = self.xdrfile(self.multi_frame)
+        for frame, offset in enumerate(self.offsets):
+            f.seek(frame)
+            assert_equal(f._bytes_tell(), offset)
+
+    def test_seek_tell_all_bytes(self):
+        f = self.xdrfile(self.multi_frame)
+        for offset in self.offsets:
+            f._bytes_seek(offset)
+            assert_equal(f._bytes_tell(), offset)
+
+    def test_seek_tell_largefile(self):
+        # Seeking/telling can be done on offsets larger than the file.
+        # Filesize won't change unless a write is done at the offset.
+        # We attempt to go just beyond a 4GB limit.
+        big_offset = 2**32+1000
+        f = self.xdrfile(self.multi_frame)
+        f._bytes_seek(big_offset)
+        assert_equal(f._bytes_tell(), big_offset)
+        # It should be safe to leave the read head so far away
+        # because the file is open read-only.
 
 
 class Test_XTCFile(XDRFormatBaseTest):
@@ -101,84 +129,91 @@ class Test_XTCFile(XDRFormatBaseTest):
 
 def test_xtc():
     f = XTCFile(XTC_single_frame)
-    assert f.n_atoms == 10
+    assert_equal(f.n_atoms, 10)
     xyz, box, step, time, prec = f.read()
     # xtc only saves with 3 decimal places precision
     assert_array_almost_equal(xyz.flat, np.arange(30), decimal=3)
     assert_array_almost_equal(box, np.eye(3) * 20, decimal=3)
-    assert step == 0
-    assert time == 10.0
-    assert prec == 1000.0
+    assert_equal(step, 0)
+    assert_equal(time, 10.0)
+    assert_equal(prec, 1000.0)
 
 
 def test_read_multi_frame_xtc():
     with XTCFile(XTC_multi_frame) as f:
         f.seek(5)
-        assert f.tell() == 5
-        assert len(f) == 10
-        assert f.tell() == 5
+        assert_equal(f.tell(), 5)
+        assert_equal(len(f), 10)
+        assert_equal(f.tell(), 5)
         f.seek(0)
-        assert f.tell() == 0
+        assert_equal(f.tell(), 0)
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
-            print(i)
             xyz, box, step, time, prec = frame
             assert_array_almost_equal(xyz, ones * i, decimal=3)
             assert_array_almost_equal(box, box_compare, decimal=3)
-            assert step == i
-            assert time == i * .5
-            assert prec == 1000.0
+            assert_equal(step, i)
+            assert_equal(time, i * 0.5)
+            assert_equal(prec, 1000.0)
 
 
 @run_in_tempdir()
 def test_write_xtc():
-    with XTCFile(XTC_multi_frame) as f_in:
-        with XTCFile('foo.xtc', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            for frame in f_in:
-                f_out.write(*frame)
+    with XTCFile(XTC_multi_frame) as f_in, XTCFile('foo.xtc', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        for frame in f_in:
+            f_out.write(*frame)
 
     with XTCFile('foo.xtc') as f:
-        assert len(f) == 10
+        assert_equal(len(f), 10)
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
-            print(i)
             xyz, box, step, time, prec = frame
             assert_array_almost_equal(xyz, ones * i, decimal=3)
             assert_array_almost_equal(box, box_compare, decimal=3)
-            assert step == i
-            assert time == i * .5
-            assert prec == 1000.0
+            assert_equal(step, i)
+            assert_equal(time, i * 0.5)
+            assert_equal(prec, 1000.0)
 
 
-@raises(ValueError)
 @run_in_tempdir()
-def test_write_different_box_xtc():
-    with XTCFile(XTC_multi_frame) as f_in:
-        with XTCFile('foo.xtc', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            f_out.write(frame.x, frame.box, frame.step,
-                        frame.time, frame.prec)
-            box = frame.box + 1
-            f_out.write(frame.x, box, frame.step,
-                        frame.time, frame.prec)
+def test_different_box_xtc():
+    """test if we can write different box-sizes for different frames.
+    """
+    fname = 'foo.xtc'
+    orig_box = None
+    with XTCFile(XTC_multi_frame) as f_in, XTCFile(fname, 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        f_out.write(frame.x, frame.box, frame.step,
+                    frame.time, frame.prec)
+        orig_box = frame.box.copy()
+        box = frame.box.copy() + 1
+        f_out.write(frame.x, box, frame.step,
+                    frame.time, frame.prec)
+
+    with XTCFile(fname) as xtc:
+        assert_equal(len(xtc), 2)
+        frame_1 = xtc.read()
+        frame_2 = xtc.read()
+
+        assert_array_almost_equal(frame_1.box, orig_box)
+        assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_x_xtc():
-    with XTCFile(XTC_multi_frame) as f_in:
-        with XTCFile('foo.xtc', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            f_out.write(frame.x, frame.box, frame.step,
-                        frame.time, frame.prec)
-            x = np.ones((f_in.n_atoms - 1, 3))
-            f_out.write(x, frame.box, frame.step,
-                        frame.time, frame.prec)
+    with XTCFile(XTC_multi_frame) as f_in, XTCFile('foo.xtc', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        f_out.write(frame.x, frame.box, frame.step,
+                    frame.time, frame.prec)
+        x = np.ones((f_in.n_atoms - 1, 3))
+        f_out.write(x, frame.box, frame.step,
+                    frame.time, frame.prec)
 
 
 @raises(ValueError)
@@ -186,7 +221,7 @@ def test_write_different_x_xtc():
 def test_write_different_prec():
     mf_xtc = XTCFile(XTC_multi_frame)
     with XTCFile('foo.xtc', 'w') as f_out:
-        assert 0 == f_out.n_atoms
+        assert_equal(f_out.n_atoms, 0)
         frame = mf_xtc.read()
         f_out.write(frame.x, frame.box, frame.step,
                     frame.time, frame.prec)
@@ -198,7 +233,7 @@ def test_write_different_prec():
 def test_write_prec():
     mf_xtc = XTCFile(XTC_multi_frame)
     with XTCFile('foo.xtc', 'w') as f_out:
-        assert 0 == f_out.n_atoms
+        assert_equal(f_out.n_atoms, 0)
         frame = mf_xtc.read()
         f_out.write(frame.x, frame.box, frame.step,
                     frame.time, 100.0)
@@ -219,26 +254,26 @@ class Test_TRRFile(XDRFormatBaseTest):
 
 def test_trr():
     f = TRRFile(TRR_single_frame)
-    assert f.n_atoms == 10
+    assert_equal(f.n_atoms, 10)
     frame = f.read()
     # trr only saves with 3 decimal places precision
     assert_array_almost_equal(frame.x.flat, np.arange(30))
     assert_array_almost_equal(frame.v.flat, np.arange(30))
     assert_array_almost_equal(frame.f.flat, np.arange(30))
     assert_array_almost_equal(frame.box, np.eye(3) * 20)
-    assert frame.step == 10
-    assert frame.time == 5.0
-    assert frame.lmbda == .5
+    assert_equal(frame.step, 10)
+    assert_equal(frame.time, 5.0)
+    assert_equal(frame.lmbda, 0.5)
 
 
 def test_read_multi_frame_trr():
     with TRRFile(TRR_multi_frame) as f:
         f.seek(5)
-        assert f.tell() == 5
-        assert len(f) == 10
-        assert f.tell() == 5
+        assert_equal(f.tell(), 5)
+        assert_equal(len(f), 10)
+        assert_equal(f.tell(), 5)
         f.seek(0)
-        assert f.tell() == 0
+        assert_equal(f.tell(), 0)
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
@@ -246,23 +281,22 @@ def test_read_multi_frame_trr():
             assert_array_almost_equal(frame.v, ones * i + 10)
             assert_array_almost_equal(frame.f, ones * i + 20)
             assert_array_almost_equal(frame.box, box_compare)
-            assert frame.step == i
-            assert frame.time == i * .5
+            assert_equal(frame.step, i)
+            assert_equal(frame.time, i * 0.5)
             assert_almost_equal(frame.lmbda, .01 * i)
 
 
 @run_in_tempdir()
 def test_write_trr():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            for frame in f_in:
-                natoms = frame.x.shape[0]
-                f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                            frame.time, frame.lmbda, natoms)
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        for frame in f_in:
+            natoms = frame.x.shape[0]
+            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                        frame.time, frame.lmbda, natoms)
 
     with TRRFile('foo.trr') as f:
-        assert len(f) == 10
+        assert_equal(len(f), 10)
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
@@ -270,80 +304,87 @@ def test_write_trr():
             assert_array_almost_equal(frame.v, ones * i + 10)
             assert_array_almost_equal(frame.f, ones * i + 20)
             assert_array_almost_equal(frame.box, box_compare)
-            assert frame.step == i
-            assert frame.time == i * .5
+            assert_equal(frame.step, i)
+            assert_equal(frame.time, i * 0.5)
             assert_almost_equal(frame.lmbda, .01 * i)
 
 
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_natoms():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            natoms = frame.x.shape[0]
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms - 1)
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        natoms = frame.x.shape[0]
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms - 1)
 
 
-@raises(ValueError)
 @run_in_tempdir()
 def test_write_different_box_trr():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            natoms = frame.x.shape[0]
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
-            box = frame.box + 1
-            f_out.write(frame.x, frame.v, frame.f, box, frame.step,
-                        frame.time, frame.lmbda, natoms)
+    """test if we can write different box-sizes for different frames.
+    """
+    fname = 'foo.trr'
+    orig_box = None
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile(fname, 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        natoms = frame.x.shape[0]
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+        orig_box = frame.box.copy()
+        box = frame.box.copy() + 1
+        f_out.write(frame.x, frame.v, frame.f, box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+
+    with TRRFile(fname) as trr:
+        assert_equal(len(trr), 2)
+        frame_1 = trr.read()
+        frame_2 = trr.read()
+
+        assert_array_almost_equal(frame_1.box, orig_box)
+        assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_x_trr():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            natoms = frame.x.shape[0]
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
-            x = np.ones((natoms - 1, 3))
-            f_out.write(x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        natoms = frame.x.shape[0]
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+        x = np.ones((natoms - 1, 3))
+        f_out.write(x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
 
 
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_v():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            natoms = frame.x.shape[0]
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
-            v = np.ones((natoms - 1, 3))
-            f_out.write(frame.x, v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        natoms = frame.x.shape[0]
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+        v = np.ones((natoms - 1, 3))
+        f_out.write(frame.x, v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
 
 
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_f():
-    with TRRFile(TRR_multi_frame) as f_in:
-        with TRRFile('foo.trr', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            natoms = frame.x.shape[0]
-            f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
-            f = np.ones((natoms - 1, 3))
-            f_out.write(frame.x, frame.v, f, frame.box, frame.step,
-                        frame.time, frame.lmbda, natoms)
+    with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
+        assert_equal(f_out.n_atoms, 0)
+        frame = f_in.read()
+        natoms = frame.x.shape[0]
+        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)
+        f = np.ones((natoms - 1, 3))
+        f_out.write(frame.x, frame.v, f, frame.box, frame.step,
+                    frame.time, frame.lmbda, natoms)

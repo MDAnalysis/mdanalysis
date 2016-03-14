@@ -10,6 +10,8 @@
 # Please cite your use of MDAnalysis in published work:
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+
+
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
@@ -43,14 +45,36 @@ def offsets_filename(filename, ending='npz'):
                                                         ending=ending))
 
 
+def read_numpy_offsets(filename):
+    """read offsets into a dictionary
+
+    Parameters
+    ----------
+    filename : str
+        filename of offsets
+
+    Returns
+    -------
+    offsets : dict
+        dictionary of offsets information
+    """
+    return {k: v for k, v in six.iteritems(np.load(filename))}
+
+
 class XDRBaseReader(base.Reader):
-    """Base class for xdrlib file formats xtc and trr"""
+    """Base class for libmdaxdr file formats xtc and trr"""
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,
                                             **kwargs)
         self._xdr = self._file(self.filename)
+
+        self._sub = sub
+        if self._sub is not None:
+            self.n_atoms = len(self._sub)
+        else:
+            self.n_atoms = self._xdr.n_atoms
 
         if not refresh_offsets:
             self._load_offsets()
@@ -65,12 +89,6 @@ class XDRBaseReader(base.Reader):
         except StopIteration:
             dt = 0
 
-        self._sub = sub
-        if self._sub is not None:
-            self.n_atoms = len(self._sub)
-        else:
-            self.n_atoms = self._xdr.n_atoms
-
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._frame = 0
         self._frame_to_ts(frame, self.ts)
@@ -78,7 +96,7 @@ class XDRBaseReader(base.Reader):
         self.ts.dt = dt
         self.ts.dimensions = triclinic_box(*frame.box)
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._unitcell[:3])
+            self.convert_pos_from_native(self.ts.dimensions[:3])
 
     def close(self):
         """close reader"""
@@ -93,15 +111,20 @@ class XDRBaseReader(base.Reader):
             self._read_offsets(store=True)
             return
 
-        with open(fname) as f:
-            data = {k: v for k, v in six.iteritems(np.load(f))}
+        data = read_numpy_offsets(fname)
+        ctime_ok = size_ok = n_atoms_ok = False
 
-        ctime_ok = getctime(self.filename) == data['ctime']
-        size_ok = getsize(self.filename) == data['size']
+        try:
+            ctime_ok = getctime(self.filename) == data['ctime']
+            size_ok = getsize(self.filename) == data['size']
+            n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+        except KeyError:
+            # we tripped over some old offset formated file
+            pass
 
-        if not (ctime_ok and size_ok):
+        if not (ctime_ok and size_ok and n_atoms_ok):
             warnings.warn("Reload offsets from trajectory\n "
-                          "ctime or size did not match")
+                          "ctime or size or n_atoms did not match")
             self._read_offsets(store=True)
         else:
             self._xdr.set_offsets(data['offsets'])
@@ -114,10 +137,10 @@ class XDRBaseReader(base.Reader):
             size = getsize(self.filename)
             try:
                 np.savez(offsets_filename(self.filename),
-                         offsets=offsets, size=size, ctime=ctime)
+                         offsets=offsets, size=size, ctime=ctime,
+                         n_atoms=self._xdr.n_atoms)
             except Exception as e:
-                warnings.warn("Couldn't save offsets because: {}".format(
-                    e.message))
+                warnings.warn("Couldn't save offsets because: {}".format(e))
 
     def rewind(self):
         """Read the first frame again"""
@@ -133,13 +156,22 @@ class XDRBaseReader(base.Reader):
         self.ts.frame = 0
         self._frame = -1
         self._xdr.close()
-        self._xdr.open(self.filename, 'r')
+        self._xdr.open(self.filename.encode('utf-8'), 'r')
 
     def _read_frame(self, i):
         """read frame i"""
-        self._xdr.seek(i)
         self._frame = i - 1
-        return self._read_next_timestep()
+        try:
+            self._xdr.seek(i)
+            timestep = self._read_next_timestep()
+        except IOError:
+            warnings.warn('seek failed, recalculating offsets and retrying')
+            offsets = self._xdr.calc_offsets()
+            self._xdr.set_offsets(offsets)
+            self._read_offsets(store=True)
+            self._xdr.seek(i)
+            timestep = self._read_next_timestep()
+        return timestep
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
@@ -160,7 +192,7 @@ class XDRBaseReader(base.Reader):
 
 
 class XDRBaseWriter(base.Writer):
-    """Base class for xdrlib file formats xtc and trr"""
+    """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
         self.filename = filename

@@ -54,11 +54,12 @@ algorithm.
 
 from six.moves import range
 
-import numpy as np
-import MDAnalysis
-import networkx as NX
-import distances
 import warnings
+
+import numpy as np
+import networkx as NX
+import MDAnalysis
+from . import distances
 
 
 class LeafletFinder(object):
