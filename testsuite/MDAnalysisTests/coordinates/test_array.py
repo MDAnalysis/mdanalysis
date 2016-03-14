@@ -81,3 +81,8 @@ class TestArrayReader(TestCase):
         assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
                                      decimal=self.ref.prec)
 
+    def test_iteration(self):
+        frames = 0
+        for i, frame in enumerate(self.reader):
+            frames += 1
+        assert_equal(frames, self.ref.n_frames)
