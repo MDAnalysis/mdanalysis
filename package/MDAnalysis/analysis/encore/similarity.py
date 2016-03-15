@@ -166,20 +166,10 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 # Low boundary value for log() argument - ensure no nans 
 EPSILON = 1E-15
 
-# x*log(y) with the assumption that 0*(log(0)) = 0
 xlogy = numpy.vectorize(
     lambda x, y: 0.0 if (x <= EPSILON and y <= EPSILON) else x * numpy.log(y))
 
 
-def is_int(n):
-    try:
-        int(n)
-        return True
-    except:
-        return False
-
-
-# discrete dKL
 def discrete_kullback_leibler_divergence(pA, pB):
     """Kullback-Leibler divergence between discrete probability distribution.
     Notice that since this measure is not symmetric ::
