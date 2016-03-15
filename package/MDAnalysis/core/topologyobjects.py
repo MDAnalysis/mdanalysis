@@ -27,7 +27,7 @@ import functools
 
 from ..lib.mdamath import norm, dihedral
 from ..lib.mdamath import angle as slowang
-from ..lib.util import cached, unique_rows
+from ..lib.util import cached
 from ..lib import distances
 
 
@@ -508,14 +508,12 @@ class TopologyGroup(object):
                              "".format(self._allowed_types))
 
         # remove duplicate bonds
-        if type is not None:
-            split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
-            self._bix, self._bondtypes, _ = np.hsplit(unique_rows(np.hstack([bondidx,type.reshape(len(type), 1)])),
-                                                                             [split_index, 10])
-            self._bix = self._bix.astype(np.int32)
-        else:
-            self._bix = unique_rows(bondidx)
-            self._bondtypes = np.array([None for x in self._bix]).reshape(len(self._bix), 1)
+        if type is None:
+            type = np.array([None for x in bondidx]).reshape(len(bondidx), 1)
+        split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
+        unique_records = np.unique((np.rec.fromarrays([bondidx[:, i] for i in xrange(split_index)] + [type])))
+        self._bix = np.vstack([unique_records[unique_records.dtype.names[i]] for i in xrange(split_index)]).T
+        self._bondtypes = unique_records[unique_records.dtype.names[bondidx.shape[1]]]
         self._u = universe
 
         # Create vertical AtomGroups
@@ -676,10 +674,10 @@ class TopologyGroup(object):
                         'angle':Angle,
                         'dihedral':Dihedral,
                         'improper':ImproperDihedral}[self.btype]
-            return outclass(self._bix[item], self._u, type=self._bondtypes[item][0])
+            return outclass(self._bix[item], self._u, type=self._bondtypes[item])
         # Slice my index array with the item
         return self.__class__(self._bix[item], self._u, btype=self.btype,\
-                              type=self._bondtypes[item][0])
+                              type=self._bondtypes[item])
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""

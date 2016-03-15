@@ -20,6 +20,7 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 Common TopologyAttrs used by most topology parsers.
 
 """
+from six.moves import zip
 from collections import defaultdict
 import itertools
 import numpy as np
@@ -880,24 +881,13 @@ class Bonds(AtomAttr):
         Eg:  [(0, 1), (1, 2), (2, 3)]
         """
         self.values = values
-        self._cache = dict()
-        self.order_bonds()
-        self._bondtypes = {}
         if types is None:
             types = [None for value in values]
-        for value, type in zip(self.values, types):
-            self._bondtypes[value] = type
+        self.types = types
+        self._cache = dict()
 
     def __len__(self):
         return len(self._bondDict)
-
-    def order_bonds(self):
-        ordered_values = []
-        for b in self.values:
-            if b[0] > b[-1]:
-                b = b[::-1]
-            ordered_values.append(b)
-        self.values = ordered_values
 
     @property
     @cached('bd')
@@ -905,7 +895,7 @@ class Bonds(AtomAttr):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b in self.values:
+        for b, t in zip(self.values, self.types):
             # We always want the first index
             # to be less than the last
             # eg (0, 1) not (1, 0)
@@ -913,7 +903,7 @@ class Bonds(AtomAttr):
             if b[0] > b[-1]:
                 b = b[::-1]
             for a in b:
-                bd[a].append(b)
+                bd[a].append((b, t))
         return bd
 
     def get_atoms(self, ag):
@@ -923,12 +913,10 @@ class Bonds(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag._ix]
-        if self._bondtypes is not None:
-            _bondtypes = {value: self._bondtypes[value] for value in unique_bonds}
-        else:
-            _bondtypes = None
-        bond_idx = np.array(sorted(unique_bonds))
-        return TopologyGroup(bond_idx, ag._u, self.singular[:-1], np.array(_bondtypes.values()))
+        bond_idx, types = np.hsplit(np.array(sorted(unique_bonds)), 2)
+        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
+        types = types.ravel()
+        return TopologyGroup(bond_idx, ag._u, self.singular[:-1], types)
 
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""
