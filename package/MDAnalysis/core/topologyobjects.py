@@ -48,7 +48,7 @@ class TopologyObject(object):
     """
     __slots__ = ("_ix", "_u", "btype")
 
-    def __init__(self, ix, universe):
+    def __init__(self, ix, universe, type=None):
         """Create a topology object
 
         Arguments
@@ -58,6 +58,7 @@ class TopologyObject(object):
         """
         self._ix = ix
         self._u = universe
+        self._bondtype = type
 
     @property
     def atoms(self):
@@ -88,7 +89,10 @@ class TopologyObject(object):
             a.type == b.type or a.type == b.type[::-1]
 
         """
-        return tuple(self.atoms.types)
+        if self._bondtype is not None:
+            return self._bondtype
+        else:
+            return tuple(self.atoms.types)
 
     def __hash__(self):
         return hash((self._u, tuple(self.indices)))
@@ -424,8 +428,9 @@ class TopologyDict(object):
                 selection = self.dict[key[::-1]]
 
             bix = np.vstack([s.indices for s in selection])
+            types = np.vstack([s.type for s in selection])
 
-            return TopologyGroup(bix, self._u, self.toptype)
+            return TopologyGroup(bix, self._u, self.toptype, types)
         else:
             raise KeyError(key)
 
@@ -490,22 +495,28 @@ class TopologyGroup(object):
     """
     _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
 
-    def __init__(self, bondidx, universe, btype=None):
-        # remove duplicate bonds
-        self._bix = unique_rows(bondidx)
-        self._u = universe
-
+    def __init__(self, bondidx, universe, btype=None, type=None):
         if btype is None:
             # guess what I am
             # difference between dihedral and improper
             # not really important
-            self.btype = {2:'bond', 3:'angle', 4:'dihedral'}[
-                len(bondidx[0])]
+            self.btype = {2:'bond', 3:'angle', 4:'dihedral'}[len(bondidx[0])]
         elif btype in self._allowed_types:
             self.btype = btype
         else:
             raise ValueError("Unsupported btype, use one of {}"
                              "".format(self._allowed_types))
+
+        # remove duplicate bonds
+        if type is not None:
+            split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
+            self._bix, self._bondtypes, _ = np.hsplit(unique_rows(np.hstack([bondidx,type.reshape(len(type), 1)])),
+                                                                             [split_index, 10])
+            self._bix = self._bix.astype(np.int32)
+        else:
+            self._bix = unique_rows(bondidx)
+            self._bondtypes = np.array([None for x in self._bix]).reshape(len(self._bix), 1)
+        self._u = universe
 
         # Create vertical AtomGroups
         self._ags = [universe.atoms[bondidx[:,i]]
@@ -623,11 +634,13 @@ class TopologyGroup(object):
                 # Reshape indices to be 2d array
                 return TopologyGroup(other.indices[None, :],
                                      other.universe,
-                                     other.btype)
+                                     other.btype,
+                                     other._bondtypes[None, :])
             else:
                 return TopologyGroup(other.indices,
                                      other.universe,
-                                     other.btype)
+                                     other.btype,
+                                     other._bondtypes)
 
         # add TO to me
         if isinstance(other, TopologyObject):
@@ -637,7 +650,8 @@ class TopologyGroup(object):
             return TopologyGroup(
                 np.concatenate([self.indices, other.indices[None, :]]),
                 self.universe,
-                self.btype)
+                self.btype,
+                np.concatenate([self._bondtypes, other._bondtypes[None, :]]))
 
         # add TG to me
         if self.btype != other.btype:
@@ -646,7 +660,8 @@ class TopologyGroup(object):
         return TopologyGroup(
             np.concatenate([self.indices, other.indices]),
             self.universe,
-            self.btype)
+            self.btype,
+            np.concatenate([self._bondtypes, other._bondtypes]))
 
     def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
@@ -661,9 +676,10 @@ class TopologyGroup(object):
                         'angle':Angle,
                         'dihedral':Dihedral,
                         'improper':ImproperDihedral}[self.btype]
-            return outclass(self._bix[item], self._u)
+            return outclass(self._bix[item], self._u, type=self._bondtypes[item][0])
         # Slice my index array with the item
-        return self.__class__(self._bix[item], self._u, btype=self.btype)
+        return self.__class__(self._bix[item], self._u, btype=self.btype,\
+                              type=self._bondtypes[item][0])
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""

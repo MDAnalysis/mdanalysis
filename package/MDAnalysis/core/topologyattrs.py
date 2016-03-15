@@ -870,7 +870,7 @@ class Bonds(AtomAttr):
     singular = 'bonds'
     transplants = defaultdict(list)
 
-    def __init__(self, values):
+    def __init__(self, values, types=None):
         """
         Arguments
         ---------
@@ -881,9 +881,23 @@ class Bonds(AtomAttr):
         """
         self.values = values
         self._cache = dict()
+        self.order_bonds()
+        self._bondtypes = {}
+        if types is None:
+            types = [None for value in values]
+        for value, type in zip(self.values, types):
+            self._bondtypes[value] = type
 
     def __len__(self):
         return len(self._bondDict)
+
+    def order_bonds(self):
+        ordered_values = []
+        for b in self.values:
+            if b[0] > b[-1]:
+                b = b[::-1]
+            ordered_values.append(b)
+        self.values = ordered_values
 
     @property
     @cached('bd')
@@ -896,7 +910,7 @@ class Bonds(AtomAttr):
             # to be less than the last
             # eg (0, 1) not (1, 0)
             # and (4, 10, 8) not (8, 10, 4)
-            if b[0] < b[-1]:
+            if b[0] > b[-1]:
                 b = b[::-1]
             for a in b:
                 bd[a].append(b)
@@ -909,8 +923,12 @@ class Bonds(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag._ix]
+        if self._bondtypes is not None:
+            _bondtypes = {value: self._bondtypes[value] for value in unique_bonds}
+        else:
+            _bondtypes = None
         bond_idx = np.array(sorted(unique_bonds))
-        return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
+        return TopologyGroup(bond_idx, ag._u, self.singular[:-1], np.array(_bondtypes.values()))
 
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""

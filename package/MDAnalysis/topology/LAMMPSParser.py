@@ -204,11 +204,11 @@ class DATAParser(TopologyReader):
                 (Impropers, 'Impropers', 4)
         ]:
             try:
-                sect = self._parse_bond_section(sects[L], nentries)
+                type, sect = self._parse_bond_section(sects[L], nentries)
             except KeyError:
                 pass
             else:
-                top.add_TopologyAttr(attr(sect))
+                top.add_TopologyAttr(attr(sect, type))
 
         return top
 
@@ -273,12 +273,14 @@ class DATAParser(TopologyReader):
         nentries - number of integers per line
         """
         section = []
+        type = []
         for line in datalines:
             line = line.split()
             # map to 0 based int
             section.append(tuple(map(lambda x: int(x) - 1, 
                                      line[2:2 + nentries])))
-        return tuple(section)
+            type.append(line[1])
+        return tuple(type), tuple(section)
 
     def _parse_atoms(self, datalines, massdict=None):
         """Creates a Topology object
@@ -315,14 +317,15 @@ class DATAParser(TopologyReader):
         n = len(datalines[0].split())
         has_charge = True if n in [7, 10] else False
 
-        types = np.zeros(n_atoms, dtype=np.int32)
+        types = np.zeros(n_atoms, dtype='|S1')
         resids = np.zeros(n_atoms, dtype=np.int32)
         if has_charge:
             charges = np.zeros(n_atoms, dtype=np.float32)
 
         for line in datalines:
             line = line.split()
-            idx, resid, atype = map(int, line[:3])
+            idx, resid = map(int, line[:2])
+            atype = line[2]
             idx -= 1
             resids[idx] = resid
             types[idx] = atype
@@ -360,7 +363,7 @@ class DATAParser(TopologyReader):
         masses = {}
         for line in datalines:
             line = line.split()
-            masses[int(line[0])] = float(line[1])
+            masses[line[0]] = float(line[1])
 
         return masses
 
