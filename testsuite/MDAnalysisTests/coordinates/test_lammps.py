@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 import MDAnalysis as mda
+from MDAnalysis import NoDataError
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
                            assert_, assert_array_almost_equal)
@@ -105,8 +106,8 @@ class _TestLAMMPSDATAWriter(TestCase):
 
         for attr in self.no_attrs:
             try:
-                assert_equal(len(self.u_new.__getattribute__(attr)), 0)
-            except AttributeError:
+                assert_equal(len(self.u_new.atoms.__getattribute__(attr)), 0)
+            except (AttributeError, NoDataError):
                 pass
 
 class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
@@ -114,32 +115,66 @@ class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
     yes_attrs = set(['types', 'bonds', 'angles', 'dihedrals'])
-    yes_numerical_attrs = set(['charges', 'velocities', 'masses'])
-    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+    yes_numerical_attrs = set(['charges', 'velocities', 'masses', 'positions'])
+    no_attrs = (all_attrs | all_numerical_attrs) - yes_attrs - yes_numerical_attrs
 
 class TestLAMMPSDATAWriter_mini(_TestLAMMPSDATAWriter):
     filename = LAMMPSdata_mini
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
     yes_attrs = set(['types'])
-    yes_numerical_attrs = set(['masses'])
-    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+    yes_numerical_attrs = set(['masses', 'positions', 'velocities', 'charges'])
+    no_attrs = (all_attrs | all_numerical_attrs) - yes_attrs - yes_numerical_attrs
 
 class TestLAMMPSDATAWriter_cnt(_TestLAMMPSDATAWriter):
     filename = LAMMPScnt
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
     yes_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
-    yes_numerical_attrs = set(['charges', 'masses'])
-    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+    yes_numerical_attrs = set(['charges', 'masses', 'positions'])
+    no_attrs = (all_attrs | all_numerical_attrs) - yes_attrs - yes_numerical_attrs
 
 class TestLAMMPSDATAWriter_hyd(_TestLAMMPSDATAWriter):
     filename = LAMMPShyd
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
-    yes_attrs = set(['bonds'])
-    yes_numerical_attrs = set(['masses'])
-    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+    yes_attrs = set(['types', 'bonds'])
+    yes_numerical_attrs = set(['masses', 'positions', 'charges'])
+    no_attrs = (all_attrs | all_numerical_attrs) - yes_attrs - yes_numerical_attrs
+
+class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata
+    yes_numerical_attrs = ['charges', 'velocities', 'masses', 'positions']
+    no_attrs = ['dihedrals', 'impropers']
+    num_atoms_kept = 5
+
+    def setUp(self):
+        self.u = mda.Universe(self.filename)
+        # dummy output file
+        ext = os.path.splitext(self.filename)[1]
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,  'lammps-data-writer-test' + ext)
+
+        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms) as W:
+            W.write(self.u.atoms[:self.num_atoms_kept])
+        self.u_ref = mda.Universe(self.filename)
+        self.u_new = mda.Universe(self.outfile)
+
+    def test_Writer_atoms(self):
+        for attr in self.yes_numerical_attrs:
+            assert_almost_equal(self.u_ref.atoms[:self.num_atoms_kept].__getattribute__(attr),\
+                                self.u_new.atoms[:self.num_atoms_kept].__getattribute__(attr),\
+                             err_msg="attributes were changed on read-write-read cycle",
+                             decimal=6)
+
+        assert_equal(len(self.u_new.atoms.bonds), 4)
+        assert_equal(len(self.u_new.atoms.angles), 4)
+
+        for attr in self.no_attrs:
+            try:
+                assert_equal(len(self.u_new.atoms.__getattribute__(attr)), 0)
+            except (AttributeError, NoDataError):
+                pass
 
 
 # need more tests of the LAMMPS DCDReader

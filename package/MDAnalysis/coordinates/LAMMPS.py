@@ -307,9 +307,8 @@ class DATAWriter(base.Writer):
 
         .. Note::
 
-           If the selection includes a partial fragment, then the outputted DATA
-           file will be invalid, because it will describe bonds between atoms
-           which do not exist in the Atoms section.
+           If the selection includes a partial fragment, then only the bonds, angles,
+           etc. whose atoms are contained within the selection will be included.
 
         :Arguments:
            *selection*
@@ -332,13 +331,9 @@ class DATAWriter(base.Writer):
         # make sure to use atoms (Issue 46)
         atoms = selection.atoms
 
-        # in future assert that atoms.fragments.atoms == atoms
-        # but right now fragments returns a tuple instead of a Group
-
-        # check that types can be converted to ints if they aren't
-        # ints already.
+        # check that types can be converted to ints if they aren't ints already
         try:
-            u.atoms.types.astype(np.int32)
+            atoms.types.astype(np.int32)
         except ValueError:
             raise ValueError('LAMMPS.DATAWriter: atom types must be '+\
                     'convertible to integers')
@@ -363,6 +358,8 @@ class DATAWriter(base.Writer):
                 try:
                     features[btype] = atoms.__getattribute__(attr_name)
                     self.file.write('%12d  %s\n'%(len(features[btype]), attr_name))
+                    features[btype] = features[btype].atomgroup_intersection(
+                            atoms, strict=True)
                 except AttributeError:
                     features[btype] = None
                     self.file.write('%12d  %s\n'%(0, attr_name))
