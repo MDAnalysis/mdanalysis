@@ -760,6 +760,7 @@ _frame_writers = {
     'PQR': PQR.PQRWriter,
     'XYZ': XYZ.XYZWriter,
     'MOL2': MOL2.MOL2Writer,
+    'DATA': LAMMPS.DATAWriter,
 }
 
 #: trajectory writers: export frames, typically only saving coordinates

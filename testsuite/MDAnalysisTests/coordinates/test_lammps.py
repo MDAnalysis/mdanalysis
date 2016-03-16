@@ -4,14 +4,14 @@ import numpy as np
 import MDAnalysis as mda
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
-                           assert_)
+                           assert_, assert_array_almost_equal)
 import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
-from MDAnalysis.tests.datafiles import LAMMPScnt
+from MDAnalysis.tests.datafiles import LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
@@ -37,7 +37,7 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.atoms[0].position, self.pos_atom1)
 
     def test_velos(self):
-        assert_equal(self.u.atoms[0].velocity, self.vel_atom1)
+        assert_almost_equal(self.u.atoms[0].velocity, self.vel_atom1)
 
     def test_dimensions(self):
         assert_equal(self.u.dimensions, self.dimensions)
@@ -63,6 +63,84 @@ class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
 
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
     pass
+
+class _TestLAMMPSDATAWriter(TestCase):
+
+    def setUp(self):
+        self.u = mda.Universe(self.filename)
+        # dummy output file
+        ext = os.path.splitext(self.filename)[1]
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,  'lammps-data-writer-test' + ext)
+
+        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms) as W:
+            W.write(self.u.atoms)
+        self.u_ref = mda.Universe(self.filename)
+        self.u_new = mda.Universe(self.outfile)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.u_new
+        del self.u_ref
+        del self.tmpdir
+
+    def test_Writer_dimensions(self):
+        assert_almost_equal(self.u_ref.dimensions, self.u_new.dimensions,
+                         err_msg="attributes were changed on read-write-read cycle")
+
+    def test_Writer_atoms(self):
+        for attr in self.yes_attrs:
+            assert_equal(self.u_ref.atoms.__getattribute__(attr),\
+                         self.u_new.atoms.__getattribute__(attr),
+                         err_msg="attributes were changed on read-write-read cycle")
+
+        for attr in self.yes_numerical_attrs:
+            assert_almost_equal(self.u_ref.atoms.__getattribute__(attr),\
+                                self.u_new.atoms.__getattribute__(attr),\
+                             err_msg="attributes were changed on read-write-read cycle",
+                             decimal=6)
+
+        for attr in self.no_attrs:
+            try:
+                assert_equal(len(self.u_new.__getattribute__(attr)), 0)
+            except AttributeError:
+                pass
+
+class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata
+    all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
+    yes_attrs = set(['types', 'bonds', 'angles', 'dihedrals'])
+    yes_numerical_attrs = set(['charges', 'velocities', 'masses'])
+    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+
+class TestLAMMPSDATAWriter_mini(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata_mini
+    all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
+    yes_attrs = set(['types'])
+    yes_numerical_attrs = set(['masses'])
+    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+
+class TestLAMMPSDATAWriter_cnt(_TestLAMMPSDATAWriter):
+    filename = LAMMPScnt
+    all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
+    yes_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    yes_numerical_attrs = set(['charges', 'masses'])
+    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+
+class TestLAMMPSDATAWriter_hyd(_TestLAMMPSDATAWriter):
+    filename = LAMMPShyd
+    all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
+    yes_attrs = set(['bonds'])
+    yes_numerical_attrs = set(['masses'])
+    no_attrs = all_attrs | all_numerical_attrs - yes_attrs - yes_numerical_attrs
+
 
 # need more tests of the LAMMPS DCDReader
 

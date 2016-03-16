@@ -83,13 +83,24 @@ Classes
 .. autoclass:: DATAReader
    :members:
    :inherited-members:
+.. autoclass:: DATAWriter
+   :members:
+   :inherited-members:
 """
 
+from six.moves import zip, range
+import numpy as np
+
+from ..core import flags
+from ..lib import util, mdamath
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
+from ..exceptions import NoDataError
 from . import base
 
+btype_sections = {'bond':'Bonds', 'angle':'Angles',
+                  'dihedral':'Dihedrals', 'improper':'Impropers'}
 
 class DCDWriter(DCD.DCDWriter):
     """Write a LAMMPS_ DCD trajectory.
@@ -149,7 +160,7 @@ class DATAReader(base.SingleFrameReader):
        Frames now 0-based instead of 1-based
     """
     format = 'DATA'
-    units = {'time': None, 'length': 'Angstrom'}
+    units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/fs'}
 
     def __init__(self, filename, **kwargs):
         self.n_atoms = kwargs.pop('n_atoms', None)
@@ -165,3 +176,215 @@ class DATAReader(base.SingleFrameReader):
         self.ts.frame = 0
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
+            try:
+                self.convert_velocities_from_native(self.ts._velocities)  # in-place !
+            except AttributeError:
+                pass
+
+class DATAWriter(base.Writer):
+    """Write out the current time step as a LAMMPS DATA file.
+
+    This writer supports the sections Atoms, Masses, Velocities, Bonds,
+    Angles, Dihedrals, and Impropers. This writer will write the header
+    and these sections (if applicable). Atoms section is written in the
+    "full" sub-style if charges are available or "molecular" sub-style
+    if they are not. Molecule id is set to 0 for all atoms.
+
+    .. Note::
+
+       This writer assumes "conventional" or "real" LAMMPS units where length
+       is measured in Angstroms and velocity is measured in Angstroms per
+       femtosecond. To write in different units, specify `lengthunit`
+    """
+    format = 'DATA'
+
+    def __init__(self, filename, convert_units=None, **kwargs):
+        """Set up a DATAWriter
+
+        :Arguments:
+           *filename*
+              output filename
+        """
+        self.filename = util.filename(filename, ext='data')
+
+        if convert_units is None:
+            convert_units = flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self.units = {'time': 'fs', 'length': 'Angstrom'}
+        self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
+        self.units['time'] = kwargs.pop('timeunit', self.units['time'])
+        self.units['velocity'] = kwargs.pop('velocityunit', \
+                self.units['length']+'/'+self.units['time'])
+
+    def _write_atoms(self, atoms):
+        self.file.write('\n')
+        self.file.write('Atoms\n')
+        self.file.write('\n')
+
+        try:
+            charges = atoms.charges
+        except (NoDataError, AttributeError):
+            has_charges = False
+        else:
+            has_charges = True
+
+        indices = atoms.indices + 1
+        types = atoms.types.astype(np.int32)
+
+        if self.convert_units:
+            coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
+
+        if has_charges:
+            for index, atype, charge, coords in zip(indices, types, charges,
+                    coordinates):
+                self.file.write('%d 0 %d %f %f %f %f\n'%(index, atype,
+                        charge, coords[0], coords[1], coords[2]))
+        else:
+            for index, atype, coords in zip(indices, types, coordinates):
+                self.file.write('%d 0 %d %f %f %f\n'%(index, atype,\
+                        coords[0], coords[1], coords[2]))
+
+    def _write_velocities(self, atoms):
+        self.file.write('\n')
+        self.file.write('Velocities\n')
+        self.file.write('\n')
+        indices = atoms.indices + 1
+        velocities = self.convert_velocities_to_native(atoms.velocities, inplace=False)
+        for index, vel in zip(indices, velocities):
+            self.file.write('%d %f %f %f\n'%(index, vel[0], vel[1], vel[2]))
+
+    def _write_masses(self, atoms):
+        self.file.write('\n')
+        self.file.write('Masses\n')
+        self.file.write('\n')
+        mass_dict = {}
+        for atype in set(atoms.types.astype(np.int32)):
+            masses = set(atoms.select_atoms('type %s'%(atype)).masses)
+            mass_dict[atype] = masses.pop()
+            if masses:
+                raise ValueError('LAMMPS DATAWriter: to write data file, '+\
+                        'atoms with same type must have same mass')
+        for atype, mass in mass_dict.items():
+            self.file.write('%d %f\n'%(atype, mass))
+
+    def _write_bonds(self, bonds):
+        num = len(bonds[0])
+        self.file.write('\n')
+        self.file.write('%s\n'%btype_sections[bonds.btype])
+        self.file.write('\n')
+        for bond, i in zip(bonds, range(1, len(bonds)+1)):
+            self.file.write('%d %s '%(i, bond.type)+\
+                    ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
+
+    def _write_dimensions(self, dimensions):
+        """
+            Convert dimensions to triclinic vectors, convert lengths to native
+            units and then write the dimensions section
+        """
+        if self.convert_units:
+            triv = self.convert_pos_to_native(mdamath.triclinic_vectors(\
+                    dimensions),inplace=False)
+        self.file.write('\n')
+        self.file.write('%f %f xlo xhi\n'%(0., triv[0][0]))
+        self.file.write('%f %f ylo yhi\n'%(0., triv[1][1]))
+        self.file.write('%f %f zlo zhi\n'%(0., triv[2][2]))
+        if any(np.array([triv[1][0], triv[2][0], triv[2][1]]) != 0):
+            self.file.write('%f %f %f xy xz yz\n'%(triv[1][0], triv[2][0],\
+                    triv[2][1]))
+        self.file.write('\n')
+
+    def write(self, selection, frame=None):
+        """Write selection at current trajectory frame to file, including sections
+        Atoms, Masses, Velocities, Bonds, Angles, Dihedrals, and Impropers (if these
+        are defined). Atoms section is written in the "full" sub-style if charges
+        are available or "molecular" sub-style if they are not.
+        Molecule id in atoms section is set to to 0.
+
+        No other sections are written to the DATA file.
+        As of this writing, other sections are not parsed into the topology
+        by the :class:`DATAReader`.
+
+        .. Note::
+
+           If the selection includes a partial fragment, then the outputted DATA
+           file will be invalid, because it will describe bonds between atoms
+           which do not exist in the Atoms section.
+
+        :Arguments:
+           *selection*
+                MDAnalysis AtomGroup (selection or Universe.atoms) or also Universe
+        :Keywords:
+           *frame*
+               optionally move to frame number *frame*
+           *renumber_atoms*
+                Set to ``True`` to make the writer renumber atoms consecutively from
+                1 to N before writing. This may be necessary for some LAMMPS features
+                such as `velocity all create` which require consecutively numbered
+                atoms. (not yet implemented)
+        """
+        u = selection.universe
+        if frame is not None:
+            u.trajectory[frame]
+        else:
+            frame = u.trajectory.ts.frame
+
+        # make sure to use atoms (Issue 46)
+        atoms = selection.atoms
+
+        # in future assert that atoms.fragments.atoms == atoms
+        # but right now fragments returns a tuple instead of a Group
+
+        # check that types can be converted to ints if they aren't
+        # ints already.
+        try:
+            u.atoms.types.astype(np.int32)
+        except ValueError:
+            raise ValueError('LAMMPS.DATAWriter: atom types must be '+\
+                    'convertible to integers')
+
+        try:
+            velocities = atoms.velocities
+        except (NoDataError, AttributeError):
+            has_velocities = False
+        else:
+            has_velocities = True
+
+        features = {}
+        with util.openany(self.filename, 'w') as self.file:
+            self.file.write('LAMMPS data file via MDAnalysis\n')
+            self.file.write('\n')
+            self.file.write('%12d  atoms\n'%len(atoms))
+
+            attrs = [('bond', 'bonds'), ('angle', 'angles'),\
+                ('dihedral', 'dihedrals'), ('improper', 'impropers')]
+
+            for btype, attr_name in attrs:
+                try:
+                    features[btype] = atoms.__getattribute__(attr_name)
+                    self.file.write('%12d  %s\n'%(len(features[btype]), attr_name))
+                except AttributeError:
+                    features[btype] = None
+                    self.file.write('%12d  %s\n'%(0, attr_name))
+
+            self.file.write('\n')
+            self.file.write('%12d  atom types\n'%len(set(atoms.types)))
+
+            for btype, attr in features.items():
+                if attr is None:
+                    self.file.write('%12d  %s types\n'%(0, btype))
+                else:
+                    self.file.write('%12d  %s types\n'%(len(attr.types()), btype))
+
+            self._write_dimensions(atoms.dimensions)
+
+            #if renumber_atoms is True:
+            self._write_masses(atoms)
+            self._write_atoms(atoms)
+            for attr in features.values():
+                if attr is None or len(attr) == 0:
+                    continue
+                self._write_bonds(attr)
+
+            if has_velocities:
+                self._write_velocities(atoms)
