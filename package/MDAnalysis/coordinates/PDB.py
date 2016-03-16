@@ -1166,7 +1166,7 @@ class PrimitivePDBWriter(base.Writer):
             segid = atom.segid if atom.segid is not "SYSTEM" else " "
 
             vals = {}
-            vals['serial'] = serial_count + 1
+            vals['serial'] = int(str(serial_count + 1)[-5:])
             vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
@@ -1190,14 +1190,14 @@ class PrimitivePDBWriter(base.Writer):
             elif not self.bonds and vals['chainID'] != prev_atom['chainID'] and \
                 vals['chainID'] != " " and prev_atom['chainID'] != " ":
                     end_atom = {}
-                    end_atom['serial'] = prev_atom['serial'] + 1
+                    end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
                     end_atom['resName'] = prev_atom['resName']
                     end_atom['chainID'] = prev_atom['chainID']
                     end_atom['resSeq'] = prev_atom['resSeq']
                     end_atom['iCode'] = prev_atom['iCode']
                     self.TER(end_atom)
                     serial_count += 1
-                    vals['serial'] = serial_count + 1
+                    vals['serial'] = int(str(serial_count + 1)[-5:])
     
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
             prev_atom = vals.copy()
@@ -1205,7 +1205,7 @@ class PrimitivePDBWriter(base.Writer):
 
         if multiframe:
             ter_atom = {}
-            ter_atom['serial'] = prev_atom['serial'] + 1
+            ter_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
             ter_atom['resName'] = prev_atom['resName']
             ter_atom['chainID'] = prev_atom['chainID']
             ter_atom['resSeq'] = prev_atom['resSeq']
