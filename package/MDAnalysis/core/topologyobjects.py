@@ -511,14 +511,19 @@ class TopologyGroup(object):
         if type is None:
             type = np.array([None for x in bondidx]).reshape(len(bondidx), 1)
         split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
-        unique_records = np.unique((np.rec.fromarrays([bondidx[:, i] for i in xrange(split_index)] + [type])))
-        self._bix = np.vstack([unique_records[unique_records.dtype.names[i]] for i in xrange(split_index)]).T
-        self._bondtypes = unique_records[unique_records.dtype.names[bondidx.shape[1]]]
+        if len(bondidx) > 0:
+            unique_records = np.unique((np.rec.fromarrays([bondidx[:, i] for i in xrange(split_index)] + [type])))
+            self._bix = np.vstack([unique_records[unique_records.dtype.names[i]] for i in xrange(split_index)]).T
+            self._bondtypes = unique_records[unique_records.dtype.names[bondidx.shape[1]]]
+            # Create vertical AtomGroups
+            self._ags = [universe.atoms[bondidx[:,i]]
+                         for i in xrange(bondidx.shape[1])]
+        else:
+            self._bix = np.array([])
+            self._bondtypes = np.array([])
+            self._ags = []
         self._u = universe
 
-        # Create vertical AtomGroups
-        self._ags = [universe.atoms[bondidx[:,i]]
-                     for i in xrange(bondidx.shape[1])]
 
         self._cache = dict()  # used for topdict saving
 
