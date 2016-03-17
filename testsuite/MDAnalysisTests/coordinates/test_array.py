@@ -13,10 +13,11 @@ from unittest import TestCase
 class ArrayReference(BaseReference):
     def __init__(self):
         super(ArrayReference, self).__init__()
-        universe = mda.Universe(PDB_small, DCD)
-        self.trajectory = universe.trajectory.timeseries(universe.atoms)
-        self.n_atoms = universe.trajectory.n_atoms
-        self.n_frames = universe.trajectory.n_frames
+        self.universe = mda.Universe(PDB_small, DCD)
+        self.trajectory = \
+            self.universe.trajectory.timeseries(self.universe.atoms)
+        self.n_atoms = self.universe.trajectory.n_atoms
+        self.n_frames = self.universe.trajectory.n_frames
         self.topology = PDB_small
         self.reader = mda.coordinates.array.ArrayReader
 
@@ -86,3 +87,35 @@ class TestArrayReader(TestCase):
         for i, frame in enumerate(self.reader):
             frames += 1
         assert_equal(frames, self.ref.n_frames)
+
+    def test_extract_array_afc(self):
+        assert_equal(self.reader.get_array('afc').shape, (3341, 98, 3))
+
+    def test_extract_array_fac(self):
+        assert_equal(self.reader.get_array('fac').shape, (98, 3341, 3))
+
+    def test_extract_array_cfa(self):
+        assert_equal(self.reader.get_array('cfa').shape, (3, 98, 3341))
+
+    def test_extract_array_acf(self):
+        assert_equal(self.reader.get_array('acf').shape, (3341, 3, 98))
+
+    def test_extract_array_fca(self):
+        assert_equal(self.reader.get_array('fca').shape, (98, 3, 3341))
+
+    def test_extract_array_caf(self):
+        assert_equal(self.reader.get_array('caf').shape, (3, 3341, 98))
+
+    def test_timeseries_skip1(self):
+        assert_equal(self.reader.timeseries(self.ref.universe.atoms).shape,
+                     (3341, 98, 3))
+
+    def test_timeseries_skip10(self):
+        assert_equal(self.reader.timeseries(self.ref.universe.atoms,
+                                            skip=10).shape,
+                     (3341, 10, 3))
+
+    def test_repr(self):
+        str_rep = str(self.reader)
+        expected = "<ArrayReader with 98 frames of 3341 atoms>"
+        assert_equal(str_rep, expected)

@@ -203,8 +203,11 @@ class ArrayReader(base.ProtoReader):
         if skip==1:
             subarray = coordinate_array.take(asel.indices,a_index)
         else:
+            stop_index = stop+1
+            if stop_index==0:
+                stop_index = None
             skip_slice = ([slice(None)]*(f_index) +
-                          [slice(start, stop+1, skip)] +
+                          [slice(start, stop_index, skip)] +
                           [slice(None)]*(2-f_index))
             subarray = coordinate_array[skip_slice]\
                 .take(asel.indices,a_index)

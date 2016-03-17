@@ -15,14 +15,32 @@
 #
 from __future__ import print_function
 
+import MDAnalysis as mda
 import MDAnalysis.analysis.encore as encore
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
 
-from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small
+from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small, PDB,XTC
 from MDAnalysisTests import parser_not_found
 
 import MDAnalysis.analysis.rms as rms
+
+class TestEnsemble(TestCase):
+
+    def test_from_reader_w_timeseries(self):
+        ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD)
+        assert_equal(len(ensemble.atoms.coordinates()), 3341,
+                     err_msg="Unexpected number of atoms in trajectory")
+
+    def test_from_reader_wo_timeseries(self):
+        ensemble = encore.Ensemble(topology=PDB, trajectory=XTC)
+        assert_equal(len(ensemble.atoms.coordinates()), 47681,
+                     err_msg="Unexpected number of atoms in trajectory")
+
+    def test_trajectories_list(self):
+        ensemble = encore.Ensemble(topology=PDB_small, trajectory=[DCD])
+        assert_equal(len(ensemble.atoms.coordinates()), 3341,
+                     err_msg="Unexpected number of atoms in trajectory")
 
 class TestEncore(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -57,6 +75,24 @@ class TestEncore(TestCase):
         aligned_ensemble1.align(selection="name CA")
         aligned_ensemble2 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         aligned_ensemble2.align(selection="name *")
+
+        rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
+        rmsfs1.run()
+
+        rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
+        rmsfs2.run()
+
+        assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
+                     err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
+                             "than ensemble aligned on only CAs.")
+
+    def test_ensemble_superimposition_to_reference_non_weighted(self):
+        aligned_ensemble1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
+        aligned_ensemble1.align(selection="name CA", weighted=False,
+                                reference=mda.Universe(PDB_small))
+        aligned_ensemble2 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
+        aligned_ensemble2.align(selection="name *", weighted=False,
+                                reference=mda.Universe(PDB_small))
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
