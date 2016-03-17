@@ -317,7 +317,7 @@ class DATAParser(TopologyReader):
         n = len(datalines[0].split())
         has_charge = True if n in [7, 10] else False
 
-        types = np.zeros(n_atoms, dtype='|S1')
+        types = np.zeros(n_atoms, dtype='|S5')
         resids = np.zeros(n_atoms, dtype=np.int32)
         if has_charge:
             charges = np.zeros(n_atoms, dtype=np.float32)

@@ -200,7 +200,7 @@ class RefTRZ(object):
 
 class RefLAMMPSData(object):
     filename = LAMMPSdata
-    n_atoms = 18360
+    n_atoms = 18364
     pos_atom1 = np.array([11.89985657, 48.4455719, 19.09719849],
                          dtype=np.float32)
     vel_atom1 = np.array([-0.005667593, 0.00791380978, -0.00300779533],
