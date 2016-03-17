@@ -1166,12 +1166,12 @@ class PrimitivePDBWriter(base.Writer):
             segid = atom.segid if atom.segid is not "SYSTEM" else " "
 
             vals = {}
-            vals['serial'] = int(str(serial_count + 1)[-5:])
+            vals['serial'] = int(str(serial_count + 1)[-5:])  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]
-            vals['resSeq'] = int(str(atom.resid)[-4:])
+            vals['resSeq'] = int(str(atom.resid)[-4:])  # check for overflow here?
             vals['iCode'] = " "
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             try:
@@ -1191,13 +1191,15 @@ class PrimitivePDBWriter(base.Writer):
                 vals['chainID'] != " " and prev_atom['chainID'] != " ":
                     end_atom = {}
                     end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+                     # check for overflow here?
                     end_atom['resName'] = prev_atom['resName']
                     end_atom['chainID'] = prev_atom['chainID']
                     end_atom['resSeq'] = prev_atom['resSeq']
                     end_atom['iCode'] = prev_atom['iCode']
                     self.TER(end_atom)
                     serial_count += 1
-                    vals['serial'] = int(str(serial_count + 1)[-5:])
+                    vals['serial'] = int(str(serial_count + 1)[-5:]) 
+                    # check for overflow here?
     
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
             prev_atom = vals.copy()
@@ -1206,6 +1208,7 @@ class PrimitivePDBWriter(base.Writer):
         if multiframe:
             ter_atom = {}
             ter_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+             # check for overflow here?
             ter_atom['resName'] = prev_atom['resName']
             ter_atom['chainID'] = prev_atom['chainID']
             ter_atom['resSeq'] = prev_atom['resSeq']
