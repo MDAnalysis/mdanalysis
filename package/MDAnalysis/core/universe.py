@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.lib.utils import deprecate
 import logging
+import itertools
 
 import MDAnalysis
 from ..lib import util
@@ -496,7 +497,7 @@ def as_Universe(*args, **kwargs):
 
 asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
 
-#TODO: UPDATE ME WITH NEW TOPOLOGY DETAILS
+
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
 
@@ -506,16 +507,23 @@ def Merge(*args):
     It can also be used with a single :class:`AtomGroup` if the user wants to,
     for example, re-order the atoms in the Universe.
 
-    :Arguments: One or more :class:`AtomGroup` instances.
+    If multiple :class:`AtomGroup` instances from the same Universe are given,
+    the merge will first simply "add" together the :class:`AtomGroup` instances.
 
-    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    Parameters
+    ----------
+    args : One or more :class:`AtomGroup` instances.
+
+    Returns
+    -------
+    universe : An instance of :class:`~MDAnalaysis.AtomGroup.Universe`
 
     :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
              empty and :exc:`TypeError` if arguments are not
              :class:`AtomGroup` instances.
 
-    .. rubric:: Example
-
+    Example
+    -------
     In this example, protein, ligand, and solvent were externally prepared in
     three different PDB files. They are loaded into separate :class:`Universe`
     objects (where they could be further manipulated, e.g. renumbered,
@@ -530,71 +538,152 @@ def Merge(*args):
 
     The complete system is then written out to a new PDB file.
 
-    .. Note:: Merging does not create a full trajectory but only a single
-              structure even if the input consists of one or more trajectories.
+    Note
+    ----
+        Merging does not create a full trajectory but only a single
+        structure even if the input consists of one or more trajectories.
 
     .. versionchanged 0.9.0::
        Raises exceptions instead of assertion errors.
 
     """
-    import MDAnalysis.topology.core
 
     if len(args) == 0:
         raise ValueError("Need at least one AtomGroup for merging")
 
     for a in args:
-        if not isinstance(a, AtomGroup):
+        if not isinstance(a, groups.AtomGroup):
             raise TypeError(repr(a) + " is not an AtomGroup")
     for a in args:
         if len(a) == 0:
             raise ValueError("cannot merge empty AtomGroup")
 
-    coords = np.vstack([a.coordinates() for a in args])
+    # If any atom groups come from the same Universe, just add them
+    # together first
+    disjoint_atom_groups = []
+    already_added = []
+    for a, b in itertools.combinations(args, r=2):
+        if a in already_added and b in already_added:
+            continue
+        if a.universe is b.universe:
+            disjoint_atom_groups.append(a + b)
+            already_added.extend([a, b])
+        else:
+            if a not in already_added:
+                disjoint_atom_groups.append(a)
+                already_added.append(a)
+            if b not in already_added:
+                disjoint_atom_groups.append(b)
+                already_added.append(b)
+
+    u = Universe()
+    # Create a new topology using the intersection of topology attributes
+    blank_topology_attrs = set(dir(Topology(attrs=[])))
+    common_attrs = set.intersection(*[set(dir(ag.universe._topology)) 
+                                      for ag in disjoint_atom_groups])
+    topology_groups = set(['bonds', 'angles', 'dihedrals', 'impropers'])
+
+    # Create set of array-valued attributes which can be simply
+    # concatenated together
+    keep_attrs = common_attrs - blank_topology_attrs - topology_groups
+
+    attrs = []
+    dtypes = {}
+    for attrname in keep_attrs:
+        for ag in disjoint_atom_groups:
+            attr = getattr(ag, attrname)
+            type_attr = type(getattr(ag.universe._topology, attrname))
+            if type(attr) != np.ndarray:
+                raise TypeError('Encountered unexpected topology'+
+                                'attribute of type {}'.format(
+                                type(attr)))
+            try:
+                attr_array.extend(attr)
+            except NameError:
+                attr_array = list(attr)
+        attrs.append(type_attr(np.array(attr_array,
+                                        dtype=attr.dtype)))
+        del attr_array
+
+    # Build up topology groups
+    for tg in (topology_groups & common_attrs):
+        bondidx = []
+        types = []
+        offset = 0
+        for ag in disjoint_atom_groups:
+            bonds = getattr(ag, tg)
+            bond_class = type(getattr(ag.universe._topology, tg))
+            bondidx.extend(bonds.indices + offset)
+            if hasattr(bonds, '_bondtypes'):
+                types.extend(bonds.types())
+            else:
+                types.extend([None]*len(bonds))
+            offset += len(ag)
+        bondidx = np.array(bondidx, dtype=np.int32)
+        if any([t is None for t in types]):
+            attrs.append(bond_class(values))
+        else:
+            types = np.array(types, dtype='|S8')
+            attrs.append(bond_class(bondidx, types))
+
+    # Renumber residue and segment indices
+    n_atoms = sum([len(ag) for ag in disjoint_atom_groups])
+    residx = []
+    segidx = []
+    for ag in disjoint_atom_groups:
+        res_offset = len(set(residx))
+        resdict = {n: i+res_offset for i, n in enumerate(set(ag.resindices))}
+        seg_offset = len(set(segidx))
+        segdict = {n: i+len(set(segidx)) for i, n in enumerate(set(ag.segindices))}
+        residx.extend([resdict[n] for n in ag.resindices])
+        segidx.extend([segdict[n] for n in ag.segindices])
+
+    residx = np.array(residx, dtype=np.int32)
+    segidx = np.array(segidx, dtype=np.int32)
+
+    n_residues = len(set(residx))
+    n_segments = len(set(segidx))
+
+    top = Topology(n_atoms, n_residues, n_segments,
+                   attrs=attrs,
+                   atom_resindex=residx,
+                   residue_segindex=segidx)
+
+    # Put topology in Universe
+    u._topology = top
+
+    # generate Universe version of each class
+    # AG, RG, SG, A, R, S
+    u._classes = groups.make_classes()
+
+    # Put Group level stuff from topology into class
+    for attr in u._topology.attrs:
+        u._process_attr(attr)
+
+    # Generate atoms, residues and segments
+    u.atoms = u._classes['atomgroup'](
+            np.arange(u._topology.n_atoms), u)
+
+    u.residues = u._classes['residuegroup'](
+            np.arange( u._topology.n_residues), u)
+
+    u.segments = u._classes['segmentgroup'](np.arange(
+        u._topology.n_segments), u)
+
+    # Update Universe namespace with segids
+    for seg in u.segments:
+        if hasattr(seg, 'segid'):
+            if seg.segid[0].isdigit():
+                name = 's' + seg.segid
+            else:
+                name = seg.segid
+            u.__dict__[name] = seg
+
+    coords = np.vstack([a.positions for a in disjoint_atom_groups])
     trajectory = MDAnalysis.coordinates.base.Reader(None)
     ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)
     trajectory.n_frames = 1
-
-    # create an empty Universe object
-    u = Universe()
     u.trajectory = trajectory
-
-    # create a list of Atoms, then convert it to an AtomGroup
-    atoms = [copy.copy(a) for gr in args for a in gr]
-    for a in atoms:
-        a.universe = u
-
-    # adjust the atom numbering
-    for i, a in enumerate(atoms):
-        a.index = i
-        a.serial = i + 1
-    u.atoms = AtomGroup(atoms)
-
-    # move over the topology
-    offset = 0
-    tops = ['bonds', 'angles', 'dihedrals', 'impropers']
-    idx_lists = {t:[] for t in tops}
-    for ag in args:
-        # create a mapping scheme for this atomgroup
-        mapping = {a.index:i for i, a in enumerate(ag, start=offset)}
-        offset += len(ag)
-
-        for t in tops:
-            tg = getattr(ag, t)
-            # Create a topology group of only bonds that are within this ag
-            # ie we don't want bonds that extend out of the atomgroup
-            tg = tg.atomgroup_intersection(ag, strict=True)
-
-            # Map them so they refer to our new indices
-            new_idx = [tuple(map(lambda x:mapping[x], entry))
-                       for entry in tg.to_indices()]
-            idx_lists[t].extend(new_idx)
-
-    for t in tops:
-        u._topology[t] = idx_lists[t]
-
-    # adjust the residue and segment numbering (removes any remaining references to the old universe)
-    MDAnalysis.topology.core.build_residues(u.atoms)
-    MDAnalysis.topology.core.build_segments(u.atoms)
 
     return u

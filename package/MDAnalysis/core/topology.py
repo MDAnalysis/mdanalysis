@@ -315,7 +315,7 @@ class Topology(object):
     """
 
     def __init__(self, n_atoms=1, n_res=1, n_seg=1,
-                 attrs=None,
+                 attrs=[],
                  atom_resindex=None,
                  residue_segindex=None):
         self.n_atoms = n_atoms
