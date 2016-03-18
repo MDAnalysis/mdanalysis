@@ -292,6 +292,12 @@ def extensions(config):
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
+    autocorrel = MDAExtension('lib.autocorrelation',
+                              ['MDAnalysis/lib/autocorrelation' + source_suffix],
+                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                              libraries=['m'],
+                              define_macros=define_macros,
+                              extra_compile_args=extra_compile_args)
     distances = MDAExtension('lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -330,7 +336,7 @@ def extensions(config):
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
 
-    pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
+    pre_exts = [dcd, dcd_time, autocorrel, distances, distances_omp, qcprot,
                   transformation, libmdaxdr, util]
     cython_generated = []
     if use_cython:
