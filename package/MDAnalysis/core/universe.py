@@ -560,30 +560,24 @@ def Merge(*args):
 
     # If any atom groups come from the same Universe, just add them
     # together first
-    disjoint_atom_groups = []
-    already_added = []
-    for a, b in itertools.combinations(args, r=2):
-        if a in already_added and b in already_added:
-            continue
-        if a.universe is b.universe:
-            disjoint_atom_groups.append(a + b)
-            already_added.extend([a, b])
-        else:
-            if a not in already_added:
-                disjoint_atom_groups.append(a)
-                already_added.append(a)
-            if b not in already_added:
-                disjoint_atom_groups.append(b)
-                already_added.append(b)
+    ag_dict = {}
+    for a in args:
+        try:
+            ag_dict[a.universe].append(a)
+        except KeyError:
+            ag_dict[a.universe] = [a]
 
-    u = Universe()
+    disjoint_atom_groups = []
+    for ag in ag_dict.values():
+        disjoint_atom_groups.append(sum(ag))
+
     # Create a new topology using the intersection of topology attributes
     blank_topology_attrs = set(dir(Topology(attrs=[])))
     common_attrs = set.intersection(*[set(dir(ag.universe._topology)) 
                                       for ag in disjoint_atom_groups])
     topology_groups = set(['bonds', 'angles', 'dihedrals', 'impropers'])
 
-    # Create set of array-valued attributes which can be simply
+    # Create set of attributes which are array-valued and can be simply
     # concatenated together
     keep_attrs = common_attrs - blank_topology_attrs - topology_groups
 
@@ -592,7 +586,7 @@ def Merge(*args):
     for attrname in keep_attrs:
         for ag in disjoint_atom_groups:
             attr = getattr(ag, attrname)
-            type_attr = type(getattr(ag.universe._topology, attrname))
+            attr_class = type(getattr(ag.universe._topology, attrname))
             if type(attr) != np.ndarray:
                 raise TypeError('Encountered unexpected topology'+
                                 'attribute of type {}'.format(
@@ -601,7 +595,7 @@ def Merge(*args):
                 attr_array.extend(attr)
             except NameError:
                 attr_array = list(attr)
-        attrs.append(type_attr(np.array(attr_array,
+        attrs.append(attr_class(np.array(attr_array,
                                         dtype=attr.dtype)))
         del attr_array
 
@@ -620,7 +614,7 @@ def Merge(*args):
                 types.extend([None]*len(bonds))
             offset += len(ag)
         bondidx = np.array(bondidx, dtype=np.int32)
-        if any([t is None for t in types]):
+        if any(t is None for t in types):
             attrs.append(bond_class(values))
         else:
             types = np.array(types, dtype='|S8')
@@ -634,7 +628,8 @@ def Merge(*args):
         res_offset = len(set(residx))
         resdict = {n: i+res_offset for i, n in enumerate(set(ag.resindices))}
         seg_offset = len(set(segidx))
-        segdict = {n: i+len(set(segidx)) for i, n in enumerate(set(ag.segindices))}
+        segdict = {n: i+len(set(segidx)) for i, n in enumerate(set(
+                                                     ag.segindices))}
         residx.extend([resdict[n] for n in ag.resindices])
         segidx.extend([segdict[n] for n in ag.segindices])
 
@@ -649,7 +644,8 @@ def Merge(*args):
                    atom_resindex=residx,
                    residue_segindex=segidx)
 
-    # Put topology in Universe
+    # Create blank Universe and put topology in it
+    u = Universe()
     u._topology = top
 
     # generate Universe version of each class

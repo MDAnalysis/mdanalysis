@@ -315,12 +315,14 @@ class Topology(object):
     """
 
     def __init__(self, n_atoms=1, n_res=1, n_seg=1,
-                 attrs=[],
+                 attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
         self.n_atoms = n_atoms
         self.n_residues = n_res
         self.n_segments = n_seg
+        if attrs is None:
+            attrs = []
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
