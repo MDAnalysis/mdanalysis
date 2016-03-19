@@ -140,6 +140,7 @@ import logging
 import warnings
 
 from .version import __version__
+from .authors import __authors__
 
 # custom exceptions and warnings
 from .exceptions import (
