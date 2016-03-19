@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.lib.utils import deprecate
 import logging
-import itertools
+from itertools import groupby
 
 import MDAnalysis
 from ..lib import util
@@ -501,6 +501,9 @@ asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
 
+    The resulting universe will only inherit the common topology attributes that
+    all merged universes share.
+
     :class:`AtomGroup` instances can come from different Universes, or come
     directly from a :meth:`~Universe.select_atoms` call.
 
@@ -560,16 +563,9 @@ def Merge(*args):
 
     # If any atom groups come from the same Universe, just add them
     # together first
-    ag_dict = {}
-    for a in args:
-        try:
-            ag_dict[a.universe].append(a)
-        except KeyError:
-            ag_dict[a.universe] = [a]
-
-    disjoint_atom_groups = []
-    for ag in ag_dict.values():
-        disjoint_atom_groups.append(sum(ag))
+    sorted_ag = sorted([a for a in args], key=lambda a: a.universe)
+    disjoint_atom_groups = [sum(list(ag)) for u, ag in groupby(sorted_ag,
+                                                        lambda a: a.universe)]
 
     # Create a new topology using the intersection of topology attributes
     blank_topology_attrs = set(dir(Topology(attrs=[])))
@@ -582,7 +578,6 @@ def Merge(*args):
     keep_attrs = common_attrs - blank_topology_attrs - topology_groups
 
     attrs = []
-    dtypes = {}
     for attrname in keep_attrs:
         for ag in disjoint_atom_groups:
             attr = getattr(ag, attrname)
