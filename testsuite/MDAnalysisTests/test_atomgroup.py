@@ -131,8 +131,8 @@ class TestAtom(TestCase):
 
     def test_set_undefined_occupancy(self):
         self.universe.atoms[0].occupancy = .5
-        assert self.universe.atoms[0].occupancy == .5
-        assert self.universe.atoms[1].occupancy == 1
+        assert_equal(self.universe.atoms[0].occupancy, .5)
+        assert_equal(self.universe.atoms[1].occupancy, 1)
 
 
 class TestAtomComparisons(object):
