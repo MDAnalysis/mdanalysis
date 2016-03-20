@@ -34,3 +34,5 @@ doc/html/
 *.sw[a-z]
 # Ignore MDAnalysis log files
 MDAnalysis.log
+# Ignore the authors.py files as they are generated files
+authors.py
