@@ -111,7 +111,7 @@ logger = logging.getLogger("MDAnalysisTests.__init__")
 
 __version__ = "0.14.1-dev0"  # keep in sync with RELEASE in setup.py
 try:
-    from .authors import __authors__
+    from MDAnalysisTests.authors import __authors__
 except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
