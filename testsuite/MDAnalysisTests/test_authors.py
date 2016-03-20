@@ -23,6 +23,6 @@ def test_package_authors():
 
 
 def test_testsuite_authors():
-    from . import __authors__
+    from MDAnalysisTests import __authors__
     assert_(len(__authors__) > 0,
             'Could not find the list of authors')
