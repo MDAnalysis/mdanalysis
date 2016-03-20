@@ -13,13 +13,15 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16 orbeckst
+??/??/16 orbeckst, jbarnoud
 
   * 0.15.0
 
     - metadata update: link download_url to GitHub releases so that
       Depsy recognizes contributors (issue #749) and added
       @richardjgowers as maintainer
+    - a __version__ variable is now exposed; it is built by setup.py from the
+      AUTHORS file (Issue #784)
 
 02/28/16 manuel.nuno.melo
 

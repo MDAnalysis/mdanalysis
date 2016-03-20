@@ -39,7 +39,6 @@ Google groups forbids any name that contains the string `anal'.)
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
-import codecs
 import os
 import sys
 import shutil
