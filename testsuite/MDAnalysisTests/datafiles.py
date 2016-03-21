@@ -110,9 +110,13 @@ __all__ = [
     "COORDINATES_TRR",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
+    "GRO_empty_atom", "GRO_missing_atomname" # for testing GROParser exception raise
 ]
 
 from pkg_resources import resource_filename
+
+GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
+GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
