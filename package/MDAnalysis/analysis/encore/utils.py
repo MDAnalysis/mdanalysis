@@ -85,11 +85,6 @@ class TriangularMatrix:
         else:
             raise TypeError
 
-    def __call__(self, x, y):
-        if x < y:
-            x, y = y, x
-        return self._elements[x * (x + 1) / 2 + y]
-
     def __getitem__(self, args):
         x, y = args
         if x < y:
@@ -125,23 +120,15 @@ class TriangularMatrix:
         		Name of the file to be loaded.
         """
         loaded = load(fname)
-        if loaded['metadata'] != None:
+
+        if loaded['metadata'].shape != ():
             if loaded['metadata']['number of frames'] != self.size:
                 raise TypeError
             self.metadata = loaded['metadata']
         else:
-            if self.size != len(loaded['elements']):
+            if self.size*(self.size-1)/2+self.size != len(loaded['elements']):
                 raise TypeError
         self._elements = loaded['elements']
-
-    def trm_print(self, justification=10):
-        """ 
-        Print the triangular matrix as triangular
-        """
-        for i in xrange(0, self.size):
-            for j in xrange(i + 1):
-                print "%.3f".ljust(justification) % self.__getitem__((i, j)),
-            print ""
 
     def change_sign(self):
         """

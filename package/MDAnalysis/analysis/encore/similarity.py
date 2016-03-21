@@ -1512,6 +1512,7 @@ def ces(ensembles,
         kwds = {}
         for i, p in enumerate(preferences):
             if ccs[i].clusters == None:
+                print "gigigigi"
                 continue
             else:
                 values.append(numpy.zeros((out_matrix_eln, out_matrix_eln)))
@@ -1537,6 +1538,7 @@ def ces(ensembles,
                 for cln, cluster in enumerate(ccs[i]):
                     kwds["cluster%d_pref%.3f" % (cln + 1, p)] = numpy.array(
                         cluster.elements)
+
 
     if full_output:
         values = numpy.array(values).swapaxes(0, 2)

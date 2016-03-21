@@ -207,13 +207,5 @@ class ClustersCollection():
 
         return [v.centroid for v in self.clusters]
 
-    def __setitiem__(self, name, val):
-        if type(val) != Cluster:
-            raise TypeError
-        self.clusters[name] = val
-
-    def __getitem__(self, name):
-        return self.clusters[name]
-
     def __iter__(self):
         return iter(self.clusters)

@@ -65,8 +65,8 @@ class ConformationalDistanceMatrixGenerator:
     process is printed out. This class acts as a functor.
     """
 
-    def run(self, ensemble, selection="", ncores=None, pairwise_align=False,
-            mass_weighted=True, metadata=True):
+    def run(self, ensemble, selection="all", superimposition_selection="", ncores = None, pairwise_align = False,
+            mass_weighted = True, metadata = True):
         """
         Run the conformational distance matrix calculation.
 
@@ -132,27 +132,21 @@ class ConformationalDistanceMatrixGenerator:
                                     ('mass-weighted', bool)])
 
         # Prepare alignment subset coordinates as necessary
-        subset_coords = None
+
         if pairwise_align:
-            # subset_selection = ensemble.superimposition_selection
-            # if align_subset_coordinates == None:
-            #     subset_coords = align_subset_coordinates
-            # else:
-            #     subset_coords = ensemble.superimposition_coordinates
-            if selection != "":
-                subset_selection = ensemble.select_atoms(selection)
+            if superimposition_selection:
+                subset_selection = superimposition_selection
             else:
-                subset_selection = ensemble.atoms
-            subset_coords = ensemble.get_coordinates(selection,
-                                                     format='fac')
+                subset_selection = selection
+            subset_coords = ensemble.get_coordinates(selection = superimposition_selection, 
+                                                     format = 'fac')
 
         # Prepare masses as necessary
-        subset_masses = None
 
         if mass_weighted:
-            masses = ensemble.atoms.masses
+            masses = ensemble.select_atoms(selection).masses
             if pairwise_align:
-                subset_masses = subset_selection.masses
+                subset_masses = ensemble.select_atoms(subset_selection).masses
         else:
             masses = ones((ensemble.get_coordinates(selection)[0].shape[0]))
             if pairwise_align:
@@ -205,7 +199,7 @@ class ConformationalDistanceMatrixGenerator:
             workers = [Process(target=self._fitter_worker, args=(
                 tasks_per_worker[i],
                 ensemble.get_coordinates(selection, format='fac'),
-                subset_coords,
+                ensemble.get_coordinates(subset_selection, format='fac'),
                 masses,
                 subset_masses,
                 distmat,
@@ -214,9 +208,9 @@ class ConformationalDistanceMatrixGenerator:
             workers = [Process(target=self._simple_worker,
                                args=(tasks_per_worker[i],
                                      ensemble.get_coordinates(selection,
-                                                              format='fac'),
+                                     format='fac'),
                                masses, distmat,
-                               pbar_counter)) for i in range(ncores)]
+                                     partial_counters[i])) for i in range(ncores)]
 
         workers += [Process(target=self._pbar_updater,
                             args=(pbar, partial_counters, matsize))]
@@ -233,8 +227,7 @@ class ConformationalDistanceMatrixGenerator:
     def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
         '''Simple worker prototype; to be overriden in derived classes
         '''
-        for i, j in trm_indeces(tasks[0], tasks[1]):
-            pass
+	return None
 
     def _fitter_worker(self, tasks, coords, subset_coords, masses,
                        subset_masses, rmsdmat,
@@ -245,29 +238,7 @@ class ConformationalDistanceMatrixGenerator:
         """
         Fitter worker prototype; to be overridden in derived classes
         """
-
-        if subset_coords == None:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                coords[i] -= average(coords[i], axis=0, weights=masses)
-                coords[j] -= average(coords[j], axis=0, weights=masses)
-                pbar_counter.value += 1
-                pass
-        else:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                com_i = average(coords[i], axis=0, weights=masses)
-                translated_i = coords[i] - com_i
-                subset1_coords = subset_coords[i] - com_i
-                com_j = average(coords[j], axis=0, weights=masses)
-                translated_j = coords[j] - com_j
-                subset2_coords = subset_coords[j] - com_j
-                rotamat = \
-                    rotation_matrix(subset1_coords, subset2_coords,
-                                    subset_masses)[
-                        0]
-                rotated_i = transpose(dot(rotamat, transpose(translated_i)))
-                pbar_counter.value += 1
-                pass
-
+	return None
     def _pbar_updater(self, pbar, pbar_counters, max_val, update_interval=0.2):
         '''Method that updates and prints the progress bar, upon polling
         progress status from workers.
@@ -385,33 +356,24 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
             	    cycle and used to evaluate the progress of each worker.
             '''
 
-        if subset_coords == None:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                coords[i] -= average(coords[i], axis=0, weights=masses)
-                coords[j] -= average(coords[j], axis=0, weights=masses)
-                weights = asarray(masses) / mean(masses)
-                rmsdmat[(i + 1) * i / 2 + j] = rmsd(coords[i], coords[j],
-                                                    weights=weights)
-                pbar_counter.value += 1
-        else:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                summasses = sum(masses)
-                subset_weights = asarray(subset_masses) / mean(subset_masses)
-                com_i = average(subset_coords[i], axis=0,
-                                weights=subset_masses)
-                translated_i = coords[i] - com_i
-                subset1_coords = subset_coords[i] - com_i
-                com_j = average(subset_coords[j], axis=0,
-                                weights=subset_masses)
-                translated_j = coords[j] - com_j
-                subset2_coords = subset_coords[j] - com_j
-                rotamat = rotation_matrix(subset1_coords, subset2_coords,
-                                          subset_weights)[0]
-                rotated_i = transpose(dot(rotamat, transpose(translated_i)))
-                rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(
-                    rotated_i.astype(float64), translated_j.astype(float64),
-                    coords[j].shape[0], masses, summasses)
-                pbar_counter.value += 1
+        for i, j in trm_indeces(tasks[0], tasks[1]):
+            summasses = sum(masses)
+            subset_weights = asarray(subset_masses) / mean(subset_masses)
+            com_i = average(subset_coords[i], axis=0,
+                            weights=subset_masses)
+            translated_i = coords[i] - com_i
+            subset1_coords = subset_coords[i] - com_i
+            com_j = average(subset_coords[j], axis=0,
+                            weights=subset_masses)
+            translated_j = coords[j] - com_j
+            subset2_coords = subset_coords[j] - com_j
+            rotamat = rotation_matrix(subset1_coords, subset2_coords,
+                                      subset_weights)[0]
+            rotated_i = transpose(dot(rotamat, transpose(translated_i)))
+            rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(
+                rotated_i.astype(float64), translated_j.astype(float64),
+                coords[j].shape[0], masses, summasses)
+            pbar_counter.value += 1
 
 
 class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
@@ -442,32 +404,23 @@ class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
         encore.confdistmatrix.RMSDMatrixGenerator._fitter_worker for details.
         '''
 
-        if subset_coords == None:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                coords[i] -= average(coords[i], axis=0, weights=masses)
-                coords[j] -= average(coords[j], axis=0, weights=masses)
-                weights = asarray(masses) / mean(masses)
-                rmsdmat[(i + 1) * i / 2 + j] = - rmsd(coords[i], coords[j],
-                                                      weights=weights)
-                pbar_counter.value += 1
-        else:
-            for i, j in trm_indeces(tasks[0], tasks[1]):
-                # masses = asarray(masses)/mean(masses)
-                summasses = sum(masses)
-                com_i = average(subset_coords[i], axis=0,
-                                weights=subset_masses)
-                translated_i = coords[i] - com_i
-                subset1_coords = subset_coords[i] - com_i
-                com_j = average(subset_coords[j], axis=0,
-                                weights=subset_masses)
-                translated_j = coords[j] - com_j
-                subset2_coords = subset_coords[j] - com_j
-                rotamat = \
-                    rotation_matrix(subset1_coords, subset2_coords,
-                                    subset_masses)[
-                        0]
-                rotated_i = transpose(dot(rotamat, transpose(translated_i)))
-                rmsdmat[(i + 1) * i / 2 + j] = MinusRMSD(
-                    rotated_i.astype(float64), translated_j.astype(float64),
-                    coords[j].shape[0], masses, summasses)
-                pbar_counter.value += 1
+        for i, j in trm_indeces(tasks[0], tasks[1]):
+            # masses = asarray(masses)/mean(masses)
+            summasses = sum(masses)
+            com_i = average(subset_coords[i], axis=0,
+                            weights=subset_masses)
+            translated_i = coords[i] - com_i
+            subset1_coords = subset_coords[i] - com_i
+            com_j = average(subset_coords[j], axis=0,
+                            weights=subset_masses)
+            translated_j = coords[j] - com_j
+            subset2_coords = subset_coords[j] - com_j
+            rotamat = \
+                rotation_matrix(subset1_coords, subset2_coords,
+                                subset_masses)[
+                    0]
+            rotated_i = transpose(dot(rotamat, transpose(translated_i)))
+            rmsdmat[(i + 1) * i / 2 + j] = MinusRMSD(
+                rotated_i.astype(float64), translated_j.astype(float64),
+                coords[j].shape[0], masses, summasses)
+            pbar_counter.value += 1
