@@ -44,6 +44,7 @@ import os
 import sys
 import shutil
 import tempfile
+import warnings
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -423,7 +424,10 @@ def dynamic_author_list():
 
 
 if __name__ == '__main__':
-    dynamic_author_list()
+    try:
+        dynamic_author_list()
+    except (OSError, IOError):
+        warnings.warn('Cannot write the list of authors.')
 
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
