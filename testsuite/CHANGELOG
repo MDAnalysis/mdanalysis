@@ -13,7 +13,7 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16 orbeckst, jbarnoud
+21/03/16 orbeckst, jbarnoud, pedrishi
 
   * 0.15.0
 
@@ -22,9 +22,9 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
       @richardjgowers as maintainer
     - a __version__ variable is now exposed; it is built by setup.py from the
       AUTHORS file (Issue #784)
+    - Removed all bare assert (Issue #724)
 
 02/28/16 manuel.nuno.melo
-
   * 0.14.0
 
     - Added the cleanup plugin (--with-mda_cleanup) to delete offset files
