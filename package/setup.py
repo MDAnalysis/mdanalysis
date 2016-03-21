@@ -68,6 +68,7 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
+
 RELEASE = "0.14.1-dev0"
 
 is_release = not 'dev' in RELEASE
@@ -370,7 +371,6 @@ def extensions(config):
 
 if __name__ == '__main__':
     # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-    RELEASE = "0.14.0-dev0"
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
