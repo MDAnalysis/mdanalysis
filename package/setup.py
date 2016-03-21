@@ -39,6 +39,7 @@ Google groups forbids any name that contains the string `anal'.)
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
+import codecs
 import os
 import sys
 import shutil
@@ -364,7 +365,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with open('AUTHORS') as infile:
+    with codecs.open('AUTHORS', encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -389,7 +390,7 @@ def dynamic_author_list():
                 break
             elif line.strip()[:2] == '- ':
                 # This is a bullet point, so it should be an author name.
-                name = line.strip()[2:].strip().decode('utf-8')
+                name = line.strip()[2:].strip()
                 authors.append(name)
 
     # So far, the list of authors is sorted chronologically. We want it
@@ -403,7 +404,8 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    with open('MDAnalysis/authors.py', 'w') as outfile:
+    out_path = 'MDAnalysis/authors.py'
+    with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
 #-*- coding:utf-8 -*-
@@ -417,7 +419,7 @@ def dynamic_author_list():
         template = u'__authors__ = [\n{}\n]'
         author_string = u',\n'.join(u'    u"{}"'.format(name)
                                     for name in authors)
-        print(template.format(author_string).encode('utf-8'), file=outfile)
+        print(template.format(author_string), file=outfile)
 
 
 if __name__ == '__main__':
