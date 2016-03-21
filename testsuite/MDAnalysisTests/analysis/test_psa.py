@@ -19,7 +19,7 @@ import MDAnalysis
 import MDAnalysis.analysis.psa
 
 from numpy.testing import (TestCase, dec, assert_array_less,
-                           assert_array_almost_equal)
+                           assert_array_almost_equal, assert_)
 import numpy as np
 
 import tempdir
@@ -73,4 +73,4 @@ class TestPSAnalysis(TestCase):
 
     def test_reversal_frechet(self):
         err_msg = "Frechet distances did not increase after path reversal"
-        assert self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg
+        assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)

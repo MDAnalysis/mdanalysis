@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 jandom, abhinavgupta94, orbeckst
+??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jdetle, jbarnoud
 
   * 0.15.0
 
@@ -21,14 +21,21 @@ Metadata
 
   * link download_url to GitHub releases so that Depsy recognizes
     contributors (issue #749)
+  * a __version__ variable is now exposed; it is built by setup.py from the
+    AUTHORS file (Issue #784)
 
 API Changes
 
   * rmsd doesn't superimpose by default anymore. The superposition
     is controlled by the 'superposition' keyword now. (see issue #562)
 
-Fixes
+Enhancements
 
+  * Add conda build scripts (Issue #608)
+
+Fixes
+  
+  * change_release now finds number and dev (Issue #776) 
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
   * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
 
