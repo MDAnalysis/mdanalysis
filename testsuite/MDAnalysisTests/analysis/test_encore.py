@@ -12,7 +12,7 @@
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
-#
+
 from __future__ import print_function
 
 import MDAnalysis as mda
@@ -30,6 +30,9 @@ import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
 
 
+class FakePBarCounter:
+    def __init__(self):
+        self.value = 0
 
 class TestEnsemble(TestCase):
 
@@ -94,10 +97,7 @@ class TestEncore(TestCase):
         parallel_calculation = encore.utils.ParallelCalculation(function = function,
                                                                 ncores = 4,
                                                                 args = arguments)
-
         results = parallel_calculation.run()
-
-
 
         for i,r in enumerate(results):
             assert_equal(r[1], arguments[i][0]**2,
@@ -117,6 +117,26 @@ class TestEncore(TestCase):
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
 
+
+        tasks = ((0, 0), (1, 0))
+        n_tasks = len(list(encore.utils.trm_indeces(tasks[0],tasks[1])))
+        distmatrix = numpy.zeros(n_tasks)
+        coordinates = self.ens1.get_coordinates(selection = "name CA", format = 'fac')
+        masses = numpy.ones(coordinates.shape[1])
+        pbar_counter = FakePBarCounter()
+
+        generator._fitter_worker(tasks,
+                                 coordinates,
+                                 coordinates,
+                                 masses,
+                                 masses,
+                                 distmatrix,
+                                 pbar_counter)
+
+        for i in range(n_tasks):
+            assert_almost_equal(reference.rmsd[i,2], distmatrix[i], decimal = 3,
+                                err_msg = "calculated RMSD values differ from the reference implementation")
+                                       
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(rmsd[2], confdist_matrix[0,i], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
