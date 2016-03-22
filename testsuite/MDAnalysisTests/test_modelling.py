@@ -19,8 +19,8 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     TRZ, TRZ_psf, \
     capping_input, capping_output, capping_ace, capping_nma, \
     merge_protein, merge_ligand, merge_water
-import MDAnalysis.core.AtomGroup
-from MDAnalysis.core.AtomGroup import Atom, AtomGroup
+import MDAnalysis.core.groups
+from MDAnalysis.core.groups import make_classes
 from MDAnalysis import NoDataError
 
 import numpy as np
@@ -33,6 +33,8 @@ import itertools
 
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
+
+AtomGroup = make_classes()['atomgroup']
 
 
 def capping(ref, ace, nma, output):
@@ -124,7 +126,6 @@ class TestCapping(TestCase):
 
         assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
-
 class TestMerge(TestCase):
     ext = "pdb"
 
@@ -154,6 +155,12 @@ class TestMerge(TestCase):
         # Check that the output Universe has the same number of atoms as the
         # starting AtomGroups
         assert_equal(len(u0.atoms), (len(u1.atoms) + len(u2.atoms) + len(u3.atoms)))
+        # Check that the output Universe has the same number of residues and
+        # segments as the starting AtomGroups
+        assert_equal(len(u0.residues), (len(u1.residues) + len(u2.residues) +
+                                                           len(u3.residues)))
+        assert_equal(len(u0.segments), (len(u1.segments) + len(u2.segments) +
+                                                           len(u3.segments)))
 
         # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe
@@ -177,6 +184,14 @@ class TestMerge(TestCase):
         ids_new2 = [a.index for a in u.atoms]
         assert_equal(ids_new, ids_new2)
 
+    def test_merge_same_universe(self):
+        u1, _, _ = self.universes
+        
+        u0 = MDAnalysis.Merge(u1.atoms, u1.atoms, u1.atoms)
+        assert_equal(len(u0.atoms), 3*len(u1.atoms))
+        assert_equal(len(u0.residues), 3*len(u1.residues))
+        assert_equal(len(u0.segments), 3*len(u1.segments))
+
     def test_residue_references(self):
         u1, u2, u3 = self.universes
         m = Merge(u1.atoms, u2.atoms)
@@ -196,8 +211,8 @@ class TestMerge(TestCase):
         assert_raises(TypeError, Merge, ['1', 2])
 
     def test_emptyAG_ValueError(self):
-        a = AtomGroup([])
-        b = AtomGroup([])
+        a = AtomGroup([], None)
+        b = AtomGroup([], None)
 
         assert_raises(ValueError, Merge, a, b)
 
@@ -205,9 +220,11 @@ class TestMergeTopology(object):
     """Test that Merge correct does topology"""
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u2 = MDAnalysis.Universe(merge_protein)
 
     def tearDown(self):
         del self.u
+        del self.u2
 
     def test_merge_with_topology(self):
         ag1 = self.u.atoms[:20]
@@ -216,25 +233,36 @@ class TestMergeTopology(object):
         u2 = MDAnalysis.Merge(ag1, ag2)
 
         assert_(len(u2.atoms) == 30)
-        assert_(len(u2.bonds) == 28)
-        assert_(len(u2.angles) == 47)
-        assert_(len(u2.dihedrals) == 53)
-        assert_(len(u2.impropers) == 1)
+        assert_(len(u2.atoms.bonds) == 28)
+        assert_(len(u2.atoms.angles) == 47)
+        assert_(len(u2.atoms.dihedrals) == 53)
+        assert_(len(u2.atoms.impropers) == 1)
 
         # All these bonds are in the merged Universe
         assert_(len(ag1[0].bonds) == len(u2.atoms[0].bonds))
         # One of these bonds isn't in the merged Universe
         assert_(len(ag2[0].bonds) -1 == len(u2.atoms[20].bonds))
 
+    def test_merge_with_topology_from_different_universes(self):
+        u3 = MDAnalysis.Merge(self.u.atoms[:110], self.u2.atoms)
+
+        # merge_protein doesn't contain bond topology, so merged universe
+        # shouldn't have one either
+        print(u3.atoms.bonds)
+        # PDB reader yields empty Bonds group, which means bonds from
+        # PSF/DCD survive the merge
+        #assert_(not hasattr(u3.atoms, 'bonds') or len(u3.atoms.bonds) == 0)
+        assert_(not hasattr(u3.atoms, 'angles') or len(u3.atoms.bonds) == 0)
+        assert_(not hasattr(u3.atoms, 'dihedrals') or len(u3.atoms.bonds) == 0)
+        assert_(not hasattr(u3.atoms, 'impropers') or len(u3.atoms.bonds) == 0)
+
     def test_merge_without_topology(self):
         # This shouldn't have topology as we merged single atoms
-        ag1 = AtomGroup([self.u.atoms[1]])
-        ag2 = AtomGroup([self.u.atoms[10]])
-
-        u2 = MDAnalysis.Merge(ag1, ag2)
+        u2 = MDAnalysis.Merge(self.u.atoms[0:1], self.u.atoms[10:11])
 
         assert_(len(u2.atoms) == 2)
-        assert_(len(u2.bonds) == 0)
-        assert_(len(u2.angles) == 0)
-        assert_(len(u2.dihedrals) == 0)
-        assert_(len(u2.impropers) == 0)
+        assert_(len(u2.atoms.bonds) == 0)
+        assert_(len(u2.atoms.angles) == 0)
+        assert_(len(u2.atoms.dihedrals) == 0)
+        assert_(len(u2.atoms.impropers) == 0)
+
