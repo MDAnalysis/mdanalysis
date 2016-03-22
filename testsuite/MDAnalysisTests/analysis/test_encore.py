@@ -434,6 +434,14 @@ class TestEncore(TestCase):
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     @dec.slow
+    def test_hes_ml_cov(self):
+        results, details = encore.hes([self.ens1, self.ens2], cov_estimator="ml")
+        result_value = results[0,1]
+        expected_value = 50187.486604828038
+        assert_almost_equal(result_value, expected_value, decimal=2,
+                            err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
+
+    @dec.slow
     def test_ces_to_self(self):
         results, details = encore.ces([self.ens1, self.ens1], preference_values = -3.0)
         result_value = results[0,1]

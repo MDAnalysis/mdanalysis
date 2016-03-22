@@ -218,10 +218,7 @@ def discrete_jensen_shannon_divergence(pA, pB):
 
 
 # calculate harmonic similarity
-def harmonic_ensemble_similarity(ensemble1=None,
-                                 ensemble2=None,
-                                 selection="name CA",
-                                 sigma1=None,
+def harmonic_ensemble_similarity(sigma1=None,
                                  sigma2=None,
                                  x1=None,
                                  x2=None,
@@ -236,18 +233,6 @@ def harmonic_ensemble_similarity(ensemble1=None,
 
     Parameters
     ----------
-
-        ensemble1 : encore.Ensemble or None
-            First ensemble to be compared. If this is None, sigma1 and x1
-            must be provided.
-
-        ensemble2 : encore.Ensemble or None
-            Second ensemble to be compared. If this is None, sigma2 and x2
-            must be provided.
-
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
         sigma1 : numpy.array
             Covariance matrix for the first ensemble. If this None, calculate
@@ -277,27 +262,6 @@ def harmonic_ensemble_similarity(ensemble1=None,
         dhes : float
             harmonic similarity measure
     """
-
-    # If matrices and means are specified, use them
-    if x1 == None or x2 == None or sigma1 == None or sigma2 == None:
-        if ensemble1 == None or ensemble2 == None:
-            raise RuntimeError
-
-        # Extract coordinates from ensembles
-        coordinates_system1 = ensemble1.get_coordinates(selection, format='fac')
-        coordinates_system2 = ensemble2.get_coordinates(selection, format='fac')
-
-        # Average coordinates in the two systems
-        x1 = numpy.average(coordinates_system1, axis=0).flatten()
-        x2 = numpy.average(coordinates_system2, axis=0).flatten()
-
-        # Covariance matrices in the two systems
-        sigma1 = covariance_matrix(ensemble1,
-                                   mass_weighted=mass_weighted,
-                                   estimator=covariance_estimator)
-        sigma2 = covariance_matrix(ensemble2,
-                                   mass_weighted=mass_weighted,
-                                   estimator=covariance_estimator)
 
     # Inverse covariance matrices
     sigma1_inv = numpy.linalg.pinv(sigma1)
@@ -444,7 +408,7 @@ def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
 
 
 def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
-                 nsamples=None, **kwargs):
+                 nsamples, **kwargs):
     """ 
     Generate Kernel Density Estimates (KDE) from embedded spaces and
     elaborate the coordinates for later use.
@@ -494,9 +458,9 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
         kdes.append(gaussian_kde(
             this_embedded))
 
-    # Set number of samples
-    if not nsamples:
-        nsamples = this_embedded.shape[1] * 10
+    # # Set number of samples
+    # if not nsamples:
+    #     nsamples = this_embedded.shape[1] * 10
 
     # Resample according to probability distributions
     for this_kde in kdes:
@@ -1159,8 +1123,7 @@ def hes(ensembles,
                 value = harmonic_ensemble_similarity(x1=xs[i],
                                                      x2=xs[j],
                                                      sigma1=sigmas[i],
-                                                     sigma2=sigmas[j],
-                                                     selection=selection)
+                                                     sigma2=sigmas[j])
                 values[i, j] = value
                 values[j, i] = value
             data.append(values)
@@ -1191,8 +1154,7 @@ def hes(ensembles,
         value = harmonic_ensemble_similarity(x1=xs[i],
                                              x2=xs[j],
                                              sigma1=sigmas[i],
-                                             sigma2=sigmas[j],
-                                             selection=selection)
+                                             sigma2=sigmas[j])
         values[i, j] = value
         values[j, i] = value
 
