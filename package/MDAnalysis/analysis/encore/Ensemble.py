@@ -59,13 +59,6 @@ class Ensemble(MDAnalysis.Universe):
     alpha carbons ("CA") are considered. Frames in an Ensemble object can be
     superimposed to a reference conformation using the reference argument.
 
-    Attributes (in addition to those found in Universe)
-    ----------
-
-    topology_filename : str
-        Name of Topology file.
-
-
 
     Examples
     --------
@@ -152,8 +145,6 @@ class Ensemble(MDAnalysis.Universe):
             # object, to provide fast access and allow coordinates
             # to be manipulated
             self.trajectory = ArrayReader(coordinates)
-
-        self.topology_filename = topology
 
 
     def get_coordinates(self, selection="", format='afc'):

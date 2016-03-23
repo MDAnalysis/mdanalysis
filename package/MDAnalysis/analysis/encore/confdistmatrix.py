@@ -117,7 +117,7 @@ class ConformationalDistanceMatrixGenerator:
             metadata = array([(gethostname(),
                                getuser(),
                                str(datetime.now()),
-                               ensemble.topology_filename,
+                               ensemble.filename,
                                framesn,
                                pairwise_align,
                                selection,

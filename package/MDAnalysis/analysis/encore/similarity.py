@@ -833,7 +833,7 @@ def get_similarity_matrix(ensembles,
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     # Joined ensemble
-    joined_ensemble = Ensemble(topology=ensembles[0].topology_filename,
+    joined_ensemble = Ensemble(topology=ensembles[0].filename,
                                trajectory=numpy.concatenate(
                                tuple([e.trajectory.timeseries(e.atoms)
                                       for e in ensembles]), axis=1),
@@ -978,7 +978,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     slices_n.append(slices_n[-1] + residuals + window_size)
     for s in range(len(slices_n) - 1):
         tmp_ensembles.append(Ensemble(
-            topology=ensemble.topology_filename,
+            topology=ensemble.filename,
             trajectory=ensemble.trajectory.
                            get_array()[:,slices_n[s]:slices_n[s + 1], :],
             format=ArrayReader))
