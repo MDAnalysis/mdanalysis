@@ -176,11 +176,6 @@ class ArrayReader(base.ProtoReader):
         """Reset iteration to first frame"""
         self.ts.frame = -1
 
-    def __iter__(self):
-        self._reopen()
-        while self.ts.frame < self.n_frames-1:
-            yield self._read_next_timestep()
-
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup. Note that
         this is a copy of the underlying array (not a view).
@@ -216,7 +211,7 @@ class ArrayReader(base.ProtoReader):
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
 
-        if self.ts.frame >= self.n_frames:
+        if self.ts.frame >= self.n_frames-1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:
             ts = self.ts
