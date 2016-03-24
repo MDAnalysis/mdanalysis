@@ -24,7 +24,7 @@ import numpy
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small, PDB,XTC
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, module_not_found
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
@@ -482,6 +482,8 @@ class TestEncore(TestCase):
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {}. Expected {}.".format(result_value, expected_value))
         
     @dec.slow
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_dres_to_self(self):
         results, details = encore.dres([self.ens1, self.ens1])
         result_value = results[0,1]
@@ -490,6 +492,8 @@ class TestEncore(TestCase):
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     @dec.slow
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_dres(self):
         results, details = encore.dres([self.ens1, self.ens2])
         result_value = results[0,1]
@@ -498,6 +502,8 @@ class TestEncore(TestCase):
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     @dec.slow
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_dres_without_superimposition(self):
         results, details = encore.dres([self.ens1, self.ens2], superimpose=False)
         result_value = results[0,1]
