@@ -520,6 +520,8 @@ class TestEncore(TestCase):
             assert_almost_equal(ev, results[i], decimal=2, 
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
     @dec.slow
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_dres_convergence(self):
         expected_values = [ 0.53998088,  0.40466411,  0.30709079,  0.26811765,  0.19571984,
          0.11489109,  0.06484937,  0.02803273,  0.        ]
@@ -528,6 +530,7 @@ class TestEncore(TestCase):
         for i,ev in enumerate(expected_values):
             assert_almost_equal(ev, results[i], decimal=1, 
                                 err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
+
     @dec.slow
     def test_hes_error_estimation(self):
         expected_average = 0.086
@@ -540,6 +543,7 @@ class TestEncore(TestCase):
                             err_msg="Unexpected average value for bootstrapped samples in Harmonic Ensemble imilarity")
         assert_almost_equal(expected_average, average, decimal=1, 
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
+
     @dec.slow
     def test_ces_error_estimation(self):
         expected_average = 0.02
@@ -552,7 +556,10 @@ class TestEncore(TestCase):
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
         assert_almost_equal(expected_average, average, decimal=1, 
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")        
+
     @dec.slow
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_dres_error_estimation(self):
         expected_average = 0.02
         expected_stdev = 0.01
