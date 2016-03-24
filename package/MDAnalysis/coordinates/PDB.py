@@ -217,6 +217,7 @@ import os
 import errno
 import textwrap
 import warnings
+import copy
 import logging
 import collections
 import numpy as np
@@ -545,7 +546,6 @@ class PrimitivePDBReader(base.Reader):
                              "Expected {expected} got {actual}"
                              "".format(expected=self._n_atoms, actual=pos))
         self.n_atoms = pos
-
         self.ts.frame = 0  # 0-based frame number as starting frame
         self.ts.data['occupancy'] = occupancy
 
@@ -799,7 +799,6 @@ class PrimitivePDBWriter(base.Writer):
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
-
         self.frames_written = 0
         if start < 0:
             raise ValueError("'Start' must be a positive value")
@@ -1185,24 +1184,22 @@ class PrimitivePDBWriter(base.Writer):
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             
-            if i == 0 :
-                prev_atom = vals.copy()
-            elif not self.bonds and vals['chainID'] != prev_atom['chainID'] and \
-                vals['chainID'] != " " and prev_atom['chainID'] != " ":
-                    end_atom = {}
-                    end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
-                     # check for overflow here?
-                    end_atom['resName'] = prev_atom['resName']
-                    end_atom['chainID'] = prev_atom['chainID']
-                    end_atom['resSeq'] = prev_atom['resSeq']
-                    end_atom['iCode'] = prev_atom['iCode']
-                    self.TER(end_atom)
-                    serial_count += 1
-                    vals['serial'] = int(str(serial_count + 1)[-5:]) 
-                    # check for overflow here?
-    
+            if i != 0 and vals['chainID'] != prev_atom['chainID'] \
+                and vals['chainID'] != " " and prev_atom['chainID'] != " ":
+                end_atom = {}
+                end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+                 # check for overflow here?
+                end_atom['resName'] = prev_atom['resName']
+                end_atom['chainID'] = prev_atom['chainID']
+                end_atom['resSeq'] = prev_atom['resSeq']
+                end_atom['iCode'] = prev_atom['iCode']
+                self.TER(end_atom)
+                serial_count += 1
+                vals['serial'] = int(str(serial_count + 1)[-5:])
+                # check for overflow here?
+          
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
-            prev_atom = vals.copy()
+            prev_atom = copy.deepcopy(vals)
             serial_count += 1
 
         if multiframe:
@@ -1214,6 +1211,7 @@ class PrimitivePDBWriter(base.Writer):
             ter_atom['resSeq'] = prev_atom['resSeq']
             ter_atom['iCode'] = prev_atom['iCode']
             self.TER(ter_atom)
+
             self.ENDMDL()
         self.frames_written += 1
 

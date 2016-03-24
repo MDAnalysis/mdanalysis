@@ -289,8 +289,8 @@ class TestPrimitivePDBWriter(TestCase):
 
         @attr('issue')
         def test_ter_format(self):
-            """Check whether the TER records are formatted and plcaed properly"""
-            filename = mda.Universe(PDB_full)
+            """Check whether the TER records are formatted and placed properly"""
+            u = mda.Universe(PDB_full)
             pdb = mda.Writer(self.outfile, multiframe=True)
             for ts in u.trajectory[:5]:
                 pdb.write(protein)
