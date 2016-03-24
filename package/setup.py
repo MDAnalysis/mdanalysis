@@ -148,9 +148,9 @@ class MDADistribution(Distribution, object):
 
     def run_commands(self):
         # The following seems fragile...
-        is_install = any(['install' in cmd for cmd in self.commands])
-        is_build = any(['build' in cmd for cmd in self.commands])
-        is_pipinstall = any(['egg_info' in cmd for cmd in self.commands])
+        is_install = any(('install' in cmd for cmd in self.commands))
+        is_build = any(('build' in cmd for cmd in self.commands))
+        is_pipinstall = any(('egg_info' in cmd for cmd in self.commands))
         if is_install or is_pipinstall:
             # MDAnalysis can do fine with only installing dependencies at
             #  build-time. However, biopython isn't that clever, and will
@@ -159,7 +159,7 @@ class MDADistribution(Distribution, object):
             #  probed by pip.
             self._mda_install_build_dependencies()
         if is_install or is_build:
-            self._mda_cython_generated = []
+            self.mda_cython_generated = []
             try:
                 if self.mda_use_cython:
                     self.cythonize()
@@ -181,7 +181,7 @@ class MDADistribution(Distribution, object):
         for pre_ext, post_ext in zip(self.ext_modules, new_ext_modules):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
-                    self._mda_cython_generated.append(source)
+                    self.mda_cython_generated.append(source)
         self.ext_modules = new_ext_modules
 
     def add_numpy_includes(self):
@@ -560,8 +560,8 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release) and hasattr(dist, "_mda_cython_generated"):
-        for cythonized in dist._mda_cython_generated:
+    if not config.get('keep_cythonized', default=is_release) and hasattr(dist, "mda_cython_generated"):
+        for cythonized in dist.mda_cython_generated:
             try:
                 os.unlink(cythonized)
             except OSError as err:
