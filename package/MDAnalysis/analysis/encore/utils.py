@@ -24,40 +24,40 @@ import sys
 class TriangularMatrix:
     """Triangular matrix class. This class is designed to provide a
     memory-efficient representation of a triangular matrix that still behaves
-     as a square symmetric one. The class wraps a numpy.array object,
-     in which data are memorized in row-major order. It also has few additional
-      facilities to conveniently load/write a matrix from/to file. It can be
-      accessed using the [] and () operators, similarly to a normal numpy array.
+    as a square symmetric one. The class wraps a numpy.array object,
+    in which data are memorized in row-major order. It also has few additional
+    facilities to conveniently load/write a matrix from/to file. It can be
+    accessed using the [] and () operators, similarly to a normal numpy array.
 
-	Attributes:
-	-----------
+    Attributes:
+    -----------
 
-		`size` : int
-			Size of the matrix (number of rows or number of columns)
-		
-		`metadata` : dict
-			Metadata for the matrix (date of creation, name of author ...)
-	"""
+    `size` : int
+            Size of the matrix (number of rows or number of columns)
+
+    `metadata` : dict
+            Metadata for the matrix (date of creation, name of author ...)
+    """
 
     def __init__(self, size, metadata=None, loadfile=None):
         """Class constructor.
-        
-		Attributes
-		----------
 
-		`size` : int or multiprocessing.SyncrhonizeArray
-    	    Size of the matrix (number of rows or columns). If an array is
-    	    provided instead, the size of the triangular matrix will be
-    	    calculated and the array copied as the matrix elements. Otherwise,
-    	    the matrix is just initialized to zero.
+        Attributes
+        ----------
 
-    	    `metadata` : dict or None
-    	    Metadata dictionary. Used to generate the metadata attribute.
+            `size` : int or multiprocessing.SyncrhonizeArray
+        Size of the matrix (number of rows or columns). If an array is
+        provided instead, the size of the triangular matrix will be
+        calculated and the array copied as the matrix elements. Otherwise,
+        the matrix is just initialized to zero.
 
-    	    `loadfile` : str or None
-    	    Load the matrix from this file. All the attributes and data will
-    	    be determined by the matrix file itself (i.e. metadata will be
-    	    ignored); size has to be provided though.
+            `metadata` : dict or None
+        Metadata dictionary. Used to generate the metadata attribute.
+
+            `loadfile` : str or None
+        Load the matrix from this file. All the attributes and data will
+        be determined by the matrix file itself (i.e. metadata will be
+        ignored); size has to be provided though.
         """
         self.metadata = metadata
         self.size = size
@@ -91,23 +91,22 @@ class TriangularMatrix:
         """Save matrix in the npz compressed numpy format. Save metadata and
         data as well.
 
-		Parameters
-		----------
-        
-      	  `fname` : str
-        		Name of the file to be saved.
+        Parameters
+        ----------
 
+        `fname` : str
+            Name of the file to be saved.
         """
         savez(fname, elements=self._elements, metadata=self.metadata)
 
     def loadz(self, fname):
-        """Load matrix from the npz compressed numpy format. 
+        """Load matrix from the npz compressed numpy format.
 
-		Parameters
-		----------
+        Parameters
+        ----------
 
-        	`fname` : str
-        		Name of the file to be loaded.
+        `fname` : str
+            Name of the file to be loaded.
         """
         loaded = load(fname)
 
@@ -131,51 +130,52 @@ class TriangularMatrix:
 class ParallelCalculation:
     """
     Generic parallel calculation class. Can use arbitrary functions,
-    arguments to functions and kwargs to functions. 
+    arguments to functions and kwargs to functions.
 
     Attributes
-	----------
+    ----------
 
-		`ncores` : int 
-			Number of cores to be used for parallel calculation
-		
-		`function` : callable object
-			Function to be run in parallel.
-	
-		`args` : list of tuples
-			Each tuple contains the arguments that will be passed to
-			function(). This means that a call to function() is performed for
-			each tuple. function is called as function(*args, **kwargs). Runs
-			are distributed on the requested numbers of cores.
-	
-		`kwargs` : list of dicts
-			Each tuple contains the named arguments that will be passed to
-			function, similarly as described for the args attribute.
-	
-		`nruns` : int
-			Number of runs to be performed. Must be equal to len(args) and
-			len(kwargs).
+    `ncores` : int
+            Number of cores to be used for parallel calculation
+
+    `function` : callable object
+            Function to be run in parallel.
+
+    `args` : list of tuples
+            Each tuple contains the arguments that will be passed to
+            function(). This means that a call to function() is performed for
+            each tuple. function is called as function(*args, **kwargs). Runs
+            are distributed on the requested numbers of cores.
+
+    `kwargs` : list of dicts
+            Each tuple contains the named arguments that will be passed to
+            function, similarly as described for the args attribute.
+
+    `nruns` : int
+            Number of runs to be performed. Must be equal to len(args) and
+            len(kwargs).
     """
 
     def __init__(self, ncores, function, args=[], kwargs=None):
         """ Class constructor.
 
-	Parameters
-	----------
-	
-		`ncores` : int 
-			Number of cores to be used for parallel calculation
-	
-		`function` : object that supports __call__, as functions
-			function to be run in parallel.
-	
-		`args` : list of tuples
-			Arguments for function; see the ParallelCalculation class
-			description.
-	
-		`kwargs` : list of dicts or None
-			kwargs for function; see the ParallelCalculation class description.
-	"""
+        Parameters
+        ----------
+
+        `ncores` : int
+            Number of cores to be used for parallel calculation
+
+        `function` : object that supports __call__, as functions
+            function to be run in parallel.
+
+        `args` : list of tuples
+            Arguments for function; see the ParallelCalculation class
+            description.
+
+        `kwargs` : list of dicts or None
+            kwargs for function; see the ParallelCalculation
+            class description.
+        """
 
         # args[0] should be a list of args, one for each run
         self.ncores = ncores
@@ -196,16 +196,16 @@ class ParallelCalculation:
         """
         Generic worker. Will run function with the prescribed args and kwargs.
 
-		Parameters
-		----------
+        Parameters
+        ----------
 
-			`q` : multiprocessing.Manager.Queue object
-				work queue, from which the worker fetches arguments and
-				messages
+        `q` : multiprocessing.Manager.Queue object
+                work queue, from which the worker fetches arguments and
+                messages
 
-			`results` : multiprocessing.Manager.Queue object
-				results queue, where results are put after each calculation is
-				finished
+        `results` : multiprocessing.Manager.Queue object
+                results queue, where results are put after each calculation is
+                finished
 
         """
         while True:
@@ -218,14 +218,14 @@ class ParallelCalculation:
         """
         Run parallel calculation.
 
-		Returns
-		-------
+        Returns
+        -------
 
-			`results` : tuple of ordered tuples (int, object)
-				int is the number of the calculation corresponding to a
-				certain argument in the args list, and object is the result of
-				corresponding calculation. For instance, in (3, output), output
-				is the return of function(\*args[3], \*\*kwargs[3]).
+        `results` : tuple of ordered tuples (int, object)
+                int is the number of the calculation corresponding to a
+                certain argument in the args list, and object is the result of
+                corresponding calculation. For instance, in (3, output), output
+                is the return of function(\*args[3], \*\*kwargs[3]).
         """
         manager = Manager()
         q = manager.Queue()
@@ -310,8 +310,9 @@ class ProgressBar(object):
 
 class AnimatedProgressBar(ProgressBar):
     """Extends ProgressBar to allow you to use it straighforward on a script.
-    Accepts an extra keyword argument named `stdout` (by default use sys.stdout).
-    The progress status may be send to any file-object. 
+    Accepts an extra keyword argument named `stdout`
+    (by default use sys.stdout).
+    The progress status may be send to any file-object.
     """
 
     def __init__(self, *args, **kwargs):
@@ -331,17 +332,17 @@ def trm_indeces(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
     The matrix size is automatically determined from the number of elements.
-    For instance: trm_indexes((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0) (2,1).
+    For instance: trm_indexes((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
+    (2,1).
 
     Parameters
-	----------
+    ----------
 
-    	`a` : (int i, int j) tuple
-		starting matrix element. 
+    `a` : (int i, int j) tuple
+        starting matrix element.
 
-    	`b` : (int i, int j) tuple
-		final matrix element.
-
+    `b` : (int i, int j) tuple
+        final matrix element.
     """
     i, j = a
     while i < b[0]:
@@ -362,29 +363,28 @@ def trm_indeces_nodiag(n):
     without diagonal (e.g. no elements (0,0),(1,1),...,(n,n))
 
     Parameters
-	----------
+    ----------
 
-	    `n` : int 
-			Matrix size
+    `n` : int
+        Matrix size
 """
 
     for i in xrange(1, n):
         for j in xrange(i):
             yield (i, j)
 
+
 def trm_indeces_diag(n):
     """generate (i,j) indeces of a triangular matrix of n rows (or columns),
-    with diagonal 
+    with diagonal
 
     Parameters
-        ----------
+    ----------
 
-            `n` : int
-                        Matrix size
+    `n` : int
+        Matrix size
 """
 
     for i in xrange(0, n):
         for j in xrange(i+1):
             yield (i, j)
-
-

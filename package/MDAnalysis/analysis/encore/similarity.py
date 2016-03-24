@@ -67,7 +67,6 @@ examples first execute: ::
     >>> import MDAnalysis.analysis.encore as encore
     >>> from MDAnalysis.tests.datafiles import PDB_small, DCD, DCD2
 
-
 To calculate the Harmonic Ensemble Similarity (:func:`hes`)
 two ensemble objects are first created and then used for calculation: ::
 
@@ -93,8 +92,12 @@ parameter `frame_interval`. Additionally, by saving the calculated
 can be reduced for future calculations using e.g. different parameters
 for the clustering algorithm, or can be reused for DRES: ::
 
-    >>> ens1 = encore.Ensemble(topology = PDB_small, trajectory = DCD, frame_interval=3)
-    >>> ens2 = encore.Ensemble(topology = PDB_small, trajectory = DCD2, frame_interval=3)
+    >>> ens1 = encore.Ensemble( topology = PDB_small, 
+                                trajectory = DCD, 
+                                frame_interval=3 )
+    >>> ens2 = encore.Ensemble( topology = PDB_small, 
+                                trajectory = DCD2, 
+                                frame_interval=3)
     >>> print encore.ces([ens1, ens2], save_matrix = "minusrmsd.npz")
     (array([[ 0.        ,  0.08093055],
            [ 0.08093055,  0.        ]]), None)
@@ -110,7 +113,10 @@ As SPE requires the distance matrix calculated on the original space, we
 can reuse the previously-calculated -RMSD matrix with sign changed.
 In the following example the dimensions are reduced to 3: ::
 
-    >>> print encore.dres([ens1, ens2], dimensions = 3, load_matrix = "minusrmsd.npz", change_sign = True)
+    >>> print encore.dres(  [ens1, ens2], 
+                            dimensions = 3, 
+                            load_matrix = "minusrmsd.npz", 
+                            change_sign = True )
     (array([[ 0.        ,  0.68108127],
            [ 0.68108127,  0.        ]]), None)
 
@@ -168,15 +174,10 @@ from .dimensionality_reduction.stochasticproxembed import \
     StochasticProximityEmbedding, kNNStochasticProximityEmbedding
 from .confdistmatrix import MinusRMSDMatrixGenerator, RMSDMatrixGenerator
 from .covariance import covariance_matrix, EstimatorShrinkage, EstimatorML
-from .utils import *
+from .utils import TriangularMatrix, ParallelCalculation
+from .utils import trm_indeces_diag, trm_indeces_nodiag
 
-
-# Silence deprecation warnings - scipy problem
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
-
-# Low boundary value for log() argument - ensure no nans 
+# Low boundary value for log() argument - ensure no nans
 EPSILON = 1E-15
 
 xlogy = numpy.vectorize(
@@ -191,17 +192,17 @@ def discrete_kullback_leibler_divergence(pA, pB):
     Parameters
     ----------
 
-        pA : iterable of floats
-            First discrete probability density function
+    pA : iterable of floats
+        First discrete probability density function
 
-        pB : iterable of floats
-            Second discrete probability density function
+    pB : iterable of floats
+        Second discrete probability density function
 
     Returns
     -------
 
-        dkl : float
-            Discrete Kullback-Liebler divergence
+    dkl : float
+        Discrete Kullback-Liebler divergence
     """
 
     return numpy.sum(xlogy(pA, pA / pB))
@@ -213,18 +214,18 @@ def discrete_jensen_shannon_divergence(pA, pB):
 
     Parameters
     ----------
-        
-        pA : iterable of floats
-            First discrete probability density function
 
-        pB : iterable of floats
-            Second discrete probability density function
+    pA : iterable of floats
+        First discrete probability density function
+
+    pB : iterable of floats
+        Second discrete probability density function
 
     Returns
     -------
-        
-        djs : float
-            Discrete Jensen-Shannon divergence
+
+    djs : float
+        Discrete Jensen-Shannon divergence
 """
     return 0.5 * (discrete_kullback_leibler_divergence(pA, (pA + pB) * 0.5) +
                   discrete_kullback_leibler_divergence(pB, (pA + pB) * 0.5))
@@ -247,27 +248,27 @@ def harmonic_ensemble_similarity(sigma1=None,
     Parameters
     ----------
 
-        sigma1 : numpy.array
-            Covariance matrix for the first ensemble. If this None, calculate
-            it from ensemble1 using covariance_estimator
+    sigma1 : numpy.array
+        Covariance matrix for the first ensemble. If this None, calculate
+        it from ensemble1 using covariance_estimator
 
-        sigma2 : numpy.array
-            Covariance matrix for the second ensemble. If this None, calculate
-            it from ensemble1 using covariance_estimator
+    sigma2 : numpy.array
+        Covariance matrix for the second ensemble. If this None, calculate
+        it from ensemble1 using covariance_estimator
 
-        x1: numpy.array
-            Mean for the estimated normal multivariate distribution of the first
-            ensemble. If this is None, calculate it from ensemble1
+    x1: numpy.array
+        Mean for the estimated normal multivariate distribution of the first
+        ensemble. If this is None, calculate it from ensemble1
 
-        x2: numpy.array
-            Mean for the estimated normal multivariate distribution of the first
-            ensemble.. If this is None, calculate it from ensemble2
+    x2: numpy.array
+        Mean for the estimated normal multivariate distribution of the first
+        ensemble.. If this is None, calculate it from ensemble2
 
-        mass_weighted : bool
-            Whether to perform mass-weighted covariance matrix estimation
+    mass_weighted : bool
+        Whether to perform mass-weighted covariance matrix estimation
 
-        covariance_estimator : either EstimatorShrinkage or EstimatorML objects
-            Which covariance estimator to use
+    covariance_estimator : either EstimatorShrinkage or EstimatorML objects
+        Which covariance estimator to use
 
     Returns
     -------
@@ -282,9 +283,6 @@ def harmonic_ensemble_similarity(sigma1=None,
 
     # Difference between average vectors
     d_avg = x1 - x2
-
-    # Sigma
-    sigma = sigma1_inv + sigma2_inv
 
     # Distance measure
     trace = numpy.trace(numpy.dot(sigma1, sigma2_inv) +
@@ -305,32 +303,31 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     Parameters
     ----------
 
-        cc : encore.ClustersCollection
-            Collection from cluster calculated by a clustering algorithm
-            (e.g. Affinity propagation)
+    cc : encore.ClustersCollection
+        Collection from cluster calculated by a clustering algorithm
+        (e.g. Affinity propagation)
 
-        ens1 : encore.Ensemble
-            First ensemble to be used in comparison
+    ens1 : encore.Ensemble
+        First ensemble to be used in comparison
 
-        ens2 : encore.Ensemble
-                Second ensemble to be used in comparison
+    ens2 : encore.Ensemble
+            Second ensemble to be used in comparison
 
-        ens1_id : int
-            First ensemble id as detailed in the ClustersCollection metadata
+    ens1_id : int
+        First ensemble id as detailed in the ClustersCollection metadata
 
-        ens2_id : int
-            Second ensemble id as detailed in the ClustersCollection metadata
+    ens2_id : int
+        Second ensemble id as detailed in the ClustersCollection metadata
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
     -------
 
-        djs : float
-            Jensen-Shannon divergence between the two ensembles, as calculated by
-            the clustering ensemble similarity method
+    djs : float
+        Jensen-Shannon divergence between the two ensembles, as calculated by
+        the clustering ensemble similarity method
     """
     ens1_coordinates = ens1.get_coordinates(selection, format='fac')
     ens2_coordinates = ens2.get_coordinates(selection, format='fac')
@@ -341,7 +338,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
                             0].shape[0] / float(ens2_coordinates.shape[0]) for
                         c in cc])
 
-    # Exclude clusters which have 0 elements in both ensembles    
+    # Exclude clusters which have 0 elements in both ensembles
     pA = tmpA[tmpA + tmpB > EPSILON]
     pB = tmpB[tmpA + tmpB > EPSILON]
 
@@ -362,34 +359,33 @@ def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     Parameters
     ----------
 
-        cc : encore.ClustersCollection
-                Collection from cluster calculated by a clustering algorithm
-                (e.g. Affinity propagation)
+    cc : encore.ClustersCollection
+            Collection from cluster calculated by a clustering algorithm
+            (e.g. Affinity propagation)
 
-        ens1 : encore.Ensemble
-                First ensemble to be used in comparison
+    ens1 : encore.Ensemble
+            First ensemble to be used in comparison
 
-        ens2 : encore.Ensemble
-                Second ensemble to be used in comparison
+    ens2 : encore.Ensemble
+            Second ensemble to be used in comparison
 
-        ens1_id : int
-                First ensemble id as detailed in the ClustersCollection
-                metadata
+    ens1_id : int
+            First ensemble id as detailed in the ClustersCollection
+            metadata
 
-        ens2_id : int
-                Second ensemble id as detailed in the ClustersCollection
-                metadata
+    ens2_id : int
+            Second ensemble id as detailed in the ClustersCollection
+            metadata
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
     -------
 
-        djs : float
-                Jensen-Shannon divergence between the two ensembles, as
-                calculated by the clustering ensemble similarity method
+    djs : float
+            Jensen-Shannon divergence between the two ensembles, as
+            calculated by the clustering ensemble similarity method
 
 """
 
@@ -403,12 +399,6 @@ def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
                 0].shape[0] for c in cc]
     sizeA = float(numpy.sum(ensA))
     sizeB = float(numpy.sum(ensB))
-    # sizeA = float( numpy.sum(
-    # [numpy.where( numpy.logical_and(c.metadata['ensemble'] <=
-    # ens1_id, c.metadata['ensemble']) >= ens1_id_min)[0].shape[0] for c in cc])
-    # sizeB = float(numpy.sum(
-    # [numpy.where( numpy.logical_and(c.metadata['ensemble']
-    # <= ens2_id, c.metadata['ensemble']) >= ens2_id_min)[0].shape[0] for c in cc])
 
     tmpA = numpy.array(ensA) / sizeA
     tmpB = numpy.array(ensB) / sizeB
@@ -429,36 +419,36 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     Parameters
     ----------
 
-        embedded_space : numpy.array
-            Array containing the coordinates of the embedded space
+    embedded_space : numpy.array
+        Array containing the coordinates of the embedded space
 
-        ensemble_assignment : numpy.array
-            Array containing one int per ensemble conformation. These allow to
-            distinguish, in the complete embedded space, which conformations
-            belong to each ensemble. For instance if ensemble_assignment
-            is [1,1,1,1,2,2], it means that the first four conformations belong
-            to ensemble 1 and the last two to ensemble 2
+    ensemble_assignment : numpy.array
+        Array containing one int per ensemble conformation. These allow to
+        distinguish, in the complete embedded space, which conformations
+        belong to each ensemble. For instance if ensemble_assignment
+        is [1,1,1,1,2,2], it means that the first four conformations belong
+        to ensemble 1 and the last two to ensemble 2
 
-        nesensembles : int
-            Number of ensembles
+    nesensembles : int
+        Number of ensembles
 
-        nsamples : int
-            samples to be drawn from the ensembles. Will be required in
-            a later stage in order to calculate dJS.
+    nsamples : int
+        samples to be drawn from the ensembles. Will be required in
+        a later stage in order to calculate dJS.
 
     Returns
     -------
 
-        kdes : scipy.stats.gaussian_kde
-            KDEs calculated from ensembles
+    kdes : scipy.stats.gaussian_kde
+        KDEs calculated from ensembles
 
-        resamples : list of numpy.array
-            For each KDE, draw samples according to the probability distribution
-            of the KDE mixture model
+    resamples : list of numpy.array
+        For each KDE, draw samples according to the probability distribution
+        of the KDE mixture model
 
-        embedded_ensembles : list of numpy.array
-            List of numpy.array containing, each one, the elements of the
-            embedded space belonging to a certain ensemble
+    embedded_ensembles : list of numpy.array
+        List of numpy.array containing, each one, the elements of the
+        embedded space belonging to a certain ensemble
     """
     kdes = []
     embedded_ensembles = []
@@ -491,7 +481,6 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
                                ln_P1_exp_P1=None, ln_P2_exp_P2=None,
                                ln_P1P2_exp_P1=None, ln_P1P2_exp_P2=None):
-    
     """
     Calculate the Jensen-Shannon divergence according the the
     Dimensionality reduction method. In this case, we have continuous
@@ -502,8 +491,8 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P
 
     where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation calculated
-    under the distribution P. We can, thus, just estimate the expectation values
-    of the 	components to get an estimate of dKL.
+    under the distribution P. We can, thus, just estimate the expectation
+    values of the components to get an estimate of dKL.
     Since the Jensen-Shannon distance is actually  more complex, we need to
     estimate four expectation values:
 
@@ -519,43 +508,43 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     Parameters
     ----------
 
-        kde1 : scipy.stats.gaussian_kde
-            Kernel density estimation for ensemble 1
+    kde1 : scipy.stats.gaussian_kde
+        Kernel density estimation for ensemble 1
 
-        resamples1 : numpy.array
-            Samples drawn according do kde1. Will be used as samples to
-            calculate the expected values according to 'P' as detailed before.
+    resamples1 : numpy.array
+        Samples drawn according do kde1. Will be used as samples to
+        calculate the expected values according to 'P' as detailed before.
 
-        kde2 : scipy.stats.gaussian_kde
-                Kernel density estimation for ensemble 2
+    kde2 : scipy.stats.gaussian_kde
+            Kernel density estimation for ensemble 2
 
-        resamples2 : numpy.array
-            Samples drawn according do kde2. Will be used as sample to
-            calculate the expected values according to 'Q' as detailed before.
+    resamples2 : numpy.array
+        Samples drawn according do kde2. Will be used as sample to
+        calculate the expected values according to 'Q' as detailed before.
 
-        ln_P1_exp_P1 : float or None
-            Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P; if None,
-            calculate it instead
+    ln_P1_exp_P1 : float or None
+        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P; if None,
+        calculate it instead
 
-        ln_P2_exp_P2 : float or None
-            Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if
-            None, calculate it instead
+    ln_P2_exp_P2 : float or None
+        Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if
+        None, calculate it instead
 
-        ln_P1P2_exp_P1 : float or None
-            Use this value for
-            :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
-             if None, calculate it instead
+    ln_P1P2_exp_P1 : float or None
+        Use this value for
+        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
+         if None, calculate it instead
 
-        ln_P1P2_exp_P1 : float or None
-            Use this value for
-            :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;
-            if None, calculate it instead
+    ln_P1P2_exp_P1 : float or None
+        Use this value for
+        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;
+        if None, calculate it instead
 
     Returns
     -------
-        djs : float
-            Jensen-Shannon divergence calculated according to the dimensionality
-            reduction method
+    djs : float
+        Jensen-Shannon divergence calculated according to the dimensionality
+        reduction method
 
     """
 
@@ -584,43 +573,43 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     Parameters
     ----------
 
-        embedded_space : numpy.array
-                Array containing the coordinates of the embedded space
+    embedded_space : numpy.array
+            Array containing the coordinates of the embedded space
 
-        ensemble_assignment : numpy.array
-                array containing one int per ensemble conformation. These allow
-                to distinguish, in the complete embedded space, which
-                conformations belong to each ensemble. For instance if
-                ensemble_assignment is [1,1,1,1,2,2], it means that the first
-                four conformations belong to ensemble 1 and the last two
-                to ensemble 2
+    ensemble_assignment : numpy.array
+            array containing one int per ensemble conformation. These allow
+            to distinguish, in the complete embedded space, which
+            conformations belong to each ensemble. For instance if
+            ensemble_assignment is [1,1,1,1,2,2], it means that the first
+            four conformations belong to ensemble 1 and the last two
+            to ensemble 2
 
-        nensembles : int
-                Number of ensembles
+    nensembles : int
+            Number of ensembles
 
-        nsamples : int
-            Samples to be drawn from the ensembles. Will be required in a later
-            stage in order to calculate dJS.
+    nsamples : int
+        Samples to be drawn from the ensembles. Will be required in a later
+        stage in order to calculate dJS.
 
-        ens_id_min : int
-            Minimum ID of the ensemble to be considered; see description
+    ens_id_min : int
+        Minimum ID of the ensemble to be considered; see description
 
-        ens_id_max : int
-            Maximum ID of the ensemble to be considered; see description
+    ens_id_max : int
+        Maximum ID of the ensemble to be considered; see description
 
     Returns
     -------
 
-        kdes : scipy.stats.gaussian_kde
-                KDEs calculated from ensembles
+    kdes : scipy.stats.gaussian_kde
+            KDEs calculated from ensembles
 
-        resamples : list of numpy.array
-                For each KDE, draw samples according to the probability
-                distribution of the kde mixture model
+    resamples : list of numpy.array
+            For each KDE, draw samples according to the probability
+            distribution of the kde mixture model
 
-        embedded_ensembles : list of numpy.array
-                List of numpy.array containing, each one, the elements of the
-                embedded space belonging to a certain ensemble
+    embedded_ensembles : list of numpy.array
+            List of numpy.array containing, each one, the elements of the
+            embedded space belonging to a certain ensemble
 
 
     """
@@ -642,7 +631,7 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
                               ensemble_assignment <= i))].transpose()
         embedded_ensembles.append(this_embedded)
         kdes.append(
-            gaussian_kde(this_embedded)) # XXX support different bandwidth values
+            gaussian_kde(this_embedded))
 
     # Set number of samples
     if not nsamples:
@@ -663,26 +652,26 @@ def write_output(matrix, base_fname=None, header="", suffix="",
     Parameters
     ----------
 
-        matrix : encore.utils.TriangularMatrix
-                Matrix containing the values to be printed
+    matrix : encore.utils.TriangularMatrix
+            Matrix containing the values to be printed
 
-        base_fname : str
-            Basic filename for output. If None, no files will be written, and
-            the matrix will be just printed on screen
+    base_fname : str
+        Basic filename for output. If None, no files will be written, and
+        the matrix will be just printed on screen
 
-        header : str
-                Line to be written just before the matrix
+    header : str
+            Line to be written just before the matrix
 
-        suffix : str
-            String to be concatenated to basename, in order to get the final
-            file name
+    suffix : str
+        String to be concatenated to basename, in order to get the final
+        file name
 
-        extension : str
-            Extension for the output file
+    extension : str
+        Extension for the output file
 
     """
 
-    if base_fname != None:
+    if base_fname is not None:
         fname = base_fname + "-" + suffix + "." + extension
     else:
         fname = None
@@ -698,24 +687,27 @@ def bootstrap_coordinates(coords, times):
     Parameters
     ----------
 
-        coords : numpy.array
-             3-dimensional coordinates array
+    coords : numpy.array
+         3-dimensional coordinates array
 
-        times : int
-            Number of times the coordinates will be bootstrapped
+    times : int
+        Number of times the coordinates will be bootstrapped
 
     Returns
     -------
 
-        out : list
-            Bootstrapped coordinates list. len(out) = times.
+    out : list
+        Bootstrapped coordinates list. len(out) = times.
         """
     out = []
     for t in range(times):
         this_coords = numpy.zeros(coords.shape)
         for c in range(this_coords.shape[0]):
-            this_coords[c, :, :] = coords[numpy.random.randint(low=0, high=
-            this_coords.shape[0]), :, :]
+            this_coords[c, :, :] = \
+                coords[numpy.random.randint(low=0,
+                                            high=this_coords.shape[0]),
+                       :,
+                       :]
         out.append(this_coords)
     return out
 
@@ -729,17 +721,17 @@ def bootstrapped_matrix(matrix, ensemble_assignment):
     Parameters
     ----------
 
-        matrix : encore.utils.TriangularMatrix
-            similarity/dissimilarity matrix
+    matrix : encore.utils.TriangularMatrix
+        similarity/dissimilarity matrix
 
-        ensemble_assignment: numpy.array 
-            array of ensemble assignments. This array must be matrix.size long.
+    ensemble_assignment: numpy.array 
+        array of ensemble assignments. This array must be matrix.size long.
 
     Returns
     -------
 
-        this_m : encore.utils.TriangularMatrix
-            bootstrapped similarity/dissimilarity matrix
+    this_m : encore.utils.TriangularMatrix
+        bootstrapped similarity/dissimilarity matrix
     """
     ensemble_identifiers = numpy.unique(ensemble_assignment)
     this_m = TriangularMatrix(size=matrix.size)
@@ -774,10 +766,10 @@ def get_similarity_matrix(ensembles,
     """
     Retrieves or calculates the similarity or conformational distance (RMSD)
     matrix. The similarity matrix is calculated between all the frames of all
-    the encore.Ensemble objects given as input. The order of the matrix elements
-    depends on the order of the coordinates of the ensembles and on the order of
-    the input ensembles themselves, therefore the order of the input list is
-    significant.
+    the encore.Ensemble objects given as input. The order of the matrix
+    elements depends on the order of the coordinates of the ensembles and on
+    the order of the input ensembles themselves, therefore the order of the
+    input list is significant.
 
     The similarity matrix can either be calculated from input Ensembles or
     loaded from an input numpy binary file. The signs of the elements of 
@@ -791,61 +783,62 @@ def get_similarity_matrix(ensembles,
 
     Parameters
     ----------
-        ensembles : list
-            List of ensembles
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    ensembles : list
+        List of ensembles
 
-        similarity_mode : str, optional
-            whether input matrix is smilarity matrix (minus RMSD) or
-            a conformational distance matrix (RMSD). Accepted values 
-            are "minusrmsd" and "rmsd".
-        
-        load_matrix : str, optional
-            Load similarity/dissimilarity matrix from numpy binary file instead
-            of calculating it (default is None). A filename is required.
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        change_sign : bool, optional
-            Change the sign of the elements of loaded matrix (default is False).
-            Useful to switch between similarity/distance matrix.
+    similarity_mode : str, optional
+        whether input matrix is smilarity matrix (minus RMSD) or
+        a conformational distance matrix (RMSD). Accepted values 
+        are "minusrmsd" and "rmsd".
 
-        save_matrix : bool, optional
-            Save calculated matrix as numpy binary file (default is None). A
-            filename is required.
+    load_matrix : str, optional
+        Load similarity/dissimilarity matrix from numpy binary file instead
+        of calculating it (default is None). A filename is required.
 
-        superimpose : bool, optional
-            Whether to superimpose structures before calculating distance
-            (default is True).
+    change_sign : bool, optional
+        Change the sign of the elements of loaded matrix (default is False).
+        Useful to switch between similarity/distance matrix.
 
-        superimposition_subset : str, optional
-            Group for superimposition using MDAnalysis selection syntax
-            (default is CA atoms: "name CA")
+    save_matrix : bool, optional
+        Save calculated matrix as numpy binary file (default is None). A
+        filename is required.
 
-        mass_weighted : bool, optional
-            calculate a mass-weighted RMSD (default is True). If set to False
-            the superimposition will also not be mass-weighted.
+    superimpose : bool, optional
+        Whether to superimpose structures before calculating distance
+        (default is True).
 
-        bootstrap_matrix : bool, optional
-            Whether to bootstrap the similarity matrix (default is False).
+    superimposition_subset : str, optional
+        Group for superimposition using MDAnalysis selection syntax
+        (default is CA atoms: "name CA")
 
-        bootstrapping_samples : int, optional
-            Number of times to bootstrap the similarity matrix (default is
-            100).
+    mass_weighted : bool, optional
+        calculate a mass-weighted RMSD (default is True). If set to False
+        the superimposition will also not be mass-weighted.
 
-        np : int, optional
-            Maximum number of cores to be used (default is 1)
+    bootstrap_matrix : bool, optional
+        Whether to bootstrap the similarity matrix (default is False).
+
+    bootstrapping_samples : int, optional
+        Number of times to bootstrap the similarity matrix (default is
+        100).
+
+    np : int, optional
+        Maximum number of cores to be used (default is 1)
 
     Returns
     -------
-        confdistmatrix : encore.utils.TriangularMatrix or list of encore.utils.TriangularMatrix
-            Conformational distance or similarity matrix. If bootstrap_matrix
-            is true, bootstrapping_samples matrixes are bootstrapped from the
-            original one and they are returned as a list.
+
+    confdistmatrix : encore.utils.TriangularMatrix or list of
+                    encore.utils.TriangularMatrix
+        Conformational distance or similarity matrix. If bootstrap_matrix
+        is true, bootstrapping_samples matrixes are bootstrapped from the
+        original one and they are returned as a list.
     """
 
-    trajlist = []
     ensemble_assignment = []
 
     nensembles = len(ensembles)
@@ -853,7 +846,7 @@ def get_similarity_matrix(ensembles,
     # Define ensemble assignments as required on the joined ensemble
     for i in range(1, nensembles + 1):
         ensemble_assignment += [i for j in ensembles[i - 1]
-            .get_coordinates(selection, format='fac')]
+                                .get_coordinates(selection, format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     # Joined ensemble
@@ -862,9 +855,6 @@ def get_similarity_matrix(ensembles,
                                tuple([e.trajectory.timeseries(e.atoms)
                                       for e in ensembles]), axis=1),
                                format=ArrayReader)
-
-    # Define metadata dictionary
-    metadata = {'ensemble': ensemble_assignment}
 
     # Choose distance metric
     if similarity_mode == "minusrmsd":
@@ -875,17 +865,18 @@ def get_similarity_matrix(ensembles,
         matrix_builder = RMSDMatrixGenerator()
     else:
         logging.error(
-            "Supported conformational distance measures are rmsd and minusrmsd")
+            "Supported conformational distance measures are rmsd \
+            and minusrmsd")
         return None
 
     # Load the matrix if required
     if load_matrix:
-        logging.info("        Loading similarity matrix from: %s" % load_matrix)
+        logging.info("        Loading similarity matrix from: %s"
+                     % load_matrix)
         confdistmatrix = \
             TriangularMatrix(
                 size=joined_ensemble.get_coordinates(selection,
-                                                     format='fac')
-                                                     .shape[0],
+                                                     format='fac').shape[0],
                 loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
@@ -907,7 +898,7 @@ def get_similarity_matrix(ensembles,
                 " do not match")
             return None
 
-    # Calculate the matrix  
+    # Calculate the matrix
     else:
         logging.info(
             "        Perform pairwise alignment: %s" % str(superimpose))
@@ -915,14 +906,16 @@ def get_similarity_matrix(ensembles,
             mass_weighted))
         if superimpose:
             logging.info(
-                "        Atoms subset for alignment: %s"%superimposition_subset)
+                "        Atoms subset for alignment: %s" %
+                superimposition_subset)
         logging.info("    Calculating similarity matrix . . .")
 
-        # Use superimposition subset, if necessary. If the pairwise alignment is not required, it will not be performed anyway.
+        # Use superimposition subset, if necessary. If the pairwise alignment
+        # is not required, it will not be performed anyway.
         if superimposition_subset:
             confdistmatrix = matrix_builder(
                 joined_ensemble,
-                selection = selection,
+                selection=selection,
                 pairwise_align=superimpose,
                 mass_weighted=mass_weighted,
                 ncores=np)
@@ -964,25 +957,24 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Parameters
     ----------
 
-        ensemble : encore.Ensemble object
-            Input ensemble
+    ensemble : encore.Ensemble object
+        Input ensemble
 
-        window_size : int
-            size of the window (in number of frames) to be used
+    window_size : int
+        size of the window (in number of frames) to be used
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
     -------
 
-        tmp_ensembles : 
-            the original ensemble is divided into ensembles, each being
-            a window_size-long slice of the original ensemble. The last
-            ensemble will be bigger if the length of the input ensemble
-            is not exactly divisible by window_size.
-    
+    tmp_ensembles : 
+        the original ensemble is divided into ensembles, each being
+        a window_size-long slice of the original ensemble. The last
+        ensemble will be bigger if the length of the input ensemble
+        is not exactly divisible by window_size.
+
     """
 
     ens_size = ensemble.get_coordinates(selection, format='fac').shape[0]
@@ -1003,8 +995,8 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     for s in range(len(slices_n) - 1):
         tmp_ensembles.append(Ensemble(
             topology=ensemble.filename,
-            trajectory=ensemble.trajectory.
-                           get_array()[:,slices_n[s]:slices_n[s + 1], :],
+            trajectory=ensemble.trajectory.get_array()
+            [:, slices_n[s]:slices_n[s + 1], :],
             format=ArrayReader))
 
     return tmp_ensembles
@@ -1024,45 +1016,44 @@ def hes(ensembles,
     the symmetrized version of Kullback-Leibler divergence as described
     in [Lindorff-Larsen2009]_.
 
-
     Parameters
     ----------
-        ensembles : list
-            List of ensemble objects for similarity measurements.
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-             (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    ensembles : list
+        List of ensemble objects for similarity measurements.
 
-        cov_estimator : str, optional
-            Covariance matrix estimator method, either shrinkage, `shrinkage`,
-            or Maximum Likelyhood, `ml`. Default is shrinkage.
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        mass_weighted : bool, optional
-            Whether to perform mass-weighted covariance matrix estimation
-            (default is True).
+    cov_estimator : str, optional
+        Covariance matrix estimator method, either shrinkage, `shrinkage`,
+        or Maximum Likelyhood, `ml`. Default is shrinkage.
 
-        details : bool, optional 
-            Save the mean and covariance matrix for each
-            ensemble in a numpy array (default is False).
+    mass_weighted : bool, optional
+        Whether to perform mass-weighted covariance matrix estimation
+        (default is True).
 
-        estimate_error : bool, optional
-            Whether to perform error estimation (default is False).
+    details : bool, optional 
+        Save the mean and covariance matrix for each
+        ensemble in a numpy array (default is False).
 
-        bootstrapping_samples : int, optional
-            Number of times the similarity matrix will be bootstrapped (default
-            is 100).
+    estimate_error : bool, optional
+        Whether to perform error estimation (default is False).
+
+    bootstrapping_samples : int, optional
+        Number of times the similarity matrix will be bootstrapped (default
+        is 100).
 
 
     Returns
     -------
-        hes : numpy.array (bidimensional)
-            Harmonic similarity measurements between each pair of ensembles.
 
-
+    hes : numpy.array (bidimensional)
+        Harmonic similarity measurements between each pair of ensembles.
 
     Notes
     -----
+
     The method assumes that each ensemble is derived from a multivariate normal
     distribution. The mean and covariance matrix are, thus, estimatated from
     the distribution of each ensemble and used for comparision by the
@@ -1222,99 +1213,103 @@ def ces(ensembles,
     Parameters
     ----------
 
-        ensembles : list
-            List of ensemble objects for similarity measurements
+    ensembles : list
+        List of ensemble objects for similarity measurements
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        preference_values : float or iterable of floats, optional
-            Preference parameter used in the Affinity Propagation algorithm for
-            clustering  (default -1.0). A high preference value results in
-            many clusters, a low preference will result in fewer numbers of
-            clusters. Providing a list of different preference values results
-            in multiple calculations of the CES, one for each preference
-            clustering.
+    preference_values : float or iterable of floats, optional
+        Preference parameter used in the Affinity Propagation algorithm for
+        clustering  (default -1.0). A high preference value results in
+        many clusters, a low preference will result in fewer numbers of
+        clusters. Providing a list of different preference values results
+        in multiple calculations of the CES, one for each preference
+        clustering.
 
-        max_iterations : int, optional
-            Maximum number of iterations for affinity propagation (default is 500).
+    max_iterations : int, optional
+        Maximum number of iterations for affinity propagation (default is 500).
 
-        convergence : int, optional
-            Minimum number of unchanging iterations to achieve convergence
-            (default is 50). Parameter in the Affinity Propagation for
-            clustering.
+    convergence : int, optional
+        Minimum number of unchanging iterations to achieve convergence
+        (default is 50). Parameter in the Affinity Propagation for
+        clustering.
 
-        damping : float, optional
-            Damping factor (default is 0.9). Parameter for the Affinity
-            Propagation for clustering.
+    damping : float, optional
+        Damping factor (default is 0.9). Parameter for the Affinity
+        Propagation for clustering.
 
-        noise : bool, optional
-            Apply noise to similarity matrix before running clustering (default is True)
+    noise : bool, optional
+        Apply noise to similarity matrix before running clustering
+        (default is True)
 
-        clustering_mode : str, optional
-            Choice of clustering algorithm. Only Affinity Propagation,`ap`,
-            is implemented so far (default).
+    clustering_mode : str, optional
+        Choice of clustering algorithm. Only Affinity Propagation,`ap`,
+        is implemented so far (default).
 
-        similarity_mode : str
-            this option will be passed over to get_similarity_matrix if a similarity
-            matrix is not supplied via the similarity_matrix option, as the
-            matrix will be calculated on the fly.
+    similarity_mode : str
+        this option will be passed over to get_similarity_matrix if a
+        similarity matrix is not supplied via the similarity_matrix option,
+        as the matrix will be calculated on the fly.
 
-        similarity_matrix : encore.utils.TriangularMatrix
-            similarity matrix for affinity propagation. If this parameter
-            is not supplied the matrix will be calculated on the fly.
+    similarity_matrix : encore.utils.TriangularMatrix
+        similarity matrix for affinity propagation. If this parameter
+        is not supplied the matrix will be calculated on the fly.
 
-        estimate_error :  bool, optional
-            Whether to perform error estimation (default is False).
-            Only bootstrapping mode is supported.
+    estimate_error :  bool, optional
+        Whether to perform error estimation (default is False).
+        Only bootstrapping mode is supported.
 
-        bootstrapping_samples : int
-            number of samples to be used for estimating error.
+    bootstrapping_samples : int
+        number of samples to be used for estimating error.
 
-        details :   bool
-            whether to provide or not details of the performed clustering
+    details :   bool
+        whether to provide or not details of the performed clustering
 
-        np : int, optional
-            Maximum number of cores to be used (default is 1).
+    np : int, optional
+        Maximum number of cores to be used (default is 1).
 
-        calc_diagonal : bool
-            Whether to calculate the diagonal of the similarity scores
-            (i.e. the simlarities of every ensemble against itself).
-            If this is False (default), 0.0 will be used instead.
+    calc_diagonal : bool
+        Whether to calculate the diagonal of the similarity scores
+        (i.e. the simlarities of every ensemble against itself).
+        If this is False (default), 0.0 will be used instead.
 
-        kwargs :  
-            these arguments will be passed to get_similarity_matrix if the matrix
-            is calculated on the fly. 
+    kwargs :  
+        these arguments will be passed to get_similarity_matrix if the matrix
+        is calculated on the fly. 
 
 
 
     Returns
     -------
-        ces, details : numpy.array, numpy.array
-            ces contains the similarity values, arranged in a numpy.array.
-            if one similarity value is provided as a floating point number,
-            the output will be a 2-dimensional square symmetrical numpy.array.
-            the order of the matrix elements depends on the order of the input ensemble:
-            for instance, if
 
-                ensemble = [ens1, ens2, ens3]
+    ces, details : numpy.array, numpy.array
+        ces contains the similarity values, arranged in a numpy.array.
+        if one similarity value is provided as a floating point number,
+        the output will be a 2-dimensional square symmetrical numpy.array.
+        the order of the matrix elements depends on the order of the input
+        ensemble: for instance, if
 
-            the matrix elements [0,2] and [2,0] will contain the similarity values
-            between ensembles ens1 and ens3.
-            If similarity values are supplied as a list, the array will be 3-dimensional
-            with the first two dimensions running over the ensembles and
-            the third dimension running over the values of the preferences parameter. 
-            Elaborating on the previous example, if preference_values are provided as [-1.0, -2.0] the
-            output will be a (3,3,2) array, with element [0,2] corresponding to the similarity
-            values between ens1 and ens2, and consisting of a 1-d array with similarity
-            values ordered according to the preference_values parameters. This means that
-            [0,2,0] will correspond to the similarity score between ens1 and ens3, using -1.0
-            as the preference value.
+            ensemble = [ens1, ens2, ens3]
+
+        the matrix elements [0,2] and [2,0] will contain the similarity values
+        between ensembles ens1 and ens3.
+        If similarity values are supplied as a list, the array will be 3-d
+        with the first two dimensions running over the ensembles and
+        the third dimension running over the values of the preferences
+        parameter.
+        Elaborating on the previous example, if preference_values are provided
+        as [-1.0, -2.0] the output will be a (3,3,2) array, with element [0,2]
+        corresponding to the similarity values between ens1 and ens2, and
+        consisting of a 1-d array with similarity values ordered according to
+        the preference_values parameters. This means that [0,2,0] will
+        correspond to the similarity score between ens1 and ens3, using -1.0
+        as the preference value.
 
 
     Notes
     -----
+
     In the Jensen-Shannon divergence the upper bound of ln(2) signifies
     no similarity between the two ensembles, the lower bound, 0.0,
     signifies identical ensembles.
@@ -1344,12 +1339,9 @@ def ces(ensembles,
             (array([[[ 0.          0.55392484]
                      [ 0.55392484  0.        ]]],None)
 
-
-
     Here None is returned in the array as no details has been requested.
 
     """
-
 
     if not hasattr(preference_values, '__iter__'):
         preference_values = [preference_values]
@@ -1359,8 +1351,8 @@ def ces(ensembles,
     try:
         preference_values = numpy.array(preference_values, dtype=numpy.float)
     except:
-        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
-        
+        raise TypeError("preferences expects a float or an iterable of numbers, \
+        such as a list of floats or a numpy.array")
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
@@ -1404,7 +1396,7 @@ def ces(ensembles,
         logging.info("        Maximum iterations: %d" % max_iterations)
         logging.info("        Convergence: %d" % convergence)
         logging.info("        Damping: %1.2f" % damping)
-        logging.info("        Apply noise to similarity matrix: %s"%str(noise))
+        logging.info("        Apply noise to matrix: %s" % str(noise))
 
         # Choose clustering algorithm
         clustalgo = AffinityPropagation()
@@ -1459,7 +1451,7 @@ def ces(ensembles,
                 failed_runs = 0
                 values[p] = []
                 for j in range(len(bootstrap_matrices)):
-                    if ccs[k].clusters == None:
+                    if ccs[k].clusters is None:
                         failed_runs += 1
                         k += 1
                         continue
@@ -1481,8 +1473,8 @@ def ces(ensembles,
                         values[p][-1][pair[1], pair[0]] = this_djs
                     k += 1
                 outs = numpy.array(values[p])
-                avgs.append( numpy.average(outs, axis=0))
-                stds.append( numpy.std(outs, axis=0))
+                avgs.append(numpy.average(outs, axis=0))
+                stds.append(numpy.std(outs, axis=0))
 
             if full_output:
                 avgs = numpy.array(avgs).swapaxes(0, 2)
@@ -1493,11 +1485,10 @@ def ces(ensembles,
 
             return avgs, stds
 
-    
         values = []
         kwds = {}
         for i, p in enumerate(preferences):
-            if ccs[i].clusters == None:
+            if ccs[i].clusters is None:
                 continue
             else:
                 values.append(numpy.zeros((out_matrix_eln, out_matrix_eln)))
@@ -1519,17 +1510,16 @@ def ces(ensembles,
                     [c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array(
                     [e.get_coordinates(selection, format='fac')
-                         .shape[0] for e in ensembles])
+                     .shape[0] for e in ensembles])
                 for cln, cluster in enumerate(ccs[i]):
                     kwds["cluster%d_pref%.3f" % (cln + 1, p)] = numpy.array(
                         cluster.elements)
-
 
     if full_output:
         values = numpy.array(values).swapaxes(0, 2)
     else:
         values = values[0]
-    
+
     if details:
         details = numpy.array(kwds)
     else:
@@ -1555,7 +1545,7 @@ def dres(ensembles,
          bootstrapping_samples=100,
          details=False,
          np=1,
-         calc_diagonal = False,
+         calc_diagonal=False,
          **kwargs):
     """
 
@@ -1567,101 +1557,101 @@ def dres(ensembles,
     Parameters
     ----------
 
-        ensembles : list
-            List of ensemble objects for similarity measurements
+    ensembles : list
+        List of ensemble objects for similarity measurements
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        conf_dist_matrix : encore.utils.TriangularMatrix
-            conformational distance matrix
+    conf_dist_matrix : encore.utils.TriangularMatrix
+        conformational distance matrix
 
-        mode : str, opt
-            Which algorithm to use for dimensional reduction. Three options:
-                - Stochastic Proximity Embedding (`vanilla`)  (default)
-                - Random Neighborhood Stochastic Proximity Embedding (`rn`)
-                - k-Nearest Neighbor Stochastic Proximity Embedding (`knn`)
+    mode : str, opt
+        Which algorithm to use for dimensional reduction. Two options:
+            - Stochastic Proximity Embedding (`vanilla`)  (default)
+            - k-Nearest Neighbor Stochastic Proximity Embedding (`knn`)
 
-        dimensions : int or iterable of ints
-            Number of dimensions to which the conformational space will be reduced 
-            to (default is 3). Providing a list of different values results in multiple
-             calculations of DRES, one for each dimension value.
+    dimensions : int or iterable of ints
+        Number of dimensions to which the conformational space will be reduced 
+        to (default is 3). Providing a list of different values results in
+        multiple calculations of DRES, one for each dimension value.
 
-        maxlam : float, optional
-            Starting lambda learning rate parameter (default is 2.0). Parameter
-            for Stochastic Proximity Embedding calculations.
+    maxlam : float, optional
+        Starting lambda learning rate parameter (default is 2.0). Parameter
+        for Stochastic Proximity Embedding calculations.
 
-        minlam : float, optional
-            Final lambda learning rate (default is 0.1). Parameter
-            for Stochastic Proximity Embedding calculations.
+    minlam : float, optional
+        Final lambda learning rate (default is 0.1). Parameter
+        for Stochastic Proximity Embedding calculations.
 
-        ncycle : int, optional
-            Number of cycles per run (default is 100). At the end of every
-            cycle, lambda is changed.
+    ncycle : int, optional
+        Number of cycles per run (default is 100). At the end of every
+        cycle, lambda is changed.
 
-        nstep : int, optional
-            Number of steps per cycle (default is 10000)
+    nstep : int, optional
+        Number of steps per cycle (default is 10000)
 
-        neighborhood_cutoff : float, optional
-            Neighborhood cutoff (default is 1.5).
+    neighborhood_cutoff : float, optional
+        Neighborhood cutoff (default is 1.5).
 
-        kn : int, optional
-            Number of neighbours to be considered (default is 100)
+    kn : int, optional
+        Number of neighbours to be considered (default is 100)
 
-        nsamples : int, optional
-            Number of samples to be drawn from the ensembles (default is 1000).
-            Parameter used in Kernel Density Estimates (KDE) from embedded
-            spaces.
+    nsamples : int, optional
+        Number of samples to be drawn from the ensembles (default is 1000).
+        Parameter used in Kernel Density Estimates (KDE) from embedded
+        spaces.
 
-        estimate_error : bool, optional
-            Whether to perform error estimation (default is False)
+    estimate_error : bool, optional
+        Whether to perform error estimation (default is False)
 
-        bootstrapping_samples : int
-            number of samples to be used for estimating error.
+    bootstrapping_samples : int
+        number of samples to be used for estimating error.
 
-        details :   bool
-            whether to provide or not details of the performed dimensionality reduction
+    details :   bool
+        whether to provide or not details of the performed dimensionality
+        reduction
 
-        np : int, optional
-            Maximum number of cores to be used (default is 1).
+    np : int, optional
+        Maximum number of cores to be used (default is 1).
 
-        **kwargs :  
-            these arguments will be passed to get_similarity_matrix if the matrix
-            is calculated on the fly. 
+    **kwargs :  
+        these arguments will be passed to get_similarity_matrix if the matrix
+        is calculated on the fly. 
 
     Returns
     -------
 
-        dres, details : numpy.array, numpy.array
-            dres contains the similarity values, arranged in numpy.array.
-            if one number of dimensions is provided as an integer,
-            the output will be a 2-dimensional square symmetrical numpy.array.
-            the order of the matrix elements depends on the order of the input ensemble:
-            for instance, if
+    dres, details : numpy.array, numpy.array
+        dres contains the similarity values, arranged in numpy.array.
+        if one number of dimensions is provided as an integer,
+        the output will be a 2-dimensional square symmetrical numpy.array.
+        the order of the matrix elements depends on the order of the 
+        input ensemble: for instance, if
 
-                ensemble = [ens1, ens2, ens3]
+            ensemble = [ens1, ens2, ens3]
 
-            the matrix elements [0,2] and [2,0] will contain the similarity values
-            between ensembles ens1 and ens3.
-            If numbers of dimensions are supplied as a list, the array will be 3-dimensional
-            with the first two dimensions running over the ensembles and
-            the third dimension running over the number of dimensions. 
-            Elaborating on the previous example, if dimensions are provided as [2, 3] the
-            output will be a (3,3,2) array, with element [0,2] corresponding to the similarity
-            values between ens1 and ens2, and consisting of a 1-d array with similarity
-            values ordered according to the dimensions parameters. This means that
-            [0,2,0] will correspond to the similarity score between ens1 and ens3, using 2
-            as the number of dimensions.
+        then the matrix elements [0,2] and [2,0] will contain the similarity
+        values between ensembles ens1 and ens3.
+        If numbers of dimensions are supplied as a list, the array will be
+        3-dimensional with the first two dimensions running over the ensembles
+        and the third dimension running over the number of dimensions.
+        Elaborating on the previous example, if dimensions are provided
+        as [2, 3] the output will be a (3,3,2) array, with element [0,2]
+        corresponding to the similarity values between ens1 and ens2, and
+        consisting of a 1-d array with similarity values ordered according to
+        the dimensions parameters. This means that [0,2,0] will correspond to
+        the similarity score between ens1 and ens3, using 2 as the number
+        of dimensions.
 
     Notes
     -----
-    To calculate the similarity the method first projects the ensembles into lower
-    dimensions by using the Stochastic Proximity Embedding algorithm. A
+
+    To calculate the similarity the method first projects the ensembles into
+    lower dimensions by using the Stochastic Proximity Embedding algorithm. A
     gaussian kernel-based density estimation method is then used to estimate
     the probability density for each ensemble which is then used to estimate
     the Jensen-shannon divergence between each pair of ensembles.
-
 
     In the Jensen-Shannon divergence the upper bound of ln(2) signifies
     no similarity between the two ensembles, the lower bound, 0.0,
@@ -1672,12 +1662,9 @@ def dres(ensembles,
     the :func:`dres` twice will not result in two identical numbers but 
     instead small differences.  
 
-
-
-
-
     Example
     -------
+
     To calculate the Dimensional Reduction Ensemble similarity, two Ensemble
     objects are created from a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
@@ -1694,7 +1681,6 @@ def dres(ensembles,
            (array( [[[ 0.          0.67383396]
                  [ 0.67383396  0.        ]], None]
 
-    
     Here None is returned in the array as no details has been requested.
 
     """
@@ -1707,7 +1693,8 @@ def dres(ensembles,
     try:
         dimensions = numpy.array(dimensions, dtype=numpy.int)
     except:
-        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
+        raise TypeError("preferences expects a float or an iterable of numbers, \
+         such as a list of floats or a numpy.array")
 
     stressfreq = -1
 
@@ -1724,8 +1711,6 @@ def dres(ensembles,
             [i for j in ensembles[i - 1].get_coordinates(selection,
                                                          format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
-
-    metadata = {'ensemble': ensemble_assignment}
 
     if conf_dist_matrix:
         confdistmatrix = conf_dist_matrix
@@ -1768,18 +1753,6 @@ def dres(ensembles,
                                    minlam,
                                    ncycle,
                                    nstep,
-                                   stressfreq)]
-
-    if mode == 'rn':
-        embedder = RandomNeighborhoodStochasticProximityEmbedding()
-        for r in range(len(runs)):
-            embedding_options += [(matrices[r],
-                                   neighborhood_cutoff,
-                                   kn,
-                                   runs[r],
-                                   maxlam,
-                                   minlam,
-                                   ncycle,
                                    stressfreq)]
 
     if mode == 'knn':
@@ -1836,16 +1809,15 @@ def dres(ensembles,
 
                 k += 1
             outs = numpy.array(values[ndim])
-            avgs.append( numpy.average(outs, axis=0))
-            stds.append( numpy.std(outs, axis=0))
+            avgs.append(numpy.average(outs, axis=0))
+            stds.append(numpy.std(outs, axis=0))
 
         if full_output:
             avgs = numpy.array(avgs).swapaxes(0, 2)
             stds = numpy.array(stds).swapaxes(0, 2)
         else:
-           avgs = avgs[0]
-           stds = stds[0]
-
+            avgs = avgs[0]
+            stds = stds[0]
 
         return (avgs, stds)
 
@@ -1916,81 +1888,74 @@ def ces_convergence(original_ensemble,
                     load_matrix=None,
                     np=1,
                     **kwargs):
-
     """ 
     Use the CES to evaluate the convergence of the ensemble/trajectory.
-    CES will be calculated between the whole trajectory contained in an ensemble and windows
-    of such trajectory of increasing sizes, so that the similarity values should gradually
-    drop to zero. The rate at which the value reach zero will be indicative of how much
-    the trajectory keeps on resampling the same ares of the conformational space, and therefore
-    of convergence.
+    CES will be calculated between the whole trajectory contained in an 
+    ensemble and windows of such trajectory of increasing sizes, so that 
+    the similarity values should gradually drop to zero. The rate at which 
+    the value reach zero will be indicative of how much the trajectory 
+    keeps on resampling the same ares of the conformational space, and
+    therefore of convergence.
 
 
     Parameters
     ----------
 
-        original_ensemble : encore.Ensemble object
-            ensemble containing the trajectory whose convergence has to estimated
+    original_ensemble : encore.Ensemble object
+        ensemble containing the trajectory whose convergence has to estimated
 
-        window_size : int
-            Size of window to be used, in number of frames
+    window_size : int
+        Size of window to be used, in number of frames
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
-            (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        preference_values : list , optional
-            Preference parameter used in the Affinity Propagation algorithm for
-            clustering  (default [-1.0]). A high preference value results in
-            many clusters, a low preference will result in fewer numbers of
-            clusters. Inputting a list of different preference values results
-            in multiple calculations of the CES, one for each preference
-            clustering.
+    preference_values : list , optional
+        Preference parameter used in the Affinity Propagation algorithm for
+        clustering  (default [-1.0]). A high preference value results in
+        many clusters, a low preference will result in fewer numbers of
+        clusters. Inputting a list of different preference values results
+        in multiple calculations of the CES, one for each preference
+        clustering.
 
-        max_iterations : int, optional
-            Parameter in the Affinity Propagation for
-            clustering (default is 500).
+    max_iterations : int, optional
+        Parameter in the Affinity Propagation for
+        clustering (default is 500).
 
-        convergence : int, optional
-            Minimum number of unchanging iterations to achieve convergence
-            (default is 50). Parameter in the Affinity Propagation for
-            clustering.
+    convergence : int, optional
+        Minimum number of unchanging iterations to achieve convergence
+        (default is 50). Parameter in the Affinity Propagation for
+        clustering.
 
-        damping : float, optional
-            Damping factor (default is 0.9). Parameter in the Affinity
-            Propagation for clustering.
+    damping : float, optional
+        Damping factor (default is 0.9). Parameter in the Affinity
+        Propagation for clustering.
 
-        noise : bool, optional
-            Apply noise to similarity matrix (default is True).
+    noise : bool, optional
+        Apply noise to similarity matrix (default is True).
 
-        np : int, optional
-            Maximum number of cores to be used (default is 1).
+    np : int, optional
+        Maximum number of cores to be used (default is 1).
 
-        **kwargs :  
-            these arguments will be passed to get_similarity_matrix if the matrix
-            is calculated on the fly. 
-
-
-    
+    **kwargs :  
+        these arguments will be passed to get_similarity_matrix if the matrix
+        is calculated on the fly. 
 
     Returns
     -------
 
-        out : np.array
-            array of shape (number_of_frames / window_size, preference_values).
-
-
+    out : np.array
+        array of shape (number_of_frames / window_size, preference_values).
    """
 
     if not hasattr(preference_values, '__iter__'):
         preferences = [preference_values]
-        full_output = False
-    else:
-        full_output = True
+
     try:
         preferences = numpy.array(preference_values, dtype=numpy.float)
     except:
-        raise TypeError("preferences expects a float or an iterable of numbers, such as a list of floats or a numpy.array")
+        raise TypeError("preferences expects a float or an iterable of numbers, \
+            such as a list of floats or a numpy.array")
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
@@ -2001,7 +1966,7 @@ def ces_convergence(original_ensemble,
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
         ensemble_assignment += [i for j in ensembles[i - 1]
-            .get_coordinates(selection, format='fac')]
+                                .get_coordinates(selection, format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -2037,17 +2002,16 @@ def ces_convergence(original_ensemble,
     ccs = [ClustersCollection(clusters[1], metadata=metadata) for clusters in
            results]
 
-    
     out = []
 
     for i, p in enumerate(preferences):
-        if ccs[i].clusters == None:
+        if ccs[i].clusters is None:
             continue
         out.append(numpy.zeros(len(ensembles)))
         for j in range(0, len(ensembles)):
             out[-1][j] = cumulative_clustering_ensemble_similarity(
                 ccs[i],
-                ensembles[ -1],
+                ensembles[-1],
                 len(ensembles) + 1,
                 ensembles[j],
                 j + 1,
@@ -2055,7 +2019,6 @@ def ces_convergence(original_ensemble,
 
     out = numpy.array(out).T
     return out
-
 
 
 def dres_convergence(original_ensemble,
@@ -2073,77 +2036,73 @@ def dres_convergence(original_ensemble,
                      nsamples=1000,
                      np=1,
                      **kwargs):
-
     """
     Use the DRES to evaluate the convergence of the ensemble/trajectory.
-    DRES will be calculated between the whole trajectory contained in an ensemble and windows
-    of such trajectory of increasing sizes, so that the similarity values should gradually
-    drop to zero. The rate at which the value reach zero will be indicative of how much
-    the trajectory keeps on resampling the same ares of the conformational space, and therefore
-    of convergence.
+    DRES will be calculated between the whole trajectory contained in an 
+    ensemble and windows of such trajectory of increasing sizes, so that 
+    the similarity values should gradually drop to zero. The rate at which
+    the value reach zero will be indicative of how much the trajectory 
+    keeps on resampling the same ares of the conformational space, and 
+    therefore of convergence.
 
     Parameters
     ----------
 
-        original_ensemble : encore.Ensemble object
-            ensemble containing the trajectory whose convergence has to estimated
+    original_ensemble : encore.Ensemble object
+        ensemble containing the trajectory whose convergence has to estimated
 
-        window_size : int
-            Size of window to be used, in number of frames
+    window_size : int
+        Size of window to be used, in number of frames
 
-        selection : str
-            Atom selection string in the MDAnalysis format. Default is "name CA"
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
 
-        mode : str, opt
-            Which algorithm to use for dimensional reduction. Three options:
-                - Stochastic Proximity Embedding (`vanilla`)  (default)
-                - Random Neighborhood Stochastic Proximity Embedding (`rn`)
-                - k-Nearest Neighbor Stochastic Proximity Embedding (`knn`)
+    mode : str, opt
+        Which algorithm to use for dimensional reduction. Two options:
+            - Stochastic Proximity Embedding (`vanilla`)  (default)
+            - k-Nearest Neighbor Stochastic Proximity Embedding (`knn`)
 
-        dimensions  : int, optional
-            Number of dimensions for reduction (default is 3)
+    dimensions  : int, optional
+        Number of dimensions for reduction (default is 3)
 
-        maxlam : float, optional
-            Starting lambda learning rate parameter (default is 2.0). Parameter
-            for Stochastic Proximity Embedding calculations.
+    maxlam : float, optional
+        Starting lambda learning rate parameter (default is 2.0). Parameter
+        for Stochastic Proximity Embedding calculations.
 
-        minlam : float, optional
-            Final lambda learning rate (default is 0.1). Parameter
-            for Stochastic Proximity Embedding calculations.
+    minlam : float, optional
+        Final lambda learning rate (default is 0.1). Parameter
+        for Stochastic Proximity Embedding calculations.
 
-        ncycle  :  int, optional
-            Number of cycles per run (default is 100). At the end of every
-            cycle, lambda is changed.
+    ncycle  :  int, optional
+        Number of cycles per run (default is 100). At the end of every
+        cycle, lambda is changed.
 
-        nstep  : int, optional
-            Number of steps per cycle (default is 10000)
+    nstep  : int, optional
+        Number of steps per cycle (default is 10000)
 
-        neighborhood_cutoff  : float, optional
-            Neighborhood cutoff (default is 1.5).
+    neighborhood_cutoff  : float, optional
+        Neighborhood cutoff (default is 1.5).
 
-        kn  : int, optional
-            Number of neighbours to be considered (default is 100)
+    kn  : int, optional
+        Number of neighbours to be considered (default is 100)
 
-        nsamples : int, optional
-            Number of samples to be drawn from the ensembles (default is 1000).
-            Parameter used in Kernel Density Estimates (KDE) from embedded
-            spaces.
+    nsamples : int, optional
+        Number of samples to be drawn from the ensembles (default is 1000).
+        Parameter used in Kernel Density Estimates (KDE) from embedded
+        spaces.
 
-        np  : int, optional
-            Maximum number of cores to be used (default is 1).
+    np  : int, optional
+        Maximum number of cores to be used (default is 1).
 
-        **kwargs :  
-            these arguments will be passed to get_similarity_matrix if the matrix
-            is calculated on the fly. 
+    **kwargs :  
+        these arguments will be passed to get_similarity_matrix if the matrix
+        is calculated on the fly. 
 
     Returns
     -------
 
-        out : np.array
-            array of shape (number_of_frames / window_size, preference_values).
-
-
-
+    out : np.array
+        array of shape (number_of_frames / window_size, preference_values).
 
     """
 
@@ -2157,7 +2116,7 @@ def dres_convergence(original_ensemble,
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
         ensemble_assignment += [i for j in ensembles[i - 1]
-            .get_coordinates(selection, format='fac')]
+                                .get_coordinates(selection, format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     out_matrix_eln = len(ensembles)
@@ -2179,19 +2138,6 @@ def dres_convergence(original_ensemble,
                                    ncycle,
                                    nstep,
                                    stressfreq)]
-
-    if mode == 'rn':
-        embedder = RandomNeighborhoodStochasticProximityEmbedding()
-        for r in range(len(runs)):
-            embedding_options += [(matrices[r],
-                                   neighborhood_cutoff,
-                                   kn,
-                                   runs[r],
-                                   maxlam,
-                                   minlam,
-                                   ncycle,
-                                   stressfreq)]
-
     if mode == 'knn':
         embedder = kNNStochasticProximityEmbedding()
         for r in range(len(runs)):
@@ -2231,7 +2177,6 @@ def dres_convergence(original_ensemble,
         embedded_spaces = embedded_spaces_perdim[ndim]
         embedded_stresses = stresses_perdim[ndim]
 
-        embedded_stress = embedded_stresses[numpy.argmin(embedded_stresses)]
         embedded_space = embedded_spaces[numpy.argmin(embedded_stresses)]
 
         # For every chosen dimension value:

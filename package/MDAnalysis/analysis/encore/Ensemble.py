@@ -18,7 +18,7 @@
 Ensemble representation --- :mod:`MDAnalysis.analysis.ensemble.ensemble`
 =====================================================================
 
-This module contains the Ensemble class allowing for easy reading in 
+This module contains the Ensemble class allowing for easy reading in
 and alignment of the ensemble contained in one or more trajectory files.
 Trajectory files can be specified in several formats, including the popular
 xtc and dcd, as well as experimental multiple-conformation pdb files, i.e.
@@ -63,33 +63,30 @@ class Ensemble(MDAnalysis.Universe):
     Examples
     --------
 
-	The examples show how to use ENCORE to initiate an Ensemble object.
-	The topology- and trajectory files are obtained from the MDAnalysis
-	test suite for a simulation of the protein AdK. To run the
-	example some imports first need to be executed: ::
+    The examples show how to use ENCORE to initiate an Ensemble object.
+    The topology- and trajectory files are obtained from the MDAnalysis
+    test suite for a simulation of the protein AdK. To run the
+    example some imports first need to be executed: ::
 
-	    >>> import MDAnalysis.analysis.encore as encore
-	    >>> from MDAnalysis.tests.datafiles import PDB_small, DCD
-	    >>> ens = encore.Ensemble(topology=PDB_small,trajectory=DCD)
+        >>> import MDAnalysis.analysis.encore as encore
+        >>> from MDAnalysis.tests.datafiles import PDB_small, DCD
+        >>> ens = encore.Ensemble(topology=PDB_small,trajectory=DCD)
 
-	In addition, to decrease the computations the :class:`Ensemble` object
-	can be initialized by only loading every nth frame from the trajectory
-	using the parameter `frame_interval`: ::
+    In addition, to decrease the computations the :class:`Ensemble` object
+    can be initialized by only loading every nth frame from the trajectory
+    using the parameter `frame_interval`: ::
 
-	    >>> ens = encore.Ensemble(topology=PDB_small, trajectory=DCD,
-	                              frame_interval=3)
+        >>> ens = encore.Ensemble(topology=PDB_small, trajectory=DCD,
+                                  frame_interval=3)
 
 
     """
-
-
 
     def __init__(self,
                  topology=None,
                  trajectory=None,
                  frame_interval=1,
                  **kwargs):
-
         """
         Constructor for the Ensemble class. See the module description for more
         details.
@@ -97,17 +94,16 @@ class Ensemble(MDAnalysis.Universe):
         Parameters
         ----------
 
-            topology : str
-                Topology file name
+        topology : str
+            Topology file name
 
-            trajectory : iterable or str
-                One or more Trajectory file name(s)
+        trajectory : iterable or str
+            One or more Trajectory file name(s)
 
-            frame_interval : int
-                Interval at which frames should be included
+        frame_interval : int
+            Interval at which frames should be included
 
         """
-
 
         # Chained trajectories cannot use TimeSeries functionality
         # and the analysis is therefore slower - we therefore use a
@@ -116,7 +112,6 @@ class Ensemble(MDAnalysis.Universe):
             trajectory = trajectory[0]
         MDAnalysis.Universe.__init__(self, topology, trajectory,
                                      **kwargs)
-
 
         if kwargs.get('format', None) != ArrayReader:
 
@@ -128,7 +123,8 @@ class Ensemble(MDAnalysis.Universe):
                 coordinates = self.universe.trajectory.timeseries(
                     self.atoms, format='afc', skip=frame_interval)
 
-            # if the Timeseries extraction fails, fall back to a slower approach
+            # if the Timeseries extraction fails,
+            # fall back to a slower approach
             except AttributeError:
                 coordinates = np.zeros(
                     tuple([self.universe.trajectory.n_frames]) +
@@ -136,37 +132,35 @@ class Ensemble(MDAnalysis.Universe):
 
                 k = 0
                 for i, time_step in enumerate(self.universe.trajectory):
-                    if i%frame_interval == 0:
+                    if i % frame_interval == 0:
                         coordinates[k] = self.atoms.coordinates(time_step)
-                        k+=1
-                coordinates = np.swapaxes(coordinates,0,1)
+                        k += 1
+                coordinates = np.swapaxes(coordinates, 0, 1)
 
             # Overwrite trajectory in universe with an ArrayReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
             self.trajectory = ArrayReader(coordinates)
 
-
     def get_coordinates(self, selection="", format='afc'):
         """
-        Convenience method for extracting array of coordinates. In cases where
-        no selection is provided, this version is slightly faster than accessing
+        Convenience method for extracting array of coordinates. If no
+        selection is provided, this version is slightly faster than accessing
         the coordinates through the timeseries interface (which always takes
         a copy of the array).
 
         Parameters
         ----------
 
-            selection : str
-                Atom selection string in the MDAnalysis format.
-                 (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+        selection : str
+            Atom selection string in the MDAnalysis format.
 
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
+        *format*
+           the order/shape of the return data array, corresponding
+           to (a)tom, (f)rame, (c)oordinates all six combinations
+           of 'a', 'f', 'c' are allowed ie "fac" - return array
+           where the shape is (frame, number of atoms,
+           coordinates)
 
         """
         if selection == "":
@@ -176,7 +170,6 @@ class Ensemble(MDAnalysis.Universe):
             return self.trajectory.timeseries(self.select_atoms(selection),
                                               format=format)
 
-
     def align(self, selection="name CA", reference=None, weighted=True):
         """
         Least-square superimposition of the Ensemble coordinates to a reference
@@ -185,19 +178,18 @@ class Ensemble(MDAnalysis.Universe):
         Parameters
         ----------
 
-            selection : str
-                Atom selection string in the MDAnalysis format. Default is
-                "name CA"
-                (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
+        selection : str
+            Atom selection string in the MDAnalysis format. Default is
+            "name CA"
 
-            reference : None or MDAnalysis.Universe
-                Reference structure on which those belonging to the Ensemble will
-                be fitted upon.  It must have the same topology as the Ensemble
-                topology. If reference is None, the structure in the first frame of
-                the ensemble will be used as reference.
+        reference : None or MDAnalysis.Universe
+            Reference structure on which those belonging to the Ensemble will
+            be fitted upon.  It must have the same topology as the Ensemble
+            topology. If reference is None, the structure in the first frame of
+            the ensemble will be used as reference.
 
-            weighted : bool
-                Whether to perform weighted superimposition or not
+        weighted : bool
+            Whether to perform weighted superimposition or not
 
         """
 
@@ -223,7 +215,7 @@ class Ensemble(MDAnalysis.Universe):
         # Move both subset atoms and the other atoms to the center of mass of
         # subset atoms
         coordinates -= alignment_subset_coordinates_center_of_mass[:,
-                       np.newaxis]
+                                                                   np.newaxis]
 
         # if reference: no offset
         if reference:
@@ -261,4 +253,4 @@ class Ensemble(MDAnalysis.Universe):
             # Apply rotation matrix
             coordinates[i][:] = np.transpose(np.dot(rotation_matrix,
                                                     np.transpose(
-                                                    coordinates[i][:])))
+                                                        coordinates[i][:])))

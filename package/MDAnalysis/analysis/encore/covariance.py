@@ -31,6 +31,7 @@ an ensemble of structures.
 
 import numpy
 
+
 class EstimatorML:
     """
     Standard maximum likelihood estimator of the covariance matrix.
@@ -55,7 +56,7 @@ class EstimatorML:
 
         """
 
-        if reference_coordinates != None:
+        if reference_coordinates is not None:
 
             # Offset from reference (for a normal covariance calculation
             # this would be the distance to the average)
@@ -74,7 +75,8 @@ class EstimatorML:
             return numpy.cov(coordinates, rowvar=0)
 
     __call__ = calculate
-        
+
+
 class EstimatorShrinkage:
     """
     Shrinkage estimator of the covariance matrix using the method described in
@@ -96,7 +98,7 @@ class EstimatorShrinkage:
         Constructor.
 
         Parameters
-		----------
+                ----------
 
             shrinkage_parameter : float
                 Makes it possible to set the shrinkage parameter explicitly,
@@ -104,12 +106,11 @@ class EstimatorShrinkage:
         """
         self.shrinkage_parameter = shrinkage_parameter
 
-
     def calculate(self, coordinates, reference_coordinates=None):
         """
 
         Parameters
-		----------
+                ----------
 
         coordinates : numpy.array
             Flattened array of coordinates
@@ -117,7 +118,7 @@ class EstimatorShrinkage:
             Optional reference to use instead of mean
 
         Returns
-		--------
+                --------
 
         cov_mat : nump.array
             Covariance matrix
@@ -130,93 +131,96 @@ class EstimatorShrinkage:
         mean_x = numpy.average(x, axis=0)
 
         # Use provided coordinates as "mean" if provided
-        if reference_coordinates != None:
+        if reference_coordinates is not None:
             mean_x = reference_coordinates
 
         x = x - mean_x
         xmkt = numpy.average(x, axis=1)
 
         # Call maximum likelihood estimator (note the additional column)
-        sample = EstimatorML()(numpy.hstack([x,xmkt[:,numpy.newaxis]]), 0) \
-                 * (t-1)/float(t)
+        sample = EstimatorML()(numpy.hstack([x, xmkt[:, numpy.newaxis]]), 0) \
+            * (t-1)/float(t)
 
         # Split covariance matrix into components
-        covmkt = sample[0:n,n]
-        varmkt = sample[n,n]
-        sample = sample[:n,:n]
+        covmkt = sample[0:n, n]
+        varmkt = sample[n, n]
+        sample = sample[:n, :n]
 
         # Prior
-        prior = numpy.outer(covmkt,covmkt)/varmkt
+        prior = numpy.outer(covmkt, covmkt)/varmkt
         prior[numpy.ma.make_mask(numpy.eye(n))] = numpy.diag(sample)
 
         # If shrinkage parameter is not set, estimate it
-        if self.shrinkage_parameter == None:
+        if self.shrinkage_parameter is None:
 
             # Frobenius norm
             c = numpy.linalg.norm(sample - prior, ord='fro')**2
 
             y = x**2
-            p=1/float(t)*numpy.sum(numpy.dot(numpy.transpose(y),y))\
-              -numpy.sum(numpy.sum(sample**2))
-            rdiag=1/float(t)*numpy.sum(numpy.sum(y**2))\
-                  -numpy.sum(numpy.diag(sample)**2)
-            z = x * numpy.repeat(xmkt[:,numpy.newaxis], n, axis=1)
-            v1 = 1/float(t) * numpy.dot(numpy.transpose(y),z) \
-                 - numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)*sample
+            p = 1/float(t)*numpy.sum(numpy.dot(numpy.transpose(y), y))\
+                - numpy.sum(numpy.sum(sample**2))
+            rdiag = 1/float(t)*numpy.sum(numpy.sum(y**2))\
+                - numpy.sum(numpy.diag(sample)**2)
+            z = x * numpy.repeat(xmkt[:, numpy.newaxis], n, axis=1)
+            v1 = 1/float(t) * numpy.dot(numpy.transpose(y), z) \
+                - numpy.repeat(covmkt[:, numpy.newaxis], n, axis=1)*sample
             roff1 = (numpy.sum(
-                v1*numpy.transpose(numpy.repeat(covmkt[:,numpy.newaxis],n, axis=1)))/varmkt -
+                v1*numpy.transpose(
+                    numpy.repeat(
+                        covmkt[:, numpy.newaxis], n, axis=1)
+                    )
+                )/varmkt -
                      numpy.sum(numpy.diag(v1)*covmkt)/varmkt)
-            v3 = 1/float(t)*numpy.dot(numpy.transpose(z),z) - varmkt*sample
-            roff3 = (numpy.sum(v3*numpy.outer(covmkt, covmkt))/varmkt**2 - 
+            v3 = 1/float(t)*numpy.dot(numpy.transpose(z), z) - varmkt*sample
+            roff3 = (numpy.sum(v3*numpy.outer(covmkt, covmkt))/varmkt**2 -
                      numpy.sum(numpy.diag(v3)*covmkt**2)/varmkt**2)
-            roff=2*roff1-roff3;
-            r=rdiag+roff;
+            roff = 2*roff1-roff3
+            r = rdiag+roff
 
             # Shrinkage constant
-            k=(p-r)/c;
-            self.shrinkage_parameter=max(0,min(1,k/float(t)))
+            k = (p-r)/c
+            self.shrinkage_parameter = max(0, min(1, k/float(t)))
 
         # calculate covariance matrix
-        sigma=self.shrinkage_parameter*prior+(1-self.shrinkage_parameter)*sample;
+        sigma = self.shrinkage_parameter*prior+(1-self.shrinkage_parameter)*sample
 
         return sigma
-    
+
     __call__ = calculate
+
 
 def covariance_matrix(ensemble,
                       selection="",
-                      estimator = EstimatorShrinkage(),
+                      estimator=EstimatorShrinkage(),
                       mass_weighted=True,
-                      reference = None,
+                      reference=None,
                       start=0,
                       end=None):
-
     """
     Calculates (optionally mass weighted) covariance matrix
 
     Parameters
-	----------
+        ----------
 
     ensemble : Ensemble object
         The structural ensemble
 
     selection : str
         Atom selection string in the MDAnalysis format.
-        (see http://mdanalysis.googlecode.com/git/package/doc/html/documentation_pages/selections.html)
 
     estimator : MLEstimator or ShrinkageEstimator object
-        Which estimator type to use (maximum likelihood, shrinkage). This 
+        Which estimator type to use (maximum likelihood, shrinkage). This
         object is required to have a __call__ function defined.
 
     mass_weighted : bool
         Whether to do a mass-weighted analysis
 
     reference : MDAnalysis.Universe object
-        Use the distances to a specific reference structure rather than the 
+        Use the distances to a specific reference structure rather than the
         distance to the mean.
 
     Returns
-	-------
+        -------
 
     cov_mat : numpy.array
         Covariance matrix
@@ -226,7 +230,6 @@ def covariance_matrix(ensemble,
     # Extract coordinates from ensemble
     # coordinates = ensemble.get_coordinates(start=start, end=end)
     coordinates = ensemble.get_coordinates(selection, format='fac')
-
 
     # Flatten coordinate matrix into n_frame x n_coordinates
     coordinates = numpy.reshape(coordinates, (coordinates.shape[0], -1))
@@ -240,7 +243,7 @@ def covariance_matrix(ensemble,
             ensemble.get_atom_selection_string())
         reference_coordinates = reference_atom_selection.atoms.coordinates()
 
-        # Flatten reference coordinates 
+        # Flatten reference coordinates
         reference_coordinates = reference_coordinates.flatten()
 
     sigma = estimator(coordinates, reference_coordinates)
@@ -256,4 +259,3 @@ def covariance_matrix(ensemble,
         sigma = numpy.dot(mass_matrix, numpy.dot(sigma, mass_matrix))
 
     return sigma
-

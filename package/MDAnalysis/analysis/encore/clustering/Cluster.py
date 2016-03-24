@@ -37,53 +37,53 @@ class Cluster:
     """
     Generic Cluster class for clusters with centroids.
 
-	Attributes
-	----------
-	
-		id : int
-			Cluster ID number. Useful for the ClustersCollection class
-	
-		metadata : iterable
-			dict of lists, containing metadata for the cluster elements. The
-			iterable must return the same number of elements as those that
-			belong to the cluster.
-	
-	   size : int
-			number of elements.
-	
-		centroid : element object
-			cluster centroid.
-	
-	   	elements : numpy.array
-			array containing the cluster elements.
+    Attributes
+    ----------
+
+    id : int
+        Cluster ID number. Useful for the ClustersCollection class
+
+    metadata : iterable
+        dict of lists, containing metadata for the cluster elements. The
+        iterable must return the same number of elements as those that
+        belong to the cluster.
+
+    size : int
+        number of elements.
+
+    centroid : element object
+        cluster centroid.
+
+    elements : numpy.array
+        array containing the cluster elements.
    """
 
     def __init__(self, elem_list=None, centroid=None, idn=None, metadata=None):
         """Class constructor. If elem_list is None, an empty cluster is created
-	    and the remaining arguments ignored.
+            and the remaining arguments ignored.
 
-	Parameters
-	----------
+        Parameters
+        ----------
 
-		elem_list : numpy.array or None
-			numpy array of cluster elements. if None, the cluster will be
-		    initialized as empty.
-		
-		centroid : None or element object
-		    centroid object
-	
-	        idn : int
-		    cluster ID
-	
-		metadata : {str:iterable, ...}
-		    metadata, one value for each cluster element. The iterable must have
-		    the same length as the elements array.
+        elem_list : numpy.array or None
+            numpy array of cluster elements. if None, the cluster will be
+            initialized as empty.
+
+        centroid : None or element object
+            centroid object
+
+        idn : int
+            cluster ID
+
+        metadata : {str:iterable, ...}
+            metadata, one value for each cluster element. The iterable
+            must have the same length as the elements array.
 
     """
 
         self.id = idn
 
-        if elem_list == None:
+        if elem_list is None:
             self.size = 0
             self.elements = np.array([])
             self.centroid = None
@@ -92,7 +92,7 @@ class Cluster:
 
         self.metadata = {}
         self.elements = elem_list
-        if not centroid in self.elements:
+        if centroid not in self.elements:
             raise LookupError
 
         self.centroid = centroid
@@ -118,47 +118,47 @@ class ClustersCollection():
     encore.clustering.Cluster objects.
 
     Attributes
-	----------
-    
-   		clusters : list
-			list of of Cluster objects which are part of the Cluster collection
+    ----------
+
+    clusters : list
+        list of of Cluster objects which are part of the Cluster collection
 
 """
 
     def __init__(self, elements=None, metadata=None):
         """Class constructor. If elements is None, an empty cluster collection
-		will be created. Otherwise, the constructor takes as input an iterable of
-		ints with the following format:
-	
-		[ a, a, a, a, b, b, b, c, c, ... , z, z ]
-	
-		the variables a,b,c,...,z are clusters centroids, represented as cluster
-		element numbers (i.e. 3 means the 4th element of the ordered input data
-		for clustering). The array has the same number of elements as input data.
-		The array maps a correspondence between cluster elements (which are
-		implicitly associated with the position in the array) with centroids,
-		i. e. defines clusters. For instance:
-	
-		[ 1, 1, 1, 4, 4, 5 ]
-		
-		means that elements 0, 1, 2 form a cluster which has 1 as centroids,
-		elements 3 and 4 form a cluster which has 4 as centroid, and element 5 has
-		its own cluster.
-	
-	
-		Arguments
-		---------
-	
-			elements : iterable of ints or None
-				clustering results. See the previous description for details
-	
-			metadata : {str:list, str:list,...} or None
-				metadata for the data elements. The list must be of the same
-				size as the elements array, with one value per element.
-		
-		"""
+            will be created. Otherwise, the constructor takes as input an
+            iterable of ints with the following format:
+
+            [ a, a, a, a, b, b, b, c, c, ... , z, z ]
+
+            the variables a,b,c,...,z are cluster centroids, here as cluster
+            element numbers (i.e. 3 means the 4th element of the ordered input
+            for clustering). The array maps a correspondence between
+            cluster elements (which are implicitly associated with the
+            position in the array) with centroids, i. e. defines clusters.
+            For instance:
+
+            [ 1, 1, 1, 4, 4, 5 ]
+
+            means that elements 0, 1, 2 form a cluster which has 1 as centroid,
+            elements 3 and 4 form a cluster which has 4 as centroid, and
+            element 5 has its own cluster.
+
+
+            Arguments
+            ---------
+
+            elements : iterable of ints or None
+                clustering results. See the previous description for details
+
+            metadata : {str:list, str:list,...} or None
+                metadata for the data elements. The list must be of the same
+                size as the elements array, with one value per element.
+
+        """
         idn = 0
-        if elements == None:
+        if elements is None:
             self.clusters = None
             return
 
@@ -184,26 +184,26 @@ class ClustersCollection():
 
     def get_ids(self):
         """
-		Get the ID numbers of the clusters
+        Get the ID numbers of the clusters
 
-		Returns
-		-------
+        Returns
+        -------
 
-			ids : list of int
-	    		list of cluster ids
-			
-		"""
+        ids : list of int
+        list of cluster ids
+        """
         return [v.idn for v in self.clusters]
 
     def get_centroids(self):
         """
-		Get the centroids of the clusters
+        Get the centroids of the clusters
 
         Returns
-		-------
+        -------
 
-        	centroids : list of cluster element objects
-            	list of cluster centroids """
+        centroids : list of cluster element objects
+        list of cluster centroids
+        """
 
         return [v.centroid for v in self.clusters]
 
