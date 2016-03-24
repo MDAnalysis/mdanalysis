@@ -43,13 +43,12 @@ from datetime import datetime
 from time import sleep
 
 try:
-    from MDAnalysis.analysis.rms import rmsd
     from MDAnalysis.analysis.align import rotation_matrix
 except:
     # backwards compatibility for MDAnalysis < 0.10.0
-    from MDAnalysis.analysis.align import rmsd, rotation_matrix
+    from MDAnalysis.analysis.align import rotation_matrix
 
-from .cutils import *
+from .cutils import PureRMSD, MinusRMSD
 from .utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
 
 
@@ -65,13 +64,14 @@ class ConformationalDistanceMatrixGenerator:
     process is printed out. This class acts as a functor.
     """
 
-    def run(self, ensemble, selection="all", superimposition_selection="", ncores = None, pairwise_align = False,
-            mass_weighted = True, metadata = True):
+    def run(self, ensemble, selection="all", superimposition_selection="",
+            ncores=None, pairwise_align=False, mass_weighted=True,
+            metadata=True):
         """
         Run the conformational distance matrix calculation.
 
         Parameters
-		----------
+        ----------
 
         ensemble : encore.Ensemble.Ensemble object
             Ensemble object for which the conformational distance matrix will
@@ -95,15 +95,16 @@ class ConformationalDistanceMatrixGenerator:
             Number of cores to be used for parallel calculation
 
         Returns
-		-------
+        -------
 
-        cond_dist_matrix` : encore.utils.TriangularMatrix object
+        conf_dist_matrix` : encore.utils.TriangularMatrix object
             Conformational distance matrix in triangular representation.
 
         """
 
         # Decide how many cores have to be used. Since the main process is
-        # stopped while the workers do their job, ncores workers will be spawned.
+        # stopped while the workers do their job, ncores workers will be
+        # spawned.
         if not ncores:
             ncores = cpu_count()
         if ncores < 1:
@@ -138,8 +139,8 @@ class ConformationalDistanceMatrixGenerator:
                 subset_selection = superimposition_selection
             else:
                 subset_selection = selection
-            subset_coords = ensemble.get_coordinates(selection = superimposition_selection, 
-                                                     format = 'fac')
+            subset_coords = ensemble.get_coordinates(selection=superimposition_selection,
+                                                     format='fac')
 
         # Prepare masses as necessary
 
@@ -208,9 +209,10 @@ class ConformationalDistanceMatrixGenerator:
             workers = [Process(target=self._simple_worker,
                                args=(tasks_per_worker[i],
                                      ensemble.get_coordinates(selection,
-                                     format='fac'),
-                               masses, distmat,
-                                     partial_counters[i])) for i in range(ncores)]
+                                                              format='fac'),
+                                     masses, distmat,
+                                     partial_counters[i]))
+                       for i in range(ncores)]
 
         workers += [Process(target=self._pbar_updater,
                             args=(pbar, partial_counters, matsize))]
@@ -233,8 +235,6 @@ class ConformationalDistanceMatrixGenerator:
                        subset_masses, rmsdmat,
                        pbar_counter):  # Prototype fitter worker: pairwase
         # align and calculate metric. To be overidden in heir classes
-
-
         """
         Fitter worker prototype; to be overridden in derived classes
         """
@@ -243,24 +243,24 @@ class ConformationalDistanceMatrixGenerator:
     def _pbar_updater(self, pbar, pbar_counters, max_val, update_interval=0.2):
         '''Method that updates and prints the progress bar, upon polling
         progress status from workers.
-            
+
         Attributes
-		-----------
-            
+        -----------
+
         pbar : encore.utils.AnimatedProgressBar object
             Progress bar object
-        
+
         pbar_counters : list of multiprocessing.RawValue
             List of counters. Each worker is given a counter, which is updated
             at every cycle. In this way the _pbar_updater process can
             asynchronously fetch progress reports.
-        
-	    max_val : int
+
+            max_val : int
             Total number of matrix elements to be calculated
-        
-	    update_interval : float
+
+            update_interval : float
             Number of seconds between progress bar updates
-            
+
         '''
 
         val = 0
@@ -284,31 +284,32 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
     def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
         '''
         Simple RMSD Matrix calculator.
-            
+
         Parameters
-		----------
-        
-   		   tasks : iterator of int of length 2
-        	    Given a triangular matrix, this worker will calculate RMSD
-        	    values from element tasks[0] to tasks[1]. Since the matrix is
-        	    triangular, the trm_indeces matrix automatically calculates
-        	    the corrisponding i,j matrix indices. The matrix is written as
-        	    an array in a row-major order (see the TriangularMatrix class
-        	    for details).
-        
-			coords : numpy.array
-       		     Array of the ensemble coordinates
-        
-			masses : numpy.array
-		            Array of atomic masses, having the same order as the
-		            coordinates array
-		        
-			rmsdmat : encore.utils.TriangularMatrix
-		            Memory-shared triangular matrix object
-		        
-			pbar_counter : multiprocessing.RawValue
-		            Thread-safe shared value. This counter is updated at every
-		            cycle and used to evaluate the progress of each worker.
+        ----------
+
+            tasks : iterator of int of length 2
+        Given a triangular matrix, this worker will calculate RMSD
+        values from element tasks[0] to tasks[1]. Since the matrix
+        is triangular, the trm_indeces matrix automatically
+        calculates the corrisponding i,j matrix indices.
+        The matrix is written as an array in a row-major
+        order (see the TriangularMatrix class for details).
+
+        coords : numpy.array
+            Array of the ensemble coordinates
+
+        masses : numpy.array
+            Array of atomic masses, having the same order as the
+            coordinates array
+
+        rmsdmat : encore.utils.TriangularMatrix
+            Memory-shared triangular matrix object
+
+        pbar_counter : multiprocessing.RawValue
+            Thread-safe shared value. This counter is updated at
+            every cycle and used to evaluate the progress of
+            each worker.
             '''
         for i, j in trm_indeces(tasks[0], tasks[1]):
             # masses = asarray(masses)/mean(masses)
@@ -322,39 +323,40 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
     def _fitter_worker(self, tasks, coords, subset_coords, masses,
                        subset_masses, rmsdmat, pbar_counter):
         '''
-            Fitter RMSD Matrix calculator: performs least-square fitting
-            between each pair of structures before calculating the RMSD.
-            
-            Parameters
-			----------
-            
-            	tasks : iterator of int of length 2
-            	Given a triangular matrix written in a row-major order, this
-            	worker will calculate RMSD values from element tasks[0] to
-            	tasks[1]. Since the matrix is triangular. the trm_indeces
-            	function automatically calculates the corrosponding i,j matrix
-            	indeces. (see the see encore.utils.TriangularMatrix for details).
+        Fitter RMSD Matrix calculator: performs least-square fitting
+        between each pair of structures before calculating the RMSD.
 
-            	coords : numpy.array
-            	    Array of the ensemble coordinates
+        Parameters
+        ----------
 
-            	subset_coords : numpy.array or None
-            	    Array of the coordinates used for fitting
+        tasks : iterator of int of length 2
+            Given a triangular matrix written in a row-major order, this
+            worker will calculate RMSD values from element tasks[0] to
+            tasks[1]. Since the matrix is triangular. the trm_indeces
+            function automatically calculates the corrosponding i,j matrix
+            indeces. (see the see encore.utils.TriangularMatrix for
+            details).
 
-            	masses : numpy.array or None
-            	    Array of atomic masses, having the same order as the
-            	    coordinates array. If None, coords will be used instead.
+        coords : numpy.array
+            Array of the ensemble coordinates
 
-            	subset_masses : numpy.array
-            	    Array of atomic masses, having the same order as the
-            	    subset_coords array
+        subset_coords : numpy.array or None
+            Array of the coordinates used for fitting
 
-            	rmsdmat : encore.utils.TriangularMatrix
-            	    Memory-shared triangular matrix object
+        masses : numpy.array or None
+            Array of atomic masses, having the same order as the
+            coordinates array. If None, coords will be used instead.
 
-            	pbar_counter : multiprocessing.RawValue
-            	    Thread-safe shared value. This counter is updated at every
-            	    cycle and used to evaluate the progress of each worker.
+        subset_masses : numpy.array
+            Array of atomic masses, having the same order as the
+            subset_coords array
+
+        rmsdmat : encore.utils.TriangularMatrix
+            Memory-shared triangular matrix object
+
+        pbar_counter : multiprocessing.RawValue
+            Thread-safe shared value. This counter is updated at every
+            cycle and used to evaluate the progress of each worker.
             '''
 
         for i, j in trm_indeces(tasks[0], tasks[1]):
@@ -379,15 +381,15 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
 
 class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
     '''
-        -RMSD Matrix calculator. See encore.confdistmatrix.RMSDMatrixGenerator
-        for details.
+    -RMSD Matrix calculator. See encore.confdistmatrix.RMSDMatrixGenerator
+    for details.
     '''
 
     def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
         '''
-            Simple RMSD Matrix calculator. See
-            encore.confdistmatrix.RMSDMatrixGenerator._simple_worker for
-            details.
+        Simple RMSD Matrix calculator. See
+        encore.confdistmatrix.RMSDMatrixGenerator._simple_worker for
+        details.
         '''
         for i, j in trm_indeces(tasks[0], tasks[1]):
             # masses = asarray(masses)/mean(masses)
