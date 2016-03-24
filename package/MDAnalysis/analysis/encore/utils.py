@@ -17,18 +17,8 @@
 
 from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
-from numpy import savez, load, zeros, array, float64, sqrt, atleast_2d, \
-    reshape, newaxis, zeros, dot, sum, exp
-import numpy as np
+from numpy import savez, load, array, float64, sqrt, zeros
 import sys
-try:
-    from scipy.stats import gaussian_kde
-except ImportError:
-    raise ImportError("Couldn't import the scipy package, which is a "
-                      "requirement for ENCORE.")
-import time
-import optparse
-import copy
 
 
 class TriangularMatrix:

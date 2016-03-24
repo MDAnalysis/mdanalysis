@@ -14,9 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Ensemble import *
-from covariance import *
-from similarity import *
-from confdistmatrix import *
-from clustering import *
+__all__ = [
+    'Ensemble',
+    'covariance',
+    'similarity',
+    'confdistmatrix',
+    'clustering'
+]
 
+from .Ensemble import Ensemble
+from .similarity import hes, ces, dres, ces_convergence, dres_convergence

@@ -1,1 +1,1 @@
-from stochasticproxembed import *
+from .stochasticproxembed import *

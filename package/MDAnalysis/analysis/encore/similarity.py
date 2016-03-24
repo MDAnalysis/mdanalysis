@@ -142,10 +142,25 @@ Functions
 
 
 """
+from __future__ import print_function
 import numpy
 import warnings
 import logging
 from time import sleep
+try:
+    from scipy.stats import gaussian_kde
+except ImportError:
+    gaussian_kde = None
+    msg = "scipy.stats.gaussian_kde could not be imported. " \
+          "Dimensionality reduction ensemble comparisons will not " \
+          "be available."
+    warnings.warn(msg,
+                  category=ImportWarning)
+    logging.warn(msg)
+    del msg
+
+from MDAnalysis.coordinates.array import ArrayReader
+
 from .Ensemble import Ensemble
 from .clustering.Cluster import ClustersCollection
 from .clustering.affinityprop import AffinityPropagation
@@ -154,9 +169,7 @@ from .dimensionality_reduction.stochasticproxembed import \
 from .confdistmatrix import MinusRMSDMatrixGenerator, RMSDMatrixGenerator
 from .covariance import covariance_matrix, EstimatorShrinkage, EstimatorML
 from .utils import *
-from scipy.stats import gaussian_kde
-import sys
-from MDAnalysis.coordinates.array import ArrayReader
+
 
 # Silence deprecation warnings - scipy problem
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -451,6 +464,12 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     embedded_ensembles = []
     resamples = []
 
+    if gaussian_kde is None:
+        # hack: if we are running with minimal dependencies then scipy was
+        # not imported and we have to bail here (see scipy import at top)
+        raise ImportError("For Kernel Density Estimation functionality you"
+                          "need to import scipy")
+
     for i in range(1, nensembles + 1):
         this_embedded = embedded_space.transpose()[
             numpy.where(ensemble_assignment == i)].transpose()
@@ -606,6 +625,11 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 
     """
 
+    if gaussian_kde is None:
+        # hack: if we are running with minimal dependencies then scipy was
+        # not imported and we have to bail here (see scipy import at top)
+        raise ImportError("For Kernel Density Estimation functionality you"
+                          "need to import scipy")
 
     kdes = []
     embedded_ensembles = []
@@ -1137,7 +1161,7 @@ def hes(ensembles,
     values = numpy.zeros((out_matrix_eln, out_matrix_eln))
 
     for e in ensembles:
-        print e
+        print(e)
         # Extract coordinates from each ensemble
         coordinates_system = e.get_coordinates(selection, format='fac')
 
@@ -1474,7 +1498,6 @@ def ces(ensembles,
         kwds = {}
         for i, p in enumerate(preferences):
             if ccs[i].clusters == None:
-                print "gigigigi"
                 continue
             else:
                 values.append(numpy.zeros((out_matrix_eln, out_matrix_eln)))
@@ -1975,7 +1998,6 @@ def ces_convergence(original_ensemble,
     kwargs['similarity_mode'] = similarity_mode
     confdistmatrix = get_similarity_matrix([original_ensemble],
                                            selection=selection, **kwargs)
-    print original_ensemble
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
         ensemble_assignment += [i for j in ensembles[i - 1]

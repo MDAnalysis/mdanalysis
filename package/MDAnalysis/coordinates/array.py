@@ -54,9 +54,10 @@ array extracted from a DCD timeseries
 
 """
 
-import base
 import errno
 import numpy as np
+
+from . import base
 
 
 class ArrayReader(base.ProtoReader):

@@ -33,7 +33,14 @@ available.
 
 """
 
-from multiprocessing import Process, Array, cpu_count, Value, RawValue
+from multiprocessing import Process, Array, cpu_count, RawValue
+from numpy import (sum, average, transpose, dot, ones, asarray, mean,
+                   float64, object, bool, array, int)
+from ctypes import c_float
+from getpass import getuser
+from socket import gethostname
+from datetime import datetime
+from time import sleep
 
 try:
     from MDAnalysis.analysis.rms import rmsd
@@ -42,15 +49,8 @@ except:
     # backwards compatibility for MDAnalysis < 0.10.0
     from MDAnalysis.analysis.align import rmsd, rotation_matrix
 
-from numpy import sum, average, transpose, dot, ones, asarray, mean, float64, \
-    object, bool, array, int
-from ctypes import c_float
-from cutils import *
-from getpass import getuser
-from socket import gethostname
-from datetime import datetime
-from utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
-from time import sleep
+from .cutils import *
+from .utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
 
 
 class ConformationalDistanceMatrixGenerator:
@@ -227,7 +227,7 @@ class ConformationalDistanceMatrixGenerator:
     def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
         '''Simple worker prototype; to be overriden in derived classes
         '''
-	return None
+        return None
 
     def _fitter_worker(self, tasks, coords, subset_coords, masses,
                        subset_masses, rmsdmat,
@@ -238,7 +238,8 @@ class ConformationalDistanceMatrixGenerator:
         """
         Fitter worker prototype; to be overridden in derived classes
         """
-	return None
+        return None
+
     def _pbar_updater(self, pbar, pbar_counters, max_val, update_interval=0.2):
         '''Method that updates and prints the progress bar, upon polling
         progress status from workers.

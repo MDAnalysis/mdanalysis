@@ -34,11 +34,11 @@ those coming from NMR structure resoltion experiments.
 
 """
 
+import numpy as np
+
 import MDAnalysis
 import MDAnalysis.analysis
 import MDAnalysis.analysis.align
-import numpy
-import numpy as np
 from MDAnalysis.coordinates.array import ArrayReader
 
 
@@ -130,7 +130,7 @@ class Ensemble(MDAnalysis.Universe):
 
             # if the Timeseries extraction fails, fall back to a slower approach
             except AttributeError:
-                coordinates = numpy.zeros(
+                coordinates = np.zeros(
                     tuple([self.universe.trajectory.n_frames]) +
                     self.atoms.coordinates().shape)
 
@@ -215,7 +215,7 @@ class Ensemble(MDAnalysis.Universe):
                 alignment_subset_selection.masses.shape[0])
 
         # Find center of mass of alignment subset for all frames
-        alignment_subset_coordinates_center_of_mass = numpy.average(
+        alignment_subset_coordinates_center_of_mass = np.average(
             alignment_subset_coordinates,
             axis=1,
             weights=alignment_subset_masses)
@@ -223,7 +223,7 @@ class Ensemble(MDAnalysis.Universe):
         # Move both subset atoms and the other atoms to the center of mass of
         # subset atoms
         coordinates -= alignment_subset_coordinates_center_of_mass[:,
-                       numpy.newaxis]
+                       np.newaxis]
 
         # if reference: no offset
         if reference:
@@ -245,8 +245,8 @@ class Ensemble(MDAnalysis.Universe):
                 reference_atom_selection.masses.shape[0])
 
         # Reference center of mass
-        reference_center_of_mass = numpy.average(reference_coordinates, axis=0,
-                                                 weights=reference_masses)
+        reference_center_of_mass = np.average(reference_coordinates, axis=0,
+                                              weights=reference_masses)
         # Move reference structure to its center of mass
         reference_coordinates -= reference_center_of_mass
 
@@ -259,6 +259,6 @@ class Ensemble(MDAnalysis.Universe):
                 alignment_subset_masses)[0]
 
             # Apply rotation matrix
-            coordinates[i][:] = numpy.transpose(numpy.dot(rotation_matrix,
-                                                          numpy.transpose(
-                                                          coordinates[i][:])))
+            coordinates[i][:] = np.transpose(np.dot(rotation_matrix,
+                                                    np.transpose(
+                                                    coordinates[i][:])))

@@ -43,7 +43,6 @@ class TestArrayReader(TestCase):
         reference = ArrayReference()
         self.ref = reference
         self.reader = self.ref.reader(self.ref.trajectory)
-        print self.reader.ts
 
     def test_n_atoms(self):
         assert_equal(self.reader.n_atoms, self.ref.n_atoms)

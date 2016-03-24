@@ -29,14 +29,7 @@ an ensemble of structures.
 .. versionadded:: 0.14.0
 """
 
-import sys
-import MDAnalysis
-import MDAnalysis.analysis
-import MDAnalysis.analysis.align
 import numpy
-
-from Ensemble import Ensemble
-
 
 class EstimatorML:
     """

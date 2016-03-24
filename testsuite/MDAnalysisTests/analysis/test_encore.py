@@ -36,6 +36,8 @@ class FakePBarCounter:
 
 class TestEnsemble(TestCase):
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_from_reader_w_timeseries(self):
         ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         assert_equal(len(ensemble.atoms.coordinates()), 3341,
@@ -46,9 +48,11 @@ class TestEnsemble(TestCase):
         assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_trajectories_list(self):
-        ensemble = encore.Ensemble(topology=PDB_small, trajectory=[DCD])
-        assert_equal(len(ensemble.atoms.coordinates()), 3341,
+        ensemble = encore.Ensemble(topology=PDB, trajectory=[XTC])
+        assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
 
 class TestEncore(TestCase):
