@@ -1161,7 +1161,7 @@ def hes(ensembles,
     values = numpy.zeros((out_matrix_eln, out_matrix_eln))
 
     for e in ensembles:
-        print(e)
+
         # Extract coordinates from each ensemble
         coordinates_system = e.get_coordinates(selection, format='fac')
 
