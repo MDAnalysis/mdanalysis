@@ -137,17 +137,26 @@ class MDADistribution(Distribution, object):
     #  not be available either).
     # The actual cython/numpy imports and calls can be delayed until after
     #  pip/setuptools have figured they must install them.
-    # This is accomplished by using a distutils.core.Distribution subclass
+    # This is accomplished by using a setuptools.dist.Distribution subclass
     #  that lazily fills-in cython and numpy information by hooking into
     #  the run_commands method.
+    # Our overrides also address the setuptools behavior of installing
+    #  setup-time dependencies locally. This involves essentially a rewrite
+    #  of fetch_build_egg.
+    # Hopefully, since none of the overriden methods was pre-underscored,
+    #  we'll stay clear of problems while this setuptools API lasts.
     def __init__(self, attrs=None):
-        # Attributes must exist if they're to be imported from attrs.
+        # Attributes must exist if they're to be imported from the
+        #  attrs that setup feeds to __init__.
         self.mda_use_cython = is_dev
-        self.mda_build_requires = None
+        self.mda_build_requires = []
         super(MDADistribution, self).__init__(attrs)
 
     def run_commands(self):
-        # The following seems fragile...
+        # The following might be fragile because we rely on specific
+        #  substrings of the command passed to setup.py. If pip ever starts
+        #  running a probing command other than 'egg_info' this might need to
+        #  be changed. Likewise if we ever come up with new commands ourselves
         is_install = any(('install' in cmd for cmd in self.commands))
         is_build = any(('build' in cmd for cmd in self.commands))
         is_pipinstall = any(('egg_info' in cmd for cmd in self.commands))
@@ -159,12 +168,17 @@ class MDADistribution(Distribution, object):
             #  probed by pip.
             self._mda_install_build_dependencies()
         if is_install or is_build:
+            # We're being built and possibly installed. We need cythonized files
+            #  and numpy include dirs.
             self.mda_cython_generated = []
             try:
                 if self.mda_use_cython:
                     self.cythonize()
                 self.add_numpy_includes()
             except ImportError as err:
+                # By now either we have all mda_build_requires dependencies
+                #  or we didn't install them because we are doing a local
+                #  build. Let's suggest this as a cause for the ImportError.
                 print("ImportError: {}\nNote: Will only install build-time "
                         "dependencies ({}) if doing an installation. "
                         "For local builds, please solve these dependencies "
@@ -175,9 +189,12 @@ class MDADistribution(Distribution, object):
         super(MDADistribution, self).run_commands()
 
     def cythonize(self):
+        # ImportErrors are caught outside of this method call.
         from Cython.Build import cythonize
         from Cython.Distutils import build_ext
         new_ext_modules = cythonize(self.ext_modules)
+        # Check for new cythonized files (to be optionally deleted
+        #  after building)
         for pre_ext, post_ext in zip(self.ext_modules, new_ext_modules):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
@@ -185,15 +202,13 @@ class MDADistribution(Distribution, object):
         self.ext_modules = new_ext_modules
 
     def add_numpy_includes(self):
+        # ImportErrors are caught outside of this method call.
         numpy_include_dir = [get_numpy_include()]
         for extension in self.ext_modules:
             extension.include_dirs += numpy_include_dir
 
     def _mda_install_build_dependencies(self):
-        try:
-            self.fetch_build_eggs(self.mda_build_requires)
-        except AttributeError:
-            pass
+        self.fetch_build_eggs(self.mda_build_requires)
 
     def fetch_build_egg(self, req):
         """Fetch an egg needed for building
@@ -201,15 +216,25 @@ class MDADistribution(Distribution, object):
         Overrides the `setuptools` version, which defaults to
         installing the egg under the current dir.
         """
+        # As the original fetch_build_egg, we cache the fetch/build command
+        #  within a try/except pair.
         try:
             cmd = self._egg_fetcher
         except AttributeError:
             from setuptools.command.install import install
             from setuptools.command.easy_install import easy_install
             dist = self.__class__()
+            # We try to cleanly emulate a non-local install by passing
+            #  onto our dependencies' Distribution objects the same args that
+            #  we got (to take care of --user installs, for instance).
             dist.script_args = self.script_args
             dist.parse_config_files()
-            # We try to cleanly emulate the system-wide install
+            # We create 'inst' as an instance of an 'install' command, but
+            #  note that it isn't really run. We just create it as a shortcut
+            #  to making a setup object that we then pass to easy_install.
+            # Also note that command class names don't follow the python's
+            #  capitalization standard so that they match what's written on
+            #  the command-line.  
             inst = install(dist)
             cmd = easy_install(dist, args="x", root=inst.root, record=inst.record)
             cmd.ensure_finalized()
@@ -231,14 +256,8 @@ def get_numpy_include():
     except ImportError:
         import builtins
     builtins.__NUMPY_SETUP__ = False
-    try:
-        import numpy as np
-    except ImportError:
-        print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
-        print('Please get it from http://numpy.scipy.org/ or install it through '
-              'your package manager.')
-        sys.exit(-1)
+    # ImportErrors are caught outside of this function call.
+    import numpy as np
     try:
         numpy_include = np.get_include()
     except AttributeError:
