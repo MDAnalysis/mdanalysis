@@ -3,7 +3,6 @@ branch = True
 source = MDAnalysis
 omit =
     */migration/*
-    */analysis/*
     */visualization/*
     */MDAnalysis/tests/*
 
