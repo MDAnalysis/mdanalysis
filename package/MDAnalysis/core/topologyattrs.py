@@ -246,8 +246,8 @@ class AtomAttr(TopologyAttr):
         attributes.
 
         """
-        aix = self.top.tt.residues2atoms_1d(rg._ix)
-        return self.values[aix]
+        aixs = self.top.tt.residues2atoms_2d(rg._ix)
+        return [self.values[aix] for aix in aixs]
 
     def get_segments(self, sg):
         """By default, the values for each atom present in the set of residues
@@ -255,8 +255,8 @@ class AtomAttr(TopologyAttr):
         attributes.
 
         """
-        aix = self.top.tt.segments2atoms_1d(sg._ix)
-        return self.values[aix]
+        aixs = self.top.tt.segments2atoms_2d(sg._ix)
+        return [self.values[aix] for aix in aixs]
 
 
 #TODO: update docs to property doc
@@ -725,8 +725,8 @@ class ResidueAttr(TopologyAttr):
         in child attributes.
 
         """
-        rix = self.top.tt.segments2residues_1d(sg._ix)
-        return self.values[rix]
+        rixs = self.top.tt.segments2residues_2d(sg._ix)
+        return [self.values[rix] for rix in rixs]
 
 
 #TODO: update docs to property doc
