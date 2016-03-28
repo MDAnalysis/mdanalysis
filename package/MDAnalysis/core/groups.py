@@ -304,6 +304,7 @@ class GroupBase(object):
 
         return R
 
+# TODO: re-add ability to use AtomGroups as input
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
 
@@ -378,6 +379,7 @@ class GroupBase(object):
         x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
         return R
 
+# TODO: re-add ability to use AtomGroups as input
     def rotateby(self, angle, axis, point=None):
         """Apply a rotation to the selection's coordinates.
 
