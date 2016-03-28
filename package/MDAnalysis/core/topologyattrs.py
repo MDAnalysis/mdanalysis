@@ -27,7 +27,7 @@ import numpy as np
 
 from . import flags
 from ..lib.util import cached
-from ..exceptions import NoDataError
+from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
 from . import flags
@@ -315,6 +315,91 @@ class Atomnames(AtomAttr):
     transplants['residue'].append(
         ('_get_named_atom', _get_named_atom))
 
+    def phi_selection(self):
+        """AtomGroup corresponding to the phi protein backbone dihedral
+        C'-N-CA-C.
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no C' found in the
+            previous residue (by resid) then this method returns ``None``.
+        """
+        sel = self.universe.select_atoms(
+            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
+              self['N'] + self['CA'] + self['C']
+        if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
+            return sel
+        else:
+            return None
+
+    transplants['residue'].append(('phi_selection', phi_selection))
+
+    def psi_selection(self):
+        """AtomGroup corresponding to the psi protein backbone dihedral
+        N-CA-C-N'.
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no N' found in the
+            following residue (by resid) then this method returns ``None``.
+        """
+        sel = self['N'] + self['CA'] + self['C'] + \
+              self.universe.select_atoms(
+                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+        if len(sel) == 4:
+            return sel
+        else:
+            return None
+
+    transplants['residue'].append(('psi_selection', psi_selection))
+
+    def omega_selection(self):
+        """AtomGroup corresponding to the omega protein backbone dihedral
+        CA-C-N'-CA'.
+
+        omega describes the -C-N- peptide bond. Typically, it is trans (180
+        degrees) although cis-bonds (0 degrees) are also occasionally observed
+        (especially near Proline).
+
+        Returns
+        -------
+        AtomGroup
+            4-atom selection in the correct order. If no C' found in the
+            previous residue (by resid) then this method returns ``None``.
+
+        """
+        nextres = self.id + 1
+        segid = self.segment.id
+        sel = self['CA'] + self['C'] + \
+              self.universe.select_atoms(
+                  'segid %s and resid %d and name N' % (segid, nextres),
+                  'segid %s and resid %d and name CA' % (segid, nextres))
+        if len(sel) == 4:
+            return sel
+        else:
+            return None
+
+    transplants['residue'].append(('omega_selection', omega_selection))
+
+    def chi1_selection(self):
+        """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+        
+        Returns
+        -------
+        AtomGroup 
+            4-atom selection in the correct order. If no CB and/or CG is found
+            then this method returns ``None``.
+
+        .. versionadded:: 0.7.5
+        """
+        try:
+            return self['N'] + self['CA'] + self['CB'] + self['CG']
+        except (SelectionError, NoDataError):
+            return None
+
+    transplants['residue'].append(('chi1_selection', chi1_selection))
 
 #TODO: update docs to property doc
 class Atomtypes(AtomAttr):
