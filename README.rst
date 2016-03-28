@@ -61,9 +61,9 @@ MDAnalysis issue tracker.)
 
 .. Footnotes
 
-.. [*] **build**: Unit testing is for the whole package; **coverage** is shown for the core library
-       modules (which excludes `MDAnalysis.analysis`_ and `MDAnalysis.visualization`_ at
-       the moment). For more details and discussion see issue `#286`_.
+.. [*] **build**: Unit testing is for the whole package; **coverage** is
+       shown for the core library modules and the analysis modules (which
+       excludes `MDAnalysis.visualization`_ at the moment).
 
 .. _trajectory formats: http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
