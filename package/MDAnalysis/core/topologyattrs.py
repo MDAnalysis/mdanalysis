@@ -353,7 +353,6 @@ class Tempfactors(AtomAttr):
     singular = 'tempfactor'
 
 
-#TODO: need to add cacheing
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
@@ -398,8 +397,8 @@ class Masses(AtomAttr):
 
         return masses
 
-    def center_of_mass(atomgroup, **kwargs):
-        """Center of mass of the AtomGroup.
+    def center_of_mass(group, **kwargs):
+        """Center of mass of the Group.
 
         Parameters
         ----------
@@ -413,6 +412,8 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         """
+        atomgroup = group.atoms
+
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
@@ -424,7 +425,7 @@ class Masses(AtomAttr):
         return np.sum(positions * masses[:, np.newaxis],
                       axis=0) / masses.sum()
 
-    transplants['atomgroup'].append(
+    transplants['group'].append(
         ('center_of_mass', center_of_mass))
 
     def total_mass(group):
@@ -436,7 +437,7 @@ class Masses(AtomAttr):
     transplants['group'].append(
         ('total_mass', total_mass))
 
-    def moment_of_inertia(atomgroup, **kwargs):
+    def moment_of_inertia(group, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
@@ -452,6 +453,7 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         # Convert to local coordinates
@@ -486,10 +488,10 @@ class Masses(AtomAttr):
 
         return tens
 
-    transplants['atomgroup'].append(
+    transplants['group'].append(
         ('moment_of_inertia', moment_of_inertia))
 
-    def radius_of_gyration(atomgroup, **kwargs):
+    def radius_of_gyration(group, **kwargs):
         """Radius of gyration.
 
         Parameters
@@ -504,19 +506,23 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
+
         if pbc:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
         else:
             recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+
         rog_sq = np.sum(masses * np.sum(np.power(recenteredpos, 2), axis=1)) / atomgroup.total_mass()
+
         return np.sqrt(rog_sq)
 
-    transplants['atomgroup'].append(
+    transplants['group'].append(
         ('radius_of_gyration', radius_of_gyration))
 
-    def shape_parameter(atomgroup, **kwargs):
+    def shape_parameter(group, **kwargs):
         """Shape parameter.
 
         See [Dima2004]_ for background information.
@@ -539,25 +545,29 @@ class Masses(AtomAttr):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        atomgroup = self.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
+
         if pbc:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
         else:
             recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
         tensor = np.zeros((3, 3))
+
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
+
         return shape
 
-    transplants['atomgroup'].append(
+    transplants['group'].append(
         ('shape_parameter', shape_parameter))
 
-    def asphericity(atomgroup, **kwargs):
+    def asphericity(group, **kwargs):
         """Asphericity.
 
         See [Dima2004]_ for background information.
@@ -580,26 +590,31 @@ class Masses(AtomAttr):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = atomgroup.masses
+
         if pbc:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
         else:
             recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+
         tensor = np.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
+
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = (3.0 / 2.0) * np.sum(np.power(eig_vals - np.mean(eig_vals), 2)) / np.power(
             np.sum(eig_vals), 2)
+
         return shape
 
-    transplants['atomgroup'].append(
+    transplants['group'].append(
         ('asphericity', asphericity))
 
-    def principal_axes(atomgroup, **kwargs):
+    def principal_axes(group, **kwargs):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -625,18 +640,52 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+
         if pbc:
             eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=True))
         else:
             eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=False))
+
         # Sort
         indices = np.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:, indices].T
 
+    transplants['group'].append(
+        ('principal_axes', principal_axes))
 
-#TODO: need to add cacheing
+    def align_principal_axis(group, axis, vector):
+        """Align principal axis with index `axis` with `vector`.
+
+        Parameters
+        ----------
+        axis : {0, 1, 2}
+            Index of the principal axis (0, 1, or 2), as produced by
+            :meth:`~principal_axes`.
+        vector : array_like
+            Vector to align principal axis with.
+
+        Notes
+        -----
+        To align the long axis of a channel (the first principal axis, i.e.
+        *axis* = 0) with the z-axis::
+
+          u.atoms.align_principal_axis(0, [0,0,1])
+          u.atoms.write("aligned.pdb")
+        """
+        p = self.principal_axes()[axis]
+        angle = np.degrees(mdamath.angle(p, vector))
+        ax = transformations.rotaxis(p, vector)
+        #print "principal[%d] = %r" % (axis, p)
+        #print "axis = %r, angle = %f deg" % (ax, angle)
+        return self.rotateby(angle, ax)
+
+    transplants['group'].append(
+        ('align_principal_axis', align_principal_axis))
+
+
 #TODO: update docs to property doc
 class Charges(AtomAttr):
     attrname = 'charges'
