@@ -2669,10 +2669,6 @@ class AtomGroup(object):
             x1, x2 = sel1.centroid(), sel2.centroid()
             vector = x2 - x1
 
-            warnings.warn("Using a tuple of AtomGroups is deprecated " 
-                          "in version 0.15.0; explicitly give translation "
-                          "vector instead.", DeprecationWarning)
-
         except (ValueError, AttributeError):
             vector = np.asarray(t)
         # changes the coordinates (in place)
@@ -2738,10 +2734,6 @@ class AtomGroup(object):
             n = v / np.linalg.norm(v)
             if point is None:
                 point = x1
-
-            warnings.warn("Using a tuple of AtomGroups is deprecated " 
-                          "in version 0.15.0; explicitly give rotation "
-                          "axis vector instead.", DeprecationWarning)
 
         except (ValueError, AttributeError):
             n = np.asarray(axis)
