@@ -457,8 +457,84 @@ _PLURAL_PROPERTIES = {'index': 'indices',
 # And the return route
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
-_FIFTEEN_DEPRECATION = "This will be removed in version 0.15.0"
+_FIFTEEN_DEPRECATION = "This will be removed in version 0.16.0"
 
+def warn_atom_property(func):
+    warnstring = "In version 0.16.0, use `{}.atoms.{}` instead."
+
+    def outfunc(self, *args):
+        if isinstance(self, SegmentGroup):
+            warnings.warn(warnstring.format('segmentgroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Segment):
+            warnings.warn(warnstring.format('segment', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, ResidueGroup):
+            warnings.warn(warnstring.format('residuegroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Residue):
+            warnings.warn(warnstring.format('residue', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, AtomGroup):
+            pass
+        elif isinstance(self, Atom):
+            pass
+
+        return func(self, *args)
+
+    return outfunc
+
+def warn_residue_property(func):
+    warnstring = "In version 0.16.0, use `{}.residues.{}` instead."
+    warnstring_sing = "In version 0.16.0, use `{}.residue.{}` instead."
+
+    def outfunc(self, *args):
+        if isinstance(self, SegmentGroup):
+            warnings.warn(warnstring.format('segmentgroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Segment):
+            warnings.warn(warnstring.format('segment', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, ResidueGroup):
+            pass
+        elif isinstance(self, Residue):
+            pass
+        elif isinstance(self, AtomGroup):
+            warnings.warn(warnstring.format('atomgroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Atom):
+            warnings.warn(warnstring_sing.format('atom', func.__name__),
+                          DeprecationWarning)
+
+        return func(self, *args)
+
+    return outfunc
+
+def warn_segment_property(func):
+    warnstring = "In version 0.16.0, use `{}.segments.{}` instead."
+    warnstring_sing = "In version 0.16.0, use `{}.segment.{}` instead."
+
+    def outfunc(self, *args):
+        if isinstance(self, SegmentGroup):
+            pass
+        elif isinstance(self, Segment):
+            pass
+        elif isinstance(self, ResidueGroup):
+            warnings.warn(warnstring.format('residuegroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Residue):
+            warnings.warn(warnstring_sing.format('residue', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, AtomGroup):
+            warnings.warn(warnstring.format('atomgroup', func.__name__),
+                          DeprecationWarning)
+        elif isinstance(self, Atom):
+            warnings.warn(warnstring_sing.format('atom', func.__name__),
+                          DeprecationWarning)
+
+        return func(self, *args)
+
+    return outfunc
 
 @functools.total_ordering
 class Atom(object):
@@ -545,14 +621,14 @@ class Atom(object):
         else:
             return AtomGroup([self] + other._atoms)
 
-    @deprecate(message="{}; use `index` property instead".format(_FIFTEEN_DEPRECATION))
     @property
+    @deprecate(message="{}; use `index` property instead".format(_FIFTEEN_DEPRECATION))
     def number(self):
         """The index of this atom"""
         return self.index
 
-    @deprecate(message="{}; use `position` property instead".format(_FIFTEEN_DEPRECATION))
     @property
+    @deprecate(message="{}; use `position` property instead".format(_FIFTEEN_DEPRECATION))
     def pos(self):
         """coordinates of the atom
 
@@ -687,8 +763,8 @@ class Atom(object):
         else:
             return self._universe
 
-    @deprecate(message="{}; Atoms will not be able to leave their Universes.".format(_FIFTEEN_DEPRECATION))
     @universe.setter
+    @deprecate(message="{}; Atoms will not be able to leave their Universes.".format(_FIFTEEN_DEPRECATION))
     def universe(self, new):
         self._universe = new
 
@@ -1045,6 +1121,9 @@ class AtomGroup(object):
             raise TypeError("Cannot slice with type: {0}".format(type(item)))
 
     def __getattr__(self, name):
+        if isinstance(self, ResidueGroup):
+            warnings.warn("In version 0.16.0 this will select "
+                          "residue names, not atom names ", DeprecationWarning)
         try:
             return self._get_named_atom(name)
         except SelectionError:
@@ -1164,6 +1243,7 @@ class AtomGroup(object):
 
     @property
     @cached('masses')
+    @warn_atom_property
     def masses(self):
         """Array of atomic masses (as defined in the topology)
 
@@ -1173,6 +1253,7 @@ class AtomGroup(object):
         return np.array([atom.mass for atom in self._atoms])
 
     @masses.setter
+    @warn_atom_property
     def masses(self, new):
         self._clear_caches('masses')
         self.set_masses(new)
@@ -1187,6 +1268,7 @@ class AtomGroup(object):
                           message=_FIFTEEN_DEPRECATION)
 
     @property
+    @warn_atom_property
     def occupancies(self):
         """Access occupancies of atoms
 
@@ -1205,6 +1287,7 @@ class AtomGroup(object):
             raise NoDataError('Timestep does not contain occupancy')
 
     @occupancies.setter
+    @warn_atom_property
     def occupancies(self, new):
         try:
             self.universe.coord.data['occupancy'][self.indices] = new
@@ -1214,6 +1297,7 @@ class AtomGroup(object):
             self.universe.coord.data['occupancy'][self.indices] = new
 
     @property
+    @warn_atom_property
     def charges(self):
         """Array of partial charges of the atoms (as defined in the topology)
 
@@ -1223,6 +1307,7 @@ class AtomGroup(object):
         return np.array([atom.charge for atom in self._atoms])
 
     @charges.setter
+    @warn_atom_property
     def charges(self, new):
         self.set_charges(new)
 
@@ -1236,6 +1321,7 @@ class AtomGroup(object):
                             message=_FIFTEEN_DEPRECATION)
 
     @property
+    @warn_atom_property
     def names(self):
         """Returns an array of atom names.
 
@@ -1247,10 +1333,12 @@ class AtomGroup(object):
         return np.array([a.name for a in self._atoms])
 
     @names.setter
+    @warn_atom_property
     def names(self, new):
         self.set_names(new)
 
     @property
+    @warn_atom_property
     def types(self):
         """Returns an array of atom types.
 
@@ -1261,10 +1349,12 @@ class AtomGroup(object):
         return np.array([a.type for a in self._atoms])
 
     @types.setter
+    @warn_atom_property
     def types(self, new):
         self.set_types(new)
 
     @property
+    @warn_atom_property
     def radii(self):
         """Array of atomic radii (as defined in the PQR file)
 
@@ -1274,20 +1364,24 @@ class AtomGroup(object):
         return np.array([atom.radius for atom in self._atoms])
 
     @radii.setter
+    @warn_atom_property
     def radii(self, new):
         self.set_radii(new)
 
     @property
+    @warn_atom_property
     def bfactors(self):
         """Crystallographic B-factors (from PDB) in A**2.
         """
         return np.array([atom.bfactor for atom in self._atoms])
 
     @bfactors.setter
+    @warn_atom_property
     def bfactors(self, new):
         self.set_bfactors(new)
 
     @property
+    @warn_atom_property
     def altLocs(self):
         """numpy array of the altLocs for all atoms in this group
 
@@ -1296,11 +1390,12 @@ class AtomGroup(object):
         return np.array([atom.altLoc for atom in self._atoms])
 
     @altLocs.setter
+    @warn_atom_property
     def altLocs(self, new):
         self.set_altlocs(new)
 
-    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
     @property
+    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
     def serials(self):
         """numpy array of the serials for all atoms in this group
 
@@ -1308,8 +1403,8 @@ class AtomGroup(object):
         """
         return np.array([atom.serial for atom in self._atoms])
 
-    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
     @serials.setter
+    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
     def serials(self, new):
         self.set_serials(new)
 
@@ -1369,6 +1464,7 @@ class AtomGroup(object):
         return np.array([a.resid for a in self._atoms])
 
     @resids.setter
+    @warn_residue_property
     def resids(self, new):
         self.set_resids(new)
 
@@ -1384,6 +1480,7 @@ class AtomGroup(object):
         return np.array([a.resname for a in self._atoms])
 
     @resnames.setter
+    @warn_residue_property
     def resnames(self, new):
         self.set_resnames(new)
 
@@ -1400,6 +1497,7 @@ class AtomGroup(object):
         return np.array([a.resnum for a in self._atoms])
 
     @resnums.setter
+    @warn_residue_property
     def resnums(self, new):
         self.set_resnums(new)
 
@@ -1415,6 +1513,7 @@ class AtomGroup(object):
         return np.array([a.segid for a in self._atoms])
 
     @segids.setter
+    @warn_segment_property
     def segids(self, new):
         self.set_segids(new)
 
@@ -3142,7 +3241,7 @@ class AtomGroup(object):
 
         if level in ('resid', 'segid'):
             warnings.warn("'resid' or 'segid' are no longer allowed levels " 
-                          "in version 0.15.0; instead give "
+                          "in version 0.16.0; instead give "
                           "'residue' or 'segment', respectively.",
                           DeprecationWarning)
 
@@ -3509,6 +3608,7 @@ class ResidueGroup(AtomGroup):
     set = _set_residues
 
     @property
+    @warn_residue_property
     def resids(self):
         """Returns an array of residue numbers.
 
@@ -3520,6 +3620,7 @@ class ResidueGroup(AtomGroup):
         return np.array([r.id for r in self.residues])
 
     @property
+    @warn_residue_property
     def resnames(self):
         """Returns an array of residue names.
 
@@ -3531,6 +3632,7 @@ class ResidueGroup(AtomGroup):
         return np.array([r.name for r in self.residues])
 
     @property
+    @warn_residue_property
     def resnums(self):
         """Returns an array of canonical residue numbers.
 
@@ -3700,24 +3802,24 @@ class Segment(ResidueGroup):
                 atom.segment = self
         self._cls = ResidueGroup
 
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     @property
+    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     def id(self):
         """Segment id (alias for :attr:`Segment.name`)"""
         return self.name
 
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     @id.setter
+    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     def id(self, x):
         self.name = x
 
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     @property
+    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     def name(self):
         return self._name
 
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     @name.setter
+    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
     def name(self, x):
         self._name = x
 
@@ -4725,34 +4827,34 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    @deprecate(_FIFTEEN_DEPRECATION)
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def make_anchor(self):
         """Add this Universe to the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
         is already on the list."""
         MDAnalysis._anchor_universes.add(self)
 
-    @deprecate(_FIFTEEN_DEPRECATION)
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def remove_anchor(self):
         """Remove this Universe from the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
         is already not on the list."""
         MDAnalysis._anchor_universes.discard(self)
 
-    @deprecate(_FIFTEEN_DEPRECATION)
     @property
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def is_anchor(self):
         """Whether this Universe will be checked for anchoring when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances"""
         return self in MDAnalysis._anchor_universes
 
-    @deprecate(_FIFTEEN_DEPRECATION)
     @property
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def anchor_name(self):
         return self._anchor_name
 
-    @deprecate(_FIFTEEN_DEPRECATION)
     @anchor_name.setter
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def anchor_name(self, name):
         """Setting this attribute to anything other than ``None`` causes this Universe to
         be added to the list where named anchors are searched for when unpickling
@@ -4764,7 +4866,7 @@ class Universe(object):
         else:
             MDAnalysis._named_anchor_universes.add(self)
 
-    @deprecate(_FIFTEEN_DEPRECATION)
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def _matches_unpickling(self, anchor_name, n_atoms, fname, trajname):
         if anchor_name is None or anchor_name == self.anchor_name:
             try:
@@ -4775,7 +4877,7 @@ class Universe(object):
             return False
 
 
-@deprecate(_FIFTEEN_DEPRECATION)
+@deprecate(message=_FIFTEEN_DEPRECATION)
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.
 
