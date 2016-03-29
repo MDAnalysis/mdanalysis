@@ -457,7 +457,7 @@ _PLURAL_PROPERTIES = {'index': 'indices',
 # And the return route
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
-_FIFTEEN_DEPRECATION = "This will be removed in version 0.16.0"
+_SIXTEEN_DEPRECATION = "This will be removed in version 0.16.0"
 
 def warn_atom_property(func):
     warnstring = "In version 0.16.0, use `{}.atoms.{}` instead."
@@ -535,6 +535,7 @@ def warn_segment_property(func):
         return func(self, *args)
 
     return outfunc
+
 
 @functools.total_ordering
 class Atom(object):
@@ -622,13 +623,13 @@ class Atom(object):
             return AtomGroup([self] + other._atoms)
 
     @property
-    @deprecate(message="{}; use `index` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `index` property instead".format(_SIXTEEN_DEPRECATION))
     def number(self):
         """The index of this atom"""
         return self.index
 
     @property
-    @deprecate(message="{}; use `position` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `position` property instead".format(_SIXTEEN_DEPRECATION))
     def pos(self):
         """coordinates of the atom
 
@@ -749,7 +750,7 @@ class Atom(object):
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
-    @deprecate(message="{}; use `position` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `position` property instead".format(_SIXTEEN_DEPRECATION))
     def centroid(self):
         """The centroid of an atom is its position, :attr:`Atom.position`."""
         # centroid exists for compatibility with AtomGroup
@@ -764,7 +765,7 @@ class Atom(object):
             return self._universe
 
     @universe.setter
-    @deprecate(message="{}; Atoms will not be able to leave their Universes.".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; Atoms will not be able to leave their Universes.".format(_SIXTEEN_DEPRECATION))
     def universe(self, new):
         self._universe = new
 
@@ -1265,7 +1266,7 @@ class AtomGroup(object):
     totalMass = deprecate(total_mass,
                           old_name='totalMass',
                           new_name='total_mass',
-                          message=_FIFTEEN_DEPRECATION)
+                          message=_SIXTEEN_DEPRECATION)
 
     @property
     @warn_atom_property
@@ -1318,7 +1319,7 @@ class AtomGroup(object):
     totalCharge = deprecate(total_charge,
                             old_name='totalCharge',
                             new_name='total_charge',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
     @property
     @warn_atom_property
@@ -1395,7 +1396,7 @@ class AtomGroup(object):
         self.set_altlocs(new)
 
     @property
-    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
     def serials(self):
         """numpy array of the serials for all atoms in this group
 
@@ -1404,7 +1405,7 @@ class AtomGroup(object):
         return np.array([atom.serial for atom in self._atoms])
 
     @serials.setter
-    @deprecate(message="{}; use `ids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
     def serials(self, new):
         self.set_serials(new)
 
@@ -1810,7 +1811,7 @@ class AtomGroup(object):
         """
         self.occupancies = occupancies
 
-    @deprecate(message="{}; use `names` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `names` property instead".format(_SIXTEEN_DEPRECATION))
     def set_names(self, name):
         """Set the atom names to string for *all atoms* in the AtomGroup.
 
@@ -1830,9 +1831,9 @@ class AtomGroup(object):
     set_name = deprecate(set_names,
                          old_name='set_name',
                          new_name='set_names',
-                         message=_FIFTEEN_DEPRECATION)
+                         message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `resids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resids` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resids(self, resid):
         """Set the resids to integer *resid* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1878,9 +1879,9 @@ class AtomGroup(object):
     set_resid = deprecate(set_resids,
                           old_name='set_resid',
                           new_name='set_resids',
-                          message=_FIFTEEN_DEPRECATION)
+                          message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `resnums` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resnums` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resnums(self, resnum):
         """Set the resnums to *resnum* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1910,9 +1911,9 @@ class AtomGroup(object):
     set_resnum = deprecate(set_resnums,
                            old_name='set_resnum',
                            new_name='set_resnums',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `resnames` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resnames` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resnames(self, resname):
         """Set the resnames to string *resname* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1935,9 +1936,9 @@ class AtomGroup(object):
     set_resname = deprecate(set_resnames,
                             old_name='set_resname',
                             new_name='set_resnames',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `segids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `segids` property instead".format(_SIXTEEN_DEPRECATION))
     def set_segids(self, segid):
         """Set the segids to *segid* for all atoms in the :class:`AtomGroup`.
 
@@ -1981,9 +1982,9 @@ class AtomGroup(object):
     set_segid = deprecate(set_segids,
                           old_name='set_segid',
                           new_name='set_segids',
-                          message=_FIFTEEN_DEPRECATION)
+                          message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `masses` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `masses` property instead".format(_SIXTEEN_DEPRECATION))
     def set_masses(self, mass):
         """Set the atom masses to float *mass* for **all atoms** in the AtomGroup.
 
@@ -2003,9 +2004,9 @@ class AtomGroup(object):
     set_mass = deprecate(set_masses,
                          old_name='set_mass',
                          new_name='set_masses',
-                         message=_FIFTEEN_DEPRECATION)
+                         message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `types` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `types` property instead".format(_SIXTEEN_DEPRECATION))
     def set_types(self, atype):
         """Set the atom types to *atype* for **all atoms** in the AtomGroup.
 
@@ -2025,9 +2026,9 @@ class AtomGroup(object):
     set_type = deprecate(set_types,
                          old_name='set_type',
                          new_name='set_types',
-                         message=_FIFTEEN_DEPRECATION)
+                         message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `charges` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `charges` property instead".format(_SIXTEEN_DEPRECATION))
     def set_charges(self, charge):
         """Set the partial charges to float *charge* for **all atoms** in the AtomGroup.
 
@@ -2047,9 +2048,9 @@ class AtomGroup(object):
     set_charge = deprecate(set_charges,
                            old_name='set_charge',
                            new_name='set_charges',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `radii` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `radii` property instead".format(_SIXTEEN_DEPRECATION))
     def set_radii(self, radius):
         """Set the atom radii to float *radius* for **all atoms** in the AtomGroup.
 
@@ -2069,9 +2070,9 @@ class AtomGroup(object):
     set_radius = deprecate(set_radii,
                            old_name='set_radius',
                            new_name='set_radii',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `bfactors` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `bfactors` property instead".format(_SIXTEEN_DEPRECATION))
     def set_bfactors(self, bfactor):
         """Set the atom bfactors to float *bfactor* for **all atoms** in the AtomGroup.
 
@@ -2091,9 +2092,9 @@ class AtomGroup(object):
     set_bfactor = deprecate(set_bfactors,
                             old_name='set_bfactor',
                             new_name='set_bfactors',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `altLocs` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `altLocs` property instead".format(_SIXTEEN_DEPRECATION))
     def set_altLocs(self, altLoc):
         """Set the altLocs to *altLoc for **all atoms** in the AtomGroup.
 
@@ -2109,9 +2110,9 @@ class AtomGroup(object):
     set_altLoc = deprecate(set_altLocs,
                            old_name='set_altLoc',
                            new_name='set_altLocs',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `serials` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `serials` property instead".format(_SIXTEEN_DEPRECATION))
     def set_serials(self, serial):
         """Set the serials to *serial* for **all atoms** in the AtomGroup.
 
@@ -2127,7 +2128,7 @@ class AtomGroup(object):
     set_serial = deprecate(set_serials,
                            old_name='set_serial',
                            new_name='set_serials',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
     def center_of_geometry(self, **kwargs):
         """Center of geometry (also known as centroid) of the selection.
@@ -2151,7 +2152,7 @@ class AtomGroup(object):
     centerOfGeometry = deprecate(center_of_geometry,
                                  old_name='centerOfGeometry',
                                  new_name='center_of_geometry',
-                                 message=_FIFTEEN_DEPRECATION)
+                                 message=_SIXTEEN_DEPRECATION)
 
     centroid = center_of_geometry
 
@@ -2178,7 +2179,7 @@ class AtomGroup(object):
     centerOfMass = deprecate(center_of_mass,
                              old_name='centerOfMass',
                              new_name='center_of_mass',
-                             message=_FIFTEEN_DEPRECATION)
+                             message=_SIXTEEN_DEPRECATION)
 
     def radius_of_gyration(self, **kwargs):
         """Radius of gyration.
@@ -2205,7 +2206,7 @@ class AtomGroup(object):
     radiusOfGyration = deprecate(radius_of_gyration,
                                  old_name='radiusOfGyration',
                                  new_name='radius_of_gyration',
-                                 message=_FIFTEEN_DEPRECATION)
+                                 message=_SIXTEEN_DEPRECATION)
 
     def shape_parameter(self, **kwargs):
         """Shape parameter.
@@ -2241,7 +2242,7 @@ class AtomGroup(object):
     shapeParameter = deprecate(shape_parameter,
                                old_name='shapeParameter',
                                new_name='shape_parameter',
-                               message=_FIFTEEN_DEPRECATION)
+                               message=_SIXTEEN_DEPRECATION)
 
     def asphericity(self, **kwargs):
         """Asphericity.
@@ -2324,7 +2325,7 @@ class AtomGroup(object):
     momentOfInertia = deprecate(moment_of_inertia,
                                 old_name='momentOfInertia',
                                 new_name='moment_of_inertia',
-                                message=_FIFTEEN_DEPRECATION)
+                                message=_SIXTEEN_DEPRECATION)
 
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
@@ -2482,9 +2483,9 @@ class AtomGroup(object):
     principalAxes = deprecate(principal_axes,
                               old_name='principalAxes',
                               new_name='principal_axes',
-                              message=_FIFTEEN_DEPRECATION)
+                              message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `positions` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
     def get_positions(self, ts=None, copy=False, dtype=np.float32):
         """Get a numpy array of the coordinates.
 
@@ -2533,9 +2534,9 @@ class AtomGroup(object):
     # MDAnalysis itself, and in the paper
 
     coordinates = deprecate(coordinates, 
-                            message="{}; use `positions` property instead".format(_FIFTEEN_DEPRECATION))
+                            message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
 
-    @deprecate(message="{}; use `positions` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
     def set_positions(self, coords, ts=None):
         """Set the positions for all atoms in the group.
 
@@ -2579,7 +2580,7 @@ class AtomGroup(object):
 
                 .. versionadded:: 0.7.6""")
 
-    @deprecate(message="{}; use `velocities` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `velocities` property instead".format(_SIXTEEN_DEPRECATION))
     def get_velocities(self, ts=None, copy=False, dtype=np.float32):
         """numpy array of the velocities.
 
@@ -2599,7 +2600,7 @@ class AtomGroup(object):
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
-    @deprecate(message="{}; use `velocities` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `velocities` property instead".format(_SIXTEEN_DEPRECATION))
     def set_velocities(self, v, ts=None):
         """Assign the velocities *v* to the timestep.
 
@@ -2633,7 +2634,7 @@ class AtomGroup(object):
            Became an attribute.
     """)
 
-    @deprecate(message="{}; use `forces` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `forces` property instead".format(_SIXTEEN_DEPRECATION))
     def get_forces(self, ts=None, copy=False, dtype=np.float32):
         """
         Get a numpy array of the atomic forces (if available).
@@ -2672,7 +2673,7 @@ class AtomGroup(object):
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
-    @deprecate(message="{}; use `forces` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `forces` property instead".format(_SIXTEEN_DEPRECATION))
     def set_forces(self, forces, ts=None):
         """Set the forces for all atoms in the group.
 
@@ -2874,7 +2875,7 @@ class AtomGroup(object):
     align_principalAxis = deprecate(align_principal_axis,
                                     old_name='align_principalAxis',
                                     new_name='align_principal_axis',
-                                    message=_FIFTEEN_DEPRECATION)
+                                    message=_SIXTEEN_DEPRECATION)
 
     def pack_into_box(self, box=None, inplace=True):
         r"""Shift all atoms in this group to be within the primary unit cell.
@@ -2933,7 +2934,7 @@ class AtomGroup(object):
     packIntoBox = deprecate(pack_into_box,
                             old_name='packIntoBox',
                             new_name='pack_into_box',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this AtomGroup back into the unit cell.
@@ -3222,7 +3223,7 @@ class AtomGroup(object):
     selectAtoms = deprecate(select_atoms,
                             old_name='selectAtoms',
                             new_name='select_atoms',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
     def split(self, level):
         """Split atomgroup into a list of atomgroups by *level*.
@@ -3469,7 +3470,7 @@ class Residue(AtomGroup):
         ##if not Residue._cache.has_key(name):
         ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -3485,7 +3486,7 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def psi_selection(self):
         """AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N'.
 
@@ -3501,7 +3502,7 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def omega_selection(self):
         """AtomGroup corresponding to the omega protein backbone dihedral CA-C-N'-CA'.
 
@@ -3525,7 +3526,7 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def chi1_selection(self):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
@@ -3659,7 +3660,7 @@ class ResidueGroup(AtomGroup):
         # a bit of a hack to use just
         return np.array([r[0].segid for r in self.residues])
 
-    @deprecate(message="{}; use `resids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resids` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resids(self, resid):
         """Set the resids to integer *resid* for **all residues** in the
         :class:`ResidueGroup`.
@@ -3694,9 +3695,9 @@ class ResidueGroup(AtomGroup):
     set_resid = deprecate(set_resids,
                           old_name='set_resid',
                           new_name='set_resids',
-                          message=_FIFTEEN_DEPRECATION)
+                          message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `resnums` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resnums` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resnums(self, resnum):
         """Set the resnums to *resnum* for **all residues** in the :class:`ResidueGroup`.
 
@@ -3726,9 +3727,9 @@ class ResidueGroup(AtomGroup):
     set_resnum = deprecate(set_resnums,
                            old_name='set_resnum',
                            new_name='set_resnums',
-                           message=_FIFTEEN_DEPRECATION)
+                           message=_SIXTEEN_DEPRECATION)
 
-    @deprecate(message="{}; use `resnames` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `resnames` property instead".format(_SIXTEEN_DEPRECATION))
     def set_resnames(self, resname):
         """Set the resnames to string *resname* for **all residues** in the
         :class:`ResidueGroup`.
@@ -3752,7 +3753,7 @@ class ResidueGroup(AtomGroup):
     set_resname = deprecate(set_resnames,
                             old_name='set_resname',
                             new_name='set_resnames',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
     # All other AtomGroup.set_xxx() methods should just work as
     # ResidueGroup.set_xxx() because we overrode self.set(); the ones above
@@ -3788,7 +3789,7 @@ class Segment(ResidueGroup):
           <ResidueGroup [<Residue 'MET', 1>, <Residue 'MET', 21>, <Residue 'MET', 34>, <Residue 'MET', 53>,
           <Residue 'MET', 96>, <Residue 'MET', 174>]>
 
-    :Data: :attr:`Segment.name` is the segid from the topology or the
+    :Data: :attr:`Segment.segid` is the segid from the topology or the
            chain identifier when loaded from a PDB
     """
 
@@ -3803,23 +3804,32 @@ class Segment(ResidueGroup):
         self._cls = ResidueGroup
 
     @property
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def id(self):
         """Segment id (alias for :attr:`Segment.name`)"""
         return self.name
 
     @id.setter
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def id(self, x):
         self.name = x
 
     @property
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
+    def segid(self):
+        """Segment id (alias for :attr:`Segment.name`)"""
+        return self.name
+
+    @id.setter
+    def segid(self, x):
+        self.name = x
+
+    @property
+    @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def name(self):
         return self._name
 
     @name.setter
-    @deprecate(message="{}; use `segid` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def name(self, x):
         self._name = x
 
@@ -3909,7 +3919,7 @@ class SegmentGroup(ResidueGroup):
         """
         return np.array([s.name for s in self.segments])
 
-    @deprecate(message="{}; use `segids` property instead".format(_FIFTEEN_DEPRECATION))
+    @deprecate(message="{}; use `segids` property instead".format(_SIXTEEN_DEPRECATION))
     def set_segids(self, segid):
         """Set the segids to *segid* for all atoms in the :class:`SegmentGroup`.
 
@@ -3938,7 +3948,7 @@ class SegmentGroup(ResidueGroup):
     set_segid = deprecate(set_segids,
                           old_name='set_segid',
                           new_name='set_segids',
-                          message=_FIFTEEN_DEPRECATION)
+                          message=_SIXTEEN_DEPRECATION)
 
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
@@ -4766,7 +4776,7 @@ class Universe(object):
     selectAtoms = deprecate(select_atoms,
                             old_name='selectAtoms',
                             new_name='select_atoms',
-                            message=_FIFTEEN_DEPRECATION)
+                            message=_SIXTEEN_DEPRECATION)
 
     def __repr__(self):
         return "<Universe with {n_atoms} atoms{bonds}>".format(
@@ -4827,14 +4837,14 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def make_anchor(self):
         """Add this Universe to the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
         is already on the list."""
         MDAnalysis._anchor_universes.add(self)
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def remove_anchor(self):
         """Remove this Universe from the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
@@ -4842,19 +4852,19 @@ class Universe(object):
         MDAnalysis._anchor_universes.discard(self)
 
     @property
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def is_anchor(self):
         """Whether this Universe will be checked for anchoring when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances"""
         return self in MDAnalysis._anchor_universes
 
     @property
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def anchor_name(self):
         return self._anchor_name
 
     @anchor_name.setter
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def anchor_name(self, name):
         """Setting this attribute to anything other than ``None`` causes this Universe to
         be added to the list where named anchors are searched for when unpickling
@@ -4866,7 +4876,7 @@ class Universe(object):
         else:
             MDAnalysis._named_anchor_universes.add(self)
 
-    @deprecate(message=_FIFTEEN_DEPRECATION)
+    @deprecate(message=_SIXTEEN_DEPRECATION)
     def _matches_unpickling(self, anchor_name, n_atoms, fname, trajname):
         if anchor_name is None or anchor_name == self.anchor_name:
             try:
@@ -4877,7 +4887,7 @@ class Universe(object):
             return False
 
 
-@deprecate(message=_FIFTEEN_DEPRECATION)
+@deprecate(message=_SIXTEEN_DEPRECATION)
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.
 
@@ -4903,7 +4913,7 @@ def as_Universe(*args, **kwargs):
 asUniverse = deprecate(as_Universe,
                        old_name='asUniverse',
                        new_name='as_Universe',
-                       message=_FIFTEEN_DEPRECATION)
+                       message=_SIXTEEN_DEPRECATION)
 
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
