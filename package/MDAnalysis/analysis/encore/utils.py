@@ -254,10 +254,6 @@ class ParallelCalculation(object):
         for i in iter(results.get, 'STOP'):
             results_list.append(i)
 
-        fh=open("dio",'a')
-        fh.write("%d\n"%len(results_list))
-        fh.close()
-
         return tuple(sorted(results_list, key=lambda x: x[0]))
 
 

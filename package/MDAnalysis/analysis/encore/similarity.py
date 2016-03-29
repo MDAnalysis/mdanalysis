@@ -341,7 +341,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     return discrete_jensen_shannon_divergence(pA, pB)
 
 
-def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
+def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
                                               ens1_id_min=1, ens2_id_min=1):
     """ Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
@@ -357,12 +357,6 @@ def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     cc : encore.ClustersCollection
             Collection from cluster calculated by a clustering algorithm
             (e.g. Affinity propagation)
-
-    ens1 : encore.Ensemble
-            First ensemble to be used in comparison
-
-    ens2 : encore.Ensemble
-            Second ensemble to be used in comparison
 
     ens1_id : int
             First ensemble id as detailed in the ClustersCollection
@@ -981,7 +975,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
         slices_n.append(slices_n[-1] + window_size)
     slices_n.append(slices_n[-1] + residuals + window_size)
 
-    for s in range(len(slices_n) - 1):
+    for s,sl in enumerate(slices_n[:-1]):
         tmp_ensembles.append(Ensemble(
             topology=ensemble.filename,
             trajectory=ensemble.trajectory.get_array()
@@ -1774,7 +1768,7 @@ def dres(ensembles,
         k = 0
         for ndim in dimensions:
             values[ndim] = []
-            for i in range(len(bootstrapped_matrices)):
+            for i,bm in enumerate(bootstrapped_matrices):
 
                 values[ndim].append(numpy.zeros((out_matrix_eln,
                                                  out_matrix_eln)))
@@ -1812,7 +1806,7 @@ def dres(ensembles,
 
     values = []
 
-    for i in range(len(dimensions)):
+    for i,d in enumerate(dimensions):
         stresses_perdim[dimensions[i]] = []
         embedded_spaces_perdim[dimensions[i]] = []
         for j in range(1):
@@ -1995,9 +1989,7 @@ def ces_convergence(original_ensemble,
         for j in range(0, len(ensembles)):
             out[-1][j] = cumulative_clustering_ensemble_similarity(
                 ccs[i],
-                ensembles[-1],
                 len(ensembles) + 1,
-                ensembles[j],
                 j + 1)
 
     out = numpy.array(out).T
@@ -2123,7 +2115,7 @@ def dres_convergence(original_ensemble,
     embedding_options = []
     if mode == 'vanilla':
         embedder = StochasticProximityEmbedding()
-        for r in range(len(runs)):
+        for r,run in enumerate(runs):
             embedding_options += [(matrices[r],
                                    neighborhood_cutoff,
                                    runs[r],
@@ -2134,7 +2126,7 @@ def dres_convergence(original_ensemble,
                                    stressfreq)]
     if mode == 'knn':
         embedder = kNNStochasticProximityEmbedding()
-        for r in range(len(runs)):
+        for r,run in enumerate(runs):
             embedding_options += [(matrices[r],
                                    kn,
                                    runs[r],
@@ -2153,7 +2145,7 @@ def dres_convergence(original_ensemble,
     stresses_perdim = {}
     out = []
 
-    for i in range(len(dimensions)):
+    for i,d in enumerate(dimensions):
         stresses_perdim[dimensions[i]] = []
         embedded_spaces_perdim[dimensions[i]] = []
         for j in range(1):
