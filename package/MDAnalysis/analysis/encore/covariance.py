@@ -31,28 +31,28 @@ an ensemble of structures.
 
 import numpy
 
-
-class EstimatorML:
+class EstimatorML(object):
     """
     Standard maximum likelihood estimator of the covariance matrix.
     The generated object acts as a functor.
     """
-    def calculate(self, coordinates, reference_coordinates=None):
+    @staticmethod
+    def calculate(coordinates, reference_coordinates=None):
         """
         Parameters
         ----------
 
-            coordinates : numpy.array
-                Flattened array of coordiantes
+        coordinates : numpy.array
+            Flattened array of coordiantes
 
-            reference_coordinates : numpy.array
-                Optional reference to use instead of mean
+        reference_coordinates : numpy.array
+            Optional reference to use instead of mean
 
         Returns
         -------
 
-            cov_mat : numpy.array
-                Estimate of  covariance matrix
+        cov_mat : numpy.array
+            Estimate of  covariance matrix
 
         """
 
@@ -77,7 +77,7 @@ class EstimatorML:
     __call__ = calculate
 
 
-class EstimatorShrinkage:
+class EstimatorShrinkage(object):
     """
     Shrinkage estimator of the covariance matrix using the method described in
 
@@ -98,11 +98,11 @@ class EstimatorShrinkage:
         Constructor.
 
         Parameters
-                ----------
+        ----------
 
-            shrinkage_parameter : float
-                Makes it possible to set the shrinkage parameter explicitly,
-                rather than having it estimated automatically.
+        shrinkage_parameter : float
+            Makes it possible to set the shrinkage parameter explicitly,
+            rather than having it estimated automatically.
         """
         self.shrinkage_parameter = shrinkage_parameter
 
@@ -110,7 +110,7 @@ class EstimatorShrinkage:
         """
 
         Parameters
-                ----------
+        ----------
 
         coordinates : numpy.array
             Flattened array of coordinates
@@ -118,7 +118,7 @@ class EstimatorShrinkage:
             Optional reference to use instead of mean
 
         Returns
-                --------
+        --------
 
         cov_mat : nump.array
             Covariance matrix
@@ -193,14 +193,12 @@ def covariance_matrix(ensemble,
                       selection="",
                       estimator=EstimatorShrinkage(),
                       mass_weighted=True,
-                      reference=None,
-                      start=0,
-                      end=None):
+                      reference=None):
     """
     Calculates (optionally mass weighted) covariance matrix
 
     Parameters
-        ----------
+    ----------
 
     ensemble : Ensemble object
         The structural ensemble
@@ -220,7 +218,7 @@ def covariance_matrix(ensemble,
         distance to the mean.
 
     Returns
-        -------
+    -------
 
     cov_mat : numpy.array
         Covariance matrix
@@ -228,7 +226,6 @@ def covariance_matrix(ensemble,
     """
 
     # Extract coordinates from ensemble
-    # coordinates = ensemble.get_coordinates(start=start, end=end)
     coordinates = ensemble.get_coordinates(selection, format='fac')
 
     # Flatten coordinate matrix into n_frame x n_coordinates

@@ -53,8 +53,6 @@ References
 
     .. [Tiberti2015] ENCORE: Software for Quantitative Ensemble Comparison. Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten Lindorff- Larsen. PLoS Comput Biol. 2015, 11
 
-
-
 .. _Examples:
 Examples
 --------
@@ -235,9 +233,7 @@ def discrete_jensen_shannon_divergence(pA, pB):
 def harmonic_ensemble_similarity(sigma1=None,
                                  sigma2=None,
                                  x1=None,
-                                 x2=None,
-                                 mass_weighted=True,
-                                 covariance_estimator=EstimatorShrinkage()):
+                                 x2=None):
     """
     Calculate the harmonic ensemble similarity measure
     as defined in 
@@ -346,8 +342,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
 
 
 def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
-                                              ens1_id_min=1, ens2_id_min=1,
-                                              selection="name CA"):
+                                              ens1_id_min=1, ens2_id_min=1):
     """ Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
     merged and the dJS is calculated between the probability distributions of
@@ -376,9 +371,6 @@ def cumulative_clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     ens2_id : int
             Second ensemble id as detailed in the ClustersCollection
             metadata
-
-    selection : str
-        Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
     -------
@@ -987,11 +979,8 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     for rs in range(rest_slices - 1):
         slices_n.append(slices_n[-1] + window_size)
-    # if residuals != 0:
-    #    slices_n.append(slices_n[-1] + residuals + window_size)
-    # else:
-    #    slices_n.append(slices_n[-1] + window_size)
     slices_n.append(slices_n[-1] + residuals + window_size)
+
     for s in range(len(slices_n) - 1):
         tmp_ensembles.append(Ensemble(
             topology=ensemble.filename,
@@ -1450,7 +1439,7 @@ def ces(ensembles,
             for i, p in enumerate(preferences):
                 failed_runs = 0
                 values[p] = []
-                for j in range(len(bootstrap_matrices)):
+                for j,bm in enumerate(bootstrap_matrices):
                     if ccs[k].clusters is None:
                         failed_runs += 1
                         k += 1
@@ -1745,7 +1734,7 @@ def dres(ensembles,
     embedding_options = []
     if mode == 'vanilla':
         embedder = StochasticProximityEmbedding()
-        for r in range(len(runs)):
+        for r,dim in enumerate(runs):
             embedding_options += [(matrices[r],
                                    neighborhood_cutoff,
                                    runs[r],
@@ -1757,7 +1746,7 @@ def dres(ensembles,
 
     if mode == 'knn':
         embedder = kNNStochasticProximityEmbedding()
-        for r in range(len(runs)):
+        for r,dim in enumerate(runs):
             embedding_options += [(matrices[r],
                                    kn,
                                    runs[r],
@@ -1879,13 +1868,11 @@ def ces_convergence(original_ensemble,
                     window_size,
                     selection="name CA",
                     similarity_mode="minusrmsd",
-                    preference_values=[-1.0],
+                    preference_values=-1.0,
                     max_iterations=500,
                     convergence=50,
                     damping=0.9,
                     noise=True,
-                    save_matrix=None,
-                    load_matrix=None,
                     np=1,
                     **kwargs):
     """ 
@@ -1950,12 +1937,12 @@ def ces_convergence(original_ensemble,
 
     if not hasattr(preference_values, '__iter__'):
         preferences = [preference_values]
-
-    try:
-        preferences = numpy.array(preference_values, dtype=numpy.float)
-    except:
-        raise TypeError("preferences expects a float or an iterable of numbers, \
-            such as a list of floats or a numpy.array")
+    else:
+        try:
+            preferences = map(float, preference_values)
+        except:
+            raise TypeError("preferences expects a float or an iterable of numbers, \
+        such as a list of floats or a numpy.array")
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size)
@@ -1970,12 +1957,9 @@ def ces_convergence(original_ensemble,
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
-
-    preferences = preference_values
-
+    
     logging.info("    Clustering algorithm: Affinity Propagation")
-    logging.info("        Preference values: %s" % ", ".join(
-        map(lambda x: "%3.2f" % x, preferences)))
+    logging.info("        Preference values: %s" % ", ".join(["%.3f" % p for p in preferences]))
     logging.info("        Maximum iterations: %d" % max_iterations)
     logging.info("        Convergence: %d" % convergence)
     logging.info("        Damping: %1.2f" % damping)
@@ -1993,17 +1977,17 @@ def ces_convergence(original_ensemble,
                convergences, noises)
 
     logging.info("    Starting affinity propagation runs . . .")
-
-    pc = ParallelCalculation(np, clustalgo, args)
+    
+    pc = ParallelCalculation(np, clustalgo, args=args)
 
     results = pc.run()
-
+    
     logging.info("\n    Done!")
     ccs = [ClustersCollection(clusters[1], metadata=metadata) for clusters in
            results]
 
     out = []
-
+    
     for i, p in enumerate(preferences):
         if ccs[i].clusters is None:
             continue
@@ -2014,8 +1998,7 @@ def ces_convergence(original_ensemble,
                 ensembles[-1],
                 len(ensembles) + 1,
                 ensembles[j],
-                j + 1,
-                selection=selection)
+                j + 1)
 
     out = numpy.array(out).T
     return out
@@ -2026,7 +2009,7 @@ def dres_convergence(original_ensemble,
                      selection="name CA",
                      conf_dist_mode='rmsd',
                      mode='vanilla',
-                     dimensions=[3],
+                     dimensions=3,
                      maxlam=2.0,
                      minlam=0.1,
                      ncycle=100,
@@ -2105,7 +2088,18 @@ def dres_convergence(original_ensemble,
         array of shape (number_of_frames / window_size, preference_values).
 
     """
+    
+    if not hasattr(dimensions, '__iter__'):
+        dimensions = numpy.array([dimensions], dtype=numpy.int)
+    else:
+        try:
+            dimensions = numpy.array(dimensions, dtype=numpy.int)
+        except:
+            raise TypeError("dimensions expects a float or an iterable of numbers, \
+        such as a list of floats or a numpy.array")
 
+
+    
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, selection=selection)
 

@@ -113,7 +113,7 @@ class Ensemble(MDAnalysis.Universe):
         MDAnalysis.Universe.__init__(self, topology, trajectory,
                                      **kwargs)
 
-        if kwargs.get('format', None) != ArrayReader:
+        if kwargs.get('format') != ArrayReader:
 
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain

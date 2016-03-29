@@ -33,7 +33,7 @@ designed to store results from clustering algorithms.
 import numpy as np
 
 
-class Cluster:
+class Cluster(object):
     """
     Generic Cluster class for clusters with centroids.
 
@@ -112,7 +112,7 @@ class Cluster:
         self.metadata[name] = np.array(data)
 
 
-class ClustersCollection():
+class ClustersCollection(object):
     """Clusters collection class; this class represents the results of a full
     clustering run. It stores a group of clusters defined as
     encore.clustering.Cluster objects.
