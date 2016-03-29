@@ -629,6 +629,14 @@ class Atom(object):
         return self.index
 
     @property
+    def id(self):
+        """The atom id of this atom"""
+        if self.serial is not None:
+            return self.serial
+        else:
+            return self.index
+
+    @property
     @deprecate(message="{}; use `position` property instead".format(_SIXTEEN_DEPRECATION))
     def pos(self):
         """coordinates of the atom
@@ -1407,6 +1415,26 @@ class AtomGroup(object):
     @serials.setter
     @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
     def serials(self, new):
+        self.set_serials(new)
+
+    @property
+    def ids(self):
+        """Array of the atom ids for all atoms in this group.
+
+        Atom ids are defined by the topology file the universe was built from,
+        and need not start from 0. They are usually unique to each atom, but
+        need not be.
+
+        """
+        out = np.array([atom.serial for atom in self._atoms])
+        
+        if not any(out):
+            out = np.array([atom.id for atom in self._atoms])
+
+        return out
+
+    @ids.setter
+    def ids(self, new):
         self.set_serials(new)
 
     @property
@@ -3458,8 +3486,7 @@ class Residue(AtomGroup):
         else:
             self.resnum = self.id  # TODO: get resnum from topologies that support it
         self.segment = None
-        for i, a in enumerate(atoms):
-            a.id = i
+        for a in atoms:
             a.resnum = self.resnum
             a.residue = self
 
@@ -3470,7 +3497,6 @@ class Residue(AtomGroup):
         ##if not Residue._cache.has_key(name):
         ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -3486,7 +3512,6 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def psi_selection(self):
         """AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N'.
 
@@ -3502,7 +3527,6 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def omega_selection(self):
         """AtomGroup corresponding to the omega protein backbone dihedral CA-C-N'-CA'.
 
@@ -3526,7 +3550,6 @@ class Residue(AtomGroup):
         else:
             return None
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def chi1_selection(self):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
