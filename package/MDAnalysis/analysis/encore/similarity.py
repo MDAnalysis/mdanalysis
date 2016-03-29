@@ -866,7 +866,7 @@ def get_similarity_matrix(ensembles,
                 loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
-            logging.info("        %s : %s" % (
+            logging.info("        {0} : {1}".format(
                 key, str(confdistmatrix.metadata[key][0])))
 
         # Change matrix sign if required. Useful to switch between
@@ -887,13 +887,13 @@ def get_similarity_matrix(ensembles,
     # Calculate the matrix
     else:
         logging.info(
-            "        Perform pairwise alignment: %s" % str(superimpose))
-        logging.info("        Mass-weighted alignment and RMSD: %s" % str(
-            mass_weighted))
+            "        Perform pairwise alignment: {0}".format(str(superimpose)))
+        logging.info("        Mass-weighted alignment and RMSD: {0}"
+            .format(str(mass_weighted)))
         if superimpose:
             logging.info(
-                "        Atoms subset for alignment: %s" %
-                superimposition_subset)
+                "        Atoms subset for alignment: {0}"
+                    .format(superimposition_subset))
         logging.info("    Calculating similarity matrix . . .")
 
         # Use superimposition subset, if necessary. If the pairwise alignment
@@ -1088,8 +1088,8 @@ def hes(ensembles,
         logging.info("    Covariance matrix estimator: Maximum Likelihood")
     else:
         logging.error(
-            "Covariance estimator %s is not supported. "
-            "Choose between 'shrinkage' and 'ml'." % cov_estimator)
+            "Covariance estimator {0} is not supported. "
+            "Choose between 'shrinkage' and 'ml'.".format(cov_estimator))
         return None
 
     out_matrix_eln = len(ensembles)
@@ -1160,8 +1160,8 @@ def hes(ensembles,
     if details:
         kwds = {}
         for i in range(out_matrix_eln):
-            kwds['ensemble%d_mean' % (i + 1)] = xs[i]
-            kwds['ensemble%d_covariance_matrix' % (i + 1)] = sigmas[i]
+            kwds['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
+            kwds['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
         details = numpy.array(kwds)
 
     else:
@@ -1374,12 +1374,12 @@ def ces(ensembles,
         preferences = map(float, preference_values)
 
         logging.info("    Clustering algorithm: Affinity Propagation")
-        logging.info("        Preference values: %s" % ", ".join(
-            map(lambda x: "%3.2f" % x, preferences)))
-        logging.info("        Maximum iterations: %d" % max_iterations)
-        logging.info("        Convergence: %d" % convergence)
-        logging.info("        Damping: %1.2f" % damping)
-        logging.info("        Apply noise to matrix: %s" % str(noise))
+        logging.info("        Preference values: {0}".format(", ".join(
+            map(lambda x: "{0:3.2f}".format(x), preferences))))
+        logging.info("        Maximum iterations: {0:d}".format(max_iterations))
+        logging.info("        Convergence: {0:d}".format(convergence))
+        logging.info("        Damping: {0:1.2f}".format(damping))
+        logging.info("        Apply noise to matrix: {0}".format(str(noise)))
 
         # Choose clustering algorithm
         clustalgo = AffinityPropagation()
@@ -1489,14 +1489,14 @@ def ces(ensembles,
                     values[-1][pair[1], pair[0]] = this_val
 
             if details:
-                kwds['centroids_pref%.3f' % p] = numpy.array(
+                kwds['centroids_pref{0:.3f}'.format(p)] = numpy.array(
                     [c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array(
                     [e.get_coordinates(selection, format='fac')
                      .shape[0] for e in ensembles])
                 for cln, cluster in enumerate(ccs[i]):
-                    kwds["cluster%d_pref%.3f" % (cln + 1, p)] = numpy.array(
-                        cluster.elements)
+                    kwds["cluster%d_pref{0:.3f}".format(cln + 1, p)] = \
+                        numpy.array(cluster.elements)
 
     if full_output:
         values = numpy.array(values).swapaxes(0, 2)
@@ -1841,9 +1841,10 @@ def dres(ensembles,
             values[-1][pair[1], pair[0]] = this_value
 
         if details:
-            kwds["stress_%ddims" % ndim] = numpy.array([embedded_stress])
+            kwds["stress_{0:d}dims".format(ndim)] = \
+                numpy.array([embedded_stress])
             for en, e in enumerate(embedded_ensembles):
-                kwds["ensemble%d_%ddims" % (en, ndim)] = e
+                kwds["ensemble{0:d}_{1:d}dims".format(en, ndim)] = e
 
         if full_output:
             values = numpy.array(values).swapaxes(0, 2)
@@ -1953,11 +1954,12 @@ def ces_convergence(original_ensemble,
     metadata = {'ensemble': ensemble_assignment}
     
     logging.info("    Clustering algorithm: Affinity Propagation")
-    logging.info("        Preference values: %s" % ", ".join(["%.3f" % p for p in preferences]))
-    logging.info("        Maximum iterations: %d" % max_iterations)
-    logging.info("        Convergence: %d" % convergence)
-    logging.info("        Damping: %1.2f" % damping)
-    logging.info("        Apply noise to similarity matrix: %s" % str(noise))
+    logging.info("        Preference values: {0}".
+                 format(", ".join(["{0:.3f}".format(p) for p in preferences])))
+    logging.info("        Maximum iterations: {0:d}".format(max_iterations))
+    logging.info("        Convergence: {0:d}".format(convergence))
+    logging.info("        Damping: {0:1.2f}".format(damping))
+    logging.info("        Apply noise to similarity matrix: {0}".format(noise))
 
     confdistmatrixs = [confdistmatrix for i in preferences]
     lams = [damping for i in preferences]
