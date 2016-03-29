@@ -857,8 +857,8 @@ def get_similarity_matrix(ensembles,
 
     # Load the matrix if required
     if load_matrix:
-        logging.info("        Loading similarity matrix from: %s"
-                     % load_matrix)
+        logging.info(
+            "        Loading similarity matrix from: {0}".format(load_matrix))
         confdistmatrix = \
             TriangularMatrix(
                 size=joined_ensemble.get_coordinates(selection,
