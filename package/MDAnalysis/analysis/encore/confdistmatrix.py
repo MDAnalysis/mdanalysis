@@ -42,17 +42,13 @@ from socket import gethostname
 from datetime import datetime
 from time import sleep
 
-try:
-    from MDAnalysis.analysis.align import rotation_matrix
-except:
-    # backwards compatibility for MDAnalysis < 0.10.0
-    from MDAnalysis.analysis.align import rotation_matrix
+from ..align import rotation_matrix
 
 from .cutils import PureRMSD, MinusRMSD
 from .utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
 
 
-class ConformationalDistanceMatrixGenerator:
+class ConformationalDistanceMatrixGenerator(object):
     """
     Base class for conformational distance matrices generator between array of
     coordinates. Work for single matrix elements is performed by the private
@@ -174,7 +170,7 @@ class ConformationalDistanceMatrixGenerator:
         a = [0, 0]
         b = [0, 0]
         tasks_per_worker = []
-        for n in range(len(runs_per_worker)):
+        for n,r in enumerate(runs_per_worker):
             while i * (i - 1) / 2 < sum(runs_per_worker[:n + 1]):
                 i += 1
             b = [i - 2,
@@ -226,21 +222,21 @@ class ConformationalDistanceMatrixGenerator:
         # When the workers have finished, return a TriangularMatrix object
         return TriangularMatrix(distmat, metadata=metadata)
 
-    def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
+    @staticmethod
+    def _simple_worker():
         '''Simple worker prototype; to be overriden in derived classes
         '''
         return None
 
-    def _fitter_worker(self, tasks, coords, subset_coords, masses,
-                       subset_masses, rmsdmat,
-                       pbar_counter):  # Prototype fitter worker: pairwase
-        # align and calculate metric. To be overidden in heir classes
+    @staticmethod
+    def _fitter_worker():
         """
         Fitter worker prototype; to be overridden in derived classes
         """
         return None
 
-    def _pbar_updater(self, pbar, pbar_counters, max_val, update_interval=0.2):
+    @staticmethod
+    def _pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
         '''Method that updates and prints the progress bar, upon polling
         progress status from workers.
 
@@ -280,8 +276,8 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
         RMSD Matrix calculator. Simple workers doesn't perform fitting, while
         fitter worker does.
     '''
-
-    def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
+    @staticmethod
+    def _simple_worker(tasks, coords, masses, rmsdmat, pbar_counter):
         '''
         Simple RMSD Matrix calculator.
 
@@ -320,7 +316,8 @@ class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
                                                     summasses)
             pbar_counter.value += 1
 
-    def _fitter_worker(self, tasks, coords, subset_coords, masses,
+    @staticmethod
+    def _fitter_worker(tasks, coords, subset_coords, masses,
                        subset_masses, rmsdmat, pbar_counter):
         '''
         Fitter RMSD Matrix calculator: performs least-square fitting
@@ -384,8 +381,8 @@ class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
     -RMSD Matrix calculator. See encore.confdistmatrix.RMSDMatrixGenerator
     for details.
     '''
-
-    def _simple_worker(self, tasks, coords, masses, rmsdmat, pbar_counter):
+    @staticmethod
+    def _simple_worker(tasks, coords, masses, rmsdmat, pbar_counter):
         '''
         Simple RMSD Matrix calculator. See
         encore.confdistmatrix.RMSDMatrixGenerator._simple_worker for
@@ -400,7 +397,8 @@ class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
                                                      masses, summasses)
             pbar_counter.value += 1
 
-    def _fitter_worker(self, tasks, coords, subset_coords, masses,
+    @staticmethod
+    def _fitter_worker(tasks, coords, subset_coords, masses,
                        subset_masses, rmsdmat, pbar_counter):
         '''
         Fitter RMSD Matrix calculator. See

@@ -19,9 +19,10 @@ from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
 from numpy import savez, load, array, float64, sqrt, zeros
 import sys
+import logging
+import traceback
 
-
-class TriangularMatrix:
+class TriangularMatrix(object):
     """Triangular matrix class. This class is designed to provide a
     memory-efficient representation of a triangular matrix that still behaves
     as a square symmetric one. The class wraps a numpy.array object,
@@ -127,7 +128,7 @@ class TriangularMatrix:
             self._elements[k] = -v
 
 
-class ParallelCalculation:
+class ParallelCalculation(object):
     """
     Generic parallel calculation class. Can use arbitrary functions,
     arguments to functions and kwargs to functions.
@@ -156,7 +157,7 @@ class ParallelCalculation:
             len(kwargs).
     """
 
-    def __init__(self, ncores, function, args=[], kwargs=None):
+    def __init__(self, ncores, function, args=None, kwargs=None):
         """ Class constructor.
 
         Parameters
@@ -177,11 +178,13 @@ class ParallelCalculation:
             class description.
         """
 
-        # args[0] should be a list of args, one for each run
+        # args[i] should be a list of args, one for each run
         self.ncores = ncores
         self.function = function
 
         # Arguments should be present
+        if args is None:
+            args = []
         self.args = args
 
         # If kwargs are not present, use empty dicts
@@ -250,6 +253,10 @@ class ParallelCalculation:
         results.put('STOP')
         for i in iter(results.get, 'STOP'):
             results_list.append(i)
+
+        fh=open("dio",'a')
+        fh.write("%d\n"%len(results_list))
+        fh.close()
 
         return tuple(sorted(results_list, key=lambda x: x[0]))
 

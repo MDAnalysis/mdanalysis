@@ -30,27 +30,30 @@ import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
 
 
-class FakePBarCounter:
+class FakePBarCounter(object):
     def __init__(self):
         self.value = 0
 
 class TestEnsemble(TestCase):
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_from_reader_w_timeseries(self):
+    @staticmethod
+    #@dec.skipif(parser_not_found('DCD'),
+    #            'DCD parser not available. Are you using python 3?')
+    def test_from_reader_w_timeseries():
         ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         assert_equal(len(ensemble.atoms.coordinates()), 3341,
                      err_msg="Unexpected number of atoms in trajectory")
 
-    def test_from_reader_wo_timeseries(self):
+    @staticmethod
+    def test_from_reader_wo_timeseries():
         ensemble = encore.Ensemble(topology=PDB, trajectory=XTC)
         assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_trajectories_list(self):
+    @staticmethod
+    #@dec.skipif(parser_not_found('DCD'),
+    #            'DCD parser not available. Are you using python 3?')
+    def test_trajectories_list():
         ensemble = encore.Ensemble(topology=PDB, trajectory=[XTC])
         assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
@@ -66,7 +69,8 @@ class TestEncore(TestCase):
         del self.ens1
         del self.ens2
 
-    def test_triangular_matrix(self):
+    @staticmethod
+    def test_triangular_matrix():
         size = 3
         expected_value = 1.984
         filename = tempfile.mktemp()+".npz"
@@ -91,7 +95,8 @@ class TestEncore(TestCase):
         assert_equal(triangular_matrix_3[0,1], expected_value, 
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
 
-    def test_parallel_calculation(self):
+    @staticmethod
+    def test_parallel_calculation():
 
         def function(x):
             return x**2
@@ -407,7 +412,8 @@ class TestEncore(TestCase):
                      err_msg="Unexpected atom number in default selection: {0:f}. "
                              "Expected {1:f}.".format(coordinates_per_frame_default, expected_value))
 
-    def test_ensemble_superimposition(self):
+    @staticmethod
+    def test_ensemble_superimposition():
         aligned_ensemble1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         aligned_ensemble1.align(selection="name CA")
         aligned_ensemble2 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
@@ -423,7 +429,8 @@ class TestEncore(TestCase):
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
                              "than ensemble aligned on only CAs.")
 
-    def test_ensemble_superimposition_to_reference_non_weighted(self):
+    @staticmethod
+    def test_ensemble_superimposition_to_reference_non_weighted():
         aligned_ensemble1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         aligned_ensemble1.align(selection="name CA", weighted=False,
                                 reference=mda.Universe(PDB_small))
@@ -479,7 +486,7 @@ class TestEncore(TestCase):
         result_value = results[0,1]
         expected_value = 0.68070
         assert_almost_equal(result_value, expected_value, decimal=2,
-                            err_msg="Unexpected value for Cluster Ensemble Similarity: {}. Expected {}.".format(result_value, expected_value))
+                            err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
         
     @dec.slow
     @dec.skipif(module_not_found('scipy'),

@@ -34,7 +34,7 @@ cimport cython
 @cython.boundscheck(False)
 @cython.wraparound(False)
 
-cdef class AffinityPropagation:
+cdef class AffinityPropagation(object):
     """ 
     Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:
 	

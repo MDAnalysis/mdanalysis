@@ -1,2 +1,2 @@
 from .Cluster import Cluster, ClustersCollection
-from .affinityprop import *
+from .affinityprop import AffinityPropagation
