@@ -462,7 +462,7 @@ _SIXTEEN_DEPRECATION = "This will be removed in version 0.16.0"
 def warn_atom_property(func):
     warnstring = "In version 0.16.0, use `{}.atoms.{}` instead."
 
-    def outfunc(self, *args):
+    def outfunc(self, *args, **kwargs):
         if isinstance(self, SegmentGroup):
             warnings.warn(warnstring.format('segmentgroup', func.__name__),
                           DeprecationWarning)
@@ -480,7 +480,7 @@ def warn_atom_property(func):
         elif isinstance(self, Atom):
             pass
 
-        return func(self, *args)
+        return func(self, *args, **kwargs)
 
     return outfunc
 
