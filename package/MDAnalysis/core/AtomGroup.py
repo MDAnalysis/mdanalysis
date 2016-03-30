@@ -462,7 +462,7 @@ _SIXTEEN_DEPRECATION = "This will be removed in version 0.16.0"
 def warn_atom_property(func):
     warnstring = "In version 0.16.0, use `{}.atoms.{}` instead."
 
-    def outfunc(self, *args):
+    def outfunc(self, *args, **kwargs):
         if isinstance(self, SegmentGroup):
             warnings.warn(warnstring.format('segmentgroup', func.__name__),
                           DeprecationWarning)
@@ -480,7 +480,7 @@ def warn_atom_property(func):
         elif isinstance(self, Atom):
             pass
 
-        return func(self, *args)
+        return func(self, *args, **kwargs)
 
     return outfunc
 
@@ -1651,6 +1651,7 @@ class AtomGroup(object):
         """
         return tuple(set(a.fragment for a in self._atoms))
 
+    @warn_atom_property
     def guess_bonds(self, vdwradii=None):
         """Guess all the bonds that exist within this AtomGroup and add to Universe.
 
@@ -1698,6 +1699,7 @@ class AtomGroup(object):
 
     @property
     @cached('bonds')
+    @warn_atom_property
     def bonds(self):
         """All the bonds in this AtomGroup
 
@@ -1715,6 +1717,7 @@ class AtomGroup(object):
 
     @property
     @cached('angles')
+    @warn_atom_property
     def angles(self):
         """All the angles in this AtomGroup
 
@@ -1732,6 +1735,7 @@ class AtomGroup(object):
 
     @property
     @cached('dihedrals')
+    @warn_atom_property
     def dihedrals(self):
         """All the dihedrals in this AtomGroup
 
@@ -1749,6 +1753,7 @@ class AtomGroup(object):
 
     @property
     @cached('impropers')
+    @warn_atom_property
     def impropers(self):
         """All the improper dihedrals in this AtomGroup
 
