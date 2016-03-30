@@ -569,7 +569,7 @@ class Atom(object):
     """
 
     __slots__ = (
-        "index", "id", "name", "type", "resname", "resid", "segid",
+        "index", "name", "type", "resname", "resid", "segid",
         "mass", "charge", "residue", "segment",
         "_universe",
         "radius", "bfactor", "resnum", "serial", "altLoc")
