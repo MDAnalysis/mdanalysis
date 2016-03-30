@@ -17,40 +17,37 @@ from __future__ import unicode_literals
 import six
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, TestCase
+from numpy.testing import assert_equal, assert_almost_equal, assert_raises,TestCase
 
 from MDAnalysis import units
 from MDAnalysis.core import flags
 
 
 class TestDefaultUnits(TestCase):
-    def testLength(self):
+    @staticmethod
+    def test_length():
         assert_equal(flags['length_unit'], 'Angstrom',
                      u"The default length unit should be Angstrom (in core.flags)")
-
-    def testTime(self):
+    @staticmethod
+    def test_time():
         assert_equal(flags['time_unit'], 'ps',
                      u"The default length unit should be pico seconds (in core.flags)")
-
-    def testConvertGromacsTrajectories(self):
+    @staticmethod
+    def test_convert_gromacs_trajectories():
         assert_equal(flags['convert_lengths'], True,
                      u"The default behaviour should be to auto-convert Gromacs trajectories")
 
 
 class TestUnitEncoding(TestCase):
-    def testUnicode(self):
+    @staticmethod
+    def test_unicode():
         try:
             assert_equal(units.lengthUnit_factor[u"\u212b"], 1.0)
         except KeyError:
             raise AssertionError("Unicode symbol for Angtrom not supported")
 
-    def testUTF8Encoding(self):
-        try:
-            assert_equal(units.lengthUnit_factor[b'\xe2\x84\xab'.decode('utf-8')], 1.0)
-        except KeyError:
-            raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
-
-    def testUnicodeEncodingWithSymbol(self):
+    @staticmethod
+    def test_unicode_encoding_with_symbol():
         try:
             assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
         except KeyError:
@@ -84,23 +81,34 @@ class TestConversion(object):
                             err_msg="Conversion {0} --> {1} failed".format(u1, u2))
 
     # generate individual test cases using nose's test generator mechanism
-    def testLength(self):
+    def test_length(self):
         nm = 12.34567
         A = nm * 10.
         yield self._assert_almost_equal_convert, nm, 'nm', 'A', A
         yield self._assert_almost_equal_convert, A, 'Angstrom', 'nm', nm
 
-    def testTime(self):
+    def test_time(self):
         yield self._assert_almost_equal_convert, 1, 'ps', 'AKMA', 20.45482949774598
         yield self._assert_almost_equal_convert, 1, 'AKMA', 'ps', 0.04888821
 
-    def testEnergy(self):
+    def test_energy(self):
         yield self._assert_almost_equal_convert, 1, 'kcal/mol', 'kJ/mol', 4.184
         yield self._assert_almost_equal_convert, 1, 'kcal/mol', 'eV', 0.0433641
 
-    def testForce(self):
+    def test_force(self):
         yield self._assert_almost_equal_convert, 1, 'kJ/(mol*A)', 'J/m', 1.66053892103219e-11
         yield self._assert_almost_equal_convert, 2.5, 'kJ/(mol*nm)', 'kJ/(mol*A)', 0.25
         yield self._assert_almost_equal_convert, 1, 'kcal/(mol*Angstrom)', 'kJ/(mol*Angstrom)', 4.184
 
+    @staticmethod
+    def test_unit_unknown():
+        nm = 12.34567
+        assert_raises(ValueError, units.convert, nm, 'Stone', 'nm')
+        assert_raises(ValueError, units.convert, nm, 'nm', 'Stone')
+    
+    @staticmethod
+    def test_unit_unconvertable():
+        nm = 12.34567
+        A = nm * 10.
+        assert_raises(ValueError, units.convert, A, 'A', 'ps')
 

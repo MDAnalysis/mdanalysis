@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
-         dotsdl, richardjgowers, jdetle
+         dotsdl, richardjgowers, jdetle, BartBruininks
 
   * 0.15.0
 
@@ -38,6 +38,7 @@ Enhancements
 Fixes
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
+  * units.py now correctly prints errors for unknown units.
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
   * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
   * MOL2 files without substructure section can now be read (Issue #816)
