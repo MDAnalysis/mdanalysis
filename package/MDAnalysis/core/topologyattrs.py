@@ -401,11 +401,19 @@ class Atomnames(AtomAttr):
 
     transplants['residue'].append(('chi1_selection', chi1_selection))
 
+
 #TODO: update docs to property doc
 class Atomtypes(AtomAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
+
+
+#TODO: update docs to property doc
+class Element(AtomAttr):
+    """Element for each atom"""
+    attrname = 'elements'
+    singular = 'element'
 
 
 #TODO: update docs to property doc
