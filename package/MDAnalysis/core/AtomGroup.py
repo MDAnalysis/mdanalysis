@@ -1266,7 +1266,7 @@ class AtomGroup(object):
     @warn_atom_property
     def masses(self, new):
         self._clear_caches('masses')
-        self.set("mass", mass, conversion=float, cache="masses")
+        self.set("mass", new, conversion=float, cache="masses")
 
     def total_mass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
@@ -1319,7 +1319,7 @@ class AtomGroup(object):
     @charges.setter
     @warn_atom_property
     def charges(self, new):
-        self.set("charge", charge, conversion=float)
+        self.set("charge", new, conversion=float)
 
     def total_charge(self):
         """Sum of all partial charges (must be defined in topology)."""
@@ -1345,7 +1345,7 @@ class AtomGroup(object):
     @names.setter
     @warn_atom_property
     def names(self, new):
-        self.set("name", name, conversion=str)
+        self.set("name", new, conversion=str)
 
     @property
     @warn_atom_property
@@ -1361,7 +1361,7 @@ class AtomGroup(object):
     @types.setter
     @warn_atom_property
     def types(self, new):
-        self.set("type", atype)
+        self.set("type", new)
 
     @property
     @warn_atom_property
@@ -1376,7 +1376,7 @@ class AtomGroup(object):
     @radii.setter
     @warn_atom_property
     def radii(self, new):
-        self.set("radius", radius, conversion=float)
+        self.set("radius", new, conversion=float)
 
     @property
     @warn_atom_property
@@ -1388,7 +1388,7 @@ class AtomGroup(object):
     @bfactors.setter
     @warn_atom_property
     def bfactors(self, new):
-        self.set("bfactor", bfactor, conversion=float)
+        self.set("bfactor", new, conversion=float)
 
     @property
     @warn_atom_property
@@ -1402,7 +1402,7 @@ class AtomGroup(object):
     @altLocs.setter
     @warn_atom_property
     def altLocs(self, new):
-        self.set("altLoc", altLoc, conversion=str)
+        self.set("altLoc", new, conversion=str)
 
     @property
     @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
@@ -1416,7 +1416,7 @@ class AtomGroup(object):
     @serials.setter
     @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
     def serials(self, new):
-        self.set("serial", serial, conversion=int)
+        self.set("serial", new, conversion=int)
 
     @property
     def ids(self):
@@ -1436,7 +1436,7 @@ class AtomGroup(object):
 
     @ids.setter
     def ids(self, new):
-        self.set("serial", serial, conversion=int)
+        self.set("serial", new, conversion=int)
 
     @property
     @cached('residues')
@@ -1499,7 +1499,7 @@ class AtomGroup(object):
     def resids(self, new):
         from MDAnalysis.topology.core import build_residues
 
-        self.set("resid", resid, conversion=int)
+        self.set("resid", new, conversion=int)
         # Note that this also automagically updates THIS AtomGroup;
         # the side effect of build_residues(self.atoms) is to update all Atoms!!!!
         self._fill_cache('residues', ResidueGroup(build_residues(self.atoms)))
@@ -1526,7 +1526,7 @@ class AtomGroup(object):
     @resnames.setter
     @warn_residue_property
     def resnames(self, new):
-        self.set("resname", resname, conversion=str)
+        self.set("resname", new, conversion=str)
 
     @property
     @warn_residue_property
@@ -1544,7 +1544,7 @@ class AtomGroup(object):
     @resnums.setter
     @warn_residue_property
     def resnums(self, new):
-        self.set("resnum", resnum)
+        self.set("resnum", new)
 
     @property
     @warn_segment_property
@@ -1563,7 +1563,7 @@ class AtomGroup(object):
     def segids(self, new):
         from MDAnalysis.topology.core import build_segments
 
-        self.set("segid", segid, conversion=str)
+        self.set("segid", new, conversion=str)
 
         # also updates convenience handles for segments in universe
         segments = self.universe._build_segments()
