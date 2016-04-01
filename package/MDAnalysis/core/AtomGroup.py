@@ -498,13 +498,12 @@ def warn_residue_property(func):
         elif isinstance(self, ResidueGroup):
             pass
         elif isinstance(self, Residue):
-            pass
+            warnings.warn("In version 0.16.0, Use 'residue.atoms.{}' instead.".format(func.__name__),
+                          DeprecationWarning)
         elif isinstance(self, AtomGroup):
-            warnings.warn(warnstring.format('atomgroup', func.__name__),
-                          DeprecationWarning)
+            pass
         elif isinstance(self, Atom):
-            warnings.warn(warnstring_sing.format('atom', func.__name__),
-                          DeprecationWarning)
+            pass
 
         return func(self, *args)
 
@@ -518,6 +517,8 @@ def warn_segment_property(func):
         if isinstance(self, SegmentGroup):
             pass
         elif isinstance(self, Segment):
+            warnings.warn("In version 0.16.0, Use 'segment.residues.{}' instead.".format(func.__name__),
+                          DeprecationWarning)
             pass
         elif isinstance(self, ResidueGroup):
             warnings.warn(warnstring.format('residuegroup', func.__name__),
@@ -1265,7 +1266,7 @@ class AtomGroup(object):
     @warn_atom_property
     def masses(self, new):
         self._clear_caches('masses')
-        self.set_masses(new)
+        self.set("mass", mass, conversion=float, cache="masses")
 
     def total_mass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
@@ -1318,7 +1319,7 @@ class AtomGroup(object):
     @charges.setter
     @warn_atom_property
     def charges(self, new):
-        self.set_charges(new)
+        self.set("charge", charge, conversion=float)
 
     def total_charge(self):
         """Sum of all partial charges (must be defined in topology)."""
@@ -1344,7 +1345,7 @@ class AtomGroup(object):
     @names.setter
     @warn_atom_property
     def names(self, new):
-        self.set_names(new)
+        self.set("name", name, conversion=str)
 
     @property
     @warn_atom_property
@@ -1360,7 +1361,7 @@ class AtomGroup(object):
     @types.setter
     @warn_atom_property
     def types(self, new):
-        self.set_types(new)
+        self.set("type", atype)
 
     @property
     @warn_atom_property
@@ -1375,7 +1376,7 @@ class AtomGroup(object):
     @radii.setter
     @warn_atom_property
     def radii(self, new):
-        self.set_radii(new)
+        self.set("radius", radius, conversion=float)
 
     @property
     @warn_atom_property
@@ -1387,7 +1388,7 @@ class AtomGroup(object):
     @bfactors.setter
     @warn_atom_property
     def bfactors(self, new):
-        self.set_bfactors(new)
+        self.set("bfactor", bfactor, conversion=float)
 
     @property
     @warn_atom_property
@@ -1401,7 +1402,7 @@ class AtomGroup(object):
     @altLocs.setter
     @warn_atom_property
     def altLocs(self, new):
-        self.set_altlocs(new)
+        self.set("altLoc", altLoc, conversion=str)
 
     @property
     @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
@@ -1415,7 +1416,7 @@ class AtomGroup(object):
     @serials.setter
     @deprecate(message="{}; use `ids` property instead".format(_SIXTEEN_DEPRECATION))
     def serials(self, new):
-        self.set_serials(new)
+        self.set("serial", serial, conversion=int)
 
     @property
     def ids(self):
@@ -1435,7 +1436,7 @@ class AtomGroup(object):
 
     @ids.setter
     def ids(self, new):
-        self.set_serials(new)
+        self.set("serial", serial, conversion=int)
 
     @property
     @cached('residues')
@@ -1482,6 +1483,7 @@ class AtomGroup(object):
         return SegmentGroup(segments)
 
     @property
+    @warn_residue_property
     def resids(self):
         """Returns an array of residue numbers.
 
@@ -1495,9 +1497,22 @@ class AtomGroup(object):
     @resids.setter
     @warn_residue_property
     def resids(self, new):
-        self.set_resids(new)
+        from MDAnalysis.topology.core import build_residues
+
+        self.set("resid", resid, conversion=int)
+        # Note that this also automagically updates THIS AtomGroup;
+        # the side effect of build_residues(self.atoms) is to update all Atoms!!!!
+        self._fill_cache('residues', ResidueGroup(build_residues(self.atoms)))
+
+        # make sure to update the whole universe: the Atoms are shared but
+        # ResidueGroups are not
+        if self.atoms is not self.universe.atoms:
+            self.universe.atoms._fill_cache(
+                    'residues',
+                    ResidueGroup(build_residues(self.universe.atoms)))
 
     @property
+    @warn_residue_property
     def resnames(self):
         """Returns an array of residue names.
 
@@ -1511,9 +1526,10 @@ class AtomGroup(object):
     @resnames.setter
     @warn_residue_property
     def resnames(self, new):
-        self.set_resnames(new)
+        self.set("resname", resname, conversion=str)
 
     @property
+    @warn_residue_property
     def resnums(self):
         """Returns an array of canonical residue numbers.
 
@@ -1528,9 +1544,10 @@ class AtomGroup(object):
     @resnums.setter
     @warn_residue_property
     def resnums(self, new):
-        self.set_resnums(new)
+        self.set("resnum", resnum)
 
     @property
+    @warn_segment_property
     def segids(self):
         """Returns an array of segment names.
 
@@ -1544,7 +1561,23 @@ class AtomGroup(object):
     @segids.setter
     @warn_segment_property
     def segids(self, new):
-        self.set_segids(new)
+        from MDAnalysis.topology.core import build_segments
+
+        self.set("segid", segid, conversion=str)
+
+        # also updates convenience handles for segments in universe
+        segments = self.universe._build_segments()
+
+        # Note that this also automagically updates THIS AtomGroup;
+        # the side effect of build_residues(self.atoms) is to update all Atoms!!!!
+        self._fill_cache('segments', SegmentGroup(segments))
+
+        # make sure to update the whole universe: the Atoms are shared but
+        # ResidueGroups are not
+        if self.atoms is not self.universe.atoms:
+            self.universe.atoms._fill_cache(
+                    'segments',
+                    SegmentGroup(segments))
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -3484,12 +3517,12 @@ class Residue(AtomGroup):
 
     def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
-        self.name = name
-        self.id = id
+        self._resname = name
+        self._resid = id
         if resnum is not None:
-            self.resnum = resnum
+            self._resnum = resnum
         else:
-            self.resnum = self.id  # TODO: get resnum from topologies that support it
+            self._resnum = self._resid  # TODO: get resnum from topologies that support it
         self.segment = None
         for a in atoms:
             a.resnum = self.resnum
@@ -3502,6 +3535,50 @@ class Residue(AtomGroup):
         ##if not Residue._cache.has_key(name):
         ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
 
+    @property
+    @deprecate(message="{}; use `resname` property instead".format(_SIXTEEN_DEPRECATION))
+    def name(self):
+        return self._resname
+
+    @name.setter
+    @deprecate(message="{}; use `resname` property instead".format(_SIXTEEN_DEPRECATION))
+    def name(self, value):
+        self._resname = value
+
+    @property
+    def resname(self):
+        return self._resname
+
+    @resname.setter
+    def resname(self, value):
+        self._resname = value
+
+    @property
+    @deprecate(message="{}; use `resid` property instead".format(_SIXTEEN_DEPRECATION))
+    def id(self):
+        return self._resid
+
+    @id.setter
+    @deprecate(message="{}; use `resid` property instead".format(_SIXTEEN_DEPRECATION))
+    def id(self, value):
+        self._resid = value
+
+    @property
+    def resid(self):
+        return self._resid
+
+    @resid.setter
+    def resid(self, value):
+        self._resid = value
+
+    @property
+    def resnum(self):
+        return self._resnum
+
+    @resnum.setter
+    def resnum(self, value):
+        self._resnum = value
+
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -3510,7 +3587,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         sel = self.universe.select_atoms(
-            'segid {0!s} and resid {1:d} and name C'.format(self.segment.id, self.id - 1)) + \
+            'segid {0!s} and resid {1:d} and name C'.format(self.segment.segid, self.resid - 1)) + \
               self['N'] + self['CA'] + self['C']
         if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
@@ -3526,7 +3603,7 @@ class Residue(AtomGroup):
         """
         sel = self['N'] + self['CA'] + self['C'] + \
               self.universe.select_atoms(
-                  'segid {0!s} and resid {1:d} and name N'.format(self.segment.id, self.id + 1))
+                  'segid {0!s} and resid {1:d} and name N'.format(self.segment.segid, self.resid + 1))
         if len(sel) == 4:
             return sel
         else:
@@ -3544,7 +3621,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
 
         """
-        nextres = self.id + 1
+        nextres = self.resid + 1
         segid = self.segment.id
         sel = self['CA'] + self['C'] + \
               self.universe.select_atoms(
@@ -3570,7 +3647,7 @@ class Residue(AtomGroup):
 
     def __repr__(self):
         return "<Residue {name}, {id}>".format(
-            name=self.name, id=self.id)
+            name=self.name, id=self.resid)
 
 
 class ResidueGroup(AtomGroup):
@@ -3646,7 +3723,7 @@ class ResidueGroup(AtomGroup):
         .. versionchanged:: 0.11.0
            Now a property and returns array of length `len(self)`
         """
-        return np.array([r.id for r in self.residues])
+        return np.array([r.resid for r in self.residues])
 
     @property
     @warn_residue_property
@@ -3824,7 +3901,7 @@ class Segment(ResidueGroup):
     def __init__(self, name, residues):
         """Initialize a Segment with segid *name* from a list of :class:`Residue` instances."""
         super(Segment, self).__init__(residues)
-        self._name = name
+        self._segid = name
         for res in self.residues:
             res.segment = self
             for atom in res:
@@ -3835,31 +3912,31 @@ class Segment(ResidueGroup):
     @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def id(self):
         """Segment id (alias for :attr:`Segment.name`)"""
-        return self.name
+        return self._segid
 
     @id.setter
     @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def id(self, x):
-        self.name = x
+        self._segid = x
 
     @property
     def segid(self):
         """Segment id (alias for :attr:`Segment.name`)"""
-        return self.name
+        return self._segid
 
     @id.setter
     def segid(self, x):
-        self.name = x
+        self._segid = x
 
     @property
     @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def name(self):
-        return self._name
+        return self._segid
 
     @name.setter
     @deprecate(message="{}; use `segid` property instead".format(_SIXTEEN_DEPRECATION))
     def name(self, x):
-        self._name = x
+        self._segid = x
 
     def __getattr__(self, attr):
         if attr[0] == 'r':
@@ -3945,7 +4022,7 @@ class SegmentGroup(ResidueGroup):
         .. versionchanged:: 0.11.0
            Now a property and returns array of length `len(self)`
         """
-        return np.array([s.name for s in self.segments])
+        return np.array([s.segid for s in self.segments])
 
     @deprecate(message="{}; use `segids` property instead".format(_SIXTEEN_DEPRECATION))
     def set_segids(self, segid):
