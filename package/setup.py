@@ -37,7 +37,9 @@ Also free to ask on the MDAnalysis mailing list for help:
 Google groups forbids any name that contains the string `anal'.)
 """
 from __future__ import print_function
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, find_packages
+from setuptools.dist import Distribution
+from distutils.extension import Extension
 from distutils.ccompiler import new_compiler
 import codecs
 import os
@@ -60,38 +62,35 @@ else:
     import configparser
     open_kwargs = {'encoding': 'utf-8'}
 
-# Handle cython modules
-try:
-    from Cython.Distutils import build_ext
-    cython_found = True
-    cmdclass = {'build_ext': build_ext}
-except ImportError:
-    cython_found = False
-    cmdclass = {}
-
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "0.14.1-dev0"
 
-is_release = not 'dev' in RELEASE
+is_dev = 'dev' in RELEASE
+is_release = not is_dev
 
-if cython_found:
-    # cython has to be >=0.16 to support cython.parallel
+# Handle cython modules
+try:
     import Cython
-    from Cython.Build import cythonize
-    from distutils.version import LooseVersion
-
-    required_version = "0.16"
-
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
-        # We don't necessarily die here. Maybe we already have
-        #  the cythonized '.c' files.
-        print("Cython version {0} was found but won't be used: version {1} "
-              "or greater is required because it offers a handy "
-              "parallelization module".format(
-               Cython.__version__, required_version))
-        cython_found = False
+except ImportError:
+    cython_found = False
+else:
+    cython_found = True
+    if is_release:
+        # cython has to be >=0.16 to support cython.parallel.
+        # dev builds enforce their own version via setup_requires
+        #  and need not worry at this point
+        from distutils.version import LooseVersion
+        required_version = "0.16"
+        if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+            # We don't necessarily die here. Maybe we already have
+            #  the cythonized '.c' files.
+            print("Cython version {0} was found but won't be used: version {1} "
+                  "or greater is required because it offers a handy "
+                  "parallelization module".format(
+                   Cython.__version__, required_version))
+            cython_found = False
+        del LooseVersion
     del Cython
-    del LooseVersion
 
 class Config(object):
     """Config wrapper class to get build options
@@ -130,33 +129,118 @@ class Config(object):
         except configparser.NoOptionError:
             return default
 
-class MDAExtension(Extension, object):
-    """Derived class to cleanly handle setup-time (numpy) dependencies.
+class MDADistribution(Distribution, object):
+    """Derived class to cleanly handle setup-time (cython/numpy) dependencies.
     """
-    # The only setup-time numpy dependency comes when setting up its
-    #  include dir.
-    # The actual numpy import and call can be delayed until after pip
-    #  has figured it must install numpy.
-    # This is accomplished by passing the get_numpy_include function
-    #  as one of the include_dirs. This derived Extension class takes
-    #  care of calling it when needed.
-    def __init__(self, *args, **kwargs):
-        self._mda_include_dirs = []
-        super(MDAExtension, self).__init__(*args, **kwargs)
+    # Setup-time cython dependency comes when cythonizing sources (cython might
+    #  not be available) or configuring numpy's include dir (numpy might
+    #  not be available either).
+    # The actual cython/numpy imports and calls can be delayed until after
+    #  pip/setuptools have figured they must install them.
+    # This is accomplished by using a setuptools.dist.Distribution subclass
+    #  that lazily fills-in cython and numpy information by hooking into
+    #  the run_commands method.
+    # Our overrides also address the setuptools behavior of installing
+    #  setup-time dependencies locally. This involves essentially a rewrite
+    #  of fetch_build_egg.
+    # Hopefully, since none of the overriden methods was pre-underscored,
+    #  we'll stay clear of problems while this setuptools API lasts.
+    def __init__(self, attrs=None):
+        # Attributes must exist if they're to be imported from the
+        #  attrs that setup feeds to __init__.
+        self.mda_use_cython = is_dev
+        self.mda_build_requires = []
+        super(MDADistribution, self).__init__(attrs)
 
-    @property
-    def include_dirs(self):
-        if not self._mda_include_dirs:
-            for item in self._mda_include_dir_args:
-                try:
-                    self._mda_include_dirs.append(item()) #The numpy callable
-                except TypeError:
-                    self._mda_include_dirs.append(item)
-        return self._mda_include_dirs
+    def run_commands(self):
+        # The following might be fragile because we rely on specific
+        #  substrings of the command passed to setup.py. If pip ever starts
+        #  running a probing command other than 'egg_info' this might need to
+        #  be changed. Likewise if we ever come up with new commands ourselves
+        is_install = any(('install' in cmd for cmd in self.commands))
+        is_build = any(('build' in cmd for cmd in self.commands))
+        is_pipinstall = any(('egg_info' in cmd for cmd in self.commands))
+        if is_install or is_pipinstall:
+            # MDAnalysis can do fine with only installing dependencies at
+            #  build-time. However, biopython isn't that clever, and will
+            #  complain about a missing numpy. We solve it for them by
+            #  installing numpy/cython as soon as we detect we're being
+            #  probed by pip.
+            self._mda_install_build_dependencies()
+        if is_install or is_build:
+            # We're being built and possibly installed. We need cythonized files
+            #  and numpy include dirs.
+            self.mda_cython_generated = []
+            try:
+                if self.mda_use_cython:
+                    self.cythonize()
+                self.add_numpy_includes()
+            except ImportError as err:
+                # By now either we have all mda_build_requires dependencies
+                #  or we didn't install them because we are doing a local
+                #  build. Let's suggest this as a cause for the ImportError.
+                print("ImportError: {}\nNote: Will only install build-time "
+                        "dependencies ({}) if doing an installation. "
+                        "For local builds, please solve these dependencies "
+                        "before attempting to build "
+                        "MDAnalysis.".format(err, self.mda_build_requires))
+                sys.exit(-1)
+        # Continue with normal procedures
+        super(MDADistribution, self).run_commands()
 
-    @include_dirs.setter
-    def include_dirs(self, val):
-        self._mda_include_dir_args = val
+    def cythonize(self):
+        # ImportErrors are caught outside of this method call.
+        from Cython.Build import cythonize
+        from Cython.Distutils import build_ext
+        new_ext_modules = cythonize(self.ext_modules)
+        # Check for new cythonized files (to be optionally deleted
+        #  after building)
+        for pre_ext, post_ext in zip(self.ext_modules, new_ext_modules):
+            for source in post_ext.sources:
+                if source not in pre_ext.sources:
+                    self.mda_cython_generated.append(source)
+        self.ext_modules = new_ext_modules
+
+    def add_numpy_includes(self):
+        # ImportErrors are caught outside of this method call.
+        numpy_include_dir = [get_numpy_include()]
+        for extension in self.ext_modules:
+            extension.include_dirs += numpy_include_dir
+
+    def _mda_install_build_dependencies(self):
+        self.fetch_build_eggs(self.mda_build_requires)
+
+    def fetch_build_egg(self, req):
+        """Fetch an egg needed for building
+        
+        Overrides the `setuptools` version, which defaults to
+        installing the egg under the current dir.
+        """
+        # As the original fetch_build_egg, we cache the fetch/build command
+        #  within a try/except pair.
+        try:
+            cmd = self._egg_fetcher
+        except AttributeError:
+            from setuptools.command.install import install
+            from setuptools.command.easy_install import easy_install
+            dist = self.__class__()
+            # We try to cleanly emulate a non-local install by passing
+            #  onto our dependencies' Distribution objects the same args that
+            #  we got (to take care of --user installs, for instance).
+            dist.script_args = self.script_args
+            dist.parse_config_files()
+            # We create 'inst' as an instance of an 'install' command, but
+            #  note that it isn't really run. We just create it as a shortcut
+            #  to making a setup object that we then pass to easy_install.
+            # Also note that command class names don't follow the python's
+            #  capitalization standard so that they match what's written on
+            #  the command-line.  
+            inst = install(dist)
+            cmd = easy_install(dist, args="x", root=inst.root, record=inst.record)
+            cmd.ensure_finalized()
+            self._egg_fetcher = cmd
+        return cmd.easy_install(req)
+
 
 def get_numpy_include():
     # Obtain the numpy include directory. This logic works across numpy
@@ -172,14 +256,8 @@ def get_numpy_include():
     except ImportError:
         import builtins
     builtins.__NUMPY_SETUP__ = False
-    try:
-        import numpy as np
-    except ImportError:
-        print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
-        print('Please get it from http://numpy.scipy.org/ or install it through '
-              'your package manager.')
-        sys.exit(-1)
+    # ImportErrors are caught outside of this function call.
+    import numpy as np
     try:
         numpy_include = np.get_include()
     except AttributeError:
@@ -238,9 +316,7 @@ def detect_openmp():
     return hasopenmp
 
 
-def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+def extensions(config, use_cython):
     use_openmp = config.get('use_openmp', default=True)
 
     if config.get('debug_cflags', default=False):
@@ -270,54 +346,42 @@ def extensions(config):
     parallel_libraries = ['gomp'] if has_openmp and use_openmp else []
     parallel_macros = [('PARALLEL', None)] if has_openmp and use_openmp else []
 
-    if use_cython:
-        print('Will attempt to use Cython.')
-        if not cython_found:
-            print("Couldn't find a Cython installation. "
-                  "Not recompiling cython extensions.")
-            use_cython = False
-    else:
-        print('Will not attempt to use Cython.')
-
     source_suffix = '.pyx' if use_cython else '.c'
 
-    # The callable is passed so that it is only evaluated at install time.
-    include_dirs = [get_numpy_include]
-
-    dcd = MDAExtension('coordinates._dcdmodule',
+    dcd = Extension('coordinates._dcdmodule',
                        ['MDAnalysis/coordinates/src/dcd.c'],
-                       include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                       include_dirs=['MDAnalysis/coordinates/include'],
                        define_macros=define_macros,
                        extra_compile_args=extra_compile_args)
-    dcd_time = MDAExtension('coordinates.dcdtimeseries',
+    dcd_time = Extension('coordinates.dcdtimeseries',
                          ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
-                         include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                         include_dirs=['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
-    distances = MDAExtension('lib.c_distances',
+    distances = Extension('lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
-                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                             include_dirs=['MDAnalysis/lib/include'],
                              libraries=['m'],
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
-    distances_omp = MDAExtension('lib.c_distances_openmp',
+    distances_omp = Extension('lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
-                                 include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                                 include_dirs=['MDAnalysis/lib/include'],
                                  libraries=['m'] + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args,
                                  extra_link_args=parallel_args)
-    qcprot = MDAExtension('lib.qcprot',
+    qcprot = Extension('lib.qcprot',
                           ['MDAnalysis/lib/qcprot' + source_suffix],
-                          include_dirs=include_dirs,
+                          include_dirs=[],
                           extra_compile_args=["-O3", "-ffast-math"])
-    transformation = MDAExtension('lib._transformations',
+    transformation = Extension('lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
                                   libraries=['m'],
                                   define_macros=define_macros,
-                                  include_dirs=include_dirs,
+                                  include_dirs=[],
                                   extra_compile_args=extra_compile_args)
-    libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
+    libmdaxdr = Extension('lib.formats.libmdaxdr',
                           sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
                                    'MDAnalysis/lib/formats/src/xdrfile.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
@@ -325,33 +389,24 @@ def extensions(config):
                                    'MDAnalysis/lib/formats/src/trr_seek.c',
                                    'MDAnalysis/lib/formats/src/xtc_seek.c',
                                    ],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
+                          include_dirs=['MDAnalysis/lib/formats/include',
                                                        'MDAnalysis/lib/formats'],
                           define_macros=largefile_macros)
-    util = MDAExtension('lib.formats.cython_util',
+    util = Extension('lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
-                        include_dirs=include_dirs)
+                        include_dirs=[])
 
-    pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
+    extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
                   transformation, libmdaxdr, util]
-    cython_generated = []
-    if use_cython:
-        extensions = cythonize(pre_exts)
-        for pre_ext, post_ext in zip(pre_exts, extensions):
-            for source in post_ext.sources:
-                if source not in pre_ext.sources:
-                    cython_generated.append(source)
-    else:
-        #Let's check early for missing .c files
-        extensions = pre_exts
-        for ext in extensions:
-            for source in ext.sources:
-                if not (os.path.isfile(source) and
-                        os.access(source, os.R_OK)):
-                    raise IOError("Source file '{}' not found. This might be "
-                                "caused by a missing Cython install, or a "
-                                "failed/disabled Cython build.".format(source))
-    return extensions, cython_generated
+
+    #Let's check early for missing source files
+    for ext in extensions:
+        for source in ext.sources:
+            if not (os.path.isfile(source) and
+                    os.access(source, os.R_OK)):
+                raise IOError("Source file '{}' "
+                    "not found.".format(source))
+    return extensions
 
 
 def dynamic_author_list():
@@ -446,9 +501,24 @@ if __name__ == '__main__':
     ]
 
     config = Config()
-    exts, cythonfiles = extensions(config)
+    require_cython = ['Cython (>=0.16)', 'Cython>=0.16'] if is_dev else []
+    # dev installs must build their own cythonized files.
+    if is_dev:
+        use_cython = True
+    else:
+        use_cython = config.get('use_cython', default=False)
+    if use_cython:
+        print('Will attempt to use Cython.')
+        if not cython_found and is_release:
+            # dev installs might not have cython straight away.
+            print("Couldn't find a Cython installation. "
+                  "Not recompiling cython extensions.")
+            use_cython = False
+    else:
+        print('Will not attempt to use Cython.')
 
-    setup(name='MDAnalysis',
+    dist = setup(
+          name='MDAnalysis',
           version=RELEASE,
           description='An object-oriented toolkit to analyze molecular dynamics '
           'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.',
@@ -464,23 +534,28 @@ if __name__ == '__main__':
           packages=find_packages(),
           package_dir={'MDAnalysis': 'MDAnalysis'},
           ext_package='MDAnalysis',
-          ext_modules=exts,
+          ext_modules=extensions(config, use_cython),
           classifiers=CLASSIFIERS,
-          cmdclass=cmdclass,
-          requires=['numpy (>=1.5.0)', 'biopython',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'],
+          distclass=MDADistribution,
+          mda_use_cython=use_cython,
+          requires=['numpy (>=1.5.0)',
+                    'biopython',
+                    'networkx (>=1.0)',
+                    'GridDataFormats (>=0.3.2)',
+                    'six (>=1.4.0)',
+                    ] + require_cython[:1],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
-          setup_requires=[
+          mda_build_requires=[
               'numpy>=1.5.0',
-          ],
+              ] + require_cython[1:],
           install_requires=[
               'numpy>=1.5.0',
               'biopython>=1.59',
               'networkx>=1.0',
               'GridDataFormats>=0.3.2',
               'six>=1.4.0',
-          ],
+              ] + require_cython[1:],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
@@ -504,11 +579,11 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release):
-        for cythonized in cythonfiles:
+    if not config.get('keep_cythonized', default=is_release) and hasattr(dist, "mda_cython_generated"):
+        for cythonized in dist.mda_cython_generated:
             try:
                 os.unlink(cythonized)
             except OSError as err:
                 print("Warning: failed to delete cythonized file {0}: {1}. "
-                    "Moving on.".format(cythonized, err.strerror))
+                    "Moving on.".format(cythonized, err))
 
