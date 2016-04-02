@@ -4379,10 +4379,10 @@ class Universe(object):
 
         segments = build_segments(self.atoms)
         for seg in segments:
-            if seg.id[0].isdigit():
-                name = 's' + seg.id
+            if seg.segid[0].isdigit():
+                name = 's' + seg.segid
             else:
-                name = seg.id
+                name = seg.segid
             self.__dict__[name] = seg
 
         return segments
@@ -4403,11 +4403,11 @@ class Universe(object):
         guessed = self._topology.get('guessed_' + cat, set())
 
         TopSet = top.TopologyGroup.from_indices(defined, self.atoms,
-                                                            bondclass=Top, guessed=False,
-                                                            remove_duplicates=True)
+                                                bondclass=Top, guessed=False,
+                                                remove_duplicates=True)
         TopSet += top.TopologyGroup.from_indices(guessed, self.atoms,
-                                                             bondclass=Top, guessed=True,
-                                                             remove_duplicates=True)
+                                                 bondclass=Top, guessed=True,
+                                                 remove_duplicates=True)
 
         return TopSet
 
