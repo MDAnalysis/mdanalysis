@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -390,22 +390,21 @@ _flags = [
 
            >>> flags['%(name)s'] = value
 
-           The Bio.PDB reader (value=``False``) can deal with 'proper' PDB
-           files from the Protein Databank that contain special PDB features
-           such as insertion codes and it can auto-correct some common
-           mistakes; see :mod:`Bio.PDB` for details. However, Bio.PDB has been
-           known to read some simulation system PDB files **incompletely**; a
-           sure sign of problems is a warning that an atom has appeared twice
-           in a residue.
-
-           Therefore, the default for the PDB reader is ``True``, which
-           selects the "primitive" (or "permissive") reader
-           :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`, which
+           The default for the PDB reader is ``True``, which
+           selects the (or "permissive") reader
+           :class:`MDAnalysis.coordinates.PDB.PDBReader`, which
            essentially just reads ATOM and HETATM lines and puts atoms in a
            list.
 
+           ``False`` selects the :class:
+           `MDAnalysis.coordinates.PDB.PrimitivePDBReader` which is a copy of
+           the :class:`MDAnalysis.coordinates.PDB.PDBReader` deprecated in favor
+           of its counterpart
+
            One can manually switch between the two by providing the *permissive*
            keyword to :class:`MDAnalysis.Universe`.
+
+
         """
     ),
     _Flag(

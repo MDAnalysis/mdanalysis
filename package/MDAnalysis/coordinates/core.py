@@ -51,7 +51,8 @@ def get_reader_for(filename, permissive=False, format=None):
         filename of the input trajectory or coordinate file
     permissive : bool
         If set to ``True``, a reader is selected that is more tolerant of the
-        input (currently only implemented for PDB). [``False``]
+        input (currently a deprecated feature only implemented for PDB).
+        [``False``]
     kwargs
         Keyword arguments for the selected Reader class.
 
@@ -67,7 +68,7 @@ def get_reader_for(filename, permissive=False, format=None):
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
-    if permissive and format == 'PDB':
+    if format == 'PDB' and permissive:
         return _READERS['Permissive_PDB']
     try:
         return _READERS[format]
@@ -101,6 +102,7 @@ def reader(filename, **kwargs):
     filename : str or tuple
         filename (or tuple of filenames) of the input coordinate file
     permissive : bool
+
         If set to ``True``, a reader is selected that is more tolerant of the
         input (currently only implemented for PDB). [``False``]
     kwargs
@@ -113,8 +115,8 @@ def reader(filename, **kwargs):
     .. SeeAlso:: For trajectory formats: :class:`~DCD.DCDReader`,
        :class:`~XTC.XTCReader`, :class:`~TRR.TRRReader`,
        :class:`~XYZ.XYZReader`.  For single frame formats:
-       :class:`~CRD.CRDReader`, :class:`~PDB.PDBReader` and
-       :class:`~PDB.PrimitivePDBReader`, :class:`~GRO.GROReader`,
+       :class:`~CRD.CRDReader`, and
+       :class:`~PDB.PDBReader`, :class:`~GRO.GROReader`,
     """
     if isinstance(filename, tuple):
         Reader = get_reader_for(filename[0],

@@ -4195,10 +4195,10 @@ class Universe(object):
              topology) is always required.
 
           *permissive*
-             currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
-             and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-             which can be useful for real Protein Databank PDB files. ``None``  selects the
-             MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
+             currently only relevant to PDBs, Readers and Writers and Parsers
+             returned by setting ::permisive = False are depecrated in favor
+             of their ::permissive = True counterparts
+
           *topology_format*
              provide the file format of the topology file; ``None`` guesses it from the file
              extension [``None``]
@@ -4260,6 +4260,9 @@ class Universe(object):
         .. versionchanged:: 0.11.0
            Added the *is_anchor* and *anchor_name* keywords for finer behavior
            control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
+        .. versionchanged:: 0.14.1
+           *permissive* set to ``True`` and set to ``False`` both yield permissive
+           PDB readers, writers and parsers
         """
 
         from ..topology.core import get_parser_for
