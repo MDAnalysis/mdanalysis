@@ -3622,7 +3622,7 @@ class Residue(AtomGroup):
 
         """
         nextres = self.resid + 1
-        segid = self.segment.id
+        segid = self.segment.segid
         sel = self['CA'] + self['C'] + \
               self.universe.select_atoms(
                   'segid {0!s} and resid {1:d} and name N'.format(segid, nextres),
@@ -3647,7 +3647,7 @@ class Residue(AtomGroup):
 
     def __repr__(self):
         return "<Residue {name}, {id}>".format(
-            name=self.name, id=self.resid)
+            name=self.resname, id=self.resid)
 
 
 class ResidueGroup(AtomGroup):
@@ -3924,7 +3924,7 @@ class Segment(ResidueGroup):
         """Segment id (alias for :attr:`Segment.name`)"""
         return self._segid
 
-    @id.setter
+    @segid.setter
     def segid(self, x):
         self._segid = x
 
@@ -3956,7 +3956,7 @@ class Segment(ResidueGroup):
 
     def __repr__(self):
         return "<Segment {name}>".format(
-            name=self.name)
+            name=self.segid)
 
 
 class SegmentGroup(ResidueGroup):
