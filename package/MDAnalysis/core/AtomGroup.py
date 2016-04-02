@@ -3087,6 +3087,8 @@ class AtomGroup(object):
         .. versionchanged:: 0.13.1
            Added implicit OR syntax to field and range selections
         """
+        if selstr is "":
+            return None
         atomgrp = Selection.Parser.parse(selstr, selgroups).apply(self)
         # Generate a selection for each selection string
         for sel in othersel:
@@ -3929,6 +3931,11 @@ class Universe(object):
               Universe with matching *anchor_name* is found. *is_anchor* will be ignored in
               this case but will still be honored when unpickling :class:`MDAnalysis.core.AtomGroup.AtomGroup`
               instances pickled with *anchor_name*==``None``. [``None``]
+          *in_memory*
+              After reading in the trajectory, transfer it to an in-memory
+              representations, which allow for manipulation of coordinates.
+          *in_memory_frame_interval
+              Only read every nth frame into in-memory representation.
 
 
         This class tries to do the right thing:
@@ -4584,6 +4591,10 @@ class Universe(object):
                                  fname=filename,
                                  trj_n_atoms=self.trajectory.n_atoms))
 
+        # Optionally switch to an in-memory representation of the trajectory
+        if kwargs.get("in_memory"):
+            self.transfer_to_memory(kwargs.get("in_memory_frame_interval", 1))
+
         return filename, self.trajectory.format
 
     def select_atoms(self, sel, *othersel, **selgroups):
@@ -4714,6 +4725,47 @@ class Universe(object):
                 return len(self.atoms)==n_atoms and self.filename==fname and self.trajectory.filename==trajname
         else:
             return False
+
+    def transfer_to_memory(self, frame_interval=1):
+        """Replace the current trajectory reader object with one of type
+        :class:`MDAnalysis.coordinates.memory.MemoryReader` to support in-place
+        editing of coordinates.
+
+        :Arguments:
+             *frame_interval*
+                 Read in every nth frame.
+         """
+
+        from ..coordinates.memory import MemoryReader
+
+        if self.trajectory.format != "array":
+
+            # Try to extract coordinates using Timeseries object
+            # This is significantly faster, but only implemented for certain
+            # trajectory file formats
+            try:
+                coordinates = self.universe.trajectory.timeseries(
+                    self.atoms, format='afc', skip=frame_interval)
+
+            # if the Timeseries extraction fails,
+            # fall back to a slower approach
+            except AttributeError:
+                coordinates = np.zeros(
+                    tuple([self.universe.trajectory.n_frames/frame_interval]) +
+                    self.atoms.coordinates().shape)
+
+                k = 0
+                for i, time_step in enumerate(self.universe.trajectory):
+                    if (i+1) % frame_interval == 0:
+                        coordinates[k] = self.atoms.coordinates(time_step)
+                        k += 1
+                coordinates = np.swapaxes(coordinates, 0, 1)
+
+            # Overwrite trajectory in universe with an MemoryReader
+            # object, to provide fast access and allow coordinates
+            # to be manipulated
+            self.trajectory = MemoryReader(coordinates)
+
 
 
 def as_Universe(*args, **kwargs):

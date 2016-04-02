@@ -23,7 +23,7 @@ import numpy
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
 
-from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small, PDB,XTC
+from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small, GRO, XTC
 from MDAnalysisTests import parser_not_found, module_not_found
 
 import MDAnalysis.analysis.rms as rms
@@ -37,8 +37,8 @@ class FakePBarCounter(object):
 class TestEnsemble(TestCase):
 
     @staticmethod
-    #@dec.skipif(parser_not_found('DCD'),
-    #            'DCD parser not available. Are you using python 3?')
+    @dec.skipif(parser_not_found('DCD'),
+               'DCD parser not available. Are you using python 3?')
     def test_from_reader_w_timeseries():
         ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD)
         assert_equal(len(ensemble.atoms.coordinates()), 3341,
@@ -46,24 +46,50 @@ class TestEnsemble(TestCase):
 
     @staticmethod
     def test_from_reader_wo_timeseries():
-        ensemble = encore.Ensemble(topology=PDB, trajectory=XTC)
+        ensemble = encore.Ensemble(topology=GRO, trajectory=XTC)
         assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
 
     @staticmethod
-    #@dec.skipif(parser_not_found('DCD'),
-    #            'DCD parser not available. Are you using python 3?')
     def test_trajectories_list():
-        ensemble = encore.Ensemble(topology=PDB, trajectory=[XTC])
+        ensemble = encore.Ensemble(topology=GRO, trajectory=[XTC])
         assert_equal(len(ensemble.atoms.coordinates()), 47681,
                      err_msg="Unexpected number of atoms in trajectory")
+
+    @staticmethod
+    def test_align():
+        ensemble = encore.Ensemble(topology=GRO, trajectory=[XTC])
+        import logging
+        logging.info(ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0])
+        ensemble.align()
+        logging.info(ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0])
+        universe = mda.Universe(GRO, XTC)
+        mda.analysis.align.rms_fit_trj(universe, universe,
+                                       select="name CA",
+                                       mass_weighted=True,
+                                       in_memory=True)
+        # assert_equal(universe.trajectory.timeseries(universe.atoms)[0,1,0],
+        #              ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0],
+        #              err_msg="Unexpected number of atoms in trajectory")
+        rmsfs1 = rms.RMSF(ensemble.select_atoms('name *'))
+        rmsfs1.run()
+
+        rmsfs2 = rms.RMSF(universe.select_atoms('name *'))
+        rmsfs2.run()
+
+        assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
+                     err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
+                             "than ensemble aligned on only CAs.")
+
 
 class TestEncore(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.ens1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        self.ens2 = encore.Ensemble(topology=PDB_small, trajectory=DCD2)
+        # self.ens1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
+        # self.ens2 = encore.Ensemble(topology=PDB_small, trajectory=DCD2)
+        self.ens1 = mda.Universe(PDB_small, DCD)
+        self.ens2 = mda.Universe(PDB_small, DCD2)
 
     def tearDown(self):
         del self.ens1
@@ -80,7 +106,7 @@ class TestEncore(TestCase):
         triangular_matrix[0,1] = expected_value
 
         assert_equal(triangular_matrix[0,1], expected_value,
-                                err_msg="Data error in TriangularMatrix: read/write are not consistent")
+                     err_msg="Data error in TriangularMatrix: read/write are not consistent")
 
         assert_equal(triangular_matrix[0,1], triangular_matrix[1,0], 
                         err_msg="Data error in TriangularMatrix: matrix non symmetrical")
@@ -130,7 +156,8 @@ class TestEncore(TestCase):
         tasks = ((0, 0), (1, 0))
         n_tasks = len(list(encore.utils.trm_indeces(tasks[0],tasks[1])))
         distmatrix = numpy.zeros(n_tasks)
-        coordinates = self.ens1.get_coordinates(selection = "name CA", format = 'fac')
+        coordinates = self.ens1.trajectory.timeseries(
+            self.ens1.select_atoms("name CA"), format = 'fac')
         masses = numpy.ones(coordinates.shape[1])
         pbar_counter = FakePBarCounter()
 
@@ -396,11 +423,11 @@ class TestEncore(TestCase):
 
         
     def test_ensemble_frame_filtering(self):
-        total_frames = len(self.ens1.get_coordinates("", format='fac'))
+        total_frames = len(self.ens1.trajectory.timeseries(format='fac'))
         interval = 10
         filtered_ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD,
                                             frame_interval=interval)
-        filtered_frames = len(filtered_ensemble.get_coordinates("", format='fac'))
+        filtered_frames = len(filtered_ensemble.trajectory.timeseries(format='fac'))
         assert_equal(filtered_frames, total_frames//interval,
                      err_msg="Incorrect frame number in Ensemble filtering: {0:f} out of {1:f}"
                      .format(filtered_frames, total_frames//interval))

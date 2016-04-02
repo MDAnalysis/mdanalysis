@@ -60,7 +60,7 @@ class ConformationalDistanceMatrixGenerator(object):
     process is printed out. This class acts as a functor.
     """
 
-    def run(self, ensemble, selection="all", superimposition_selection="",
+    def run(self, ensemble, selection="", superimposition_selection="",
             ncores=None, pairwise_align=False, mass_weighted=True,
             metadata=True):
         """
@@ -107,7 +107,8 @@ class ConformationalDistanceMatrixGenerator(object):
             ncores = 1
 
         # framesn: number of frames
-        framesn = len(ensemble.get_coordinates(selection, format='fac'))
+        framesn = len(ensemble.trajectory.timeseries(
+            ensemble.select_atoms(selection), format='fac'))
 
         # Prepare metadata recarray
         if metadata:
@@ -135,8 +136,9 @@ class ConformationalDistanceMatrixGenerator(object):
                 subset_selection = superimposition_selection
             else:
                 subset_selection = selection
-            subset_coords = ensemble.get_coordinates(selection=superimposition_selection,
-                                                     format='fac')
+            subset_coords = ensemble.trajectory.timeseries(
+                ensemble.select_atoms(superimposition_selection),
+                format='fac')
 
         # Prepare masses as necessary
 
@@ -145,7 +147,8 @@ class ConformationalDistanceMatrixGenerator(object):
             if pairwise_align:
                 subset_masses = ensemble.select_atoms(subset_selection).masses
         else:
-            masses = ones((ensemble.get_coordinates(selection)[0].shape[0]))
+            masses = ones((ensemble.trajectory.timeseries(
+                ensemble.select_atoms(selection))[0].shape[0]))
             if pairwise_align:
                 subset_masses = ones((subset_coords[0].shape[0]))
 
@@ -195,8 +198,12 @@ class ConformationalDistanceMatrixGenerator(object):
         if pairwise_align:
             workers = [Process(target=self._fitter_worker, args=(
                 tasks_per_worker[i],
-                ensemble.get_coordinates(selection, format='fac'),
-                ensemble.get_coordinates(subset_selection, format='fac'),
+                ensemble.trajectory.timeseries(
+                    ensemble.select_atoms(selection),
+                    format='fac'),
+                ensemble.trajectory.timeseries(
+                    ensemble.select_atoms(subset_selection),
+                    format='fac'),
                 masses,
                 subset_masses,
                 distmat,
@@ -204,8 +211,9 @@ class ConformationalDistanceMatrixGenerator(object):
         else:
             workers = [Process(target=self._simple_worker,
                                args=(tasks_per_worker[i],
-                                     ensemble.get_coordinates(selection,
-                                                              format='fac'),
+                                     ensemble.trajectory.timeseries(
+                                         ensemble.select_atoms(selection),
+                                         format='fac'),
                                      masses, distmat,
                                      partial_counters[i]))
                        for i in range(ncores)]

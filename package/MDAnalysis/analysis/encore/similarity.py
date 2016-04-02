@@ -147,6 +147,7 @@ Functions
 
 """
 from __future__ import print_function
+import MDAnalysis as mda
 import numpy
 import warnings
 import logging
@@ -163,7 +164,7 @@ except ImportError:
     logging.warn(msg)
     del msg
 
-from MDAnalysis.coordinates.array import ArrayReader
+from MDAnalysis.coordinates.memory import MemoryReader
 
 from .Ensemble import Ensemble
 from .clustering.Cluster import ClustersCollection
@@ -325,8 +326,10 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Jensen-Shannon divergence between the two ensembles, as calculated by
         the clustering ensemble similarity method
     """
-    ens1_coordinates = ens1.get_coordinates(selection, format='fac')
-    ens2_coordinates = ens2.get_coordinates(selection, format='fac')
+    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(selection),
+                                                  format='fac')
+    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(selection),
+                                                  format='fac')
     tmpA = numpy.array([numpy.where(c.metadata['ensemble'] == ens1_id)[
                             0].shape[0] / float(ens1_coordinates.shape[0]) for
                         c in cc])
@@ -831,16 +834,18 @@ def get_similarity_matrix(ensembles,
 
     # Define ensemble assignments as required on the joined ensemble
     for i in range(1, nensembles + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1]
-                                .get_coordinates(selection, format='fac')]
+        ensemble_assignment += \
+            [i for j in ensembles[i - 1]
+                .trajectory.timeseries(ensembles[i-1].select_atoms(selection),
+                                       format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     # Joined ensemble
     joined_ensemble = Ensemble(topology=ensembles[0].filename,
                                trajectory=numpy.concatenate(
-                               tuple([e.trajectory.timeseries(e.atoms)
+                               tuple([e.trajectory.timeseries()
                                       for e in ensembles]), axis=1),
-                               format=ArrayReader)
+                               format=MemoryReader)
 
     # Choose distance metric
     if similarity_mode == "minusrmsd":
@@ -861,8 +866,9 @@ def get_similarity_matrix(ensembles,
             "        Loading similarity matrix from: {0}".format(load_matrix))
         confdistmatrix = \
             TriangularMatrix(
-                size=joined_ensemble.get_coordinates(selection,
-                                                     format='fac').shape[0],
+                size=joined_ensemble.trajectory.timeseries(
+                    joined_ensemble.select_atoms(selection),
+                    format='fac').shape[0],
                 loadfile=load_matrix)
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
@@ -877,8 +883,9 @@ def get_similarity_matrix(ensembles,
 
         # Check matrix size for consistency
         if not confdistmatrix.size == \
-                joined_ensemble.get_coordinates(selection,
-                                                format='fac').shape[0]:
+                joined_ensemble.trajectory.timeseries(
+                    joined_ensemble.select_atoms(selection),
+                    format='fac').shape[0]:
             logging.error(
                 "ERROR: The size of the loaded matrix and of the ensemble"
                 " do not match")
@@ -963,7 +970,8 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     """
 
-    ens_size = ensemble.get_coordinates(selection, format='fac').shape[0]
+    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
+                                              format='fac').shape[0]
 
     rest_slices = ens_size / window_size
     residuals = ens_size % window_size
@@ -978,9 +986,9 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     for s,sl in enumerate(slices_n[:-1]):
         tmp_ensembles.append(Ensemble(
             topology=ensemble.filename,
-            trajectory=ensemble.trajectory.get_array()
+            trajectory=ensemble.trajectory.timeseries()
             [:, slices_n[s]:slices_n[s + 1], :],
-            format=ArrayReader))
+            format=MemoryReader))
 
     return tmp_ensembles
 
@@ -989,10 +997,12 @@ def hes(ensembles,
         selection="name CA",
         cov_estimator="shrinkage",
         mass_weighted=True,
+        align=True,
         details=False,
         estimate_error=False,
         bootstrapping_samples=100,
-        calc_diagonal=False):
+        calc_diagonal=False,
+        **kwargs):
     """
 
     Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
@@ -1003,7 +1013,7 @@ def hes(ensembles,
     ----------
 
     ensembles : list
-        List of ensemble objects for similarity measurements.
+        List of universe objects for similarity measurements.
 
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
@@ -1026,6 +1036,8 @@ def hes(ensembles,
     bootstrapping_samples : int, optional
         Number of times the similarity matrix will be bootstrapped (default
         is 100).
+
+    kwargs: Any additional args are passed to the rms_fit_traj function.
 
 
     Returns
@@ -1079,6 +1091,19 @@ def hes(ensembles,
     Here None is returned in the array as no details has been requested. 
     """
 
+    # Ensure in-memory trajectories either by calling align
+    # with in_memory=True or by directly calling transfer_to_memory
+    # on the universe.
+    if align:
+        for ensemble in ensembles:
+            mda.analysis.align.rms_fit_trj(ensemble, ensembles[0],
+                                           select=selection,
+                                           mass_weighted=True,
+                                           in_memory=True)
+    else:
+        for ensemble in ensembles:
+            ensemble.transfer_to_memory()
+
     logging.info("Chosen metric: Harmonic similarity")
     if cov_estimator == "shrinkage":
         covariance_estimator = EstimatorShrinkage()
@@ -1110,7 +1135,8 @@ def hes(ensembles,
             values = numpy.zeros((out_matrix_eln, out_matrix_eln))
             for e in ensembles:
                 this_coords = bootstrap_coordinates(
-                    e.get_coordinates(selection, format='fac'),
+                    e.trajectory.timeseries(e.select_atoms(selection),
+                                            format='fac'),
                     1)[0]
                 xs.append(numpy.average(this_coords, axis=0).flatten())
                 sigmas.append(covariance_matrix(e,
@@ -1137,7 +1163,8 @@ def hes(ensembles,
     for e in ensembles:
 
         # Extract coordinates from each ensemble
-        coordinates_system = e.get_coordinates(selection, format='fac')
+        coordinates_system = e.trajectory.timeseries(e.select_atoms(selection),
+                                                     format='fac')
 
         # Average coordinates in each system
         xs.append(numpy.average(coordinates_system, axis=0).flatten())
@@ -1340,8 +1367,9 @@ def ces(ensembles,
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
         ensemble_assignment += \
-            [i for j in ensembles[i - 1].get_coordinates(selection,
-                                                         format='fac')]
+            [i for j in ensembles[i - 1].trajectory.timeseries(
+                ensembles[i - 1].select_atoms(selection),
+                format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -1492,7 +1520,8 @@ def ces(ensembles,
                 kwds['centroids_pref{0:.3f}'.format(p)] = numpy.array(
                     [c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array(
-                    [e.get_coordinates(selection, format='fac')
+                    [e.trajectory.timeseries(e.select_atoms(selection),
+                                             format='fac')
                      .shape[0] for e in ensembles])
                 for cln, cluster in enumerate(ccs[i]):
                     kwds["cluster%d_pref{0:.3f}".format(cln + 1, p)] = \
@@ -1691,8 +1720,9 @@ def dres(ensembles,
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
         ensemble_assignment += \
-            [i for j in ensembles[i - 1].get_coordinates(selection,
-                                                         format='fac')]
+            [i for j in ensembles[i - 1].trajectory.timeseries(
+                ensembles[i - 1].select_atoms(selection),
+                format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     if conf_dist_matrix:
@@ -1947,8 +1977,10 @@ def ces_convergence(original_ensemble,
                                            selection=selection, **kwargs)
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1]
-                                .get_coordinates(selection, format='fac')]
+        ensemble_assignment += \
+            [i for j in ensembles[i - 1]
+                .trajectory.timeseries(ensembles[i - 1].select_atoms(selection),
+                                       format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     metadata = {'ensemble': ensemble_assignment}
@@ -2103,8 +2135,9 @@ def dres_convergence(original_ensemble,
 
     ensemble_assignment = []
     for i in range(1, len(ensembles) + 1):
-        ensemble_assignment += [i for j in ensembles[i - 1]
-                                .get_coordinates(selection, format='fac')]
+        ensemble_assignment += \
+            [i for j in ensembles[i - 1].trajectory.timeseries(
+                ensembles[i - 1].select_atoms(selection), format='fac')]
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     out_matrix_eln = len(ensembles)

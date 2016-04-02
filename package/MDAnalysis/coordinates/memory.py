@@ -14,7 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.array`
+Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 ==========================================================================
 
 :Author: Wouter Boomsma
@@ -36,7 +36,7 @@ to write the entire state to file.
 Examples
 --------
 
-Constructing a Reader from an array
+Constructing a Reader from a numpy array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A simple example where a new universe is created from the
@@ -50,7 +50,11 @@ array extracted from a DCD timeseries
     coordinates = universe.trajectory.timeseries(universe.atoms)
 
     universe2 = Universe(PDB_small, coordinates,
-                         format=ArrayReader)
+                         format=MemoryReader)
+
+This two step process can also be done in one go:
+
+    universe = Universe(PDB_small, DCD, in_memory=True)
 
 """
 
@@ -60,7 +64,7 @@ import numpy as np
 from . import base
 
 
-class ArrayReader(base.ProtoReader):
+class MemoryReader(base.ProtoReader):
     """
     A trajectory reader interface to a numpy array of the coordinates.
     For compatibility with the timeseries interface, support is provided for
@@ -75,12 +79,12 @@ class ArrayReader(base.ProtoReader):
     convert_units : bool (optional)
         convert into MDAnalysis units
     precision : float (optional)
-        set precision of saved trjactory to this number of decimal places.
+        set precision of saved trajectory to this number of decimal places.
     """
 
-    format = 'array'
+    format = 'memory'
 
-    class ArrayTimestep(base.Timestep):
+    class MemoryTimestep(base.Timestep):
         """
         Overrides the positions property in base.Timestep to
         use avoid duplication of the array.
@@ -96,20 +100,21 @@ class ArrayReader(base.ProtoReader):
             # Use reference to original rather than a copy
             self._pos = new
 
-    _Timestep = ArrayTimestep
+    _Timestep = MemoryTimestep
 
     def __init__(self, coordinate_array, format='afc', **kwargs):
         """Constructor
 
-        :Arguments:
-            *coordinate_array*
-               :class:`~numpy.ndarray object
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
+        Parameters
+        ---------
+        coordinate_array : :class:`~numpy.ndarray object
+            The underlying array of coordinates
+        format : str
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
         """
         self.set_array(coordinate_array, format)
         self.n_frames = coordinate_array.shape[self.format.find('f')]
@@ -124,39 +129,50 @@ class ArrayReader(base.ProtoReader):
         """
         Set underlying array in desired column format.
 
-        :Arguments:
-            *coordinate_array*
-               :class:`~numpy.ndarray object
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
-
+        Parameters
+        ---------
+        coordinate_array : :class:`~numpy.ndarray object
+            The underlying array of coordinates
+        format
+            The order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
         """
         self.coordinate_array = coordinate_array
         self.format = format
 
-    def get_array(self, format='afc'):
+    def get_array(self):
         """
-        Return underlying array in desired column format.
-        This methods has overlapping functionality with the
-        timeseries method, but is slightly faster in cases
-        where no selection or filtering is required. Another
-        difference is that get_array always returns a view of
-        the original array, while timeseries will return a copy.
+        Return underlying array.
+        """
+        return self.coordinate_array
 
-        :Arguments:
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
+    def _reopen(self):
+        """Reset iteration to first frame"""
+        self.ts.frame = -1
+
+    def timeseries(self, asel=None, start=0, stop=-1, skip=1, format='afc'):
+        """Return a subset of coordinate data for an AtomGroup in desired
+        column format. If no selection is given, it will return a view of
+        the underlying array, while a copy is returned otherwise.
+
+        Parameters
+        ---------
+        asel : :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+            Atom selection
+        start, stop, skip : int
+            range of trajectory to access, start and stop are inclusive
+        format : str
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
         """
-        array = self.coordinate_array
-        if format==self.format:
+        array = self.get_array()
+        if format == self.format:
             pass
         elif format[0] == self.format[0]:
             array = np.swapaxes(array, 1, 2)
@@ -170,44 +186,23 @@ class ArrayReader(base.ProtoReader):
         elif self.format[2] == format[0]:
             array = np.swapaxes(array, 2, 0)
             array = np.swapaxes(array, 1, 2)
-        return array
 
-
-    def _reopen(self):
-        """Reset iteration to first frame"""
-        self.ts.frame = -1
-
-    def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
-        """Return a subset of coordinate data for an AtomGroup. Note that
-        this is a copy of the underlying array (not a view).
-
-        :Arguments:
-            *asel*
-               :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
-            *start, stop, skip*
-               range of trajectory to access, start and stop are inclusive
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
-        """
-        coordinate_array = self.get_array(format)
         a_index = format.find('a')
         f_index = format.find('f')
-        if skip==1:
-            subarray = coordinate_array.take(asel.indices,a_index)
-        else:
-            stop_index = stop+1
-            if stop_index==0:
-                stop_index = None
-            skip_slice = ([slice(None)]*(f_index) +
-                          [slice(start, stop_index, skip)] +
-                          [slice(None)]*(2-f_index))
-            subarray = coordinate_array[skip_slice]\
-                .take(asel.indices,a_index)
-        return subarray
+        stop_index = stop+1
+        if stop_index == 0:
+            stop_index = None
+        # To make the skip implementation consistent with DCD.timeseries, we
+        # start at start+(skip-1)
+        basic_slice = ([slice(None)]*(f_index) +
+                       [slice(start+(skip-1), stop_index, skip)] +
+                       [slice(None)]*(2-f_index))
+        # If no selection is specified, return a view
+        array = array[basic_slice]
+        if asel is not None:
+            # If selection is specified, return a copy
+            array = array.take(asel.indices, a_index)
+        return array
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
@@ -228,6 +223,7 @@ class ArrayReader(base.ProtoReader):
         return self._read_next_timestep()
 
     def __repr__(self):
+        """String representation"""
         return ("<{cls} with {nframes} frames of {natoms} atoms>"
                 "".format(
                     cls=self.__class__.__name__,

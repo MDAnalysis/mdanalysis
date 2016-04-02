@@ -498,7 +498,7 @@ class DCDReader(base.Reader):
         ts.frame = frame
         return ts
 
-    def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
+    def timeseries(self, asel=None, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         :Arguments:
@@ -514,11 +514,14 @@ class DCDReader(base.Reader):
                coordinates)
         """
         start, stop, skip = self.check_slice_indices(start, stop, skip)
-        if len(asel) == 0:
-            raise NoDataError("Timeseries requires at least one atom to analyze")
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")
-        atom_numbers = list(asel.indices)
+        if asel is not None:
+            if len(asel) == 0:
+                raise NoDataError("Timeseries requires at least one atom to analyze")
+            atom_numbers = list(asel.indices)
+        else:
+            atom_numbers = range(self.n_atoms)
         # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
         # from trajectory file instead of an entire timestep
         # XXX needs to be implemented

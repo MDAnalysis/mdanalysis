@@ -2028,6 +2028,50 @@ class TestCustomReaders(TestCase):
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
+class TestInMemoryUniverse(TestCase):
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+               'DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries():
+        universe = MDAnalysis.Universe(PDB_small, DCD, in_memory=True)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 98, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    def test_reader_wo_timeseries():
+        universe = MDAnalysis.Universe(GRO, TRR, in_memory=True)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (47681, 10, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+               'DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries_frame_interval():
+        universe = MDAnalysis.Universe(PDB_small, DCD, in_memory=True,
+                                       in_memory_frame_interval=10)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 9, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    def test_reader_wo_timeseries_frame_interval():
+        universe = MDAnalysis.Universe(GRO, TRR, in_memory=True,
+                                       in_memory_frame_interval=3)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (47681, 3, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    def test_existing_universe():
+        universe = MDAnalysis.Universe(PDB_small, DCD)
+        universe.transfer_to_memory()
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 98, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
 
 class TestWrap(TestCase):
     @dec.skipif(parser_not_found('TRZ'),

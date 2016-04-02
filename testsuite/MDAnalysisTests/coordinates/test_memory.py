@@ -4,32 +4,32 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import DCD, PDB_small
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               assert_timestep_almost_equal)
-from MDAnalysis.coordinates.array import ArrayReader
+from MDAnalysis.coordinates.memory import MemoryReader
 from numpy.testing import assert_equal
 
 from unittest import TestCase
 
 
-class ArrayReference(BaseReference):
+class MemoryReference(BaseReference):
     def __init__(self):
-        super(ArrayReference, self).__init__()
+        super(MemoryReference, self).__init__()
         self.universe = mda.Universe(PDB_small, DCD)
         self.trajectory = \
             self.universe.trajectory.timeseries(self.universe.atoms)
         self.n_atoms = self.universe.trajectory.n_atoms
         self.n_frames = self.universe.trajectory.n_frames
         self.topology = PDB_small
-        self.reader = mda.coordinates.array.ArrayReader
+        self.reader = mda.coordinates.memory.MemoryReader
 
-        self.first_frame = ArrayReader.ArrayTimestep(self.n_atoms)
+        self.first_frame = MemoryReader.MemoryTimestep(self.n_atoms)
         self.first_frame.positions = self.trajectory[:,0,:]
         self.first_frame.frame = 0
 
-        self.second_frame = ArrayReader.ArrayTimestep(self.n_atoms)
+        self.second_frame = MemoryReader.MemoryTimestep(self.n_atoms)
         self.second_frame.positions = self.trajectory[:,1,:]
         self.second_frame.frame = 1
 
-        self.last_frame = ArrayReader.ArrayTimestep(self.n_atoms)
+        self.last_frame = MemoryReader.MemoryTimestep(self.n_atoms)
         self.last_frame.positions = self.trajectory[:,self.n_frames - 1,:]
         self.last_frame.frame = self.n_frames - 1
 
@@ -40,7 +40,7 @@ class ArrayReference(BaseReference):
 
 class TestArrayReader(TestCase):
     def setUp(self):
-        reference = ArrayReference()
+        reference = MemoryReference()
         self.ref = reference
         self.reader = self.ref.reader(self.ref.trajectory)
 
@@ -88,33 +88,53 @@ class TestArrayReader(TestCase):
         assert_equal(frames, self.ref.n_frames)
 
     def test_extract_array_afc(self):
-        assert_equal(self.reader.get_array('afc').shape, (3341, 98, 3))
+        assert_equal(self.reader.timeseries(format='afc').shape, (3341, 98, 3))
 
     def test_extract_array_fac(self):
-        assert_equal(self.reader.get_array('fac').shape, (98, 3341, 3))
+        assert_equal(self.reader.timeseries(format='fac').shape, (98, 3341, 3))
 
     def test_extract_array_cfa(self):
-        assert_equal(self.reader.get_array('cfa').shape, (3, 98, 3341))
+        assert_equal(self.reader.timeseries(format='cfa').shape, (3, 98, 3341))
 
     def test_extract_array_acf(self):
-        assert_equal(self.reader.get_array('acf').shape, (3341, 3, 98))
+        assert_equal(self.reader.timeseries(format='acf').shape, (3341, 3, 98))
 
     def test_extract_array_fca(self):
-        assert_equal(self.reader.get_array('fca').shape, (98, 3, 3341))
+        assert_equal(self.reader.timeseries(format='fca').shape, (98, 3, 3341))
 
     def test_extract_array_caf(self):
-        assert_equal(self.reader.get_array('caf').shape, (3, 3341, 98))
+        assert_equal(self.reader.timeseries(format='caf').shape, (3, 3341, 98))
 
     def test_timeseries_skip1(self):
         assert_equal(self.reader.timeseries(self.ref.universe.atoms).shape,
                      (3341, 98, 3))
 
     def test_timeseries_skip10(self):
-        assert_equal(self.reader.timeseries(self.ref.universe.atoms,
-                                            skip=10).shape,
-                     (3341, 10, 3))
+        assert_equal(self.reader.timeseries(skip=10).shape,
+                     (3341, 9, 3))
+        assert_equal(self.ref.universe.trajectory.timeseries(skip=10)[0,:,0],
+                     self.reader.timeseries(skip=10)[0,:,0])
+
+    def test_timeseries_view(self):
+        assert_equal(self.reader.timeseries().base is self.reader.get_array(),
+                     True)
+
+    def test_timeseries_view2(self):
+        assert_equal(
+            self.reader.timeseries(start=5,
+                                   stop=15,
+                                   skip=2,
+                                   format='fac').base is self.reader.get_array(),
+                     True)
+
+    def test_timeseries_noview2(self):
+        assert_equal(
+            self.reader.timeseries(
+                asel=self.ref.universe.
+                    select_atoms("name CA")).base is self.reader.get_array(),
+                    False)
 
     def test_repr(self):
         str_rep = str(self.reader)
-        expected = "<ArrayReader with 98 frames of 3341 atoms>"
+        expected = "<MemoryReader with 98 frames of 3341 atoms>"
         assert_equal(str_rep, expected)

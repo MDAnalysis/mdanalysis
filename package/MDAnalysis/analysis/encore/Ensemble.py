@@ -39,14 +39,14 @@ import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis
 import MDAnalysis.analysis.align
-from MDAnalysis.coordinates.array import ArrayReader
+from MDAnalysis.coordinates.memory import MemoryReader
 
 
 class Ensemble(MDAnalysis.Universe):
     """
     A wrapper class around Universe providing functionality for aligning
     all frames in a trajectory, and providing easy access to the underlying
-    array of coordinates. This class makes use of the ArrayReader
+    array of coordinates. This class makes use of the MemoryReader
     trajectory reader to store the entire trajectory in a numpy array, in
     which coordinates can be manipulated upon alignment. The frame_interval
     option makes it possible to read in a lower number of frames (e.g. with
@@ -113,7 +113,7 @@ class Ensemble(MDAnalysis.Universe):
         MDAnalysis.Universe.__init__(self, topology, trajectory,
                                      **kwargs)
 
-        if kwargs.get('format') != ArrayReader:
+        if kwargs.get('format') != MemoryReader:
 
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain
@@ -127,20 +127,20 @@ class Ensemble(MDAnalysis.Universe):
             # fall back to a slower approach
             except AttributeError:
                 coordinates = np.zeros(
-                    tuple([self.universe.trajectory.n_frames]) +
+                    tuple([self.universe.trajectory.n_frames/frame_interval]) +
                     self.atoms.coordinates().shape)
 
                 k = 0
                 for i, time_step in enumerate(self.universe.trajectory):
-                    if i % frame_interval == 0:
+                    if (i+1) % frame_interval == 0:
                         coordinates[k] = self.atoms.coordinates(time_step)
                         k += 1
                 coordinates = np.swapaxes(coordinates, 0, 1)
 
-            # Overwrite trajectory in universe with an ArrayReader
+            # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
-            self.trajectory = ArrayReader(coordinates)
+            self.trajectory = MemoryReader(coordinates)
 
     def get_coordinates(self, selection="", format='afc'):
         """
@@ -163,12 +163,12 @@ class Ensemble(MDAnalysis.Universe):
            coordinates)
 
         """
-        if selection == "":
-            # If no selection is applied, return raw array
-            return self.trajectory.get_array(format=format)
-        else:
-            return self.trajectory.timeseries(self.select_atoms(selection),
-                                              format=format)
+        # if selection == "":
+        #     # If no selection is applied, return raw array
+        #     return self.trajectory.get_array(format=format)
+        # else:
+        return self.trajectory.timeseries(self.select_atoms(selection),
+                                          format=format)
 
     def align(self, selection="name CA", reference=None, weighted=True):
         """
@@ -193,7 +193,7 @@ class Ensemble(MDAnalysis.Universe):
 
         """
 
-        coordinates = self.trajectory.get_array(format='fac')
+        coordinates = self.trajectory.timeseries(format='fac')
 
         alignment_subset_selection = self.select_atoms(selection)
         alignment_subset_coordinates = \
@@ -241,6 +241,9 @@ class Ensemble(MDAnalysis.Universe):
                                               weights=reference_masses)
         # Move reference structure to its center of mass
         reference_coordinates -= reference_center_of_mass
+
+        import logging
+        logging.info("reference_coordinates: " + str(reference_coordinates))
 
         # Apply optimal rotations for each frame
         for i in range(offset, len(coordinates)):
