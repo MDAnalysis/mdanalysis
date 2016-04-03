@@ -928,10 +928,10 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = {a.index for a in self.obj.atoms}
-
-        mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
-
+        atoms = {atom.index for atom in self.obj.atoms}
+        
+        mapping = {i:atom for i, atom in enumerate(self.obj.atoms.serials)}
+        
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
             bonds = [(bond[0].index, bond[1].index) for bond in bonds if not bond.is_guessed]
@@ -951,7 +951,7 @@ class PrimitivePDBWriter(base.Writer):
             con[a2].append(a1)
             con[a1].append(a2)
 
-        atoms = sorted([a.index for a in self.obj.atoms])
+        atoms = sorted(atoms)
 
         conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
 
@@ -1184,8 +1184,9 @@ class PrimitivePDBWriter(base.Writer):
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             
-            if i != 0 and vals['chainID'] != prev_atom['chainID'] \
-                and vals['chainID'] != " " and prev_atom['chainID'] != " ":
+            if i != 0 and (vals['chainID'] != prev_atom['chainID'] 
+              and vals['chainID'] != " " and prev_atom['chainID'] != " "):
+                
                 end_atom = {}
                 end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
                  # check for overflow here?
@@ -1202,16 +1203,16 @@ class PrimitivePDBWriter(base.Writer):
             prev_atom = copy.deepcopy(vals)
             serial_count += 1
 
-        if multiframe:
-            ter_atom = {}
-            ter_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
-             # check for overflow here?
-            ter_atom['resName'] = prev_atom['resName']
-            ter_atom['chainID'] = prev_atom['chainID']
-            ter_atom['resSeq'] = prev_atom['resSeq']
-            ter_atom['iCode'] = prev_atom['iCode']
-            self.TER(ter_atom)
+        ter_atom = {}
+        ter_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+        # check for overflow here?
+        ter_atom['resName'] = prev_atom['resName']
+        ter_atom['chainID'] = prev_atom['chainID']
+        ter_atom['resSeq'] = prev_atom['resSeq']
+        ter_atom['iCode'] = prev_atom['iCode']
+        self.TER(ter_atom)
 
+        if multiframe:
             self.ENDMDL()
         self.frames_written += 1
 
@@ -1315,7 +1316,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
         """
-        conect = ["{0:5d}".format(entry + 1) for entry in conect]
+        conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 

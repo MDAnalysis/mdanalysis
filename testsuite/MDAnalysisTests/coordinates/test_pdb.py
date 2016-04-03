@@ -286,26 +286,28 @@ class TestPrimitivePDBWriter(TestCase):
                     pdb.trajectory.n_frames,
                     err_msg = 'ENDMDL records not equal to the no of frames.')
         
+    @attr('issue')
+    def test_ter_format(self):
+        """Check whether the TER records are formatted and placed properly"""
+        u = mda.Universe(PDB_full)
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
 
-        @attr('issue')
-        def test_ter_format(self):
-            """Check whether the TER records are formatted and placed properly"""
-            u = mda.Universe(PDB_full)
-            pdb = mda.Writer(self.outfile, multiframe=True)
-            for ts in u.trajectory[:5]:
-                pdb.write(protein)
-            pdb.close()
-
-            with open(self.outfile) as f:
-                for i,line in enumerate(f):
-                    if line.startswith('TER'):
-                        assert_equal(line[11:], 
-                                    f[i-1][11:27],
-                                    err_msg = "TER Record data not same as "
-                                    "terminal atom.")
-                        if not f[i+1].startswith('ENDMDL'):
-                            assert_(f[i-1][21] != f[i+1][21],
-                                    'TER record placed in wrong position.')
+        with open(self.outfile) as f:
+            line = f.readlines()
+            for i in range(len(line)):
+                if line[i].startswith('TER'):
+                    assert_equal(line[i][16:26], 
+                                line[i-1][16:26],
+                                err_msg = "TER Record data not same as "
+                                "terminal atom.")
+                    if (not line[i+1].startswith('ENDMDL') or 
+                      not line[i+1].startswith('END')):
+                        assert_(line[i-1][21] != line[i+1][21],
+                                'TER record placed in wrong position.')
 
 
 class TestMultiPDBReader(TestCase):
