@@ -1735,6 +1735,7 @@ class TestUniverse(TestCase):
                                  **u._kwargs)
         
         assert_(u2._kwargs['fake_kwarg'] is True)
+        assert_equal(u._kwargs, u2._kwargs)
     
 class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
