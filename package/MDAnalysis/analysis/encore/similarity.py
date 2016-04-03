@@ -166,7 +166,6 @@ except ImportError:
 
 from MDAnalysis.coordinates.memory import MemoryReader
 
-from .Ensemble import Ensemble
 from .clustering.Cluster import ClustersCollection
 from .clustering.affinityprop import AffinityPropagation
 from .dimensionality_reduction.stochasticproxembed import \
@@ -304,11 +303,11 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Collection from cluster calculated by a clustering algorithm
         (e.g. Affinity propagation)
 
-    ens1 : encore.Ensemble
+    ens1 : :class:`~MDAnalysis.core.AtomGroup.Universe`
         First ensemble to be used in comparison
 
-    ens2 : encore.Ensemble
-            Second ensemble to be used in comparison
+    ens2 : :class:`~MDAnalysis.core.AtomGroup.Universe`
+        Second ensemble to be used in comparison
 
     ens1_id : int
         First ensemble id as detailed in the ClustersCollection metadata
@@ -669,9 +668,9 @@ def write_output(matrix, base_fname=None, header="", suffix="",
 
 def bootstrap_coordinates(coords, times):
     """
-    Bootstrap conformations in a encore.Ensemble. This means drawing from the
-    encore.Ensemble.coordinates numpy array with replacement "times" times
-    and returning the outcome.
+    Bootstrap conformations in a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+    This means drawing from the encore.Ensemble.coordinates numpy array with
+    replacement "times" times and returning the outcome.
 
     Parameters
     ----------
@@ -755,12 +754,12 @@ def get_similarity_matrix(ensembles,
     """
     Retrieves or calculates the similarity or conformational distance (RMSD)
     matrix. The similarity matrix is calculated between all the frames of all
-    the encore.Ensemble objects given as input. The order of the matrix
-    elements depends on the order of the coordinates of the ensembles and on
-    the order of the input ensembles themselves, therefore the order of the
-    input list is significant.
+    the :class:`~MDAnalysis.core.AtomGroup.Universe` objects given as input.
+    The order of the matrix elements depends on the order of the coordinates
+    of the ensembles and on the order of the input ensembles themselves,
+    therefore the order of the input list is significant.
 
-    The similarity matrix can either be calculated from input Ensembles or
+    The similarity matrix can either be calculated from input ensembles or
     loaded from an input numpy binary file. The signs of the elements of 
     the loaded matrix elements can be inverted using by the option
     `change_sign`.
@@ -841,11 +840,11 @@ def get_similarity_matrix(ensembles,
     ensemble_assignment = numpy.array(ensemble_assignment)
 
     # Joined ensemble
-    joined_ensemble = Ensemble(topology=ensembles[0].filename,
-                               trajectory=numpy.concatenate(
-                               tuple([e.trajectory.timeseries()
-                                      for e in ensembles]), axis=1),
-                               format=MemoryReader)
+    joined_ensemble = mda.Universe(
+        ensembles[0].filename,
+        numpy.concatenate(tuple([e.trajectory.timeseries() for e in ensembles]),
+                          axis=1),
+        format=MemoryReader)
 
     # Choose distance metric
     if similarity_mode == "minusrmsd":
@@ -950,7 +949,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Parameters
     ----------
 
-    ensemble : encore.Ensemble object
+    ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
         Input ensemble
 
     window_size : int
@@ -984,9 +983,9 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     slices_n.append(slices_n[-1] + residuals + window_size)
 
     for s,sl in enumerate(slices_n[:-1]):
-        tmp_ensembles.append(Ensemble(
-            topology=ensemble.filename,
-            trajectory=ensemble.trajectory.timeseries()
+        tmp_ensembles.append(mda.Universe(
+            ensemble.filename,
+            ensemble.trajectory.timeseries()
             [:, slices_n[s]:slices_n[s + 1], :],
             format=MemoryReader))
 
@@ -997,7 +996,7 @@ def hes(ensembles,
         selection="name CA",
         cov_estimator="shrinkage",
         mass_weighted=True,
-        align=True,
+        align=False,
         details=False,
         estimate_error=False,
         bootstrapping_samples=100,
@@ -1026,7 +1025,13 @@ def hes(ensembles,
         Whether to perform mass-weighted covariance matrix estimation
         (default is True).
 
-    details : bool, optional 
+    align : bool, optional
+        Whether to align the ensembles before calculating their similarity.
+        Note: this changes the ensembles in-place, and will thus leave your
+        ensembles in an altered state.
+        (default is False)
+
+    details : bool, optional
         Save the mean and covariance matrix for each
         ensemble in a numpy array (default is False).
 
@@ -1071,24 +1076,42 @@ def hes(ensembles,
     the measurement can therefore best be used for relative comparison between
     multiple ensembles.
 
+    When using this similarity measure, consider whether you want to align
+    the ensembles first (see example below)
 
     Example
     -------
 
-    To calculate the Harmonic Ensemble similarity, two Ensemble objects are
-    created from a topology file and two trajectories. The
+    To calculate the Harmonic Ensemble similarity, two ensembles are created
+    as Universe object from a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
 
-    >>> ens1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-    >>> ens2 = encore.Ensemble(topology=PDB_small, trajectory=DCD2)
+    >>> ens1 = Universe(PDB_small, DCD)
+    >>> ens2 = Universe(PDB_small, DCD2)
     >>> print encore.hes([ens1, ens2])
     (array([[        0.        ,  13946090.57640726],
            [ 13946090.57640726,         0.        ]]), None)
 
 
-    Here None is returned in the array as no details has been requested. 
+    Here None is returned in the array as no details has been requested.
+
+    You can use the align=True option to align the ensembles first. This will
+    align everything to the current timestep in the first ensemble. Note that
+    this changes the ens1 and ens2 objects:
+
+    >>> print encore.hes([ens1, ens2], align=True)
+    (array([[    0.        ,  6868.27953491],
+           [ 6868.27953491,     0.        ]]), None)
+    Alternatively, for greater flexibility in how the alignment should be done
+    you can call the rms_fit_trj function manually:
+
+    >>> align.rms_fit_trj(ens1, ens1, select="name CA", in_memory=True)
+    >>> align.rms_fit_trj(ens2, ens1, select="name CA", in_memory=True)
+    >>> print encore.hes([ens1, ens2])
+    (array([[    0.        ,  6935.99303895],
+           [ 6935.99303895,     0.        ]]), None)
     """
 
     # Ensure in-memory trajectories either by calling align
@@ -1334,16 +1357,16 @@ def ces(ensembles,
 
     Example
     -------
-    To calculate the Clustering Ensemble similarity, two Ensemble objects are
-    created from a topology file and two trajectories. The
+    To calculate the Clustering Ensemble similarity, two ensembles are
+    created as Universe object using a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
     Here the simplest case of just two :class:`Ensemble`s used for comparison
     are illustrated: ::
 
-        >>> ens1 = encore.Ensemble(topology = PDB_small, trajectory = DCD)
-        >>> ens2 = encore.Ensemble(topology = PDB_small, trajectory = DCD2)
+        >>> ens1 = Universe(PDB_small, DCD)
+        >>> ens2 = Universe(PDB_small, DCD2)
         >>> CES = encore.ces([ens1,ens2])
         >>> print CES
             (array([[[ 0.          0.55392484]
@@ -1352,6 +1375,9 @@ def ces(ensembles,
     Here None is returned in the array as no details has been requested.
 
     """
+
+    for ensemble in ensembles:
+        ensemble.transfer_to_memory()
 
     if not hasattr(preference_values, '__iter__'):
         preference_values = [preference_values]
@@ -1677,8 +1703,8 @@ def dres(ensembles,
     Example
     -------
 
-    To calculate the Dimensional Reduction Ensemble similarity, two Ensemble
-    objects are created from a topology file and two trajectories. The
+    To calculate the Dimensional Reduction Ensemble similarity, two ensembles
+    are created as Universe objects from a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
@@ -1686,8 +1712,8 @@ def dres(ensembles,
     illustrated: ::
 
 
-        >>> ens1 = encore.Ensemble(topology=PDB_small,trajectory=DCD)
-        >>> ens2 = encore.Ensemble(topology=PDB_small,trajectory=DCD2)
+        >>> ens1 = Universe(PDB_small,DCD)
+        >>> ens2 = Universe(PDB_small,DCD2)
         >>> DRES = encore.dres([ens1,ens2])
         >>> print DRES
            (array( [[[ 0.          0.67383396]
@@ -1696,6 +1722,9 @@ def dres(ensembles,
     Here None is returned in the array as no details has been requested.
 
     """
+
+    for ensemble in ensembles:
+        ensemble.transfer_to_memory()
 
     if not hasattr(dimensions, '__iter__'):
         dimensions = [dimensions]
@@ -1913,7 +1942,7 @@ def ces_convergence(original_ensemble,
     Parameters
     ----------
 
-    original_ensemble : encore.Ensemble object
+    original_ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
         ensemble containing the trajectory whose convergence has to estimated
 
     window_size : int
@@ -2057,7 +2086,7 @@ def dres_convergence(original_ensemble,
     Parameters
     ----------
 
-    original_ensemble : encore.Ensemble object
+    original_ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
         ensemble containing the trajectory whose convergence has to estimated
 
     window_size : int

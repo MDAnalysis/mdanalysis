@@ -382,7 +382,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
 def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
                 mass_weighted=False, tol_mass=0.1, strict=False, force=True, quiet=False,
-                in_memory=True, **kwargs):
+                in_memory=False, **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
     Both reference *ref* and trajectory *traj* must be
@@ -435,9 +435,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          - ``True``: suppress progress and logging for levels INFO and below.
          - ``False``: show all status messages and do not change the the logging
            level (default)
-
-         .. Note:: If
-
+      *in_memory*
+         Default: ``False``
+         - ``True``: Switch to an in-memory trajectory so that alignment can
+           be done in-place.
 
       *kwargs*
          All other keyword arguments are passed on the trajectory
@@ -542,10 +543,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         ts.positions[:] = ts.positions * R  # R acts to the left & is broadcasted N times.
         ts.positions += ref_com
 
-
         if writer is not None:
             writer.write(traj.atoms)  # write whole input trajectory system
         percentage.echo(ts.frame)
+
     if writer is not None:
         logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                     frames.n_frames, filename)

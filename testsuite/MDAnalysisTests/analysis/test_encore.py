@@ -23,7 +23,7 @@ import numpy
 
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
 
-from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small, GRO, XTC
+from MDAnalysisTests.datafiles import DCD, DCD2, PDB_small
 from MDAnalysisTests import parser_not_found, module_not_found
 
 import MDAnalysis.analysis.rms as rms
@@ -34,60 +34,11 @@ class FakePBarCounter(object):
     def __init__(self):
         self.value = 0
 
-class TestEnsemble(TestCase):
-
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-               'DCD parser not available. Are you using python 3?')
-    def test_from_reader_w_timeseries():
-        ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        assert_equal(len(ensemble.atoms.coordinates()), 3341,
-                     err_msg="Unexpected number of atoms in trajectory")
-
-    @staticmethod
-    def test_from_reader_wo_timeseries():
-        ensemble = encore.Ensemble(topology=GRO, trajectory=XTC)
-        assert_equal(len(ensemble.atoms.coordinates()), 47681,
-                     err_msg="Unexpected number of atoms in trajectory")
-
-    @staticmethod
-    def test_trajectories_list():
-        ensemble = encore.Ensemble(topology=GRO, trajectory=[XTC])
-        assert_equal(len(ensemble.atoms.coordinates()), 47681,
-                     err_msg="Unexpected number of atoms in trajectory")
-
-    @staticmethod
-    def test_align():
-        ensemble = encore.Ensemble(topology=GRO, trajectory=[XTC])
-        import logging
-        logging.info(ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0])
-        ensemble.align()
-        logging.info(ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0])
-        universe = mda.Universe(GRO, XTC)
-        mda.analysis.align.rms_fit_trj(universe, universe,
-                                       select="name CA",
-                                       mass_weighted=True,
-                                       in_memory=True)
-        # assert_equal(universe.trajectory.timeseries(universe.atoms)[0,1,0],
-        #              ensemble.trajectory.timeseries(ensemble.atoms)[0,1,0],
-        #              err_msg="Unexpected number of atoms in trajectory")
-        rmsfs1 = rms.RMSF(ensemble.select_atoms('name *'))
-        rmsfs1.run()
-
-        rmsfs2 = rms.RMSF(universe.select_atoms('name *'))
-        rmsfs2.run()
-
-        assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
-                     err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
-                             "than ensemble aligned on only CAs.")
-
 
 class TestEncore(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        # self.ens1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        # self.ens2 = encore.Ensemble(topology=PDB_small, trajectory=DCD2)
         self.ens1 = mda.Universe(PDB_small, DCD)
         self.ens2 = mda.Universe(PDB_small, DCD2)
 
@@ -425,8 +376,9 @@ class TestEncore(TestCase):
     def test_ensemble_frame_filtering(self):
         total_frames = len(self.ens1.trajectory.timeseries(format='fac'))
         interval = 10
-        filtered_ensemble = encore.Ensemble(topology=PDB_small, trajectory=DCD,
-                                            frame_interval=interval)
+        filtered_ensemble = mda.Universe(PDB_small, DCD,
+                                         in_memory=True,
+                                         in_memory_frame_interval=interval)
         filtered_frames = len(filtered_ensemble.trajectory.timeseries(format='fac'))
         assert_equal(filtered_frames, total_frames//interval,
                      err_msg="Incorrect frame number in Ensemble filtering: {0:f} out of {1:f}"
@@ -441,10 +393,14 @@ class TestEncore(TestCase):
 
     @staticmethod
     def test_ensemble_superimposition():
-        aligned_ensemble1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        aligned_ensemble1.align(selection="name CA")
-        aligned_ensemble2 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        aligned_ensemble2.align(selection="name *")
+        aligned_ensemble1 = mda.Universe(PDB_small, DCD)
+        align.rms_fit_trj(aligned_ensemble1, aligned_ensemble1,
+                          select="name CA",
+                          in_memory=True)
+        aligned_ensemble2 = mda.Universe(PDB_small, DCD)
+        align.rms_fit_trj(aligned_ensemble2, aligned_ensemble2,
+                          select="name *",
+                          in_memory=True)
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
@@ -458,18 +414,30 @@ class TestEncore(TestCase):
 
     @staticmethod
     def test_ensemble_superimposition_to_reference_non_weighted():
-        aligned_ensemble1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        aligned_ensemble1.align(selection="name CA", weighted=False,
-                                reference=mda.Universe(PDB_small))
-        aligned_ensemble2 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-        aligned_ensemble2.align(selection="name *", weighted=False,
-                                reference=mda.Universe(PDB_small))
+        ensemble0 = mda.Universe(PDB_small, DCD)
+        filename = align.rms_fit_trj(ensemble0, ensemble0,
+                                     select="name CA", mass_weighted=False)
+        aligned_ensemble0 = mda.Universe(PDB_small, filename)
+        aligned_ensemble1 = mda.Universe(PDB_small, DCD)
+        align.rms_fit_trj(aligned_ensemble1, aligned_ensemble1,
+                          select="name CA", mass_weighted=False,
+                          in_memory=True)
+        aligned_ensemble2 = mda.Universe(PDB_small, DCD)
+        align.rms_fit_trj(aligned_ensemble2, aligned_ensemble2,
+                          select="name *", mass_weighted=False,
+                          in_memory=True)
+
+        rmsfs0 = rms.RMSF(aligned_ensemble0.select_atoms('name *'))
+        rmsfs0.run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
+
+        import logging
+        logging.info("{0} {1} {2}".format(sum(rmsfs1.rmsf), sum(rmsfs2.rmsf), sum(rmsfs0.rmsf)))
 
         assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
@@ -491,6 +459,13 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
+    @dec.slow
+    def test_hes_align(self):
+        results, details = encore.hes([self.ens1, self.ens2], align=True)
+        result_value = results[0,1]
+        expected_value = 6868.28
+        assert_almost_equal(result_value, expected_value, decimal=2,
+                            err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
     @dec.slow
     def test_hes_ml_cov(self):
         results, details = encore.hes([self.ens1, self.ens2], cov_estimator="ml")

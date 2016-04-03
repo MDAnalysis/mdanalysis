@@ -212,8 +212,12 @@ class MemoryReader(base.ProtoReader):
         if ts is None:
             ts = self.ts
         ts.frame += 1
-        ts.positions = self.coordinate_array.take(self.ts.frame,
-                                                  axis=self.format.find('f'))
+        f_index = self.format.find('f')
+        basic_slice = ([slice(None)]*(f_index) +
+                       [self.ts.frame] +
+                       [slice(None)]*(2-f_index))
+        ts.positions = self.coordinate_array[basic_slice]
+
         ts.time = self.ts.frame
         return ts
 
