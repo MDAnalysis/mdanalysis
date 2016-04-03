@@ -3966,6 +3966,10 @@ class Universe(object):
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
 
+        # hold on to copy of kwargs; used by external libraries that
+        # reinitialize universes
+        self._kwargs = copy.deepcopy(kwargs)
+
         # managed attribute holding Reader
         self._trajectory = None
 
