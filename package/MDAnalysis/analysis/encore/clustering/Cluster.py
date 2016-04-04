@@ -176,7 +176,7 @@ class ClustersCollection(object):
             this_array = np.where(elements_array == c)
             if metadata:
                 for k, v in six.iteritems(metadata):
-                    this_metadata[k] = np.array(v)[this_array]
+                    this_metadata[k] = np.asarray(v)[this_array]
             self.clusters.append(
                 Cluster(elem_list=this_array[0], idn=idn, centroid=c,
                         metadata=this_metadata))
