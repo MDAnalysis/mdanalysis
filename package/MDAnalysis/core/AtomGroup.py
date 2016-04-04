@@ -4750,16 +4750,7 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                coordinates = np.zeros(
-                    tuple([self.universe.trajectory.n_frames/frame_interval]) +
-                    self.atoms.coordinates().shape)
-
-                k = 0
-                for i, time_step in enumerate(self.universe.trajectory):
-                    if (i+1) % frame_interval == 0:
-                        coordinates[k] = self.atoms.coordinates(time_step)
-                        k += 1
-                coordinates = np.swapaxes(coordinates, 0, 1)
+                coordinates = self.universe.trajectory[frame_interval-1::frame_interval]
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
