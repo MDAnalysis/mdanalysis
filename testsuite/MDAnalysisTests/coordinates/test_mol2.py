@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -15,9 +15,10 @@
 #
 from six.moves import range
 
-import tempfile
+import tempdir
 import os
-from numpy.testing import *
+from numpy.testing import (assert_equal,assert_raises, assert_array_equal,
+                           assert_array_almost_equal, TestCase)     
 
 from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
 from MDAnalysis import Universe
@@ -26,14 +27,11 @@ import MDAnalysis as mda
 
 class TestMol2(TestCase):
     def setUp(self):
-        fd, self.outfile = tempfile.mkstemp(suffix=".mol2")
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.mol2')
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_read(self):
         u = Universe(mol2_molecules)

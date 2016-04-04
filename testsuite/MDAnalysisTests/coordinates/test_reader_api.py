@@ -16,7 +16,7 @@
 
 from MDAnalysis.coordinates.base import Timestep, SingleFrameReader, Reader
 
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_raises
 import numpy as np
 
 """
@@ -172,6 +172,8 @@ class TestMultiFrameReader(_Multi):
 
     def _check_getitem(self, sl):
         res = [ts.frame for ts in self.reader[sl]]
+
+        sl = np.asarray(sl)
         ref = self.reference[sl]
 
         assert_equal(res, ref)
@@ -196,6 +198,18 @@ class TestMultiFrameReader(_Multi):
         def sl():
             return list(self.reader[np.array([1.2, 3.4, 5.6])])
         assert_raises(TypeError, sl)
+
+    def test_bool_slice(self):
+        t = True
+        f = False
+        for sl in (
+                [t, f, t, f, t, f, t, f, t, f],
+                [t, t, f, f, t, t, f, t, f, t],
+                [t, t, t, t, t, t, t, t, t, t],
+                [f, f, f, f, f, f, f, f, f, f],
+        ):
+            yield self._check_getitem, sl
+            yield self._check_getitem, np.array(sl, dtype=np.bool)
 
 
 class _Single(_TestReader):

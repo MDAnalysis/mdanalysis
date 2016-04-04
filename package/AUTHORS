@@ -49,6 +49,7 @@ Chronological list of authors
   - Robert McGibbon
   - Richard J. Gowers
   - Alejandro Bernardin
+  - Lennard van der Feltz
 2014
   - Matthieu Chavent
   - Joe Jordan
@@ -66,6 +67,10 @@ Chronological list of authors
   - Hai Nguyen
 2016
   - Balasubramanian
+  - Mattia F. Palermo
+  - Utkarsh Saxena
+  - Abhinav Gupta
+  - John Detlefs
 
 External code
 -------------
@@ -73,14 +78,22 @@ External code
 External code (under a GPL-compatible licence) was obtained from
 various sources. The authors (as far as we know them) are listed here.
 
-libxdrfile
-  - David van der Spoel <spoel@gromacs.org>
-  - Erik Lindahl <lindahl@gromacs.org>
-  As of MDAnalysis version 0.8.0 libxdrfile is no longer used, having
-  been replaced by libxdrfile2, a GPLv2 derivative of libxdrfile.
+xdrfile
+  - David van der Spoel <david.vanderspoel@icm.uu.se>
+  - Erik Lindahl <erik.lindahl@scilifelab.se>
+  - Frans van Hoesel <f.h.j.van.hoesel@rug.nl> (not listed as an xdrfile
+    author, but the original author of the XTC coordinate compression code)
 
-numpy.i
-  - Bill Spotz
+  The Gromacs libxdrfile (LGPL-licensed) was used before MDAnalysis
+   version 0.8.0.
+  Between MDAnalysis versions 0.8.0 and 0.13.0 libxdrfile was replaced by
+   libxdrfile2, our GPLv2 enhanced derivative of libxdrfile.
+  Since version 0.14.0 xdr enhanecments were rebased onto Gromacs'
+   xdrfile 1.1.4 code (now BSD-licensed). Our contributions remain GPLv2
+   and were split into files xtc_seek.c, trr_seek.c, xtc_seek.h, and
+   trr_seek.h, for clarity (xdrfile 1.1.4 code is distributed with minor
+   modifications). Also for clarity we now name the resulting enhanced
+   xdr-reading library, complete with cython bindings, 'libmdaxdr'.
 
 KDTree
   - Thomas Hamelryck <thamelry@binf.ku.dk>

@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 import six
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_almost_equal, TestCase
 
 from MDAnalysis import units
 from MDAnalysis.core import flags

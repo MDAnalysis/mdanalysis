@@ -4,7 +4,9 @@ branches:
     - master
     - develop
 
-language: python
+os:
+  - linux
+  - osx
 env:
   global:
     - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
@@ -13,40 +15,31 @@ env:
     - GIT_CI_USER: TravisCI
     - GIT_CI_EMAIL: TravisCI@mdanalysis.org
     - MDA_DOCDIR: package/doc/html
+  matrix:
+    - SETUP=minimal PYTHON_VERSION=2.7
+    - SETUP=full PYTHON_VERSION=2.7
+    - SETUP=minimal PYTHON_VERSION=3.3
+    - SETUP=full PYTHON_VERSION=3.3
 matrix:
   allow_failures:
-     - python: "3.3"
-       env: SETUP=full CYTHONIZE=true
-  include:
-     - python: "2.7"
-       env: SETUP=minimal CYTHONIZE=false
-     - python: "2.7"
-       env: SETUP=full CYTHONIZE=true
-     - python: "3.3"
-       env: SETUP=full CYTHONIZE=true
-# command to install dependencies
-addons:
-  apt:
-    packages:
-      - gfortran
-      - libgfortran3
-      - libhdf5-serial-dev
-      - libnetcdf-dev
-      - liblapack-dev
-      - libatlas-dev
+    - env: SETUP=minimal PYTHON_VERSION=3.3
+    - env: SETUP=full PYTHON_VERSION=3.3
+
 before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
   - chmod +x miniconda.sh
-  - ./miniconda.sh -b -p /home/travis/miniconda
-  - export PATH=/home/travis/miniconda/bin:$PATH
+  - ./miniconda.sh -b -p $(pwd)/miniconda
+  - export PATH=$(pwd)/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=2.7 numpy=1.9.2 scipy=0.16.0 nose=1.3.7 sphinx=1.3; fi
-  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=2.7 numpy=1.9.2 nose=1.3.7 sphinx=1.3; fi
+  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy scipy nose=1.3.7 sphinx=1.3; fi
+  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy nose=1.3.7 sphinx=1.3; fi
   - source activate pyenv
-  - if [[ $SETUP == 'full' ]]; then conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4; fi
-  - if [[ $SETUP == 'minimal' ]]; then conda install --yes python=$TRAVIS_PYTHON_VERSION biopython networkx; fi
-  - if [[ $CYTHONIZE == 'true' ]]; then find . -name '*.pyx' -exec touch '{}' \; ;fi
+  - if [[ $SETUP == 'full' ]]; then conda install --yes python=$PYTHON_VERSION cython biopython matplotlib networkx netcdf4; fi
+  - if [[ $SETUP == 'minimal' ]]; then conda install --yes python=$PYTHON_VERSION cython biopython networkx; fi
+# ensure that cython files are rebuilt
+  - find . -name '*.pyx' -exec touch '{}' \;
   - pip install -v package/
   - pip install testsuite/
   - pip install coveralls tempdir

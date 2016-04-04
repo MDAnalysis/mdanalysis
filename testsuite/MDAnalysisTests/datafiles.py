@@ -45,6 +45,7 @@ __all__ = [
     "PDB_conect",
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
+    "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
@@ -85,6 +86,7 @@ __all__ = [
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
@@ -108,9 +110,13 @@ __all__ = [
     "COORDINATES_TRR",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
+    "GRO_empty_atom", "GRO_missing_atomname" # for testing GROParser exception raise
 ]
 
 from pkg_resources import resource_filename
+
+GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
+GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
@@ -139,6 +145,7 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
+ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
@@ -259,6 +266,10 @@ capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
+
+contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro.bz2")
+contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro.bz2")
+contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
 
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")

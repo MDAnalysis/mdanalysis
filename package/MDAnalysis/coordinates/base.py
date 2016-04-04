@@ -1171,6 +1171,12 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             frame = apply_limits(frame)
             return self._read_frame(frame)
         elif isinstance(frame, (list, np.ndarray)):
+            if isinstance(frame[0], (bool, np.bool_)):
+                # Avoid having list of bools
+                frame = np.asarray(frame, dtype=np.bool)
+                # Convert bool array to int array
+                frame = np.arange(len(self))[frame]
+
             def listiter(frames):
                 for f in frames:
                     if not isinstance(f, (int, np.integer)):

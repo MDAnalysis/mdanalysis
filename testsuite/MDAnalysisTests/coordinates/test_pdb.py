@@ -1,12 +1,14 @@
+from six import StringIO
+from six.moves import zip
+
 import MDAnalysis as mda
 import numpy as np
 import os
-from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
                            assert_array_almost_equal,
-                           assert_almost_equal, assert_raises)
+                           assert_almost_equal, assert_raises, assert_)
 import tempdir
 from unittest import TestCase
 
@@ -15,8 +17,7 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial,
-                                       NUCL)
+                                       INC_PDB, PDB_xlserial, ALIGN)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
@@ -241,6 +242,28 @@ class TestPrimitivePDBWriter(TestCase):
         u.atoms[1000].pos[1] = 9999.9996
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
+
+    @attr('issue')
+    def test_check_header_title_multiframe(self):
+        """Check whether HEADER and TITLE are written just once in a multi-
+        frame PDB file (Issue 741)"""
+        u = mda.Universe(PSF,DCD, permissive=True) 
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            got_header = 0
+            got_title = 0
+            for line in f:
+                if line.startswith('HEADER'):
+                    got_header += 1
+                    assert_(got_header <= 1, "There should be only one HEADER.")
+                elif line.startswith('TITLE'):
+                    got_title += 1
+                    assert_(got_title <= 1, "There should be only one TITLE.")
 
 
 class TestMultiPDBReader(TestCase):
@@ -599,7 +622,7 @@ class TestIncompletePDB(object):
         del self.u
 
     def test_natoms(self):
-        assert len(self.u.atoms) == 3
+        assert_equal(len(self.u.atoms), 3)
 
     def test_coords(self):
         assert_array_almost_equal(self.u.atoms.positions,
@@ -618,16 +641,16 @@ class TestIncompletePDB(object):
                                            dtype=np.float32))
 
     def test_names(self):
-        assert all(self.u.atoms.names == 'CA')
+        assert_(all(self.u.atoms.names == 'CA'))
 
     def test_residues(self):
-        assert len(self.u.residues) == 3
+        assert_equal(len(self.u.residues), 3)
 
     def test_resnames(self):
-        assert len(self.u.atoms.resnames) == 3
-        assert 'VAL' in self.u.atoms.resnames
-        assert 'LYS' in self.u.atoms.resnames
-        assert 'PHE' in self.u.atoms.resnames
+        assert_equal(len(self.u.atoms.resnames), 3)
+        assert_('VAL' in self.u.atoms.resnames)
+        assert_('LYS' in self.u.atoms.resnames)
+        assert_('PHE' in self.u.atoms.resnames)
 
     def test_reading_trajectory(self):
         for ts in self.u.trajectory:
@@ -723,21 +746,44 @@ class TestPDBWriterOccupancies(object):
 
         assert_(all(u2.atoms.occupancies == 0.12))
 
-def test_writer_alignments():
-    u = mda.Universe(NUCL)
 
-    tmpdir = tempdir.TempDir()
-    outfile = tmpdir.name + '/nucl.pdb'
+class TestWriterAlignments(object):
+    def __init__(self):
+        u = mda.Universe(ALIGN)
+        self.tmpdir = tempdir.TempDir()
+        outfile = self.tmpdir.name + '/nucl.pdb'
+        u.atoms.write(outfile)
+        self.writtenstuff = open(outfile, 'r').readlines()
 
-    u.atoms.write(outfile)
+    def test_atomname_alignment(self):
+        # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+        refs = ("ATOM      1  H5T",
+                "ATOM      2  CA ",
+                "ATOM      3 CA  ",
+                "ATOM      4 H5''",)
+        for written, reference in zip(self.writtenstuff[4:], refs):
+            assert_equal(written[:16], reference)
 
-    writtenstuff = open(outfile, 'r').readlines()
+    def test_atomtype_alignment(self):
+        result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
+                       "  1.00  0.00      RNAA H\n")
+        assert_equal(self.writtenstuff[4], result_line)
 
-    # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
-    assert_(writtenstuff[4].startswith(
-        "ATOM      1  H5T GUA"))
-    assert_(writtenstuff[8].startswith(
-        "ATOM      5 H5'' GUA"))
-
-    del tmpdir
-    del outfile
+def test_deduce_PDB_atom_name():
+    # The Pair named tuple is used to mock atoms as we only need them to have a
+    # ``resname`` and a ``name`` attribute.
+    Pair = mda.coordinates.PDB.Pair
+    def _test_PDB_atom_name(atom, ref_atom_name):
+        dummy_file = StringIO()
+        name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
+                ._deduce_PDB_atom_name(atom))
+        assert_equal(name, ref_atom_name)
+    test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
+                  (Pair('GLU', 'OE1'), ' OE1'),
+                  (Pair('MSE', 'SE'), 'SE  '),  # Selenium like in 4D3L
+                  (Pair('CA', 'CA'), 'CA  '),   # Calcium like in 4D3L
+                  (Pair('HDD', 'FE'), 'FE  '),  # Iron from a heme like in 1GGE
+                  (Pair('PLC', 'P'), ' P  '),  # Lipid phosphorus (1EIN)
+                  )
+    for atom, ref_name in test_cases:
+        yield _test_PDB_atom_name, atom, ref_name

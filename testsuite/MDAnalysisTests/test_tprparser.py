@@ -18,7 +18,7 @@ from MDAnalysis.tests.datafiles import TPR, \
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double, \
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded
 
-from numpy.testing import TestCase, dec
+from numpy.testing import TestCase, dec, assert_
 from test_topology import _TestTopology
 import MDAnalysis.topology.TPRParser
 
@@ -246,8 +246,8 @@ def _test_is_in_topology(name, elements, topology_section, topology_path):
     """
     universe = MDAnalysis.Universe(topology_path)
     for element in elements:
-        assert element in universe._topology[topology_section], \
-            'Interaction type "{0}" not found'.format(name)
+        assert_(element in universe._topology[topology_section],\
+                'Interaction type "{0}" not found'.format(name))
 
 
 def test_all_bonds():

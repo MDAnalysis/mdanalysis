@@ -139,7 +139,14 @@ __all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
 import logging
 import warnings
 
+logger = logging.getLogger("MDAnalysis.__init__")
+
 from .version import __version__
+try:
+    from .authors import __authors__
+except ImportError:
+    logger.info('Could not find authors.py, __authors__ will be empty.')
+    __authors__ = []
 
 # custom exceptions and warnings
 from .exceptions import (

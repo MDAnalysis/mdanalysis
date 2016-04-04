@@ -51,11 +51,11 @@ cdef extern from 'include/xdrfile_trr.h':
 
 
 cdef extern from 'include/xtc_seek.h':
-    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
+    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
 
 
 cdef extern from 'include/trr_seek.h':
-    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
+    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
 
 
 cdef enum:
@@ -150,7 +150,7 @@ cdef class _XDRFile:
             res = xdrfile_close(self.xfp)
             self.is_open = False
             if res != EOK:
-                raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
+                raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(
                     self.fname, error_message[res]))
         # forget old offsets in case we open a different file with the same instance.
         self._has_offsets = False
@@ -195,10 +195,10 @@ cdef class _XDRFile:
             if not exists(self.fname):
                 raise IOError('File does not exist: {}'.format(self.fname))
 
-            return_code, self.n_atoms = self._calc_natoms(fname);
+            return_code, self.n_atoms = self._calc_natoms(fname)
 
             if return_code != EOK:
-                raise IOError('XDRLIB read error: {}'.format(
+                raise IOError('XDR read error = {}'.format(
                     error_message[return_code]))
             if self.n_atoms <= 0:
                 raise IOError('Couldn\'t read number of atoms: {}'.format(
@@ -206,7 +206,7 @@ cdef class _XDRFile:
 
         self.xfp = xdrfile_open(fname, opening_mode)
         if self.xfp is NULL:
-            raise IOError('error opening xtf file: {}'.format(self.fname))
+            raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))
         self.is_open = True
 
     def __enter__(self):
@@ -362,7 +362,7 @@ cdef class TRRFile(_XDRFile):
 
     Examples
     --------
-    >>> from MDAnalysis.lib.formats.xdrlib import TRRFile
+    >>> from MDAnalysis.lib.formats.libmdaxdr import TRRFile
     >>> with TRRFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
@@ -381,10 +381,10 @@ cdef class TRRFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
-            raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
-                error_message[ok]))
+            raise RuntimeError("TRR couldn't calculate offsets. "
+                               "XDR error = {}".format(error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
@@ -399,7 +399,7 @@ cdef class TRRFile(_XDRFile):
 
         Returns
         -------
-        frame : xdrlib.TRRFrame
+        frame : libmdaxdr.TRRFrame
             namedtuple with frame information
 
         See Also
@@ -444,7 +444,7 @@ cdef class TRRFile(_XDRFile):
         # produced by different codes (Gromacs, ...).
         if return_code != EOK and return_code != EENDOFFILE \
            and return_code != EINTEGER:
-            raise RuntimeError('TRR Read Error occured: {}'.format(
+            raise IOError('TRR read error = {}'.format(
                 error_message[return_code]))
 
         # In a trr the integer error seems to indicate that the file is ending.
@@ -538,10 +538,6 @@ cdef class TRRFile(_XDRFile):
                 raise ValueError('Previous frames forces contained {} atoms. You '
                                  'are trying to write {} atoms.'.format(
                                      self.n_atoms, forces.shape[0]))
-            if not np.allclose(self.box, box, rtol=0, atol=1e-2):
-                raise ValueError('Previous frames contained {} box. You '
-                                 'are trying to write {} box.'.format(
-                                     self.box, box))
 
         return_code = write_trr(self.xfp, self.n_atoms, step, time,
                                        _lambda, <matrix> box_ptr,
@@ -549,7 +545,7 @@ cdef class TRRFile(_XDRFile):
                                        <rvec*> velocity_ptr,
                                        <rvec*> forces_ptr)
         if return_code != EOK:
-            raise RuntimeError('TRR write error: {}'.format(
+            raise IOError('TRR write error = {}'.format(
                 error_message[return_code]))
 
         self.current_frame += 1
@@ -574,7 +570,7 @@ cdef class XTCFile(_XDRFile):
 
     Examples
     --------
-    >>> from MDAnalysis.lib.formats.xdrlib import XTCFile
+    >>> from MDAnalysis.lib.formats.libmdaxdr import XTCFile
     >>> with XTCFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
@@ -594,10 +590,10 @@ cdef class XTCFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
-            raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
-                error_message[ok]))
+            raise RuntimeError("XTC couldn't calculate offsets. "
+                               "XDR error = {}".format(error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
@@ -612,7 +608,7 @@ cdef class XTCFile(_XDRFile):
 
         Returns
         -------
-        frame : xdrlib.XTCFrame
+        frame : libmdaxdr.XTCFrame
             namedtuple with frame information
 
         See Also
@@ -644,7 +640,7 @@ cdef class XTCFile(_XDRFile):
                                       &time, <matrix>box.data,
                                       <rvec*>xyz.data, <float*> &prec)
         if return_code != EOK and return_code != EENDOFFILE:
-            raise RuntimeError('XTC Read Error occured: {}'.format(
+            raise IOError('XTC read error = {}'.format(
                 error_message[return_code]))
 
         if return_code == EENDOFFILE:
@@ -702,10 +698,6 @@ cdef class XTCFile(_XDRFile):
                 raise ValueError('Previous frames contained {} atoms. You '
                                  'are trying to write {} atoms.'.format(
                                      self.n_atoms, xyz.shape[1]))
-            if not np.allclose(self.box, box, rtol=0, atol=1e-2):
-                raise ValueError('Previous frames contained {} box. You '
-                                 'are trying to write {} box.'.format(
-                                     self.box, box))
             if self.precision != precision:
                 raise ValueError('Previous frames used precision of {}. You '
                                  'are trying to use {}'.format(
@@ -715,7 +707,7 @@ cdef class XTCFile(_XDRFile):
                                        <matrix>&box_view[0, 0],
                                        <rvec*>&xyz_view[0, 0], precision)
         if return_code != EOK:
-            raise RuntimeError('XTC write error: {}'.format(
+            raise IOError('XTC write error = {}'.format(
                 error_message[return_code]))
 
         self.current_frame += 1

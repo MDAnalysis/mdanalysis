@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -19,7 +19,7 @@ from six.moves import StringIO
 
 import sys
 import os
-import tempfile
+import tempdir
 import logging
 
 from numpy.testing import TestCase, assert_
@@ -34,13 +34,11 @@ class TestLogging(TestCase):
     name = "MDAnalysis"
 
     def setUp(self):
-        fd, self.logfile = tempfile.mkstemp(suffix=".log")
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.log')
 
     def tearDown(self):
-        try:
-            os.unlink(self.logfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_start_stop_logging(self):
         try:

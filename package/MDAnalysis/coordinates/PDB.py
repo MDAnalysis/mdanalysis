@@ -218,6 +218,7 @@ import errno
 import textwrap
 import warnings
 import logging
+import collections
 import numpy as np
 
 from ..core import flags
@@ -229,6 +230,9 @@ from ..exceptions import NoDataError
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
+
+# Pairs of residue name / atom name in use to deduce PDB formatted atom names
+Pair = collections.namedtuple('Atom', 'resname name')
 
 
 class PDBReader(base.SingleFrameReader):
@@ -651,7 +655,7 @@ class PrimitivePDBWriter(base.Writer):
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
 
-    The :class:`PrimitivePDBWriter` can be used to either a dump a coordinate
+    The :class:`PrimitivePDBWriter` can be used to either dump a coordinate
     set to a PDB file (operating as a "single frame writer", selected with the
     constructor keyword *multiframe* = ``False``, the default) or by writing a
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
@@ -672,33 +676,23 @@ class PrimitivePDBWriter(base.Writer):
        Initial support for multi-frame PDB files.
 
     .. versionchanged:: 0.7.6
-       The *multiframe* keyword was added to select the writing mode. The writing
-       of bond information (CONECT_ records) is now disabled by default but can be
-       enabled with the *bonds* keyword.
+       The *multiframe* keyword was added to select the writing mode. The
+       writing of bond information (CONECT_ records) is now disabled by default
+       but can be enabled with the *bonds* keyword.
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
-    """
-    #          1         2         3         4         5         6         7         8
-    # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-    # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
-    # ATOM  %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
-    #                 %1s  %1s                                                      %2d
-    #            =        =      ===                                    ==========
-    # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
-    # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
-    # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
 
-    # Strict PDB format:
-    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(
-    # x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
-    # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
+    .. versionchanged:: 0.14.0
+       PDB doesn't save charge information
+
+    """
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:2s}{charge:.2f}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
         'REMARK': "REMARK     {0}\n",
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
@@ -719,6 +713,34 @@ class PrimitivePDBWriter(base.Writer):
     # :attr:`remark_max_length` characters.
     remark_max_length = 66
     multiframe = False
+
+    # These attributes are used to deduce how to format the atom name.
+    ions = ('FE', 'AS', 'ZN', 'MG', 'MN', 'CO', 'BR',
+            'CU', 'TA', 'MO', 'AL', 'BE', 'SE', 'PT',
+            'EU', 'NI', 'IR', 'RH', 'AU', 'GD', 'RU')
+    # Mercurial can be confused for hydrogen gamma. Yet, mercurial is
+    # rather rare in the PDB. Here are all the residues that contain
+    # mercurial.
+    special_hg = ('CMH', 'EMC', 'MBO', 'MMC', 'HGB', 'BE7', 'PMB')
+    # Chloride can be confused for a carbon. Here are the residues that
+    # contain chloride.
+    special_cl = ('0QE', 'CPT', 'DCE', 'EAA', 'IMN', 'OCZ', 'OMY', 'OMZ',
+                  'UN9', '1N1', '2T8', '393', '3MY', 'BMU', 'CLM', 'CP6',
+                  'DB8', 'DIF', 'EFZ', 'LUR', 'RDC', 'UCL', 'XMM', 'HLT',
+                  'IRE', 'LCP', 'PCI', 'VGH')
+    # In these pairs, the atom name is aligned on the first column
+    # (column 13).
+    include_pairs = (Pair('OEC', 'CA1'),
+                     Pair('PLL', 'PD'),
+                     Pair('OEX', 'CA1'))
+    # In these pairs, the atom name is aligned on the second column
+    # (column 14), but other rules would align them on the first column.
+    exclude_pairs = (Pair('C14', 'C14'), Pair('C15', 'C15'),
+                     Pair('F9F', 'F9F'), Pair('OAN', 'OAN'),
+                     Pair('BLM', 'NI'), Pair('BZG', 'CO'),
+                     Pair('BZG', 'NI'), Pair('VNL', 'CO1'),
+                     Pair('VNL', 'CO2'), Pair('PF5', 'FE1'),
+                     Pair('PF5', 'FE2'), Pair('UNL', 'UNL'))
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PrimitivePDBWriter",
@@ -786,6 +808,7 @@ class PrimitivePDBWriter(base.Writer):
 
         self.pdbfile = util.anyopen(self.filename, 'wt')  # open file on init
         self.has_END = False
+        self.first_frame_done = False
 
     def close(self):
         """Close PDB file and write END record"""
@@ -810,10 +833,15 @@ class PrimitivePDBWriter(base.Writer):
         if not self.obj or not hasattr(self.obj, 'universe'):
             self._write_pdb_title(self)
             return
+        if self.first_frame_done == True:
+            return        
 
+        self.first_frame_done = True
         u = self.obj.universe
         self.HEADER(u.trajectory)
+        
         self._write_pdb_title()
+
         self.COMPND(u.trajectory)
         try:
             # currently inconsistent: DCDReader gives a string,
@@ -1074,6 +1102,30 @@ class PrimitivePDBWriter(base.Writer):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
+    def _deduce_PDB_atom_name(self, atom):
+        """Deduce how the atom name should be aligned.
+
+        Atom name format can be deduced from the atom type, yet atom type is
+        not always available. This function uses the atom name and residue name
+        to deduce how the atom name should be formatted. The rules in use got
+        inferred from an analysis of the PDB. See gist at
+        <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
+        details.
+        """
+        if len(atom.name) >= 4:
+            return atom.name[:4]
+        elif len(atom.name) == 1:
+            return ' {}  '.format(atom.name)
+        elif ((atom.resname == atom.name
+               or atom.name[:2] in self.ions
+               or atom.name == 'UNK'
+               or (atom.resname in self.special_hg and atom.name[:2] == 'HG')
+               or (atom.resname in self.special_cl and atom.name[:2] == 'CL')
+               or Pair(atom.resname, atom.name) in self.include_pairs)
+              and Pair(atom.resname, atom.name) not in self.exclude_pairs):
+            return '{:<4}'.format(atom.name)
+        return ' {:<3}'.format(atom.name)
+
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
 
@@ -1111,10 +1163,7 @@ class PrimitivePDBWriter(base.Writer):
 
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            name = atom.name[:4]
-            if len(name) < 4:  # Start names in column 14 if we can
-                name = ' ' + name
-            vals['name'] = name
+            vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]
@@ -1130,7 +1179,6 @@ class PrimitivePDBWriter(base.Writer):
             vals['tempFactor'] = temp if temp is not None else 0.0
             vals['segID'] = segid[:4]
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
-            vals['charge'] = 0
 
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))

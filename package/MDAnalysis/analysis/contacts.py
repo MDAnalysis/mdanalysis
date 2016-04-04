@@ -18,10 +18,6 @@
 Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 ================================================================
 
-:Author: Oliver Beckstein
-:Year: 2010
-:Copyright: GNU Public License v3
-
 Analysis of native contacts *q* over a trajectory.
 
 * a "contact" exists between two atoms *i* and *j* if the distance between them is
@@ -135,8 +131,15 @@ Compare the resulting pathway to the `MinActionPath result for AdK`_.
 Classes
 -------
 
+.. autoclass:: Contacts
+   :members:
 .. autoclass:: ContactAnalysis
    :members:
+
+
+Deprecated
+----------
+
 .. autoclass:: ContactAnalysis1
    :members:
 
@@ -147,16 +150,23 @@ import errno
 import warnings
 import bz2
 from six.moves import zip
+
 import numpy as np
+
 import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
-
+from MDAnalysis.analysis.distances import distance_array
+from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
+
+# ContactAnalysis needs to be cleaned up and possibly renamed but
+# until then it remains because we don't have the functionality
+# elsewhere.
 
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
@@ -171,6 +181,20 @@ class ContactAnalysis(object):
 
     The total number of contacts in the reference states 1 and 2 are
     stored in :attr:`ContactAnalysis.nref` (index 0 and 1).
+
+    The :meth:`ContactAnalysis.run` method calculates the percentage of native
+    contacts *q1* and *q2* along a trajectory. "Contacts" are defined as the
+    number of Ca atoms (or per-residue *centroids* of a user defined
+    *selection*) within *radius* of a primary Ca. *q1* is the fraction of
+    contacts relative to the reference state 1 (typically the starting
+    conformation of the trajectory) and *q2* is the fraction of contacts
+    relative to the conformation 2.
+
+    The timeseries is written to a bzip2-compressed file in `targetdir`
+    named "basename(trajectory)infix_q1q2.dat.bz2" and is also
+    accessible as the attribute
+    :attr:`ContactAnalysis.timeseries`.
+
     """
 
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
@@ -178,49 +202,38 @@ class ContactAnalysis(object):
                  selection="name CA", centroids=False):
         """Calculate native contacts from two reference structures.
 
-        :Arguments:
-          *topology*
-            psf or pdb file
-          *trajectory*
-            dcd or xtc/trr file
-          *ref1*
+        Parameters
+        ----------
+        topology : filename
+            topology file
+        trajectory : filename
+            trajectory
+        ref1 : filename or ``None``, optional
             structure of the reference conformation 1 (pdb); if ``None`` the *first*
             frame of the trajectory is chosen
-          *ref2*
+        ref2 : filename or ``None``, optional
             structure of the reference conformation 2 (pdb); if ``None`` the *last*
             frame of the trajectory is chosen
-          *radius*
-            contacts are deemed any Ca within radius [8 A]
-          *targetdir*
-            output files are saved there [.]
-          *infix*
+        radius : float, optional, default 8 A
+            contacts are deemed any Ca within radius
+        targetdir : path, optional, default ``.``
+            output files are saved in this directory
+        infix : string, optional
             additional tag string that is inserted into the output filename of the
-            data file [""]
-          *selection*
+            data file
+         selection : string, optional, default ``"name CA"``
             MDAnalysis selection string that selects the particles of
             interest; the default is to only select the C-alpha atoms
-            in *ref1* and *ref*2 ["name CA"]
+            in `ref1` and `ref2`
 
-            .. Note:: If *selection* produces more than one atom per
+            .. Note:: If `selection` produces more than one atom per
                       residue then you will get multiple contacts per
-                      residue unless you also set *centroids* = ``True``
-          *centroids*
+                      residue unless you also set `centroids` = ``True``
+         centroids : bool
             If set to ``True``, use the centroids for the selected atoms on a
             per-residue basis to compute contacts. This allows, for instance
-            defining the sidechains as *selection* and then computing distances
+            defining the sidechains as `selection` and then computing distances
             between sidechain centroids.
-
-        The function calculates the percentage of native contacts *q1* and *q2*
-        along a trajectory. "Contacts" are defined as the number of Ca atoms (or
-        per-residue *centroids* of a user defined *selection*) within *radius* of
-        a primary Ca. *q1* is the fraction of contacts relative to the reference
-        state 1 (typically the starting conformation of the trajectory) and *q2*
-        is the fraction of contacts relative to the conformation 2.
-
-        The timeseries is written to a bzip2-compressed file in *targetdir*
-        named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
-        accessible as the attribute
-        :attr:`ContactAnalysis.timeseries`.
         """
 
         self.topology = topology
@@ -287,11 +300,14 @@ class ContactAnalysis(object):
     def get_distance_array(self, g, **kwargs):
         """Calculate the self_distance_array for atoms in group *g*.
 
-        :Keywords:
-           *results*
+        Parameters
+        ----------
+        g : AtomGroup
+              group of atoms to calculate distance array for
+        results : array, optional
               passed on to :func:`MDAnalysis.lib.distances.self_distance_array`
               as a preallocated array
-           *centroids*
+        centroids : bool, optional, default ``None``
               ``True``: calculate per-residue centroids from the selected atoms;
               ``False``: consider each atom separately; ``None``: use the class
               default for *centroids* [``None``]
@@ -350,11 +366,28 @@ class ContactAnalysis(object):
         return self.output_bz2
 
     def qarray(self, d, out=None):
-        """Return distance array with True for contacts.
+        """Return array with ``True`` for contacts.
 
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
+        Note
+        ----
+        This method is typically only used internally.
+
+        Arguments
+        ---------
+        d : array
+          2D array of distances. The method uses the value of
+          :attr:`radius` to determine if a ``distance < radius``
+          is considered a contact.
+        out : array, optional
+          If `out` is supplied as a pre-allocated array of the correct
+          shape then it is filled instead of allocating a new one in
+          order to increase performance.
+
+        Returns
+        -------
+        array
+           contact matrix
+
         """
         if out is None:
             out = (d <= self.radius)
@@ -363,12 +396,31 @@ class ContactAnalysis(object):
         return out
 
     def qN(self, q, n, out=None):
-        """Calculate native contacts relative to state n.
+        """Calculate native contacts relative to reference state.
 
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
+        Note
+        ----
+        This method is typically only used internally.
+
+        Arguments
+        ---------
+        q : array
+          contact matrix (see :meth:`Contacts.qarray`)
+        out : array, optional
+          If `out` is supplied as a pre-allocated array of the correct
+          shape then it will contain the contact matrix relative
+          to the reference state, i.e. only those contacts that
+          are also seen in the reference state.
+
+        Returns
+        -------
+        contacts : integer
+           total number of contacts
+        fraction : float
+           fraction of contacts relative to the reference state
+
         """
+
         if out is None:
             out = np.logical_and(q, self.qref[n])
         else:
@@ -405,7 +457,6 @@ class ContactAnalysis(object):
 # If ContactAnalysis is enhanced to accept two references then this should be even easier.
 # It might also be worthwhile making a simpler class that just does the q calculation
 # and use it for both reference and trajectory data.
-
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
@@ -509,6 +560,8 @@ class ContactAnalysis1(object):
 
         The timeseries is written to a file *outfile* and is also accessible as
         the attribute :attr:`ContactAnalysis1.timeseries`.
+
+        .. deprecated: 0.14.0
         """
 
         # XX or should I use as input
@@ -521,8 +574,13 @@ class ContactAnalysis1(object):
         # - make this selection based on qavg
         from os.path import splitext
 
-        self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
-        self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
+        warnings.warn("ContactAnalysis1 is deprecated and will be removed in 1.0. "
+                      "Use Contacts instead.", category=DeprecationWarning)
+
+        self.selection_strings = self._return_tuple2(kwargs.pop(
+            'selection', "name CA or name B*"), "selection")
+        self.references = self._return_tuple2(kwargs.pop('refgroup', None),
+                                              "refgroup")
         self.radius = kwargs.pop('radius', 8.0)
         self.targetdir = kwargs.pop('targetdir', os.path.curdir)
         self.output = kwargs.pop('outfile', "q1.dat.gz")
@@ -638,7 +696,7 @@ class ContactAnalysis1(object):
         if n_frames > 0:
             self.qavg /= n_frames
         else:
-            logger.warn("No frames were analyzed. Check values of start, stop, step.") 
+            logger.warn("No frames were analyzed. Check values of start, stop, step.")
             logger.debug("start={start} stop={stop} step={step}".format(**vars()))
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
@@ -773,3 +831,370 @@ class ContactAnalysis1(object):
 
         if filename is not None:
             savefig(filename)
+
+
+def best_hummer_q(r, r0, beta=5.0, lambda_constant=1.8):
+    """Calculate the Best-Hummer fraction of native contacts (Q)
+
+    A soft-cutoff contacts analysis
+
+    Parameters
+    ----------
+    r: array
+      Contact distances at time t
+    r0: array
+      Contact distances at time t=0, reference distances
+    beta: float (default 5.0 Angstrom)
+      Softness of the switching function
+    lambda_constant: float (default 1.8, unitless)
+      Reference distance tolerance
+
+    Returns
+    -------
+    Q : float
+      Fraction of native contacts
+    result : array
+      Intermediate, r-r0 array transformed by the switching function
+    """
+    result = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+    return result.sum() / len(r0), result
+
+
+class Contacts(AnalysisBase):
+    """Calculate fraction of native contacts (Q) from a trajectory
+
+    Inputs
+    ------
+    Two string selections for the contacting AtomGroups,
+    the groups could be protein-lipid or protein-protein.
+
+    Use two reference AtomGroups to obtain reference distances (r0)
+    for the cotacts.
+
+    Methods available
+    -----------------
+    Supports either hard-cutoff or soft-cutoff (Best-Hummer like [1]_)
+    contacts.
+
+    Returns
+    -------
+    list
+        Returns a list of following structure::
+            {
+                [[t1, q1], [t2, q2], ... [tn, qn]]
+            }
+        where t is time in ps and q is the fraction of native contacts
+
+    Examples
+    --------
+
+    1. Protein folding::
+
+        ref = Universe("villin.gro")
+        u = Universe("conf_protein.gro", "traj_protein.xtc")
+        Q = calculate_contacts(u, ref, "protein and not name H*", "protein and not name H*")
+
+    2. A pair of helices::
+
+        ref = Universe("glycophorin_dimer.pdb")
+        u = Universe("conf_protein.gro", "traj_protein.xtc")
+        Q = calculate_contacts(u, ref, \
+            "protein and resid 75-92 and not name H* and segid A", \
+            "protein and resid 75-92 and not name H* and segid B")
+
+    Parameter choices
+    -----------------
+    There are recommendations and not strict orders.
+    These parameters should be insensitive to small changes.
+    * For all-atom simulations, radius = 4.5 A and lambda_constant = 1.8 (unitless)
+    * For coarse-grained simulations, radius = 6.0 A and lambda_constant = 1.5 (unitless)
+
+    Additional
+    ----------
+    Supports writing and reading the analysis results to and from a text file.
+    Supports simple plotting operations, for exploratory data analysis.
+
+    Notes
+    -----
+    We use the definition of Best et al [1]_, namely Eq. (1) of the SI
+    defines the expression for the fraction of native contacts,
+    $Q(X)$:
+
+    .. math::
+
+        Q(X) = \frac{1}{|S|} \sum_{(i,j) \in S}
+               \frac{1}{1 + \exp[\beta(r_{ij}(X) - \lambda r_{ij}^0)]}
+
+    where:
+
+    * :math:`X` is a conformation,
+    * :math:`r_{ij}(X)` is the distance between atoms $i$ and $j$ in
+      conformation $X$,
+    * :math:`r^0_{ij}` is the distance from heavy atom i to j in the
+      native state conformation,
+    * :math:`S` is the set of all pairs of heavy atoms $(i,j)$
+      belonging to residues $\theta_i$ and $\theta_j$ such that
+      $|\theta_i - \theta_j| > 3$ and $r^0_{i,} < 4.5
+      \unicode{x212B}$,
+    * :math:`\beta=5 \unicode{x212B}^{-1},
+    * :math:`\lambda=1.8` for all-atom simulations
+
+    References
+    ----------
+
+    .. [1] RB Best, G Hummer, and WA Eaton, "Native contacts determine
+       protein folding mechanisms in atomistic simulations" _PNAS_
+       **110** (2013), 17874–17879.  `10.1073/pnas.1311599110
+       <http://doi.org/10.1073/pnas.1311599110>`_.
+
+    """
+    def __init__(self, u, selection, refgroup, method="cutoff", radius=4.5, outfile=None,
+                 start=None, stop=None, step=None, **kwargs):
+        """Calculate the persistence length for polymer chains
+
+        Parameters
+        ----------
+        u: Universe
+            trajectory
+        selection: tuple(string, string)
+            two contacting groups that change over time
+        refgroup: tuple(AtomGroup, AtomGroup)
+            two contacting groups in their reference conformation
+        radius: float, optional (4.5 Angstroms)
+            radius within which contacts exist
+        method: string
+            either 'cutoff' or 'best-hummer'
+
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+
+        Parameters for 'best-hummer' method
+        -----------------------------------
+        lambda_constant: float, optional (1.8 unitless)
+            contact is considered formed between (lambda*r0,r0)
+        beta: float, optional (5 Angstroms^-1)
+            softness of the switching function, the lower the softer
+
+        Attributes
+        ----------
+        results: list
+            Fraction of native contacts for each frame
+        """
+
+        # check method
+        if not method in ("cutoff", "best-hummer"):
+            raise ValueError("method has to be 'cutoff' or 'best-hummer'")
+        self._method = method
+
+        # method-specific parameters
+        if method == "best-hummer":
+            self.beta = kwargs.get('beta', 5.0)
+            self.lambda_constant  = kwargs.get('lambda_constant', 1.8)
+
+        # steup boilerplate
+        self.u = u
+        self._setup_frames(self.u.trajectory,
+                           start=start,
+                           stop=stop,
+                           step=step)
+
+        self.selection = selection
+        grA, grB = u.select_atoms(selection[0]), u.select_atoms(selection[1])
+        self.grA, self.grB = grA, grB
+        refA, refB = refgroup
+
+        # contacts formed in reference
+        r0 = distance_array(refA.positions, refB.positions)
+        self.r0 = r0
+        self.mask = r0 < radius
+
+        self.contact_matrix = []
+        self.timeseries = []
+        self.outfile = outfile
+
+    def load(self, filename):
+        """Load the data file.
+
+        Arguments
+        ---------
+        filename : string
+            name of the data file to be read (can be compressed
+            or a stream, see :func:`~MDAnalysis.lib.util.openany`
+            for what is possible)
+        """
+        records = []
+        with openany(filename) as data:
+            for line in data:
+                if line.startswith('#'): continue
+                records.append(map(float, line.split()))
+        return np.array(records)
+
+    def _single_frame(self):
+        grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
+
+        # compute distance array for a frame
+        d = distance_array(grA.positions, grB.positions)
+
+        # select only the contacts that were formed in the reference state
+        # r, r0 are 1D array
+        r, r0 = d[mask], r0[mask]
+
+        if self._method == "cutoff":
+            y = r <= r0
+            y = float(y.sum())/mask.sum()
+        elif self._method == "best-hummer":
+            y, _ = best_hummer_q(r, r0, self.beta, self.lambda_constant)
+        else:
+            raise ValueError("Unknown method type, has to be 'cutoff' or 'best-hummer'")
+
+        cm = np.zeros((grA.positions.shape[0], grB.positions.shape[0]))
+        cm[mask] = y
+        self.contact_matrix.append(cm)
+        self.timeseries.append((self._ts.frame , y, mask.sum()))
+
+    def _conclude(self):
+        """Finalise the timeseries you've gathered.
+
+        Called at the end of the run() method to finish everything up.
+        """
+        # write output
+        if not self.outfile: return
+        with open(self.outfile, "w") as f:
+            f.write("# q1 analysis\n# nref = {0:d}\n".format(self.mask.sum()))
+            f.write("# frame  q1  n1\n")
+            for frame, q1, n1 in self.timeseries:
+                f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
+
+    def contact_matrix(self, d, out=None):
+        """Return distance array with True for contacts.
+
+        Parameters
+        ----------
+        d : array
+            is the matrix of distances. The method uses the value of
+            `ContactAnalysis1.radius` to determine if a ``distance < radius``
+            is considered a contact.
+        out: array (optional)
+            If `out` is supplied as a pre-allocated array of the correct
+            shape then it is filled instead of allocating a new one in
+            order to increase performance.
+
+        Returns
+        -------
+        array
+            boolean array of which contacts are formed
+
+        Note
+        ----
+        This method is typically only used internally.
+        """
+        if out:
+            out[:] = (d <= self.radius)
+        else:
+            out = (d <= self.radius)
+        return out
+
+    def fraction_native(q, out=None):
+        """Calculate native contacts relative to reference state.
+
+        Parameters
+        ----------
+        q: array
+            is the matrix of contacts (e.g. `ContactAnalysis1.q`).
+        out: array
+            If *out* is supplied as a pre-allocated array of the correct
+            shape then it is filled instead of allocating a new one in
+            order to increase performance.
+
+        Returns
+        -------
+        contacts : integer
+           total number of contacts
+        fraction : float
+           Fraction of native contacts (Q) calculated from a contact matrix
+
+        Note
+        ----
+        This method is typically only used internally.
+        """
+        if out:
+            np.logical_and(q, self.mask, out)
+        else:
+            out = np.logical_and(q, self.mask)
+        contacts = out.sum()
+        return contacts, float(contacts) / self.mask.sum()
+
+    def plot(self, filename=None, **kwargs):
+        """Plot q(t).
+
+        Parameters
+        ----------
+        filename : str
+            If `filename` is supplied then the figure is also written to file (the
+            suffix determines the file type, e.g. pdf, png, eps, ...). All other
+            keyword arguments are passed on to `pylab.plot`.
+        **kwargs
+            Arbitrary keyword arguments for the plotting function
+        """
+        if not self.timeseries :
+            raise ValueError("No timeseries data; do 'Contacts.run()' first.")
+        x, y, _ = zip(*self.timeseries)
+
+        import matplotlib.pyplot as plt
+        kwargs.setdefault('color', 'black')
+        kwargs.setdefault('linewidth', 2)
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(x, y, **kwargs)
+        ax.set_xlabel(r"frame number $t$")
+        ax.set_ylabel(r"contacts $q_1$")
+
+        if filename:
+            fig.savefig(filename)
+        else:
+            fig.show()
+
+    def plot_qavg(self, filename=None, **kwargs):
+        """Plot `Contacts.qavg`, the matrix of average contacts.
+
+        Parameters
+        ----------
+        filename : str
+            If `filename` is supplied then the figure is also written to file (the
+            suffix determines the file type, e.g. pdf, png, eps, ...). All other
+            keyword arguments are passed on to `pylab.imshow`.
+        **kwargs
+            Arbitrary keyword arguments for the plotting function
+        """
+        if not self.contact_matrix :
+            raise ValueError("No timeseries data; do 'Contacts.run()' first.")
+        # collapse on the time-axis
+        data = np.array(self.contact_matrix)
+        data = data.mean(axis=0)
+
+        import matplotlib.pyplot as plt
+        import matplotlib.cm as cm
+
+        kwargs['origin'] = 'lower'
+        kwargs.setdefault('aspect', 'equal')
+        kwargs.setdefault('interpolation', 'nearest')
+        kwargs.setdefault('vmin', 0)
+        kwargs.setdefault('vmax', 1)
+        kwargs.setdefault('cmap', cm.hot)
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        cax = ax.imshow(data, **kwargs)
+
+        cbar = fig.colorbar(cax)
+
+        if filename:
+            fig.savefig(filename)
+        else:
+            fig.show()
