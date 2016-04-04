@@ -3622,7 +3622,7 @@ class Residue(AtomGroup):
 
         """
         nextres = self.resid + 1
-        segid = self.segment.id
+        segid = self.segment.segid
         sel = self['CA'] + self['C'] + \
               self.universe.select_atoms(
                   'segid {0!s} and resid {1:d} and name N'.format(segid, nextres),
@@ -3647,7 +3647,7 @@ class Residue(AtomGroup):
 
     def __repr__(self):
         return "<Residue {name}, {id}>".format(
-            name=self.name, id=self.resid)
+            name=self.resname, id=self.resid)
 
 
 class ResidueGroup(AtomGroup):
@@ -3924,7 +3924,7 @@ class Segment(ResidueGroup):
         """Segment id (alias for :attr:`Segment.name`)"""
         return self._segid
 
-    @id.setter
+    @segid.setter
     def segid(self, x):
         self._segid = x
 
@@ -3956,7 +3956,7 @@ class Segment(ResidueGroup):
 
     def __repr__(self):
         return "<Segment {name}>".format(
-            name=self.name)
+            name=self.segid)
 
 
 class SegmentGroup(ResidueGroup):
@@ -4379,10 +4379,10 @@ class Universe(object):
 
         segments = build_segments(self.atoms)
         for seg in segments:
-            if seg.id[0].isdigit():
-                name = 's' + seg.id
+            if seg.segid[0].isdigit():
+                name = 's' + seg.segid
             else:
-                name = seg.id
+                name = seg.segid
             self.__dict__[name] = seg
 
         return segments
@@ -4403,11 +4403,11 @@ class Universe(object):
         guessed = self._topology.get('guessed_' + cat, set())
 
         TopSet = top.TopologyGroup.from_indices(defined, self.atoms,
-                                                            bondclass=Top, guessed=False,
-                                                            remove_duplicates=True)
+                                                bondclass=Top, guessed=False,
+                                                remove_duplicates=True)
         TopSet += top.TopologyGroup.from_indices(guessed, self.atoms,
-                                                             bondclass=Top, guessed=True,
-                                                             remove_duplicates=True)
+                                                 bondclass=Top, guessed=True,
+                                                 remove_duplicates=True)
 
         return TopSet
 
