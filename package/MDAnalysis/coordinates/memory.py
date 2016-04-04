@@ -117,9 +117,9 @@ class MemoryReader(base.ProtoReader):
             where the shape is (frame, number of atoms,
             coordinates)
         """
-        self.set_array(coordinate_array, format)
-        self.n_frames = coordinate_array.shape[self.format.find('f')]
-        self.n_atoms = coordinate_array.shape[self.format.find('a')]
+        self.set_array(np.asarray(coordinate_array), format)
+        self.n_frames = self.coordinate_array.shape[self.format.find('f')]
+        self.n_atoms = self.coordinate_array.shape[self.format.find('a')]
 
         kwargs.pop("n_atoms", None)
         self.ts = self._Timestep(self.n_atoms, **kwargs)
