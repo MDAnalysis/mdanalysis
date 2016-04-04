@@ -2150,7 +2150,7 @@ class TestGuessBonds(TestCase):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=True,
                                 vdwradii=self.vdw)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bounds'] is True)
+        assert_(u.kwargs['guess_bonds'] is True)
         assert_equal(self.vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
@@ -2159,7 +2159,7 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.bonds), 0)
         assert_equal(len(u.angles), 0)
         assert_equal(len(u.dihedrals), 0)
-        assert_(u.kwargs['guess_bounds'] is False)
+        assert_(u.kwargs['guess_bonds'] is False)
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
