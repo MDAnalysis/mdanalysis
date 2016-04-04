@@ -138,10 +138,10 @@ class Atomindices(TopologyAttr):
         return ag._ix
 
     def get_residues(self, rg):
-        return self.top.tt.residues2atoms_1d(rg._ix)
+        return list(self.top.tt.residues2atoms_2d(rg._ix))
 
     def get_segments(self, sg):
-        return self.top.tt.segments2atoms_1d(sg._ix)
+        return list(self.top.tt.segments2atoms_2d(sg._ix))
 
 
 class Resindices(TopologyAttr):
@@ -184,7 +184,7 @@ class Resindices(TopologyAttr):
         raise AttributeError("Residue indices are fixed; they cannot be reset")
 
     def get_segments(self, sg):
-        return self.top.tt.segments2residues_1d(sg._ix)
+        return list(self.top.tt.segments2residues_2d(sg._ix))
 
 
 class Segindices(TopologyAttr):
