@@ -30,18 +30,19 @@ class TestPDBReader(_SingleFrameReader):
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
 
-    def test_uses_Biopython(self):
+
+    def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
         assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose Biopython PDBReader")
+                "failed to choose PDBReader")
 
-    @knownfailure("Biopython PDB reader does not parse CRYST1", AssertionError)
+
     def test_dimensions(self):
         assert_almost_equal(
             self.universe.trajectory.ts.dimensions, RefAdKSmall.ref_unitcell,
             self.prec,
-            "Biopython reader failed to get unitcell dimensions from CRYST1")
+            "PDBReader failed to get unitcell dimensions from CRYST1")
 
 
 class _PDBMetadata(TestCase, Ref4e43):
@@ -712,11 +713,11 @@ class TestPSF_PDBReader(TestPDBReader):
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
 
-    def test_uses_Biopython(self):
+    def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
         assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose Biopython PDBReader")
+                "failed to choose PDBReader")
 
 
 class TestPDBWriterOccupancies(object):

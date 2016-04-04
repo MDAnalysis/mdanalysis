@@ -1429,7 +1429,7 @@ class AtomGroup(object):
 
         """
         out = np.array([atom.serial for atom in self._atoms])
-        
+
         if not any(out):
             out = np.array([atom.id for atom in self._atoms])
 
@@ -3334,7 +3334,7 @@ class AtomGroup(object):
             return [AtomGroup([a]) for a in self]
 
         if level in ('resid', 'segid'):
-            warnings.warn("'resid' or 'segid' are no longer allowed levels " 
+            warnings.warn("'resid' or 'segid' are no longer allowed levels "
                           "in version 0.16.0; instead give "
                           "'residue' or 'segment', respectively.",
                           DeprecationWarning)
@@ -4196,8 +4196,12 @@ class Universe(object):
 
           *permissive*
              currently only relevant to PDBs, Readers and Writers and Parsers
-             returned by setting ::permisive = False are depecrated in favor
+             returned by setting ::permisive = False are deprecated in favor
              of their ::permissive = True counterparts
+             ..deprecated:: 0.15.0
+             Readers amd writers solely available in the form of
+             Simple Readers and Writers, see below. Permissive flag
+             will soon be removed.
 
           *topology_format*
              provide the file format of the topology file; ``None`` guesses it from the file
@@ -4260,7 +4264,7 @@ class Universe(object):
         .. versionchanged:: 0.11.0
            Added the *is_anchor* and *anchor_name* keywords for finer behavior
            control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
-        .. versionchanged:: 0.14.1
+        .. versionchanged:: 0.15.0
            *permissive* set to ``True`` and set to ``False`` both yield permissive
            PDB readers, writers and parsers
         """

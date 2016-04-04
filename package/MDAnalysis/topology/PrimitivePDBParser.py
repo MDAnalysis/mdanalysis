@@ -45,9 +45,8 @@ Classes
    :members:
    :inherited-members:
 
-..deprecated:: 0.14.1
-    PrimitivePDBParser now has the same behavior as PDBParser, and will be
-    absent from future versions
+..deprecated:: 0.15.0
+    PDBParser has been replaced with PrimitivePDBParser.
 """
 
 from __future__ import absolute_import, print_function
@@ -62,17 +61,17 @@ from ..lib.util import openany
 from .base import TopologyReader
 
 
-warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
-              'it is deprecated in favor of the shorter name',
-              category=DeprecationWarning)
+
 class PrimitivePDBParser(PDBParser.PDBParser):
+    def __init__(self, *args, **kwargs):
+        warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
+                    ' it is deprecated in favor of the shorter name',
+                    category=DeprecationWarning)
+        super(PDBParser.PDBParser, self).__init__(*args, **kwargs)
     format = 'Permissive_PDB'
 
-warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
-              'it is deprecated in favor of the shorter name,'
-              'please use the parse_conect function of that class',
-              category=DeprecationWarning)
 def _parse_conect(conect):
+
     """parse a CONECT record from pdbs
 
     Parameters
