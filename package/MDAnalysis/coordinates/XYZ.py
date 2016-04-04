@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
@@ -70,11 +70,10 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 
 """
 
+from six.moves import range, zip
 import os
 import errno
 import numpy as np
-import itertools
-
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.psa')
 
@@ -97,6 +96,7 @@ class XYZWriter(base.Writer):
     """
 
     format = 'XYZ'
+    multiframe = True
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
@@ -139,7 +139,7 @@ class XYZWriter(base.Writer):
             self.__class__.__name__, __version__)
         self.remark = default_remark if remark == 'default' else remark
         # can also be gz, bz2
-        self._xyz = util.anyopen(self.filename, 'w')
+        self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""
@@ -228,8 +228,8 @@ class XYZWriter(base.Writer):
                 raise ValueError('n_atoms keyword was specified indicating '
                                  'that this should be a trajectory of the '
                                  'same model. But the provided TimeStep has a '
-                                 'different number ({}) then expected ({})'.format(
-                                     ts.n_atoms, self.n_atoms))
+                                 'different number ({}) then expected ({})'
+                                 ''.format(ts.n_atoms, self.n_atoms))
         else:
             if len(self.atomnames) != ts.n_atoms:
                 logger.info('Trying to write a TimeStep with unkown atoms. '
@@ -239,14 +239,16 @@ class XYZWriter(base.Writer):
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
-            coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
+            coordinates = self.convert_pos_to_native(
+                ts.positions, inplace=False)
         else:
-            coordinates = ts._pos
+            coordinates = ts.positions
 
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
         self._xyz.write("frame {0}\n".format(ts.frame))
-        for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
-            self._xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
+        for atom, (x, y, z) in zip(self.atomnames, coordinates):
+            self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
+                            "".format(atom, x, y, z))
 
 
 class XYZReader(base.Reader):
@@ -357,8 +359,8 @@ class XYZReader(base.Reader):
             # we assume that there are only two header lines per frame
             f.readline()
             f.readline()
-            for i in xrange(self.n_atoms):
-                self.ts._pos[i] = map(float, f.readline().split()[1:4])
+            for i in range(self.n_atoms):
+                self.ts._pos[i] = list(map(float, f.readline().split()[1:4]))
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:

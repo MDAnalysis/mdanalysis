@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -113,6 +113,8 @@ Utilities
 
 
 """
+from __future__ import print_function
+from six.moves import range
 
 import glob
 import os
@@ -341,21 +343,20 @@ class BaseX3DNA(object):
 
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
 
         na_avg, na_std = self.mean_std()
         for k in range(len(na_avg[0])):
             ax = kwargs.pop('ax', plt.subplot(111))
-            x = range(1, len(na_avg[:, k]) + 1)
+            x = list(range(1, len(na_avg[:, k]) + 1))
             ax.errorbar(x, na_avg[:, k], yerr=na_std[:, k], fmt='-o')
             ax.set_xlim(0, len(na_avg[:, k]) + 1)
             ax.set_xlabel(r"Nucleic Acid Number")
             param = self.profiles.values()[0].dtype.names[k]
             if param in ["Shear", "Stretch", "Stagger", "Rise", "Shift", "Slide"]:
-                ax.set_ylabel("%s ($\AA$)" % (param))
+                ax.set_ylabel("{0!s} ($\AA$)".format((param)))
             else:
-                ax.set_ylabel("%s (deg)" % (param))
-            ax.figure.savefig("%s.png" % (param))
+                ax.set_ylabel("{0!s} (deg)".format((param)))
+            ax.figure.savefig("{0!s}.png".format((param)))
             ax.figure.clf()
 
     def sorted_profiles_iter(self):
@@ -438,7 +439,7 @@ class X3DNA(BaseX3DNA):
         self.x3dna_param = kwargs.pop('x3dna_param', True)
         self.exe['xdna_ensemble'] = which(x3dna_exe_name)
         if self.exe['xdna_ensemble'] is None:
-            errmsg = "X3DNA binary %(x3dna_exe_name)r not found." % vars()
+            errmsg = "X3DNA binary {x3dna_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
             logger.fatal("%(x3dna_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
@@ -533,7 +534,7 @@ class X3DNA(BaseX3DNA):
             length = len(filenames)
             if length == 0:
                 logger.error("Glob pattern %r did not find any files.", self.filename)
-                raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
+                raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
 
         # one recarray for each frame, indexed by frame number
@@ -612,7 +613,7 @@ class X3DNA(BaseX3DNA):
                 os.system("rm -f tmp*.out")
                 if not os.path.exists(rundir):
                     os.makedirs(rundir)
-                frame_x3dna_txt = os.path.join(rundir, "bp_step_%s_%04d.dat.gz" % (run, x3dna_profile_no))
+                frame_x3dna_txt = os.path.join(rundir, "bp_step_{0!s}_{1:04d}.dat.gz".format(run, x3dna_profile_no))
                 np.savetxt(frame_x3dna_txt, frame_x3dna_output)
                 logger.debug("Finished with frame %d, saved as %r", x3dna_profile_no, frame_x3dna_txt)
                 # if we get here then we haven't found anything interesting
@@ -684,8 +685,6 @@ class X3DNAtraj(BaseX3DNA):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
-
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
         step = kwargs.pop('step', self.step)
@@ -697,13 +696,13 @@ class X3DNAtraj(BaseX3DNA):
 
         nucleic = self.universe.select_atoms(self.selection)
         for ts in self.universe.trajectory[start:stop:step]:
-            print ts.frame
-            print nucleic.atoms
+            print(ts.frame)
+            print(nucleic.atoms)
             logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             nucleic.write(pdbfile)
-            os.system("find_pair %s 355d.bps" % pdbfile)
+            os.system("find_pair {0!s} 355d.bps".format(pdbfile))
             try:
                 nucleic.write(pdbfile)
                 '''

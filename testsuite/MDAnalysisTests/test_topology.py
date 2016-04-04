@@ -13,7 +13,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from six.moves import range, zip
+
 import MDAnalysis
+import MDAnalysis as mda
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.util import guess_format
@@ -28,8 +31,10 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
-from numpy.testing import *
+from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
+                           assert_array_equal, assert_almost_equal)
 from nose.plugins.attrib import attr
 import numpy as np
 
@@ -144,13 +149,15 @@ class TestMagnesium(_TestGuessAtomType):
     testnames = ['MG', 'MG2+']
 
 
-class TestTopologyGroup_Cython(TestCase):
+class TestTopologyGroup_Cython(object):
     """
     Check that the shortcut to all cython functions:
      - work (return proper values)
      - catch errors
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # topologygroups for testing
@@ -277,6 +284,8 @@ class TestTopologyGuessers(TestCase):
     guess_improper_dihedrals
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 

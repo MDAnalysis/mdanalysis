@@ -1,6 +1,6 @@
 graft scripts
 include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
-include ez_setup.py setup.py
+include setup.py
 include MDAnalysisTests/mda_nosetests
 include MDAnalysisTests/data/gms/*.inp
 include MDAnalysisTests/data/lammps/*.in

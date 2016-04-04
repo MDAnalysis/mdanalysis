@@ -43,7 +43,7 @@ class TestHydrogenBondAnalysis(TestCase):
         self.values = {
             'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
             'donor_resid': np.array([5,  6,  8,  9, 10, 11, 12, 13]),
-            'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
+            'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA'], dtype='U4'),
             }
 
     def _run(self, **kwargs):
@@ -109,7 +109,7 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
         self.kwargs["distance"] = 3.0
         self.values['num_bb_hbonds'] = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
         self.values['donor_resid'] = np.array([])
-        self.values['acceptor_resnm'] = np.array([], dtype="|S3")
+        self.values['acceptor_resnm'] = np.array([], dtype="<U3")
 
 
 class TestHydrogenBondAnalysisChecking(object):

@@ -56,9 +56,17 @@ class TestPRM12Parser(TOPBase):
     filename = PRM12
     expected_n_atoms = 8923
     expected_n_residues = 2861
+    ref_proteinatoms = 0
 
 
 class TestParm7Parser(TOPBase):
     filename = PRM7
     expected_n_atoms = 5827
     expected_n_residues = 1882
+
+
+class TestPRM2(TOPBase):
+    filename = PRMpbc
+    expected_n_atoms = 5071
+    expected_n_residues = 1686
+    ref_proteinatoms = 22

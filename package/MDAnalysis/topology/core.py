@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -26,17 +26,19 @@ module. They are mostly of use to developers.
 """
 
 from __future__ import print_function
+import six
+
 # Global imports
 import os.path
 import numpy as np
 from collections import defaultdict
-from itertools import izip
 
 # Local imports
-from MDAnalysis.topology import tables
-from MDAnalysis.lib import distances
-from MDAnalysis.lib.util import cached
-from MDAnalysis.lib import util
+from . import _PARSERS
+from . import tables
+from ..lib import distances
+from ..lib.util import cached
+from ..lib import util
 
 
 def get_parser_for(filename, permissive=False, format=None):
@@ -49,16 +51,14 @@ def get_parser_for(filename, permissive=False, format=None):
       *ValueError*
         If no appropriate parser could be found.
     """
-    from . import _topology_parsers
-
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
     if format == 'PDB' and permissive:
-        return _topology_parsers['Permissive_PDB']
+        return _PARSERS['Permissive_PDB']
 
     try:
-        return _topology_parsers[format]
+        return _PARSERS[format]
     except KeyError:
         raise ValueError(
             "Cannot autodetect topology type for file '{0}' "
@@ -69,7 +69,7 @@ def get_parser_for(filename, permissive=False, format=None):
             "           {1}\n"
             "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
             "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
+            "http://issues.mdanalysis.org".format(filename, _PARSERS.keys()))
 
 
 def guess_atom_type(atomname):
@@ -181,9 +181,9 @@ def guess_bonds(atoms, coords, **kwargs):
     try:
         atomtypes = set(atoms.types)
     except AttributeError:  # sometimes atoms is just list of atoms not AG
-        atomtypes = set([a.type for a in atoms])
+        atomtypes = {a.type for a in atoms}
     # check that all types have a defined vdw
-    if not all([val in vdwradii for val in atomtypes]):
+    if not all( val in vdwradii for val in atomtypes):
         raise ValueError(("vdw radii for types: " +
                           ", ".join([t for t in atomtypes if
                                      not t in vdwradii]) +

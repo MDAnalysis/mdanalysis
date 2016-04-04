@@ -1,3 +1,5 @@
+from six.moves import range
+
 import MDAnalysis as mda
 import numpy as np
 

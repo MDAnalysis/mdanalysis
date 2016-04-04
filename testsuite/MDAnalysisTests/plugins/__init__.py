@@ -61,7 +61,7 @@ happen only at test runtime. See Issue 344 for details.
 #  code won't be run again under coverage's watch.
 
 # Don't forget to also add your plugin to the import further ahead
-__all__ = ['memleak', 'capture_err', 'knownfailure']
+__all__ = ['memleak', 'capture_err', 'knownfailure', 'cleanup']
 
 import distutils.version
 try:
@@ -76,7 +76,7 @@ import nose.plugins.multiprocess
 
 def _nose_config():
     """Function that exposes nose's configuration via a hack in one of our plugins
-    
+
     The external plugins managed by this module are scanned for the :attr:`config` attribute,
     which at least one should implement upon configuration. Plugins need only to be loaded
     for this to work, not necessarily enabled.
@@ -88,7 +88,7 @@ def _nose_config():
 
 def _check_plugins_loaded():
     """Function that checks whether external plugins were loaded.
-    
+
     It can be used to ascertain whether nose tests were launched using `nosetests` from the
     command-line, and hence that external plugins aren't available.
 
@@ -103,7 +103,7 @@ def _check_plugins_loaded():
 loaded_plugins = dict()
 
 # ADD HERE your plugin import
-import memleak, capture_err, knownfailure
+from . import memleak, capture_err, knownfailure, cleanup
 
 plugin_classes = []
 for plugin in __all__:
@@ -114,7 +114,7 @@ for plugin in __all__:
         plugin_classes.extend(cls)
 
 for p_class in plugin_classes:
-    if p_class.name is None: # KnownFailure doesn't implement a name...
+    if p_class.name is None: # some plugins might not implement a name
         loaded_plugins[p_class.__name__] = p_class()
     else:
         loaded_plugins[p_class.name] = p_class()

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -53,7 +53,7 @@ Timeseries of observables
 
 """
 
-import groups
+from . import groups
 
 
 class TimeseriesCollection(object):
@@ -92,7 +92,7 @@ class TimeseriesCollection(object):
             suffix = 's'
         else:
             suffix = ''
-        return '<' + self.__class__.__name__ + ' with %d timeseries object%s>' % (len(self), suffix)
+        return '<' + self.__class__.__name__ + ' with {0:d} timeseries object{1!s}>'.format(len(self), suffix)
 
     def addTimeseries(self, ts):
         '''add a Timeseries object to the collection'''
@@ -175,7 +175,7 @@ class Timeseries(object):
         elif isinstance(atoms, groups.Atom):
             self.atoms = [atoms]
         else:
-            raise TypeError("Invalid atoms passed to %s timeseries" % self.__class__.__name__)
+            raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
         self.code = code
         self.n_atoms = len(self.atoms)
         self.dsize = dsize
@@ -194,8 +194,8 @@ class Timeseries(object):
 
     def __repr__(self):
         if hasattr(self, "__data__"):
-            return '<' + self.__class__.__name__ + ' timeseries object is populated with data>\n%s' % \
-                                                   (repr(self.__data__))
+            return '<' + self.__class__.__name__ + ' timeseries object is populated with data>\n{0!s}'.format( \
+                                                   (repr(self.__data__)))
         else:
             return '<' + self.__class__.__name__ + ' timeseries object is not populated with data>'
 
@@ -247,7 +247,7 @@ class Atom(Timeseries):
         elif isinstance(atoms, groups.Atom):
             n_atoms = 1
         else:
-            raise TypeError("Invalid atoms passed to %s timeseries" % self.__class__.__name__)
+            raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
         Timeseries.__init__(self, code * n_atoms, atoms, size * n_atoms)
 
     def getAtomCounts(self):

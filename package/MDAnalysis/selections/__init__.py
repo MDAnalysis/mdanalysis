@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -68,5 +68,4 @@ def get_writer(filename, defaultformat):
     try:
         return _selection_writers[format]
     except KeyError:
-        raise NotImplementedError("Writing as %r is not implemented; only %r will work."
-                                  % (format, _selection_writers.keys()))
+        raise NotImplementedError("Writing as {0!r} is not implemented; only {1!r} will work.".format(format, _selection_writers.keys()))

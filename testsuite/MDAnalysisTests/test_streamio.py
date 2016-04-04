@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -13,8 +13,14 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import six
+from six.moves import range, cStringIO, StringIO
+
 import numpy as np
-from numpy.testing import *
+from numpy.testing import (TestCase, dec,
+                           assert_equal, assert_almost_equal,
+                           assert_array_almost_equal,
+                           )
 
 import MDAnalysis
 import MDAnalysis.lib.util as util
@@ -22,10 +28,9 @@ import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
-import StringIO
-import cStringIO
-import tempfile
 import os
+
+import tempdir
 
 
 class TestIsstream(TestCase):
@@ -43,7 +48,7 @@ class TestIsstream(TestCase):
         assert_equal(util.isstream(obj), False)
 
     def test_iterator(self):
-        obj = (i for i in xrange(3))
+        obj = (i for i in range(3))
         assert_equal(util.isstream(obj), False)
 
     def test_file(self):
@@ -52,23 +57,23 @@ class TestIsstream(TestCase):
 
     def test_cStringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = cStringIO.StringIO(f.read())
+            obj = cStringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_cStringIO_write(self):
-        obj = cStringIO.StringIO()
+        obj = cStringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = StringIO.StringIO(f)
+            obj = StringIO(f)
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_write(self):
-        obj = StringIO.StringIO()
+        obj = StringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
@@ -84,15 +89,15 @@ class TestNamedStream(TestCase):
         self.textname = "jabberwock.txt"
         self.numtextlines = len(self.text)
 
-    def testClosing(self):
-        obj = cStringIO.StringIO("".join(self.text))
+    def test_closing(self):
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
-    def testClosingForce(self):
-        obj = cStringIO.StringIO("".join(self.text))
+    def test_closing_force(self):
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
         ns.close()
@@ -100,8 +105,8 @@ class TestNamedStream(TestCase):
         ns.close(force=True)
         assert_equal(ns.closed, True)
 
-    def testcStringIO_read(self):
-        obj = cStringIO.StringIO("".join(self.text))
+    def test_cStringIO_read(self):
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
@@ -110,7 +115,7 @@ class TestNamedStream(TestCase):
         assert_equal(len(ns.readlines()), self.numtextlines)
         ns.close(force=True)
 
-    def testFile_read(self):
+    def test_File_read(self):
         obj = open(self.filename, 'r')
         ns = util.NamedStream(obj, self.filename)
         assert_equal(ns.name, self.filename)
@@ -120,8 +125,8 @@ class TestNamedStream(TestCase):
         assert_equal(len(ns.readlines()), self.numlines)
         ns.close(force=True)
 
-    def testcStringIO_write(self):
-        obj = cStringIO.StringIO()
+    def test_cStringIO_write(self):
+        obj = cStringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
         assert_equal(ns.name, self.textname)
@@ -132,27 +137,114 @@ class TestNamedStream(TestCase):
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
 
-    def testFile_write(self):
-        fd, outfile = tempfile.mkstemp(suffix=".txt")
-        os.close(fd)
-        try:
-            obj = open(outfile, "w")
-            ns = util.NamedStream(obj, outfile, close=True)
-            ns.writelines(self.text)
-            ns.close()
-            text = open(outfile).readlines()
-
-            assert_equal(ns.name, outfile)
-            assert_equal(str(ns), outfile)
-            assert_equal(len(text), len(self.text))
-            assert_equal("".join(text), "".join(self.text))
-        finally:
-            ns.close()
-            obj.close()
+    def test_File_write(self):
+        with tempdir.in_tempdir():
+            outfile = "lookingglas.txt"
             try:
-                os.unlink(outfile)
-            except OSError:
-                pass
+                obj = open(outfile, "w")
+                ns = util.NamedStream(obj, outfile, close=True)
+                ns.writelines(self.text)
+                ns.close()
+                text = open(outfile).readlines()
+
+                assert_equal(ns.name, outfile)
+                assert_equal(str(ns), outfile)
+                assert_equal(len(text), len(self.text))
+                assert_equal("".join(text), "".join(self.text))
+            finally:
+                ns.close()
+                obj.close()
+
+
+class TestNamedStream_filename_behavior(object):
+    textname = "~/stories/jabberwock.txt"  # with tilde ~ to test regular expanduser()
+    # note: no setUp() because classes with generators would run it
+    #       *for each generated test* and we need it for the generator method
+
+    def create_NamedStream(self, name=None):
+        if name is None:
+            name = self.textname
+        obj = cStringIO()
+        return util.NamedStream(obj, name)
+
+    def test_ospath_funcs(self):
+        ns = self.create_NamedStream()
+
+        # - "expandvars" gave Segmentation fault (OS X 10.6, Python 2.7.11 -- orbeckst)
+        # - "expanduser" will either return a string if it carried out interpolation
+        #   or "will do nothing" and return the NamedStream (see extra test below).
+        #   On systems without a user or HOME, it will also do nothing and the test
+        #   below will fail.
+        funcs = ("abspath", "basename", "dirname", "expanduser",
+                 "normpath", "relpath", "split", "splitext")
+        def _test_func(funcname, fn=self.textname, ns=ns):
+            func = getattr(os.path, funcname)
+            reference = func(fn)
+            value = func(ns)
+            assert_equal(value, reference,
+                         err_msg=("os.path.{0}() does not work with "
+                                  "NamedStream").format(funcname))
+        # join not included because of different call signature
+        # but added first argument for the sake of it showing up in the verbose
+        # nose output
+        def _test_join(funcname="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
+            reference = os.path.join(path, fn)
+            value = os.path.join(path, ns)
+            assert_equal(value, reference,
+                         err_msg=("os.path.{0}() does not work with "
+                                  "NamedStream").format(funcname))
+        for func in funcs:
+            yield _test_func, func
+        yield _test_join, "join"
+
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    def test_expanduser_noexpansion_returns_NamedStream(self):
+        ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
+        reference = ns
+        value = os.path.expanduser(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.expanduser() without '~' did not "
+                              "return NamedStream --- weird!!"))
+
+    # expandvars(NamedStream) does not work interactively, so it is a knownfailure
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    @dec.skipif("HOME" not in os.environ)
+    @knownfailure()
+    def test_expandvars(self):
+        name = "${HOME}/stories/jabberwock.txt"
+        ns = self.create_NamedStream(name)
+        reference = os.path.expandvars(name)
+        value = os.path.expandvars(ns)
+        assert_equal(value, reference,
+                     err_msg="os.path.expandvars() did not expand HOME")
+
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    def test_expandvars_noexpansion_returns_NamedStream(self):
+        ns = self.create_NamedStream() # no $VAR constructs
+        reference = ns
+        value = os.path.expandvars(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.expandvars() without '$VARS' did not "
+                              "return NamedStream --- weird!!"))
+
+    def test_add(self):
+        ns = self.create_NamedStream()
+        try:
+            assert_equal(ns + "foo", self.textname + "foo")
+        except TypeError:
+            raise AssertionError("NamedStream does not support  "
+                                 "string concatenation, NamedStream + str")
+
+    def test_radd(self):
+        ns = self.create_NamedStream()
+        try:
+            assert_equal("foo" + ns, "foo" + self.textname)
+        except TypeError:
+            raise AssertionError("NamedStream does not support right "
+                                 "string concatenation, str + NamedStream")
 
 
 class _StreamData(object):
@@ -168,10 +260,10 @@ class _StreamData(object):
     }
 
     def __init__(self):
-        self.buffers = dict(
-            (name, "".join(open(fn).readlines())) for name, fn in self.filenames.iteritems())
-        self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
-        self.buffers['XYZ_PSF'] = """\
+        self.buffers = {name: "".join(open(fn).readlines())
+                        for name, fn in six.iteritems(self.filenames)}
+        self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
+        self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
 
       1 !NTITLE
@@ -223,10 +315,10 @@ frame 3
 """
 
     def as_StringIO(self, name):
-        return StringIO.StringIO(self.buffers[name])
+        return StringIO(self.buffers[name])
 
     def as_cStringIO(self, name):
-        return cStringIO.StringIO(self.buffers[name])
+        return cStringIO(self.buffers[name])
 
     def as_NamedStream(self, name):
         return util.NamedStream(self.as_cStringIO(name), self.filenames[name])

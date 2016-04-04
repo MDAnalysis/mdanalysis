@@ -21,6 +21,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PSF,
+    PSF_nosegid,
     PSF_NAMD,
 )
 
@@ -97,3 +98,12 @@ class TestNAMDPSFParser(ParserBase):
     expected_n_atoms = 130
     expected_n_residues = 6
     expected_n_segments = 1
+
+
+def test_psf_nosegid():
+    """Issue #121"""
+    u = mda.Universe(PSF_nosegid)
+    assert_(isinstance(u, mda.Universe))
+    assert_equal(u.atoms.n_atoms, 98)
+    assert_equal(u.segments.segids, ["SYSTEM"])
+

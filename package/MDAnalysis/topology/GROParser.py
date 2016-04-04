@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -35,6 +35,7 @@ Classes
 from __future__ import absolute_import
 
 import numpy as np
+from six.moves import range
 
 from ..lib.util import openany
 from ..core.topologyattrs import (
@@ -48,11 +49,13 @@ from .base import TopologyReader, squash_by
 
 
 class GROParser(TopologyReader):
+    format = 'GRO'
+
     def parse(self):
         """Return the *Topology* object for this file"""
         # Gro has the following columns
         # resid, resname, name, index, (x,y,z)
-        with openany(self.filename, 'r') as inf:
+        with openany(self.filename, 'rt') as inf:
             inf.readline()
             n_atoms = int(inf.readline())
 
@@ -62,12 +65,17 @@ class GROParser(TopologyReader):
             names = np.zeros(n_atoms, dtype=object)
             indices = np.zeros(n_atoms, dtype=np.int32)
 
-            for i in xrange(n_atoms):
+            for i in range(n_atoms):
                 line = inf.readline()
-                resids[i] = int(line[:5])
-                resnames[i] = line[5:10].strip()
-                names[i] = line[10:15].strip()
-                indices[i] = int(line[15:20])
+                try:
+                    resids[i] = int(line[:5])
+                    resnames[i] = line[5:10].strip()
+                    names[i] = line[10:15].strip()
+                    indices[i] = int(line[15:20])
+                except (ValueError, TypeError):
+                    raise IOError(
+                        "Couldn't read the following line of the .gro file:\n"
+                        "{0}".format(line))
 
         residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
@@ -84,4 +92,3 @@ class GROParser(TopologyReader):
                        residue_segindex=None)
 
         return top
-        

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -217,6 +217,8 @@ Classes, methods, and functions
 .. |Np| replace:: :math:`N_p`
 
 """
+import six
+from six.moves import range, cPickle
 
 import numpy as np
 
@@ -224,7 +226,6 @@ import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
 
-import cPickle as pickle
 import os
 
 import logging
@@ -251,8 +252,8 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        print("Path metric {} not found. Valid selections: ".format(key))
-        for name in path_metrics.keys(): print("  \"{}\"".format(name))
+        print("Path metric {0} not found. Valid selections: ".format(key))
+        for name in path_metrics.keys(): print("  \"{0}\"".format(name))
 
 
 def sqnorm(v, axis=None):
@@ -585,7 +586,7 @@ def dist_mat_to_vec(N, i, j):
     """
     if i > N or j > N:
         err_str = "Matrix indices are out of range; i and j must be less than"  \
-                + " N = {:d}".format(N)
+                + " N = {0:d}".format(N)
         raise ValueError(err_str)
     if j > i:
         return (N*i) + j - (i+2)*(i+1)/2
@@ -597,7 +598,7 @@ def dist_mat_to_vec(N, i, j):
         return (N*j) + i - (j+2)*(j+1)/2
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\
-                + " less than integer N = {:d} such that j >= i+1.".format(N)
+                + " less than integer N = {0:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
 
 
@@ -1075,7 +1076,7 @@ class PSAnalysis(object):
     """
     def __init__(self, universes, reference=None, ref_select='name CA',
                  ref_frame=0, path_select=None, labels=None,
-                 targetdir=None):
+                 targetdir=os.path.curdir):
         """Setting up Path Similarity Analysis.
 
         The mutual similarity between all unique pairs of trajectories
@@ -1142,7 +1143,7 @@ class PSAnalysis(object):
                          'paths' : '/paths',
                          'distance_matrices' : '/distance_matrices',
                          'plots' : '/plots'}
-        for dir_name, directory in self.datadirs.iteritems():
+        for dir_name, directory in six.iteritems(self.datadirs):
             try:
                 full_dir_name = os.path.join(self.targetdir, dir_name)
                 os.makedirs(full_dir_name)
@@ -1171,11 +1172,11 @@ class PSAnalysis(object):
         self._labels_pkl = os.path.join(self.targetdir, "psa_labels.pkl")
         # Pickle topology and trajectory filenames for this analysis to curdir
         with open(self._top_pkl, 'wb') as output:
-            pickle.dump(self.top_name, output)
+            cPickle.dump(self.top_name, output)
         with open(self._trjs_pkl, 'wb') as output:
-            pickle.dump(self.trj_names, output)
+            cPickle.dump(self.trj_names, output)
         with open(self._labels_pkl, 'wb') as output:
-            pickle.dump(self.labels, output)
+            cPickle.dump(self.labels, output)
 
         self.natoms = None
         self.npaths = None
@@ -1243,7 +1244,7 @@ class PSAnalysis(object):
             p = Path(u, self.u_reference, ref_select=self.ref_select,           \
                      path_select=self.path_select, ref_frame=ref_frame)
             trj_dir = self.targetdir + self.datadirs['fitted_trajs']
-            postfix = '{}{}{:03n}'.format(infix, '_psa', i+1)
+            postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)
             top_name, fit_trj_name = p.run(align=align, filename=filename,      \
                                            postfix=postfix,                     \
                                            targetdir=trj_dir,                   \
@@ -1257,7 +1258,7 @@ class PSAnalysis(object):
         self.fit_trj_names = fit_trj_names
         if save:
             with open(self._fit_trjs_pkl, 'wb') as output:
-                pickle.dump(self.fit_trj_names, output)
+                cPickle.dump(self.fit_trj_names, output)
         if store:
             filename = kwargs.pop('filename', None)
             self.save_paths(filename=filename)
@@ -1296,8 +1297,8 @@ class PSAnalysis(object):
         numpaths = self.npaths
         D = np.zeros((numpaths,numpaths))
 
-        for i in xrange(0, numpaths-1):
-            for j in xrange(i+1, numpaths):
+        for i in range(0, numpaths-1):
+            for j in range(i+1, numpaths):
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
                 D[i,j] = metric_func(P, Q)
@@ -1344,8 +1345,8 @@ class PSAnalysis(object):
         self._HP = [] # list of Hausdorff pairs
         self._psa_pairs = [] # list of PSAPairs
 
-        for i in xrange(0, numpaths-1):
-            for j in xrange(i+1, numpaths):
+        for i in range(0, numpaths-1):
+            for j in range(i+1, numpaths):
                 pp = PSAPair(i, j, numpaths)
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
@@ -1399,13 +1400,13 @@ class PSAnalysis(object):
             raise NoDataError("Paths have not been calculated yet")
         path_names = []
         for i, path in enumerate(self.paths):
-            current_outfile = "{}{:03n}.npy".format(outfile, i+1)
+            current_outfile = "{0}{1:03n}.npy".format(outfile, i+1)
             np.save(current_outfile, self.paths[i])
             path_names.append(current_outfile)
             logger.info("Wrote path to file %r", current_outfile)
         self.path_names = path_names
         with open(self._paths_pkl, 'wb') as output:
-            pickle.dump(self.path_names, output)
+            cPickle.dump(self.path_names, output)
         return filename
 
 
@@ -1415,7 +1416,7 @@ class PSAnalysis(object):
         """
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
-                              "{} does not exist.".format(self._paths_pkl))
+                              "{0} does not exist.".format(self._paths_pkl))
         self.path_names = np.load(self._paths_pkl)
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
@@ -1665,9 +1666,8 @@ class PSAnalysis(object):
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
         if self._NN is None:
-            err_str =                                                           \
-                    + "No nearest neighbor data; run "                          \
-                    + "'PSAnalysis.run_nearest_neighbors()' first."
+            err_str = ("No nearest neighbor data; run "
+                       "'PSAnalysis.run_nearest_neighbors()' first.")
             raise ValueError(err_str)
 
         sns.set_style('whitegrid')

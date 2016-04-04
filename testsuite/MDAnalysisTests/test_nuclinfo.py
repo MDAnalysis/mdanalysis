@@ -29,9 +29,8 @@ import MDAnalysis
 from MDAnalysis.analysis import nuclinfo
 from MDAnalysis.tests.datafiles import NUCL
 
-from numpy.testing import *
+from numpy.testing import assert_almost_equal ,assert_array_almost_equal, TestCase
 
-del test
 from nose.plugins.attrib import attr
 
 

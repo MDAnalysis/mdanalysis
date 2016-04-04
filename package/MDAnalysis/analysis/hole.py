@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -101,8 +101,8 @@ ascending order parameter. To access the individual profiles one can simply
 iterate over the sorted profiles (see :meth:`HOLEtraj.sorted_profiles_iter`) ::
 
   for q, profile in H:
-     print "orderparameter = %g" % q
-     print "min(R) = %g" % profile.radius.min()
+     print("orderparameter = %g" % q)
+     print("min(R) = %g" % profile.radius.min())
 
 
 Data structures
@@ -172,24 +172,27 @@ Utilities
 
 """
 
-import numpy as np
+from six.moves import zip, cPickle
+import six
 
+import numpy as np
 import glob
 import os
 import errno
 import shutil
 import warnings
-
 import os.path
 import subprocess
 import tempfile
 import textwrap
+import logging
+from itertools import cycle
 
+from MDAnalysis import Universe
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
 from MDAnalysis.lib.util import FORTRANReader
 
-import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.hole")
 
@@ -272,13 +275,10 @@ class BaseHOLE(object):
            profiles = cPickle.load(open(filename))
 
         """
-        import cPickle
-
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
         import matplotlib.colors
-        from itertools import cycle
 
         kw = {}
         frames = kwargs.pop('frames', None)
@@ -339,12 +339,11 @@ class BaseHOLE(object):
         All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
         ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot, (frame, color, linestyle) in enumerate(izip(kw['frames'], kw['colors'], kw['linestyles'])):
+        for iplot, (frame, color, linestyle) in enumerate(zip(kw['frames'], kw['colors'], kw['linestyles'])):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -381,7 +380,6 @@ class BaseHOLE(object):
         """
         import matplotlib.pyplot as plt
         import mpl_toolkits.mplot3d.axes3d as axes3d
-        from itertools import izip
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
         rmax = kw.pop('rmax', None)
@@ -389,7 +387,7 @@ class BaseHOLE(object):
 
         fig = plt.figure(figsize=kwargs.pop('figsize', (6, 6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
-        for frame, color, linestyle in izip(kw['frames'], kw['colors'], kw['linestyles']):
+        for frame, color, linestyle in zip(kw['frames'], kw['colors'], kw['linestyles']):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -696,7 +694,7 @@ class HOLE(BaseHOLE):
         hole_exe_name = kwargs.pop('executable', 'hole')
         self.exe['hole'] = which(hole_exe_name)
         if self.exe['hole'] is None:
-            errmsg = "HOLE binary %(hole_exe_name)r not found." % vars()
+            errmsg = "HOLE binary {hole_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
             logger.fatal("%(hole_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
@@ -823,7 +821,7 @@ class HOLE(BaseHOLE):
             logger.fatal("HOLE Failure (%d). Check output %r", hole.returncode, outname)
             if stderr is not None:
                 logger.fatal(stderr)
-            raise ApplicationError(hole.returncode, "HOLE %r failed. Check output %r." % (self.exe['hole'], outname))
+            raise ApplicationError(hole.returncode, "HOLE {0!r} failed. Check output {1!r}.".format(self.exe['hole'], outname))
         logger.info("HOLE finished: output file %(outname)r", vars())
 
     def create_vmd_surface(self, filename="hole.vmd", **kwargs):
@@ -914,17 +912,13 @@ class HOLE(BaseHOLE):
         logger.info("Collecting HOLE profiles for run with id %s", run)
         length = 1  # length of trajectory --- is this really needed?? No... just for info
         if '*' in self.filename:
-            import glob
-
             filenames = glob.glob(self.filename)
             length = len(filenames)
             if length == 0:
                 logger.error("Glob pattern %r did not find any files.", self.filename)
-                raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
+                raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
-            from MDAnalysis import Universe
-
             u = Universe(self.filename, self.dcd)
             length = int((u.trajectory.n_frames - self.dcd_iniskip) / (self.dcd_step + 1))
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
@@ -975,7 +969,7 @@ class HOLE(BaseHOLE):
                             rundir = os.path.join(outdir, "run_" + str(run))
                             if not os.path.exists(rundir):
                                 os.makedirs(rundir)
-                            frame_hole_txt = os.path.join(rundir, "radii_%s_%04d.dat.gz" % (run, hole_profile_no))
+                            frame_hole_txt = os.path.join(rundir, "radii_{0!s}_{1:04d}.dat.gz".format(run, hole_profile_no))
                             np.savetxt(frame_hole_txt, frame_hole_output)
                             logger.debug("Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
                         continue
@@ -1077,7 +1071,7 @@ class HOLEtraj(BaseHOLE):
         * If data is a array/list: use as is
         * If ``None``: assign frame numbers from trajectory
         """
-        if isinstance(data, basestring):
+        if isinstance(data, six.string_types):
             q = np.loadtxt(data)
         elif data is None:
             # frame numbers
@@ -1100,8 +1094,6 @@ class HOLEtraj(BaseHOLE):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
-
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
         step = kwargs.pop('step', self.step)
@@ -1120,7 +1112,7 @@ class HOLEtraj(BaseHOLE):
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
         protein = self.universe.select_atoms(self.selection)
-        for q, ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+        for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)

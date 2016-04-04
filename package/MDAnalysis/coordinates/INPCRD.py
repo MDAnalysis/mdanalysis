@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -25,10 +25,12 @@ Read and write coordinates in Amber_ coordinate/restart file (suffix
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from six.moves import range
+
 from . import base
 
 class INPReader(base.SingleFrameReader):
-    format = 'INPCRD'
+    format = ['INPCRD', 'RESTRT']
     units = {'length': 'Angstrom'}
 
     def _read_first_frame(self):
@@ -47,7 +49,7 @@ class INPReader(base.SingleFrameReader):
                 self.ts.time = time
             self.ts.frame = 0
 
-            for p in xrange(self.n_atoms // 2):
+            for p in range(self.n_atoms // 2):
                 line = inf.readline()
                 # each float is f12.7, 6 floats a line
                 for i, dest in enumerate([(2*p, 0), (2*p, 1), (2*p, 2),

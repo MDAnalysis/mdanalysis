@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -27,8 +27,7 @@ from Bio.KDTree import KDTree
 
 from MDAnalysis.core.groups import AtomGroup
 
-
-class AtomNeighborSearch():
+class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the
     radius of a given query position.
 
@@ -94,8 +93,8 @@ class AtomNeighborSearch():
             else:
                 return AtomGroup(n_atom_list)
         elif level == 'R':
-            return list(set([a.residue for a in n_atom_list]))
+            return list({a.residue for a in n_atom_list})
         elif level == 'S':
             return list(set([a.segment for a in n_atom_list]))
         else:
-            raise NotImplementedError('{}: level not implemented'.format(level))
+            raise NotImplementedError('{0}: level not implemented'.format(level))

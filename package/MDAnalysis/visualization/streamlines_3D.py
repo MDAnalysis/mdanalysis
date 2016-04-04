@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -26,6 +26,8 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 .. autofunction:: generate_streamlines_3d
 
 '''
+import six
+from six.moves import range
 
 import MDAnalysis
 import multiprocessing
@@ -196,7 +198,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,
         store a key/value pair for the centroid of the particles that fall within the cube.'''
         cube_counter = 0
-        for key, cube in dictionary_cube_data_this_core.iteritems():
+        for key, cube in six.iteritems(dictionary_cube_data_this_core):
             index_list_in_cube = point_in_cube(array_simulation_particle_coordinates, cube['vertex_list'],
                                                cube['centroid'])
             cube['start_frame_index_list_in_cube'] = index_list_in_cube
@@ -211,7 +213,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
         '''Update the cube dictionary objects again as appropriate for the second and final frame.'''
         cube_counter = 0
-        for key, cube in dictionary_cube_data_this_core.iteritems():
+        for key, cube in six.iteritems(dictionary_cube_data_this_core):
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
             if cube['centroid_of_particles_first_frame'] == 'empty':
                 cube['dx'] = 0

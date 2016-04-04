@@ -97,17 +97,25 @@ parentheses must be included.
 
 .. _NumPy: http://www.numpy.org/
 .. _nose:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
+   http://nose.readthedocs.org/en/latest/
 .. _nose commandline options:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/usage.html#extended-usage
+  http://nose.readthedocs.org/en/latest/man.html?highlight=command%20line
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
 
 """
+import logging
+logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.13.0-dev0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.14.1-dev0"  # keep in sync with RELEASE in setup.py
+try:
+    from MDAnalysisTests.authors import __authors__
+except ImportError:
+    logger.info('Could not find authors.py, __authors__ will be empty.')
+    __authors__ = []
+
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import
@@ -172,6 +180,26 @@ def module_not_found(module):
     try:
         importlib.import_module(module)
     except ImportError:
+        return True
+    else:
+        return False
+
+
+def parser_not_found(parser_name):
+    """Return ``True`` if the parser of the given name cannot be found.
+
+    This allows to skip a test when the parser is unavailable (e.g in python 3
+    when the parser is not compatible).
+
+    To be used as the argument of::
+
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser is not available. Are you on python 3?')
+    """
+    import MDAnalysis.coordinates
+    try:
+        getattr(MDAnalysis.coordinates, parser_name)
+    except AttributeError:
         return True
     else:
         return False

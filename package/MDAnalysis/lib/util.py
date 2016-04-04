@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -150,6 +150,9 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
+from six.moves import range, map
+import six
+
 import os
 import os.path
 import errno
@@ -161,6 +164,7 @@ import io
 import warnings
 from functools import wraps
 import numpy as np
+import functools
 
 from ..exceptions import StreamWarning
 
@@ -253,6 +257,25 @@ def openany(datasource, mode='r', reset=True):
         stream.close()
 
 
+# On python 3, we want to use bz2.open to open and uncompress bz2 files. That
+# function allows to specify the type of the uncompressed file (bytes ot text).
+# The function does not exist in python 2, thus we must use bz2.BZFile to
+# which we cannot tell if the uncompressed file contains bytes or text.
+# Therefore, on python 2 we use a proxy function that removes the type of the
+# uncompressed file from the `mode` argument.
+try:
+    bz2.open
+except AttributeError:
+    # We are on python 2 and bz2.open is not available
+    def bz2_open(filename, mode):
+        """Open and uncompress a BZ2 file"""
+        mode = mode.replace('t', '').replace('b', '')
+        return bz2.BZ2File(filename, mode)
+else:
+    # We are on python 3 so we can use bz2.open
+    bz2_open = bz2.open
+
+
 def anyopen(datasource, mode='r', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
@@ -281,7 +304,7 @@ def anyopen(datasource, mode='r', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
+    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):
@@ -295,7 +318,7 @@ def anyopen(datasource, mode='r', reset=True):
                     stream.reset()
                 except (AttributeError, IOError):
                     try:
-                        stream.seek(0L)
+                        stream.seek(0)
                     except (AttributeError, IOError):
                         warnings.warn("Stream {0}: not guaranteed to be at the beginning."
                                       "".format(filename),
@@ -306,10 +329,10 @@ def anyopen(datasource, mode='r', reset=True):
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
-                if not stream is None:
+                if stream is not None:
                     break
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
@@ -328,9 +351,9 @@ def anyopen(datasource, mode='r', reset=True):
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     else:
-        raise NotImplementedError("Sorry, mode=%(mode)r is not implemented for %(datasource)r" % vars())
+        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
     try:
         stream.name = filename
     except (AttributeError, TypeError):
@@ -338,7 +361,7 @@ def anyopen(datasource, mode='r', reset=True):
     return stream
 
 
-def _get_stream(filename, openfunction=file, mode='r'):
+def _get_stream(filename, openfunction=open, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
@@ -361,7 +384,26 @@ def _get_stream(filename, openfunction=file, mode='r'):
 
 
 def greedy_splitext(p):
-    """Split extension in path *p* at the left-most separator."""
+    """Split extension in path *p* at the left-most separator.
+
+    Extensions are taken to be separated from the filename with the
+    separator :data:`os.extsep` (as used by :func:`os.path.splitext`).
+
+    Arguments
+    ---------
+    p : path, string
+
+    Returns
+    -------
+    Tuple ``(root, extension)`` where ``root`` is the full path and
+    filename with all extensions removed whereas ``extension`` is the
+    string of all extensions.
+
+    Example
+    -------
+    >>> greedy_splitext("/home/joe/protein.pdb.bz2")
+    ('/home/joe/protein', '.pdb.bz2')
+    """
     path, root = os.path.split(p)
     extension = ''
     while True:
@@ -369,7 +411,7 @@ def greedy_splitext(p):
         extension = ext + extension
         if not ext:
             break
-    return root, extension
+    return os.path.join(path, root), extension
 
 
 def hasmethod(obj, m):
@@ -437,7 +479,8 @@ def which(program):
     return None
 
 
-class NamedStream(io.IOBase, basestring):
+@functools.total_ordering
+class NamedStream(io.IOBase):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream *stream* in this class, it can be passed to
@@ -448,8 +491,11 @@ class NamedStream(io.IOBase, basestring):
     The class can be used as a context manager.
 
     :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that
-    it is a stream) *and* :class:`basestring` (that one can use
-    :func:`iterable` in the same way as for strings).
+    it is a stream). Many operations that normally expect a string will also
+    work with a :class:`NamedStream`; for instance, most of the functions in
+    :mod:`os.path` will work with the exception of :func:`os.path.expandvars`
+    and :func:`os.path.expanduser`, which will return the :class:`NamedStream`
+    itself instead of a string if no substitutions were made.
 
     .. rubric:: Example
 
@@ -503,22 +549,22 @@ class NamedStream(io.IOBase, basestring):
            :meth:`close` (see there) unless the *close* keyword is set to
            ``True``.
 
-        :Arguments:
-
-           *stream*
-               open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
-           *filename*
+        Arguments
+        ---------
+        stream : stream
+               an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
+        filename : str
                the filename that should be associated with the stream
 
-        :Keywords:
-
-           *reset*
+        Keywords
+        --------
+        reset : boolean, default ``True``
                start the stream from the beginning (either :meth:`reset` or :meth:`seek`)
-               when the class instance is constructed [``True``]
-           *close*
+               when the class instance is constructed
+        close : booelan, default ``True``
                close the stream when a :keyword:`with` block exits or when
                :meth:`close` is called; note that the default is **not to close
-               the stream** [``False``]
+               the stream**
 
         .. versionadded:: 0.9.0
         """
@@ -535,7 +581,7 @@ class NamedStream(io.IOBase, basestring):
             self.stream.reset()  # e.g. StreamIO
         except (AttributeError, IOError):
             try:
-                self.stream.seek(0L)  # typical file objects
+                self.stream.seek(0)  # typical file objects
             except (AttributeError, IOError):
                 warnings.warn("NamedStream {0}: not guaranteed to be at the beginning."
                               "".format(self.name),
@@ -552,7 +598,7 @@ class NamedStream(io.IOBase, basestring):
         return iter(self.stream)
 
     def __enter__(self):
-        # do not call the stream __enter__ because the stream is already open
+        # do not call the stream's __enter__ because the stream is already open
         return self
 
     def __exit__(self, *args):
@@ -700,23 +746,22 @@ class NamedStream(io.IOBase, basestring):
     def __eq__(self, x):
         return self.name == x
 
-    def __neq__(self, x):
-        return self.name != x
-
-    def __gt__(self, x):
-        return self.name > x
-
-    def __ge__(self, x):
-        return self.name >= x
-
     def __lt__(self, x):
         return self.name < x
 
-    def __le__(self, x):
-        return self.name <= x
-
     def __len__(self):
         return len(self.name)
+
+    def __add__(self, x):
+        return self.name + x
+
+    def __radd__(self, x):
+        return x + self.name
+
+    def __mul__(self, x):
+        return self.name * x
+
+    __rmul__ = __mul__
 
     def __format__(self, format_spec):
         return self.name.format(format_spec)
@@ -813,8 +858,9 @@ def guess_format(filename):
 
 
 def iterable(obj):
-    """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    """Returns ``True`` if *obj* can be iterated over and is *not* a  string
+    nor a :class:`NamedStream`"""
+    if isinstance(obj, (six.string_types, NamedStream)):
         return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
@@ -876,14 +922,14 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("%r: Failed to read&convert %r" % (self, line[self.start:self.stop]))
+            raise ValueError("{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop]))
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
 
     def __repr__(self):
-        return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
+        return "FixedcolumnEntry({0:d},{1:d},{2!r})".format(self.start, self.stop, self.typespecifier)
 
 
 class FORTRANReader(object):
@@ -974,7 +1020,7 @@ class FORTRANReader(object):
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
-                raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+                raise ValueError("unrecognized FORTRAN format {0!r}".format(edit_descriptor))
         d = m.groupdict()
         if d['repeat'] == '':
             d['repeat'] = 1
@@ -1029,7 +1075,7 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
@@ -1106,7 +1152,7 @@ def parse_residue(residue):
     # XXX: use _translate_residue() ....
     m = RESIDUE.match(residue)
     if not m:
-        raise ValueError("Selection %(residue)r is not valid (only 1/3/4 letter resnames, resid required)." % vars())
+        raise ValueError("Selection {residue!r} is not valid (only 1/3/4 letter resnames, resid required).".format(**vars()))
     resid = int(m.group('resid'))
     residue = m.group('aa')
     if len(residue) == 1:
@@ -1193,3 +1239,67 @@ def unique_rows(arr):
         dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
     ))
     return u.view(arr.dtype).reshape(-1, m)
+
+
+def blocks_of(a, n, m):
+    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+
+    Parameters
+    ----------
+    a : array_like
+        starting array
+    n : int
+        size of block in first dimension
+    m : int
+        size of block in second dimension
+
+
+    Returns
+    -------
+      (nblocks, n, m) view of the original array.
+      Where nblocks is the number of times the miniblock fits in the original.
+
+    Raises
+    ------
+      ValueError
+        If the supplied `n` and `m` don't divide `a` into an integer number
+        of blocks.
+
+    Examples
+    --------
+    >>> arr = np.arange(16).reshape(4, 4)
+    >>> view = blocks_of(arr, 2, 2)
+    >>> view[:] = 100
+    >>> arr
+    array([[100, 100,   2,   3],
+           [100, 100,   6,   7],
+           [  8,   9, 100, 100],
+           [ 12,  13, 100, 100]])
+
+    Notes
+    -----
+      n, m must divide a into an identical integer number of blocks.
+
+      Uses strides so probably requires that the array is C contiguous
+
+      Returns a view, so editing this modifies the original array
+
+    .. versionadded:: 0.12.0
+    """
+    # based on:
+    # http://stackoverflow.com/a/10862636
+    # but generalised to handle non square blocks.
+
+    nblocks = a.shape[0] / n
+    nblocks2 = a.shape[1] / m
+
+    if not nblocks == nblocks2:
+        raise ValueError("Must divide into same number of blocks in both"
+                         " directions.  Got {} by {}"
+                         "".format(nblocks, nblocks2))
+
+    new_shape = (nblocks, n, m)
+    new_strides = (n * a.strides[0] + m * a.strides[1],
+                   a.strides[0], a.strides[1])
+
+    return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)

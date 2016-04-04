@@ -29,14 +29,16 @@ All functions take the optional keyword *backend*, which determines
 the type of acceleration. Currently, the following choices are
 implemented (*backend* is case-insensitive):
 
-========== ======================== ======================================
-*backend*  module                   description
-========== ======================== ======================================
-"serial"   :mod:`_distances`        serial implementation in C/Cython
+.. Table:: Available *backends* for accelerated distance functions.
 
-"OpenMP"   :mod:`_distances_openmp` parallel implementation in C/Cython
-                                    with OpenMP
-========== ======================== ======================================
+   ========== ========================= ======================================
+   *backend*  module                    description
+   ========== ========================= ======================================
+   "serial"   :mod:`c_distances`        serial implementation in C/Cython
+
+   "OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
+                                        with OpenMP
+   ========== ========================= ======================================
 
 .. versionadded:: 0.13.0
 
@@ -53,6 +55,8 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 
 """
+from six.moves import range
+
 import numpy as np
 from numpy.lib.utils import deprecate
 
@@ -64,10 +68,10 @@ from .mdamath import triclinic_vectors, triclinic_box
 # independent from the OpenMP code
 import importlib
 _distances = {}
-_distances['serial'] = importlib.import_module("._distances",
+_distances['serial'] = importlib.import_module(".c_distances",
                                          package="MDAnalysis.lib")
 try:
-    _distances['openmp'] = importlib.import_module("._distances_openmp",
+    _distances['openmp'] = importlib.import_module(".c_distances_openmp",
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
@@ -87,24 +91,24 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from ._distances import (calc_distance_array,
-                         calc_distance_array_ortho,
-                         calc_distance_array_triclinic,
-                         calc_self_distance_array,
-                         calc_self_distance_array_ortho,
-                         calc_self_distance_array_triclinic,
-                         coord_transform,
-                         calc_bond_distance,
-                         calc_bond_distance_ortho,
-                         calc_bond_distance_triclinic,
-                         calc_angle,
-                         calc_angle_ortho,
-                         calc_angle_triclinic,
-                         calc_dihedral,
-                         calc_dihedral_ortho,
-                         calc_dihedral_triclinic,
-                         ortho_pbc,
-                         triclinic_pbc)
+from .c_distances import (calc_distance_array,
+                          calc_distance_array_ortho,
+                          calc_distance_array_triclinic,
+                          calc_self_distance_array,
+                          calc_self_distance_array_ortho,
+                          calc_self_distance_array_triclinic,
+                          coord_transform,
+                          calc_bond_distance,
+                          calc_bond_distance_ortho,
+                          calc_bond_distance_triclinic,
+                          calc_angle,
+                          calc_angle_ortho,
+                          calc_angle_triclinic,
+                          calc_dihedral,
+                          calc_dihedral_ortho,
+                          calc_dihedral_triclinic,
+                          ortho_pbc,
+                          triclinic_pbc)
 
 
 def _box_check(box):
@@ -183,7 +187,7 @@ def _check_lengths_match(*arrays):
     """Check all arrays are same shape"""
     ref = arrays[0].shape
 
-    if not all([a.shape == ref for a in arrays]):
+    if not all( a.shape == ref for a in arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
 
@@ -303,8 +307,8 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
              N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
              coordinates i and j at position d[k]. Loop through d::
 
-                 for i in xrange(N):
-                     for j in xrange(i+1, N):
+                 for i in range(N):
+                     for j in range(i+1, N):
                          k += 1
                          dist[i,j] = d[k]
 
@@ -725,8 +729,10 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     return angles
 
-calc_torsions = deprecate(calc_dihedrals, old_name='calc_torsions',
-                          new_name='calc_dihedrals')
+calc_torsions = deprecate(calc_dihedrals,
+                          old_name='calc_torsions',
+                          new_name='calc_dihedrals',
+                          message="This will be removed in v0.15.0")
 
 
 def apply_PBC(incoords, box, backend="serial"):
@@ -787,4 +793,7 @@ def apply_PBC(incoords, box, backend="serial"):
 
     return coords
 
-applyPBC = deprecate(apply_PBC, old_name='applyPBC', new_name='apply_PBC')
+applyPBC = deprecate(apply_PBC,
+                     old_name='applyPBC',
+                     new_name='apply_PBC',
+                     message="This will be removed in v0.15.0")

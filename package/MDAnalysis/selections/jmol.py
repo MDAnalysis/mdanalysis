@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -50,7 +50,7 @@ class SelectionWriter(base.SelectionWriter):
         return base.join(atoms, ' ', _index)
 
     def _write_head(self, out, **kwargs):
-        out.write("@~%(name)s ({" % kwargs)
+        out.write("@~{name!s} ({{".format(**kwargs))
 
     def _write_tail(self, out, **kwargs):
         out.write("});")

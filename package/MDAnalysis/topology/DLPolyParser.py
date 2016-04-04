@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -28,6 +28,7 @@ DLPoly files have the following Attributes:
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+from six.moves import zip
 import numpy as np
 
 from .base import TopologyReader
@@ -44,6 +45,8 @@ class ConfigParser(TopologyReader):
 
     .. versionadded:: 0.10.1
     """
+    format = 'CONFIG'
+
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
@@ -88,7 +91,6 @@ class ConfigParser(TopologyReader):
 
         names = Atomnames(names)
         ids = Atomids(ids)
-
         top = Topology(len(ids), 1, 1,
                        attrs = [ids, names])
 
@@ -100,6 +102,8 @@ class HistoryParser(TopologyReader):
 
     .. versionadded:: 0.10.1
     """
+    format = 'HISTORY'
+
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
@@ -143,7 +147,6 @@ class HistoryParser(TopologyReader):
 
         names = Atomnames(names)
         ids = Atomids(ids)
-
         top = Topology(len(ids), 1, 1,
                        attrs = [ids, names])
 

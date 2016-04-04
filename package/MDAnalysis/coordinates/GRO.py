@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -57,6 +57,7 @@ box_triclinic
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
 
+from six.moves import range
 import warnings
 import numpy as np
 
@@ -121,7 +122,7 @@ class GROReader(base.SingleFrameReader):
     _Timestep = Timestep
 
     def _read_first_frame(self):
-        with util.openany(self.filename, 'r') as grofile:
+        with util.openany(self.filename, 'rt') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()
             self.n_atoms = n_atoms = int(grofile.readline())
@@ -139,16 +140,16 @@ class GROReader(base.SingleFrameReader):
             for pos, line in enumerate(grofile, start=-2):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.array(map(float, line.split()))
+                    unitcell = np.array(list(map(float, line.split())))
                     continue
                 if pos < 0:
                     continue
-                for i in xrange(3):
+                for i in range(3):
                     ts._pos[pos, i] = float(line[20 + cs*i: 20 + cs*(i+1)])
 
                 if not has_velocities:
                     continue
-                for i, j in enumerate(xrange(3, 6)):
+                for i, j in enumerate(range(3, 6)):
                     ts._velocities[pos, i] = float(line[20+cs*j:20+cs*(j+1)])
 
         self.ts.frame = 0  # 0-based frame number
@@ -280,17 +281,18 @@ class GROWriter(base.Writer):
                              "".format(self.gro_coor_limits["min"],
                                        self.gro_coor_limits["max"]))
 
-        with util.openany(self.filename, 'w') as output_gro:
+        with util.openany(self.filename, 'wt') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
             output_gro.write(self.fmt['n_atoms'].format(len(atoms)))
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
+                truncated_atom_index = int(str(atom_index + 1)[-5:])
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
                         resid=atom.resid,
                         resname=atom.resname,
-                        index=atom_index+1,
+                        index=truncated_atom_index,
                         name=atom.name,
                         pos=coordinates[atom_index],
                         vel=velocities[atom_index],
@@ -299,7 +301,7 @@ class GROWriter(base.Writer):
                     output_gro.write(self.fmt['xyz'].format(
                         resid=atom.resid,
                         resname=atom.resname,
-                        index=atom_index+1,
+                        index=truncated_atom_index,
                         name=atom.name,
                         pos=coordinates[atom_index]
                     ))

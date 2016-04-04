@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -38,10 +38,12 @@ One can use this information to identify
   of distances from the centre of geometry (or possibly simply the
   :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radius_of_gyration`).
 
-See example scripts in the ``examples/`` directory on how to use
+See example scripts in the MDAnalysisCookbook_ on how to use
 :class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.
+
+.. MDAnalysisCookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
 
 .. autoclass:: LeafletFinder
    :members:
@@ -50,11 +52,14 @@ algorithm.
 
 """
 
-import numpy as np
-import MDAnalysis
-import networkx as NX
-import distances
+from six.moves import range
+
 import warnings
+
+import numpy as np
+import networkx as NX
+import MDAnalysis
+from . import distances
 
 
 class LeafletFinder(object):
@@ -192,7 +197,7 @@ class LeafletFinder(object):
 
     def groups_iter(self):
         """Iterator over all leaflet :meth:`groups`"""
-        for component_index in xrange(len(self.components)):
+        for component_index in range(len(self.components)):
             yield self.group(component_index)
 
     def write_selection(self, filename, **kwargs):
@@ -209,15 +214,14 @@ class LeafletFinder(object):
         SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format', None))
         writer = SelectionWriter(
             filename, mode=kwargs.pop('mode', 'wa'),
-            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self),
+            preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(**vars(self)),
             **kwargs)
         for i, ag in enumerate(self.groups_iter()):
-            name = "leaflet_%d" % (i + 1)
+            name = "leaflet_{0:d}".format((i + 1))
             writer.write(ag, name=name)
 
     def __repr__(self):
-        return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-               (self.selectionstring, self.cutoff, self.selection.n_atoms,
+        return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(self.selectionstring, self.cutoff, self.selection.n_atoms,
                len(self.components))
 
 

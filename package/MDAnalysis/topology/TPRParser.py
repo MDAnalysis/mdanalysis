@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -147,6 +147,8 @@ class TPRParser(TopologyReader):
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
+    format = 'TPR'
+
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
@@ -157,7 +159,7 @@ class TPRParser(TopologyReader):
         #ndo_rvec = U.ndo_rvec
         #ndo_ivec = U.ndo_ivec
 
-        tprf = anyopen(self.filename).read()
+        tprf = anyopen(self.filename, mode='rb').read()
         data = xdrlib.Unpacker(tprf)
         try:
             th = U.read_tpxheader(data)                    # tpxheader

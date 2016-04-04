@@ -1,9 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -41,8 +41,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
+import numpy as np
 import warnings
 import numpy as np
 
@@ -88,9 +89,13 @@ class PrimitivePDBParser(TopologyReader):
 
     .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
 
+    See Also
+    --------
+    :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
+
     .. versionadded:: 0.8
     """
-    format = 'PDB'
+    format = 'Permissive_PDB'
 
     def parse(self):
         """Parse atom information from PDB file
@@ -144,6 +149,7 @@ class PrimitivePDBParser(TopologyReader):
                     serial = int(line[6:11])
                 except ValueError:
                     # serial can become '***' when they get too high
+                    self._wrapped_serials = True
                     serial = None
                 serials.append(serial)
 
@@ -253,7 +259,7 @@ class PrimitivePDBParser(TopologyReader):
     def _parsebonds(self, serials):
         # Could optimise this by saving lines in the main loop
         # then doing post processing after all Atoms have been read
-        # ie do one pass through the file only        
+        # ie do one pass through the file only
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
@@ -263,10 +269,9 @@ class PrimitivePDBParser(TopologyReader):
 
         bonds = set()
         with openany(self.filename, "r") as f:
-            lines = (line[6:].split() for line in f
-                     if line.startswith("CONECT"))
-            for bond in lines:
-                atom, atoms = int(bond[0]), map(int, bond[1:])
+            lines = (line for line in f if line[:6] == "CONECT")
+            for line in lines:
+                atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
@@ -274,3 +279,34 @@ class PrimitivePDBParser(TopologyReader):
         bonds = tuple(bonds)
 
         return Bonds(bonds)
+
+
+def _parse_conect(conect):
+    """parse a CONECT record from pdbs
+
+    Parameters
+    ----------
+    conect : str
+        white space striped CONECT record
+
+    Returns
+    -------
+    atom_id : int
+        atom index of bond
+    bonds : set
+        atom ids of bonded atoms
+
+    Raises
+    ------
+    RuntimeError
+        Raised if ``conect`` is not a valid CONECT record
+    """
+    atom_id = np.int(conect[6:11])
+    n_bond_atoms = len(conect[11:]) // 5
+    if len(conect[11:]) % n_bond_atoms != 0:
+        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
+                           "record: {}".format(conect))
+    bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
+                  range(n_bond_atoms))
+    return atom_id, bond_atoms
+

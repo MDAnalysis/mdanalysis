@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -35,7 +35,9 @@ Deprecated classes
    :members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
+
+from six.moves import range
 
 import numpy as np
 import logging
@@ -142,12 +144,14 @@ class DATAParser(TopologyReader):
 
     .. versionadded:: 0.9.0
     """
+    format = 'DATA'
+
     def iterdata(self):
         with anyopen(self.filename, 'r') as f:
             for line in f:
                 line = line.partition('#')[0].strip()
                 if line:
-                    yield line        
+                    yield line
 
     def grab_datafile(self):
         """Split a data file into dict of header and sections
@@ -277,7 +281,7 @@ class DATAParser(TopologyReader):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple(map(lambda x: int(x) - 1, 
+            section.append(tuple(map(lambda x: int(x) - 1,
                                      line[2:2 + nentries])))
             type.append(line[1])
         return tuple(type), tuple(section)
@@ -525,7 +529,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         # skip line
                         file_iter.next()
                         data = []
-                        for i in xrange(headers[h]):
+                        for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
                             data.append(tuple(map(conv_float, fields[1:])))
                         sections[line] = data
@@ -541,7 +545,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     elif line == "Atoms":
                         file_iter.next()
                         data = []
-                        for i in xrange(headers["atoms"]):
+                        for i in range(headers["atoms"]):
                             fields = file_iter.next().strip().split()
                             index = int(fields[0]) - 1
                             a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]),
@@ -553,9 +557,9 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     elif line == "Masses":
                         file_iter.next()
                         data = []
-                        for i in xrange(headers["atom type"]):
+                        for i in range(headers["atom type"]):
                             fields = file_iter.next().strip().split()
-                            print "help"
+                            print("help")
                 self.positions = positions
 
     def writePSF(self, filename, names=None):

@@ -1,3 +1,5 @@
+from six.moves import range
+
 import MDAnalysis as mda
 import numpy as np
 
@@ -53,13 +55,13 @@ class TestXYZWriter(BaseWriterTest):
         with self.ref.writer(outfile) as w:
             for i in range(2, 4):
                 sel = uni.select_atoms(
-                    ' or '.join(['resid {}'.format(j) for j
+                    ' or '.join(['resid {0}'.format(j) for j
                                  in range(1, i)]))
                 w.write(sel)
         # how now how to check that the produced file is correct?
         reader = self.ref.reader(outfile)
         for i, ts in enumerate(reader):
-            sel = uni.select_atoms(' or '.join(['resid {}'.format(j)
+            sel = uni.select_atoms(' or '.join(['resid {0}'.format(j)
                                                 for j in range(1, i + 2)]))
             assert_array_almost_equal(
                 ts._pos, sel.atoms.positions, self.ref.prec,

@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -13,31 +13,38 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import zip, cPickle
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-    merge_protein, merge_water, merge_ligand, \
-    TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res, \
-    XYZ_mini, two_water_gro, two_water_gro_nonames
+from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
+                                        TRZ, TRZ_psf, PSF_notop,
+                                        PSF_BAD, unordered_res,
+                                        XYZ_mini, two_water_gro,
+                                        two_water_gro_nonames)
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import (TestCase, dec, raises, assert_equal,
+                           assert_almost_equal, assert_raises, assert_,
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_allclose)
 from nose.plugins.attrib import attr
 
 import os
-import tempfile
+import tempdir
 import itertools
 
-from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
 
 class TestAtom(TestCase):
     """Tests of Atom."""
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -124,8 +131,8 @@ class TestAtom(TestCase):
 
     def test_set_undefined_occupancy(self):
         self.universe.atoms[0].occupancy = .5
-        assert self.universe.atoms[0].occupancy == .5
-        assert self.universe.atoms[1].occupancy == 1
+        assert_equal(self.universe.atoms[0].occupancy, .5)
+        assert_equal(self.universe.atoms[1].occupancy, 1)
 
 
 class TestAtomComparisons(object):
@@ -143,37 +150,37 @@ class TestAtomComparisons(object):
         del self.at4
 
     def test_lt(self):
-        assert_((self.at1 < self.at2) == True)
-        assert_((self.at3 < self.at2) == False)
-        assert_((self.at2 < self.at2) == False)
+        assert_(self.at1 < self.at2)
+        assert_(not (self.at3 < self.at2))
+        assert_(not (self.at2 < self.at2))
 
     def test_gt(self):
-        assert_((self.at2 > self.at1) == True)
-        assert_((self.at2 > self.at3) == False)
-        assert_((self.at2 > self.at2) == False)
+        assert_(self.at2 > self.at1)
+        assert_(not (self.at2 > self.at3))
+        assert_(not (self.at2 > self.at2))
 
     def test_eq(self):
-        assert_((self.at2 == self.at2) == True)
-        assert_((self.at2 == self.at3) == False)
+        assert_(self.at2 == self.at2)
+        assert_(not (self.at2 == self.at3))
 
         # We only check index of atom, so these are equal
         # despite being different objects.
         pseudo_at2 = Atom(2, 'b', 'tb', 'rm', 2, 's2', 0.02, 0.02)
-        assert_((self.at2 == pseudo_at2) == True)
+        assert_(self.at2 == pseudo_at2)
 
     def test_neq(self):
-        assert_((self.at2 != self.at3) == True)
-        assert_((self.at2 != self.at2) == False)
+        assert_(self.at2 != self.at3)
+        assert_(not (self.at2 != self.at2))
 
     def test_geq(self):
-        assert_((self.at2 >= self.at1) == True)
-        assert_((self.at2 >= self.at2) == True)
-        assert_((self.at2 >= self.at3) == False)
+        assert_(self.at2 >= self.at1)
+        assert_(self.at2 >= self.at2)
+        assert_(not (self.at2 >= self.at3))
 
     def test_leq(self):
-        assert_((self.at2 <= self.at3) == True)
-        assert_((self.at2 <= self.at2) == True)
-        assert_((self.at2 <= self.at1) == False)
+        assert_(self.at2 <= self.at3)
+        assert_(self.at2 <= self.at2)
+        assert_(not (self.at2 <= self.at1))
 
     def test_sorting_1(self):
         l = [self.at1, self.at2, self.at3, self.at4]
@@ -203,7 +210,8 @@ class TestAtomNoForceNoVel(TestCase):
         assert_raises(NoDataError, getattr, self.a, 'force')
 
     def test_velocity_set_fail(self):
-        assert_raises(NoDataError, setattr, self.a, 'velocity', [1.0, 1.0, 1.0])
+        assert_raises(NoDataError, setattr, self.a, 'velocity',
+                      [1.0, 1.0, 1.0])
 
     def test_force_set_fail(self):
         assert_raises(NoDataError, setattr, self.a, 'force', [1.0, 1.0, 1.0])
@@ -211,15 +219,18 @@ class TestAtomNoForceNoVel(TestCase):
 
 class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
-    # all tests are done with the AdK system (PSF and DCD)
-    # sequence: http://www.uniprot.org/uniprot/P69441.fasta
+    # all tests are done with the AdK system (PSF and DCD) sequence:
+    # http://www.uniprot.org/uniprot/P69441.fasta
     # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1
-    ref_adk_sequence = """\
-       MRIILLGAPGAGKGTQAQFIMEKYGIPQISTGDMLRAAVKSGSELGKQAKDIMDAGKLVT
-       DELVIALVKERIAQEDCRNGFLLDGFPRTIPQADAMKEAGINVDYVLEFDVPDELIVDRI
-       VGRRVHAPSGRVYHVKFNPPKVEGKDDVTGEELTTRKDDQEETVRKRLVEYHQMTAPLIG
-       YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG""".translate(None, " \n\t")
+    ref_adk_sequence = (
+        "MRIILLGAPGAGKGTQAQFIMEKYGIPQISTGDMLRAAVKSGSELGKQAKDIMDAGKLVT"
+        "DELVIALVKERIAQEDCRNGFLLDGFPRTIPQADAMKEAGINVDYVLEFDVPDELIVDRI"
+        "VGRRVHAPSGRVYHVKFNPPKVEGKDDVTGEELTTRKDDQEETVRKRLVEYHQMTAPLIG"
+        "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
+    )
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -228,19 +239,23 @@ class TestAtomGroup(TestCase):
 
     def test_newAtomGroup(self):
         newag = MDAnalysis.core.AtomGroup.AtomGroup(self.ag[1000:2000:200])
-        assert_equal(type(newag), type(self.ag), "Failed to make a new AtomGroup: type mismatch")
+        assert_equal(type(newag), type(self.ag),
+                     "Failed to make a new AtomGroup: type mismatch")
         assert_equal(newag.n_atoms, len(self.ag[1000:2000:200]))
         assert_equal(newag.n_residues, 5)
-        assert_almost_equal(newag.total_mass(), 40.044999999999995)  # check any special method
+        # check any special method
+        assert_almost_equal(newag.total_mass(), 40.044999999999995)
 
     def test_getitem_int(self):
         assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
 
     def test_getitem_slice(self):
-        assert_equal(self.universe.atoms[0:4]._atoms, self.universe.atoms._atoms[:4])
+        assert_equal(self.universe.atoms[0:4]._atoms,
+                     self.universe.atoms._atoms[:4])
 
     def test_getitem_slice2(self):
-        assert_equal(self.universe.atoms[0:8:2]._atoms, self.universe.atoms._atoms[0:8:2])
+        assert_equal(self.universe.atoms[0:8:2]._atoms,
+                     self.universe.atoms._atoms[0:8:2])
 
     def test_getitem_str(self):
         ag1 = self.universe.atoms['HT1']
@@ -291,28 +306,30 @@ class TestAtomGroup(TestCase):
 
     def test_center_of_geometry(self):
         assert_array_almost_equal(self.ag.center_of_geometry(),
-                                  np.array([-0.04223963, 0.0141824, -0.03505163],
-                                           dtype=np.float32))
+                                  np.array([-0.04223963, 0.0141824,
+                                            -0.03505163], dtype=np.float32))
 
     def test_center_of_mass(self):
         assert_array_almost_equal(self.ag.center_of_mass(),
-                                  np.array([-0.01094035, 0.05727601, -0.12885778]))
+                                  np.array([-0.01094035, 0.05727601,
+                                            -0.12885778]))
 
     def test_coordinates(self):
-        assert_array_almost_equal(self.ag.coordinates()[1000:2000:200],
-                                  np.array([[3.94543672, -12.4060812, -7.26820087],
-                                            [13.21632767, 5.879035, -14.67914867],
-                                            [12.07735443, -9.00604534, 4.09301519],
-                                            [11.35541916, 7.0690732, -0.32511973],
-                                            [-13.26763439, 4.90658951, 10.6880455]],
-                                           dtype=np.float32))
+        assert_array_almost_equal(
+            self.ag.coordinates()[1000:2000:200],
+            np.array([[3.94543672, -12.4060812, -7.26820087],
+                      [13.21632767, 5.879035, -14.67914867],
+                      [12.07735443, -9.00604534, 4.09301519],
+                      [11.35541916, 7.0690732, -0.32511973],
+                      [-13.26763439, 4.90658951, 10.6880455]],
+                     dtype=np.float32))
 
     def test_principal_axes(self):
-        assert_array_almost_equal(self.ag.principal_axes(),
-                                  np.array([
-                                      [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
-                                      [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                                      [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
+        assert_array_almost_equal(
+            self.ag.principal_axes(),
+            np.array([[-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+                      [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
+                      [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
 
     def test_total_charge(self):
         assert_almost_equal(self.ag.total_charge(), -4.0)
@@ -390,30 +407,33 @@ class TestAtomGroup(TestCase):
     def test_occupancies(self):
         assert_raises(NoDataError, getattr, self.ag, 'occupancies')
         self.ag.occupancies = 0.25
-        assert_array_almost_equal(self.ag.occupancies, np.ones(len(self.ag)) * 0.25)
+        assert_array_almost_equal(self.ag.occupancies,
+                                  np.ones(len(self.ag)) * 0.25)
 
     def test_sequence_from_atoms(self):
         p = self.universe.select_atoms("protein")
         assert_equal(p.sequence(format="string"),
                      p.residues.sequence(format="string"),
-                     err_msg="sequence() yields different results for residues and atoms")
+                     err_msg="sequence() yields different results for "
+                     "residues and atoms")
 
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
-        assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
+        assert_equal(p.residues.sequence(format="string"),
+                     self.ref_adk_sequence)
 
     def test_sequence_SeqRecord(self):
         p = self.universe.select_atoms("protein")
         s = p.residues.sequence(format="SeqRecord",
-                       id="P69441", name="KAD_ECOLI Adenylate kinase",
-                       description="EcAdK from pdb 4AKE")
+                                id="P69441", name="KAD_ECOLI Adenylate kinase",
+                                description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
         assert_equal(s.seq.tostring(), self.ref_adk_sequence)
 
     def test_sequence_SeqRecord_default(self):
         p = self.universe.select_atoms("protein")
         s = p.residues.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
-                       description="EcAdK from pdb 4AKE")
+                                description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
         assert_equal(s.seq.tostring(), self.ref_adk_sequence)
 
@@ -423,11 +443,14 @@ class TestAtomGroup(TestCase):
         assert_equal(s.tostring(), self.ref_adk_sequence)
 
     def test_sequence_nonIUPACresname(self):
-        """test_sequence_nonIUPACresname: non recognized amino acids raise ValueError"""
+        """test_sequence_nonIUPACresname: non recognized amino acids raise
+        ValueError"""
         # fake non-IUPAC residue name for this test
         self.universe.select_atoms("resname MET").residues.set_resnames("MSE")
+
         def wrong_res():
             self.universe.atoms.sequence()
+
         assert_raises(ValueError, wrong_res)
 
     def test_no_uni_1(self):
@@ -459,7 +482,7 @@ class TestAtomGroup(TestCase):
         # Should make sure that the user facing info stays as expected
         assert_equal(repr(self.ag), "<AtomGroup with 3341 atoms>")
 
-    ## Issue 202 following 4 tests
+    # Issue 202 following 4 tests
     def test_set_resnum_single(self):
         ag = self.universe.atoms[:3]
         new = 5
@@ -492,7 +515,8 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resname, v)
         assert_equal(all(ag.resnames == new), True)
 
-    # TODO: add all other methods except select_atoms(), see test_atomselections.py
+    # TODO: add all other methods except select_atoms(), see
+    # test_atomselections.py
     def test_set_charges(self):
         # Charges are initially 0
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
@@ -543,29 +567,32 @@ class TestAtomGroup(TestCase):
         assert_raises(ValueError, badpack, ag)
 
     def test_packintobox(self):
-        """test AtomGroup.pack_into_box(): Tests application of periodic boundary conditions on coordinates
+        """test AtomGroup.pack_into_box(): Tests application of periodic boundary
+        conditions on coordinates
 
-        Reference system doesn't have dimensions, so an arbitrary box is imposed on the system
+        Reference system doesn't have dimensions, so an arbitrary box is
+        imposed on the system
+
         """
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
-
-        ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))  # Provide arbitrary box
-        assert_array_almost_equal(ag.coordinates(),
-                                  np.array(
-                                      [
-                                          [3.94543672, 2.5939188, 2.73179913],
-                                          [3.21632767, 0.879035, 0.32085133],
-                                          [2.07735443, 0.99395466, 4.09301519],
-                                          [1.35541916, 2.0690732, 4.67488003],
-                                          [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
+        # Provide arbitrary box
+        ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))
+        assert_array_almost_equal(
+            ag.coordinates(),
+            np.array([[3.94543672, 2.5939188, 2.73179913],
+                      [3.21632767, 0.879035, 0.32085133],
+                      [2.07735443, 0.99395466, 4.09301519],
+                      [1.35541916, 2.0690732, 4.67488003],
+                      [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
 
     def test_residues(self):
         u = self.universe
         assert_equal(u.residues[100]._atoms,
                      u.select_atoms('resname ILE and resid 101')._atoms,
-                     "Direct selection from residue group does not match expected I101.")
+                     "Direct selection from residue group does not match "
+                     "expected I101.")
 
     def test_segments(self):
         u = self.universe
@@ -581,11 +608,13 @@ class TestAtomGroup(TestCase):
     def test_index_slice(self):
         u = self.universe
         a = u.atoms[100:200:10]
-        assert_(isinstance(a, AtomGroup), "slice index did not return AtomGroup")
+        assert_(isinstance(a, AtomGroup),
+                "slice index did not return AtomGroup")
 
     def test_index_slice_empty(self):
         u = self.universe
-        assert_array_equal(u.atoms[0:0], [], "making an empty AtomGroup failed")
+        assert_array_equal(u.atoms[0:0], [],
+                           "making an empty AtomGroup failed")
 
     def test_index_advancedslice(self):
         u = self.universe
@@ -599,6 +628,16 @@ class TestAtomGroup(TestCase):
         # index an array with a sequence of bools
         # issue #282
         sel = np.array([True, False, True])
+        ag = self.universe.atoms[10:13]
+        ag2 = ag[sel]
+        assert_equal(len(ag2), 2)
+        for at in [ag[0], ag[2]]:
+            assert_equal(at in ag2, True)
+
+    def test_boolean_indexing_2(self):
+        # index an array with a sequence of bools
+        # issue #282
+        sel = [True, False, True]
         ag = self.universe.atoms[10:13]
         ag2 = ag[sel]
         assert_equal(len(ag2), 2)
@@ -678,7 +717,8 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
     def test_dihedral_ValueError(self):
-        """test that AtomGroup.dihedral() raises ValueError if not exactly 4 atoms given"""
+        """test that AtomGroup.dihedral() raises ValueError if not exactly
+        4 atoms given"""
         nodih = self.universe.select_atoms("resid 3:10")
         assert_raises(ValueError, getattr, nodih, 'dihedral')
         nodih = self.universe.select_atoms("resid 3:5")
@@ -688,15 +728,17 @@ class TestAtomGroup(TestCase):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
-                                 "atom 4AKE 21 N", "atom 4AKE 21 HN")
-        assert_almost_equal(peptbond.improper.value(), 168.52952575683594, self.dih_prec,
-                            "Peptide bond improper dihedral for M21 calculated wrongly.")
+                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
+        assert_almost_equal(peptbond.improper.value(), 168.52952575683594,
+                            self.dih_prec,
+                            "Peptide bond improper dihedral for M21 "
+                            "calculated wrongly.")
 
     def test_dihedral_equals_improper(self):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
-                                 "atom 4AKE 21 N", "atom 4AKE 21 HN")
+                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
         assert_equal(peptbond.improper.value(), peptbond.dihedral.value(),
                      "improper() and proper dihedral() give different results")
 
@@ -718,7 +760,8 @@ class TestAtomGroup(TestCase):
 
     def test_angle(self):
         self.universe.trajectory.rewind()  # just to make sure...
-        sel3 = self.universe.s4AKE.r98.select_atoms("name OE1", "name CD", "name OE2")
+        sel3 = self.universe.s4AKE.r98.select_atoms("name OE1", "name CD",
+                                                    "name OE2")
         assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
@@ -746,7 +789,9 @@ class TestAtomGroup(TestCase):
         ag.positions = pos
         # should work
         assert_almost_equal(ag.coordinates(), pos,
-                            err_msg="failed to update atoms 12:42 position to new position")
+                            err_msg="failed to update atoms 12:42 position "
+                            "to new position")
+
         def set_badarr(pos=pos):
             # create wrong size array
             badarr = np.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
@@ -758,11 +803,12 @@ class TestAtomGroup(TestCase):
         pos = ag.get_positions() + 3.14
         ag.set_positions(pos)
         assert_almost_equal(ag.coordinates(), pos,
-                            err_msg="failed to update atoms 12:42 position to new position")
+                            err_msg="failed to update atoms 12:42 position "
+                            "to new position")
 
     def test_no_velocities_raises_NoDataError(self):
         def get_vel(ag=self.universe.select_atoms("bynum 12:42")):
-            v = ag.get_velocities()
+            ag.get_velocities()
         # trj has no velocities
         assert_raises(NoDataError, get_vel)
 
@@ -791,7 +837,8 @@ class TestAtomGroup(TestCase):
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
         assert_equal(ag.resids, 999 * np.ones(ag.n_residues),
-                     err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
+                     err_msg="failed to set_resid of residues belonging to "
+                     "atoms 12:42 to same resid")
 
     def test_set_names(self):
         ag = self.universe.atoms[:2]
@@ -807,10 +854,12 @@ class TestAtomGroup(TestCase):
         ag.set_resids(resids)
         # check individual atoms
         assert_equal([a.resid for a in ag], resids,
-                     err_msg="failed to set_resid atoms 12:42 to resids {0}".format(resids))
+                     err_msg="failed to set_resid atoms 12:42 to "
+                     "resids {0}".format(resids))
         # check residues
         assert_equal(ag.residues.resids, np.unique(resids),
-                     err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
+                     err_msg="failed to set_resid of residues belonging to "
+                     "atoms 12:42 to same resid")
 
     def test_merge_residues(self):
         ag = self.universe.select_atoms("resid 12:14")
@@ -820,10 +869,14 @@ class TestAtomGroup(TestCase):
         nres_new = self.universe.atoms.n_residues
         r_merged = self.universe.select_atoms("resid 12:14").residues
         natoms_new = self.universe.select_atoms("resid 12").n_atoms
-        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
+        assert_equal(len(r_merged), 1,
+                     err_msg="set_resid failed to merge residues: "
+                     "merged = {0}".format(r_merged))
         assert_equal(nres_new, nres_old - 2,
-                     err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
-        assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms on merge".format(r_merged))
+                     err_msg="set_resid failed to merge residues: "
+                     "merged = {0}".format(r_merged))
+        assert_equal(natoms_new, natoms_old,
+                     err_msg="set_resid lost atoms on merge".format(r_merged))
 
     def test_set_masses(self):
         ag = self.universe.select_atoms("bynum 12:42 and name H*")
@@ -832,7 +885,8 @@ class TestAtomGroup(TestCase):
         # check individual atoms
         assert_equal([a.mass for a in ag],
                      mass * np.ones(ag.n_atoms),
-                     err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
+                     err_msg="failed to set_mass H* atoms in resid "
+                     "12:42 to {0}".format(mass))
 
     def test_set_segids(self):
         u = self.universe
@@ -847,20 +901,22 @@ class TestAtomGroup(TestCase):
         assert_raises(ValueError, self.ag.set_masses, [0.1, 0.2])
 
     def test_split_atoms(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
         sg = ag.split("atom")
         assert_equal(len(sg), len(ag))
-        for g, ref_atom in itertools.izip(sg, ag):
+        for g, ref_atom in zip(sg, ag):
             atom = g[0]
             assert_equal(len(g), 1)
             assert_equal(atom.name, ref_atom.name)
             assert_equal(atom.resid, ref_atom.resid)
 
     def test_split_residues(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
         sg = ag.split("residue")
         assert_equal(len(sg), len(ag.residues.resids))
-        for g, ref_resname in itertools.izip(sg, ag.residues.resnames):
+        for g, ref_resname in zip(sg, ag.residues.resnames):
             if ref_resname == "GLY":
                 assert_equal(len(g), 1)
             else:
@@ -869,10 +925,11 @@ class TestAtomGroup(TestCase):
                 assert_equal(atom.resname, ref_resname)
 
     def test_split_segments(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
         sg = ag.split("segment")
         assert_equal(len(sg), len(ag.segments.segids))
-        for g, ref_segname in itertools.izip(sg, ag.segments.segids):
+        for g, ref_segname in zip(sg, ag.segments.segids):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
@@ -885,6 +942,8 @@ class TestAtomGroup(TestCase):
 
 
 class TestAtomGroupNoTop(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
         self.ag = self.u.atoms[:10]
@@ -905,7 +964,8 @@ class TestAtomGroupNoTop(TestCase):
     def test_noimps(self):
         assert_equal(self.ag.impropers, [])
 
-    # Because I'm messing with atom info, I've put these here separated from other tests
+    # Because I'm messing with atom info, I've put these here separated from
+    # other tests
     def test_clear_cache(self):
         self.ag._clear_caches()
 
@@ -914,10 +974,12 @@ class TestAtomGroupNoTop(TestCase):
     def test_rebuild_cache_residues(self):
         assert_equal(len(self.ag.residues), 1)
 
-        # Mess with stuff, add a different residues and segment for the first atom
+        # Mess with stuff, add a different residues and segment for the first
+        # atom
         self.ag[0].residue = self.u.atoms[100].residue
 
-        # There's actually 2 residues now, but because of cache this isn't detected
+        # There's actually 2 residues now, but because of cache this isn't
+        # detected
         assert_equal(len(self.ag.residues), 1)
 
         # After cache rebuild second residue is finally seen
@@ -925,7 +987,8 @@ class TestAtomGroupNoTop(TestCase):
         assert_equal(len(self.ag.residues), 2)
 
     def test_rebuild_cache_segments(self):
-        # This test is similar to above, but a second segment has to be taken from a new universe
+        # This test is similar to above, but a second segment has to be taken
+        # from a new universe
         assert_equal(len(self.ag.segments), 1)
 
         u2 = MDAnalysis.Universe(PSF_notop, DCD)
@@ -936,15 +999,16 @@ class TestAtomGroupNoTop(TestCase):
         assert_equal(len(self.ag.segments), 2)
 
     def test_atom_cachesize_change(self):
-        # By default 10,000 atoms are required to necessitate cache lookup, we can change this though
+        # By default 10,000 atoms are required to necessitate cache lookup, we
+        # can change this though
         ag = self.u.atoms[:100]
         # run a __contains__ query
-        val = self.u.atoms[10] in ag
+        self.u.atoms[10] in ag
         # Check that cache wasn't used
         assert_equal('atoms' in ag._cache, False)
         ag._atomcache_size = 50  # now will make cache if size > 50
         # Run another query
-        val = self.u.atoms[10] in ag
+        self.u.atoms[10] in ag
         # Check if cache was built this time
         assert_equal('atoms' in ag._cache, True)
 
@@ -978,6 +1042,8 @@ class TestAtomGroupNoTop(TestCase):
 class TestUniverseSetTopology(TestCase):
     """Tests setting of bonds/angles/dihedrals/impropers from Universe."""
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1026,8 +1092,8 @@ class TestUniverseSetTopology(TestCase):
     # Delete
     # Assert it's not in cache
     def test_bonds_delete(self):
-        bg = self.u.bonds
-        abg = self.u.atoms[0].bonds
+        self.u.bonds
+        self.u.atoms[0].bonds
 
         assert_equal('bonds' in self.u._cache, True)
         assert_equal('bondDict' in self.u._cache, True)
@@ -1038,8 +1104,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('bondDict' in self.u._cache, False)
 
     def test_angles_delete(self):
-        bg = self.u.angles
-        abg = self.u.atoms[0].angles
+        self.u.angles
+        self.u.atoms[0].angles
 
         assert_equal('angles' in self.u._cache, True)
         assert_equal('angleDict' in self.u._cache, True)
@@ -1050,8 +1116,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('angleDict' in self.u._cache, False)
 
     def test_dihedrals_delete(self):
-        bg = self.u.dihedrals
-        abg = self.u.atoms[0].dihedrals
+        self.u.dihedrals
+        self.u.atoms[0].dihedrals
 
         assert_equal('dihedrals' in self.u._cache, True)
         assert_equal('dihedralDict' in self.u._cache, True)
@@ -1062,8 +1128,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('dihedralDict' in self.u._cache, False)
 
     def test_impropers_delete(self):
-        bg = self.u.impropers
-        abg = self.u.atoms[0].impropers
+        self.u.impropers
+        self.u.atoms[0].impropers
 
         assert_equal('impropers' in self.u._cache, True)
         assert_equal('improperDict' in self.u._cache, True)
@@ -1075,6 +1141,8 @@ class TestUniverseSetTopology(TestCase):
 
 
 class TestResidue(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.res = self.universe.residues[100]
@@ -1104,16 +1172,20 @@ class TestResidue(TestCase):
 
 
 class TestResidueGroup(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.rg = self.universe.atoms.residues
 
     def test_newResidueGroup(self):
-        """test that slicing a ResidueGroup returns a new ResidueGroup (Issue 135)"""
+        """test that slicing a ResidueGroup returns a new ResidueGroup
+        (Issue 135)"""
         rg = self.universe.atoms.residues
         newrg = rg[10:20:2]
-        assert_equal(type(newrg), type(rg), "Failed to make a new ResidueGroup: type mismatch")
+        assert_equal(type(newrg), type(rg),
+                     "Failed to make a new ResidueGroup: type mismatch")
         assert_equal(len(newrg), len(rg[10:20:2]))
 
     def test_n_atoms(self):
@@ -1133,7 +1205,8 @@ class TestResidueGroup(TestCase):
 
     def test_len(self):
         """testing that len(residuegroup) == residuegroup.n_residues"""
-        assert_equal(len(self.rg), self.rg.n_residues, "len and n_residues disagree")
+        assert_equal(len(self.rg), self.rg.n_residues,
+                     "len and n_residues disagree")
 
     def test_set_resids(self):
         rg = self.universe.select_atoms("bynum 12:42").residues
@@ -1145,7 +1218,8 @@ class TestResidueGroup(TestCase):
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
         assert_equal(rg.resids, resid * np.ones(rg.n_residues),
-                     err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
+                     err_msg="failed to set_resid of residues belonging to "
+                     "atoms 12:42 to same resid")
 
     def test_set_resids(self):
         """test_set_resid: set ResidueGroup resids on a per-residue basis"""
@@ -1153,25 +1227,28 @@ class TestResidueGroup(TestCase):
         resids = np.array(rg.resids) + 1000
         rg.set_resids(resids)
         # check individual atoms
-        for r, resid in itertools.izip(rg, resids):
+        for r, resid in zip(rg, resids):
             assert_equal([a.resid for a in r.atoms],
                          resid * np.ones(r.n_atoms),
-                         err_msg="failed to set_resid residues 10:18 to same resid in residue {0}\n"
-                                 "(resids = {1}\nresidues = {2})".format(r, resids, rg))
+                         err_msg="failed to set_resid residues 10:18 to same "
+                         "resid in residue {0}\n"
+                         "(resids = {1}\nresidues = {2})".format(r, resids, rg))
         # check residues
-        # NOTE: need to create a new selection because underlying Residue objects are not changed;
-        #       only Atoms are changed, and Residues are rebuilt from Atoms.
+        # NOTE: need to create a new selection because underlying Residue
+        #       objects are not changed; only Atoms are changed, and Residues
+        #       are rebuilt from Atoms.
         rgnew = self.universe.select_atoms("resid 1010:1018").residues
         assert_equal(rgnew.resids, np.unique(resids),
-                     err_msg="failed to set_resid of residues belonging to residues 10:18 to new resids")
+                     err_msg="failed to set_resid of residues belonging to "
+                     "residues 10:18 to new resids")
 
     def test_set_resids_updates_self(self):
         rg = self.universe.select_atoms("resid 10:18").residues
         resids = np.array(rg.resids) + 1000
         rg.set_resids(resids)
-        #rgnew = self.universe.select_atoms("resid 1000:1008").residues
         assert_equal(rg.resids, np.unique(resids),
-                     err_msg="old selection was not changed in place after set_resid")
+                     err_msg="old selection was not changed in place "
+                     "after set_resid")
 
     def test_set_resnum_single(self):
         rg = self.universe.residues[:3]
@@ -1229,13 +1306,18 @@ class TestResidueGroup(TestCase):
         nres_new = self.universe.atoms.n_residues
         r_merged = self.universe.select_atoms("resid 12:14").residues
         natoms_new = self.universe.select_atoms("resid 12").n_atoms
-        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
+        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge "
+                     "residues: merged = {0}".format(r_merged))
         assert_equal(nres_new, nres_old - 2,
-                     err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
-        assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms on merge".format(r_merged))
+                     err_msg="set_resid failed to merge residues: "
+                     "merged = {0}".format(r_merged))
+        assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms "
+                     "on merge".format(r_merged))
 
-        assert_equal(self.universe.residues.n_residues, self.universe.atoms.n_residues,
-                     err_msg="Universe.residues and Universe.atoms.n_residues do not agree after residue "
+        assert_equal(self.universe.residues.n_residues,
+                     self.universe.atoms.n_residues,
+                     err_msg="Universe.residues and Universe.atoms.n_residues "
+                     "do not agree after residue "
                              "merge.")
 
     def test_set_masses(self):
@@ -1249,6 +1331,8 @@ class TestResidueGroup(TestCase):
 
 
 class TestSegment(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.universe.residues[:100].set_segids("A")  # make up some segments
@@ -1287,6 +1371,8 @@ class TestSegment(TestCase):
 
 
 class TestSegmentGroup(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -1371,9 +1457,6 @@ class TestAtomGroupVelocities(TestCase):
         v = self.ag.get_velocities()
         assert_(np.any(np.abs(v) > 1e-6), "velocities should be non-zero")
 
-    def test_vel_src(self):
-        assert_equal(self.universe.trajectory.ts.data['velocity_source'], 0)
-
     @dec.slow
     def test_velocities(self):
         ag = self.universe.atoms[42:45]
@@ -1396,6 +1479,8 @@ class TestAtomGroupVelocities(TestCase):
 class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.prec = 6
@@ -1428,18 +1513,17 @@ class _WriteAtoms(TestCase):
     ext = None  # override to test various output writers
     precision = 3
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
         del self.universe
+        del self.tempdir
 
     def universe_from_tmp(self):
         return MDAnalysis.Universe(self.outfile, convert_units=True)
@@ -1448,7 +1532,7 @@ class _WriteAtoms(TestCase):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
         assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
-                                  err_msg="atom coordinate mismatch between original and %s file" % self.ext)
+                                  err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
     def test_write_empty_atomgroup(self):
         sel = self.universe.select_atoms('name doesntexist')
@@ -1525,10 +1609,9 @@ class TestWriteGRO(_WriteAtoms):
                      "testing suite.)")
 
 
-import MDAnalysis.core.AtomGroup
-
-
 @attr("issue")
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
     universe = MDAnalysis.Universe(PSF, DCD)
@@ -1546,6 +1629,8 @@ def test_generated_residueselection():
 
 
 @attr('issue')
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_instantselection_termini():
     """Test that instant selections work, even for residues that are also termini (Issue 70)"""
     universe = MDAnalysis.Universe(PSF, DCD)
@@ -1559,6 +1644,8 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_bad_topology(self):
         # tests that Universe builds produce the right error message
         def bad_load():
@@ -1567,21 +1654,29 @@ class TestUniverse(TestCase):
         assert_raises(ValueError, bad_load)
 
     @attr('issue')
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_strict(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=False)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_permissive(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=True)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1597,6 +1692,8 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_almost_equal(u.atoms.positions, ref.atoms.positions)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_list(self):
         # Universe(top, [trj, trj, ...])
         ref = MDAnalysis.Universe(PSF, DCD)
@@ -1604,6 +1701,8 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_args(self):
         # Universe(top, trj, trj, ...)
         ref = MDAnalysis.Universe(PSF, DCD)
@@ -1611,12 +1710,14 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_pickle_raises_NotImplementedError(self):
-        import cPickle
-
         u = MDAnalysis.Universe(PSF, DCD)
         assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90])
@@ -1625,6 +1726,8 @@ class TestUniverse(TestCase):
 
 
 class TestPBCFlag(TestCase):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
@@ -1734,6 +1837,8 @@ class TestPBCFlag(TestCase):
 
 
 class TestAsUniverse(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
 
@@ -1756,6 +1861,8 @@ class TestAsUniverse(TestCase):
 
 
 class TestFragments(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
@@ -1884,6 +1991,8 @@ class TestCustomReaders(TestCase):
     """
     Can pass a reader as kwarg on Universe creation
     """
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_reader(self):
         # check that reader passing works
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
@@ -1904,11 +2013,15 @@ class TestCustomReaders(TestCase):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_parser(self):
         # topology reader passing works
         u = MDAnalysis.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_both(self):
         # use custom for both
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
@@ -1917,6 +2030,8 @@ class TestCustomReaders(TestCase):
 
 
 class TestWrap(TestCase):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:100]
@@ -2120,6 +2235,8 @@ class TestAtomGroupProperties(object):
             assert_equal(getattr(atom, att), val,
                          err_msg="Change to AtomGroup not reflected in Atoms for propert: {0}".format(att))
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_attributes(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.atoms.occupancies = 1.0
@@ -2199,7 +2316,7 @@ class TestCrossUniverse(object):
         A = [u1.atoms[:2], u1.atoms[3]]
         B = [u2.atoms[:3], u2.atoms[0]]
 
-        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG 
+        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
         for x, y in itertools.product(A, B):
             yield self._check_badadd, x, y
 

@@ -1,12 +1,12 @@
 import MDAnalysis as mda
 import numpy as np
 import os
-from six.moves import zip
+from six.moves import zip, range
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal,
-                           assert_allclose)
+                           assert_allclose, dec)
 import tempdir
 from unittest import TestCase
 
@@ -14,6 +14,7 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests import module_not_found
 
 
 @attr('issue')
@@ -95,7 +96,8 @@ class TestDCDReader(_TestDCD):
 
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
-        assert_equal(frames, range(20, 5, -1), "reversing dcd [20:5:-1]")
+        assert_equal(frames, list(range(20, 5, -1)),
+                     "reversing dcd [20:5:-1]")
 
     def test_n_atoms(self):
         assert_equal(self.universe.trajectory.n_atoms, 3341,
@@ -305,16 +307,16 @@ class TestDCDWriter_Issue59(TestCase):
             dcd.atoms.positions,
             xtc.atoms.positions,
             2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
-            dcd.trajectory.frame)
+            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
+            dcd.trajectory.frame))
         xtc.trajectory[3]
         dcd.trajectory[3]
         assert_array_almost_equal(
             dcd.atoms.positions,
             xtc.atoms.positions,
             2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
-            dcd.trajectory.frame)
+            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
+            dcd.trajectory.frame))
 
 
 class _TestDCDReader_TriclinicUnitcell(TestCase):
@@ -369,6 +371,8 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
 
 
 class TestNCDF2DCD(TestCase):
+    @dec.skipif(module_not_found("netCDF4"),
+                "Test skipped because netCDF is not available.")
     def setUp(self):
         self.u = mda.Universe(PRMncdf, NCDF)
         # create the DCD
@@ -399,8 +403,8 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.dimensions,
                 ts_copy.dimensions,
                 3,
-                err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" %
-                ts_orig.frame)
+                err_msg="NCDF->DCD: unit cell dimensions wrong at frame {0:d}".format(
+                ts_orig.frame))
 
     def test_coordinates(self):
         for ts_orig, ts_copy in zip(self.u.trajectory,
@@ -409,8 +413,8 @@ class TestNCDF2DCD(TestCase):
                 self.u.atoms.positions,
                 self.w.atoms.positions,
                 3,
-                err_msg="NCDF->DCD: coordinates wrong at frame %d" %
-                ts_orig.frame)
+                err_msg="NCDF->DCD: coordinates wrong at frame {0:d}".format(
+                ts_orig.frame))
 
 
 class TestDCDCorrel(_TestDCD):

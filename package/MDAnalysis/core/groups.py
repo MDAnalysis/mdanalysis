@@ -11,6 +11,7 @@ from . import selection
 from . import flags
 from . import levels
 from ..exceptions import NoDataError
+from . import topologyobjects
 
 
 def make_classes():
@@ -946,6 +947,82 @@ class AtomGroup(object):
 
         return [self[levelindices == index] for index in
                 np.unique(levelindices)]
+
+    @property
+    def bond(self):
+        """This AtomGroup represented as a Bond object
+
+        Returns
+        -------
+          A :class:`MDAnalysis.core.topologyobjects.Bond` object
+
+        Raises
+        ------
+          `ValueError` if the AtomGroup is not length 2
+
+        .. versionadded:: 0.11.0
+        """
+        if len(self) != 2:
+            raise ValueError(
+                "bond only makes sense for a group with exactly 2 atoms")
+        return topologyobjects.Bond(self._ix, self.universe)
+
+    @property
+    def angle(self):
+        """This AtomGroup represented as an Angle object
+
+        Returns
+        -------
+          A :class:`MDAnalysis.core.topologyobjects.Angle` object
+
+        Raises
+        ------
+          `ValueError` if the AtomGroup is not length 3
+
+        .. versionadded:: 0.11.0
+        """
+        if len(self) != 3:
+            raise ValueError(
+                "angle only makes sense for a group with exactly 3 atoms")
+        return topologyobjects.Angle(self._ix, self.universe)
+
+    @property
+    def dihedral(self):
+        """This AtomGroup represented as a Dihedral object
+
+        Returns
+        -------
+          A :class:`MDAnalysis.core.topologyobjects.Dihedral` object
+
+        Raises
+        ------
+          `ValueError` if the AtomGroup is not length 4
+
+        .. versionadded:: 0.11.0
+        """
+        if len(self) != 4:
+            raise ValueError(
+                "dihedral only makes sense for a group with exactly 4 atoms")
+        return topologyobjects.Dihedral(self._ix, self.universe)
+
+    @property
+    def improper(self):
+        """This AtomGroup represented as an ImproperDihedral object
+
+        Returns
+        -------
+          A :class:`MDAnalysis.core.topologyobjects.ImproperDihedral` object
+
+        Raises
+        ------
+          `ValueError` if the AtomGroup is not length 4
+
+        .. versionadded:: 0.11.0
+        """
+        if len(self) != 4:
+            raise ValueError(
+                "improper only makes sense for a group with exactly 4 atoms")
+        return topologyobjects.ImproperDihedral(self._ix, self.universe)
 
 
 class ResidueGroup(object):

@@ -55,9 +55,10 @@ def test_version_at_packagelevel():
     return test_version_format(version)
 
 
-## The following allow testing of the memleak tester plugin.
-## Keep commented out unless you suspect the plugin
-## might be misbehaving."""
+# The following allow testing of the memleak tester plugin.
+# Keep commented out unless you suspect the plugin
+# might be misbehaving. Apparently python3 is immune to these leaks!"""
+#from numpy.testing import TestCase
 #class A():
 #    """This is a small leaky class that won't break anything."""
 #    def __init__(self):

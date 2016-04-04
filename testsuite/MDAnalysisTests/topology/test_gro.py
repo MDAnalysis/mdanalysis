@@ -14,6 +14,7 @@
 #
 from numpy.testing import (
     assert_,
+    assert_raises,
 )
 
 import MDAnalysis as mda
@@ -22,6 +23,8 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     GRO,
     two_water_gro_widebox,
+    GRO_empty_atom,
+    GRO_missing_atomname,
 )
 
 
@@ -42,7 +45,6 @@ class TestGROParser(ParserBase):
             assert_(len(self.top.resnames) == self.top.n_residues)
 
 
-
 class TestGROWideBox(object):
     """Tests for Issue #548"""
     def test_atoms(self):
@@ -50,3 +52,15 @@ class TestGROWideBox(object):
         with parser(two_water_gro_widebox) as p:
             s = p.parse()
         assert_(s.n_atoms == 6)
+
+
+def test_parse_empty_atom_IOerror():
+    parser = mda.topology.GROParser.GROParser
+    with parser(GRO_empty_atom) as p:
+      assert_raises(IOError, p.parse)
+
+
+def test_parse_missing_atomname_IOerror():
+    parser = mda.topology.GROParser.GROParser
+    with parser(GRO_missing_atomname) as p:
+      assert_raises(IOError, p.parse)

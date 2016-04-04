@@ -21,6 +21,7 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
     PDB_small,
+    PDB_conect
 )
 
 
@@ -44,3 +45,40 @@ class TestPDBParserSegids(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+class TestPDBConect(object):
+    """Testing PDB topology parsing (PrimitivePDB)"""
+    @staticmethod
+    def test_conect_parser():
+        lines = ("CONECT1233212331",
+                 "CONECT123331233112334",
+                 "CONECT123341233312335",
+                 "CONECT123351233412336",
+                 "CONECT12336123271233012335",
+                 "CONECT12337 7718 84081234012344",
+                 "CONECT1233812339123401234112345")
+        results = ((12332, [12331]),
+                   (12333, [12331, 12334]),
+                   (12334, [12333, 12335]),
+                   (12335, [12334, 12336]),
+                   (12336, [12327, 12330, 12335]),
+                   (12337, [7718, 8408, 12340, 12344]),
+                   (12338, [12339, 12340, 12341, 12345]))
+        for line, res in zip(lines, results):
+            bonds = mda.topology.PrimitivePDBParser._parse_conect(line)
+            assert_equal(bonds[0], res[0])
+            for bond, res_bond in zip(bonds[1], res[1]):
+                assert_equal(bond, res_bond)
+
+        assert_raises(RuntimeError,
+                      mda.topology.PrimitivePDBParser._parse_conect,
+                      'CONECT12337 7718 84081234012344123')
+
+    @staticmethod
+    def test_conect_topo_parser():
+        """Check that the parser works as intended,
+        and that the returned value is a dictionary
+        """
+        with mda.topology.PrimitivePDBParser(PDB_conect) as p:
+            top = p.parse()
+            assert_(isinstance(top, mda.core.topology.Topology))

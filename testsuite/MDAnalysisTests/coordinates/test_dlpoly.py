@@ -44,7 +44,7 @@ class TestConfigReader(_DLPConfig):
     f = DLP_CONFIG
 
     def test_read(self):
-        assert self.rd.title == "DL_POLY: Potassium Chloride Test Case"
+        assert_equal(self.rd.title, "DL_POLY: Potassium Chloride Test Case")
 
 
 class TestConfigOrder(_DLPConfig):

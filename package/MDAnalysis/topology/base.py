@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -30,39 +30,52 @@ Classes
 """
 import numpy as np
 import warnings
+import six
 
+from . import _PARSERS
 from ..coordinates.base import IObase
+from ..lib import util
 
 
-class TopologyReader(IObase):
+class _Topologymeta(type):
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = util.asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _PARSERS[f] = cls
+
+
+class TopologyReader(six.with_metaclass(_Topologymeta, IObase)):
     """Base class for topology readers
 
-    All topology readers must:
-      * Be initialised with a filename
-      * Return a Topology object with their `parse` method
+    Parameters
+    ----------
+    filename : str
+        name of the topology file
+    universe : Universe, optional
+        Supply a Universe to the Parser.  This then passes it to the
+        atom instances that are created within parsers.
+    kwargs : optional
+        Other keyword arguments that can vary with the specific format.
+        These are stored as self.kwargs
 
-    :Raises:
-       * :exc:`IOError` upon failing to read a topology file
-       * :exc:`ValueError` upon failing to make sense of the read data
+    All topology readers must define a `parse` method which
+    returns a Topology object
+
+    Raises
+    ------
+    * :exc:`IOError` upon failing to read a topology file
+    * :exc:`ValueError` upon failing to make sense of the read data
 
     .. versionadded:: 0.9.0
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
     def __init__(self, filename, **kwargs):
-        """Standard arguments for a TopologyReader:
-
-        :Arguments:
-
-           *filename*
-               name of the topology file
-
-        :Keywords:
-           *kwargs*
-               Other keyword arguments that can vary with the specific format.
-               These are stored as self.kwargs
-
-        """
         self.filename = filename
         self.kwargs = kwargs
 

@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -22,14 +22,15 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
+from MDAnalysisTests import parser_not_found
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
+                           assert_array_equal)
 from nose.plugins.attrib import attr
 
 import os
-import tempfile
-import itertools
+import tempdir
 
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
@@ -77,14 +78,11 @@ class TestCapping(TestCase):
 
     def setUp(self):
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_capping_file(self):
         peptide = MDAnalysis.Universe(capping_input)
@@ -135,16 +133,13 @@ class TestMerge(TestCase):
         self.universes = [u1, u2, u3]
 
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
         for u in self.universes:
             del u
+        del self.tempdir
 
     def test_merge(self):
         u1, u2, u3 = self.universes
@@ -157,7 +152,7 @@ class TestMerge(TestCase):
 
         # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe
-        set0 = set([a.universe for a in u0.atoms])
+        set0 = {a.universe for a in u0.atoms}
         assert_equal(len(set0), 1)
         u = list(set0)[0]
         assert_equal(u, u0)
@@ -203,6 +198,8 @@ class TestMerge(TestCase):
 
 class TestMergeTopology(object):
     """Test that Merge correct does topology"""
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 
