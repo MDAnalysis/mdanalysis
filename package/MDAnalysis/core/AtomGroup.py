@@ -3087,8 +3087,6 @@ class AtomGroup(object):
         .. versionchanged:: 0.13.1
            Added implicit OR syntax to field and range selections
         """
-        if selstr is "":
-            return None
         atomgrp = Selection.Parser.parse(selstr, selgroups).apply(self)
         # Generate a selection for each selection string
         for sel in othersel:

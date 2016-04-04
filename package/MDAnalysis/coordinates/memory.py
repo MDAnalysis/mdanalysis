@@ -201,12 +201,20 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [slice(start+(skip-1), stop_index, skip)] +
                        [slice(None)]*(2-f_index))
-        # If no selection is specified, return a view
+
+        # Return a view if either:
+        #   1) asel is None
+        #   2) asel corresponds to a selection of all atoms. To avoid doing
+        #      a full comparison of all atom objects in the selection, we check
+        #      for the length and the identity of the first atom.
         array = array[basic_slice]
-        if asel is not None:
+        if (asel is None or
+            (len(asel) == len(asel.universe.atoms) and
+             asel[0] is asel.universe.atoms[0])):
+            return array
+        else:
             # If selection is specified, return a copy
-            array = array.take(asel.indices, a_index)
-        return array
+            return array.take(asel.indices, a_index)
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""

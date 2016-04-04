@@ -190,7 +190,7 @@ class EstimatorShrinkage(object):
 
 
 def covariance_matrix(ensemble,
-                      selection="",
+                      selection="all",
                       estimator=EstimatorShrinkage(),
                       mass_weighted=True,
                       reference=None):

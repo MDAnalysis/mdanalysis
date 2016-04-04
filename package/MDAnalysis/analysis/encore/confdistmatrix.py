@@ -60,7 +60,7 @@ class ConformationalDistanceMatrixGenerator(object):
     process is printed out. This class acts as a functor.
     """
 
-    def run(self, ensemble, selection="", superimposition_selection="",
+    def run(self, ensemble, selection="all", superimposition_selection="all",
             ncores=None, pairwise_align=False, mass_weighted=True,
             metadata=True):
         """
@@ -132,7 +132,7 @@ class ConformationalDistanceMatrixGenerator(object):
         # Prepare alignment subset coordinates as necessary
 
         if pairwise_align:
-            if superimposition_selection:
+            if superimposition_selection != "all":
                 subset_selection = superimposition_selection
             else:
                 subset_selection = selection
