@@ -31,6 +31,7 @@ designed to store results from clustering algorithms.
 """
 
 import numpy as np
+import six
 
 
 class Cluster(object):
@@ -98,10 +99,10 @@ class Cluster(object):
         self.centroid = centroid
         self.size = self.elements.shape[0]
         if metadata:
-            for k, v in metadata.iteritems():
-                if len(v) != self.size:
+            for name, data in six.iteritems(metadata):
+                if len(data) != self.size:
                     raise TypeError
-            self.metadata[k] = np.array(v)
+            self.add_metadata(name, data)
 
     def __iter__(self):
         return iter(self.elements)
@@ -174,7 +175,7 @@ class ClustersCollection(object):
             this_metadata = {}
             this_array = np.where(elements_array == c)
             if metadata:
-                for k, v in metadata.iteritems():
+                for k, v in six.iteritems(metadata):
                     this_metadata[k] = np.array(v)[this_array]
             self.clusters.append(
                 Cluster(elem_list=this_array[0], idn=idn, centroid=c,
