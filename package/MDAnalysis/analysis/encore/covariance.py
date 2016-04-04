@@ -29,7 +29,7 @@ an ensemble of structures.
 .. versionadded:: 0.14.0
 """
 
-import numpy
+import numpy as np
 
 class EstimatorML(object):
     """
@@ -63,16 +63,16 @@ class EstimatorML(object):
             coordinates_offset = coordinates - reference_coordinates
 
             # Calculate covariance manually
-            coordinates_cov = numpy.zeros((coordinates.shape[1],
-                                           coordinates.shape[1]))
+            coordinates_cov = np.zeros((coordinates.shape[1],
+                                        coordinates.shape[1]))
             for frame in coordinates_offset:
-                coordinates_cov += numpy.outer(frame, frame)
+                coordinates_cov += np.outer(frame, frame)
             coordinates_cov /= coordinates.shape[0]
 
             return coordinates_cov
 
         else:
-            return numpy.cov(coordinates, rowvar=0)
+            return np.cov(coordinates, rowvar=0)
 
     __call__ = calculate
 
@@ -128,17 +128,17 @@ class EstimatorShrinkage(object):
         t = x.shape[0]
         n = x.shape[1]
 
-        mean_x = numpy.average(x, axis=0)
+        mean_x = np.average(x, axis=0)
 
         # Use provided coordinates as "mean" if provided
         if reference_coordinates is not None:
             mean_x = reference_coordinates
 
         x = x - mean_x
-        xmkt = numpy.average(x, axis=1)
+        xmkt = np.average(x, axis=1)
 
         # Call maximum likelihood estimator (note the additional column)
-        sample = EstimatorML()(numpy.hstack([x, xmkt[:, numpy.newaxis]]), 0) \
+        sample = EstimatorML()(np.hstack([x, xmkt[:, np.newaxis]]), 0) \
             * (t-1)/float(t)
 
         # Split covariance matrix into components
@@ -147,33 +147,33 @@ class EstimatorShrinkage(object):
         sample = sample[:n, :n]
 
         # Prior
-        prior = numpy.outer(covmkt, covmkt)/varmkt
-        prior[numpy.ma.make_mask(numpy.eye(n))] = numpy.diag(sample)
+        prior = np.outer(covmkt, covmkt)/varmkt
+        prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
 
         # If shrinkage parameter is not set, estimate it
         if self.shrinkage_parameter is None:
 
             # Frobenius norm
-            c = numpy.linalg.norm(sample - prior, ord='fro')**2
+            c = np.linalg.norm(sample - prior, ord='fro')**2
 
             y = x**2
-            p = 1/float(t)*numpy.sum(numpy.dot(numpy.transpose(y), y))\
-                - numpy.sum(numpy.sum(sample**2))
-            rdiag = 1/float(t)*numpy.sum(numpy.sum(y**2))\
-                - numpy.sum(numpy.diag(sample)**2)
-            z = x * numpy.repeat(xmkt[:, numpy.newaxis], n, axis=1)
-            v1 = 1/float(t) * numpy.dot(numpy.transpose(y), z) \
-                - numpy.repeat(covmkt[:, numpy.newaxis], n, axis=1)*sample
-            roff1 = (numpy.sum(
-                v1*numpy.transpose(
-                    numpy.repeat(
-                        covmkt[:, numpy.newaxis], n, axis=1)
+            p = 1/float(t)*np.sum(np.dot(np.transpose(y), y))\
+                - np.sum(np.sum(sample**2))
+            rdiag = 1/float(t)*np.sum(np.sum(y**2))\
+                - np.sum(np.diag(sample)**2)
+            z = x * np.repeat(xmkt[:, np.newaxis], n, axis=1)
+            v1 = 1/float(t) * np.dot(np.transpose(y), z) \
+                - np.repeat(covmkt[:, np.newaxis], n, axis=1)*sample
+            roff1 = (np.sum(
+                v1*np.transpose(
+                    np.repeat(
+                        covmkt[:, np.newaxis], n, axis=1)
                     )
                 )/varmkt -
-                     numpy.sum(numpy.diag(v1)*covmkt)/varmkt)
-            v3 = 1/float(t)*numpy.dot(numpy.transpose(z), z) - varmkt*sample
-            roff3 = (numpy.sum(v3*numpy.outer(covmkt, covmkt))/varmkt**2 -
-                     numpy.sum(numpy.diag(v3)*covmkt**2)/varmkt**2)
+                     np.sum(np.diag(v1)*covmkt)/varmkt)
+            v3 = 1/float(t)*np.dot(np.transpose(z), z) - varmkt*sample
+            roff3 = (np.sum(v3*np.outer(covmkt, covmkt))/varmkt**2 -
+                     np.sum(np.diag(v3)*covmkt**2)/varmkt**2)
             roff = 2*roff1-roff3
             r = rdiag+roff
 
@@ -231,7 +231,7 @@ def covariance_matrix(ensemble,
         format='fac')
 
     # Flatten coordinate matrix into n_frame x n_coordinates
-    coordinates = numpy.reshape(coordinates, (coordinates.shape[0], -1))
+    coordinates = np.reshape(coordinates, (coordinates.shape[0], -1))
 
     # Extract coordinates from reference structure, if specified
     reference_coordinates = None
@@ -251,10 +251,10 @@ def covariance_matrix(ensemble,
     if mass_weighted:
         # Calculate mass-weighted covariance matrix
         if selection:
-            masses = numpy.repeat(ensemble.select_atoms(selection).masses, 3)
+            masses = np.repeat(ensemble.select_atoms(selection).masses, 3)
         else:
-            masses = numpy.repeat(ensemble.atoms.masses, 3)
-        mass_matrix = numpy.sqrt(numpy.identity(len(masses))*masses)
-        sigma = numpy.dot(mass_matrix, numpy.dot(sigma, mass_matrix))
+            masses = np.repeat(ensemble.atoms.masses, 3)
+        mass_matrix = np.sqrt(np.identity(len(masses))*masses)
+        sigma = np.dot(mass_matrix, np.dot(sigma, mass_matrix))
 
     return sigma
