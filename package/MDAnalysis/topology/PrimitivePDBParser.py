@@ -62,17 +62,18 @@ from ..lib.util import openany
 from .base import TopologyReader
 
 
-warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
-              'it is deprecated in favor of the shorter name',
-              category=DeprecationWarning)
+
 class PrimitivePDBParser(PDBParser.PDBParser):
+    warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
+                  'it is deprecated in favor of the shorter name',
+                  category=DeprecationWarning)
     format = 'Permissive_PDB'
 
-warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
-              'it is deprecated in favor of the shorter name,'
-              'please use the parse_conect function of that class',
-              category=DeprecationWarning)
 def _parse_conect(conect):
+    warnings.warn('PrimitivePDBParser module is identical to the PDBParser,'
+                  'module, it is deprecated in favor of the shorter name,'
+                  'please use the parse_conect function of that class',
+                  category=DeprecationWarning)
     """parse a CONECT record from pdbs
 
     Parameters

@@ -1055,16 +1055,19 @@ class PDBWriter(base.Writer):
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
-warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
-              'it is deprecated in favor of the shorter name',
-              category=DeprecationWarning)
+
 class PrimitivePDBReader(PDBReader):
+    warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
+                  'it is deprecated in favor of the shorter name'
+                  'removal targeted for version 0.15.0',
+                  category=DeprecationWarning)
     format = 'Permissive_PDB'
 
-warnings.warn('PrimitivePDBWriter is now identical to the PDBWriter,'
-              'it is deprecated in favor of the shorter name',
-              category=DeprecationWarning)
 class PrimitivePDBWriter(PDBWriter):
+        warnings.warn('PrimitivePDBWriter is identical to the Writer,'
+                      'it is deprecated in favor of the shorter name'
+                      'removal targeted for version 0.15.0',
+                      category=DeprecationWarning)
     format = 'Permissive_PDB'
 
 class ExtendedPDBReader(PDBReader):
