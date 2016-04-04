@@ -4267,6 +4267,13 @@ class Universe(object):
         return self
 
     @property
+    def kwargs(self):
+        """Keyword arguments used to initialize this universe (read-only).
+
+        """
+        return copy.deepcopy(self._kwargs)
+
+    @property
     @cached('fragments')
     def fragments(self):
         """Read only tuple of fragments in the Universe
