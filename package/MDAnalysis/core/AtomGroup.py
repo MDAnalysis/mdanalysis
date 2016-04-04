@@ -4744,18 +4744,21 @@ class Universe(object):
             # This is significantly faster, but only implemented for certain
             # trajectory file formats
             try:
-                coordinates = self.universe.trajectory.timeseries(
+                coordinates = self.trajectory.timeseries(
                     self.atoms, format='afc', skip=frame_interval)
 
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                coordinates = self.universe.trajectory[frame_interval-1::frame_interval]
+                coordinates = self.trajectory[frame_interval-1::frame_interval]
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
-            self.trajectory = MemoryReader(coordinates)
+            self.trajectory = \
+                MemoryReader(coordinates,
+                             dimensions=self.trajectory.ts.dimensions,
+                             dt=self.trajectory.ts.dt)
 
 
 

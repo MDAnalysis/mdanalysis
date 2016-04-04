@@ -1,85 +1,66 @@
+import numpy as np
 from numpy.testing import raises
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import DCD, PDB_small
+from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
-                                              assert_timestep_almost_equal)
+                                              BaseReaderTest)
 from MDAnalysis.coordinates.memory import MemoryReader
 from numpy.testing import assert_equal
-
-from unittest import TestCase
 
 
 class MemoryReference(BaseReference):
     def __init__(self):
         super(MemoryReference, self).__init__()
-        self.universe = mda.Universe(PDB_small, DCD)
-        self.trajectory = \
-            self.universe.trajectory.timeseries(self.universe.atoms)
+        self.topology = PSF
+        self.trajectory = DCD
+        self.universe = mda.Universe(PSF, DCD)
+
         self.n_atoms = self.universe.trajectory.n_atoms
         self.n_frames = self.universe.trajectory.n_frames
-        self.topology = PDB_small
-        self.reader = mda.coordinates.memory.MemoryReader
+
+        self.dt = self.universe.trajectory.ts.dt
+        self.dimensions = self.universe.trajectory.ts.dimensions
+        self.totaltime = self.universe.trajectory.totaltime
+        self.volume = self.universe.trajectory.ts.volume
 
         self.first_frame = MemoryReader.MemoryTimestep(self.n_atoms)
-        self.first_frame.positions = self.trajectory[:,0,:]
+        self.first_frame.positions = np.array(self.universe.trajectory[0])
         self.first_frame.frame = 0
+        self.first_frame.time = self.first_frame.frame*self.dt
 
         self.second_frame = MemoryReader.MemoryTimestep(self.n_atoms)
-        self.second_frame.positions = self.trajectory[:,1,:]
+        self.second_frame.positions = np.array(self.universe.trajectory[1])
         self.second_frame.frame = 1
+        self.second_frame.time = self.second_frame.frame*self.dt
 
         self.last_frame = MemoryReader.MemoryTimestep(self.n_atoms)
-        self.last_frame.positions = self.trajectory[:,self.n_frames - 1,:]
+        self.last_frame.positions = \
+            np.array(self.universe.trajectory[self.n_frames - 1])
         self.last_frame.frame = self.n_frames - 1
+        self.last_frame.time = self.last_frame.frame*self.dt
 
         self.jump_to_frame = self.first_frame.copy()
-        self.jump_to_frame.positions = self.trajectory[:,3,:]
+        self.jump_to_frame.positions = np.array(self.universe.trajectory[3])
         self.jump_to_frame.frame = 3
+        self.jump_to_frame.time = self.jump_to_frame.frame*self.dt
 
 
-class TestArrayReader(TestCase):
-    def setUp(self):
+    def reader(self, trajectory):
+        return mda.Universe(self.topology,
+                            trajectory, in_memory=True).trajectory
+
+    def iter_ts(self, i):
+        ts = self.universe.trajectory[i]
+        return ts
+
+
+
+class TestMemoryReader(BaseReaderTest):
+    def __init__(self):
         reference = MemoryReference()
         self.ref = reference
         self.reader = self.ref.reader(self.ref.trajectory)
-
-    def test_n_atoms(self):
-        assert_equal(self.reader.n_atoms, self.ref.n_atoms)
-
-    def test_n_frames(self):
-        assert_equal(len(self.reader), self.ref.n_frames)
-
-    def test_first_frame(self):
-        self.reader.rewind()
-        assert_timestep_almost_equal(self.reader.ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
-    def test_reopen(self):
-        self.reader.close()
-        self.reader._reopen()
-        ts = self.reader.next()
-        assert_timestep_almost_equal(ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
-
-    def test_last_frame(self):
-        ts = self.reader[-1]
-        assert_timestep_almost_equal(ts, self.ref.last_frame,
-                                     decimal=self.ref.prec)
-
-    def test_next_gives_second_frame(self):
-        reader = self.ref.reader(self.ref.trajectory)
-        ts = reader.next()
-        assert_timestep_almost_equal(ts, self.ref.second_frame,
-                                     decimal=self.ref.prec)
-
-    @raises(IndexError)
-    def test_go_over_last_frame(self):
-        self.reader[self.ref.n_frames + 1]
-
-    def test_frame_jump(self):
-        ts = self.reader[self.ref.jump_to_frame.frame]
-        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
-                                     decimal=self.ref.prec)
 
     def test_iteration(self):
         frames = 0
@@ -138,3 +119,10 @@ class TestArrayReader(TestCase):
         str_rep = str(self.reader)
         expected = "<MemoryReader with 98 frames of 3341 atoms>"
         assert_equal(str_rep, expected)
+
+    def test_get_writer_1(self):
+        pass
+
+    def test_get_writer_2(self):
+        pass
+

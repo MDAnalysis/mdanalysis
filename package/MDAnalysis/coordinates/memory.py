@@ -102,7 +102,8 @@ class MemoryReader(base.ProtoReader):
 
     _Timestep = MemoryTimestep
 
-    def __init__(self, coordinate_array, format='afc', **kwargs):
+    def __init__(self, coordinate_array, format='afc',
+                 dimensions = None, dt=1, **kwargs):
         """Constructor
 
         Parameters
@@ -122,6 +123,9 @@ class MemoryReader(base.ProtoReader):
 
         kwargs.pop("n_atoms", None)
         self.ts = self._Timestep(self.n_atoms, **kwargs)
+        self.ts.dt = dt
+        if dimensions is not None:
+            self.ts.dimensions = dimensions
         # self.ts.frame = -1
         self._read_next_timestep()
 
@@ -218,7 +222,7 @@ class MemoryReader(base.ProtoReader):
                        [slice(None)]*(2-f_index))
         ts.positions = self.coordinate_array[basic_slice]
 
-        ts.time = self.ts.frame
+        ts.time = self.ts.frame*self.dt
         return ts
 
     def _read_frame(self, i):
