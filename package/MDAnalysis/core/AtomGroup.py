@@ -486,7 +486,7 @@ def warn_atom_property(func):
 
 def warn_residue_property(func):
     warnstring = "In version 0.16.0, use `{}.residues.{}` instead."
-    warnstring_sing = "In version 0.16.0, use `{}.residue.{}` instead."
+    warnstring_sing = "In version 0.16.0, use `{}.atoms.{}` instead."
 
     def outfunc(self, *args):
         if isinstance(self, SegmentGroup):
@@ -498,7 +498,7 @@ def warn_residue_property(func):
         elif isinstance(self, ResidueGroup):
             pass
         elif isinstance(self, Residue):
-            warnings.warn("In version 0.16.0, Use 'residue.atoms.{}' instead.".format(func.__name__),
+            warnings.warn(warnstring_sing.format('residue', func.__name__),
                           DeprecationWarning)
         elif isinstance(self, AtomGroup):
             pass
@@ -511,7 +511,7 @@ def warn_residue_property(func):
 
 def warn_segment_property(func):
     warnstring = "In version 0.16.0, use `{}.segments.{}` instead."
-    warnstring_sing = "In version 0.16.0, use `{}.segment.{}` instead."
+    warnstring_sing = "In version 0.16.0, use `{}.atoms.{}` instead."
 
     def outfunc(self, *args):
         if isinstance(self, SegmentGroup):
@@ -527,11 +527,9 @@ def warn_segment_property(func):
             warnings.warn(warnstring_sing.format('residue', func.__name__),
                           DeprecationWarning)
         elif isinstance(self, AtomGroup):
-            warnings.warn(warnstring.format('atomgroup', func.__name__),
-                          DeprecationWarning)
+            pass
         elif isinstance(self, Atom):
-            warnings.warn(warnstring_sing.format('atom', func.__name__),
-                          DeprecationWarning)
+            pass
 
         return func(self, *args)
 
@@ -1235,6 +1233,7 @@ class AtomGroup(object):
         return len(self.segments)
 
     @property
+    @warn_atom_property
     @cached('indices')
     def indices(self):
         """Array of all :attr:`Atom.index` in the group.
@@ -1252,8 +1251,8 @@ class AtomGroup(object):
         return np.array([atom.index for atom in self._atoms])
 
     @property
-    @cached('masses')
     @warn_atom_property
+    @cached('masses')
     def masses(self):
         """Array of atomic masses (as defined in the topology)
 
@@ -1419,6 +1418,7 @@ class AtomGroup(object):
         self.set("serial", new, conversion=int)
 
     @property
+    @warn_atom_property
     def ids(self):
         """Array of the atom ids for all atoms in this group.
 
@@ -1435,6 +1435,7 @@ class AtomGroup(object):
         return out
 
     @ids.setter
+    @warn_atom_property
     def ids(self, new):
         self.set("serial", new, conversion=int)
 
@@ -1731,8 +1732,8 @@ class AtomGroup(object):
         self._clear_caches('dihedrals')
 
     @property
-    @cached('bonds')
     @warn_atom_property
+    @cached('bonds')
     def bonds(self):
         """All the bonds in this AtomGroup
 
@@ -1749,8 +1750,8 @@ class AtomGroup(object):
         return top.TopologyGroup(mybonds)
 
     @property
-    @cached('angles')
     @warn_atom_property
+    @cached('angles')
     def angles(self):
         """All the angles in this AtomGroup
 
@@ -1767,8 +1768,8 @@ class AtomGroup(object):
         return top.TopologyGroup(mybonds)
 
     @property
-    @cached('dihedrals')
     @warn_atom_property
+    @cached('dihedrals')
     def dihedrals(self):
         """All the dihedrals in this AtomGroup
 
@@ -1785,8 +1786,8 @@ class AtomGroup(object):
         return top.TopologyGroup(mybonds)
 
     @property
-    @cached('impropers')
     @warn_atom_property
+    @cached('impropers')
     def impropers(self):
         """All the improper dihedrals in this AtomGroup
 
@@ -3408,6 +3409,7 @@ class AtomGroup(object):
                 writer.close()
 
     # TODO: This is _almost_ the same code as write() --- should unify!
+    @deprecate(message="{}; use `write` method instead".format(_SIXTEEN_DEPRECATION))
     def write_selection(self, filename=None, format="vmd", filenamefmt="%(trjname)s_%(frame)d",
                         **kwargs):
         """Write AtomGroup selection to a file to be used in another programme.
@@ -3751,6 +3753,7 @@ class ResidueGroup(AtomGroup):
         return np.array([r.resnum for r in self.residues])
 
     @property
+    @warn_segment_property
     def segids(self):
         """Returns an array of segment names.
 
@@ -4014,6 +4017,7 @@ class SegmentGroup(ResidueGroup):
     set = _set_segments
 
     @property
+    @warn_segment_property
     def segids(self):
         """Returns an array of segment names.
 

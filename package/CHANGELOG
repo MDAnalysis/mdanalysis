@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
-         manuel.nuno.melo
+         manuel.nuno.melo, dotsdl
 
   * 0.14.0
 
@@ -53,6 +53,22 @@ Fixes
   * Fixed Reader returning all frames with stop in slice was 0 (Issue #672)
   * Fixed NCDFReader not reading dt (Issue #676)
   * Fixed PDB-Topology read bonds for atom ids larger then 10000 (Issue #693)
+
+Deprecations (Issue #599)
+  * Deprecated all `get_*` and `set_*` methods of Groups.
+  * Deprecation warnings for accessing atom attributes from Residue,
+    ResidueGroup, Segment, SegmentGroup. Will not be present or will
+    give per-level results.
+  * Deprecation warnings for accessing plural residue attributes from
+    Residue or Segment (will disappear), or from SegmentGroup (will give
+    per-Segment results).
+  * Deprecation warnings for accessing plural segment attributes from Segment
+    (will disappear).
+  * Deprecated Atom number, pos, centroid, universe setter
+  * Deprecated AtomGroup serials, write_selection
+  * Deprecated Residue name, id
+  * Deprecated Segment id, name
+  * Deprecated as_Universe function; not needed
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
