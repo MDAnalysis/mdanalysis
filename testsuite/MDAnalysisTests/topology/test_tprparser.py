@@ -13,16 +13,18 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from MDAnalysis.tests.datafiles import TPR, \
-    TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, \
-    TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double, \
-    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded
-
-from numpy.testing import TestCase, dec
-from MDAnalysisTests.topology.base import ParserBase
-import MDAnalysis.topology.TPRParser
-
+from numpy.testing import TestCase, dec, assert_
 import functools
+
+from MDAnalysis.tests.datafiles import (
+    TPR,
+    TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
+    TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
+    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded
+)
+from MDAnalysisTests.topology.base import ParserBase
+
+import MDAnalysis.topology.TPRParser
 
 
 class TestTPR(ParserBase):
@@ -133,8 +135,8 @@ def _test_is_in_topology(name, elements, topology_section, topology_path):
     parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
     top = parser.parse()
     for element in elements:
-        assert element in getattr(top, topology_section).values, \
-            'Interaction type "{}" not found'.format(name)
+        assert_(element in getattr(top, topology_section).values,
+                'Interaction type "{}" not found'.format(name))
 
 
 def test_all_bonds():

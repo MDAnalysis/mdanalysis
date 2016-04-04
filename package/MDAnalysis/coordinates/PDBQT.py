@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -264,8 +264,7 @@ class PDBQTWriter(base.Writer):
                 if err.errno == errno.ENOENT:
                     pass
             raise ValueError(
-                "PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
-                (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+                "PDB files must have coordinate values between {0:.3f} and {1:.3f} Angstroem: No file was written.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,

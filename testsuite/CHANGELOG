@@ -7,12 +7,36 @@ The rules for this file:
   * summarize sets of changes - don't reproduce every subversion log comment here.
   * don't ever delete anything.
   * keep the format consistent (79 char width, M/D/Y date format) and do not
-    use tabs but use spaces for formatting	 
+    use tabs but use spaces for formatting
 
 Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+??/??/16 orbeckst, jbarnoud, pedrishi, fiona-naughton
+  * 0.15.0
+
+    - metadata update: link download_url to GitHub releases so that
+      Depsy recognizes contributors (issue #749) and added
+      @richardjgowers as maintainer
+    - a __version__ variable is now exposed; it is built by setup.py from the
+      AUTHORS file (Issue #784)
+    - Removed all bare assert (Issue #724)
+    - added tests for GRO format
+
+02/28/16 manuel.nuno.melo
+  * 0.14.0
+
+    - Added the cleanup plugin (--with-mda_cleanup) to delete offset files
+      after tests have run (Issue 669)
+    - Made memleak testing python 3 compliant (Issue 662). It may be a moot
+      point since python 3.4 now cleverly deals with leaks.
+
+01/16/16 orbeckst
+  * 0.13.0
+
+    - removed ez_setup.py
+
 09/07/2015 manuel.nuno.melo, orbeckst
   * 0.11.0
 

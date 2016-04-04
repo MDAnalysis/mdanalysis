@@ -14,9 +14,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import unicode_literals
+import six
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_almost_equal, TestCase
 
 from MDAnalysis import units
 from MDAnalysis.core import flags
@@ -25,27 +26,33 @@ from MDAnalysis.core import flags
 class TestDefaultUnits(TestCase):
     def testLength(self):
         assert_equal(flags['length_unit'], 'Angstrom',
-                     b"The default length unit should be Angstrom (in core.flags)")
+                     u"The default length unit should be Angstrom (in core.flags)")
 
     def testTime(self):
         assert_equal(flags['time_unit'], 'ps',
-                     b"The default length unit should be pico seconds (in core.flags)")
+                     u"The default length unit should be pico seconds (in core.flags)")
 
     def testConvertGromacsTrajectories(self):
         assert_equal(flags['convert_lengths'], True,
-                     b"The default behaviour should be to auto-convert Gromacs trajectories")
+                     u"The default behaviour should be to auto-convert Gromacs trajectories")
 
 
 class TestUnitEncoding(TestCase):
     def testUnicode(self):
         try:
-            assert_equal(units.lengthUnit_factor["\u212b"], 1.0)
+            assert_equal(units.lengthUnit_factor[u"\u212b"], 1.0)
         except KeyError:
             raise AssertionError("Unicode symbol for Angtrom not supported")
 
     def testUTF8Encoding(self):
         try:
-            assert_equal(units.lengthUnit_factor[b"\xe2\x84\xab"], 1.0)
+            assert_equal(units.lengthUnit_factor[b'\xe2\x84\xab'.decode('utf-8')], 1.0)
+        except KeyError:
+            raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
+
+    def testUnicodeEncodingWithSymbol(self):
+        try:
+            assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
         except KeyError:
             raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
 
@@ -62,7 +69,7 @@ class TestConstants(object):
         }
 
     def test_constant(self):
-        for name, value in self.constants_reference.iteritems():
+        for name, value in six.iteritems(self.constants_reference):
             yield self.check_physical_constant, name, value
 
     @staticmethod

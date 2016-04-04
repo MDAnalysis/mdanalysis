@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -13,27 +13,28 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import range, StringIO
+import six
+
 import numpy as np
-import numpy.random
-from numpy.testing import *
+from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_,
+                           TestCase)
 
-
-from MDAnalysisTests.datafiles import PSF, Make_Whole
-
+import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError
-import MDAnalysis as mda
 
-import cStringIO
-import os.path
-import tempfile
+
+from MDAnalysisTests.datafiles import Make_Whole
 
 
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
+
 
 def check_convert_aa_3to1(resname3, resname1):
     assert_equal(util.convert_aa_code(resname3), resname1)
@@ -86,6 +87,11 @@ class TestStringFunctions(object):
     def test_VE_2(self):
         assert_raises(ValueError, util.convert_aa_code, '£')
 
+def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
+                         ref=("foo/bar/boing", ".2.pdb.bz2")):
+    root, ext = util.greedy_splitext(inp)
+    assert_equal(root, ref[0], err_msg="root incorrect")
+    assert_equal(ext, ref[1], err_msg="extension incorrect")
 
 class TestIterable(TestCase):
     def test_lists(self):
@@ -97,7 +103,7 @@ class TestIterable(TestCase):
         assert_equal(util.iterable(()), True)
 
     def test_iterator(self):
-        assert_equal(util.iterable(xrange(3)), True)
+        assert_equal(util.iterable(range(3)), True)
 
     def test_arrays(self):
         assert_equal(util.iterable(np.array([1, 2, 3])), True)
@@ -139,7 +145,7 @@ class TestFilename(TestCase):
         assert_equal(fn, self.filename2)
 
     def testNamedStream(self):
-        ns = util.NamedStream(cStringIO.StringIO(), self.filename)
+        ns = util.NamedStream(StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:
@@ -516,33 +522,33 @@ class TestConvFloat(object):
         assert_equal(util.conv_float('a.b'), 'a.b')
 
     def test_map_1(self):
-        ret = map(util.conv_float, ['0.45', '0.56', '6.7'])
+        ret = list(map(util.conv_float, ['0.45', '0.56', '6.7']))
         assert_equal(ret, [0.45, 0.56, 6.7])
 
     def test_map_2(self):
-        ret = map(util.conv_float, ['0.45', 'a.b', '!!'])
+        ret = list(map(util.conv_float, ['0.45', 'a.b', '!!']))
         assert_equal(ret, [0.45, 'a.b', '!!'])
 
 class TestFixedwidthBins(object):
     def test_keys(self):
         ret = util.fixedwidth_bins(0.5, 1.0, 2.0)
         for k in ['Nbins', 'delta', 'min', 'max']:
-            assert k in ret
+            assert_(k in ret)
 
     def test_VE(self):
         assert_raises(ValueError, util.fixedwidth_bins, 0.1, 5.0, 4.0)
 
     def test_usage_1(self):
         ret = util.fixedwidth_bins(0.1, 4.0, 5.0)
-        assert ret['Nbins'] == 10
-        assert ret['delta'] == 0.1
-        assert ret['min'] == 4.0
-        assert ret['max'] == 5.0
+        assert_equal(ret['Nbins'], 10)
+        assert_equal(ret['delta'], 0.1)
+        assert_equal(ret['min'], 4.0)
+        assert_equal(ret['max'], 5.0)
 
     def test_usage_2(self):
         ret = util.fixedwidth_bins(0.4, 4.0, 5.0)
-        assert ret['Nbins'] == 3
-        assert ret['delta'] == 0.4
+        assert_equal(ret['Nbins'], 3)
+        assert_equal(ret['delta'], 0.4)
         assert_almost_equal(ret['min'], 3.9)
         assert_almost_equal(ret['max'], 5.1)
 
@@ -558,14 +564,11 @@ class TestGuessFormat(object):
         ('CHAIN', None, mda.coordinates.base.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
-        ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
-        ('DCD', None, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
         ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
-        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
         ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
         ('NC', None, mda.coordinates.TRJ.NCDFReader),
@@ -580,38 +583,46 @@ class TestGuessFormat(object):
         ('TPR', mda.topology.TPRParser.TPRParser, None),
         ('TRJ', None, mda.coordinates.TRJ.TRJReader),
         ('TRR', None, mda.coordinates.TRR.TRRReader),
-        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
         ('XML', mda.topology.HoomdXMLParser.HoomdXMLParser, None),
         ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
         ('XTC', None, mda.coordinates.XTC.XTCReader),
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
     ]
+    if six.PY2:
+        # DCD, LAMMPS, and TRZ are not supported on Python 3 yet
+        formats += [
+            ('DATA', mda.topology.LAMMPSParser.DATAParser,
+             mda.coordinates.LAMMPS.DATAReader),
+            ('DCD', None, mda.coordinates.DCD.DCDReader),
+            ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
+            ('TRZ', None, mda.coordinates.TRZ.TRZReader),
+        ]
     # list of possible compressed extensions
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
     def _check_get_ext(self, f, fn):
-        """Check that get ext works"""
+        """Check that get_ext works"""
         a, b = util.get_ext(fn)
 
-        assert a == 'file'
-        assert b == f.lower()
+        assert_equal(a, 'file')
+        assert_equal(b, f.lower())
 
     def _check_compressed(self, f, fn):
         """Check that format suffixed by compressed extension works"""
         a = util.format_from_filename_extension(fn)
 
-        assert a == f
+        assert_equal(a, f)
 
     def _check_guess_format(self, f, fn):
         a = util.guess_format(fn)
 
-        assert a == f
+        assert_equal(a, f)
 
     def _check_get_parser(self, fn, P):
         a = mda.topology.core.get_parser_for(fn)
 
-        assert a == P
+        assert_equal(a, P)
 
     def _check_get_parser_invalid(self, fn):
         assert_raises(ValueError, mda.topology.core.get_parser_for, fn)
@@ -619,7 +630,7 @@ class TestGuessFormat(object):
     def _check_get_reader(self, fn, R):
         a = mda.coordinates.core.get_reader_for(fn)
 
-        assert a == R
+        assert_equal(a, R)
 
     def _check_get_reader_invalid(self, fn):
         assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
@@ -629,7 +640,7 @@ class TestGuessFormat(object):
         # P - parser class or None
         # R - reader class or None
         for f, P, R in self.formats:
-            fn = 'file.{}'.format(f)
+            fn = 'file.{0}'.format(f)
             # check f doesn't trip up get_ext or guess_format
             yield self._check_get_ext, f, fn
             yield self._check_guess_format, f, fn
@@ -665,7 +676,7 @@ class TestGuessFormat(object):
 
     def test_guess_format_stream_VE(self):
         # This stream has no name, so can't guess format
-        s = cStringIO.StringIO('this is a very fun file')
+        s = StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
 
@@ -682,3 +693,116 @@ class TestUniqueRows(object):
 
         assert_array_equal(util.unique_rows(a),
                            np.array([[0, 1, 2], [2, 3, 4]]))
+
+
+class TestGetWritterFor(TestCase):
+    def test_no_arguments(self):
+        """Does ``get_writer_for`` fails as expected when provided no
+        arguments
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for)
+
+    def test_precedence(self):
+        """Make sure ``get_writer_for`` uses *format* if provided"""
+        writter = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
+        assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_missing_extension(self):
+        """Make sure ``get_writer_for`` behave as expected if *filename*
+        has no extension
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename='test', format=None)
+
+    def test_wrong_format(self):
+        """Make sure ``get_writer_for`` fails if the format is unknown"""
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      format='UNK')
+
+    def test_compressed_extension(self):
+        """Make sure ``get_writer_for`` works with compressed file file names
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.gro' + ext
+            writter = mda.coordinates.core.get_writer_for(filename=fn)
+            assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_compressed_extension_fail(self):
+        """Make sure ``get_writer_for`` fails if an unknown format is compressed
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.unk' + ext
+            assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                          filename=fn)
+
+    def test_non_sring_filename(self):
+        """Does ``get_writer_for`` fails with non string filename, no format
+        """
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename=StringIO(), format=None)
+
+    def test_multiframe_failure(self):
+        """Does ``get_writer_for`` fails with invalid format and multiframe
+        not None
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=True)
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=False)
+
+    def test_multiframe_nonsense(self):
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename='this.gro', multiframe='sandwich')
+
+
+class TestBlocksOf(object):
+    def test_blocks_of_1(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 1, 1)
+
+        # should return a (4, 1, 1) view
+        # ie 4 lots of 1x1
+        assert_(view.shape == (4, 1, 1))
+        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
+
+        # Change my view, check changes are reflected in arr
+        view[:] = 1001
+
+        assert_array_almost_equal(arr,
+                                  np.array([[1001, 1, 2, 3],
+                                            [4, 1001, 6, 7],
+                                            [8, 9, 1001, 11],
+                                            [12, 13, 14, 1001]]))
+
+    def test_blocks_of_2(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 2, 2)
+
+        # should return (2, 2, 2)
+        assert_(view.shape == (2, 2, 2))
+        assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
+                                                  [[10, 11], [14, 15]]]))
+
+        view[0] = 100
+        view[1] = 200
+
+        assert_array_almost_equal(arr,
+                                  np.array([[100, 100, 2, 3],
+                                            [100, 100, 6, 7],
+                                            [8, 9, 200, 200],
+                                            [12, 13, 200, 200]]))
+
+    def test_blocks_of_3(self):
+        # testing non square array
+        arr = np.arange(32).reshape(8, 4)
+
+        view = util.blocks_of(arr, 2, 1)
+
+        assert_(view.shape == (4, 2, 1))
+
+    def test_blocks_of_VE(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        assert_raises(ValueError, util.blocks_of, arr, 2, 1)

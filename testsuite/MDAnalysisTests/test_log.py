@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -15,11 +15,11 @@
 #
 
 # initial simple tests for logging module
+from six.moves import StringIO
 
 import sys
 import os
-import cStringIO
-import tempfile
+import tempdir
 import logging
 
 from numpy.testing import TestCase, assert_
@@ -34,13 +34,11 @@ class TestLogging(TestCase):
     name = "MDAnalysis"
 
     def setUp(self):
-        fd, self.logfile = tempfile.mkstemp(suffix=".log")
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.log')
 
     def tearDown(self):
-        try:
-            os.unlink(self.logfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_start_stop_logging(self):
         try:
@@ -75,7 +73,7 @@ class RedirectedStderr(object):
 
 class TestProgressMeter(TestCase):
     def setUp(self):
-        self.buf = cStringIO.StringIO()
+        self.buf = StringIO()
 
     def tearDown(self):
         del self.buf
@@ -89,10 +87,10 @@ class TestProgressMeter(TestCase):
     def test_default_ProgressMeter(self, n=101, interval=10):
         format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
         with RedirectedStderr(self.buf):
-            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval, offset=1)
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval)
             for frame in range(n):
                 pm.echo(frame)
-        self.buf.seek(0L)
+        self.buf.seek(0)
         output = "".join(self.buf.readlines())
         self._assert_in(output, format % {'step': 1, 'numsteps': n, 'percentage': 100./n})
         # last line always has \n instead of \r!
@@ -107,7 +105,7 @@ class TestProgressMeter(TestCase):
             for frame in range(n):
                 rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
                 pm.echo(frame, rmsd=rmsd)
-        self.buf.seek(0L)
+        self.buf.seek(0)
         output = "".join(self.buf.readlines())
         self._assert_in(output, format %
                         {'rmsd': 0.0, 'step': 1, 'numsteps': n, 'percentage': 100./n})

@@ -16,14 +16,18 @@
 from __future__ import print_function
 
 import MDAnalysis
-import MDAnalysis.analysis.distances
+from MDAnalysisTests import module_not_found
 
-from numpy.testing import TestCase, assert_equal
+from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 
 
 class TestContactMatrix(TestCase):
+
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
+        import MDAnalysis.analysis.distances
         self.coord = np.array([[1, 1, 1],
                                   [5, 5, 5],
                                   [1.1, 1.1, 1.1],
@@ -47,27 +51,27 @@ class TestContactMatrix(TestCase):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             self.coord, cutoff=1, returntype="numpy")
         assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {})".format(self.shape))
+                     "wrong shape (should be {0})".format(self.shape))
         assert_equal(contacts, self.res_no_pbc)
 
     def test_sparse(self):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             self.coord, cutoff=1.5, returntype="sparse")
         assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {})".format(self.shape))
+                     "wrong shape (should be {0})".format(self.shape))
         assert_equal(contacts.toarray(), self.res_no_pbc)
 
     def test_box_numpy(self):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             self.coord, box=self.box, cutoff=1)
         assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {})".format(self.shape))
+                     "wrong shape (should be {0})".format(self.shape))
         assert_equal(contacts, self.res_pbc)
 
     def test_box_sparse(self):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             self.coord, box=self.box, cutoff=1, returntype='sparse')
         assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {})".format(self.shape))
+                     "wrong shape (should be {0})".format(self.shape))
         assert_equal(contacts.toarray(), self.res_pbc)
 

@@ -42,11 +42,14 @@ __all__ = [
     "PDB_closed",
     "PDB_multiframe",
     "PDB_helix",
+    "PDB_conect",
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
+    "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
@@ -55,11 +58,13 @@ __all__ = [
     "TPR510_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
+    "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
+    "PRM7", "NCDFtruncoct",  # Amber (cpptrj test trajectory, see Issue 488)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
@@ -67,15 +72,21 @@ __all__ = [
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
+    "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "PDB_HOLE",  # gramicidin A
     "XTC_HOLE",  # gramicidin A, all frames identical, for Issue 129
     "DMS",
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
+    "XTC_single_frame",
+    "XTC_multi_frame",
+    "TRR_single_frame",
+    "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
@@ -91,16 +102,28 @@ __all__ = [
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "Plength",
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
     "Martini_membrane_gro", # for testing the leaflet finder
+    "COORDINATES_XTC",
+    "COORDINATES_TRR",
+    "COORDINATES_TOPOLOGY",
+    "NUCLsel",
+    "GRO_empty_atom", "GRO_missing_atomname" # for testing GROParser exception raise
 ]
 
 from pkg_resources import resource_filename
 
+GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
+GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
+
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
+COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
+COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
@@ -122,21 +145,35 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
+ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
+PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
+GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
+XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
+XTC_single_frame = resource_filename(
+    __name__, 'data/xtc_test_only_single_frame_10_atoms.xtc')
+XTC_multi_frame = resource_filename(
+    __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
+)
+TRR_single_frame = resource_filename(
+    __name__, 'data/trr_test_only_single_frame_10_atoms.trr')
+TRR_multi_frame = resource_filename(
+    __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
+)
 
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
@@ -200,6 +237,8 @@ PDBQT_input = resource_filename(__name__, 'data/pdbqt_inputpdbqt.pdbqt')
 PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 
 FASTA = resource_filename(__name__, 'data/test.fasta')
+HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8.dat')
+
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
@@ -227,6 +266,10 @@ capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
+
+contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro.bz2")
+contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro.bz2")
+contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
 
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
@@ -264,4 +307,12 @@ HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
 
+Plength = resource_filename(__name__, 'data/plength.gro')
 Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')
+
+# Contains one of each residue in 'nucleic' selections
+NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
+
+
+# This should be the last line: clean up namespace
+del resource_filename

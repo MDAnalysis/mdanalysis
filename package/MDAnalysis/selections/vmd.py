@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -43,7 +43,7 @@ class SelectionWriter(base.SelectionWriter):
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis VMD selection"))
-        out.write("atomselect macro %(name)s {index " % kwargs)
+        out.write("atomselect macro {name!s} {{index ".format(**kwargs))
 
     def _translate(self, atoms, **kwargs):
         # VMD index is 0-based (as is MDAnalysis)

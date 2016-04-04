@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -59,7 +59,7 @@ through the pseudo-dictionary :data:`MDAnalysis.core.flags`.
 The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
 raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
- print MDAnalysis.core.flags.doc()
+ print(MDAnalysis.core.flags.doc())
 
 
 List of MDAnalysis flags with default values
@@ -82,6 +82,8 @@ Classes
 
 """
 
+import six
+
 __all__ = ['AtomGroup', 'Selection', 'Timeseries']
 
 
@@ -98,7 +100,7 @@ class Flags(dict):
     The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
     raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
-      print MDAnalysis.core.flags.__doc__
+      print(MDAnalysis.core.flags.__doc__)
 
     New flags are added with the :meth:`Flags.register` method which takes a new :class:`Flag`
     instance as an argument.
@@ -133,7 +135,7 @@ class Flags(dict):
         self.get_flag(name).set(value)
 
     def _itervalues(self):
-        return super(Flags, self).itervalues()
+        return six.itervalues(super(Flags, self))
 
     def _items(self):
         return super(Flags, self).items()
@@ -222,7 +224,7 @@ class Flag(object):
         return {'fget': self.get, 'fset': self.set, 'doc': self.__doc__}
 
     def __repr__(self):
-        return """Flag('%(name)s',%(value)r)""" % self.__dict__
+        return """Flag('{name!s}',{value!r})""".format(**self.__dict__)
 
 
 class _Flag(Flag):
@@ -443,6 +445,6 @@ class flagsDocs(object):
     __doc__ = flags.doc()
 
 
-import groups
-import selection
-import Timeseries
+from . import groups
+from . import selection
+from . import Timeseries

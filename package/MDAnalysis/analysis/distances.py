@@ -25,47 +25,90 @@ atoms or groups of atoms.
 :func:`dist` and :func:`between` can take atom groups that do not even
 have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
-.. SeeAlso:: :mod:`MDAnalysis.lib.distances` and :mod:`MDAnalysis.lib.parallel.distances`
+.. SeeAlso:: :mod:`MDAnalysis.lib.distances` 
 """
 
 __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
 
 import numpy as np
-from scipy import sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
-from MDAnalysis.lib._distances import contact_matrix_no_pbc, contact_matrix_pbc
+from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 
+import warnings
 import logging
-
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
+try:
+   from scipy import sparse
+except ImportError:
+   sparse = None
+   msg = "scipy.sparse could not be imported: some functionality will " \
+         "not be available in contact_matrix()"
+   warnings.warn(msg, category=ImportWarning)
+   logger.warn(msg)
+   del msg
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
-    '''Calculates a matrix of contacts within a numpy array of type float32.
+    '''Calculates a matrix of contacts.
 
     There is a fast, high-memory-usage version for small systems
     (*returntype* = 'numpy'), and a slower, low-memory-usage version for
     larger systems (*returntype* = 'sparse').
 
-    If *box* dimensions are passed (``box = [Lx, Ly, Lz]``), then
-    periodic boundary conditions are applied.  Only orthorhombic boxes
-    are currently supported.
+    If *box* dimensions are passed then periodic boundary conditions
+    are applied.
+
+    Parameters
+    ---------
+    coord : array
+       Array of coordinates of shape ``(N, 3)`` and dtype float32.
+    cutoff : float, optional, default 15
+       Particles within `cutoff` are considered to form a contact.
+    returntype : string, optional, default "numpy"
+       Select how the contact matrix is returned.
+       * ``"numpy"``: return as an ``(N. N)`` :class:`numpy.ndarray`
+       * ``"sparse"``: return as a :class:`scipy.sparse.lil_matrix`
+    box : array-like or ``None``, optional, default ``None``
+       Simulation cell dimensions in the form of
+       :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+       periodic boundary conditions should be taken into account for
+       the calculation of contacts.
+
+    Returns
+    -------
+    array or sparse matrix
+       The contact matrix is returned in a format determined by the `returntype`
+       keyword.
+
+
+    Note
+    ----
+    :module:`scipy.sparse` is require for using *sparse* matrices; if it cannot
+    be imported then an `ImportError` is raised.
 
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
+
     '''
+
     if returntype == "numpy":
         adj = (distance_array(coord, coord, box=box) < cutoff)
         return adj
     elif returntype == "sparse":
-        # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
+        if sparse is None:
+            # hack: if we are running with minimal dependencies then scipy was
+            #       not imported and we have to bail here (see scipy import at top)
+            raise ImportError("For sparse matrix functionality you need to "
+                              "import scipy.")
+        # Initialize square List of Lists matrix of dimensions equal to number
+        # of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         if box is not None:
-            # if PBC
+            # with PBC
             contact_matrix_pbc(coord, sparse_contacts, box, cutoff)
         else:
-            # if no PBC
+            # without PBC
             contact_matrix_no_pbc(coord, sparse_contacts, cutoff)
         return sparse_contacts
 
@@ -75,27 +118,33 @@ def dist(A, B, offset=0):
 
     The distance is calculated atom-wise. The residue ids are also
     returned because a typical use case is to look at CA distances
-    before and after an alignment. Using the *offset* keyword one can
+    before and after an alignment. Using the `offset` keyword one can
     also add a constant offset to the resids which facilitates
     comparison with PDB numbering.
 
-    :Arguments:
-       *A*, *B*
-          :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
-          same number of atoms
+    Arguments
+    ---------
 
-    :Keywords:
-       *offset* : integer
-          The *offset* is added to *resids_A* and *resids_B* (see
-          below) in order to produce PDB numbers. The default is 0.
+    A, B: AtomGroup instances
+       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
+       same number of atoms
+    offset : integer or tuple, optional, default 0
+       An integer `offset` is added to *resids_A* and *resids_B* (see
+       below) in order to produce PDB numbers.
 
-       *offset* : tuple
-          *offset[0]* is added to *resids_A* and *offset[1]* to
-          *resids_B*. Note that one can actually supply numpy arrays
-          of the same length as the atom group so that an individual
-          offset is added to each resid.
+       If `offset` is :class:`tuple` then ``offset[0]`` is added to
+       *resids_A* and ``offset[1]`` to *resids_B*. Note that one can
+       actually supply numpy arrays of the same length as the atom
+       group so that an individual offset is added to each resid.
 
-    :Returns: NumPy `array([resids_A, resids_B, distances])`
+    Returns
+    -------
+    resids_A : array
+        residue ids of the `A` group (possibly changed with `offset`)
+    resids_B : array
+       residue ids of the `B` group (possibly changed with `offset`)
+    distances : array
+       distances between the atoms
 
     """
     if A.atoms.n_atoms != B.atoms.n_atoms:
@@ -112,20 +161,35 @@ def dist(A, B, offset=0):
 
 
 def between(group, A, B, distance):
-    """Return sub group of *group* that is within *distance* of both *A* and *B*.
+    """Return sub group of `group` that is within `distance` of both `A` and `B`
 
-    *group*, *A*, and *B* must be
-    :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances.  Works best
-    if *group* is bigger than either *A* or *B*. This function is not
-    aware of periodic boundary conditions.
+    This function is not aware of periodic boundary conditions.
 
     Can be used to find bridging waters or molecules in an interface.
 
     Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
 
-    .. SeeAlso:: Makes use of :mod:`MDAnalysis.lib.NeighborSearch`.
+    Parameters
+    ----------
+
+    group : AtomGroup
+        Find members of `group` that are between `A` and `B`
+    A, B : AtomGroups
+        `A` and `B` are :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        instances.  Works best if `group` is bigger than either `A` or
+        `B`.
+    distance : float
+        maximum distance for an atom to be counted as in the vicinity of
+        `A` or `B`
+
+    Returns
+    -------
+    AtomGroup
+       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` of atoms that
+       fulfill the criterion
 
     .. versionadded: 0.7.5
+
     """
     from MDAnalysis.core.AtomGroup import AtomGroup
 

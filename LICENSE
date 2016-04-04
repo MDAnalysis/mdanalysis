@@ -346,6 +346,43 @@ Public License instead of this License.
 
 
 ==========================================================================
+
+Gromacs xdrfile library for reading XTC/TRR trajectories
+  - lib/formats/src/xdrfile.c
+  - lib/formats/src/xdrfile_xtc.c
+  - lib/formats/src/xdrfile_trr.c
+  - lib/formats/include/xdrfile.h
+  - lib/formats/include/xdrfile_xtc.h
+  - lib/formats/include/xdrfile_trr.h
+
+Copyright (c) 2009-2014, Erik Lindahl & David van der Spoel
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==========================================================================
+
 CatDCD is released under the UIUC Open Source License:
 http://www.ks.uiuc.edu/Development/MDTools/catdcd/license.html
 
@@ -526,15 +563,22 @@ PyQCPROT
 
 MDAnalysis logo (see doc/sphinx/source/logos)
 
+The MDAnalysis 'Atom' logo was created by Christian Beckstein and is
+
+Copyright (c) 2011 Christian Beckstein
+
 MDAnalysis Logo 'Atom' by Christian Beckstein is licensed under a
 Creative Commons Attribution-NoDerivs 3.0 Unported License.
+To view a copy of this license, visit
+http://creativecommons.org/licenses/by-nd/3.0/ or send a letter to Creative
+Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 
-http://creativecommons.org/licenses/by-nd/3.0/
+The logo is contained in the file 'mdanalysis-logo.png'.
 
-See the file LICENSE in the logo directory for the full text of the
-license.
+Derivatives in the files 'mdanalysis-logo-127x55.png',
+'mdanalysis-logo-200x150.png', 'mdanalysis-logo.ico' were created for
+inclusion in MDAnalysis and on websites related to MDAnalysis. They
+are distributed under the same license as the 'Atom' logo.
 
 ==========================================================================
-
-
 

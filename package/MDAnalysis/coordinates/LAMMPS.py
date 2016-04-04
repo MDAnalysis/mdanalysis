@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -99,7 +99,8 @@ class DCDWriter(DCD.DCDWriter):
     "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
-    format = 'DCD'
+    format = 'LAMMPS'
+    multiframe = True
     flavor = 'LAMMPS'
 
     def __init__(self, *args, **kwargs):
@@ -109,9 +110,9 @@ class DCDWriter(DCD.DCDWriter):
         for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
-                    raise TypeError("LAMMPS DCDWriter: wrong unit %r for unit type %r" % (unit, unit_type))
+                    raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit %r" % unit)
+                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -125,7 +126,7 @@ class DCDReader(DCD.DCDReader):
 
     .. _units style: http://lammps.sandia.gov/doc/units.html
     """
-    format = 'DCD'
+    format = 'LAMMPS'
     flavor = 'LAMMPS'
 
     def __init__(self, dcdfilename, **kwargs):
@@ -135,9 +136,9 @@ class DCDReader(DCD.DCDReader):
         for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
-                    raise TypeError("LAMMPS DCDReader: wrong unit %r for unit type %r" % (unit, unit_type))
+                    raise TypeError("LAMMPS DCDReader: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDReader: unknown unit %r" % unit)
+                raise ValueError("LAMMPS DCDReader: unknown unit {0!r}".format(unit))
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 

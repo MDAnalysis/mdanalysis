@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -20,36 +20,24 @@
 _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 
-import numpy as np
-from numpy.testing import (TestCase, assert_raises, assert_equal,
-                           assert_array_almost_equal, assert_, dec)
-from nose.plugins.attrib import attr
-from nose.tools import assert_not_equal
-from MDAnalysisTests.plugins.knownfailure import knownfailure
-from MDAnalysisTests import module_not_found
+from numpy.testing import assert_equal, dec
+from MDAnalysisTests import module_not_found, parser_not_found
 
 import MDAnalysis as mda
-from MDAnalysis.lib.mdamath import triclinic_vectors
-from MDAnalysis import NoDataError
-from MDAnalysisTests.datafiles import (
-    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, PDBQT_input,
-    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF,
-    PQR,
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata,
-    LAMMPSdata_mini,
-    LAMMPSdata2,LAMMPSdcd2,
-    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
-    INPCRD, XYZ_five, mol2_molecules,
-    DLP_CONFIG, DLP_HISTORY
-    )
+from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
+                                       DLP_HISTORY, DMS, GMS_ASYMOPT, GRO, XTC,
+                                       TRR, LAMMPSdata, LAMMPSdata2,
+                                       LAMMPSdcd2, mol2_molecules, PDB_small,
+                                       PDBQT_input, PQR, PRM, TRJ, PRMncdf,
+                                       NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_other_timestep(self):
         # use a subclass to base.Timestep to check it works
         ts1 = mda.coordinates.base.Timestep(10)
@@ -62,7 +50,7 @@ class TestBaseTimestep(BaseTimestepTest):
                         mda.coordinates.DMS.Timestep,
                         mda.coordinates.GRO.Timestep,
                         mda.coordinates.TRZ.Timestep,
-                        mda.coordinates.XTC.Timestep]:
+                        ]:
             ts2 = otherTS(10)
             ts2.positions = self._get_pos()
             yield (self._check_ts_equal, ts1, ts2,
@@ -100,6 +88,8 @@ class TestCRD(BaseTimestepInterfaceTest):
 
 
 class TestDCD(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(PSF, DCD)
         self.ts = u.trajectory.ts
@@ -143,12 +133,16 @@ class TestINPCRD(BaseTimestepInterfaceTest):
 
 
 class TestLAMMPS(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('LAMMPS'),
+                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata)
         self.ts = u.trajectory.ts
 
 
 class TestLAMMPSDCD(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('LAMMPS'),
+                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata2, LAMMPSdcd2,
                                   format='LAMMPS', topology_format='DATA',
@@ -201,6 +195,8 @@ class TestTRR(BaseTimestepInterfaceTest):
 
 
 class TestTRZ(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.ts = u.trajectory.ts

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -72,7 +72,6 @@ Classes and Functions
    :inherited-members:
    :show-inheritance:
 .. autofunction:: density_from_Universe
-.. autofunction:: density_from_trajectory
 .. autofunction:: density_from_PDB
 .. autofunction:: Bfactor2RMSF
 .. autoclass:: BfactorDensityCreator
@@ -83,13 +82,13 @@ Classes and Functions
 
 """
 from __future__ import print_function
+from six.moves import range
 
 import numpy as np
 import sys
 import os
 import os.path
 import errno
-import cPickle
 import warnings
 
 try:
@@ -113,10 +112,14 @@ except ImportError:
     )
 
 import MDAnalysis
+import MDAnalysis.core.AtomGroup
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
+from MDAnalysis.lib.log import ProgressMeter
+
+import MDAnalysis.analysis.distances
 
 import logging
 
@@ -155,7 +158,7 @@ class Density(Grid):
     1. From a histogram (i.e. counts on a grid)::
 
         h,edges = numpy.histogramdd(...)
-        D = Density(h,edges)
+        D = Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
         D.make_density()
 
     2. From a saved density file (e.g. in OpenDX format), where the lengths are
@@ -303,9 +306,9 @@ class Density(Grid):
             warnings.warn(msg)
             return
 
-        dedges = map(np.diff, self.edges)
+        dedges = [np.diff(edge) for edge in self.edges]
         D = len(self.edges)
-        for i in xrange(D):
+        for i in range(D):
             shape = np.ones(D, int)
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
@@ -370,8 +373,7 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density', self.units['density'], unit)
         except KeyError:
-            raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
-                             (unit, units.conversion_factor['density'].keys()))
+            raise ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys()))
         self.units['density'] = unit
 
     def __repr__(self):
@@ -381,54 +383,26 @@ class Density(Grid):
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
-
-def density_from_trajectory(*args, **kwargs):
-    """Create a density grid from a trajectory.
-
-         density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
-
-    or
-
-         density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
-
-    :Arguments:
-      topology file
-            any topology file understood by MDAnalysis
-      trajectory
-            any trajectory (coordinate) file understood by MDAnalysis;
-            if reading a single PDB file it is sufficient to just
-            provide it once as a single argument
-
-    :Keywords:
-      atomselection
-            selection string (MDAnalysis syntax) for the species to be analyzed
-            ["name OH2"]
-      delta
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-      metadata
-            dictionary of additional data to be saved with the object
-      padding
-            increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem [2.0]
-      soluteselection
-            MDAnalysis selection for the solute, e.g. "protein" [``None``]
-      cutoff
-            With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
-            (Special routines that are faster than the standard AROUND selection) [0]
-
-    :Returns: :class:`Density`
-
-    .. SeeAlso:: docs for :func:`density_from_Universe` (defaults for kwargs are defined there).
-    """
-    return density_from_Universe(MDAnalysis.Universe(*args), **kwargs)
-
-
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
+                          start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
-                          use_kdtree=True, **kwargs):
-    """Create a density grid from a MDAnalysis.Universe object.
+                          use_kdtree=True, update_selection=False,
+                          quiet=False, interval=1,
+                          **kwargs):
+    """Create a density grid from a :class:`MDAnalysis.Universe` object.
+
+    The trajectory is read, frame by frame, and the atoms selected with *atomselection* are
+    histogrammed on a grid with spacing *delta*::
 
       density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
+
+    .. Note:: By default, the *atomselection* is static, i.e., atoms are only
+              selected once at the beginning. If you want dynamically changing
+              selections (such as "name OW and around 4.0 (protein and not name
+              H*)") then set ``update_selection=True``. For the special case of
+              calculating a density of the "bulk" solvent away from a solute
+              use the optimized selections with keywords *cutoff* and
+              *soluteselection*.
 
     :Arguments:
       universe
@@ -440,6 +414,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             ["name OH2"]
       delta
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+      start, stop, step
+            Slice the trajectory as ``trajectory[start"stop:step]``; default
+            is to read the whole trajectory.
       metadata
             dictionary of additional data to be saved with the object
       padding
@@ -448,14 +425,29 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       soluteselection
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
       cutoff
-            With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
-            (Special routines that are faster than the standard AROUND selection) [0]
+            With *cutoff*, select "<atomsel> NOT WITHIN <cutoff> OF <soluteselection>"
+            (Special routines that are faster than the standard ``AROUND`` selection)
+            [0]
+      update_selection
+            Should the selection of atoms be updated for every step? [``False``]
+            - ``True``: atom selection is updated for each frame, can be slow
+            - ``False``: atoms are only selected at the beginning
+      quiet
+            Print status update to the screen for every *interval* frame? [``False``]
+            - ``True``: no status updates when a new frame is processed
+            - ``False``: status update every frame (including number of atoms
+              processed, which is interesting with ``update_selection=True``)
+      interval
+           Show status update every *interval* frame [1]
       parameters
             dict with some special parameters for :class:`Density` (see doc)
       kwargs
             metadata, parameters are modified and passed on to :class:`Density`
 
     :Returns: :class:`Density`
+
+    .. versionchanged:: 0.13.0
+       *update_selection* and *quite* keywords added
 
     """
     try:
@@ -468,7 +460,6 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
         notwithin_coordinates = notwithin_coordinates_factory(u, atomselection, soluteselection, cutoff,
                                                               use_kdtree=use_kdtree)
-
         def current_coordinates():
             return notwithin_coordinates()
     else:
@@ -478,8 +469,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             return group.coordinates()
 
     coord = current_coordinates()
-    logger.info("Selected %d atoms out of %d atoms (%s) from %d total." %
-                (coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
+    logger.info("Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total.".format(coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
@@ -508,16 +498,26 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     grid *= 0.0
     h = grid.copy()
 
-    for ts in u.trajectory:
-        print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
-        coord = current_coordinates()
+    pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
+                       format="Histogramming %(n_atoms)6d atoms in frame "
+                       "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)                    
+    for ts in u.trajectory[start:stop:step]:
+        if update_selection:
+           group = u.select_atoms(atomselection)
+           coord=group.positions
+        else:
+           coord = current_coordinates()
+
+        pm.echo(ts.frame, n_atoms=len(coord))
         if len(coord) == 0:
             continue
+
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-    print("")
-    n_frames = u.trajectory.n_frames
+   
+    
+    n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
     # pick from kwargs
@@ -589,8 +589,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     protein = universe.select_atoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
-        import MDAnalysis.core.AtomGroup
-
         set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
         if not_within is True:  # default
             def notwithin_coordinates(cutoff=cutoff):
@@ -608,8 +606,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
                 return group.coordinates()
     else:
         # slower distance matrix based (calculate all with all distances first)
-        import MDAnalysis.analysis.distances
-
         dist = np.zeros((len(solvent), len(protein)), dtype=np.float64)
         box = None  # as long as s_coor is not minimum-image remapped
         if not_within is True:  # default
@@ -753,13 +749,10 @@ class BfactorDensityCreator(object):
         that can be easily matched to a broader density distribution.
 
         """
-        from MDAnalysis import as_Universe
-
-        u = as_Universe(pdb)
+        u = MDAnalysis.as_Universe(pdb)
         group = u.select_atoms(atomselection)
         coord = group.coordinates()
-        logger.info("Selected %d atoms (%s) out of %d total." %
-                    (coord.shape[0], atomselection, len(u.atoms)))
+        logger.info("Selected {0:d} atoms ({1!s}) out of {2:d} total.".format(coord.shape[0], atomselection, len(u.atoms)))
         smin = np.min(coord, axis=0) - padding
         smax = np.max(coord, axis=0) + padding
 
@@ -788,7 +781,7 @@ class BfactorDensityCreator(object):
         else:
             # histogram 'delta functions'
             grid, self.edges = np.histogramdd(coord, bins=bins, range=arange, normed=False)
-            logger.info("Histogrammed %6d atoms from pdb." % len(group.atoms))
+            logger.info("Histogrammed {0:6d} atoms from pdb.".format(len(group.atoms)))
             # just a convolution of the density with a Gaussian
             self.g = self._smear_sigma(grid, sigma)
 
@@ -821,11 +814,10 @@ class BfactorDensityCreator(object):
         # rho_smeared = F^-1[ F[g]*F[rho] ]
         g = np.zeros(grid.shape)  # holds the smeared out density
         pos = np.where(grid != 0)  # position in histogram (as bin numbers)
-        for iwat in xrange(len(pos[0])):  # super-ugly loop
+        for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
-            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, len(pos[0]), sigma),)
+            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -838,8 +830,7 @@ class BfactorDensityCreator(object):
                 continue
             g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
                                     c=coord, sigma=rmsf[iwat])
-            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, N, rmsf[iwat]),)
+            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
         return g
 
     def _gaussian(self, i, j, k, p, sigma):

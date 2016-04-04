@@ -1,6 +1,6 @@
 import itertools
 import numpy as np
-from six.moves import zip
+from six.moves import zip, range
 from nose.plugins.attrib import attr
 from unittest import TestCase
 import tempdir
@@ -32,7 +32,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
-                     "load Universe from file %s" % U.trajectory.filename)
+                     "load Universe from file {0!s}".format(U.trajectory.filename))
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
@@ -111,6 +111,7 @@ class BaseReference(object):
         # default for the numpy test functions
         self.prec = 6
         self.container_format = False
+        self.changing_dimensions = False
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
@@ -130,7 +131,10 @@ class BaseReference(object):
         self.jump_to_frame.positions = 2 ** 3 * self.first_frame.positions
         self.jump_to_frame.frame = 3
 
-        self.dimensions = np.array([80, 80, 80, 60, 60, 90], dtype=np.float32)
+        self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85],
+                                   dtype=np.float32)
+        self.dimensions_second_frame = np.array([82.1, 83.2, 84.3, 75.1, 80.1,
+                                                 85.1], dtype=np.float32)
         self.volume = mda.lib.mdamath.box_volume(self.dimensions)
         self.time = 0
         self.dt = 1
@@ -192,16 +196,14 @@ class BaseReaderTest(object):
         assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
                                      decimal=self.ref.prec)
 
-    def test_get_writer_container(self):
-        if not self.ref.container_format:
-            return
+    def test_get_writer_1(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile) as W:
                 assert_equal(isinstance(W, self.ref.writer), True)
                 assert_equal(W.n_atoms, self.reader.n_atoms)
 
-    def test_get_writer(self):
+    def test_get_writer_2(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile, n_atoms=100) as W:
@@ -217,15 +219,29 @@ class BaseReaderTest(object):
     def test_total_time(self):
         assert_equal(self.reader.totaltime, self.ref.totaltime)
 
-    def test_dimensions(self):
+    def test_first_dimensions(self):
+        self.reader.rewind()
         assert_array_almost_equal(self.reader.ts.dimensions,
                                   self.ref.dimensions,
                                   decimal=self.ref.prec)
 
+    def test_changing_dimensions(self):
+        if self.ref.changing_dimensions:
+            self.reader.rewind()
+            assert_array_almost_equal(self.reader.ts.dimensions,
+                                      self.ref.dimensions,
+                                      decimal=self.ref.prec)
+            self.reader[1]
+            assert_array_almost_equal(self.reader.ts.dimensions,
+                                      self.ref.dimensions_second_frame,
+                                      decimal=self.ref.prec)
+
     def test_volume(self):
         self.reader.rewind()
         vol = self.reader.ts.volume
-        assert_array_almost_equal(vol, self.ref.volume)
+        # Here we can only be sure about the numbers upto the decimal point due
+        # to floating point impressions.
+        assert_almost_equal(vol, self.ref.volume, 0)
 
     def test_iter(self):
         for i, ts in enumerate(self.reader):
@@ -248,6 +264,22 @@ class BaseWriterTest(object):
             for ts in self.reader:
                 W.write(ts)
         self._check_copy(outfile)
+
+    def test_write_different_box(self):
+        if self.ref.changing_dimensions:
+            outfile = self.tmp_file('write-dimensions-test')
+            with self.ref.writer(outfile, self.reader.n_atoms) as W:
+                for ts in self.reader:
+                    ts.dimensions[:3] += 1
+                    W.write(ts)
+
+            written = self.ref.reader(outfile)
+
+            for ts_ref, ts_w in zip(self.reader, written):
+                ts_ref.dimensions[:3] += 1
+                assert_array_almost_equal(ts_ref.dimensions,
+                                          ts_w.dimensions,
+                                          decimal=self.ref.prec)
 
     def test_write_trajectory_atomgroup(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)
@@ -767,7 +799,7 @@ class BaseTimestepTest(object):
                 ts2.forces = self.reffor.copy()
 
             yield (self._check_ts_equal, ts1, ts2,
-                   'Failed on {}'.format(self.name))
+                   'Failed on {0}'.format(self.name))
 
     def test_wrong_class_equality(self):
         ts1 = self.Timestep(self.size)
@@ -890,7 +922,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_positions != B.has_positions:
         raise AssertionError('Only one Timestep has positions:'
-                             'A.has_positions = {}, B.has_positions'.format(
+                             'A.has_positions = {}, B.has_positions = {}'.format(
                                  A.has_positions, B.has_positions))
 
     if A.has_positions:
@@ -900,7 +932,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_velocities != B.has_velocities:
         raise AssertionError('Only one Timestep has velocities:'
-                             'A.has_velocities = {}, B.has_velocities'.format(
+                             'A.has_velocities = {}, B.has_velocities = {}'.format(
                                  A.has_velocities, B.has_velocities))
     if A.has_velocities:
         assert_array_almost_equal(A.velocities, B.velocities, decimal=decimal,
@@ -909,7 +941,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_forces != B.has_forces:
         raise AssertionError('Only one Timestep has forces:'
-                             'A.has_forces = {}, B.has_forces'.format(
+                             'A.has_forces = {}, B.has_forces = {}'.format(
                                  A.has_forces, B.has_forces))
     if A.has_forces:
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,

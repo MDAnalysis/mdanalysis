@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -34,6 +34,7 @@ Classes
 from __future__ import absolute_import
 
 import numpy as np
+from six.moves import range
 
 from ..lib.util import openany
 from .base import TopologyReader
@@ -51,6 +52,7 @@ class XYZParser(TopologyReader):
 
     .. versionadded:: 0.9.1
     """
+    format = 'XYZ'
 
     def parse(self):
         """Read the file and return the structure.

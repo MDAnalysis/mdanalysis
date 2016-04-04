@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -18,25 +18,29 @@ from __future__ import print_function
 import MDAnalysis
 import MDAnalysis.analysis.psa
 
-from numpy.testing import TestCase, assert_array_less, assert_array_almost_equal
+from numpy.testing import (TestCase, dec, assert_array_less,
+                           assert_array_almost_equal, assert_)
 import numpy as np
 
-import tempfile
-import shutil
+import tempdir
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
-
+from MDAnalysisTests import parser_not_found
 
 
 class TestPSAnalysis(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
+        self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
         self.universe1 = MDAnalysis.Universe(PSF, DCD)
         self.universe2 = MDAnalysis.Universe(PSF, DCD2)
         self.universe_rev = MDAnalysis.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
         self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
-                                               path_select='name CA')
+                                               path_select='name CA',           \
+                                                      targetdir=self.tmpdir.name)
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -54,7 +58,7 @@ class TestPSAnalysis(TestCase):
         del self.universe2
         del self.universe_rev
         del self.psa
-        shutil.rmtree('psadata') # remove psa data directory
+        del self.tmpdir
 
     def test_hausdorff_bound(self):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
@@ -69,4 +73,4 @@ class TestPSAnalysis(TestCase):
 
     def test_reversal_frechet(self):
         err_msg = "Frechet distances did not increase after path reversal"
-        assert self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg
+        assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)

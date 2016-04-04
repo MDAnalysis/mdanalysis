@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -115,6 +115,9 @@ module. The derived classes must follow the Trajectory API in
 
 """
 
+from six.moves import range
+import six
+
 import itertools
 import os.path
 import warnings
@@ -123,6 +126,11 @@ import numpy as np
 import copy
 import weakref
 
+from . import (
+    _READERS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+)
 from ..core import flags
 from .. import units
 from ..lib.util import asiterable
@@ -152,22 +160,24 @@ class Timestep(object):
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
 
-        :Arguments:
-          *n_atoms*
-            The total number of atoms this Timestep describes
-
-        :Keywords:
-          *positions*
-            Whether this Timestep has position information [``True``]
-          *velocities*
-            Whether this Timestep has velocity information [``False``]
-          *forces*
-            Whether this Timestep has force information [``False``]
-          *dt*
-            The time difference between frames (ps).  If :attr:`time`
-            is set, then `dt` will be ignored.
-          *time_offset*
-            The starting time from which to calculate time (ps)
+        Parameters
+        ----------
+        n_atoms : int
+          The total number of atoms this Timestep describes
+        positions : bool, optional
+          Whether this Timestep has position information [``True``]
+        velocities : bool, optional
+          Whether this Timestep has velocity information [``False``]
+        forces : bool, optional
+          Whether this Timestep has force information [``False``]
+        reader : Reader, optional
+          A weak reference to the owning Reader.  Used for
+          when attributes require trajectory manipulation (e.g. dt)
+        dt : float, optional
+          The time difference between frames (ps).  If :attr:`time`
+          is set, then `dt` will be ignored.
+        time_offset : float, optional
+          The starting time from which to calculate time (ps)
 
         .. versionchanged:: 0.11.0
            Added keywords for positions, velocities and forces
@@ -186,6 +196,11 @@ class Timestep(object):
                 self.data[att] = kwargs[att]
             except KeyError:
                 pass
+        try:
+            # do I have a hook back to the Reader?
+            self._reader = weakref.ref(kwargs['reader'])
+        except KeyError:
+            pass
 
         # Stupid hack to make it allocate first time round
         # ie we have to go from not having, to having positions
@@ -260,12 +275,12 @@ class Timestep(object):
         has_forces = forces is not None
 
         lens = [len(a) for a in [positions, velocities, forces]
-                if not a is None]
+                if a is not None]
         if not lens:
             raise ValueError("Must specify at least one set of data")
         n_atoms = max(lens)
         # Check arrays are matched length?
-        if not all([val == n_atoms for val in lens]):
+        if not all( val == n_atoms for val in lens):
             raise ValueError("Lengths of input data mismatched")
 
         ts = cls(n_atoms,
@@ -351,7 +366,7 @@ class Timestep(object):
 
             iterate of the coordinates, atom by atom
         """
-        for i in xrange(self.n_atoms):
+        for i in range(self.n_atoms):
             yield self[i]
 
     def __repr__(self):
@@ -480,13 +495,15 @@ class Timestep(object):
         Setting this attribute will add positions to the Timestep if they
         weren't originally present.
 
-        :Returns:
-           A numpy.ndarray of shape (n_atoms, 3) of position data for each
-           atom
+        Returns
+        -------
+          A numpy.ndarray of shape (n_atoms, 3) of position data for each
+          atom
 
-        :Raises:
-           :class:`MDAnalysis.exceptions.NoDataError`
-              If the Timestep has no position data
+        Raises
+        ------
+          :class:`MDAnalysis.exceptions.NoDataError`
+          If the Timestep has no position data
 
         .. versionchanged:: 0.11.0
            Now can raise NoDataError when no position data present
@@ -555,13 +572,15 @@ class Timestep(object):
         Setting this attribute will add velocities to the Timestep if they
         weren't originally present.
 
-        :Returns:
-           A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
-           atom
+        Returns
+        -------
+          A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
+          atom
 
-        :Raises:
-           :class:`MDAnalysis.exceptions.NoDataError`
-              When the Timestep does not contain velocity information
+        Raises
+        ------
+          :class:`MDAnalysis.exceptions.NoDataError`
+          When the Timestep does not contain velocity information
 
         .. versionadded:: 0.11.0
         """
@@ -602,13 +621,15 @@ class Timestep(object):
         Setting this attribute will add forces to the Timestep if they
         weren't originally present.
 
-        :Returns:
-           A numpy.ndarray of shape (n_atoms, 3) of force data for each
-           atom
+        Returns
+        -------
+        A numpy.ndarray of shape (n_atoms, 3) of force data for each
+        atom
 
-        :Raises:
-           :class:`MDAnalysis.NoDataError`
-              When the Timestep does not contain force information
+        Raises
+        ------
+        :class:`MDAnalysis.NoDataError`
+        When the Timestep does not contain force information
 
         .. versionadded:: 0.11.0
         """
@@ -651,10 +672,15 @@ class Timestep(object):
     def triclinic_dimensions(self):
         """The unitcell dimensions represented as triclinic vectors
 
-        :Returns:
-           A (3, 3) numpy.ndarray of unit cell vectors
+        Returns
+        -------
+        A (3, 3) numpy.ndarray of unit cell vectors
 
-        For example::
+        Examples
+        --------
+        The unitcell for a given system can be queried as either three
+        vectors lengths followed by their respective angle, or as three
+        triclinic vectors.
 
           >>> ts.dimensions
           array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
@@ -689,8 +715,9 @@ class Timestep(object):
     def dt(self):
         """The time difference in ps between timesteps
 
-        .. Note::
-           This defaults to 1.0 ps in the absence of time data
+        Note
+        ----
+        This defaults to 1.0 ps in the absence of time data
 
         .. versionadded:: 0.11.0
         """
@@ -749,16 +776,23 @@ class IObase(object):
     .. versionchanged:: 0.8
        Added context manager protocol.
     """
-    #: override to define trajectory format of the reader/writer (DCD, XTC, ...)
-    format = None
 
     #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
     units = {'time': None, 'length': None, 'velocity': None}
 
     def convert_pos_from_native(self, x, inplace=True):
-        """In-place conversion of coordinate array x from native units to base units.
+        """Conversion of coordinate array x from native units to base units.
 
+        Parameters
+        ----------
+        x : array_like
+          Positions to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *x* is modified in place and also returned.
 
         .. versionchanged:: 0.7.5
@@ -768,7 +802,8 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', self.units['length'], flags['length_unit'])
+        f = units.get_conversion_factor(
+            'length', self.units['length'], flags['length_unit'])
         if f == 1.:
             return x
         if not inplace:
@@ -777,13 +812,23 @@ class IObase(object):
         return x
 
     def convert_velocities_from_native(self, v, inplace=True):
-        """In-place conversion of velocities array *v* from native units to base units.
+        """Conversion of velocities array *v* from native to base units
 
+        Parameters
+        ----------
+        v : array_like
+          Velocities to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *v* is modified in place and also returned.
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', self.units['velocity'], flags['speed_unit'])
+        f = units.get_conversion_factor(
+            'speed', self.units['velocity'], flags['speed_unit'])
         if f == 1.:
             return v
         if not inplace:
@@ -792,13 +837,23 @@ class IObase(object):
         return v
 
     def convert_forces_from_native(self, force, inplace=True):
-        """In-place conversion of forces array *force* from native units to base units.
+        """Conversion of forces array *force* from native to base units
 
+        Parameters
+        ----------
+        force : array_like
+          Forces to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *force* is modified in place and also returned.
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', self.units['force'], flags['force_unit'])
+        f = units.get_conversion_factor(
+            'force', self.units['force'], flags['force_unit'])
         if f == 1.:
             return force
         if not inplace:
@@ -809,6 +864,15 @@ class IObase(object):
     def convert_time_from_native(self, t, inplace=True):
         """Convert time *t* from native units to base units.
 
+        Parameters
+        ----------
+        t : array_like
+          Time values to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *t* is modified in place and also
         returned (although note that scalar values *t* are passed by
         value in Python and hence an in-place modification has no
@@ -821,7 +885,8 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', self.units['time'], flags['time_unit'])
+        f = units.get_conversion_factor(
+            'time', self.units['time'], flags['time_unit'])
         if f == 1.:
             return t
         if not inplace:
@@ -832,6 +897,15 @@ class IObase(object):
     def convert_pos_to_native(self, x, inplace=True):
         """Conversion of coordinate array x from base units to native units.
 
+        Parameters
+        ----------
+        x : array_like
+          Positions to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *x* is modified in place and also returned.
 
         .. versionchanged:: 0.7.5
@@ -841,7 +915,8 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', flags['length_unit'], self.units['length'])
+        f = units.get_conversion_factor(
+            'length', flags['length_unit'], self.units['length'])
         if f == 1.:
             return x
         if not inplace:
@@ -850,13 +925,23 @@ class IObase(object):
         return x
 
     def convert_velocities_to_native(self, v, inplace=True):
-        """In-place conversion of coordinate array *v* from base units to native units.
+        """Conversion of coordinate array *v* from base to native units
 
+        Parameters
+        ----------
+        v : array_like
+          Velocities to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *v* is modified in place and also returned.
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', flags['speed_unit'], self.units['velocity'])
+        f = units.get_conversion_factor(
+            'speed', flags['speed_unit'], self.units['velocity'])
         if f == 1.:
             return v
         if not inplace:
@@ -865,13 +950,23 @@ class IObase(object):
         return v
 
     def convert_forces_to_native(self, force, inplace=True):
-        """In-place conversion of force array *force* from base units to native units.
+        """Conversion of force array *force* from base to native units.
 
+        Parameters
+        ----------
+        force : array_like
+          Forces to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *force* is modified in place and also returned.
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', flags['force_unit'], self.units['force'])
+        f = units.get_conversion_factor(
+            'force', flags['force_unit'], self.units['force'])
         if f == 1.:
             return force
         if not inplace:
@@ -882,6 +977,15 @@ class IObase(object):
     def convert_time_to_native(self, t, inplace=True):
         """Convert time *t* from base units to native units.
 
+        Parameters
+        ----------
+        t : array_like
+          Time values to transform
+        inplace : bool, optional
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
         By default, the input *t* is modified in place and also
         returned. (Also note that scalar values *t* are passed by
         value in Python and hence an in-place modification has no
@@ -894,7 +998,8 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', flags['time_unit'], self.units['time'])
+        f = units.get_conversion_factor(
+            'time', flags['time_unit'], self.units['time'])
         if f == 1.:
             return t
         if not inplace:
@@ -906,7 +1011,6 @@ class IObase(object):
         """Close the trajectory file."""
         pass
 
-    # experimental:  context manager protocol
     def __enter__(self):
         return self
 
@@ -916,7 +1020,20 @@ class IObase(object):
         return False  # do not suppress exceptions
 
 
-class ProtoReader(IObase):
+class _Readermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _READERS[f] = cls
+
+
+class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     """Base class for Readers, without a :meth:`__del__` method.
 
     Extends :class:`IObase` with most attributes and methods of a generic
@@ -944,6 +1061,10 @@ class ProtoReader(IObase):
     def next(self):
         """Forward one step to next frame."""
         return self._read_next_timestep()
+
+    def __next__(self):
+        """Forward one step to next frame when using the `next` builtin."""
+        return self.next()
 
     def rewind(self):
         """Position at beginning of trajectory"""
@@ -978,9 +1099,11 @@ class ProtoReader(IObase):
         return self.ts.time
 
     def Writer(self, filename, **kwargs):
-        """Returns a trajectory writer with the same properties as this trajectory."""
-        raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. "
-                "Please file an enhancement request at https://github.com/MDAnalysis/mdanalysis/issues")
+        """A trajectory writer with the same properties as this trajectory."""
+        raise NotImplementedError(
+            "Sorry, there is no Writer for this format in MDAnalysis. "
+            "Please file an enhancement request at "
+            "https://github.com/MDAnalysis/mdanalysis/issues")
 
     def OtherWriter(self, filename, **kwargs):
         """Returns a writer appropriate for *filename*.
@@ -998,12 +1121,14 @@ class ProtoReader(IObase):
             pass
         return core.writer(filename, **kwargs)
 
-    def _read_next_timestep(self, ts=None):
+    def _read_next_timestep(self, ts=None):  # pragma: no cover
         # Example from DCDReader:
-        #     if ts is None: ts = self.ts
-        #     ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+        #     if ts is None:
+        #         ts = self.ts
+        #     ts.frame = self._read_next_frame(etc)
         #     return ts
-        raise NotImplementedError("BUG: Override _read_next_timestep() in the trajectory reader!")
+        raise NotImplementedError(
+            "BUG: Override _read_next_timestep() in the trajectory reader!")
 
     def __iter__(self):
         self._reopen()
@@ -1030,7 +1155,9 @@ class ProtoReader(IObase):
         If frame is a :class:`slice` then an iterator is returned that
         allows iteration over that part of the trajectory.
 
-        .. Note:: *frame* is a 0-based frame index.
+        Note
+        ----
+        *frame* is a 0-based frame index.
         """
         def apply_limits(frame):
             if frame < 0:
@@ -1044,14 +1171,20 @@ class ProtoReader(IObase):
             frame = apply_limits(frame)
             return self._read_frame(frame)
         elif isinstance(frame, (list, np.ndarray)):
+            if isinstance(frame[0], (bool, np.bool_)):
+                # Avoid having list of bools
+                frame = np.asarray(frame, dtype=np.bool)
+                # Convert bool array to int array
+                frame = np.arange(len(self))[frame]
+
             def listiter(frames):
                 for f in frames:
-                    if not isinstance(f, int):
+                    if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame(apply_limits(f))
             return listiter(frame)
         elif isinstance(frame, slice):
-            start, stop, step = self._check_slice_indices(
+            start, stop, step = self.check_slice_indices(
                 frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
                 return self.__iter__()
@@ -1068,7 +1201,7 @@ class ProtoReader(IObase):
         # Example implementation in the DCDReader:
         #self._jump_to_frame(frame)
         #ts = self.ts
-        #ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1) # XXX required!!
+        #ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
         #return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1082,54 +1215,72 @@ class ProtoReader(IObase):
         """
         # override with an appropriate implementation e.g. using self[i] might
         # be much slower than skipping steps in a next() loop
-        def _iter(start=start, stop=stop, step=step):
-            try:
-                for i in xrange(start, stop, step):
-                    yield self._read_frame(i)
-            except TypeError:  # if _read_frame not implemented
-                raise TypeError("{0} does not support slicing."
-                                "".format(self.__class__.__name__))
-        return _iter()
+        try:
+            for i in range(start, stop, step):
+                yield self._read_frame(i)
+        except TypeError:  # if _read_frame not implemented
+            raise TypeError("{0} does not support slicing."
+                            "".format(self.__class__.__name__))
 
-    def _check_slice_indices(self, start, stop, step):
-        """Unpack the slice object and do checks
+    def check_slice_indices(self, start, stop, step):
+        """Check frame indices are valid and clip to fit trajectory
 
-        Return the start stop and step indices
+        Parameters
+        ----------
+        start, stop, step : int or None
+          Values representing the slice indices.
+          Can use `None` to use defaults of (0, -1, and 1)
+          respectively.
+
+        Returns
+        -------
+        start, stop, step : int
+          Integers representing the slice
         """
-        if not (((type(start) == int) or (start is None)) and
-                ((type(stop) == int) or (stop is None)) and
-                ((type(step) == int) or (step is None))):
-            raise TypeError("Slice indices are not integers")
+        for var, varname in (
+                (start, 'start'),
+                (stop, 'stop'),
+                (step, 'step')
+        ):
+            if not (isinstance(var, int) or (var is None)):
+                raise TypeError("{0} is not an integer".format(varname))
         if step == 0:
             raise ValueError("Step size is zero")
 
-        n = len(self)
+        nframes = len(self)
         step = step or 1
 
-        if start:
-            if start < 0:
-                start += n
-        else:
-            start = 0 if step > 0 else n - 1
+        if start is None:
+            start = 0 if step > 0 else nframes - 1
+        elif start < 0:
+            start += nframes
 
-        if stop:
+        if stop is not None:
             if stop < 0:
-                stop += n
-            elif stop > n:
-                stop = n
+                stop += nframes
+            elif stop > nframes:
+                stop = nframes
         else:
-            stop = n if step > 0 else -1
+            stop = nframes if step > 0 else -1
 
-        if step > 0 and stop <= start:
+        if step > 0 and stop < start:
             raise IndexError("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= n) or (stop > n)):
-            raise IndexError("Frame start/stop outside of the range of the trajectory.")
+        elif step < 0 and start < stop:
+            raise IndexError("Start frame is lower than stop frame")
+        if not (0 <= start < nframes) or stop > nframes:
+            raise IndexError(
+                "Frame start/stop outside of the range of the trajectory.")
 
         return start, stop, step
 
     def __repr__(self):
-        return "< %s %r with %d frames of %d atoms>" % \
-               (self.__class__.__name__, self.filename, self.n_frames, self.n_atoms)
+        return ("<{cls} {fname} with {nframes} frames of {natoms} atoms>"
+                "".format(
+                    cls=self.__class__.__name__,
+                    fname=self.filename,
+                    nframes=self.n_frames,
+                    natoms=self.n_atoms
+                ))
 
 
 class Reader(ProtoReader):
@@ -1266,7 +1417,7 @@ class ChainReader(ProtoReader):
         # build map 'start_frames', which is used by _get_local_frame()
         n_frames = self._get('n_frames')
         # [0]: frames are 0-indexed internally
-        # (see Timestep._check_slice_indices())
+        # (see Timestep.check_slice_indices())
         self.__start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
@@ -1305,7 +1456,7 @@ class ChainReader(ProtoReader):
         # trajectory index i
         i = bisect.bisect_right(self.__start_frames, k) - 1
         if i < 0:
-            raise IndexError("Cannot find trajectory for virtual frame %d" % k)
+            raise IndexError("Cannot find trajectory for virtual frame {0:d}".format(k))
         # local frame index f in trajectory i (frame indices are 0-based)
         f = k - self.__start_frames[i]
         return i, f
@@ -1393,7 +1544,7 @@ class ChainReader(ProtoReader):
         """Make reader *i* the active reader."""
         # private method, not to be used by user to avoid a total mess
         if i < 0 or i >= len(self.readers):
-            raise IndexError("Reader index must be 0 <= i < %d" % len(self.readers))
+            raise IndexError("Reader index must be 0 <= i < {0:d}".format(len(self.readers)))
         self.__active_reader_index = i
 
     @property
@@ -1437,14 +1588,14 @@ class ChainReader(ProtoReader):
             yield ts
 
     def _read_next_timestep(self, ts=None):
-        self.ts = self.__chained_trajectories_iter.next()
+        self.ts = next(self.__chained_trajectories_iter)
         return self.ts
 
     def rewind(self):
         """Set current frame to the beginning."""
         self._rewind()
         self.__chained_trajectories_iter = self._chained_iterator()
-        self.ts = self.__chained_trajectories_iter.next()  # set time step to frame 1
+        self.ts = next(self.__chained_trajectories_iter)  # set time step to frame 1
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
@@ -1465,19 +1616,40 @@ class ChainReader(ProtoReader):
         return filename[0] if isinstance(filename, tuple) else filename
 
     def __repr__(self):
-        return "< %s %r with %d frames of %d atoms>" % \
-               (self.__class__.__name__,
-               [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
-               self.n_frames, self.n_atoms)
+        return ("<{clsname} {fname} with {nframes} frames of {natoms} atoms>"
+                "".format(
+                    clsname=self.__class__.__name__,
+                    fname=[os.path.basename(self.get_flname(fn))
+                           for fn in self.filenames],
+                    nframes=self.n_frames,
+                    natoms=self.n_atoms))
 
 
-class Writer(IObase):
+class _Writermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _SINGLEFRAME_WRITERS[f] = cls
+            try:
+                if classdict['multiframe']:
+                    for f in fmt:
+                        _MULTIFRAME_WRITERS[f] = cls
+            except KeyError:
+                pass
+
+
+class Writer(six.with_metaclass(_Writermeta, IObase)):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
-
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -1521,10 +1693,10 @@ class Writer(IObase):
 
     def __repr__(self):
         try:
-            return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.n_atoms)
+            return "< {0!s} {1!r} for {2:d} atoms >".format(self.__class__.__name__, self.filename, self.n_atoms)
         except (TypeError, AttributeError):
             # no trajectory loaded yet or a Writer that does not need e.g. self.n_atoms
-            return "< %s %r >" % (self.__class__.__name__, self.filename)
+            return "< {0!s} {1!r} >".format(self.__class__.__name__, self.filename)
 
     def has_valid_coordinates(self, criteria, x):
         """Returns ``True`` if all values are within limit values of their formats.

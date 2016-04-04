@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -64,7 +64,9 @@ Classes
 from __future__ import absolute_import, division
 
 import numpy as np
-from itertools import izip
+from six.moves import range, zip
+import functools
+from math import ceil
 
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReader
@@ -115,6 +117,8 @@ class TOPParser(TopologyReader):
    .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
     """
+    format = ['TOP', 'PRMTOP', 'PARM7']
+
     def parse(self):
         """Parse Amber PRMTOP topology file *filename*.
 
@@ -187,7 +191,7 @@ class TOPParser(TopologyReader):
         resptrs = attrs.pop('respoint')
         resptrs.append(n_atoms)
         residx = np.zeros(n_atoms, dtype=np.int32)
-        for i, (x, y) in enumerate(izip(resptrs[:-1], resptrs[1:])):
+        for i, (x, y) in enumerate(zip(resptrs[:-1], resptrs[1:])):
             residx[x:y] = i
 
         top = Topology(n_atoms, len(attrs['resname']), 1,

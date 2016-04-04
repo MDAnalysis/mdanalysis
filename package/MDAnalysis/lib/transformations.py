@@ -190,6 +190,8 @@ Functions
 
 from __future__ import division
 
+from six.moves import range
+
 import sys
 import os
 import warnings
@@ -702,7 +704,7 @@ def shear_from_matrix(matrix):
     l, V = np.linalg.eig(M33)
     i = np.where(abs(np.real(l) - 1.0) < 1e-4)[0]
     if len(i) < 2:
-        raise ValueError("no two linear independent eigenvectors found %s" % l)
+        raise ValueError("no two linear independent eigenvectors found {0!s}".format(l))
     V = np.real(V[:, i]).squeeze().T
     lenorm = -1.0
     for i0, i1 in ((0, 1), (0, 2), (1, 2)):

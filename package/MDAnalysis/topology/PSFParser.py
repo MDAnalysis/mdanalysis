@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -36,7 +36,9 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
 import logging
+import functools
 from math import ceil
 import numpy as np
 
@@ -80,6 +82,8 @@ class PSFParser(TopologyReader):
 
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
     """
+    format = 'PSF'
+
     def parse(self):
         """Parse PSF file into Topology
 
@@ -104,15 +108,15 @@ class PSFParser(TopologyReader):
             else:
                 self._format = "STANDARD"    # CHARMM
 
-            psffile.next()
-            title = psffile.next().split()
+            next(psffile)
+            title = next(psffile).split()
             if not (title[1] == "!NTITLE"):
                 err = "{0} is not a valid PSF file".format(psffile.name)
                 logger.error(err)
                 raise ValueError(err)
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
-                psffile.next()
+                next(psffile)
             logger.debug("PSF file {0}: format {1}"
                          "".format(psffile.name, self._format))
 
@@ -149,9 +153,9 @@ class PSFParser(TopologyReader):
         A list of Attributes from this section
         """
         desc, atoms_per, per_line, parsefunc = section_info
-        header = psffile.next()
+        header = next(psffile)
         while header.strip() == "":
-            header = psffile.next()
+            header = next(psffile)
         header = header.split()
         # Get the number
         num = float(header[0])
@@ -165,7 +169,8 @@ class PSFParser(TopologyReader):
         # Now figure out how many lines to read
         numlines = int(ceil(num/per_line))
 
-        return parsefunc(psffile.next, atoms_per, numlines)
+        psffile_next = functools.partial(next, psffile)
+        return parsefunc(psffile_next, atoms_per, numlines)
 
     def _parseatoms(self, lines, atoms_per, numlines):
         """Parses atom section in a Charmm PSF file.
@@ -313,9 +318,9 @@ class PSFParser(TopologyReader):
     def _parsesection(self, lines, atoms_per, numlines):
         section = []
 
-        for i in xrange(numlines):
+        for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = map(lambda x: int(x) - 1, lines().split())
+            fields = list(map(lambda x: int(x) - 1, lines().split()))
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

@@ -66,7 +66,7 @@ class GMSReader(base.Reader):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
-        self.outfile = util.anyopen(self.filename, 'r')
+        self.outfile = util.anyopen(self.filename, 'rt')
 
         # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
@@ -78,7 +78,7 @@ class GMSReader(base.Reader):
         self.ts = self._Timestep(0) # need for properties initial calculations
 
         # update runtyp property
-        self.runtyp 
+        self.runtyp
         if not self.runtyp in ['optimize', 'surface']:
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
 
@@ -92,7 +92,7 @@ class GMSReader(base.Reader):
     @property
     def runtyp(self):
         """RUNTYP property of the GAMESS run"""
-        if not self._runtyp is None:   # return cached value
+        if self._runtyp is not None:   # return cached value
             return self._runtyp
         try:
             self._runtyp = self._determine_runtyp()
@@ -106,7 +106,7 @@ class GMSReader(base.Reader):
         counter = 0
         for line in self.outfile:
             m = re.match(r'^.*RUNTYP=([A-Z]+)\s+.*', line)
-            if (m != None):
+            if (m is not None):
                 self.close()
                 return m.group(1).lower()
 
@@ -116,7 +116,7 @@ class GMSReader(base.Reader):
     @property
     def n_atoms(self):
         """number of atoms in a frame"""
-        if not self._n_atoms is None:   # return cached value
+        if self._n_atoms is not None:   # return cached value
             return self._n_atoms
         try:
             self._n_atoms = self._read_out_natoms()
@@ -127,10 +127,11 @@ class GMSReader(base.Reader):
 
     def _read_out_natoms(self):
         self._reopen()
-        # this assumes that this is only called once at startup and that the filestream is already open
-        for line in self.outfile:           
+        # this assumes that this is only called once at startup and that the
+        # filestream is already open
+        for line in self.outfile:
             m = re.match(r'\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*',line)
-            if m == None:
+            if m is None:
                 continue
             self.close()
             return int(m.group(1))
@@ -140,7 +141,7 @@ class GMSReader(base.Reader):
 
     @property
     def n_frames(self):
-        if not self._n_frames is None:   # return cached value
+        if self._n_frames is not None:   # return cached value
             return self._n_frames
         try:
             self._n_frames = self._read_out_n_frames(self.filename)
@@ -153,11 +154,11 @@ class GMSReader(base.Reader):
         self._reopen()
         counter = 0
         if self.runtyp == 'optimize':
-            for line in self.outfile:           
+            for line in self.outfile:
                 if re.match(r'^.NSERCH=.*', line):
                     counter += 1
         elif self.runtyp == 'surface':
-            for line in self.outfile:           
+            for line in self.outfile:
                 if re.match(r'^.COORD 1=.*', line):
                     counter += 1
 
@@ -174,20 +175,20 @@ class GMSReader(base.Reader):
         x = []
         y = []
         z = []
-        
+
         flag = 0
         counter = 0
 
         for line in self.outfile:
-            if self.runtyp == 'optimize': 
-                if (flag == 0) and (re.match(r'^.NSERCH=.*', line) != None):
+            if self.runtyp == 'optimize':
+                if (flag == 0) and (re.match(r'^.NSERCH=.*', line) is not None):
                     flag = 1
                     continue
                 if (flag == 1) and (re.match(r'^ COORDINATES OF ALL ATOMS ARE ',\
-                    line) != None):
+                    line) is not None):
                     flag = 2
                     continue
-                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) != None):
+                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:
@@ -199,11 +200,11 @@ class GMSReader(base.Reader):
 
             elif self.runtyp == 'surface':
                 if (flag == 0) and (re.match(\
-                        r'^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*', line) != None):
+                        r'^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*', line) is not None):
                     flag = 1
                     continue
                 if (flag == 1) and (re.match(\
-                        r'^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*', line) != None):
+                        r'^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:
@@ -235,17 +236,17 @@ class GMSReader(base.Reader):
         self.open_trajectory()
 
     def open_trajectory(self):
-        if not self.outfile is None:
+        if self.outfile is not None:
             raise IOError(errno.EALREADY, 'GMS file already opened', self.filename)
         if not os.path.exists(self.filename):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'GMS file not found', self.filename)
 
-        self.outfile = util.anyopen(self.filename, 'r')
+        self.outfile = util.anyopen(self.filename, 'rt')
 
         # reset ts
         ts = self.ts
-        ts.frame = -1 
+        ts.frame = -1
         return self.outfile
 
     def close(self):

@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -13,24 +13,25 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import tempfile
+from six.moves import range
+
+import tempdir
 import os
-from numpy.testing import *
+from numpy.testing import (assert_equal,assert_raises, assert_array_equal,
+                           assert_array_almost_equal, TestCase)     
 
 from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
 from MDAnalysis import Universe
+import MDAnalysis as mda
 
 
 class TestMol2(TestCase):
     def setUp(self):
-        fd, self.outfile = tempfile.mkstemp(suffix=".mol2")
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.mol2')
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_read(self):
         u = Universe(mol2_molecules)
@@ -45,10 +46,7 @@ class TestMol2(TestCase):
         ref.atoms.write(self.outfile)
         u = Universe(self.outfile)
         assert_equal(len(u.atoms), len(ref.atoms))
-        assert_equal(len(u.trajectory), len(ref.trajectory))
-        assert_array_equal(u.atoms.positions, ref.atoms.positions)
-        u.trajectory[199]
-        ref.trajectory[199]
+        assert_equal(len(u.trajectory), 1)
         assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_write_selection(self):
@@ -58,6 +56,20 @@ class TestMol2(TestCase):
         u = Universe(self.outfile)
         gr1 = u.select_atoms("name C*")
         assert_equal(len(gr0), len(gr1))
+
+    def test_write_in_loop(self):
+        ref = Universe(mol2_molecules)
+
+        with mda.Writer(self.outfile) as W:
+            for ts in ref.trajectory:
+                W.write(ref.atoms)
+        u = Universe(self.outfile)
+        assert_equal(len(u.atoms), len(ref.atoms))
+        assert_equal(len(u.trajectory), len(ref.trajectory))
+        assert_array_equal(u.atoms.positions, ref.atoms.positions)
+        u.trajectory[199]
+        ref.trajectory[199]
+        assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_broken_molecule(self):
         assert_raises(ValueError, Universe, mol2_broken_molecule)
@@ -104,7 +116,8 @@ class TestMol2_traj(TestCase):
 
     def test_reverse_traj(self):
         frames = [ts.frame for ts in self.traj[20:5:-1]]
-        assert_equal(frames, range(20, 5, -1), "reversing traj [20:5:-1]")
+        assert_equal(frames, list(range(20, 5, -1)),
+                     "reversing traj [20:5:-1]")
 
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")

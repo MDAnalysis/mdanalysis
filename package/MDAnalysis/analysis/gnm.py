@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -29,8 +29,12 @@ Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 
 Analyse a trajectory using elastic network models, following the approach of [Hall2007]_.
 
-An example is provided in :file:`examples/GNMExample.py`. The basic
-approach is to pass a trajectory to :class:`GNMAnalysis` and then run
+An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
+
+.. GNMExample_: https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py
+.. Cookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook
+
+The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
 the analysis::
 
    u = MDAnalysis.Universe(PSF,DCD)
@@ -76,6 +80,9 @@ directly needed to perform the analysis.
 
 # import copy #unused
 
+from __future__ import print_function
+from six.moves import range
+
 import numpy as np
 from numpy import linalg
 
@@ -107,7 +114,7 @@ def backup_file(filename):
                     failure = False
                     break
         if failure:
-            print "Too many backups. Clean up and try again"
+            print("Too many backups. Clean up and try again")
             exit()
 
 
@@ -189,7 +196,8 @@ class GNMAnalysis(object):
         if ReportVector:
             with open(ReportVector, "a") as oup:
                 for item in enumerate(v[list_map[1]]):
-                    print >> oup, "", counter, time, item[0] + 1, w[list_map[1]], item[1]
+                    print("", counter, time, item[0] + 1,
+                          w[list_map[1]], item[1], file=oup)
         outputobject.append((time, w[list_map[1]], v[list_map[1]]))
         #outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ], [ v[list_map[i]] for i in range(
         # nmodes) ] ))
@@ -281,8 +289,9 @@ class GNMAnalysis(object):
             matrix = self.generate_kirchoff()
             try:
                 [u, w, v] = linalg.svd(matrix)
-            except:
-                print "\nFrame skip at", timestep, "(SVD failed to converge). Cutoff", self.cutoff
+            except linalg.LinAlgError:
+                print("\nFrame skip at", timestep,
+                      "(SVD failed to converge). Cutoff", self.cutoff)
                 continue
             #Save the results somewhere useful in some useful format. Usefully.
             self.generate_output(w, v, self.results, timestep, matrix, ReportVector=self.ReportVector, counter=counter)

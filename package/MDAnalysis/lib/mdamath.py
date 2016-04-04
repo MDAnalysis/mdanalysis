@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -159,7 +159,7 @@ def triclinic_box(x, y, z):
 
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
-    A, B, C = [norm(v) for v in x, y, z]
+    A, B, C = [norm(v) for v in (x, y, z)]
     alpha = _angle(y, z)
     beta = _angle(x, z)
     gamma = _angle(x, y)

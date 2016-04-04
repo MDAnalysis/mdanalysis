@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -82,7 +82,7 @@ hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
   #now we print the data ready to graph. The first two columns are the HBLc vs t graph and
   #the second two columns are the HBLi vs t graph
   for HBLc, HBLi in HBL_analysis.timeseries:
-        print i +" "+ HBLc +" "+ i +" "+ HBLi
+        print(i +" "+ HBLc +" "+ i +" "+ HBLi)
         i+=1
 
 where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is the value for the intermittent
@@ -106,7 +106,7 @@ Analyzing water orientational relaxation (WOR) :class:`WaterOrientationalRelaxat
   #now we print the data ready to graph. The first two columns are WOR_OH vs t graph,
   #the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph
   for WOR_OH, WOR_HH, WOR_dip in WOR_analysis.timeseries:
-        print i +" "+ WOR_OH +" "+ i +" "+ WOR_HH +" "+ i +" "+ WOR_dip
+        print(i +" "+ WOR_OH +" "+ i +" "+ WOR_HH +" "+ i +" "+ WOR_dip)
 
 where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows timesteps (20 values in the x axis),
 the first window is created with 1000 timestep average (1000/1), the second window is created with 500
@@ -133,7 +133,7 @@ with something (residue, protein, etc)::
   #the seconds two columns are P(cos(theta)) vs cos(theta) for HH vector and thirds two columns
   #are P(cos(theta)) vs cos(theta) for dipole vector
   for i in range(bins):
-        print AD_analysis.graph[0][i] +" "+ AD_analysis.graph[1][i] +" "+ AD_analysis.graph[2][i]
+        print(AD_analysis.graph[0][i] +" "+ AD_analysis.graph[1][i] +" "+ AD_analysis.graph[2][i])
 
 where P(cos(theta)) is the angular distribution or angular probabilities.
 
@@ -154,7 +154,7 @@ rise mean a fast movement of water molecules, a weak rise mean slow movement of 
   #represents MSD vs t
   i=0
   for msd in MSD_analysis.timeseries:
-        print i +" "+ msd
+        print(i +" "+ msd)
         i += 1
 
 
@@ -176,7 +176,7 @@ other hand, a fast decay means a short permanence time::
   #represents SP vs t
   i=0
   for sp in SP_analysis.timeseries:
-        print i +" "+ sp
+        print(i +" "+ sp)
         i += 1
 
 .. Output
@@ -279,11 +279,14 @@ Classes
 
 
 """
+from __future__ import print_function
+from six.moves import range, zip_longest
 
-import MDAnalysis.analysis.hbonds
 import numpy as np
 import multiprocessing
-import itertools
+
+import MDAnalysis.analysis.hbonds
+
 
 class HydrogenBondLifetimes(object):
     r"""
@@ -464,8 +467,8 @@ class HydrogenBondLifetimes(object):
                 h.run(quiet=quiet)
                 break
             except:
-                print "error"
-                print "trying again"
+                print("error")
+                print("trying again")
                 sys.stdout.flush()
         sys.stdout.flush()
         conn.send(h.timeseries[0])
@@ -484,7 +487,7 @@ class HydrogenBondLifetimes(object):
                     k=i
                     for j in range(self.nproc):
                         #start
-                        print "ts=",i+1
+                        print("ts=",i+1)
                         if i >= len(self.universe.trajectory):
                             break
                         conn_parent, conn_child  = multiprocessing.Pipe(False)
@@ -499,7 +502,7 @@ class HydrogenBondLifetimes(object):
                                      conn_parent))
                                 break
                             except:
-                                print "error in jobs.append"
+                                print("error in jobs.append")
                         jobs[j][0].start()
                         i = i + 1
 
@@ -639,7 +642,12 @@ class WaterOrientationalRelaxation(object):
         valdipList = []
 
         for j in range(totalFrames/dt-1):
-            a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
+            # If the selection of atoms is too small, there will be a division by zero in the next line.
+            # The except clause avoid the use of the result of _getOneDeltaPoint() on the mean.
+            try:
+                a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
+            except ZeroDivisionError:
+                continue
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
@@ -666,7 +674,7 @@ class WaterOrientationalRelaxation(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     # Second Legendre polynomial
@@ -791,7 +799,7 @@ class AngularDistribution(object):
         to a column format.
         """
         a = []
-        for x in itertools.izip_longest(*aList, fillvalue="."):
+        for x in zip_longest(*aList, fillvalue="."):
             a.append(" ".join(str(i) for i in x))
         return a
 
@@ -823,7 +831,7 @@ class AngularDistribution(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
 
@@ -921,7 +929,7 @@ class  MeanSquareDisplacement(object):
 
         for j in range(totalFrames/dt-1):
             a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
-            print "a=",a
+            print("a=",a)
             sumDeltaO += a
             valOList.append(a)
             sumsdt +=  dt
@@ -944,7 +952,7 @@ class  MeanSquareDisplacement(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     def run(self,**kwargs):
@@ -1054,7 +1062,7 @@ class SurvivalProbability(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print ts.frame
+            print(ts.frame)
         return selection
 
     def run(self,**kwargs):

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -139,7 +139,14 @@ __all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
 import logging
 import warnings
 
+logger = logging.getLogger("MDAnalysis.__init__")
+
 from .version import __version__
+try:
+    from .authors import __authors__
+except ImportError:
+    logger.info('Could not find authors.py, __authors__ will be empty.')
+    __authors__ = []
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -172,3 +179,12 @@ _named_anchor_universes = weakref.WeakSet()
 del weakref
 
 from .migration.ten2eleven import ten2eleven
+
+import six
+if six.PY3:
+    warnings.warn('''\
+#####
+MDAnalysis on python 3 is highly experimental!
+It is mostly non functional and dramatically untested.
+Use at your own risks!!!
+''')

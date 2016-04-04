@@ -33,6 +33,11 @@ class _NCDFReaderTest(_TRJReaderTest):
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
 
+    def test_dt(self):
+        ref = 0.0
+        assert_almost_equal(ref, self.universe.trajectory.dt, self.prec)
+        assert_almost_equal(ref, self.universe.trajectory.ts.dt, self.prec)
+
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
     pass
@@ -102,6 +107,11 @@ class TestNCDFReader2(TestCase):
         ref = 35.04
         assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
 
+    def test_dt(self):
+        ref = 0.02
+        assert_almost_equal(ref, self.u.trajectory.dt, self.prec)
+        assert_almost_equal(ref, self.u.trajectory.ts.dt, self.prec)
+
 
 class _NCDFWriterTest(TestCase):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
@@ -132,13 +142,12 @@ class _NCDFWriterTest(TestCase):
         import netCDF4
         #for issue #518 -- preserve float32 data in ncdf output
         dataset = netCDF4.Dataset(self.outfile, 'r', format='NETCDF3')
-        variable_dict = dataset.variables
-        coords = variable_dict['coordinates']
-        time = variable_dict['time']
-        self.assertTrue('float32' in coords.__repr__(),
-                'ncdf coord output not float32')
-        self.assertTrue('float32' in time.__repr__(),
-                'ncdf time output not float32')
+        coords = dataset.variables['coordinates']
+        time = dataset.variables['time']
+        assert_equal(coords.dtype, np.float32,
+                     err_msg='ncdf coord output not float32')
+        assert_equal(time.dtype, np.float32,
+                     err_msg='ncdf time output not float32')
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
@@ -181,8 +190,8 @@ class _NCDFWriterTest(TestCase):
                                      "dimension '{}'".format(k))
             else:
                 assert_equal(len(dim), len(dim_new),
-                             err_msg="Dimension '{}' size mismatch".format(k))
-                
+                             err_msg="Dimension '{0}' size mismatch".format(k))
+
 
         for k, v in nc_orig.variables.items():
             try:
@@ -298,7 +307,7 @@ class TestNCDFWriterVelsForces(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
 
         del self.ts1

@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -29,6 +29,8 @@ The currently read file format versions are defined in
 :data:`SUPPORTED_VERSIONS`.
 
 """
+
+from six.moves import range
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
 SUPPORTED_VERSIONS = (58, 73, 83, 100, 103)
@@ -70,7 +72,7 @@ tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials = 98
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = range(92)
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(92))
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [
@@ -189,4 +191,3 @@ interaction_types = [
     ("DVR/DL", "dVrestraint/dl", None),
     ("DVT/DL", "dVtemperature/dl", None)
 ]
-

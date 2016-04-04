@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -67,6 +67,7 @@ class MOL2Parser(TopologyReader):
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
     """
+    format = 'MOL2'
 
     def parse(self):
         """Parse MOL2 file *filename* and return the dict `structure`.

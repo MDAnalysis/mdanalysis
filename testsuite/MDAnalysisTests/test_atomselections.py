@@ -14,6 +14,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from six.moves import range
+
 import numpy as np
 from numpy.testing import(
     TestCase,
@@ -23,6 +25,7 @@ from numpy.testing import(
     assert_,
     assert_array_equal,
     assert_warns,
+    assert_raises,
 )
 from nose.plugins.attrib import attr
 import warnings
@@ -33,18 +36,23 @@ import MDAnalysis.core.Selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.topologyobjects import TopologyGroup
 from MDAnalysis.core.selection import Parser
+from MDAnalysis import SelectionError
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, TPR, XTC,
+    GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
+    PDB_full,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
 
 class TestSelectionsCHARMM(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent.
 
@@ -139,6 +147,10 @@ class TestSelectionsCHARMM(TestCase):
             np.array([[20.38685226, -3.44224262, -5.92158318]],
                      dtype=np.float32))
 
+    def test_atom_empty(self):
+        sel = self.universe.select_atoms('atom 4AKE 100 XX')  # Does not exist
+        assert_equal(len(sel), 0)
+
     def test_type(self):
         sel = self.universe.select_atoms("type 1")
         assert_equal(len(sel), 253)
@@ -217,11 +229,16 @@ class TestSelectionsCHARMM(TestCase):
     def test_same_resname(self):
         """Test the 'same ... as' construct (Issue 217)"""
         sel = self.universe.select_atoms("same resname as resid 10 or resid 11")
-        assert_equal(len(sel), 331, "Found a wrong number of atoms with same resname as resids 10 or 11")
-        target_resids = np.array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38, 42, 46,
-                               49, 55, 56, 66, 73, 80, 85, 93, 95, 99, 100, 122, 127,
-                              130, 144, 150, 176, 180, 186, 188, 189, 194, 198, 203, 207, 214])
-        assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues with same resname as resids 10 or 11")
+        assert_equal(len(sel), 331,
+                     ("Found a wrong number of atoms with same resname as "
+                      "resids 10 or 11"))
+        target_resids = np.array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38,
+                                   42, 46, 49, 55, 56, 66, 73, 80, 85, 93, 95,
+                                   99, 100, 122, 127, 130, 144, 150, 176, 180,
+                                   186, 188, 189, 194, 198, 203, 207, 214])
+        assert_array_equal(sel.residues.resids, target_resids,
+                           ("Found wrong residues with same resname as "
+                            "resids 10 or 11"))
 
     @knownfailure("Can't set segids")
     def test_same_segment(self):
@@ -246,12 +263,22 @@ class TestSelectionsCHARMM(TestCase):
         #assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
         #assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 160")
 
+    def test_empty_same(self):
+        ag = self.universe.select_atoms('resname MET')
+
+        # No GLY, so 'as resname GLY' is empty
+        ag2 = ag.select_atoms('same mass as resname GLY')
+
+        assert_(len(ag2) == 0)
+
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
-        assert_equal(len(self.universe.select_atoms('resname TRP')), 0)  # no Trp in AdK
+        # no Trp in AdK
+        assert_equal(len(self.universe.select_atoms('resname TRP')), 0)
 
     def test_parenthesized_expression(self):
-        sel = self.universe.select_atoms('( name CA or name CB ) and resname LEU')
+        sel = self.universe.select_atoms(
+            '( name CA or name CB ) and resname LEU')
         assert_equal(len(sel), 32)
 
     def test_no_space_around_parentheses(self):
@@ -267,13 +294,15 @@ class TestSelectionsCHARMM(TestCase):
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = E151.atoms.select_atoms('name HN', 'name N', 'name CA', 'name CB')
         assert_equal(len(phi151), 4)
-        assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB")
+        assert_equal(phi151[0].name, 'HN',
+                     "wrong ordering in selection, should be HN-N-CA-CB")
 
     def test_global(self):
         """Test the `global` modifier keyword (Issue 268)"""
         ag = self.universe.select_atoms("resname LYS and name NZ")
         # Lys amines within 4 angstrom of the backbone.
-        ag1 = self.universe.select_atoms("resname LYS and name NZ and around 4 backbone")
+        ag1 = self.universe.select_atoms(
+            "resname LYS and name NZ and around 4 backbone")
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_array_equal(ag2.indices, ag1.indices)
 
@@ -311,9 +340,13 @@ class TestSelectionsNAMD(TestCase):
         del self.universe
 
     def test_protein(self):
-        sel = self.universe.select_atoms('protein or resname HAO or resname ORT')  # must include non-standard residues
-        assert_equal(sel.n_atoms, self.universe.atoms.n_atoms, "failed to select peptide")
-        assert_equal(sel.n_residues, 6, "failed to select all peptide residues")
+        # must include non-standard residues
+        sel = self.universe.select_atoms(
+            'protein or resname HAO or resname ORT')
+        assert_equal(sel.n_atoms, self.universe.atoms.n_atoms,
+                     "failed to select peptide")
+        assert_equal(sel.n_residues, 6,
+                     "failed to select all peptide residues")
 
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 12')
@@ -323,7 +356,8 @@ class TestSelectionsNAMD(TestCase):
     def test_type(self):
         sel = self.universe.select_atoms('type H')
         assert_equal(len(sel), 5)
-        assert_array_equal(sel.names, ['HN', 'HN', 'HN', 'HH', 'HN'])  # note 4th HH
+        # note 4th HH
+        assert_array_equal(sel.names, ['HN', 'HN', 'HN', 'HH', 'HN'])
 
 
 class TestSelectionsGRO(TestCase):
@@ -351,18 +385,21 @@ class TestSelectionsGRO(TestCase):
     def test_same_coordinate(self):
         """Test the 'same ... as' construct (Issue 217)"""
         sel = self.universe.select_atoms("same x as bynum 1 or bynum 10")
-        assert_equal(len(sel), 12, "Found a wrong number of atoms with same x as ids 1 or 10")
-        target_ids = np.array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])
-        assert_array_equal(sel.indices, target_ids, "Found wrong atoms with same x as ids 1 or 10")
+        assert_equal(len(sel), 12,
+                     "Found a wrong number of atoms with same x as ids 1 or 10")
+        target_ids = np.array([ 0, 8, 9, 224, 643, 3515,
+                                11210, 14121, 18430, 25418, 35811, 43618])
+        assert_array_equal(sel.indices, target_ids,
+                           "Found wrong atoms with same x as ids 1 or 10")
 
     def test_cylayer(self):
-        """Test cylinder layer selections from AtomGroups, and with tricilinic periodicity (Issue 274)"""
+        """Cylinder layer selections with tricilinic periodicity (Issue 274)"""
         atgp = self.universe.select_atoms('name OW')
         sel = atgp.select_atoms('cylayer 10 20 20 -20 bynum 3554')
         assert_equal(len(sel), 1155)
 
     def test_cyzone(self):
-        """Test cylinder zone selections from AtomGroups, and with tricilinic periodicity (Issue 274)"""
+        """Cylinder zone selections with tricilinic periodicity (Issue 274)"""
         atgp = self.universe.select_atoms('name OW')
         sel = atgp.select_atoms('cyzone 20 20 -20 bynum 3554')
         assert_equal(len(sel), 1556)
@@ -393,6 +430,13 @@ class TestSelectionsNucleicAcids(TestCase):
         rna = self.universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
+
+    def test_nucleic_all(self):
+        u = mda.Universe(NUCLsel)
+
+        sel = u.select_atoms('nucleic')
+
+        assert_(len(sel) == 34)
 
     def test_nucleicbackbone(self):
         rna = self.universe.select_atoms("nucleicbackbone")
@@ -518,11 +562,39 @@ class BaseDistanceSelection(object):
 
 
 class TestOrthogonalDistanceSelections(BaseDistanceSelection):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(TRZ_psf, TRZ)
 
     def tearDown(self):
         del self.u
+
+    def _check_cyzone(self, meth, periodic):
+        sel = Parser.parse('cyzone 5 4 -4 resid 2', self.u.atoms)
+        sel.periodic = periodic
+        result = sel.apply(self.u.atoms)
+
+        other = self.u.select_atoms('resid 2')
+        pos = other.center_of_geometry()
+
+        vecs = self.u.atoms.positions - pos
+        if periodic:
+            box = self.u.dimensions[:3]
+            vecs -= box * np.rint(vecs / box)
+
+        mask = (vecs[:,2] > -4) & (vecs[:,2] < 4)
+
+        radii = vecs[:,0] ** 2 + vecs[:, 1] ** 2
+        mask &= radii < 5**2
+
+        ref = set(self.u.atoms[mask].indices)
+
+        assert_(ref == set(result.indices))
+
+    def test_cyzone(self):
+        for meth, periodic in self.methods[1:]:
+            yield self._check_cyzone, meth, periodic
 
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
@@ -611,7 +683,7 @@ class TestPropSelection(object):
     def _check_lt(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} < 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} < 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) < 500.0].indices))
@@ -619,7 +691,7 @@ class TestPropSelection(object):
     def _check_le(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} <= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} <= 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) <= 500.0].indices))
@@ -627,7 +699,7 @@ class TestPropSelection(object):
     def _check_gt(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} > 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} > 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) > 500.0].indices))
@@ -635,7 +707,7 @@ class TestPropSelection(object):
     def _check_ge(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} >= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} >= 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) >= 500.0].indices))
@@ -643,7 +715,7 @@ class TestPropSelection(object):
     def _check_eq(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} == 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} == 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) == 500.0].indices))
@@ -651,7 +723,7 @@ class TestPropSelection(object):
     def _check_ne(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} != 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} != 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))
@@ -670,6 +742,8 @@ class TestPropSelection(object):
 
 
 class TestBondedSelection(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -690,4 +764,99 @@ class TestBondedSelection(object):
         #self.u.select_atoms, 'type 2 and bonded name N')
 
 
-    
+class TestSelectionErrors(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def selection_fail(self, selstr):
+        assert_raises(SelectionError, self.u.select_atoms,
+                      selstr)
+
+    def test_expected_errors(self):
+        for selstr in [
+                'name and H',  # string selection
+                'name )',
+                'resid abcd',  # range selection
+                'resid 1-',
+                'prop chicken == tasty',
+                'prop chicken <= 7.4',
+                'prop mass ^^ 12.0',
+                'same this as resid 1',  # same selection
+                'same resid resname mass 5.0',  # same / expect
+                'name H and',  # check all tokens used
+                'naem H',  # unkonwn (misplet) opertaor
+                'resid and name C',  # rangesel not finding vals
+                'resnum ',
+                'bynum or protein',
+                'prop mass < 4.0 hello',  # unused token
+                'prop mass > 10. and group this',  # missing group
+                'prop mass > 10. and fullgroup this',  # missing fullgroup
+        ]:
+            yield self.selection_fail, selstr
+
+
+def test_segid_and_resid():
+    u = mda.Universe(PDB_full)
+
+    ag = u.select_atoms('segid B and resid 1-100')
+
+    ref = ag.select_atoms('segid B').select_atoms('resid 1-100')
+
+    assert_array_equal(ag.indices, ref.indices)
+
+
+class TestImplicitOr(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF)
+
+    def tearDown(self):
+        del self.u
+
+    def _check_sels(self, ref, sel):
+        ref = self.u.select_atoms(ref)
+        sel = self.u.select_atoms(sel)
+
+        assert_array_equal(ref.indices, sel.indices)
+
+    def test_string_selections(self):
+        for ref, sel in (
+                ('name HT1 or name HT2 or name HT3', 'name HT1 HT2 HT3'),
+                ('type 2 or type 3 or type 4', 'type 2 3 4'),
+                ('resname MET or resname GLY', 'resname MET GLY'),
+                ('name H* or name N', 'name H* N'),
+                ('(name N or name HT1) and (resname MET or resname GLY)',
+                 'name N HT1 and resname MET GLY'),
+        ):
+            yield self._check_sels, ref, sel
+
+    def test_segids(self):
+        # Don't put me into generator, I use a different Universe
+        # (With multiple segids)
+        u = mda.Universe(PDB_full)
+        ref = u.select_atoms('segid A or segid B')
+        ag = u.select_atoms('segid A B')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_range_selections(self):
+        # All these selections just use numeric types,
+        # So loop over what type of selections,
+        # And apply the same numeric constraints to all
+        for seltype in ['resid', 'resnum', 'bynum']:
+            for ref, sel in (
+                    ('{typ} 1 or {typ} 2', '{typ} 1 2'),
+                    ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
+                    ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
+                    ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
+                    ('{typ} 1-5 or {typ} 7:10 or {typ} 12',
+                     '{typ} 1-5 7:10 12'),
+                    ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
+            ):
+                yield (self._check_sels,
+                       ref.format(typ=seltype),
+                       sel.format(typ=seltype))

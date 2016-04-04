@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -22,6 +22,7 @@ The building blocks for MDAnalysis' description of topology
 """
 from __future__ import print_function, absolute_import
 
+from six.moves import zip
 import numpy as np
 import functools
 
@@ -131,6 +132,15 @@ class TopologyObject(object):
 
     def __len__(self):
         return len(self._ix)
+
+    def _cmp_key(self):
+        """Unique key for the object to be used to generate the object hash"""
+        # This key must be equal for two object considered as equal by __eq__
+        return self.__class__, tuple(sorted(self.indices))
+
+    def __hash__(self):
+        """Makes the object hashable"""
+        return hash(self._cmp_key())
 
 
 class Bond(TopologyObject):
@@ -524,7 +534,6 @@ class TopologyGroup(object):
             self._ags = []
         self._u = universe
 
-
         self._cache = dict()  # used for topdict saving
 
     @property
@@ -547,7 +556,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        return self.topDict.keys()
+        return list(self.topDict.keys())
 
     @property
     @cached('dict')
@@ -777,7 +786,7 @@ class TopologyGroup(object):
         vec1 = self._ags[0].positions - self._ags[1].positions
         vec2 = self._ags[2].positions - self._ags[1].positions
 
-        angles = np.array([slowang(a, b) for a, b in izip(vec1, vec2)])
+        angles = np.array([slowang(a, b) for a, b in zip(vec1, vec2)])
         return angles
 
     def angles(self, result=None, pbc=False):
@@ -825,7 +834,7 @@ class TopologyGroup(object):
         vec3 = self._ags[3].positions - self._ags[2].positions
 
         return np.array([dihedral(a, b, c)
-                         for a, b, c in izip(vec1, vec2, vec3)])
+                         for a, b, c in zip(vec1, vec2, vec3)])
 
     def dihedrals(self, result=None, pbc=False):
         """Calculate the dihedralal angle in radians for this topology
