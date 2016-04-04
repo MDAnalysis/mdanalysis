@@ -4942,14 +4942,12 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def make_anchor(self):
         """Add this Universe to the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
         is already on the list."""
         MDAnalysis._anchor_universes.add(self)
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def remove_anchor(self):
         """Remove this Universe from the list where anchors are searched for when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
@@ -4957,19 +4955,16 @@ class Universe(object):
         MDAnalysis._anchor_universes.discard(self)
 
     @property
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def is_anchor(self):
         """Whether this Universe will be checked for anchoring when unpickling
         :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances"""
         return self in MDAnalysis._anchor_universes
 
     @property
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def anchor_name(self):
         return self._anchor_name
 
     @anchor_name.setter
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def anchor_name(self, name):
         """Setting this attribute to anything other than ``None`` causes this Universe to
         be added to the list where named anchors are searched for when unpickling
@@ -4981,7 +4976,6 @@ class Universe(object):
         else:
             MDAnalysis._named_anchor_universes.add(self)
 
-    @deprecate(message=_SIXTEEN_DEPRECATION)
     def _matches_unpickling(self, anchor_name, n_atoms, fname, trajname):
         if anchor_name is None or anchor_name == self.anchor_name:
             try:
