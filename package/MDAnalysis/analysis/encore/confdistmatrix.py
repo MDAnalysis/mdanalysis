@@ -33,7 +33,7 @@ available.
 
 """
 
-from multiprocessing import Process, Array, cpu_count, RawValue
+from multiprocessing import Process, Array, RawValue
 from numpy import (sum, average, transpose, dot, ones, asarray, mean,
                    float64, object, bool, array, int)
 from ctypes import c_float
@@ -88,7 +88,7 @@ class ConformationalDistanceMatrixGenerator(object):
             Whether to build a metadata dataset for the calculated matrix
 
         ncores : int
-            Number of cores to be used for parallel calculation
+            Number of cores to be used for parallel calculation (default is 1)
 
         Returns
         -------
@@ -101,8 +101,7 @@ class ConformationalDistanceMatrixGenerator(object):
         # Decide how many cores have to be used. Since the main process is
         # stopped while the workers do their job, ncores workers will be
         # spawned.
-        if not ncores:
-            ncores = cpu_count()
+
         if ncores < 1:
             ncores = 1
 
