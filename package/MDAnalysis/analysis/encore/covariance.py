@@ -58,21 +58,22 @@ class EstimatorML(object):
 
         if reference_coordinates is not None:
 
-            # Offset from reference (for a normal covariance calculation
-            # this would be the distance to the average)
+            # Offset from reference
             coordinates_offset = coordinates - reference_coordinates
 
-            # Calculate covariance manually
-            coordinates_cov = np.zeros((coordinates.shape[1],
-                                        coordinates.shape[1]))
-            for frame in coordinates_offset:
-                coordinates_cov += np.outer(frame, frame)
-            coordinates_cov /= coordinates.shape[0]
-
-            return coordinates_cov
-
         else:
-            return np.cov(coordinates, rowvar=0)
+            # Normal covariance calculation: distance to the average
+            coordinates_offset = coordinates - np.average(coordinates, axis=0)
+
+        # Calculate covariance manually
+        coordinates_cov = np.zeros((coordinates.shape[1],
+                                    coordinates.shape[1]))
+        for frame in coordinates_offset:
+            coordinates_cov += np.outer(frame, frame)
+        coordinates_cov /= coordinates.shape[0]
+
+        return coordinates_cov
+
 
     __call__ = calculate
 
