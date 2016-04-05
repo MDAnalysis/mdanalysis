@@ -325,6 +325,8 @@ class Topology(object):
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
 
+        if attrs is None:
+            attrs = []
         # add core TopologyAttrs that give access to indices
         attrs.extend((Atomindices(), Resindices(), Segindices()))
 
