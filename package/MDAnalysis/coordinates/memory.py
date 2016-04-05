@@ -208,9 +208,7 @@ class MemoryReader(base.ProtoReader):
         #      a full comparison of all atom objects in the selection, we check
         #      for the length and the identity of the first atom.
         array = array[basic_slice]
-        if (asel is None or
-            (len(asel) == len(asel.universe.atoms) and
-             asel[0] is asel.universe.atoms[0])):
+        if (asel is None or asel is asel.universe.atoms):
             return array
         else:
             # If selection is specified, return a copy
