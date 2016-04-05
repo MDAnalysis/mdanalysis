@@ -1724,6 +1724,7 @@ class TestUniverse(TestCase):
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
+    @staticmethod
     def test_universe_kwargs(self):
         u = MDAnalysis.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
