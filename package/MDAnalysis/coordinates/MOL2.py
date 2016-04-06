@@ -59,6 +59,8 @@ class MOL2Reader(base.Reader):
         """Read coordinates from *filename*."""
         super(MOL2Reader, self).__init__(filename, **kwargs)
 
+        self.n_atoms = None
+
         blocks = []
 
         with util.openany(filename) as f:
@@ -93,16 +95,26 @@ class MOL2Reader(base.Reader):
         if not len(atom_lines):
             raise Exception("The mol2 (starting at line {0}) block has no atoms"
                             "".format(block["start_line"]))
+        elif self.n_atoms is None:
+            # First time round, remember the number of atoms
+            self.n_atoms = len(atom_lines)
+        elif len(atom_lines) != self.n_atoms:
+            raise ValueError(
+                "MOL2Reader assumes that the number of atoms remains unchanged"
+                " between frames; the current "
+                "frame has {0}, the next frame has {1} atoms"
+                "".format(self.n_atoms, len(atom_lines)))
+
         if not len(bond_lines):
             raise Exception("The mol2 (starting at line {0}) block has no bonds"
                             "".format(block["start_line"]))
 
-        coords = []
-        for a in atom_lines:
+        coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
+        for i, a in enumerate(atom_lines):
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
-            x, y, z = float(x), float(y), float(z)
-            coords.append((x, y, z))
-        coords = np.array(coords, dtype=np.float32)
+            #x, y, z = float(x), float(y), float(z)
+            coords[i, :] = x, y, z
+
         return sections, coords
 
     def _read_next_timestep(self, ts=None):
@@ -129,14 +141,6 @@ class MOL2Reader(base.Reader):
                 self.ts.data[sect] = sections[sect]
             except KeyError:
                 pass
-
-        # check if atom number changed
-        if len(coords) != self.n_atoms:
-            raise ValueError(
-                "MOL2Reader assumes that the number of atoms remains unchanged"
-                " between frames; the current "
-                "frame has {0}, the next frame has {1} atoms"
-                "".format(self.n_atoms, len(coords)))
 
         self.ts.positions = np.array(coords, dtype=np.float32)
         self.ts.unitcell = unitcell

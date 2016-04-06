@@ -138,3 +138,7 @@ class TestMOL2NoSubstructure(object):
     def test_load(self):
         r = mda.coordinates.MOL2.MOL2Reader(mol2_zinc, n_atoms=self.n_atoms)
         assert_(r.n_atoms == 45)
+
+    def test_universe(self):
+        u = mda.Universe(mol2_zinc)
+        assert_(len(u.atoms) == 45)
