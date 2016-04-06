@@ -284,10 +284,9 @@ class MOL2Writer(base.Writer):
         atom_lines = "\n".join(atom_lines)
 
         try:
-            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"]
-            substructure.extend(ts.data['substructure'])
+            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + ts.data['substructure']
         except KeyError:
-            raise NotImplementedError("No MOL2 substructure type found in traj")
+            substructure = ""
 
         molecule = ts.data['molecule']
         check_sums = molecule[1].split()
