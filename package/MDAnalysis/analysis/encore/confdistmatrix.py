@@ -55,6 +55,7 @@ def conformational_distance_matrix(ensemble,
     mass_weighted=True, metadata=True, *args, **kwargs):
     """
     Run the conformational distance matrix calculation.
+    args and kwargs are passed to conf_dist_function.
 
     Parameters
     ----------
@@ -62,6 +63,10 @@ def conformational_distance_matrix(ensemble,
     ensemble : encore.Ensemble.Ensemble object
         Ensemble object for which the conformational distance matrix will
         be computed.
+
+    conf_dist_function : function object
+        Function that fills the matrix with conformational distance
+        values. See set_rmsd_matrix_elements for an example.
 
     pairwise_align : bool
         Whether to perform pairwise alignment between conformations
@@ -192,33 +197,33 @@ def conformational_distance_matrix(ensemble,
 
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
-    """
+    
     workers = [Process(target=conf_dist_function, args=(
         tasks_per_worker[i],
         rmsd_coordinates,
-        fitting_coordinates,
-        masses,
-        subset_masses,
         distmat,
-        partial_counters[i]),
-        *args,
-        **kwargs) for i in range(ncores)]
+        masses,
+        fitting_coordinates,
+        subset_masses,
+        partial_counters[i],
+        args,
+        kwargs)) for i in range(ncores)]
 
     # Start & join the workers
     for w in workers:
         w.start()
     for w in workers:
         w.join()
-    """
     
-    conf_dist_function(tasks_per_worker[0], rmsd_coordinates, distmat,  masses, fitting_coordinates, subset_masses, partial_counters[0])
+    
+    #conf_dist_function(tasks_per_worker[0], rmsd_coordinates, distmat,  masses, fitting_coordinates, subset_masses, partial_counters[0])
 
     # When the workers have finished, return a TriangularMatrix object
     return TriangularMatrix(distmat, metadata=metadata)
 
 
 def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
-                       fit_masses=None, pbar_counter=None):
+                       fit_masses=None, pbar_counter=None, *args, **kwargs):
 
     '''
     RMSD Matrix calculator
