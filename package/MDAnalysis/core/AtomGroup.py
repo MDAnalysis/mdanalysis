@@ -3966,6 +3966,10 @@ class Universe(object):
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
 
+        # hold on to copy of kwargs; used by external libraries that
+        # reinitialize universes
+        self._kwargs = copy.deepcopy(kwargs)
+
         # managed attribute holding Reader
         self._trajectory = None
 
@@ -4261,6 +4265,13 @@ class Universe(object):
         # Encapsulation in an accessor prevents the Universe from having to keep a reference to itself,
         #  which might be undesirable if it has a __del__ method. It is also cleaner than a weakref.
         return self
+
+    @property
+    def kwargs(self):
+        """Keyword arguments used to initialize this universe (read-only).
+
+        """
+        return copy.deepcopy(self._kwargs)
 
     @property
     @cached('fragments')
