@@ -44,7 +44,7 @@ cdef class AffinityPropagation(object):
 
     """
 
-    def run(self, s, preference, double lam, int max_iterations, int convergence, int noise=1):
+    def run(self, s, preference, float lam, int max_iterations, int convergence, int noise=1):
         """
         Run the clustering algorithm.
 
@@ -77,29 +77,29 @@ cdef class AffinityPropagation(object):
 
 	"""
         cdef int cn = s.size
-        cdef double cpreference = preference
+        cdef float cpreference = preference
 
         # Assign preference values to diagonal
         try:
             for i in xrange(s.size):
-                s[i,i] = <double>preference[i]
+                s[i,i] = <float>preference[i]
         except:
             pass
 
         if type(preference) == float:
             for i in xrange(s.size):
-                s[i,i] = <double>preference
+                s[i,i] = <float>preference
         else:
             raise TypeError
         
         logging.info("Preference %3.2f: starting Affinity Propagation" % (preference))
 
         # Prepare input and ouput arrays
-        cdef numpy.ndarray[numpy.float64_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float64)
+        cdef numpy.ndarray[numpy.float32_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float32)
         cdef numpy.ndarray[long,   ndim=1] clusters   = numpy.zeros((s.size),dtype=long)
         
         # run C module Affinity Propagation
-        iterations = caffinityprop.CAffinityPropagation( <double*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
+        iterations = caffinityprop.CAffinityPropagation( <float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
         # Check results and return them
         if iterations > 0:
             centroids = numpy.unique(clusters)

@@ -28,4 +28,4 @@ float min(float*, int);
 
 float max(float*, int);
 
-int CAffinityPropagation(double*, int, double, int, int, int, double*);
+int CAffinityPropagation(float*, int, float, int, int, int, float*);

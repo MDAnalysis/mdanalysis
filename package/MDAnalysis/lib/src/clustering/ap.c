@@ -27,16 +27,16 @@ inline int sqmIndex(int colsn, int row, int col) { // array index for square mat
 	return row*colsn + col;
 }
 
-inline double pwmax(double x, double y) { //pairwise min
+inline float pwmax(float x, float y) { //pairwise min
 	return x > y ? x : y;
 }
 
-inline double pwmin(double x, double y) { //pairwise max
+inline float pwmin(float x, float y) { //pairwise max
 	return x < y ? x : y;
 }
 
-double min(double * values, int length) { //array min
-	double min = values[0];
+float min(float * values, int length) { //array min
+	float min = values[0];
 	for (int i=1;i<length;i++) {
 		if (values[i] < min) {
 			min = values[i];
@@ -45,8 +45,8 @@ double min(double * values, int length) { //array min
 	return min;
 }
 
-double max(double * values, int length) { //array max
-	double max = values[0];
+float max(float * values, int length) { //array max
+	float max = values[0];
 	for (int i=1;i<length;i++) {
 		if (values[i] > max) {
 			max = values[i];
@@ -55,13 +55,13 @@ double max(double * values, int length) { //array max
 	return max;
 }
 
-void printarray(double* array, int lenarray) { //print an array, for debug purposes
+void printarray(float* array, int lenarray) { //print an array, for debug purposes
 	for (int i=0;i<lenarray;i++) {
 		printf("%1.2f\n",array[i]);
 	}
 }
 
-void printsqmatrix(double* array, int lenarray) { //print a square matrix, for debug purposes
+void printsqmatrix(float* array, int lenarray) { //print a square matrix, for debug purposes
 	//printf("%s","\n");
 	for (int i=0;i<lenarray;i++) {
 		for (int j=0;j<lenarray;j++) {
@@ -71,7 +71,7 @@ void printsqmatrix(double* array, int lenarray) { //print a square matrix, for d
 	}
 }
 
-void printtrmatrix(double* array, int lenarray) { //print a triangular matrix, for debug purposes
+void printtrmatrix(float* array, int lenarray) { //print a triangular matrix, for debug purposes
 	//printf("%s","\n");
 	for (int i=0; i<lenarray; i++) {
 		for (int j=0; j<=i; j++) {
@@ -82,7 +82,7 @@ void printtrmatrix(double* array, int lenarray) { //print a triangular matrix, f
 	}
 }
 
-int CAffinityPropagation(double *s, int n, double lambda, int max_iterations, int convergence, int noise, long* clusters) { // Affinity Propagation clustering algorithm
+int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int convergence, int noise, long* clusters) { // Affinity Propagation clustering algorithm
 
     /* n: number of elements
        s: similarity matrix
@@ -91,8 +91,8 @@ int CAffinityPropagation(double *s, int n, double lambda, int max_iterations, in
        convergence: convergence reached when centroids are stable for convergence iterations
        noise: apply noise to input similarities to eliminate redundancy */
 
-	double *r =              (double *)  calloc( n*n , sizeof(double));  // N*N responsibilities matrix
-	double *a  =             (double *)  calloc( n*n , sizeof(double));  // N*N availabilities matrix
+	float *r =              (float *)  calloc( n*n , sizeof(float));  // N*N responsibilities matrix
+	float *a  =             (float *)  calloc( n*n , sizeof(float));  // N*N availabilities matrix
     int *exemplars =          (int *)  malloc( n   * sizeof(int));        // N array of exemplars
     int *old_exemplars =      (int *)  malloc( n   * sizeof(int));        // N array of old exemplars, for convergence checking
 
@@ -104,17 +104,17 @@ int CAffinityPropagation(double *s, int n, double lambda, int max_iterations, in
     int sqm_idx = 0;                  // index for square matrix
     int currit = 0;                   // current iteration number
     int conv_count = 0;               // number of iterations with constant centroids so far
-	double tmpsum = 0.0, maxsim = 0.0, this_tmpsum = 0.0;      // accumulators
-	double tmp = 0.0;                  // temporary value
-	double max1 = 0;
-	double max2 = 0;
+	float tmpsum = 0.0, maxsim = 0.0, this_tmpsum = 0.0;      // accumulators
+	float tmp = 0.0;                  // temporary value
+	float max1 = 0;
+	float max2 = 0;
 	int conv_reached = 0;        // convergence flag
 	int has_cluster = 0;         // found clusters flag
-	double lamprev = 1.0 - lambda;     // 1-lambda
+	float lamprev = 1.0 - lambda;     // 1-lambda
 
     if (noise != 0) { // Add noise to data
         for (int i=0;i<n*(n+1)/2;i++) {
-            s[i] = s[i] + (1e-16*s[i] )*(rand()/((double)RAND_MAX+1));
+            s[i] = s[i] + (1e-16*s[i] )*(rand()/((float)RAND_MAX+1));
         }
      }
 

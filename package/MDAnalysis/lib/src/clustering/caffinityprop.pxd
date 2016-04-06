@@ -34,4 +34,4 @@ cdef extern from "ap.h":
     float pwmin(float, float)
     float min(float*, int)
     float max(float*, int)
-    int CAffinityPropagation(double*, int, double, int, int, bint, long*)
+    int CAffinityPropagation(float*, int, float, int, int, bint, long*)
