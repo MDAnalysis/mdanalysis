@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jdetle, jbarnoud
+??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jdetle, jbarnoud,
+        richardjgowers
 
   * 0.15.0
 
@@ -38,6 +39,8 @@ Fixes
   * change_release now finds number and dev (Issue #776) 
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
   * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
+  * MOL2 files without substructure section can now be read (Issue #816)
+  * MOL2 files can be written without substructure section (Issue #816)
 
 Changes
 
