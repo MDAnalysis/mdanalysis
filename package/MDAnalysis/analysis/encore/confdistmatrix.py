@@ -44,391 +44,294 @@ from time import sleep
 
 from ..align import rotation_matrix
 
-from .cutils import PureRMSD, MinusRMSD
+from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
 
 
-class ConformationalDistanceMatrixGenerator(object):
+
+def conformational_distance_matrix(ensemble,
+    conf_dist_function, selection="",
+    superimposition_selection="", ncores=1, pairwise_align=True,
+    mass_weighted=True, metadata=True, *args, **kwargs):
     """
-    Base class for conformational distance matrices generator between array of
-    coordinates. Work for single matrix elements is performed by the private
-    _simple_worker and _fitter_worker methods, which respectively do or don't
-    perform pairwise alignment before calculating the distance metric. The
-    class efficiently and automatically spans work over a prescribed number of
-    cores, while keeping both input coordinates and the output matrix as
-    shared memory. If logging level is low enough, a progress bar of the whole
-    process is printed out. This class acts as a functor.
+    Run the conformational distance matrix calculation.
+
+    Parameters
+    ----------
+
+    ensemble : encore.Ensemble.Ensemble object
+        Ensemble object for which the conformational distance matrix will
+        be computed.
+
+    pairwise_align : bool
+        Whether to perform pairwise alignment between conformations
+
+    mass_weighted : bool
+        Whether to perform mass-weighted superimposition and metric
+        calculation
+
+    metadata : bool
+        Whether to build a metadata dataset for the calculated matrix
+
+    ncores : int
+        Number of cores to be used for parallel calculation (default is 1)
+
+    Returns
+    -------
+
+    conf_dist_matrix` : encore.utils.TriangularMatrix object
+        Conformational distance matrix in triangular representation.
+
     """
 
-    def run(self, ensemble, selection="", superimposition_selection="",
-            ncores=None, pairwise_align=False, mass_weighted=True,
-            metadata=True):
-        """
-        Run the conformational distance matrix calculation.
+    # Decide how many cores have to be used. Since the main process is
+    # stopped while the workers do their job, ncores workers will be
+    # spawned.
 
-        Parameters
-        ----------
+    if ncores < 1:
+        ncores = 1
 
-        ensemble : encore.Ensemble.Ensemble object
-            Ensemble object for which the conformational distance matrix will
-            be computed.
+    # framesn: number of frames
+    framesn = len(ensemble.trajectory.timeseries(
+        ensemble.select_atoms(selection), format='fac'))
 
-        pairwise_align : bool
-            Whether to perform pairwise alignment between conformations
+    # Prepare metadata recarray
+    if metadata:
+        metadata = array([(gethostname(),
+                           getuser(),
+                           str(datetime.now()),
+                           ensemble.filename,
+                           framesn,
+                           pairwise_align,
+                           selection,
+                           mass_weighted)],
+                         dtype=[('host', object),
+                                ('user', object),
+                                ('date', object),
+                                ('topology file', object),
+                                ('number of frames', int),
+                                ('pairwise superimposition', bool),
+                                ('superimposition subset', object),
+                                ('mass-weighted', bool)])
 
-        align_subset_coordinates : numpy.array or None
-            Use these coordinates for superimposition instead of those from
-            ensemble.superimposition_coordinates
+    # Prepare alignment subset coordinates as necessary
 
-        mass_weighted : bool
-            Whether to perform mass-weighted superimposition and metric
-            calculation
+    rmsd_coordinates = ensemble.trajectory.timeseries(
+            ensemble.select_atoms(selection),
+            format='fac')
 
-        metadata : bool
-            Whether to build a metadata dataset for the calculated matrix
+    print "AA", rmsd_coordinates
 
-        ncores : int
-            Number of cores to be used for parallel calculation (default is 1)
-
-        Returns
-        -------
-
-        conf_dist_matrix` : encore.utils.TriangularMatrix object
-            Conformational distance matrix in triangular representation.
-
-        """
-
-        # Decide how many cores have to be used. Since the main process is
-        # stopped while the workers do their job, ncores workers will be
-        # spawned.
-
-        if ncores < 1:
-            ncores = 1
-
-        # framesn: number of frames
-        framesn = len(ensemble.trajectory.timeseries(
-            ensemble.select_atoms(selection), format='fac'))
-
-        # Prepare metadata recarray
-        if metadata:
-            metadata = array([(gethostname(),
-                               getuser(),
-                               str(datetime.now()),
-                               ensemble.filename,
-                               framesn,
-                               pairwise_align,
-                               selection,
-                               mass_weighted)],
-                             dtype=[('host', object),
-                                    ('user', object),
-                                    ('date', object),
-                                    ('topology file', object),
-                                    ('number of frames', int),
-                                    ('pairwise superimposition', bool),
-                                    ('superimposition subset', object),
-                                    ('mass-weighted', bool)])
-
-        # Prepare alignment subset coordinates as necessary
-
-        if pairwise_align:
-            if superimposition_selection:
-                subset_selection = superimposition_selection
-            else:
-                subset_selection = selection
-            subset_coords = ensemble.trajectory.timeseries(
-                ensemble.select_atoms(superimposition_selection),
-                format='fac')
-
-        # Prepare masses as necessary
-
-        if mass_weighted:
-            masses = ensemble.select_atoms(selection).masses
-            if pairwise_align:
-                subset_masses = ensemble.select_atoms(subset_selection).masses
+    if pairwise_align:
+        if superimposition_selection:
+            subset_selection = superimposition_selection
         else:
-            masses = ones((ensemble.trajectory.timeseries(
-                ensemble.select_atoms(selection))[0].shape[0]))
-            if pairwise_align:
-                subset_masses = ones((subset_coords[0].shape[0]))
+            subset_selection = selection
 
-        # matsize: number of elements of the triangular matrix, diagonal
-        # elements included.
-        matsize = framesn * (framesn + 1) / 2
+        fitting_coordinates = ensemble.trajectory.timeseries(
+            ensemble.select_atoms(subset_selection),
+            format='fac')
+    else:
+        fitting_coordinates = None
 
-        # Calculate the number of matrix elements that each core has to
-        # calculate as equally as possible.
-        if ncores > matsize:
-            ncores = matsize
-        runs_per_worker = [matsize / int(ncores) for x in range(ncores)]
-        unfair_work = matsize % ncores
-        for i in range(unfair_work):
-            runs_per_worker[i] += 1
-
-        # Splice the matrix in ncores segments. Calculate the first and the
-        # last (i,j) matrix elements of the slices that will be assigned to
-        # each worker. Each of them will proceed in a column-then-row order
-        # (e.g. 0,0 1,0 1,1 2,0 2,1 2,2 ... )
-        i = 0
-        a = [0, 0]
-        b = [0, 0]
-        tasks_per_worker = []
-        for n,r in enumerate(runs_per_worker):
-            while i * (i - 1) / 2 < sum(runs_per_worker[:n + 1]):
-                i += 1
-            b = [i - 2,
-                 sum(runs_per_worker[0:n + 1]) - (i - 2) * (i - 1) / 2 - 1]
-            tasks_per_worker.append((tuple(a), tuple(b)))
-            if b[0] == b[1]:
-                a[0] = b[0] + 1
-                a[1] = 0
-            else:
-                a[0] = b[0]
-                a[1] = b[1] + 1
-
-        # Allocate for output matrix
-        distmat = Array(c_float, matsize)
-
-        # Prepare progress bar stuff and run it
-        pbar = AnimatedProgressBar(end=matsize, width=80)
-        partial_counters = [RawValue('i', 0) for i in range(ncores)]
-
-        # Initialize workers. Simple worker doesn't perform fitting,
-        # fitter worker does.
+    # Prepare masses as necessary
+    if mass_weighted:
+        masses = ensemble.select_atoms(selection).masses
         if pairwise_align:
-            workers = [Process(target=self._fitter_worker, args=(
-                tasks_per_worker[i],
-                ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(selection),
-                    format='fac'),
-                ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(subset_selection),
-                    format='fac'),
-                masses,
-                subset_masses,
-                distmat,
-                partial_counters[i])) for i in range(ncores)]
+            subset_masses = ensemble.select_atoms(subset_selection).masses
         else:
-            workers = [Process(target=self._simple_worker,
-                               args=(tasks_per_worker[i],
-                                     ensemble.trajectory.timeseries(
-                                         ensemble.select_atoms(selection),
-                                         format='fac'),
-                                     masses, distmat,
-                                     partial_counters[i]))
-                       for i in range(ncores)]
+            subset_masses = None
+    else:
+        masses = ones((ensemble.trajectory.timeseries(
+            ensemble.select_atoms(selection))[0].shape[0]))
+        if pairwise_align:
+            subset_masses = ones((fit_coords[0].shape[0]))
+        else:
+            subset_masses = None
 
-        workers += [Process(target=self._pbar_updater,
-                            args=(pbar, partial_counters, matsize))]
+    # matsize: number of elements of the triangular matrix, diagonal
+    # elements included.
+    matsize = framesn * (framesn + 1) / 2
 
-        # Start & join the workers
-        for w in workers:
-            w.start()
-        for w in workers:
-            w.join()
+    # Calculate the number of matrix elements that each core has to
+    # calculate as equally as possible.
+    if ncores > matsize:
+        ncores = matsize
+    runs_per_worker = [matsize / int(ncores) for x in range(ncores)]
+    unfair_work = matsize % ncores
+    for i in range(unfair_work):
+        runs_per_worker[i] += 1
 
-        # When the workers have finished, return a TriangularMatrix object
-        return TriangularMatrix(distmat, metadata=metadata)
+    # Splice the matrix in ncores segments. Calculate the first and the
+    # last (i,j) matrix elements of the slices that will be assigned to
+    # each worker. Each of them will proceed in a column-then-row order
+    # (e.g. 0,0 1,0 1,1 2,0 2,1 2,2 ... )
+    i = 0
+    a = [0, 0]
+    b = [0, 0]
+    tasks_per_worker = []
+    for n,r in enumerate(runs_per_worker):
+        while i * (i - 1) / 2 < sum(runs_per_worker[:n + 1]):
+            i += 1
+        b = [i - 2,
+             sum(runs_per_worker[0:n + 1]) - (i - 2) * (i - 1) / 2 - 1]
+        tasks_per_worker.append((tuple(a), tuple(b)))
+        if b[0] == b[1]:
+            a[0] = b[0] + 1
+            a[1] = 0
+        else:
+            a[0] = b[0]
+            a[1] = b[1] + 1
 
-    @staticmethod
-    def _simple_worker():
-        '''Simple worker prototype; to be overriden in derived classes
-        '''
-        return None
+    # Allocate for output matrix
+    distmat = Array(c_float, matsize)
 
-    @staticmethod
-    def _fitter_worker():
-        """
-        Fitter worker prototype; to be overridden in derived classes
-        """
-        return None
+    # Prepare progress bar stuff and run it
+    pbar = AnimatedProgressBar(end=matsize, width=80)
+    partial_counters = [RawValue('i', 0) for i in range(ncores)]
 
-    @staticmethod
-    def _pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
-        '''Method that updates and prints the progress bar, upon polling
-        progress status from workers.
+    # Initialize workers. Simple worker doesn't perform fitting,
+    # fitter worker does.
+    """
+    workers = [Process(target=conf_dist_function, args=(
+        tasks_per_worker[i],
+        rmsd_coordinates,
+        fitting_coordinates,
+        masses,
+        subset_masses,
+        distmat,
+        partial_counters[i]),
+        *args,
+        **kwargs) for i in range(ncores)]
 
-        Attributes
-        -----------
+    # Start & join the workers
+    for w in workers:
+        w.start()
+    for w in workers:
+        w.join()
+    """
+    
+    conf_dist_function(tasks_per_worker[0], rmsd_coordinates, distmat,  masses, fitting_coordinates, subset_masses, partial_counters[0])
 
-        pbar : encore.utils.AnimatedProgressBar object
-            Progress bar object
-
-        pbar_counters : list of multiprocessing.RawValue
-            List of counters. Each worker is given a counter, which is updated
-            at every cycle. In this way the _pbar_updater process can
-            asynchronously fetch progress reports.
-
-            max_val : int
-            Total number of matrix elements to be calculated
-
-            update_interval : float
-            Number of seconds between progress bar updates
-
-        '''
-
-        val = 0
-        while val < max_val:
-            val = 0
-            for c in pbar_counters:
-                val += c.value
-            pbar.update(val)
-            pbar.show_progress()
-            sleep(update_interval)
-
-    __call__ = run
+    # When the workers have finished, return a TriangularMatrix object
+    return TriangularMatrix(distmat, metadata=metadata)
 
 
-class RMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
+def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
+                       fit_masses=None, pbar_counter=None):
+
     '''
-        RMSD Matrix calculator. Simple workers doesn't perform fitting, while
-        fitter worker does.
-    '''
-    @staticmethod
-    def _simple_worker(tasks, coords, masses, rmsdmat, pbar_counter):
+    RMSD Matrix calculator
+
+    Parameters
+    ----------
+
+        tasks : iterator of int of length 2
+    Given a triangular matrix, this worker will calculate RMSD
+    values from element tasks[0] to tasks[1]. Since the matrix
+    is triangular, the trm_indeces matrix automatically
+    calculates the corrisponding i,j matrix indices.
+    The matrix is written as an array in a row-major
+    order (see the TriangularMatrix class for details).
+
+    If fit_coords and fit_masses are specified, the structures
+    will be superimposed before calculating RMSD, and fit_coords and fit_masses
+    will be used to place both structures at their center of mass and 
+    compute the rotation matrix. In this case, both fit_coords and fit_masses
+    must be specified.
+
+    coords : numpy.array
+        Array of the ensemble coordinates
+
+    masses : numpy.array
+        Array of atomic masses, having the same order as the
+        coordinates array
+
+    rmsdmat : encore.utils.TriangularMatrix
+        Memory-shared triangular matrix object
+
+    fit_coords : numpy.array or None
+        Array of the coordinates used for fitting
+
+    fit_masses : numpy.array
+        Array of atomic masses, having the same order as the
+        fit_coords array
+
+    pbar_counter : multiprocessing.RawValue
+        Thread-safe shared value. This counter is updated at
+        every cycle and used to evaluate the progress of
+        each worker in a parallel calculation.
         '''
-        Simple RMSD Matrix calculator.
 
-        Parameters
-        ----------
+    print coords
+    print fit_coords
+    print masses
+    print fit_masses
 
-            tasks : iterator of int of length 2
-        Given a triangular matrix, this worker will calculate RMSD
-        values from element tasks[0] to tasks[1]. Since the matrix
-        is triangular, the trm_indeces matrix automatically
-        calculates the corrisponding i,j matrix indices.
-        The matrix is written as an array in a row-major
-        order (see the TriangularMatrix class for details).
-
-        coords : numpy.array
-            Array of the ensemble coordinates
-
-        masses : numpy.array
-            Array of atomic masses, having the same order as the
-            coordinates array
-
-        rmsdmat : encore.utils.TriangularMatrix
-            Memory-shared triangular matrix object
-
-        pbar_counter : multiprocessing.RawValue
-            Thread-safe shared value. This counter is updated at
-            every cycle and used to evaluate the progress of
-            each worker.
-            '''
+    if fit_coords is None and fit_masses is None:
         for i, j in trm_indeces(tasks[0], tasks[1]):
-            # masses = asarray(masses)/mean(masses)
             summasses = sum(masses)
             rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(float64),
                                                     coords[j].astype(float64),
-                                                    coords[j].shape[0], masses,
+                                                    coords[j].shape[0], 
+                                                    masses,
                                                     summasses)
-            pbar_counter.value += 1
 
-    @staticmethod
-    def _fitter_worker(tasks, coords, subset_coords, masses,
-                       subset_masses, rmsdmat, pbar_counter):
-        '''
-        Fitter RMSD Matrix calculator: performs least-square fitting
-        between each pair of structures before calculating the RMSD.
-
-        Parameters
-        ----------
-
-        tasks : iterator of int of length 2
-            Given a triangular matrix written in a row-major order, this
-            worker will calculate RMSD values from element tasks[0] to
-            tasks[1]. Since the matrix is triangular. the trm_indeces
-            function automatically calculates the corrosponding i,j matrix
-            indeces. (see the see encore.utils.TriangularMatrix for
-            details).
-
-        coords : numpy.array
-            Array of the ensemble coordinates
-
-        subset_coords : numpy.array or None
-            Array of the coordinates used for fitting
-
-        masses : numpy.array or None
-            Array of atomic masses, having the same order as the
-            coordinates array. If None, coords will be used instead.
-
-        subset_masses : numpy.array
-            Array of atomic masses, having the same order as the
-            subset_coords array
-
-        rmsdmat : encore.utils.TriangularMatrix
-            Memory-shared triangular matrix object
-
-        pbar_counter : multiprocessing.RawValue
-            Thread-safe shared value. This counter is updated at every
-            cycle and used to evaluate the progress of each worker.
-            '''
-
+    elif fit_coords is not None and fit_coords is not None:
         for i, j in trm_indeces(tasks[0], tasks[1]):
             summasses = sum(masses)
-            subset_weights = asarray(subset_masses) / mean(subset_masses)
-            com_i = average(subset_coords[i], axis=0,
-                            weights=subset_masses)
+            subset_weights = asarray(fit_masses) / mean(fit_masses)
+            com_i = average(fit_coords[i], axis=0,
+                            weights=fit_masses)
             translated_i = coords[i] - com_i
-            subset1_coords = subset_coords[i] - com_i
-            com_j = average(subset_coords[j], axis=0,
-                            weights=subset_masses)
+            subset1_coords = fit_coords[i] - com_i
+            com_j = average(fit_coords[j], axis=0,
+                            weights=fit_masses)
             translated_j = coords[j] - com_j
-            subset2_coords = subset_coords[j] - com_j
+            subset2_coords = fit_coords[j] - com_j
+            print "XX", coords.shape, translated_i.shape, coords[i].shape
             rotamat = rotation_matrix(subset1_coords, subset2_coords,
                                       subset_weights)[0]
             rotated_i = transpose(dot(rotamat, transpose(translated_i)))
             rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(
                 rotated_i.astype(float64), translated_j.astype(float64),
                 coords[j].shape[0], masses, summasses)
-            pbar_counter.value += 1
 
+    else: 
+        raise TypeError("Both fit_coords and fit_masses must be specified \
+                        if one of them is given")
 
-class MinusRMSDMatrixGenerator(ConformationalDistanceMatrixGenerator):
+    if pbar_counter is not None:
+        pbar_counter.value += 1
+
+def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
+    '''Method that updates and prints the progress bar, upon polling
+    progress status from workers.
+
+    Attributes
+    -----------
+
+    pbar : encore.utils.AnimatedProgressBar object
+        Progress bar object
+
+    pbar_counters : list of multiprocessing.RawValue
+        List of counters. Each worker is given a counter, which is updated
+        at every cycle. In this way the _pbar_updater process can
+        asynchronously fetch progress reports.
+
+        max_val : int
+        Total number of matrix elements to be calculated
+
+        update_interval : float
+        Number of seconds between progress bar updates
+
     '''
-    -RMSD Matrix calculator. See encore.confdistmatrix.RMSDMatrixGenerator
-    for details.
-    '''
-    @staticmethod
-    def _simple_worker(tasks, coords, masses, rmsdmat, pbar_counter):
-        '''
-        Simple RMSD Matrix calculator. See
-        encore.confdistmatrix.RMSDMatrixGenerator._simple_worker for
-        details.
-        '''
-        for i, j in trm_indeces(tasks[0], tasks[1]):
-            # masses = asarray(masses)/mean(masses)
-            summasses = sum(masses)
-            rmsdmat[(i + 1) * i / 2 + j] = MinusRMSD(coords[i].astype(float64),
-                                                     coords[j].astype(float64),
-                                                     coords[j].shape[0],
-                                                     masses, summasses)
-            pbar_counter.value += 1
 
-    @staticmethod
-    def _fitter_worker(tasks, coords, subset_coords, masses,
-                       subset_masses, rmsdmat, pbar_counter):
-        '''
-        Fitter RMSD Matrix calculator. See
-        encore.confdistmatrix.RMSDMatrixGenerator._fitter_worker for details.
-        '''
-
-        for i, j in trm_indeces(tasks[0], tasks[1]):
-            # masses = asarray(masses)/mean(masses)
-            summasses = sum(masses)
-            com_i = average(subset_coords[i], axis=0,
-                            weights=subset_masses)
-            translated_i = coords[i] - com_i
-            subset1_coords = subset_coords[i] - com_i
-            com_j = average(subset_coords[j], axis=0,
-                            weights=subset_masses)
-            translated_j = coords[j] - com_j
-            subset2_coords = subset_coords[j] - com_j
-            rotamat = \
-                rotation_matrix(subset1_coords, subset2_coords,
-                                subset_masses)[
-                    0]
-            rotated_i = transpose(dot(rotamat, transpose(translated_i)))
-            rmsdmat[(i + 1) * i / 2 + j] = MinusRMSD(
-                rotated_i.astype(float64), translated_j.astype(float64),
-                coords[j].shape[0], masses, summasses)
-            pbar_counter.value += 1
+    val = 0
+    while val < max_val:
+        val = 0
+        for c in pbar_counters:
+            val += c.value
+        pbar.update(val)
+        pbar.show_progress()
+        sleep(update_interval)

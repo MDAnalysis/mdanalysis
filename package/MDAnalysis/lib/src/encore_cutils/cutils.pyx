@@ -34,7 +34,6 @@ cdef extern from "math.h":
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-
 def PureRMSD(np.ndarray[np.float64_t,ndim=2] coordsi,
              np.ndarray[np.float64_t,ndim=2] coordsj,
              int atomsn,
@@ -49,20 +48,3 @@ def PureRMSD(np.ndarray[np.float64_t,ndim=2] coordsi,
     for k in xrange(atomsn):
         normsum += masses[k]*((coordsi[k,0]-coordsj[k,0])**2 + (coordsi[k,1]-coordsj[k,1])**2 + (coordsi[k,2]-coordsj[k,2])**2)
     return sqrt(normsum/summasses)
-
-def MinusRMSD(np.ndarray[np.float64_t,ndim=2] coordsi,
-             np.ndarray[np.float64_t,ndim=2] coordsj,
-             int atomsn,
-             np.ndarray[np.float64_t,ndim=1] masses,
-             double summasses):
-
-    cdef  int k
-    cdef double normsum, totmasses
-
-    normsum = 0.0
-
-    for k in xrange(atomsn):
-        normsum += masses[k]*((coordsi[k,0]-coordsj[k,0])**2 + (coordsi[k,1]-coordsj[k,1])**2 + (coordsi[k,2]-coordsj[k,2])**2)
-    return -sqrt(normsum/summasses)
-    
-

@@ -164,13 +164,12 @@ except ImportError:
     logging.warn(msg)
     del msg
 
-from MDAnalysis.coordinates.memory import MemoryReader
-
+from ...coordinates.memory import MemoryReader
 from .clustering.Cluster import ClustersCollection
 from .clustering.affinityprop import AffinityPropagation
 from .dimensionality_reduction.stochasticproxembed import \
     StochasticProximityEmbedding, kNNStochasticProximityEmbedding
-from .confdistmatrix import MinusRMSDMatrixGenerator, RMSDMatrixGenerator
+from .confdistmatrix import conformational_distance_matrix, set_rmsd_matrix_elements, pbar_updater
 from .covariance import covariance_matrix, EstimatorShrinkage, EstimatorML
 from .utils import TriangularMatrix, ParallelCalculation
 from .utils import trm_indeces_diag, trm_indeces_nodiag
@@ -750,7 +749,9 @@ def get_similarity_matrix(ensembles,
                           mass_weighted=True,
                           bootstrap_matrix=False,
                           bootstrapping_samples=100,
-                          np=1):
+                          np=1,
+                          *conf_dist_args,
+                          **conf_dist_kwargs):
     """
     Retrieves or calculates the similarity or conformational distance (RMSD)
     matrix. The similarity matrix is calculated between all the frames of all
@@ -788,7 +789,7 @@ def get_similarity_matrix(ensembles,
         of calculating it (default is None). A filename is required.
 
     change_sign : bool, optional
-        Change the sign of the elements of loaded matrix (default is False).
+        Change the sign of the elements of the matrix (default is False).
         Useful to switch between similarity/distance matrix.
 
     save_matrix : bool, optional
@@ -849,10 +850,12 @@ def get_similarity_matrix(ensembles,
     # Choose distance metric
     if similarity_mode == "minusrmsd":
         logging.info("    Similarity matrix: -RMSD matrix")
-        matrix_builder = MinusRMSDMatrixGenerator()
+        conf_dist_func = set_rmsd_matrix_elements
+        minus = True
     elif similarity_mode == "rmsd":
         logging.info("    Similarity matrix: RMSD matrix")
-        matrix_builder = RMSDMatrixGenerator()
+        conf_dist_func = set_rmsd_matrix_elements
+        minus = False
     else:
         logging.error(
             "Supported conformational distance measures are rmsd \
@@ -874,12 +877,6 @@ def get_similarity_matrix(ensembles,
             logging.info("        {0} : {1}".format(
                 key, str(confdistmatrix.metadata[key][0])))
 
-        # Change matrix sign if required. Useful to switch between
-        # similarity/distance matrix.
-        if change_sign:
-            logging.info("        The matrix sign will be changed.")
-            confdistmatrix.change_sign()
-
         # Check matrix size for consistency
         if not confdistmatrix.size == \
                 joined_ensemble.trajectory.timeseries(
@@ -889,6 +886,11 @@ def get_similarity_matrix(ensembles,
                 "ERROR: The size of the loaded matrix and of the ensemble"
                 " do not match")
             return None
+
+        if change_sign:
+            logging.info("        The sign of the loaded matrix will be changed.")
+            confdistmatrix.change_sign()
+
 
     # Calculate the matrix
     else:
@@ -904,21 +906,22 @@ def get_similarity_matrix(ensembles,
 
         # Use superimposition subset, if necessary. If the pairwise alignment
         # is not required, it will not be performed anyway.
-        if superimposition_subset:
-            confdistmatrix = matrix_builder(
-                joined_ensemble,
-                selection=selection,
-                pairwise_align=superimpose,
-                mass_weighted=mass_weighted,
-                ncores=np)
+        confdistmatrix = conformational_distance_matrix(joined_ensemble,
+                                                conf_dist_function=conf_dist_func,
+                                                selection=selection,
+                                                pairwise_align=superimpose,
+                                                mass_weighted=mass_weighted,
+                                                ncores=np,
+                                                *conf_dist_args,
+                                                kwargs=conf_dist_kwargs)
 
-        else:
-            confdistmatrix = matrix_builder(joined_ensemble,
-                                            pairwise_align=superimpose,
-                                            mass_weighted=mass_weighted,
-                                            ncores=np)
+        if minus:
+            confdistmatrix.change_sign()
 
         logging.info("    Done!")
+
+        # Change matrix sign if required. Useful to switch between
+        # similarity/distance matrix.
 
         if save_matrix:
             confdistmatrix.savez(save_matrix)

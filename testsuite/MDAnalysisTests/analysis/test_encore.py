@@ -128,10 +128,10 @@ class TestEncore(TestCase):
             assert_almost_equal(rmsd[2], confdist_matrix[0,i], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
 
-    def test_minus_rmsd_matrix_with_superimposition(self):
+    def test_rmsd_matrix_with_superimposition(self):
         
-        generator = encore.confdistmatrix.MinusRMSDMatrixGenerator()
-        confdist_matrix = generator(self.ens1,
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(self.ens1,
+                                    encore.confdistmatrix.set_rmsd_matrix_elements,
                                     selection = "name CA",
                                     pairwise_align = True,
                                     mass_weighted = True,
@@ -139,9 +139,11 @@ class TestEncore(TestCase):
 
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
+        print(reference.rmsd)
+        print(conf_dist_matrix[0,0],conf_dist_matrix[0,1],conf_dist_matrix[0,2])
 
         for i,rmsd in enumerate(reference.rmsd):
-            assert_almost_equal(-rmsd[2], confdist_matrix[0,i], decimal=3,
+            assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")            
 
     def test_rmsd_matrix_without_superimposition(self):
@@ -247,131 +249,17 @@ class TestEncore(TestCase):
                          0.6843332 ]
 
         selection_string = "name CA"
-        generator = encore.confdistmatrix.RMSDMatrixGenerator()
-        confdist_matrix = generator(self.ens1,
-                                    selection = selection_string,
-                                    pairwise_align = False,
-                                    mass_weighted = True,
-                                    ncores = 1)
+        confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+                            self.ens1,
+                            encore.confdistmatrix.set_rmsd_matrix_elements,
+                            selection = "name CA",
+                            pairwise_align = False,
+                            mass_weighted = True,
+                            ncores = 1)
         
         for i,rmsd in enumerate(reference_rmsd):
             assert_almost_equal(confdist_matrix[0,i]/10.0, rmsd, decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
-
-    def test_minus_rmsd_matrix_without_superimposition(self):
-        
-        # calculated with gromacs - gmx rms -fit none
-        reference_rmsd =[0.0000001,
-                         0.0425684,
-                         0.0595158,
-                         0.0738680,
-                         0.0835519,
-                         0.0924640,
-                         0.1010487,
-                         0.1131771,
-                         0.1227527,
-                         0.1343707,
-                         0.1433841,
-                         0.1545489,
-                         0.1638420,
-                         0.1720007,
-                         0.1818408,
-                         0.1897694,
-                         0.1979185,
-                         0.2050228,
-                         0.2190710,
-                         0.2282337,
-                         0.2392368,
-                         0.2467754,
-                         0.2559295,
-                         0.2634292,
-                         0.2758299,
-                         0.2815295,
-                         0.2889598,
-                         0.2988116,
-                         0.3075704,
-                         0.3168339,
-                         0.3252532,
-                         0.3335701,
-                         0.3421980,
-                         0.3499905,
-                         0.3576347,
-                         0.3648850,
-                         0.3746280,
-                         0.3787407,
-                         0.3876532,
-                         0.3949267,
-                         0.4022163,
-                         0.4123725,
-                         0.4171653,
-                         0.4270313,
-                         0.4339235,
-                         0.4441433,
-                         0.4535998,
-                         0.4629753,
-                         0.4738565,
-                         0.4778692,
-                         0.4846473,
-                         0.4921997,
-                         0.5025109,
-                         0.5078515,
-                         0.5176530,
-                         0.5236758,
-                         0.5279259,
-                         0.5359889,
-                         0.5479882,
-                         0.5513062,
-                         0.5550882,
-                         0.5616842,
-                         0.5691664,
-                         0.5797819,
-                         0.5860255,
-                         0.5929349,
-                         0.6031308,
-                         0.6075997,
-                         0.6206015,
-                         0.6300921,
-                         0.6396201,
-                         0.6409384,
-                         0.6439900,
-                         0.6467734,
-                         0.6527478,
-                         0.6543783,
-                         0.6585453,
-                         0.6659292,
-                         0.6674148,
-                         0.6699741,
-                         0.6713669,
-                         0.6696672,
-                         0.6695362,
-                         0.6699672,
-                         0.6765218,
-                         0.6806746,
-                         0.6801361,
-                         0.6786651,
-                         0.6828524,
-                         0.6851146,
-                         0.6872993,
-                         0.6837722,
-                         0.6852713,
-                         0.6838173,
-                         0.6822636,
-                         0.6829022,
-                         0.6846855,
-                         0.6843332 ]
-
-        selection_string = "name CA"
-        generator = encore.confdistmatrix.MinusRMSDMatrixGenerator()
-        confdist_matrix = generator(self.ens1,
-                                    selection = selection_string,
-                                    pairwise_align = False,
-                                    mass_weighted = True,
-                                    ncores = 1)
-        
-        for i,rmsd in enumerate(reference_rmsd):
-            assert_almost_equal(-confdist_matrix[0,i]/10.0, rmsd, decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")
-
         
     def test_ensemble_frame_filtering(self):
         total_frames = len(self.ens1.trajectory.timeseries(format='fac'))
