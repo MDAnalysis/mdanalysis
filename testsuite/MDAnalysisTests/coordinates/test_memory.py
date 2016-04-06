@@ -108,12 +108,23 @@ class TestMemoryReader(BaseReaderTest):
                                    format='fac').base is self.reader.get_array(),
                      True)
 
-    def test_timeseries_noview2(self):
-        assert_equal(
-            self.reader.timeseries(
-                asel=self.ref.universe.
-                    select_atoms("name CA")).base is self.reader.get_array(),
-                    False)
+    def test_timeseries_view3(self):
+        selection = self.ref.universe.atoms
+        assert_equal(self.reader.timeseries(
+            asel=selection).base is self.reader.get_array(),
+            True)
+
+    def test_timeseries_view4(self):
+        selection = self.ref.universe.select_atoms("all")
+        assert_equal(self.reader.timeseries(
+            asel=selection).base is self.reader.get_array(),
+            True)
+
+    def test_timeseries_noview(self):
+        selection = self.ref.universe.select_atoms("name CA")
+        assert_equal(self.reader.timeseries(
+            asel=selection).base is self.reader.get_array(),
+            False)
 
     def test_repr(self):
         str_rep = str(self.reader)

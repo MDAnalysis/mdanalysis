@@ -215,9 +215,6 @@ def conformational_distance_matrix(ensemble,
     for w in workers:
         w.join()
     
-    
-    #conf_dist_function(tasks_per_worker[0], rmsd_coordinates, distmat,  masses, fitting_coordinates, subset_masses, partial_counters[0])
-
     # When the workers have finished, return a TriangularMatrix object
     return TriangularMatrix(distmat, metadata=metadata)
 

@@ -2034,7 +2034,7 @@ class TestInMemoryUniverse(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                'DCD parser not available. Are you using python 3?')
     def test_reader_w_timeseries():
-        universe = MDAnalysis.Universe(PDB_small, DCD, in_memory=True)
+        universe = MDAnalysis.Universe(PSF, DCD, in_memory=True)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
@@ -2050,7 +2050,7 @@ class TestInMemoryUniverse(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                'DCD parser not available. Are you using python 3?')
     def test_reader_w_timeseries_frame_interval():
-        universe = MDAnalysis.Universe(PDB_small, DCD, in_memory=True,
+        universe = MDAnalysis.Universe(PSF, DCD, in_memory=True,
                                        in_memory_frame_interval=10)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 9, 3),
@@ -2065,12 +2065,27 @@ class TestInMemoryUniverse(TestCase):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_existing_universe():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         universe.transfer_to_memory()
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
+
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def test_frame_interval_convention():
+        universe1 = MDAnalysis.Universe(PSF, DCD)
+        array1 = universe1.trajectory.timeseries(skip=10)
+        universe2 = MDAnalysis.Universe(PSF, DCD, in_memory=True,
+                                        in_memory_frame_interval=10)
+        array2 = universe2.trajectory.timeseries()
+        assert_equal(array1, array2,
+                     err_msg="Unexpected differences between arrays.")
 
 
 class TestWrap(TestCase):
