@@ -124,8 +124,11 @@ class MOL2Reader(base.Reader):
 
         sections, coords = self.parse_block(block)
 
-        self.ts.data['molecule'] = sections["molecule"]
-        self.ts.data['substructure'] = sections["substructure"]
+        for sect in ['molecule', 'substructure']:
+            try:
+                self.ts.data[sect] = sections[sect]
+            except KeyError:
+                pass
 
         # check if atom number changed
         if len(coords) != self.n_atoms:
