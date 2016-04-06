@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jdetle, jbarnoud,
-        richardjgowers
+        dotsdl, richardjgowers
 
   * 0.15.0
 
@@ -33,6 +33,7 @@ API Changes
 Enhancements
 
   * Add conda build scripts (Issue #608)
+  * Added read-only property giving Universe init kwargs (Issue #292)
 
 Fixes
   

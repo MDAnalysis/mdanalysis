@@ -1724,7 +1724,20 @@ class TestUniverse(TestCase):
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
+    @staticmethod
+    def test_universe_kwargs():
+        u = MDAnalysis.Universe(PSF, PDB_small, fake_kwarg=True)
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
+        assert_(u.kwargs['fake_kwarg'] is True)
+
+        # initialize new universe from pieces of existing one
+        u2 = MDAnalysis.Universe(u.filename, u.trajectory.filename, 
+                                 **u.kwargs)
+        
+        assert_(u2.kwargs['fake_kwarg'] is True)
+        assert_equal(u.kwargs, u2.kwargs)
+    
 class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
@@ -2121,11 +2134,13 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
+        assert_('guess_bonds' in u.kwargs)
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = MDAnalysis.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
+        assert_(u.kwargs['guess_bonds'] is True)
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
@@ -2136,6 +2151,8 @@ class TestGuessBonds(TestCase):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=True,
                                 vdwradii=self.vdw)
         self._check_universe(u)
+        assert_(u.kwargs['guess_bonds'] is True)
+        assert_equal(self.vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=False)
@@ -2143,6 +2160,7 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.bonds), 0)
         assert_equal(len(u.angles), 0)
         assert_equal(len(u.dihedrals), 0)
+        assert_(u.kwargs['guess_bonds'] is False)
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
