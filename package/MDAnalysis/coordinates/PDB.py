@@ -217,6 +217,7 @@ import os
 import errno
 import textwrap
 import warnings
+import copy
 import logging
 import collections
 import numpy as np
@@ -545,7 +546,6 @@ class PrimitivePDBReader(base.Reader):
                              "Expected {expected} got {actual}"
                              "".format(expected=self._n_atoms, actual=pos))
         self.n_atoms = pos
-
         self.ts.frame = 0  # 0-based frame number as starting frame
         self.ts.data['occupancy'] = occupancy
 
@@ -699,6 +699,8 @@ class PrimitivePDBWriter(base.Writer):
         'TITLE': "TITLE     {0}\n",
         'MODEL': "MODEL     {0:5d}\n",
         'NUMMDL': "NUMMDL    {0:5d}\n",
+        'TER': ("TER   {serial:5d}      {resName:<4s}"
+                "{chainID:1s}{resSeq:4d}{iCode:1s}\n"),
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
         'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
@@ -797,7 +799,6 @@ class PrimitivePDBWriter(base.Writer):
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
-
         self.frames_written = 0
         if start < 0:
             raise ValueError("'Start' must be a positive value")
@@ -834,7 +835,7 @@ class PrimitivePDBWriter(base.Writer):
             self._write_pdb_title(self)
             return
         if self.first_frame_done == True:
-            return        
+            return
 
         self.first_frame_done = True
         u = self.obj.universe
@@ -927,10 +928,10 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = {a.index for a in self.obj.atoms}
-
-        mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
-
+        atoms = {atom.index for atom in self.obj.atoms}
+        
+        mapping = {i:atom for i, atom in enumerate(self.obj.atoms.serials)}
+        
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
             bonds = [(bond[0].index, bond[1].index) for bond in bonds if not bond.is_guessed]
@@ -950,7 +951,7 @@ class PrimitivePDBWriter(base.Writer):
             con[a2].append(a1)
             con[a1].append(a2)
 
-        atoms = sorted([a.index for a in self.obj.atoms])
+        atoms = sorted(atoms)
 
         conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
 
@@ -1158,16 +1159,18 @@ class PrimitivePDBWriter(base.Writer):
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
+        prev_atom = {}
+        serial_count = 0
         for i, atom in enumerate(atoms):
             segid = atom.segid if atom.segid is not "SYSTEM" else " "
 
             vals = {}
-            vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
+            vals['serial'] = int(str(serial_count + 1)[-5:])  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]
-            vals['resSeq'] = int(str(atom.resid)[-4:])
+            vals['resSeq'] = int(str(atom.resid)[-4:])  # check for overflow here?
             vals['iCode'] = " "
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             try:
@@ -1179,9 +1182,36 @@ class PrimitivePDBWriter(base.Writer):
             vals['tempFactor'] = temp if temp is not None else 0.0
             vals['segID'] = segid[:4]
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
-
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
+            
+            if i != 0 and (vals['chainID'] != prev_atom['chainID'] 
+              and vals['chainID'] != " " and prev_atom['chainID'] != " "):
+                
+                end_atom = {}
+                end_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+                 # check for overflow here?
+                end_atom['resName'] = prev_atom['resName']
+                end_atom['chainID'] = prev_atom['chainID']
+                end_atom['resSeq'] = prev_atom['resSeq']
+                end_atom['iCode'] = prev_atom['iCode']
+                self.TER(end_atom)
+                serial_count += 1
+                vals['serial'] = int(str(serial_count + 1)[-5:])
+                # check for overflow here?
+          
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            prev_atom = copy.deepcopy(vals)
+            serial_count += 1
+
+        ter_atom = {}
+        ter_atom['serial'] = int(str(prev_atom['serial'] + 1)[-5:])
+        # check for overflow here?
+        ter_atom['resName'] = prev_atom['resName']
+        ter_atom['chainID'] = prev_atom['chainID']
+        ter_atom['resSeq'] = prev_atom['resSeq']
+        ter_atom['iCode'] = prev_atom['iCode']
+        self.TER(ter_atom)
+
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
@@ -1264,6 +1294,14 @@ class PrimitivePDBWriter(base.Writer):
             self.pdbfile.write(self.fmt['END'])
         self.has_END = True
 
+    def TER(self, tatom):
+        """Write the TER_ record.
+
+        .. _TER: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#TER
+
+        """
+        self.pdbfile.write(self.fmt['TER'].format(**tatom))
+
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
@@ -1278,7 +1316,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
         """
-        conect = ["{0:5d}".format(entry + 1) for entry in conect]
+        conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 

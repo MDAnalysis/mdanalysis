@@ -17,7 +17,7 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial, ALIGN)
+                                       INC_PDB, PDB_xlserial, ALIGN, PDB_full)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
@@ -264,6 +264,50 @@ class TestPrimitivePDBWriter(TestCase):
                 elif line.startswith('TITLE'):
                     got_title += 1
                     assert_(got_title <= 1, "There should be only one TITLE.")
+
+    @attr('issue')
+    def test_check_endmdl_equality(self):
+        """Check whether ENDMDL records are equal to n_frames"""
+        u = mda.Universe(PSF,DCD)
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            got_endmdl = 0
+            for line in f:
+                if line.startswith('ENDMDL'):
+                    got_endmdl += 1
+        
+        pdb = mda.Universe(self.outfile)
+        assert_equal(got_endmdl,
+                    pdb.trajectory.n_frames,
+                    err_msg = 'ENDMDL records not equal to the no of frames.')
+        
+    @attr('issue')
+    def test_ter_format(self):
+        """Check whether the TER records are formatted and placed properly"""
+        u = mda.Universe(PDB_full)
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            line = f.readlines()
+            for i in range(len(line)):
+                if line[i].startswith('TER'):
+                    assert_equal(line[i][16:26], 
+                                line[i-1][16:26],
+                                err_msg = "TER Record data not same as "
+                                "terminal atom.")
+                    if (not line[i+1].startswith('ENDMDL') or 
+                      not line[i+1].startswith('END')):
+                        assert_(line[i-1][21] != line[i+1][21],
+                                'TER record placed in wrong position.')
 
 
 class TestMultiPDBReader(TestCase):
