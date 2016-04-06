@@ -29,12 +29,6 @@ from MDAnalysisTests import parser_not_found, module_not_found
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
 
-
-class FakePBarCounter(object):
-    def __init__(self):
-        self.value = 0
-
-
 class TestEncore(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -89,47 +83,7 @@ class TestEncore(TestCase):
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-
-
-    def test_rmsd_matrix_with_superimposition(self):
-        
-        generator = encore.confdistmatrix.RMSDMatrixGenerator()
-        confdist_matrix = generator(self.ens1,
-                                    selection = "name CA",
-                                    pairwise_align = True,
-                                    mass_weighted = True,
-                                    ncores = 1)
-
-        reference = rms.RMSD(self.ens1, select = "name CA")
-        reference.run()
-
-
-        tasks = ((0, 0), (1, 0))
-        n_tasks = len(list(encore.utils.trm_indeces(tasks[0],tasks[1])))
-        distmatrix = numpy.zeros(n_tasks)
-        coordinates = self.ens1.trajectory.timeseries(
-            self.ens1.select_atoms("name CA"), format = 'fac')
-        masses = numpy.ones(coordinates.shape[1])
-        pbar_counter = FakePBarCounter()
-
-        generator._fitter_worker(tasks,
-                                 coordinates,
-                                 coordinates,
-                                 masses,
-                                 masses,
-                                 distmatrix,
-                                 pbar_counter)
-
-        for i in range(n_tasks):
-            assert_almost_equal(reference.rmsd[i,2], distmatrix[i], decimal = 3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")
-                                       
-        for i,rmsd in enumerate(reference.rmsd):
-            assert_almost_equal(rmsd[2], confdist_matrix[0,i], decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")
-
-    def test_rmsd_matrix_with_superimposition(self):
-        
+    def test_rmsd_matrix_with_superimposition(self):        
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(self.ens1,
                                     encore.confdistmatrix.set_rmsd_matrix_elements,
                                     selection = "name CA",
