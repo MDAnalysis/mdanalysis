@@ -4732,7 +4732,9 @@ class Universe(object):
         :Arguments:
              *frame_interval*
                  Read in every nth frame.
-         """
+
+        .. versionadded:: 0.15.0
+        """
 
         from ..coordinates.memory import MemoryReader
 
