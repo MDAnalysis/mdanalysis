@@ -17,10 +17,16 @@ from six.moves import range
 
 import tempdir
 import os
-from numpy.testing import (assert_equal,assert_raises, assert_array_equal,
-                           assert_array_almost_equal, TestCase)     
+from numpy.testing import (
+    assert_equal,assert_raises, assert_array_equal,
+    assert_array_almost_equal, TestCase,
+    assert_,
+)     
 
-from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
+from MDAnalysisTests.datafiles import (
+    mol2_molecules, mol2_molecule, mol2_broken_molecule,
+    mol2_zinc,
+)
 from MDAnalysis import Universe
 import MDAnalysis as mda
 
@@ -121,3 +127,30 @@ class TestMol2_traj(TestCase):
 
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")
+
+
+class TestMOL2NoSubstructure(object):
+    """MOL2 file without substructure
+
+    """
+    n_atoms = 45
+
+    def test_load(self):
+        r = mda.coordinates.MOL2.MOL2Reader(mol2_zinc, n_atoms=self.n_atoms)
+        assert_(r.n_atoms == 45)
+
+    def test_universe(self):
+        u = mda.Universe(mol2_zinc)
+        assert_(len(u.atoms) == self.n_atoms)
+
+    def test_write_nostructure(self):
+        mytempdir = tempdir.TempDir()
+        outfile = os.path.join(mytempdir.name, 'test.mol2')
+
+        u = mda.Universe(mol2_zinc)
+        with mda.Writer(outfile) as W:
+            W.write(u.atoms)
+
+        u2 = mda.Universe(outfile)
+
+        assert_(len(u.atoms) == len(u2.atoms))
