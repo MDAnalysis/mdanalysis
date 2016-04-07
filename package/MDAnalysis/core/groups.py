@@ -99,6 +99,10 @@ class GroupBase(object):
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
         if not isinstance(item, (int, np.int_)):
+            if isinstance(item, list):
+                # hack to make lists into numpy arrays
+                # important for boolean slicing
+                item = np.array(item)
             return self.__class__(self._ix[item], self._u)
         else:
             return self.level.singular(self._ix[item], self._u)
