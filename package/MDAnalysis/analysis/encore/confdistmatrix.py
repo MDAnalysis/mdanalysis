@@ -291,7 +291,6 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
                             weights=fit_masses)
             translated_j = coords[j] - com_j
             subset2_coords = fit_coords[j] - com_j
-            print "XX", coords.shape, translated_i.shape, coords[i].shape
             rotamat = rotation_matrix(subset1_coords, subset2_coords,
                                       subset_weights)[0]
             rotated_i = transpose(dot(rotamat, transpose(translated_i)))
