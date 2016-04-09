@@ -98,14 +98,14 @@ class GroupBase(object):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if not isinstance(item, (int, np.int_)):
-            if isinstance(item, list):
+        if isinstance(item, (int, np.int_)):
+            return self.level.singular(self._ix[item], self._u)
+        else:
+            if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 item = np.array(item)
             return self.__class__(self._ix[item], self._u)
-        else:
-            return self.level.singular(self._ix[item], self._u)
 
     def __repr__(self):
         name = self.level.name
@@ -146,7 +146,7 @@ class GroupBase(object):
             # maybe raise TypeError instead?
             # eq method raises Error for wrong comparisons
             return False
-        return other.index in self._ix
+        return other.ix in self._ix
 
     @property
     def universe(self):
@@ -1040,7 +1040,7 @@ class ResidueGroup(object):
         No duplicates are removed.
 
         """
-        return self._u.atoms[self.indices]
+        return self._u.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1203,7 +1203,7 @@ class SegmentGroup(object):
         segment in the SegmentGroup. No duplicates are removed.
 
         """
-        return self._u.atoms[self.indices]
+        return self._u.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1223,7 +1223,7 @@ class SegmentGroup(object):
         No duplicates are removed.
 
         """
-        return self._u.residues[self.resindices]
+        return self._u.residues[np.concatenate(self.resindices)]
 
     @property
     def n_residues(self):
@@ -1275,15 +1275,15 @@ class ComponentBase(object):
     def __lt__(self, other):
         if self.level != other.level:
             raise TypeError("Can't compare different level objects")
-        return self._ix < other._ix
+        return self.ix < other.ix
 
     def __eq__(self, other):
         if self.level != other.level:
             raise TypeError("Can't compare different level objects")
-        return self.index == other.index
+        return self.ix == other.ix
 
     def __hash__(self):
-        return hash(self._ix)
+        return hash(self.ix)
 
     def __add__(self, other):
         """Concatenate the Component with another Component or Group of the
@@ -1307,13 +1307,13 @@ class ComponentBase(object):
         if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
 
-        if isinstance(other._ix, int):
-            o_ix = np.array([other._ix])
+        if isinstance(other.ix, int):
+            o_ix = np.array([other.ix])
         else:
-            o_ix = other._ix
+            o_ix = other.ix
 
         return self.level.plural(
-                np.concatenate((np.array([self._ix]), o_ix)), self._u)
+                np.concatenate((np.array([self.ix]), o_ix)), self.universe)
 
     @classmethod
     def _add_prop(cls, attr):
