@@ -14,6 +14,28 @@ from ..exceptions import NoDataError
 from . import topologyobjects
 
 
+def same_universe_check(f):
+    # Check a two object method occurs between objects in same Universe
+    @functools.wraps(f)
+    def wrapper(self, other):
+        if not self.universe is other.universe:
+            raise ValueError("Can't do {0} on objects from different Universe"
+                             "".format(f.__name__))
+        return f(self, other)
+    return wrapper
+
+
+def same_level_check(f):
+    # Check a two object method occurs between objects in same Universe
+    @functools.wraps(f)
+    def wrapper(self, other):
+        if not self.level == other.level:
+            raise TypeError("Can't do {0} on objects from different level"
+                             "".format(f.__name__))
+        return f(self, other)
+    return wrapper
+
+
 def make_classes():
     """Make a fresh copy of all Classes
 
@@ -112,6 +134,8 @@ class GroupBase(object):
         return ("<{}Group with {} {}s>"
                 "".format(name.capitalize(), len(self), name))
 
+    @same_universe_check
+    @same_level_check
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
         level.
@@ -127,11 +151,6 @@ class GroupBase(object):
             Group with elements of `self` and `other` concatenated
         
         """
-        if self.level != other.level:
-            raise TypeError("Can't add different level objects")
-        if not self._u is other._u:
-            raise ValueError("Can't add objects from different Universe")
-        
         # for the case where other is a Component, and so other._ix is an
         # integer
         if isinstance(other._ix, int):
@@ -1520,3 +1539,6 @@ class Segment(ComponentBase):
         residuesclass = self.level.child.plural
         return residuesclass(self._u._topology.resindices[self],
                              self._u)
+
+
+
