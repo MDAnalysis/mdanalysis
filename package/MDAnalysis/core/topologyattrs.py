@@ -265,6 +265,7 @@ class Atomids(AtomAttr):
     """
     attrname = 'ids'
     singular = 'id'
+    per_object = 'atom'
 
 
 #TODO: update docs to property doc
@@ -273,6 +274,7 @@ class Atomnames(AtomAttr):
     """
     attrname = 'names'
     singular = 'name'
+    per_object = 'atom'
     transplants = defaultdict(list)
 
     def getattr__(atomgroup, name):
@@ -407,6 +409,7 @@ class Atomtypes(AtomAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
+    per_object = 'atom'
 
 
 #TODO: update docs to property doc
@@ -421,6 +424,7 @@ class Radii(AtomAttr):
     """Radii for each atom"""
     attrname = 'radii'
     singular = 'radius'
+    per_object = 'atom'
 
 
 class ChainIDs(AtomAttr):
@@ -432,23 +436,27 @@ class ChainIDs(AtomAttr):
     """
     attrname = 'chainIDs'
     singular = 'chainID'
+    per_object = 'atom'
 
 
 class ICodes(AtomAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
+    per_object = 'atom'
 
 
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
     attrname = 'tempfactors'
     singular = 'tempfactor'
+    per_object = 'atom'
 
 
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
+    per_object = 'atom'
     target_levels = ['atom', 'residue', 'segment']
     transplants = defaultdict(list)
 
@@ -783,6 +791,7 @@ class Masses(AtomAttr):
 class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
+    per_object = 'atom'
     target_levels = ['atom', 'residue', 'segment']
     transplants = defaultdict(list)
 
@@ -821,12 +830,14 @@ class Bfactors(AtomAttr):
     """Crystallographic B-factors in A**2 for each atom"""
     attrname = 'bfactors'
     singular = 'bfactor'
+    per_object = 'atom'
 
 
 #TODO: update docs to property doc
 class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
+    per_object = 'atom'
 
 
 #TODO: update docs to property doc
@@ -834,6 +845,7 @@ class AltLocs(AtomAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
+    per_object = 'atom'
 
 
 ## residue attributes
@@ -850,6 +862,7 @@ class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
     singular = 'residueattr'
     target_levels = ['residue']
+    per_object = 'residue'
 
     def get_atoms(self, ag):
         rix = self.top.tt.atoms2residues(ag._ix)
@@ -944,6 +957,7 @@ class SegmentAttr(TopologyAttr):
     attrname = 'segmentattrs'
     singular = 'segmentattr'
     target_levels = ['segment']
+    per_object = 'segment'
 
     def get_atoms(self, ag):
         six = self.top.tt.atoms2segments(ag._ix)

@@ -141,6 +141,28 @@ class GroupBase(object):
 
         return self.__class__(np.concatenate([self._ix, o_ix]), self._u)
 
+    def __radd__(self, other):
+        """Using built-in sum requires supporting 0 + self. If other is
+        anything other 0, an exception will be raised.
+
+        Parameters
+        ----------
+        other : int
+            Other should be 0, or else an exception will be raised.
+
+        Returns
+        -------
+        self
+            Group with elements of `self` reproduced
+
+        """
+        if other == 0:
+            return self.__class__(self._ix, self._u)
+        else:
+            raise TypeError("unsupported operand type(s) for +:"+
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
+
     def __contains__(self, other):
         if not other.level == self.level:
             # maybe raise TypeError instead?

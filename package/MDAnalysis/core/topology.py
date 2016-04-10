@@ -36,7 +36,7 @@ class TransTable(object):
         array must be <= `n_residues`, and the array must be length `n_atoms`;
         giving None defaults to placing all atoms in residue 0
     residue_segindex : 1-D array
-        segindex for each atom in the topology; the number of unique values in this
+        segindex for each residue in the topology; the number of unique values in this
         array must be <= `n_segments`, and the array must be length `n_residues`;
         giving None defaults to placing all residues in segment 0
  
@@ -321,6 +321,8 @@ class Topology(object):
         self.n_atoms = n_atoms
         self.n_residues = n_res
         self.n_segments = n_seg
+        if attrs is None:
+            attrs = []
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)

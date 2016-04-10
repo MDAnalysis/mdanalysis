@@ -586,6 +586,10 @@ class TopologyGroup(object):
 
         .. versionadded:: 0.9.0
         """
+        # Issue #780 - if self is empty, return self to avoid invalid mask
+        if not self:
+            return self
+
         # Strict requires all items in a row to be seen,
         # otherwise any item in a row
         func = np.all if kwargs.get('strict', False) else np.any
