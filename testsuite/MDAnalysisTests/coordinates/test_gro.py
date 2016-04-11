@@ -171,7 +171,7 @@ class TestGROIncompleteVels(object):
         del self.u
 
     def test_load(self):
-        assert_(len(self.u.atoms) == 4)
+        assert_equal(len(self.u.atoms), 4)
 
     def test_velocities(self):
         assert_array_almost_equal(self.u.atoms[0].velocity,
