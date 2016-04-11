@@ -59,7 +59,7 @@ Implementations
 PDB I/O is available in the form of the":ref:`permissive<permissive>`"
 Reader/Writers.
 
-..deprecated:: 0.14.1
+..deprecated:: 0.15.0
 Only available in the form of the ":ref:":ref:`permissive<permissive>`"
 Readers and Writers, see below
 
@@ -1059,14 +1059,14 @@ class PDBWriter(base.Writer):
 class PrimitivePDBReader(PDBReader):
     warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
                   'it is deprecated in favor of the shorter name'
-                  'removal targeted for version 0.15.0',
+                  'removal targeted for version 0.16.0',
                   category=DeprecationWarning)
     format = 'Permissive_PDB'
 
 class PrimitivePDBWriter(PDBWriter):
-        warnings.warn('PrimitivePDBWriter is identical to the Writer,'
+    warnings.warn('PrimitivePDBWriter is identical to the Writer,'
                       'it is deprecated in favor of the shorter name'
-                      'removal targeted for version 0.15.0',
+                      'removal targeted for version 0.16.0',
                       category=DeprecationWarning)
     format = 'Permissive_PDB'
 

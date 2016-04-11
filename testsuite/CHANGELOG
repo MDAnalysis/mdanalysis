@@ -13,9 +13,9 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16 jdetle, orbeckst, jbarnoud, pedrishi, fiona-naughton
+??/??/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
-    - removed known failures from BioPython
+    - removed biopython PDB parser for coordinates and topology (Issue #777)
     - metadata update: link download_url to GitHub releases so that
       Depsy recognizes contributors (issue #749) and added
       @richardjgowers as maintainer

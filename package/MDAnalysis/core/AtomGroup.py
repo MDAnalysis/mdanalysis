@@ -4235,7 +4235,7 @@ class Universe(object):
         .. versionchanged:: 0.11.0
            Added the *is_anchor* and *anchor_name* keywords for finer behavior
            control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
-        .. versionchanged:: 0.14.1
+        .. versionchanged:: 0.15.0
            *permissive* set to ``True`` and set to ``False`` both yield permissive
            PDB readers, writers and parsers
         """
