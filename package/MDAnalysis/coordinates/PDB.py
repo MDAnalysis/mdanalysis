@@ -56,15 +56,13 @@ standard`_.
 Implementations
 ---------------
 
-PDB I/O is available in the form of the":ref:`permissive<permissive>`"
-Reader/Writers.
+PDB I/O is available in the form of the Simple PDB Reader/Writers.
 
 ..deprecated:: 0.15.0
-Only available in the form of the ":ref:":ref:`permissive<permissive>`"
-Readers and Writers, see below
+Readers amd writers solely available in the form of
+Simple Readers and Writers, see below.
 
-.. _permissive:
-Simple (permissive) PDB Reader and Writer
+Simple PDB Reader and Writer
 -----------------------------------------
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and
@@ -132,7 +130,7 @@ Classes
    :members:
 
 
-..deprecated:: 0.14.1
+..deprecated:: 0.15.0
     Setting the flag "permissive_pdb_reader" in :data:`MDAnalysis.core.flags`
     (see :ref:`flags-label`) to ``False``::
 
@@ -736,12 +734,12 @@ class PDBWriter(base.Writer):
 
         Attributes initialized/updated:
 
-        * :attr:`PrimitivePDBWriter.obj` (the entity that provides topology information *and*
+        * :attr:`PDBWriter.obj` (the entity that provides topology information *and*
           coordinates, either a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or a whole
           :class:`~MDAnalysis.core.AtomGroup.Universe`)
-        * :attr:`PrimitivePDBWriter.trajectory` (the underlying trajectory
+        * :attr:`PDBWriter.trajectory` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Reader`)
-        * :attr:`PrimitivePDBWriter.timestep` (the underlying trajectory
+        * :attr:`PDBWriter.timestep` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Timestep`)
 
         Before calling :meth:`write_next_timestep` this method **must** be
@@ -855,14 +853,14 @@ class PDBWriter(base.Writer):
         :Keywords:
           *ts*
              :class:`base.Timestep` object containing coordinates to be written to trajectory file;
-             if ``None`` then :attr:`PrimitivePDBWriter.ts`` is tried.
+             if ``None`` then :attr:`PDBWriter.ts`` is tried.
           *multiframe*
              ``False``: write a single frame (default); ``True`` behave as a trajectory writer
 
         .. Note::
 
            Before using this method with another :class:`base.Timestep` in the *ts*
-           argument, :meth:`PrimitivePDBWriter._update_frame` *must* be called
+           argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
         '''
@@ -1027,7 +1025,7 @@ class PDBWriter(base.Writer):
         Only a single END record is written. Calling END multiple times has no
         effect. Because :meth:`~PDBWriter.close` also calls this
         method right before closing the file it is recommended to *not* call
-        :meth:`~PrimitivePDBWriter.END` explicitly.
+        :meth:`~PDBWriter.END` explicitly.
 
         .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
 
@@ -1057,17 +1055,21 @@ class PDBWriter(base.Writer):
 
 
 class PrimitivePDBReader(PDBReader):
-    warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
-                  'it is deprecated in favor of the shorter name'
-                  'removal targeted for version 0.16.0',
+    def __init__(self, filename, *args, **kwargs):
+        warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
+                  ' it is deprecated in favor of the shorter name'
+                  ' removal targeted for version 0.16.0',
                   category=DeprecationWarning)
+        super(PrimitivePDBReader, self).__init__(filename, *args, **kwargs)
     format = 'Permissive_PDB'
 
 class PrimitivePDBWriter(PDBWriter):
-    warnings.warn('PrimitivePDBWriter is identical to the Writer,'
+    def __init__(self, filename, *args, **kwargs):
+        warnings.warn('PrimitivePDBWriter is identical to the Writer,'
                       'it is deprecated in favor of the shorter name'
-                      'removal targeted for version 0.16.0',
+                      ' removal targeted for version 0.16.0',
                       category=DeprecationWarning)
+        super(PrimitivePDBWriter, self).__init__(filename, *args, **kwargs)
     format = 'Permissive_PDB'
 
 class ExtendedPDBReader(PDBReader):
