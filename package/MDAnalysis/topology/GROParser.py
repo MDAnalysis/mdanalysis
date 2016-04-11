@@ -71,7 +71,7 @@ class GROParser(TopologyReader):
                     charge = guess_atom_charge(name)
                     # segid = "SYSTEM"
                     # ignore coords and velocities, they can be read by coordinates.GRO
-                except:
+                except (ValueError, IndexError):
                     raise IOError("Couldn't read the following line of the .gro file:\n"
                                   "{0}".format(line))
                 else:
