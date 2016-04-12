@@ -32,25 +32,24 @@ from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 class TestRMSD(object):
     def __init__(self):
         shape = (5, 3)
-        self.a = np.arange(np.prod(shape)).reshape(shape)
-        self.b = np.arange(np.prod(shape)).reshape(shape) + 1
+        # vectors with length one
+        ones = np.ones(shape) / np.sqrt(3)
+        self.a = ones * np.arange(1, 6)[:, np.newaxis]
+        self.b = self.a + ones
 
     def test_no_center(self):
         rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=False)
-        assert_equal(rmsd, 1.0)
+        assert_almost_equal(rmsd, 1.0)
 
     def test_center(self):
         rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=True)
-        assert_equal(rmsd, 0.0)
+        assert_almost_equal(rmsd, 0.0)
 
-    @staticmethod
-    def test_list():
-        a = [[0, 1, 2],
-             [3, 4, 5]]
-        b = [[1, 2, 3],
-             [4, 5, 6]]
-        rmsd = MDAnalysis.analysis.rms.rmsd(a, b, center=False)
-        assert_equal(rmsd, 1.0)
+    def test_list(self):
+        rmsd = MDAnalysis.analysis.rms.rmsd(self.a.tolist(),
+                                            self.b.tolist(),
+                                            center=False)
+        assert_almost_equal(rmsd, 1.0)
 
     @staticmethod
     def test_superposition():
