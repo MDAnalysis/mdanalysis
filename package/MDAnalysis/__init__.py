@@ -84,14 +84,14 @@ Calculate the centre of mass of the CA and of all atoms::
 
 Calculate the CA end-to-end distance (in angstroem)::
   >>> import numpy as np
-  >>> coord = ca.coordinates()
+  >>> coord = ca.positions
   >>> v = coord[-1] - coord[0]   # last Ca minus first one
   >>> np.sqrt(np.dot(v, v,))
   10.938133
 
 Define a function eedist():
   >>> def eedist(atoms):
-  ...     coord = atoms.coordinates()
+  ...     coord = atoms.positions
   ...     v = coord[-1] - coord[0]
   ...     return sqrt(dot(v, v,))
   ...

@@ -234,11 +234,11 @@ def phase_cp(universe, seg, i):
     atom4 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i))
     atom5 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i))
 
-    data1 = atom1.coordinates()
-    data2 = atom2.coordinates()
-    data3 = atom3.coordinates()
-    data4 = atom4.coordinates()
-    data5 = atom5.coordinates()
+    data1 = atom1.positions
+    data2 = atom2.positions
+    data3 = atom3.positions
+    data4 = atom4.positions
+    data5 = atom5.positions
 
     r0 = (data1 + data2 + data3 + data4 + data5) * (1.0 / 5.0)
     r1 = data1 - r0

@@ -2420,7 +2420,7 @@ class AtomGroup(object):
         if pbc:
             x = self.pack_into_box(inplace=False)
         else:
-            x = self.coordinates()
+            x = self.positions
         return np.array([x.min(axis=0), x.max(axis=0)])
 
     def bsphere(self, **kwargs):
@@ -2446,7 +2446,7 @@ class AtomGroup(object):
             x = self.pack_into_box(inplace=False)
             centroid = self.center_of_geometry(pbc=True)
         else:
-            x = self.coordinates()
+            x = self.positions
             centroid = self.center_of_geometry(pbc=False)
         R = np.sqrt(np.max(np.sum(np.square(x - centroid), axis=1)))
         return R, centroid
@@ -2590,19 +2590,18 @@ class AtomGroup(object):
             ts = self.universe.trajectory.ts
         return np.array(ts.positions[self.indices], copy=copy, dtype=dtype)
 
-    coordinates = get_positions
-    """Np array of the coordinates.
+    @deprecate(message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
+    def coordinates(self):
+        """Np array of the coordinates.
 
-    .. SeeAlso:: :attr:`~AtomGroup.positions` and :meth:`~AtomGroup.get_positions`
+        .. SeeAlso:: :attr:`~AtomGroup.positions` and :meth:`~AtomGroup.get_positions`
 
-    .. deprecated:: 0.7.6
-       In new scripts use :meth:`AtomGroup.get_positions` preferrably.
-    """
-    # coordinates() should NOT be removed as it has been used in many scripts,
-    # MDAnalysis itself, and in the paper
-
-    coordinates = deprecate(coordinates, 
-                            message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
+        .. deprecated:: 0.7.6
+        In new scripts use :meth:`AtomGroup.get_positions` preferrably.
+        """
+        return self.positions
+        # coordinates() should NOT be removed as it has been used in many scripts,
+        # MDAnalysis itself, and in the paper
 
     @deprecate(message="{}; use `positions` property instead".format(_SIXTEEN_DEPRECATION))
     def set_positions(self, coords, ts=None):
@@ -2634,19 +2633,22 @@ class AtomGroup(object):
             ts = self.universe.trajectory.ts
         ts.positions[self.indices, :] = coords
 
-    positions = property(get_positions, set_positions,
-                         doc="""
-                Coordinates of the atoms in the AtomGroup.
+    @property
+    def positions(self):
+        """Coordinates of the atoms in the AtomGroup.
 
-                The positions can be changed by assigning an array of the appropriate
-                shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
-                the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
-                will move all particles to the origin).
+        The positions can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+        the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
+        will move all particles to the origin).
 
-                For more control use the :meth:`~AtomGroup.get_positions` and
-                :meth:`~AtomGroup.set_positions` methods.
+        .. versionadded:: 0.7.6
+        """
+        return self.universe.trajectory.ts.positions[self.indices, :]
 
-                .. versionadded:: 0.7.6""")
+    @positions.setter
+    def positions(self, coords):
+        self.universe.trajectory.ts.positions[self.indices, :] = coords
 
     @deprecate(message="{}; use `velocities` property instead".format(_SIXTEEN_DEPRECATION))
     def get_velocities(self, ts=None, copy=False, dtype=np.float32):
@@ -2688,8 +2690,9 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
-    velocities = property(get_velocities, set_velocities, doc="""\
-        numpy array of the velocities of the atoms in the group.
+    @property
+    def velocities(self):
+        """numpy array of the velocities of the atoms in the group.
 
         If the trajectory does not contain velocity information then a
         :exc:`~MDAnalysis.NoDataError` is raised.
@@ -2700,7 +2703,18 @@ class AtomGroup(object):
            and :meth:`set_velocities`.
         .. versionchanged:: 0.8
            Became an attribute.
-    """)
+        """
+        try:
+            return self.universe.trajectory.ts.velocities[self.indices]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @velocities.setter
+    def velocities(self, new):
+        try:
+            self.universe.trajectory.ts.velocities[self.indices] = new
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
 
     @deprecate(message="{}; use `forces` property instead".format(_SIXTEEN_DEPRECATION))
     def get_forces(self, ts=None, copy=False, dtype=np.float32):
@@ -2774,19 +2788,30 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
 
-    forces = property(get_forces, set_forces,
-                      doc="""
-                Forces on the atoms in the AtomGroup.
+    @property
+    def forces(self):
+        """Forces on the atoms in the AtomGroup.
 
-                The forces can be changed by assigning an array of the appropriate
-                shape, i.e. either Nx3 to assign individual force or 3, to assign
-                the *same* force to all atoms (e.g. ``ag.forces = array([0,0,0])``
-                will set all forces to (0.,0.,0.)).
+        The forces can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual force or 3, to assign
+        the *same* force to all atoms (e.g. ``ag.forces = array([0,0,0])``
+        will set all forces to (0.,0.,0.)).
 
-                For more control use the :meth:`~AtomGroup.get_forces` and
-                :meth:`~AtomGroup.set_forces` methods.
+        For more control use the :meth:`~AtomGroup.get_forces` and
+        :meth:`~AtomGroup.set_forces` methods.
 
-                .. versionadded:: 0.7.7""")
+        .. versionadded:: 0.7.7"""
+        try:
+            return self.universe.trajectory.ts.forces[self.indices]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
+
+    @forces.setter
+    def forces(self, new):
+        try:
+            self.universe.trajectory.ts.forces[self.indices] = new
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
 
     def transform(self, M):
         r"""Apply homogenous transformation matrix *M* to the coordinates.
@@ -5082,7 +5107,7 @@ def Merge(*args):
         if len(a) == 0:
             raise ValueError("cannot merge empty AtomGroup")
 
-    coords = np.vstack([a.coordinates() for a in args])
+    coords = np.vstack([a.positions for a in args])
     trajectory = MDAnalysis.coordinates.base.Reader(None)
     ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)

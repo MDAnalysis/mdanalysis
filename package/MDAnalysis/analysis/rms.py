@@ -443,7 +443,7 @@ class RMSD(object):
         ref_coordinates_T_64 = ref_coordinates.T.astype(np.float64)
 
         # allocate the array for selection atom coords
-        traj_coordinates = traj_atoms.coordinates().copy()
+        traj_coordinates = traj_atoms.positions.copy()
 
         if self.groupselections_atoms:
             # Only carry out a rotation if we want to calculate secondary
@@ -468,7 +468,7 @@ class RMSD(object):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
             x_com = traj_atoms.center_of_mass().astype(np.float32)
-            traj_coordinates[:] = traj_atoms.coordinates() - x_com
+            traj_coordinates[:] = traj_atoms.positions - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time
 

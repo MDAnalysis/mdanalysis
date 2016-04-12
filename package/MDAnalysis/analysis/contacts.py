@@ -606,7 +606,7 @@ class ContactAnalysis1(object):
 
         # compute reference contacts
         dref = MDAnalysis.lib.distances.distance_array(
-            self.references[0].coordinates(), self.references[1].coordinates())
+            self.references[0].positions, self.references[1].positions)
         self.qref = self.qarray(dref)
         self.nref = self.qref.sum()
 
@@ -682,7 +682,7 @@ class ContactAnalysis1(object):
             for ts in self.universe.trajectory[start:stop:step]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
-                MDAnalysis.lib.distances.distance_array(A.coordinates(), B.coordinates(), result=self.d)
+                MDAnalysis.lib.distances.distance_array(A.positions, B.positions, result=self.d)
                 self.qarray(self.d, out=self.q)
                 n1, q1 = self.qN(self.q, out=self._qtmp)
                 self.qavg += self.q
