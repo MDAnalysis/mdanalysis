@@ -1,5 +1,5 @@
 '''
-run with: python ten2eleven.py -f torsionclasses test_dummy_old_MDA_code.py 
+run with: python ten2sixteen.py -f torsionclasses test_dummy_old_MDA_code.py 
 Author: Tyler Reddy (but effectively a hack of lib2to3/fixes/fix_metaclass.py)
 '''
 
