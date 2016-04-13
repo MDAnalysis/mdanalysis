@@ -260,7 +260,7 @@ class PDBReader(base.Reader):
         with util.openany(filename, 'rt') as pdbfile:
             for i, line in enumerate(pdbfile):
                 line = line.strip()  # Remove extra spaces
-                if len(line) == 0:  # Skip line if empty
+                if not line:  # Skip line if empty
                     continue
                 record = line[:6].strip()
 
@@ -324,7 +324,7 @@ class PDBReader(base.Reader):
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
 
         # No 'MODEL' entries
-        if len(frames) == 0:
+        if not frames:
             frames[0] = 0
 
         self.frames = frames

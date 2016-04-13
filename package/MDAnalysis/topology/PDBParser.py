@@ -100,7 +100,7 @@ class PDBParser(TopologyReader):
             resid_prev = 0  # resid looping hack
             for i, line in enumerate(f):
                 line = line.strip()  # Remove extra spaces
-                if len(line) == 0:  # Skip line if empty
+                if not line:  # Skip line if empty
                     continue
                 record = line[:6].strip()
 
