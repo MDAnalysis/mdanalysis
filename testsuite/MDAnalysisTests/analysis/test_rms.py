@@ -18,9 +18,10 @@ from __future__ import print_function
 from six.moves import range
 
 import MDAnalysis
-import MDAnalysis.analysis.rms
+import MDAnalysis as mda
+from MDAnalysis.analysis import rms, align
 
-from numpy.testing import TestCase, assert_almost_equal, assert_equal, raises
+from numpy.testing import TestCase, assert_almost_equal, raises, assert_
 import numpy as np
 
 import os
@@ -32,34 +33,44 @@ from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 class TestRMSD(object):
     def __init__(self):
         shape = (5, 3)
-        self.a = np.arange(np.prod(shape)).reshape(shape)
-        self.b = np.arange(np.prod(shape)).reshape(shape) + 1
+        # vectors with length one
+        ones = np.ones(shape) / np.sqrt(3)
+        self.a = ones * np.arange(1, 6)[:, np.newaxis]
+        self.b = self.a + ones
+
+        self.u = mda.Universe(PSF, DCD)
+        self.u2 = mda.Universe(PSF, DCD)
+
+        self.p_first = self.u.select_atoms('protein')
+        self.p_last = self.u2.select_atoms('protein')
+
+    def setUp(self):
+        self.u.trajectory[2]
+        self.u2.trajectory[-2]
+        # reset coordinates
+        self.u.trajectory[0]
+        self.u2.trajectory[-1]
 
     def test_no_center(self):
-        rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=False)
-        assert_equal(rmsd, 1.0)
+        rmsd = rms.rmsd(self.a, self.b, center=False)
+        assert_almost_equal(rmsd, 1.0)
 
     def test_center(self):
-        rmsd = MDAnalysis.analysis.rms.rmsd(self.a, self.b, center=True)
-        assert_equal(rmsd, 0.0)
+        rmsd = rms.rmsd(self.a, self.b, center=True)
+        assert_almost_equal(rmsd, 0.0)
 
-    @staticmethod
-    def test_list():
-        a = [[0, 1, 2],
-             [3, 4, 5]]
-        b = [[1, 2, 3],
-             [4, 5, 6]]
-        rmsd = MDAnalysis.analysis.rms.rmsd(a, b, center=False)
-        assert_equal(rmsd, 1.0)
+    def test_list(self):
+        rmsd = rms.rmsd(self.a.tolist(),
+                        self.b.tolist(),
+                        center=False)
+        assert_almost_equal(rmsd, 1.0)
 
-    @staticmethod
-    def test_superposition():
-        u = MDAnalysis.Universe(PSF, DCD)
-        bb = u.atoms.select_atoms('backbone')
+    def test_superposition(self):
+        bb = self.u.atoms.select_atoms('backbone')
         a = bb.positions.copy()
-        u.trajectory[-1]
+        self.u.trajectory[-1]
         b = bb.positions.copy()
-        rmsd = MDAnalysis.analysis.rms.rmsd(a, b, superposition=True)
+        rmsd = rms.rmsd(a, b, superposition=True)
         assert_almost_equal(rmsd, 6.820321761927005)
 
     @staticmethod
@@ -67,12 +78,29 @@ class TestRMSD(object):
     def test_unequal_shape():
         a = np.ones((4, 3))
         b = np.ones((5, 3))
-        MDAnalysis.analysis.rms.rmsd(a, b)
+        rms.rmsd(a, b)
 
     @raises(ValueError)
     def test_wrong_weights(self):
         w = np.ones(2)
-        MDAnalysis.analysis.rms.rmsd(self.a, self.b, w)
+        rms.rmsd(self.a, self.b, w)
+
+    def test_with_superposition_smaller(self):
+        A = self.p_first.positions
+        B = self.p_last.positions
+        rmsd = rms.rmsd(A, B)
+        rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
+        print(rmsd, rmsd_superposition)
+        # by design the super positioned rmsd is smaller
+        assert_(rmsd > rmsd_superposition)
+
+    def test_with_superposition_equal(self):
+        align.alignto(self.p_first, self.p_last)
+        A = self.p_first.positions
+        B = self.p_last.positions
+        rmsd = rms.rmsd(A, B)
+        rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
+        assert_almost_equal(rmsd, rmsd_superposition)
 
 
 class TestRMSF(TestCase):
