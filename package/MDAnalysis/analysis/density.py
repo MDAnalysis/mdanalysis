@@ -80,6 +80,10 @@ Classes and Functions
    :members:
    :inherited-members:
 
+.. deprecated:: 0.15.0
+    The "permissive" flag is not used anymore (and effectively
+    defaults to True); it will be completely removed in 0.16.0.
+
 """
 from __future__ import print_function
 from six.moves import range
@@ -501,7 +505,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
-    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)                    
+    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     for ts in u.trajectory[start:stop:step]:
         if update_selection:
            group = u.select_atoms(atomselection)
@@ -515,8 +519,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-   
-    
+
+
     n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
@@ -727,11 +731,7 @@ class BfactorDensityCreator(object):
         :Arguments:
 
           pdb
-            PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the
-            simpl PDB reader. If the Bio.PDB reader is required, either set
-            the *permissive_pdb_reader* flag to ``False`` in
-            :data:`MDAnalysis.core.flags` or supply a Universe
-            that was created with the `permissive` = ``False`` keyword.
+            PDB file or :class:`MDAnalysis.Universe`;
           atomselection
             selection string (MDAnalysis syntax) for the species to be analyzed
           delta

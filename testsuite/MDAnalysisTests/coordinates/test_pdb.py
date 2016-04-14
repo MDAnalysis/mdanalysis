@@ -23,9 +23,8 @@ from MDAnalysisTests import parser_not_found, tempdir
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
-        # use permissive=False instead of changing the global flag as this
         # can lead to race conditions when testing in parallel
-        self.universe = mda.Universe(RefAdKSmall.filename, permissive=False)
+        self.universe = mda.Universe(RefAdKSmall.filename)
         # 3 decimals in PDB spec
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
@@ -46,10 +45,10 @@ class TestPDBReader(_SingleFrameReader):
 
 
 class _PDBMetadata(TestCase, Ref4e43):
-    permissive = True
+
 
     def setUp(self):
-        self.universe = mda.Universe(self.filename, permissive=self.permissive)
+        self.universe = mda.Universe(self.filename)
 
     def tearDown(self):
         del self.universe
@@ -107,27 +106,6 @@ class _PDBMetadata(TestCase, Ref4e43):
                          err_msg="REMARK line {0} do not match".format(lineno))
 
 
-class TestPrimitivePDBReader_Metadata(_PDBMetadata):
-    permissive = True
-
-
-class TestPrimitivePDBReader(_SingleFrameReader):
-    def setUp(self):
-        self.universe = mda.Universe(PDB_small, permissive=True)
-        # 3 decimals in PDB spec
-        # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-        self.prec = 3
-
-    def test_missing_natoms(self):
-        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
-
-        assert_raises(ValueError, PrimitivePDBReader, 'something.pdb')
-
-    def test_wrong_natoms(self):
-        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
-
-        assert_raises(ValueError, PrimitivePDBReader, PDB_small, n_atoms=4000)
-
 
 class TestExtendedPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -146,26 +124,12 @@ class TestExtendedPDBReader(_SingleFrameReader):
         assert_equal(u[4].resid, 10000, "can't read a five digit resid")
 
 
-class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        # 3 decimals in PDB spec
-        # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-        self.prec = 3
-
-    def test_dimensions(self):
-        assert_almost_equal(self.universe.trajectory.ts.dimensions,
-                            RefAdKSmall.ref_unitcell, self.prec,
-                            "Primitive PDB reader failed to get unitcell "
-                            "dimensions from CRYST1")
-
-
-class TestPrimitivePDBWriter(TestCase):
+class TestPDBWriter(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.universe = mda.Universe(PSF, PDB_small)
+        self.universe2 = mda.Universe(PSF, DCD)
         # 3 decimals in PDB spec
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
@@ -184,10 +148,10 @@ class TestPrimitivePDBWriter(TestCase):
     def test_writer(self):
         "Test writing from a single frame PDB file to a PDB file." ""
         self.universe.atoms.write(self.outfile)
-        u = mda.Universe(PSF, self.outfile, permissive=True)
+        u = mda.Universe(PSF, self.outfile)
         assert_almost_equal(u.atoms.positions,
                             self.universe.atoms.positions, self.prec,
-                            err_msg="Writing PDB file with PrimitivePDBWriter "
+                            err_msg="Writing PDB file with PDBWriter "
                             "does not reproduce original coordinates")
 
     @attr('issue')
@@ -226,7 +190,7 @@ class TestPrimitivePDBWriter(TestCase):
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u = mda.Universe(PSF, PDB_small)
         u.atoms[2000].pos[1] = -999.9995
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
@@ -237,7 +201,7 @@ class TestPrimitivePDBWriter(TestCase):
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u = mda.Universe(PSF, PDB_small)
         # OB: 9999.99951 is not caught by '<=' ?!?
         u.atoms[1000].pos[1] = 9999.9996
         assert_raises(ValueError, u.atoms.write, self.outfile)
@@ -247,7 +211,7 @@ class TestPrimitivePDBWriter(TestCase):
     def test_check_header_title_multiframe(self):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
-        u = mda.Universe(PSF,DCD, permissive=True)
+        u = mda.Universe(PSF,DCD)
         pdb = mda.Writer(self.outfile, multiframe=True)
         protein = u.select_atoms("protein and name CA")
         for ts in u.trajectory[:5]:
@@ -269,7 +233,6 @@ class TestPrimitivePDBWriter(TestCase):
 class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe,
-                                       permissive=True,
                                        guess_bonds=True)
         self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, guess_bonds=True)
@@ -429,9 +392,9 @@ class TestMultiPDBWriter(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.universe = mda.Universe(PSF, PDB_small)
+        self.multiverse = mda.Universe(PDB_multiframe)
+        self.universe2 = mda.Universe(PSF, DCD)
         # 3 decimals in PDB spec
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
@@ -696,7 +659,6 @@ class TestPDBXLSerial(object):
 # Does not implement Reader.remarks, Reader.header, Reader.title,
 # Reader.compounds because the PDB header data in trajectory.metadata are
 # already parsed; should perhaps update the PrimitivePDBReader to do the same.
-# [orbeckst] class TestPDBReader_Metadata(_PDBMetadata): permissive = False
 
 
 class TestPSF_CRDReader(_SingleFrameReader):
@@ -707,8 +669,7 @@ class TestPSF_CRDReader(_SingleFrameReader):
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
-        # mda.core.flags['permissive_pdb_reader'] = False
-        self.universe = mda.Universe(PSF, PDB_small, permissive=False)
+        self.universe = mda.Universe(PSF, PDB_small)
         # 3 decimals in PDB spec
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3

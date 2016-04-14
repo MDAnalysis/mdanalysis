@@ -166,14 +166,9 @@ class _TestTopology(TestCase):
         del self.universe
 
     def test_correct_parser(self):
-        """Check that get_parser returns the intended parser"""
-        try:
-            perm = self.perm
-        except AttributeError:
-            perm = False
-        ret = get_parser_for(self.topology, permissive=perm)
-
-        assert_equal(self.parser, ret)
+      """Check that get_parser returns the intended parser"""
+      ret = get_parser_for(self.topology)
+      assert_equal(self.parser, ret)
 
     def test_parser(self):
         """Check that the parser works as intended,

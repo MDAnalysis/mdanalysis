@@ -1662,20 +1662,6 @@ class TestUniverse(TestCase):
 
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_load_new_strict(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=False)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_new_permissive(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=True)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = MDAnalysis.Universe(PSF, DCD)
 

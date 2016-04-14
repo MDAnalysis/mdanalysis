@@ -386,25 +386,7 @@ _flags = [
             'Bio.PDB': False, 'biopython': False, False: False,
         },
         """
-           Select the default reader for PDB Brookhaven databank files.
-
-           >>> flags['%(name)s'] = value
-
-           The default for the PDB reader is ``True``, which
-           selects the (or "permissive") reader
-           :class:`MDAnalysis.coordinates.PDB.PDBReader`, which
-           essentially just reads ATOM and HETATM lines and puts atoms in a
-           list.
-
-           ``False`` selects the :class:
-           `MDAnalysis.coordinates.PDB.PrimitivePDBReader` which is a copy of
-           the :class:`MDAnalysis.coordinates.PDB.PDBReader` deprecated in favor
-           of its counterpart
-
-           One can manually switch between the two by providing the *permissive*
-           keyword to :class:`MDAnalysis.Universe`.
-
-
+          This flag is deprecated and will be removed in 0.16.0.
         """
     ),
     _Flag(

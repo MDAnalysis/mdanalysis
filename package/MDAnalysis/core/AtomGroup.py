@@ -4194,15 +4194,6 @@ class Universe(object):
              MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
              topology) is always required.
 
-          *permissive*
-             currently only relevant to PDBs, Readers and Writers and Parsers
-             returned by setting ::permisive = False are deprecated in favor
-             of their ::permissive = True counterparts
-             ..deprecated:: 0.15.0
-             Readers amd writers solely available in the form of
-             Simple Readers and Writers, see below. Permissive flag
-             will soon be removed.
-
           *topology_format*
              provide the file format of the topology file; ``None`` guesses it from the file
              extension [``None``]
@@ -4264,9 +4255,9 @@ class Universe(object):
         .. versionchanged:: 0.11.0
            Added the *is_anchor* and *anchor_name* keywords for finer behavior
            control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
-        .. versionchanged:: 0.15.0
-           *permissive* set to ``True`` and set to ``False`` both yield permissive
-           PDB readers, writers and parsers
+        .. deprecated:: 0.15.0
+          The "permissive" flag is not used anymore (and effectively defaults
+           to True); it will be completely removed in 0.16.0.
         """
 
         from ..topology.core import get_parser_for
@@ -4290,7 +4281,7 @@ class Universe(object):
         # Cached stuff is handled using util.cached decorator
         self._cache = dict()
 
-        if len(args) == 0:
+        if not args:
             # create an empty universe
             self._topology = dict()
             self.atoms = AtomGroup([])
@@ -4334,7 +4325,6 @@ class Universe(object):
             perm = kwargs.get('permissive',
                               MDAnalysis.core.flags['permissive_pdb_reader'])
             parser = get_parser_for(self.filename,
-                                    permissive=perm,
                                     format=topology_format)
         try:
             with parser(self.filename, universe=self) as p:
@@ -4824,11 +4814,6 @@ class Universe(object):
              *filename*
                  the coordinate file (single frame or trajectory) *or* a list of
                  filenames, which are read one after another.
-             *permissive*
-                 currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
-                 and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-                 which can be useful for real Protein Databank PDB files. ``None``  selects the
-                 MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
              *format*
                  provide the file format of the coordinate or trajectory file;
                  ``None`` guesses it from the file extension. Note that this
@@ -4850,6 +4835,10 @@ class Universe(object):
            not read by the :class:`~MDAnalysis.coordinates.base.ChainReader` but directly by
            its specialized file format reader, which typically has more features than the
            :class:`~MDAnalysis.coordinates.base.ChainReader`.
+
+        .. deprecated:: 0.15.0
+           The "permissive" flag is not used anymore (and effectively
+           defaults to True); it will be completely removed in 0.16.0.
         """
         if filename is None:
             return
@@ -4864,7 +4853,6 @@ class Universe(object):
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
 
         reader_format = kwargs.pop('format', None)
-        perm = kwargs.get('permissive', MDAnalysis.core.flags['permissive_pdb_reader'])
         reader = None
 
         # Check if we were passed a Reader to use
@@ -4882,7 +4870,6 @@ class Universe(object):
                 reader_format='CHAIN'
             try:
                 reader = get_reader_for(filename,
-                                        permissive=perm,
                                         format=reader_format)
             except TypeError as err:
                 raise TypeError(
