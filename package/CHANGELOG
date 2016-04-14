@@ -44,12 +44,13 @@ Fixes
   * MOL2 files can be written without substructure section (Issue #816)
 
 Changes
-
-  * PDB parsers/readers/writers replaced by permissive counterparts (Issue #777)
+  * Removed sloppy structure builder(Issue #777)
+  * PDB parsers/readers/writers replaced by primitive counterparts (Issue #777)
   * Generalized contact analysis class added. (Issue #702)
 
 Deprecations (Issue #599)
-
+  * Use of PrimitivePDBReader/Writer/Parser deprecated in favor of PDBReader/
+    Writer/Parser (Issue #777)
   * Deprecated all `get_*` and `set_*` methods of Groups.
   * Deprecation warnings for accessing atom attributes from Residue,
     ResidueGroup, Segment, SegmentGroup. Will not be present or will

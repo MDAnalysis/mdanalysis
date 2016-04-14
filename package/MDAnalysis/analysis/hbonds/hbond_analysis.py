@@ -208,7 +208,7 @@ All protein-water hydrogen bonds can be analysed with ::
 
   import MDAnalysis.analysis.hbonds
 
-  u = MDAnalysis.Universe(PSF, PDB, permissive=True)
+  u = MDAnalysis.Universe(PSF, PDB)
   h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname TIP3', distance=3.0, angle=120.0)
   h.run()
 

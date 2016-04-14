@@ -22,13 +22,6 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def tearDown(self):
         del self.universe
 
-    def test_flag_permissive_pdb_reader(self):
-        """test_flag_permissive_pdb_reader: permissive_pdb_reader==True enables
-        primitive PDB reader"""
-        assert_equal(mda.core.flags['permissive_pdb_reader'], True,
-                     "'permissive_pdb_reader' flag should be True as "
-                     "MDAnalysis default")
-
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms,

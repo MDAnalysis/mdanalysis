@@ -59,7 +59,7 @@ Implementations
 PDB I/O is available in the form of the Simple PDB Reader/Writers.
 
 ..deprecated:: 0.15.0
-Readers amd writers solely available in the form of
+Readers and writers solely available in the form of
 Simple Readers and Writers, see below.
 
 Simple PDB Reader and Writer
@@ -131,13 +131,8 @@ Classes
 
 
 ..deprecated:: 0.15.0
-    Setting the flag "permissive_pdb_reader" in :data:`MDAnalysis.core.flags`
-    (see :ref:`flags-label`) to ``False``::
-
-    MDAnalysis.core.flags["permissive_pdb_reader"] = False
-
-    Now yields a placeholder Primitive PDB Reader/Writer that inherits from
-    PDBReader and Writer
+    The "permissive" flag is not used anymore (and effectively defaults to True);
+    it will be completely removed in 0.16.0.
 
 """
 
@@ -331,7 +326,7 @@ class PDBReader(base.Reader):
         self.n_frames = len(frames) if frames else 1
 
     def Writer(self, filename, **kwargs):
-        """Returns a permissive (simple) PDBWriter for *filename*.
+        """Returns a PDBWriter for *filename*.
 
         :Arguments:
           *filename*

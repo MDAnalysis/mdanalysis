@@ -42,17 +42,13 @@ from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
 
-def get_reader_for(filename, permissive=False, format=None):
+def get_reader_for(filename, format=None):
     """Return the appropriate trajectory reader class for *filename*.
 
     Parameters
     ----------
     filename : str
         filename of the input trajectory or coordinate file
-    permissive : bool
-        If set to ``True``, a reader is selected that is more tolerant of the
-        input (currently a deprecated feature only implemented for PDB).
-        [``False``]
     kwargs
         Keyword arguments for the selected Reader class.
 
@@ -68,8 +64,8 @@ def get_reader_for(filename, permissive=False, format=None):
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
-    if format == 'PDB' and permissive:
-        return _READERS['Permissive_PDB']
+    if format == 'PDB':
+        return _READERS['PDB']
     try:
         return _READERS[format]
     except KeyError:
@@ -90,9 +86,7 @@ def reader(filename, **kwargs):
     This function guesses the file format from the extension of *filename* and
     it will throw a :exc:`TypeError` if the extension is not recognized.
 
-    In most cases, no special keyword arguments are necessary. For PDB readers
-    it might be useful to set the *permissive* = ``True`` flag to
-    select a simpler but faster reader.
+    In most cases, no special keyword arguments are necessary.
 
     All other keywords are passed on to the underlying Reader classes; see
     their documentation for details.
@@ -101,10 +95,6 @@ def reader(filename, **kwargs):
     ----------
     filename : str or tuple
         filename (or tuple of filenames) of the input coordinate file
-    permissive : bool
-
-        If set to ``True``, a reader is selected that is more tolerant of the
-        input (currently only implemented for PDB). [``False``]
     kwargs
         Keyword arguments for the selected Reader class.
 
@@ -117,15 +107,17 @@ def reader(filename, **kwargs):
        :class:`~XYZ.XYZReader`.  For single frame formats:
        :class:`~CRD.CRDReader`, and
        :class:`~PDB.PDBReader`, :class:`~GRO.GROReader`,
+
+    .. deprecated:: 0.15.0
+    The "permissive" flag is not used anymore (and effectively
+    defaults to True); it will be completely removed in 0.16.0.
     """
     if isinstance(filename, tuple):
         Reader = get_reader_for(filename[0],
-                                permissive=kwargs.pop('permissive', False),
                                 format=filename[1])
         return Reader(filename[0], **kwargs)
     else:
-        Reader = get_reader_for(filename,
-                                permissive=kwargs.pop('permissive', False))
+        Reader = get_reader_for(filename)
         return Reader(filename, **kwargs)
 
 

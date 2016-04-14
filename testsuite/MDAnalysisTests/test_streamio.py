@@ -337,7 +337,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
 
     def test_PDBReader(self):
         try:
-            u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
+            u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
             raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)

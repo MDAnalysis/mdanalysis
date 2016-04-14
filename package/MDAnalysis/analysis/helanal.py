@@ -466,7 +466,7 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
-def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=None, permissive=False):
+def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=None):
     """Simple HELANAL run on a single frame PDB/GRO.
 
     Computed data are returned as a dict and also logged at level INFO to the
@@ -503,7 +503,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
        *MDAnalysis.analysis.helanal* instead of being printed to stdout.
     """
 
-    universe = MDAnalysis.Universe(pdbfile, permissive=permissive)
+    universe = MDAnalysis.Universe(pdbfile)
     if not (start is None and end is None):
         if start is None:
             start = universe.atoms[0].resid
