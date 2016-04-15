@@ -109,11 +109,13 @@ cdef class AffinityPropagation(object):
                     return None
             
             logging.info("Preference %3.2f: converged in %d iterations" % (preference, iterations))
-            return clusters
-        
+
         else:
             logging.info("Preference %3.2f: could not converge in %d iterations" % (preference, -iterations))
-            return None
+            import warnings
+            warnings.warn("Clustering with preference {0:3.2f} did not fully converge in {1:d} iterations".format(preference, -iterations))
+
+        return clusters
 
     def __call__(self, *args):
         results = self.run(*args)
