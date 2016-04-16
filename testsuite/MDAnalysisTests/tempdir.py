@@ -57,7 +57,7 @@ Might not work on windows when the files are still opened
 
     def __str__(self):
         if self.name:
-            return "temporary directory at: %s" % (self.name,)
+            return "temporary directory at: {}".format(self.name,)
         else:
             return "dissolved temporary directory"
 
