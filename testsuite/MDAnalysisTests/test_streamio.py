@@ -27,10 +27,9 @@ import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import tempdir
 
 import os
-
-import tempdir
 
 
 class TestIsstream(TestCase):

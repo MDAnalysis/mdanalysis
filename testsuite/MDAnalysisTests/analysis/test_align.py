@@ -25,11 +25,10 @@ from numpy.testing import (TestCase, dec,
 import numpy as np
 from nose.plugins.attrib import attr
 
-import tempdir
 from os import path
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA
-from MDAnalysisTests import executable_not_found, parser_not_found
+from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
 
 
 class TestRotationMatrix(object):

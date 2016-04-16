@@ -19,7 +19,6 @@ from six.moves import StringIO
 
 import sys
 import os
-import tempdir
 import logging
 
 from numpy.testing import TestCase, assert_
@@ -28,6 +27,8 @@ from six.moves import range
 
 import MDAnalysis
 import MDAnalysis.lib.log
+
+from MDAnalysisTests import tempdir
 
 
 class TestLogging(TestCase):

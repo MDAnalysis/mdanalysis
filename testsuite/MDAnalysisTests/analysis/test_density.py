@@ -18,7 +18,6 @@ from __future__ import print_function
 from six.moves import zip
 import numpy as np
 import os
-import tempdir
 
 from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
 
@@ -28,7 +27,7 @@ import MDAnalysis as mda
 ## import MDAnalysis.analysis.density
 
 from MDAnalysisTests.datafiles import TPR, XTC
-from MDAnalysisTests import module_not_found
+from MDAnalysisTests import module_not_found, tempdir
 
 
 class TestDensity(TestCase):
@@ -140,6 +139,3 @@ class Test_density_from_Universe(TestCase):
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
             update_selections=True)
-
-
-

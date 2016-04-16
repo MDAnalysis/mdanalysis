@@ -27,10 +27,9 @@ import nose
 from nose.plugins.attrib import attr
 
 import errno
-import tempdir
 
 from MDAnalysisTests.datafiles import PDB_HOLE, XTC_HOLE
-from MDAnalysisTests import executable_not_found
+from MDAnalysisTests import executable_not_found, tempdir
 
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
@@ -110,5 +109,3 @@ class TestHoleModule(TestCase):
     def tearDown(self):
         self._restore_rlimits()
         del self.universe
-
-

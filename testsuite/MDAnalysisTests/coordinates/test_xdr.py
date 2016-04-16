@@ -12,7 +12,6 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
                            assert_almost_equal, assert_raises,
                            assert_array_equal)
-import tempdir
 from unittest import TestCase
 
 
@@ -27,6 +26,7 @@ from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
+from MDAnalysisTests import tempdir
 
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR

@@ -9,7 +9,6 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
                            assert_array_almost_equal,
                            assert_almost_equal, assert_raises, assert_)
-import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
@@ -19,7 +18,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 class TestPDBReader(_SingleFrameReader):
@@ -247,7 +246,7 @@ class TestPrimitivePDBWriter(TestCase):
     def test_check_header_title_multiframe(self):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
-        u = mda.Universe(PSF,DCD, permissive=True) 
+        u = mda.Universe(PSF,DCD, permissive=True)
         pdb = mda.Writer(self.outfile, multiframe=True)
         protein = u.select_atoms("protein and name CA")
         for ts in u.trajectory[:5]:

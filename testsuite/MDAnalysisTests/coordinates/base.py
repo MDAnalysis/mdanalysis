@@ -3,7 +3,6 @@ import numpy as np
 from six.moves import zip, range
 from nose.plugins.attrib import attr
 from unittest import TestCase
-import tempdir
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
                            assert_)
@@ -14,6 +13,7 @@ from MDAnalysis import NoDataError
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
+from MDAnalysisTests import tempdir
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
