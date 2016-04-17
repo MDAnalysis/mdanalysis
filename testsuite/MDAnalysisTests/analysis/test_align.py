@@ -87,9 +87,9 @@ class TestAlign(TestCase):
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.select_atoms('backbone')
-        first_frame = bb.coordinates(copy=True)
+        first_frame = bb.positions
         self.universe.trajectory[-1]
-        last_frame = bb.coordinates()
+        last_frame = bb.positions
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
@@ -121,8 +121,8 @@ class TestAlign(TestCase):
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
-        rmsd = rms.rmsd(self.reference.atoms.coordinates(),
-                        fitted.atoms.coordinates(), superposition=True)
+        rmsd = rms.rmsd(self.reference.atoms.positions,
+                        fitted.atoms.positions, superposition=True)
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame {0:d} of fit does not have "
                             "expected RMSD".format(frame))

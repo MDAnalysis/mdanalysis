@@ -106,9 +106,9 @@ class _TestDistanceArrayDCD(TestCase):
     def test_simple(self):
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         self.trajectory[10]
-        x1 = U.atoms.coordinates(copy=True)
+        x1 = U.atoms.positions
         d = MDAnalysis.lib.distances.distance_array(x0, x1, backend=self.backend)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
@@ -119,9 +119,9 @@ class _TestDistanceArrayDCD(TestCase):
     def test_outarray(self):
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         self.trajectory[10]
-        x1 = U.atoms.coordinates(copy=True)
+        x1 = U.atoms.positions
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
         MDAnalysis.lib.distances.distance_array(x0, x1, result=d, backend=self.backend)
@@ -135,9 +135,9 @@ class _TestDistanceArrayDCD(TestCase):
         # boring with the current dcd as that has no PBC
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         self.trajectory[10]
-        x1 = U.atoms.coordinates(copy=True)
+        x1 = U.atoms.positions
         d = MDAnalysis.lib.distances.distance_array(x0, x1, box=U.coord.dimensions,
                                                     backend=self.backend)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
@@ -173,7 +173,7 @@ class _TestSelfDistanceArrayDCD(TestCase):
     def test_simple(self):
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         d = MDAnalysis.lib.distances.self_distance_array(x0, backend=self.backend)
         N = 3341 * (3341 - 1) / 2
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
@@ -185,7 +185,7 @@ class _TestSelfDistanceArrayDCD(TestCase):
     def test_outarray(self):
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) / 2
         d = np.zeros((N,), np.float64)
@@ -200,7 +200,7 @@ class _TestSelfDistanceArrayDCD(TestCase):
         # boring with the current dcd as that has no PBC
         U = self.universe
         self.trajectory.rewind()
-        x0 = U.atoms.coordinates(copy=True)
+        x0 = U.atoms.positions
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) / 2
         d = MDAnalysis.lib.distances.self_distance_array(x0, box=U.coord.dimensions,
@@ -575,7 +575,7 @@ class _Test_apply_PBC(TestCase):
         from MDAnalysis.lib.distances import apply_PBC
 
         U = MDAnalysis.Universe(PSF, DCD)
-        atoms = U.atoms.coordinates()
+        atoms = U.atoms.positions
         box1 = np.array([2.5, 2.5, 3.5], dtype=np.float32)
         box2 = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
 
@@ -592,7 +592,7 @@ class _Test_apply_PBC(TestCase):
         from MDAnalysis.lib.distances import apply_PBC
 
         U = MDAnalysis.Universe(TRIC)
-        atoms = U.atoms.coordinates()
+        atoms = U.atoms.positions
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 

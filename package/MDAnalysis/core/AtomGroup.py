@@ -69,13 +69,13 @@ changes it "everywhere".
 The same is mostly true for :class:`Residue` instances although they are
 derived from :class:`Atom` instances: all :class:`Atom` objects with the same
 :attr:`Atom.resid` are bundled into a single :class:`Residue` with
-:class:`Residue.id` = *resid*. This means that just changing, say, the residue
+:class:`Residue.resid` = *resid*. This means that just changing, say, the residue
 name with a command such as ::
 
   >>> r = u.select_atoms("resid 99").residues[0]
   >>> print(r)
   <Residue 'ALA', 99>
-  >>> r.name = "UNK"
+  >>> r.resname = "UNK"
   >>> print(r)
   <Residue 'UNK', 99>
   >>> rnew = u.select_atoms("resid 99").residues[0]
@@ -1907,7 +1907,7 @@ class AtomGroup(object):
 
         If *resid* is a sequence of the same length as the :class:`AtomGroup`
         then each :attr:`Atom.resid` is set to the corresponding value together
-        with the :attr:`Residue.id` of the residue the atom belongs to. If
+        with the :attr:`Residue.resid` of the residue the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -1987,7 +1987,7 @@ class AtomGroup(object):
 
         If *resname* is a sequence of the same length as the :class:`AtomGroup`
         then each :attr:`Atom.resname` is set to the corresponding value together
-        with the :attr:`Residue.name` of the residue the atom belongs to. If
+        with the :attr:`Residue.resname` of the residue the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -2012,7 +2012,7 @@ class AtomGroup(object):
 
         If *segid* is a sequence of the same length as the :class:`AtomGroup`
         then each :attr:`Atom.segid` is set to the corresponding value together
-        with the :attr:`Segment.id` of the residue the atom belongs to. If
+        with the :attr:`Segment.segid` of the residue the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -3524,9 +3524,9 @@ class Residue(AtomGroup):
       - ``r['name']`` or ``r[id]`` - returns the atom corresponding to that name
 
     :Data:
-      :attr:`Residue.name`
+      :attr:`Residue.resname`
         Three letter residue name.
-      :attr:`Residue.id`
+      :attr:`Residue.resid`
         Numeric (integer) resid, taken from the topology.
       :attr:`Residue.resnum`
         Numeric canonical residue id (e.g. as used in the PDB structure).
@@ -3763,7 +3763,7 @@ class ResidueGroup(AtomGroup):
         .. versionchanged:: 0.11.0
            Now a property and returns array of length `len(self)`
         """
-        return np.array([r.name for r in self.residues])
+        return np.array([r.resname for r in self.residues])
 
     @property
     @warn_residue_property
@@ -3801,7 +3801,7 @@ class ResidueGroup(AtomGroup):
 
         If *resid* is a sequence of the same length as the :class:`ResidueGroup`
         then each :attr:`Atom.resid` is set to the corresponding value together
-        with the :attr:`Residue.id` of the residue the atom belongs to. If
+        with the :attr:`Residue.resid` of the residue the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -3870,7 +3870,7 @@ class ResidueGroup(AtomGroup):
 
         If *resname* is a sequence of the same length as the :class:`ResidueGroup`
         then each :attr:`Atom.resname` is set to the corresponding value together
-        with the :attr:`Residue.name` of the residue the atom belongs to. If
+        with the :attr:`Residue.resname` of the residue the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -3975,7 +3975,7 @@ class Segment(ResidueGroup):
             # There can be multiple residues with the same name
             r = []
             for res in self.residues:
-                if (res.name == attr):
+                if (res.resname == attr):
                     r.append(res)
             if (len(r) == 0):
                 return super(Segment, self).__getattr__(attr)
@@ -4060,7 +4060,7 @@ class SegmentGroup(ResidueGroup):
 
         If *segid* is a sequence of the same length as the :class:`SegmentGroup`
         then each :attr:`Atom.segid` is set to the corresponding value together
-        with the :attr:`Segment.id` of the segment the atom belongs to. If
+        with the :attr:`Segment.segid` of the segment the atom belongs to. If
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
@@ -4088,7 +4088,7 @@ class SegmentGroup(ResidueGroup):
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
             attr = attr[1:]  # sNxxx only used for python, the name is stored without s-prefix
-        seglist = [segment for segment in self.segments if segment.name == attr]
+        seglist = [segment for segment in self.segments if segment.segid == attr]
         if len(seglist) == 0:
             return super(SegmentGroup, self).__getattr__(attr)
         if len(seglist) > 1:

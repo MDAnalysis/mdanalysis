@@ -316,7 +316,7 @@ class TestAtomGroup(TestCase):
 
     def test_coordinates(self):
         assert_array_almost_equal(
-            self.ag.coordinates()[1000:2000:200],
+            self.ag.positions[1000:2000:200],
             np.array([[3.94543672, -12.4060812, -7.26820087],
                       [13.21632767, 5.879035, -14.67914867],
                       [12.07735443, -9.00604534, 4.09301519],
@@ -580,7 +580,7 @@ class TestAtomGroup(TestCase):
         # Provide arbitrary box
         ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))
         assert_array_almost_equal(
-            ag.coordinates(),
+            ag.positions,
             np.array([[3.94543672, 2.5939188, 2.73179913],
                       [3.21632767, 0.879035, 0.32085133],
                       [2.07735443, 0.99395466, 4.09301519],
@@ -788,7 +788,7 @@ class TestAtomGroup(TestCase):
         pos = ag.positions + 3.14
         ag.positions = pos
         # should work
-        assert_almost_equal(ag.coordinates(), pos,
+        assert_almost_equal(ag.positions, pos,
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
@@ -802,7 +802,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.select_atoms("bynum 12:42")
         pos = ag.get_positions() + 3.14
         ag.set_positions(pos)
-        assert_almost_equal(ag.coordinates(), pos,
+        assert_almost_equal(ag.positions, pos,
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
@@ -1531,7 +1531,7 @@ class _WriteAtoms(TestCase):
     def test_write_atoms(self):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
-        assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
+        assert_array_almost_equal(self.universe.atoms.positions, u2.atoms.positions, self.precision,
                                   err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
     def test_write_empty_atomgroup(self):
@@ -1544,7 +1544,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         CA2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(CA.atoms), "written CA selection does not match original selection")
-        assert_almost_equal(CA2.coordinates(), CA.coordinates(), self.precision,
+        assert_almost_equal(CA2.positions, CA.positions, self.precision,
                             err_msg="CA coordinates do not agree with original")
 
     def test_write_Residue(self):
@@ -1553,7 +1553,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written R206 Residue does not match original ResidueGroup")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="Residue R206 coordinates do not agree with original")
 
     def test_write_ResidueGroup(self):
@@ -1562,7 +1562,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written LEU ResidueGroup does not match original ResidueGroup")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="ResidueGroup LEU coordinates do not agree with original")
 
     def test_write_Segment(self):
@@ -1571,7 +1571,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written s4AKE segment does not match original segment")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
     def test_write_Universe(self):
@@ -1581,7 +1581,7 @@ class _WriteAtoms(TestCase):
         W.close()
         u2 = self.universe_from_tmp()
         assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
-        assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
+        assert_almost_equal(u2.atoms.positions, U.atoms.positions, self.precision,
                             err_msg="written universe 4AKE coordinates do not agree with original")
 
 
