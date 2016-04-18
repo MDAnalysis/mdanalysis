@@ -73,6 +73,32 @@ class TestRMSD(object):
         rmsd = rms.rmsd(a, b, superposition=True)
         assert_almost_equal(rmsd, 6.820321761927005)
 
+    def test_weights(self):
+        weights = np.zeros(len(self.a))
+        weights[0] = 1
+        weights[1] = 1
+        weighted = rms.rmsd(self.a, self.b, weights=weights)
+        firstCoords = rms.rmsd(self.a[:2], self.b[:2])
+        assert_almost_equal(weighted, firstCoords)
+
+    def test_weights_and_superposition_1(self):
+        weights = np.ones(len(self.u.trajectory[0]))
+        weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
+            weights=weights, superposition=True)
+        firstCoords = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
+            superposition=True)
+        assert_almost_equal(weighted, firstCoords, decimal=5)
+
+    def test_weights_and_superposition_2(self):
+        weights = np.zeros(len(self.u.trajectory[0]))
+        weights[:100] = 1
+        weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[-1],
+            weights=weights, superposition=True)
+        firstCoords = rms.rmsd(self.u.trajectory[0][:100], self.u.trajectory[-1][:100],
+            superposition=True)
+        #very close to zero, change significant decimal places to 5
+        assert_almost_equal(weighted, firstCoords, decimal = 5)
+
     @staticmethod
     @raises(ValueError)
     def test_unequal_shape():

@@ -204,7 +204,11 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         return qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, None,
                                             relative_weights)
     else:
-        return np.sqrt(np.sum((a - b) ** 2) / N)
+        if weights is not None:
+            return np.sqrt(np.sum(relative_weights[:, np.newaxis]
+                * (( a - b ) ** 2)) / N)
+        else:
+            return np.sqrt(np.sum((a - b) ** 2) / N)
 
 
 def _process_selection(select):
