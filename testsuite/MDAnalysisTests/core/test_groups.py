@@ -2,6 +2,7 @@ import itertools
 import numpy as np
 from numpy.testing import (
     assert_,
+    assert_equal,
     assert_raises,
 )
 
@@ -118,10 +119,16 @@ class TestGroupSlicing(object):
 class TestGroupAddition(object):
     """Tests for combining Group objects
 
-    A + A -> AG
-    AG + A -> AG
-    A + AG -> AG
-    AG + AG -> AG
+    Contents
+    --------
+    Addition of Groups should work like list addition
+    Addition of Singular objects should make Group
+      A + A -> AG
+      AG + A -> AG
+      A + AG -> AG
+      AG + AG -> AG
+    Cross level addition (eg AG + RG) raises TypeError
+    Sum() should work on an iterable of many same level Components/Groups
 
     SUMMATION
     """
@@ -158,6 +165,9 @@ class TestGroupAddition(object):
             for x, y in itertools.product([group, single], repeat=2):
                 yield self._check_addition, x, y, groupclasses[level]
 
+            for x, y, z in itertools.product([group, single], repeat=3):
+                yield self._check_sum, x, y, z, groupclasses[level]
+
         # Check that you can't add anything together cross-level
         for alevel, blevel in itertools.permutations(levels, 2):
             for typeA, typeB in itertools.product([singles, groups], repeat=2):
@@ -186,6 +196,17 @@ class TestGroupAddition(object):
         assert_(isinstance(newgroup, refclass))
         # Check ordering of created Group
         for x, y in zip(newgroup, itertools.chain(self.itr(a), self.itr(b))):
+            assert_(x == y)
+
+    def _check_sum(self, a, b, c, refclass):
+        # weird hack in radd allows this
+        summed = sum([a, b, c])
+
+        assert_(isinstance(summed, refclass))
+        assert_equal(len(summed),
+            len(self.itr(a)) + len(self.itr(b)) + len(self.itr(c)))
+        for x, y in zip(summed,
+                        itertools.chain(self.itr(a), self.itr(b), self.itr(c))):
             assert_(x == y)
 
     def _check_crosslevel(self, a, b):

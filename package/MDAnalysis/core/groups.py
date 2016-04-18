@@ -1337,6 +1337,28 @@ class ComponentBase(object):
         return self.level.plural(
                 np.concatenate((np.array([self.ix]), o_ix)), self.universe)
 
+    def __radd__(self, other):
+        """Using built-in sum requires supporting 0 + self. If other is
+        anything other 0, an exception will be raised.
+
+        Parameters
+        ----------
+        other : int
+            Other should be 0, or else an exception will be raised.
+
+        Returns
+        -------
+        self
+            Group with elements of `self` reproduced
+
+        """
+        if other == 0:
+            return self.level.plural(np.array([self._ix]), self._u)
+        else:
+            raise TypeError("unsupported operand type(s) for +:"+
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
+
     @classmethod
     def _add_prop(cls, attr):
         """Add attr into the namespace for this class
