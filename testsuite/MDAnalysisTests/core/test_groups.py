@@ -129,8 +129,7 @@ class TestGroupAddition(object):
       AG + AG -> AG
     Cross level addition (eg AG + RG) raises TypeError
     Sum() should work on an iterable of many same level Components/Groups
-
-    SUMMATION
+    Groups contain items "x in y"
     """
     def test_addition(self):
         u = make_Universe()
@@ -167,6 +166,12 @@ class TestGroupAddition(object):
 
             for x, y, z in itertools.product([group, single], repeat=3):
                 yield self._check_sum, x, y, z, groupclasses[level]
+
+            yield self._check_contains, group
+            yield self._check_contains_false, group
+            for olevel in levels:
+                if not level == olevel:
+                    yield self._check_contains_wronglevel, group, groups[olevel]
 
         # Check that you can't add anything together cross-level
         for alevel, blevel in itertools.permutations(levels, 2):
@@ -213,6 +218,15 @@ class TestGroupAddition(object):
         def add(x, y):
             return x + y
         assert_raises(TypeError, add, a, b)
+
+    def _check_contains(self, group):
+        assert_(group[2] in group)
+
+    def _check_contains_false(self, group):
+        assert_(not group[3] in group[:2])
+
+    def _check_contains_wronglevel(self, group, group2):
+        assert_(not group[2] in group2)
 
 
 class TestGroupLevelTransition(object):
