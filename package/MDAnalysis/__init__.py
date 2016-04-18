@@ -162,7 +162,7 @@ logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
 # DeprecationWarnings are loud by default
-warnings.simplefilter('always', DeprecationWarning)
+warnings.simplefilter('once', DeprecationWarning)
 
 
 from . import units
