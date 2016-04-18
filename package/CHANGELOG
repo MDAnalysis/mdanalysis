@@ -42,6 +42,7 @@ Fixes
   * HEADER and TITLE now appear just once in the PDB. (Issue #741) (PR #761)
   * MOL2 files without substructure section can now be read (Issue #816)
   * MOL2 files can be written without substructure section (Issue #816)
+  * GRO files with an incomplete set of velocities can now be read (Issue #820)
 
 Changes
 
