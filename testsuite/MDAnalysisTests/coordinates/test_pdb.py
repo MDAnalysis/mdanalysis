@@ -185,8 +185,8 @@ class TestPrimitivePDBWriter(TestCase):
         "Test writing from a single frame PDB file to a PDB file." ""
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter "
                             "does not reproduce original coordinates")
 
@@ -215,7 +215,7 @@ class TestPrimitivePDBWriter(TestCase):
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="Output PDB should only contain a single frame")
-        assert_almost_equal(u2.atoms.coordinates(), u.atoms.coordinates(),
+        assert_almost_equal(u2.atoms.positions, u.atoms.positions,
                             self.prec, err_msg="Written coordinates do not "
                             "agree with original coordinates from frame %d" %
                             u.trajectory.frame)

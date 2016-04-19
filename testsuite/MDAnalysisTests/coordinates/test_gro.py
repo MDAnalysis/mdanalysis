@@ -207,8 +207,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
     def test_writer(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
 
