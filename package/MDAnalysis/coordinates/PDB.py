@@ -1056,7 +1056,7 @@ class PrimitivePDBReader(PDBReader):
                   ' removal targeted for version 0.16.0',
                   category=DeprecationWarning)
         super(PrimitivePDBReader, self).__init__(filename, *args, **kwargs)
-    format = 'Permissive_PDB'
+
 
 class PrimitivePDBWriter(PDBWriter):
     def __init__(self, filename, *args, **kwargs):
@@ -1065,7 +1065,6 @@ class PrimitivePDBWriter(PDBWriter):
                       ' removal targeted for version 0.16.0',
                       category=DeprecationWarning)
         super(PrimitivePDBWriter, self).__init__(filename, *args, **kwargs)
-    format = 'Permissive_PDB'
 
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.

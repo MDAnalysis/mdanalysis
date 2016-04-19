@@ -68,7 +68,6 @@ class PrimitivePDBParser(PDBParser.PDBParser):
                     ' it is deprecated in favor of the shorter name',
                     category=DeprecationWarning)
         super(PDBParser.PDBParser, self).__init__(*args, **kwargs)
-    format = 'Permissive_PDB'
 
 def _parse_conect(conect):
 

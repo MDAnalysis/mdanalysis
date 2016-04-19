@@ -44,7 +44,9 @@ Fixes
   * MOL2 files can be written without substructure section (Issue #816)
 
 Changes
-  * Removed sloppy structure builder(Issue #777)
+  
+  * Removed sloppy structure builder and all of MDAnalysis.coordinates.pdb 
+   (Issue #777)
   * PDB parsers/readers/writers replaced by primitive counterparts (Issue #777)
   * Generalized contact analysis class added. (Issue #702)
 
