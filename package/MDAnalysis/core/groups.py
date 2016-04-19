@@ -98,10 +98,14 @@ class GroupBase(object):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if not isinstance(item, (int, np.int_)):
-            return self.__class__(self._ix[item], self._u)
-        else:
+        if isinstance(item, (int, np.int_)):
             return self.level.singular(self._ix[item], self._u)
+        else:
+            if isinstance(item, list) and item:  # check for empty list
+                # hack to make lists into numpy arrays
+                # important for boolean slicing
+                item = np.array(item)
+            return self.__class__(self._ix[item], self._u)
 
     def __repr__(self):
         name = self.level.name
@@ -137,12 +141,34 @@ class GroupBase(object):
 
         return self.__class__(np.concatenate([self._ix, o_ix]), self._u)
 
+    def __radd__(self, other):
+        """Using built-in sum requires supporting 0 + self. If other is
+        anything other 0, an exception will be raised.
+
+        Parameters
+        ----------
+        other : int
+            Other should be 0, or else an exception will be raised.
+
+        Returns
+        -------
+        self
+            Group with elements of `self` reproduced
+
+        """
+        if other == 0:
+            return self.__class__(self._ix, self._u)
+        else:
+            raise TypeError("unsupported operand type(s) for +:"+
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
+
     def __contains__(self, other):
         if not other.level == self.level:
             # maybe raise TypeError instead?
             # eq method raises Error for wrong comparisons
             return False
-        return other.index in self._ix
+        return other.ix in self._ix
 
     @property
     def universe(self):
@@ -1271,15 +1297,15 @@ class ComponentBase(object):
     def __lt__(self, other):
         if self.level != other.level:
             raise TypeError("Can't compare different level objects")
-        return self._ix < other._ix
+        return self.ix < other.ix
 
     def __eq__(self, other):
         if self.level != other.level:
             raise TypeError("Can't compare different level objects")
-        return self.index == other.index
+        return self.ix == other.ix
 
     def __hash__(self):
-        return hash(self._ix)
+        return hash(self.ix)
 
     def __add__(self, other):
         """Concatenate the Component with another Component or Group of the
@@ -1303,13 +1329,35 @@ class ComponentBase(object):
         if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
 
-        if isinstance(other._ix, int):
-            o_ix = np.array([other._ix])
+        if isinstance(other.ix, int):
+            o_ix = np.array([other.ix])
         else:
-            o_ix = other._ix
+            o_ix = other.ix
 
         return self.level.plural(
-                np.concatenate((np.array([self._ix]), o_ix)), self._u)
+                np.concatenate((np.array([self.ix]), o_ix)), self.universe)
+
+    def __radd__(self, other):
+        """Using built-in sum requires supporting 0 + self. If other is
+        anything other 0, an exception will be raised.
+
+        Parameters
+        ----------
+        other : int
+            Other should be 0, or else an exception will be raised.
+
+        Returns
+        -------
+        self
+            Group with elements of `self` reproduced
+
+        """
+        if other == 0:
+            return self.level.plural(np.array([self._ix]), self._u)
+        else:
+            raise TypeError("unsupported operand type(s) for +:"+
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
 
     @classmethod
     def _add_prop(cls, attr):
