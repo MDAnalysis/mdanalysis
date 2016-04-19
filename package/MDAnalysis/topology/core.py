@@ -125,9 +125,6 @@ def get_parser_for(filename, format=None):
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
-    if format == 'PDB':
-        return _PARSERS['PDB']
-
     try:
         return _PARSERS[format]
     except KeyError:

@@ -64,8 +64,6 @@ def get_reader_for(filename, format=None):
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
-    if format == 'PDB':
-        return _READERS['PDB']
     try:
         return _READERS[format]
     except KeyError:

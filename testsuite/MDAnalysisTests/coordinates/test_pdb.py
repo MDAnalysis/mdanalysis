@@ -211,7 +211,7 @@ class TestPDBWriter(TestCase):
     def test_check_header_title_multiframe(self):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
-        u = mda.Universe(PSF,DCD)
+        u = mda.Universe(PSF, DCD)
         pdb = mda.Writer(self.outfile, multiframe=True)
         protein = u.select_atoms("protein and name CA")
         for ts in u.trajectory[:5]:

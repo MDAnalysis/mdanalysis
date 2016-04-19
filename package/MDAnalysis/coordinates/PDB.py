@@ -776,7 +776,7 @@ class PDBWriter(base.Writer):
         :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
         The last letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is
-        used as the PDB chainID (but see :meth:`~PrimitivePDBWriter.ATOM` for
+        used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
         details).
 
         :Arguments:
@@ -1056,7 +1056,7 @@ class PrimitivePDBReader(PDBReader):
                   ' removal targeted for version 0.16.0',
                   category=DeprecationWarning)
         super(PrimitivePDBReader, self).__init__(filename, *args, **kwargs)
-    format = 'Permissive_PDB'
+
 
 class PrimitivePDBWriter(PDBWriter):
     def __init__(self, filename, *args, **kwargs):
@@ -1065,7 +1065,6 @@ class PrimitivePDBWriter(PDBWriter):
                       ' removal targeted for version 0.16.0',
                       category=DeprecationWarning)
         super(PrimitivePDBWriter, self).__init__(filename, *args, **kwargs)
-    format = 'Permissive_PDB'
 
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
