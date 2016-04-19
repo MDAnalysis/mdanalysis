@@ -1036,7 +1036,7 @@ class ResidueGroup(object):
         No duplicates are removed.
 
         """
-        return self._u.atoms[self.indices]
+        return self._u.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1199,7 +1199,7 @@ class SegmentGroup(object):
         segment in the SegmentGroup. No duplicates are removed.
 
         """
-        return self._u.atoms[self.indices]
+        return self._u.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1219,7 +1219,7 @@ class SegmentGroup(object):
         No duplicates are removed.
 
         """
-        return self._u.residues[self.resindices]
+        return self._u.residues[np.concatenate(self.resindices)]
 
     @property
     def n_residues(self):
