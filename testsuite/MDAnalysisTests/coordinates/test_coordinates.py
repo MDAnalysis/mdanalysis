@@ -123,12 +123,12 @@ class TestChainReader(TestCase):
 
     def test_frame(self):
         self.trajectory[0]
-        coord0 = self.universe.atoms.coordinates().copy()
+        coord0 = self.universe.atoms.positions.copy()
         # forward to frame where we repeat original dcd again:
         # dcd:0..97 crd:98 dcd:99..196
         self.trajectory[99]
         assert_array_equal(
-            self.universe.atoms.coordinates(), coord0,
+            self.universe.atoms.positions, coord0,
             "coordinates at frame 1 and 100 should be the same!")
 
     def test_time(self):

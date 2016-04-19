@@ -14,8 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
+"""Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
 =====================================================================
 
 :Author: Oliver Beckstein, Joshua Adelman
@@ -70,21 +69,29 @@ two structures, using :func:`rmsd`::
    >>> ref = Universe(PDB_small)
    >>> mobile = Universe(PSF,DCD)
    >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions)
-   18.858259026820352
+   16.282308620224068
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
-   >>> ref0 =  ref.atoms.CA.positions - ref.atoms.CA.center_of_mass()
-   >>> mobile0 = mobile.atoms.CA.positions - mobile.atoms.CA.center_of_mass()
-   >>> rmsd(mobile0, ref0)
-    6.8093965864717951
+   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions, center=True)
+   12.639693690256898
+
+This has only done a translational superposition. If you want to also do a
+rotational superposition use the superposition keyword. This will calculate a
+minimized RMSD between the reference and mobile structure.
+
+   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions,
+   >>>      superposition=True)
+   6.8093965864717951
 
 The rotation matrix that superimposes *mobile* on *ref* while
 minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`
 function ::
 
+   >>> mobile0 = mobile.atoms.CA.positions - mobile.atoms.center_of_mass()
+   >>> ref0 = ref.atoms.CA.positions - ref.atoms.center_of_mass()
    >>> R, rmsd = rotation_matrix(mobile0, ref0)
    >>> print rmsd
    6.8093965864717951
@@ -155,6 +162,7 @@ normal users.
 
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
+
 """
 
 import os.path
@@ -209,8 +217,8 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
-    >>> R = rotation_matrix(A.select_atoms('backbone').coordinates(),
-    >>>                     B.select_atoms('backbone').coordinates())[0]
+    >>> R = rotation_matrix(A.select_atoms('backbone').positions,
+    >>>                     B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
     >>> A.atoms.write("rotated.pdb")
 
@@ -348,10 +356,10 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
         ref_com = ref_atoms.center_of_geometry()
         mobile_com = mobile_atoms.center_of_geometry()
 
-    ref_coordinates = ref_atoms.coordinates() - ref_com
-    mobile_coordinates = mobile_atoms.coordinates() - mobile_com
+    ref_coordinates = ref_atoms.positions - ref_com
+    mobile_coordinates = mobile_atoms.positions - mobile_com
 
-    old_rmsd = rms.rmsd(mobile_atoms.coordinates(), ref_atoms.coordinates())
+    old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates)
 
     R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
@@ -486,10 +494,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     # reference centre of mass system
     ref_com = ref_atoms.center_of_mass()
-    ref_coordinates = ref_atoms.coordinates() - ref_com
+    ref_coordinates = ref_atoms.positions - ref_com
 
     # allocate the array for selection atom coords
-    traj_coordinates = traj_atoms.coordinates().copy()
+    traj_coordinates = traj_atoms.positions.copy()
 
     # RMSD timeseries
     nframes = len(frames)
@@ -508,7 +516,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
         x_com = traj_atoms.center_of_mass().astype(np.float32)
-        traj_coordinates[:] = traj_atoms.coordinates() - x_com
+        traj_coordinates[:] = traj_atoms.positions - x_com
 
         # Need to transpose coordinates such that the coordinate array is
         # 3xN instead of Nx3. Also qcp requires that the dtype be float64

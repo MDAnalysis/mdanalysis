@@ -16,7 +16,7 @@
 
 import MDAnalysis
 import numpy as np
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_almost_equal, TestCase
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import GRO_velocity, PDB_xvf, TRR_xvf

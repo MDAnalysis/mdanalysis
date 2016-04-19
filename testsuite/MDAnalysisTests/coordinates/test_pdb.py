@@ -8,7 +8,7 @@ import os
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
                            assert_array_almost_equal,
-                           assert_almost_equal, assert_raises)
+                           assert_almost_equal, assert_raises, assert_)
 import tempdir
 from unittest import TestCase
 
@@ -185,8 +185,8 @@ class TestPrimitivePDBWriter(TestCase):
         "Test writing from a single frame PDB file to a PDB file." ""
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter "
                             "does not reproduce original coordinates")
 
@@ -215,7 +215,7 @@ class TestPrimitivePDBWriter(TestCase):
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="Output PDB should only contain a single frame")
-        assert_almost_equal(u2.atoms.coordinates(), u.atoms.coordinates(),
+        assert_almost_equal(u2.atoms.positions, u.atoms.positions,
                             self.prec, err_msg="Written coordinates do not "
                             "agree with original coordinates from frame %d" %
                             u.trajectory.frame)
@@ -242,6 +242,28 @@ class TestPrimitivePDBWriter(TestCase):
         u.atoms[1000].pos[1] = 9999.9996
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
+
+    @attr('issue')
+    def test_check_header_title_multiframe(self):
+        """Check whether HEADER and TITLE are written just once in a multi-
+        frame PDB file (Issue 741)"""
+        u = mda.Universe(PSF,DCD, permissive=True) 
+        pdb = mda.Writer(self.outfile, multiframe=True)
+        protein = u.select_atoms("protein and name CA")
+        for ts in u.trajectory[:5]:
+            pdb.write(protein)
+        pdb.close()
+
+        with open(self.outfile) as f:
+            got_header = 0
+            got_title = 0
+            for line in f:
+                if line.startswith('HEADER'):
+                    got_header += 1
+                    assert_(got_header <= 1, "There should be only one HEADER.")
+                elif line.startswith('TITLE'):
+                    got_title += 1
+                    assert_(got_title <= 1, "There should be only one TITLE.")
 
 
 class TestMultiPDBReader(TestCase):
@@ -600,7 +622,7 @@ class TestIncompletePDB(object):
         del self.u
 
     def test_natoms(self):
-        assert len(self.u.atoms) == 3
+        assert_equal(len(self.u.atoms), 3)
 
     def test_coords(self):
         assert_array_almost_equal(self.u.atoms.positions,
@@ -619,16 +641,16 @@ class TestIncompletePDB(object):
                                            dtype=np.float32))
 
     def test_names(self):
-        assert all(self.u.atoms.names == 'CA')
+        assert_(all(self.u.atoms.names == 'CA'))
 
     def test_residues(self):
-        assert len(self.u.residues) == 3
+        assert_equal(len(self.u.residues), 3)
 
     def test_resnames(self):
-        assert len(self.u.atoms.resnames) == 3
-        assert 'VAL' in self.u.atoms.resnames
-        assert 'LYS' in self.u.atoms.resnames
-        assert 'PHE' in self.u.atoms.resnames
+        assert_equal(len(self.u.atoms.resnames), 3)
+        assert_('VAL' in self.u.atoms.resnames)
+        assert_('LYS' in self.u.atoms.resnames)
+        assert_('PHE' in self.u.atoms.resnames)
 
     def test_reading_trajectory(self):
         for ts in self.u.trajectory:

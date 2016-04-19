@@ -240,8 +240,8 @@ class TestWrite_Partial_Timestep(TestCase):
 
         u_ag = mda.Universe(self.outfile)
 
-        assert_array_almost_equal(self.ag.coordinates(),
-                                  u_ag.atoms.coordinates(),
+        assert_array_almost_equal(self.ag.positions,
+                                  u_ag.atoms.positions,
                                   self.prec,
                                   err_msg="Writing AtomGroup timestep failed.")
 

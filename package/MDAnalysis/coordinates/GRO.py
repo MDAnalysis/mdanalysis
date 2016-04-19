@@ -130,11 +130,14 @@ class GROReader(base.SingleFrameReader):
             # (dependent upon the GRO file precision)
             first_atomline = grofile.readline()
             cs = first_atomline[25:].find('.') + 1
-            has_velocities = first_atomline[20:].count('.') > 3
+
+            # Always try, and maybe add them later
+            velocities = np.zeros((n_atoms, 3), dtype=np.float32)
 
             self.ts = ts = self._Timestep(n_atoms,
-                                          velocities=has_velocities,
                                           **self._ts_kwargs)
+
+            missed_vel = False
 
             grofile.seek(0)
             for pos, line in enumerate(grofile, start=-2):
@@ -144,13 +147,19 @@ class GROReader(base.SingleFrameReader):
                     continue
                 if pos < 0:
                     continue
-                for i in range(3):
-                    ts._pos[pos, i] = float(line[20 + cs*i: 20 + cs*(i+1)])
 
-                if not has_velocities:
-                    continue
-                for i, j in enumerate(range(3, 6)):
-                    ts._velocities[pos, i] = float(line[20+cs*j:20+cs*(j+1)])
+                ts._pos[pos] = [line[20 + cs*i:20 + cs*(i+1)] for i in range(3)]
+                try:
+                    velocities[pos] = [line[20 + cs*i:20 + cs*(i+1)] for i in range(3, 6)]
+                except ValueError:
+                    # Remember that we got this error
+                    missed_vel = True
+
+        if np.any(velocities):
+            ts.velocities = velocities
+            if missed_vel:
+                warnings.warn("Not all velocities were present.  "
+                              "Unset velocities set to zero.")
 
         self.ts.frame = 0  # 0-based frame number
 

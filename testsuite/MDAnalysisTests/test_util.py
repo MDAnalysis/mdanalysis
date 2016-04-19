@@ -531,22 +531,22 @@ class TestFixedwidthBins(object):
     def test_keys(self):
         ret = util.fixedwidth_bins(0.5, 1.0, 2.0)
         for k in ['Nbins', 'delta', 'min', 'max']:
-            assert k in ret
+            assert_(k in ret)
 
     def test_VE(self):
         assert_raises(ValueError, util.fixedwidth_bins, 0.1, 5.0, 4.0)
 
     def test_usage_1(self):
         ret = util.fixedwidth_bins(0.1, 4.0, 5.0)
-        assert ret['Nbins'] == 10
-        assert ret['delta'] == 0.1
-        assert ret['min'] == 4.0
-        assert ret['max'] == 5.0
+        assert_equal(ret['Nbins'], 10)
+        assert_equal(ret['delta'], 0.1)
+        assert_equal(ret['min'], 4.0)
+        assert_equal(ret['max'], 5.0)
 
     def test_usage_2(self):
         ret = util.fixedwidth_bins(0.4, 4.0, 5.0)
-        assert ret['Nbins'] == 3
-        assert ret['delta'] == 0.4
+        assert_equal(ret['Nbins'], 3)
+        assert_equal(ret['delta'], 0.4)
         assert_almost_equal(ret['min'], 3.9)
         assert_almost_equal(ret['max'], 5.1)
 
@@ -603,24 +603,24 @@ class TestGuessFormat(object):
         """Check that get_ext works"""
         a, b = util.get_ext(fn)
 
-        assert a == 'file'
-        assert b == f.lower()
+        assert_equal(a, 'file')
+        assert_equal(b, f.lower())
 
     def _check_compressed(self, f, fn):
         """Check that format suffixed by compressed extension works"""
         a = util.format_from_filename_extension(fn)
 
-        assert a == f
+        assert_equal(a, f)
 
     def _check_guess_format(self, f, fn):
         a = util.guess_format(fn)
 
-        assert a == f
+        assert_equal(a, f)
 
     def _check_get_parser(self, fn, P):
         a = mda.topology.core.get_parser_for(fn)
 
-        assert a == P
+        assert_equal(a, P)
 
     def _check_get_parser_invalid(self, fn):
         assert_raises(ValueError, mda.topology.core.get_parser_for, fn)
@@ -628,7 +628,7 @@ class TestGuessFormat(object):
     def _check_get_reader(self, fn, R):
         a = mda.coordinates.core.get_reader_for(fn)
 
-        assert a == R
+        assert_equal(a, R)
 
     def _check_get_reader_invalid(self, fn):
         assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)

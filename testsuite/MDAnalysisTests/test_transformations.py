@@ -137,7 +137,7 @@ class _RotationMatrix(object):
 
 class TestRotationMatrixNP(_RotationMatrix):
     f = staticmethod(t._py_rotation_matrix)
-        
+
 class TestRotationMatrixCy(_RotationMatrix):
     f = staticmethod(t.rotation_matrix)
 
@@ -297,8 +297,11 @@ def test_shear_from_matrix():
     # direct = np.random.random(3) - 0.5
     # point = np.random.random(3) - 0.5
     # normal = np.cross(direct, np.random.random(3))
+    # In this random configuration the test will fail about 0.05% of all times.
+    # Then we hit some edge-cases of the algorithm. The edge cases for these
+    # values are slightly different for the linalg library used (MKL/LAPACK).
     # So here are some of my random numbers
-    angle = 2.8965075413405783
+    angle = 2.8969075413405783
     direct = np.array([-0.31117458, -0.41769518, -0.01188556])
     point = np.array([-0.0035982, -0.40997482,  0.42241425])
     normal = np.cross(direct, np.array([ 0.08122421,  0.4747914 ,  0.19851859]))
@@ -587,7 +590,7 @@ class _QuaternionSlerp(object):
 
 class TestQuaternionSlerpNP(_QuaternionSlerp):
     f = staticmethod(t._py_quaternion_slerp)
-        
+
 class TestQuaternionSlerpCy(_QuaternionSlerp):
     f = staticmethod(t.quaternion_slerp)
 

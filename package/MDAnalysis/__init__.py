@@ -84,14 +84,14 @@ Calculate the centre of mass of the CA and of all atoms::
 
 Calculate the CA end-to-end distance (in angstroem)::
   >>> import numpy as np
-  >>> coord = ca.coordinates()
+  >>> coord = ca.positions
   >>> v = coord[-1] - coord[0]   # last Ca minus first one
   >>> np.sqrt(np.dot(v, v,))
   10.938133
 
 Define a function eedist():
   >>> def eedist(atoms):
-  ...     coord = atoms.coordinates()
+  ...     coord = atoms.positions
   ...     v = coord[-1] - coord[0]
   ...     return sqrt(dot(v, v,))
   ...
@@ -139,7 +139,14 @@ __all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
 import logging
 import warnings
 
+logger = logging.getLogger("MDAnalysis.__init__")
+
 from .version import __version__
+try:
+    from .authors import __authors__
+except ImportError:
+    logger.info('Could not find authors.py, __authors__ will be empty.')
+    __authors__ = []
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -155,7 +162,7 @@ logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
 # DeprecationWarnings are loud by default
-warnings.simplefilter('always', DeprecationWarning)
+warnings.simplefilter('once', DeprecationWarning)
 
 
 from . import units
