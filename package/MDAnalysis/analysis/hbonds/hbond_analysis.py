@@ -916,15 +916,15 @@ class HydrogenBondAnalysis(object):
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1 = h.pos - d.pos
-        v2 = h.pos - a.pos
+        v1 = h.position - d.position
+        v2 = h.position - a.position
         if np.all(v1 == v2):
             return 0.0
         return np.rad2deg(angle(v1, v2))
 
     def calc_eucl_distance(self, a1, a2):
         """Calculate the Euclidean distance between two atoms. """
-        return norm(a2.pos - a1.pos)
+        return norm(a2.position - a1.position)
 
     def generate_table(self):
         """Generate a normalised table of the results.

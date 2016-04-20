@@ -49,6 +49,7 @@ __all__ = [
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "GRO_incomplete_vels",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "PDB_xlserial",
@@ -155,6 +156,7 @@ PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
+GRO_incomplete_vels = resource_filename(__name__, 'data/grovels.gro')
 GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')

@@ -290,7 +290,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
             if trajectory.time > finish:
                 break
 
-        ca_positions = ca.coordinates()
+        ca_positions = ca.positions
         twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
             main_loop(ca_positions, ref_axis=ref_axis)
 
@@ -515,7 +515,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
 
     twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
-        main_loop(ca.coordinates(), ref_axis=ref_axis)
+        main_loop(ca.positions, ref_axis=ref_axis)
 
     #TESTED- origins are correct
     #print current_origin

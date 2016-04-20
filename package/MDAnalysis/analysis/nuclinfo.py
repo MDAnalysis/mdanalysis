@@ -135,7 +135,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     wc_dist = universe.select_atoms("(segid {0!s} and resid {1!s} and name {2!s}) "
                                     "or (segid {3!s} and resid {4!s} and name {5!s}) "
                                     .format(seg1, i, a1, seg2, bp, a2))
-    wc = mdamath.norm(wc_dist[0].pos - wc_dist[1].pos)
+    wc = mdamath.norm(wc_dist[0].position - wc_dist[1].position)
     return wc
 
 
@@ -168,7 +168,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     c2o2_dist = universe.select_atoms("(segid {0!s} and resid {1!s} and name {2!s}) "
                                       "or (segid {3!s} and resid {4!s} and name {5!s})"
                                       .format(seg1, i, a1, seg2, bp, a2))
-    c2o2 = mdamath.norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
+    c2o2 = mdamath.norm(c2o2_dist[0].position - c2o2_dist[1].position)
     return c2o2
 
 
@@ -208,7 +208,7 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     no_dist = universe.select_atoms("(segid {0!s} and resid {1!s} and name {2!s}) "
                                     "or (segid {3!s} and resid {4!s} and name {5!s}) "
                                     .format(seg1, i, a1, seg2, bp, a2))
-    major = mdamath.norm(no_dist[0].pos - no_dist[1].pos)
+    major = mdamath.norm(no_dist[0].position - no_dist[1].position)
     return major
 
 
@@ -234,11 +234,11 @@ def phase_cp(universe, seg, i):
     atom4 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i))
     atom5 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i))
 
-    data1 = atom1.coordinates()
-    data2 = atom2.coordinates()
-    data3 = atom3.coordinates()
-    data4 = atom4.coordinates()
-    data5 = atom5.coordinates()
+    data1 = atom1.positions
+    data2 = atom2.positions
+    data3 = atom3.positions
+    data4 = atom4.positions
+    data5 = atom5.positions
 
     r0 = (data1 + data2 + data3 + data4 + data5) * (1.0 / 5.0)
     r1 = data1 - r0

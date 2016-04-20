@@ -226,8 +226,8 @@ class TestDCDWriter(TestCase):
         w = mda.Universe(PSF, self.outfile)
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="coordinates do not match")
 
@@ -242,8 +242,8 @@ class TestDCDWriter(TestCase):
         assert_equal(w.trajectory.n_frames, 1,
                      "with_statement: single frame trajectory has wrong "
                      "number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="with_statement: coordinates do not match")
 
@@ -287,8 +287,8 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            xtc.atoms.coordinates(),
-            dcd.atoms.coordinates(),
+            xtc.atoms.positions,
+            dcd.atoms.positions,
             3,
             err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
 
@@ -304,16 +304,16 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
             dcd.trajectory.frame))
         xtc.trajectory[3]
         dcd.trajectory[3]
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
             dcd.trajectory.frame))
