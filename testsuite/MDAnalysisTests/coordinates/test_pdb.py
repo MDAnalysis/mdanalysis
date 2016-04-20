@@ -149,11 +149,12 @@ class TestPDBWriter(TestCase):
     def test_writer(self):
         "Test writing from a single frame PDB file to a PDB file." ""
         self.universe.atoms.write(self.outfile)
-        u = mda.Universe(PSF, self.outfile)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
-                            err_msg="PDBReader does not read correct
-                            coordinates")
+        u = mda.Universe(PSF, self.outfile, permissive=True)
+        assert_almost_equal(u.atoms.positions,
+              self.universe.atoms.positions,
+              self.prec, err_msg="Writing PDB file with PrimitivePDBWriter "
+              "does not reproduce original coordinates")
+
 
     @attr('issue')
     def test_write_single_frame_Writer(self):

@@ -4181,6 +4181,14 @@ class Universe(object):
        :attr:`anchor_name` were added to support the pickling/unpickling of
        :class:`AtomGroup`.
        Deprecated :meth:`selectAtoms` in favour of :meth:`select_atoms`.
+
+    .. versionchanged:: 0.15.0
+        Can read multi-frame PDB files with the :class:
+        `~MDAnalysis.coordinates.PDB.PDBReader`.
+        Deprecated :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader` in
+        favor of :class:`~MDAnalysis.coordinates.PDB.PDBReader`.
+
+
     """
 
     def __init__(self, *args, **kwargs):

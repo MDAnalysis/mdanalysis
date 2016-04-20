@@ -776,7 +776,7 @@ class PDBWriter(base.Writer):
         :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
         The last letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is
-        used as the PDB chainID (but see :meth:`~PrimitivePDBWriter.ATOM` for
+        used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
         details).
 
         :Arguments:
