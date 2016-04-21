@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -41,12 +41,8 @@ The following table lists the currently supported topology formats.
                                  :mod:`MDAnalysis.topology.CRDParser`
 
    Brookhaven [#a]_  pdb         a simplified PDB format (as used in MD simulations)
-                                 is read by default; the full format can be read by
-                                 supplying the `permissive=False` flag to
-                                 :class:`MDAnalysis.Universe`;
-                                 :mod:`MDAnalysis.topology.PrimitivePDBParser` and
-                                 :mod:`MDAnalysis.topology.PDBParser`
-
+                                 is read by default
+                                 
    XPDB [#a]_        pdb         Extended PDB format (can use 5-digit residue
                                  numbers). To use, specify the format "XPBD"
                                  explicitly:
