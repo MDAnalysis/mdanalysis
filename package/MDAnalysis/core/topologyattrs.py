@@ -20,6 +20,7 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 Common TopologyAttrs used by most topology parsers.
 
 """
+import six
 from six.moves import zip
 from collections import defaultdict
 import itertools
@@ -32,8 +33,22 @@ from .topologyobjects import TopologyGroup
 from . import selection
 from . import flags
 
+from . import _TOPOLOGYATTRS 
 
-class TopologyAttr(object):
+
+class _TopologyAttrmeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            attrname = classdict['attrname']
+        except KeyError:
+            pass
+        else:
+            _TOPOLOGYATTRS[attrname] = cls
+
+
+class TopologyAttr(six.with_metaclass(_TopologyAttrmeta)):
     """Base class for Topology attributes.
 
     .. note::   This class is intended to be subclassed, and mostly amounts to a
@@ -233,6 +248,13 @@ class AtomAttr(TopologyAttr):
     attrname = 'atomattrs'
     singular = 'atomattr'
     target_levels = ['atom']
+
+    def _to_json(self):
+        return self.values.tolist()
+
+    @classmethod
+    def _from_json(cls, values):
+        return cls(np.array(values))
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -864,6 +886,13 @@ class ResidueAttr(TopologyAttr):
     target_levels = ['residue']
     per_object = 'residue'
 
+    def _to_json(self):
+        return self.values.tolist()
+
+    @classmethod
+    def _from_json(cls, values):
+        return cls(np.array(values))
+
     def get_atoms(self, ag):
         rix = self.top.tt.atoms2residues(ag._ix)
         return self.values[rix]
@@ -959,6 +988,13 @@ class SegmentAttr(TopologyAttr):
     target_levels = ['segment']
     per_object = 'segment'
 
+    def _to_json(self):
+        return self.values.tolist()
+
+    @classmethod
+    def _from_json(cls, values):
+        return cls(np.array(values))
+
     def get_atoms(self, ag):
         six = self.top.tt.atoms2segments(ag._ix)
         return self.values[six]
@@ -1044,6 +1080,13 @@ class Bonds(AtomAttr):
 
     def __len__(self):
         return len(self._bondDict)
+
+    def _to_json(self):
+        return {'values': self.values, 'types': self.types}
+
+    @classmethod
+    def _from_json(cls, values):
+        return cls(values=values['values'], types=values['types'])
 
     @property
     @cached('bd')

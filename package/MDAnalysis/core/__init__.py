@@ -86,6 +86,8 @@ import six
 
 __all__ = ['AtomGroup', 'Selection', 'Timeseries']
 
+# Registry of TopologyAttrs
+_TOPOLOGYATTRS = {}
 
 # set up flags for core routines (more convoluted than strictly necessary but should
 # be clean to add more flags if needed)

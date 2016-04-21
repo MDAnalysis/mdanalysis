@@ -134,6 +134,9 @@ class Universe(object):
         if isinstance(args[0], Topology):
             self._topology = args[0]
             self.filename = None
+
+            if len(coordinatefile) == 0:
+                coordinatefile = None
         else:
             self.filename = args[0]
             topology_format = kwargs.pop('topology_format', None)
@@ -154,8 +157,8 @@ class Universe(object):
                     # or if file is known as a topology & coordinate file, use that
                     if fmt is None:
                         fmt = util.guess_format(self.filename)
-                    if (fmt in MDAnalysis.coordinates._trajectory_readers
-                        and fmt in MDAnalysis.topology._topology_parsers):
+                    if (fmt in MDAnalysis.coordinates._READERS
+                        and fmt in MDAnalysis.topology._PARSERS):
                         coordinatefile = self.filename
                 if len(coordinatefile) == 0:
                     coordinatefile = None

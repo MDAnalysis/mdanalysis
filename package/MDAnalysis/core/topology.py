@@ -18,6 +18,8 @@ Topology object --- :mod:`MDAnalysis.core.topology'
 ===================================================================
 
 """
+import json
+
 import numpy as np
 
 from ..lib.mdamath import one_to_many_pointers
@@ -348,3 +350,64 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+
+    def to_json(self, filename):
+        """Write out Topology to JSON form.
+
+        Parameters
+        ----------
+        filename : str
+            File to write.
+
+        """
+        jstruct = {'n_atoms': self.n_atoms,
+                   'n_residues': self.n_residues,
+                   'n_segments': self.n_segments,
+                   'atoms->residues': self.tt.AR.tolist(),
+                   'residues->segments': self.tt.RS.tolist(),
+                   'topattrs': dict()}
+
+        # TODO: add warning that could not serialize some topology attributes
+        for topattr in self.attrs:
+
+            # these don't hold any data of their own
+            if isinstance(topattr, (Atomindices, Resindices, Segindices)):
+                continue
+
+            try:
+                jstruct['topattrs'][topattr.attrname] = topattr._to_json()
+            except AttributeError:
+                pass
+
+        # write out
+        with open(filename, 'w') as f:
+            json.dump(jstruct, f)
+
+    @classmethod
+    def from_json(cls, filename):
+        """Generate Topology from JSON form.
+
+        """
+        from . import _TOPOLOGYATTRS
+
+        with open(filename, 'r') as f:
+            jstruct = json.load(f)
+
+        attrs = []
+        for attrname, values in jstruct['topattrs'].items():
+            # TODO: add warning that could not deserialize a topology attribute
+            try:
+                topattr = _TOPOLOGYATTRS[attrname]
+            except KeyError:
+                pass
+
+            attrs.append(topattr._from_json(values))
+
+        top = cls(n_atoms=jstruct['n_atoms'],
+                  n_res=jstruct['n_residues'],
+                  n_seg=jstruct['n_segments'],
+                  attrs=attrs,
+                  atom_resindex=np.array(jstruct['atoms->residues']),
+                  residue_segindex=np.array(jstruct['residues->segments']))
+
+        return top
