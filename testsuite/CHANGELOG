@@ -23,6 +23,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
       AUTHORS file (Issue #784)
     - Removed all bare assert (Issue #724)
     - added tests for GRO format
+    - added tempdir module
 
 02/28/16 manuel.nuno.melo
   * 0.14.0
@@ -60,7 +61,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - MDAnalysis and MDAnalysisTests packages MUST have the same
       release number (they need to stay in sync); MDAnalysisTests
       will NOT run if a release mismatch is detected
-    - see Issue #87 and 
+    - see Issue #87 and
       https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 
@@ -69,7 +70,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
   * 0.7.4
 
     - Split off test data trajectories and structures from
-      MDAnalaysis/tests/data into separate package. (Issue 28) 
+      MDAnalaysis/tests/data into separate package. (Issue 28)
 
     - Numbering matches the earliest MDAnalysis release for which the data is
       needed. Any later releases of MDAnalysis will also use these test data

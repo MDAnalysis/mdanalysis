@@ -3,11 +3,11 @@ import os
 
 from numpy.testing import (assert_almost_equal, assert_equal)
 from unittest import TestCase
-import tempdir
 
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall)
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PQR)
+from MDAnalysisTests import tempdir
 
 
 class TestPQRReader(_SingleFrameReader):

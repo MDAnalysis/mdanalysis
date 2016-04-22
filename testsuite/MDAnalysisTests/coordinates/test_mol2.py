@@ -15,13 +15,12 @@
 #
 from six.moves import range
 
-import tempdir
 import os
 from numpy.testing import (
     assert_equal,assert_raises, assert_array_equal,
     assert_array_almost_equal, TestCase,
     assert_,
-)     
+)
 
 from MDAnalysisTests.datafiles import (
     mol2_molecules, mol2_molecule, mol2_broken_molecule,
@@ -29,6 +28,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
+from MDAnalysisTests import tempdir
 
 
 class TestMol2(TestCase):

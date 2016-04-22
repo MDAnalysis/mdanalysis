@@ -21,7 +21,7 @@ from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from numpy.testing import assert_equal, TestCase
 
 import os
-import tempdir
+from MDAnalysisTests import tempdir
 
 
 class TestPDBQT(TestCase):

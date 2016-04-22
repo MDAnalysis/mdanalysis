@@ -5,13 +5,14 @@ import MDAnalysis as mda
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
                            assert_)
-import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
 from MDAnalysis.tests.datafiles import LAMMPScnt
+from MDAnalysisTests import tempdir
+
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader

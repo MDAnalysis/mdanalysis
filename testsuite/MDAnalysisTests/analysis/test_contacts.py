@@ -27,24 +27,22 @@ import nose
 from nose.plugins.attrib import attr
 
 import os
-import tempdir
 
 from MDAnalysisTests.datafiles import (
-    PSF, 
-    DCD, 
-    contacts_villin_folded, 
+    PSF,
+    DCD,
+    contacts_villin_folded,
     contacts_villin_unfolded,
     contacts_file,
 )
 
-from MDAnalysisTests import executable_not_found, parser_not_found
-
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
     """
         Reference implementation for testing
-    """    
+    """
     # reference groups A and B from selection strings
     refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
 
@@ -83,7 +81,7 @@ class TestContactAnalysis1(TestCase):
 
     def tearDown(self):
         del self.universe, self.trajectory
-        del self.folded, self.unfolded  
+        del self.folded, self.unfolded
 
     def _run_ContactAnalysis1(self, **runkwargs):
         sel_basic = "(resname ARG or resname LYS) and (name NH* or name NZ)"
@@ -177,7 +175,7 @@ class TestContactAnalysis1(TestCase):
 
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
-        
+
         results = zip(*best_hummer_q(f, u, sel, sel))[1]
 
         assert_almost_equal(zip(*q.timeseries)[1], results)
@@ -195,6 +193,6 @@ class TestContactAnalysis1(TestCase):
 
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
-        
+
         results = zip(*best_hummer_q(f, u, sel, sel)) [1]
-        assert_almost_equal(zip(*q.timeseries)[1], results)        
+        assert_almost_equal(zip(*q.timeseries)[1], results)
