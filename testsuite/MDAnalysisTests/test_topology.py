@@ -1000,12 +1000,6 @@ class RefPDB(object):
     ref_n_atoms = 3341
     ref_numresidues = 214
 
-
-class RefPDB_Perm(RefPDB):
-    perm = True
-    parser = MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser
-
-
 class TestPDB(_TestTopology, RefPDB):
     """Testing PDB topology parsing (PrimitivePDB)"""
     @staticmethod
@@ -1040,10 +1034,6 @@ class TestPDB(_TestTopology, RefPDB):
         """
         with self.parser(PDB_conect) as p:
             p.parse()
-
-
-class TestPDB_Perm(_TestTopology, RefPDB_Perm):
-    pass
 
 
 class RefXPDB(object):
