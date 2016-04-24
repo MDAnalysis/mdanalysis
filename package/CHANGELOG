@@ -36,6 +36,7 @@ Enhancements
   * Added read-only property giving Universe init kwargs (Issue #292)
 
 Fixes
+
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
   * test_shear_from_matrix doesn't fail for MKL builds anymore (Issue #757)
@@ -45,11 +46,17 @@ Fixes
   * GRO files with an incomplete set of velocities can now be read (Issue #820)
 
 Changes
-
   * Generalized contact analysis class `Contacts` added. (Issue #702)
+  * Removed Bio.PDBParser and sloppy structure builder and all of
+    MDAnalysis.coordinates.pdb (Issue #777)
+  * PDB parsers/readers/writers replaced by "permissive"/"primitive"
+    counterparts (formerly known as PrimitivePDBReader); the
+    'permissive' keyword for Universe is now ignored and only the
+    native MDAnalysis PDBReader is being used (Issue #777)
 
 Deprecations (Issue #599)
-
+  * Use of PrimitivePDBReader/Writer/Parser deprecated in favor of PDBReader/
+    Writer/Parser (Issue #777)
   * Deprecated all `get_*` and `set_*` methods of Groups.
   * Deprecation warnings for accessing atom attributes from Residue,
     ResidueGroup, Segment, SegmentGroup. Will not be present or will

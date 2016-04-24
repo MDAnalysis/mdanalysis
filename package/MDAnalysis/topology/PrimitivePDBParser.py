@@ -35,7 +35,7 @@ numbers up to 99,999.
 .. SeeAlso::
 
    * :mod:`MDAnalysis.topology.ExtendedPDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
+   * :class:`MDAnalysis.coordinates.PDB.PDBReader`
    * :class:`MDAnalysis.core.AtomGroup.Universe`
 
 Classes
@@ -45,149 +45,32 @@ Classes
    :members:
    :inherited-members:
 
+..deprecated:: 0.15.0
+    PDBParser has been replaced with PrimitivePDBParser.
 """
+
 from __future__ import absolute_import, print_function
 
 import numpy as np
 import warnings
 
+from . import PDBParser
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_element
 from ..lib.util import openany
 from .base import TopologyReader
 
 
-class PrimitivePDBParser(TopologyReader):
-    """Parser that obtains a list of atoms from a standard PDB file.
 
-    See Also
-    --------
-    :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
-
-    .. versionadded:: 0.8
-    """
-    format = 'Permissive_PDB'
-
-    def parse(self):
-        """Parse atom information from PDB file *filename*.
-
-        Returns
-        -------
-        MDAnalysis internal *structure* dict
-
-        See Also
-        --------
-        The *structure* dict is defined in `MDAnalysis.topology` and the file
-        is read with :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-
-        """
-        structure = {}
-
-        atoms = self._parseatoms()
-        structure['atoms'] = atoms
-
-        bonds = self._parsebonds(atoms)
-        structure['bonds'] = bonds
-
-        return structure
-
-    def _parseatoms(self):
-        iatom = 0
-        atoms = []
-
-        with openany(self.filename) as f:
-            resid_prev = 0  # resid looping hack
-            for i, line in enumerate(f):
-                line = line.strip()  # Remove extra spaces
-                if len(line) == 0:  # Skip line if empty
-                    continue
-                record = line[:6].strip()
-
-                if record.startswith('END'):
-                    break
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    try:
-                        serial = int(line[6:11])
-                    except ValueError:
-                        # serial can become '***' when they get too high
-                        self._wrapped_serials = True
-                        serial = None
-                    name = line[12:16].strip()
-                    altLoc = line[16:17].strip()
-                    resName = line[17:21].strip()
-                    # empty chainID is a single space ' '!
-                    chainID = line[21:22].strip()
-                    if self.format == "XPDB":  # fugly but keeps code DRY
-                        # extended non-standard format used by VMD
-                        resSeq = int(line[22:27])
-                        resid = resSeq
-                    else:
-                        resSeq = int(line[22:26])
-                        resid = resSeq
-
-                        while resid - resid_prev < -5000:
-                            resid += 10000
-                        resid_prev = resid
-                        # insertCode = _c(27, 27, str)  # not used
-                        # occupancy = float(line[54:60])
-                    try:
-                        tempFactor = float(line[60:66])
-                    except ValueError:
-                        tempFactor = 0.0
-                    segID = line[66:76].strip()
-                    element = line[76:78].strip()
-
-                    segid = segID.strip() or chainID.strip() or "SYSTEM"
-
-                    elem = guess_atom_element(name)
-
-                    atomtype = element or elem
-                    mass = get_atom_mass(elem)
-                    # charge = guess_atom_charge(name)
-                    charge = 0.0
-
-                    atom = Atom(iatom, name, atomtype, resName, resid,
-                                segid, mass, charge,
-                                bfactor=tempFactor, serial=serial,
-                                altLoc=altLoc, universe=self._u,
-                                resnum=resSeq)
-                    iatom += 1
-                    atoms.append(atom)
-
-        return atoms
-
-    def _parsebonds(self, atoms):
-        # Could optimise this by saving lines in the main loop
-        # then doing post processing after all Atoms have been read
-        # ie do one pass through the file only
-        # Problem is that in multiframe PDB, the CONECT is at end of file,
-        # so the "break" call happens before bonds are reached.
-
-        # If the serials wrapped, this won't work
-        if hasattr(self, '_wrapped_serials'):
-            warnings.warn("Invalid atom serials were present, bonds will not"
-                          " be parsed")
-            return tuple([])
-
-        # Mapping between the atom array indicies a.index and atom ids
-        # (serial) in the original PDB file
-        mapping = dict((a.serial, a.index) for a in atoms)
-
-        bonds = set()
-        with openany(self.filename, "r") as f:
-            lines = (line for line in f if line[:6] == "CONECT")
-            for line in lines:
-                atom, atoms = _parse_conect(line.strip())
-                for a in atoms:
-                    bond = tuple([mapping[atom], mapping[a]])
-                    bonds.add(bond)
-
-        bonds = tuple(bonds)
-
-        return bonds
-
+class PrimitivePDBParser(PDBParser.PDBParser):
+    def __init__(self, *args, **kwargs):
+        warnings.warn('PrimitivePDBParser is identical to the PDBParser,'
+                    ' it is deprecated in favor of the shorter name',
+                    category=DeprecationWarning)
+        super(PDBParser.PDBParser, self).__init__(*args, **kwargs)
 
 def _parse_conect(conect):
+
     """parse a CONECT record from pdbs
 
     Parameters
