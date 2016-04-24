@@ -8,7 +8,6 @@ from numpy.testing import (assert_equal, assert_almost_equal, dec,
                            assert_array_almost_equal, assert_raises,
                            )
 from unittest import TestCase
-import tempdir
 
 from MDAnalysisTests.datafiles import (
     GRO, GRO_velocity, GRO_large,
@@ -16,6 +15,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests import tempdir
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -302,7 +302,7 @@ class TestGROWriterVels(object):
         u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
-        
+
         assert_array_almost_equal(u.atoms.velocities,
                                   u2.atoms.velocities)
 

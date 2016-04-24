@@ -21,7 +21,7 @@ Extended PDB topology parser
 
 This topology parser uses a PDB file to build a minimum internal structure
 representation (list of atoms). The only difference from
-:mod:`~MDAnalysis.topology.PrimitivePDBParser` is that this parser reads a
+:mod:`~MDAnalysis.topology.PDBParser` is that this parser reads a
 non-standard PDB-like format in which residue numbers can be five digits
 instead of four.
 
@@ -37,7 +37,7 @@ handle such residue numbers.
 
 .. SeeAlso::
 
-   * :mod:`MDAnalysis.topology.PrimitivePDBParser`
+   * :mod:`MDAnalysis.topology.PDBParser`
    * :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
    * :class:`MDAnalysis.core.AtomGroup.Universe`
 
@@ -51,10 +51,10 @@ Classes
 """
 from __future__ import absolute_import
 
-from . import PrimitivePDBParser
+from . import PDBParser
 
 
-class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
+class ExtendedPDBParser(PDBParser.PDBParser):
     """Parser that obtains a list of atoms from an non-standard "extended" PDB file.
 
     Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue

@@ -21,11 +21,10 @@ import MDAnalysis.analysis.gnm
 from numpy.testing import (TestCase, assert_equal, assert_almost_equal)
 import numpy as np
 
-import tempdir
 from nose.plugins.attrib import attr
 
 from MDAnalysisTests.datafiles import GRO, XTC
-
+from MDAnalysisTests import tempdir
 
 class TestGNM(TestCase):
     def setUp(self):
@@ -133,4 +132,3 @@ class TestGNM(TestCase):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.0, -3.0])
-

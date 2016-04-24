@@ -25,9 +25,9 @@ from numpy.testing import TestCase, assert_almost_equal, raises, assert_
 import numpy as np
 
 import os
-import tempdir
 
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
+from MDAnalysisTests import tempdir
 
 
 class TestRMSD(object):

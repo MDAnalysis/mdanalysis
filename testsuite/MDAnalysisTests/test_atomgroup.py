@@ -34,10 +34,9 @@ from numpy.testing import (TestCase, dec, raises, assert_equal,
 from nose.plugins.attrib import attr
 
 import os
-import tempdir
 import itertools
 
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 class TestAtom(TestCase):
@@ -1663,20 +1662,6 @@ class TestUniverse(TestCase):
 
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_load_new_strict(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=False)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_new_permissive(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=True)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1732,12 +1717,12 @@ class TestUniverse(TestCase):
         assert_(u.kwargs['fake_kwarg'] is True)
 
         # initialize new universe from pieces of existing one
-        u2 = MDAnalysis.Universe(u.filename, u.trajectory.filename, 
+        u2 = MDAnalysis.Universe(u.filename, u.trajectory.filename,
                                  **u.kwargs)
-        
+
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
-    
+
 class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
