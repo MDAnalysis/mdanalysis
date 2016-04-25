@@ -44,6 +44,8 @@ Fixes
   * MOL2 files without substructure section can now be read (Issue #816)
   * MOL2 files can be written without substructure section (Issue #816)
   * GRO files with an incomplete set of velocities can now be read (Issue #820)
+ * Fixed Atom.position/velocity/force returning a view onto Timestep array
+   (Issue #755)
 
 Changes
   * Generalized contact analysis class `Contacts` added. (Issue #702)

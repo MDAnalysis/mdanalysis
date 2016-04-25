@@ -229,7 +229,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
-        u.atoms[2000].pos[1] = -999.9995 * 10  # nm -> A
+        u.atoms[2000].position = -999.9995 * 10  # nm -> A
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -242,7 +242,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
-        u.atoms[1000].pos[1] = 9999.9999 * 10
+        u.atoms[1000].position = 9999.9999 * 10
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -253,7 +253,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
-        u.atoms[1000].pos[1] = 9999.9999
+        u.atoms[1000].position = 9999.9999
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
