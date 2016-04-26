@@ -228,19 +228,19 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
     Parameters
     ----------
 
-        tasks : iterator of int of length 2
-    Given a triangular matrix, this worker will calculate RMSD
-    values from element tasks[0] to tasks[1]. Since the matrix
-    is triangular, the trm_indeces matrix automatically
-    calculates the corrisponding i,j matrix indices.
-    The matrix is written as an array in a row-major
-    order (see the TriangularMatrix class for details).
+    tasks : iterator of int of length 2
+        Given a triangular matrix, this function will calculate RMSD
+        values from element tasks[0] to tasks[1]. Since the matrix
+        is triangular, the trm_indeces matrix automatically
+        calculates the corrisponding i,j matrix indices.
+        The matrix is written as an array in a row-major
+        order (see the TriangularMatrix class for details).
 
-    If fit_coords and fit_masses are specified, the structures
-    will be superimposed before calculating RMSD, and fit_coords and fit_masses
-    will be used to place both structures at their center of mass and 
-    compute the rotation matrix. In this case, both fit_coords and fit_masses
-    must be specified.
+        If fit_coords and fit_masses are specified, the structures
+        will be superimposed before calculating RMSD, and fit_coords and fit_masses
+        will be used to place both structures at their center of mass and 
+        compute the rotation matrix. In this case, both fit_coords and fit_masses
+        must be specified.
 
     coords : numpy.array
         Array of the ensemble coordinates
@@ -265,10 +265,6 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
         each worker in a parallel calculation.
         '''
 
-    print coords
-    print fit_coords
-    print masses
-    print fit_masses
 
     if fit_coords is None and fit_masses is None:
         for i, j in trm_indeces(tasks[0], tasks[1]):
