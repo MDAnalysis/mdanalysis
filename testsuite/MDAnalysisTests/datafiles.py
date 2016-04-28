@@ -112,11 +112,13 @@ __all__ = [
     "COORDINATES_TRR",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
-    "GRO_empty_atom", "GRO_missing_atomname" # for testing GROParser exception raise
+    "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
+    "ENT" #for testing ENT file extension
 ]
 
 from pkg_resources import resource_filename
 
+ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 

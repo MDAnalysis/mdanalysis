@@ -40,7 +40,7 @@ The following table lists the currently supported topology formats.
                                  either standard or EXTended format;
                                  :mod:`MDAnalysis.topology.CRDParser`
 
-   Brookhaven [#a]_  pdb         a simplified PDB format (as used in MD simulations)
+   Brookhaven [#a]_  pdb/ent     a simplified PDB format (as used in MD simulations)
                                  is read by default
                                  
    XPDB [#a]_        pdb         Extended PDB format (can use 5-digit residue

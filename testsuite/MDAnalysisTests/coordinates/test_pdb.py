@@ -16,10 +16,9 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial, ALIGN)
+                                       INC_PDB, PDB_xlserial, ALIGN, ENT)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
-
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -42,6 +41,12 @@ class TestPDBReader(_SingleFrameReader):
             self.universe.trajectory.ts.dimensions, RefAdKSmall.ref_unitcell,
             self.prec,
             "PDBReader failed to get unitcell dimensions from CRYST1")
+
+    def test_ENT(self):
+        from MDAnalysis.coordinates.PDB import PDBReader
+        self.universe = mda.Universe(ENT)
+        assert_(isinstance(self.universe.trajectory, PDBReader),
+            "failed to choose PDBReader")
 
 
 class _PDBMetadata(TestCase, Ref4e43):

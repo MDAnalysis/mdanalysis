@@ -1,0 +1,9 @@
+HEADER    RIBONUCLEASE INHIBITOR                  09-MAY-94   1BTA              
+ATOM      1  N   LYS A   1      -8.655   5.770   8.371  1.00  1.40           N  
+ATOM      2  CA  LYS A   1      -7.542   5.187   9.163  1.00  0.52           C  
+ATOM      3  C   LYS A   1      -6.210   5.619   8.561  1.00  0.39           C  
+ATOM      4  O   LYS A   1      -6.156   6.468   7.693  1.00  0.33           O  
+ATOM      5  CB  LYS A   1      -7.641   3.666   9.159  1.00  1.53           C  
+TER       6      LYS A   1                                                     
+MASTER       97    1    0    4    3    0    0    6 1434    1    0    7          
+END                                                                             
