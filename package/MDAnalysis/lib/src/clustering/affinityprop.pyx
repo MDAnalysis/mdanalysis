@@ -38,7 +38,7 @@ cdef class AffinityPropagation(object):
     """ 
     Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:
 	
-	Clustering by Passing Messages Between Data Points. [PDF] [BibTeX]
+	Clustering by Passing Messages Between Data Points.
 	Brendan J. Frey and Delbert Dueck, University of Toronto
 	Science 315, 972–976, February 2007 
 

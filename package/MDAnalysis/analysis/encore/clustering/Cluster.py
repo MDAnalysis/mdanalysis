@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Ensemble representation --- :mod:`MDAnalysis.analysis.ensemble.ensemble`
+Ensemble representation --- :mod:`MDAnalysis.analysis.encore.clustering.Cluster`
 =====================================================================
 
 The module contains the Cluster and ClusterCollection classes which are

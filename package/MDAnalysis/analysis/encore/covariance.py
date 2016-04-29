@@ -26,59 +26,54 @@ an ensemble of structures.
 :Copyright: GNU Public License v3
 :Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
-.. versionadded:: 0.14.0
+.. versionadded:: 0.15.0
 """
 
 import numpy as np
 
-class EstimatorML(object):
+def ml_covariance_estimator(coordinates, reference_coordinates=None):
     """
     Standard maximum likelihood estimator of the covariance matrix.
     The generated object acts as a functor.
+
+    Parameters
+    ----------
+
+    coordinates : numpy.array
+        Flattened array of coordiantes
+
+    reference_coordinates : numpy.array
+        Optional reference to use instead of mean
+
+    Returns
+    -------
+
+    cov_mat : numpy.array
+        Estimate of  covariance matrix
+
     """
-    @staticmethod
-    def calculate(coordinates, reference_coordinates=None):
-        """
-        Parameters
-        ----------
 
-        coordinates : numpy.array
-            Flattened array of coordiantes
+    if reference_coordinates is not None:
 
-        reference_coordinates : numpy.array
-            Optional reference to use instead of mean
+        # Offset from reference
+        coordinates_offset = coordinates - reference_coordinates
 
-        Returns
-        -------
+    else:
+        # Normal covariance calculation: distance to the average
+        coordinates_offset = coordinates - np.average(coordinates, axis=0)
 
-        cov_mat : numpy.array
-            Estimate of  covariance matrix
+    # Calculate covariance manually
+    coordinates_cov = np.zeros((coordinates.shape[1],
+                                coordinates.shape[1]))
+    for frame in coordinates_offset:
+        coordinates_cov += np.outer(frame, frame)
+    coordinates_cov /= coordinates.shape[0]
 
-        """
+    return coordinates_cov
 
-        if reference_coordinates is not None:
-
-            # Offset from reference
-            coordinates_offset = coordinates - reference_coordinates
-
-        else:
-            # Normal covariance calculation: distance to the average
-            coordinates_offset = coordinates - np.average(coordinates, axis=0)
-
-        # Calculate covariance manually
-        coordinates_cov = np.zeros((coordinates.shape[1],
-                                    coordinates.shape[1]))
-        for frame in coordinates_offset:
-            coordinates_cov += np.outer(frame, frame)
-        coordinates_cov /= coordinates.shape[0]
-
-        return coordinates_cov
-
-
-    __call__ = calculate
-
-
-class EstimatorShrinkage(object):
+def shrinkage_covariance_estimator( coordinates, 
+                                    reference_coordinates=None, 
+                                    shrinkage_parameter=None):
     """
     Shrinkage estimator of the covariance matrix using the method described in
 
@@ -90,109 +85,93 @@ class EstimatorShrinkage(object):
     Ledoit on his website:
     http://www.ledoit.net/ole2_abstract.htm
 
-    The generated object acts as a functor.
+    Parameters
+    ----------
 
+    coordinates : numpy.array
+        Flattened array of coordinates
+
+    reference_coordinates: numpy.array
+        Optional reference to use instead of mean
+
+    shrinkage_parameter: None or float
+        Optional shrinkage parameter
+
+    Returns
+    --------
+
+    cov_mat : nump.array
+        Covariance matrix
     """
 
-    def __init__(self, shrinkage_parameter=None):
-        """
-        Constructor.
+    x = coordinates
+    t = x.shape[0]
+    n = x.shape[1]
 
-        Parameters
-        ----------
+    mean_x = np.average(x, axis=0)
 
-        shrinkage_parameter : float
-            Makes it possible to set the shrinkage parameter explicitly,
-            rather than having it estimated automatically.
-        """
-        self.shrinkage_parameter = shrinkage_parameter
+    # Use provided coordinates as "mean" if provided
+    if reference_coordinates is not None:
+        mean_x = reference_coordinates
 
-    def calculate(self, coordinates, reference_coordinates=None):
-        """
+    x = x - mean_x
+    xmkt = np.average(x, axis=1)
 
-        Parameters
-        ----------
+    # Call maximum likelihood estimator (note the additional column)
+    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0) \
+        * (t-1)/float(t)
 
-        coordinates : numpy.array
-            Flattened array of coordinates
-        reference_coordinates: numpy.array
-            Optional reference to use instead of mean
+    # Split covariance matrix into components
+    covmkt = sample[0:n, n]
+    varmkt = sample[n, n]
+    sample = sample[:n, :n]
 
-        Returns
-        --------
+    # Prior
+    prior = np.outer(covmkt, covmkt)/varmkt
+    prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
 
-        cov_mat : nump.array
-            Covariance matrix
-        """
+    # If shrinkage parameter is not set, estimate it
+    if shrinkage_parameter is None:
 
-        x = coordinates
-        t = x.shape[0]
-        n = x.shape[1]
+        # Frobenius norm
+        c = np.linalg.norm(sample - prior, ord='fro')**2
 
-        mean_x = np.average(x, axis=0)
+        y = x**2
+        p = 1/float(t)*np.sum(np.dot(np.transpose(y), y))\
+            - np.sum(np.sum(sample**2))
+        rdiag = 1/float(t)*np.sum(np.sum(y**2))\
+            - np.sum(np.diag(sample)**2)
+        z = x * np.repeat(xmkt[:, np.newaxis], n, axis=1)
+        v1 = 1/float(t) * np.dot(np.transpose(y), z) \
+            - np.repeat(covmkt[:, np.newaxis], n, axis=1)*sample
+        roff1 = (np.sum(
+            v1*np.transpose(
+                np.repeat(
+                    covmkt[:, np.newaxis], n, axis=1)
+                )
+            )/varmkt -
+                 np.sum(np.diag(v1)*covmkt)/varmkt)
+        v3 = 1/float(t)*np.dot(np.transpose(z), z) - varmkt*sample
+        roff3 = (np.sum(v3*np.outer(covmkt, covmkt))/varmkt**2 -
+                 np.sum(np.diag(v3)*covmkt**2)/varmkt**2)
+        roff = 2*roff1-roff3
+        r = rdiag+roff
 
-        # Use provided coordinates as "mean" if provided
-        if reference_coordinates is not None:
-            mean_x = reference_coordinates
+        # Shrinkage constant
+        k = (p-r)/c
+        shrinkage_parameter = max(0, min(1, k/float(t)))
 
-        x = x - mean_x
-        xmkt = np.average(x, axis=1)
+    # calculate covariance matrix
+    sigma = shrinkage_parameter*prior+(1-shrinkage_parameter)*sample
 
-        # Call maximum likelihood estimator (note the additional column)
-        sample = EstimatorML()(np.hstack([x, xmkt[:, np.newaxis]]), 0) \
-            * (t-1)/float(t)
+    return sigma
 
-        # Split covariance matrix into components
-        covmkt = sample[0:n, n]
-        varmkt = sample[n, n]
-        sample = sample[:n, :n]
 
-        # Prior
-        prior = np.outer(covmkt, covmkt)/varmkt
-        prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
-
-        # If shrinkage parameter is not set, estimate it
-        if self.shrinkage_parameter is None:
-
-            # Frobenius norm
-            c = np.linalg.norm(sample - prior, ord='fro')**2
-
-            y = x**2
-            p = 1/float(t)*np.sum(np.dot(np.transpose(y), y))\
-                - np.sum(np.sum(sample**2))
-            rdiag = 1/float(t)*np.sum(np.sum(y**2))\
-                - np.sum(np.diag(sample)**2)
-            z = x * np.repeat(xmkt[:, np.newaxis], n, axis=1)
-            v1 = 1/float(t) * np.dot(np.transpose(y), z) \
-                - np.repeat(covmkt[:, np.newaxis], n, axis=1)*sample
-            roff1 = (np.sum(
-                v1*np.transpose(
-                    np.repeat(
-                        covmkt[:, np.newaxis], n, axis=1)
-                    )
-                )/varmkt -
-                     np.sum(np.diag(v1)*covmkt)/varmkt)
-            v3 = 1/float(t)*np.dot(np.transpose(z), z) - varmkt*sample
-            roff3 = (np.sum(v3*np.outer(covmkt, covmkt))/varmkt**2 -
-                     np.sum(np.diag(v3)*covmkt**2)/varmkt**2)
-            roff = 2*roff1-roff3
-            r = rdiag+roff
-
-            # Shrinkage constant
-            k = (p-r)/c
-            self.shrinkage_parameter = max(0, min(1, k/float(t)))
-
-        # calculate covariance matrix
-        sigma = self.shrinkage_parameter*prior+(1-self.shrinkage_parameter)*sample
-
-        return sigma
-
-    __call__ = calculate
 
 
 def covariance_matrix(ensemble,
-                      selection="all",
-                      estimator=EstimatorShrinkage(),
+                      selection="name CA",
+                      estimator=shrinkage_covariance_estimator,
                       mass_weighted=True,
                       reference=None):
     """
@@ -248,13 +227,16 @@ def covariance_matrix(ensemble,
 
     sigma = estimator(coordinates, reference_coordinates)
 
+
     # Optionally correct with mass-weighting
     if mass_weighted:
         # Calculate mass-weighted covariance matrix
+
         if selection:
             masses = np.repeat(ensemble.select_atoms(selection).masses, 3)
         else:
             masses = np.repeat(ensemble.atoms.masses, 3)
+
         mass_matrix = np.sqrt(np.identity(len(masses))*masses)
         sigma = np.dot(mass_matrix, np.dot(sigma, mass_matrix))
 

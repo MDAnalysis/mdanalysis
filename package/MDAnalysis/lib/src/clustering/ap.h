@@ -20,10 +20,6 @@ int trmIndex(int, int);
 
 int sqmIndex(int, int, int);
 
-float pwmax(float, float);
-
-float pwmin(float, float);
-
 float min(float*, int);
 
 float max(float*, int);

@@ -27,14 +27,6 @@ inline int sqmIndex(int colsn, int row, int col) { // array index for square mat
 	return row*colsn + col;
 }
 
-inline float pwmax(float x, float y) { //pairwise min
-	return x > y ? x : y;
-}
-
-inline float pwmin(float x, float y) { //pairwise max
-	return x < y ? x : y;
-}
-
 float min(float * values, int length) { //array min
 	float min = values[0];
 	for (int i=1;i<length;i++) {
@@ -137,8 +129,8 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
 	// Update r
 
 		for (int i=0;i<n;i++) {
-			max1 = -DBL_MAX;
-			max2 = -DBL_MAX;
+			max1 = -FLT_MAX;
+			max2 = -FLT_MAX;
 			for (int j=0;j<n;j++) {
 				sqm_idx = sqmIndex(n,i,j);
 				idx = trmIndex(i,j);

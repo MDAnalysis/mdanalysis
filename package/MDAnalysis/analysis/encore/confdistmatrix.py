@@ -29,7 +29,7 @@ available.
 :Copyright: GNU Public License v3
 :Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
-.. versionadded:: 0.14.0
+.. versionadded:: 0.15.0
 
 """
 
@@ -69,22 +69,25 @@ def conformational_distance_matrix(ensemble,
         values. See set_rmsd_matrix_elements for an example.
 
     pairwise_align : bool
-        Whether to perform pairwise alignment between conformations
+        Whether to perform pairwise alignment between conformations. 
+        Default is True (do the superimposition)
 
     mass_weighted : bool
         Whether to perform mass-weighted superimposition and metric
-        calculation
+        calculation. Default is True.
 
     metadata : bool
-        Whether to build a metadata dataset for the calculated matrix
+        Whether to build a metadata dataset for the calculated matrix.
+        Default is True.
 
     ncores : int
-        Number of cores to be used for parallel calculation (default is 1)
+        Number of cores to be used for parallel calculation 
+        Default is 1.
 
     Returns
     -------
 
-    conf_dist_matrix` : encore.utils.TriangularMatrix object
+    conf_dist_matrix : encore.utils.TriangularMatrix object
         Conformational distance matrix in triangular representation.
 
     """
@@ -124,8 +127,6 @@ def conformational_distance_matrix(ensemble,
     rmsd_coordinates = ensemble.trajectory.timeseries(
             ensemble.select_atoms(selection),
             format='fac')
-
-    print "AA", rmsd_coordinates
 
     if pairwise_align:
         if superimposition_selection:

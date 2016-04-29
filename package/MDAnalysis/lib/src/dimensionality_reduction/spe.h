@@ -30,30 +30,6 @@ int cmp_ivwrapper(const void*, const void*);
 
 int nearest_neighbours(double*, int, int);
 
-double CkNNStochasticProximityEmbedding(
-        double*,
-        double*,
-        int,
-        int,
-        int,
-        double,
-        double,
-        int,
-        int,
-        int); 
-
-double CkNeighboursStochasticProximityEmbedding(
-	double*,
-        double*,
-        double,
-        int,
-        int,
-        int,
-        double,
-        double,
-        int,
-        int);
-
 double CStochasticProximityEmbedding(
         double*,
         double*,

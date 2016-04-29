@@ -295,7 +295,7 @@ class TestEncore(TestCase):
 
     @dec.slow
     def test_hes(self):
-        results, details = encore.hes([self.ens1, self.ens2])
+        results, details = encore.hes([self.ens1, self.ens2], mass_weighted=True)
         result_value = results[0,1]
         expected_value = 13946090.576
         assert_almost_equal(result_value, expected_value, decimal=2,

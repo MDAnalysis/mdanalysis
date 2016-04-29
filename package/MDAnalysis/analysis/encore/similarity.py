@@ -23,6 +23,8 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 :Copyright: GNU Public License v3
 :Maintainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
+.. versionadded:: 0.15.0
+
 The module contains implementations of similarity measures between protein
 ensembles described in [Lindorff-Larsen2009]_. The implementation and examples
 are described in [Tiberti2015]_.
@@ -170,7 +172,7 @@ from .clustering.affinityprop import AffinityPropagation
 from .dimensionality_reduction.stochasticproxembed import \
     StochasticProximityEmbedding, kNNStochasticProximityEmbedding
 from .confdistmatrix import conformational_distance_matrix, set_rmsd_matrix_elements, pbar_updater
-from .covariance import covariance_matrix, EstimatorShrinkage, EstimatorML
+from .covariance import covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator
 from .utils import TriangularMatrix, ParallelCalculation
 from .utils import trm_indeces_diag, trm_indeces_nodiag
 
@@ -262,8 +264,8 @@ def harmonic_ensemble_similarity(sigma1=None,
     mass_weighted : bool
         Whether to perform mass-weighted covariance matrix estimation
 
-    covariance_estimator : either EstimatorShrinkage or EstimatorML objects
-        Which covariance estimator to use
+    covariance_estimator : function
+        Covariance estimator to be used
 
     Returns
     -------
@@ -1132,10 +1134,10 @@ def hes(ensembles,
 
     logging.info("Chosen metric: Harmonic similarity")
     if cov_estimator == "shrinkage":
-        covariance_estimator = EstimatorShrinkage()
+        covariance_estimator = shrinkage_covariance_estimator
         logging.info("    Covariance matrix estimator: Shrinkage")
     elif cov_estimator == "ml":
-        covariance_estimator = EstimatorML()
+        covariance_estimator = ml_covariance_estimator
         logging.info("    Covariance matrix estimator: Maximum Likelihood")
     else:
         logging.error(
