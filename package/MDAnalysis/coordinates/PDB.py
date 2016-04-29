@@ -219,7 +219,7 @@ class PDBReader(base.Reader):
        * New :attr:`title` (list with all TITLE lines).
 
     """
-    format = 'PDB'
+    format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):
@@ -471,7 +471,7 @@ class PDBWriter(base.Writer):
                    "{spacegroup:<11s}{zvalue:4d}\n"),
         'CONECT': "CONECT{0}\n"
     }
-    format = 'PDB'
+    format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
     #: wrap comments into REMARK records that are not longer than

@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
-         dotsdl, richardjgowers, jdetle, BartBruininks
+         dotsdl, richardjgowers, BartBruininks, jdetle
 
   * 0.15.0
 
@@ -36,7 +36,7 @@ Enhancements
   * Added read-only property giving Universe init kwargs (Issue #292)
 
 Fixes
-
+  * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
   * units.py now correctly prints errors for unknown units.

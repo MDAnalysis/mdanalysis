@@ -182,6 +182,7 @@ For details see the report for `Issue 87`_.
                   'data/Amber/*.ncdf', 'data/Amber/*.nc',
                   'data/Amber/*.inpcrd',
                   'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
+                  'data/*.ent',
                   'data/*.fasta',
                   'data/*.dat',
                   'data/*.dms',
