@@ -215,9 +215,8 @@ All protein-water hydrogen bonds can be analysed with ::
 
   import MDAnalysis
   import MDAnalysis.analysis.hbonds
-  from MDAnalysisTests.datafiles import PSF, DCD
 
-  u = MDAnalysis.Universe(PSF, DCD)
+  u = MDAnalysis.Universe('topology', 'trajectory')
   h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', distance=3.0, angle=120.0)
   h.run()
 
@@ -232,6 +231,11 @@ for the format and further options.
    *larger* group, e.g. the water when looking at water-protein
    H-bonds or the whole protein when looking at ligand-protein
    interactions.
+
+.. Note::
+
+   The topology supplied and the trajectory must reflect the same total number
+   of atoms.
 
 .. TODO: how to analyse the ouput and notes on selection updating
 
