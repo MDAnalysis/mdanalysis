@@ -226,29 +226,21 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
         currit++; // increment iteration number
     } // start a new iteration. If convergence or max_iterations reached
 
-    if ( conv_reached == 1 ) {
-        //printf("Preference %3.2f: Convergence reached at iteration %d!\n",currit); // print convergence info
-        for (int i=0;i<n;i++) { // assign elements to clusters
-            idx = sqmIndex(n,i,0);
-            maxsim = r[idx]+a[idx];
-		//printf("%3.1f, ",maxsim);
-            for (k=1;k<n;k++) {
-                idx = sqmIndex(n,i,k);
-                tmpsum = r[idx]+a[idx];
-			//Zprintf("%3.1f, ",tmpsum);
-                if (tmpsum > maxsim) {
-                    clusters[i] = k;
-                    maxsim = tmpsum;
-                }
+    //printf("Preference %3.2f: Convergence reached at iteration %d!\n",currit); // print convergence info
+    for (int i=0;i<n;i++) { // assign elements to clusters
+        idx = sqmIndex(n,i,0);
+        maxsim = r[idx]+a[idx];
+	//printf("%3.1f, ",maxsim);
+        for (k=1;k<n;k++) {
+            idx = sqmIndex(n,i,k);
+            tmpsum = r[idx]+a[idx];
+		//Zprintf("%3.1f, ",tmpsum);
+            if (tmpsum > maxsim) {
+                clusters[i] = k;
+                maxsim = tmpsum;
             }
         }
     }
-    else {
-        for (int i=0;i<n;i++)
-            clusters[i] = -1.0;
-        //printf("\nPreference %3.2f: Convergence not reached in %d iterations.\n", s[0], currit+1);
-    }
-    //for (int i=0;i<n;i++) { if (exemplars[i] == 1) printf("%d\n",i); }
 
     //Free memory anyway
     free(r);

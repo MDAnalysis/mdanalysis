@@ -91,10 +91,10 @@ class TestMemoryReader(BaseReaderTest):
                      (3341, 98, 3))
 
     def test_timeseries_skip10(self):
-        assert_equal(self.reader.timeseries(skip=10).shape,
-                     (3341, 9, 3))
-        assert_equal(self.ref.universe.trajectory.timeseries(skip=10)[0,:,0],
-                     self.reader.timeseries(skip=10)[0,:,0])
+        # Check that timeseries skip works similar to numpy slicing
+        array1 = self.reader.timeseries(skip=10)
+        array2 = self.reader.timeseries()[:,::10,:]
+        assert_equal(array1, array2)
 
     def test_timeseries_view(self):
         assert_equal(self.reader.timeseries().base is self.reader.get_array(),

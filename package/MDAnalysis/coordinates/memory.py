@@ -23,7 +23,7 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 :Maintainer: Wouter Boomsma <wb@bio.ku.dk>, wouterboomsma on github
 
 
-.. versionadded:: 0.14.0
+.. versionadded:: 0.15.0
 
 The module contains a trajectory reader that operates on an array
 in memory, rather than reading from file. This makes it possible to
@@ -196,17 +196,13 @@ class MemoryReader(base.ProtoReader):
         stop_index = stop+1
         if stop_index == 0:
             stop_index = None
-        # To make the skip implementation consistent with DCD.timeseries, we
-        # start at start+(skip-1)
         basic_slice = ([slice(None)]*(f_index) +
-                       [slice(start+(skip-1), stop_index, skip)] +
+                       [slice(start, stop_index, skip)] +
                        [slice(None)]*(2-f_index))
 
         # Return a view if either:
         #   1) asel is None
-        #   2) asel corresponds to a selection of all atoms. To avoid doing
-        #      a full comparison of all atom objects in the selection, we check
-        #      for the length and the identity of the first atom.
+        #   2) asel corresponds to the selection of all atoms.
         array = array[basic_slice]
         if (asel is None or asel is asel.universe.atoms):
             return array
