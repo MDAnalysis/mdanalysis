@@ -213,10 +213,12 @@ Example
 
 All protein-water hydrogen bonds can be analysed with ::
 
+  import MDAnalysis
   import MDAnalysis.analysis.hbonds
+  from MDAnalysisTests.datafiles import PSF, DCD
 
-  u = MDAnalysis.Universe(PSF, PDB)
-  h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname TIP3', distance=3.0, angle=120.0)
+  u = MDAnalysis.Universe(PSF, DCD)
+  h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', distance=3.0, angle=120.0)
   h.run()
 
 The results are stored as the attribute
@@ -255,10 +257,14 @@ Classes
         results = [
             [ # frame 1
                [ # hbond 1
-                  <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+                  <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                  <acceptor index (0-based)>, <donor string>, <acceptor string>,
+                  <distance>, <angle>
                ],
                [ # hbond 2
-                  <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+                  <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                  <acceptor index (0-based)>, <donor string>, <acceptor string>,
+                  <distance>, <angle>
                ],
                ....
             ],
@@ -267,7 +273,6 @@ Classes
             ],
             ...
         ]
-
       The time of each step is not stored with each hydrogen bond frame but in
       :attr:`~HydrogenBondAnalysis.timesteps`.
 
@@ -498,8 +503,7 @@ class HydrogenBondAnalysis(object):
             last trajectory frame for analysis, ``None`` is the last one [``None``]
           *step*
             read every *step* between *start* and *stop*, ``None`` selects 1.
-            Note that not all trajectory readers perform well with a step different
-            from 1 [``None``]
+            Note that not all trajectory reader from 1 [``None``]
           *verbose*
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in

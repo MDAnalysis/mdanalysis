@@ -26,7 +26,7 @@ import numpy as np
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PDB_helix
+from MDAnalysisTests.datafiles import PDB_helix, PSF, DCD
 
 
 class TestHydrogenBondAnalysis(TestCase):
@@ -58,6 +58,12 @@ class TestHydrogenBondAnalysis(TestCase):
         assert_equal(len(h.timeseries[0]),
                      self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds")
         assert_equal(h.timesteps, [0.0])
+
+    def test_zero_vs_1based(self):
+        h = self._run()
+        if h.timeseries[0]:
+            assert_equal((int(h.timeseries[0][0][0])-int(h.timeseries[0][0][2])),1)
+            assert_equal((int(h.timeseries[0][0][1])-int(h.timeseries[0][0][3])),1)
 
     def test_generate_table(self):
         h = self._run()
@@ -191,6 +197,3 @@ class TestHydrogenBondAnalysisChecking(object):
                 yield run_HBA_dynamic_selections, s1, s2, s1type
         finally:
             self._tearDown() # manually tear down (because with yield cannot use TestCase)
-
-
-
