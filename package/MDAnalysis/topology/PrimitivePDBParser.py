@@ -167,10 +167,7 @@ class PrimitivePDBParser(TopologyReader):
                     resids.append(int(line[22:27]))
                 else:
                     resid = int(line[22:26])
-                    try:
-                        icodes.append(int(line[26:27]))
-                    except ValueError:
-                        icodes.append(None)
+                    icodes.append(line[26:27].strip())
 
                     resnums.append(resid)
 
@@ -206,7 +203,7 @@ class PrimitivePDBParser(TopologyReader):
         attrs.append(Atomnames(np.array(names, dtype=object)))
         # Optional attributes
         for vals, Attr, dtype in (
-                (icodes, ICodes, np.int32),
+                (icodes, ICodes, object),
                 (atomtypes, Atomtypes, object),
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),

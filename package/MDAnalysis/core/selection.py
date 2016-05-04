@@ -587,6 +587,12 @@ class AtomTypeSelection(StringSelection):
     field = 'types'
 
 
+class AtomICodeSelection(StringSelection):
+    """Select atoms based on icode attribute"""
+    token = 'icode'
+    field = 'icodes'
+
+
 class ResidueNameSelection(StringSelection):
     """Select atoms based on 'resnames' attribute"""
     token = 'resname'
