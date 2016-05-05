@@ -92,6 +92,10 @@ if cython_found:
         cython_found = False
     del Cython
     del LooseVersion
+else:
+    if not is_release:
+        print("Cython is needed for development installation")
+        sys.exit(1)
 
 
 class Config(object):
