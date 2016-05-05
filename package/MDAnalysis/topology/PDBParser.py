@@ -96,7 +96,7 @@ class PDBParser(TopologyReader):
         iatom = 0
         atoms = []
 
-        with openany(self.filename) as f:
+        with openany(self.filename, 'rt') as f:
             resid_prev = 0  # resid looping hack
             for i, line in enumerate(f):
                 line = line.strip()  # Remove extra spaces
@@ -175,7 +175,7 @@ class PDBParser(TopologyReader):
         mapping = dict((a.serial, a.index) for a in atoms)
 
         bonds = set()
-        with openany(self.filename, "r") as f:
+        with openany(self.filename, "rt") as f:
             lines = (line for line in f if line[:6] == "CONECT")
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())
