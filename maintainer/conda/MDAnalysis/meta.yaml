@@ -22,7 +22,6 @@ requirements:
     - networkx
     - griddataformats
     - nose
-    - tempdir
 
   run:
     - python
@@ -36,7 +35,6 @@ requirements:
     - six
     - netcdf4
     - nose
-    - tempdir
 
 test:
   imports:
@@ -59,7 +57,6 @@ test:
     - six
     - netcdf4
     - nose
-    - tempdir
 
   commands:
     # run the testsuite with 2 processes
