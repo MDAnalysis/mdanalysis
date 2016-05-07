@@ -26,7 +26,7 @@ import numpy as np
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PDB_helix, PSF, DCD
+from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
 
 
 class TestHydrogenBondAnalysis(TestCase):
@@ -74,8 +74,12 @@ class TestHydrogenBondAnalysis(TestCase):
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
-    # TODO: Expand tests because the following ones are a bit superficial
-    #       because we should really run them on a trajectory
+    @staticmethod
+    def test_true_traj(self):
+        u = MDAnalysis.Universe(GRO, XTC)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u,'protein','resname ASP', distance=3.0, angle=120.0)
+        h.run()
+        assert_equal(len(h.timeseries), 10)
 
     def test_count_by_time(self):
         h = self._run()
