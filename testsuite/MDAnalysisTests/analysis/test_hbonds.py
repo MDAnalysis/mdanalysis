@@ -75,7 +75,7 @@ class TestHydrogenBondAnalysis(TestCase):
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
     @staticmethod
-    def test_true_traj(self):
+    def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u,'protein','resname ASP', distance=3.0, angle=120.0)
         h.run()
