@@ -713,7 +713,8 @@ class HydrogenBondAnalysis(object):
         """
         try:
             return atom.residue.select_atoms(
-                "(name H* or name 1H* or name 2H* or name 3H* or type H) and around {0:f} name {1!s}".format(self.r_cov[atom.name[0]], atom.name))
+                "(name H* 1H* 2H* 3H* or type H) and around {0:f} name {1!s}"
+                "".format(self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
             return []
 
@@ -765,7 +766,8 @@ class HydrogenBondAnalysis(object):
         self._s1_donors_h = {}
         self._s1_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s1_donors = self._s1.select_atoms(' or '.join(['name {0}'.format(name) for name in self.donors]))
+            self._s1_donors = self._s1.select_atoms(
+                'name {0}'.format(' '.join(self.donors)))
             self._s1_donors_h = {}
             for i, d in enumerate(self._s1_donors):
                 tmp = self._get_bonded_hydrogens(d)
@@ -774,12 +776,13 @@ class HydrogenBondAnalysis(object):
             self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
             self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_donors_h)))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s1_acceptors = self._s1.select_atoms(' or '.join(['name {0}'.format(name) for name in self.acceptors]))
+            self._s1_acceptors = self._s1.select_atoms(
+                'name {0}'.format(' '.join(self.acceptors)))
             self.logger_debug("Selection 1 acceptors: {0}".format(len(self._s1_acceptors)))
 
     def _update_selection_2(self):
         self._s2 = self.u.select_atoms(self.selection2)
-        if self.filter_first and len(self._s2) > 0:
+        if self.filter_first and self._s2:
             self.logger_debug('Size of selection 2 before filtering:'
                               ' {} atoms'.format(len(self._s2)))
             ns_selection_2 = AtomNeighborSearch(self._s2)
@@ -793,11 +796,11 @@ class HydrogenBondAnalysis(object):
         self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.select_atoms(
-                ' or '.join(['name {0!s}'.format(i) for i in self.acceptors]))
+                'name {0}'.format(' '.join(self.acceptors)))
             self.logger_debug("Selection 2 acceptors: {0:d}".format(len(self._s2_acceptors)))
         if self.selection1_type in ('acceptor', 'both'):
             self._s2_donors = self._s2.select_atoms(
-                ' or '.join(['name {0!s}'.format(i) for i in self.donors]))
+                'name {0}'.format(' '.join(self.donors)))
             self._s2_donors_h = {}
             for i, d in enumerate(self._s2_donors):
                 tmp = self._get_bonded_hydrogens(d)
@@ -907,7 +910,7 @@ class HydrogenBondAnalysis(object):
             if self.update_selection2:
                 self._update_selection_2()
 
-            if self.selection1_type in ('donor', 'both') and len(self._s2_acceptors) > 0:
+            if self.selection1_type in ('donor', 'both') and self._s2_acceptors:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = AtomNeighborSearch(self._s2_acceptors)
                 for i, donor_h_set in self._s1_donors_h.items():
@@ -929,7 +932,7 @@ class HydrogenBondAnalysis(object):
                                     dist, angle])
 
                                 already_found[(h.index + 1, a.index + 1)] = True
-            if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
+            if self.selection1_type in ('acceptor', 'both') and self._s1_acceptors:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = AtomNeighborSearch(self._s1_acceptors)
                 for i, donor_h_set in self._s2_donors_h.items():
@@ -959,7 +962,8 @@ class HydrogenBondAnalysis(object):
         logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",
                     self.count_by_time().count.sum(), self.__class__.__name__)
 
-    def calc_angle(self, d, h, a):
+    @staticmethod
+    def calc_angle(d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
         v1 = h.position - d.position
         v2 = h.position - a.position
@@ -967,7 +971,8 @@ class HydrogenBondAnalysis(object):
             return 0.0
         return np.rad2deg(angle(v1, v2))
 
-    def calc_eucl_distance(self, a1, a2):
+    @staticmethod
+    def calc_eucl_distance(a1, a2):
         """Calculate the Euclidean distance between two atoms. """
         return norm(a2.position - a1.position)
 
