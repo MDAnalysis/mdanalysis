@@ -44,6 +44,4 @@ cdef extern from "stochasticproxembed.h":
     int neighbours(double, int, double, int*, int*, int*)
     int* nearest_neighbours(double*, int, int)
     int cmp_ivwrapper(void*,void*)
-    double CkNeighboursStochasticProximityEmbedding(double*, double*, double, int, int, int, double, double, int, int)
     double CStochasticProximityEmbedding(double*, double*, double, int, int, double, double, int, int, int)
-    double CkNNStochasticProximityEmbedding(double*, double*, int, int, int, double, double, int, int, int)

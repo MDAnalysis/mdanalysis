@@ -169,8 +169,7 @@ except ImportError:
 from ...coordinates.memory import MemoryReader
 from .clustering.Cluster import ClustersCollection
 from .clustering.affinityprop import AffinityPropagation
-from .dimensionality_reduction.stochasticproxembed import \
-    StochasticProximityEmbedding, kNNStochasticProximityEmbedding
+from .dimensionality_reduction.stochasticproxembed import StochasticProximityEmbedding
 from .confdistmatrix import conformational_distance_matrix, set_rmsd_matrix_elements, pbar_updater
 from .covariance import covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator
 from .utils import TriangularMatrix, ParallelCalculation
