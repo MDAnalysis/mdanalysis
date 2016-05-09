@@ -22,17 +22,17 @@ Mixed Cython utils for ENCORE
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015--2016
 :Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github                       """
+:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.15.0
+"""
+
 
 import numpy as np
 cimport numpy as np
 import cython
+from libc.math cimport sqrt
 
-cdef extern from "math.h":
-    double sqrt(double x)
-    
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
