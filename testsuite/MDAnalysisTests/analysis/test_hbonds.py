@@ -26,7 +26,7 @@ import numpy as np
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PDB_helix
+from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
 
 
 class TestHydrogenBondAnalysis(TestCase):
@@ -59,6 +59,12 @@ class TestHydrogenBondAnalysis(TestCase):
                      self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds")
         assert_equal(h.timesteps, [0.0])
 
+    def test_zero_vs_1based(self):
+        h = self._run()
+        if h.timeseries[0]:
+            assert_equal((int(h.timeseries[0][0][0])-int(h.timeseries[0][0][2])),1)
+            assert_equal((int(h.timeseries[0][0][1])-int(h.timeseries[0][0][3])),1)
+
     def test_generate_table(self):
         h = self._run()
         h.generate_table()
@@ -68,8 +74,12 @@ class TestHydrogenBondAnalysis(TestCase):
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
-    # TODO: Expand tests because the following ones are a bit superficial
-    #       because we should really run them on a trajectory
+    @staticmethod
+    def test_true_traj():
+        u = MDAnalysis.Universe(GRO, XTC)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u,'protein','resname ASP', distance=3.0, angle=120.0)
+        h.run()
+        assert_equal(len(h.timeseries), 10)
 
     def test_count_by_time(self):
         h = self._run()
@@ -191,6 +201,3 @@ class TestHydrogenBondAnalysisChecking(object):
                 yield run_HBA_dynamic_selections, s1, s2, s1type
         finally:
             self._tearDown() # manually tear down (because with yield cannot use TestCase)
-
-
-

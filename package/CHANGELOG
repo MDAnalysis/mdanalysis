@@ -49,6 +49,8 @@ Fixes
    (Issue #755)
 
 Changes
+  
+  * Added zero_based indices for HBondsAnalysis. (Issue #807) 
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of
     MDAnalysis.coordinates.pdb (Issue #777)
