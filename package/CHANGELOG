@@ -34,6 +34,7 @@ Enhancements
 
   * Add conda build scripts (Issue #608)
   * Added read-only property giving Universe init kwargs (Issue #292)
+  * Added 'crdbox' as AMBER Trj format extension (Issue #846)
 
 Fixes
   * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
@@ -49,8 +50,8 @@ Fixes
    (Issue #755)
 
 Changes
-  
-  * Added zero_based indices for HBondsAnalysis. (Issue #807) 
+
+  * Added zero_based indices for HBondsAnalysis. (Issue #807)
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of
     MDAnalysis.coordinates.pdb (Issue #777)
