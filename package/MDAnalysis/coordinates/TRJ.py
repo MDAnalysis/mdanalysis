@@ -66,8 +66,8 @@ ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
 are handled by the :class:`TRJReader`. It is also possible to directly
 read *bzip2* or *gzip* compressed files.
 
-AMBER ASCII trajectories are recognised by the suffix '.trj' or
-'.mdcrd' (possibly with an additional '.gz' or '.bz2').
+AMBER ASCII trajectories are recognised by the suffix '.trj',
+'.mdcrd' or '.crdbox (possibly with an additional '.gz' or '.bz2').
 
 .. rubric:: Limitations
 
@@ -191,13 +191,12 @@ class TRJReader(base.Reader):
        Frames now 0-based instead of 1-based
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
-    format = ['TRJ', 'MDCRD']
+    format = ['TRJ', 'MDCRD', 'CRDBOX']
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
-        # amber trj REQUIRES the number of atoms from the topology
         if n_atoms is None:
             raise ValueError("AMBER TRJ reader REQUIRES the n_atoms keyword")
         self._n_atoms = n_atoms
