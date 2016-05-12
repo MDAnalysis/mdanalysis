@@ -240,7 +240,7 @@ class PDBReader(base.Reader):
             # regular MDA usage via Universe doesn't follow this route
             from MDAnalysis.topology import PDBParser
 
-            with PDBParser(self.filename) as p:
+            with PDBParser.PDBParser(self.filename) as p:
                 top = p.parse()
             self.n_atoms = len(top['atoms'])
 

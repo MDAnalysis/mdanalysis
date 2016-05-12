@@ -787,4 +787,9 @@ class TestCrystModelOrder(object):
                 u.trajectory, boxsize, position):
             assert_almost_equal(u.dimensions[0], refbox)
             assert_almost_equal(u.atoms[0].position[0], refpos)
-        
+
+def test_standalone_pdb():
+    # check that PDBReader works without n_atoms kwarg
+    r = mda.coordinates.PDB.PDBReader(PDB_cm)
+
+    assert_(r.n_atoms == 4)
