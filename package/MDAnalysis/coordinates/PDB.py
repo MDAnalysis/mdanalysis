@@ -236,6 +236,7 @@ class PDBReader(base.Reader):
 
         try:
             self._n_atoms = kwargs['n_atoms']
+            self.n_atoms = self._n_atoms # ?? does this have to be private?
         except KeyError:
             raise ValueError("PDBReader requires the n_atoms keyword")
 
@@ -246,84 +247,49 @@ class PDBReader(base.Reader):
         compound = []
         remarks = []
 
-        frames = {}
-
         self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
 
-        pos = 0  # atom position for filling coordinates array
-        occupancy = np.ones(self._n_atoms)
+        self._offsets = offsets = []
         with util.openany(filename, 'rt') as pdbfile:
-            for i, line in enumerate(pdbfile):
-                line = line.strip()  # Remove extra spaces
-                if not line:  # Skip line if empty
-                    continue
-                record = line[:6].strip()
-
-                if record == 'END':
+            line = "magical"
+            while True:
+                line = pdbfile.readline()
+                if not line:  # EOF
                     break
-                elif record == 'CRYST1':
+                line = line.strip()  # but allow blank lines (empty line == "\n", EOF == "" ?)
+                if line.startswith('MODEL'):
+                    offsets.append(pdbfile.tell())
+                elif line.startswith('CRYST1'):  # Where do CRYST entries happen?
                     self.ts._unitcell[:] = [line[6:15], line[15:24],
                                             line[24:33], line[33:40],
                                             line[40:47], line[47:54]]
-                    continue
-                elif record == 'HEADER':
+                elif line.startswith('HEADER'):
                     # classification = line[10:50]
                     # date = line[50:59]
                     # idCode = line[62:66]
                     header = line[10:66]
-                    continue
-                elif record == 'TITLE':
+                elif line.startswith('TITLE'):
                     l = line[8:80].strip()
                     title.append(l)
-                    continue
-                elif record == 'COMPND':
+                elif line.startswith('COMPND'):
                     l = line[7:80].strip()
                     compound.append(l)
-                    continue
-                elif record == 'REMARK':
+                elif line.startswith('REMARK'):
                     content = line[6:].strip()
                     remarks.append(content)
-                elif record == 'MODEL':
-                    frames[len(frames)] = i  # 0-based indexing
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    # skip atom/hetatm for frames other than the first
-                    # they will be read in when next() is called
-                    # on the trajectory reader
-                    if len(frames) > 1:
-                        continue
-                    self.ts._pos[pos] = [line[30:38],
-                                         line[38:46],
-                                         line[46:54]]
-                    try:
-                        occupancy[pos] = line[54:60]
-                    except ValueError:
-                        pass
-                    pos += 1
 
         self.header = header
         self.title = title
         self.compound = compound
         self.remarks = remarks
 
-        if pos != self._n_atoms:
-            raise ValueError("Read an incorrect number of atoms\n"
-                             "Expected {expected} got {actual}"
-                             "".format(expected=self._n_atoms, actual=pos))
-        self.n_atoms = pos
+        if not offsets:
+            # No model entries
+            # so read from start of file to read first frame
+            offsets.append(0)
+        self.n_frames = len(offsets)
 
-        self.ts.frame = 0  # 0-based frame number as starting frame
-        self.ts.data['occupancy'] = occupancy
-
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-
-        # No 'MODEL' entries
-        if not frames:
-            frames[0] = 0
-
-        self.frames = frames
-        self.n_frames = len(frames) if frames else 1
+        self._read_frame(0)
 
     def Writer(self, filename, **kwargs):
         """Returns a PDBWriter for *filename*.
@@ -360,20 +326,15 @@ class PDBReader(base.Reader):
 
     def _read_frame(self, frame):
         try:
-            line = self.frames[frame]
-        except KeyError:
+            offset = self._offsets[frame]
+        except IndexError:  # out of range of known frames
             raise IOError
-        if line is None:
-            # single frame file, we already have the timestep
-            return self.ts
 
-        # TODO: only open file once and leave the file open; then seek back and
-        #       forth; should improve performance substantially
         pos = 0
         occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'rt') as f:
-            for i in range(line):
-                next(f)  # forward to frame
+            f.seek(offset)
+
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
