@@ -229,16 +229,20 @@ class PDBReader(base.Reader):
 
         If the pdb file contains multiple MODEL records then it is
         read as a trajectory where the MODEL numbers correspond to
-        frame numbers. Therefore, the MODEL numbers must be a sequence
-        of integers (typically starting at 1 or 0).
+        frame numbers.
         """
         super(PDBReader, self).__init__(filename, **kwargs)
 
         try:
-            self._n_atoms = kwargs['n_atoms']
-            self.n_atoms = self._n_atoms # ?? does this have to be private?
+            self.n_atoms = kwargs['n_atoms']
         except KeyError:
-            raise ValueError("PDBReader requires the n_atoms keyword")
+            # hackish, but should work and keeps things DRY
+            # regular MDA usage via Universe doesn't follow this route
+            from MDAnalysis.topology import PDBParser
+
+            with PDBParser(self.filename) as p:
+                top = p.parse()
+            self.n_atoms = len(top['atoms'])
 
         self.model_offset = kwargs.pop("model_offset", 0)
 
@@ -247,7 +251,7 @@ class PDBReader(base.Reader):
         self.compound = compound = []
         self.remarks = remarks = []
 
-        self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         # Record positions in file of CRYST and MODEL headers
         # then build frame offsets to start at the minimum of these
@@ -258,33 +262,32 @@ class PDBReader(base.Reader):
         models = []
         crysts = []
 
-        self._pdbfile = util.openany(filename, 'rt')
+        pdbfile = self._pdbfile = util.anyopen(filename, 'rt')
 
-        with util.openany(filename, 'rt') as pdbfile:
-            line = "magical"
-            while line:
-                # need to use readline so tell gives end of line
-                # (rather than end of current chunk)
-                line = pdbfile.readline()
+        line = "magical"
+        while line:
+            # need to use readline so tell gives end of line
+            # (rather than end of current chunk)
+            line = pdbfile.readline()
 
-                if line.startswith('MODEL'):
-                    models.append(pdbfile.tell())
-                elif line.startswith('CRYST1'):
-                    # remove size of line to get **start** of CRYST line
-                    crysts.append(pdbfile.tell() - len(line))
-                elif line.startswith('HEADER'):
-                    # classification = line[10:50]
-                    # date = line[50:59]
-                    # idCode = line[62:66]
-                    header = line[10:66]
-                elif line.startswith('TITLE'):
-                    title.append(line[8:80].strip())
-                elif line.startswith('COMPND'):
-                    compound.append(line[7:80].strip())
-                elif line.startswith('REMARK'):
-                    remarks.append(line[6:].strip())
+            if line.startswith('MODEL'):
+                models.append(pdbfile.tell())
+            elif line.startswith('CRYST1'):
+                # remove size of line to get **start** of CRYST line
+                crysts.append(pdbfile.tell() - len(line))
+            elif line.startswith('HEADER'):
+                # classification = line[10:50]
+                # date = line[50:59]
+                # idCode = line[62:66]
+                header = line[10:66]
+            elif line.startswith('TITLE'):
+                title.append(line[8:80].strip())
+            elif line.startswith('COMPND'):
+                compound.append(line[7:80].strip())
+            elif line.startswith('REMARK'):
+                remarks.append(line[6:].strip())
 
-            end = pdbfile.tell()  # where the file ends
+        end = pdbfile.tell()  # where the file ends
 
         if not models:
             # No model entries
@@ -322,7 +325,7 @@ class PDBReader(base.Reader):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
         self.close()
-        self._pdbfile = util.openany(self.filename, 'rt')
+        self._pdbfile = util.anyopen(self.filename, 'rt')
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -345,7 +348,7 @@ class PDBReader(base.Reader):
             raise IOError
 
         pos = 0
-        occupancy = np.ones(self._n_atoms)
+        occupancy = np.ones(self.n_atoms)
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
@@ -370,10 +373,10 @@ class PDBReader(base.Reader):
                                         line[40:47], line[47:54]]
 
         # check if atom number changed
-        if pos != self._n_atoms:
+        if pos != self.n_atoms:
             raise ValueError("Read an incorrect number of atoms\n"
                              "Expected {expected} got {actual}"
-                             "".format(expected=self._n_atoms, actual=pos+1))
+                             "".format(expected=self.n_atoms, actual=pos+1))
 
         if self.convert_units:
             # both happen inplace
