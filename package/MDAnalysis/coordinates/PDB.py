@@ -136,7 +136,7 @@ Classes
 
 """
 
-from six.moves import range
+from six.moves import range, zip
 
 import os
 import errno
@@ -242,51 +242,60 @@ class PDBReader(base.Reader):
 
         self.model_offset = kwargs.pop("model_offset", 0)
 
-        header = ""
-        title = []
-        compound = []
-        remarks = []
+        self.header = header = ""
+        self.title = title = []
+        self.compound = compound = []
+        self.remarks = remarks = []
 
         self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
 
-        self._offsets = offsets = []
+        # Record positions in file of CRYST and MODEL headers
+        # then build frame offsets to start at the minimum of these
+        # This allows CRYST to come either before or after MODEL
+        # This assumes that **either**
+        # - pdbfile has a single CRYST (NVT)
+        # - pdbfile has a CRYST for every MODEL (NPT)
+        models = []
+        crysts = []
+
         with util.openany(filename, 'rt') as pdbfile:
             line = "magical"
-            while True:
+            while line:
+                # need to use readline so tell gives end of line
+                # (rather than end of current chunk)
                 line = pdbfile.readline()
-                if not line:  # EOF
-                    break
-                line = line.strip()  # but allow blank lines (empty line == "\n", EOF == "" ?)
+
                 if line.startswith('MODEL'):
-                    offsets.append(pdbfile.tell())
-                elif line.startswith('CRYST1'):  # Where do CRYST entries happen?
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
+                    models.append(pdbfile.tell())
+                elif line.startswith('CRYST1'):
+                    # remove size of line to get **start** of CRYST line
+                    crysts.append(pdbfile.tell() - len(line))
                 elif line.startswith('HEADER'):
                     # classification = line[10:50]
                     # date = line[50:59]
                     # idCode = line[62:66]
                     header = line[10:66]
                 elif line.startswith('TITLE'):
-                    l = line[8:80].strip()
-                    title.append(l)
+                    title.append(line[8:80].strip())
                 elif line.startswith('COMPND'):
-                    l = line[7:80].strip()
-                    compound.append(l)
+                    compound.append(line[7:80].strip())
                 elif line.startswith('REMARK'):
-                    content = line[6:].strip()
-                    remarks.append(content)
+                    remarks.append(line[6:].strip())
 
-        self.header = header
-        self.title = title
-        self.compound = compound
-        self.remarks = remarks
+            end = pdbfile.tell()  # where the file ends
 
-        if not offsets:
+        if not models:
             # No model entries
             # so read from start of file to read first frame
-            offsets.append(0)
+            models.append(0)
+        if len(crysts) == len(models):
+            offsets = [min(a, b) for a, b in zip(models, crysts)]
+        else:
+            offsets = models
+        # Position of the start of each frame
+        self._start_offsets = offsets
+        # Position of the end of each frame
+        self._stop_offsets = offsets[1:] + [end]
         self.n_frames = len(offsets)
 
         self._read_frame(0)
@@ -326,27 +335,20 @@ class PDBReader(base.Reader):
 
     def _read_frame(self, frame):
         try:
-            offset = self._offsets[frame]
+            start = self._start_offsets[frame]
+            stop = self._stop_offsets[frame]
         except IndexError:  # out of range of known frames
             raise IOError
 
         pos = 0
         occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'rt') as f:
-            f.seek(offset)
+            f.seek(start)
 
-            for line in f:
-                if line[:6] == 'ENDMDL':
-                    break
-                # NOTE - CRYST1 line won't be found if it comes before the
-                # MODEL line, which is sometimes the case, e.g. output from
-                # gromacs trjconv
-                elif line[:6] == 'CRYST1':
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
-                    continue
-                elif line[:6] in ('ATOM  ', 'HETATM'):
+            chunk = f.read(stop - start)
+
+            for line in chunk.splitlines():
+                if line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
                     self.ts._pos[pos] = [line[30:38],
                                          line[38:46],
@@ -358,7 +360,10 @@ class PDBReader(base.Reader):
                         # Be tolerant for ill-formated or empty occupancies
                         pass
                     pos += 1
-                    continue
+                elif line[:6] == 'CRYST1':
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
 
         # check if atom number changed
         if pos != self._n_atoms:

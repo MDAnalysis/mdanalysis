@@ -16,7 +16,8 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial, ALIGN, ENT)
+                                       INC_PDB, PDB_xlserial, ALIGN, ENT,
+                                       PDB_cm, PDB_mc)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
 
@@ -752,3 +753,38 @@ def test_deduce_PDB_atom_name():
                   )
     for atom, ref_name in test_cases:
         yield _test_PDB_atom_name, atom, ref_name
+
+
+class TestCrystModelOrder(object):
+    # tests that cryst can precede or follow model header
+    # allow frames to follow either of these formats:
+
+    # Case 1 (PDB_mc)
+    # MODEL
+    # ...
+    # ENDMDL
+    # CRYST
+
+    # Case 2 (PDB_cm)
+    # CRYST
+    # MODEL
+    # ...
+    # ENDMDL
+    def test_order(self):
+        for pdbfile in [PDB_cm, PDB_mc]:
+            yield self._check_order, pdbfile
+
+    @staticmethod
+    def _check_order(pdbfile):
+        u = mda.Universe(pdbfile)
+
+        assert_(len(u.trajectory) == 3)
+
+        boxsize = [80, 70, 60]
+        position = [10, 20, 30]
+
+        for ts, refbox, refpos in zip(
+                u.trajectory, boxsize, position):
+            assert_almost_equal(u.dimensions[0], refbox)
+            assert_almost_equal(u.atoms[0].position[0], refpos)
+        

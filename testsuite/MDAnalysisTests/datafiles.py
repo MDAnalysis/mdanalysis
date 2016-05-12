@@ -48,6 +48,7 @@ __all__ = [
     "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
+    "PDB_cm", "PDB_mc",  # for testing cryst before/after model headers
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
@@ -152,6 +153,8 @@ PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
+PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
+PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
