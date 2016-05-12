@@ -258,6 +258,8 @@ class PDBReader(base.Reader):
         models = []
         crysts = []
 
+        self._pdbfile = util.openany(filename, 'rt')
+
         with util.openany(filename, 'rt') as pdbfile:
             line = "magical"
             while line:
@@ -319,6 +321,8 @@ class PDBReader(base.Reader):
     def _reopen(self):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
+        self.close()
+        self._pdbfile = util.openany(self.filename, 'rt')
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -342,28 +346,28 @@ class PDBReader(base.Reader):
 
         pos = 0
         occupancy = np.ones(self._n_atoms)
-        with util.openany(self.filename, 'rt') as f:
-            f.seek(start)
 
-            chunk = f.read(stop - start)
+        # Seek to start and read until start of next frame
+        self._pdbfile.seek(start)
+        chunk = self._pdbfile.read(stop - start)
 
-            for line in chunk.splitlines():
-                if line[:6] in ('ATOM  ', 'HETATM'):
-                    # we only care about coordinates
-                    self.ts._pos[pos] = [line[30:38],
-                                         line[38:46],
-                                         line[46:54]]
-                    # TODO import bfactors - might these change?
-                    try:
-                        occupancy[pos] = line[54:60]
-                    except ValueError:
-                        # Be tolerant for ill-formated or empty occupancies
-                        pass
-                    pos += 1
-                elif line[:6] == 'CRYST1':
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
+        for line in chunk.splitlines():
+            if line[:6] in ('ATOM  ', 'HETATM'):
+                # we only care about coordinates
+                self.ts._pos[pos] = [line[30:38],
+                                     line[38:46],
+                                     line[46:54]]
+                # TODO import bfactors - might these change?
+                try:
+                    occupancy[pos] = line[54:60]
+                except ValueError:
+                    # Be tolerant for ill-formated or empty occupancies
+                    pass
+                pos += 1
+            elif line[:6] == 'CRYST1':
+                self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                        line[24:33], line[33:40],
+                                        line[40:47], line[47:54]]
 
         # check if atom number changed
         if pos != self._n_atoms:
@@ -378,6 +382,9 @@ class PDBReader(base.Reader):
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
         return self.ts
+
+    def close(self):
+        self._pdbfile.close()
 
 
 class PDBWriter(base.Writer):
