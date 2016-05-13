@@ -48,7 +48,9 @@ __all__ = [
     "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
-    "PDB_cm", "PDB_mc",  # for testing cryst before/after model headers
+    # for testing cryst before/after model headers
+    "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
+    "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
@@ -154,7 +156,11 @@ ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
+PDB_cm_gz = resource_filename(__name__, 'data/cryst_then_model.pdb.gz')
+PDB_cm_bz2 = resource_filename(__name__, 'data/cryst_then_model.pdb.bz2')
 PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
+PDB_mc_gz = resource_filename(__name__, 'data/model_then_cryst.pdb.gz')
+PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
