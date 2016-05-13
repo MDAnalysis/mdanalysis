@@ -136,7 +136,7 @@ Classes
 
 """
 
-from six.moves import range
+from six.moves import range, zip
 
 import os
 import errno
@@ -229,101 +229,81 @@ class PDBReader(base.Reader):
 
         If the pdb file contains multiple MODEL records then it is
         read as a trajectory where the MODEL numbers correspond to
-        frame numbers. Therefore, the MODEL numbers must be a sequence
-        of integers (typically starting at 1 or 0).
+        frame numbers.
         """
         super(PDBReader, self).__init__(filename, **kwargs)
 
         try:
-            self._n_atoms = kwargs['n_atoms']
+            self.n_atoms = kwargs['n_atoms']
         except KeyError:
-            raise ValueError("PDBReader requires the n_atoms keyword")
+            # hackish, but should work and keeps things DRY
+            # regular MDA usage via Universe doesn't follow this route
+            from MDAnalysis.topology import PDBParser
+
+            with PDBParser.PDBParser(self.filename) as p:
+                top = p.parse()
+            self.n_atoms = len(top['atoms'])
 
         self.model_offset = kwargs.pop("model_offset", 0)
 
-        header = ""
-        title = []
-        compound = []
-        remarks = []
+        self.header = header = ""
+        self.title = title = []
+        self.compound = compound = []
+        self.remarks = remarks = []
 
-        frames = {}
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
-        self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
+        # Record positions in file of CRYST and MODEL headers
+        # then build frame offsets to start at the minimum of these
+        # This allows CRYST to come either before or after MODEL
+        # This assumes that **either**
+        # - pdbfile has a single CRYST (NVT)
+        # - pdbfile has a CRYST for every MODEL (NPT)
+        models = []
+        crysts = []
 
-        pos = 0  # atom position for filling coordinates array
-        occupancy = np.ones(self._n_atoms)
-        with util.openany(filename, 'rt') as pdbfile:
-            for i, line in enumerate(pdbfile):
-                line = line.strip()  # Remove extra spaces
-                if not line:  # Skip line if empty
-                    continue
-                record = line[:6].strip()
+        pdbfile = self._pdbfile = util.anyopen(filename, 'rt')
 
-                if record == 'END':
-                    break
-                elif record == 'CRYST1':
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
-                    continue
-                elif record == 'HEADER':
-                    # classification = line[10:50]
-                    # date = line[50:59]
-                    # idCode = line[62:66]
-                    header = line[10:66]
-                    continue
-                elif record == 'TITLE':
-                    l = line[8:80].strip()
-                    title.append(l)
-                    continue
-                elif record == 'COMPND':
-                    l = line[7:80].strip()
-                    compound.append(l)
-                    continue
-                elif record == 'REMARK':
-                    content = line[6:].strip()
-                    remarks.append(content)
-                elif record == 'MODEL':
-                    frames[len(frames)] = i  # 0-based indexing
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    # skip atom/hetatm for frames other than the first
-                    # they will be read in when next() is called
-                    # on the trajectory reader
-                    if len(frames) > 1:
-                        continue
-                    self.ts._pos[pos] = [line[30:38],
-                                         line[38:46],
-                                         line[46:54]]
-                    try:
-                        occupancy[pos] = line[54:60]
-                    except ValueError:
-                        pass
-                    pos += 1
+        line = "magical"
+        while line:
+            # need to use readline so tell gives end of line
+            # (rather than end of current chunk)
+            line = pdbfile.readline()
 
-        self.header = header
-        self.title = title
-        self.compound = compound
-        self.remarks = remarks
+            if line.startswith('MODEL'):
+                models.append(pdbfile.tell())
+            elif line.startswith('CRYST1'):
+                # remove size of line to get **start** of CRYST line
+                crysts.append(pdbfile.tell() - len(line))
+            elif line.startswith('HEADER'):
+                # classification = line[10:50]
+                # date = line[50:59]
+                # idCode = line[62:66]
+                header = line[10:66]
+            elif line.startswith('TITLE'):
+                title.append(line[8:80].strip())
+            elif line.startswith('COMPND'):
+                compound.append(line[7:80].strip())
+            elif line.startswith('REMARK'):
+                remarks.append(line[6:].strip())
 
-        if pos != self._n_atoms:
-            raise ValueError("Read an incorrect number of atoms\n"
-                             "Expected {expected} got {actual}"
-                             "".format(expected=self._n_atoms, actual=pos))
-        self.n_atoms = pos
+        end = pdbfile.tell()  # where the file ends
 
-        self.ts.frame = 0  # 0-based frame number as starting frame
-        self.ts.data['occupancy'] = occupancy
+        if not models:
+            # No model entries
+            # so read from start of file to read first frame
+            models.append(0)
+        if len(crysts) == len(models):
+            offsets = [min(a, b) for a, b in zip(models, crysts)]
+        else:
+            offsets = models
+        # Position of the start of each frame
+        self._start_offsets = offsets
+        # Position of the end of each frame
+        self._stop_offsets = offsets[1:] + [end]
+        self.n_frames = len(offsets)
 
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-
-        # No 'MODEL' entries
-        if not frames:
-            frames[0] = 0
-
-        self.frames = frames
-        self.n_frames = len(frames) if frames else 1
+        self._read_frame(0)
 
     def Writer(self, filename, **kwargs):
         """Returns a PDBWriter for *filename*.
@@ -344,6 +324,8 @@ class PDBReader(base.Reader):
     def _reopen(self):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
+        self.close()
+        self._pdbfile = util.anyopen(self.filename, 'rt')
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -360,50 +342,41 @@ class PDBReader(base.Reader):
 
     def _read_frame(self, frame):
         try:
-            line = self.frames[frame]
-        except KeyError:
+            start = self._start_offsets[frame]
+            stop = self._stop_offsets[frame]
+        except IndexError:  # out of range of known frames
             raise IOError
-        if line is None:
-            # single frame file, we already have the timestep
-            return self.ts
 
-        # TODO: only open file once and leave the file open; then seek back and
-        #       forth; should improve performance substantially
         pos = 0
-        occupancy = np.ones(self._n_atoms)
-        with util.openany(self.filename, 'rt') as f:
-            for i in range(line):
-                next(f)  # forward to frame
-            for line in f:
-                if line[:6] == 'ENDMDL':
-                    break
-                # NOTE - CRYST1 line won't be found if it comes before the
-                # MODEL line, which is sometimes the case, e.g. output from
-                # gromacs trjconv
-                elif line[:6] == 'CRYST1':
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
-                    continue
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    # we only care about coordinates
-                    self.ts._pos[pos] = [line[30:38],
-                                         line[38:46],
-                                         line[46:54]]
-                    # TODO import bfactors - might these change?
-                    try:
-                        occupancy[pos] = line[54:60]
-                    except ValueError:
-                        # Be tolerant for ill-formated or empty occupancies
-                        pass
-                    pos += 1
-                    continue
+        occupancy = np.ones(self.n_atoms)
+
+        # Seek to start and read until start of next frame
+        self._pdbfile.seek(start)
+        chunk = self._pdbfile.read(stop - start)
+
+        for line in chunk.splitlines():
+            if line[:6] in ('ATOM  ', 'HETATM'):
+                # we only care about coordinates
+                self.ts._pos[pos] = [line[30:38],
+                                     line[38:46],
+                                     line[46:54]]
+                # TODO import bfactors - might these change?
+                try:
+                    occupancy[pos] = line[54:60]
+                except ValueError:
+                    # Be tolerant for ill-formated or empty occupancies
+                    pass
+                pos += 1
+            elif line[:6] == 'CRYST1':
+                self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                        line[24:33], line[33:40],
+                                        line[40:47], line[47:54]]
 
         # check if atom number changed
-        if pos != self._n_atoms:
+        if pos != self.n_atoms:
             raise ValueError("Read an incorrect number of atoms\n"
                              "Expected {expected} got {actual}"
-                             "".format(expected=self._n_atoms, actual=pos+1))
+                             "".format(expected=self.n_atoms, actual=pos+1))
 
         if self.convert_units:
             # both happen inplace
@@ -412,6 +385,9 @@ class PDBReader(base.Reader):
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
         return self.ts
+
+    def close(self):
+        self._pdbfile.close()
 
 
 class PDBWriter(base.Writer):

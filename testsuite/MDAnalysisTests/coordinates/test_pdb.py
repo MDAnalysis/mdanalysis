@@ -16,7 +16,9 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial, ALIGN, ENT)
+                                       INC_PDB, PDB_xlserial, ALIGN, ENT,
+                                       PDB_cm, PDB_cm_gz, PDB_cm_bz2,
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
 
@@ -752,3 +754,72 @@ def test_deduce_PDB_atom_name():
                   )
     for atom, ref_name in test_cases:
         yield _test_PDB_atom_name, atom, ref_name
+
+
+class TestCrystModelOrder(object):
+    """Check offset based reading of pdb files
+
+    Checks
+     - len
+     - seeking around
+
+    # tests that cryst can precede or follow model header
+    # allow frames to follow either of these formats:
+
+    # Case 1 (PDB_mc)
+    # MODEL
+    # ...
+    # ENDMDL
+    # CRYST
+
+    # Case 2 (PDB_cm)
+    # CRYST
+    # MODEL
+    # ...
+    # ENDMDL
+    """
+    boxsize = [80, 70, 60]
+    position = [10, 20, 30]
+
+    def test_order(self):
+        for pdbfile in [PDB_cm, PDB_cm_bz2, PDB_cm_gz,
+                        PDB_mc, PDB_mc_bz2, PDB_mc_gz]:
+            yield self._check_order, pdbfile
+            yield self._check_seekaround, pdbfile
+            yield self._check_rewind, pdbfile
+
+    @staticmethod
+    def _check_len(pdbfile):
+        u = mda.Universe(pdbfile)
+        assert_(len(u.trajectory) == 3)
+
+    def _check_order(self, pdbfile):
+        u = mda.Universe(pdbfile)
+
+        for ts, refbox, refpos in zip(
+                u.trajectory, self.boxsize, self.position):
+            assert_almost_equal(u.dimensions[0], refbox)
+            assert_almost_equal(u.atoms[0].position[0], refpos)
+
+    def _check_seekaround(self, pdbfile):
+        u = mda.Universe(pdbfile)
+
+        for frame in [2, 0, 2, 1]:
+            u.trajectory[frame]
+            assert_almost_equal(u.dimensions[0], self.boxsize[frame])
+            assert_almost_equal(u.atoms[0].position[0], self.position[frame])
+        
+    def _check_rewind(self, pdbfile):
+        u = mda.Universe(pdbfile)
+
+        u.trajectory[2]
+        u.trajectory.rewind()
+        assert_almost_equal(u.dimensions[0], self.boxsize[0])
+        assert_almost_equal(u.atoms[0].position[0], self.position[0])
+
+
+def test_standalone_pdb():
+    # check that PDBReader works without n_atoms kwarg
+    r = mda.coordinates.PDB.PDBReader(PDB_cm)
+
+    assert_(r.n_atoms == 4)
