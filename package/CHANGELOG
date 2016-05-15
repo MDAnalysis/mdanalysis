@@ -51,6 +51,7 @@ Fixes
     (Issue #755)
   * PDB files can now read a CRYST entry if it happens before model headers
     (Issue #849)
+  * Fixed HistoryReader returning 1 based frame indices (Issue #851)
 
 Changes
 
