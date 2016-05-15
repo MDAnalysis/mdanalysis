@@ -13,7 +13,7 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
+05/15/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
     - removed biopython PDB parser for coordinates and topology (Issue #777)
     - Added test for weighted rmsd (issue #814)
