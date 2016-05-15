@@ -258,7 +258,7 @@ class HistoryReader(base.Reader):
         self._file = open(self.filename, 'r')
         self._file.readline()  # header is 2 lines
         self._file.readline()
-        self.ts.frame = 0
+        self.ts.frame = -1
 
     def close(self):
         self._file.close()
