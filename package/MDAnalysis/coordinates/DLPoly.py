@@ -57,13 +57,15 @@ class ConfigReader(base.SingleFrameReader):
     _Timestep = Timestep
 
     def _read_first_frame(self):
+        unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
+
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
             levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
             if not imcon == 0:
-                cellx = list(map(float, inf.readline().split()))
-                celly = list(map(float, inf.readline().split()))
-                cellz = list(map(float, inf.readline().split()))
+                unitcell[0][:] = inf.readline().split()
+                unitcell[1][:] = inf.readline().split()
+                unitcell[2][:] = inf.readline().split()
 
             ids = []
             coords = []
@@ -126,11 +128,8 @@ class ConfigReader(base.SingleFrameReader):
             ts._velocities = velocities
         if has_forces:
             ts._forces = forces
-
         if not imcon == 0:
-            ts._unitcell[0][:] = cellx
-            ts._unitcell[1][:] = celly
-            ts._unitcell[2][:] = cellz
+            ts._unitcell = unitcell
 
         ts.frame = 0
 
@@ -168,9 +167,9 @@ class HistoryReader(base.Reader):
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = list(map(float, self._file.readline().split()))
-            ts._unitcell[1] = list(map(float, self._file.readline().split()))
-            ts._unitcell[2] = list(map(float, self._file.readline().split()))
+            ts._unitcell[0] = self._file.readline().split()
+            ts._unitcell[1] = self._file.readline().split()
+            ts._unitcell[2] = self._file.readline().split()
 
         # If ids are given, put them in here
         # and later sort by them
@@ -186,12 +185,11 @@ class HistoryReader(base.Reader):
                 ids.append(idx)
 
             # Read in this order for now, then later reorder in place
-            ts._pos[i] = list(map(float, self._file.readline().split()))
+            ts._pos[i] = self._file.readline().split()
             if self._has_vels:
-                ts._velocities[i] = list(map(float,
-                                             self._file.readline().split()))
+                ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
-                ts._forces[i] = list(map(float, self._file.readline().split()))
+                ts._forces[i] = self._file.readline().split()
 
         if ids:
             ids = np.array(ids)
@@ -210,7 +208,7 @@ class HistoryReader(base.Reader):
     def _read_frame(self, frame):
         """frame is 0 based, error checking is done in base.getitem"""
         self._file.seek(self._offsets[frame])
-        self.ts.frame = frame  # gets +1'd in read_next_frame
+        self.ts.frame = frame - 1  # gets +1'd in read_next_frame
         return self._read_next_timestep()
 
     @property
@@ -255,16 +253,12 @@ class HistoryReader(base.Reader):
 
         return n_frames
 
-    def rewind(self):
-        self._reopen()
-        self.next()
-
     def _reopen(self):
         self.close()
         self._file = open(self.filename, 'r')
         self._file.readline()  # header is 2 lines
         self._file.readline()
-        self.ts.frame = 0
+        self.ts.frame = -1
 
     def close(self):
         self._file.close()

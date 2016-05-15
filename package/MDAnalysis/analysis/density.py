@@ -80,6 +80,10 @@ Classes and Functions
    :members:
    :inherited-members:
 
+.. deprecated:: 0.15.0
+    The "permissive" flag is not used anymore (and effectively
+    defaults to True); it will be completely removed in 0.16.0.
+
 """
 from __future__ import print_function
 from six.moves import range
@@ -466,7 +470,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         group = u.select_atoms(atomselection)
 
         def current_coordinates():
-            return group.coordinates()
+            return group.positions
 
     coord = current_coordinates()
     logger.info("Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total.".format(coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
@@ -501,7 +505,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
-    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)                    
+    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     for ts in u.trajectory[start:stop:step]:
         if update_selection:
            group = u.select_atoms(atomselection)
@@ -515,8 +519,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-   
-    
+
+
     n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
@@ -596,14 +600,14 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
                 solvation_shell = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
                 group = MDAnalysis.core.AtomGroup.AtomGroup(set_solvent - set(solvation_shell))  # bulk
-                return group.coordinates()
+                return group.positions
         else:
             def notwithin_coordinates(cutoff=cutoff):
                 # acts as '<solvent> WITHIN <cutoff> OF <protein>'
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
                 group = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
-                return group.coordinates()
+                return group.positions
     else:
         # slower distance matrix based (calculate all with all distances first)
         dist = np.zeros((len(solvent), len(protein)), dtype=np.float64)
@@ -616,8 +620,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
             aggregatefunc = np.any
 
         def notwithin_coordinates(cutoff=cutoff):
-            s_coor = solvent.coordinates()
-            p_coor = protein.coordinates()
+            s_coor = solvent.positions
+            p_coor = protein.positions
             # Does water i satisfy d[i,j] > r for ALL j?
             d = MDAnalysis.analysis.distances.distance_array(s_coor, p_coor, box=box, result=dist)
             return s_coor[aggregatefunc(compare(d, cutoff), axis=1)]
@@ -727,11 +731,7 @@ class BfactorDensityCreator(object):
         :Arguments:
 
           pdb
-            PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the
-            simpl PDB reader. If the Bio.PDB reader is required, either set
-            the *permissive_pdb_reader* flag to ``False`` in
-            :data:`MDAnalysis.core.flags` or supply a Universe
-            that was created with the `permissive` = ``False`` keyword.
+            PDB file or :class:`MDAnalysis.Universe`;
           atomselection
             selection string (MDAnalysis syntax) for the species to be analyzed
           delta
@@ -751,7 +751,7 @@ class BfactorDensityCreator(object):
         """
         u = MDAnalysis.as_Universe(pdb)
         group = u.select_atoms(atomselection)
-        coord = group.coordinates()
+        coord = group.positions
         logger.info("Selected {0:d} atoms ({1!s}) out of {2:d} total.".format(coord.shape[0], atomselection, len(u.atoms)))
         smin = np.min(coord, axis=0) - padding
         smax = np.max(coord, axis=0) + padding

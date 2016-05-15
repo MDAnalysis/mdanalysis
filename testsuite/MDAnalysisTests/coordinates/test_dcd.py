@@ -7,14 +7,13 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal,
                            assert_allclose, dec)
-import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-from MDAnalysisTests import module_not_found
+from MDAnalysisTests import module_not_found, tempdir
 
 
 @attr('issue')
@@ -226,8 +225,8 @@ class TestDCDWriter(TestCase):
         w = mda.Universe(PSF, self.outfile)
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="coordinates do not match")
 
@@ -242,8 +241,8 @@ class TestDCDWriter(TestCase):
         assert_equal(w.trajectory.n_frames, 1,
                      "with_statement: single frame trajectory has wrong "
                      "number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="with_statement: coordinates do not match")
 
@@ -287,8 +286,8 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            xtc.atoms.coordinates(),
-            dcd.atoms.coordinates(),
+            xtc.atoms.positions,
+            dcd.atoms.positions,
             3,
             err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
 
@@ -304,16 +303,16 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
             dcd.trajectory.frame))
         xtc.trajectory[3]
         dcd.trajectory[3]
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
             dcd.trajectory.frame))
@@ -566,5 +565,3 @@ class TestDCDTimestep(BaseTimestepTest):
         assert_allclose(self.ts._unitcell, np.array([10, 80, 11, 85, 90, 12]))
         self.ts._ts_order = old
         self.ts.dimensions = np.zeros(6)
-
-

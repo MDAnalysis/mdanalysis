@@ -25,11 +25,10 @@ from numpy.testing import (TestCase, dec,
 import numpy as np
 from nose.plugins.attrib import attr
 
-import tempdir
 from os import path
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA
-from MDAnalysisTests import executable_not_found, parser_not_found
+from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
 
 
 class TestRotationMatrix(object):
@@ -87,18 +86,20 @@ class TestAlign(TestCase):
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.select_atoms('backbone')
-        first_frame = bb.coordinates(copy=True)
+        first_frame = bb.positions
         self.universe.trajectory[-1]
-        last_frame = bb.coordinates()
+        last_frame = bb.positions
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
-        rmsd = rms.rmsd(first_frame, last_frame)
-        assert_almost_equal(rms.rmsd(last_frame, first_frame), rmsd, 6,
+        rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
+        assert_almost_equal(rms.rmsd(last_frame, first_frame,
+                                     superposition=True),
+                            rmsd, 6,
                             err_msg="error: rmsd() is not symmetric")
-        assert_almost_equal(rmsd, 6.8342494129169804, 5,
+        assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
 
@@ -114,13 +115,13 @@ class TestAlign(TestCase):
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
-        self._assert_rmsd(fitted, 0, 6.92913674516568)
+        self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
-        rmsd = rms.rmsd(self.reference.atoms.coordinates(),
-                        fitted.atoms.coordinates())
+        rmsd = rms.rmsd(self.reference.atoms.positions,
+                        fitted.atoms.positions, superposition=True)
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame {0:d} of fit does not have "
                             "expected RMSD".format(frame))

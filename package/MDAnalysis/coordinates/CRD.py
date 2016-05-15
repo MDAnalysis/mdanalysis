@@ -145,7 +145,7 @@ class CRDWriter(base.Writer):
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        coor = atoms.positions  # can write from selection == Universe (Issue 49)
         with util.openany(self.filename, 'w') as self.crd:
             self._TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
             self._TITLE("")

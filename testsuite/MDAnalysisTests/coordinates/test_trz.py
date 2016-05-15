@@ -4,7 +4,6 @@ from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_raises)
-import tempdir
 import numpy as np
 
 from unittest import TestCase
@@ -14,6 +13,7 @@ from MDAnalysis import NoDataError
 from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
+from MDAnalysisTests import tempdir
 
 
 class TestTRZReader(TestCase, RefTRZ):
@@ -240,8 +240,8 @@ class TestWrite_Partial_Timestep(TestCase):
 
         u_ag = mda.Universe(self.outfile)
 
-        assert_array_almost_equal(self.ag.coordinates(),
-                                  u_ag.atoms.coordinates(),
+        assert_array_almost_equal(self.ag.positions,
+                                  u_ag.atoms.positions,
                                   self.prec,
                                   err_msg="Writing AtomGroup timestep failed.")
 
@@ -255,4 +255,3 @@ class TestTRZTimestep(BaseTimestepTest):
                          0., 11., 0.,
                          0., 0., 12.])
     uni_args = (TRZ_psf, TRZ)
-

@@ -166,14 +166,9 @@ class _TestTopology(TestCase):
         del self.universe
 
     def test_correct_parser(self):
-        """Check that get_parser returns the intended parser"""
-        try:
-            perm = self.perm
-        except AttributeError:
-            perm = False
-        ret = get_parser_for(self.topology, permissive=perm)
-
-        assert_equal(self.parser, ret)
+      """Check that get_parser returns the intended parser"""
+      ret = get_parser_for(self.topology)
+      assert_equal(self.parser, ret)
 
     def test_parser(self):
         """Check that the parser works as intended,
@@ -1005,12 +1000,6 @@ class RefPDB(object):
     ref_n_atoms = 3341
     ref_numresidues = 214
 
-
-class RefPDB_Perm(RefPDB):
-    perm = True
-    parser = MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser
-
-
 class TestPDB(_TestTopology, RefPDB):
     """Testing PDB topology parsing (PrimitivePDB)"""
     @staticmethod
@@ -1045,10 +1034,6 @@ class TestPDB(_TestTopology, RefPDB):
         """
         with self.parser(PDB_conect) as p:
             p.parse()
-
-
-class TestPDB_Perm(_TestTopology, RefPDB_Perm):
-    pass
 
 
 class RefXPDB(object):

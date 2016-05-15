@@ -92,7 +92,7 @@ class AnalysisBase(object):
         """
         pass
 
-    def run(self):
+    def run(self, **kwargs):
         """Perform the calculation"""
         logger.info("Starting preparation")
         self._prepare()

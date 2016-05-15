@@ -18,10 +18,10 @@ import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-from numpy.testing import *
+from numpy.testing import assert_equal, TestCase
 
 import os
-import tempdir
+from MDAnalysisTests import tempdir
 
 
 class TestPDBQT(TestCase):

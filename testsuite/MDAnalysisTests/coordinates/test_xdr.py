@@ -12,7 +12,6 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
                            assert_almost_equal, assert_raises,
                            assert_array_equal)
-import tempdir
 from unittest import TestCase
 
 
@@ -27,6 +26,7 @@ from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
+from MDAnalysisTests import tempdir
 
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
@@ -155,7 +155,7 @@ class _GromacsReader(TestCase):
         ca = U.select_atoms('name CA and resid 122')
         # low precision match (2 decimals in A, 3 in nm) because the above are
         # the trr coords
-        assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
+        assert_array_almost_equal(ca.positions, ca_Angstrom, 2,
                                   err_msg="coords of Ca of resid 122 do not "
                                   "match for frame 3")
 
@@ -231,8 +231,8 @@ class _GromacsReader(TestCase):
         assert_equal(u.trajectory.n_frames, 2)
         # prec = 6: TRR test fails; here I am generous and take self.prec =
         # 3...
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec)
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec)
 
     @dec.slow
     def test_EOFraisesIOErrorEIO(self):
@@ -337,7 +337,7 @@ class _XDRNoConversion(TestCase):
         ca = U.select_atoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals
         # in nm in xtc!
-        assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
+        assert_array_almost_equal(ca.positions, ca_nm, 3,
                                   err_msg="native coords of Ca of resid 122 "
                                   "do not match for frame 3 with "
                                   "convert_units=False")
@@ -532,8 +532,8 @@ class _GromacsWriterIssue101(TestCase):
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
         assert_almost_equal(
-            w.atoms.coordinates(),
-            u.atoms.coordinates(),
+            w.atoms.positions,
+            u.atoms.positions,
             self.prec,
             err_msg="coordinates do not match for {0!r}".format(filename))
 

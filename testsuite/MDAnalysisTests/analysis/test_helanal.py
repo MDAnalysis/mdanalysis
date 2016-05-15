@@ -15,7 +15,6 @@
 #
 import os
 import re
-import tempdir
 
 import numpy as np
 from numpy.testing import (dec, assert_raises, assert_,
@@ -27,7 +26,7 @@ import MDAnalysis.analysis.helanal
 from MDAnalysis import FinishTimeException
 from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX)
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 # reference data from a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
@@ -149,5 +148,3 @@ def test_xtc_striding():
     #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
     #   except IndexError:
     #       self.fail("IndexError consistent with Issue 188.")
-
-

@@ -27,7 +27,6 @@ from Bio.KDTree import KDTree
 
 from MDAnalysis.core.AtomGroup import AtomGroup
 
-
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the
     radius of a given query position.
@@ -39,33 +38,33 @@ class AtomNeighborSearch(object):
 
     def __init__(self, atom_group, bucket_size=10):
         """
-        :Arguments:
-         *atom_list*
-          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)
-         *bucket_size*
+
+        Parameters
+        ----------
+        atom_list : AtomGroup
+          list of atoms
+        bucket_size : int
           Number of entries in leafs of the KDTree. If you suffer poor
           performance you can play around with this number. Increasing the
           `bucket_size` will speed up the construction of the KDTree but
           slow down the search.
         """
         self.atom_group = atom_group
-        if not hasattr(atom_group, 'coordinates'):
-            raise TypeError('atom_group must have a coordinates() method'
-                            '(eq a AtomGroup from a selection)')
         self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
-        self.kdtree.set_coords(atom_group.coordinates())
+        self.kdtree.set_coords(atom_group.positions)
 
     def search(self, atoms, radius, level='A'):
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
 
-        :Arguments:
-         *atoms*
-          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)
-         *radius*
-          float. Radius for search in Angstrom.
-         *level* (optional)
+        Parameters
+        ----------
+        atoms : AtomGroup
+          list of atoms
+        radius : float
+          Radius for search in Angstrom.
+        level : str
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
@@ -77,13 +76,14 @@ class AtomNeighborSearch(object):
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
-        """ Convert list of atom_indices in a AtomGroup to either the
-            Atoms or segments/residues containing these atoms.
+        """Convert list of atom_indices in a AtomGroup to either the
+        Atoms or segments/residues containing these atoms.
 
-        :Arguments:
-         *indices*
+        Parameters
+        ----------
+        indices
            list of atom indices
-         *level*
+        level : str
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """

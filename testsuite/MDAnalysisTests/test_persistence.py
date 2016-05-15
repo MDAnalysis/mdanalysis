@@ -30,7 +30,6 @@ import os
 import gc
 import shutil
 import warnings
-import tempdir
 
 
 class TestAtomGroupPickle(TestCase):

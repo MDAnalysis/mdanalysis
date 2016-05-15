@@ -112,7 +112,7 @@ def build_residues(atoms):
     return residues
 
 
-def get_parser_for(filename, permissive=False, format=None):
+def get_parser_for(filename, format=None):
     """Return the appropriate topology parser for *filename*.
 
     Automatic detection is disabled when an explicit *format* is
@@ -125,9 +125,6 @@ def get_parser_for(filename, permissive=False, format=None):
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
-    if format == 'PDB' and permissive:
-        return _PARSERS['Permissive_PDB']
-
     try:
         return _PARSERS[format]
     except KeyError:

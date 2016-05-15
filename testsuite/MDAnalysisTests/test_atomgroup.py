@@ -34,10 +34,9 @@ from numpy.testing import (TestCase, dec, raises, assert_equal,
 from nose.plugins.attrib import attr
 
 import os
-import tempdir
 import itertools
 
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 class TestAtom(TestCase):
@@ -131,8 +130,8 @@ class TestAtom(TestCase):
 
     def test_set_undefined_occupancy(self):
         self.universe.atoms[0].occupancy = .5
-        assert self.universe.atoms[0].occupancy == .5
-        assert self.universe.atoms[1].occupancy == 1
+        assert_equal(self.universe.atoms[0].occupancy, .5)
+        assert_equal(self.universe.atoms[1].occupancy, 1)
 
 
 class TestAtomComparisons(object):
@@ -316,7 +315,7 @@ class TestAtomGroup(TestCase):
 
     def test_coordinates(self):
         assert_array_almost_equal(
-            self.ag.coordinates()[1000:2000:200],
+            self.ag.positions[1000:2000:200],
             np.array([[3.94543672, -12.4060812, -7.26820087],
                       [13.21632767, 5.879035, -14.67914867],
                       [12.07735443, -9.00604534, 4.09301519],
@@ -580,7 +579,7 @@ class TestAtomGroup(TestCase):
         # Provide arbitrary box
         ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))
         assert_array_almost_equal(
-            ag.coordinates(),
+            ag.positions,
             np.array([[3.94543672, 2.5939188, 2.73179913],
                       [3.21632767, 0.879035, 0.32085133],
                       [2.07735443, 0.99395466, 4.09301519],
@@ -788,7 +787,7 @@ class TestAtomGroup(TestCase):
         pos = ag.positions + 3.14
         ag.positions = pos
         # should work
-        assert_almost_equal(ag.coordinates(), pos,
+        assert_almost_equal(ag.positions, pos,
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
@@ -802,7 +801,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.select_atoms("bynum 12:42")
         pos = ag.get_positions() + 3.14
         ag.set_positions(pos)
-        assert_almost_equal(ag.coordinates(), pos,
+        assert_almost_equal(ag.positions, pos,
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
@@ -1531,7 +1530,7 @@ class _WriteAtoms(TestCase):
     def test_write_atoms(self):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
-        assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
+        assert_array_almost_equal(self.universe.atoms.positions, u2.atoms.positions, self.precision,
                                   err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
     def test_write_empty_atomgroup(self):
@@ -1544,7 +1543,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         CA2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(CA.atoms), "written CA selection does not match original selection")
-        assert_almost_equal(CA2.coordinates(), CA.coordinates(), self.precision,
+        assert_almost_equal(CA2.positions, CA.positions, self.precision,
                             err_msg="CA coordinates do not agree with original")
 
     def test_write_Residue(self):
@@ -1553,7 +1552,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written R206 Residue does not match original ResidueGroup")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="Residue R206 coordinates do not agree with original")
 
     def test_write_ResidueGroup(self):
@@ -1562,7 +1561,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written LEU ResidueGroup does not match original ResidueGroup")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="ResidueGroup LEU coordinates do not agree with original")
 
     def test_write_Segment(self):
@@ -1571,7 +1570,7 @@ class _WriteAtoms(TestCase):
         u2 = self.universe_from_tmp()
         G2 = u2.select_atoms('all')  # check EVERYTHING, otherwise we might get false positives!
         assert_equal(len(u2.atoms), len(G.atoms), "written s4AKE segment does not match original segment")
-        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+        assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
     def test_write_Universe(self):
@@ -1581,7 +1580,7 @@ class _WriteAtoms(TestCase):
         W.close()
         u2 = self.universe_from_tmp()
         assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
-        assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
+        assert_almost_equal(u2.atoms.positions, U.atoms.positions, self.precision,
                             err_msg="written universe 4AKE coordinates do not agree with original")
 
 
@@ -1663,20 +1662,6 @@ class TestUniverse(TestCase):
 
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_load_new_strict(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=False)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_new_permissive(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small, permissive=True)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1724,6 +1709,19 @@ class TestUniverse(TestCase):
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
+    @staticmethod
+    def test_universe_kwargs():
+        u = MDAnalysis.Universe(PSF, PDB_small, fake_kwarg=True)
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
+
+        assert_(u.kwargs['fake_kwarg'] is True)
+
+        # initialize new universe from pieces of existing one
+        u2 = MDAnalysis.Universe(u.filename, u.trajectory.filename,
+                                 **u.kwargs)
+
+        assert_(u2.kwargs['fake_kwarg'] is True)
+        assert_equal(u.kwargs, u2.kwargs)
 
 class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
@@ -2121,11 +2119,13 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
+        assert_('guess_bonds' in u.kwargs)
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = MDAnalysis.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
+        assert_(u.kwargs['guess_bonds'] is True)
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
@@ -2136,6 +2136,8 @@ class TestGuessBonds(TestCase):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=True,
                                 vdwradii=self.vdw)
         self._check_universe(u)
+        assert_(u.kwargs['guess_bonds'] is True)
+        assert_equal(self.vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=False)
@@ -2143,6 +2145,7 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.bonds), 0)
         assert_equal(len(u.angles), 0)
         assert_equal(len(u.dihedrals), 0)
+        assert_(u.kwargs['guess_bonds'] is False)
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
