@@ -42,7 +42,7 @@ install:
   - find . -name '*.pyx' -exec touch '{}' \;
   - pip install -v package/
   - pip install testsuite/
-  - pip install coveralls tempdir
+  - pip install coveralls
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
