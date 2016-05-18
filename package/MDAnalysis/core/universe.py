@@ -128,6 +128,9 @@ class Universe(object):
         if isinstance(args[0], Topology):
             self._topology = args[0]
             self.filename = None
+
+            if len(coordinatefile) == 0:
+                coordinatefile = None
         else:
             self.filename = args[0]
             topology_format = kwargs.pop('topology_format', None)
