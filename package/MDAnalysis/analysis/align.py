@@ -168,14 +168,17 @@ normal users.
 import os.path
 from six.moves import range, zip, zip_longest
 import numpy as np
+from numpy.lib.utils import deprecate
 import warnings
 import logging
 
+import MDAnalysis as MDA
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
-from MDAnalysis.lib.log import ProgressMeter
 import MDAnalysis.analysis.rms as rms
+from MDAnalysis.lib.log import ProgressMeter
 
+from .base import AnalysisBase
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -232,16 +235,17 @@ def rotation_matrix(a, b, weights=None):
     :func:`rmsd` calculates the RMSD between *a* and *b*; for fitting a whole
     trajectory it is more efficient to use :func:`rms_fit_trj`. A complete fit
     of two structures can be done with :func:`alignto`. """
-    if weights is not None:
-        # weights are constructed as relative to the mean
-        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
 
+    if weights is not None:
+        weights = np.asarray(weights, dtype=np.float64)
+
     rot = np.zeros(9, dtype=np.float64)
     rmsd = qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, rot, weights)
+
     return np.matrix(rot.reshape(3, 3)), rmsd
 
 
@@ -285,7 +289,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          1. any valid selection string for
             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
-         2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
+         2. dictionary ``{'mobile':sel1, 'reference':sel2}``
             (the :func:`fasta2select` function returns such a
             dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
          3.  tuple ``(sel1, sel2)``
@@ -340,7 +344,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
         mobile_atoms = mobile.atoms
         ref_atoms = reference.atoms
     else:
-        select = rms._process_selection(select)
+        select = rms.process_selection(select)
         mobile_atoms = mobile.select_atoms(*select['mobile'])
         ref_atoms = reference.select_atoms(*select['reference'])
 
@@ -348,7 +352,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
                                                  tol_mass=tol_mass, strict=strict)
 
     if mass_weighted:
-        weights = ref_atoms.masses / np.mean(ref_atoms.masses)
+        weights = np.asarray(ref_atoms.masses)
         ref_com = ref_atoms.center_of_mass()
         mobile_com = mobile_atoms.center_of_mass()
     else:
@@ -380,6 +384,140 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     return old_rmsd, new_rmsd
 
 
+class AlignTraj(AnalysisBase):
+    def __init__(self, mobile, reference, select='all', filename=None, prefix='rmsfit_',
+                    mass_weighted=False, tol_mass=0.1, strict=False, force=True, quiet=False,
+                    start=None, stop=None, step = None, **kwargs):
+        """Initialization
+
+        Parameters
+        ----------
+        mobile : Universe
+            Universe containing trajectory to be fitted to reference
+        reference : Universe
+            Universe containing trajectory frame to be used as reference
+        select : string, optional
+            Set as default to all, is used for Universe.select_atoms to choose
+            subdomain to be fitted against
+        filename : string, optional
+            Provide a filename for results to be written to
+        prefix : string, optional
+            Provide a string to prepend to filename for results to be written
+            to
+        mass_weighted : boolean, optional
+            Boolean, if true will rmsd will be mass-weighted corresponding to
+            the atoms selected in the reference trajectory
+        tol_mass : float, optional
+            Tolerance given to `get_matching_atoms` to find appropriate atoms
+        strict : boolean, optional
+            Force `get_matching_atoms` to fail if atoms can't be found using exact
+            methods
+        force : boolean, optional
+            Force overwrite of filename for rmsd-fitting
+        quiet : boolean, optional
+            Set logger to show minimal information
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+
+            
+        """
+
+        self.mobile = mobile
+        self.reference = reference
+        frames = self.mobile.trajectory
+
+        select = rms.process_selection(select)
+        self.ref_atoms = self.reference.select_atoms(*select['reference'])
+        self.mobile_atoms = self.mobile.select_atoms(*select['mobile'])
+        self.natoms = self.mobile_atoms.n_atoms
+
+        kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
+
+        if filename is None:
+            path, fn = os.path.split(frames.filename)
+            filename = os.path.join(path, prefix + fn)
+
+        if os.path.exists(filename) and not force:
+            logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
+
+        self.filename = filename
+
+        self.natoms = self.mobile_atoms.n_atoms
+        self.ref_atoms, self.mobile_atoms = get_matching_atoms(self.ref_atoms,
+                            self.mobile_atoms, tol_mass=tol_mass, strict=strict)
+
+        self.writer = MDA.Writer(filename, self.natoms)
+
+        if mass_weighted:
+            # if performing a mass-weighted alignment/rmsd calculation
+            self.weights = np.asarray(ref_atoms.masses)
+        else:
+            self.weights = None
+
+        if os.path.exists(self.filename) and not force:
+            logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(self.filename))
+
+        logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
+
+        self.quiet = quiet
+        if self.quiet:
+            # should be part of a try ... finally to guarantee restoring the log level
+            logging.disable(logging.WARN)
+
+        self._setup_frames(frames, start,stop,step)
+
+    def _prepare(self):
+        # reference centre of mass system
+        self.ref_com = self.ref_atoms.center_of_mass()
+        self.ref_coordinates = self.ref_atoms.positions - self.ref_com
+
+        # allocate the array for selection atom coords
+        self.mobile_coordinates = self.mobile_atoms.positions.copy()
+        self.rmsd = np.zeros(())
+
+        # R: rotation matrix that aligns r-r_com, x~-x~com
+        #    (x~: selected coordinates, x: all coordinates)
+        # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
+        self.rot = np.zeros(9, dtype=np.float64)  # allocate space for calculation
+        self.R = np.matrix(self.rot.reshape(3, 3))
+
+    def _single_frame(self):
+
+        self.mobile_com = self.mobile_atoms.center_of_mass().astype(np.float32)
+        self.mobile_coordinates[:] = self.mobile_atoms.positions - self.mobile_com
+
+        # Need to transpose coordinates such that the coordinate array is
+        # 3xN instead of Nx3. Also qcp requires that the dtype be float64
+        # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
+        # so that R acts **to the left** and can be broadcasted; we're saving
+        # one transpose. [orbeckst])
+        np.append(self.rmsd, qcp.CalcRMSDRotationalMatrix(self.ref_coordinates.T.astype(np.float64),
+                self.mobile_coordinates.T.astype(np.float64), self.natoms, self.rot, self.weights))
+
+        self.R[:, :] = self.rot.reshape(3, 3)
+
+        # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
+        # (Marginally (~3%) faster than "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
+        self._ts.positions -= self.mobile_com
+        self._ts.positions[:] = self._ts.positions * self.R  # R acts to the left & is broadcasted N times.
+        self._ts.positions += self.ref_com
+
+        self.writer.write(self.mobile.atoms)  # write whole input trajectory system
+
+    def _conclude(self):
+        self.writer.close()
+        if self.quiet:
+            logging.disable(logging.NOTSET)
+
+    def save(self, rmsdfile):
+        np.savetxt(rmsdfile, self.rmsd)
+        logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
+
+@deprecate(new_name="AlignTraj", message="This function will be removed in 0.17")
 def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
                 mass_weighted=False, tol_mass=0.1, strict=False, force=True, quiet=False, **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
@@ -435,8 +573,6 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          - ``False``: show all status messages and do not change the the logging
            level (default)
 
-         .. Note:: If
-
 
       *kwargs*
          All other keyword arguments are passed on the trajectory
@@ -459,6 +595,9 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
        the old behavior was the equivalent of *strict* = ``True``.
 
     """
+    warnings.warn('rms_fit_trj is deprecated in favor of the '
+                  'AlignTraj class, removal is targeted for '
+                  'version 16.0.', category=DeprecationWarning)
     frames = traj.trajectory
     if quiet:
         # should be part of a try ... finally to guarantee restoring the log level
@@ -477,7 +616,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     writer = _Writer(filename, **kwargs)
     del _Writer
 
-    select = rms._process_selection(select)
+    select = rms.process_selection(select)
     ref_atoms = reference.select_atoms(*select['reference'])
     traj_atoms = traj.select_atoms(*select['mobile'])
     natoms = traj_atoms.n_atoms
@@ -488,9 +627,9 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     logger.info("RMS-fitting on {0:d} atoms.".format(len(ref_atoms)))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weight = ref_atoms.masses / ref_atoms.masses.mean()
+        weights = np.asarray(ref_atoms.masses)
     else:
-        weight = None
+        weights = None
 
     # reference centre of mass system
     ref_com = ref_atoms.center_of_mass()
@@ -525,7 +664,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         # one transpose. [orbeckst])
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype(np.float64),
                                                traj_coordinates.T.astype(np.float64),
-                                               natoms, rot, weight)
+                                               natoms, rot, weights)
         R[:, :] = rot.reshape(3, 3)
 
         # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
@@ -538,6 +677,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                 frames.n_frames, filename)
+
     if rmsdfile is not None:
         np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)

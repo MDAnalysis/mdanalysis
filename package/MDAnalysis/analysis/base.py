@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -27,6 +27,8 @@ from six.moves import range
 
 import numpy as np
 import logging
+from MDAnalysis.lib.log import ProgressMeter
+
 
 
 logger = logging.getLogger(__name__)
@@ -36,14 +38,14 @@ class AnalysisBase(object):
     """Base class for defining multi frame analysis
 
     The analysis base class is designed as a template for creating
-    multiframe analysis.  
+    multiframe analysis.
 
     The class implements the following methods:
 
     _setup_frames(trajectory, start=None, stop=None, step=None)
       Pass a Reader object and define the desired iteration pattern
       through the trajectory
-      
+
     run
       The user facing run method.  Calls the analysis methods
       defined below
@@ -73,10 +75,13 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.nframes = len(range(start, stop, step))
+        if self.nframes > 0:
+            self.percentage = ProgressMeter(self.nframes, interval=10, format=
+        "Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
- 
+        
         Don't worry about normalising, just deal with a single frame.
         """
         pass
@@ -101,7 +106,8 @@ class AnalysisBase(object):
             self._ts = ts
             #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
+            if self.nframes > 0:
+                self.percentage.echo(self._ts.frame)
+
         logger.info("Finishing up")
         self._conclude()
-
-

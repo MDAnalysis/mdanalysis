@@ -118,6 +118,19 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
 
+    def test_AlignTraj(self):
+        self.reference.trajectory[-1]
+        self.tempdir = tempdir.TempDir()
+        self.outfile = path.join(self.tempdir.name, 'AlignTraj_test.dcd')
+        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile)
+        x.run()
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        # RMSD against the reference frame
+        # calculated on Mac OS X x86 with MDA 0.7.2 r689
+        # VMD: 6.9378711
+        self._assert_rmsd(fitted, 0, 6.929083044751061)
+        self._assert_rmsd(fitted, -1, 0.0)
+
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(self.reference.atoms.positions,
