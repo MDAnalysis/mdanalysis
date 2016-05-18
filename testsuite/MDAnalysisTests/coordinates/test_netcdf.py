@@ -7,7 +7,6 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_array_equal,
                            assert_almost_equal, assert_raises, dec)
-import tempdir
 from unittest import TestCase
 from MDAnalysisTests import module_not_found
 
@@ -15,6 +14,8 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
+from MDAnalysisTests import tempdir
+
 
 class _NCDFReaderTest(_TRJReaderTest):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")

@@ -22,7 +22,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import make_classes
 from MDAnalysis import NoDataError
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 import numpy as np
 from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
@@ -30,7 +30,6 @@ from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
 from nose.plugins.attrib import attr
 
 import os
-import tempdir
 
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto

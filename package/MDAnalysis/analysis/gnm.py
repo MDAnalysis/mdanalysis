@@ -210,7 +210,7 @@ class GNMAnalysis(object):
         the cutoff. Returns the resulting matrix
         '''
         #ca = self.u.select_atoms(self.selection)
-        positions = self.ca.coordinates()
+        positions = self.ca.positions
 
         natoms = len(positions)
 
@@ -320,7 +320,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
     def generate_kirchoff(self):
         natoms = len(self.ca.atoms)
         nresidues = len(self.ca.residues)
-        positions = self.ca.coordinates()
+        positions = self.ca.positions
         [res_positions, grid, low_x, low_y, low_z] = generate_grid(positions, self.cutoff)
         residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue]
         matrix = np.zeros((nresidues, nresidues), "float")

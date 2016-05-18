@@ -253,7 +253,7 @@ class PDBQTWriter(base.Writer):
         self.TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        coor = atoms.positions  # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if not self.has_valid_coordinates(self.pdb_coor_limits, coor):

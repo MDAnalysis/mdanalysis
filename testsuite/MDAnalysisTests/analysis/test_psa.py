@@ -22,10 +22,8 @@ from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_)
 import numpy as np
 
-import tempdir
-
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 class TestPSAnalysis(TestCase):

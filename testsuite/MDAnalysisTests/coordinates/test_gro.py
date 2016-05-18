@@ -5,13 +5,17 @@ import bz2
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
-                           assert_array_almost_equal, assert_raises)
+                           assert_array_almost_equal, assert_raises,
+                           )
 from unittest import TestCase
-import tempdir
 
-from MDAnalysisTests.datafiles import (GRO, GRO_velocity, GRO_large)
+from MDAnalysisTests.datafiles import (
+    GRO, GRO_velocity, GRO_large,
+    GRO_incomplete_vels,
+)
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests import tempdir
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -159,6 +163,25 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
 
+class TestGROIncompleteVels(object):
+    def setUp(self):
+        self.u = mda.Universe(GRO_incomplete_vels)
+
+    def tearDown(self):
+        del self.u
+
+    def test_load(self):
+        assert_equal(len(self.u.atoms), 4)
+
+    def test_velocities(self):
+        assert_array_almost_equal(self.u.atoms[0].velocity,
+                                  np.array([ 79.56,  124.08,   49.49]),
+                                  decimal=3)
+        assert_array_almost_equal(self.u.atoms[2].velocity,
+                                  np.array([0.0, 0.0, 0.0]),
+                                  decimal=3)
+
+
 class TestGROWriter(TestCase, tempdir.TempDir):
     def setUp(self):
         self.universe = mda.Universe(GRO)
@@ -279,7 +302,7 @@ class TestGROWriterVels(object):
         u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
-        
+
         assert_array_almost_equal(u.atoms.velocities,
                                   u2.atoms.velocities)
 

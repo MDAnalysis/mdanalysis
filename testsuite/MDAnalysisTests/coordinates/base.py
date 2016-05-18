@@ -3,7 +3,6 @@ import numpy as np
 from six.moves import zip, range
 from nose.plugins.attrib import attr
 from unittest import TestCase
-import tempdir
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
                            assert_)
@@ -14,6 +13,7 @@ from MDAnalysis import NoDataError
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
+from MDAnalysisTests import tempdir
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
@@ -21,13 +21,6 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
 
     def tearDown(self):
         del self.universe
-
-    def test_flag_permissive_pdb_reader(self):
-        """test_flag_permissive_pdb_reader: permissive_pdb_reader==True enables
-        primitive PDB reader"""
-        assert_equal(mda.core.flags['permissive_pdb_reader'], True,
-                     "'permissive_pdb_reader' flag should be True as "
-                     "MDAnalysis default")
 
     def test_load_file(self):
         U = self.universe

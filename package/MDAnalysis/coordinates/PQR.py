@@ -205,7 +205,7 @@ class PQRWriter(base.Writer):
                 frame = 0  # should catch cases when we are analyzing a single frame(?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coordinates = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        coordinates = atoms.positions  # can write from selection == Universe (Issue 49)
         if self.convert_units:
             self.convert_pos_to_native(coordinates)  # inplace because coordinates is already a copy
 

@@ -217,8 +217,8 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
-    >>> R = rotation_matrix(A.select_atoms('backbone').coordinates(),
-    >>>                     B.select_atoms('backbone').coordinates())[0]
+    >>> R = rotation_matrix(A.select_atoms('backbone').positions,
+    >>>                     B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
     >>> A.atoms.write("rotated.pdb")
 
@@ -356,8 +356,8 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
         ref_com = ref_atoms.center_of_geometry()
         mobile_com = mobile_atoms.center_of_geometry()
 
-    ref_coordinates = ref_atoms.coordinates() - ref_com
-    mobile_coordinates = mobile_atoms.coordinates() - mobile_com
+    ref_coordinates = ref_atoms.positions - ref_com
+    mobile_coordinates = mobile_atoms.positions - mobile_com
 
     old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates)
 
@@ -494,10 +494,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     # reference centre of mass system
     ref_com = ref_atoms.center_of_mass()
-    ref_coordinates = ref_atoms.coordinates() - ref_com
+    ref_coordinates = ref_atoms.positions - ref_com
 
     # allocate the array for selection atom coords
-    traj_coordinates = traj_atoms.coordinates().copy()
+    traj_coordinates = traj_atoms.positions.copy()
 
     # RMSD timeseries
     nframes = len(frames)
@@ -516,7 +516,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
         x_com = traj_atoms.center_of_mass().astype(np.float32)
-        traj_coordinates[:] = traj_atoms.coordinates() - x_com
+        traj_coordinates[:] = traj_atoms.positions - x_com
 
         # Need to transpose coordinates such that the coordinate array is
         # 3xN instead of Nx3. Also qcp requires that the dtype be float64

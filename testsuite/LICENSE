@@ -484,7 +484,7 @@ pyqcprot (src/pyqcprot) is released under the following 'BSD 3-clause' licence:
 -----------------------------------------------------------------------------
 PyQCPROT
 
-    Author(s) of Original Implementation:     
+    Author(s) of Original Implementation:
                   Douglas L. Theobald
                   Department of Biochemistry
                   MS 009
@@ -494,7 +494,7 @@ PyQCPROT
                   USA
 
                   dtheobald@brandeis.edu
-                  
+
                   Pu Liu
                   Johnson & Johnson Pharmaceutical Research and Development, L.L.C.
                   665 Stockton Drive
@@ -504,7 +504,7 @@ PyQCPROT
                   pliu24@its.jnj.com
 
                   For the original code written in C see:
-                  http://theobald.brandeis.edu/qcp/ 
+                  http://theobald.brandeis.edu/qcp/
 
 
     Author of Python Port:
@@ -512,10 +512,10 @@ PyQCPROT
                   Department of Biological Sciences
                   University of Pittsburgh
                   Pittsburgh, PA 15260
-                   
+
                   jla65@pitt.edu
 
- 
+
     If you use this QCP rotation calculation method in a publication, please
     reference:
 
@@ -525,25 +525,25 @@ PyQCPROT
       Acta Crystallographica A 61(4):478-480.
 
       Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
-      "Fast determination of the optimal rotational matrix for macromolecular 
+      "Fast determination of the optimal rotational matrix for macromolecular
       superpositions."
-      J. Comput. Chem. 31, 1561-1563. 
+      J. Comput. Chem. 31, 1561-1563.
 
 
-    Copyright (c) 2009-2010, Pu Liu and Douglas L. Theobald 
+    Copyright (c) 2009-2010, Pu Liu and Douglas L. Theobald
     Copyright (c) 2011       Joshua L. Adelman
     All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without modification, are permitted 
+    Redistribution and use in source and binary forms, with or without modification, are permitted
     provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+    * Redistributions of source code must retain the above copyright notice, this list of
       conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, this list 
-      of conditions and the following disclaimer in the documentation and/or other materials 
+    * Redistributions in binary form must reproduce the above copyright notice, this list
+      of conditions and the following disclaimer in the documentation and/or other materials
       provided with the distribution.
-    * Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to 
-      endorse or promote products derived from this software without specific prior written 
+    * Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to
+      endorse or promote products derived from this software without specific prior written
       permission.
 
     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -582,3 +582,24 @@ are distributed under the same license as the 'Atom' logo.
 
 ==========================================================================
 
+tempdir is released under the following MIT licence:
+
+Copyright (c) 2010-2016 Thomas Fenzl
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

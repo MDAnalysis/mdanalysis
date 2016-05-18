@@ -224,7 +224,7 @@ water = {
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
     'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0,
-    '\u212b^{-3}': 1 / 1.0, b'\xe2\x84\xab^{-3}': 1 / 1.0,  # Unicode and UTF-8 encoded
+    '\u212b^{-3}': 1 / 1.0,
     'nm^{-3}': 1 / 1e-3, 'nanometer^{-3}': 1 / 1e-3,
     'Molar': 1 / (1e-27 * constants['N_Avogadro']),
     'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
@@ -247,7 +247,7 @@ timeUnit_factor = {
 
 #: For *speed*, the basic unit is Angstrom/ps.
 speedUnit_factor = {
-    'Angstrom/ps': 1.0, 'A/ps': 1.0, '\u212b/ps': 1.0, b'\xe2\x84\xab/ps': 1.0,
+    'Angstrom/ps': 1.0, 'A/ps': 1.0, '\u212b/ps': 1.0,
     'Angstrom/picosecond': 1.0,
     'angstrom/picosecond': 1.0,  # 1
     'Angstrom/AKMA': 4.888821e-2,
@@ -269,7 +269,7 @@ energyUnit_factor = {
 #: For *force* the basic unit is kJ/(mol*Angstrom).
 forceUnit_factor = {
     'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0,
-    'kJ/(mol*\u212b)': 1.0, b'kJ/(mol*\xe2\x84\xab)': 1.0,
+    'kJ/(mol*\u212b)': 1.0,
     'kJ/(mol*nm)': 10.0,
     'Newton': 1e13/constants['N_Avogadro'],
     'N': 1e13/constants['N_Avogadro'],
@@ -343,16 +343,14 @@ def convert(x, u1, u2):
     try:
         ut1 = unit_types[u1]
     except KeyError:
-        raise ValueError(("unit '{0}' not recognized.\n" +
-                          len("ValueError: ")*[" "] +
-                          "It must be one of {1}.").format(u1, unit_types))
+        raise ValueError("unit '{0}' not recognized.\n"
+                          "It must be one of {1}.".format(u1, ", ".join(unit_types)))
     try:
         ut2 = unit_types[u2]
     except KeyError:
-        raise ValueError(("unit '{0}' not recognized.\n" +
-                          len("ValueError: ")*" " +
-                          "It must be one of {1}.").format(u2, unit_types))
+        raise ValueError("unit '{0}' not recognized.\n"
+                          "It must be one of {1}.".format(u2, ", ".join(unit_types)))
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types "
-                         "{0[ut1]} --> {0[ut2]}".format(vars()))
+                         "{0} --> {1}".format(u1, u2))
     return x * get_conversion_factor(ut1, u1, u2)

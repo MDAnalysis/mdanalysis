@@ -36,12 +36,10 @@ Also free to ask on the MDAnalysis mailing list for help:
 Google groups forbids any name that contains the string `anal'.)
 """
 from __future__ import print_function
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, find_packages
 
 import codecs
 import sys
-import os
-import glob
 import warnings
 
 
@@ -92,8 +90,8 @@ def dynamic_author_list():
     authors.remove('Naveen Michaud-Agrawal')
     authors.remove('Elizabeth J. Denning')
     authors.remove('Oliver Beckstein')
-    authors = (['Naveen Michaud-Agrawal', 'Elizabeth J. Denning']
-               + authors + ['Oliver Beckstein'])
+    authors = (['Naveen Michaud-Agrawal', 'Elizabeth J. Denning'] +
+               authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
     out_path = 'MDAnalysisTests/authors.py'
@@ -116,8 +114,8 @@ def dynamic_author_list():
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
-    print("MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected".format(*
-          sys.version_info[:2]))
+    print("MDAnalysis requires Python 2.7 or better. "
+          "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
 
@@ -128,7 +126,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    RELEASE = "0.14.1-dev0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.15.1-dev0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -168,39 +166,41 @@ For details see the report for `Issue 87`_.
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
                        'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
           package_data={'MDAnalysisTests':
-              [
-                  'data/*.psf', 'data/*.dcd', 'data/*.pdb',
-                  'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr',
-                  'data/tprs/all_bonded/*.gro', 'data/tprs/all_bonded/*.top',
-                  'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
-                  'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
-                  'data/*.crd', 'data/*.xyz',
-                  'data/Amber/*.bz2',
-                  'data/Amber/*.prmtop', 'data/Amber/*.top',
-                  'data/Amber/*.parm7',
-                  'data/Amber/*.trj', 'data/Amber/*.mdcrd',
-                  'data/Amber/*.ncdf', 'data/Amber/*.nc',
-                  'data/Amber/*.inpcrd',
-                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
-                  'data/*.fasta',
-                  'data/*.dat',
-                  'data/*.dms',
-                  'data/merge/2zmm/*.pdb',
-                  'data/*.trz',
-                  'data/mol2/*.mol2',
-                  'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
-                  'data/capping/*.gro', 'data/capping/*.pdb',
-                  'data/lammps/*.data', 'data/lammps/*.data.bz2',
-                  'data/lammps/*.data2',
-                  'data/lammps/*.dcd', 'data/lammps/*.trz',
-                  'data/lammps/*.inp',
-                  'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
-                  'data/*.inpcrd',
-                  'data/dlpoly/CONFIG*',
-                  'data/dlpoly/HISTORY*',
-                  'data/*.xml',
-                  'data/coordinates/*',
-              ],
+                        ['data/*.psf', 'data/*.dcd', 'data/*.pdb',
+                         'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr',
+                         'data/tprs/all_bonded/*.gro',
+                         'data/tprs/all_bonded/*.top',
+                         'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
+                         'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
+                         'data/*.crd', 'data/*.xyz',
+                         'data/Amber/*.bz2',
+                         'data/Amber/*.prmtop', 'data/Amber/*.top',
+                         'data/Amber/*.parm7',
+                         'data/Amber/*.trj', 'data/Amber/*.mdcrd',
+                         'data/Amber/*.ncdf', 'data/Amber/*.nc',
+                         'data/Amber/*.inpcrd',
+                         'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/*.gz',
+                         'data/*.ent',
+                         'data/*.fasta',
+                         'data/*.dat',
+                         'data/*.dms',
+                         'data/merge/2zmm/*.pdb',
+                         'data/*.trz',
+                         'data/mol2/*.mol2',
+                         'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
+                         'data/capping/*.gro', 'data/capping/*.pdb',
+                         'data/lammps/*.data', 'data/lammps/*.data.bz2',
+                         'data/lammps/*.data2',
+                         'data/lammps/*.dcd', 'data/lammps/*.trz',
+                         'data/lammps/*.inp',
+                         'data/gms/*.xyz', 'data/gms/*.gms',
+                         'data/gms/*.gms.gz',
+                         'data/*.inpcrd',
+                         'data/dlpoly/CONFIG*',
+                         'data/dlpoly/HISTORY*',
+                         'data/*.xml',
+                         'data/coordinates/*',
+                        ],
           },
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
@@ -208,7 +208,8 @@ For details see the report for `Issue 87`_.
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'numpy>=1.5',
               'nose>=1.3.7',
-              'tempdir',
           ],
-          zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
+          # had 'KeyError' as zipped egg (2MB savings are not worth the
+          # trouble)
+          zip_safe=False,
           )
