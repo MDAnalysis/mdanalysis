@@ -791,6 +791,26 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
 
+    @property
+    def ts(self):
+        """Temporary Timestep that contains the selection coordinates.
+
+        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
+        which can be passed to a trajectory writer.
+
+        If :attr:`~AtomGroup.ts` is modified then these modifications
+        will be present until the frame number changes (which
+        typically happens when the underlying trajectory frame
+        changes).
+
+        It is not possible to assign a new
+        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :attr:`AtomGroup.ts` attribute; change attributes of the object.
+        """
+        trj_ts = self.universe.trajectory.ts  # original time step
+
+        return trj_ts.copy_slice(self.indices)
+
     def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
 
@@ -1483,29 +1503,6 @@ class Atom(ComponentBase):
             ts.forces[self._ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
-
-    @property
-    def ts(self):
-        """Temporary Timestep that contains the selection coordinates.
-
-        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
-        which can be passed to a trajectory writer.
-
-        If :attr:`~AtomGroup.ts` is modified then these modifications
-        will be present until the frame number changes (which
-        typically happens when the underlying trajectory frame
-        changes).
-
-        It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
-        :attr:`AtomGroup.ts` attribute; change attributes of the object.
-        """
-        trj_ts = self.universe.trajectory.ts  # original time step
-
-        if self._ts is None or self._ts.frame != trj_ts.frame:
-            # create a timestep of same type as the underlying trajectory
-            self._ts = trj_ts.copy_slice(self.indices)
-        return self._ts
 
 
 class Residue(ComponentBase):

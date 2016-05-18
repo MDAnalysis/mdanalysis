@@ -18,7 +18,7 @@ import six
 
 import numpy as np
 from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_,
+                           assert_array_almost_equal, assert_, assert_array_equal,
                            TestCase)
 
 import MDAnalysis as mda

@@ -46,6 +46,7 @@ from __future__ import absolute_import, print_function
 
 import numpy as np
 
+from ..lib import util
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
 from ..core.topologyattrs import (
@@ -118,7 +119,7 @@ class PDBParser(TopologyReader):
 
         segids = []
 
-        with openany(self.filename) as f:
+        with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -248,7 +249,7 @@ class PDBParser(TopologyReader):
         mapping = dict((s, i) for i, s in enumerate(serials))
 
         bonds = set()
-        with openany(self.filename, "r") as f:
+        with util.openany(self.filename, "r") as f:
             lines = (line for line in f if line[:6] == "CONECT")
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())

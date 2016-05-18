@@ -25,7 +25,7 @@ This module contains classes that allow neighbor searches directly with
 import numpy as np
 from Bio.KDTree import KDTree
 
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, Atom
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the
@@ -60,7 +60,7 @@ class AtomNeighborSearch(object):
 
         Parameters
         ----------
-        atoms : AtomGroup
+        atoms : AtomGroup or Atom
           list of atoms
         radius : float
           Radius for search in Angstrom.
@@ -68,9 +68,14 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
+        if isinstance(atoms, Atom):
+            positions = Atom.position.reshape(1, 3)
+        else:
+            positions = atoms.positions
+
         indices = []
-        for atom in atoms.coordinates():
-            self.kdtree.search(atom, radius)
+        for pos in positions:
+            self.kdtree.search(pos, radius)
             indices.append(self.kdtree.get_indices())
         unique_idx = np.unique([i for l in indices for i in l])
         return self._index2level(unique_idx, level)

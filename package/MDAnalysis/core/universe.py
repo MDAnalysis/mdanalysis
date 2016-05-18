@@ -59,12 +59,6 @@ class Universe(object):
         MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
         topology) is always required. Alternatively, an existing
         :class:`MDAnalysis.core.topology.Topology` instance may also be given.
-    permissive
-        Currently only relevant for PDB files: Set to ``True`` in order to
-        ignore most errors and read typical MD simulation PDB files; set to
-        ``False`` to read with the Bio.PDB reader, which can be useful for real
-        Protein Databank PDB files. ``None``  selects the MDAnalysis default
-        (which is set in :class:`MDAnalysis.core.flags`) [``None``]
     topology_format
         Provide the file format of the topology file; ``None`` guesses it from
         the file extension [``None``] Can also pass a subclass of
@@ -165,10 +159,7 @@ class Universe(object):
                 if issubclass(topology_format, TopologyReader):
                     parser = topology_format
             except TypeError:  # But strings/None raise TypeError in issubclass
-                perm = kwargs.get('permissive',
-                                  MDAnalysis.core.flags['permissive_pdb_reader'])
                 parser = get_parser_for(self.filename,
-                                        permissive=perm,
                                         format=topology_format)
             try:
                 with parser(self.filename) as p:
@@ -232,11 +223,6 @@ class Universe(object):
              *filename*
                  the coordinate file (single frame or trajectory) *or* a list of
                  filenames, which are read one after another.
-             *permissive*
-                 currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
-                 and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-                 which can be useful for real Protein Databank PDB files. ``None``  selects the
-                 MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
              *format*
                  provide the file format of the coordinate or trajectory file;
                  ``None`` guesses it from the file extension. Note that this
@@ -272,7 +258,6 @@ class Universe(object):
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
 
         reader_format = kwargs.pop('format', None)
-        perm = kwargs.get('permissive', MDAnalysis.core.flags['permissive_pdb_reader'])
         reader = None
 
         # Check if we were passed a Reader to use
@@ -290,7 +275,6 @@ class Universe(object):
                 reader_format='CHAIN'
             try:
                 reader = get_reader_for(filename,
-                                        permissive=perm,
                                         format=reader_format)
             except TypeError as err:
                 raise TypeError(
