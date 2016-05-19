@@ -7,6 +7,7 @@ import functools
 import itertools
 
 from ..lib import mdamath
+from ..lib import util
 from . import selection
 from . import flags
 from . import levels
@@ -1069,6 +1070,76 @@ class AtomGroup(object):
             raise ValueError(
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self._ix, self.universe)
+
+    def write(self, filename=None, format="PDB",
+              filenamefmt="%(trjname)s_%(frame)d", **kwargs):
+        """Write AtomGroup to a file.
+
+        AtomGroup.write(filename[,format])
+
+        :Keywords:
+          *filename*
+               ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
+          *format*
+                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
+                Jmol (spt); case-insensitive and can also be supplied as the
+                filename extension [PDB]
+          *filenamefmt*
+                format string for default filename; use substitution tokens
+                'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
+          *bonds*
+                how to handle bond information, especially relevant for PDBs;
+                default is ``"conect"``.
+                * ``"conect"``: write only the CONECT records defined in the original
+                  file
+                * ``"all"``: write out all bonds, both the original defined and those
+                  guessed by MDAnalysis
+                * ``None``: do not write out bonds
+        .. versionchanged:: 0.9.0
+           Merged with write_selection.  This method can now write both
+           selections out.
+        """
+        import MDAnalysis.coordinates
+        import MDAnalysis.selections
+
+        # check that AtomGroup actually has any atoms (Issue #434)
+        if len(self.atoms) == 0:
+            raise IndexError("Cannot write an AtomGroup with 0 atoms")
+
+        trj = self.universe.trajectory  # unified trajectory API
+        frame = trj.ts.frame
+
+        if trj.n_frames == 1: kwargs.setdefault("multiframe", False)
+
+        if filename is None:
+            trjname, ext = os.path.splitext(os.path.basename(trj.filename))
+            filename = filenamefmt % vars()
+        filename = util.filename(filename, ext=format.lower(), keep=True)
+
+        # From the following blocks, one must pass.
+        # Both can't pass as the extensions don't overlap.
+        try:
+            writer = MDAnalysis.coordinates.writer(filename, **kwargs)
+        except TypeError:
+            # might be selections format
+            coords = False
+        else:
+            coords = True
+
+        try:
+            SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
+        except (TypeError, NotImplementedError):
+            selection = False
+        else:
+            writer = SelectionWriter(filename, **kwargs)
+            selection = True
+
+        if not (coords or selection):
+            raise ValueError("No writer found for format: {0}".format(filename))
+        else:
+            writer.write(self.atoms)
+            if coords:  # only these writers have a close method
+                writer.close()
 
 
 class ResidueGroup(object):
