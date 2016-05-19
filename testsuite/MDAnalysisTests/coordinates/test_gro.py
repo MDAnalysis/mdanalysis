@@ -63,7 +63,7 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.dt, 1.0)
 
     def test_coordinates(self):
-        A10CA = self.universe.SYSTEM.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
@@ -73,8 +73,8 @@ class TestGROReader(TestCase, RefAdK):
         # NOTe that the prec is only 1 decimal: subtracting two low precision
         #      coordinates low prec: 9.3455122920041109; high prec (from pdb):
         #      9.3513174
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
@@ -119,7 +119,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
     def test_coordinates(self):
         # note: these are the native coordinates in nm; for the test to succeed
         # we loaded with convert_units=False
-        A10CA = self.universe.SYSTEM.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         # coordinates in nm
         assert_almost_equal(A10CA.position, RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
@@ -132,8 +132,8 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         #  Arrays are not almost equal distance between M1:N and G214:C
         #    ACTUAL: 0.93455122920041123
         #    DESIRED: 0.93513173999999988
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         # coordinates in nm
         assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
