@@ -32,7 +32,7 @@ cdef extern from "stdlib.h":
 cdef extern from "math.h":
     double  sqrt(double)
 
-cdef extern from "stochasticproxembed.h":
+cdef extern from "spe.h":
     ctypedef struct IVWrapper:
         pass
     ctypedef void* empty

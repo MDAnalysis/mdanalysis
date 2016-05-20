@@ -68,7 +68,7 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.14.1-dev0"
+RELEASE = "0.16.0-dev0"
 
 is_release = not 'dev' in RELEASE
 
@@ -330,17 +330,17 @@ def extensions(config):
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
     encore_utils = MDAExtension('analysis.encore.cutils',
-                            sources = ['MDAnalysis/lib/src/encore_cutils/cutils' + source_suffix],
+                            sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
                             include_dirs = include_dirs,
                             extra_compile_args = ["-O3", "-ffast-math"])
     ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
-                            sources = ['MDAnalysis/lib/src/clustering/affinityprop' + source_suffix, "MDAnalysis/lib/src/clustering/ap.c"],
-                            include_dirs = include_dirs,
+                            sources = ['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'MDAnalysis/analysis/encore/clustering/src/ap.c'],
+                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
     spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
-                            sources = ['MDAnalysis/lib/src/dimensionality_reduction/stochasticproxembed' + source_suffix, "MDAnalysis/lib/src/dimensionality_reduction/spe.c"],
-                            include_dirs = include_dirs,
+                            sources = ['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
+                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
     pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,

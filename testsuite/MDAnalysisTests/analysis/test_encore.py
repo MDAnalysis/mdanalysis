@@ -93,8 +93,6 @@ class TestEncore(TestCase):
 
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
-        print(reference.rmsd)
-        print(conf_dist_matrix[0,0],conf_dist_matrix[0,1],conf_dist_matrix[0,2])
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,

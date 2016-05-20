@@ -335,7 +335,7 @@ def trm_indeces(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
     The matrix size is automatically determined from the number of elements.
-    For instance: trm_indexes((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
+    For instance: trm_indeces((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
     (2,1).
 
     Parameters
