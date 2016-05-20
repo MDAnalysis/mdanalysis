@@ -843,7 +843,7 @@ class PDBWriter(base.Writer):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
-    def _deduce_PDB_atom_name(self, atom):
+    def _deduce_PDB_atom_name(self, atomname, resname):
         """Deduce how the atom name should be aligned.
 
         Atom name format can be deduced from the atom type, yet atom type is
@@ -853,19 +853,19 @@ class PDBWriter(base.Writer):
         <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
         details.
         """
-        if len(atom.name) >= 4:
-            return atom.name[:4]
-        elif len(atom.name) == 1:
-            return ' {}  '.format(atom.name)
-        elif ((atom.resname == atom.name
-               or atom.name[:2] in self.ions
-               or atom.name == 'UNK'
-               or (atom.resname in self.special_hg and atom.name[:2] == 'HG')
-               or (atom.resname in self.special_cl and atom.name[:2] == 'CL')
-               or Pair(atom.resname, atom.name) in self.include_pairs)
-              and Pair(atom.resname, atom.name) not in self.exclude_pairs):
-            return '{:<4}'.format(atom.name)
-        return ' {:<3}'.format(atom.name)
+        if len(atomname) >= 4:
+            return atomname[:4]
+        elif len(atomname) == 1:
+            return ' {}  '.format(atomname)
+        elif ((resname == atomname
+               or atomname[:2] in self.ions
+               or atomname == 'UNK'
+               or (resname in self.special_hg and atomname[:2] == 'HG')
+               or (resname in self.special_cl and atomname[:2] == 'CL')
+               or Pair(resname, atomname) in self.include_pairs)
+              and Pair(resname, atomname) not in self.exclude_pairs):
+            return '{:<4}'.format(atomname)
+        return ' {:<3}'.format(atomname)
 
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
@@ -899,26 +899,45 @@ class PDBWriter(base.Writer):
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
+        # Make zero assumptions on what information the AtomGroup has!
+        # theoretically we could get passed only indices!
+        def get_attr(attrname, default):
+            """Try and pull info off atoms, else fake it
+
+            attrname - the field to pull of AtomGroup (plural!)
+            default - default value in case attrname not found
+            """
+            try:
+                return getattr(atoms, attrname)
+            except AttributeError:
+                if self.frames_written == 0:
+                    warnings.warn("Found no information for attr: '{}'"
+                                  " Using default value of '{}'"
+                                  "".format(attrname, default))
+                return np.array([default] * len(atoms))
+        altlocs = get_attr('altLocs', ' ')
+        resnames = get_attr('resnames', ' ')
+        icodes = get_attr('icodes', ' ')
+        segids = get_attr('segids', ' ')
+        resids = get_attr('resids', 1)
+        occupancies = get_attr('occupancies', 1.0)
+        tempfactors = get_attr('tempfactors', 0.0)
+        atomnames = get_attr('names', ' ')
+
         for i, atom in enumerate(atoms):
-            segid = atom.segid if atom.segid is not "SYSTEM" else " "
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            vals['name'] = self._deduce_PDB_atom_name(atom)
-            vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
-            vals['resName'] = atom.resname[:4]
-            vals['chainID'] = segid[:1]
-            vals['resSeq'] = int(str(atom.resid)[-4:])
-            vals['iCode'] = " "
+            vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
+            vals['altLoc'] = altlocs[i][:1]
+            vals['resName'] = resnames[i][:4]
+            vals['chainID'] = segids[i][:1]
+            vals['resSeq'] = int(str(resids[i])[-4:])
+            vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
-            try:
-                occ = atom.occupancy
-            except NoDataError:
-                occ = 1.0
-            vals['occupancy'] = occ if occ is not None else 1.0
-            temp = atom.bfactor
-            vals['tempFactor'] = temp if temp is not None else 0.0
-            vals['segID'] = segid[:4]
-            vals['element'] = guess_atom_element(atom.name.strip())[:2]
+            vals['occupancy'] = occupancies[i]
+            vals['tempFactor'] = tempfactors[i]
+            vals['segID'] = segids[i][:4]
+            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))

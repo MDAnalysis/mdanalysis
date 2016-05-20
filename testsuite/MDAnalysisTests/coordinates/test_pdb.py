@@ -743,7 +743,7 @@ def test_deduce_PDB_atom_name():
     def _test_PDB_atom_name(atom, ref_atom_name):
         dummy_file = StringIO()
         name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
-                ._deduce_PDB_atom_name(atom))
+                ._deduce_PDB_atom_name(atom.name, atom.resname))
         assert_equal(name, ref_atom_name)
     test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
                   (Pair('GLU', 'OE1'), ' OE1'),
