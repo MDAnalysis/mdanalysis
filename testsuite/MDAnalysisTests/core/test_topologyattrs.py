@@ -35,11 +35,11 @@ class TopologyAttrMixin(object):
     Sidx = np.array([0, 1, 1, 0])
 
     def setUp(self):
-        self.top = Topology(10, 4, 2, 
+        self.top = Topology(10, 4, 2,
                             attrs=[self.attrclass(self.values.copy())],
                             atom_resindex=self.Ridx,
                             residue_segindex=self.Sidx)
-        
+
         self.attr = getattr(self.top, self.attrclass.attrname)
 
     def tearDown(self):
@@ -70,16 +70,16 @@ class TestAtomAttr(TopologyAttrMixin):
         atoms in residues.
 
         """
-        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])), 
-                           self.values[[2, 3, 9, 4, 5, 8]])
+        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])),
+                           self.values[[2, 3, 9, 4, 5, 8]].reshape(2, 3))
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([1])), 
-                           self.values[[4, 5, 8, 2, 3, 9]])
+        assert_array_equal(self.attr.get_segments(DummyAG([1])),
+                           self.values[[4, 5, 8, 2, 3, 9]].reshape(1, 6))
 
 
 class TestAtomids(TestAtomAttr):
@@ -94,12 +94,12 @@ class TestAtomnames(TestAtomAttr):
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])), 
-                           np.array([self.values[[2, 3, 9]].sum(), 
+        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])),
+                           np.array([self.values[[2, 3, 9]].sum(),
                                      self.values[[4, 5, 8]].sum()]))
 
     def test_get_segments(self):
-        assert_array_equal(self.attr.get_segments(DummyAG([1])), 
+        assert_array_equal(self.attr.get_segments(DummyAG([1])),
                            np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
 
 
@@ -124,7 +124,7 @@ class TestResidueAttr(TopologyAttrMixin):
                            self.values[[3, 2, 2]])
 
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])), 
+        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])),
                            self.values[[1, 2, 1, 3]])
 
     def test_set_residues(self):
@@ -138,8 +138,8 @@ class TestResidueAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([0, 1, 1])), 
-                           self.values[[0, 3, 1, 2, 1, 2]])
+        assert_array_equal(self.attr.get_segments(DummyAG([0, 1, 1])),
+                           self.values[[0, 3, 1, 2, 1, 2]].reshape(3, 2))
 
 
 class TestResids(TestResidueAttr):
@@ -175,7 +175,7 @@ class TestSegmentAttr(TopologyAttrMixin):
                            self.values[[1, 1, 0]])
 
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])), 
+        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])),
                            self.values[[1, 1, 1, 0]])
 
     def test_get_segments(self):
@@ -183,11 +183,11 @@ class TestSegmentAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 0])), 
+        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 0])),
                            self.values[[1, 0, 0]])
 
     def test_set_segments(self):
         self.attr.set_segments(DummyAG([0, 1]),
                                np.array([23, -0.0002]))
-        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 1])), 
+        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 1])),
                 np.array([-0.0002, 23, -0.0002]))
