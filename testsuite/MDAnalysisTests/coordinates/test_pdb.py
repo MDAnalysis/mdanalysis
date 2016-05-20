@@ -240,9 +240,7 @@ class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe,
                                        guess_bonds=True)
-        self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, guess_bonds=True)
-        self.conect.build_topology()
 
     def tearDown(self):
         del self.multiverse
@@ -531,7 +529,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_coordinates(self):
-        A10CA = self.universe.SYSTEM.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
@@ -539,8 +537,8 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_distances(self):
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")

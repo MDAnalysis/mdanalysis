@@ -45,6 +45,7 @@ Classes
 from __future__ import absolute_import, print_function
 
 import numpy as np
+import warnings
 
 from ..lib import util
 from .base import TopologyReader, squash_by
