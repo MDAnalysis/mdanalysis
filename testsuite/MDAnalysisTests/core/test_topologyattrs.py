@@ -14,10 +14,10 @@ from MDAnalysis.core.topology import Topology
 from MDAnalysis.exceptions import NoDataError
 
 
-class DummyAG(object):
-    """Designed to mock an AtomGroup
+class DummyGroup(object):
+    """Designed to mock an Group
 
-    initiate with indices, these are then available as ._ix (like an AG)
+    initiate with indices, these are then available as ._ix
     """
     def __init__(self, vals):
         self._ix = vals
@@ -28,6 +28,10 @@ class DummyAG(object):
 
 class TopologyAttrMixin(object):
     """Mixin to test the common elements to all TopologyAttrs.
+
+    10 atoms
+    4 residues
+    2 segments
 
     """
     # Reference data
@@ -57,12 +61,15 @@ class TestAtomAttr(TopologyAttrMixin):
     attrclass = tpattrs.AtomAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms(DummyAG([2, 1])),
+        result = self.attr.get_atoms(DummyGroup([2, 1]))
+
+        assert_(len(result) == 2)
+        assert_array_equal(result,
                            self.values[[2, 1]])
 
     def test_set_atoms(self):
-        self.attr.set_atoms(DummyAG([3, 7]), np.array([23, 504]))
-        assert_array_equal(self.attr.get_atoms(DummyAG([3, 7])),
+        self.attr.set_atoms(DummyGroup([3, 7]), np.array([23, 504]))
+        assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])),
                            np.array([23, 504]))
 
     def test_get_residues(self):
@@ -70,16 +77,22 @@ class TestAtomAttr(TopologyAttrMixin):
         atoms in residues.
 
         """
-        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])), 
-                           self.values[[2, 3, 9, 4, 5, 8]])
+        result = self.attr.get_residues(DummyGroup([2, 1]))
+
+        assert_(len(result) == 2)
+        assert_array_equal(result,
+                           [self.values[[2, 3, 9]], self.values[[4, 5, 8]]])
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([1])), 
-                           self.values[[4, 5, 8, 2, 3, 9]])
+        result = self.attr.get_segments(DummyGroup([1]))
+
+        assert_(len(result) == 1)
+        assert_array_equal(result,
+                           [self.values[[4, 5, 8, 2, 3, 9]]])
 
 
 class TestAtomids(TestAtomAttr):
@@ -94,12 +107,12 @@ class TestAtomnames(TestAtomAttr):
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([2, 1])), 
+        assert_array_equal(self.attr.get_residues(DummyGroup([2, 1])), 
                            np.array([self.values[[2, 3, 9]].sum(), 
                                      self.values[[4, 5, 8]].sum()]))
 
     def test_get_segments(self):
-        assert_array_equal(self.attr.get_segments(DummyAG([1])), 
+        assert_array_equal(self.attr.get_segments(DummyGroup([1])), 
                            np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
 
 
@@ -120,17 +133,17 @@ class TestResidueAttr(TopologyAttrMixin):
     attrclass = tpattrs.ResidueAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms(DummyAG([7, 3, 9])),
+        assert_array_equal(self.attr.get_atoms(DummyGroup([7, 3, 9])),
                            self.values[[3, 2, 2]])
 
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])), 
+        assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])), 
                            self.values[[1, 2, 1, 3]])
 
     def test_set_residues(self):
-        self.attr.set_residues(DummyAG([3, 0, 1]),
+        self.attr.set_residues(DummyGroup([3, 0, 1]),
                                np.array([23, 504, 0.0002]))
-        assert_array_almost_equal(self.attr.get_residues(DummyAG([3, 0, 1])),
+        assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 0.0002]))
 
     def test_get_segments(self):
@@ -138,8 +151,8 @@ class TestResidueAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([0, 1, 1])), 
-                           self.values[[0, 3, 1, 2, 1, 2]])
+        assert_array_equal(self.attr.get_segments(DummyGroup([0, 1, 1])), 
+                           [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
 
 
 class TestResids(TestResidueAttr):
@@ -157,6 +170,12 @@ class TestResids(TestResidueAttr):
         # set to resid that no residue has (should raise exception)
         assert_raises(NoDataError, self.attr.set_atoms, [3, 7], np.array([11, 21]))
 
+    def test_set_residues(self):
+        self.attr.set_residues(DummyGroup([3, 0, 1]),
+                               np.array([23, 504, 27]))
+        assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
+                                  np.array([23, 504, 27]))
+
 
 class TestResnames(TestResidueAttr):
     values = np.array(['ARG', 'LYS', 'VAL', 'POPG'], dtype=np.object)
@@ -171,11 +190,11 @@ class TestSegmentAttr(TopologyAttrMixin):
     attrclass = tpattrs.SegmentAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms(DummyAG([2, 4, 1])),
+        assert_array_equal(self.attr.get_atoms(DummyGroup([2, 4, 1])),
                            self.values[[1, 1, 0]])
 
     def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyAG([1, 2, 1, 3])), 
+        assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])), 
                            self.values[[1, 1, 1, 0]])
 
     def test_get_segments(self):
@@ -183,11 +202,11 @@ class TestSegmentAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 0])), 
+        assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 0])), 
                            self.values[[1, 0, 0]])
 
     def test_set_segments(self):
-        self.attr.set_segments(DummyAG([0, 1]),
+        self.attr.set_segments(DummyGroup([0, 1]),
                                np.array([23, -0.0002]))
-        assert_array_equal(self.attr.get_segments(DummyAG([1, 0, 1])), 
+        assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 1])), 
                 np.array([-0.0002, 23, -0.0002]))
