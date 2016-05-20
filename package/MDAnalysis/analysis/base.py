@@ -75,10 +75,7 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.nframes = len(range(start, stop, step))
-        if self.nframes > 0:
-            self.percentage = ProgressMeter(self.nframes, interval=10, format=
-        "Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
-
+    
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
         
@@ -106,8 +103,5 @@ class AnalysisBase(object):
             self._ts = ts
             #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
-            if self.nframes > 0:
-                self.percentage.echo(self._ts.frame)
-
         logger.info("Finishing up")
         self._conclude()
