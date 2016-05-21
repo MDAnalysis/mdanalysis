@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -280,7 +280,7 @@ class Timestep(object):
             raise ValueError("Must specify at least one set of data")
         n_atoms = max(lens)
         # Check arrays are matched length?
-        if not all( val == n_atoms for val in lens):
+        if not all(val == n_atoms for val in lens):
             raise ValueError("Lengths of input data mismatched")
 
         ts = cls(n_atoms,
@@ -1199,10 +1199,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         raise TypeError("{0} does not support direct frame indexing."
                         "".format(self.__class__.__name__))
         # Example implementation in the DCDReader:
-        #self._jump_to_frame(frame)
-        #ts = self.ts
-        #ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-        #return ts
+        # self._jump_to_frame(frame)
+        # ts = self.ts
+        # ts.frame = self._read_next_frame(ts._x, ts._y, ts._z,
+        #                                  ts._unitcell, 1)
+        # return ts
 
     def _sliced_iter(self, start, stop, step):
         """Generator for slicing a trajectory.
@@ -1284,7 +1285,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
 
 class Reader(ProtoReader):
-    """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
+    """Base class for trajectory readers that extends :class:`ProtoReader` with a
+    :meth:`__del__` method.
 
     New Readers should subclass :class:`Reader` and properly implement a
     :meth:`close` method, to ensure proper release of resources (mainly file
@@ -1304,6 +1306,7 @@ class Reader(ProtoReader):
        functionality, all Reader subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
+
     """
     def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename
@@ -1343,7 +1346,7 @@ class ChainReader(ProtoReader):
        Frames now 0-based instead of 1-based
     .. versionchanged:: 0.13.0
        :attr:`time` now reports the time summed over each trajectory's
-       frames and individual :attr:`dt`. 
+       frames and individual :attr:`dt`.
     """
     format = 'CHAIN'
 
@@ -1595,7 +1598,8 @@ class ChainReader(ProtoReader):
         """Set current frame to the beginning."""
         self._rewind()
         self.__chained_trajectories_iter = self._chained_iterator()
-        self.ts = next(self.__chained_trajectories_iter)  # set time step to frame 1
+        # set time step for frame 1
+        self.ts = next(self.__chained_trajectories_iter)
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
@@ -1608,11 +1612,13 @@ class ChainReader(ProtoReader):
     def __iter__(self):
         """Generator for all frames, starting at frame 1."""
         self._rewind()
-        self.__chained_trajectories_iter = self._chained_iterator()  # start from first frame
+        # start from first frame
+        self.__chained_trajectories_iter = self._chained_iterator()
         for ts in self.__chained_trajectories_iter:
             yield ts
 
-    def get_flname(self, filename):  # retrieve the actual filename of the list element
+    def get_flname(self, filename):
+        """retrieve the actual filename of the list element"""
         return filename[0] if isinstance(filename, tuple) else filename
 
     def __repr__(self):
@@ -1695,7 +1701,8 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         try:
             return "< {0!s} {1!r} for {2:d} atoms >".format(self.__class__.__name__, self.filename, self.n_atoms)
         except (TypeError, AttributeError):
-            # no trajectory loaded yet or a Writer that does not need e.g. self.n_atoms
+            # no trajectory loaded yet or a Writer that does not need e.g.
+            # self.n_atoms
             return "< {0!s} {1!r} >".format(self.__class__.__name__, self.filename)
 
     def has_valid_coordinates(self, criteria, x):
@@ -1716,6 +1723,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
     # def write_next_timestep(self, ts=None)
+
 
 class SingleFrameReader(ProtoReader):
     """Base class for Readers that only have one frame.
