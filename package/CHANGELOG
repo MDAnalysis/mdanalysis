@@ -15,8 +15,11 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16
 
-  * 0.15.1
+  * 0.15.1 kain88-de
 
+Fixes
+
+  * reading/writing lambda value in trr files (Issue #859)
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
