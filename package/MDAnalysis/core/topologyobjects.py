@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -230,8 +230,8 @@ class Angle(TopologyObject):
 
         .. versionadded:: 0.9.0
         """
-        a = self[0].pos - self[1].pos
-        b = self[2].pos - self[1].pos
+        a = self[0].position - self[1].position
+        b = self[2].position - self[1].position
         return np.rad2deg(
             np.arccos(np.dot(a, b) / (norm(a) * norm(b))))
 

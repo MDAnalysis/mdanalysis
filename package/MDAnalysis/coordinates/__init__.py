@@ -179,10 +179,8 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
-   | Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
-   | [#a]_         |           |       | is read by default; the full format can be read by   |
-   |               |           |       | supplying the `permissive=False` flag to             |
-   |               |           |       | :class:`MDAnalysis.Universe`. Multiple frames (MODEL)|
+   | Brookhaven    | pdb/ent   |  r/w  | a relaxed PDB format (as used in MD simulations)     |
+   | [#a]_         |           |       | is read by default; Multiple frames (MODEL)          |
    |               |           |       | are supported but require the *multiframe* keyword.  |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |
    +---------------+-----------+-------+------------------------------------------------------+
@@ -265,7 +263,7 @@ History
 - 2015-01-15 Timestep._init_unitcell() method added
 - 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
 - 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)
-
+- 2016-04-03 Removed references to Strict Readers for PDBS [jdetle]
 .. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 

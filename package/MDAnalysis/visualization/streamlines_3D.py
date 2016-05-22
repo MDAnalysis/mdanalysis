@@ -42,7 +42,7 @@ def determine_container_limits(coordinate_file_path, trajectory_file_path, buffe
     container for the system and return these limits.'''
     universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
     all_atom_selection = universe_object.select_atoms('all')  # select all particles
-    all_atom_coordinate_array = all_atom_selection.coordinates()
+    all_atom_coordinate_array = all_atom_selection.positions
     x_min, x_max, y_min, y_max, z_min, z_max = [
         all_atom_coordinate_array[..., 0].min(),
         all_atom_coordinate_array[..., 0].max(), all_atom_coordinate_array[..., 1].min(),
@@ -253,9 +253,9 @@ def produce_coordinate_arrays_single_process(coordinate_file_path, trajectory_fi
         if ts.frame > end_frame:
             break  # stop here
         if ts.frame == start_frame:
-            start_frame_relevant_particle_coordinate_array_xyz = relevant_particles.coordinates()
+            start_frame_relevant_particle_coordinate_array_xyz = relevant_particles.positions
         elif ts.frame == end_frame:
-            end_frame_relevant_particle_coordinate_array_xyz = relevant_particles.coordinates()
+            end_frame_relevant_particle_coordinate_array_xyz = relevant_particles.positions
         else:
             continue
     return (start_frame_relevant_particle_coordinate_array_xyz, end_frame_relevant_particle_coordinate_array_xyz)

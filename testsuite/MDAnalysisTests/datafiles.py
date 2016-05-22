@@ -48,7 +48,11 @@ __all__ = [
     "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
+    # for testing cryst before/after model headers
+    "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
+    "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "GRO_incomplete_vels",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "PDB_xlserial",
@@ -85,6 +89,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
+    "mol2_zinc",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -110,9 +115,15 @@ __all__ = [
     "COORDINATES_TRR",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
+    "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
+    "ENT" #for testing ENT file extension
 ]
 
 from pkg_resources import resource_filename
+
+ENT = resource_filename(__name__, 'data/testENT.ent')
+GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
+GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
@@ -144,12 +155,19 @@ PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
+PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
+PDB_cm_gz = resource_filename(__name__, 'data/cryst_then_model.pdb.gz')
+PDB_cm_bz2 = resource_filename(__name__, 'data/cryst_then_model.pdb.bz2')
+PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
+PDB_mc_gz = resource_filename(__name__, 'data/model_then_cryst.pdb.gz')
+PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
+GRO_incomplete_vels = resource_filename(__name__, 'data/grovels.gro')
 GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
@@ -257,6 +275,8 @@ merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
 mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
 mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
 mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")
+# MOL2 file without substructure field
+mol2_zinc = resource_filename(__name__, "data/mol2/zinc_856218.mol2")
 
 capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")

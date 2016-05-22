@@ -5,13 +5,17 @@ import bz2
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
-                           assert_array_almost_equal, assert_raises)
+                           assert_array_almost_equal, assert_raises,
+                           )
 from unittest import TestCase
-import tempdir
 
-from MDAnalysisTests.datafiles import (GRO, GRO_velocity, GRO_large)
+from MDAnalysisTests.datafiles import (
+    GRO, GRO_velocity, GRO_large,
+    GRO_incomplete_vels,
+)
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests import tempdir
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -159,6 +163,25 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
 
+class TestGROIncompleteVels(object):
+    def setUp(self):
+        self.u = mda.Universe(GRO_incomplete_vels)
+
+    def tearDown(self):
+        del self.u
+
+    def test_load(self):
+        assert_equal(len(self.u.atoms), 4)
+
+    def test_velocities(self):
+        assert_array_almost_equal(self.u.atoms[0].velocity,
+                                  np.array([ 79.56,  124.08,   49.49]),
+                                  decimal=3)
+        assert_array_almost_equal(self.u.atoms[2].velocity,
+                                  np.array([0.0, 0.0, 0.0]),
+                                  decimal=3)
+
+
 class TestGROWriter(TestCase, tempdir.TempDir):
     def setUp(self):
         self.universe = mda.Universe(GRO)
@@ -184,8 +207,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
     def test_writer(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
 
@@ -206,7 +229,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
-        u.atoms[2000].pos[1] = -999.9995 * 10  # nm -> A
+        u.atoms[2000].position = -999.9995 * 10  # nm -> A
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -219,7 +242,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
-        u.atoms[1000].pos[1] = 9999.9999 * 10
+        u.atoms[1000].position = 9999.9999 * 10
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -230,7 +253,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
-        u.atoms[1000].pos[1] = 9999.9999
+        u.atoms[1000].position = 9999.9999
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
@@ -279,7 +302,7 @@ class TestGROWriterVels(object):
         u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
-        
+
         assert_array_almost_equal(u.atoms.velocities,
                                   u2.atoms.velocities)
 

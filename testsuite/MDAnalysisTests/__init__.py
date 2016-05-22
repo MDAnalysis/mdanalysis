@@ -97,9 +97,9 @@ parentheses must be included.
 
 .. _NumPy: http://www.numpy.org/
 .. _nose:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
+   http://nose.readthedocs.org/en/latest/
 .. _nose commandline options:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/usage.html#extended-usage
+  http://nose.readthedocs.org/en/latest/man.html?highlight=command%20line
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
@@ -109,7 +109,7 @@ parentheses must be included.
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.14.1-dev0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.15.1-dev0"  # keep in sync with RELEASE in setup.py
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:

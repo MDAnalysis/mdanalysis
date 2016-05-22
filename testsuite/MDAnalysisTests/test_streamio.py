@@ -27,10 +27,9 @@ import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import tempdir
 
 import os
-
-import tempdir
 
 
 class TestIsstream(TestCase):
@@ -334,10 +333,10 @@ class TestStreamIO(TestCase, RefAdKSmall):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    @knownfailure()
+
     def test_PDBReader(self):
         try:
-            u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
+            u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
             raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)

@@ -116,19 +116,19 @@ class _DLHistory(object):
 
     def test_len(self):
         assert_equal(len(self.u.trajectory), 3)
-        assert_equal([ts.frame for ts in self.u.trajectory], [1, 2, 3])
+        assert_equal([ts.frame for ts in self.u.trajectory], [0, 1, 2])
 
     def test_getting(self):
         ts = self.u.trajectory[1]
-        assert_equal(ts.frame, 2)
+        assert_equal(ts.frame, 1)
 
     def test_slicing(self):
         nums = [ts.frame for ts in self.u.trajectory[::2]]
-        assert_equal(nums, [1, 3])
+        assert_equal(nums, [0, 2])
 
     def test_slicing_2(self):
         nums = [ts.frame for ts in self.u.trajectory[1::-2]]
-        assert_equal(nums, [2])
+        assert_equal(nums, [1])
 
     def test_position(self):
         ref = np.array([[-7.595541651, -7.898808509, -7.861763110

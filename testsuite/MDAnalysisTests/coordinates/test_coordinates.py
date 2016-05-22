@@ -22,13 +22,12 @@ from six.moves import zip
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_allclose, assert_equal, assert_array_equal,
                            assert_almost_equal, dec)
-import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, tempdir
 
 
 class TestINPCRDReader(TestCase):
@@ -123,12 +122,12 @@ class TestChainReader(TestCase):
 
     def test_frame(self):
         self.trajectory[0]
-        coord0 = self.universe.atoms.coordinates().copy()
+        coord0 = self.universe.atoms.positions.copy()
         # forward to frame where we repeat original dcd again:
         # dcd:0..97 crd:98 dcd:99..196
         self.trajectory[99]
         assert_array_equal(
-            self.universe.atoms.coordinates(), coord0,
+            self.universe.atoms.positions, coord0,
             "coordinates at frame 1 and 100 should be the same!")
 
     def test_time(self):

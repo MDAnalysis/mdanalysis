@@ -39,10 +39,12 @@ Google groups forbids any name that contains the string `anal'.)
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
+import codecs
 import os
 import sys
 import shutil
 import tempfile
+import warnings
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -68,7 +70,8 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.16.0-dev0"
+
+RELEASE = "0.15.1-dev0"
 
 is_release = not 'dev' in RELEASE
 
@@ -280,6 +283,7 @@ def extensions(config):
     source_suffix = '.pyx' if use_cython else '.c'
 
     # The callable is passed so that it is only evaluated at install time.
+
     include_dirs = [get_numpy_include]
 
     dcd = MDAExtension('coordinates._dcdmodule',
@@ -329,6 +333,7 @@ def extensions(config):
     util = MDAExtension('lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
+
     encore_utils = MDAExtension('analysis.encore.cutils',
                             sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
                             include_dirs = include_dirs,
@@ -379,7 +384,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with open('AUTHORS') as infile:
+    with codecs.open('AUTHORS', encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -404,7 +409,7 @@ def dynamic_author_list():
                 break
             elif line.strip()[:2] == '- ':
                 # This is a bullet point, so it should be an author name.
-                name = line.strip()[2:].strip().decode('utf-8')
+                name = line.strip()[2:].strip()
                 authors.append(name)
 
     # So far, the list of authors is sorted chronologically. We want it
@@ -418,7 +423,8 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    with open('MDAnalysis/authors.py', 'w') as outfile:
+    out_path = 'MDAnalysis/authors.py'
+    with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
 #-*- coding:utf-8 -*-
@@ -432,11 +438,14 @@ def dynamic_author_list():
         template = u'__authors__ = [\n{}\n]'
         author_string = u',\n'.join(u'    u"{}"'.format(name)
                                     for name in authors)
-        print(template.format(author_string).encode('utf-8'), file=outfile)
+        print(template.format(author_string), file=outfile)
 
 
 if __name__ == '__main__':
-    dynamic_author_list()
+    try:
+        dynamic_author_list()
+    except (OSError, IOError):
+        warnings.warn('Cannot write the list of authors.')
 
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
