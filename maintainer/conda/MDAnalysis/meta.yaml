@@ -11,6 +11,12 @@ source:
    # git_branch: master
    git_tag: release-0.15.0
 
+# specify the subversion of the conda package. Defaults to 0. If you make
+# changes to the conda package alone with out an increase in the source package
+# version increase this number. Should be reset to 0 after a new release
+build:
+  number: 1
+
 requirements:
   build:
     - python
