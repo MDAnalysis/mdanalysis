@@ -24,6 +24,10 @@ class TRRWriter(XDRBaseWriter):
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
 
+    If the data dictionary of a TimeStep contains the key 'lambda' the
+    corresponding value will be used as the lambda value for written TRR file.
+    If None is found the lambda is set to 0.
+
     Parameter
     ---------
     filename : str
@@ -34,6 +38,7 @@ class TRRWriter(XDRBaseWriter):
         convert into MDAnalysis units
     precision : float (optional)
         set precision of saved trjactory to this number of decimal places.
+
     """
 
     format = 'TRR'
@@ -79,7 +84,12 @@ class TRRWriter(XDRBaseWriter):
 
         box = triclinic_vectors(dimensions)
 
-        self._xdr.write(xyz, velo, forces, box, step, time, 1, self.n_atoms)
+        lmbda = 0
+        if 'lambda' in ts.data:
+            lmbda = ts.data['lambda']
+
+        self._xdr.write(xyz, velo, forces, box, step, time, lmbda,
+                        self.n_atoms)
 
 
 class TRRReader(XDRBaseReader):
@@ -87,6 +97,8 @@ class TRRReader(XDRBaseReader):
     store *velocoties* and *forces* in addition to the coordinates. It is also
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
+
+    The lambda value is written in the data dictionary of the returned TimeStep
 
     Parameter
     ---------
@@ -143,5 +155,7 @@ class TRRReader(XDRBaseReader):
                 ts.forces = frame.f
             if self.convert_units:
                 self.convert_forces_from_native(ts.forces)
+
+        ts.data['lambda'] = frame.lmbda
 
         return ts
