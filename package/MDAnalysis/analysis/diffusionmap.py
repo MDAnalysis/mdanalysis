@@ -282,62 +282,56 @@ class DiffusionMap(BaseAnalysis):
 
 
     #mappable function
-    def calc_diffusion(self):
+    @concurrent
+    def calc_diffusion(self, traj_index):
     """Calculates diffusion distance from metric function
         rmsd_matrix will be 0's in the lower triangle.
     """
-            logger.debug("calculating rmsd from structure {0} to all".format(i))
-            i_ref = u.trajectory[self._ts.frame].positions-ref_atoms.center_of_mass()
-            for j in range(ts.nframe, self.nframes):
-                j_ref = u.trajectory[j].positions-ref_atoms.center_of_mass()
-                self.rmsd_matrix[i, j] = metric(i_ref.T.astype(np.float64), \
-                j_ref.T.astype(np.float64), self.natoms, self.rot, self.weights)
-
-
-    for i in range(nframes):
-        logger.info("calculating rmsd from structure {0} to all".format(i))
-        i_ref = np.copy(u.trajectory[i].positions-ref_atoms.center_of_mass())
-        for j in range(i, nframes):
+        logger.debug("calculating rmsd from structure {0} to all".format(i))
+        i_ref = np.copy(u.trajectory[self._ts.frame].positions-ref_atoms.center_of_mass())
+        for j in range(ts.nframe, self.nframes):
             j_ref = np.copy(u.trajectory[j].positions-ref_atoms.center_of_mass())
-            rmsd_matrix[i, j] = qcp.CalcRMSDRotationalMatrix(i_ref.T.astype(np.float64), \
-              j_ref.T.astype(np.float64), natoms, rot, weight)
+            self.rmsd_matrix[i, j] = self.metric(i_ref.T.astype(np.float64), \
+            j_ref.T.astype(np.float64), self.natoms, self.rot, self.weights)
 
-    #fill in symmetric values
-    rmsd_matrix = rmsd_matrix + rmsd_matrix.T - np.diag(rmsd_matrix.diagonal())
+    @concurrent
+    def _single_frame(self):
+        self.calc_diffusion(self._ts.frame)
 
-    #calculate epsilons
-    #mappable function
-    if type_epsilon == 'average':
+    def _conclude(self):
+        if type_epsilon == 'average':
+            for i in range(nframes):
+               #np.argsort(rmsd_matrix[i,:])#[10]]
+                epsilon[i] = rmsd_matrix[i, np.argsort(rmsd_matrix[i, :])[k]]
+            epsilon = np.full((nframes, ), epsilon.mean())
+        logger.info('epsilon: {0}'.format(epsilon))
+
+        #possibly mappable
         for i in range(nframes):
-           #np.argsort(rmsd_matrix[i,:])#[10]]
-            epsilon[i] = rmsd_matrix[i, np.argsort(rmsd_matrix[i, :])[k]]
-        epsilon = np.full((nframes, ), epsilon.mean())
+            kernel2[i, :] = np.exp(-rmsd_matrix[i, :]**2/(epsilon[i]*epsilon[:]))
 
+        p_vector = np.zeros((nframes, ))
+        d_vector = np.zeros((nframes, ))
 
-    logger.info('epsilon: {0}'.format(epsilon))
+        #possibly mappable
+        for i in range(nframes):
+            p_vector[i] = np.dot(kernel2[i, :], weights)
 
-    #calculate normalized kernel
-    for i in range(nframes):
-        kernel2[i, :] = np.exp(-rmsd_matrix[i, :]**2/(epsilon[i]*epsilon[:]))
+            kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
 
-    p_vector = np.zeros((nframes, ))
-    d_vector = np.zeros((nframes, ))
-    for i in range(nframes):
-        p_vector[i] = np.dot(kernel2[i, :], weights)
+        for i in range(nframes):
+            d_vector[i] = np.dot(kernel2[i, :], weights)
 
-    kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
+        for i in range(nframes):
+            kernel2[i, :] = kernel2[i, :]*weights
 
-    for i in range(nframes):
-        d_vector[i] = np.dot(kernel2[i, :], weights)
+        kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
-    for i in range(nframes):
-        kernel2[i, :] = kernel2[i, :]*weights
+        kernel2 = kernel2 + kernel2.T - np.diag(kernel2.diagonal())
 
-    kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+        #eigenvalues and eigenvector are the collective coordinates
+        eg, ev = np.linalg.eig(kernel2)
 
-    #eigenvalues and eigenvector are the collective coordinates
-    eg, ev = np.linalg.eig(kernel2)
-
-    eg_arg = np.argsort(eg)
-    eg = eg[eg_arg[::-1]]
-    ev = ev[eg_arg[::-1],:]
+        eg_arg = np.argsort(eg)
+        self.eg = eg[eg_arg[::-1]]
+        self.ev = ev[eg_arg[::-1],:]
