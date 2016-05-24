@@ -23,15 +23,15 @@ Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`
 :Copyright: GNU Public License v3
 
 The module contains the non-linear dimension reduction method diffusion map.
-The diffusion map allows to get a quick estimate of the slowest collective 
-coordinates for a trajectory. This non-linear dimension reduction method 
-assumes that the trajectory is long enough to represents a probability 
-distribution of as protein close to the equilibrium. Further the diffusion map 
-assumes that the diffusion coefficients are constant. The eigenvectors with the 
-largest eigenvalues are the slowest collective coordinates. The complexity of 
-the diffusion map is O(N^2), where N is the number of frames in the trajectory. 
-Instead of a single trajectory a sample of protein structures can be used. 
-The sample should be equiblibrated, at least locally.  Different weights can be used. 
+The diffusion map allows to get a quick estimate of the slowest collective
+coordinates for a trajectory. This non-linear dimension reduction method
+assumes that the trajectory is long enough to represent a probability
+distribution of as protein close to the equilibrium. Furthermore, the diffusion map
+assumes that the diffusion coefficients are constant. The eigenvectors with the
+largest eigenvalues are the slowest collective coordinates. The complexity of
+the diffusion map is O(N^3), where N is the number of frames in the trajectory.
+Instead of a single trajectory a sample of protein structures can be used.
+The sample should be equiblibrated, at least locally.  Different weights can be used.
 The order of the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension reduction.
@@ -45,9 +45,9 @@ Diffusion Map tutorial
 
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
-:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that these test data 
-aren't representing a sample from the equilibrium. This violates a basic 
-assumption of the diffusion map and the results shouldn't be interpreted for this reason. 
+:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that these test data
+aren't representing a sample from the equilibrium. This violates a basic
+assumption of the diffusion map and the results shouldn't be interpreted for this reason.
 This tutorial shows how to use the diffusionmap function.
 First load all modules and test data ::
 
@@ -56,11 +56,12 @@ First load all modules and test data ::
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
    >>> from MDAnalysis.tests.datafiles import PSF,DCD
 
-In the simplest case, we can simply calculate the diffusion map from 
+In the simplest case, we can simply calculate the diffusion map from
 one trajectory :func:`diffusionmap`::
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
-   >>> eg,ev=diffusionmap.diffusionmap(u)
+   >>> dmap = diffusionmap.DiffusionMap(u)
+   >>> eg,ev= diffusionmap.DiffusionMap(u).run()
 
 To see how the two slowest collective coordinates how the Other stuff in paper
 
@@ -71,21 +72,21 @@ To see how the two slowest collective coordinates how the Other stuff in paper
    >>> plt.ylabel("second slowest collective coordinate")
    >>> plt.show()
 
+Classes
+-------
 
-Functions
----------
-
-.. autofunction:: diffusionmap
+.. autoclass:: Contacts
+   :members:
 
 References
 ---------
 
 If you use this QCP rotation calculation method in a publication, please
 reference:
-..[Lafon1] Coifman, Ronald R., Lafon, Stephane (2006) Diffusion maps. 
+..[Lafon1] Coifman, Ronald R., Lafon, Stephane (2006) Diffusion maps.
 Appl. Comput. Harmon. Anal. 21, 5–30.
-..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C. (2013) 
-Determination of reaction coordinates via locally scaled 
+..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C. (2013)
+Determination of reaction coordinates via locally scaled
 diffusion map. Journal of Chemical Physics.
 
 
@@ -97,6 +98,7 @@ import numpy as np
 import MDAnalysis.lib.qcprot as qcp
 from six.moves import range
 
+logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
 def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
     """Non-linear dimension reduction method diffusion map
@@ -107,16 +109,15 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
 
     Parameters
     -------------
-      *u*
-         trajectory :class:`~MDAnalysis.core.AtomGroup.Universe`
-         The trajectory can be a long trajectory 
-      select: str, optional 
+      u : trajectory :class:`~MDAnalysis.core.AtomGroup.Universe`
+         Remember that eigenvalue decomposition scales at O(n^3)
+      select: str, optional
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` 
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
          This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
-      epsilon : float, optional 
-          Specifies the epsilon used for the diffusion map. More information in [1] and [2] 
-          With 'average' the average of the RMSD to the k-nearest-neighbor will be used.  
+      epsilon : float, optional
+          Specifies the epsilon used for the diffusion map. More information in [1] and [2]
+          With 'average' the average of the RMSD to the k-nearest-neighbor will be used.
       k : int, optional
           specifies the k for the k-nearest-neighbor is average epsilon is used.
       weight: numpy array, optional
@@ -135,7 +136,7 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
 
     Notes
     ---------------
-    
+
     The dimension reduction works in the following way:
 
     1. A RMSD between each every pair of frames is calculated.
@@ -143,7 +144,6 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
     3. The eigenvalues and eigenvectors of the normalized kernel are the output.
 
     """
-    logger = logging.getLogger('MDAnalysis.analysis.diffusionmap')
     frames = u.trajectory
     ref_atoms = u.select_atoms(select)
     nframes = len(frames)
@@ -181,7 +181,7 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
     #fill in symmetric values
     rmsd_matrix = rmsd_matrix + rmsd_matrix.T - np.diag(rmsd_matrix.diagonal())
 
-    #calculate epsilons 
+    #calculate epsilons
     if type_epsilon == 'average':
         for i in range(nframes):
            #np.argsort(rmsd_matrix[i,:])#[10]]
@@ -218,3 +218,126 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
     ev = ev[eg_arg[::-1],:]
 
     return eg, ev
+
+class DiffusionMap(BaseAnalysis):
+    def __init__(self, u,  select='all', epsilon='average', k=10, weights=None,
+        start=None, stop=None, step=None):
+    """
+        Parameters
+    -------------
+    u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
+        The MD Trajectory for dimension reduction, remember that computational
+        scales at O(n^3). Cost can be reduced by increasing step interval or
+        specifying start and stop
+    select: str, optional
+        1. any valid selection string for
+        :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+        This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
+    epsilon : float, optional
+        Specifies the epsilon used for the diffusion map. More information in [1] and [2]
+        With 'average' the average of the RMSD to the k-nearest-neighbor will be used.
+    k : int, optional
+        specifies the k for the k-nearest-neighbor is average epsilon is used.
+    weights: numpy array, optional
+        The numpy array has to have the same length as the trajectory.
+        With 'None' the weight of each frame of the trajectory will be the same.
+        If order of the weights has to be the same as the order of framesin the trajectory.
+    metric : function, optional
+        Maps two numpy arrays to a scalar, positive definite, symmetric.
+    start : int, optional
+        First frame of trajectory to analyse, Default: 0
+    stop : int, optional
+        Last frame of trajectory to analyse, Default: -1
+    step : int, optional
+        Step between frames to analyse, Default: 1
+    """
+        self.u = y
+        self.atoms = u.select_atoms(select)
+        self.natoms = atoms.n_atoms
+        frames = u.trajectory
+        if metric not None:
+            self.metric = metric
+        else:
+            self.metric = qcp.CalcRMSDRotationalMatrix
+
+        self._setup_frames(frames, start, stop, step)
+
+    def _prepare(self):
+        self.rmsd_matrix = np.zeros((self.nframes,self.nframes))
+        self.kernel2 = np.zeros((self.nframes, self.nframes))
+
+        if epsilon == 'average':
+            self.epsilon = np.zeros((self.nframes, ), )
+            self.type_epsilon = 'average'
+        else:
+            value_epsilon = epsilon
+            self.epsilon = np.full((nframes, ), value_epsilon)
+            self.type_epsilon = 'constant'
+
+
+        self.rot = np.zeros(9)
+        if weights is not None:
+        # weights are constructed as relative to the mean
+            self.weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+
+
+    #mappable function
+    def calc_diffusion(self):
+    """Calculates diffusion distance from metric function
+        rmsd_matrix will be 0's in the lower triangle.
+    """
+            logger.debug("calculating rmsd from structure {0} to all".format(i))
+            i_ref = u.trajectory[self._ts.frame].positions-ref_atoms.center_of_mass()
+            for j in range(ts.nframe, self.nframes):
+                j_ref = u.trajectory[j].positions-ref_atoms.center_of_mass()
+                self.rmsd_matrix[i, j] = metric(i_ref.T.astype(np.float64), \
+                j_ref.T.astype(np.float64), self.natoms, self.rot, self.weights)
+
+
+    for i in range(nframes):
+        logger.info("calculating rmsd from structure {0} to all".format(i))
+        i_ref = np.copy(u.trajectory[i].positions-ref_atoms.center_of_mass())
+        for j in range(i, nframes):
+            j_ref = np.copy(u.trajectory[j].positions-ref_atoms.center_of_mass())
+            rmsd_matrix[i, j] = qcp.CalcRMSDRotationalMatrix(i_ref.T.astype(np.float64), \
+              j_ref.T.astype(np.float64), natoms, rot, weight)
+
+    #fill in symmetric values
+    rmsd_matrix = rmsd_matrix + rmsd_matrix.T - np.diag(rmsd_matrix.diagonal())
+
+    #calculate epsilons
+    #mappable function
+    if type_epsilon == 'average':
+        for i in range(nframes):
+           #np.argsort(rmsd_matrix[i,:])#[10]]
+            epsilon[i] = rmsd_matrix[i, np.argsort(rmsd_matrix[i, :])[k]]
+        epsilon = np.full((nframes, ), epsilon.mean())
+
+
+    logger.info('epsilon: {0}'.format(epsilon))
+
+    #calculate normalized kernel
+    for i in range(nframes):
+        kernel2[i, :] = np.exp(-rmsd_matrix[i, :]**2/(epsilon[i]*epsilon[:]))
+
+    p_vector = np.zeros((nframes, ))
+    d_vector = np.zeros((nframes, ))
+    for i in range(nframes):
+        p_vector[i] = np.dot(kernel2[i, :], weights)
+
+    kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
+
+    for i in range(nframes):
+        d_vector[i] = np.dot(kernel2[i, :], weights)
+
+    for i in range(nframes):
+        kernel2[i, :] = kernel2[i, :]*weights
+
+    kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+
+    #eigenvalues and eigenvector are the collective coordinates
+    eg, ev = np.linalg.eig(kernel2)
+
+    eg_arg = np.argsort(eg)
+    eg = eg[eg_arg[::-1]]
+    ev = ev[eg_arg[::-1],:]
