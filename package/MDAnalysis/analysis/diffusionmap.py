@@ -95,8 +95,10 @@ diffusion map. Journal of Chemical Physics.
 
 import logging
 import numpy as np
+from deco import *
 import MDAnalysis.lib.qcprot as qcp
 from six.moves import range
+from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -219,54 +221,65 @@ def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
 
     return eg, ev
 
-class DiffusionMap(BaseAnalysis):
+class DiffusionMap(AnalysisBase):
     def __init__(self, u,  select='all', epsilon='average', k=10, weights=None,
-        start=None, stop=None, step=None):
-    """
+        metric=None, start=None, stop=None, step=None):
+        """
         Parameters
-    -------------
-    u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
-        The MD Trajectory for dimension reduction, remember that computational
-        scales at O(n^3). Cost can be reduced by increasing step interval or
-        specifying start and stop
-    select: str, optional
-        1. any valid selection string for
-        :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
-        This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
-    epsilon : float, optional
-        Specifies the epsilon used for the diffusion map. More information in [1] and [2]
-        With 'average' the average of the RMSD to the k-nearest-neighbor will be used.
-    k : int, optional
-        specifies the k for the k-nearest-neighbor is average epsilon is used.
-    weights: numpy array, optional
-        The numpy array has to have the same length as the trajectory.
-        With 'None' the weight of each frame of the trajectory will be the same.
-        If order of the weights has to be the same as the order of framesin the trajectory.
-    metric : function, optional
-        Maps two numpy arrays to a scalar, positive definite, symmetric.
-    start : int, optional
-        First frame of trajectory to analyse, Default: 0
-    stop : int, optional
-        Last frame of trajectory to analyse, Default: -1
-    step : int, optional
-        Step between frames to analyse, Default: 1
-    """
-        self.u = y
+        -------------
+        u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
+            The MD Trajectory for dimension reduction, remember that computational
+            scales at O(n^3). Cost can be reduced by increasing step interval or
+            specifying start and stop
+        select: str, optional
+            1. any valid selection string for
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+            This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
+        epsilon : float, optional
+            Specifies the epsilon used for the diffusion map. More information in [1] and [2]
+            With 'average' the average of the RMSD to the k-nearest-neighbor will be used.
+        k : int, optional
+            specifies the k for the k-nearest-neighbor is average epsilon is used.
+        weights: list, optional
+            The list has to have the same length as the trajectory.
+            With 'None' the weight of each frame of the trajectory will be the same.
+
+        metric : function, optional
+            Maps two numpy arrays to a float, is positive definite and symmetric.
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+        """
+        self.u = u
         self.atoms = u.select_atoms(select)
-        self.natoms = atoms.n_atoms
+        self.natoms = self.atoms.n_atoms
+        self.k = k
         frames = u.trajectory
-        if metric not None:
+        self.epsilon = epsilon
+        if metric is not None:
             self.metric = metric
         else:
             self.metric = qcp.CalcRMSDRotationalMatrix
 
         self._setup_frames(frames, start, stop, step)
+        if weights is None:
+            self.weights = np.ones((self.nframes,))
+        else:
+            if weights.shape[0] != self.nframes:
+                raise ValueError("The weight should have the same length as the trajectroy")
+            else:
+                # weights are constructed as relative to the mean
+                self.weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+
 
     def _prepare(self):
         self.rmsd_matrix = np.zeros((self.nframes,self.nframes))
         self.kernel2 = np.zeros((self.nframes, self.nframes))
 
-        if epsilon == 'average':
+        if self.epsilon == 'average':
             self.epsilon = np.zeros((self.nframes, ), )
             self.type_epsilon = 'average'
         else:
@@ -276,61 +289,66 @@ class DiffusionMap(BaseAnalysis):
 
 
         self.rot = np.zeros(9)
-        if weights is not None:
-        # weights are constructed as relative to the mean
-            self.weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
-
 
     #mappable function
-    @concurrent
     def calc_diffusion(self, traj_index):
-    """Calculates diffusion distance from metric function
-        rmsd_matrix will be 0's in the lower triangle.
-    """
-        logger.debug("calculating rmsd from structure {0} to all".format(i))
-        i_ref = np.copy(u.trajectory[self._ts.frame].positions-ref_atoms.center_of_mass())
-        for j in range(ts.nframe, self.nframes):
-            j_ref = np.copy(u.trajectory[j].positions-ref_atoms.center_of_mass())
-            self.rmsd_matrix[i, j] = self.metric(i_ref.T.astype(np.float64), \
-            j_ref.T.astype(np.float64), self.natoms, self.rot, self.weights)
+        """Calculates diffusion distance from metric function
+            rmsd_matrix will be 0's in the lower triangle.
+        """
+        logger.info("calculating rmsd from structure {0} to all".format(traj_index))
+        i_ref = np.copy(self.u.trajectory[traj_index].positions-self.atoms.center_of_mass())
 
-    @concurrent
+        logger.info("i_ref {0}".format(i_ref))
+        for j in range(traj_index+1, self.nframes):
+
+            j_ref = np.copy(self.u.trajectory[j].positions-self.atoms.center_of_mass())
+            logger.info("j_ref {0}".format(j_ref))
+
+            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),
+                j_ref.T.astype(np.float64), self.natoms, self.rot, None)
+
     def _single_frame(self):
         self.calc_diffusion(self._ts.frame)
 
     def _conclude(self):
-        if type_epsilon == 'average':
-            for i in range(nframes):
+
+        self.rmsd_matrix = self.rmsd_matrix + self.rmsd_matrix.T - \
+            np.diag(self.rmsd_matrix.diagonal())
+
+        logger.info('rmsd_matrix: {0}'.format(self.rmsd_matrix))
+        if self.type_epsilon == 'average':
+            for i in range(self.nframes):
                #np.argsort(rmsd_matrix[i,:])#[10]]
-                epsilon[i] = rmsd_matrix[i, np.argsort(rmsd_matrix[i, :])[k]]
-            epsilon = np.full((nframes, ), epsilon.mean())
-        logger.info('epsilon: {0}'.format(epsilon))
+                self.epsilon[i] = self.rmsd_matrix[i, \
+                np.argsort(self.rmsd_matrix[i, :])[self.k]]
+            self.epsilon = np.full((self.nframes, ), self.epsilon.mean())
+
+        logger.info('epsilon: {0}'.format(self.epsilon))
 
         #possibly mappable
-        for i in range(nframes):
-            kernel2[i, :] = np.exp(-rmsd_matrix[i, :]**2/(epsilon[i]*epsilon[:]))
+        for i in range(self.nframes):
+            self.kernel2[i, :] = np.exp(-self.rmsd_matrix[i, :]**2/(self.epsilon[i]*self.epsilon[:]))
 
-        p_vector = np.zeros((nframes, ))
-        d_vector = np.zeros((nframes, ))
+        p_vector = np.zeros((self.nframes, ))
+        d_vector = np.zeros((self.nframes, ))
 
         #possibly mappable
-        for i in range(nframes):
-            p_vector[i] = np.dot(kernel2[i, :], weights)
+        for i in range(self.nframes):
+            p_vector[i] = np.dot(self.kernel2[i, :], self.weights)
 
-            kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
+        self.kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
 
-        for i in range(nframes):
-            d_vector[i] = np.dot(kernel2[i, :], weights)
+        for i in range(self.nframes):
+            d_vector[i] = np.dot(self.kernel2[i, :], self.weights)
 
-        for i in range(nframes):
-            kernel2[i, :] = kernel2[i, :]*weights
+        for i in range(self.nframes):
+            self.kernel2[i, :] = self.kernel2[i, :]*self.weights
 
-        kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+        self.kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
-        kernel2 = kernel2 + kernel2.T - np.diag(kernel2.diagonal())
-
+        logger.info('kernel: {0}'.format(self.kernel2))
         #eigenvalues and eigenvector are the collective coordinates
-        eg, ev = np.linalg.eig(kernel2)
+        eg, ev = np.linalg.eig(self.kernel2)
 
         eg_arg = np.argsort(eg)
         self.eg = eg[eg_arg[::-1]]
