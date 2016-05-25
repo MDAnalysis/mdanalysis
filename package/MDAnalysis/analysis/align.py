@@ -242,7 +242,8 @@ def rotation_matrix(a, b, weights=None):
     N = b.shape[0]
 
     if weights is not None:
-        weights = np.asarray(weights, dtype=np.float64)
+        #qcp does NOT divide weights relative to the mean
+        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
     rot = np.zeros(9, dtype=np.float64)
     # Need to transpose coordinates such that the coordinate array is
@@ -395,18 +396,10 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
                                                  tol_mass=tol_mass, strict=strict)
 
 
-    if subselection is None:
-        mobile_atoms = mobile.universe.atoms
-    elif type(subselection) is str:
-        mobile_atoms = mobile.select_atoms(subselection)
-    else:
-        try:
-            mobile_atoms = subselection.atoms
-        except AttributeError:
-            raise TypeError("subselection must be a selection string, a AtomGroup or Universe or None")
+
 
     if mass_weighted:
-        #division by the mean is done in rmsd and qcp call
+        #division by the mean is done in rmsd, not done in qcp, but is done in _fit_to
         weights = ref_atoms.masses
         ref_com = ref_atoms.center_of_geometry()
         mobile_com = mobile_atoms.center_of_geometry()
@@ -419,6 +412,16 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     mobile_coordinates = mobile_atoms.positions - mobile_com
 
     old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates, weights)
+
+    if subselection is None:
+        mobile_atoms = mobile.universe.atoms
+    elif type(subselection) is str:
+        mobile_atoms = mobile.select_atoms(subselection)
+    else:
+        try:
+            mobile_atoms = subselection.atoms
+        except AttributeError:
+            raise TypeError("subselection must be a selection string, a AtomGroup or Universe or None")
 
     #_fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates,\
