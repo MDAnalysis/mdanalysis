@@ -255,7 +255,7 @@ def rotation_matrix(a, b, weights=None):
 
     return np.matrix(rot.reshape(3, 3)), rmsd
 
-def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms, ref_atoms,\
+def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
     mobile_com, ref_com, weights=None):
     """Perform an rmsd-fitting to determine rotation matrix and align atoms
 
@@ -267,14 +267,12 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms, ref_atoms,\
         Coordinates of atoms to be fit against
     mobile_atoms : AtomGroup
         Atoms to be translated
-    ref_atoms : AtomGroup
-        Atoms to be fit against
     weights : numpy array, optional
         Array to be used for weighted rmsd
 
     Returns
     -------
-    atoms
+    mobile_atoms
         AtomGroup of translated and rotated atoms
     min_rmsd
         Minimum rmsd of coordinates
@@ -425,7 +423,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     #_fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates,\
-        ref_coordinates, mobile_atoms, ref_atoms, mobile_com, ref_com, weights)
+        ref_coordinates, mobile_atoms, mobile_com, ref_com, weights=weights)
 
     return old_rmsd, new_rmsd
 
@@ -541,8 +539,8 @@ class AlignTraj(AnalysisBase):
 
         self.mobile_com = self.mobile_atoms.center_of_mass()
         self.mobile.atoms, self.rmsd[index] = _fit_to(self.mobile_coordinates,\
-            self.ref_coordinates, self.mobile_atoms, self.ref_atoms,\
-            self.mobile_com, self.ref_com, self.weights)
+            self.ref_coordinates, self.mobile_atoms, self.mobile_com,\
+                self.ref_com, self.weights)
 
         self.writer.write(self.mobile.atoms)  # write whole input trajectory system
 
