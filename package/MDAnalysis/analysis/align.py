@@ -172,7 +172,7 @@ from numpy.lib.utils import deprecate
 import warnings
 import logging
 
-import MDAnalysis as MDA
+import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
@@ -233,7 +233,8 @@ def rotation_matrix(a, b, weights=None):
 
     See Also
     --------
-    :func:`rmsd` calculates the RMSD between *a* and *b*; for fitting a whole
+    :func:`rmsd` calculates the RMSD between *a* and *b*; for fitting a wholecan you also test that all warnings/exceptions are raised. The best thing is to make sure with coverage that the whole class is covered.
+
     trajectory it is more efficient to use :func:`rms_fit_trj`. A complete fit
     of two structures can be done with :func:`alignto`. """
 
@@ -252,7 +253,6 @@ def rotation_matrix(a, b, weights=None):
     # so that R acts **to the left** and can be broadcasted; we're saving
     # one transpose. [orbeckst])
     rmsd = qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, rot, weights)
-
     return np.matrix(rot.reshape(3, 3)), rmsd
 
 def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
@@ -277,7 +277,6 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
     min_rmsd
         Minimum rmsd of coordinates
     """
-
     R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
     mobile_atoms.translate(-mobile_com)
@@ -377,8 +376,6 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     .. versionchanged:: 0.15.1
         Uses :func:`_fit_to` to get new minimum rmsd
     """
-
-
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
@@ -393,18 +390,15 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
                                                  tol_mass=tol_mass, strict=strict)
 
-
-
-
     if mass_weighted:
         #division by the mean is done in rmsd, not done in qcp, but is done in _fit_to
         weights = ref_atoms.masses
-        ref_com = ref_atoms.center_of_geometry()
-        mobile_com = mobile_atoms.center_of_geometry()
-    else:
-        weights = None
         ref_com = ref_atoms.center_of_mass()
         mobile_com = mobile_atoms.center_of_mass()
+    else:
+        weights = None
+        ref_com = ref_atoms.center_of_geometry()
+        mobile_com = mobile_atoms.center_of_geometry()
 
     ref_coordinates = ref_atoms.positions - ref_com
     mobile_coordinates = mobile_atoms.positions - mobile_com
@@ -424,7 +418,6 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     #_fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates,\
         ref_coordinates, mobile_atoms, mobile_com, ref_com, weights=weights)
-
     return old_rmsd, new_rmsd
 
 
@@ -476,6 +469,10 @@ class AlignTraj(AnalysisBase):
             Step between frames to analyse, Default: 1
 
         """
+        self.quiet = quiet
+        if self.quiet:
+            # should be part of a try ... finally to guarantee restoring the log level
+            logging.disable(logging.WARN)
 
         self.mobile = mobile
         self.reference = reference
@@ -501,24 +498,15 @@ class AlignTraj(AnalysisBase):
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(self.ref_atoms,
                             self.mobile_atoms, tol_mass=tol_mass, strict=strict)
 
-        self.writer = MDA.Writer(filename, self.natoms)
+        self.writer = mda.Writer(filename, self.natoms)
 
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
-            self.weights = ref_atoms.masses
+            self.weights = self.ref_atoms.masses
         else:
             self.weights = None
 
-        if os.path.exists(self.filename) and not force:
-            logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(self.filename))
-
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
-
-        self.quiet = quiet
-        if self.quiet:
-            # should be part of a try ... finally to guarantee restoring the log level
-            logging.disable(logging.WARN)
-
         self._setup_frames(frames, start,stop,step)
 
     def _prepare(self):
