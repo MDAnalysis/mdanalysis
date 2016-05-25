@@ -295,7 +295,7 @@ class TestEncore(TestCase):
     def test_hes(self):
         results, details = encore.hes([self.ens1, self.ens2], mass_weighted=True)
         result_value = results[0,1]
-        expected_value = 13946090.576
+        expected_value = 38279683.96
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
@@ -303,7 +303,7 @@ class TestEncore(TestCase):
     def test_hes_align(self):
         results, details = encore.hes([self.ens1, self.ens2], align=True)
         result_value = results[0,1]
-        expected_value = 6868.28
+        expected_value = 6964.83
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
