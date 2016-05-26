@@ -246,6 +246,7 @@ def rotation_matrix(a, b, weights=None):
         #qcp does NOT divide weights relative to the mean
         weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
+
     rot = np.zeros(9, dtype=np.float64)
     # Need to transpose coordinates such that the coordinate array is
     # 3xN instead of Nx3. Also qcp requires that the dtype be float64
@@ -267,6 +268,8 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
         Coordinates of atoms to be fit against
     mobile_atoms : AtomGroup
         Atoms to be translated
+    ref_com:
+        Center of mass of reference atoms in current coordinates
     weights : numpy array, optional
         Array to be used for weighted rmsd
 
@@ -284,7 +287,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
     mobile_atoms.rotate(R)
     mobile_atoms.translate(ref_com)
 
-    return min_rmsd
+    return mobile_atoms, min_rmsd
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
             subselection=None, tol_mass=0.1, strict=False):
@@ -417,7 +420,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
             raise TypeError("subselection must be a selection string, a AtomGroup or Universe or None")
 
     #_fit_to DOES subtract center of mass, will provide proper min_rmsd
-    new_rmsd = _fit_to(mobile_coordinates,\
+    mobile_atoms, new_rmsd = _fit_to(mobile_coordinates,\
         ref_coordinates, mobile_atoms, mobile_com, ref_com, weights=weights)
     return old_rmsd, new_rmsd
 
@@ -513,25 +516,23 @@ class AlignTraj(AnalysisBase):
         # reference centre of mass system
         self.ref_com = self.ref_atoms.center_of_mass()
         self.ref_coordinates = self.ref_atoms.positions - self.ref_com
-
         # allocate the array for selection atom coords
-        self.mobile_coordinates = self.mobile_atoms.positions.copy()
         self.rmsd = np.zeros((self.nframes,))
-
-        # R: rotation matrix that aligns r-r_com, x~-x~com
-        #    (x~: selected coordinates, x: all coordinates)
-        # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
 
     def _single_frame(self):
         index = self._ts.frame
-        self.ref_atoms.positions[0]))
+
         self.mobile_com = self.mobile_atoms.center_of_mass()
+        self.mobile_coordinates = self.mobile_atoms.positions.copy() - self.mobile_com
 
-        self.rmsd[index] = _fit_to(self.mobile_coordinates,self.ref_coordinates,\
-            self.mobile_atoms, self.mobile_com, self.ref_com, self.weights)
-
-        self.writer.write(self.mobile.atoms)  # write whole input trajectory system
-
+        self.mobile_atoms, self.rmsd[index] = _fit_to(self.mobile_coordinates,\
+            self.ref_coordinates, self.mobile_atoms, self.mobile_com,\
+            self.ref_com, self.weights)
+        logger.info('mobile_atoms.positions: {0}, rmsd:{1}'.format(\
+            self.mobile_atoms.positions[0], self.rmsd[index]))
+         # write whole aligned input trajectory system
+        self.writer.write(self.mobile_atoms)
+        
     def _conclude(self):
         self.writer.close()
         if self.quiet:
