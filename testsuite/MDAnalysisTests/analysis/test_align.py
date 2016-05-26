@@ -143,14 +143,20 @@ class TestAlign(TestCase):
         # VMD: 6.9378711
         self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
+        del self.outfile
         #test weighted
 
         #test filename=none
         #test os.path_exists and not force
         #test .save()
+        self.outfile = path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
         x = align.AlignTraj(self.universe,self.reference,filename=self.outfile,\
         mass_weighted=True)
         x.run()
+        self.rmsd_outfile = path.join(self.tempdir.name, 'rmsd')
+        x.save(self.rmsd_outfile)
+        self._assert_rmsd(fitted, 0, 6.929083044751061)
+        self._assert_rmsd(fitted, -1, 0.0)
         del self.outfile
         del fitted
 

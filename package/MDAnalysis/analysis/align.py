@@ -270,6 +270,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
     weights : numpy array, optional
         Array to be used for weighted rmsd
 
+
     Returns
     -------
     mobile_atoms
@@ -283,7 +284,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
     mobile_atoms.rotate(R)
     mobile_atoms.translate(ref_com)
 
-    return mobile_atoms, min_rmsd
+    return min_rmsd
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
             subselection=None, tol_mass=0.1, strict=False):
@@ -416,7 +417,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
             raise TypeError("subselection must be a selection string, a AtomGroup or Universe or None")
 
     #_fit_to DOES subtract center of mass, will provide proper min_rmsd
-    mobile_atoms, new_rmsd = _fit_to(mobile_coordinates,\
+    new_rmsd = _fit_to(mobile_coordinates,\
         ref_coordinates, mobile_atoms, mobile_com, ref_com, weights=weights)
     return old_rmsd, new_rmsd
 
@@ -524,11 +525,12 @@ class AlignTraj(AnalysisBase):
 
     def _single_frame(self):
         index = self._ts.frame
-
+        logger.info('mobile_atoms: {0}, ref atoms: {1}'.format(self.mobile_atoms.positions[0],\
+        self.ref_atoms.positions[0]))
         self.mobile_com = self.mobile_atoms.center_of_mass()
-        self.mobile.atoms, self.rmsd[index] = _fit_to(self.mobile_coordinates,\
-            self.ref_coordinates, self.mobile_atoms, self.mobile_com,\
-                self.ref_com, self.weights)
+
+        self.rmsd[index] = _fit_to(self.mobile_coordinates,self.ref_coordinates,\
+            self.mobile_atoms, self.mobile_com, self.ref_com, self.weights)
 
         self.writer.write(self.mobile.atoms)  # write whole input trajectory system
 
