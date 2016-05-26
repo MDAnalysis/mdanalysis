@@ -491,8 +491,7 @@ class AlignTraj(AnalysisBase):
             filename = os.path.join(path, prefix + fn)
 
         if os.path.exists(filename) and not force:
-            logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
-
+            raise IOError('Filename already exists in path and force is not set to True')
         self.filename = filename
 
         self.natoms = self.mobile_atoms.n_atoms
@@ -525,7 +524,6 @@ class AlignTraj(AnalysisBase):
 
     def _single_frame(self):
         index = self._ts.frame
-        logger.info('mobile_atoms: {0}, ref atoms: {1}'.format(self.mobile_atoms.positions[0],\
         self.ref_atoms.positions[0]))
         self.mobile_com = self.mobile_atoms.center_of_mass()
 
