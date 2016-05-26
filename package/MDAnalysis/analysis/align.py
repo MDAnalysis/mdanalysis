@@ -268,8 +268,10 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,\
         Coordinates of atoms to be fit against
     mobile_atoms : AtomGroup
         Atoms to be translated
-    ref_com:
-        Center of mass of reference atoms in current coordinates
+    mobile_com: ndarray
+        array of xyz coordinate of mobile center of mass
+    ref_com: ndarray
+        array of xyz coordinate of reference center of mass
     weights : numpy array, optional
         Array to be used for weighted rmsd
 
@@ -378,7 +380,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        the old behavior was the equivalent of *strict* = ``True``.
 
     .. versionchanged:: 0.15.1
-        Uses :func:`_fit_to` to get new minimum rmsd
+        Uses :func:`_fit_to` to get new minimum rmsd, new mobile atoms
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -492,6 +494,7 @@ class AlignTraj(AnalysisBase):
         if filename is None:
             path, fn = os.path.split(frames.filename)
             filename = os.path.join(path, prefix + fn)
+            logger.info('none filename: {0}'.format(filename))
 
         if os.path.exists(filename) and not force:
             raise IOError('Filename already exists in path and force is not set to True')
@@ -528,11 +531,9 @@ class AlignTraj(AnalysisBase):
         self.mobile_atoms, self.rmsd[index] = _fit_to(self.mobile_coordinates,\
             self.ref_coordinates, self.mobile_atoms, self.mobile_com,\
             self.ref_com, self.weights)
-        logger.info('mobile_atoms.positions: {0}, rmsd:{1}'.format(\
-            self.mobile_atoms.positions[0], self.rmsd[index]))
          # write whole aligned input trajectory system
         self.writer.write(self.mobile_atoms)
-        
+
     def _conclude(self):
         self.writer.close()
         if self.quiet:
