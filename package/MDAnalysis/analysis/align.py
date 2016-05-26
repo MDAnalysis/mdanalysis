@@ -728,23 +728,32 @@ def sequence_alignment(mobile, reference, **kwargs):
     low sequence identity, more specialized tools such as clustalw,
     muscle, tcoffee, or similar should be used.
 
-    :Arguments:
-       *mobile*
-          protein atom group
-       *reference*
-          protein atom group
-
-    :Keywords:
+    Parameters
+    ----------
+    mobile : AtomGroup
+        Atom group to be aligned
+    reference : AtomGroup
+        Atom group to be aligned against
+    ** kwargs
       *match_score*
-         score for matching residues [2]
+         score for matching residues, default is [2]
       *mismatch_penalty*
-         penalty for residues that do not match [-1]
+         penalty for residues that do not match , default is [-1]
       *gap_penalty*
          penalty for opening a gap; the high default value creates compact
          alignments for highly identical sequences but might not be suitable
-         for sequences with low identity [-2]
+         for sequences with low identity, default is [-2]
       *gapextension_penalty*
-         penalty for extending a gap [-0.1]
+         penalty for extending a gap, defualt is [-0.1]
+
+    Returns
+    -------
+    aln[0]
+        Tuple of top sequence matching output ('Sequence A', 'Sequence B', score,
+        begin, end ,prev_pos, nex_pos)
+
+    BioPython documentation:
+        http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
 
     .. versionadded:: 0.10.0
     """
@@ -793,40 +802,48 @@ def fasta2select(fastafilename, is_aligned=False,
 
     (This translation table *is* combined with any value for *xxx_offset*!)
 
-    :Arguments:
-      *fastafilename*
-         FASTA file with first sequence as reference and
-         second the one to be aligned (ORDER IS IMPORTANT!)
-      *is_aligned*
-         False: run clustalw for sequence alignment; True: use
-         the alignment in the file (e.g. from STAMP) [``False``]
-      *ref_offset*
-         add this number to the column number in the FASTA file
-         to get the original residue number
-      *target_offset*
-         same for the target
-      *ref_resids*
-         sequence of resids as they appear in the reference structure
-      *target_resids*
-         sequence of resids as they appear in the target
-      *alnfilename*
-         filename of ClustalW alignment (clustal format) that is
-         produced by *clustalw* when *is_aligned* = ``False``.
-         ``None`` uses the name and path of *fastafilename* and
-         subsititutes the suffix with '.aln'.[``None``]
-      *treefilename*
-         filename of ClustalW guide tree (Newick format);
-         if ``None``  the the filename is generated from *alnfilename*
-         with the suffix '.dnd' instead of '.aln' [``None``]
-      *clustalw*
-         path to the ClustalW (or ClustalW2) binary; only
-         needed for *is_aligned* = ``False`` ["clustalw2"]
+    Parameters
+    ----------
+    fastafilename : str, path to filename
+        FASTA file with first sequence as reference and
+        second the one to be aligned (ORDER IS IMPORTANT!)
+    is_aligned : boolean, optional
+        ``False`` : [default]
+            run clustalw for sequence alignment;
+        ``True``
+            use the alignment in the file (e.g. from STAMP) [``False``]
+    ref_offset : int, optional
+        default [0], add this number to the column number in the FASTA file
+        to get the original residue number
+    target_offset : int, optional
+        default [0], add this number to the column number in the FASTA file
+        to get the original residue number
+    ref_resids : str, optional
+        sequence of resids as they appear in the reference structure
+    target_resids : str, optional
+        sequence of resids as they appear in the target
+    alnfilename : str, optional
+        default [``None``]
+        filename of ClustalW alignment (clustal format) that is
+        produced by *clustalw* when *is_aligned* = ``False``.
+        ``None`` uses the name and path of *fastafilename* and
+        subsititutes the suffix with '.aln'.
+    treefilename: str, optional
+        default [``None``]
+        filename of ClustalW guide tree (Newick format);
+        if ``None``  the the filename is generated from *alnfilename*
+        with the suffix '.dnd' instead of '.aln'
+    clustalw : str, optional
+        default ["ClustalW2"]
+        path to the ClustalW (or ClustalW2) binary; only
+        needed for *is_aligned* = ``False``
 
-    :Returns:
-      *select_dict*
-          dictionary with 'reference' and 'mobile' selection string
-          that can be used immediately in :func:`rms_fit_trj` as
-          ``select=select_dict``.
+    Returns
+    -------
+    select_dict
+        dictionary with 'reference' and 'mobile' selection string
+        that can be used immediately in :func:`rms_fit_trj` as
+        ``select=select_dict``.
     """
     import Bio.SeqIO
     import Bio.AlignIO
@@ -1009,7 +1026,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         matching masses differ by more than *tol*.
 
     Notes
-    ----- 
+    -----
     The algorithm could be improved by using e.g. the Needleman-Wunsch
     algorithm in :mod:`Bio.profile2` to align atoms in each residue (doing a
     global alignment is too expensive).
