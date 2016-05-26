@@ -13,13 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16
+??/??/16 kain88-de,jdetle
 
-  * 0.15.1 kain88-de
+  * 0.15.1 
 
 Fixes
-
   * reading/writing lambda value in trr files (Issue #859)
+
+Changes
+  * Refactor of align to fit Bauhaus, wrapper added for alignment (Issue #845)
+
+Deprecations (Issue #599)
+  * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
@@ -62,7 +67,6 @@ Fixes
   * Fixed HistoryReader returning 1 based frame indices (Issue #851)
 
 Changes
-
   * Added zero_based indices for HBondsAnalysis. (Issue #807)
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of
