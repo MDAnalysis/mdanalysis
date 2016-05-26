@@ -320,18 +320,19 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        index and therefore destroy the correspondence between the two groups. **It
        is safest not to mix ordered AtomGroups with selection strings.**
 
-    :Arguments:
-      *mobile*
+    Parameters
+    ----------
+      mobile : Universe or AtomGroup
          structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
-      *reference*
+      reference : Universe or AtomGroup
          reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
-      *select*
+      select: string or dict, optional
          1. any valid selection string for
             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
-         2. dictionary ``{'mobile':sel1, 'reference':sel2}``
+         2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
             (the :func:`fasta2select` function returns such a
             dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
          3.  tuple ``(sel1, sel2)``
@@ -339,21 +340,21 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
          a list of selection strings (to generate a AtomGroup with defined atom order as
          described under :ref:`ordered-selections-label`).
-      *mass_weighted* : boolean
+      mass_weighted : boolean, optional
          ``True`` uses the masses :meth:`reference.masses` as weights for the
          RMSD fit.
-      *tol_mass*
+      tol_mass: float, optional
          Reject match if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
-      *strict*
+      strict: boolean, optional
          ``True``
-             Will raise :exc:`SelectioError` if a single atom does not
+             Will raise :exc:`SelectionError` if a single atom does not
              match between the two selections.
          ``False`` [default]
              Will try to prepare a matching selection by dropping
              residues with non-matching atoms. See :func:`get_matching_atoms`
              for details.
-      *subselection*
+      subselection : string, optional
          Apply the transformation only to this selection.
 
          ``None`` [default]
@@ -365,10 +366,15 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
              Apply to the arbitrary group of atoms
 
-    :Returns: RMSD before and after spatial alignment.
+    Returns
+    -------
+    old_rmsd
+        RMSD before spatial alignment
+    new_rmsd
+        RMSD after spatial alignment.
 
     .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
-                 use :func:`rms_fit_trj`.
+                 use :class:`AlignTraj`.
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -380,7 +386,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        the old behavior was the equivalent of *strict* = ``True``.
 
     .. versionchanged:: 0.15.1
-        Uses :func:`_fit_to` to get new minimum rmsd, new mobile atoms
+        Uses :func:`_fit_to` to get new minimum rmsd
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -586,7 +592,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          *tol_mass* [0.1]
       *strict*
          Default: ``False``
-         - ``True``: Will raise :exc:`SelectioError` if a single atom does not
+         - ``True``: Will raise :exc:`SelectionError` if a single atom does not
            match between the two selections.
          - ``False``: Will try to prepare a matching selection by dropping
            residues with non-matching atoms. See :func:`get_matching_atoms`
@@ -969,29 +975,41 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     The log file (see :func:`MDAnalysis.start_logging`) will contain detailed
     information about mismatches.
 
-    :Arguments:
-      *ag1*, *ag2*
-         :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances that are compared
-    :Keywords:
-      *tol_mass*
+    Parameters
+    ----------
+    ag1 : AtomGroup
+        First :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance that is
+        compared
+    ag2 : AtomGroup
+        Second :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance that is
+        compared
+    tol_mass : float, optional
          Reject if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
-      *strict*
-         ``True``
-             Will raise :exc:`SelectioError` if a single atom does not
-             match between the two selections.
-         ``False`` [default]
-             Will try to prepare a matching selection by dropping
-             residues with non-matching atoms. See :func:`get_matching_atoms`
-             for details.
+    strict : boolean, optional
+        ``True``
+            Will raise :exc:`SelectionError` if a single atom does not
+            match between the two selections.
+        ``False`` [default]
+            Will try to prepare a matching selection by dropping
+            residues with non-matching atoms. See :func:`get_matching_atoms`
+            for details.
 
-    :Returns: Tuple ``(g1, g2)`` with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances
-              that match, atom by atom. The groups are either the original groups if all matches
-              or slices of the original groups.
+    Returns
+    -------
+    ``(g1, g2)``
+        Tuple with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances
+        that match, atom by atom. The groups are either the original groups if all matches
+        or slices of the original groups.
 
-    :Raises: :exc:`SelectionError` if the number of residues does not match or if in the final
-             matching masses differ by more than *tol*.
+    Raises
+    ------
+    :exc:`SelectionError`
+        Error raised if the number of residues does not match or if in the final
+        matching masses differ by more than *tol*.
 
+    Notes
+    ----- 
     The algorithm could be improved by using e.g. the Needleman-Wunsch
     algorithm in :mod:`Bio.profile2` to align atoms in each residue (doing a
     global alignment is too expensive).
