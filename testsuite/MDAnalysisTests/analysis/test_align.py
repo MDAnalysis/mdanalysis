@@ -138,6 +138,12 @@ class TestAlign(TestCase):
         x = align.AlignTraj(self.universe,self.reference,filename=self.outfile)
         x.run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
+
+        self.rmsd_outfile = path.join(self.tempdir.name, 'rmsd')
+        x.save(self.rmsd_outfile)
+        assert_almost_equal(x.rmsd[0],6.929083044751061, decimal = 3)
+        assert_almost_equal(x.rmsd[-1],5.279731379771749336e-07, decimal = 3)
+
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
@@ -145,20 +151,18 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, -1, 0.0)
         del self.outfile
         #test weighted
-
-        #test filename=none
-        #test os.path_exists and not force
-        #test .save()
         self.outfile = path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
         x = align.AlignTraj(self.universe,self.reference,filename=self.outfile,\
         mass_weighted=True)
         x.run()
-        self.rmsd_outfile = path.join(self.tempdir.name, 'rmsd')
-        x.save(self.rmsd_outfile)
-        self._assert_rmsd(fitted, 0, 6.929083044751061)
-        self._assert_rmsd(fitted, -1, 0.0)
+
+
+        del self.rmsd_outfile
         del self.outfile
         del fitted
+        #test filename=none
+        #test os.path_exists and not force
+        #test .save()
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
