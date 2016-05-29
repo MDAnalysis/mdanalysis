@@ -18,12 +18,12 @@
 Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`
 =====================================================================
 
-:Author: Eugen Hruska
+:Authors: Eugen Hruska, John Detlefs
 :Year: 2016
 :Copyright: GNU Public License v3
 
 The module contains the non-linear dimension reduction method diffusion map.
-The diffusion map allows to get a quick estimate of the slowest collective
+The diffusion map provides an estimate of the slowest collective
 coordinates for a trajectory. This non-linear dimension reduction method
 assumes that the trajectory is long enough to represent a probability
 distribution of as protein close to the equilibrium. Furthermore, the diffusion map
@@ -45,8 +45,8 @@ Diffusion Map tutorial
 
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
-:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that these test data
-aren't representing a sample from the equilibrium. This violates a basic
+:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that this trajectory
+does not represent a sample from the equilibrium. This violates a basic
 assumption of the diffusion map and the results shouldn't be interpreted for this reason.
 This tutorial shows how to use the diffusionmap function.
 First load all modules and test data ::
@@ -56,32 +56,26 @@ First load all modules and test data ::
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
    >>> from MDAnalysis.tests.datafiles import PSF,DCD
 
-In the simplest case, we can simply calculate the diffusion map from
-one trajectory :func:`diffusionmap`::
+Given an universe or atom group, we can calculate the diffusion map from
+that trajectory using :class:`DiffusionMap`:: and get the corresponding eigenvalues
+and eigenvectors
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
    >>> dmap = diffusionmap.DiffusionMap(u)
-   >>> eg,ev= diffusionmap.DiffusionMap(u).run()
-
-To see how the two slowest collective coordinates how the Other stuff in paper
-
-   >>> import matplotlib.pyplot as plt
-   >>> plt.scatter(ev[:,1],ev[:,2])
-   >>> plt.title('diffusion map')
-   >>> plt.xlabel("slowest collective coordinate")
-   >>> plt.ylabel("second slowest collective coordinate")
-   >>> plt.show()
+   >>> dmap.run()
+   >>> eigenvalues = dmap.eigenvalues
+   >>> eigenvectors = dmap.eigenvectors
 
 Classes
 -------
 
-.. autoclass:: Contacts
+.. autoclass:: DiffusionMap
    :members:
 
 References
 ---------
 
-If you use this QCP rotation calculation method in a publication, please
+If you use this Dimension Reduction method in a publication, please
 reference:
 ..[Lafon1] Coifman, Ronald R., Lafon, Stephane (2006) Diffusion maps.
 Appl. Comput. Harmon. Anal. 21, 5–30.
@@ -89,139 +83,38 @@ Appl. Comput. Harmon. Anal. 21, 5–30.
 Determination of reaction coordinates via locally scaled
 diffusion map. Journal of Chemical Physics.
 
+.. If you choose the default metric, this module uses the fast QCP algorithm
+[Theobald2005]_ to calculate the root mean square distance (RMSD) between
+two coordinate sets (as implemented in :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
+When using this module in published work please cite [Theobald2005]_.
 
 
 """
 
 import logging
 import numpy as np
-from deco import *
 import MDAnalysis.lib.qcprot as qcp
 from six.moves import range
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
-def diffusionmap(u, select='all', epsilon='average', k=10, weight=None):
-    """Non-linear dimension reduction method diffusion map
 
-    diffusionmap(u, select, epsilon, k, weight)
+class DiffusionMap(AnalysisBase):
+    """Non-linear dimension reduction method
 
     Dimension reduction with diffusion map of the structures in the universe.
 
-    Parameters
-    -------------
-      u : trajectory :class:`~MDAnalysis.core.AtomGroup.Universe`
-         Remember that eigenvalue decomposition scales at O(n^3)
-      select: str, optional
-         1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
-         This selection of atoms is used to calculate the RMSD between different frames. Water should be excluded.
-      epsilon : float, optional
-          Specifies the epsilon used for the diffusion map. More information in [1] and [2]
-          With 'average' the average of the RMSD to the k-nearest-neighbor will be used.
-      k : int, optional
-          specifies the k for the k-nearest-neighbor is average epsilon is used.
-      weight: numpy array, optional
-         The numpy array has to have the same length as the trajectory.
-         With 'None' the weight of each frame of the trajectory will be the same.
-         If order of the weights has to be the same as the order of framesin the trajectory.
-
-
-    Returns
-    ----------------
+    Attributes
+    ----------
     eigenvalues: numpy array
          Eigenvalues of the diffusion map
     eigenvectors: numpy array
          Eigenvectors of the diffusion map
          The second and higher eigenvectors ev[i+1,:] represent the i-th slowest collective coordinates.
 
-    Notes
-    ---------------
-
-    The dimension reduction works in the following way:
-
-    1. A RMSD between each every pair of frames is calculated.
-    2. The normalized kernel is obtain as in [1] and [2].
-    3. The eigenvalues and eigenvectors of the normalized kernel are the output.
-
     """
-    frames = u.trajectory
-    ref_atoms = u.select_atoms(select)
-    nframes = len(frames)
-    natoms = ref_atoms.n_atoms
 
-    rmsd_matrix = np.zeros((nframes, nframes))
-    kernel2 = np.zeros((nframes, nframes))
-
-    if epsilon == 'average':
-        epsilon = np.zeros((nframes, ), )
-        type_epsilon = 'average'
-    else:
-        value_epsilon = epsilon
-        epsilon = np.full((nframes, ), value_epsilon)
-        type_epsilon = 'constant'
-
-
-    rot = np.zeros(9)
-    if weight is None:
-        weights = np.full((nframes, ), 1)
-    else:
-        if weight.shape[0] != nframes:
-            raise ValueError("The weight should have the same length as the trajectroy")
-        else:
-            weights = weight
-
-    for i in range(nframes):
-        logger.info("calculating rmsd from structure {0} to all".format(i))
-        i_ref = np.copy(u.trajectory[i].positions-ref_atoms.center_of_mass())
-        for j in range(i, nframes):
-            j_ref = np.copy(u.trajectory[j].positions-ref_atoms.center_of_mass())
-            rmsd_matrix[i, j] = qcp.CalcRMSDRotationalMatrix(i_ref.T.astype(np.float64), \
-              j_ref.T.astype(np.float64), natoms, rot, weight)
-
-    #fill in symmetric values
-    rmsd_matrix = rmsd_matrix + rmsd_matrix.T - np.diag(rmsd_matrix.diagonal())
-
-    #calculate epsilons
-    if type_epsilon == 'average':
-        for i in range(nframes):
-           #np.argsort(rmsd_matrix[i,:])#[10]]
-            epsilon[i] = rmsd_matrix[i, np.argsort(rmsd_matrix[i, :])[k]]
-        epsilon = np.full((nframes, ), epsilon.mean())
-
-
-    logger.info('epsilon: {0}'.format(epsilon))
-
-    #calculate normalized kernel
-    for i in range(nframes):
-        kernel2[i, :] = np.exp(-rmsd_matrix[i, :]**2/(epsilon[i]*epsilon[:]))
-
-    p_vector = np.zeros((nframes, ))
-    d_vector = np.zeros((nframes, ))
-    for i in range(nframes):
-        p_vector[i] = np.dot(kernel2[i, :], weights)
-
-    kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
-
-    for i in range(nframes):
-        d_vector[i] = np.dot(kernel2[i, :], weights)
-
-    for i in range(nframes):
-        kernel2[i, :] = kernel2[i, :]*weights
-
-    kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
-
-    #eigenvalues and eigenvector are the collective coordinates
-    eg, ev = np.linalg.eig(kernel2)
-
-    eg_arg = np.argsort(eg)
-    eg = eg[eg_arg[::-1]]
-    ev = ev[eg_arg[::-1],:]
-
-    return eg, ev
-
-class DiffusionMap(AnalysisBase):
     def __init__(self, u,  select='all', epsilon='average', k=10, weights=None,
         metric=None, start=None, stop=None, step=None):
         """
@@ -229,8 +122,8 @@ class DiffusionMap(AnalysisBase):
         -------------
         u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
             The MD Trajectory for dimension reduction, remember that computational
-            scales at O(n^3). Cost can be reduced by increasing step interval or
-            specifying start and stop
+            cost scales at O(n^3). Cost can be reduced by increasing step interval or
+            specifying a start and stop
         select: str, optional
             1. any valid selection string for
             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
@@ -243,9 +136,9 @@ class DiffusionMap(AnalysisBase):
         weights: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the same.
-
         metric : function, optional
-            Maps two numpy arrays to a float, is positive definite and symmetric.
+            Maps two numpy arrays to a float, is positive definite and symmetric,
+            Default: ``None`` sets metric to qcp.CalcRMSDRotationalMatrix
         start : int, optional
             First frame of trajectory to analyse, Default: 0
         stop : int, optional
@@ -288,30 +181,21 @@ class DiffusionMap(AnalysisBase):
 
         self.rot = np.zeros(9)
 
-    #mappable function
-    def calc_diffusion(self, traj_index):
-        """Calculates diffusion distance from metric function
-            rmsd_matrix will be 0's in the lower triangle.
-        """
-        logger.info("calculating rmsd from structure {0} to all".format(traj_index))
-        i_ref = np.copy(self.u.trajectory[traj_index].positions-self.atoms.center_of_mass())
-
-        for j in range(traj_index, self.nframes):
-            j_ref = np.copy(self.u.trajectory[j].positions-self.atoms.center_of_mass())
-            logger.info('_ts.frame {0}'.format(self._ts.frame))
-            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),\
-                j_ref.T.astype(np.float64), self.natoms, self.rot, weights=None)
-
     def _single_frame(self):
         logger.info("_ts.frame {0}, numframes{1}".format(self._ts.frame, self.nframes))
-        self.calc_diffusion(self._ts.frame)
+        traj_index = self._ts.frame
+        i_ref = np.copy(self.u.trajectory[traj_index].positions-self.atoms.center_of_mass())
+
+        #diagonal entries need not be calculated due to metric(x,x) == 0 in theory
+        for j in range(self.nframes-1, self._ts.frame-1, -1):
+            j_ref = np.copy(self.u.trajectory[j].positions-self.atoms.center_of_mass())
+            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),\
+                j_ref.T.astype(np.float64), self.natoms, self.rot, self.weights)
 
     def _conclude(self):
-
-        logger.info('rmsd_matrix: {0}'.format(self.rmsd_matrix))
-
         self.rmsd_matrix = self.rmsd_matrix + self.rmsd_matrix.T - \
             np.diag(self.rmsd_matrix.diagonal())
+
         if self.type_epsilon == 'average':
             for i in range(self.nframes):
                #np.argsort(rmsd_matrix[i,:])#[10]]
@@ -319,8 +203,6 @@ class DiffusionMap(AnalysisBase):
                 np.argsort(self.rmsd_matrix[i, :])[self.k]]
 
             self.epsilon = np.full((self.nframes, ), self.epsilon.mean())
-
-        logger.info('epsilon: {0}'.format(self.epsilon))
 
         self.kernel2 = np.zeros((self.nframes, self.nframes))
 
@@ -343,11 +225,9 @@ class DiffusionMap(AnalysisBase):
             self.kernel2[i, :] = self.kernel2[i, :]*self.weights
 
         self.kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
-
-        logger.info('kernel: {0}'.format(self.kernel2))
         #eigenvalues and eigenvector are the collective coordinates
         eg, ev = np.linalg.eig(self.kernel2)
 
         eg_arg = np.argsort(eg)
-        self.eg = eg[eg_arg[::-1]]
-        self.ev = ev[eg_arg[::-1],:]
+        self.eigenvalues = eg[eg_arg[::-1]]
+        self.eigenvectors = ev[eg_arg[::-1],:]
