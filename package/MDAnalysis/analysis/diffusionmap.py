@@ -93,7 +93,6 @@ When using this module in published work please cite [Theobald2005]_.
 
 import logging
 import numpy as np
-from deco import *
 import MDAnalysis.lib.qcprot as qcp
 from six.moves import range
 from .base import AnalysisBase
