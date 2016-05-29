@@ -265,6 +265,7 @@ class DiffusionMap(AnalysisBase):
             self.metric = qcp.CalcRMSDRotationalMatrix
 
         self._setup_frames(frames, start, stop, step)
+
         if weights is None:
             self.weights = np.ones((self.nframes,))
         else:
@@ -274,10 +275,8 @@ class DiffusionMap(AnalysisBase):
                 # weights are constructed as relative to the mean
                 self.weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
-
     def _prepare(self):
         self.rmsd_matrix = np.zeros((self.nframes,self.nframes))
-        self.kernel2 = np.zeros((self.nframes, self.nframes))
 
         if self.epsilon == 'average':
             self.epsilon = np.zeros((self.nframes, ), )
@@ -286,7 +285,6 @@ class DiffusionMap(AnalysisBase):
             value_epsilon = epsilon
             self.epsilon = np.full((nframes, ), value_epsilon)
             self.type_epsilon = 'constant'
-
 
         self.rot = np.zeros(9)
 
@@ -298,32 +296,33 @@ class DiffusionMap(AnalysisBase):
         logger.info("calculating rmsd from structure {0} to all".format(traj_index))
         i_ref = np.copy(self.u.trajectory[traj_index].positions-self.atoms.center_of_mass())
 
-        logger.info("i_ref {0}".format(i_ref))
-        for j in range(traj_index+1, self.nframes):
-
+        for j in range(traj_index, self.nframes):
             j_ref = np.copy(self.u.trajectory[j].positions-self.atoms.center_of_mass())
-            logger.info("j_ref {0}".format(j_ref))
-
-            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),
-                j_ref.T.astype(np.float64), self.natoms, self.rot, None)
+            logger.info('_ts.frame {0}'.format(self._ts.frame))
+            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),\
+                j_ref.T.astype(np.float64), self.natoms, self.rot, weights=None)
 
     def _single_frame(self):
+        logger.info("_ts.frame {0}, numframes{1}".format(self._ts.frame, self.nframes))
         self.calc_diffusion(self._ts.frame)
 
     def _conclude(self):
 
+        logger.info('rmsd_matrix: {0}'.format(self.rmsd_matrix))
+
         self.rmsd_matrix = self.rmsd_matrix + self.rmsd_matrix.T - \
             np.diag(self.rmsd_matrix.diagonal())
-
-        logger.info('rmsd_matrix: {0}'.format(self.rmsd_matrix))
         if self.type_epsilon == 'average':
             for i in range(self.nframes):
                #np.argsort(rmsd_matrix[i,:])#[10]]
                 self.epsilon[i] = self.rmsd_matrix[i, \
                 np.argsort(self.rmsd_matrix[i, :])[self.k]]
+
             self.epsilon = np.full((self.nframes, ), self.epsilon.mean())
 
         logger.info('epsilon: {0}'.format(self.epsilon))
+
+        self.kernel2 = np.zeros((self.nframes, self.nframes))
 
         #possibly mappable
         for i in range(self.nframes):
@@ -332,7 +331,6 @@ class DiffusionMap(AnalysisBase):
         p_vector = np.zeros((self.nframes, ))
         d_vector = np.zeros((self.nframes, ))
 
-        #possibly mappable
         for i in range(self.nframes):
             p_vector[i] = np.dot(self.kernel2[i, :], self.weights)
 
