@@ -152,14 +152,10 @@ class TestAlign(TestCase):
         del self.outfile
         #test weighted
         self.outfile = path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
-        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile,\
-        mass_weighted=True)
+        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile, 
+                            mass_weighted=True)
         x.run()
 
-
-        del self.rmsd_outfile
-        del self.outfile
-        del fitted
         #test filename=none
         #test os.path_exists and not force
         #test .save()
@@ -192,8 +188,6 @@ class TestAlign(TestCase):
 
         assert_raises(SelectionError, different_atoms)
 
-        #TODO
-        #Assert raised type error for subselection
 
 
 class TestAlignmentProcessing(TestCase):

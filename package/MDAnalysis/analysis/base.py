@@ -21,15 +21,12 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 A collection of useful building blocks for creating Analysis
 classes.
 
-
 """
 from six.moves import range
 
 import numpy as np
 import logging
 from MDAnalysis.lib.log import ProgressMeter
-
-
 
 logger = logging.getLogger(__name__)
 
@@ -75,10 +72,10 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.nframes = len(range(start, stop, step))
-    
+
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
-        
+
         Don't worry about normalising, just deal with a single frame.
         """
         pass
@@ -101,7 +98,7 @@ class AnalysisBase(object):
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
             self._ts = ts
-            #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+            # logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
         logger.info("Finishing up")
         self._conclude()
