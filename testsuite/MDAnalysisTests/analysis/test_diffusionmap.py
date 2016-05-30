@@ -34,20 +34,21 @@ class TestDiffusionmap(object):
         #assert_almost_equal(self.ev[0,0], .095836037343022831)
         #faster
         u = MDAnalysis.Universe(PDB, XTC)
-        eg, ev = diffusionmap.diffusionmap(u, select = 'backbone', k = 5)
-        self.eg = eg
-        self.ev = ev
+        dmap = diffusionmap.DiffusionMap(u, select='backbone', k = 5)
+        dmap.run()
+        self.eigvals = dmap.eigenvalues
+        self.eigvects = dmap.eigenvectors
        
 
     def test_eg(self):
-        assert_equal(self.eg.shape, (10, ))
-        assert_almost_equal(self.eg[0], 1.0, decimal=5)
-        assert_almost_equal(self.eg[-1], 0.0142, decimal = 3)
+        assert_equal(self.eigvals.shape, (10, ))
+        assert_almost_equal(self.eigvals[0], 1.0, decimal=5)
+        assert_almost_equal(self.eigvals[-1], 0.0142, decimal = 3)
 
 
     def test_ev(self):
-        assert_equal(self.ev.shape, (10, 10))
-        assert_almost_equal(self.ev[0, 0], -0.3019, decimal = 2)
+        assert_equal(self.eigvects.shape, (10, 10))
+        assert_almost_equal(self.eigvects[0, 0], -0.3019, decimal = 2)
 
 
 
