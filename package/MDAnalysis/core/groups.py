@@ -6,6 +6,7 @@ import numpy as np
 import functools
 import itertools
 
+import MDAnalysis
 from ..lib import mdamath
 from ..lib import util
 from . import selection
@@ -249,7 +250,7 @@ class GroupBase(object):
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
         else:
-            x = atomgroup.coordinates()
+            x = atomgroup.positions
 
         return np.array([x.min(axis=0), x.max(axis=0)])
 
@@ -285,7 +286,7 @@ class GroupBase(object):
             x = atomgroup.pack_into_box(inplace=False)
             centroid = atomgroup.center_of_geometry(pbc=True)
         else:
-            x = atomgroup.coordinates()
+            x = atomgroup.positions
             centroid = atomgroup.center_of_geometry(pbc=False)
 
         R = np.sqrt(np.max(np.sum(np.square(x - centroid), axis=1)))
