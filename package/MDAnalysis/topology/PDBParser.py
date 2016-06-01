@@ -45,6 +45,7 @@ Classes
 from __future__ import absolute_import, print_function
 
 import numpy as np
+import warnings
 
 from ..lib import util
 from .base import TopologyReader, squash_by
@@ -146,18 +147,23 @@ class PDBParser(TopologyReader):
                     chainid = None
                 chainids.append(chainid)
 
-                if self.format == "XPDB":  # fugly but keeps code DRY
-                    # extended non-standard format used by VMD
-                    resids.append(int(line[22:27]))
-                else:
-                    resid = int(line[22:26])
-                    icodes.append(line[26:27].strip())
-
-                    resnums.append(resid)
-
-                    while resid - resid_prev < -5000:
-                        resid += 10000
-                    resid_prev = resid
+                # Resids are optional
+                try:
+                    if self.format == "XPDB":  # fugly but keeps code DRY
+                        # extended non-standard format used by VMD
+                        resid = int(line[22:27])
+                    else:
+                        resid = int(line[22:26])
+                        icodes.append(line[26:27].strip())
+                        # Wrapping
+                        while resid - resid_prev < -5000:
+                            resid += 10000
+                        resid_prev = resid
+                except ValueError:
+                    warnings.warn("PDB file is missing resid information.  "
+                                  "Defaulted to '0'")
+                    resid = 0
+                finally:
                     resids.append(resid)
 
                 try:
