@@ -137,6 +137,13 @@ from ..lib.util import asiterable
 from . import core
 from .. import NoDataError
 
+from .. import auxiliary  # ?
+
+class Namespace(object):
+    # set up a basic class so we can make an 'aux' namespace in Timestep 
+    # for auxiliary data; might be better defined elsewhere...?
+    # There's probably a better way to do this
+    pass
 
 class Timestep(object):
     """Timestep data for one frame
@@ -216,6 +223,9 @@ class Timestep(object):
         self.has_forces = kwargs.get('forces', False)
 
         self._unitcell = self._init_unitcell()
+        
+        # set up aux namespace for adding auxiliary data
+        self.aux = Namespace()
 
     @classmethod
     def from_timestep(cls, other, **kwargs):
@@ -1054,6 +1064,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
+    
+    def __init__(self):
+        ## adding so can to initialise _auxs; subclasses should now call super
+        self._auxs = {}
 
     def __len__(self):
         return self.n_frames
@@ -1282,8 +1296,33 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     nframes=self.n_frames,
                     natoms=self.n_atoms
                 ))
+                
+    def add_auxiliary(self, auxname, auxdata, **kwargs):
+        if auxname in self.aux_list:
+            raise ValueError("Auxiliary data with name {name} already "
+                             "exists".format(name=auxname))
+        if isinstance(auxdata, auxiliary.base.AuxReader):
+            auxreader = auxdata
+        else:
+            # TODO: implement guess_reader; default to XVGReader for now
+           auxreader = auxiliary.base.XVGReader(auxname, auxdata, **kwargs)
+        self._auxs['auxname'] = auxreader
+        # TODO - move aux step to match trajectory ts
+    
+    def remove_auxiliary(self, auxname):
+        if auxname in self.aux_list:
+            self._auxs[auxname].close()            
+            del self._auxs[auxname]
+            # TODO: remove auxs in ts - will need to pass ts?
+        else:
+            raise ValueError("No auxiliary named {name}".format(name=auxname))
+            
+    @property
+    def aux_list(self):
+        """ List of the names of added auxiliary data """
+        return self._auxs.keys()
 
-
+        
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
@@ -1309,6 +1348,8 @@ class Reader(ProtoReader):
 
     """
     def __init__(self, filename, convert_units=None, **kwargs):
+        super(Reader, self).__init__()
+
         self.filename = filename
 
         if convert_units is None:
@@ -1386,6 +1427,8 @@ class ChainReader(ProtoReader):
         .. versionchanged:: 0.13
            The *delta* keyword was deprecated in favor of using *dt*.
         """
+        super(ChainReader, self).__init__()
+
         if 'delta' in kwargs:
             warnings.warn("Keyword 'delta' is now deprecated "
                           "(from version 0.13); "
@@ -1740,6 +1783,8 @@ class SingleFrameReader(ProtoReader):
     _err = "{0} only contains a single frame"
 
     def __init__(self, filename, convert_units=None, **kwargs):
+        super(SingleFrameReader, self).__init__()
+
         self.filename = filename
         if convert_units is None:
             convert_units = flags['convert_lengths']
