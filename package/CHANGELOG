@@ -21,7 +21,8 @@ Fixes
   * reading/writing lambda value in trr files (Issue #859)
 
 Changes
-  * Refactor of align to fit Bauhaus, wrapper added for alignment (Issue #845)
+  * Added new AlignTraj class for alignment that follows the new analysis API known
+    as Bauhaus style.
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)

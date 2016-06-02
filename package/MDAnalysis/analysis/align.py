@@ -394,8 +394,6 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
 
-    .. versionchanged:: 0.15.1
-        Uses :func:`_fit_to` to get new minimum rmsd
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -544,7 +542,7 @@ class AlignTraj(AnalysisBase):
         else:
             self.weights = None
 
-        logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
+        logger.info("RMS-alignment on {0:d} atoms.".format(len(self.ref_atoms)))
         self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
@@ -572,8 +570,9 @@ class AlignTraj(AnalysisBase):
             logging.disable(logging.NOTSET)
 
     def save(self, rmsdfile):
-        # these are the values of the new rmsd between the aligned trajectory
-        # and reference structure
+        """Saves the rmsd values of the trajectory frames versus the reference
+            structure
+        """
         np.savetxt(rmsdfile, self.rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
