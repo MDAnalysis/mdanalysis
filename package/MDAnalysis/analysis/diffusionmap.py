@@ -100,7 +100,6 @@ from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
-
 class DiffusionMap(AnalysisBase):
     """Non-linear dimension reduction method
 
@@ -128,8 +127,9 @@ class DiffusionMap(AnalysisBase):
         -------------
         u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
             The MD Trajectory for dimension reduction, remember that computational
-            cost scales at O(N^3). Cost can be reduced by increasing step interval
-            or specifying a start and stop
+            cost scales at O(N^3) where N is the number of frames.
+            Cost can be reduced by increasing step interval or specifying a
+            start and stop
         select: str, optional
             1. any valid selection string for
             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
@@ -211,15 +211,18 @@ class DiffusionMap(AnalysisBase):
         self.diffusion_matrix = (self.diffusion_matrix +
                                  self.diffusion_matrix.T -
                                  np.diag(self.diffusion_matrix.diagonal()))
+
         logger.info('printing diffusion matrix: {0}'.format(self.diffusion_matrix))
         if self._type_epsilon == 'average':
             for i in range(self.nframes):
                 # np.argsort(diffusion_matrix[i,:])#[10]]
                 # picks k largest rmsd value in column for choice of epsilon
                 self._epsilon[i] = self.diffusion_matrix[i, np.argsort(
-                                    (self.diffusion_matrix[i, :][self._k]))]
+                                    self.diffusion_matrix[i, :])[self._k]]
 
             self._epsilon = np.full((self.nframes, ), self._epsilon.mean())
+
+        logger.info('printing epsilon: {0}'.format(self._epsilon))
 
         self._kernel2 = np.zeros((self.nframes, self.nframes))
 
@@ -228,7 +231,7 @@ class DiffusionMap(AnalysisBase):
             self._kernel2[i, :] = (np.exp((-self.diffusion_matrix[i, :] ** 2) /
                                    (self._epsilon[i]*self._epsilon[:])))
 
-        logger.info('printing kernel: {0}'.format(self.kernel2))
+        logger.info('printing kernel: {0}'.format(self._kernel2))
         p_vector = np.zeros((self.nframes, ))
         d_vector = np.zeros((self.nframes, ))
 
