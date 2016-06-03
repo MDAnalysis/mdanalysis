@@ -108,11 +108,16 @@ class DiffusionMap(AnalysisBase):
 
     Attributes
     ----------
-    eigenvalues: numpy array
-         Eigenvalues of the diffusion map
-    eigenvectors: numpy array
-         Eigenvectors of the diffusion map
-         The second and higher eigenvectors ev[i+1,:] represent the i-th slowest collective coordinates.
+    atoms : AtomGroup
+        Selected atoms in trajectory subject to dimension reduction
+    diffusion_matrix : array
+        Array of all possible ij metric distances between frames in trajectory
+    eigenvalues: array
+        Eigenvalues of the diffusion map
+    eigenvectors: array
+        Eigenvectors of the diffusion map
+        The second and higher eigenvectors ev[i+1,:] represent the i-th slowest
+        collective coordinates.
 
     """
 
@@ -151,92 +156,96 @@ class DiffusionMap(AnalysisBase):
         step : int, optional
             Step between frames to analyse, Default: 1
         """
-        self.u = u
+        self._u = u
         self.atoms = u.select_atoms(select)
-        self.natoms = self.atoms.n_atoms
-        self.k = k
+        self._natoms = self.atoms.n_atoms
+        self._k = k
         traj = u.trajectory
-        self.epsilon = epsilon
+        self._epsilon = epsilon
         if metric is not None:
-            self.metric = metric
+            self._metric = metric
         else:
-            self.metric = qcp.CalcRMSDRotationalMatrix
+            self._metric = qcp.CalcRMSDRotationalMatrix
 
         self._setup_frames(traj, start, stop, step)
 
         if weights is None:
             # weights do not apply to metric
-            self.weights = np.ones((self.nframes,))
+            self._weights = np.ones((self.nframes,))
         else:
             if weights.shape[0] != self.nframes:
                 raise ValueError("The weight should have the same length as the trajectroy")
             else:
                 # weights are constructed as relative to the mean
-                self.weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+                self._weights = (np.asarray(weights, dtype=np.float64) /
+                                 np.mean(weights))
 
     def _prepare(self):
-        self.rmsd_matrix = np.zeros((self.nframes,self.nframes))
+        self.diffusion_matrix = np.zeros((self.nframes, self.nframes))
 
-        if self.epsilon == 'average':
-            self.epsilon = np.zeros((self.nframes, ), )
-            self.type_epsilon = 'average'
+        if self._epsilon == 'average':
+            self._epsilon = np.zeros((self.nframes, ), )
+            self._type_epsilon = 'average'
         else:
-            value_epsilon = epsilon
-            self.epsilon = np.full((nframes, ), value_epsilon)
-            self.type_epsilon = 'constant'
+            value_epsilon = self._epsilon
+            self._epsilon = np.full((self.nframes, ), value_epsilon)
+            self._type_epsilon = 'constant'
 
-        self.rot = np.zeros(9)
+        self._rot = np.zeros(9)
 
     def _single_frame(self):
         traj_index = self._ts.frame
-        i_ref = self.u.trajectory[traj_index].positions - self.atoms.center_of_mass()
+        i_ref = self._u.trajectory[traj_index].positions - self.atoms.center_of_mass()
 
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a cutoff
         # for significant decimal places to sparsify matrix
         for j in range(self.nframes-1, self._ts.frame-1, -1):
-            j_ref = self.u.trajectory[j].positions-self.atoms.center_of_mass()
-            self.rmsd_matrix[traj_index, j] = self.metric(i_ref.T.astype(np.float64),
-                                                          j_ref.T.astype(np.float64),
-                                                          self.natoms, self.rot,
-                                                          weights=None)
+            j_ref = self._u.trajectory[j].positions-self.atoms.center_of_mass()
+            self.diffusion_matrix[traj_index, j] = self._metric(i_ref.T.astype(np.float64),
+                                                    j_ref.T.astype(np.float64),
+                                                    self._natoms, self._rot,
+                                                    weights=None)
 
     def _conclude(self):
-        self.rmsd_matrix = self.rmsd_matrix + self.rmsd_matrix.T - \
-            np.diag(self.rmsd_matrix.diagonal())
-
-        if self.type_epsilon == 'average':
+        self.diffusion_matrix = (self.diffusion_matrix +
+                                 self.diffusion_matrix.T -
+                                 np.diag(self.diffusion_matrix.diagonal()))
+        logger.info('printing diffusion matrix: {0}'.format(self.diffusion_matrix))
+        if self._type_epsilon == 'average':
             for i in range(self.nframes):
-                # np.argsort(rmsd_matrix[i,:])#[10]]
-                self.epsilon[i] = self.rmsd_matrix[i,
-                np.argsort(self.rmsd_matrix[i, :])[self.k]]
+                # np.argsort(diffusion_matrix[i,:])#[10]]
+                # picks k largest rmsd value in column for choice of epsilon
+                self._epsilon[i] = self.diffusion_matrix[i, np.argsort(
+                                    (self.diffusion_matrix[i, :][self._k]))]
 
-            self.epsilon = np.full((self.nframes, ), self.epsilon.mean())
+            self._epsilon = np.full((self.nframes, ), self._epsilon.mean())
 
-        self.kernel2 = np.zeros((self.nframes, self.nframes))
+        self._kernel2 = np.zeros((self.nframes, self.nframes))
 
         # possibly mappable
         for i in range(self.nframes):
-            self.kernel2[i, :] = (np.exp(-self.rmsd_matrix[i, :] ** 2) /
-                                 (self.epsilon[i]*self.epsilon[:]))
+            self._kernel2[i, :] = (np.exp((-self.diffusion_matrix[i, :] ** 2) /
+                                   (self._epsilon[i]*self._epsilon[:])))
 
+        logger.info('printing kernel: {0}'.format(self.kernel2))
         p_vector = np.zeros((self.nframes, ))
         d_vector = np.zeros((self.nframes, ))
 
         for i in range(self.nframes):
-            p_vector[i] = np.dot(self.kernel2[i, :], self.weights)
+            p_vector[i] = np.dot(self._kernel2[i, :], self._weights)
 
-        self.kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
-
-        for i in range(self.nframes):
-            d_vector[i] = np.dot(self.kernel2[i, :], self.weights)
+        self._kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
 
         for i in range(self.nframes):
-            self.kernel2[i, :] = self.kernel2[i, :]*self.weights
+            d_vector[i] = np.dot(self._kernel2[i, :], self._weights)
 
-        self.kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+        for i in range(self.nframes):
+            self._kernel2[i, :] = self._kernel2[i, :] * self._weights
+
+        self._kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
         # eigenvalues and eigenvector are the collective coordinates
-        eigenvals, eigenvectors = np.linalg.eig(self.kernel2)
+        eigenvals, eigenvectors = np.linalg.eig(self._kernel2)
 
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
