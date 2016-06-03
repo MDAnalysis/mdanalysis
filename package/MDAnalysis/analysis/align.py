@@ -394,6 +394,8 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
 
+    .. versionchanged:: 0.15.1
+        Uses :func:`_fit_to` to get new minimum rmsd
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -455,6 +457,19 @@ class AlignTraj(AnalysisBase):
     trajectory then it is used. The output file format is determined
     by the file extension of *filename*. One can also use the same
     universe if one wants to fit to the current frame.
+
+    Attributes
+    ----------
+    reference_atoms : AtomGroup
+        Atoms of the reference structure to be aligned against
+    mobile_atoms : AtomGroup
+        Atoms inside each trajectory frame to be rmsd_aligned
+    rmsd : Array
+        Array of the rmsd values of the least rmsd between the mobile_atoms
+        and reference_atoms after superposition and minimimization of rmsd
+    filename : string
+        String reflecting the filename of the file where mobile_atoms positions
+        will be written to upon running RMSD alignment
     """
 
     def __init__(self, mobile, reference, select='all', filename=None,
@@ -503,19 +518,14 @@ class AlignTraj(AnalysisBase):
         exception
 
         """
-        self.quiet = quiet
-        if self.quiet:
+        self._quiet = quiet
+        if self._quiet:
             logging.disable(logging.WARN)
 
-        self.mobile = mobile
-        self.reference = reference
-        traj = self.mobile.trajectory
-
+        traj = mobile.trajectory
         select = rms.process_selection(select)
-        self.ref_atoms = self.reference.select_atoms(*select['reference'])
-        self.mobile_atoms = self.mobile.select_atoms(*select['mobile'])
-        self.natoms = self.mobile_atoms.n_atoms
-
+        self.ref_atoms = reference.select_atoms(*select['reference'])
+        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
         kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
 
         if filename is None:
@@ -530,25 +540,25 @@ class AlignTraj(AnalysisBase):
                 ' to True')
         self.filename = filename
 
-        self.natoms = self.mobile_atoms.n_atoms
+        natoms = self.mobile_atoms.n_atoms
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass, strict=strict)
 
-        self.writer = mda.Writer(filename, self.natoms)
+        self._writer = mda.Writer(self.filename, natoms)
 
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
-            self.weights = self.ref_atoms.masses
+            self._weights = self.ref_atoms.masses
         else:
-            self.weights = None
+            self._weights = None
 
-        logger.info("RMS-alignment on {0:d} atoms.".format(len(self.ref_atoms)))
+        logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
         self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
         # reference centre of mass system
-        self.ref_com = self.ref_atoms.center_of_mass()
-        self.ref_coordinates = self.ref_atoms.positions - self.ref_com
+        self._ref_com = self.ref_atoms.center_of_mass()
+        self._ref_coordinates = self.ref_atoms.positions - self._ref_com
         # allocate the array for selection atom coords
         self.rmsd = np.zeros((self.nframes,))
 
@@ -557,22 +567,21 @@ class AlignTraj(AnalysisBase):
         mobile_com = self.mobile_atoms.center_of_mass()
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
-                                                 self.ref_coordinates,
+                                                 self._ref_coordinates,
                                                  self.mobile_atoms,
                                                  mobile_com,
-                                                 self.ref_com, self.weights)
+                                                 self._ref_com, self._weights)
         # write whole aligned input trajectory system
-        self.writer.write(mobile_atoms)
+        self._writer.write(mobile_atoms)
 
     def _conclude(self):
-        self.writer.close()
-        if self.quiet:
+        self._writer.close()
+        if self._quiet:
             logging.disable(logging.NOTSET)
 
     def save(self, rmsdfile):
-        """Saves the rmsd values of the trajectory frames versus the reference
-            structure
-        """
+        # these are the values of the new rmsd between the aligned trajectory
+        # and reference structure
         np.savetxt(rmsdfile, self.rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
