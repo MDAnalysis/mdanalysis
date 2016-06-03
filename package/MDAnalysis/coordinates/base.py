@@ -137,7 +137,8 @@ from ..lib.util import asiterable
 from . import core
 from .. import NoDataError
 
-from .. import auxiliary  # ?
+from ..auxiliary.base import AuxReader
+from ..auxiliary.xvg import XVGReader  # ?
 
 class Namespace(object):
     # set up a basic class so we can make an 'aux' namespace in Timestep 
@@ -1297,23 +1298,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     natoms=self.n_atoms
                 ))
                 
-    def add_auxiliary(self, auxname, auxdata, **kwargs):
+    def add_auxiliary(self, auxdata, auxname, **kwargs):
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
-        if isinstance(auxdata, auxiliary.base.AuxReader):
+        if isinstance(auxdata, AuxReader):
             auxreader = auxdata
         else:
             # TODO: implement guess_reader; default to XVGReader for now
-           auxreader = auxiliary.base.XVGReader(auxname, auxdata, **kwargs)
-        self._auxs['auxname'] = auxreader
-        # TODO - move aux step to match trajectory ts
+           auxreader = XVGReader(auxname, auxdata, **kwargs)
+        self._auxs[auxname] = auxreader
+        self.ts = auxreader.go_to_ts(self.ts)
     
     def remove_auxiliary(self, auxname):
         if auxname in self.aux_list:
             self._auxs[auxname].close()            
             del self._auxs[auxname]
-            # TODO: remove auxs in ts - will need to pass ts?
+            ## TODO remove from ts
         else:
             raise ValueError("No auxiliary named {name}".format(name=auxname))
             
