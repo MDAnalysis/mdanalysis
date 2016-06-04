@@ -100,6 +100,7 @@ from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
+
 class DiffusionMap(AnalysisBase):
     """Non-linear dimension reduction method
 
@@ -137,10 +138,10 @@ class DiffusionMap(AnalysisBase):
             different frames. Water should be excluded.
         epsilon : float, optional
             Specifies the epsilon used for the diffusion map. More information
-            in [1] and [2]. With 'average' the average of the RMSD to the
-            k-nearest-neighbor will be used.
+            in [1] and [2]. With 'average' the average of the RMSD to the k-th
+            greatest value is used. (#TODO, check if actually agrees with theory)
         k : int, optional
-            specifies the k for the k-nearest-neighbor if average epsilon is
+            specifies the k for the epsilon choice if average epsilon is
             used.
         weights: list, optional
             The list has to have the same length as the trajectory.
@@ -159,22 +160,25 @@ class DiffusionMap(AnalysisBase):
         self._u = u
         self.atoms = u.select_atoms(select)
         self._natoms = self.atoms.n_atoms
-        self._k = k
+        # modulus to prevent index out of bounds exception
         traj = u.trajectory
         self._epsilon = epsilon
         if metric is not None:
             self._metric = metric
         else:
             self._metric = qcp.CalcRMSDRotationalMatrix
-
+        # remember that this must be called before referencing self.nframes
         self._setup_frames(traj, start, stop, step)
 
+        # modulus to prevent array index out of bounds exception
+        self._k = k % self.nframes
         if weights is None:
             # weights do not apply to metric
             self._weights = np.ones((self.nframes,))
         else:
             if weights.shape[0] != self.nframes:
-                raise ValueError("The weight should have the same length as the trajectroy")
+                raise ValueError("The weight should have the same length as the"
+                                 'trajectory')
             else:
                 # weights are constructed as relative to the mean
                 self._weights = (np.asarray(weights, dtype=np.float64) /
@@ -182,7 +186,6 @@ class DiffusionMap(AnalysisBase):
 
     def _prepare(self):
         self.diffusion_matrix = np.zeros((self.nframes, self.nframes))
-
         if self._epsilon == 'average':
             self._epsilon = np.zeros((self.nframes, ), )
             self._type_epsilon = 'average'
@@ -202,11 +205,13 @@ class DiffusionMap(AnalysisBase):
         # for significant decimal places to sparsify matrix
         for j in range(self.nframes-1, self._ts.frame-1, -1):
             j_ref = self._u.trajectory[j].positions-self.atoms.center_of_mass()
-            self.diffusion_matrix[traj_index, j] = self._metric(i_ref.T.astype(np.float64),
-                                                    j_ref.T.astype(np.float64),
-                                                    self._natoms, self._rot,
-                                                    weights=None)
-
+            ij_result = self._metric(i_ref.T.astype(np.float64),
+                                     j_ref.T.astype(np.float64), self._natoms,
+                                     self._rot, weights=None)
+            if(ij_result < 1E-05):
+                self.diffusion_matrix[traj_index, j] = 0
+            else:
+                self.diffusion_matrix[traj_index, j] = ij_result
     def _conclude(self):
         self.diffusion_matrix = (self.diffusion_matrix +
                                  self.diffusion_matrix.T -
@@ -243,10 +248,12 @@ class DiffusionMap(AnalysisBase):
         for i in range(self.nframes):
             d_vector[i] = np.dot(self._kernel2[i, :], self._weights)
 
+        logger.info('printing d_vector matrix: {0}'.format(d_vector))
         for i in range(self.nframes):
             self._kernel2[i, :] = self._kernel2[i, :] * self._weights
 
         self._kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+        logger.info('printing final kernel: {0}'.format(self._kernel2))
         # eigenvalues and eigenvector are the collective coordinates
         eigenvals, eigenvectors = np.linalg.eig(self._kernel2)
 
