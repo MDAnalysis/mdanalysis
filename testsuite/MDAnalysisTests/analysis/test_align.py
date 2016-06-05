@@ -102,6 +102,14 @@ class TestAlign(TestCase):
         assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
+        #test mass_weighted
+        last_atoms_weight = self.universe.atoms.masses
+        A = self.universe.trajectory[0]
+        B = self.reference.trajectory[-1]
+        rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
+        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight, center=True, superposition=True)
+        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
+
 
     @dec.slow
     @attr('issue')
@@ -117,6 +125,40 @@ class TestAlign(TestCase):
         # VMD: 6.9378711
         self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
+
+        #test filename=none
+        align.rms_fit_trj(self.universe, self.reference, select="all",
+                          filename=None, quiet=True)
+        #test os.path_exists and not force
+
+    def test_AlignTraj(self):
+        self.reference.trajectory[-1]
+        self.tempdir = tempdir.TempDir()
+        self.outfile = path.join(self.tempdir.name, 'AlignTraj_test.dcd')
+        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile)
+        x.run()
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+
+        self.rmsd_outfile = path.join(self.tempdir.name, 'rmsd')
+        x.save(self.rmsd_outfile)
+        assert_almost_equal(x.rmsd[0],6.929083044751061, decimal = 3)
+        assert_almost_equal(x.rmsd[-1],5.279731379771749336e-07, decimal = 3)
+
+        # RMSD against the reference frame
+        # calculated on Mac OS X x86 with MDA 0.7.2 r689
+        # VMD: 6.9378711
+        self._assert_rmsd(fitted, 0, 6.929083044751061)
+        self._assert_rmsd(fitted, -1, 0.0)
+        del self.outfile
+        #test weighted
+        self.outfile = path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
+        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile, 
+                            mass_weighted=True)
+        x.run()
+
+        #test filename=none
+        #test os.path_exists and not force
+        #test .save()
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
@@ -145,6 +187,7 @@ class TestAlign(TestCase):
             return MDAnalysis.analysis.align.alignto(a, b)
 
         assert_raises(SelectionError, different_atoms)
+
 
 
 class TestAlignmentProcessing(TestCase):

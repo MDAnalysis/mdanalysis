@@ -211,7 +211,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
             return np.sqrt(np.sum((a - b) ** 2) / N)
 
 
-def _process_selection(select):
+def process_selection(select):
     """Return a canonical selection dictionary.
 
     Parameters

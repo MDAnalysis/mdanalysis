@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -21,13 +21,12 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 A collection of useful building blocks for creating Analysis
 classes.
 
-
 """
 from six.moves import range
 
 import numpy as np
 import logging
-
+from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +35,14 @@ class AnalysisBase(object):
     """Base class for defining multi frame analysis
 
     The analysis base class is designed as a template for creating
-    multiframe analysis.  
+    multiframe analysis.
 
     The class implements the following methods:
 
     _setup_frames(trajectory, start=None, stop=None, step=None)
       Pass a Reader object and define the desired iteration pattern
       through the trajectory
-      
+
     run
       The user facing run method.  Calls the analysis methods
       defined below
@@ -76,7 +75,7 @@ class AnalysisBase(object):
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
- 
+
         Don't worry about normalising, just deal with a single frame.
         """
         pass
@@ -99,9 +98,7 @@ class AnalysisBase(object):
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
             self._ts = ts
-            #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+            # logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
         logger.info("Finishing up")
         self._conclude()
-
-
