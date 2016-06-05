@@ -394,8 +394,6 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
 
-    .. versionchanged:: 0.15.1
-        Uses :func:`_fit_to` to get new minimum rmsd
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
