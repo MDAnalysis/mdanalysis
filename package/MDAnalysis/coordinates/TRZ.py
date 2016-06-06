@@ -309,7 +309,7 @@ class TRZReader(base.Reader):
             self.next()
             t1 = self.ts.time
             dt = t1 - t0
-        except IOError:
+        except StopIteration:
             return 0
         else:
             return dt
@@ -332,7 +332,7 @@ class TRZReader(base.Reader):
             self.next()
             t1 = self.ts._frame
             skip_timestep = t1 - t0
-        except IOError:
+        except StopIteration:
             return 0
         else:
             return skip_timestep
