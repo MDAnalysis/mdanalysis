@@ -57,7 +57,6 @@ class TestDiffusionmap(object):
         dmap2.run()
         assert_almost_equal(self.eigvals, dmap2.eigenvalues, decimal=5)
         assert_almost_equal(self.eigvects, dmap2.eigenvectors, decimal=6)
-        assert_raised
 
     @raises(ValueError)
     def test_wrong_weights(self):
@@ -70,4 +69,3 @@ class TestDiffusionmap(object):
                                           epsilon=4.62827648)
         dmap3.run()
         assert_almost_equal(self.eigvals, dmap3.eigenvalues, decimal=5)
-        assert_almost_equal(self.eigvects, dmap3.eigenvectors, decimal=5)
