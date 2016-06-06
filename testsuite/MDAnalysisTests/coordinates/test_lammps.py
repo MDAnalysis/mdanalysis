@@ -44,7 +44,7 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.dimensions, self.dimensions)
 
     def test_singleframe(self):
-        assert_raises(IOError, self.u.trajectory.next)
+        assert_raises(StopIteration, self.u.trajectory.next)
 
     def test_seek(self):
         assert_raises(IndexError, self.u.trajectory.__getitem__, 1)

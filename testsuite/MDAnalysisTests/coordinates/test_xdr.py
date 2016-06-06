@@ -235,7 +235,7 @@ class _GromacsReader(TestCase):
                             self.universe.atoms.positions, self.prec)
 
     @dec.slow
-    def test_EOFraisesIOErrorEIO(self):
+    def test_EOFraisesStopIteration(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
             self.universe.trajectory.next()
