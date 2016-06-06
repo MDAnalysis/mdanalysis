@@ -1770,7 +1770,7 @@ class SingleFrameReader(ProtoReader):
         pass
 
     def next(self):
-        raise IOError(self._err.format(self.__class__.__name__))
+        raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
         yield self.ts
