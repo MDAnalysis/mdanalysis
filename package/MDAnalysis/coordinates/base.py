@@ -1076,11 +1076,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     def next(self):
         """Forward one step to next frame."""
         try:
-            return self._read_next_timestep()
+            ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
             raise StopIteration
-
+        else:
+            for auxname in self.aux_list:
+                ts = self._auxs[auxname].read_next_ts(ts)
+        return ts
 
     def __next__(self):
         """Forward one step to next frame when using the `next` builtin."""
@@ -1184,7 +1187,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
         if isinstance(frame, int):
             frame = apply_limits(frame)
-            return self._read_frame(frame)
+            return self._goto_frame(frame)
         elif isinstance(frame, (list, np.ndarray)):
             if isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
@@ -1196,7 +1199,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                 for f in frames:
                     if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
-                    yield self._read_frame(apply_limits(f))
+                    yield self._goto_frame(apply_limits(f))
             return listiter(frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
@@ -1220,6 +1223,13 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         #                                  ts._unitcell, 1)
         # return ts
 
+    def _goto_frame(self, frame):
+        """Move to *frame*, updating ts with trajectory and auxiliary data."""
+        ts = self._read_frame(frame)
+        for aux in self.aux_list:
+            ts = self._auxs[aux].go_to_ts(ts)
+
+
     def _sliced_iter(self, start, stop, step):
         """Generator for slicing a trajectory.
 
@@ -1233,7 +1243,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         # be much slower than skipping steps in a next() loop
         try:
             for i in range(start, stop, step):
-                yield self._read_frame(i)
+                yield self._goto_frame(i)
         except TypeError:  # if _read_frame not implemented
             raise TypeError("{0} does not support slicing."
                             "".format(self.__class__.__name__))
