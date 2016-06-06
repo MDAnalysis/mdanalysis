@@ -1060,7 +1060,12 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
     def next(self):
         """Forward one step to next frame."""
-        return self._read_next_timestep()
+        try:
+            return self._read_next_timestep()
+        except (EOFError, IOError):
+            self.rewind()
+            raise StopIteration
+
 
     def __next__(self):
         """Forward one step to next frame when using the `next` builtin."""
@@ -1132,12 +1137,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
     def __iter__(self):
         self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except (EOFError, IOError):
-                self.rewind()
-                raise StopIteration
+        return self
 
     def _reopen(self):
         """Should position Reader to just before first frame

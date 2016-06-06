@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de,jdetle
+??/??/16 kain88-de,jdetle, fiona-naughton
 
   * 0.15.1 
 
 Fixes
   * reading/writing lambda value in trr files (Issue #859)
+  * fix __iter__/next redundancy (Issue #869)
 
 Changes
   * Added new AlignTraj class for alignment that follows the new analysis API known
