@@ -91,11 +91,12 @@ When using this module in published work please cite [Theobald2005]_.
 
 
 """
-
+from six.moves import range
 import logging
 import numpy as np
+
 import MDAnalysis.lib.qcprot as qcp
-from six.moves import range
+
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
