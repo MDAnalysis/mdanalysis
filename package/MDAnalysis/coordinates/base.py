@@ -141,10 +141,10 @@ from ..auxiliary.base import AuxReader
 from ..auxiliary.xvg import XVGReader  # ?
 
 class Namespace(object):
-    # set up a basic class so we can make an 'aux' namespace in Timestep 
-    # for auxiliary data; might be better defined elsewhere...?
-    # There's probably a better way to do this
+    """Empty class 
+    To allow storing attributes in new namespace """
     pass
+
 
 class Timestep(object):
     """Timestep data for one frame
@@ -1065,9 +1065,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
-    
+
     def __init__(self):
-        ## adding so can to initialise _auxs; subclasses should now call super
+        # initialise list to store added auxiliary readers in
+        # subclasses should now call super
         self._auxs = {}
 
     def __len__(self):
@@ -1082,7 +1083,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             raise StopIteration
         else:
             for auxname in self.aux_list:
-                ts = self._auxs[auxname].read_next_ts(ts)
+                ts = self._auxs[auxname].read_ts(ts)
         return ts
 
     def __next__(self):
@@ -1228,7 +1229,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ts = self._read_frame(frame)
         for aux in self.aux_list:
             ts = self._auxs[aux].go_to_ts(ts)
-
+        return ts
 
     def _sliced_iter(self, start, stop, step):
         """Generator for slicing a trajectory.
@@ -1309,6 +1310,13 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                 ))
                 
     def add_auxiliary(self, auxdata, auxname, **kwargs):
+        """Add auxiliary data to be read alongside trajectory and match to 
+        current timestep.
+
+        *auxdata* can be an AuxReader instance, or the data itself (array,
+        filename...); in the latter case an appropriate AuxReader is guessed
+        from the data/file format.
+        """
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
@@ -1316,21 +1324,23 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             auxreader = auxdata
         else:
             # TODO: implement guess_reader; default to XVGReader for now
-           auxreader = XVGReader(auxname, auxdata, **kwargs)
+            auxreader = XVGReader(auxname, auxdata, **kwargs)
         self._auxs[auxname] = auxreader
         self.ts = auxreader.go_to_ts(self.ts)
     
     def remove_auxiliary(self, auxname):
+        """Close the Reader for auxiliary data *auxname* and remove data 
+        from trajectory."""
         if auxname in self.aux_list:
             self._auxs[auxname].close()            
             del self._auxs[auxname]
-            ## TODO remove from ts
+            del self.ts.aux.__dict__[auxname]
         else:
             raise ValueError("No auxiliary named {name}".format(name=auxname))
             
     @property
     def aux_list(self):
-        """ List of the names of added auxiliary data """
+        """ Lists the names of added auxiliary data. """
         return self._auxs.keys()
 
         
