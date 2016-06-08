@@ -45,11 +45,11 @@ class TestDiffusionmap(object):
         # number of frames is trajectory is now 10 vs. 98
         assert_equal(self.eigvals.shape, (self.dmap.nframes, ))
         assert_almost_equal(self.eigvals[0], 1.0, decimal=5)
-        assert_almost_equal(self.eigvals[-1], 0.0142, decimal=3)
+        assert_almost_equal(self.eigvals[-1], 0.006621, decimal=3)
 
     def test_ev(self):
         assert_equal(self.eigvects.shape, (self.dmap.nframes, self.dmap.nframes))
-        assert_almost_equal(self.eigvects[0, 0], -0.3019, decimal=2)
+        assert_almost_equal(self.eigvects[0, 0], 0.3172, decimal=2)
 
     def test_weights(self):
         dmap2 = diffusionmap.DiffusionMap(self.u, select='backbone',
@@ -66,6 +66,6 @@ class TestDiffusionmap(object):
 
     def test_constant_epsilon(self):
         dmap3 = diffusionmap.DiffusionMap(self.u, select='backbone', k=5,
-                                          epsilon=4.62827648)
+                                          epsilon=16.12272861)
         dmap3.run()
         assert_almost_equal(self.eigvals, dmap3.eigenvalues, decimal=5)

@@ -158,9 +158,10 @@ class DiffusionMap(AnalysisBase):
             Step between frames to analyse, Default: 1
         """
         self._u = u
+        self.select = select
         self.atoms = u.select_atoms(select)
         self._natoms = self.atoms.n_atoms
-        # modulus to prevent index out of bounds exception
+
         traj = u.trajectory
         self._epsilon = epsilon
         if metric is not None:
@@ -198,13 +199,14 @@ class DiffusionMap(AnalysisBase):
 
     def _single_frame(self):
         traj_index = self._ts.frame
-        i_ref = self._u.trajectory[traj_index].positions - self.atoms.center_of_mass()
+        i_ref = self.atoms.positions - self.atoms.center_of_mass()
 
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a cutoff
         # for significant decimal places to sparsify matrix
         for j in range(self.nframes-1, self._ts.frame-1, -1):
-            j_ref = self._u.trajectory[j].positions-self.atoms.center_of_mass()
+            self._ts = self._u.trajectory[j]
+            j_ref = self.atoms.positions - self.atoms.center_of_mass()
             ij_result = self._metric(i_ref.T.astype(np.float64),
                                      j_ref.T.astype(np.float64), self._natoms,
                                      self._rot, weights=None)
@@ -212,6 +214,7 @@ class DiffusionMap(AnalysisBase):
                 self.diffusion_matrix[traj_index, j] = 0
             else:
                 self.diffusion_matrix[traj_index, j] = ij_result
+
     def _conclude(self):
         self.diffusion_matrix = (self.diffusion_matrix +
                                  self.diffusion_matrix.T -
