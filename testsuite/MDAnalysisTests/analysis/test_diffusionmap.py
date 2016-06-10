@@ -35,7 +35,7 @@ class TestDiffusionmap(object):
         # assert_almost_equal(self.ev[0,0], .095836037343022831)
         # faster
         self.u = MDAnalysis.Universe(PDB, XTC)
-        self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', k=5)
+        self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone')
         self.dmap.run()
         self.eigvals = self.dmap.eigenvalues
         self.eigvects = self.dmap.eigenvectors
@@ -61,11 +61,9 @@ class TestDiffusionmap(object):
     @raises(ValueError)
     def test_wrong_weights(self):
         dmap2 = diffusionmap.DiffusionMap(self.u, select='backbone',
-                                          weights=np.ones((2,)),
-                                          k=5)
+                                          weights=np.ones((2,)))
 
     def test_constant_epsilon(self):
-        dmap3 = diffusionmap.DiffusionMap(self.u, select='backbone', k=5,
-                                          epsilon=16.12272861)
+        dmap3 = diffusionmap.DiffusionMap(self.u, select='backbone')
         dmap3.run()
         assert_almost_equal(self.eigvals, dmap3.eigenvalues, decimal=5)
