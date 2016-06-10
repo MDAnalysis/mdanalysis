@@ -93,16 +93,100 @@ When using this module in published work please cite [Theobald2005]_.
 """
 from six.moves import range
 import logging
+
 import numpy as np
 
-import MDAnalysis.lib.qcprot as qcp
+from MDAnalysis.analysis import rms
 
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
 
-class DiffusionMap(AnalysisBase):
+class DistMatrix(AnalysisBase):
+    """ Calculate the pairwise distance between each frame in a trajectory using
+        a given metric
+
+    Attributes
+    ----------
+    atoms : AtomGroup
+        Selected atoms in trajectory subject to dimension reduction
+    d_matrix : array
+        Array of all possible ij metric distances between frames in trajectory
+    """
+    def __init__(self, u, select='all', metric=None, cutoff=1E-05, weights=None,
+                 start=None, stop=None, step=None):
+        """
+        Parameters
+        -------------
+        u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
+            The MD Trajectory for dimension reduction, remember that
+            computational cost of eigenvalue decomposition
+            scales at O(N^3) where N is the number of frames.
+            Cost can be reduced by increasing step interval or specifying a
+            start and stop.
+        select: str, optional
+            Any valid selection string for
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+            This selection of atoms is used to calculate the RMSD between
+            different frames. Water should be excluded.
+        metric : function, optional
+            Maps two numpy arrays to a float, is positive definite and
+            symmetric, Default: ``None`` sets metric to rms.rmsd()
+        cutoff : float, optional
+            Specify a given cutoff for metric values to be considered equal
+        weights : array, optional
+            Weights to be given to coordinates for metric calculation
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+        """
+        self._u = u
+        self.atoms = self._u.select_atoms(select)
+        self._natoms = self.atoms.n_atoms
+        traj = u.trajectory
+        if metric is None:
+            self._metric = rms.rmsd
+        else:
+            self._metric = metric
+
+        # remember that this must be called before referencing self.nframes
+        self._setup_frames(traj, start, stop, step)
+        self._cutoff = cutoff
+        self._weights = weights
+
+    def _prepare(self):
+        self.d_matrix = np.zeros((self.nframes, self.nframes))
+
+    def _single_frame(self):
+        traj_index = self._ts.frame
+        i_ref = self.atoms.positions - self.atoms.center_of_mass()
+
+        # diagonal entries need not be calculated due to metric(x,x) == 0 in
+        # theory, _ts not updated properly. Possible savings by setting a
+        # cutoff for significant decimal places to sparsify matrix
+        for j in range(self.stop, self._ts.frame-1, -self.step):
+            j_ref = self.atoms.positions-self.atoms.center_of_mass()
+            ij_result = self._metric(i_ref, j_ref, weights=self._weights)
+            if(ij_result < self._cutoff):
+                self.d_matrix[traj_index, j] = 0
+            else:
+                self.d_matrix[traj_index, j] = ij_result
+
+    self.d_matrix = (self.d_matrix + self.d_matrix.T -
+                     np.diag(self.d_matrix.diagonal()))
+
+    def store(self, filename):
+        pass
+
+    def load(self, filename):
+        pass
+
+
+class DiffusionMap(DistMatrix):
     """Non-linear dimension reduction method
 
     Dimension reduction with diffusion map of the structures in the universe.
@@ -119,120 +203,36 @@ class DiffusionMap(AnalysisBase):
         Eigenvectors of the diffusion map
         The second and higher eigenvectors ev[i+1,:] represent the i-th slowest
         collective coordinates.
-
     """
 
-    def __init__(self, u,  select='all', epsilon='average', k=10, weights=None,
-                 metric=None, start=None, stop=None, step=None):
+    def __init__(self, epsilon='average', weights=None):
         """
-        Parameters
-        -------------
-        u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
-            The MD Trajectory for dimension reduction, remember that computational
-            cost scales at O(N^3) where N is the number of frames.
-            Cost can be reduced by increasing step interval or specifying a
-            start and stop
-        select: str, optional
-            1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
-            This selection of atoms is used to calculate the RMSD between
-            different frames. Water should be excluded.
-        epsilon : float, optional
-            Specifies the epsilon used for the diffusion map. More information
-            in [1] and [2]. With 'average' the average of the RMSD to the k-th
-            greatest value is used. (#TODO, check if actually agrees with theory)
-        k : int, optional
-            specifies the k for the epsilon choice if average epsilon is
-            used.
+        epsilon : function, optional
+            Specifies the method used for the choice of scale parameter in the
+            diffusion map. More information in [1] and [2]. With 'average'
+            the average of the RMSD to the k-th greatest value is used.
         weights: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the
             same.
-        metric : function, optional
-            Maps two numpy arrays to a float, is positive definite and symmetric,
-            Default: ``None`` sets metric to qcp.CalcRMSDRotationalMatrix
-        start : int, optional
-            First frame of trajectory to analyse, Default: 0
-        stop : int, optional
-            Last frame of trajectory to analyse, Default: -1
-        step : int, optional
-            Step between frames to analyse, Default: 1
         """
-        self._u = u
-        self.select = select
-        self.atoms = u.select_atoms(select)
-        self._natoms = self.atoms.n_atoms
 
-        traj = u.trajectory
         self._epsilon = epsilon
-        if metric is not None:
-            self._metric = metric
-        else:
-            self._metric = qcp.CalcRMSDRotationalMatrix
-        # remember that this must be called before referencing self.nframes
-        self._setup_frames(traj, start, stop, step)
 
-        # modulus to prevent array index out of bounds exception
-        self._k = k % self.nframes
         if weights is None:
             # weights do not apply to metric
-            self._weights = np.ones((self.nframes,))
+            self._weights_ker = np.ones((self.nframes,))
         else:
             if weights.shape[0] != self.nframes:
-                raise ValueError("The weight should have the same length as the"
-                                 'trajectory')
+                raise ValueError("The weight should have the same length as "
+                                 'the trajectory')
             else:
                 # weights are constructed as relative to the mean
-                self._weights = (np.asarray(weights, dtype=np.float64) /
-                                 np.mean(weights))
-
-    def _prepare(self):
-        self.diffusion_matrix = np.zeros((self.nframes, self.nframes))
-        if self._epsilon == 'average':
-            self._epsilon = np.zeros((self.nframes, ), )
-            self._type_epsilon = 'average'
-        else:
-            value_epsilon = self._epsilon
-            self._epsilon = np.full((self.nframes, ), value_epsilon)
-            self._type_epsilon = 'constant'
-
-        self._rot = np.zeros(9)
-
-    def _single_frame(self):
-        traj_index = self._ts.frame
-        i_ref = self.atoms.positions - self.atoms.center_of_mass()
-
-        # diagonal entries need not be calculated due to metric(x,x) == 0 in
-        # theory, _ts not updated properly. Possible savings by setting a cutoff
-        # for significant decimal places to sparsify matrix
-        for j in range(self.nframes-1, self._ts.frame-1, -1):
-            self._ts = self._u.trajectory[j]
-            j_ref = self.atoms.positions - self.atoms.center_of_mass()
-            ij_result = self._metric(i_ref.T.astype(np.float64),
-                                     j_ref.T.astype(np.float64), self._natoms,
-                                     self._rot, weights=None)
-            if(ij_result < 1E-05):
-                self.diffusion_matrix[traj_index, j] = 0
-            else:
-                self.diffusion_matrix[traj_index, j] = ij_result
+                self._weights_ker = (np.asarray(weights, dtype=np.float64) /
+                                     np.mean(weights))
 
     def _conclude(self):
-        self.diffusion_matrix = (self.diffusion_matrix +
-                                 self.diffusion_matrix.T -
-                                 np.diag(self.diffusion_matrix.diagonal()))
-
-        logger.info('printing diffusion matrix: {0}'.format(self.diffusion_matrix))
-        if self._type_epsilon == 'average':
-            for i in range(self.nframes):
-                # np.argsort(diffusion_matrix[i,:])#[10]]
-                # picks k largest rmsd value in column for choice of epsilon
-                self._epsilon[i] = self.diffusion_matrix[i, np.argsort(
-                                    self.diffusion_matrix[i, :])[self._k]]
-
-            self._epsilon = np.full((self.nframes, ), self._epsilon.mean())
-
-        logger.info('printing epsilon: {0}'.format(self._epsilon))
-
+        epsilon = self._epsilon(self.d_matrix, epsilon)
         self._kernel2 = np.zeros((self.nframes, self.nframes))
 
         # possibly mappable
@@ -240,27 +240,70 @@ class DiffusionMap(AnalysisBase):
             self._kernel2[i, :] = (np.exp((-self.diffusion_matrix[i, :] ** 2) /
                                    (self._epsilon[i]*self._epsilon[:])))
 
-        logger.info('printing kernel: {0}'.format(self._kernel2))
         p_vector = np.zeros((self.nframes, ))
         d_vector = np.zeros((self.nframes, ))
 
         for i in range(self.nframes):
-            p_vector[i] = np.dot(self._kernel2[i, :], self._weights)
+            p_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
 
         self._kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
 
         for i in range(self.nframes):
-            d_vector[i] = np.dot(self._kernel2[i, :], self._weights)
+            d_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
 
-        logger.info('printing d_vector matrix: {0}'.format(d_vector))
         for i in range(self.nframes):
-            self._kernel2[i, :] = self._kernel2[i, :] * self._weights
+            self._kernel2[i, :] = self._kernel2[i, :] * self._weights_ker
 
         self._kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
-        logger.info('printing final kernel: {0}'.format(self._kernel2))
         # eigenvalues and eigenvector are the collective coordinates
         eigenvals, eigenvectors = np.linalg.eig(self._kernel2)
 
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
         self.eigenvectors = eigenvectors[eg_arg[::-1], :]
+
+
+
+
+def epsilon_average(dist_matrix, k, nframes):
+    """Premade function for the determination of epsilon based on averaging after
+    picking a neighbor based on connectivity.
+
+    Parameters
+    ----------
+    dist_matrix : matrix
+        The nframes-by-nframes matrix generated by DistMatrix
+    k : int
+        The index of the diffusion value in i_th matrix column used for epsilon
+        value picking.
+    nframes : int
+        The number of frames used in the dimension reduction.
+    """
+    epsilon = np.zeros((nframes, ), )
+    # modulus to prevent array index out of bounds exception
+    k = k % self.nframes
+    for i in range(nframes):
+        # np.argsort(diffusion_matrix[i,:])#[10]]
+        # picks k largest rmsd value in column for choice of epsilon
+        epsilon[i] = d_matrix[i, np.argsort(d_matrix[i, :])[k]]
+
+    epsilon = np.full((self.nframes, ), epsilon.mean())
+    return epsilon
+
+
+def epsilon_constant(dist_matrix, epsilon, nframes):
+    """Premade function for the determination of epsilon based on providing
+    an arbitrary constant
+
+    Parameters
+    ----------
+    dist_matrix : matrix
+        The nframes-by-nframes matrix generated by DistMatrix
+    epsilon : int
+        The value of epsilon to be used as a local scale parameter
+    nframes : int
+        The number of frames used in the dimension reduction.
+    """
+    epsilon = np.zeros((nframes, ), )
+    epsilon = np.full((self.nframes, ), epsilon)
+    return epsilon
