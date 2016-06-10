@@ -48,8 +48,8 @@ The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
 :data:`~MDAnalysis.tests.datafiles.DCD`). Notice that this trajectory
 does not represent a sample from the equilibrium. This violates a basic
-assumption of the diffusion map and the results shouldn't be interpreted for this reason.
-This tutorial shows how to use the diffusionmap function.
+assumption of the diffusion map and the results shouldn't be interpreted for
+this reason/ This tutorial shows how to use the diffusionmap function.
 First load all modules and test data ::
 
    >>> import MDAnalysis
@@ -112,13 +112,14 @@ class DistMatrix(AnalysisBase):
     atoms : AtomGroup
         Selected atoms in trajectory subject to dimension reduction
     d_matrix : array
-        Array of all possible ij metric distances between frames in trajectory
+        Array of all possible ij metric distances between frames in trajectory.
+        This matrix is symmetric with zeros on the diagonal.
     """
-    def __init__(self, u, select='all', metric=None, cutoff=1E-05, weights=None,
-                 start=None, stop=None, step=None):
+    def __init__(self, u, select='all', metric=rms.rmsd, cutoff=1E0-5,
+                 weights=None, start=None, stop=None, step=None):
         """
         Parameters
-        -------------
+        ----------
         u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
             The MD Trajectory for dimension reduction, remember that
             computational cost of eigenvalue decomposition
@@ -132,9 +133,10 @@ class DistMatrix(AnalysisBase):
             different frames. Water should be excluded.
         metric : function, optional
             Maps two numpy arrays to a float, is positive definite and
-            symmetric, Default: ``None`` sets metric to rms.rmsd()
+            symmetric, Default: metric is set to rms.rmsd().
         cutoff : float, optional
-            Specify a given cutoff for metric values to be considered equal
+            Specify a given cutoff for metric values to be considered equal,
+            Default: 1EO-5
         weights : array, optional
             Weights to be given to coordinates for metric calculation
         start : int, optional
@@ -144,40 +146,32 @@ class DistMatrix(AnalysisBase):
         step : int, optional
             Step between frames to analyse, Default: 1
         """
-        self._u = u
-        self.atoms = self._u.select_atoms(select)
-        self._natoms = self.atoms.n_atoms
-        traj = u.trajectory
-        if metric is None:
-            self._metric = rms.rmsd
-        else:
-            self._metric = metric
 
-        # remember that this must be called before referencing self.nframes
-        self._setup_frames(traj, start, stop, step)
+        self._u = u
+        traj = self._u.trajectory
+        self.atoms = self._u.select_atoms(select)
+        self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
+        # remember that this must be called before referencing self.nframes
+        self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
+        logger.info('numframes {0}'.format(self.nframes))
         self.d_matrix = np.zeros((self.nframes, self.nframes))
 
     def _single_frame(self):
         traj_index = self._ts.frame
         i_ref = self.atoms.positions - self.atoms.center_of_mass()
-
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j in range(self.stop, self._ts.frame-1, -self.step):
+        for j in range(self.stop-1, self._ts.frame-1, -self.step):
+            self._ts = self._u.trajectory[j]
             j_ref = self.atoms.positions-self.atoms.center_of_mass()
-            ij_result = self._metric(i_ref, j_ref, weights=self._weights)
-            if(ij_result < self._cutoff):
-                self.d_matrix[traj_index, j] = 0
-            else:
-                self.d_matrix[traj_index, j] = ij_result
-
-    self.d_matrix = (self.d_matrix + self.d_matrix.T -
-                     np.diag(self.d_matrix.diagonal()))
+            dist = self._metric(i_ref, j_ref, weights=self._weights)
+            self.d_matrix[traj_index, j] = dist if dist > self._cutoff else 0
+            self.d_matrix[j, traj_index] = self.d_matrix[traj_index, j]
 
     def store(self, filename):
         pass
@@ -195,7 +189,7 @@ class DiffusionMap(DistMatrix):
     ----------
     atoms : AtomGroup
         Selected atoms in trajectory subject to dimension reduction
-    diffusion_matrix : array
+    d_matrix : array
         Array of all possible ij metric distances between frames in trajectory
     eigenvalues: array
         Eigenvalues of the diffusion map
@@ -205,8 +199,14 @@ class DiffusionMap(DistMatrix):
         collective coordinates.
     """
 
-    def __init__(self, epsilon='average', weights=None):
+    def __init__(self, DistMatrix, epsilon=epsilon_constant, weights=None,
+                 **kwargs):
         """
+        Parameters
+        -------------
+        DistMatrix : DistMatrix object
+            Distance matrix to be made into a diffusion kernel and perform
+            an Eigenvector decomposition on.
         epsilon : function, optional
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in [1] and [2]. With 'average'
@@ -216,10 +216,9 @@ class DiffusionMap(DistMatrix):
             With 'None' the weight of each frame of the trajectory will be the
             same.
         """
-
         self._epsilon = epsilon
-
-        if weights is None:
+        self.d_matrix = DistMatrix.d_matrix
+        if weights_ker is None:
             # weights do not apply to metric
             self._weights_ker = np.ones((self.nframes,))
         else:
@@ -232,12 +231,13 @@ class DiffusionMap(DistMatrix):
                                      np.mean(weights))
 
     def _conclude(self):
-        epsilon = self._epsilon(self.d_matrix, epsilon)
+        # TODO: fix this, simply a proof of concept, need to add kwargs for
+        # epsilon calculation
+        self._epsilon = epsilon_constant(10, self.nframes)
         self._kernel2 = np.zeros((self.nframes, self.nframes))
-
         # possibly mappable
         for i in range(self.nframes):
-            self._kernel2[i, :] = (np.exp((-self.diffusion_matrix[i, :] ** 2) /
+            self._kernel2[i, :] = (np.exp((-self.d_matrix[i, :] ** 2) /
                                    (self._epsilon[i]*self._epsilon[:])))
 
         p_vector = np.zeros((self.nframes, ))
@@ -287,23 +287,20 @@ def epsilon_average(dist_matrix, k, nframes):
         # picks k largest rmsd value in column for choice of epsilon
         epsilon[i] = d_matrix[i, np.argsort(d_matrix[i, :])[k]]
 
-    epsilon = np.full((self.nframes, ), epsilon.mean())
+    epsilon = np.full((nframes, ), epsilon.mean())
     return epsilon
 
 
-def epsilon_constant(dist_matrix, epsilon, nframes):
+def epsilon_constant(epsilon, nframes):
     """Premade function for the determination of epsilon based on providing
     an arbitrary constant
 
     Parameters
     ----------
-    dist_matrix : matrix
-        The nframes-by-nframes matrix generated by DistMatrix
     epsilon : int
         The value of epsilon to be used as a local scale parameter
     nframes : int
         The number of frames used in the dimension reduction.
     """
-    epsilon = np.zeros((nframes, ), )
-    epsilon = np.full((self.nframes, ), epsilon)
+    epsilon = np.full((nframes, ), epsilon)
     return epsilon
