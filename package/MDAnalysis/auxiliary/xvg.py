@@ -53,7 +53,7 @@ class XVGReader(base.AuxFileReader):
         if i < 0:
             raise ValueError("Step numbering begins from 0")
 
-        self.go_to_first_step()
+        value = self.go_to_first_step()
         while self.step != i:
             value = self._read_next_step()
         return value

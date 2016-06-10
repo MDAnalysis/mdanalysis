@@ -13,15 +13,14 @@ class AuxReader(object):
     When reading in a trajectory, auxiliary data steps are 'assigned' the 
     closest trajectory timestep.
 
-    Attributes:
+    Attributes
+    ==========
       step: 
         number of the current auxiliary step, starting at 0
       dt:   
         change in time between auxiliary steps (ps)
       initial_time: 
         time of first auxilairy step (ps)
-      _data:
-        full data read in for current step (split into columns)
       n_cols:
         number of columns of data for each auxiliary step
       time_col:
@@ -132,7 +131,7 @@ class AuxReader(object):
 
     def read_ts(self, ts):
         """ Read the auxiliary steps 'assigned' to *ts* (the steps that are
-        within *ts.dt/2* of of the trajectory timestep/frame - ie. closer to *ts*
+        within *ts.dt*/2 of of the trajectory timestep/frame - ie. closer to *ts*
         than either the preceeding or following frame). 
 
         Calculate a 'representative value' for the timestep from the 
@@ -159,6 +158,7 @@ class AuxReader(object):
         # (as when auxiliary data is less frequent), the most recent auxiliary 
         # step before the frame)
 
+
     def step_to_frame(self, step, ts):
         """ Calculate the frame number that auxiliary step number *step* is 
         assigned to, given dt and offset from *ts*
@@ -183,7 +183,7 @@ class AuxReader(object):
     def add_step_to_ts(self, ts_time):
         """ Add data from the current step to *ts_data* """
         if len(self.ts_data) == 0:
-            self.ts_data = [self.step_data]
+            self.ts_data = np.array([self.step_data])
         else:
             self.ts_data = np.append(self.ts_data, [self.step_data], axis=0)
         self.ts_diffs.append(abs(self.time - ts_time))

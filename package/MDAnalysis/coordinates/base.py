@@ -1343,7 +1343,35 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """ Lists the names of added auxiliary data. """
         return self._auxs.keys()
 
-        
+    def next_as_aux(self, auxname):
+        """ Move to the next trajcetory timestep which has a step from the
+        auxiliary *auxname* assigned to it.
+        If the auxiliary steps are less frequent (aux dt > trajectroy dt), 
+        this allows to move forward at the auxiliary pace (rounded to nearest
+        timestep).
+        If the auxiliary steps are more frequent than the trajectory 
+        timesteps (aux dt < trajectory dt), this works the same as just 
+        calling next() on the trajectory."""
+        aux = self._auxs[auxname]
+        ts = self.ts
+        if aux.step > aux.n_steps-1:
+            raise StopIteration
+        next_frame = aux.step_to_frame(aux.step+1, ts)
+        while self.frame != next_frame:
+            ts = self.next()
+        return ts 
+
+    def iter_as_aux(self, auxname):
+        """Iterate through trajectory steps which have a step from the
+        auxiliary *auxname* assigned to the."""
+        self._reopen()
+        #temp fix as reopen sets trajectory frame to 0
+        self.ts.frame = -1
+        self._auxs[auxname]._restart()
+        while True:
+            yield self.next_as_aux(auxname)
+ 
+                
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
@@ -1389,6 +1417,8 @@ class Reader(ProtoReader):
         self._ts_kwargs = ts_kwargs
 
     def __del__(self):
+        for aux in self.aux_list:
+            self._auxs[aux].close()
         self.close()
 
 
