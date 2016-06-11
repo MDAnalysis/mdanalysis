@@ -138,12 +138,18 @@ from . import core
 from .. import NoDataError
 
 from ..auxiliary.base import AuxReader
-from ..auxiliary.xvg import XVGReader  # ?
+from ..auxiliary.core import get_auxreader_for
 
 class Namespace(object):
-    """Empty class 
-    To allow storing attributes in new namespace """
-    pass
+    """Class to allow storing attributes in new namespace. """
+    def __getattr__(self, key):
+        # a.this causes a __getattr__ call for key = 'this' 
+        return self.__dict__[key]
+    def __setattr__(self, key, value):
+        # a.this = 10 causes a __setattr__ call for key='this' value=10
+        self.__dict__[key] = value
+    def __delattr__(self, key):
+        del self.__dict__[key]
 
 
 class Timestep(object):
@@ -1228,7 +1234,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """Move to *frame*, updating ts with trajectory and auxiliary data."""
         ts = self._read_frame(frame)
         for aux in self.aux_list:
-            ts = self._auxs[aux].go_to_ts(ts)
+            ts = self._auxs[aux].read_ts(ts) 
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1309,24 +1315,39 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     natoms=self.n_atoms
                 ))
                 
-    def add_auxiliary(self, auxdata, auxname, **kwargs):
-        """Add auxiliary data to be read alongside trajectory and match to 
-        current timestep.
+    def add_auxiliary(self, auxname, auxdata, **kwargs):
+        """Add auxiliary data to be read alongside trajectory.
 
-        *auxdata* can be an AuxReader instance, or the data itself (array,
-        filename...); in the latter case an appropriate AuxReader is guessed
-        from the data/file format.
+        Auxiliary data may be any data timeseries from the trajectory additional
+        to that read in by the trajectory reader. *auxdata* can be an AuxReader 
+        instance, or the data itself as e.g. an array, filename; in the latter 
+        case an appropriate AuxReader is guessed from the data/file format.
+
+        The representative value of the auxiliary data for each timestep (as
+        calculated by the AuxReader) is stored in the ts.aux namespace as 
+        auxname.
+
+        e.g. to add additional pull force data stored in pull-force.xvg::
+
+          u = MDAnalysis.Universe(PDB, XTC)
+          u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
+
+        The representative value for the current timestep may then be accessed 
+        as ``u.trajectory.ts.aux.pull``.
+
+        AuxReader is initially matched to the current timestep of the trajectory.
+
         """
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
         if isinstance(auxdata, AuxReader):
-            auxreader = auxdata
+            aux = auxdata
         else:
-            # TODO: implement guess_reader; default to XVGReader for now
-            auxreader = XVGReader(auxname, auxdata, **kwargs)
-        self._auxs[auxname] = auxreader
-        self.ts = auxreader.go_to_ts(self.ts)
+            auxreader = get_auxreader_for(auxdata)
+            aux = auxreader(auxdata, name=auxname, **kwargs)
+        self._auxs[auxname] = aux
+        self.ts = aux.read_ts(self.ts)
     
     def remove_auxiliary(self, auxname):
         """Close the Reader for auxiliary data *auxname* and remove data 
@@ -1334,7 +1355,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         if auxname in self.aux_list:
             self._auxs[auxname].close()            
             del self._auxs[auxname]
-            del self.ts.aux.__dict__[auxname]
+            delattr(self.ts.aux, auxname)
         else:
             raise ValueError("No auxiliary named {name}".format(name=auxname))
             

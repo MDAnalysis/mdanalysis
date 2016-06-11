@@ -370,6 +370,8 @@ Attributes
       in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
+  ``aux``
+      namespace for the representative values of any added auxiliary data.
 
 
 Private attributes
@@ -549,6 +551,8 @@ Attributes
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
      frame number of the current time step (0-based)
+ ``aux_list``
+     list of the names of any added auxiliary data.
 
 **Optional attributes**
 

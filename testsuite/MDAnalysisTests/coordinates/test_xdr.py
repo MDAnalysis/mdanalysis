@@ -677,6 +677,8 @@ class TRRReference(BaseReference):
         ts.forces = ts.positions / 100
         ts.time = i
         ts.frame = i
+        ts.aux.__dict__['lowf'] = np.array(self.auxdata_lowf[i])
+        ts.aux.__dict__['highf'] = np.array(self.auxdata_highf[i])
         return ts
 
 

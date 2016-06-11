@@ -200,6 +200,7 @@ For details see the report for `Issue 87`_.
                          'data/dlpoly/HISTORY*',
                          'data/*.xml',
                          'data/coordinates/*',
+                         'data/*xvg',
                         ],
           },
           classifiers=CLASSIFIERS,

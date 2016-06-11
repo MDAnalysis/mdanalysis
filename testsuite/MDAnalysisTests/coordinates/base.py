@@ -13,6 +13,7 @@ from MDAnalysis import NoDataError
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
+from MDAnalysisTests.datafiles import AUX_XVG_HIGHF, AUX_XVG_LOWF
 from MDAnalysisTests import tempdir
 
 
@@ -105,24 +106,37 @@ class BaseReference(object):
         self.prec = 6
         self.container_format = False
         self.changing_dimensions = False
+        self.aux_lowf = AUX_XVG_LOWF
+        self.aux_highf = AUX_XVG_HIGHF
+
+        self.auxdata_lowf = np.array([[1], [np.nan], [2], [np.nan], [4]])
+        self.auxdata_highf = np.array([[1], [4], [16], [64], [256]])
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
             3 * self.n_atoms).reshape(self.n_atoms, 3)
         self.first_frame.frame = 0
+        self.first_frame.aux.__dict__['lowf'] = self.auxdata_lowf[0]
+        self.first_frame.aux.__dict__['highf'] = self.auxdata_highf[0]
 
         self.second_frame = self.first_frame.copy()
         self.second_frame.positions = 2 ** 1 * self.first_frame.positions
         self.second_frame.frame = 1
+        self.second_frame.aux.__dict__['lowf'] = self.auxdata_lowf[1]
+        self.second_frame.aux.__dict__['highf'] = self.auxdata_highf[2]
 
         self.last_frame = self.first_frame.copy()
         self.last_frame.positions = 2 ** 4 * self.first_frame.positions
         self.last_frame.frame = self.n_frames - 1
+        self.last_frame.aux.__dict__['lowf'] = self.auxdata_lowf[-1]
+        self.last_frame.aux.__dict__['highf'] = self.auxdata_highf[-1]
 
         # remember frames are 0 indexed
         self.jump_to_frame = self.first_frame.copy()
         self.jump_to_frame.positions = 2 ** 3 * self.first_frame.positions
         self.jump_to_frame.frame = 3
+        self.jump_to_frame.aux.__dict__['lowf'] = self.auxdata_lowf[3]
+        self.jump_to_frame.aux.__dict__['highf'] = self.auxdata_highf[3]
 
         self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85],
                                    dtype=np.float32)
@@ -138,6 +152,8 @@ class BaseReference(object):
         ts.positions = 2**i * self.first_frame.positions
         ts.time = i
         ts.frame = i
+        ts.aux.__dict__['lowf'] = np.array(self.auxdata_lowf[i])
+        ts.aux.__dict__['highf'] = np.array(self.auxdata_highf[i])
         return ts
 
 
@@ -145,6 +161,9 @@ class BaseReaderTest(object):
     def __init__(self, reference):
         self.ref = reference
         self.reader = self.ref.reader(self.ref.trajectory)
+        ## test add_aux first?
+        self.reader.add_auxiliary('lowf', self.ref.aux_lowf)
+        self.reader.add_auxiliary('highf', self.ref.aux_highf)
 
     def test_n_atoms(self):
         assert_equal(self.reader.n_atoms, self.ref.n_atoms)
@@ -240,6 +259,8 @@ class BaseReaderTest(object):
         for i, ts in enumerate(self.reader):
             assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
                                          decimal=self.ref.prec)
+
+    ## TODO - test add aux, remove aux, next/iter as aux...
 
 
 class BaseWriterTest(object):
@@ -939,3 +960,8 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if A.has_forces:
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
                                   err_msg='Timestep forces', verbose=verbose)
+
+    ## Temp fix so doesn't check when testing writer
+    for aux in A.aux.__dict__.keys():
+        assert_almost_equal(A.aux.__dict__[aux], B.aux.__dict__[aux])
+
