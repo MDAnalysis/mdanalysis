@@ -19,6 +19,7 @@ from __future__ import print_function
 import collections
 import os
 import sys
+import weakref
 
 import gc
 
@@ -69,13 +70,18 @@ class ReportUniverse(Plugin):
                 reader = universe.trajectory
                 referrers = gc.get_referrers(universe)
                 ref_counter = collections.Counter(r.__class__ for r in referrers)
+                weak_referrers = weakref.getweakrefs(universe)
                 # Exclude the reference we created in the loop.
                 n_references = sys.getrefcount(universe) - 1
+                n_weakrefs = weakref.getweakrefcount(universe)
                 print('* {}'.format(universe), file=stream)
                 print('  reader: {}'.format(reader), file=stream)
                 print('  {} references to the universe'.format(n_references),
                       file=stream)
                 print('  referenced by ' + str(ref_counter), file=stream)
+                print('  {} weak references to the universe'.format(n_weakrefs),
+                      file=stream)
+                print('  weak references by ' + str(weak_referrers), file=stream)
 
 
 plugin_class = ReportUniverse
