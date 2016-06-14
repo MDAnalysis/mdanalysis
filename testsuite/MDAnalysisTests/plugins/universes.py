@@ -18,10 +18,12 @@ from __future__ import print_function
 
 import collections
 import os
+import random
 import sys
 import weakref
 
 import gc
+import objgraph
 
 from nose.plugins.base import Plugin
 from nose.pyversion import exc_to_unicode, force_unicode
@@ -82,6 +84,12 @@ class ReportUniverse(Plugin):
                 print('  {} weak references to the universe'.format(n_weakrefs),
                       file=stream)
                 print('  weak references by ' + str(weak_referrers), file=stream)
+        
+        living_atoms = [o for o in gc.get_objects() if isinstance(o, mda.core.AtomGroup.Atom)]
+        print('There are {} living atoms.'.format(len(living_atoms)), file=stream)
+
+        objgraph.show_refs(living_atoms[0], filename='sample-graph.png')
+        objgraph.show_backrefs(living_atoms[0], filename='backrefs.png', max_depth=10)
 
 
 plugin_class = ReportUniverse
