@@ -240,9 +240,7 @@ class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe,
                                        guess_bonds=True)
-        self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, guess_bonds=True)
-        self.conect.build_topology()
 
     def tearDown(self):
         del self.multiverse
@@ -531,7 +529,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_coordinates(self):
-        A10CA = self.universe.SYSTEM.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
@@ -539,8 +537,8 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_distances(self):
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
@@ -743,7 +741,7 @@ def test_deduce_PDB_atom_name():
     def _test_PDB_atom_name(atom, ref_atom_name):
         dummy_file = StringIO()
         name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
-                ._deduce_PDB_atom_name(atom))
+                ._deduce_PDB_atom_name(atom.name, atom.resname))
         assert_equal(name, ref_atom_name)
     test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
                   (Pair('GLU', 'OE1'), ' OE1'),

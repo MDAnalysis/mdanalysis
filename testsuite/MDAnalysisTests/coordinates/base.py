@@ -70,7 +70,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
-        assert_almost_equal(A10CA.positions,
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             3,
                             err_msg="wrong coordinates for A10:CA")

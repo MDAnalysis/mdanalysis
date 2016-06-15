@@ -200,7 +200,7 @@ class Universe(object):
 
         # Update Universe namespace with segids
         for seg in self.segments:
-            if hasattr(seg, 'segid'):
+            if hasattr(seg, 'segid') and seg.segid:
                 if seg.segid[0].isdigit():
                     name = 's' + seg.segid
                 else:
