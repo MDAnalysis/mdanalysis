@@ -1377,8 +1377,13 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ts = self.ts
         if aux.step > aux.n_steps-1:
             raise StopIteration
+        # catch up auxiliary if it starts earlier than trajectory
+        while aux.step_to_frame(aux.step+1, ts) < 0:
+            next(aux)
         next_frame = aux.step_to_frame(aux.step+1, ts)
-        while self.frame != next_frame:
+        # some readers set self._frame to -1, rather than self.frame, on 
+        # _reopen; catch here or doesn't read first frame
+        while self.frame != next_frame or getattr(self, '_frame', 0) == -1:
             ts = self.next()
         return ts 
 
@@ -1386,8 +1391,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """Iterate through trajectory steps which have a step from the
         auxiliary *auxname* assigned to the."""
         self._reopen()
-        #temp fix as reopen sets trajectory frame to 0
-        self.ts.frame = -1
         self._auxs[auxname]._restart()
         while True:
             yield self.next_as_aux(auxname)

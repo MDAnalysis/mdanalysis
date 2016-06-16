@@ -381,6 +381,8 @@ class PDBReader(base.Reader):
             self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
+        for aux in self.aux_list:
+            self.ts = self._auxs[aux].read_ts(self.ts)
         return self.ts
 
     def close(self):

@@ -167,6 +167,8 @@ class XDRBaseReader(base.Reader):
             self._read_offsets(store=True)
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
+        for aux in self.aux_list:
+            timestep = self._auxs[aux].read_ts(timestep)
         return timestep
 
     def _read_next_timestep(self, ts=None):

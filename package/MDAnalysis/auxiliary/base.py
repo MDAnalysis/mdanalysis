@@ -148,6 +148,8 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
         # set initially to avoid error on first read
         self.n_cols = None
+        self._data_cols = []
+        self._time_col = None
 
         self.ts_data = None
         self.ts_rep = None
@@ -180,7 +182,9 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     def next(self):
         """ Move to next step of auxiliary data. """
-        return self._read_next_step()
+        self._read_next_step()
+        return {'time': self.time, 'data': self.step_data}
+
 
     def __next__(self):
         """ Move to next step of auxiliary data. """
@@ -588,5 +592,5 @@ class AuxFileReader(AuxReader):
                              "(num. steps {1}!".format(i, self.n_steps))
         value = self.go_to_first_step()
         while self.step != i:
-            value = self._read_next_step()
+            value = self.next()
         return value

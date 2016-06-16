@@ -70,7 +70,6 @@ class XVGReader(base.AuxFileReader):
                 raise ValueError('Step {0} has {1} columns instead of '
                                  '{2}'.format(self.step, len(self._data),
                                              self.n_cols))
-            return self._data
         else:
             self.go_to_first_step()
             raise StopIteration

@@ -76,9 +76,8 @@ class BaseAuxReaderTest(object):
 
     def test_iter(self):
         for i, val in enumerate(self.reader):
-            ##temp - assume time first column; change __iter__ to return
-            ## data only or add full ref_data line to ref?
-            ref_data = [self.ref.all_times[i]]+self.ref.all_step_data[i]
+            ref_data = {'time': self.ref.all_times[i], 
+                        'data': self.ref.all_step_data[i]}
             assert_equal(val, ref_data)
 
     def test_read_ts_lowf(self):
