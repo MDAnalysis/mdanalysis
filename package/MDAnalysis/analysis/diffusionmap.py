@@ -65,8 +65,7 @@ First load all modules and test data ::
 
 Given a universe or atom group, we can calculate the diffusion map from
 that trajectory using :class:`DiffusionMap`:: and get the corresponding
-eigenvalues and eigenvectors. Fr
-
+eigenvalues and eigenvectors.
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
    >>> d_matrix = DistMatrix(u)
@@ -74,15 +73,20 @@ eigenvalues and eigenvectors. Fr
    >>> dmap.run()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
-From here we can
+
+From here we can perform an embedding onto the k dominant eigenvectors.
+
    >>> ts_one = u.trajectory[0]
    >>> params_on_frame = dmap.embedding(ts_one)
+
+This is calculated from an ad hoc determination of the spectral gap, if a more
+rigorous investigation of the data is expected, you should probably do this on
+your own.
 
 Classes
 -------
 
 .. autoclass:: DiffusionMap
-   :members:
 .. autoclass:: DistMatrix
 .. autoclass:: Epsilon
 
@@ -300,8 +304,13 @@ class DiffusionMap(DistMatrix):
         for i in range(self.nframes):
             self._kernel[i, :] = self._kernel2[i, :] * self._weights_ker
 
-        # Define anisotropic transition kernel from this term
+        # Define anisotropic transition by dividing kernel by this term
         self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+
+        # Apply timescaling, HELP, I think I'm pythoning wrong
+        for i in range(t):
+            if i > 1:
+                self._kernel.__matmul__(self._kernel)
 
         eigenvals, eigenvectors = np.linalg.eig(self._kernel)
 
