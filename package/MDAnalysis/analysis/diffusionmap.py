@@ -348,6 +348,17 @@ class DiffusionMap(AnalysisBase):
         # TODO
         pass
 
+    def _prepare(self):
+        self.embedded = np.zeros((self.eigenvectors.shape[0],
+                                  self.num_eigenvectors))
+
+    def _single_frame(self):
+        # The diffusion map embedding takes the ith sample in you
+        # data matrix and maps it to each of the ith coordinates
+        # in your set of k dominant eigenvectors
+        for k in range(self.num_eigenvectors):
+            self.embedded[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
+
     def embedding(self, num_eigenvectors):
         """ Embeds a trajectory via the diffusion map
 
@@ -357,21 +368,16 @@ class DiffusionMap(AnalysisBase):
             The number of dominant eigenvectors to be used for diffusion mapping
 
         """
-
+        self.num_eigenvectors = num_eigenvectors
         self._setup_frames(self.DistanceMatrix._trajectory,
                            self.DistanceMatrix.start, self.DistanceMatrix.stop,
                            self.DistanceMatrix.step)
 
-        def _prepare(self):
-            self.embedded = np.zeros((self.eigenvectors.shape[0],
-                                      num_eigenvectors))
-
-        def _single_frame(self):
-            # The diffusion map embedding takes the ith sample in you
-            # data matrix and maps it to each of the ith coordinates
-            # in your set of k dominant eigenvectors
-            for k in range(num_eigenvectors):
-                self.embedded[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
+        logger.info('debugging DELETE: nframes: {0}'.format(self.nframes))
+        logger.info('start: {0}'.format(self.start))
+        logger.info('stop: {0}'.format(self.stop))
+        logger.info('step: {0}'.format(self.step))
+        logger.info('traj: {0}'.format(self._trajectory))
 
         self.run()
         return self.embedded
