@@ -65,6 +65,11 @@ the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
 :class:`~MDAnalysis.core.AtomGroup.Universe`).
 
+If additional simulation data is available, it may be added to and read 
+alongside a trajectory using 
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary`. See the 
+:ref:`Auxiliary API`.
+
 
 Writers
 -------
@@ -553,6 +558,9 @@ Attributes
      frame number of the current time step (0-based)
  ``aux_list``
      list of the names of any added auxiliary data.
+ ``_auxs``
+     dictionary of the :class:`~MDAnalysis.auxiliary.base.AuxReader`
+     instances for any added auxiliary data.
 
 **Optional attributes**
 

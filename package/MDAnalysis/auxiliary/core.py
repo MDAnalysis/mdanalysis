@@ -29,14 +29,14 @@ from ..lib import util
 def get_auxreader_for(auxdata, format=None):
     """Return the appropriate auxiliary reader class for *auxdata*.
 
-    Paramaters
+    Parameters
     ----------
     auxdata
         The auxiliary data (e.g. array) or filename of file containing
         auxiliary data.
     format
-        (Optional). Known format of *auxdata*; will be guessed from datatype/
-        file extension if not provided.
+        (Optional). Known format of *auxdata*; if not provided, will be guessed 
+        from datatype/file extension.
 
     Returns
     -------

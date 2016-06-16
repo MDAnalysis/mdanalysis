@@ -106,37 +106,38 @@ class BaseReference(object):
         self.prec = 6
         self.container_format = False
         self.changing_dimensions = False
+
+        # for testing auxiliary addition
         self.aux_lowf = AUX_XVG_LOWF
         self.aux_highf = AUX_XVG_HIGHF
-
-        self.auxdata_lowf = np.array([[1], [np.nan], [2], [np.nan], [4]])
-        self.auxdata_highf = np.array([[1], [4], [16], [64], [256]])
+        self.auxdata_lowf = np.array([[1.], [np.nan], [2.], [np.nan], [4.]])
+        self.auxdata_highf = np.array([[1.], [4.], [16.], [64.], [256.]])
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
             3 * self.n_atoms).reshape(self.n_atoms, 3)
         self.first_frame.frame = 0
-        self.first_frame.aux.__dict__['lowf'] = self.auxdata_lowf[0]
-        self.first_frame.aux.__dict__['highf'] = self.auxdata_highf[0]
+        self.first_frame.aux.lowf = self.auxdata_lowf[0]
+        self.first_frame.aux.highf = self.auxdata_highf[0]
 
         self.second_frame = self.first_frame.copy()
         self.second_frame.positions = 2 ** 1 * self.first_frame.positions
         self.second_frame.frame = 1
-        self.second_frame.aux.__dict__['lowf'] = self.auxdata_lowf[1]
-        self.second_frame.aux.__dict__['highf'] = self.auxdata_highf[2]
+        self.second_frame.aux.lowf = self.auxdata_lowf[1]
+        self.second_frame.aux.highf = self.auxdata_highf[1]
 
         self.last_frame = self.first_frame.copy()
         self.last_frame.positions = 2 ** 4 * self.first_frame.positions
         self.last_frame.frame = self.n_frames - 1
-        self.last_frame.aux.__dict__['lowf'] = self.auxdata_lowf[-1]
-        self.last_frame.aux.__dict__['highf'] = self.auxdata_highf[-1]
+        self.last_frame.aux.lowf = self.auxdata_lowf[-1]
+        self.last_frame.aux.highf = self.auxdata_highf[-1]
 
         # remember frames are 0 indexed
         self.jump_to_frame = self.first_frame.copy()
         self.jump_to_frame.positions = 2 ** 3 * self.first_frame.positions
         self.jump_to_frame.frame = 3
-        self.jump_to_frame.aux.__dict__['lowf'] = self.auxdata_lowf[3]
-        self.jump_to_frame.aux.__dict__['highf'] = self.auxdata_highf[3]
+        self.jump_to_frame.aux.lowf = self.auxdata_lowf[3]
+        self.jump_to_frame.aux.highf = self.auxdata_highf[3]
 
         self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85],
                                    dtype=np.float32)
@@ -147,13 +148,18 @@ class BaseReference(object):
         self.dt = 1
         self.totaltime = 5
 
+        self.iter_as_aux_lowf_steps = [0, 1, 2]
+        self.iter_as_aux_lowf_frames = [0, 2, 4]
+        self.iter_as_aux_highf_steps = [0, 2, 4, 6, 8]
+        self.iter_as_aux_highf_frames = [0, 1, 2, 3, 4]
+
     def iter_ts(self, i):
         ts = self.first_frame.copy()
         ts.positions = 2**i * self.first_frame.positions
         ts.time = i
         ts.frame = i
-        ts.aux.__dict__['lowf'] = np.array(self.auxdata_lowf[i])
-        ts.aux.__dict__['highf'] = np.array(self.auxdata_highf[i])
+        ts.aux.lowf = np.array(self.auxdata_lowf[i])
+        ts.aux.highf = np.array(self.auxdata_highf[i])
         return ts
 
 
@@ -260,7 +266,34 @@ class BaseReaderTest(object):
             assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
                                          decimal=self.ref.prec)
 
-    ## TODO - test add aux, remove aux, next/iter as aux...
+    @raises(ValueError)
+    def test_add_same_auxname_raises_ValueError(self):
+        self.reader.add_auxiliary('lowf', self.ref.aux_lowf)
+
+    def test_remove_auxiliary(self):
+        self.reader.remove_auxiliary('lowf')
+        assert_raises(AttributeError, getattr, self.reader._auxs, 'lowf')
+        assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')
+
+    @raises(ValueError)
+    def test_remove_nonexistant_auxiliary_raises_ValueError(self):
+        self.reader.remove_auxiliary('nonexistant')
+
+    def test_iter_as_aux_highf(self):
+        for i, ts in enumerate(self.reader.iter_as_aux('highf')):
+            assert_equal(ts.frame, self.ref.iter_as_aux_highf_frames[i],
+                         "Timestep frame index does not match")
+            assert_equal(self.reader._auxs['highf'].step, 
+                         self.ref.iter_as_aux_highf_steps[i],
+                         "Auxiliary step index does not match")
+
+    def test_iter_as_aux_lowf(self):
+        for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
+            assert_equal(ts.frame, self.ref.iter_as_aux_lowf_frames[i],
+                         "Timestep frame index does not match")
+            assert_equal(self.reader._auxs['lowf'].step, 
+                         self.ref.iter_as_aux_lowf_steps[i],
+                         "Auxiliary step index does not match")
 
 
 class BaseWriterTest(object):
@@ -962,6 +995,8 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                                   err_msg='Timestep forces', verbose=verbose)
 
     ## Temp fix so doesn't check when testing writer
-    for aux in A.aux.__dict__.keys():
-        assert_almost_equal(A.aux.__dict__[aux], B.aux.__dict__[aux])
+    for aux in A.aux.keys():
+        assert_almost_equal(getattr(A.aux, aux), getattr(B.aux, aux), 
+                                   err_msg='Auxiliary values do not match: '
+                                   'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
 

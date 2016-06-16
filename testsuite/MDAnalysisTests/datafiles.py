@@ -119,7 +119,7 @@ __all__ = [
     "ENT", #for testing ENT file extension
     "RANDOM_WALK",
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
-    "AUX_XVG", #for testing .xvg auxiliary reader
+    "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
 ]
 
@@ -127,6 +127,7 @@ from pkg_resources import resource_filename
 
 AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
+XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')
 AUX_XVG = resource_filename(__name__, 'data/test.xvg')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')

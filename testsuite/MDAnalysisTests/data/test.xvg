@@ -1,7 +1,7 @@
 # xvg file for testing adding auxiliary data
 @ this line should be skipped
-0 1
-1 2
-2 4
-3 8
-4 16
+0 0 1
+1 2 2
+2 4 4 #this comment should be skipped
+3 6 8
+4 8 16
