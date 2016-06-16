@@ -35,35 +35,57 @@ class TestDiffusionmap(object):
         # assert_almost_equal(self.ev[0,0], .095836037343022831)
         # faster
         self.u = MDAnalysis.Universe(PDB, XTC)
-        self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone')
-        self.dmap.run()
+        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
+        self.dist.run()
+        self.epsilon = diffusionmap.EpsilonConstant(self.dist, 500)
+        self.epsilon.determine_epsilon()
+        self.dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon)
+        self.dmap.decompose_kernel()
         self.eigvals = self.dmap.eigenvalues
         self.eigvects = self.dmap.eigenvectors
-        self.weights = np.ones((self.dmap.nframes, ))
+        self.weights = np.ones((self.dist.nframes, ))
 
     def test_eg(self):
         # number of frames is trajectory is now 10 vs. 98
-        assert_equal(self.eigvals.shape, (self.dmap.nframes, ))
+        assert_equal(self.eigvals.shape, (self.dist.nframes, ))
+        # makes no sense to test values here, no physical meaning
         assert_almost_equal(self.eigvals[0], 1.0, decimal=5)
-        assert_almost_equal(self.eigvals[-1], 0.006621, decimal=3)
 
     def test_ev(self):
-        assert_equal(self.eigvects.shape, (self.dmap.nframes, self.dmap.nframes))
-        assert_almost_equal(self.eigvects[0, 0], 0.3172, decimal=2)
+        #makes no sense to test values here, no physical meaning
+        assert_equal(self.eigvects.shape, (self.dist.nframes, self.dist.nframes))
 
     def test_weights(self):
-        dmap2 = diffusionmap.DiffusionMap(self.u, select='backbone',
-                                          weights=self.weights, k=5)
-        dmap2.run()
-        assert_almost_equal(self.eigvals, dmap2.eigenvalues, decimal=5)
-        assert_almost_equal(self.eigvects, dmap2.eigenvectors, decimal=6)
+        dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
+        dist.run()
+        dmap = diffusionmap.DiffusionMap(dist,self.epsilon,
+                                          weights=self.weights)
+        dmap.decompose_kernel()
+        assert_almost_equal(self.eigvals, dmap.eigenvalues, decimal=5)
+        assert_almost_equal(self.eigvects, dmap.eigenvectors, decimal=6)
+
 
     @raises(ValueError)
     def test_wrong_weights(self):
-        dmap2 = diffusionmap.DiffusionMap(self.u, select='backbone',
+        dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon,
                                           weights=np.ones((2,)))
+    def test_timescaling(self):
+        dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon,
+                                          timescale=2)
+        dmap.decompose_kernel()
+        assert_equal(dmap.eigenvalues.shape, (self.dist.nframes, ))
+        # makes no sense to test values here, no physical meaning
+        assert_almost_equal(self.eigvals[0], 1.0, decimal=5)
 
-    def test_constant_epsilon(self):
-        dmap3 = diffusionmap.DiffusionMap(self.u, select='backbone')
-        dmap3.run()
-        assert_almost_equal(self.eigvals, dmap3.eigenvalues, decimal=5)
+
+    def test_different_steps(self):
+        dist = diffusionmap.DistanceMatrix(self.u, select='backbone',step=3)
+        dist.run()
+        dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon)
+        dmap.decompose_kernel()
+
+    def test_transform(self):
+        self.num_eigenvectors = 4
+        self.dmap.transform(self.num_eigenvectors)
+        assert_equal(self.dmap.fit.shape, (self.eigvects.shape[0],
+                     self.num_eigenvectors))
