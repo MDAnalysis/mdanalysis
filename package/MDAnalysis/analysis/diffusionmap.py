@@ -68,8 +68,8 @@ that trajectory using :class:`DiffusionMap`:: and get the corresponding
 eigenvalues and eigenvectors.
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
-   >>> d_matrix = DistMatrix(u)
-   >>> dmap = diffusionmap.DiffusionMap(DistMatrix)
+   >>> d_matrix = DistanceMatrix(u)
+   >>> dmap = diffusionmap.DiffusionMap(dist_matrix)
    >>> dmap.run()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
@@ -122,7 +122,7 @@ from .base import AnalysisBase
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
 
-class DistMatrix(AnalysisBase):
+class DistanceMatrix(AnalysisBase):
     """ Calculate the pairwise distance between each frame in a trajectory using
         a given metric
 
@@ -197,8 +197,7 @@ class DistMatrix(AnalysisBase):
             # distance squared in preparation for kernel calculation
             # don't think this will come up in other areas, but might be
             # a fix we should make later
-            self.dist_matrix[traj_index, j] = dist**2 if dist > self._cutoff
-            else 0
+            self.dist_matrix[traj_index, j] = dist**2 if dist > self._cutoff else 0
             self.dist_matrix[j, traj_index] = self.dist_matrix[traj_index, j]
 
     def save(self, filename):
@@ -211,7 +210,7 @@ class Epsilon(object):
 
     Attributes
     ----------
-    scaledMatrix : DistMatrix object
+    scaledMatrix : DistanceMatrix object
         A matrix with each term divided by a local scale parameter
 
     Methods
@@ -219,17 +218,37 @@ class Epsilon(object):
     determineEpsilon()
         Determine local scale parameters using a chosen algorithm
     """
-    def __init__(self, DistMatrix, **kwargs):
-        self._distMatrix = DistMatrix
+    def __init__(self, DistanceMatrix, **kwargs):
+        self._DistanceMatrix = DistMatrix
 
-    def determineEpsilon(self):
+    def determine_epsilon(self):
         pass
 
 
-class DiffusionMap(DistMatrix):
+class EpsilonConstant(Epsilon):
+    """Premade function for the determination of epsilon based on providing
+    an arbitrary constant"""
+
+    def __init__(self, DistanceMatrix, epsilon):
+        """
+        Parameters
+        ----------
+        epsilon : int
+            The value of epsilon to be used as a local scale parameter
+        """
+        self.scaledMatrix = DistanceMatrix.dist_matrix
+        self._epsilon = epsilon
+
+    def determine_epsilon(self):
+        self.scaledMatrix /= self._epsilon
+        return
+
+
+class DiffusionMap(AnalysisBase):
     """Non-linear dimension reduction method
 
-    Dimension reduction with diffusion map of the structures in the universe.
+    Dimension reduction with diffusion mapping of selected structures in a
+    trajectory.
 
     Attributes
     ----------
@@ -249,31 +268,34 @@ class DiffusionMap(DistMatrix):
         the collective coordinates.
     """
 
-    def __init__(self, DistMatrix, epsilon=EpsilonConstant, weights=None):
+    def __init__(self, DistanceMatrix, epsilon, weights=None, timescale=1):
         """
         Parameters
         -------------
-        DistMatrix : DistMatrix object
+        DistanceMatrix : DistanceMatrix object
             Distance matrix to be made into a diffusion kernel and perform
             an eigenvector decomposition on.
-        epsilon : function, optional
+        epsilon : Epsilon object
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [1] and [2]. With 'average'
-            the average of the RMSD to the k-th greatest value is used.
+            diffusion map. More information in [1], [2] and [3].
         weights: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the
             same.
+        timescale: int, optional
+            The number of steps in the random walk, large t reflects global
+            structure whereas small t indicates local structure.
         """
+        self.DistanceMatrix = DistanceMatrix
+        self._nframes = DistanceMatrix.nframes
+        self._t = timescale
         self._epsilon = epsilon
-        # this should be a reference to the same object as
-        # epsilon.scaledMatrix
-        self.dist_matrix = DistMatrix.dist_matrix
-        if weights_ker is None:
-            # weights do not apply to metric
-            self._weights_ker = np.ones((self.nframes,))
+
+        if weights is None:
+            # weights do not apply to metric but density of data
+            self._weights_ker = np.ones((self._nframes,))
         else:
-            if weights.shape[0] != self.nframes:
+            if weights.shape[0] != self._nframes:
                 raise ValueError("The weight should have the same length as "
                                  'the trajectory')
             else:
@@ -281,34 +303,38 @@ class DiffusionMap(DistMatrix):
                 self._weights_ker = (np.asarray(weights, dtype=np.float64) /
                                      np.mean(weights))
 
-    def _conclude(self):
-        self._epsilon.determineEpsilon()
+    def decompose_kernel(self):
+        self._epsilon.determine_epsilon()
+
+        # DistanceMatrix.dist_matrix
+        # this should be a reference to the same object as
         self._kernel = self._epsilon.scaledMatrix
+
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._kernel)
 
         # define an anistropic diffusion term q
-        q_vector = np.zeros((self.nframes, ))
+        q_vector = np.zeros((self._nframes, ))
         # weights should reflect the density of the points on the manifold
-        for i in range(self.nframes):
-            q_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
+        for i in range(self._nframes):
+            q_vector[i] = np.dot(self._kernel[i, :], self._weights_ker)
 
         # Form a new kernel from the anisotropic diffusion term q
         self._kernel /= np.sqrt(q_vector[:, np.newaxis].dot(q_vector[np.newaxis]))
 
         # Weighted Graph Laplacian normalization on this new graph
-        d_vector = np.zeros((self.nframes, ))
-        for i in range(self.nframes):
-            d_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
+        d_vector = np.zeros((self._nframes, ))
+        for i in range(self._nframes):
+            d_vector[i] = np.dot(self._kernel[i, :], self._weights_ker)
 
-        for i in range(self.nframes):
-            self._kernel[i, :] = self._kernel2[i, :] * self._weights_ker
+        for i in range(self._nframes):
+            self._kernel[i, :] = self._kernel[i, :] * self._weights_ker
 
         # Define anisotropic transition by dividing kernel by this term
         self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
         # Apply timescaling, HELP, I think I'm pythoning wrong
-        for i in range(t):
+        for i in range(self._t):
             if i > 1:
                 self._kernel.__matmul__(self._kernel)
 
@@ -322,21 +348,30 @@ class DiffusionMap(DistMatrix):
         # TODO
         pass
 
-    def embedding(self, timestep):
-        # TODO
-        pass
+    def embedding(self, num_eigenvectors):
+        """ Embeds a trajectory via the diffusion map
 
+        Parameter
+        ---------
+        num_eigenvectors : int
+            The number of dominant eigenvectors to be used for diffusion mapping
 
-class EpsilonConstant(Epsilon):
-    """Premade function for the determination of epsilon based on providing
-    an arbitrary constant"""
-
-    def __init__(self, DistMatrix, epsilon):
         """
-        Parameters
-        ----------
-        epsilon : int
-            The value of epsilon to be used as a local scale parameter
-        """
-        self._epsilon = epsilon
-        epsilon = np.full((nframes, ), epsilon)
+
+        self._setup_frames(self.DistanceMatrix._trajectory,
+                           self.DistanceMatrix.start, self.DistanceMatrix.stop,
+                           self.DistanceMatrix.step)
+
+        def _prepare(self):
+            self.embedded = np.zeros((self.eigenvectors.shape[0],
+                                      num_eigenvectors))
+
+        def _single_frame(self):
+            # The diffusion map embedding takes the ith sample in you
+            # data matrix and maps it to each of the ith coordinates
+            # in your set of k dominant eigenvectors
+            for k in range(num_eigenvectors):
+                self.embedded[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
+
+        self.run()
+        return self.embedded
