@@ -28,16 +28,20 @@ coordinates for a trajectory. This non-linear dimension reduction method
 assumes that the trajectory is long enough to represent a probability
 distribution of as protein close to the equilibrium. Furthermore, the diffusion
 map assumes that the diffusion coefficients are constant. The eigenvectors with
-the largest eigenvalues are the slowest collective coordinates. The complexity of
-the diffusion map is O(N^3), where N is the number of frames in the trajectory.
-Instead of a single trajectory a sample of protein structures can be used.
-The sample should be equiblibrated, at least locally.  Different weights can be
-used. The order of the sampled structures in the trajectory is irrelevant.
+the largest eigenvalues are the more dominant collective coordinates. Assigning
+phyiscal meaning to the reaction coordinates is a fundamentally difficult
+problem. The time complexity of the diffusion map is O(N^3), where N is the
+number of frames in the trajectory, and the storage complexity is O(N^3).
+Instead of a single trajectory a sample of protein structures
+can be used. The sample should be equiblibrated, at least locally. Different
+weights can be used to determine the anisotropy of the diffusion kernel.
+The motivation for the creation of an anisotropic kernel is given on page 14 of
+[Lafon1]_. The order of the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
-More details about diffusion maps are in [Lafon1]_  and [Clementi1]_.
+More details about diffusion maps are in [Lafon1]_ , [Ferguson1], and [Clementi1]_.
 
 .. _Diffusion-Map-tutorial:
 
@@ -47,9 +51,11 @@ Diffusion Map tutorial
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
 :data:`~MDAnalysis.tests.datafiles.DCD`). Notice that this trajectory
-does not represent a sample from the equilibrium. This violates a basic
-assumption of the diffusion map and the results shouldn't be interpreted for
-this reason/ This tutorial shows how to use the diffusionmap function.
+does not represent a sample from equilibrium. This violates a basic
+assumption of the anisotropic kernel. The anisotropic kernel is created to act
+as a discrete approximation for the Fokker-Plank equation from statistical
+mechanics, results from a non-equilibrium trajectory shouldn't be interpreted
+for this reason. This tutorial shows how to use the diffusionmap function.
 First load all modules and test data ::
 
    >>> import MDAnalysis
@@ -57,27 +63,36 @@ First load all modules and test data ::
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
    >>> from MDAnalysis.tests.datafiles import PSF,DCD
 
-Given an universe or atom group, we can calculate the diffusion map from
-that trajectory using :class:`DiffusionMap`:: and get the corresponding eigenvalues
-and eigenvectors
+Given a universe or atom group, we can calculate the diffusion map from
+that trajectory using :class:`DiffusionMap`:: and get the corresponding
+eigenvalues and eigenvectors. Fr
+
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
-   >>> dmap = diffusionmap.DiffusionMap(u)
+   >>> d_matrix = DistMatrix(u)
+   >>> dmap = diffusionmap.DiffusionMap(DistMatrix)
    >>> dmap.run()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
+From here we can
+   >>> ts_one = u.trajectory[0]
+   >>> params_on_frame = dmap.embedding(ts_one)
 
 Classes
 -------
 
 .. autoclass:: DiffusionMap
    :members:
+.. autoclass:: DistMatrix
+.. autoclass:: Epsilon
 
 References
 ---------
 
 If you use this Dimension Reduction method in a publication, please
 reference:
+..[Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.;
+Debenedetti, P. G. Chem. Phys. Lett. 2011, 509, 1−11
 ..[Lafon1] Coifman, Ronald R., Lafon, Stephane (2006) Diffusion maps.
 Appl. Comput. Harmon. Anal. 21, 5–30.
 ..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C. (2013)
@@ -111,9 +126,14 @@ class DistMatrix(AnalysisBase):
     ----------
     atoms : AtomGroup
         Selected atoms in trajectory subject to dimension reduction
-    d_matrix : array
+    dist_matrix : array
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
+
+    Methods
+    -------
+    save(filename)
+        Save the `dist_matrix` to a given filename
     """
     def __init__(self, u, select='all', metric=rms.rmsd, cutoff=1E0-5,
                  weights=None, start=None, stop=None, step=None):
@@ -158,7 +178,7 @@ class DistMatrix(AnalysisBase):
 
     def _prepare(self):
         logger.info('numframes {0}'.format(self.nframes))
-        self.d_matrix = np.zeros((self.nframes, self.nframes))
+        self.dist_matrix = np.zeros((self.nframes, self.nframes))
 
     def _single_frame(self):
         traj_index = self._ts.frame
@@ -170,13 +190,35 @@ class DistMatrix(AnalysisBase):
             self._ts = self._u.trajectory[j]
             j_ref = self.atoms.positions-self.atoms.center_of_mass()
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.d_matrix[traj_index, j] = dist if dist > self._cutoff else 0
-            self.d_matrix[j, traj_index] = self.d_matrix[traj_index, j]
+            # distance squared in preparation for kernel calculation
+            # don't think this will come up in other areas, but might be
+            # a fix we should make later
+            self.dist_matrix[traj_index, j] = dist**2 if dist > self._cutoff
+            else 0
+            self.dist_matrix[j, traj_index] = self.dist_matrix[traj_index, j]
 
-    def store(self, filename):
-        pass
+    def save(self, filename):
+        np.savetxt(filename, self.dist_matrix)
+        logger.info("Wrote the distance-squared matrix to file %r", filename)
 
-    def load(self, filename):
+
+class Epsilon(object):
+    """Manipulates a distance matrix by local scale parameters
+
+    Attributes
+    ----------
+    scaledMatrix : DistMatrix object
+        A matrix with each term divided by a local scale parameter
+
+    Methods
+    -------
+    determineEpsilon()
+        Determine local scale parameters using a chosen algorithm
+    """
+    def __init__(self, DistMatrix, **kwargs):
+        self._distMatrix = DistMatrix
+
+    def determineEpsilon(self):
         pass
 
 
@@ -187,26 +229,29 @@ class DiffusionMap(DistMatrix):
 
     Attributes
     ----------
-    atoms : AtomGroup
-        Selected atoms in trajectory subject to dimension reduction
-    d_matrix : array
-        Array of all possible ij metric distances between frames in trajectory
     eigenvalues: array
         Eigenvalues of the diffusion map
     eigenvectors: array
         Eigenvectors of the diffusion map
-        The second and higher eigenvectors ev[i+1,:] represent the i-th slowest
-        collective coordinates.
+
+    Methods
+    -------
+    spectral_gap()
+        Retrieve a guess for the set of eigenvectors reflecting the intrinsic
+        dimensionality of the molecular system.
+
+    embedding(timestep)
+        Perform an embedding of a frame into the eigenvectors representing
+        the collective coordinates.
     """
 
-    def __init__(self, DistMatrix, epsilon=epsilon_constant, weights=None,
-                 **kwargs):
+    def __init__(self, DistMatrix, epsilon=EpsilonConstant, weights=None):
         """
         Parameters
         -------------
         DistMatrix : DistMatrix object
             Distance matrix to be made into a diffusion kernel and perform
-            an Eigenvector decomposition on.
+            an eigenvector decomposition on.
         epsilon : function, optional
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in [1] and [2]. With 'average'
@@ -217,7 +262,9 @@ class DiffusionMap(DistMatrix):
             same.
         """
         self._epsilon = epsilon
-        self.d_matrix = DistMatrix.d_matrix
+        # this should be a reference to the same object as
+        # epsilon.scaledMatrix
+        self.dist_matrix = DistMatrix.dist_matrix
         if weights_ker is None:
             # weights do not apply to metric
             self._weights_ker = np.ones((self.nframes,))
@@ -231,76 +278,56 @@ class DiffusionMap(DistMatrix):
                                      np.mean(weights))
 
     def _conclude(self):
-        # TODO: fix this, simply a proof of concept, need to add kwargs for
-        # epsilon calculation
-        self._epsilon = epsilon_constant(10, self.nframes)
-        self._kernel2 = np.zeros((self.nframes, self.nframes))
-        # possibly mappable
-        for i in range(self.nframes):
-            self._kernel2[i, :] = (np.exp((-self.d_matrix[i, :] ** 2) /
-                                   (self._epsilon[i]*self._epsilon[:])))
+        self._epsilon.determineEpsilon()
+        self._kernel = self._epsilon.scaledMatrix
+        # take negative exponent of scaled matrix to create Isotropic kernel
+        self._kernel = np.exp(-self._kernel)
 
-        p_vector = np.zeros((self.nframes, ))
+        # define an anistropic diffusion term q
+        q_vector = np.zeros((self.nframes, ))
+        # weights should reflect the density of the points on the manifold
+        for i in range(self.nframes):
+            q_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
+
+        # Form a new kernel from the anisotropic diffusion term q
+        self._kernel /= np.sqrt(q_vector[:, np.newaxis].dot(q_vector[np.newaxis]))
+
+        # Weighted Graph Laplacian normalization on this new graph
         d_vector = np.zeros((self.nframes, ))
-
-        for i in range(self.nframes):
-            p_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
-
-        self._kernel2 /= np.sqrt(p_vector[:, np.newaxis].dot(p_vector[np.newaxis]))
-
         for i in range(self.nframes):
             d_vector[i] = np.dot(self._kernel2[i, :], self._weights_ker)
 
         for i in range(self.nframes):
-            self._kernel2[i, :] = self._kernel2[i, :] * self._weights_ker
+            self._kernel[i, :] = self._kernel2[i, :] * self._weights_ker
 
-        self._kernel2 /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
-        # eigenvalues and eigenvector are the collective coordinates
-        eigenvals, eigenvectors = np.linalg.eig(self._kernel2)
+        # Define anisotropic transition kernel from this term
+        self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
+
+        eigenvals, eigenvectors = np.linalg.eig(self._kernel)
 
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
         self.eigenvectors = eigenvectors[eg_arg[::-1], :]
 
+    def spectral_gap(self):
+        # TODO
+        pass
+
+    def embedding(self, timestep):
+        # TODO
+        pass
 
 
-
-def epsilon_average(dist_matrix, k, nframes):
-    """Premade function for the determination of epsilon based on averaging after
-    picking a neighbor based on connectivity.
-
-    Parameters
-    ----------
-    dist_matrix : matrix
-        The nframes-by-nframes matrix generated by DistMatrix
-    k : int
-        The index of the diffusion value in i_th matrix column used for epsilon
-        value picking.
-    nframes : int
-        The number of frames used in the dimension reduction.
-    """
-    epsilon = np.zeros((nframes, ), )
-    # modulus to prevent array index out of bounds exception
-    k = k % self.nframes
-    for i in range(nframes):
-        # np.argsort(diffusion_matrix[i,:])#[10]]
-        # picks k largest rmsd value in column for choice of epsilon
-        epsilon[i] = d_matrix[i, np.argsort(d_matrix[i, :])[k]]
-
-    epsilon = np.full((nframes, ), epsilon.mean())
-    return epsilon
-
-
-def epsilon_constant(epsilon, nframes):
+class EpsilonConstant(Epsilon):
     """Premade function for the determination of epsilon based on providing
-    an arbitrary constant
+    an arbitrary constant"""
 
-    Parameters
-    ----------
-    epsilon : int
-        The value of epsilon to be used as a local scale parameter
-    nframes : int
-        The number of frames used in the dimension reduction.
-    """
-    epsilon = np.full((nframes, ), epsilon)
-    return epsilon
+    def __init__(self, DistMatrix, epsilon):
+        """
+        Parameters
+        ----------
+        epsilon : int
+            The value of epsilon to be used as a local scale parameter
+        """
+        self._epsilon = epsilon
+        epsilon = np.full((nframes, ), epsilon)
