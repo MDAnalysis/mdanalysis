@@ -200,20 +200,23 @@ class DistanceMatrix(AnalysisBase):
         self.dist_matrix = np.zeros((self.nframes, self.nframes))
 
     def _single_frame(self):
-        traj_index = self._ts.frame
+        i = self._ts.frame
         i_ref = self.atoms.positions - self.atoms.center_of_mass()
+
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j in range(self.stop-1, self._ts.frame-1, -self.step):
-            self._ts = self._u.trajectory[j]
-            j_ref = self.atoms.positions-self.atoms.center_of_mass()
-            dist = self._metric(i_ref, j_ref, weights=self._weights)
-            # distance squared in preparation for kernel calculation
-            # don't think this will come up in other areas, but might be
-            # a fix we should make later
-            self.dist_matrix[traj_index, j] = dist if dist > self._cutoff else 0
-            self.dist_matrix[j, traj_index] = self.dist_matrix[traj_index, j]
+        for j, ts in enumerate(self._u.trajectory[i:self.stop:self.step]):
+            if i == j:
+                self.dist_matrix[i,i] = 0
+            else:
+                self._ts = ts
+                j_ref = self.atoms.positions-self.atoms.center_of_mass()
+                dist = self._metric(i_ref, j_ref, weights=self._weights)
+                self.dist_matrix[i, j] = dist if dist > self._cutoff else 0
+                self.dist_matrix[j, i] = self.dist_matrix[i, j]
+
+        self._ts = self._u.trajectory[i]
 
     def save(self, filename):
         np.savetxt(filename, self.dist_matrix)

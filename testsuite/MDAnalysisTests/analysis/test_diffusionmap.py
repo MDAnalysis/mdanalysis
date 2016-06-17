@@ -85,7 +85,7 @@ class TestDiffusionmap(object):
         dmap.decompose_kernel()
 
     def test_transform(self):
-        self.num_eigenvectors = 6
+        self.num_eigenvectors = 4
         self.dmap.transform(self.num_eigenvectors)
         assert_equal(self.dmap.fit.shape, (self.eigvects.shape[0],
                      self.num_eigenvectors))
