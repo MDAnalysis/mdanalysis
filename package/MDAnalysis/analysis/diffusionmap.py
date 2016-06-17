@@ -27,11 +27,12 @@ The diffusion map provides an estimate of the slowest collective
 coordinates for a trajectory. This non-linear dimension reduction method
 assumes that the trajectory is long enough to represent a probability
 distribution of as protein close to the equilibrium. Furthermore, the diffusion
-map assumes that the diffusion coefficients are constant. The eigenvectors with
+map assumes that the diffusion coefficients  associated with the dynamical
+motion of molecules in the system are constant. The eigenvectors with
 the largest eigenvalues are the more dominant collective coordinates. Assigning
-phyiscal meaning to the reaction coordinates is a fundamentally difficult
+phyiscal meaning of the 'collective coordinates' is a fundamentally difficult
 problem. The time complexity of the diffusion map is O(N^3), where N is the
-number of frames in the trajectory, and the storage complexity is O(N^3).
+number of frames in the trajectory, and the storage complexity is O(N^2).
 Instead of a single trajectory a sample of protein structures
 can be used. The sample should be equiblibrated, at least locally. Different
 weights can be used to determine the anisotropy of the diffusion kernel.
@@ -41,7 +42,8 @@ The motivation for the creation of an anisotropic kernel is given on page 14 of
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
-More details about diffusion maps are in [Lafon1]_ , [Ferguson1], and [Clementi1]_.
+More details about diffusion maps are in [Lafon1]_ , [Ferguson1]_, and
+[Clementi1]_.
 
 .. _Diffusion-Map-tutorial:
 
@@ -68,16 +70,29 @@ that trajectory using :class:`DiffusionMap`:: and get the corresponding
 eigenvalues and eigenvectors.
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
-   >>> d_matrix = DistanceMatrix(u)
-   >>> dmap = diffusionmap.DiffusionMap(dist_matrix)
-   >>> dmap.run()
+   >>> dist_matrix = DistanceMatrix(u)
+
+We leave determination of the appropriate scale parameter epsilon to the user,
+[Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
+trajectory frame, whereas others simple use a trial-and-error approach with
+a constant epsilon. For those users, a
+`~MDAnalysis.analysis.diffusionmap.EpsilonConstant` class has been provided.
+Any user choosing to write their own Epsilon class must write a class that
+inherits from `~MDAnalysis.analysis.diffusionmap.Epsilon`, and call the
+`determine_epsilon` function required by the API before running the diffusion
+map.
+
+   >>> epsilon_matrix = EpsilonConstant(DistanceMatrix, 500)
+   >>> epsilon_matrix.determine_epsilon()
+   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilon_matrix)
+   >>> dmap.decompose_kernel()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
 
 From here we can perform an embedding onto the k dominant eigenvectors.
 
-   >>> ts_one = u.trajectory[0]
-   >>> params_on_frame = dmap.embedding(ts_one)
+   >>>
+   >>> params_on_frame = dmap.transform(ts_one)
 
 This is calculated from an ad hoc determination of the spectral gap, if a more
 rigorous investigation of the data is expected, you should probably do this on
@@ -197,7 +212,7 @@ class DistanceMatrix(AnalysisBase):
             # distance squared in preparation for kernel calculation
             # don't think this will come up in other areas, but might be
             # a fix we should make later
-            self.dist_matrix[traj_index, j] = dist**2 if dist > self._cutoff else 0
+            self.dist_matrix[traj_index, j] = dist if dist > self._cutoff else 0
             self.dist_matrix[j, traj_index] = self.dist_matrix[traj_index, j]
 
     def save(self, filename):
@@ -256,8 +271,8 @@ class DiffusionMap(AnalysisBase):
         Eigenvalues of the diffusion map
     eigenvectors: array
         Eigenvectors of the diffusion map
-    embedding : array
-        After calling `embedding(num_eigenvectors)` the diffusion map embedding
+    fit : array
+        After calling `transform(num_eigenvectors)` the diffusion map embedding
         into the lower dimensional diffusion space will exist here.
 
     Methods
@@ -270,7 +285,7 @@ class DiffusionMap(AnalysisBase):
         Retrieve a guess for the set of eigenvectors reflecting the intrinsic
         dimensionality of the molecular system.
 
-    embedding(num_eigenvectors)
+    transform(num_eigenvectors)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
     """
@@ -311,8 +326,6 @@ class DiffusionMap(AnalysisBase):
                                      np.mean(weights))
 
     def decompose_kernel(self):
-        self._epsilon.determine_epsilon()
-
         # this should be a reference to the same object as
         # self.DistanceMatrix.dist_matrix
         self._kernel = self._epsilon.scaledMatrix
@@ -356,7 +369,7 @@ class DiffusionMap(AnalysisBase):
         pass
 
     def _prepare(self):
-        self.embedded = np.zeros((self.eigenvectors.shape[0],
+        self.fit = np.zeros((self.eigenvectors.shape[0],
                                   self.num_eigenvectors))
 
     def _single_frame(self):
@@ -364,9 +377,9 @@ class DiffusionMap(AnalysisBase):
         # data matrix and maps it to each of the ith coordinates
         # in the set of k-dominant eigenvectors
         for k in range(self.num_eigenvectors):
-            self.embedded[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
+            self.fit[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
 
-    def embedding(self, num_eigenvectors):
+    def transform(self, num_eigenvectors):
         """ Embeds a trajectory via the diffusion map
 
         Parameter
@@ -382,4 +395,4 @@ class DiffusionMap(AnalysisBase):
 
 
         self.run()
-        return self.embedded
+        return self.fit
