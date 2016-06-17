@@ -256,14 +256,21 @@ class DiffusionMap(AnalysisBase):
         Eigenvalues of the diffusion map
     eigenvectors: array
         Eigenvectors of the diffusion map
+    embedding : array
+        After calling `embedding(num_eigenvectors)` the diffusion map embedding
+        into the lower dimensional diffusion space will exist here.
 
     Methods
     -------
+    decompose_kernel()
+        Constructs an anisotropic diffusion kernel and performs eigenvalue
+        decomposition on it.
+
     spectral_gap()
         Retrieve a guess for the set of eigenvectors reflecting the intrinsic
         dimensionality of the molecular system.
 
-    embedding(timestep)
+    embedding(num_eigenvectors)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
     """
@@ -306,8 +313,8 @@ class DiffusionMap(AnalysisBase):
     def decompose_kernel(self):
         self._epsilon.determine_epsilon()
 
-        # DistanceMatrix.dist_matrix
         # this should be a reference to the same object as
+        # self.DistanceMatrix.dist_matrix
         self._kernel = self._epsilon.scaledMatrix
 
         # take negative exponent of scaled matrix to create Isotropic kernel
@@ -333,7 +340,7 @@ class DiffusionMap(AnalysisBase):
         # Define anisotropic transition by dividing kernel by this term
         self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
-        # Apply timescaling, HELP, I think I'm pythoning wrong
+        # Apply timescaling
         for i in range(self._t):
             if i > 1:
                 self._kernel.__matmul__(self._kernel)
@@ -353,9 +360,9 @@ class DiffusionMap(AnalysisBase):
                                   self.num_eigenvectors))
 
     def _single_frame(self):
-        # The diffusion map embedding takes the ith sample in you
+        # The diffusion map embedding takes the ith sample in the
         # data matrix and maps it to each of the ith coordinates
-        # in your set of k dominant eigenvectors
+        # in the set of k-dominant eigenvectors
         for k in range(self.num_eigenvectors):
             self.embedded[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
 
@@ -373,11 +380,6 @@ class DiffusionMap(AnalysisBase):
                            self.DistanceMatrix.start, self.DistanceMatrix.stop,
                            self.DistanceMatrix.step)
 
-        logger.info('debugging DELETE: nframes: {0}'.format(self.nframes))
-        logger.info('start: {0}'.format(self.start))
-        logger.info('stop: {0}'.format(self.stop))
-        logger.info('step: {0}'.format(self.step))
-        logger.info('traj: {0}'.format(self._trajectory))
 
         self.run()
         return self.embedded
