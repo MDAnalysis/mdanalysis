@@ -196,12 +196,11 @@ class DistanceMatrix(AnalysisBase):
         self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
-        logger.info('numframes {0}'.format(self.nframes))
         self.dist_matrix = np.zeros((self.nframes, self.nframes))
         self._i = -1
+
     def _single_frame(self):
         self._i = self._i + 1
-        logger.info('i : {0}'.format(self._i))
         i_ref = self.atoms.positions - self.atoms.center_of_mass()
 
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
@@ -217,9 +216,7 @@ class DistanceMatrix(AnalysisBase):
                 dist = self._metric(i_ref, j_ref, weights=self._weights)
                 self.dist_matrix[self._i, j] = dist if dist > self._cutoff else 0
                 self.dist_matrix[j, self._i] = self.dist_matrix[self._i, j]
-        logger.info('i: {0}'.format(self._i))
         self._ts = self._u.trajectory.ts
-        logger.info('self._ts.frame : {0}'.format(self._ts.frame))
 
     def save(self, filename):
         np.savetxt(filename, self.dist_matrix)
@@ -398,7 +395,5 @@ class DiffusionMap(AnalysisBase):
         self._setup_frames(self.DistanceMatrix._trajectory,
                            self.DistanceMatrix.start, self.DistanceMatrix.stop,
                            self.DistanceMatrix.step)
-
-
         self.run()
         return self.fit
