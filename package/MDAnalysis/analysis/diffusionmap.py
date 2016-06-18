@@ -26,14 +26,14 @@ The module contains the non-linear dimension reduction method diffusion map.
 The diffusion map provides an estimate of the slowest collective
 coordinates for a trajectory. This non-linear dimension reduction method
 assumes that the trajectory is long enough to represent a probability
-distribution of as protein close to the equilibrium. Furthermore, the diffusion
-map assumes that the diffusion coefficients  associated with the dynamical
+distribution of a protein close to the equilibrium. Furthermore, the diffusion
+map assumes that the diffusion coefficients associated with the dynamical
 motion of molecules in the system are constant. The eigenvectors with
 the largest eigenvalues are the more dominant collective coordinates. Assigning
 phyiscal meaning of the 'collective coordinates' is a fundamentally difficult
 problem. The time complexity of the diffusion map is O(N^3), where N is the
-number of frames in the trajectory, and the storage complexity is O(N^2).
-Instead of a single trajectory a sample of protein structures
+number of frames in the trajectory, and the in-memory storage complexity is
+O(N^2). Instead of a single trajectory a sample of protein structures
 can be used. The sample should be equiblibrated, at least locally. Different
 weights can be used to determine the anisotropy of the diffusion kernel.
 The motivation for the creation of an anisotropic kernel is given on page 14 of
@@ -89,14 +89,24 @@ map.
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
 
-From here we can perform an embedding onto the k dominant eigenvectors.
+From here we can perform an embedding onto the k dominant eigenvectors. This
+is similar to the idea of a transform in Principal Component Analysis, but the
+non-linearity of the map means there is no explicit relationship between the
+lower dimensional space and our original trajectory. However, this is an
+isometry (distance preserving map), which means that points close in the lower
+dimensional space are close in the higher-dimensional space and vice versa.
+In order to embed into the most relevant low-dimensional space, there should
+exist some number of dominant eigenvectors, whose corresponding eigenvalues
+diminish at a constant rate until falling off, this is referred to as a
+spectral gap and should be somewhat apparent for a system at equilibrium with a
+high number of frames.
 
-   >>>
-   >>> params_on_frame = dmap.transform(ts_one)
+   >>> num_dominant_eigenvectors = # some number less than the number of frames
+   >>> fit = dmap.transform(num_dominant_eigenvectors)
 
-This is calculated from an ad hoc determination of the spectral gap, if a more
-rigorous investigation of the data is expected, you should probably do this on
-your own.
+From here it can be difficult to interpret the data, and is left as a task
+for the user. The `diffusion distance` between frames i and j is best
+approximated by the euclidean distance  between rows i and j of self.fit.
 
 Classes
 -------
@@ -120,7 +130,8 @@ diffusion map. Journal of Chemical Physics.
 
 .. If you choose the default metric, this module uses the fast QCP algorithm
 [Theobald2005]_ to calculate the root mean square distance (RMSD) between
-two coordinate sets (as implemented in :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
+two coordinate sets (as implemented
+in :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
 When using this module in published work please cite [Theobald2005]_.
 
 
@@ -388,8 +399,16 @@ class DiffusionMap(AnalysisBase):
         Parameter
         ---------
         num_eigenvectors : int
-            The number of dominant eigenvectors to be used for diffusion mapping
+            The number of dominant eigenvectors to be used for
+            diffusion mapping
 
+        Return
+        ------
+        fit : array
+            The diffusion map embedding as defined by [Ferguson1]_.
+            This isn't a linear transformation, but an isometry
+            between the higher dimensional space and the space spanned by
+            the eigenvectors.
         """
         self.num_eigenvectors = num_eigenvectors
         self._setup_frames(self.DistanceMatrix._trajectory,
