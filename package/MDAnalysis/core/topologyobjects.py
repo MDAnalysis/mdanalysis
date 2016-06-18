@@ -47,7 +47,7 @@ class TopologyObject(object):
     .. versionadded:: 0.11.0
        Added the `value` method to return the size of the object
     """
-    __slots__ = ("_ix", "_u", "btype")
+    __slots__ = ("_ix", "_u", "btype", "_bondtype")
 
     def __init__(self, ix, universe, type=None):
         """Create a topology object
@@ -651,7 +651,8 @@ class TopologyGroup(object):
                 return TopologyGroup(other.indices[None, :],
                                      other.universe,
                                      other.btype,
-                                     other._bondtypes[None, :])
+                                     np.array([other._bondtype])
+                )
             else:
                 return TopologyGroup(other.indices,
                                      other.universe,
@@ -667,7 +668,9 @@ class TopologyGroup(object):
                 np.concatenate([self.indices, other.indices[None, :]]),
                 self.universe,
                 self.btype,
-                np.concatenate([self._bondtypes, other._bondtypes[None, :]]))
+                np.concatenate([self._bondtypes,
+                                np.array([other._bondtype])])
+                )
 
         # add TG to me
         if self.btype != other.btype:
