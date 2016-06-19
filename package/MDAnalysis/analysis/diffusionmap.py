@@ -140,7 +140,6 @@ from six.moves import range
 import logging
 
 import numpy as np
-
 from MDAnalysis.analysis import rms
 
 from .base import AnalysisBase
@@ -212,22 +211,23 @@ class DistanceMatrix(AnalysisBase):
 
     def _single_frame(self):
         self._i = self._i + 1
+        iframe = self._ts.frame
         i_ref = self.atoms.positions - self.atoms.center_of_mass()
-
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._u.trajectory[self._i:self.stop:self.step]):
-            if self._i == j:
-                self.dist_matrix[self._i, self._i] = 0
-            else:
-                logger.info('j : {0}'.format(j))
-                self._ts = ts
-                j_ref = self.atoms.positions-self.atoms.center_of_mass()
-                dist = self._metric(i_ref, j_ref, weights=self._weights)
-                self.dist_matrix[self._i, j] = dist if dist > self._cutoff else 0
-                self.dist_matrix[j, self._i] = self.dist_matrix[self._i, j]
-        self._ts = self._u.trajectory.ts
+        for j, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+            self._ts = ts
+            if self._ts.frame >= iframe:
+                if self._i == j:
+                    self.dist_matrix[self._i, self._i] = 0
+                else:
+                    j_ref = self.atoms.positions-self.atoms.center_of_mass()
+                    dist = self._metric(i_ref, j_ref, weights=self._weights)
+                    self.dist_matrix[self._i, j] = (dist if dist > self._cutoff
+                                                    else 0)
+                    self.dist_matrix[j, self._i] = self.dist_matrix[self._i, j]
+        self._ts = self._u.trajectory[iframe]
 
     def save(self, filename):
         np.savetxt(filename, self.dist_matrix)
@@ -379,7 +379,10 @@ class DiffusionMap(AnalysisBase):
         self.eigenvectors = eigenvectors[eg_arg[::-1], :]
 
     def spectral_gap(self):
-        # TODO
+        """An ad hoc method to determine the spectral
+            gap in a set of eigenvalues
+
+        """
         pass
 
     def _prepare(self):
