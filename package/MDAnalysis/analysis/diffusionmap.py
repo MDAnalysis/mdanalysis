@@ -378,16 +378,9 @@ class DiffusionMap(AnalysisBase):
         self.eigenvalues = eigenvals[eg_arg[::-1]]
         self.eigenvectors = eigenvectors[eg_arg[::-1], :]
 
-    def spectral_gap(self):
-        """An ad hoc method to determine the spectral
-            gap in a set of eigenvalues
-
-        """
-        pass
-
     def _prepare(self):
         self.fit = np.zeros((self.eigenvectors.shape[0],
-                                  self.num_eigenvectors))
+                             self.num_eigenvectors))
 
     def _single_frame(self):
         # The diffusion map embedding takes the ith sample in the
