@@ -69,9 +69,10 @@ class TestDiffusionmap(object):
     def test_wrong_weights(self):
         dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon,
                                           weights=np.ones((2,)))
+                                          
     def test_timescaling(self):
         dmap = diffusionmap.DiffusionMap(self.dist, self.epsilon,
-                                          timescale=2)
+                                         timescale=2)
         dmap.decompose_kernel()
         assert_equal(dmap.eigenvalues.shape, (self.dist.nframes, ))
         # makes no sense to test values here, no physical meaning

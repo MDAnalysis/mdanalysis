@@ -158,7 +158,8 @@ class DistanceMatrix(AnalysisBase):
     dist_matrix : array
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
-
+    calculated : boolean
+        Boolean indicating if the distance matrix has been calculated.
     Methods
     -------
     save(filename)
@@ -202,6 +203,7 @@ class DistanceMatrix(AnalysisBase):
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
+        self.calculated = False
         # remember that this must be called before referencing self.nframes
         self._setup_frames(traj, start, stop, step)
 
@@ -229,8 +231,11 @@ class DistanceMatrix(AnalysisBase):
                     self.dist_matrix[j, self._i] = self.dist_matrix[self._i, j]
         self._ts = self._u.trajectory[iframe]
 
+    def _conclude(self):
+        self.calculated = true
+        
     def save(self, filename):
-        np.savetxt(filename, self.dist_matrix)
+        np.save(filename, self.dist_matrix)
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 
 
@@ -239,9 +244,10 @@ class Epsilon(object):
 
     Attributes
     ----------
-    scaledMatrix : DistanceMatrix object
+    scaled_matrix : DistanceMatrix object
         A matrix with each term divided by a local scale parameter
-
+    calculated : boolean
+        True after determine epsilon called
     Methods
     -------
     determineEpsilon()
@@ -265,11 +271,13 @@ class EpsilonConstant(Epsilon):
         epsilon : int
             The value of epsilon to be used as a local scale parameter
         """
-        self.scaledMatrix = DistanceMatrix.dist_matrix
+        self.scaled_matrix = DistanceMatrix.dist_matrix
         self._epsilon = epsilon
+        self.calculated = False
 
     def determine_epsilon(self):
         self.scaledMatrix /= self._epsilon
+        self.calculated = True
         return
 
 
@@ -285,7 +293,7 @@ class DiffusionMap(AnalysisBase):
         Eigenvalues of the diffusion map
     eigenvectors: array
         Eigenvectors of the diffusion map
-    fit : array
+    diffusion_space : array
         After calling `transform(num_eigenvectors)` the diffusion map embedding
         into the lower dimensional diffusion space will exist here.
 
@@ -294,11 +302,6 @@ class DiffusionMap(AnalysisBase):
     decompose_kernel()
         Constructs an anisotropic diffusion kernel and performs eigenvalue
         decomposition on it.
-
-    spectral_gap()
-        Retrieve a guess for the set of eigenvectors reflecting the intrinsic
-        dimensionality of the molecular system.
-
     transform(num_eigenvectors)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
@@ -322,8 +325,8 @@ class DiffusionMap(AnalysisBase):
             The number of steps in the random walk, large t reflects global
             structure whereas small t indicates local structure.
         """
-        self.DistanceMatrix = DistanceMatrix
-        self._nframes = DistanceMatrix.nframes
+        self.dist_matrix = DistanceMatrix
+        self._nframes = self.dist_matrix.nframes
         self._t = timescale
         self._epsilon = epsilon
 
@@ -341,8 +344,13 @@ class DiffusionMap(AnalysisBase):
 
     def decompose_kernel(self):
         # this should be a reference to the same object as
-        # self.DistanceMatrix.dist_matrix
-        self._kernel = self._epsilon.scaledMatrix
+        # self.dist_matrix.dist_matrix
+        # check determine_epsilon called
+        if self._epsilon.calculated:
+            self._kernel = self._epsilon.scaled_matrix
+        else:
+            raise AttributeError('scaled_matrix does not exist, was'
+                                 'determine_epsilon called?')
 
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._kernel)
@@ -369,8 +377,8 @@ class DiffusionMap(AnalysisBase):
 
         # Apply timescaling
         for i in range(self._t):
-            if i > 1:
-                self._kernel.__matmul__(self._kernel)
+            if i > 0:
+                self._kernel = self._kernel.dot(self._kernel)
 
         eigenvals, eigenvectors = np.linalg.eig(self._kernel)
 
@@ -387,7 +395,7 @@ class DiffusionMap(AnalysisBase):
         # data matrix and maps it to each of the ith coordinates
         # in the set of k-dominant eigenvectors
         for k in range(self.num_eigenvectors):
-            self.fit[self._ts.frame][k] = self.eigenvectors[k][self._ts.frame]
+            self.fit[self._index][k] = self.eigenvectors[k][self._index]
 
     def transform(self, num_eigenvectors):
         """ Embeds a trajectory via the diffusion map
@@ -407,8 +415,8 @@ class DiffusionMap(AnalysisBase):
             the eigenvectors.
         """
         self.num_eigenvectors = num_eigenvectors
-        self._setup_frames(self.DistanceMatrix._trajectory,
-                           self.DistanceMatrix.start, self.DistanceMatrix.stop,
-                           self.DistanceMatrix.step)
+        self._setup_frames(self.dist_matrix._u.trajectory,
+                           self.dist_matrix.start, self.dist_matrix.stop,
+                           self.dist_matrix.step)
         self.run()
         return self.fit
