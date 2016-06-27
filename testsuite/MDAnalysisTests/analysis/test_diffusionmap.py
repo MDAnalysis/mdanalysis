@@ -88,5 +88,6 @@ class TestDiffusionmap(object):
     def test_transform(self):
         self.num_eigenvectors = 4
         self.dmap.transform(self.num_eigenvectors)
-        assert_equal(self.dmap.fit.shape, (self.eigvects.shape[0],
+        assert_equal(self.dmap.diffusion_space.shape, 
+                    (self.eigvects.shape[0],
                      self.num_eigenvectors))
