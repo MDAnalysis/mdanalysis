@@ -141,6 +141,7 @@ When using this module in published work please cite [Theobald2005]_.
 from six.moves import range
 import logging
 
+import MDAnalysis as mda
 import numpy as np
 
 from .rms import rmsd
@@ -235,57 +236,6 @@ class DistanceMatrix(AnalysisBase):
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 
 
-class Epsilon(object):
-    """Manipulates a distance matrix by local scale parameters
-
-    Attributes
-    ----------
-    scaled_matrix : numpy array
-        A matrix with each term divided by a local scale parameter
-
-    Methods
-    -------
-    determine_epsilon()
-        Determine local scale parameters using a chosen algorithm
-    """
-    def __init__(self, dist_matrix):
-        if dist_matrix._calculated:
-            # the DistanceMatrix object
-            self.dist_matrix = dist_matrix
-            # the actual numpy array containing the data
-            self.scaled_matrix = dist_matrix.dist_matrix
-        else:
-            raise AttributeError('Distance Matrix does not exist, was'
-                                 'DistanceMatrix.run() called?')
-        self._calculated = False
-
-    def determine_epsilon(self):
-        # set self.calculated = True here
-        pass
-
-
-class EpsilonConstant(Epsilon):
-    """Premade function for the determination of epsilon based on providing
-    an arbitrary constant"""
-
-    def __init__(self, dist_matrix, epsilon):
-        """
-        Parameters
-        ----------
-        epsilon : int
-            The value of epsilon to be used as a local scale parameter
-        """
-        Epsilon.__init__(self, dist_matrix)
-        self._epsilon = epsilon
-
-    def determine_epsilon(self):
-        # set self.calculated = True here
-        if not self._calculated:
-            self.scaled_matrix /= self._epsilon
-            self._calculated = True
-        return
-
-
 class DiffusionMap(object):
     """Non-linear dimension reduction method
 
@@ -312,18 +262,19 @@ class DiffusionMap(object):
         the collective coordinates.
     """
 
-    def __init__(self, dist_matrix, epsilon=1, manifold_density=None, timescale=1):
+    def __init__(self, u, epsilon=1, manifold_density=None,
+                 timescale=1, **kwargs):
         """
         Parameters
         -------------
-        dist_matrix : DistanceMatrix object
-            Distance matrix to be made into a diffusion kernel and perform
-            an eigenvector decomposition on.
-        epsilon : Float or Epsilon object
+        u : MDAnalysis Universe or DistanceMatrix object
+            Can be a Universe, in which case one must supply kwargs for the
+            initialization of a DistanceMatrix. Otherwise, this can be a
+            DistanceMatrix already initialized. Either way, this will be made
+            into a diffusion kernel.
+        epsilon : Float
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [1], [2] and [3]. If a float
-            is given, this will be the scale parameter used for
-            the kernel.
+            diffusion map. More information in [1], [2] and [3].
         manifold_density: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the
@@ -332,12 +283,13 @@ class DiffusionMap(object):
             The number of steps in the random walk, large t reflects global
             structure whereas small t indicates local structure.
         """
-        # .run() called in _prepare
-        self._dist_matrix = dist_matrix
-        # because we check for .run() in Epsilon class, we must be sure to call
-        # dist_matrix.run() before determine_epsilon, if a user wishes to
-        # provide their  own epsilon class, dist_matrix.run() must be run
-        # prior to Diffusion Map initilization
+        if isinstance(u, mda.Universe):
+            self._dist_matrix = DistanceMatrix(u, kwargs)
+        elif isinstance(u, DistanceMatrix):
+            self._dist_matrix = u
+        else:
+            raise ValueError("U is not a Universe or DistanceMatrix and"
+                             " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
         # important for transform function
         self._nframes = self._dist_matrix.nframes
@@ -348,28 +300,23 @@ class DiffusionMap(object):
             # weights do not apply to metric but density of data
             self._weights_ker = np.ones((self._nframes,))
         else:
-            if weights.shape[0] != self._nframes:
+            if manifold_density.shape[0] != self._nframes:
                 raise ValueError("The weight should have the same length as "
                                  'the trajectory')
             else:
                 # density weights are constructed as relative to the mean
-                self._weights_ker = (np.asarray(weights, dtype=np.float64) /
-                                     np.mean(weights))
+                self._weights_ker = (np.asarray(manifold_density,
+                                     dtype=np.float64) /
+                                     np.mean(manifold_density))
 
     def run(self):
         # will only run if distance matrix not already calculated
         self._dist_matrix.run()
-        # this is the case when user provides no Epsilon class
-        if isinstance(self._epsilon, float) or isinstance(self._epsilon, int):
-            self._epsilon = EpsilonConstant(self._dist_matrix,
-                                            self._epsilon)
-
-        self._epsilon.determine_epsilon()
+        self._scaled_matrix = self._dist_matrix.dist_matrix / self._epsilon
         # this should be a reference to the same object as
         # self.dist_matrix.dist_matrix
         # take negative exponent of scaled matrix to create Isotropic kernel
-        self._kernel = np.exp(-self._epsilon.scaled_matrix)
-
+        self._kernel = np.exp(-self._scaled_matrix)
         # define an anistropic diffusion term q
         q_vector = np.zeros((self._nframes, ))
         # weights should reflect the density of the points on the manifold
@@ -422,7 +369,7 @@ class DiffusionMap(object):
         self.diffusion_space = np.zeros((self.eigenvectors.shape[0],
                                          num_eigenvectors))
 
-        for i in range(self.nframes):
+        for i in range(self._nframes):
             for j in range(num_eigenvectors):
                 self.diffusion_space[i][j] = self.eigenvectors[j][i]
 
