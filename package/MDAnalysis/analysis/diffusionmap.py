@@ -160,8 +160,7 @@ class DistanceMatrix(AnalysisBase):
     dist_matrix : array
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
-    calculated : boolean
-        Boolean indicating if the distance matrix has been calculated.
+
     Methods
     -------
     save(filename)
@@ -205,7 +204,7 @@ class DistanceMatrix(AnalysisBase):
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
-        self.calculated = False
+        self._calculated = False
         # remember that this must be called before referencing self.nframes
         self._setup_frames(traj, start, stop, step)
 
@@ -214,23 +213,22 @@ class DistanceMatrix(AnalysisBase):
 
     def _single_frame(self):
         iframe = self._ts.frame
-        i_ref = self.atoms.positions - self.atoms.center_of_mass()
+        i_ref = self.atoms.positions
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
         for j, ts in enumerate(self._u.trajectory[iframe:self.stop:self.step]):
             self._ts = ts
-            j_ref = self.atoms.positions-self.atoms.center_of_mass()
+            j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.dist_matrix[self._index, j+self._index] = (dist if dist >
-                                                            self._cutoff else 0)
-            self.dist_matrix[j+self._index, self._index] = (self.dist_matrix[
-                                                            self._index,
-                                                            j+self._index])
+            self.dist_matrix[self._frame_index, j+self._frame_index] = (
+                dist if dist > self._cutoff else 0)
+            self.dist_matrix[j+self._frame_index, self._frame_index] = (
+                self.dist_matrix[self._frame_index, j+self._frame_index])
         self._ts = self._u.trajectory[iframe]
 
     def _conclude(self):
-        self.calculated = True
+        self._calculated = True
 
     def save(self, filename):
         np.save(filename, self.dist_matrix)
@@ -242,19 +240,27 @@ class Epsilon(object):
 
     Attributes
     ----------
-    scaled_matrix : DistanceMatrix object
+    scaled_matrix : numpy array
         A matrix with each term divided by a local scale parameter
-    calculated : boolean
-        True after determine epsilon called
+
     Methods
     -------
     determine_epsilon()
         Determine local scale parameters using a chosen algorithm
     """
-    def __init__(self, DistanceMatrix, **kwargs):
-        self._dist_matrix = DistMatrix
+    def __init__(self, dist_matrix):
+        if dist_matrix._calculated:
+            # the DistanceMatrix object
+            self.dist_matrix = dist_matrix
+            # the actual numpy array containing the data
+            self.scaled_matrix = dist_matrix.dist_matrix
+        else:
+            raise AttributeError('Distance Matrix does not exist, was'
+                                 'DistanceMatrix.run() called?')
+        self._calculated = False
 
     def determine_epsilon(self):
+        # set self.calculated = True here
         pass
 
 
@@ -262,29 +268,25 @@ class EpsilonConstant(Epsilon):
     """Premade function for the determination of epsilon based on providing
     an arbitrary constant"""
 
-    def __init__(self, DistanceMatrix, epsilon):
+    def __init__(self, dist_matrix, epsilon):
         """
         Parameters
         ----------
         epsilon : int
             The value of epsilon to be used as a local scale parameter
         """
-        if DistanceMatrix.calculated:
-            self.scaled_matrix = DistanceMatrix.dist_matrix
-        else:
-            raise AttributeError('Distance Matrix does not exist, was'
-                                 'DistanceMatrix.run() called?')
-
+        Epsilon.__init__(self, dist_matrix)
         self._epsilon = epsilon
-        self.calculated = False
 
     def determine_epsilon(self):
-        self.scaled_matrix /= self._epsilon
-        self.calculated = True
+        # set self.calculated = True here
+        if not self._calculated:
+            self.scaled_matrix /= self._epsilon
+            self._calculated = True
         return
 
 
-class DiffusionMap(AnalysisBase):
+class DiffusionMap(object):
     """Non-linear dimension reduction method
 
     Dimension reduction with diffusion mapping of selected structures in a
@@ -310,17 +312,19 @@ class DiffusionMap(AnalysisBase):
         the collective coordinates.
     """
 
-    def __init__(self, DistanceMatrix, Epsilon, weights=None, timescale=1):
+    def __init__(self, dist_matrix, epsilon=1, manifold_density=None, timescale=1):
         """
         Parameters
         -------------
-        DistanceMatrix : DistanceMatrix object
+        dist_matrix : DistanceMatrix object
             Distance matrix to be made into a diffusion kernel and perform
             an eigenvector decomposition on.
-        Epsilon : Epsilon object
+        epsilon : Float or Epsilon object
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [1], [2] and [3].
-        weights: list, optional
+            diffusion map. More information in [1], [2] and [3]. If a float
+            is given, this will be the scale parameter used for
+            the kernel.
+        manifold_density: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the
             same.
@@ -328,25 +332,19 @@ class DiffusionMap(AnalysisBase):
             The number of steps in the random walk, large t reflects global
             structure whereas small t indicates local structure.
         """
-        # check .run() called
-        if DistanceMatrix.calculated:
-            self._dist_matrix = DistanceMatrix
-        else:
-            raise AttributeError('Distance Matrix does not exist, was'
-                                 'DistanceMatrix.run() called?')
-
+        # .run() called in _prepare
+        self._dist_matrix = dist_matrix
+        # because we check for .run() in Epsilon class, we must be sure to call
+        # dist_matrix.run() before determine_epsilon, if a user wishes to
+        # provide their  own epsilon class, dist_matrix.run() must be run
+        # prior to Diffusion Map initilization
+        self._epsilon = epsilon
+        # important for transform function
         self._nframes = self._dist_matrix.nframes
+        # determines length of diffusion process
         self._t = timescale
 
-        # check determine_epsilon called
-        if Epsilon.calculated:
-            self._kernel = Epsilon.scaled_matrix
-        else:
-            raise AttributeError('scaled_matrix does not exist, was'
-                                 'determine_epsilon() called?')
-        self._epsilon = Epsilon
-
-        if weights is None:
+        if manifold_density is None:
             # weights do not apply to metric but density of data
             self._weights_ker = np.ones((self._nframes,))
         else:
@@ -354,15 +352,23 @@ class DiffusionMap(AnalysisBase):
                 raise ValueError("The weight should have the same length as "
                                  'the trajectory')
             else:
-                # weights are constructed as relative to the mean
+                # density weights are constructed as relative to the mean
                 self._weights_ker = (np.asarray(weights, dtype=np.float64) /
                                      np.mean(weights))
 
-    def decompose_kernel(self):
+    def run(self):
+        # will only run if distance matrix not already calculated
+        self._dist_matrix.run()
+        # this is the case when user provides no Epsilon class
+        if isinstance(self._epsilon, float) or isinstance(self._epsilon, int):
+            self._epsilon = EpsilonConstant(self._dist_matrix,
+                                            self._epsilon)
+
+        self._epsilon.determine_epsilon()
         # this should be a reference to the same object as
         # self.dist_matrix.dist_matrix
         # take negative exponent of scaled matrix to create Isotropic kernel
-        self._kernel = np.exp(-self._kernel)
+        self._kernel = np.exp(-self._epsilon.scaled_matrix)
 
         # define an anistropic diffusion term q
         q_vector = np.zeros((self._nframes, ))
@@ -394,18 +400,7 @@ class DiffusionMap(AnalysisBase):
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
         self.eigenvectors = eigenvectors[eg_arg[::-1], :]
-
-    def _prepare(self):
-        self.diffusion_space = np.zeros((self.eigenvectors.shape[0],
-                                         self.num_eigenvectors))
-
-    def _single_frame(self):
-        # The diffusion map embedding takes the ith sample in the
-        # data matrix and maps it to each of the ith coordinates
-        # in the set of k-dominant eigenvectors
-        for k in range(self.num_eigenvectors):
-            self.diffusion_space[self._index][k] = (self.eigenvectors[k][
-                                                   self._index])
+        self._calculated = True
 
     def transform(self, num_eigenvectors):
         """ Embeds a trajectory via the diffusion map
@@ -424,9 +419,11 @@ class DiffusionMap(AnalysisBase):
             between the higher dimensional space and the space spanned by
             the eigenvectors.
         """
-        self.num_eigenvectors = num_eigenvectors
-        self._setup_frames(self._dist_matrix._u.trajectory,
-                           self._dist_matrix.start, self._dist_matrix.stop,
-                           self._dist_matrix.step)
-        self.run()
+        self.diffusion_space = np.zeros((self.eigenvectors.shape[0],
+                                         num_eigenvectors))
+
+        for i in range(self.nframes):
+            for j in range(num_eigenvectors):
+                self.diffusion_space[i][j] = self.eigenvectors[j][i]
+
         return self.diffusion_space
