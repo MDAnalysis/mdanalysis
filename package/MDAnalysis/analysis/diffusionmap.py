@@ -288,7 +288,15 @@ class DiffusionMap(object):
             DistanceMatrix, Default: False
         """
         if isinstance(u, mda.Universe):
-            self._dist_matrix = DistanceMatrix(u, kwargs)
+            select = kwargs.get('select', "all")
+            metric = kwargs.get('metric', rmsd)
+            cutoff = kwargs.get('cutoff', 1E0-5)
+            weights = kwargs.get('weights')
+            start = kwargs.get('start')
+            stop = kwargs.get('stop')
+            step = kwargs.get('step')
+            self._dist_matrix = DistanceMatrix(u,select, metric, cutoff,
+                                               weights, start, stop, step)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
@@ -298,9 +306,9 @@ class DiffusionMap(object):
         # important for transform function and length of .run() method
         self._nframes = self._dist_matrix.nframes
         if self._nframes > 2000 and not force:
-            raise ValueError("The distance matrix is very large, and can"
+            raise ValueError("The distance matrix is very large, and can "
                              "be slow and even possibly crash a PC, set force="
-                             " True to override this exception.")
+                             "True to override this exception.")
 
         # determines length of diffusion process
         self._t = timescale
@@ -351,9 +359,12 @@ class DiffusionMap(object):
             if i > 0:
                 self._kernel = self._kernel.dot(self._kernel)
 
-        self.eigenvalues, self.eigenvectors = np.linalg.eig(self._kernel)
-        self.eigenvalues = self.eigenvalues[:1]
-        self.eigenvectors = self.eigenvectors[:1]
+        eigenvals, eigenvectors = np.linalg.eig(self._kernel)
+        eg_arg = np.argsort(eigenvals)
+        self.eigenvalues = eigenvals[eg_arg[::-1]]
+        self.eigenvalues = self.eigenvalues[1:]
+        self.eigenvectors = eigenvectors[eg_arg[::-1], :]
+        self.eigenvectors = self.eigenvectors[1:]
         self._calculated = True
 
     def transform(self, num_eigenvectors):
@@ -376,7 +387,7 @@ class DiffusionMap(object):
         self.diffusion_space = np.zeros((self.eigenvectors.shape[0],
                                          num_eigenvectors))
 
-        for i in range(self._nframes):
+        for i in range(self._nframes-1):
             for j in range(num_eigenvectors):
                 self.diffusion_space[i][j] = self.eigenvectors[j][i]
 
