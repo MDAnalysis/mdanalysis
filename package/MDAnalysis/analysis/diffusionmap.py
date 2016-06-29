@@ -140,6 +140,7 @@ When using this module in published work please cite [Theobald2005]_.
 """
 from six.moves import range
 import logging
+import warnings
 
 import MDAnalysis as mda
 import numpy as np
@@ -263,7 +264,7 @@ class DiffusionMap(object):
     """
 
     def __init__(self, u, epsilon=1, manifold_density=None,
-                 timescale=1, **kwargs):
+                 timescale=1, force=False, **kwargs):
         """
         Parameters
         -------------
@@ -274,14 +275,17 @@ class DiffusionMap(object):
             into a diffusion kernel.
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [1], [2] and [3].
+            diffusion map. More information in [1], [2] and [3], Default: 1.
         manifold_density: list, optional
             The list has to have the same length as the trajectory.
             With 'None' the weight of each frame of the trajectory will be the
-            same.
+            same, Default : None
         timescale: int, optional
             The number of steps in the random walk, large t reflects global
-            structure whereas small t indicates local structure.
+            structure whereas small t indicates local structure, Default: 1
+        force : boolean, optional
+            A boolean to override an exception thrown for a large
+            DistanceMatrix, Default: False
         """
         if isinstance(u, mda.Universe):
             self._dist_matrix = DistanceMatrix(u, kwargs)
@@ -291,8 +295,13 @@ class DiffusionMap(object):
             raise ValueError("U is not a Universe or DistanceMatrix and"
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
-        # important for transform function
+        # important for transform function and length of .run() method
         self._nframes = self._dist_matrix.nframes
+        if self._nframes > 2000 and not force:
+            raise ValueError("The distance matrix is very large, and can"
+                             "be slow and even possibly crash a PC, set force="
+                             " True to override this exception.")
+
         # determines length of diffusion process
         self._t = timescale
 
@@ -342,11 +351,9 @@ class DiffusionMap(object):
             if i > 0:
                 self._kernel = self._kernel.dot(self._kernel)
 
-        eigenvals, eigenvectors = np.linalg.eig(self._kernel)
-
-        eg_arg = np.argsort(eigenvals)
-        self.eigenvalues = eigenvals[eg_arg[::-1]]
-        self.eigenvectors = eigenvectors[eg_arg[::-1], :]
+        self.eigenvalues, self.eigenvectors = np.linalg.eig(self._kernel)
+        self.eigenvalues = self.eigenvalues[:1]
+        self.eigenvectors = self.eigenvectors[:1]
         self._calculated = True
 
     def transform(self, num_eigenvectors):
