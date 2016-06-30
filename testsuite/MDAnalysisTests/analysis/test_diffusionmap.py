@@ -58,12 +58,6 @@ class TestDiffusionmap(object):
         dmap = diffusionmap.DiffusionMap(self.dist,
                                          manifold_density=np.ones((2,)))
 
-    @raises(ValueError)
-    def test_large_matrix_exception(self):
-        dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
-        dist.nframes = 5000
-        dmap = diffusionmap.DiffusionMap(dist)
-
     def test_timescaling(self):
         dmap = diffusionmap.DiffusionMap(self.dist, timescale=2)
         dmap.run()

@@ -109,7 +109,6 @@ Classes
 
 .. autoclass:: DiffusionMap
 .. autoclass:: DistMatrix
-.. autoclass:: Epsilon
 
 References
 ---------
@@ -230,50 +229,6 @@ class DistanceMatrix(AnalysisBase):
         np.save(filename, self.dist_matrix)
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 
-class Epsilon(object):
-    """Manipulates a distance matrix by local scale parameters
-
-    Attributes
-    ----------
-    scaled_matrix : DistanceMatrix object
-        A matrix with each term divided by a local scale parameter
-
-    Methods
-    -------
-    determine_epsilon()
-        Determine local scale parameters using a chosen algorithm
-    """
-    def __init__(self, DistanceMatrix):
-        self._dist_matrix = DistMatrix
-
-    def determine_epsilon(self):
-        pass
-
-
-class EpsilonConstant(Epsilon):
-    """Premade function for the determination of epsilon based on providing
-    an arbitrary constant"""
-
-    def __init__(self, DistanceMatrix, epsilon):
-        """
-        Parameters
-        ----------
-        epsilon : int
-        The value of epsilon to be used as a local scale parameter
-        """
-        if DistanceMatrix.calculated:
-            self.scaled_matrix = DistanceMatrix.dist_matrix
-        else:
-            raise AttributeError('Distance Matrix does not exist, was'
-                                 'DistanceMatrix.run() called?')
-
-        self._epsilon = epsilon
-        self.calculated = False
-
-    def determine_epsilon(self):
-        self.scaled_matrix /= self._epsilon
-        self.calculated = True
-        return
 
 class DiffusionMap(object):
     """Non-linear dimension reduction method
@@ -302,7 +257,7 @@ class DiffusionMap(object):
     """
 
     def __init__(self, u, epsilon=1, manifold_density=None,
-                 timescale=1, force=False, **kwargs):
+                 timescale=1, **kwargs):
         """
         Parameters
         -------------
@@ -321,20 +276,9 @@ class DiffusionMap(object):
         timescale: int, optional
             The number of steps in the random walk, large t reflects global
             structure whereas small t indicates local structure, Default: 1
-        force : boolean, optional
-            A boolean to override an exception thrown for a large
-            DistanceMatrix, Default: False
-        """
+            """
         if isinstance(u, mda.Universe):
-            select = kwargs.get('select', "all")
-            metric = kwargs.get('metric', rmsd)
-            cutoff = kwargs.get('cutoff', 1E0-5)
-            weights = kwargs.get('weights')
-            start = kwargs.get('start')
-            stop = kwargs.get('stop')
-            step = kwargs.get('step')
-            self._dist_matrix = DistanceMatrix(u,select, metric, cutoff,
-                                               weights, start, stop, step)
+            self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
@@ -343,10 +287,10 @@ class DiffusionMap(object):
         self._epsilon = epsilon
         # important for transform function and length of .run() method
         self._nframes = self._dist_matrix.nframes
-        if self._nframes > 2000 and not force:
-            raise ValueError("The distance matrix is very large, and can "
-                             "be slow and even possibly crash a PC, set force="
-                             "True to override this exception.")
+        if self._nframes > 2000:
+            warnings.warn("The distance matrix is very large, and can "
+                          "be very slow to compute. Consider picking a larger "
+                          "step size in distance matrix initialization.")
 
         # determines length of diffusion process
         self._t = timescale
@@ -422,11 +366,6 @@ class DiffusionMap(object):
             between the higher dimensional space and the space spanned by
             the eigenvectors.
         """
-        self.diffusion_space = np.zeros((self.eigenvectors.shape[0],
-                                         num_eigenvectors))
-
-        for i in range(self._nframes-1):
-            for j in range(num_eigenvectors):
-                self.diffusion_space[i][j] = self.eigenvectors[j][i]
-
+        self.diffusion_space = (self.eigenvectors.T[:,:num_eigenvectors] *
+                                self.eigenvalues[:num_eigenvectors])
         return self.diffusion_space
