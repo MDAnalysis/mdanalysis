@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de,jdetle, fiona-naughton, richardjgowers
 
-  * 0.15.1 
+  * 0.15.1
 
 Fixes
   * reading/writing lambda value in trr files (Issue #859)
@@ -24,6 +24,8 @@ Fixes
     next (Issue #869)
 
 Changes
+  * Added protected variable _frame_index to to keep track of frame iteration
+    number in AnalysisBase
   * Added new AlignTraj class for alignment that follows the new analysis API known
     as Bauhaus style.
 
