@@ -295,9 +295,9 @@ def extensions(config):
 
     include_dirs = [get_numpy_include]
 
-    dcd = MDAExtension('coordinates._dcdmodule',
-                       ['MDAnalysis/coordinates/src/dcd.c'],
-                       include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+    dcd = MDAExtension('lib.formats.libdcd',
+                       ['MDAnalysis/lib/formats/libdcd' + source_suffix],
+                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                        define_macros=define_macros,
                        extra_compile_args=extra_compile_args)
     distances = MDAExtension('lib.c_distances',
@@ -356,6 +356,8 @@ def extensions(config):
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred]
 
+    pre_exts = [dcd, distances, distances_omp, qcprot,
+                  transformation, libmdaxdr, util]
     cython_generated = []
     if use_cython:
         extensions = cythonize(pre_exts)
