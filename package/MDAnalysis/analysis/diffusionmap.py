@@ -70,23 +70,16 @@ that trajectory using :class:`DiffusionMap`:: and get the corresponding
 eigenvalues and eigenvectors.
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
-   >>> dist_matrix = DistanceMatrix(u)
-   >>> dist_matrix.run()
 
 We leave determination of the appropriate scale parameter epsilon to the user,
 [Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
 trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. For those users, a
-`~MDAnalysis.analysis.diffusionmap.EpsilonConstant` class has been provided.
-Any user choosing to write their own Epsilon class must write a class that
-inherits from `~MDAnalysis.analysis.diffusionmap.Epsilon`, and call the
-`determine_epsilon` function required by the API before running the diffusion
-map.
+a constant epsilon. Users wishing to use a complex method to determine epsilon
+will have to initialize a distance matrix and scale it appropriately themselves
+and then pass the new scaled distance matrix as a parameter.
 
-   >>> epsilon_matrix = EpsilonConstant(distance_matrix, 1)
-   >>> epsilon_matrix.determine_epsilon()
-   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilon_matrix)
-   >>> dmap.decompose_kernel()
+   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilon =2)
+   >>> dmap.run()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
 
@@ -102,13 +95,14 @@ diminish at a constant rate until falling off, this is referred to as a
 spectral gap and should be somewhat apparent for a system at equilibrium with a
 high number of frames.
 
-   >>> num_dominant_eigenvectors = # some number less than the number of frames
-   >>> dmap.transform(num_dominant_eigenvectors)
+   >>> num_eigenvectors = # some number less than the number of frames-1
+   >>> dmap.transform(num_eigenvectors)
 
 From here it can be difficult to interpret the data, and is left as a task
 for the user. The `diffusion distance` between frames i and j is best
 approximated by the euclidean distance  between rows i and j of
-self.diffusion_space.
+self.diffusion_space. A Jupyter notebook providing an analysis of protein
+opening and closing is provided [here](#TODO url to notebook)
 
 Classes
 -------
@@ -236,6 +230,50 @@ class DistanceMatrix(AnalysisBase):
         np.save(filename, self.dist_matrix)
         logger.info("Wrote the distance-squared matrix to file %r", filename)
 
+class Epsilon(object):
+    """Manipulates a distance matrix by local scale parameters
+
+    Attributes
+    ----------
+    scaled_matrix : DistanceMatrix object
+        A matrix with each term divided by a local scale parameter
+
+    Methods
+    -------
+    determine_epsilon()
+        Determine local scale parameters using a chosen algorithm
+    """
+    def __init__(self, DistanceMatrix):
+        self._dist_matrix = DistMatrix
+
+    def determine_epsilon(self):
+        pass
+
+
+class EpsilonConstant(Epsilon):
+    """Premade function for the determination of epsilon based on providing
+    an arbitrary constant"""
+
+    def __init__(self, DistanceMatrix, epsilon):
+        """
+        Parameters
+        ----------
+        epsilon : int
+        The value of epsilon to be used as a local scale parameter
+        """
+        if DistanceMatrix.calculated:
+            self.scaled_matrix = DistanceMatrix.dist_matrix
+        else:
+            raise AttributeError('Distance Matrix does not exist, was'
+                                 'DistanceMatrix.run() called?')
+
+        self._epsilon = epsilon
+        self.calculated = False
+
+    def determine_epsilon(self):
+        self.scaled_matrix /= self._epsilon
+        self.calculated = True
+        return
 
 class DiffusionMap(object):
     """Non-linear dimension reduction method
@@ -255,7 +293,7 @@ class DiffusionMap(object):
 
     Methods
     -------
-    decompose_kernel()
+    run()
         Constructs an anisotropic diffusion kernel and performs eigenvalue
         decomposition on it.
     transform(num_eigenvectors)
