@@ -68,6 +68,10 @@ class BaseAuxReference(object):
         self.highf['rep'] = [np.nan, np.nan]
         self.highf['last'] = 0
 
+        self.description= {'dt':self.dt, 'represent_ts_as':'closest', 
+                           'initial_time':0, 'time_col':self.time_col,
+                           'data_cols':[1,2], 'constant_dt':True, 
+                           'cutoff':-1,}
 
 
 class BaseAuxReaderTest(object):
@@ -75,7 +79,8 @@ class BaseAuxReaderTest(object):
         self.ref = reference
         # time assumed to be in first column!
         self.reader = self.ref.reader(self.ref.testdata, time_col=0, 
-                                      name='test')
+                                      auxname='test')
+        self.ref.description['auxname'] = 'test'
 
     def tearDown(self):
         del self.reader
@@ -183,7 +188,7 @@ class BaseAuxReaderTest(object):
         self.reader.step_to_time(self.reader.n_steps)
 
     def test_not_setting_auxname(self):
-        # reading a timestep without setting *name* should mean the 
+        # reading a timestep without setting *auxname* should mean the 
         # timesteps aux namespace is unchanged
         self.reader = self.ref.reader(self.ref.testdata)
         aux_before = self.ref.lowf_ts.copy().aux
@@ -258,4 +263,17 @@ class BaseAuxReaderTest(object):
         assert_equal(aux_iter_values, self.ref.all_step_data, 
                      "representative value does not match when when iterating "
                      "using iter_as_aux")
-       
+
+    def test_get_description(self):
+        description = self.reader.get_description()
+        for attr in self.ref.description:
+            assert_equal(description[attr], self.ref.description[attr],
+                         "'Description' does not match for {0}".format(attr))
+
+    def test_load_from_description(self):
+        description = self.reader.get_description()
+        auxdata = description.pop('auxdata')
+        format = description.pop('format')
+        reader = mda.auxiliary.core.get_auxreader_for(format=format)
+        assert_equal(reader(auxdata, **description), self.reader,
+                     "AuxReader reloaded from description does not match")

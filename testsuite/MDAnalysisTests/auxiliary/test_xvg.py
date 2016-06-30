@@ -1,5 +1,6 @@
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            raises)
+import os
 
 import MDAnalysis as mda
 
@@ -11,6 +12,8 @@ class XVGReference(BaseAuxReference):
         super(XVGReference, self).__init__()
         self.testdata = AUX_XVG
         self.reader = mda.auxiliary.XVG.XVGReader
+        self.description['auxdata'] = os.path.abspath(self.testdata)
+        self.description['format'] = self.reader.format
 
 class TestXVGReader(BaseAuxReaderTest):
     def __init__(self):
@@ -40,6 +43,7 @@ class XVGFileReference(XVGReference):
         super(XVGFileReference, self).__init__()
         self.reader = mda.auxiliary.XVG.XVGFileReader
         self.format = "XVG-F"
+        self.description['format'] = self.format
 
 class TestXVGFileReader(TestXVGReader):
     def __init__(self):

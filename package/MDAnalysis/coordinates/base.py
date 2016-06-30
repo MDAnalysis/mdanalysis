@@ -1326,7 +1326,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     natoms=self.n_atoms
                 ))
                 
-    def add_auxiliary(self, auxname, auxdata, **kwargs):
+    def add_auxiliary(self, auxname=None, auxdata=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory additional
@@ -1334,7 +1334,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data 
         itself as e.g. an array, filename; in the latter case an appropriate 
         :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the 
-        data/file format.
+        data/file format. An appropriate *format* may also be directly provided 
+        as a key word argument.
 
         On adding, the AuxReader is initially matched to the current timestep
         of the trajectory, and will be updated when the trajectory timestep
@@ -1363,14 +1364,21 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See 
         the :ref:`Auxiliary API`.
         """
+        # making auxname and auxdata keyworded so we can more easily reload
+        # an auxiliary; so we now have to check we have both
+        if not auxname or not auxdata:
+            raise TypeError("Must provide an auxname and auxdata")
+ 
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
         if isinstance(auxdata, AuxReader):
             aux = auxdata
+            aux.auxname = auxname
         else:
-            auxreader = get_auxreader_for(auxdata)
-            aux = auxreader(auxdata, name=auxname, **kwargs)
+            auxreader = get_auxreader_for(auxdata, 
+                                          format=kwargs.pop('format', None))
+            aux = auxreader(auxdata, auxname=auxname, **kwargs)
         self._auxs[auxname] = aux
         self.ts = aux.read_ts(self.ts)
     
@@ -1439,7 +1447,36 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         while True:
             yield self.next_as_aux(auxname)
  
-                
+    def get_aux_descriptions(self, auxnames=None):
+        """Get descriptions to allow reloading the specified auxiliaries.
+
+        If no auxnames provided, defaults to the full list of added auxiliaries.
+
+        Passing the resultant description to ``add_auxiliary()`` will allow
+        recreation of the auxiliary. e.g., to duplicate all auxiliaries into a 
+        second trajectory::
+            
+           descriptions = trajectory_1.get_aux_descriptions()
+           for aux in descriptions:
+               trajectory_2.add_auxiliary(**aux)
+
+
+        Returns
+        -------
+        list
+            Of dictionaries of the args/kwargs describind each auxiliary.
+
+        See Also
+        --------  
+        :meth:`MDAnalysis.auxiliary.base.AuxReader.get_description`
+        """
+        if not auxnames:
+            auxnames = self.aux_list
+        descriptions = [self._auxs[aux].get_description() for aux in auxnames]
+        return descriptions
+
+
+
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.

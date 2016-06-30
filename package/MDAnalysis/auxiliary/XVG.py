@@ -28,6 +28,7 @@ XVG auxiliary reader --- :mod:`MDAnalysis.auxiliary.XVG`
 
 """
 
+import os
 import numpy as np
 from . import base
 
@@ -89,6 +90,7 @@ class XVGReader(base.AuxReader):
     format = "XVG"
 
     def __init__(self, filename, **kwargs):
+        self._data_input = os.path.abspath(filename)
         with open(filename) as xvg_file:
             lines = xvg_file.readlines()
         auxdata = []

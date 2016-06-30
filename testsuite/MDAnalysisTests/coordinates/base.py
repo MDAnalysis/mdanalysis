@@ -295,6 +295,18 @@ class BaseReaderTest(object):
                          self.ref.iter_as_aux_lowf_steps[i],
                          "Auxiliary step index does not match")
 
+    def test_reload_auxiliaries_from_description(self):
+        descriptions = self.reader.get_aux_descriptions()
+        reader = self.ref.reader(self.ref.trajectory)
+        for aux in descriptions:
+            reader.add_auxiliary(**aux)
+        assert_equal(reader.aux_list, self.reader.aux_list,
+                     'Number of auxiliaries does not match')
+        for auxname in reader.aux_list:
+            assert_equal(reader._auxs[auxname], self.reader._auxs[auxname],
+                         'AuxReaders do not match') 
+
+
 
 class BaseWriterTest(object):
     def __init__(self, reference):

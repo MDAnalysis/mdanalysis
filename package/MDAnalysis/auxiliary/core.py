@@ -26,13 +26,16 @@ from six import string_types
 from . import _AUXREADERS
 from ..lib import util
 
-def get_auxreader_for(auxdata, format=None):
-    """Return the appropriate auxiliary reader class for *auxdata*.
+def get_auxreader_for(auxdata=None, format=None):
+    """Return the appropriate auxiliary reader class for *auxdata*/*format*.
+
+    If *format* is provided, will attempt to find an AuxReader corresponding
+    to that format. If *auxdata* is provided, the format will first be guessed.
 
     Parameters
     ----------
     auxdata
-        The auxiliary data (e.g. array) or filename of file containing
+        (Optional) The auxiliary data (e.g. array) or filename of file containing
         auxiliary data.
     format
         (Optional). Known format of *auxdata*; if not provided, will be guessed 
@@ -45,9 +48,12 @@ def get_auxreader_for(auxdata, format=None):
     Raises
     ------
     ValueError
-        If an AuxReader for the guessed format cannot be found.
+        If an AuxReader for the format (provided or guessed from *auxdata*)
+        cannot be found.
 
     """
+    if not auxdata and not format:
+        raise ValueError('Must provide either auxdata or format')
 
     if format is None:
         if isinstance(auxdata, string_types):
@@ -56,8 +62,13 @@ def get_auxreader_for(auxdata, format=None):
         else:
             ## arrays etc
             pass
-    format = format.upper()
-    try:
-        return _AUXREADERS[format]
-    except KeyError:
-        raise ValueError("Unknown auxiliary data format for {0}".format(auxdata))
+        format = format.upper()
+        try:
+            return _AUXREADERS[format]
+        except KeyError:
+            raise ValueError("Unknown auxiliary data format for {0}".format(auxdata))
+    else:
+        try:
+            return _AUXREADERS[format]
+        except KeyError:
+            raise ValueError("Unknown auxiliary data format {0}".format(format))
