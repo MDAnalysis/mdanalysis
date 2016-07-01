@@ -22,6 +22,7 @@ Fixes
   * fix __iter__/next redundancy (Issue #869)
   * SingleFrameReader now raises StopIteration instead of IOError on calling
     next (Issue #869)
+  * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
 
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
