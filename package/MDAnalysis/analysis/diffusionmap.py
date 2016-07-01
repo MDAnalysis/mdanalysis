@@ -309,11 +309,11 @@ class DiffusionMap(object):
                                      np.mean(manifold_density))
 
     def run(self):
-        # will only run if distance matrix not already calculated
-        self._dist_matrix.run()
+        # run only if distance matrix not already calculated
+        if not self.dist_matrix._calculated
+            self._dist_matrix.run()
         self._scaled_matrix = self._dist_matrix.dist_matrix / self._epsilon
-        # this should be a reference to the same object as
-        # self.dist_matrix.dist_matrix
+
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
         # define an anistropic diffusion term q
@@ -337,9 +337,8 @@ class DiffusionMap(object):
         self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
         # Apply timescaling
-        for i in range(self._t):
-            if i > 0:
-                self._kernel = self._kernel.dot(self._kernel)
+        if self._t > 1:
+            self._kernel = np.linalg.matrix_power(self._kernel, self._t)
 
         eigenvals, eigenvectors = np.linalg.eig(self._kernel)
         eg_arg = np.argsort(eigenvals)
@@ -349,12 +348,12 @@ class DiffusionMap(object):
         self.eigenvectors = self.eigenvectors[1:]
         self._calculated = True
 
-    def transform(self, num_eigenvectors):
+    def transform(self, n_eigenvectors):
         """ Embeds a trajectory via the diffusion map
 
         Parameter
         ---------
-        num_eigenvectors : int
+        n_eigenvectors : int
             The number of dominant eigenvectors to be used for
             diffusion mapping
 
@@ -366,6 +365,5 @@ class DiffusionMap(object):
             between the higher dimensional space and the space spanned by
             the eigenvectors.
         """
-        self.diffusion_space = (self.eigenvectors.T[:,:num_eigenvectors] *
-                                self.eigenvalues[:num_eigenvectors])
-        return self.diffusion_space
+        return (self.eigenvectors.T[:,:n_eigenvectors] *
+                self.eigenvalues[:n_eigenvectors])
