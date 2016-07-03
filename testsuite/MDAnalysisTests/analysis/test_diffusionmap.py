@@ -17,64 +17,68 @@ from __future__ import print_function
 import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.diffusionmap as diffusionmap
-from numpy.testing import (assert_almost_equal, assert_equal, raises)
+from numpy.testing import (assert_almost_equal, assert_equal,
+                           assert_array_almost_equal,raises)
 
 
 from MDAnalysisTests.datafiles import PDB, XTC
 
 
 class TestDiffusionmap(object):
-    def __init__(self):
+    def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
         self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
         self.dmap = diffusionmap.DiffusionMap(self.dist)
         self.dmap.run()
         self.eigvals = self.dmap.eigenvalues
         self.eigvects = self.dmap.eigenvectors
-        self.weights_ker = np.ones((self.dist.nframes, ))
 
     def test_eg(self):
         # number of frames is trajectory is now 10 vs. 98
-        assert_equal(self.eigvals.shape, (self.dist.nframes-1, ))
+        assert_equal(self.eigvals.shape, (self.dist.nframes, ))
         # makes no sense to test values here, no physical meaning
+        del self.dmap
 
     def test_dist_weights(self):
         backbone = self.u.select_atoms('backbone')
         weights_atoms = np.ones(len(backbone.atoms))
-        dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
+        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
                                            weights=weights_atoms)
-        dist.run()
+        self.dist.run()
+        del self.dist
 
     def test_kernel_weights(self):
-        dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
-        dmap = diffusionmap.DiffusionMap(dist,
+        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
+        self.weights_ker = np.ones((self.dist.nframes, ))
+        self.dmap = diffusionmap.DiffusionMap(self.dist,
                                          manifold_density=self.weights_ker)
-        dmap.run()
-        assert_almost_equal(self.eigvals, dmap.eigenvalues, decimal=5)
-        assert_almost_equal(self.eigvects, dmap.eigenvectors, decimal=6)
+        self.dmap.run()
+        assert_array_almost_equal(self.eigvals, self.dmap.eigenvalues, decimal=5)
+        assert_array_almost_equal(self.eigvects, self.dmap.eigenvectors, decimal=6)
+        del self.dist, self.dmap
 
     @raises(ValueError)
     def test_wrong_kernel_weights(self):
-        dmap = diffusionmap.DiffusionMap(self.dist,
+        self.dmap = diffusionmap.DiffusionMap(self.dist,
                                          manifold_density=np.ones((2,)))
+        del self.dmap
 
     def test_timescaling(self):
-        dmap = diffusionmap.DiffusionMap(self.dist, timescale=2)
-        dmap.run()
-        assert_equal(dmap.eigenvalues.shape, (self.dist.nframes-1, ))
+        self.dmap = diffusionmap.DiffusionMap(self.u, timescale=2)
+        self.dmap.run()
+        assert_equal(self.dmap.eigenvalues.shape, (self.dmap._nframes, ))
+        del self.dmap
 
     def test_different_steps(self):
-        dist = diffusionmap.DistanceMatrix(self.u, select='backbone', step=3)
-        dmap = diffusionmap.DiffusionMap(dist)
-        dmap.run()
+        self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', step=3)
+        self.dmap.run()
+        del self.dmap, self.dist
 
     def test_transform(self):
-        self.num_eigenvectors = 4
-        self.dmap.transform(self.num_eigenvectors)
-        assert_equal(self.dmap.diffusion_space.shape,
+        self.n_eigenvectors = 4
+        self.dmap = diffusionmap.DiffusionMap(self.u)
+        self.dmap.run()
+        diffusion_space = self.dmap.transform(self.n_eigenvectors,1)
+        assert_equal(diffusion_space.shape,
                      (self.eigvects.shape[0],
-                      self.num_eigenvectors))
-
-    def test_universe_init(self):
-        dmap = diffusionmap.DiffusionMap(self.u)
-        dmap.run()
+                      self.n_eigenvectors))

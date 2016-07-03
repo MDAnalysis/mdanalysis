@@ -78,7 +78,7 @@ a constant epsilon. Users wishing to use a complex method to determine epsilon
 will have to initialize a distance matrix and scale it appropriately themselves
 and then pass the new scaled distance matrix as a parameter.
 
-   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilon =2)
+   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilo =2)
    >>> dmap.run()
    >>> eigenvalues = dmap.eigenvalues
    >>> eigenvectors = dmap.eigenvectors
@@ -95,8 +95,8 @@ diminish at a constant rate until falling off, this is referred to as a
 spectral gap and should be somewhat apparent for a system at equilibrium with a
 high number of frames.
 
-   >>> num_eigenvectors = # some number less than the number of frames-1
-   >>> dmap.transform(num_eigenvectors)
+   >>> num_eigenvectors = # some number less than the number of frames
+   >>> fit = dmap.transform(num_eigenvectors)
 
 From here it can be difficult to interpret the data, and is left as a task
 for the user. The `diffusion distance` between frames i and j is best
@@ -115,13 +115,17 @@ References
 
 If you use this Dimension Reduction method in a publication, please
 reference:
-..[Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.;
-Debenedetti, P. G. Chem. Phys. Lett. 2011, 509, 1−11
-..[Lafon1] Coifman, Ronald R., Lafon, Stephane (2006) Diffusion maps.
-Appl. Comput. Harmon. Anal. 21, 5–30.
-..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C. (2013)
+..[Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
+Debenedetti,  P. G. Nonlinear dimensionality reduction in molecular
+simulation: The diffusion map approach  Chem. Phys. Lett. 509, 1−11 (2011)
+..[Lafon1] Coifman, Ronald R., Lafon, Stephane Diffusion maps.
+Appl. Comput. Harmon. Anal. 21, 5–30  (2006).
+..[Lafon2] Boaz Nadler, Stéphane Lafon, Ronald R. Coifman, Ioannis G. Kevrekidis.
+Diffusion maps, spectral clustering and reaction coordinates
+of dynamical systems. Appl. Comput. Harmon. Anal. 21 (2006) 113–127
+..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
 Determination of reaction coordinates via locally scaled
-diffusion map. Journal of Chemical Physics.
+diffusion map. J. Chem. Phys. 134, 124116 (2011).
 
 .. If you choose the default metric, this module uses the fast QCP algorithm
 [Theobald2005]_ to calculate the root mean square distance (RMSD) between
@@ -243,7 +247,7 @@ class DiffusionMap(object):
     eigenvectors: array
         Eigenvectors of the diffusion map
     diffusion_space : array
-        After calling `transform(num_eigenvectors)` the diffusion map embedding
+        After calling `transform(n_eigenvectors)` the diffusion map embedding
         into the lower dimensional diffusion space will exist here.
 
     Methods
@@ -251,7 +255,7 @@ class DiffusionMap(object):
     run()
         Constructs an anisotropic diffusion kernel and performs eigenvalue
         decomposition on it.
-    transform(num_eigenvectors)
+    transform(n_eigenvectors, time)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
     """
@@ -293,7 +297,7 @@ class DiffusionMap(object):
                           "step size in distance matrix initialization.")
 
         # determines length of diffusion process
-        self._t = timescale
+        self._timescale = timescale
 
         if manifold_density is None:
             # weights do not apply to metric but density of data
@@ -310,10 +314,10 @@ class DiffusionMap(object):
 
     def run(self):
         # run only if distance matrix not already calculated
-        if not self.dist_matrix._calculated
+        if not self._dist_matrix._calculated:
             self._dist_matrix.run()
-        self._scaled_matrix = self._dist_matrix.dist_matrix / self._epsilon
-
+        self._scaled_matrix = (self._dist_matrix.dist_matrix ** 2 /
+                               self._epsilon)
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
         # define an anistropic diffusion term q
@@ -323,7 +327,8 @@ class DiffusionMap(object):
             q_vector[i] = np.dot(self._kernel[i, :], self._weights_ker)
 
         # Form a new kernel from the anisotropic diffusion term q
-        self._kernel /= np.sqrt(q_vector[:, np.newaxis].dot(q_vector[np.newaxis]))
+        self._kernel /= (np.sqrt(q_vector[:, np.newaxis
+                         ].dot(q_vector[np.newaxis])))
 
         # Weighted Graph Laplacian normalization on this new graph
         d_vector = np.zeros((self._nframes, ))
@@ -337,18 +342,17 @@ class DiffusionMap(object):
         self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
 
         # Apply timescaling
-        if self._t > 1:
-            self._kernel = np.linalg.matrix_power(self._kernel, self._t)
+        if self._timescale > 1:
+            self._kernel = np.linalg.matrix_power(self._kernel,
+                                                  self._timescale)
 
         eigenvals, eigenvectors = np.linalg.eig(self._kernel)
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
-        self.eigenvalues = self.eigenvalues[1:]
-        self.eigenvectors = eigenvectors[eg_arg[::-1], :]
-        self.eigenvectors = self.eigenvectors[1:]
+        self.eigenvectors = eigenvectors[eg_arg[::-1]]
         self._calculated = True
 
-    def transform(self, n_eigenvectors):
+    def transform(self, n_eigenvectors, time):
         """ Embeds a trajectory via the diffusion map
 
         Parameter
@@ -356,14 +360,13 @@ class DiffusionMap(object):
         n_eigenvectors : int
             The number of dominant eigenvectors to be used for
             diffusion mapping
-
+        time : float
+            Exponent that eigenvalues are raised to for embedding, for large
+            values, more dominant eigenvectors determine diffusion distance.
         Return
         ------
         diffusion_space : array
             The diffusion map embedding as defined by [Ferguson1]_.
-            This isn't a linear transformation, but an isometry
-            between the higher dimensional space and the space spanned by
-            the eigenvectors.
         """
-        return (self.eigenvectors.T[:,:n_eigenvectors] *
-                self.eigenvalues[:n_eigenvectors])
+        return (self.eigenvectors[1:n_eigenvectors+1,].T *
+                (self.eigenvalues[1:n_eigenvectors+1]**time))
