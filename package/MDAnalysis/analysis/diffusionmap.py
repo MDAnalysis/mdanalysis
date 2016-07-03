@@ -260,8 +260,7 @@ class DiffusionMap(object):
         the collective coordinates.
     """
 
-    def __init__(self, u, epsilon=1, manifold_density=None,
-                 timescale=1, **kwargs):
+    def __init__(self, u, epsilon=1, **kwargs):
         """
         Parameters
         -------------
@@ -273,10 +272,6 @@ class DiffusionMap(object):
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in [1], [2] and [3], Default: 1.
-        manifold_density: list, optional
-            The list has to have the same length as the trajectory.
-            With 'None' the weight of each frame of the trajectory will be the
-            same, Default : None
         timescale: int, optional
             The number of steps in the random walk, large t reflects global
             structure whereas small t indicates local structure, Default: 1
@@ -296,21 +291,6 @@ class DiffusionMap(object):
                           "be very slow to compute. Consider picking a larger "
                           "step size in distance matrix initialization.")
 
-        # determines length of diffusion process
-        self._timescale = timescale
-
-        if manifold_density is None:
-            # weights do not apply to metric but density of data
-            self._weights_ker = np.ones((self._nframes,))
-        else:
-            if manifold_density.shape[0] != self._nframes:
-                raise ValueError("The weight should have the same length as "
-                                 'the trajectory')
-            else:
-                # density weights are constructed as relative to the mean
-                self._weights_ker = (np.asarray(manifold_density,
-                                     dtype=np.float64) /
-                                     np.mean(manifold_density))
 
     def run(self):
         # run only if distance matrix not already calculated
@@ -320,33 +300,9 @@ class DiffusionMap(object):
                                self._epsilon)
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
-        # define an anistropic diffusion term q
-        q_vector = np.zeros((self._nframes, ))
-        # weights should reflect the density of the points on the manifold
-        for i in range(self._nframes):
-            q_vector[i] = np.dot(self._kernel[i, :], self._weights_ker)
-
-        # Form a new kernel from the anisotropic diffusion term q
-        self._kernel /= (np.sqrt(q_vector[:, np.newaxis
-                         ].dot(q_vector[np.newaxis])))
-
-        # Weighted Graph Laplacian normalization on this new graph
-        d_vector = np.zeros((self._nframes, ))
-        for i in range(self._nframes):
-            d_vector[i] = np.dot(self._kernel[i, :], self._weights_ker)
-
-        for i in range(self._nframes):
-            self._kernel[i, :] = self._kernel[i, :] * self._weights_ker
-
-        # Define anisotropic transition by dividing kernel by this term
-        self._kernel /= np.sqrt(d_vector[:, np.newaxis].dot(d_vector[np.newaxis]))
-
-        # Apply timescaling
-        if self._timescale > 1:
-            self._kernel = np.linalg.matrix_power(self._kernel,
-                                                  self._timescale)
-
-        eigenvals, eigenvectors = np.linalg.eig(self._kernel)
+        D_inv = np.diag(1 / self._kernel.sum(1))
+        self._diff = np.dot(D_inv, self._kernel)
+        eigenvals, eigenvectors = np.linalg.eig(self._diff)
         eg_arg = np.argsort(eigenvals)
         self.eigenvalues = eigenvals[eg_arg[::-1]]
         self.eigenvectors = eigenvectors[eg_arg[::-1]]

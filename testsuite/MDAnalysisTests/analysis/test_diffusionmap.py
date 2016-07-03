@@ -37,7 +37,6 @@ class TestDiffusionmap(object):
         # number of frames is trajectory is now 10 vs. 98
         assert_equal(self.eigvals.shape, (self.dist.nframes, ))
         # makes no sense to test values here, no physical meaning
-        del self.dmap
 
     def test_dist_weights(self):
         backbone = self.u.select_atoms('backbone')
@@ -45,35 +44,11 @@ class TestDiffusionmap(object):
         self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
                                            weights=weights_atoms)
         self.dist.run()
-        del self.dist
-
-    def test_kernel_weights(self):
-        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
-        self.weights_ker = np.ones((self.dist.nframes, ))
-        self.dmap = diffusionmap.DiffusionMap(self.dist,
-                                         manifold_density=self.weights_ker)
-        self.dmap.run()
-        assert_array_almost_equal(self.eigvals, self.dmap.eigenvalues, decimal=5)
-        assert_array_almost_equal(self.eigvects, self.dmap.eigenvectors, decimal=6)
-        del self.dist, self.dmap
-
-    @raises(ValueError)
-    def test_wrong_kernel_weights(self):
-        self.dmap = diffusionmap.DiffusionMap(self.dist,
-                                         manifold_density=np.ones((2,)))
-        del self.dmap
-
-    def test_timescaling(self):
-        self.dmap = diffusionmap.DiffusionMap(self.u, timescale=2)
-        self.dmap.run()
-        assert_equal(self.dmap.eigenvalues.shape, (self.dmap._nframes, ))
-        del self.dmap
 
     def test_different_steps(self):
         self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', step=3)
         self.dmap.run()
-        del self.dmap, self.dist
-
+    
     def test_transform(self):
         self.n_eigenvectors = 4
         self.dmap = diffusionmap.DiffusionMap(self.u)
