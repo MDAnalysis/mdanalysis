@@ -35,27 +35,33 @@ from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.pca")
 
-
 class PCA(object):
     """Principal component analysis on an MD trajectory
 
     Attributes
     ----------
-    components: array, [number of frames, number of atoms]
+    components: array, (n_components, n_atoms)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
 
-    explained_variance_ratio : array, [number of frames]
+    explained_variance_ratio : array, (n_components, )
         Percentage of variance explained by each of the selected components.
         If a subset of components is not chosen then all components are stored
         and the sum of explained variances is equal to 1.0
 
+
+
+
     Methods
     -------
+    fit(traj)
 
+    transform(traj, n_components)
+
+    inverse_tranform(pc_space)
     """
 
-    def __init__(self, u, select='All', start=None, stop=None,step=None,
+    def __init__(self, u, n_components=None
                  **kwargs):
         """
         Parameters
@@ -63,17 +69,25 @@ class PCA(object):
         u : MDAnalysis Universe
             The universe containing the trajectory frames for Principal
             Component Analysis.
-        start : int, optional
-            First frame of trajectory to analyse, Default: 0
-        stop : int, optional
-            Last frame of trajectory to analyse, Default: -1
-        step : int, optional
-            Step between frames to analyse, Default: 1
         """
-        self.setup_frames(start, stop, step)
+        self.u = u
+        self._calculated = False
+
+    def fit(self, traj=None, n_components = None, start=None, step=None,
+            stop=None):
+        """ Use a subset of the trajectory to generate principal components """
+        if traj is None:
+            traj = self.u.trajectory
+        elif isinstance(traj, u.trajectory):
+            traj = traj
+        else:
+            raise AttributeError("Trajectory can not be found.")
+
+        self._setup_frames(traj, start, stop, step)
 
 
-    def transform(self, traj=None):
+
+    def transform(self, traj=None, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
