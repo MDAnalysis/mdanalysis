@@ -260,13 +260,16 @@ class TestGROWriter(TestCase, tempdir.TempDir):
 
 
 class TestGROWriterLarge(TestCase, tempdir.TempDir):
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.large_universe = mda.Universe(GRO_large)
 
-    def tearDown(self):
-        del self.tmpdir
-        del self.large_universe
+    @classmethod
+    def setUpClass(cls):
+        cls.tmpdir = tempdir.TempDir()
+        cls.large_universe = mda.Universe(GRO_large)
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.tmpdir
+        del cls.large_universe
 
     @dec.slow
     @attr('issue')
@@ -283,6 +286,28 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
                              expected_lines,
                              err_msg="Writing GRO file with > 100 000 "
                                  "coords does not truncate properly.")
+
+    @dec.slow
+    @attr('issue')
+    def test_writer_large_residue_count(self):
+        """Ensure large residue number truncation for
+        GRO files (Issue 886)."""
+        outfile = self.tmpdir.name + '/outfile2.gro'
+        target_resname = self.large_universe.residues[-1].resname
+        resid_value = 999999999999999999999
+        self.large_universe.residues[-1].atoms.resids = resid_value
+        self.large_universe.atoms.write(outfile)
+        with open(outfile, 'rt') as mda_output:
+            output_lines = mda_output.readlines()
+            produced_resid = output_lines[-2].split(target_resname)[0]
+            expected_resid = str(resid_value)[:5]
+            assert_equal(produced_resid,
+                         expected_resid,
+                         err_msg="Writing GRO file with > 99 999 "
+                             "resids does not truncate properly.")
+
+
+
 
 class TestGROWriterVels(object):
     def setUp(self):
