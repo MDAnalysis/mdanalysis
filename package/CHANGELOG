@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de,jdetle, fiona-naughton, richardjgowers
+??/??/16 kain88-de, fiona-naughton, richardjgowers, euhruska, jdetle
 
   * 0.15.1
 
@@ -28,7 +28,9 @@ Changes
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase
   * Added new AlignTraj class for alignment that follows the new analysis API known
-    as Bauhaus style.
+    as Bauhaus style. (Issue #845)
+  * Added new diffusionmap module for dimension reduction that follows the
+    Bauhaus API. (Issue #857)
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
