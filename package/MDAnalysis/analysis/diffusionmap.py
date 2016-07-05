@@ -303,9 +303,9 @@ class DiffusionMap(object):
         D_inv = np.diag(1 / self._kernel.sum(1))
         self._diff = np.dot(D_inv, self._kernel)
         eigenvals, eigenvectors = np.linalg.eig(self._diff)
-        eg_arg = np.argsort(eigenvals)
-        self.eigenvalues = eigenvals[eg_arg[::-1]]
-        self.eigenvectors = eigenvectors[eg_arg[::-1]]
+        sort_idx = np.argsort(eigenvals)[::-1]
+        self.eigenvalues = eigenvals[sort_idx]
+        self.eigenvectors = eigenvectors[sort_idx]
         self._calculated = True
 
     def transform(self, n_eigenvectors, time):
