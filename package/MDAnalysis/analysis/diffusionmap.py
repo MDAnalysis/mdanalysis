@@ -34,10 +34,8 @@ phyiscal meaning of the 'collective coordinates' is a fundamentally difficult
 problem. The time complexity of the diffusion map is O(N^3), where N is the
 number of frames in the trajectory, and the in-memory storage complexity is
 O(N^2). Instead of a single trajectory a sample of protein structures
-can be used. The sample should be equiblibrated, at least locally. Different
-weights can be used to determine the anisotropy of the diffusion kernel.
-The motivation for the creation of an anisotropic kernel is given on page 14 of
-[Lafon1]_. The order of the sampled structures in the trajectory is irrelevant.
+can be used. The sample should be equiblibrated, at least locally. The order of
+the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
@@ -52,36 +50,30 @@ Diffusion Map tutorial
 
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
-:data:`~MDAnalysis.tests.datafiles.DCD`). Notice that this trajectory
-does not represent a sample from equilibrium. This violates a basic
-assumption of the anisotropic kernel. The anisotropic kernel is created to act
-as a discrete approximation for the Fokker-Plank equation from statistical
-mechanics, results from a non-equilibrium trajectory shouldn't be interpreted
-for this reason. This tutorial shows how to use the diffusionmap function.
+:data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
+Diffusion Map class.
+
 First load all modules and test data ::
 
    >>> import MDAnalysis
    >>> import numpy as np
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
-   >>> from MDAnalysis.tests.datafiles import PSF,DCD
+   >>> from MDAnalysis.tests.datafiles import PSF, DCD
 
-Given a universe or atom group, we can calculate the diffusion map from
-that trajectory using :class:`DiffusionMap`:: and get the corresponding
-eigenvalues and eigenvectors.
+Given a universe or atom group, we can create and eigenvalue decompose
+the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get
+the corresponding eigenvalues and eigenvectors.
 
    >>> u = MDAnalysis.Universe(PSF,DCD)
 
 We leave determination of the appropriate scale parameter epsilon to the user,
 [Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
 trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. Users wishing to use a complex method to determine epsilon
-will have to initialize a distance matrix and scale it appropriately themselves
-and then pass the new scaled distance matrix as a parameter.
+a constant epsilon. Currently, the constant epsilon method is implemented
+by MDAnalysis.
 
-   >>> dmap = diffusionmap.DiffusionMap(dist_matrix, epsilo =2)
+   >>> dmap = diffusionmap.DiffusionMap(u, select='backbone', epsilon=2)
    >>> dmap.run()
-   >>> eigenvalues = dmap.eigenvalues
-   >>> eigenvectors = dmap.eigenvectors
 
 From here we can perform an embedding onto the k dominant eigenvectors. This
 is similar to the idea of a transform in Principal Component Analysis, but the
@@ -96,7 +88,7 @@ spectral gap and should be somewhat apparent for a system at equilibrium with a
 high number of frames.
 
    >>> num_eigenvectors = # some number less than the number of frames
-   >>> fit = dmap.transform(num_eigenvectors)
+   >>> fit = dmap.transform(num_eigenvectors, time=1)
 
 From here it can be difficult to interpret the data, and is left as a task
 for the user. The `diffusion distance` between frames i and j is best
@@ -118,10 +110,12 @@ reference:
 ..[Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
 Debenedetti,  P. G. Nonlinear dimensionality reduction in molecular
 simulation: The diffusion map approach  Chem. Phys. Lett. 509, 1−11 (2011)
+..[deLaPorte1] J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
+An Introduction to Diffusion Maps.
 ..[Lafon1] Coifman, Ronald R., Lafon, Stephane Diffusion maps.
 Appl. Comput. Harmon. Anal. 21, 5–30  (2006).
-..[Lafon2] Boaz Nadler, Stéphane Lafon, Ronald R. Coifman, Ioannis G. Kevrekidis.
-Diffusion maps, spectral clustering and reaction coordinates
+..[Lafon2] Boaz Nadler, Stéphane Lafon, Ronald R. Coifman, Ioannis G.
+Kevrekidis. Diffusion maps, spectral clustering and reaction coordinates
 of dynamical systems. Appl. Comput. Harmon. Anal. 21 (2006) 113–127
 ..[Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
 Determination of reaction coordinates via locally scaled
@@ -272,10 +266,7 @@ class DiffusionMap(object):
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in [1], [2] and [3], Default: 1.
-        timescale: int, optional
-            The number of steps in the random walk, large t reflects global
-            structure whereas small t indicates local structure, Default: 1
-            """
+        """
         if isinstance(u, mda.Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
@@ -302,10 +293,10 @@ class DiffusionMap(object):
         self._kernel = np.exp(-self._scaled_matrix)
         D_inv = np.diag(1 / self._kernel.sum(1))
         self._diff = np.dot(D_inv, self._kernel)
-        eigenvals, eigenvectors = np.linalg.eig(self._diff)
-        sort_idx = np.argsort(eigenvals)[::-1]
-        self.eigenvalues = eigenvals[sort_idx]
-        self.eigenvectors = eigenvectors[sort_idx]
+        self._eigenvals, self._eigenvectors = np.linalg.eig(self._diff)
+        sort_idx = np.argsort(self._eigenvals)[::-1]
+        self.eigenvalues = self._eigenvals[sort_idx]
+        self.eigenvectors = self._eigenvectors[sort_idx]
         self._calculated = True
 
     def transform(self, n_eigenvectors, time):
