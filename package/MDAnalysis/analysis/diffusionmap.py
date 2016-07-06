@@ -93,8 +93,8 @@ high number of frames.
 From here it can be difficult to interpret the data, and is left as a task
 for the user. The `diffusion distance` between frames i and j is best
 approximated by the euclidean distance  between rows i and j of
-self.diffusion_space. A Jupyter notebook providing an analysis of protein
-opening and closing is provided [here](#TODO url to notebook)
+self.diffusion_space. A Jupyter [notebook](https://github.com/jdetle/dimension_reduction/blob/master/diffusionMaps/Diffusion_Map_Analysis_of_ADK.ipynb)
+providing an analysis of protein pening and closing has been provided.
 
 Classes
 -------
