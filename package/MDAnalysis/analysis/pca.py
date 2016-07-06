@@ -32,24 +32,23 @@ import numpy as np
 from MDAnalysis import Universe
 
 from .base import AnalysisBase
+from .rms import process_selection
 
 logger = logging.getLogger("MDAnalysis.analysis.pca")
 
-class PCA(object):
+class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory
 
     Attributes
     ----------
-    components: array, (n_components, n_atoms)
+    p_components: array, (n_components, n_atoms)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
 
-    explained_variance_ratio : array, (n_components, )
+    cumulated_variance : array, (n_components, )
         Percentage of variance explained by each of the selected components.
         If a subset of components is not chosen then all components are stored
         and the sum of explained variances is equal to 1.0
-
-
 
 
     Methods
@@ -61,8 +60,7 @@ class PCA(object):
     inverse_tranform(pc_space)
     """
 
-    def __init__(self, u, n_components=None
-                 **kwargs):
+    def __init__(self, u):
         """
         Parameters
         ----------
@@ -71,20 +69,40 @@ class PCA(object):
             Component Analysis.
         """
         self.u = u
+
         self._calculated = False
 
-    def fit(self, traj=None, n_components = None, start=None, step=None,
-            stop=None):
+
+    def fit(self, select='All', n_components=-1, start=None, stop=None,
+            step=None):
         """ Use a subset of the trajectory to generate principal components """
-        if traj is None:
-            traj = self.u.trajectory
-        elif isinstance(traj, u.trajectory):
-            traj = traj
-        else:
-            raise AttributeError("Trajectory can not be found.")
+        self._setup_frames(self.u.trajectory, start, stop, step)
+        self.atoms = self.u.select_atoms(select)
+        self._n_atoms = self.atoms.n_atoms
+        traj = self.u.trajectory
+        self.run()
+        self._calculated = True
+        return self.cumulated_variance, self.p_components
 
-        self._setup_frames(traj, start, stop, step)
 
+    def _prepare(self):
+        self._xyz = np.zeros((self.nframes, self._n_atoms))
+
+
+    def _single_frame(self):
+        self._xyz[self._frame_index] = self.atoms.positions.copy()
+
+
+    def _conclude(self):
+        self._xyz.reshape(self.nframes, self._n_atoms * 3, order='F')
+        x = self._xyz - self._xyz.mean(0)
+        cov = np.cov(x, rowvar = 0)
+        e_vals, e_vects = np.linalg.eig(cov)
+        sort_idx = np.argsort(e_vals)[::-1]
+        variance = e_vals[sort_idx]
+        p_components = e_vects[sort_idx]
+        self.cumulated_variance = np.cumsum(variance)
+        self.p_components = p_components[:n_components]
 
 
     def transform(self, traj=None, n_components=None):
@@ -99,9 +117,10 @@ class PCA(object):
         -------
         pca_space : array, shape (number of atoms, number of components)
         """
-        # apply Transform
-        #
-        pass
+        if traj is None:
+            traj = self._original_traj
+        return np.dot(traj, self.p_components)
+
 
     def inverse_tranform(self, pca_space):
         """ Transform PCA-transformed data back to original configuration space.
@@ -116,4 +135,5 @@ class PCA(object):
         -------
         original_traj : array, shape (number of frames, number of atoms)
         """
-        pass
+        inv = np.linalg.inv(self.p_components)
+        return np.dot(pca_space, inv)
