@@ -261,6 +261,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
 
 class TestGROWriterLarge(TestCase, tempdir.TempDir):
 
+    # not normally recommended to use class-level
+    # setup for universe (special case here)
     @classmethod
     def setUpClass(cls):
         cls.tmpdir = tempdir.TempDir()
