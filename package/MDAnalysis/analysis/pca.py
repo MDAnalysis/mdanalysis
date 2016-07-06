@@ -77,6 +77,7 @@ class PCA(AnalysisBase):
             step=None):
         """ Use a subset of the trajectory to generate principal components """
         self._setup_frames(self.u.trajectory, start, stop, step)
+        self.n_components = n_components
         self.atoms = self.u.select_atoms(select)
         self._n_atoms = self.atoms.n_atoms
         traj = self.u.trajectory
@@ -86,7 +87,7 @@ class PCA(AnalysisBase):
 
 
     def _prepare(self):
-        self._xyz = np.zeros((self.nframes, self._n_atoms))
+        self._xyz = np.zeros((self.nframes, self._n_atoms, 3))
 
 
     def _single_frame(self):
@@ -94,15 +95,16 @@ class PCA(AnalysisBase):
 
 
     def _conclude(self):
-        self._xyz.reshape(self.nframes, self._n_atoms * 3, order='F')
+        self._xyz = self._xyz.reshape(self.nframes, self._n_atoms * 3,
+                                      order='F')
         x = self._xyz - self._xyz.mean(0)
         cov = np.cov(x, rowvar = 0)
         e_vals, e_vects = np.linalg.eig(cov)
         sort_idx = np.argsort(e_vals)[::-1]
-        variance = e_vals[sort_idx]
+        self.variance = e_vals[sort_idx]
         p_components = e_vects[sort_idx]
-        self.cumulated_variance = np.cumsum(variance)
-        self.p_components = p_components[:n_components]
+        self.cumulated_variance = np.cumsum(variance) / np.sum(variance)
+        self.p_components = p_components[:self.n_components]
 
 
     def transform(self, traj=None, n_components=None):
