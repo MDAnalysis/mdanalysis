@@ -55,28 +55,28 @@ class TestAnalysisBase(object):
 
     def test_default(self):
         an = FrameAnalysis(self.u.trajectory)
-        assert_(an.nframes == len(self.u.trajectory))
+        assert_(an.n_frames == len(self.u.trajectory))
 
         an.run()
         assert_(an.frames == list(range(len(self.u.trajectory))))
 
     def test_start(self):
         an = FrameAnalysis(self.u.trajectory, start=20)
-        assert_(an.nframes == len(self.u.trajectory) - 20)
+        assert_(an.n_frames == len(self.u.trajectory) - 20)
 
         an.run()
         assert_(an.frames == list(range(20, len(self.u.trajectory))))
 
     def test_stop(self):
         an = FrameAnalysis(self.u.trajectory, stop=20)
-        assert_(an.nframes == 20)
+        assert_(an.n_frames == 20)
 
         an.run()
         assert_(an.frames == list(range(20)))
 
     def test_step(self):
         an = FrameAnalysis(self.u.trajectory, step=20)
-        assert_(an.nframes == 5)
+        assert_(an.n_frames == 5)
 
         an.run()
         assert_(an.frames == list(range(98))[::20])
