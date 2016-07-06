@@ -44,20 +44,24 @@ class PCA(AnalysisBase):
     p_components: array, (n_components, n_atoms)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
-
-    cumulated_variance : array, (n_components, )
+    variance : array (n_components, )
+        The raw variance explained by each eigenvector of the covariance
+        matrix.
+    explained_variance : array, (n_components, )
         Percentage of variance explained by each of the selected components.
         If a subset of components is not chosen then all components are stored
-        and the sum of explained variances is equal to 1.0
-
+        and the sum of explained variances is equal to 1.0.
 
     Methods
     -------
-    fit(traj)
-
-    transform(traj, n_components)
-
-    inverse_tranform(pc_space)
+    fit(traj=None, select='All', start=None, stop=None, step=None)
+        Find the principal components of selected atoms in a subset of the
+        trajectory.
+    transform(traj=None, n_components=None)
+        Take the original trajectory and project it onto the principal
+        components.
+    inverse_tranform(pca_space)
+        Take a pca_space and map it back onto the trajectory used to create it.
     """
 
     def __init__(self, u):
@@ -69,18 +73,36 @@ class PCA(AnalysisBase):
             Component Analysis.
         """
         self.u = u
-
+        self._original_traj = self.u.trajectory
         self._calculated = False
 
 
     def fit(self, select='All', n_components=-1, start=None, stop=None,
             step=None):
-        """ Use a subset of the trajectory to generate principal components """
+        """ Use a subset of the trajectory to generate principal components.
+
+        Parameters
+        ----------
+        select : string, optional
+            A valid select statement for picking a subset of atoms from an
+            MDAnalysis Trajectory.
+        n_components : int, optional
+            The number of principal components to be saved, default saves
+            all principal components, Default: -1
+        start : int, optional
+            First frame of trajectory to use for generation
+            of covariance matrix, Default: 0
+        stop : int, optional
+            Last frame of trajectory to use for generation
+            of covariance matrix, Default: -1
+        step : int, optional
+            Step between frames of trajectory to use for generation
+            of covariance matrix, Default: 1
+        """
         self._setup_frames(self.u.trajectory, start, stop, step)
         self.n_components = n_components
         self.atoms = self.u.select_atoms(select)
         self._n_atoms = self.atoms.n_atoms
-        traj = self.u.trajectory
         self.run()
         self._calculated = True
         return self.cumulated_variance, self.p_components
@@ -114,7 +136,6 @@ class PCA(AnalysisBase):
         ----------
         traj : MDAnalysis Trajectory
             Trajectory for PCA transformation
-
         Returns
         -------
         pca_space : array, shape (number of atoms, number of components)
