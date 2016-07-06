@@ -144,9 +144,9 @@ class InterRDF(AnalysisBase):
         vol *= 4/3.0 * np.pi
 
         # Average number density
-        box_vol = self.volume / self.nframes
+        box_vol = self.volume / self.n_frames
         density = N / box_vol
 
-        rdf = self.count / (density * vol * self.nframes)
+        rdf = self.count / (density * vol * self.n_frames)
 
         self.rdf = rdf
