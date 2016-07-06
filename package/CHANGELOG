@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de,jdetle, fiona-naughton, richardjgowers
+??/??/16 kain88-de, jdetle, fiona-naughton, richardjgowers, tyler.je.reddy
 
   * 0.15.1
 
 Fixes
+  * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
   * fix __iter__/next redundancy (Issue #869)
   * SingleFrameReader now raises StopIteration instead of IOError on calling
