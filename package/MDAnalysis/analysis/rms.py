@@ -338,9 +338,9 @@ class RMSD(object):
             self.reference = self.universe
         else:
             self.reference = reference
-        self.select = _process_selection(select)
+        self.select = process_selection(select)
         if groupselections is not None:
-            self.groupselections = [_process_selection(s) for s in groupselections]
+            self.groupselections = [process_selection(s) for s in groupselections]
         else:
             self.groupselections = []
         self.mass_weighted = mass_weighted
