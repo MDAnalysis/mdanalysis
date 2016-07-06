@@ -294,7 +294,7 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
     def test_writer_large_residue_count(self):
         """Ensure large residue number truncation for
         GRO files (Issue 886)."""
-        outfile = self.tmpdir.name + '/outfile2.gro'
+        outfile = os.path.join(self.tmpdir.name, 'outfile2.gro')
         target_resname = self.large_universe.residues[-1].resname
         resid_value = 999999999999999999999
         self.large_universe.residues[-1].atoms.resids = resid_value
