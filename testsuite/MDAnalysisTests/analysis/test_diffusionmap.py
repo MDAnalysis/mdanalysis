@@ -31,24 +31,24 @@ class TestDiffusionmap(object):
         self.dmap = diffusionmap.DiffusionMap(self.dist)
         self.dmap.run()
         self.eigvals = self.dmap.eigenvalues
-        self.eigvects = self.dmap.eigenvectors
+        self.eigvects = self.dmap._eigenvectors
 
     def test_eg(self):
         # number of frames is trajectory is now 10 vs. 98
-        assert_equal(self.eigvals.shape, (self.dist.nframes, ))
+        assert_equal(self.eigvals.shape, (self.dist.n_frames, ))
         # makes no sense to test values here, no physical meaning
 
     def test_dist_weights(self):
         backbone = self.u.select_atoms('backbone')
         weights_atoms = np.ones(len(backbone.atoms))
         self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
-                                           weights=weights_atoms)
+                                                weights=weights_atoms)
         self.dist.run()
 
     def test_different_steps(self):
         self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', step=3)
         self.dmap.run()
-    
+
     def test_transform(self):
         self.n_eigenvectors = 4
         self.dmap = diffusionmap.DiffusionMap(self.u)
