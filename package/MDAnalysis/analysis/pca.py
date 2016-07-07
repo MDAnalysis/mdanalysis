@@ -111,7 +111,6 @@ class PCA(AnalysisBase):
         components.
     inverse_tranform(pca_space)
         Take a pca_space and map it back onto the trajectory used to create it.
-
     """
 
     def __init__(self, u):
@@ -123,7 +122,6 @@ class PCA(AnalysisBase):
             Component Analysis.
         """
         self.u = u
-        self._original_traj = self.u.trajectory
         self._calculated = False
 
 
@@ -180,22 +178,28 @@ class PCA(AnalysisBase):
         self.p_components = p_components[:self.n_components]
 
 
-    def transform(self, traj=None, n_components=None):
+    def transform(self, select='All', u=None, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
         ----------
-        traj : MDAnalysis Universe
+        select : string, optional
+            A valid select statement for picking a subset of atoms from an
+            MDAnalysis Universe.
+        u : MDAnalysis Universe
             Universe containing trajectory for PCA transformation
         Returns
         -------
-        pca_space : array, shape (number of atoms, number of components)
+        pca_space : array, shape (number of atoms*3, number of components)
         """
-        if traj is None:
-            traj = self._original_traj
+        if u is None:
+            u = self.u
 
-        ca_xyz = np.array([ca.positions.copy() for ts in traj])
-        return np.dot(traj, self.p_components[:n_components])
+        atoms = u.select_atoms(select)
+
+        xyz = np.array([atoms.positions.copy() for ts in u.trajectory])
+        xyz.reshape(u.trajectory.nframes, atoms.n_atoms*3, order='F')
+        return np.dot(xyz, self.p_components[:n_components])
 
 
     def inverse_tranform(self, pca_space):
@@ -210,7 +214,7 @@ class PCA(AnalysisBase):
 
         Returns
         -------
-        original_traj : array, shape (number of frames, number of atoms)
+        original_traj : array, shape (number of frames, number of atoms*3)
         """
         inv = np.linalg.inv(self.p_components)
         return np.dot(pca_space, inv)
