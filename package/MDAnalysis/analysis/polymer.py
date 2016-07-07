@@ -125,15 +125,16 @@ class PersistenceLength(AnalysisBase):
 
         self.fit = np.exp(-self.x/self.lp)
 
-    def plot(self):
+    def plot(self, ax=None):
         """Oooh fancy"""
         import matplotlib.pyplot as plt
-        plt.ylabel('C(x)')
-        plt.xlabel('x')
-        plt.xlim([0.0, 40 * self.lb])
-        plt.plot(self.x, self.results, 'ro')
-        plt.plot(self.x, self.fit)
-        plt.show()
+        if ax is None:
+            ax = plt.gca()
+        ax.plot(self.x, self.results, 'ro', label='Result')
+        ax.plot(self.x, self.fit, label='Fit')
+        ax.set(xlabel='x', ylabel='C(x)', xlim=[0.0, 40 * self.lb])
+        ax.legend(loc='best')
+        return ax
 
 
 def fit_exponential_decay(x, y):
