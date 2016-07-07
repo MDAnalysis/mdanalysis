@@ -22,7 +22,19 @@ Diffusion map --- :mod:`MDAnalysis.analysis.pca`
 :Year: 2016
 :Copyright: GNU Public License v3
 
-TODO, write documentation
+This module contains the linear dimension reduction method Principal
+Component Analysis. This module constructs a covariance matrix wherein each
+element of the matrix is denoted by (i,j) row-column coordinates. The (i,j)
+coordinate reflects the influence of the of the ith frame on the jth frame
+of the trajectory. The Principal Components are the eigenvectors of this matrix.
+
+For each eigenvector, its eigenvalue reflects the variance that the eigenvector
+explains. This value is made into a ratio stored in `explained_variance`, which
+provides divides accumulated variance of the nth eigenvector and the
+n-1 eigenvectors preceding by the total variance in the data.
+
+From here, we can project a trajectory onto these principal components,
+
 
 """
 from six.moves import range
@@ -32,7 +44,6 @@ import numpy as np
 from MDAnalysis import Universe
 
 from .base import AnalysisBase
-from .rms import process_selection
 
 logger = logging.getLogger("MDAnalysis.analysis.pca")
 
@@ -62,6 +73,7 @@ class PCA(AnalysisBase):
         components.
     inverse_tranform(pca_space)
         Take a pca_space and map it back onto the trajectory used to create it.
+
     """
 
     def __init__(self, u):
@@ -125,7 +137,8 @@ class PCA(AnalysisBase):
         sort_idx = np.argsort(e_vals)[::-1]
         self.variance = e_vals[sort_idx]
         p_components = e_vects[sort_idx]
-        self.cumulated_variance = np.cumsum(variance) / np.sum(variance)
+        self.cumulated_variance = (np.cumsum(self.variance) /
+                                   np.sum(self.variance))
         self.p_components = p_components[:self.n_components]
 
 
@@ -152,7 +165,8 @@ class PCA(AnalysisBase):
         ----------
         pca_space : array
             The space corresponding to the trajectory coordinates after the PCA
-            transformation.
+            transformation. Assumes current principal components were the
+            components projected onto to create the pca_space.
 
         Returns
         -------
