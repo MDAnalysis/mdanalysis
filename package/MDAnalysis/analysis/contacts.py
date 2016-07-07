@@ -14,7 +14,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
+"""\
+================================================================
+Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 ================================================================
 
 
@@ -29,9 +31,9 @@ different metrics liseted below, as wel as custom metrics.
    as close as in the reference structure.
 
 2. *Soft Cut*: The atom pair *i* and *j* is assigned based on a soft potential
-   that is 1 for if the distance is 0, 1./2 if the distance is the same as in
+   that is 1 for if the distance is 0, 1/2 if the distance is the same as in
    the reference and 0 for large distances. For the exact definition of the
-   potential and parameters have a look at `soft_cut_q`.
+   potential and parameters have a look at function :func:`soft_cut_q`.
 
 3. *Radius Cut*: To count as a contact the atoms *i* and *j* cannot be further
    apart then some distance `radius`.
@@ -40,8 +42,9 @@ The "fraction of native contacts" *Q(t)* is a number between 0 and 1 and
 calculated as the total number of native contacts for a given time frame
 divided by the total number of contacts in the reference structure.
 
-Examples
---------
+
+Examples for contact analysis
+-----------------------------
 
 One-dimensional contact analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,36 +53,36 @@ As an example we analyze the opening ("unzipping") of salt bridges
 when the AdK enzyme opens up; this is one of the example trajectories
 in MDAnalysis. ::
 
->>> import MDAnalysis as mda
->>> from MDAnalysis.analysis import contacts
->>> from MDAnalysis.tests.datafiles import PSF,DCD
->>> import matplotlib.pyplot as plt
->>> # example trajectory (transition of AdK from closed to open)
->>> u = mda.Universe(PSF,DCD)
->>> # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
->>> # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the
->>> # problem before using this for real work.
->>> sel_basic = "(resname ARG LYS) and (name NH* NZ)"
->>> sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
->>> # reference groups (first frame of the trajectory, but you could also use a
->>> # separate PDB, eg crystal structure)
->>> acidic = u.select_atoms(sel_acidic)
->>> basic = u.select_atoms(sel_basic)
->>> # set up analysis of native contacts ("salt bridges"); salt bridges have a
->>> # distance <6 A
->>> ca1 = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
->>>                         refgroup=(acidic, basic), radius=6.0)
->>> # iterate through trajectory and perform analysis of "native contacts" Q
->>> ca1.run()
->>> # print number of averave contacts
->>> average_contacts = np.mean(ca1.timeseries[:, 1])
->>> print('average contacts = {}'.format(average_contacts))
->>> # plot time series q(t)
->>> f, ax = plt.subplots()
->>> ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
->>> ax.set(xlabel='frame', ylabel='fraction of native contacts',
+    import MDAnalysis as mda
+    from MDAnalysis.analysis import contacts
+    from MDAnalysis.tests.datafiles import PSF,DCD
+    import matplotlib.pyplot as plt
+    # example trajectory (transition of AdK from closed to open)
+    u = mda.Universe(PSF,DCD)
+    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
+    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the
+    # problem before using this for real work.
+    sel_basic = "(resname ARG LYS) and (name NH* NZ)"
+    sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
+    # reference groups (first frame of the trajectory, but you could also use a
+    # separate PDB, eg crystal structure)
+    acidic = u.select_atoms(sel_acidic)
+    basic = u.select_atoms(sel_basic)
+    # set up analysis of native contacts ("salt bridges"); salt bridges have a
+    # distance <6 A
+    ca1 = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+                            refgroup=(acidic, basic), radius=6.0)
+    # iterate through trajectory and perform analysis of "native contacts" Q
+    ca1.run()
+    # print number of averave contacts
+    average_contacts = np.mean(ca1.timeseries[:, 1])
+    print('average contacts = {}'.format(average_contacts))
+    # plot time series q(t)
+    f, ax = plt.subplots()
+    ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
+    ax.set(xlabel='frame', ylabel='fraction of native contacts',
            title='Native Contacts, average = {:.2f}'.format(average_contacts))
->>> fig.show()
+    fig.show()
 
 
 The first graph shows that when AdK opens, about 20% of the salt
@@ -87,86 +90,93 @@ bridges that existed in the closed state disappear when the enzyme
 opens. They open in a step-wise fashion (made more clear by the movie
 `AdK_zipper_cartoon.avi`_).
 
-.. AdK_zipper_cartoon.avi:
+.. _`AdK_zipper_cartoon.avi`:
    http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2803350/bin/NIHMS150766-supplement-03.avi
 
-Notes
------
+.. rubric:: Notes
+
 Suggested cutoff distances for different simulations
+
 * For all-atom simulations, cutoff = 4.5 A
 * For coarse-grained simulations, cutoff = 6.0 A
+
 
 Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Analyze a single DIMS transition of AdK between its closed and open
-conformation and plot the trajectory projected on q1-q2::
+conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
 
 
->>> import MDAnalysis as mda
->>> from MDAnalysis.analysis import contacts
->>> from MDAnalysisTests.datafiles import PSF, DCD
->>> u = mda.Universe(PSF, DCD)
->>> q1q2 = contacts.q1q2(u, 'name CA', radius=8)
->>> q1q2.run()
->>>
->>> f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))
->>> ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label='q1')
->>> ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label='q2')
->>> ax[0].legend(loc='best')
->>> ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], '.-')
->>> f.show()
+    import MDAnalysis as mda
+    from MDAnalysis.analysis import contacts
+    from MDAnalysisTests.datafiles import PSF, DCD
+    u = mda.Universe(PSF, DCD)
+    q1q2 = contacts.q1q2(u, 'name CA', radius=8)
+    q1q2.run()
 
-Compare the resulting pathway to the `MinActionPath result for AdK`_.
+    f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))
+    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label='q1')
+    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label='q2')
+    ax[0].legend(loc='best')
+    ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], '.-')
+    f.show()
+
+Compare the resulting pathway to the `MinActionPath result for AdK`_
+[Franklin2007]_.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
 
+
 Writing your own contact analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ..class:`Contacts` has been designed to be extensible for your own
+The :class:`Contacts` class has been designed to be extensible for your own
 analysis. As an example we will analysis when the acidic and basic groups of
 are in contact which each other, this means that at least one of the contacts
-formed in the reference is closer then 2.5 Angstrom. For this we define a new
-method to determine if any contact is closer then 2.5 Angström that implements
-the API ..class:`Contacts` except.
+formed in the reference is closer then 2.5 Å.
 
-The first to parameters `r` and `r0` are provided by ..class:`Contacts` the
-others can be passed as keyword args using the `kwargs` parameter in
-..class:`Contacts`.
+For this we define a new function to determine if any contact is closer than
+2.5 Å; this function must implement the API prescribed by :class:`Contacts`::
 
->>> def is_any_closer(r, r0, dist=2.5):
->>>     return np.any(r < dist)
+    def is_any_closer(r, r0, dist=2.5):
+        return np.any(r < dist)
 
-Next we are creating an instance of the Constants class and use the
-`is_any_closer` function as an argument to `method` and run the analysus
+The first two parameters `r` and `r0` are provided by :class:`Contacts` when it
+calls :func:`is_any_closer` while the others can be passed as keyword args
+using the `kwargs` parameter in :class:`Contacts`.
 
->>> # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
->>> # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the
->>> # problem before using this for real work.
->>> sel_basic = "(resname ARG LYS) and (name NH* NZ)"
->>> sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
->>> # reference groups (first frame of the trajectory, but you could also use a
->>> # separate PDB, eg crystal structure)
->>> acidic = u.select_atoms(sel_acidic)
->>> basic = u.select_atoms(sel_basic)
->>> nc = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
->>>                        method=is_any_closer,
->>>                        refgroup=(acidic, basic), kwargs={'dist': 2.5})
->>>
->>> nc.run()
->>>
->>> bound = nc.timeseries[:, 1]
->>> frames = nc.timeseries[:, 0]
->>>
->>> f, ax = plt.subplots()
->>>
->>> ax.plot(frames, bound, '.')
->>> ax.set(xlabel='frame', ylabel='is Bound',
->>>        ylim=(-0.1, 1.1))
->>>
->>> f.show()
+Next we are creating an instance of the :class:`Contacts` class and use the
+:func:`is_any_closer` function as an argument to `method` and run the analysis::
+
+    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and
+    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the
+    # problem before using this for real work.
+    sel_basic = "(resname ARG LYS) and (name NH* NZ)"
+    sel_acidic = "(resname ASP GLU) and (name OE* OD*)"
+
+    # reference groups (first frame of the trajectory, but you could also use a
+    # separate PDB, eg crystal structure)
+    acidic = u.select_atoms(sel_acidic)
+    basic = u.select_atoms(sel_basic)
+
+    nc = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+                           method=is_any_closer,
+                           refgroup=(acidic, basic), kwargs={'dist': 2.5})
+    nc.run()
+
+    bound = nc.timeseries[:, 1]
+    frames = nc.timeseries[:, 0]
+
+    f, ax = plt.subplots()
+
+    ax.plot(frames, bound, '.')
+    ax.set(xlabel='frame', ylabel='is Bound',
+           ylim=(-0.1, 1.1))
+
+    f.show()
+
 
 Functions
 ---------
@@ -186,6 +196,8 @@ Classes
 
 Deprecated
 ----------
+
+The following classes are deprecated and are scheduled for removal in release 0.17.0.
 
 .. autoclass:: ContactAnalysis1
    :members:
@@ -219,13 +231,16 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
-    ..math::
+    The native contact function is defined as [Best2013]_
+
+    .. math::
+
         Q(r, r_0) = \frac{1}{1 + e^{\beta (r - \lambda r_0)}}
 
     Reasonable values for different simulation types are
 
-    *All Atom*: lambda_constant = 1.8 (unitless)
-    *Coarse Grained*: lambda_constant = 1.5 (unitless)
+    - *All Atom*: `lambda_constant = 1.8` (unitless)
+    - *Coarse Grained*: `lambda_constant = 1.5` (unitless)
 
     Parameters
     ----------
@@ -245,9 +260,9 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
 
     References
     ----------
-    .. [1] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
+    .. [Best2013] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
        folding mechanisms in atomistic simulations" _PNAS_ **110** (2013),
-       17874–17879. `10.1073/pnas.1311599110
+       17874–17879. doi: `10.1073/pnas.1311599110
        <http://doi.org/10.1073/pnas.1311599110>`_.
 
     """
@@ -259,8 +274,10 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
 
 
 def hard_cut_q(r, cutoff):
-    """Calculate fraction of native contacts *Q* for a hard cut off. The cutoff
-    can either be a float a ndarray the same shape as `r`
+    """Calculate fraction of native contacts *Q* for a hard cut off.
+
+    The cutoff can either be a float or a :class:`~numpy.ndarray` of the same
+    shape as `r`.
 
     Parameters
     ----------
@@ -283,14 +300,14 @@ def hard_cut_q(r, cutoff):
 
 
 def radius_cut_q(r, r0, radius):
-    """calculate native contacts *Q* based on the single sistance radius
+    """calculate native contacts *Q* based on the single distance radius.
 
     Parameters
     ----------
     r : ndarray
         distance array between atoms
     r0 : ndarray
-        unused to fullfill Contacts API
+        unused to fullfill :class:`Contacts` API
     radius : float
         Distance between atoms at which a contact is formed
 
@@ -301,11 +318,11 @@ def radius_cut_q(r, r0, radius):
 
     References
     ----------
-    .. [1] Franklin, J., Koehl, P., Doniach, S., & Delarue, M. (2007).
-       MinActionPath: Maximum likelihood trajectory for large-scale structural
-       transitions in a coarse-grained locally harmonic energy landscape.
-       Nucleic Acids Research, 35(SUPPL.2), 477–482.
-       http://doi.org/10.1093/nar/gkm342
+    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., & Delarue,
+       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale
+       structural transitions in a coarse-grained locally harmonic energy
+       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.
+       doi: `10.1093/nar/gkm342 <http://doi.org/10.1093/nar/gkm342>`_
 
     """
     return hard_cut_q(r, radius)
@@ -341,9 +358,16 @@ class Contacts(AnalysisBase):
     """Calculate contacts based observables.
 
     The standard methods used in this class calculate the fraction of native
-    contacts *Q* from a trajectory. By defining your own method it is possible
-    to calculate other observables that only depend on the distances and a
-    possible reference distance.
+    contacts *Q* from a trajectory.
+
+
+    .. rubric:: Contact API
+
+    By defining your own method it is possible to calculate other observables
+    that only depend on the distances and a possible reference distance. The
+    **Contact API** prescribes that this method must be a function with call
+    signature ``func(r, r0, **kwargs)`` and must be provided in the keyword
+    argument `method`.
 
     Attributes
     ----------
@@ -367,8 +391,8 @@ class Contacts(AnalysisBase):
         radius : float, optional (4.5 Angstroms)
             radius within which contacts exist in refgroup
         method : string | callable (optional)
-            Can either be one of ['hard_cut' , 'soft_cut'] or a callable that
-            implements a API (r, r0, **kwargs).
+            Can either be one of ``['hard_cut' , 'soft_cut']`` or a callable
+            with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
@@ -437,8 +461,8 @@ class Contacts(AnalysisBase):
     def save(self, outfile):
         """save contacts timeseries
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         outfile : str
             file to save contacts
 
@@ -457,8 +481,10 @@ def _new_selections(u_orig, selections, frame):
 
 def q1q2(u, selection='all', radius=4.5,
          start=None, stop=None, step=None):
-    """Do a q1-q2 analysis to compare native contacts between the starting
-    structure and final structure of a trajectory.
+    """Perform a q1-q2 analysis.
+
+    Compares native contacts between the starting structure and final structure
+    of a trajectory [Franklin2007]_.
 
     Parameters
     ----------
@@ -477,8 +503,8 @@ def q1q2(u, selection='all', radius=4.5,
 
     Returns
     -------
-    contacts
-        Contact Analysis setup for a q1-q2 analysis
+    contacts : :class:`Contacts`
+        Contact Analysis that is set up for a q1-q2 analysis
 
     """
     selection = (selection, selection)
@@ -533,6 +559,8 @@ class ContactAnalysis(object):
     accessible as the attribute
     :attr:`ContactAnalysis.timeseries`.
 
+
+    .. deprecated:: 0.15.0
     """
 
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
@@ -865,6 +893,7 @@ class ContactAnalysis1(object):
     *q*
          fraction of native contacts relative to the reference
 
+    .. deprecated:: 0.15.0
     """
 
     def __init__(self, *args, **kwargs):
@@ -911,8 +940,6 @@ class ContactAnalysis1(object):
 
         The timeseries is written to a file *outfile* and is also accessible as
         the attribute :attr:`ContactAnalysis1.timeseries`.
-
-        .. deprecated: 0.14.0
 
         """
 
