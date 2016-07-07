@@ -15,7 +15,7 @@
 #
 
 """
-Diffusion map --- :mod:`MDAnalysis.analysis.pca`
+Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 =====================================================================
 
 :Authors: John Detlefs
@@ -25,17 +25,55 @@ Diffusion map --- :mod:`MDAnalysis.analysis.pca`
 This module contains the linear dimension reduction method Principal
 Component Analysis. This module constructs a covariance matrix wherein each
 element of the matrix is denoted by (i,j) row-column coordinates. The (i,j)
-coordinate reflects the influence of the of the ith frame on the jth frame
-of the trajectory. The Principal Components are the eigenvectors of this matrix.
+coordinate reflects the influence of the of the ith frame's coordinates on the
+jth frame's coordinates of a given trajectory. The eponymous components are the
+eigenvectors of this matrix.
 
 For each eigenvector, its eigenvalue reflects the variance that the eigenvector
-explains. This value is made into a ratio stored in `explained_variance`, which
-provides divides accumulated variance of the nth eigenvector and the
-n-1 eigenvectors preceding by the total variance in the data.
+explains. This value is made into a ratio. Stored in
+:attribute:`explained_variance`, this ratio divides the accumulated variance
+of the nth eigenvector and the n-1 eigenvectors preceding the eigenvector by
+the total variance in the data. For most data, :attribute:`explained_variance`
+will be approximately equal to one for some n that is significantly smaller
+than the total number of components, these are the components of interest given
+by Principal Component Analysis.
 
-From here, we can project a trajectory onto these principal components,
+From here, we can project a trajectory onto these principal components and
+attempt to retrieve some structure from our high dimensional data. We have
+provided a [notebook](# TODO edit max's notebook to use the new module)
+containing a thorough demonstration of Principal Component Analysis.
+
+For a basic introduction to the module, the :ref:`PCA-tutorial` shows how
+to perform Principal Component Analysis.
 
 
+.. _PCA-tutorial:
+The example uses files provided as part of the MDAnalysis test suite
+(in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
+:data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
+PCA class.
+
+
+First load all modules and test data ::
+    >>> import MDAnalysis as mda
+    >>> import numpy as np
+    >>> import MDAnalysis.analysis.pca as pca
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+
+Given a universe containing trajectory data we can perform PCA using
+:class:`PCA`:: and retrieve the principal components.
+    >>> u = mda.Universe(PSF,DCD)
+    >>> PSF_pca = pca.PCA(u)
+    >>> cumulated_variance, principal_components = PSF_pca.fit()
+
+Inspect the components to determine the principal components you would like
+to retain. The choice is arbitrary, but I will stop when 95 percent of the
+variance is explained by the components.
+    >>> n_pcs = next(x[0] for x in enumerate(cumulated_variance) if x[1] > 0.95)
+    >>> pca_space = PSF_pca.transform(n_components=n_pcs)
+
+From here, inspection of the pca_space and conclusions to be drawn from the
+data are left to the user.
 """
 from six.moves import range
 import logging
@@ -147,15 +185,17 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        traj : MDAnalysis Trajectory
-            Trajectory for PCA transformation
+        traj : MDAnalysis Universe
+            Universe containing trajectory for PCA transformation
         Returns
         -------
         pca_space : array, shape (number of atoms, number of components)
         """
         if traj is None:
             traj = self._original_traj
-        return np.dot(traj, self.p_components)
+
+        ca_xyz = np.array([ca.positions.copy() for ts in traj])
+        return np.dot(traj, self.p_components[:n_components])
 
 
     def inverse_tranform(self, pca_space):
