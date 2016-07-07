@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -79,18 +79,14 @@ class InterRDF(AnalysisBase):
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
-                 start=None, stop=None, step=None):
+                 **kwargs):
+        super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
         self.g2 = g2
         self.u = g1.universe
 
-        self._setup_frames(self.u.trajectory,
-                           start=start,
-                           stop=stop,
-                           step=step)
-
-        self.rdf_settings = {'bins':nbins,
-                             'range':range}
+        self.rdf_settings = {'bins': nbins,
+                             'range': range}
 
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
