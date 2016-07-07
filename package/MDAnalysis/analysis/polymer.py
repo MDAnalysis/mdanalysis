@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -32,7 +32,6 @@ import numpy as np
 import logging
 
 from .. import NoDataError
-from ..lib.util import blocks_of
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
 
@@ -51,8 +50,7 @@ class PersistenceLength(AnalysisBase):
 
     .. versionadded:: 0.13.0
     """
-    def __init__(self, atomgroups,
-                 start=None, stop=None, step=None):
+    def __init__(self, atomgroups, **kwargs):
         """Calculate the persistence length for polymer chains
 
         Parameters
@@ -67,16 +65,15 @@ class PersistenceLength(AnalysisBase):
         step : int, optional
             Step between frames to analyse, Default: 1
         """
+        super(PersistenceLength, self).__init__(
+            atomgroups[0].universe.trajectory, **kwargs)
         self._atomgroups = atomgroups
 
         # Check that all chains are the same length
         lens = [len(ag) for ag in atomgroups]
         chainlength = len(atomgroups[0])
-        if not all( l == chainlength for l in lens):
+        if not all(l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
-
-        self._setup_frames(atomgroups[0].universe.trajectory,
-                           start, stop, step)
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
@@ -117,10 +114,9 @@ class PersistenceLength(AnalysisBase):
 
     def perform_fit(self):
         """Fit the results to an exponential decay"""
-        from scipy.optimize import curve_fit
 
         try:
-            results = self.results
+            self.results
         except AttributeError:
             raise NoDataError("Use the run method first")
         self.x = np.arange(len(self.results)) * self.lb
