@@ -171,6 +171,7 @@ Utilities
 
 
 """
+from __future__ import absolute_import, with_statement
 
 from six.moves import zip, cPickle
 import six
@@ -296,8 +297,8 @@ class BaseHOLE(object):
             kw['label'] = True
         color = kwargs.pop('color', None)
         if color is None:
-            cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-            normalize = matplotlib.colors.normalize(vmin=np.min(frames), vmax=np.max(frames))
+            cmap = kwargs.pop('cmap', matplotlib.cm.viridis)
+            normalize = matplotlib.colors.Normalize(vmin=np.min(frames), vmax=np.max(frames))
             colors = cmap(normalize(frames))
         else:
             colors = cycle(asiterable(color))
@@ -314,7 +315,7 @@ class BaseHOLE(object):
            *step*
               only plot every *step* profile [1]
            *cmap*
-              matplotlib color map to continuously color graphs [jet]
+              matplotlib color map to continuously color graphs [viridis]
            *color*
               color or iterable of colors to specify graph colors;
               ``None`` will use *cmap* instead [``None``]
@@ -337,6 +338,11 @@ class BaseHOLE(object):
               [``None``]
 
         All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
+
+        :Returns: axis
+
+        .. versionchanged:: 0.16.0
+           Returns ``ax``.
         """
         import matplotlib.pyplot as plt
 
@@ -356,6 +362,7 @@ class BaseHOLE(object):
         ax.set_ylabel(r"HOLE radius $r$ ($\AA$)")
         if kw['label']:
             ax.legend(loc="best")
+        return ax
 
     def plot3D(self, **kwargs):
         """Stacked graph of profiles.
@@ -366,17 +373,22 @@ class BaseHOLE(object):
            *step*
               only plot every *step* profile [1]
            *cmap*
-              matplotlib color map [jet]
+              matplotlib color map [viridis]
            *rmax*
               only display radii up to *rmax* [``None``]
            *ylabel*
               label of the reaction coordinate axis ["frames"]
+
+
+        :Returns: axis
 
         Based on Stack Overflow post `3d plots using matplotlib`_.
 
         .. _`3d plots using matplotlib`:
            http://stackoverflow.com/questions/9053255/3d-plots-using-matplotlib
 
+        .. versionchanged:: 0.16.0
+           Returns ``ax``.
         """
         import matplotlib.pyplot as plt
         import mpl_toolkits.mplot3d.axes3d as axes3d
@@ -409,14 +421,12 @@ class BaseHOLE(object):
         ax.set_xlabel(r"pore coordinate $z$")
         ax.set_ylabel(ylabel)
         ax.set_zlabel(r"HOLE radius $r$")
-        plt.draw()
+        
+        return ax
 
     def min_radius(self):
         """Return the minimum radius over all profiles as a function of q"""
-        f = []
-        for q, profile in self:
-            f.append([q, profile.radius.min()])
-        return np.array(f)
+        return np.array([[q, profile.radius.min()] for q, profile in self])
 
     def sorted_profiles_iter(self):
         """Return an iterator over profiles sorted by frame/order parameter *q*.
