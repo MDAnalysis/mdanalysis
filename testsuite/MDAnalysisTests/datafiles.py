@@ -78,7 +78,7 @@ __all__ = [
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "PDB_HOLE",  # gramicidin A
-    "XTC_HOLE",  # gramicidin A, all frames identical, for Issue 129
+    "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
@@ -255,7 +255,7 @@ HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matri
 
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
-XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
+MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
 

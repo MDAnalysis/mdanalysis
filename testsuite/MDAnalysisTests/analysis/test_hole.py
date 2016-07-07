@@ -28,7 +28,7 @@ from nose.plugins.attrib import attr
 
 import errno
 
-from MDAnalysisTests.datafiles import PDB_HOLE, XTC_HOLE
+from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE
 from MDAnalysisTests import executable_not_found, tempdir
 
 def rlimits_missing():
@@ -44,7 +44,7 @@ def rlimits_missing():
 
 class TestHoleModule(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PDB_HOLE, XTC_HOLE)
+        self.universe = MDAnalysis.Universe(MULTIPDB_HOLE)
         try:
             # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
             import resource

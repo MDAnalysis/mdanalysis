@@ -13,13 +13,14 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16 jbarnoud
+??/??/16 jbarnoud, orbeckst
 
   * 0.15.1
     - Added a plugin to list the non-closed file handle (Issue #853, PR #874).
       The plugin can be disabled with --no-open-files.
     - The test_failure test can be made fail by setting the MDA_FAILURE_TEST
       environment variable (PR #874)
+    - replaced XTC_HOLE test trajectory with more meaningful one MULTIPDB_HOLE
 
 05/15/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
