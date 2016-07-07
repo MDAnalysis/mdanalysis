@@ -71,7 +71,7 @@ class AnalysisBase(object):
         self.start = start
         self.stop = stop
         self.step = step
-        self.nframes = len(range(start, stop, step))
+        self.n_frames = len(range(start, stop, step))
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -99,7 +99,7 @@ class AnalysisBase(object):
                 self._trajectory[self.start:self.stop:self.step]):
             self._frame_index = i
             self._ts = ts
-            # logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+            # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
         logger.info("Finishing up")
         self._conclude()

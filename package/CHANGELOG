@@ -13,17 +13,19 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de,jdetle, fiona-naughton, richardjgowers
+??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
 
   * 0.15.1
 
 Fixes
+  * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
   * fix __iter__/next redundancy (Issue #869)
   * SingleFrameReader now raises StopIteration instead of IOError on calling
     next (Issue #869)
   * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
-
+  * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
+  
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase

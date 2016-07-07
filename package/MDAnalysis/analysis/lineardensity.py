@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -46,7 +46,7 @@ class LinearDensity(AnalysisBase):
 
     binsize : float
           Bin width in Angstrom used to build linear density
-          histograms. Defines the resolution of the resulting density 
+          histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution) [0.25]
 
     start : int
@@ -58,7 +58,7 @@ class LinearDensity(AnalysisBase):
 
     Example
     -------
-    First create a LinearDensity object by supplying a selection, 
+    First create a LinearDensity object by supplying a selection,
     then use the `run` method:
       ldens = LinearDensity(selection)
       ldens.run()
@@ -161,7 +161,7 @@ class LinearDensity(AnalysisBase):
         # Average results over the  number of configurations
         for dim in ['x', 'y', 'z']:
             for key in ['pos', 'pos_std', 'char', 'char_std']:
-                self.results[dim][key] /= self.nframes
+                self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
             self.results[dim]['pos_std'] = np.sqrt(self.results[dim]['pos_std']
                                                    - np.square(self.results[dim]['pos']))
