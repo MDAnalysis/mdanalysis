@@ -112,5 +112,6 @@ Volumetric analysis
 Dimension Reduction
 ===================
 .. toctree::
-    :maxdepth: 1
-    analysis/diffusionmap
+   :maxdepth: 1
+   
+   analysis/diffusionmap
