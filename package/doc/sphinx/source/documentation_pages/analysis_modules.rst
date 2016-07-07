@@ -113,5 +113,5 @@ Dimension Reduction
 ===================
 .. toctree::
    :maxdepth: 1
-   
+
    analysis/diffusionmap
