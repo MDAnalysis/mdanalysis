@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -472,8 +472,7 @@ class AlignTraj(AnalysisBase):
 
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', mass_weighted=False, tol_mass=0.1,
-                 strict=False, force=True, quiet=False, start=None, stop=None,
-                 step=None, **kwargs):
+                 strict=False, force=True, **kwargs):
         """Initialization
 
         Parameters
@@ -516,18 +515,16 @@ class AlignTraj(AnalysisBase):
         exception
 
         """
-        self._quiet = quiet
+        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
         if self._quiet:
             logging.disable(logging.WARN)
 
-        traj = mobile.trajectory
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
         self.mobile_atoms = mobile.select_atoms(*select['mobile'])
-        kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
 
         if filename is None:
-            path, fn = os.path.split(traj.filename)
+            path, fn = os.path.split(self._trajectory.filename)
             filename = os.path.join(path, prefix + fn)
             logger.info('filename of rms_align with no filename given'
                         ': {0}'.format(filename))
@@ -540,7 +537,8 @@ class AlignTraj(AnalysisBase):
 
         natoms = self.mobile_atoms.n_atoms
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
-            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass, strict=strict)
+            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
+            strict=strict)
 
         self._writer = mda.Writer(self.filename, natoms)
 
@@ -551,7 +549,6 @@ class AlignTraj(AnalysisBase):
             self._weights = None
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
-        self._setup_frames(traj, start, stop, step)
 
     def _prepare(self):
         # reference centre of mass system
