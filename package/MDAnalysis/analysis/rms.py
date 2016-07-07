@@ -461,11 +461,11 @@ class RMSD(object):
             rot = None
 
         # RMSD timeseries
-        nframes = len(np.arange(0, len(trajectory))[start:stop:step])
-        rmsd = np.zeros((nframes, 3 + len(self.groupselections_atoms)))
+        n_frames = len(np.arange(0, len(trajectory))[start:stop:step])
+        rmsd = np.zeros((n_frames, 3 + len(self.groupselections_atoms)))
 
         percentage = ProgressMeter(
-            nframes, interval=10, format="RMSD %(rmsd)5.2f A at frame "
+            n_frames, interval=10, format="RMSD %(rmsd)5.2f A at frame "
             "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
         for k, ts in enumerate(trajectory[start:stop:step]):

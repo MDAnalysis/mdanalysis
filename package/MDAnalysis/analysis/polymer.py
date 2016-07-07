@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -84,7 +84,7 @@ class PersistenceLength(AnalysisBase):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
-        # decorrel for that 
+        # decorrel for that
         n = len(self._atomgroups[0])
 
         for chain in self._atomgroups:
@@ -101,7 +101,7 @@ class PersistenceLength(AnalysisBase):
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * self.nframes
+        norm *= len(self._atomgroups) * self.n_frames
 
         self.results = self._results / norm
         self._calc_bond_length()
@@ -169,5 +169,3 @@ def fit_exponential_decay(x, y):
     a = curve_fit(expfunc, x, y)[0][0]
 
     return a
-
-    

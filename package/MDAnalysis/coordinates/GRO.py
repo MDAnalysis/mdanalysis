@@ -297,9 +297,10 @@ class GROWriter(base.Writer):
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
                 truncated_atom_index = int(str(atom_index + 1)[-5:])
+                truncated_resid = int(str(atom.resid)[:5])
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
-                        resid=atom.resid,
+                        resid=truncated_resid,
                         resname=atom.resname,
                         index=truncated_atom_index,
                         name=atom.name,
@@ -308,7 +309,7 @@ class GROWriter(base.Writer):
                     ))
                 else:
                     output_gro.write(self.fmt['xyz'].format(
-                        resid=atom.resid,
+                        resid=truncated_resid,
                         resname=atom.resname,
                         index=truncated_atom_index,
                         name=atom.name,

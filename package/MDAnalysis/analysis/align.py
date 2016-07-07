@@ -558,7 +558,7 @@ class AlignTraj(AnalysisBase):
         self._ref_com = self.ref_atoms.center_of_mass()
         self._ref_coordinates = self.ref_atoms.positions - self._ref_com
         # allocate the array for selection atom coords
-        self.rmsd = np.zeros((self.nframes,))
+        self.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
         index = self._ts.frame
@@ -717,8 +717,8 @@ def rms_fit_trj(
     traj_coordinates = traj_atoms.positions.copy()
 
     # RMSD timeseries
-    nframes = len(frames)
-    rmsd = np.zeros((nframes,))
+    n_frames = len(frames)
+    rmsd = np.zeros((n_frames,))
 
     # R: rotation matrix that aligns r-r_com, x~-x~com
     #    (x~: selected coordinates, x: all coordinates)
@@ -727,7 +727,7 @@ def rms_fit_trj(
     R = np.matrix(rot.reshape(3, 3))
 
     percentage = ProgressMeter(
-        nframes,
+        n_frames,
         interval=10,
         quiet=quiet,
         format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]      r")
