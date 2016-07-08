@@ -44,6 +44,15 @@ class IncompleteAnalysis(AnalysisBase):
         super(IncompleteAnalysis, self).__init__(reader, **kwargs)
 
 
+class OldAPIAnalysis(AnalysisBase):
+    """for version 0.15.0"""
+    def __init__(self, reader, **kwargs):
+        self._setup_frames(reader, **kwargs)
+
+    def _single_frame(self):
+        pass
+
+
 class TestAnalysisBase(object):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -81,3 +90,6 @@ class TestAnalysisBase(object):
     @raises(NotImplementedError)
     def test_incomplete_defined_analysis(self):
         IncompleteAnalysis(self.u.trajectory).run()
+
+    def test_old_api(self):
+        OldAPIAnalysis(self.u.trajectory).run()

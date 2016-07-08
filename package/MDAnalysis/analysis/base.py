@@ -90,13 +90,8 @@ class AnalysisBase(object):
         quiet : bool, optional
             Turn off verbosity
         """
-        self._setup_frames(trajectory, start, stop, step)
-        interval = int(self.n_frames // 100)
-        if interval == 0:
-            interval = 1
-        self._pm = ProgressMeter(self.nframes if self.nframes else 1,
-                                 interval=interval, quiet=quiet)
         self._quiet = quiet
+        self._setup_frames(trajectory, start, stop, step)
 
     def _setup_frames(self, trajectory, start=None,
                       stop=None, step=None):
@@ -122,6 +117,16 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.n_frames = len(range(start, stop, step))
+        interval = int(self.n_frames // 100)
+        if interval == 0:
+            interval = 1
+
+        # ensure _quiet is set when __init__ wasn't called, this is to not
+        # break pre 0.16.0 API usage of AnalysisBase
+        if not hasattr(self, '_quiet'):
+            self._quiet = True
+        self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
+                                 interval=interval, quiet=self._quiet)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
