@@ -132,7 +132,7 @@ class TestRMSD(object):
     def setUp(self):
         self.universe = MDAnalysis.Universe(GRO, XTC)
         self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'rmsd.xtc')
+        self.outfile = os.path.join(self.tempdir.name, 'rmsd.npy')
 
     def tearDown(self):
         del self.universe
@@ -151,7 +151,15 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(start=5, stop=6)
 
-
+    def test_rmsd_save(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
+        RMSD.run()
+        RMSD.save(self.outfile)
+        saved_file = np.load(self.outfile)
+        test_rmsds = np.load(rmsdArray)
+        assert_almost_equal(saved_file, test_rmsds, 5,
+                            err_msg="error: rmsd profile should match test " +
+                            "values")
 
 class TestRMSF(TestCase):
     def setUp(self):
