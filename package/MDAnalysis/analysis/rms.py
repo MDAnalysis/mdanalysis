@@ -527,7 +527,7 @@ class RMSD(object):
         if filename is not None:
             if self.rmsd is None:
                 raise NoDataError("rmsd has not been calculated yet")
-            np.savetxt(filename, self.rmsd)
+            np.save(filename, self.rmsd)
             logger.info("Wrote RMSD timeseries  to file %r", filename)
         return filename
 

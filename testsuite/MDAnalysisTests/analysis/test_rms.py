@@ -26,11 +26,11 @@ import numpy as np
 
 import os
 
-from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
+from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, rmsdArray, PSF, DCD
 from MDAnalysisTests import tempdir
 
 
-class TestRMSD(object):
+class Testrmsd(object):
     def __init__(self):
         shape = (5, 3)
         # vectors with length one
@@ -127,6 +127,30 @@ class TestRMSD(object):
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
         assert_almost_equal(rmsd, rmsd_superposition)
+
+class TestRMSD(object):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(GRO, XTC)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'rmsd.xtc')
+
+    def tearDown(self):
+        del self.universe
+        del self.tempdir
+
+    def test_rmsd(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
+        RMSD.run()
+        test_rmsds = np.load(rmsdArray)
+
+        assert_almost_equal(RMSD.rmsd, test_rmsds, 5,
+                            err_msg="error: rmsd profile should match test " +
+                            "values")
+
+    def test_rmsd_single_frame(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
+        RMSD.run(start=5, stop=6)
+
 
 
 class TestRMSF(TestCase):
