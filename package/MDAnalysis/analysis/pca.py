@@ -113,7 +113,7 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, u):
+    def __init__(self, u, select='all'):
         """
         Parameters
         ----------
@@ -121,19 +121,20 @@ class PCA(AnalysisBase):
             The universe containing the trajectory frames for Principal
             Component Analysis.
         """
-        self.u = u
+        self._u = u
+        self._atoms = self._u.select_atoms(select)
+        self._n_atoms = self._atoms.n_atoms
         self._calculated = False
 
 
-    def fit(self, select='All', n_components=-1, start=None, stop=None,
+    def fit(self, n_components=None, start=None, stop=None,
             step=None):
-        """ Use a subset of the trajectory to generate principal components.
+        """ Use a subset of frames from the trajectory to generate the
+            principal components.
 
         Parameters
         ----------
-        select : string, optional
-            A valid select statement for picking a subset of atoms from an
-            MDAnalysis Trajectory.
+
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: -1
@@ -146,60 +147,67 @@ class PCA(AnalysisBase):
         step : int, optional
             Step between frames of trajectory to use for generation
             of covariance matrix, Default: 1
+
+        Return
+        ------
+        cumulated_variance: array, (n_components, )
+            The amount of variance explained by the nth component and the n-1
+            components preceding it.
+        p_components: array, (n_components, n_atoms * 3)
+
         """
-        self._setup_frames(self.u.trajectory, start, stop, step)
+        self._setup_frames(self._u.trajectory, start, stop, step)
         self.n_components = n_components
-        self.atoms = self.u.select_atoms(select)
-        self._n_atoms = self.atoms.n_atoms
         self.run()
         self._calculated = True
-        return self.cumulated_variance, self.p_components
 
+        if n_components is None:
+            return self.cumulated_variance, self.p_components
+        else:
+            return (self.cumulated_variance[:n_components],
+                    self.p_components[:n_components])
 
     def _prepare(self):
-        self._xyz = np.zeros((self.nframes, self._n_atoms, 3))
+        self._xyz = np.zeros((self.n_frames, self._n_atoms, 3))
 
 
     def _single_frame(self):
-        self._xyz[self._frame_index] = self.atoms.positions.copy()
+        self._xyz[self._frame_index] = self._atoms.positions.copy()
 
 
     def _conclude(self):
-        self._xyz = self._xyz.reshape(self.nframes, self._n_atoms * 3,
+        self._xyz = self._xyz.reshape(self.n_frames, self._n_atoms * 3,
                                       order='F')
         x = self._xyz - self._xyz.mean(0)
         cov = np.cov(x, rowvar = 0)
         e_vals, e_vects = np.linalg.eig(cov)
         sort_idx = np.argsort(e_vals)[::-1]
         self.variance = e_vals[sort_idx]
-        p_components = e_vects[sort_idx]
+        self.p_components = e_vects[sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
-        self.p_components = p_components[:self.n_components]
 
 
-    def transform(self, select='All', u=None, n_components=None):
+    def transform(self, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
         ----------
-        select : string, optional
-            A valid select statement for picking a subset of atoms from an
-            MDAnalysis Universe.
-        u : MDAnalysis Universe
-            Universe containing trajectory for PCA transformation
+        n_components: int, optional
+            The number of components to be projected onto, default maps onto
+            all components.
         Returns
         -------
-        pca_space : array, shape (number of atoms*3, number of components)
+        pca_space : array, shape (number of frames, number of components)
         """
-        if u is None:
-            u = self.u
 
-        atoms = u.select_atoms(select)
-
-        xyz = np.array([atoms.positions.copy() for ts in u.trajectory])
-        xyz.reshape(u.trajectory.nframes, atoms.n_atoms*3, order='F')
-        return np.dot(xyz, self.p_components[:n_components])
+        xyz = np.array([self._atoms.positions.copy() for ts in self._u.trajectory])
+        xyz = xyz.reshape(self._u.trajectory.n_frames,
+                          self._n_atoms*3, order='F')
+        if n_components is None:
+            return np.dot(xyz, self.p_components.T)
+        else:
+            return np.dot(xyz, self.p_components[:n_components].T)
 
 
     def inverse_tranform(self, pca_space):
