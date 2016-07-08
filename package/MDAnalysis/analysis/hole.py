@@ -674,6 +674,16 @@ class HOLE(BaseHOLE):
                to live in the same directory as :program:`hole`. If
                :program:`hole` is found on the :envvar:`PATH` then the bare
                executable name is sufficient.  ["hole"]
+
+          *raseed*
+
+               Integer number to start the random number generator; by
+               default, :program:`hole` will use the time of the day
+               (set `raseed=None`, the default) but for reproducible
+               runs (e.g., for testing) set it to an integer.
+
+        .. versionchanged:: 0.16.0
+           Added *raseed* keyword argument.
         """
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = []
@@ -695,6 +705,7 @@ class HOLE(BaseHOLE):
         self.ignore_residues = kwargs.pop("ignore_residues", self.default_ignore_residues)
         self.radius = self.check_and_fix_long_filename(
             realpath(kwargs.pop('radius', None) or write_simplerad2()))
+        self.raseed = kwargs.pop('raseed', None)
 
         logger.info("Setting up HOLE analysis for %(filename)r", vars(self))
         logger.info("Using radius file %(radius)r", vars(self))
@@ -728,11 +739,18 @@ class HOLE(BaseHOLE):
             IGNORE %(ignore)s
             SHORTO %(shorto)d
             """)
+        if self.raseed is not None:
+            self.raseed = int(self.raseed)
+            self.template += "RASEED %(raseed)d\n"
+            logger.info("Fixed random number seed {} for reproducible "
+                        "runs.".format(self.raseed))
+
         if self.cpoint is not None:
             # note: if it is None then we can't change this with a kw for run() !!
             self.template += "CPOINT %(cpoint_xyz)s\n"
         else:
             logger.info("HOLE will guess CPOINT")
+
         if self.cvect is not None:
             # note: if it is None then we can't change this with a kw for run() !!
             self.template += "CVECT  %(cvect_xyz)s\n"
@@ -1084,8 +1102,8 @@ class HOLEtraj(BaseHOLE):
         if isinstance(data, six.string_types):
             q = np.loadtxt(data)
         elif data is None:
-            # frame numbers
-            q = np.arange(1, self.universe.trajectory.n_frames + 1)
+            # frame numbers (starting with 0, convention in MDAnalysis >= 0.11.0)
+            q = np.arange(self.universe.trajectory.n_frames)
         else:
             q = np.asarray(data)
 

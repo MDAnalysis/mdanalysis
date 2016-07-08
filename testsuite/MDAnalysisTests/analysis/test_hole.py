@@ -19,9 +19,12 @@ from six.moves import range
 
 import MDAnalysis
 import MDAnalysis.analysis.hole
-from MDAnalysis.analysis.hole import HOLEtraj
+from MDAnalysis.analysis.hole import HOLEtraj, HOLE
 
-from numpy.testing import TestCase, dec
+from numpy.testing import (TestCase, dec, 
+                           assert_equal, assert_almost_equal, 
+                           assert_array_equal,
+                           assert_array_almost_equal)
 import numpy as np
 import nose
 from nose.plugins.attrib import attr
@@ -41,6 +44,81 @@ def rlimits_missing():
     except ImportError:
         return True
     return False
+
+@attr('slow')
+@dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+def test_HOLE(filename=PDB_HOLE):
+    with tempdir.in_tempdir():
+        H = HOLE(filename, raseed=31415)
+        H.run()
+        H.collect()
+    profiles = H.profiles.values()
+    assert_equal(len(profiles), 1, 
+                 err_msg="HOLE.profile should contain exactly 1 profile")
+
+    p = profiles[0]
+    
+    assert_equal(len(p), 425, 
+                 err_msg="wrong number of points in HOLE profile")
+    assert_almost_equal(p.rxncoord.mean(), -1.41225,
+                        err_msg="wrong mean HOLE rxncoord")
+    assert_almost_equal(p.radius.min(), 1.19707,
+                        err_msg="wrong min HOLE radius")
+
+
+class TestHOLEtraj(TestCase):
+    filename = MULTIPDB_HOLE
+    start = 5
+    stop = 7
+
+    # HOLE is so slow so we only run it once and keep it in
+    # the class; note that you may not change universe.trajectory
+    # (eg iteration) because this is not safe in parallel
+    @classmethod
+    def setUpClass(cls):
+        cls.universe = MDAnalysis.Universe(cls.filename)
+        if not executable_not_found("hole"):
+            with tempdir.in_tempdir():
+                H = HOLEtraj(cls.universe, start=cls.start, 
+                             stop=cls.stop, raseed=31415)
+                H.run()
+            cls.H = H
+        else:
+            cls.H = None
+
+        cls.frames = [ts.frame 
+                      for ts in cls.universe.trajectory[cls.start:cls.stop]]
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.H
+        del cls.universe
+
+    # This is VERY slow on 11 frames so we just take 2
+    @attr('slow')
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+    def test_HOLEtraj(self):
+        assert_array_equal(sorted(self.H.profiles.keys()), self.frames,
+                           err_msg="H.profiles.keys() should contain the frame numbers")
+
+        data = np.transpose([(len(p), p.rxncoord.mean(), p.radius.min()) 
+                             for p in self.H.profiles.values()])
+
+        assert_array_equal(data[0], [401, 399], 
+                           err_msg="incorrect profile lengths")
+        assert_array_almost_equal(data[1], [1.98767,  0.0878],
+                                  err_msg="wrong mean HOLE rxncoord")
+        assert_array_almost_equal(data[2], [1.19819, 1.29628],
+                                  err_msg="wrong minimum radius")
+
+    @attr('slow')
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+    def test_min_radius(self):
+        assert_array_almost_equal(self.H.min_radius(),
+                                  np.array([[ 5.     ,  1.19819],
+                                            [ 6.     ,  1.29628]]),
+                                  err_msg="min_radius() array not correct")                                  
+
 
 class TestHoleModule(TestCase):
     def setUp(self):
