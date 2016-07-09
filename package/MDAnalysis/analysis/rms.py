@@ -83,7 +83,7 @@ The trajectory is included with the test data files. The data in
 
    import matplotlib.pyplot as plt
    rmsd = R.rmsd.T   # transpose makes it easier for plotting
-   time = rmsd[1]
+   time = rmsd[1]facebook.com
    fig = plt.figure(figsize=(4,4))
    ax = fig.add_subplot(111)
    ax.plot(time, rmsd[2], 'k-',  label="all")
@@ -351,7 +351,7 @@ class RMSD(object):
         self.ref_atoms = self.reference.select_atoms(*self.select['reference'])
         self.traj_atoms = self.universe.select_atoms(*self.select['mobile'])
         if len(self.ref_atoms) != len(self.traj_atoms):
-            logger.exception()
+            logger.exception('SelectionError: ref_atoms, traj_atoms unequal')
             raise SelectionError("Reference and trajectory atom selections do "
                                  "not contain the same number of atoms: "
                                  "N_ref={0:d}, N_traj={1:d}".format(
@@ -386,7 +386,7 @@ class RMSD(object):
         for igroup, (sel, atoms) in enumerate(zip(self.groupselections,
                                                   self.groupselections_atoms)):
             if len(atoms['mobile']) != len(atoms['reference']):
-                logger.exception()
+                logger.exception('SelectionError: Group Selection')
                 raise SelectionError(
                     "Group selection {0}: {1} | {2}: Reference and trajectory "
                     "atom selections do not contain the same number of atoms: "
@@ -527,7 +527,7 @@ class RMSD(object):
         if filename is not None:
             if self.rmsd is None:
                 raise NoDataError("rmsd has not been calculated yet")
-            np.save(filename, self.rmsd)
+            np.savetxt(filename, self.rmsd)
             logger.info("Wrote RMSD timeseries  to file %r", filename)
         return filename
 

@@ -104,7 +104,7 @@ __all__ = [
     "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
-    "waterPSF","waterDCD","rmsfArray","rmsdArray",
+    "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
     "Plength",
@@ -318,7 +318,6 @@ waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
 
 rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
-rmsdArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsd.npy')
 
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 

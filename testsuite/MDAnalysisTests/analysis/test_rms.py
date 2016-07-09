@@ -26,7 +26,8 @@ import numpy as np
 
 import os
 
-from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, rmsdArray, PSF, DCD
+from MDAnalysis.exceptions import SelectionError, NoDataError
+from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 from MDAnalysisTests import tempdir
 
 
@@ -130,7 +131,7 @@ class Testrmsd(object):
 
 class TestRMSD(object):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(GRO, XTC)
+        self.universe = MDAnalysis.Universe(PSF, DCD)
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'rmsd.npy')
 
@@ -140,26 +141,58 @@ class TestRMSD(object):
 
     def test_rmsd(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
-        RMSD.run()
-        test_rmsds = np.load(rmsdArray)
-
-        assert_almost_equal(RMSD.rmsd, test_rmsds, 5,
+        RMSD.run(step=49)
+        correct_values = [[  0, 0, 0],
+                          [  49, 48.9999, 4.68953]]
+        assert_almost_equal(RMSD.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match test " +
                             "values")
+
 
     def test_rmsd_single_frame(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(start=5, stop=6)
 
-    def test_rmsd_save(self):
+
+    def test_mass_weighted_and_save(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
-        RMSD.run()
-        RMSD.save(self.outfile)
-        saved_file = np.load(self.outfile)
-        test_rmsds = np.load(rmsdArray)
-        assert_almost_equal(saved_file, test_rmsds, 5,
-                            err_msg="error: rmsd profile should match test " +
-                            "values")
+        RMSD.run(step=49, mass_weighted= True)
+        RMSD.save()
+        
+    def test_rmsd_group_selections(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            groupselections=
+                                            ['backbone','name CA'])
+        RMSD.run(step=49)
+
+
+    @raises(SelectionError)
+    def test_ref_length_unequal_len(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms = reference.atoms[:-1]
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference)
+
+    @raises(SelectionError)
+    def test_mass_mismatches(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms.masses = 10
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference)
+
+
+    @raises(SelectionError)
+    def test_group_selections_unequal_len(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms[0].resname='NOTMET'
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference,
+                                            groupselections=
+                                            ['resname MET','type NH3'])
+    @raises(NoDataError)
+    def test_save_before_run(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe)
+        RMSD.save('blah')
 
 class TestRMSF(TestCase):
     def setUp(self):

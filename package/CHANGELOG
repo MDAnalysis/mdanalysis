@@ -25,7 +25,6 @@ Fixes
     next (Issue #869)
   * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
   * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
-  * Removed call to protected process_selection function in RMSD
   
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
