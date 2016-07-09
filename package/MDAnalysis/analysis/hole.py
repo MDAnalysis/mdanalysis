@@ -14,57 +14,70 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole`
+r"""Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole`
 =================================================================================
 
 :Author: Lukas Stelzl, Oliver Beckstein
 :Year: 2011-2012
 :Copyright: GNU Public License v2
 
-With the help of this module, HOLE_ can be run on frames in a trajectory. Data
-can be combined and analyzed. HOLE_ [Smart1993]_ [Smart1996]_ must be installed
-separately and can be obtained from http://www.smartsci.uk/hole/.
+With the help of this module, the :program:`hole` program from the HOLE_ suite
+of tools [Smart1993]_ [Smart1996]_ can be run on frames in a trajectory. Data
+can be combined and analyzed.  
 
 
-.. rubric:: References
-
-.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
-               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
-.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
-               HOLE: A program for the analysis of the pore dimensions of ion channel
-               structural models. J.Mol.Graph., 14:354–360, 1996.
-               URL http://www.smartsci.uk/hole/
+HOLE_ must be installed separately and can be obtained in binary form from
+http://www.smartsci.uk/hole/. (HOLE is not open source and must be used under
+licence but for academic work, a free (as in "no costs") version is available.)
 
 .. _HOLE: http://www.smartsci.uk/hole/
 
 
-Examples
---------
+Examples for using HOLE
+-----------------------
+
+The two classes :class:`HOLE` and :class:`HOLEtraj` in this module primarily
+act as wrappers around the :program:`hole` program from the HOLE_ suite of
+tools. They contain many options to set options of :program:`hole`. However,
+the defaults often work well and the following examples should be good starting
+points for applying HOLE_ to other problems.
+
 
 Single structure
 ~~~~~~~~~~~~~~~~
 
-Gramicidin A (gA) channel::
+The following example runs :program:`hole` on the experimental
+structure of the Gramicidin A (gA) channel. We use the :class:`HOLE`
+class, which acts as a wrapper around :program:`hole`. It therefore
+shares some of the limitations of HOLE_, namely, that it can only
+process PDB files [#HOLEDCD]_. ::
 
-   from MDAnalysis.analysis.hole import HOLE, HOLEtraj
+   from MDAnalysis.analysis.hole import HOLE
    from MDAnalysis.tests.datafiles import PDB_HOLE
 
-   H = HOLE(PDB_HOLE, executable="~/hole2/bin/hole")  # set path to your hole binary
+   H = HOLE(PDB_HOLE, executable="~/hole2/exe/hole")  # set path to your hole binary
    H.run()
    H.collect()
    H.plot(linewidth=3, color="black", label=False)
 
+The example assumes that :program:`hole` was installed as
+``~/hole2/exe/hole``)
 
 Trajectory
 ~~~~~~~~~~
 
-Analyzing a trajectory::
+One can also run :program:`hole` on frames in a trajectory with
+:class:`HOLEtraj`. In this case, provide a
+:class:`~MDAnalysis.core.AtomGroup.Universe`::
 
-  u = MDAnalysis.Universe(psf, trajectory)
-  H = HOLEtraj(u, ...)
-  H.run()
-  H.plot3D()
+   import MDAnalysis as mda   
+   from MDAnalysis.analysis.hole import HOLEtraj
+   from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
+   
+   u = mda.Universe(MULTIPDB_HOLE)
+   H = HOLEtraj(u, executable="~/hole2/exe/hole")
+   H.run()
+   H.plot3D()
 
 The profiles are available as the attribute :attr:`HOLEtraj.profiles`
 (``H.profiles`` in the example) and are indexed by frame number but
@@ -75,34 +88,55 @@ next example.
 Trajectory with RMSD as order parameter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order to classify the HOLE profiles the RMSD to a reference
-structure is calculated for each trajectory frame (e.g. using the
-:class:`MDAnalysis.analysis.rms.RMSD` analysis class). Then the HOLE
-profiles can be ordered by the RMSD, which acts as an order
-parameter. ::
+In order to classify the HOLE profiles :math:`R(\zeta)` the RMSD :math:`\rho`
+to a reference structure is calculated for each trajectory frame (e.g. using
+the :class:`MDAnalysis.analysis.rms.RMSD` analysis class). Then the HOLE
+profiles :math:`R_\rho(\zeta)` can be ordered by the RMSD, which acts as an
+order parameter :math:`\rho`. ::
 
-  import MDAnalysis.analysis.hole
-  import MDAnalysis.analysis.rms
-  MDAnalysis.start_logging()
-  ref = MDAnalysis.Universe("ref.psf", "ref.pdb")         # reference structure
-  u = MDAnalysis.Universe("ref.psf", "traj.xtc")          # trajectory
+   import MDAnalysis as mda
+   from MDAnalysis.analysis.hole import HOLEtraj
+   from MDAnalysis.analysis.rms import RMSD
 
-  # calculate RMSD
-  R = MDAnalysis.analysis.rms.RMSD(u, reference=ref, select="protein", mass_weighted=True)
-  R.run()
-
-  # HOLE analysis with order parameters
-  H = MDAnalysis.analysis.hole.HOLEtraj(u, cvect=[0,0,1], orderparameters=R.rmsd[:,2])
-  H.run()
+   from MDAnalysis.tests.datafiles import PDB_HOLE, MULTIPDB_HOLE
+   
+   mda.start_logging()
+   ref = mda.Universe(PDB_HOLE)    # reference structure
+   u = mda.Universe(MULTIPDB_HOLE) # trajectory
+   
+   # calculate RMSD
+   R = RMSD(u, reference=ref, select="protein", mass_weighted=True)
+   R.run()
+   
+   # HOLE analysis with order parameters
+   H = HOLEtraj(u, orderparameters=R.rmsd[:,2], 
+                executable="~/hole2/exe/hole")
+   H.run()
 
 The :attr:`HOLEtraj.profiles` dictionary will have the order parameter as key
 for each frame. The plot functions will automatically sort the profiles by
 ascending order parameter. To access the individual profiles one can simply
-iterate over the sorted profiles (see :meth:`HOLEtraj.sorted_profiles_iter`) ::
+iterate over the sorted profiles (see
+:meth:`HOLEtraj.sorted_profiles_iter`). For example, in order to plot the
+minimum radius as function of order parameter
 
-  for q, profile in H:
-     print("orderparameter = %g" % q)
-     print("min(R) = %g" % profile.radius.min())
+.. math::
+ 
+   r(\rho) = \min_\zeta R_\rho(\zeta)
+
+we iterate over the profiles and process them in turn::
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  r_rho = np.array([[rho, profile.radius.min()] for rho, profile in H])
+
+  ax = plt.subplot(111)
+  ax.plot(r_rho[:, 0], r_rho[:, 1], lw=2)
+  ax.set_xlabel(r"order parameter RMSD $\rho$ ($\AA$)")
+  ax.set_ylabel(r"minimum HOLE pore radius $r$ ($\AA$)")
+
+(The graph shows that the pore opens up with increasing order parameter.)
 
 
 Data structures
@@ -133,7 +167,6 @@ frame. In that case, the key becomes the orderparameter.
    be stored in the dict.
 
 
-
 Analysis
 --------
 
@@ -148,6 +181,10 @@ Analysis
       frame was analyzed then this will be ``HOLE.profiles[0]``. Note
       that the order is random; one needs to sort the keys first.
 
+      .. Note:: 
+         Duplicate keys are not possible. The last key overwrites
+         previous values. This is arguably a bug.
+
 .. autoclass:: HOLEtraj
    :members:
    :inherited-members:
@@ -159,18 +196,43 @@ Analysis
       parameter (if *orderparameters* was supplied). Note that the
       order is random; one needs to sort the keys first.
 
-.. autodata:: SIMPLE2_RAD
-
+      .. Note:: 
+         Duplicate keys are not possible. The last key overwrites
+         previous values. This is arguably a bug.
 
 Utilities
 ---------
 
 .. autofunction:: write_simplerad2
+.. autodata:: SIMPLE2_RAD
 .. autofunction:: seq2str
 .. autoclass:: ApplicationError
 
 
+References
+----------
+
+.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
+               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
+.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
+               HOLE: A program for the analysis of the pore dimensions of ion channel
+               structural models. J.Mol.Graph., 14:354–360, 1996.
+               URL http://www.smartsci.uk/hole/
+
+.. Footnotes
+
+.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can
+              read. In principle, it is also able to read CHARMM DCD
+              trajectories and generate a hole profile for each frame. However,
+              native support for DCD in :program:`hole` is patchy and not every
+              DCD is recognized. In particular, At the moment, DCDs generated
+              with MDAnalysis are not accepted by HOLE. If DCDs do not work,
+              use :class:`HOLEtraj`, which converts any of the :ref:`any
+              trajectory that MDAnalysis can read <Supported coordinate
+              formats>` into a sequence of PDB files and runs :class:`HOLE` on
+              each of them in turn.
 """
+
 from __future__ import absolute_import, with_statement
 
 from six.moves import zip, cPickle
@@ -190,7 +252,7 @@ import logging
 from itertools import cycle
 
 from MDAnalysis import Universe
-from MDAnalysis import ApplicationError
+from MDAnalysis.exceptions import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
 from MDAnalysis.lib.util import FORTRANReader
 
@@ -243,10 +305,21 @@ BOND ???? 0.85
 
 
 def write_simplerad2(filename="simple2.rad"):
-    """Write the built-in radii in :data:`SIMPLE2_RAD` to *filename*.
+    """Write the built-in radii in :data:`SIMPLE2_RAD` to `filename`.
 
-    Does nothing if *filename* already exists.
+    Does nothing if `filename` already exists.
+
+    Parameters 
+    ----------
+    filename : string, optional
+       output file name; the default is "simple2.rad"
+
+    Returns
+    -------
+    filename : string
+       returns the name of the data file
     """
+
     if not os.path.exists(filename):
         with open(filename, "w") as rad:
             rad.write(SIMPLE2_RAD + "\n")
@@ -255,10 +328,20 @@ def write_simplerad2(filename="simple2.rad"):
 
 
 def seq2str(v):
-    """Return sequence *v* as a string of numbers with spaces as separators.
+    """Return sequence as a string of numbers with spaces as separators.
 
     In the special case of ``None``, the empty string "" is returned.
+
+    Parameters
+    ----------
+    v : sequence or array_like
+
+    Returns
+    -------
+    string
+
     """
+
     if v is None:
         return ""
     return " ".join([str(x) for x in v])
@@ -276,6 +359,7 @@ class BaseHOLE(object):
            profiles = cPickle.load(open(filename))
 
         """
+
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
@@ -298,7 +382,8 @@ class BaseHOLE(object):
         color = kwargs.pop('color', None)
         if color is None:
             cmap = kwargs.pop('cmap', matplotlib.cm.viridis)
-            normalize = matplotlib.colors.Normalize(vmin=np.min(frames), vmax=np.max(frames))
+            normalize = matplotlib.colors.Normalize(vmin=np.min(frames), 
+                                                    vmax=np.max(frames))
             colors = cmap(normalize(frames))
         else:
             colors = cycle(asiterable(color))
@@ -307,49 +392,66 @@ class BaseHOLE(object):
         return kw, kwargs
 
     def plot(self, **kwargs):
-        """Plot profiles in a 1D graph.
+        r"""Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.
 
-        Lines are coloured according to the colour map *cmap*.
+        Lines are colored according to the color map *cmap*. One graph is
+        plotted for each trajectory frame (unless `step` is changed).
 
-        :Keywords:
-           *step*
-              only plot every *step* profile [1]
-           *cmap*
-              matplotlib color map to continuously color graphs [viridis]
-           *color*
-              color or iterable of colors to specify graph colors;
-              ``None`` will use *cmap* instead [``None``]
-           *linestyle*
-              linestyle supported by :func:`matplotlib.pyplot.plot`;
-              an iterable will be applied in turn ['-']
-           *yshift*
-              displace each R(zeta) profile by *yshift* in the
-              y-direction [0]
-           *frames*
-              integer or list: only plot these specific frame(s);
-              the default is to plot everything (see also *step*).
-              [``None``]
-           *label*
-              ignored and replaced with the frame number; if it
-              is set to "_nolegend_" or ``False`` then no
-              legend is displayed
-           *ax*
-              :class:`matplotlib.axes.Axes` instance to plot into
-              [``None``]
+        Parameters
+        ----------
+        step : integer, optional
+              only plot every `step` profiles; default is 1.
+        color : string or iterable, optional
+              color or iterable of colors to specify graph colors; The default
+              ``None`` will use the color map `cmap` instead.
+        cmap : :class:`matplotlib.colors.Colormap`
+               Pick colors from the matplotlib color map `cmap`; the default is
+               *viridis*.
+        linestyle : string or iterable, optional
+              linestyle supported by :func:`matplotlib.pyplot.plot`; an
+              iterable that is not a string (e.g., ``('-', '--', '.')``) will
+              be applied in turn. The default is '-' to draw a simple line.
+        yshift : float, optional
+              displace each :math:`R(\zeta)` profile by `yshift` in the
+              :math:`y`-direction for clearer visualization. The default is 0,
+              i.e., not to shift any graph.        
+        frames : integer or array_like, optional
+              only plot these specific frame(s); the default ``None`` is to
+              plot everything (see also `step`)
+        label : bool or string, optional
+              If it is set to "_nolegend_" or ``False`` then no legend is
+              displayed. Any other value is ignored and the frame number is
+              used as a label. The default is ``True`` to plot the legend even
+              though this can become rather messy.
+        ax : :class:`matplotlib.axes.Axes`
+              If no `ax` is supplied or set to ``None`` then the plot will
+              be added to the current active axes.
 
-        All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
+        kwargs :  `**kwargs`
+             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
-        :Returns: axis
+        Returns
+        -------
+        ax : :class:`~matplotlib.axes.Axes`
+             Axes with the plot, either `ax` or the current axes.
 
+        Notes
+        -----
         .. versionchanged:: 0.16.0
            Returns ``ax``.
+
         """
+
         import matplotlib.pyplot as plt
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
-        ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot, (frame, color, linestyle) in enumerate(zip(kw['frames'], kw['colors'], kw['linestyles'])):
+        ax = kwargs.pop('ax', None)
+        if ax is None:
+            ax = plt.gca()
+
+        for iplot, (frame, color, linestyle) in enumerate(
+                zip(kw['frames'], kw['colors'], kw['linestyles'])):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -357,48 +459,70 @@ class BaseHOLE(object):
             dy = iplot * kw['yshift']
             profile = self.profiles[frame]
             ax.plot(profile.rxncoord, profile.radius + dy, **kwargs)
-            #logger.debug("Plotted frame %d with color %r and linestyle %r", frame, color, linestyle)
         ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
-        ax.set_ylabel(r"HOLE radius $r$ ($\AA$)")
+        ax.set_ylabel(r"HOLE radius $R$ ($\AA$)")
         if kw['label']:
             ax.legend(loc="best")
         return ax
 
     def plot3D(self, **kwargs):
-        """Stacked graph of profiles.
+        r"""Stacked 3D graph of profiles :math:`R(\zeta)`.
 
-        Lines are coloured according to the colour map *cmap*.
+        Lines are coloured according to the colour map `cmap`.
 
-        :Keywords:
-           *step*
-              only plot every *step* profile [1]
-           *cmap*
-              matplotlib color map [viridis]
-           *rmax*
-              only display radii up to *rmax* [``None``]
-           *ylabel*
-              label of the reaction coordinate axis ["frames"]
+        Parameters
+        ----------
+        step : int, optional
+               only plot every *step* profile; default: 1
+        cmap : :class:`matplotlib.colors.Colormap`, optional
+               matplotlib color map ;  the default is *viridis*
+        rmax : float, optional
+               only display radii up to `rmax`; the default is ``None``, which
+               means to show all radii.
+        ylabel : string, optional
+               label of the reaction coordinate axis; the default is "frames"
+        ax : :class:`matplotlib.axes.Axes`
+               axes instance to plot into, which *must* have been generated
+               with the `projection='3d'` keyword set (see
+               :mod:`mpl_toolkits.mplot3d.axes3d` and the `mplot3d tutorial`_
+               for details)
 
+        Returns
+        -------
+        ax : :class:`~matplotlib.axes.Axes`
+             Axes with the plot, either `ax` or the current axes.
 
-        :Returns: axis
+        Notes
+        -----
 
-        Based on Stack Overflow post `3d plots using matplotlib`_.
+        Based on StackOverflow post `3d plots using matplotlib`_. Masking of
+        the data above `rmax` implements the StackOverflow hack `How do I set a
+        maximum value for the z axis`_.
 
         .. _`3d plots using matplotlib`:
            http://stackoverflow.com/questions/9053255/3d-plots-using-matplotlib
+        .. _`How do I set a maximum value for the z axis`:
+           http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
+        .. _`mplot3d tutorial`:
+           http://matplotlib.org/mpl_toolkits/mplot3d/tutorial.html
 
         .. versionchanged:: 0.16.0
            Returns ``ax``.
+
         """
+
         import matplotlib.pyplot as plt
-        import mpl_toolkits.mplot3d.axes3d as axes3d
+        from mpl_toolkits.mplot3d import Axes3D
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
         rmax = kw.pop('rmax', None)
         ylabel = kwargs.pop('ylabel', "frames")
 
-        fig = plt.figure(figsize=kwargs.pop('figsize', (6, 6)))
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
+        ax = kwargs.pop('ax', None)
+        if ax is None:
+            fig = plt.gcf()
+            ax = fig.add_subplot(1, 1, 1, projection='3d')
+
         for frame, color, linestyle in zip(kw['frames'], kw['colors'], kw['linestyles']):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
@@ -418,9 +542,9 @@ class BaseHOLE(object):
                 radius[radius > rmax] = np.nan
             ax.plot(rxncoord, frame * np.ones_like(rxncoord), radius, **kwargs)
 
-        ax.set_xlabel(r"pore coordinate $z$")
+        ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
         ax.set_ylabel(ylabel)
-        ax.set_zlabel(r"HOLE radius $r$")
+        ax.set_zlabel(r"HOLE radius $R$ ($\AA$)")
         
         return ax
 
@@ -442,21 +566,24 @@ class BaseHOLE(object):
 
 
 class HOLE(BaseHOLE):
-    """Run HOLE on a single frame or a DCD trajectory.
+    """Run :program:`hole` on a single frame or a DCD trajectory.
+
+    :program:`hole` is part of the HOLE_ suite of programs. It is used to
+    analyze channels and cavities in proteins, especially ion channels.
 
     Only a subset of all `HOLE control parameters`_ is supported and can be set
     with keyword arguments.
 
-    HOLE (as a FORTRAN77 program) has a number of limitations when it comes to
+    :program:`hole` (as a FORTRAN77 program) has a number of limitations when it comes to
     filename lengths (must be shorter than the empirically found
     :attr:`HOLE.HOLE_MAX_LENGTH`). This class tries to work around them by
     creating temporary symlinks to files when needed but this can still fail
     when permissions are not correctly set on the current directory.
 
-    Running HOLE with the :class:`HOLE` class is a 3-step process:
+    Running :program:`hole` with the :class:`HOLE` class is a 3-step process:
 
      1. set up the class with all desired parameters
-     2. run HOLE with :meth:`HOLE.run`
+     2. run :program:`hole` with :meth:`HOLE.run`
      3. collect the data from the output file with :meth:`HOLE.collect`
 
     The class also provides some simple plotting functions of the collected
@@ -464,8 +591,12 @@ class HOLE(BaseHOLE):
 
     .. versionadded:: 0.7.7
 
+    .. versionchanged:: 0.16.0
+           Added `raseed` keyword argument.
+
     .. _`HOLE control parameters`:
        http://s3.smartsci.uk/hole2/doc/old/hole_d03.html
+
     """
     #: Maximum number of characters in a filename (limitation of HOLE)
     HOLE_MAX_LENGTH = 70
@@ -477,214 +608,197 @@ class HOLE(BaseHOLE):
     def __init__(self, filename, **kwargs):
         """Set up parameters to run HOLE_ on PDB *filename*.
 
-        :Arguments:
+        Parameters
+        ----------
+        filename : string
+            The `filename` is used as input for HOLE in the "COORD" card of the
+            input file.  It specifies the name of a PDB co-ordinate file to be
+            used. This must be in Brookhaven protein databank format or
+            something closely approximating this. Both ATOM and HETATM records
+            are read. Note that if water molecules or ions are present in the
+            channel these can be ignored on read by the use of the
+            `ignore_residues` keyword.
 
-          *filename*
+            **Wildcard pattern**. A new feature (in release 2.1 of HOLE) was
+            the option to include a wild card (``*``) in the filename. e.g.,
+            ``filename="ab*.pdb"`` will apply hole to all files in the
+            directory whose name starts with ``ab`` and ends with
+            ``.pdb``. This is intended to aid the analysis of multiple copies
+            of the same molecule - produced during molecular dynamics or other
+            method. The hole procedure will be applied to each file in turn
+            with the same setup conditions (initial point, sampling distance
+            etc.). Graphics files will contain a combination of the individual
+            runs, one after another. Note that the pdb files are read
+            independently so that they need not have an identical number of
+            atoms or atom order etc. (though they should be sufficiently
+            similar for a HOLE run from identical starting conditions to be
+            useful).
 
-               The *filename* is used as input for HOLE in the "COORD" card of
-               the input file.  It specifies the name of a PDB co-ordinate file
-               to be used. This must be in Brookhaven protein databank format
-               or something closely approximating this. Both ATOM and HETATM
-               records are read. Note that if water molecules or ions are
-               present in the channel these can be ignored on read by the use
-               of the *ignore_residues* keyword.
+            .. SeeAlso::
 
-               **Wildcard pattern**. A new feature (in release 2.1 of HOLE) was
-               the option to include a wild card (``*``) in the filename. e.g.,
-               *filename* = `"ab*.pdb"` will apply hole to all files in the
-               directory whose name starts with ``ab`` and ends with
-               ``.pdb``. This is intended to aid the analysis of multiple
-               copies of the same molecule - produced during molecular dynamics
-               or other method. The hole procedure will be applied to each file
-               in turn with the same setup conditions (initial point, sampling
-               distance etc.). Graphics files will contain a combination of the
-               individual runs, one after another. Note that the pdb files are
-               read independently so that they need not have an identical
-               number of atoms or atom order etc. (though they should be
-               sufficiently similar for a HOLE run from identical starting
-               conditions to be useful).
+               An alternative way to load in multiple files is a direct read
+               from a CHARMM binary dynamics DCD coordinate file - using the
+               `dcd` keyword or use :class:`HOLEtraj`.
 
-               .. SeeAlso::
+        dcd : string, optional
+            File name of DCD trajectory (must be supplied together with a
+            matching PDB file `filename`) and then HOLE runs its analysis on
+            each frame.
 
-                  An alternative way to load in multiple files is a direct read
-                  from a CHARMM binary dynamics DCD coordinate file - using the
-                  *dcd* keyword or use :class:`HOLEtraj`.
+            It does multiple HOLE runs on positions taken from a CHARMM binary
+            dynamics format DCD trajectory file. The `dcd` file must have
+            exactly the same number of atoms in exactly the same order as the
+            pdb file specified by `filename`. Note that if this option is used
+            the pdb file is used as a template only - the coordinates are
+            ignored. Note that structural parameters determined for each
+            individual structure are written in a tagged format so that it is
+            possible to extract the information from the text output file using
+            a :program:`grep` command. The reading of the file can be
+            controlled by the `step` keyword and/or setting
+            :attr:`HOLE.dcd_iniskip` to the number of frames to be skipped
+            initially.
 
+            .. Note::
 
-        :Keywords:
+               HOLE is very picky and does not read all DCD-like
+               formats [#HOLEDCD]_. If in doubt, look into the `logfile` for
+               error diagnostics.
 
-          *dcd*
-               DCD trajectory (must be supplied together with a matching
-               PDB file *filename*) and then HOLE runs its analysis on each frame.
+        logfile : string, optional
+            file name of the file collecting HOLE's output (which can be
+            parsed using :meth:`HOLE.collect`);  the default is "hole.out".
 
-               It does multiple HOLE runs on positions taken from a CHARMM binary
-               dynamics format .DCD trajectory file. The *dcd* file must have
-               exactly the same number of atoms in exactly the same order as
-               the pdb file specified by *filename*. Note that if this option
-               is used the pdb file is used as a template only - the
-               coordinates are ignored. Note that structural parameters
-               determined for each individual structure are written in a tagged
-               format so that it is possible to extract the information from
-               the text output file using a :program:`grep` command. The
-               reading of the file can be controlled by the *step* keyword
-               and/or setting :attr:`HOLE.dcd_iniskip` to the number of frames
-               to be skipped initially.
+        sphpdb : string, optional
+            path to the HOLE sph file, a PDB-like file containig the
+            coordinates of the pore centers; the default is "hole.sph".
 
-               .. Note::
+            This keyword specifies the filename for output of the sphere centre
+            information in pdb form. Its typical suffix is ".sph". The
+            co-ordinates are set to the sphere centres and the occupancies are
+            the sphere radii. All centres are assigned the atom name QSS and
+            residue name SPH and the residue number is set to the storage
+            number of the centre. The file can be imported into molecular
+            graphics programs but are likely to be bonded together in a awful
+            manner - as the points are very close to one another. In VMD sph
+            objects are best displayed as "Points". Displaying .sph objects
+            rather than rendered or dot surfaces can be useful to analyze the
+            distance of particular atoms from the sphere-centre line.
 
-                  HOLE is very picky and does not read all DCD-like formats. If
-                  in doubt, look into the *logfile* for error diagnostics.
+            Most usefully .sph files can be used to produce molecular graphical
+            output from a hole run. This is achieved by using the
+            :program:`sph_process` program to read the .sph file.
 
-                  At the moment, DCDs generated with MDAnalysis are not
-                  accepted by HOLE — use :class:`HOLEtraj`, which works with
-                  anything that MDAnalysis can read.
+        step : int, optional
+             step size for going through the trajectory (skips `step` - 1
+             frames); the default is 1.
 
-          *logfile*
+        cpoint : array_like, optional
+             coordinates of a point inside the pore, e.g. ``[12.3, 0.7,
+             18.55]``. If set to ``None`` (the default) then HOLE's own search
+             algorithm is used.
 
-               name of the file collecting HOLE's output (which can be parsed
-               using :meth:`HOLE.collect` ["hole.out"]
+             `cpoint` specifies a point which lies within the channel. For
+             simple channels such as gramicidin results do not show great
+             sensitivity to the exact point taken. An easy way to produce an
+             initial point is to use molecular graphics to find two atoms which
+             lie either side of the pore and to average their co-ordinates. Or
+             if the channel structure contains water molecules or counter ions
+             then take the coordinates of one of these (and use the
+             `ignore_residues` keyword to ignore them in the pore radius
+             calculation).
 
-          *sphpdb*
+             If this card is not specified then HOLE now (from version 2.2)
+             attempts to make a guess where the channel will be. The procedure
+             assumes the channel is reasonably symmetric. The initial guess on
+             cpoint will be the centroid of all alpha carbon atoms (name 'CA'
+             in pdb file). This is then refined by a crude grid search up to 5
+             Å from the original position. This procedure works most of the
+             time but is clearly far from infallible — results should be
+             careful checked (with molecular graphics) if it is used.
 
-               name of the HOLE sph file, a PDB-like file containig the coordinates
-               of the pore centers ["hole.sph"]
+        cvect : array_like, optional
+             Search direction, should be parallel to the pore axis,
+             e.g. ``[0,0,1]`` for the z-axis. The default is ``None`` so that
+             HOLE's built-in procedure is used.
 
-          *step*
+             If this keyword is ``None`` then HOLE attempts to make a guess
+             where the channel will be. The procedure assumes the channel is
+             reasonably symmetric. The guess will be either along the X axis
+             (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not
+             aligned on one of these axis the results will clearly be
+             approximate. If a guess is used then results should be carefully
+             checked.
 
-               step size for going through the trajectory (skips *step* - 1
-               frames) [1]
+        sample : float, optional
+             distance of sample points in Å; the default is 0.2 Å.
 
-          *cpoint*
+             Specifies the distance between the planes used in the HOLE
+             procedure. The default value should be reasonable for most
+             purposes. However, if you wish to visualize a very tight
+             constriction then specify a smaller value.
 
-               coordinates of a point inside the pore, e.g. ``[12.3, 0.7,
-               18.55]``. If ``None`` then HOLE's own simple search algorithm is
-               used.
+             This value determines how many points in the pore profile are
+             calculated.
 
-               This specifies a point which lies within the channel, for simple
-               channels such as gramicidin results do not show great
-               sensitivity to the exact point taken. An easy way to produce an
-               initial point is to use molecular graphics to find two atoms
-               which lie either side of the pore and to average their
-               co-ordinates. Or if the channel structure contains water
-               molecules or counter ions then take the coordinates of one of
-               these (and use the *ignore_residues* keyword to ignore them in
-               the pore radius calculation).
+        dotden : int, optional
+             density of facettes for generating a 3D pore representation;
+             default is 15.
 
-               If this card is not specified then HOLE now (from version 2.2)
-               attempts to make a guess where the channel will be. The
-               procedure assumes the channel is reasonably symmetric. The
-               initial guess on cpoint will be the centroid of all alpha carbon
-               atoms (name 'CA' in pdb file). This is then refined by a crude
-               grid search up to 5 Å from the original position. This procedure
-               works most of the time but is clearly far from infallible —
-               results should be careful checked (with molecular graphics) if
-               it is used. [``None``]
+             This number controls the density of dots which will be used by
+             the program. A sphere of dots is placed on each centre
+             determined in the Monte Carlo procedure. Only dots which do not
+             lie within any other sphere are considered. The actual number of
+             dots written is therefore controlled by `dotden` and
+             `sample`. `dotden` should be set to between 5 (few dots per
+             sphere) and 35 (large number of dots per sphere).
 
-          *cvect*
+        endrad : float, optional
+             Radius which is considered to be the end of the pore. This
+             keyword can be used to specify the radius above which the
+             program regards a result as indicating that the end of the pore
+             has been reached. The default value is 22.0 Å. This may need to
+             be increased for large channels or reduced for small.
 
-               Search direction, should be parallel to the pore axis,
-               e.g. ``[0,0,1]`` for the z-axis.
+        shorto : int, optional
+             Determines the output of output in the `logfile`; for automated processing
+             this must be < 3. The default is 0, which shows all output.
 
-               If this keyword is ``None`` then HOLE now attempts to make a
-               guess where the channel will be. The procedure assumes the
-               channel is reasonably symmetric. The guess will be either along
-               the X axis (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the
-               structure is not aligned on one of these axis the results will
-               clearly be approximate. If a guess is used then results should
-               be carefully checked. [``None``]
+             - 0: Full text output
+             - 1: All text output given except "run in progress" (i.e.,
+               detailed contemporary description of what HOLE is doing).
+             - 2: Ditto plus no graph type output - only leaving minimum
+               radius and conductance calculations.
+             - 3: All text output other than input card mirroring and error messages
+               turned off.
 
-          *sample*
-               distance of sample points in Å
+        ignore_residues : array_like, optional
+             sequence of three-letter residues that are not taken into
+             account during the calculation; wildcards are *not*
+             supported. The default is ``["SOL","WAT", "TIP", "HOH", "K ",
+             "NA ", "CL "]``.
 
-               Specifies the distance between the planes used in the HOLE
-               procedure. The default value is 0.2 Å, this should be reasonable
-               for most purposes. However, if you wish to visualize a very
-               tight constriction then specify a smaller value.  [0.2]
+        radius : string, optional
+             path to the file specifying van der Waals radii for each atom. If
+             set to ``None`` (the default) then a set of default radii,
+             :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
+             the HOLE distribution)
 
-          *dotden*
-               density of facettes for generating a 3D pore representation
+        executable : string, optional
+             Path to the :program:`hole` executable
+             (e.g. ``~/hole2/exe/hole``); the other programs
+             :program:`sph_process` and :program:`sos_triangle` are assumed
+             to live in the same directory as :program:`hole`. If
+             :program:`hole` is found on the :envvar:`PATH` then the bare
+             executable name is sufficient. The default is "hole".
 
-               This number controls the density of dots which will be used by
-               the program. A sphere of dots is placed on each centre
-               determined in the Monte Carlo procedure. Only dots which do not
-               lie within any other sphere are considered. The actual number of
-               dots written is therefore controlled by *dotden* and
-               *sample*. *dotden* should be set to between 5 (few dots per
-               sphere) and 35 (large number of dots per sphere). [15]
+        raseed : int, optional
+             integer number to start the random number generator; by default,
+             :program:`hole` will use the time of the day (default value
+             ``None``) but for reproducible runs (e.g., for testing) set it to
+             an integer.
 
-          *endrad*
-               Radius which is considered to be the end of the pore. This
-               keyword can be used to specify the radius above which the
-               program regards a result as indicating that the end of the pore
-               has been reached. The default value is 22.0 Å. This may need to
-               be increased for large channels or reduced for small. [22.0]
-
-          *shorto*
-
-               Determines the output of output in the *logfile*; for automated processing
-               this must be < 3.
-
-               - 0: Full text output
-               - 1: All text output given except "run in progress" (i.e.,
-                 detailed contemporary description of what HOLE is doing).
-               - 2: Ditto plus no graph type output - only leaving minimum
-                 radius and conductance calculations.
-               - 3: All text output other than input card mirroring and error messages
-                 turned off.
-
-          *ignore_residues*
-
-               sequence of three-letter residues that are not taken into account during the
-               calculation; wildcards are *not* supported
-               [ ``["SOL","WAT", "TIP", "HOH", "K  ", "NA ", "CL "]`` ]
-
-          *radius*
-               Path to the radii; if set to None then a set of default radii, :data:`SIMPLE2_RAD`,
-               is used (an extension of ``simple.rad`` from the HOLE distribution)
-
-               This specifies the name for the file specifying van der Waals
-               radii for each atom. A number of files with different values are
-               supplied with HOLE.
-
-          *sphpdb*
-
-               This keyword specifies the filename for output of the sphere
-               centre information in pdb form. Its typical suffix is
-               ".sph". The co-ordinates are set to the sphere centres and the
-               occupancies are the sphere radii. All centres are assigned the
-               atom name QSS and residue name SPH and the residue number is set
-               to the storage number of the centre. The file can be imported
-               into molecular graphics programs but are likely to be bonded
-               together in a awful manner - as the points are very close to one
-               another. In VMD sph objects are best displayed as
-               "Points". Displaying .sph objects rather than rendered or dot
-               surfaces can be useful to analyze the distance of particular
-               atoms from the sphere-centre line.
-
-               Most usefully .sph files can be used to produce molecular
-               graphical output from a hole run. This is achieved by using the
-               :program:`sph_process` program to read the .sph
-               file. ["hole.sph"]
-
-          *executable*
-
-               Path to the :program:`hole` executable
-               (e.g. ``/opt/hole/exe/hole``); the other programs
-               :program:`sph_process` and :program:`sos_triangle` are assumed
-               to live in the same directory as :program:`hole`. If
-               :program:`hole` is found on the :envvar:`PATH` then the bare
-               executable name is sufficient.  ["hole"]
-
-          *raseed*
-
-               Integer number to start the random number generator; by
-               default, :program:`hole` will use the time of the day
-               (set `raseed=None`, the default) but for reproducible
-               runs (e.g., for testing) set it to an integer.
-
-        .. versionchanged:: 0.16.0
-           Added *raseed* keyword argument.
         """
+
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = []
         self.tempdirs = []
@@ -775,22 +889,41 @@ class HOLE(BaseHOLE):
         self.profiles = {}
 
     def check_and_fix_long_filename(self, filename, tmpdir=os.path.curdir):
-        """Return *filename* suitable for HOLE.
+        """Return a file name suitable for HOLE.
 
         HOLE is limited to filenames <= :attr:`HOLE.HOLE_MAX_LENGTH`. This method
 
-        1. returns *filename* if HOLE can process it
+        1. returns `filename` if HOLE can process it
         2. returns a relative path (see :func:`os.path.relpath`) if that shortens the
            path sufficiently
-        3. creates a symlink to *filename* (:func:`os.symlink`) in a safe temporary
+        3. creates a symlink to `filename` (:func:`os.symlink`) in a safe temporary
            directory and returns the path of the symlink. The temporary directory and
            the symlink are stored in :attr:`HOLE.tempfiles` and :attr:`HOLE.tempdirs`
            and deleted when the :class:`HOLE` instance is deleted or garbage collected.
 
+        Parameters
+        ----------
+        filename : string
+           file name to be processed
+        tmpdir : string, optional
            By default the temporary directory is created inside the current
            directory in order to keep that path name short. This can be changed
-           with the *tmpdir* keyword (e.g. one can use "/tmp").
+           with the `tmpdir` keyword (e.g. one can use "/tmp"). The default is
+           the current directory :data:`os.path.curdir`.
+
+        Returns
+        -------
+        string
+          path to the file that has a length less than
+          :attr:`HOLE.HOLE_MAX_LENGTH`
+
+        Raises
+        ------
+        RuntimeError
+          If none of the tricks for filename shortening worked. In this case,
+          manually rename the file or recompile your version of HOLE.
         """
+
         if len(filename) <= self.HOLE_MAX_LENGTH:
             return filename
 
@@ -817,6 +950,7 @@ class HOLE(BaseHOLE):
 
     def run(self, **kwargs):
         """Run HOLE on the input file."""
+
         inpname = kwargs.pop("inpfile", None)
         outname = kwargs.pop("outfile", self.logfile)
         # NOTE: If cvect and cpoint had been None in the constructor then they are
@@ -899,9 +1033,11 @@ class HOLE(BaseHOLE):
         return filename
 
     def collect(self, **kwargs):
-        """Parse the output from a HOLE run into numpy recarrays.
+        """Parse the output from a :class:`HOLE` run into numpy recarrays.
 
-        Can deal with outputs containing multiple frames. Output format::
+        It can process outputs containing multiple frames (when a DCD was supplied to :program:`hole`). 
+
+        Output format::
 
             frame  rxncoord   radius
 
@@ -909,15 +1045,16 @@ class HOLE(BaseHOLE):
         indexed by the frame number. Each entry is a
         :class:`numpy.recarray`.
 
-        If the keyword *outdir* is supplied (e.g. ".") then each profile is
+        If the keyword `outdir` is supplied (e.g. ".") then each profile is
         saved to a gzipped data file.
 
-        :Keywords:
-           *run*
-              identifier, free form [1]
-           *outdir*
-              save output data under *outdir*/*run* if set to any other
-              value but ``None`` [``None``]
+        Parameters
+        ----------
+        run : int or string, optional
+            identifier, free form; default is 1
+        outdir : string, optional
+            save output data under `outdir`/`run` if set to any other value but
+            ``None``; the default is ``None``.
 
         """
         # cenxyz.cvec      radius  cen_line_D sum{s/(area point sourc
@@ -1023,48 +1160,57 @@ class HOLEtraj(BaseHOLE):
     The :class:`HOLE` class provides a direct interface to HOLE. HOLE itself
     has limited support for analysing trajectories but cannot deal with all the
     trajectory formats understood by MDAnalysis. This class can take any
-    universe and feed it to HOLE. By default it sequentially creates a PDB for
+    universe and feed it to HOLE. It sequentially creates a temporary PDB for
     each frame and runs HOLE on the frame.
+
+    The trajectory can be sliced with the `start`, `stop`, and `step`
+    keywords. (:program:`hole` is not fast so slicing a trajectory is
+    recommended.)
+
+    Frames of the trajectory can be associated with order parameters (e.g.,
+    RMSD) in order to group the HOLE profiles by order parameter (see the
+    `orderparameters` keyword).
+
     """
 
     def __init__(self, universe, **kwargs):
-        """Set up the class.
+        """Set up the HOLE analysis over a trajectory.
 
-        :Arguments:
+        Parameters
+        ----------
+        universe : :class:`~MDAnalysis.core.AtomGroup.Universe`
+             The input trajectory is taken from a
+             :class:`~MDAnalysis.core.AtomGroup.Universe`. The trajectory is
+             converted to a sequence of PDB files and :class:`HOLE` is run on
+             each individual file.
+        orderparameters : array_like or string, optional
+             Sequence or text file containing order parameters (float
+             numbers) corresponding to the frames in the trajectory.
+        start, stop, step : int, optional
+             slice the trajectory as
+             ``universe.trajectory[start:stop:step]``. The default is ``None``
+             so that the whole trajectory is analyzed
+        selection : string, optional
+             selection string for
+             :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` to select
+             the group of atoms that is to be analysed by HOLE. The default is
+             "protein" to include all protein residues.
+        cpoint : bool or array_like, optional
+             Point inside the pore to start the HOLE search procedure. The
+             default is ``None`` to select HOLE's internal search procedure.
 
-          *universe*
-               The input trajectory as part of a
-               :class:`~MDAnalysis.core.AtomGroup.Universe`. trajectory is
-               converted to a sequence of PDB files and HOLE is run on each
-               individual file. (Use the *start*, *stop*, and *step* keywords
-               to slice the trajectory.)
+             If set to ``True`` then *cpoint* is guessed as the
+             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
+             the `selection` from the first frame of the trajectory.
 
-          *orderparameters*
-               Sequence or text file with list of numbers corresponding to the
-               frames in the trajectory.
-
-          *start*, *stop*, *step*
-               frame indices to slice the trajectory as
-               ``universe.trajectory[start, stop, step]``
-
-          *selection*
-               selection string for :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` to select
-               the group of atoms that is to be analysed by HOLE ["protein"]
-
-          *cpoint*
-               Point inside the pore.
-
-               If set to ``True`` then *cpoint* is guessed as the
-               :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
-               the *selection* from the first frame of the trajectory.
-
-               If *cpoint* is not set or set to ``None`` then HOLE guesses it
-               with its own algorithm (for each individual frame). [``None``]
-
-          *kwargs*
-               All other keywords are passed on to :class:`HOLE` (see there for description).
+             If `cpoint` is not set or set to ``None`` then HOLE guesses it
+             with its own algorithm (for each individual frame).
+        kwargs : `**kwargs`
+             All other keywords are passed on to :class:`HOLE` (see there for
+             description).
 
         """
+
         self.universe = universe
         self.selection = kwargs.pop("selection", "protein")
         self.orderparametersfile = kwargs.pop("orderparameters", None)
@@ -1084,20 +1230,24 @@ class HOLEtraj(BaseHOLE):
         # processing
         self.orderparameters = self._process_orderparameters(self.orderparametersfile)
 
-    def guess_cpoint(self, **kwargs):
+    def guess_cpoint(self, selection="protein", **kwargs):
         """Guess a point inside the pore.
 
-        This method simply uses the center of geometry of the protein selection
-        as a guess. *selection* is "protein" by default.
+        This method simply uses the center of geometry of the selection as a
+        guess. `selection` is "protein" by default.
+
         """
-        return self.universe.select_atoms(kwargs.get("selection", "protein")).center_of_geometry()
+        return self.universe.select_atoms(selection).center_of_geometry()
 
     def _process_orderparameters(self, data):
-        """Read orderparameters from *data*
+        """Read orderparameters.
 
-        * If *data* is a string: Read orderparameters from *filename*.
-        * If data is a array/list: use as is
-        * If ``None``: assign frame numbers from trajectory
+        Parameters
+        ----------
+        data : string or array_like or ``None``
+           * string: Read orderparameters from *filename*.
+           * array/list: use as is
+           * ``None``: assign frame numbers from trajectory
         """
         if isinstance(data, six.string_types):
             q = np.loadtxt(data)
@@ -1119,7 +1269,7 @@ class HOLEtraj(BaseHOLE):
     def run(self, **kwargs):
         """Run HOLE on the whole trajectory and collect profiles.
 
-        Keyword arguments *start*, *stop*, and *step* can be used to only
+        Keyword arguments `start`, `stop`, and `step` can be used to only
         analyse part of the trajectory.
         """
         start = kwargs.pop('start', self.start)
