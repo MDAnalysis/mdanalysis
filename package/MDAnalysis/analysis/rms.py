@@ -351,13 +351,12 @@ class RMSD(object):
         self.ref_atoms = self.reference.select_atoms(*self.select['reference'])
         self.traj_atoms = self.universe.select_atoms(*self.select['mobile'])
         if len(self.ref_atoms) != len(self.traj_atoms):
-            errmsg = "Reference and trajectory atom selections do "
-                                 "not contain the same number of atoms: "
-                                 "N_ref={0:d}, N_traj={1:d}".format(
-                                     self.ref_atoms.n_atoms,
-                                     self.traj_atoms.n_atoms)
+            errmsg = ("Reference and trajectory atom selections do "+
+                      "not contain the same number of atoms: "+
+                      "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
+                                                        self.traj_atoms.n_atoms))
             logger.exception(errmsg)
-            raise SelectionError(errormsg)
+            raise SelectionError(errmsg)
         logger.info("RMS calculation for {0:d} atoms.".format(len(self.ref_atoms)))
         mass_mismatches = (np.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
         if np.any(mass_mismatches):
@@ -367,9 +366,9 @@ class RMSD(object):
                 if ar.name != at.name:
                     logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                                  at.segid, at.resid, at.resname, at.name, at.mass))
-            errmsg = "Inconsistent selections, masses differ by more than"
+            errmsg = ("Inconsistent selections, masses differ by more than"
                      + "{0:f}; mis-matching atoms are shown above.".format(
-                     self.tol_mass)
+                     self.tol_mass))
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches

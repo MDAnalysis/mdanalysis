@@ -21,7 +21,9 @@ import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import TestCase, assert_almost_equal, raises, assert_
+from numpy.testing import (TestCase, assert_almost_equal, raises, assert_,
+                           assert_array_almost_equal)
+
 import numpy as np
 
 import os
@@ -133,7 +135,11 @@ class TestRMSD(object):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'rmsd.npy')
+        self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
+        self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
+        self.correct_values_group = [[0 , 0, 0, 0, 0],
+                                     [49, 48.9999, 4.7857, 4.7002,
+                                      4.68981]]
 
     def tearDown(self):
         del self.universe
@@ -142,28 +148,36 @@ class TestRMSD(object):
     def test_rmsd(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(step=49)
-        correct_values = [[  0, 0, 0],
-                          [  49, 48.9999, 4.68953]]
-        assert_almost_equal(RMSD.rmsd, correct_values, 4,
-                            err_msg="error: rmsd profile should match test " +
-                            "values")
-
+        assert_array_almost_equal(RMSD.rmsd, self.correct_values, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
 
     def test_rmsd_single_frame(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(start=5, stop=6)
-
+        single_frame = [[ 5, 5, 0.91544906]]
+        assert_array_almost_equal(RMSD.rmsd, single_frame, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
 
     def test_mass_weighted_and_save(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(step=49, mass_weighted= True)
-        RMSD.save()
-        
+        RMSD.save(self.outfile)
+        saved = np.loadtxt(self.outfile)
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
+                                  err_msg="error: rmsd profile should match " +
+                                          "test values")
+
     def test_rmsd_group_selections(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
                                             groupselections=
                                             ['backbone','name CA'])
         RMSD.run(step=49)
+
+        assert_array_almost_equal(RMSD.rmsd, self.correct_values_group, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
 
 
     @raises(SelectionError)
