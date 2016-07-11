@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import MDAnalysis
 import MDAnalysis.analysis.align as align
@@ -21,11 +21,12 @@ import MDAnalysis.analysis.rms as rms
 from MDAnalysis import SelectionError
 
 from numpy.testing import (TestCase, dec,
-                           assert_almost_equal, assert_raises, assert_equal)
+                           assert_almost_equal, assert_raises, assert_equal,
+                           assert_)
 import numpy as np
 from nose.plugins.attrib import attr
 
-from os import path
+import os.path
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA
 from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
@@ -76,7 +77,7 @@ class TestAlign(TestCase):
         self.reference = MDAnalysis.Universe(PSF, DCD)
         # output is always same as input (=DCD)
         self.tempdir = tempdir.TempDir()
-        self.outfile = path.join(self.tempdir.name, 'align_test.dcd')
+        self.outfile = os.path.join(self.tempdir.name, 'align_test.dcd')
 
     def tearDown(self):
         del self.tempdir
@@ -126,20 +127,32 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
 
-        #test filename=none
-        align.rms_fit_trj(self.universe, self.reference, select="all",
-                          filename=None, quiet=True)
-        #test os.path_exists and not force
+    @dec.slow
+    @attr('issue')
+    def test_rms_fit_trj_defaultfilename(self):
+        filename = 'rmsfit_' + os.path.basename(self.universe.trajectory.filename)
+        with tempdir.in_tempdir():
+            # Need to pretend to have the universe trajectory INSIDE the tempdir because
+            # filename=None uses the full path
+            self.universe.trajectory.filename = os.path.abspath(
+                os.path.join(
+                    os.curdir,
+                    os.path.basename(self.universe.trajectory.filename)))
+            #test filename=none and different selection
+            align.rms_fit_trj(self.universe, self.reference, select="name CA",
+                              filename=None, quiet=True)
+            assert_(os.path.exists(filename),
+                    "rms_fit_trj did not write to {}".format(filename))
 
     def test_AlignTraj(self):
         self.reference.trajectory[-1]
         self.tempdir = tempdir.TempDir()
-        self.outfile = path.join(self.tempdir.name, 'AlignTraj_test.dcd')
+        self.outfile = os.path.join(self.tempdir.name, 'AlignTraj_test.dcd')
         x = align.AlignTraj(self.universe,self.reference,filename=self.outfile)
         x.run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
 
-        self.rmsd_outfile = path.join(self.tempdir.name, 'rmsd')
+        self.rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
         x.save(self.rmsd_outfile)
         assert_almost_equal(x.rmsd[0],6.929083044751061, decimal = 3)
         assert_almost_equal(x.rmsd[-1],5.279731379771749336e-07, decimal = 3)
@@ -151,8 +164,8 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, -1, 0.0)
         del self.outfile
         #test weighted
-        self.outfile = path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
-        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile, 
+        self.outfile = os.path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
+        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile,
                             mass_weighted=True)
         x.run()
 
@@ -194,8 +207,8 @@ class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
         self.tempdir = tempdir.TempDir()
-        self.alnfile = path.join(self.tempdir.name, 'alignmentprocessing.aln')
-        self.treefile = path.join(self.tempdir.name, 'alignmentprocessing.dnd')
+        self.alnfile = os.path.join(self.tempdir.name, 'alignmentprocessing.aln')
+        self.treefile = os.path.join(self.tempdir.name, 'alignmentprocessing.dnd')
 
     def tearDown(self):
         del self.tempdir
