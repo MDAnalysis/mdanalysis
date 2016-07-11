@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-
+         orbeckst
+        
   * 0.15.1
 
 Fixes
@@ -25,7 +26,8 @@ Fixes
     next (Issue #869)
   * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
   * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
-  
+  * fixed incompatibility with newer matplotlib in analysis.hole
+        
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase

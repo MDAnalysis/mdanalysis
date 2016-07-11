@@ -488,7 +488,7 @@ if __name__ == '__main__':
               'AMBER': ['netCDF4>=1.0'],  # for AMBER netcdf, also needs HDF5
                                           # and netcdf-4
               'analysis': [
-                  'matplotlib',
+                  'matplotlib>=1.5.1',
                   'scipy',
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
