@@ -15,6 +15,7 @@ env:
     - GIT_CI_USER: TravisCI
     - GIT_CI_EMAIL: TravisCI@mdanalysis.org
     - MDA_DOCDIR: package/doc/html
+    - MDA_OPTPACKAGES: opt/packages
   matrix:
     - SETUP=minimal PYTHON_VERSION=2.7
     - SETUP=full PYTHON_VERSION=2.7
@@ -45,6 +46,16 @@ install:
   - pip install testsuite/
   - pip install coveralls
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
+# additional external tools (Isssue #898) -- HOLE
+  - |
+     if [[ $SETUP == 'full' ]]; then \
+         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
+         HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
+         export PATH=${PATH}:${HOLE_BINDIR}; \
+     fi
+  # we should still be here but make doubly sure:
+  - cd ${TRAVIS_BUILD_DIR}
+
 # command to run tests
 script:
   - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 --with-memleak
