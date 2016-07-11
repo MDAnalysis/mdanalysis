@@ -21,6 +21,8 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - The test_failure test can be made fail by setting the MDA_FAILURE_TEST
       environment variable (PR #874)
     - replaced XTC_HOLE test trajectory with more meaningful one MULTIPDB_HOLE
+    - install external packages on Travis (SETUP == full: HOLE)
+      to test additional analysis code (Issue #898)
 
 05/15/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
