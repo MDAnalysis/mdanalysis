@@ -22,7 +22,7 @@ from MDAnalysis import SelectionError
 
 from numpy.testing import (TestCase, dec,
                            assert_almost_equal, assert_raises, assert_equal,
-                           assert_)
+                           assert_array_equal, assert_)
 import numpy as np
 from nose.plugins.attrib import attr
 
@@ -190,14 +190,14 @@ class TestAlign(TestCase):
         def different_size():
             a = u.atoms[10:100]
             b = u.atoms[10:101]
-            return MDAnalysis.analysis.align.alignto(a, b)
+            return align.alignto(a, b)
 
         assert_raises(SelectionError, different_size)
 
         def different_atoms():
             a = u.atoms[10:20]
             b = u.atoms[10:17] + u.atoms[18:21]
-            return MDAnalysis.analysis.align.alignto(a, b)
+            return align.alignto(a, b)
 
         assert_raises(SelectionError, different_atoms)
 
@@ -216,9 +216,7 @@ class TestAlignmentProcessing(TestCase):
     @attr('issue')
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
-        from MDAnalysis.analysis.align import fasta2select
-
-        sel = fasta2select(self.seq, is_aligned=True)
+        sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 30623,
                      err_msg="selection string has unexpected length")
@@ -229,14 +227,10 @@ class TestAlignmentProcessing(TestCase):
     @dec.skipif(executable_not_found("clustalw2"),
                 msg="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self):
-        """MDAnalysis.analysis.align: test fasta2select() with calling
-        ClustalW (Issue 113)"""
-        # note: will not be run if clustalw is not installed
-        from MDAnalysis.analysis.align import fasta2select
-
-        sel = fasta2select(self.seq, is_aligned=False,
-                           alnfilename=self.alnfile,
-                           treefilename=self.treefile)
+        """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
+        sel = align.fasta2select(self.seq, is_aligned=False,
+                                 alnfilename=self.alnfile,
+                                 treefilename=self.treefile)
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
@@ -244,3 +238,21 @@ class TestAlignmentProcessing(TestCase):
                      err_msg="selection string has unexpected length")
         assert_equal(len(sel['mobile']), 23090,
                      err_msg="selection string has unexpected length")
+
+def test_sequence_alignment():
+    u = MDAnalysis.Universe(PSF)
+    reference = u.atoms
+    mobile = u.select_atoms("resid 122-159")
+    aln = align.sequence_alignment(mobile, reference)
+
+    assert_equal(len(aln), 5, err_msg="return value has wrong tuple size")
+
+    seqA, seqB, score, begin, end = aln
+    assert_equal(seqA, reference.residues.sequence(format="string"),
+                 err_msg="reference sequence mismatch")
+    assert_(mobile.residues.sequence(format="string") in seqB,
+            "mobile sequence mismatch")
+    assert_almost_equal(score, 54.6)
+    assert_array_equal([begin, end], [0, reference.n_residues])
+
+
