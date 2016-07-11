@@ -21,7 +21,8 @@ import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import (TestCase, assert_almost_equal, raises, assert_,
+from numpy.testing import (TestCase, dec,
+                           assert_almost_equal, raises, assert_,
                            assert_array_almost_equal)
 
 import numpy as np
@@ -30,7 +31,7 @@ import os
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, parser_not_found
 
 
 class Testrmsd(object):
@@ -132,6 +133,8 @@ class Testrmsd(object):
         assert_almost_equal(rmsd, rmsd_superposition)
 
 class TestRMSD(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.tempdir = tempdir.TempDir()
