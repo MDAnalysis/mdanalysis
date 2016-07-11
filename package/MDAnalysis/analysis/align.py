@@ -773,10 +773,12 @@ def rms_fit_trj(
     return filename
 
 
-def sequence_alignment(mobile, reference, **kwargs):
-    """Generate a global sequence alignment between residues in *reference* and *mobile*.
+def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
+                       gap_penalty=-2, gapextension_penalty=-0.1):
+    """Generate a global sequence alignment between two residue groups.
 
-    The global alignment uses the Needleman-Wunsch algorith as
+    The residues in `reference` and `mobile` will be globally aligned.
+    The global alignment uses the Needleman-Wunsch algorithm as
     implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic
     programming algorithm can be tuned with the keywords. The defaults
     should be suitable for two similar sequences. For sequences with
@@ -789,39 +791,40 @@ def sequence_alignment(mobile, reference, **kwargs):
         Atom group to be aligned
     reference : AtomGroup
         Atom group to be aligned against
-    ** kwargs
-      *match_score*
-         score for matching residues, default :2
-      *mismatch_penalty*
+    match_score : float, optional, default 2
+         score for matching residues, default 2
+    mismatch_penalty : float, optional, default -1
          penalty for residues that do not match , default : -1
-      *gap_penalty*
+    gap_penalty : float, optional, default -2
          penalty for opening a gap; the high default value creates compact
          alignments for highly identical sequences but might not be suitable
          for sequences with low identity, default : -2
-      *gapextension_penalty*
+    gapextension_penalty : float, optional, default -0.1
          penalty for extending a gap, default: -0.1
 
     Returns
     -------
     aln[0]
-        Tuple of top sequence matching output ('Sequence A', 'Sequence B', score,
-        begin, end ,prev_pos, nex_pos)
+        Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
+        begin, end)`
 
-    BioPython documentation:
-        http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
+    See Also
+    --------
+    BioPython documentation for `pairwise2`_. Alternatively, use
+    :func:`fasta2select` with :program:`clustalw2` and the option
+    ``is_aligned=False``.
+
+    .. _`pairwise2`: http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
 
     .. versionadded:: 0.10.0
+
     """
     import Bio.pairwise2
-    kwargs.setdefault('match_score', 2)
-    kwargs.setdefault('mismatch_penalty', -1)
-    kwargs.setdefault('gap_penalty', -2)
-    kwargs.setdefault('gapextension_penalty', -0.1)
 
     aln = Bio.pairwise2.align.globalms(
-        reference.sequence(format="string"), mobile.sequence(format="string"),
-        kwargs['match_score'], kwargs['mismatch_penalty'],
-        kwargs['gap_penalty'], kwargs['gapextension_penalty'])
+        reference.residues.sequence(format="string"),
+        mobile.residues.sequence(format="string"),
+        match_score, mismatch_penalty, gap_penalty, gapextension_penalty)
     # choose top alignment
     return aln[0]
 
@@ -892,10 +895,16 @@ def fasta2select(fastafilename, is_aligned=False,
 
     Returns
     -------
-    select_dict
+    select_dict : dict
         dictionary with 'reference' and 'mobile' selection string
         that can be used immediately in :func:`rms_fit_trj` as
         ``select=select_dict``.
+
+    See Also
+    --------
+    :func:`sequence_alignment`, which does not require external
+    programs.
+
     """
     import Bio.SeqIO
     import Bio.AlignIO
