@@ -3,8 +3,8 @@ import datreant.core as dtr
 
 from .core.AtomGroup import Universe
 
-def make_bundle(simulations, topology=None, univ_kwargs={}, names=None, 
-                data={}, auxs={}, aux_kwargs={}):
+def make_bundle(simulations, topology=None, univ_kwargs=None, names=None, 
+                data=None, auxs=None, aux_kwargs=None):
     """ Create a MDSynthesis Bundle from a set of simulations.
 
     Simulations may be passed in as a list of MDSynthesis Sims, Universes or
@@ -50,16 +50,13 @@ def make_bundle(simulations, topology=None, univ_kwargs={}, names=None,
     stored.
 
     """
-    # TODO - check length of various lists match
+    # TODO - check length of various lists match + all of same type
     # TODO - use Group
     # TODO - careful about overwriting existing sims/category values
 
-    if not names:
+    if names is None:
         # if names not provided, use the index for name
-        names = map(str, range(len(args[0])))
-    if not isinstance(simulations, list): 
-        raise TypeError('simulations must be list of trajectory filenames, '
-                        'Universes or MDSynthesis Sims')
+        names = map(str, range(len(simulations)))
     if isinstance(simulations[0], str):
         # assume passing in traj/top
         trajs = simulations
@@ -67,6 +64,7 @@ def make_bundle(simulations, topology=None, univ_kwargs={}, names=None,
             raise ValueError('Must supply topology file/s if providing '
                              'simulations as trajectory files.')
         tops = topology
+        uargs = univ_kwargs if univ_kwargs is not None else {}
         if isinstance(tops, str):
             # assume we've passed in a single common topology. 
             tops = [tops]*len(trajs)
@@ -82,17 +80,20 @@ def make_bundle(simulations, topology=None, univ_kwargs={}, names=None,
         # assume we've passed in a list of Sims
         bundle = dtr.Bundle(simulations)
     else:
-        raise TypeError('simulations must be list of trajectory filenames, '
+        raise TypeError('simulations must be trajectory filenames, '
                         'Universes or MDSynthesis Sims')
 
     ## Add any auxiliaries
-    for auxname, auxvals in auxs.items():
-        args = aux_kwargs.get(auxname, {})
-        for i, sim in enumerate(bundle):
-            sim.universe.trajectory.add_auxiliary(auxname=auxname, 
-                                                  auxdata=auxvals[i], **args) 
+    auxargs = aux_kwargs if aux_kwargs is not None else {}
+    if auxs is not None:
+        for auxname, auxvals in auxs.items():
+            args = aux_kwargs.get(auxname, {})
+            for i, sim in enumerate(bundle):
+                sim.universe.trajectory.add_auxiliary(auxname=auxname, 
+                                                      auxdata=auxvals[i], **args) 
 
     ## Add any metadata
+    data = data if data is not None else {}
     for i, sim in enumerate(bundle):
         sim.categories.add({key: value[i] for key, value in data.items()})
 
