@@ -136,32 +136,12 @@ from . import (
 )
 from ..core import flags
 from .. import units
-from ..lib.util import asiterable
+from ..lib.util import asiterable, Namespace
 from . import core
 from .. import NoDataError
 
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import get_auxreader_for
-
-class Namespace(object):
-    """Class to allow storing attributes in new namespace. """
-    def __getattr__(self, key):
-        # a.this causes a __getattr__ call for key = 'this' 
-        return self.__dict__[key]
-    def __setattr__(self, key, value):
-        # a.this = 10 causes a __setattr__ call for key='this' value=10
-        self.__dict__[key] = value
-    def __delattr__(self, key):
-        del self.__dict__[key]
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-    def __str__(self):
-        return str(self.__dict__)
-    def __len__(self):
-        return len(self.__dict__)
-    def keys(self):
-        return self.__dict__.keys()
-
 
 class Timestep(object):
     """Timestep data for one frame
@@ -1205,7 +1185,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
         if isinstance(frame, int):
             frame = apply_limits(frame)
-            return self._goto_frame(frame)
+            return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
             if isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
@@ -1217,7 +1197,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                 for f in frames:
                     if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
-                    yield self._goto_frame(apply_limits(f))
+                    yield self._read_frame_with_aux(apply_limits(f))
             return listiter(frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
@@ -1241,7 +1221,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         #                                  ts._unitcell, 1)
         # return ts
 
-    def _goto_frame(self, frame):
+    def _read_frame_with_aux(self, frame):
         """Move to *frame*, updating ts with trajectory and auxiliary data."""
         ts = self._read_frame(frame)
         for aux in self.aux_list:
@@ -1261,7 +1241,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         # be much slower than skipping steps in a next() loop
         try:
             for i in range(start, stop, step):
-                yield self._goto_frame(i)
+                yield self._read_frame_with_aux(i)
         except TypeError:  # if _read_frame not implemented
             raise TypeError("{0} does not support slicing."
                             "".format(self.__class__.__name__))
