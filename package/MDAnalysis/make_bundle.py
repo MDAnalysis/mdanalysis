@@ -3,24 +3,26 @@ import datreant.core as dtr
 
 from .core.AtomGroup import Universe
 
-def make_bundle(*args, **kwargs):
+def make_bundle(simulations, topology=None, univ_kwargs={}, names=None, 
+                data={}, auxs={}, aux_kwargs={}):
     """ Create a MDSynthesis Bundle from a set of simulations.
 
     Simulations may be passed in as a list of MDSynthesis Sims, Universes or
     trajectory files; in the latter case, a single topology file or corresponding
-    list of topology files must also be provided as a second argument, so the 
+    list of topology files must be provided with the *topology* kwarg, so the  
     following are all valid::
         make_bundle([Sim1, Sim2, ...])
         make_bundle([Universe1, Universe2, ...])
-        make_bundle([traj_file1, traj_file2, ...], common_topology_file)
-        make_bundle([traj_file1, traj_file2, ...], [top_file1, top_file2, ...])
+        make_bundle([traj_file1, traj_file2, ...], topology=common_topology_file)
+        make_bundle([traj_file1, traj_file2, ...], 
+                    topology=[top_file1, top_file2, ...])
 
     For the trajectory case, if additional keyword arguments are required, these 
-    can be provided with the kwarg *univ_kwargs*. [currently assumes we're using 
+    can be provided as *univ_kwargs*. [currently assumes we're using
     the same kwargs for all].
 
-    If not passing in Sims, these are created, using names passed in 
-    with the *names* kwarg (as a list). If names are not provided, the index is 
+    If not passing in Sims, these are created, using names passed in with the
+    *names* kwarg (as a list). If names are not provided, the index is 
     used instead. 
 
     Metadata and auxiliary data may be added on initialisation using the *data*  
@@ -52,39 +54,45 @@ def make_bundle(*args, **kwargs):
     # TODO - use Group
     # TODO - careful about overwriting existing sims/category values
 
-    names = kwargs.get('names', map(str, range(len(args[0]))))
-    if len(args) == 2:
+    if not names:
+        # if names not provided, use the index for name
+        names = map(str, range(len(args[0])))
+    if not isinstance(simulations, list): 
+        raise TypeError('simulations must be list of trajectory filenames, '
+                        'Universes or MDSynthesis Sims')
+    if isinstance(simulations[0], str):
         # assume passing in traj/top
-        trajs = args[0]
-        tops = args[1]
-        uargs = kwargs.get('univ_kwargs', {})
+        trajs = simulations
+        if not topology:
+            raise ValueError('Must supply topology file/s if providing '
+                             'simulations as trajectory files.')
+        tops = topology
         if isinstance(tops, str):
             # assume we've passed in a single common topology. 
             tops = [tops]*len(trajs)
         bundle = dtr.Bundle([Sim(name, new=True) for name in names])
         for i, sim in enumerate(bundle):
-            sim.universe = Universe(tops[i], trajs[i], **uargs)
-    elif isinstance(args[0][0], Universe):
+            sim.universe = Universe(tops[i], trajs[i], **univ_kwargs)
+    elif isinstance(simulations[0], Universe):
         # assume we've passed in list of Universes
         bundle = dtr.Bundle([Sim(name, new=True) for name in names])
         for i, sim in enumerate(bundle):
-            sim.universe = args[0][i]
-    elif isinstance(args[0][0], Sim):
+            sim.universe = simulations[i]
+    elif isinstance(simulations[0], Sim):
         # assume we've passed in a list of Sims
-        bundle = dtr.Bundle(args[0])
+        bundle = dtr.Bundle(simulations)
+    else:
+        raise TypeError('simulations must be list of trajectory filenames, '
+                        'Universes or MDSynthesis Sims')
 
     ## Add any auxiliaries
-    auxs = kwargs.get('auxs', {})
-    all_aux_args = kwargs.get('aux_kwargs', {})
-    for auxname, auxargs in auxs.items():
-        aux_args = all_aux_args.get(auxname, {})
+    for auxname, auxvals in auxs.items():
+        args = aux_kwargs.get(auxname, {})
         for i, sim in enumerate(bundle):
             sim.universe.trajectory.add_auxiliary(auxname=auxname, 
-                                                  auxdata=auxargs[i], 
-                                                  **aux_args) 
+                                                  auxdata=auxvals[i], **args) 
 
     ## Add any metadata
-    data = kwargs.get('data', {})
     for i, sim in enumerate(bundle):
         sim.categories.add({key: value[i] for key, value in data.items()})
 
