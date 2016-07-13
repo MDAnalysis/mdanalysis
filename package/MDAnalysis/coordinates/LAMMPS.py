@@ -208,6 +208,18 @@ class DATAWriter(base.Writer):
     is measured in Angstroms and velocity is measured in Angstroms per
     femtosecond. To write in different units, specify `lengthunit`
 
+    If atom types are not already positive integers, the user must set them
+    to be positive integers, because the writer will not automatically
+    assign new types.
+
+    To preserve numerical atom types when writing a selection, the Masses
+    section will have entries for each atom type up to the maximum atom type.
+    If the universe does not contain atoms of some type in
+    {1, ... max(atom_types)}, then the mass for that type will be set to 1.
+
+    In order to write bonds, each selected bond type must be explicitly set to
+    an integer >= 1.
+
     """
     format = 'DATA'
 
@@ -277,9 +289,15 @@ class DATAWriter(base.Writer):
         self.f.write('Masses\n')
         self.f.write('\n')
         mass_dict = {}
-        for atype in set(atoms.types.astype(np.int32)):
-            masses = set(atoms.select_atoms('type {:d}'.format(atype)).masses)
-            mass_dict[atype] = masses.pop()
+        max_type = max(atoms.types.astype(np.int32))
+        for atype in range(1, max_type+1):
+            # search entire universe for mass info, not just writing selection
+            masses = set(atoms.universe.atoms.select_atoms(
+                'type {:d}'.format(atype)).masses)
+            if len(masses) == 0:
+                mass_dict[atype] = 1.0
+            else:
+                mass_dict[atype] = masses.pop()
             if masses:
                 raise ValueError('LAMMPS DATAWriter: to write data file, '+
                         'atoms with same type must have same mass')
@@ -287,13 +305,17 @@ class DATAWriter(base.Writer):
             self.f.write('{:d} {:f}\n'.format(atype, mass))
 
     def _write_bonds(self, bonds):
-        num = len(bonds[0])
         self.f.write('\n')
         self.f.write('{}\n'.format(btype_sections[bonds.btype]))
         self.f.write('\n')
         for bond, i in zip(bonds, range(1, len(bonds)+1)):
-            self.f.write('{:d} {:s} '.format(i, bond.type)+\
-                    ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
+            try:
+                self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
+                        ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
+            except TypeError:
+                raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
+                                'but bond type {} is not '
+                                'numerical.'.format(bond.type))
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native
@@ -378,7 +400,7 @@ class DATAWriter(base.Writer):
                     self.f.write('{:>12d}  {}\n'.format(0, attr_name))
 
             self.f.write('\n')
-            self.f.write('{:>12d}  atom types\n'.format(len(set(atoms.types))))
+            self.f.write('{:>12d}  atom types\n'.format(max(atoms.types.astype(np.int32))))
 
             for btype, attr in features.items():
                 if attr is None:
