@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -78,6 +78,7 @@ import logging
 
 from .. import version
 
+
 def start_logging(logfile="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
 
@@ -94,7 +95,6 @@ def stop_logging():
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
     clear_handlers(logger)  # this _should_ do the job...
-
 
 
 def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
@@ -209,7 +209,8 @@ class ProgressMeter(object):
 
     """
 
-    def __init__(self, numsteps, format=None, interval=10, offset=1, quiet=False):
+    def __init__(self, numsteps, format=None, interval=10, offset=1,
+                 quiet=False):
         """Set up the ProgressMeter
 
         :Arguments:
