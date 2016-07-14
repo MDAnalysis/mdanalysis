@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -18,7 +18,7 @@ from __future__ import division
 from six.moves import range
 
 from numpy.testing import (
-    assert_, dec
+    assert_, dec, raises
 )
 
 import MDAnalysis as mda
@@ -30,17 +30,27 @@ from MDAnalysisTests import parser_not_found
 
 class FrameAnalysis(AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
-    def __init__(self, reader, start=None, stop=None, step=None):
+    def __init__(self, reader, **kwargs):
+        super(FrameAnalysis, self).__init__(reader, **kwargs)
         self.traj = reader
-        self._setup_frames(reader,
-                           start=start,
-                           stop=stop,
-                           step=step)
-
         self.frames = []
 
     def _single_frame(self):
         self.frames.append(self._ts.frame)
+
+
+class IncompleteAnalysis(AnalysisBase):
+    def __init__(self, reader, **kwargs):
+        super(IncompleteAnalysis, self).__init__(reader, **kwargs)
+
+
+class OldAPIAnalysis(AnalysisBase):
+    """for version 0.15.0"""
+    def __init__(self, reader, **kwargs):
+        self._setup_frames(reader, **kwargs)
+
+    def _single_frame(self):
+        pass
 
 
 class TestAnalysisBase(object):
@@ -54,29 +64,32 @@ class TestAnalysisBase(object):
         del self.u
 
     def test_default(self):
-        an = FrameAnalysis(self.u.trajectory)
+        an = FrameAnalysis(self.u.trajectory).run()
         assert_(an.n_frames == len(self.u.trajectory))
-
-        an.run()
         assert_(an.frames == list(range(len(self.u.trajectory))))
 
     def test_start(self):
-        an = FrameAnalysis(self.u.trajectory, start=20)
+        an = FrameAnalysis(self.u.trajectory, start=20).run()
         assert_(an.n_frames == len(self.u.trajectory) - 20)
-
-        an.run()
         assert_(an.frames == list(range(20, len(self.u.trajectory))))
 
     def test_stop(self):
-        an = FrameAnalysis(self.u.trajectory, stop=20)
+        an = FrameAnalysis(self.u.trajectory, stop=20).run()
         assert_(an.n_frames == 20)
-
-        an.run()
         assert_(an.frames == list(range(20)))
 
     def test_step(self):
-        an = FrameAnalysis(self.u.trajectory, step=20)
+        an = FrameAnalysis(self.u.trajectory, step=20).run()
         assert_(an.n_frames == 5)
-
-        an.run()
         assert_(an.frames == list(range(98))[::20])
+
+    def test_quiet(self):
+        a = FrameAnalysis(self.u.trajectory, quiet=False)
+        assert_(not a._quiet)
+
+    @raises(NotImplementedError)
+    def test_incomplete_defined_analysis(self):
+        IncompleteAnalysis(self.u.trajectory).run()
+
+    def test_old_api(self):
+        OldAPIAnalysis(self.u.trajectory).run()

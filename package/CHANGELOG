@@ -18,6 +18,13 @@ The rules for this file:
         
   * 0.15.1
 
+Enhancements
+
+  * All classes derived from 'AnalysisBase' now display a ProgressMeter
+  with 'quiet=False'
+  * The 'run' method from all 'AnalysisBase' derived classes return the
+  class itself.
+
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
