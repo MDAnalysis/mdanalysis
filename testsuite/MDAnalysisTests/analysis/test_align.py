@@ -202,8 +202,7 @@ class TestAlign(TestCase):
         assert_raises(SelectionError, different_atoms)
 
 
-
-class TestAlignmentProcessing(TestCase):
+class TestAlignmentProcessing(object):
     def setUp(self):
         self.seq = FASTA
         self.tempdir = tempdir.TempDir()

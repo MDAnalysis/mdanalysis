@@ -376,7 +376,7 @@ class Contacts(AnalysisBase):
 
     """
     def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
-                 kwargs=None, start=None, stop=None, step=None,):
+                 kwargs=None, **basekwargs):
         """Initialization
 
         Parameters
@@ -404,6 +404,9 @@ class Contacts(AnalysisBase):
             Step between frames to analyse, Default: 1
 
         """
+        self.u = u
+        super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
+
         if method == 'hard_cut':
             self.fraction_contacts = hard_cut_q
         elif method == 'soft_cut':
@@ -412,10 +415,6 @@ class Contacts(AnalysisBase):
             if not callable(method):
                 raise ValueError("method has to be callable")
             self.fraction_contacts = method
-
-        # setup boilerplate
-        self.u = u
-        self._setup_frames(self.u.trajectory, start, stop, step)
 
         self.selection = selection
         self.grA = u.select_atoms(selection[0])
