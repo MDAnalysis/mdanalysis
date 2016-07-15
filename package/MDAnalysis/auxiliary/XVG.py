@@ -57,6 +57,44 @@ def uncomment(lines):
             yield line
         # if comment_position == 0, then the line is empty
 
+class XVGStep(base.AuxStep):
+    """ AuxStep class for .xvg file format 
+
+    Parameters
+    ----------
+    time_selector : int
+        Index of column in .xvg file storing time, assumed to be in ps. Default
+        value is 0. 
+    data_selector : list of int
+        Indices of columns in .xvg file containing data of interest to be 
+        stored in ``step_data``. Default value is ``None``, which will select 
+        all columns but that containing time.
+    """
+    def _select_time(self, key):
+        if key is None:
+            # here so that None is a valid value; just return
+            return
+        if isinstance(key, int):
+            return self._select_data(key)
+        else:
+             raise ValueError('Time selector must be single index')
+
+    def _select_data(self, key):
+        if key is None:
+             key = [i for i in range(len(self._data)) if i != self.time_selector]
+        if isinstance(key, int):
+            try:
+                return self._data[key]
+            except IndexError:
+                raise ValueError('{} not a valid index for data with {} '
+                                 'columns'.format(key, len(self._data)))
+        else:
+            return [self._select_data(i) for i in key] 
+
+    def _empty_data(self):
+        return [np.nan]*len(self.step_data)
+
+
 class XVGReader(base.AuxReader):
     """ Auxiliary reader to read data from an .xvg file.
 
@@ -70,13 +108,6 @@ class XVGReader(base.AuxReader):
     ----------
     filename : str
         Location of the file containing the auxiliary data.
-    time_selector : int
-        Index of column in .xvg file storing time, assumed to be in ps. Default
-        value is 0. 
-    data_selector : list of int
-        Indices of columns in .xvg file containing data of interest to be 
-        stored in ``step_data``. Default value is ``None``, which will select 
-        all columns but that containing time.
     **kwargs
        Other AuxReader options.    
 
@@ -94,6 +125,7 @@ class XVGReader(base.AuxReader):
     """
 
     format = "XVG"
+    _Auxstep = XVGStep
 
     def __init__(self, filename, time_selector=0, data_selector=None, **kwargs):
         self._data_input = os.path.abspath(filename)
@@ -108,16 +140,17 @@ class XVGReader(base.AuxReader):
                 raise ValueError('Step {0} has {1} columns instead of '
                                  '{2}'.format(i, auxdata[i], auxdata[0]))
         self._auxdata = np.array(auxdata)
-        self._n_cols = len(self._auxdata[0])
         super(XVGReader, self).__init__(time_selector=time_selector, 
                                         data_selector=data_selector, **kwargs)
 
     def _read_next_step(self):
         """ Read next auxiliary step. """
+        auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            self._data = self._auxdata[new_step]
-            self.step = new_step
+            auxstep._data = self._auxdata[new_step]
+            auxstep.step = new_step
+            return auxstep
         else:
             self.rewind()
             raise StopIteration
@@ -138,7 +171,7 @@ class XVGReader(base.AuxReader):
         if i not in range(self.n_steps):
             raise ValueError("Step index {0} is not valid for auxiliary "
                              "(num. steps {1})".format(i, self.n_steps))
-        self.step = i-1
+        self.auxstep.step = i-1
         self.next()
 
     def count_n_steps(self):
@@ -160,30 +193,6 @@ class XVGReader(base.AuxReader):
             Time of each step
         """
         return self._auxdata[:,self.time_selector]
-
-    def _select_time(self, key):
-        if key is None:
-            # here so that None is a valid value; just return
-            return
-        if isinstance(key, int):
-            return self._select_data(key)
-        else:
-             raise ValueError('Time selector must be single index')
-
-    def _select_data(self, key):
-        if key is None:
-             key = [i for i in range(self._n_cols) if i != self.time_selector]
-        if isinstance(key, int):
-            try:
-                return self._data[key]
-            except IndexError:
-                raise ValueError('{} not a valid index for data with {} '
-                                 'columns'.format(key, self._n_cols))
-        else:
-            return [self._select_data(i) for i in key] 
-
-    def _empty_data(self):
-        return [np.nan]*len(self.step_data)
 
 
 class XVGFileReader(base.AuxFileReader):
@@ -213,9 +222,9 @@ class XVGFileReader(base.AuxFileReader):
     """
 
     format = 'XVG-F'
+    _Auxstep = XVGStep
 
     def __init__(self, filename, time_selector=0, **kwargs):
-        self._n_cols = None
         super(XVGFileReader, self).__init__(filename, time_selector=time_selector, 
                                             **kwargs)
         
@@ -223,23 +232,26 @@ class XVGFileReader(base.AuxFileReader):
         """ Read next recorded step in xvg file. """
         line = self.auxfile.readline()
         if line:
+            auxstep = self.auxstep
             # xvg has both comments '#' and grace instructions '@'
             while line.lstrip()[0] in ['#', '@']:
                 line = self.auxfile.readline()
             # remove end of line comments
             line_no_comment = line.split('#')[0]
-            self.step = self.step + 1
-            self._data = [float(i) for i in line_no_comment.split()]
-            if self._n_cols is None:
-                self._n_cols = len(self._data)
-            if len(self._data) != self._n_cols:
+            auxstep.step = self.step + 1
+            auxstep._data = [float(i) for i in line_no_comment.split()]
+            try: 
+                n_cols = auxstep._n_cols
+            except AttributeError:
+                auxstep._n_cols = len(auxstep._data)
+            if len(auxstep._data) != auxstep._n_cols:
                 raise ValueError('Step {0} has {1} columns instead of '
-                                 '{2}'.format(self.step, len(self._data),
-                                             self._n_cols))
+                                 '{2}'.format(self.step, len(auxstep._data),
+                                             auxstep._n_cols))
+            return auxstep
         else:
             self.rewind()
             raise StopIteration
-
 
     def count_n_steps(self):
         """ Iterate through all steps to count total number.
@@ -274,27 +286,3 @@ class XVGFileReader(base.AuxFileReader):
         for step in self:
             times.append(self.time)
         return np.array(times)
-
-    def _select_time(self, key):
-        if key is None:
-            # here so that None is a valid value; just return
-            return
-        if isinstance(key, int):
-            return self._select_data(key)
-        else:
-             raise ValueError('Time selector must be single index')
-
-    def _select_data(self, key):
-        if key is None:
-             key = [i for i in range(self._n_cols) if i != self.time_selector]
-        if isinstance(key, int):
-            try:
-                return self._data[key]
-            except IndexError:
-                raise ValueError('{} not a valid index for data with {} '
-                                 'columns'.format(key, self._n_cols))
-        else:
-            return np.array([self._select_data(i) for i in key])
-
-    def _empty_data(self):
-        return np.array([np.nan]*len(self.step_data))

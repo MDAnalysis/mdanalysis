@@ -54,6 +54,129 @@ class _AuxReaderMeta(type):
                 _AUXREADERS[f] = cls
 
 
+class AuxStep(object):
+    """ Base class for auxiliary timesteps.
+
+    Stores the auxiliary data for the current auxiliary step.
+
+    Parameters
+    ----------
+    dt : float, optional
+        Change in time between auxiliary steps (in ps). If not specified, will
+        attempt to be determined from auxiliary data; otherwise defaults to 1 ps.
+    initial_time : float, optional 
+        Time of first auxiliary step (in ps). If not specified, will attempt to
+        be determined from auxiliary data; otherwise defaults to 0 ps.
+    time_selector: optional
+        Key to select 'time' value from the full set of data read for each step. 
+        If ``None`` (default value), time is instead calculated from ``dt``, 
+        ``initial_time`` and the step. Type will vary depending on the auxiliary 
+        data format; see individual AuxReader documention.
+    data_selector: optional
+        Key(s) to select auxilairy data values of interest from the full set of
+        data read for each step. If ``None`` (default value), add values 
+        excluding time (as specified by ``time_selector``) are used. Type will 
+        vary depending on the auxiliary data format; see individual AuxReader 
+        documention.
+
+    Attributes
+    ----------
+    step : int
+        Number of the current auxiliary step (0-based).
+    time : float
+        Time of current auxiliary step, as read from data (if ``time_selector``
+        specified) or calculated using `dt` and `initial_time`.
+    step_data : ndarray
+        Value(s) of auxiliary data of interest for the current step.
+    """ 
+    def __init__(self, dt=1, initial_time=0, time_selector=None, 
+                 data_selector=None):
+        self.step = -1
+        self._initial_time = initial_time
+        self._dt = dt
+        self._time_selector = time_selector
+        self._data_selector = data_selector
+
+    @property
+    def time(self):
+        """ Time in ps of current auxiliary step.
+
+        As read from the full set of data if present (specified by 
+        ``time_selector``); otherwise calcuated as ``step * dt + initial_time``.
+
+        Note
+        ----
+        Assumed to be in ps.
+        """
+        if self.time_selector is not None:
+            return self._select_time(self.time_selector)
+        else:
+            return self.step * self.dt + self.initial_time    
+ 
+    @property
+    def step_data(self):
+        """ Auxiliary values of interest for the current step.
+
+        As selected from the full set of data read it for each step by  
+        ``data_selector``.
+        """
+        return self._select_data(self.data_selector)
+
+    @property
+    def dt(self):
+        """ Change in time between steps. 
+
+        Defaults to 1ps if not provided or read from auxiliary data. """
+        return self._dt
+
+    @property
+    def initial_time(self):
+        """ Time corresponding to first auxiliary step. 
+
+        Defaults to 0ps if not provided or read from auxiliary data. """
+        return self._initial_time
+
+    @property
+    def time_selector(self):
+        """ 'Key' to select time from the full set of data read in each step.
+
+        Will be passed to ``_select_time()``, defined separately for each 
+        auxiliary format, when returning the time of the current step. 
+        Format will hence depend on the auxiliary format. e.g. for the XVGReader,
+        this is an index and `_select_time()` returns the value in that column 
+        of the current step data.
+        """
+        return self._time_selector
+
+    @time_selector.setter
+    def time_selector(self, new):
+        # check *new* is valid before setting; _select_time should raise 
+        # an error if not
+        self._select_time(new)
+        self._time_selector = new
+
+    @property
+    def data_selector(self):
+        """ 'Key' to select values of interest from full set of auxiliary data. 
+        These are the values that will be stored in ``step_data``, 
+        ``frame_data``, and ``frame_rep``.
+
+        Will be passed to ``_select_data()``, defined separately for each 
+        auxiliary format, when returning the data of interest for the current
+        step (``step_data``). Format will depend on the auxiliary format; e.g.
+        for the XVGReader, this is a list of indices and `_select_data()` returns
+        the value(s) in those columns of the current step data.
+        """ 
+        return self._data_selector
+
+    @data_selector.setter
+    def data_selector(self, new):
+        # check *new* is valid before setting; _select_data should raise an 
+        # error if not
+        self._select_data(new)
+        self._data_selector = new
+
+
 class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     """ Base class for auxiliary readers.
 
@@ -90,45 +213,25 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         will be ignored when calculating representative values (the default
         value is -1, which indicates all auxiliary steps assigned to that 
         timestep will be used).
-    dt : float, optional
-        Change in time between auxiliary steps (in ps). If not specified, will
-        attempt to be determined from auxiliary data; otherwise defaults to 1 ps.
-    initial_time : float, optional 
-        Time of first auxiliary step (in ps). If not specified, will attempt to
-        be determined from auxiliary data; otherwise defaults to 0 ps.
     constant_dt : bool, optional
         If true, will use ``dt``/``initial_time`` to calculate step time even 
         when time stored in auxiliary data (default value is ``True``).
-    time_selector: optional
-        Key to select 'time' value from the full set of data read for each step. 
-        If ``None`` (default value), time is instead calculated from ``dt``, 
-        ``initial_time`` and the step. Type will vary depending on the auxiliary 
-        data format; see individual AuxReader documention.
-    data_selector: optional
-        Key(s) to select auxilairy data values of interest from the full set of
-        data read for each step. If ``None`` (default value), add values 
-        excluding time (as specified by ``time_selector``) are used. Type will 
-        vary depending on the auxiliary data format; see individual AuxReader 
-        documention.
+    **kwargs
+        Options to be passed to :class:`~AuxStep`
 
 
     Attributes
     ----------
-    step : int
-        Number of the current auxiliary step (0-based).
+    auxstep : AuxStep object
+       :class:`~AuxStep` object containing data for current step. 
     n_steps : int
         Total number of auxiliary steps.
-    time : float
-        Time of current auxiliary step, as read from data (if present) or 
-        calculated using `dt` and `initial_time`.
-    step_data : ndarray
-        Value(s) of auxiliary data of interest for the current step (based on
-        ``data_selector``. 
-   ** frame_data : ndarray
-        List of 'step_data' from each auxiliary step assigned to the last-read
+    frame_data : 
+        'step_data' from each auxiliary step assigned to the last-read
         trajectory timestep.
     frame_rep : list of float
         Represenatative value of auxiliary data for current trajectory timestep.
+
 
     Note
     ----
@@ -136,41 +239,34 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     It step time is read from the data, it is assumed to be in ps units.
     """
 
+    _Auxstep = AuxStep
     # update when add new options
     represent_options = ['closest', 'average']
 
     # list of attributes required to recreate the auxiliary
-    required_attrs = ['_represent_ts_as', 'cutoff', '_dt', '_initial_time',
-                      '_time_selector', '_data_selector', 'constant_dt', 'auxname', 
+    required_attrs = ['represent_ts_as', 'cutoff', 'dt', 'initial_time',
+                      'time_selector', 'data_selector', 'constant_dt', 'auxname', 
                       'format', '_data_input']
       
     def __init__(self, represent_ts_as='closest', auxname=None, cutoff=-1, 
-                 dt=1, initial_time=0, time_selector=None, data_selector=None, 
-                 constant_dt=True):
+                 constant_dt=True, **kwargs):
         # allow auxname to be optional for when using reader separate from
         # trajectory.
         self.auxname = auxname
         self.represent_ts_as = represent_ts_as
         self.cutoff = cutoff
-
+        self.constant_dt = constant_dt
         self.frame_data = None
         self.frame_rep = None
 
-        self._initial_time = initial_time
-        self._dt = dt
-        self.constant_dt = constant_dt
-
-        self.step = -1
+        self.auxstep = self._Auxstep(**kwargs)
         self._read_next_step()
-
-        self.time_selector = time_selector
-        self.data_selector = data_selector
 
         # get dt and initial time from auxiliary data (if time included)
         if self.time_selector is not None and self.constant_dt:
-            self._initial_time = self.time
+            self.auxstep._initial_time = self.time
             self._read_next_step()
-            self._dt = self.time - self._initial_time
+            self.auxstep._dt = self.time - self.initial_time
             self.rewind()
 
     def __len__(self):
@@ -179,9 +275,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     def next(self):
         """ Move to next step of auxiliary data. """
-        self._read_next_step()
-        return {'time': self.time, 'data': self.step_data}
-
+        return self._read_next_step()
 
     def __next__(self):
         """ Move to next step of auxiliary data. """
@@ -195,7 +289,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     def _restart(self):
         """ Reset back to start; calling next() should read first step. """
         # Overwrite as appropriate
-        self.step = -1
+        self.auxstep.step = -1
                 
     def rewind(self):
         """ Return to and read first step. """
@@ -348,7 +442,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             to calculate difference in time between current step and timestep.
         """
         time_diff = self.time - ts_time
-        self.frame_data[time_diff] = self.step_data
+        self.frame_data[time_diff] = self.auxstep.step_data
 
     def calc_representative(self):
         """ Calculate represenatative auxiliary value(s) from *frame_data*.
@@ -377,7 +471,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         if len(cutoff_data) == 0:
             # no steps are 'assigned' to this trajectory frame, so return
             # values of ``np.nan``
-            value = self._empty_data()
+            value = self.auxstep._empty_data()
         elif self.represent_ts_as == 'closest':
             min_diff = min([abs(i) for i in cutoff_data])
             # temp fix to get right sign. Go with -ve over +ve.
@@ -399,31 +493,6 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     def close(self):
         # Overwrite as appropriate
         pass
-
-    @property
-    def time(self):
-        """ Time in ps of current auxiliary step.
-
-        As read from the full set of data if present (specified by 
-        ``time_selector``); otherwise calcuated as ``step * dt + initial_time``.
-
-        Note
-        ----
-        Assumed to be in ps.
-        """
-        if self.time_selector is not None:
-            return self._select_time(self.time_selector)
-        else:
-            return self.step * self.dt + self.initial_time
-
-    @property
-    def step_data(self):
-        """ Auxiliary values of interest for the current step.
-
-        As selected from the full set of data read it for each step by  
-        ``data_selector``.
-        """
-        return self._select_data(self.data_selector)
 
     @property
     def n_steps(self):
@@ -467,47 +536,6 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             except AttributeError:
                 self._times = self.read_all_times()
                 return self._times[i]
-
-    @property
-    def dt(self):
-        """ Change in time between steps. 
-
-        Defaults to 1ps if not provided or read from auxiliary data. """
-        return self._dt
-
-    @property
-    def initial_time(self):
-        """ Time corresponding to first auxiliary step. 
-
-        Defaults to 0ps if not provided or read from auxiliary data. """
-        return self._initial_time
-
-    @property
-    def time_selector(self):
-        """ Get or set key to select time from full set of auxiliary data."""
-        return self._time_selector
-
-    @time_selector.setter
-    def time_selector(self, new):
-        # check *new* is valid before setting; _select_time should raise 
-        # an error if not
-        self._select_time(new)
-        self._time_selector = new
-
-    @property
-    def data_selector(self):
-        """ Get or set key(s) to select values of interest from full set of 
-        auxiliary data. These are the values that will be stored in 
-        ``step_data``, ``frame_data``, and ``frame_rep``.
-        """ 
-        return self._data_selector
-
-    @data_selector.setter
-    def data_selector(self, new):
-        # check *new* is valid before setting; _select_data should raise an 
-        # error if not
-        self._select_data(new)
-        self._data_selector = new
 
     @property
     def represent_ts_as(self):
@@ -557,6 +585,48 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
                 return False
         return True
 
+    @property
+    def step(self):
+        """Number of the current auxiliary step (as stored in ``auxstep``; 
+        0-based)."""
+        return self.auxstep.step
+
+    @property
+    def time(self):
+        """Time of current auxiliary step (as stored in ``auxstep``)"""
+        return self.auxstep.time
+
+    @property
+    def dt(self):
+        """Change in time between auxiliary steps (as stored in ``auxstep``; 
+        in ps)"""
+        return self.auxstep.dt
+
+    @property
+    def initial_time(self):
+        """Time of first auxiliary step (as stored in ``auxstep``; in ps)"""
+        return self.auxstep.initial_time
+
+    @property
+    def time_selector(self):
+        """Key to select 'time' value from the full set of data read for each step
+        (as stored in ``austep``).""" 
+        return self.auxstep.time_selector
+
+    @time_selector.setter
+    def time_selector(self, new):
+        self.auxstep.time_selector = new
+
+    @property
+    def data_selector(self):
+        """Key(s) to select auxilairy data values of interest from the full set 
+        of data read for each step (as stored in ``auxstep``)."""
+        return self.auxstep.data_selector
+
+    @data_selector.setter
+    def data_selector(self, new):
+        self.auxstep.data_selector = new
+
 
 class AuxFileReader(AuxReader):
     """ Base class for auxiliary readers that read from file.
@@ -599,14 +669,14 @@ class AuxFileReader(AuxReader):
     def _restart(self):
         """ Reposition to just before first step. """
         self.auxfile.seek(0)
-        self.step = -1
+        self.auxstep.step = -1
         
     def _reopen(self):
         """ Close and then reopen *auxfile*. """
         if self.auxfile != None:
             self.auxfile.close()
         self.auxfile = open(self.filename)
-        self.step = -1
+        self.auxstep.step = -1
 
     def go_to_step(self, i):
         """ Move to and read i-th auxiliary step. 

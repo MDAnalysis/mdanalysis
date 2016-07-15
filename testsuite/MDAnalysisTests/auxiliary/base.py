@@ -15,7 +15,7 @@ class BaseAuxReference(object):
         self.all_data = [[0, 0, 1], [1, 2, 2], [2, 4, 4], [3, 6, 8], [4, 8, 16]]
 
         # make time first column
-        self.time_selector = 0
+        self.time_selector = 0        
         self.all_times = [i[0] for i in self.all_data]
         self.all_step_data = [[i[1], i[2]] for i in self.all_data]
 
@@ -30,7 +30,7 @@ class BaseAuxReference(object):
 
         self.cutoff = 0
  
-        # reference timestep with lower frequency (higher dt)
+        ## reference timestep with lower frequency (higher dt)
         lowf = 2
         self.lowf = {}
         self.lowf_ts = mda.coordinates.base.Timestep(0, dt=lowf*self.dt)
@@ -45,7 +45,7 @@ class BaseAuxReference(object):
         self.lowf['cutoff_average'] = [4, 4]
 
 
-        # reference timestep, offset
+        ## reference timestep, offset
         offset = 0.25
         self.offset = {}
         self.offset_ts = mda.coordinates.base.Timestep(0, dt=self.dt, 
@@ -59,7 +59,7 @@ class BaseAuxReference(object):
         self.offset['cutoff_closest'] = [np.nan, np.nan]
 
 
-        # reference timestep with higher frequency (lower dt)
+        ## reference timestep with higher frequency (lower dt)
         highf = 0.5
         self.highf = {}
         self.highf_ts = mda.coordinates.base.Timestep(0, dt=highf*self.dt)
@@ -100,9 +100,9 @@ class BaseAuxReaderTest(object):
 
     def check_step(self, i):
         # check step_data and time match expected values for step i
-        assert_equal(self.reader.step_data, self.ref.all_step_data[i],
+        assert_equal(self.reader.auxstep.step_data, self.ref.all_step_data[i],
                      "Step data for step {0} does not match".format(i))
-        assert_equal(self.reader.time, self.ref.all_times[i],
+        assert_equal(self.reader.auxstep.time, self.ref.all_times[i],
                      "Time for step {0} does not match".format(i))
 
     def test_first_step(self):
@@ -131,9 +131,10 @@ class BaseAuxReaderTest(object):
     def test_iter(self):
         for i, val in enumerate(self.reader):
             # check yielded val is as expected
-            ref_data = {'time': self.ref.all_times[i], 
-                        'data': self.ref.all_step_data[i]}
-            assert_equal(val, ref_data)
+            ## TODO should be able to directly check timestep
+            assert_equal(val.time, self.ref.all_times[i])
+            assert_equal(val.step_data, self.ref.all_step_data[i])
+
             # also check values set in reader 
             self.check_step(i)
 
@@ -143,7 +144,7 @@ class BaseAuxReaderTest(object):
         self.reader = self.ref.reader(self.ref.testdata, 
                                       data_selector=self.ref.set_data_selector)
         for i, val in enumerate(self.reader):
-            assert_equal(val['data'], self.ref.set_data_selector_vals[i],
+            assert_equal(val.step_data, self.ref.set_data_selector_vals[i],
                          "step_data for step {0} does not match".format(i))
 
     def test_no_time_selector(self):
