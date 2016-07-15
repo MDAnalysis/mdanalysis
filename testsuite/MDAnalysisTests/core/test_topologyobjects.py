@@ -109,7 +109,7 @@ class TestTopologyObjects(object):
 
     def test_bondrepr(self):
         assert_equal(repr(self.b),
-                     '<Bond between: Atom 12, Atom 9>')
+                     '<Bond between: Atom 9, Atom 12>')
 
     # Angle class checks
     def test_angle(self):
