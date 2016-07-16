@@ -280,7 +280,7 @@ class DiffusionMap(object):
 
     Attributes
     ----------
-    eigenvalues: array
+    eigenvalues: array ()
         Eigenvalues of the diffusion map
 
     Methods
@@ -357,7 +357,7 @@ class DiffusionMap(object):
             values, more dominant eigenvectors determine diffusion distance.
         Return
         ------
-        diffusion_space : array
+        diffusion_space : array (n_frames, n_eigenvectors)
             The diffusion map embedding as defined by [Ferguson1]_.
         """
         return (self._eigenvectors[1:n_eigenvectors+1,].T *

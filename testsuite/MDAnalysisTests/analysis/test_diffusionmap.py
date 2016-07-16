@@ -42,12 +42,22 @@ class TestDiffusionmap(object):
         backbone = self.u.select_atoms('backbone')
         weights_atoms = np.ones(len(backbone.atoms))
         self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
-                                                weights=weights_atoms)
+                                                weights=weights_atoms,
+                                                step=3)
         self.dist.run()
+        self.dmap = diffusionmap.DiffusionMap(self.dist)
+        self.dmap.run()
+        assert_array_almost_equal(self.dmap.eigenvalues, [1,1,1,1], 4)
+        assert_array_almost_equal(self.dmap._eigenvectors,
+                                  ([[ 0, 0, 1, 0],
+                                    [ 0, 0, 0, 1],
+                                    [ -.707,-.707, 0, 0],
+                                    [  .707,-.707, 0, 0]]) ,2)
 
     def test_different_steps(self):
         self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', step=3)
         self.dmap.run()
+        assert_equal(self.dmap._eigenvectors.shape, (4,4))
 
     def test_transform(self):
         self.n_eigenvectors = 4
