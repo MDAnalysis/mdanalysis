@@ -173,7 +173,7 @@ The following attributes are inherited from
       ``_select_time()``/``time_selector``, or calculated using ``dt`` and 
       ``initial_time``.
   ``frame_data``
-      `step_data` from each auxiliary step assigned to the 
+      `data` from each auxiliary step assigned to the 
       last-read trajectory timestep.
   ``frame_rep``
       Represenatative value(s) of auxiliary data for last-read trajectory timestep.
@@ -228,7 +228,7 @@ The following methods are inherited from
     Return the time of the auxiliary step `step`. 
 
   ``calc_representative()``
-    Return the representative value calculated from ``step_data`` following
+    Return the representative value calculated from ``data`` following
     the method specified by ``represent_ts_as`` and ``cutoff``.
 
   ``__enter__()``
@@ -254,19 +254,22 @@ and addionally define:
     value(s) from each column. Raise `StopIteration` when attempting to read 
     past last step.
 
-  ``count_n_steps()``
-    Return the total number of steps.
-
-  ``read_all_times()``
-    Return the list of times for each step.
-
-  ``go_to_step(i)``
+  ``_go_to_step(i)``
     Move to and read step `i` (0-based) from the auxiliary data. Raise 
     ValueError when i is out of range
 
 
 Depending on the format of the auxiliary data, it may also be necessary to 
-overwrite the following:
+define/overwrite the following:
+
+  ``read_all_times()``
+    Return the list of times for each step (only required if ``constant_dt``
+    may be false).
+
+  ``count_n_steps()``
+    Return the total number of steps (only required if `_n_steps` not otherwise
+    set during `__init__`).
+
   ``_restart()``
     Reposition before the first step
 
@@ -286,7 +289,7 @@ following (though these may be overwritten by subclasses as appropriate):
   ``close()``
     Close ``auxfile``
 
-  ``go_to_step(i)``
+  ``_go_to_step(i)``
     Iterate through all steps until step `i` is reached.
 
   ``_reopen()``
@@ -331,7 +334,7 @@ The following are inherited from :class:`~MDAnalysis.auxiliary.base.AuxStep`:
       Time of current auxiliary step, determined from the ``_data`` using 
       ``_select_time()``/``time_selector``, or calculated using ``dt`` and 
       ``initial_time``.
-  ``step_data``
+  ``data``
       Auxiliary values of interest for the current step, determined from 
       ``_data`` using ``_select_data()``/``data_selector``.
 

@@ -27,8 +27,8 @@ class TestXVGReader(BaseAuxReaderTest):
                                       initial_time=self.ref.initial_time,
                                       time_selector=None)
         for i, val in enumerate(self.reader):
-            assert_equal(val.step_data, self.ref.all_data[i],
-                         "step_data for step {0} does not match".format(i))
+            assert_equal(val.data, self.ref.all_data[i],
+                         "data for step {0} does not match".format(i))
 
     @raises(ValueError)
     def test_wrong_n_col_raises_ValueError(self): 
@@ -61,4 +61,4 @@ class TestXVGFileReader(TestXVGReader):
         self.reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
         self.reader.next()
-        assert_equal(self.reader.auxstep.step_data, self.ref.all_step_data[0])
+        assert_equal(self.reader.auxstep.data, self.ref.all_step_data[0])

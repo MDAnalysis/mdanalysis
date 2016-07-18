@@ -99,8 +99,8 @@ class BaseAuxReaderTest(object):
                      "initial time does not match")
 
     def check_step(self, i):
-        # check step_data and time match expected values for step i
-        assert_equal(self.reader.auxstep.step_data, self.ref.all_step_data[i],
+        # check data and time match expected values for step i
+        assert_equal(self.reader.auxstep.data, self.ref.all_step_data[i],
                      "Step data for step {0} does not match".format(i))
         assert_equal(self.reader.auxstep.time, self.ref.all_times[i],
                      "Time for step {0} does not match".format(i))
@@ -121,11 +121,11 @@ class BaseAuxReaderTest(object):
         self.check_step(1)
 
     def test_go_to_step(self):
-        self.reader.go_to_step(3)
+        self.reader._go_to_step(3)
         self.check_step(3)
 
     def test_next_past_last_step_raises_StopIteration(self):
-        self.reader.go_to_step(self.reader.n_steps-1)
+        self.reader._go_to_step(self.reader.n_steps-1)
         assert_raises(StopIteration, self.reader.next)
 
     def test_iter(self):
@@ -133,19 +133,19 @@ class BaseAuxReaderTest(object):
             # check yielded val is as expected
             ## TODO should be able to directly check timestep
             assert_equal(val.time, self.ref.all_times[i])
-            assert_equal(val.step_data, self.ref.all_step_data[i])
+            assert_equal(val.data, self.ref.all_step_data[i])
 
             # also check values set in reader 
             self.check_step(i)
 
     def test_data_selector(self):
         # reload reader, imposing a selection for which values to
-        # include in step_data
+        # include in data
         self.reader = self.ref.reader(self.ref.testdata, 
                                       data_selector=self.ref.set_data_selector)
         for i, val in enumerate(self.reader):
-            assert_equal(val.step_data, self.ref.set_data_selector_vals[i],
-                         "step_data for step {0} does not match".format(i))
+            assert_equal(val.data, self.ref.set_data_selector_vals[i],
+                         "data for step {0} does not match".format(i))
 
     def test_no_time_selector(self):
         # reload reader, without setting time selector; pass dt and initial_time
@@ -154,7 +154,7 @@ class BaseAuxReaderTest(object):
                                       initial_time=self.ref.initial_time)
         for i, val in enumerate(self.reader):
             assert_equal(val['data'], self.ref.all_data[i],
-                         "step_data for step {0} does not match".format(i))
+                         "data for step {0} does not match".format(i))
 
     def test_no_constant_dt(self):
         # reload reader, without assuming constant dt
@@ -163,7 +163,7 @@ class BaseAuxReaderTest(object):
         for i in range(self.ref.n_steps):
             assert_almost_equal(self.reader.step_to_time(i), 
                                 self.ref.all_times[i],
-                              err_msg="step_data for step {0} does not match".format(i))
+                              err_msg="data for step {0} does not match".format(i))
 
     @raises(ValueError)
     def test_bad_represent_raises_ValueError(self):
@@ -179,7 +179,7 @@ class BaseAuxReaderTest(object):
 
     @raises(ValueError)
     def test_go_to_invalid_step_raises_ValueError(self):
-        self.reader.go_to_step(self.reader.n_steps)
+        self.reader._go_to_step(self.reader.n_steps)
 
     @raises(ValueError)
     def test_invalid_step_to_time_raises_ValueError(self):
@@ -195,7 +195,7 @@ class BaseAuxReaderTest(object):
 
     def check_timestep(self, ref):
         assert_equal(self.reader.frame_data, ref['data'],
-                    "List of step_data for steps assigned to ts does not match")
+                    "List of data for steps assigned to ts does not match")
         assert_almost_equal(self.reader.frame_rep, ref['rep'],
                             err_msg="Representative value for ts does not math")
         assert_equal(self.reader.step, ref['last'],

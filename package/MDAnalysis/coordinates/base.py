@@ -1306,7 +1306,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     natoms=self.n_atoms
                 ))
                 
-    def add_auxiliary(self, auxname=None, auxdata=None, **kwargs):
+    def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory additional
@@ -1344,11 +1344,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See 
         the :ref:`Auxiliary API`.
         """
-        # making auxname and auxdata keyworded so we can more easily reload
-        # an auxiliary; so we now have to check we have both
-        if not auxname or not auxdata:
-            raise TypeError("Must provide an auxname and auxdata")
- 
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
@@ -1356,8 +1351,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             aux = auxdata
             aux.auxname = auxname
         else:
-            auxreader = get_auxreader_for(auxdata, 
-                                          format=kwargs.pop('format', None))
+            auxreader = get_auxreader_for(auxdata, format=format)
             aux = auxreader(auxdata, auxname=auxname, **kwargs)
         self._auxs[auxname] = aux
         self.ts = aux.read_ts(self.ts)
