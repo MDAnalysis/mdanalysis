@@ -51,7 +51,6 @@ Diffusion Map class.
 First load all modules and test data ::
 
    >>> import MDAnalysis as mda
-   >>> import numpy as np
    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
    >>> from MDAnalysis.tests.datafiles import PSF, DCD
 
@@ -112,7 +111,6 @@ map method. The :class:`DistanceMatrix` exists in
 :mod:`~MDAnalysis.analysis.diffusionmap` and can be passed
 as an initialization argument for :class:`DiffusionMap`.
     >>> import MDAnalysis as mda
-    >>> import numpy as np
     >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
     >>> from MDAnalysis.tests.datafiles import PSF, DCD
 
@@ -191,7 +189,7 @@ class DistanceMatrix(AnalysisBase):
     ----------
     atoms : AtomGroup
         Selected atoms in trajectory subject to dimension reduction
-    dist_matrix : array
+    dist_matrix : array, (n_frames, n_frames)
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
@@ -205,7 +203,7 @@ class DistanceMatrix(AnalysisBase):
         """
         Parameters
         ----------
-        u : trajectory `~MDAnalysis.core.AtomGroup.Universe`
+        u : universe `~MDAnalysis.core.AtomGroup.Universe`
             The MD Trajectory for dimension reduction, remember that
             computational cost of eigenvalue decomposition
             scales at O(N^3) where N is the number of frames.
@@ -280,7 +278,7 @@ class DiffusionMap(object):
 
     Attributes
     ----------
-    eigenvalues: array ()
+    eigenvalues: array (n_frames,)
         Eigenvalues of the diffusion map
 
     Methods
@@ -343,11 +341,12 @@ class DiffusionMap(object):
         self.eigenvalues = self._eigenvals[sort_idx]
         self._eigenvectors = self._eigenvectors[sort_idx]
         self._calculated = True
+        return self
 
     def transform(self, n_eigenvectors, time):
         """ Embeds a trajectory via the diffusion map
 
-        Parameter
+        Parameters
         ---------
         n_eigenvectors : int
             The number of dominant eigenvectors to be used for
