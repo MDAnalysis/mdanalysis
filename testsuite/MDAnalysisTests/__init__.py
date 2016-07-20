@@ -134,6 +134,13 @@ except ImportError:
     raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.5'").""")
 
+# Any tests that plot with matplotlib need to run with the simple agg backend because
+# on Travis there is no DISPLAY set
+try:
+    import matplotlib
+    matplotlib.use('agg')
+except ImportError:
+    pass
 
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
