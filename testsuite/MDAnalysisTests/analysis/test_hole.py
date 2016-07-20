@@ -186,7 +186,7 @@ class TestHoleModule(TestCase):
     @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_hole_module_fd_closure(self):
-        """MDAnalysis.analysis.hole: Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
+        """test open file descriptors are closed (MDAnalysisTests.analysis.test_hole.TestHoleModule): Issue 129"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
         # the system, and cause many other tests to fail as well.
         #
@@ -194,7 +194,24 @@ class TestHoleModule(TestCase):
 
         # Hasten failure by setting "ulimit -n 64" (can't go too low because of open modules etc...)
         import resource
-        resource.setrlimit(resource.RLIMIT_NOFILE, (64, self.hard_max_open_files))
+
+        # ----- temporary hack -----
+        # on Mac OS X (on Travis) we run out of open file descriptors
+        # before even starting this test (see
+        # https://github.com/MDAnalysis/mdanalysis/pull/901#issuecomment-231938093);
+        # if this issue is solved by #363 then revert the following
+        # hack:
+        #
+        import platform
+        if platform.platform() == "Darwin":
+            max_open_files = 512
+        else:
+            max_open_files = 64
+        #
+        # --------------------------
+
+        resource.setrlimit(resource.RLIMIT_NOFILE,
+                           (max_open_files, self.hard_max_open_files))
 
         with tempdir.in_tempdir():
             try:
@@ -221,7 +238,8 @@ class TestHoleModule(TestCase):
     def _restore_rlimits(self):
         try:
             import resource
-            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
+            resource.setrlimit(resource.RLIMIT_NOFILE,
+                               (self.soft_max_open_files, self.hard_max_open_files))
         except ImportError:
             pass
 
