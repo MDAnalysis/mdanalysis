@@ -29,10 +29,12 @@ import numpy as np
 import nose
 from nose.plugins.attrib import attr
 
+import os
 import errno
 
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE
-from MDAnalysisTests import executable_not_found, module_not_found, tempdir
+from MDAnalysisTests import (executable_not_found, module_not_found,
+                             tempdir, in_dir)
 
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
@@ -45,26 +47,47 @@ def rlimits_missing():
         return True
     return False
 
-@attr('slow')
-@dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-def test_HOLE(filename=PDB_HOLE):
-    with tempdir.in_tempdir():
-        H = HOLE(filename, raseed=31415)
-        H.run()
-        H.collect()
-    profiles = H.profiles.values()
-    assert_equal(len(profiles), 1,
-                 err_msg="HOLE.profile should contain exactly 1 profile")
 
-    p = profiles[0]
+class TestHOLE(TestCase):
+    filename = PDB_HOLE
 
-    assert_equal(len(p), 425,
-                 err_msg="wrong number of points in HOLE profile")
-    assert_almost_equal(p.rxncoord.mean(), -1.41225,
-                        err_msg="wrong mean HOLE rxncoord")
-    assert_almost_equal(p.radius.min(), 1.19707,
-                        err_msg="wrong min HOLE radius")
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+    def setUp(self):
+        # keep tempdir around for the whole lifetime of the class
+        self.tempdir = tempdir.TempDir()
+        with in_dir(self.tempdir.name):
+            H = HOLE(self.filename, raseed=31415)
+            H.run()
+            H.collect()
+        self.H = H
 
+    def tearDown(self):
+        del self.H
+        del self.tempdir
+
+    @attr('slow')
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+    def test_HOLE(self):
+        profiles = self.H.profiles.values()
+        assert_equal(len(profiles), 1,
+                     err_msg="HOLE.profile should contain exactly 1 profile")
+
+        p = profiles[0]
+
+        assert_equal(len(p), 425,
+                     err_msg="wrong number of points in HOLE profile")
+        assert_almost_equal(p.rxncoord.mean(), -1.41225,
+                            err_msg="wrong mean HOLE rxncoord")
+        assert_almost_equal(p.radius.min(), 1.19707,
+                            err_msg="wrong min HOLE radius")
+
+    @attr('slow')
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
+    def test_vmd_surface(self):
+        with in_dir(self.tempdir.name):
+            filename = self.H.create_vmd_surface(filename="hole.vmd")
+            assert_equal(len(open(filename).readlines()), 6504,
+                         err_msg="HOLE VMD surface file is incomplete")
 
 class TestHOLEtraj(TestCase):
     filename = MULTIPDB_HOLE

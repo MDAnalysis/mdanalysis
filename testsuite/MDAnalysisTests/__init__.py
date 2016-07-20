@@ -121,7 +121,9 @@ except ImportError:
 # If MDAnalysis is imported here coverage accounting might fail because all the import
 #  code won't be run again under coverage's watch. See Issue 344.
 
-from os.path import dirname
+import os
+from contextlib import contextmanager
+
 # We get our nose from the plugins so that version-checking needs only be done there.
 from MDAnalysisTests.plugins import nose, loaded_plugins
 import sys
@@ -161,7 +163,7 @@ def run(*args, **kwargs):
     except KeyError:
         kwargs['addplugins'] = loaded_plugins.values()
     # By default, test our testsuite
-    kwargs['defaultTest'] = dirname(__file__)
+    kwargs['defaultTest'] = os.path.dirname(__file__)
     return nose.run_exit(*args, **kwargs)
 
 
@@ -210,3 +212,33 @@ def parser_not_found(parser_name):
         return True
     else:
         return False
+
+
+@contextmanager
+def in_dir(dirname):
+    """Context manager for safely changing directories.
+
+    Arguments
+    ---------
+    dirname : string
+        directory to change into
+
+    Example
+    -------
+    Change into a temporary directory and always change back to the
+    current one::
+
+      with in_dir("/tmp") as tmpdir:
+          # do stuff
+
+    SeeAlso
+    -------
+    The :mod:`tmpdir` module provides functionality such as :func:`tmpdir.in_tmpdir`
+    to create temporary directories that are automatically deleted once they are no
+    longer used.
+    """
+
+    old_path = os.getcwd()
+    os.chdir(dirname)
+    yield dirname
+    os.chdir(old_path)
