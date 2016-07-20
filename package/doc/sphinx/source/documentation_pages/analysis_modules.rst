@@ -19,7 +19,7 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 
     import MDAnalysis.analysis.align
 
-.. Note:: 
+.. Note::
 
   Some of the modules require additional Python packages such as
   :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
@@ -100,7 +100,7 @@ Structure
 
 
 Volumetric analysis
-===================   
+===================
 
 .. toctree::
    :maxdepth: 1
@@ -109,4 +109,9 @@ Volumetric analysis
    analysis/lineardensity
    analysis/waterdynamics
 
+Dimension Reduction
+===================
+.. toctree::
+   :maxdepth: 1
 
+   analysis/diffusionmap
