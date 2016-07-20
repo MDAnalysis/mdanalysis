@@ -23,7 +23,7 @@ r"""Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.
 
 With the help of this module, the :program:`hole` program from the HOLE_ suite
 of tools [Smart1993]_ [Smart1996]_ can be run on frames in a trajectory. Data
-can be combined and analyzed.  
+can be combined and analyzed.
 
 
 HOLE_ must be installed separately and can be obtained in binary form from
@@ -70,10 +70,10 @@ One can also run :program:`hole` on frames in a trajectory with
 :class:`HOLEtraj`. In this case, provide a
 :class:`~MDAnalysis.core.AtomGroup.Universe`::
 
-   import MDAnalysis as mda   
+   import MDAnalysis as mda
    from MDAnalysis.analysis.hole import HOLEtraj
    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
-   
+
    u = mda.Universe(MULTIPDB_HOLE)
    H = HOLEtraj(u, executable="~/hole2/exe/hole")
    H.run()
@@ -99,17 +99,17 @@ order parameter :math:`\rho`. ::
    from MDAnalysis.analysis.rms import RMSD
 
    from MDAnalysis.tests.datafiles import PDB_HOLE, MULTIPDB_HOLE
-   
+
    mda.start_logging()
    ref = mda.Universe(PDB_HOLE)    # reference structure
    u = mda.Universe(MULTIPDB_HOLE) # trajectory
-   
+
    # calculate RMSD
    R = RMSD(u, reference=ref, select="protein", mass_weighted=True)
    R.run()
-   
+
    # HOLE analysis with order parameters
-   H = HOLEtraj(u, orderparameters=R.rmsd[:,2], 
+   H = HOLEtraj(u, orderparameters=R.rmsd[:,2],
                 executable="~/hole2/exe/hole")
    H.run()
 
@@ -121,7 +121,7 @@ iterate over the sorted profiles (see
 minimum radius as function of order parameter
 
 .. math::
- 
+
    r(\rho) = \min_\zeta R_\rho(\zeta)
 
 we iterate over the profiles and process them in turn::
@@ -181,7 +181,7 @@ Analysis
       frame was analyzed then this will be ``HOLE.profiles[0]``. Note
       that the order is random; one needs to sort the keys first.
 
-      .. Note:: 
+      .. Note::
          Duplicate keys are not possible. The last key overwrites
          previous values. This is arguably a bug.
 
@@ -196,7 +196,7 @@ Analysis
       parameter (if *orderparameters* was supplied). Note that the
       order is random; one needs to sort the keys first.
 
-      .. Note:: 
+      .. Note::
          Duplicate keys are not possible. The last key overwrites
          previous values. This is arguably a bug.
 
@@ -309,7 +309,7 @@ def write_simplerad2(filename="simple2.rad"):
 
     Does nothing if `filename` already exists.
 
-    Parameters 
+    Parameters
     ----------
     filename : string, optional
        output file name; the default is "simple2.rad"
@@ -382,7 +382,7 @@ class BaseHOLE(object):
         color = kwargs.pop('color', None)
         if color is None:
             cmap = kwargs.pop('cmap', matplotlib.cm.viridis)
-            normalize = matplotlib.colors.Normalize(vmin=np.min(frames), 
+            normalize = matplotlib.colors.Normalize(vmin=np.min(frames),
                                                     vmax=np.max(frames))
             colors = cmap(normalize(frames))
         else:
@@ -414,7 +414,7 @@ class BaseHOLE(object):
         yshift : float, optional
               displace each :math:`R(\zeta)` profile by `yshift` in the
               :math:`y`-direction for clearer visualization. The default is 0,
-              i.e., not to shift any graph.        
+              i.e., not to shift any graph.
         frames : integer or array_like, optional
               only plot these specific frame(s); the default ``None`` is to
               plot everything (see also `step`)
@@ -545,7 +545,7 @@ class BaseHOLE(object):
         ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
         ax.set_ylabel(ylabel)
         ax.set_zlabel(r"HOLE radius $R$ ($\AA$)")
-        
+
         return ax
 
     def min_radius(self):
@@ -1015,27 +1015,37 @@ class HOLE(BaseHOLE):
         fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
         os.close(fd)
         try:
-            rc = subprocess.call([
-                self.exe["sph_process"], "-sos", "-dotden", str(kwargs['dotden']),
-                "-color", self.sphpdb, tmp_sos])
-            if rc != 0:
-                logger.fatal("sph_process failed (%d)", rc)
-                raise OSError(rc, "sph_process failed")
-            with open(tmp_sos) as sos:
-                with open(filename, "w") as triangles:
-                    rc = subprocess.call([self.exe["sos_triangle"], "-s"], stdin=sos, stdout=triangles)
-            if rc != 0:
-                logger.fatal("sos_triangle failed (%d)", rc)
-                raise OSError(rc, "sos_triangle failed")
+            output = subprocess.check_output([self.exe["sph_process"], "-sos", "-dotden",
+                                              str(kwargs['dotden']), "-color", self.sphpdb,
+                                              tmp_sos], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            os.unlink(tmp_sos)
+            logger.fatal("sph_process failed ({0})".format(err.returncode))
+            raise OSError(err.returncode, "sph_process failed")
         except:
             os.unlink(tmp_sos)
             raise
+
+        try:
+            # Could check: os.devnull if subprocess.DEVNULL not available (>3.3)
+            # Suppress stderr messages of sos_triangle
+            with open(tmp_sos) as sos, open(filename, "w") as triangles, \
+                 open(os.devnull, 'w') as FNULL:
+                subprocess.check_call(
+                    [self.exe["sos_triangle"], "-s"], stdin=sos, stdout=triangles,
+                    stderr=FNULL)
+        except subprocess.CalledProcessError as err:
+            logger.fatal("sos_triangle failed ({0})".format(err.returncode))
+            raise OSError(err.returncode, "sos_triangle failed")
+        finally:
+            os.unlink(tmp_sos)
+
         return filename
 
     def collect(self, **kwargs):
         """Parse the output from a :class:`HOLE` run into numpy recarrays.
 
-        It can process outputs containing multiple frames (when a DCD was supplied to :program:`hole`). 
+        It can process outputs containing multiple frames (when a DCD was supplied to :program:`hole`).
 
         Output format::
 
