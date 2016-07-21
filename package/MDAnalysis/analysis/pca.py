@@ -83,7 +83,7 @@ from MDAnalysis import Universe
 
 from .base import AnalysisBase
 
-logger = logging.getLogger("MDAnalysis.analysis.pca")
+logger = logging.getLogger(__name__)
 
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory
@@ -126,7 +126,6 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
 
-
     def fit(self, n_components=None, start=None, stop=None,
             step=None):
         """ Use a subset of frames from the trajectory to generate the
@@ -157,6 +156,10 @@ class PCA(AnalysisBase):
 
         """
         self._setup_frames(self._u.trajectory, start, stop, step)
+        self.start = start
+        self.stop = stop
+        self.step = step
+
         self.n_components = n_components
         self.run()
         self._calculated = True
@@ -168,25 +171,27 @@ class PCA(AnalysisBase):
                     self.p_components[:n_components])
 
     def _prepare(self):
-        self._xyz = np.zeros((self.n_frames, self._n_atoms, 3))
-
+        n_dim = self._n_atoms * 3
+        self.cov = np.zeros((n_dim, n_dim))
+        self.mean = np.zeros(n_dim,)
+        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+            x = self._atoms.positions.ravel()
+            self.mean += x
+        self.mean /= self.n_frames
 
     def _single_frame(self):
-        self._xyz[self._frame_index] = self._atoms.positions.copy()
-
+        x = self._atoms.positions.ravel()
+        x -= self.mean
+        self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
-        self._xyz = self._xyz.reshape(self.n_frames, self._n_atoms * 3,
-                                      order='F')
-        x = self._xyz - self._xyz.mean(0)
-        cov = np.cov(x, rowvar = 0)
-        e_vals, e_vects = np.linalg.eig(cov)
+        self.cov /= self.n_frames - 1
+        e_vals, e_vects = np.linalg.eig(self.cov)
         sort_idx = np.argsort(e_vals)[::-1]
         self.variance = e_vals[sort_idx]
         self.p_components = e_vects[sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
-
 
     def transform(self, n_components=None):
         """Apply the dimensionality reduction on a trajectory
