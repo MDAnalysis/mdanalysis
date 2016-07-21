@@ -193,7 +193,7 @@ class PCA(AnalysisBase):
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
 
-    def transform(self, n_components=None):
+    def transform(self, atomgroup=None, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -205,8 +205,15 @@ class PCA(AnalysisBase):
         -------
         pca_space : array, shape (number of frames, number of components)
         """
+        if atomgroup is not None:
+            atoms = atomgroup
+        else:
+            atoms = self._atoms
 
-        xyz = np.array([self._atoms.positions.copy() for ts in self._u.trajectory])
+        if self._atoms != atoms:
+            warnings.warn('This is a transform for different atom types.')
+
+        xyz = np.array([atoms.positions.copy() for ts in self._u.trajectory])
         xyz = xyz.reshape(self._u.trajectory.n_frames,
                           self._n_atoms*3, order='F')
         if n_components is None:
