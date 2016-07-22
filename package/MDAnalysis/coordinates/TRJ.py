@@ -364,11 +364,6 @@ class TRJReader(base.Reader):
         self.trjfile.close()
         self.trjfile = None
 
-    def rewind(self):
-        """Reposition at the beginning of the trajectory"""
-        self._reopen()
-        next(self)
-
 
 class NCDFReader(base.Reader):
     """Reader for `AMBER NETCDF format`_ (version 1.0).
