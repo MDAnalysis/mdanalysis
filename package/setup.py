@@ -249,6 +249,9 @@ def extensions(config):
             -Wchar-subscripts -Winline -Wnested-externs -Wbad-function-cast \
             -Wunreachable-code -Werror'
         define_macros = [('DEBUG', '1')]
+    elif True:  # again, hack in linetrace command line option here
+        extra_compile_args = ''
+        define_macros = [('CYTHON_TRACE', '1'), ('CYTHON_TRACE_NOGIL', '1')]
     else:
         extra_compile_args = ''
         define_macros = []
@@ -336,7 +339,10 @@ def extensions(config):
                   transformation, libmdaxdr, util]
     cython_generated = []
     if use_cython:
-        extensions = cythonize(pre_exts)
+        comp_dirs = {}
+        if True:  # hack in command line option here...
+            comp_dirs['linetrace'] = True
+        extensions = cythonize(pre_exts, compiler_directives=comp_dirs)
         for pre_ext, post_ext in zip(pre_exts, extensions):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
