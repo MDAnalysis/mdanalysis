@@ -688,6 +688,7 @@ from . import DMS
 from . import GMS
 from . import GRO
 from . import INPCRD
+from . import MMTF
 from . import MOL2
 from . import PDB
 from . import PDBQT
