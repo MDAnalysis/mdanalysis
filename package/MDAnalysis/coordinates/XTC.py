@@ -13,6 +13,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+XTC trajectory files --- :mod:`MDAnalysis.coordinates.XTC`
+==========================================================
+
+Read and write GROMACS XTC trajectories.
+
+See Also
+--------
+MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
+"""
+
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
@@ -26,8 +37,8 @@ class XTCWriter(XDRBaseWriter):
     they require significantly less disk space and the loss of precision is
     usually not a problem.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     n_atoms : int
@@ -52,7 +63,7 @@ class XTCWriter(XDRBaseWriter):
 
         Parameters
         ----------
-        ts : TimeStep
+        ts: TimeStep
 
         See Also
         --------
@@ -83,8 +94,8 @@ class XTCReader(XDRBaseReader):
     require significantly less disk space and the loss of precision is usually
     not a problem.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     convert_units : bool (optional)

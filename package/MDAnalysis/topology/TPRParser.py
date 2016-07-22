@@ -1,8 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning,
+# Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -78,7 +79,7 @@ Bonded interactions available in Gromacs are described in table 5.5 of the
 
 
 Classes
----------
+-------
 
 .. autoclass:: TPRParser
    :members:
@@ -142,8 +143,6 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 class TPRParser(TopologyReader):
     """Read topology information from a Gromacs_ TPR_ file.
 
-    .. SeeAlso:: :mod:`MDAnalysis.topology.TPR`
-
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
@@ -152,7 +151,9 @@ class TPRParser(TopologyReader):
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
-        :Returns: ``structure`` dict
+        Returns
+        -------
+        structure : dict
         """
         #ndo_int = U.ndo_int
         ndo_real = U.ndo_real

@@ -31,10 +31,11 @@ logger = logging.getLogger(__name__)
 
 
 class AnalysisBase(object):
-    """Base class for defining multi frame analysis, it is designed as a
-    template for creating multiframe analysis. This class will automatically
-    take care of setting up the trajectory reader for iterating and offers to
-    show a progress meter.
+    """Base class for defining multi frame analysis
+    
+    The class it is designed as a template for creating multiframe analyses.
+    This class will automatically take care of setting up the trajectory
+    reader for iterating, and it offers to show a progress meter.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
     `_single_frame` must be defined. It is also possible to define
@@ -42,6 +43,7 @@ class AnalysisBase(object):
     below.
 
     .. code-block:: python
+
        class NewAnalysis(AnalysisBase):
            def __init__(self, atomgroup, parameter, **kwargs):
                super(NewAnalysis, self).__init__(atomgroup.universe.trajectory,
@@ -70,6 +72,7 @@ class AnalysisBase(object):
     Afterwards the new analysis can be run like this.
 
     .. code-block:: python
+
        na = NewAnalysis(u.select_atoms('name CA'), 35).run()
        print(na.result)
 

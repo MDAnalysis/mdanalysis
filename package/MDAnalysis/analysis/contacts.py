@@ -14,7 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""\
+"""
 ================================================================
 Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 ================================================================
@@ -97,8 +97,8 @@ opens. They open in a step-wise fashion (made more clear by the movie
 
 Suggested cutoff distances for different simulations
 
-* For all-atom simulations, cutoff = 4.5 A
-* For coarse-grained simulations, cutoff = 6.0 A
+* For all-atom simulations, cutoff = 4.5 Å
+* For coarse-grained simulations, cutoff = 6.0 Å
 
 
 Two-dimensional contact analysis (q1-q2)
@@ -377,8 +377,7 @@ class Contacts(AnalysisBase):
     """
     def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
                  kwargs=None, **basekwargs):
-        """Initialization
-
+        """
         Parameters
         ----------
         u : Universe
@@ -565,13 +564,12 @@ class ContactAnalysis(object):
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False,
                  selection="name CA", centroids=False):
-        """Calculate native contacts from two reference structures.
-
+        """
         Parameters
         ----------
-        topology : filename
+        topology : filename as str
             topology file
-        trajectory : filename
+        trajectory : filename as str
             trajectory
         ref1 : filename or ``None``, optional
             structure of the reference conformation 1 (pdb); if ``None`` the
@@ -1026,6 +1024,7 @@ class ContactAnalysis1(object):
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
+
         *start*
             The value of the first frame index in the trajectory to be used
             (default: index 0)
@@ -1150,9 +1149,7 @@ class ContactAnalysis1(object):
     def plot(self, filename=None, **kwargs):
         """Plot q(t).
 
-        .. function:: ContactAnalysis1.plot([filename, ...])
-
-        If *filename* is supplied then the figure is also written to file (the
+        If `filename` is supplied then the figure is also written to file (the
         suffix determines the file type, e.g. pdf, png, eps, ...). All other
         keyword arguments are passed on to :func:`pylab.plot`.
         """
@@ -1196,8 +1193,6 @@ class ContactAnalysis1(object):
 
     def plot_qavg(self, filename=None, **kwargs):
         """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts.
-
-        .. function:: ContactAnalysis1.plot_qavg([filename, ...])
 
         If *filename* is supplied then the figure is also written to file (the
         suffix determines the file type, e.g. pdf, png, eps, ...). All other

@@ -32,7 +32,8 @@ given startpoint, :math:`t_0`, is evaluated based on geometric criteria and
 then the lifetime of these bonds is monitored over time.  Multiple passes
 through the trajectory are used to build an average of the behaviour.
 
-    :math:`C_x(t) = \\left \\langle \\frac{h_{ij}(t_0) h_{ij}(t_0 + t)}{h_{ij}(t_0)^2} \\right\\rangle`
+.. math::
+   C_x(t) = \\left \\langle \\frac{h_{ij}(t_0) h_{ij}(t_0 + t)}{h_{ij}(t_0)^2} \\right\\rangle
 
 The subscript :math:`x` refers to the definition of lifetime being used, either
 continuous or intermittent.  The continuous definition measures the time that
@@ -41,7 +42,8 @@ intermittent definition allows a bond to break and then subsequently reform and
 be counted again.  The relevent lifetime, :math:`\\tau_x`, can then be found
 via integration of this function
 
-    :math:`\\tau_x = \\int_0^\\infty C_x(t) dt`
+.. math::
+   \\tau_x = \\int_0^\\infty C_x(t) dt`
 
 For this, the observed behaviour is fitted to a multi exponential function,
 using 2 exponents for the continuous lifetime and 3 for the intermittent
@@ -277,8 +279,8 @@ class HydrogenBondAutoCorrel(object):
     def run(self, force=False):
         """Run all the required passes
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         force : bool, optional
             Will overwrite previous results if they exist
         """
