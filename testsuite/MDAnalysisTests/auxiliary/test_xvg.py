@@ -12,30 +12,41 @@ class XVGReference(BaseAuxReference):
         super(XVGReference, self).__init__()
         self.testdata = AUX_XVG
         self.reader = mda.auxiliary.XVG.XVGReader
+
+        # add the auxdata and format for .xvg to the reference description
         self.description['auxdata'] = os.path.abspath(self.testdata)
         self.description['format'] = self.reader.format
+
+        # for testing the selection of data/time
+        self.time_selector = 0 # take time as first value in auxilairy
+        self.select_time_ref = range(self.n_steps)
+        self.data_selector = [1,2] # select the second/third columns from auxiliary
+        self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
+
 
 class TestXVGReader(BaseAuxReaderTest):
     def __init__(self):
         reference = XVGReference()
         super(TestXVGReader, self).__init__(reference)
 
-    def test_no_time_selector(self):
-        # XVGReader automatically sets time_select to 0 so we need to specifically
-        # set it to none to test without
-        self.reader = self.ref.reader(self.ref.testdata, dt=self.ref.dt, 
-                                      initial_time=self.ref.initial_time,
-                                      time_selector=None)
-        for i, val in enumerate(self.reader):
-            assert_equal(val.data, self.ref.all_data[i],
-                         "data for step {0} does not match".format(i))
-
     @raises(ValueError)
-    def test_wrong_n_col_raises_ValueError(self): 
-        # encountering a different number of columns at a later step should 
-        # raise ValueError
+    def test_changing_n_col_raises_ValueError(self): 
+        # if number of columns in .xvg file is not consistent, a ValueError
+        # should be raised
         self.reader = self.ref.reader(XVG_BAD_NCOL)
         next(self.reader)
+
+    @raises(ValueError)
+    def test_time_selector_out_of_range_raises_ValueError(self):
+        # if time_selector is not a valid index of _data, a ValueError 
+        # should be raised
+        self.reader.time_selector = len(self.reader.auxstep._data) 
+
+    @raises(ValueError)
+    def test_data_selector_out_of_range_raises_ValueError(self):
+        # if data_selector is not a valid index of _data, a ValueError 
+        # should be raised
+        self.reader.data_selector = [len(self.reader.auxstep._data)]
 
 
 class XVGFileReference(XVGReference):
@@ -61,4 +72,4 @@ class TestXVGFileReader(TestXVGReader):
         self.reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
         self.reader.next()
-        assert_equal(self.reader.auxstep.data, self.ref.all_step_data[0])
+        assert_equal(self.reader.step, 0)

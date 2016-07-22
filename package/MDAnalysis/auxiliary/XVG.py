@@ -28,6 +28,8 @@ XVG auxiliary reader --- :mod:`MDAnalysis.auxiliary.XVG`
 
 """
 
+from six.moves import range
+
 import os
 import numpy as np
 from . import base
@@ -67,8 +69,7 @@ class XVGStep(base.AuxStep):
         value is 0. 
     data_selector : list of int
         Indices of columns in .xvg file containing data of interest to be 
-        stored in ``data``. Default value is ``None``, which will select 
-        all columns but that containing time.
+        stored in ``data``. Default value is ``None``.
     """
     def _select_time(self, key):
         if key is None:
@@ -81,7 +82,8 @@ class XVGStep(base.AuxStep):
 
     def _select_data(self, key):
         if key is None:
-             key = [i for i in range(len(self._data)) if i != self._time_selector]
+            # here so that None is a valid value; just return
+            return
         if isinstance(key, int):
             try:
                 return self._data[key]
@@ -169,7 +171,7 @@ class XVGReader(base.AuxReader):
         ValueError
             If step index not in valid range.
         """
-        if i not in range(self.n_steps):
+        if i >= self.n_steps:
             raise ValueError("Step index {0} is not valid for auxiliary "
                              "(num. steps {1})".format(i, self.n_steps))
         self.auxstep.step = i-1

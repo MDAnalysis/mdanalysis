@@ -117,6 +117,88 @@ If the auxiliary data are more frequent,
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.__iter__`.
 
 
+.. _AuxStep API:
+
+AuxStep class
+~~~~~~~~~~~~~
+An AuxStep instance holds the auxiliary data for the current step. It is
+updated whenever the a new auxiliary step is read.
+
+AuxStep classes are derived from the base class 
+:class:`~MDAnalysis.auxiliary.base.AuxStep`. The appropriate AuxStep class for
+a given auxiliary reader is identified using the `_Auxstep` attribute.
+
+
+Attributes
+..........
+The following are inherited from :class:`~MDAnalysis.auxiliary.base.AuxStep`:
+
+  ``step``
+      Current auxiliary step (0-based).
+  ``_data``
+      All recorded data for the current step, as a numpy array.
+  ``time``
+      Time of current auxiliary step, determined from the ``_data`` using 
+      ``_select_time()``/``time_selector``, or calculated using ``dt`` and 
+      ``initial_time``.
+  ``data``
+      Auxiliary values of interest for the current step, determined from 
+      ``_data`` using ``_select_data()``/``data_selector``.
+
+The following are stored in AuxStep but can be acessed through the parent 
+auxiliary reader (see :ref:`AuxReader API` below). 
+
+  ``_dt``
+      Change in time between auxiliary steps (in ps). If not specified, will
+      attempt to determine from auxiliary data; otherwise defaults to 1 ps.
+  ``_initial_time``
+      Time of first auxiliary step (in ps). If not specified, will attempt to
+      determine from auxiliary data; otherwise defaults to 0 ps.
+  ``_time_selector``
+      Selection key to get time from full set of auxilairy data read with each
+      step(``_data``), if time selection is enabled by the reader (by defining 
+      a ``_select_time` method). Type depends on the auxiliary format - e.g. 
+      where data is stored in columns, time_selector may be an index of 'time' column.
+      Default value is ``None``, in which case step time is calculated from ``dt``,
+      ``initial_time`` and ``step``.
+  ``_data_selector``
+      Selection key(s) to get data of interest from full set of auxilairy data read with 
+      each step (``_data``), if data selection is enabled by the reader (by 
+      defining a ``_select_data`` method). As for ``time_selector``, type 
+      depends on the auxiliary format.
+      If ``None`` (default value), ``_data`` is returned.
+
+
+Methods
+.......
+The following methods are inherited from :class:`~MDAnalaysis.auxiliary.base.AuxStep`:
+
+  ``__init__(**kwargs)``
+    Setup appropriate attributes based on *kwargs*.
+
+The following must be defined by each AuxStep:
+
+  ``_empty_data()``
+    Return a np.array in the same format as ``data``, but with all values 
+    ``np.nan``; used as the auxiliary value for a trajectory when no 
+    auxiliary steps are assigned to the current frame.
+
+To allow selection of time/data of interest from the full set of auxiliary
+data, the following must be provided:
+
+  ``_select_time(key)``
+    Return the value indicated by *key* from ``_data`` (the full set of data read 
+    in from the current step). Raise ``ValueError`` if *key* is not a valid 
+    time selector for the auxiliary format.
+
+  ``_select_data(key)``
+    Return, as a ndarray, the value(s) indicated by *key* (may be e.g. a list of 
+    multiple individual 'keys') from ``_data``. Raise ``ValueError`` if *key* is 
+    not a valid data selector for the auxiliary format.
+
+
+.. _AuxReader API:
+
 AuxReader class
 ~~~~~~~~~~~~~~~
 
@@ -133,6 +215,7 @@ Attributes
 
 The following attributes are inherited from 
 :class:`~MDAnalaysis.auxiliary.base.AuxReader`:
+
   ``name``
       Name under which auxiliary data will be stored in trajectory/Timestep.
   ``represent_ts_as``
@@ -145,39 +228,26 @@ The following attributes are inherited from
       The :class:`~MDAnalysis.auxiliary.base.AuxStep` object to store data for
       the current step. Customised for each auxiliary format to allow selection
       of data.
-  ``dt``
-      Change in time between auxiliary steps (in ps). If not specified, will
-      attempt to determine from auxiliary data; otherwise defaults to 1 ps.
-  ``initial_time``
-      Time of first auxiliary step (in ps). If not specified, will attempt to
-      determine from auxiliary data; otherwise defaults to 0 ps.
-  ``time_selector``
-      Selection key to get time from full set of auxilairy data read with each
-      step (``_data__``). Type depends on the auxilairy format - e.g. where 
-      data is stored in columns, time_selector may be an index of 'time' column.
-      (default value ``None``, in which case step time is calculated from ``dt``
-      and ``initial_time``).
-  ``data_selector``
-      Selection key(s) to get time from full set of auxilairy data read with 
-      each step (``__data``). As for ``time_selector``, type depends on 
-      auxiliary format.
+  ``n_steps``
+      Total number of auxiliary steps
   ``constant_dt``
       Boolean of whether dt is constant throughout auxiliary data. Default is 
       ``True``.
-  ``step``
-      Current auxiliary step (0-based).
-  ``n_steps``
-      Total number of auxiliary steps
-  ``time``
-      Time of current auxiliary step, determined from the ``_data`` using 
-      ``_select_time()``/``time_selector``, or calculated using ``dt`` and 
-      ``initial_time``.
   ``frame_data``
       `data` from each auxiliary step assigned to the 
       last-read trajectory timestep.
   ``frame_rep``
       Represenatative value(s) of auxiliary data for last-read trajectory timestep.
 
+The following are stored in ``auxstep`` but may be accessed from the auxiliary
+reader; see the :ref:`AuxStep API` above.
+
+  ``step``
+  ``time``
+  ``dt``
+  ``initial_time``
+  ``time_selector``
+  ``data_selector``
 
 :class:`~MDAnalaysis.auxiliary.base.AuxFileReader` additionally provides:
   ``auxfilename``
@@ -205,6 +275,10 @@ The following methods are inherited from
 
   ``__iter__()``
     Allow iteration through each auxiliary step.
+
+  ``__getitem__(step)``
+    If *step* is a single index, move to that step and return the :class:`AuxStep`;
+    if a list or slice, return an iterator over the specified auxiliary steps.
 
   ``rewind()``
     Reposition to first step.
@@ -256,7 +330,9 @@ and addionally define:
 
   ``_go_to_step(i)``
     Move to and read step `i` (0-based) from the auxiliary data. Raise 
-    ValueError when i is out of range
+    ValueError when i is out of range. 
+    Sets ``_data`` in the AuxStep to an appropriate numpy array of the full set 
+    of data read in, and return the AuxStep.
 
 
 Depending on the format of the auxiliary data, it may also be necessary to 
@@ -295,74 +371,6 @@ following (though these may be overwritten by subclasses as appropriate):
   ``_reopen()``
     Close ``auxfile`` and reopen.
 
-
-AuxStep class
-~~~~~~~~~~~~~
-An AuxStep instance holds the auxiliary data for the current step. It is
-updated whenever the a new auxiliary step is read.
-
-AuxStep classes are derived from the base class 
-:class:`~MDAnalysis.auxiliary.base.AuxStep`. The appropriate AuxStep class for
-a given auxiliary reader is identified using the `_Auxstep` attribute.
-
-
-Attributes
-..........
-The following are inherited from :class:`~MDAnalysis.auxiliary.base.AuxStep`:
-
-  ``dt``
-      Change in time between auxiliary steps (in ps). If not specified, will
-      attempt to determine from auxiliary data; otherwise defaults to 1 ps.
-  ``initial_time``
-      Time of first auxiliary step (in ps). If not specified, will attempt to
-      determine from auxiliary data; otherwise defaults to 0 ps.
-  ``time_selector``
-      Selection key to get time from full set of auxilairy data read with each
-      step (``_data__``). Type depends on the auxilairy format - e.g. where 
-      data is stored in columns, time_selector may be an index of 'time' column.
-      (default value ``None``, in which case step time is calculated from ``dt``
-      and ``initial_time``).
-  ``data_selector``
-      Selection key(s) to get time from full set of auxilairy data read with 
-      each step (``__data``). As for ``time_selector``, type depends on 
-      auxiliary format.
-  ``step``
-      Current auxiliary step (0-based).
-  ``_data``
-      All recorded data for the current step.
-  ``time``
-      Time of current auxiliary step, determined from the ``_data`` using 
-      ``_select_time()``/``time_selector``, or calculated using ``dt`` and 
-      ``initial_time``.
-  ``data``
-      Auxiliary values of interest for the current step, determined from 
-      ``_data`` using ``_select_data()``/``data_selector``.
-
-
-Methods
-.......
-The following methods are inherited from :class:`~MDAnalaysis.auxiliary.base.AuxStep`:
-
-  ``__init__(**kwargs)``
-    Setup appropriate attributes based on *kwargs*.
-
-In order to allow selection of time/data of interest from the full set of auxiliary
-data, the following must also be provided:
-
-  ``_select_time(key)``
-    Return the value indicated by *key* from ``_data`` (the full set of data read 
-    in from the current step). Raise ``ValueError`` if *key* is not a valid 
-    time selector for the auxiliary format.
-
-  ``_select_data(key)``
-    Return, as a ndarray, the value(s) indicated by *key* (may be e.g. a list of 
-    multiple individual 'keys') from ``_data``. Raise ``ValueError`` if *key* is 
-    not a valid data selector for the auxiliary format.
-
-  ``_empty_data()``
-    Return a np.array in the same format as returned by `_select_data`, but with
-    all values ``np.nan``; used as the auxiliary value for a trajectory when no 
-    auxiliary steps are assigned to the current frame.
 
 """
 

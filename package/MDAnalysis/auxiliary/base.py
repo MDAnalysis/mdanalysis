@@ -30,6 +30,7 @@ Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAna
 """
 
 import six
+from six.moves import range
 
 import os
 import numpy as np
@@ -68,16 +69,17 @@ class AuxStep(object):
         Time of first auxiliary step (in ps). If not specified, will attempt to
         be determined from auxiliary data; otherwise defaults to 0 ps.
     time_selector: optional
-        Key to select 'time' value from the full set of data read for each step. 
+        Key to select 'time' value from the full set of data read for each step,
+        if time selection is enabled; type will vary depending on the auxiliary
+        data format (see individual AuxReader documentation). 
         If ``None`` (default value), time is instead calculated from ``dt``, 
-        ``initial_time`` and the step. Type will vary depending on the auxiliary 
-        data format; see individual AuxReader documention.
+        ``initial_time`` and ``step``.
     data_selector: optional
         Key(s) to select auxilairy data values of interest from the full set of
-        data read for each step. If ``None`` (default value), add values 
-        excluding time (as specified by ``time_selector``) are used. Type will 
-        vary depending on the auxiliary data format; see individual AuxReader 
-        documention.
+        data read for each step, if data selection is enabled by the reader; 
+        type will vary depending on the auxiliary data formar (See individual
+        AuxReader documentation). 
+        If ``None`` (default value), the full set of data is returned.
 
     Attributes
     ----------
@@ -120,8 +122,10 @@ class AuxStep(object):
         As selected from the full set of data read it for each step by  
         ``data_selector``.
         """
-        return self._select_data(self._data_selector)
-
+        if self._data_selector is not None:
+            return self._select_data(self._data_selector)
+        else:
+            return self._data
 
     @property
     def _time_selector(self):
@@ -284,10 +288,12 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         # Overwrite as appropriate
         #  could also use _go_to_step(0)
         self._restart()
-        self._read_next_step()
+        return self._read_next_step()
                 
     def _read_next_step(self):
-        """ Move to next step and update data. """
+        """ Move to next step and update data. 
+
+        Should return an AuxStep instance, with values for the appropriate step"""
         # Define in each auxiliary reader
         raise NotImplementedError(
             "BUG: Override _read_next_timestep() in auxiliary reader!")
@@ -374,7 +380,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         Note that the returned frame number may be out of range for the 
         trajectory.
         """
-        if step not in range(self.n_steps):
+        if step >= self.n_steps:
             return None 
         offset = ts.data.get('time_offset', 0)
         return int(math.floor((self.step_to_time(step)-offset+ts.dt/2.)/ts.dt))
@@ -413,26 +419,60 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     def __getitem__(self, i):
         """ Return the AuxStep corresponding to the *i*-th auxiliary step(s)
-        (0-based).
+        (0-based). Negative numbers are counted from the end.
         
-        *i* may be an integer (in which case the corresponding step is 
-        returned) or a slice (in which case an iterator is returned). """
+        *i* may be an integer (in which case the corresponding AuxStep is 
+        returned) or a list or integers or slice (in which case an iterator is 
+        returned). So ::
+
+             aux_reader[10]
+
+        will load data from step 10 of the auxiliary and return the 
+        :class:`AuxStep``. By using a slice/list, we can iterated over specified 
+        parts of the trajectory ::
+
+             for auxstep in aux_reader[100:200]:   # analyse only steps 100 to 200
+                 run_analysis(auxstep)
+
+             for auxstep in aux_reader[::10]       # analyse every 10th step        
+                 run_analysis(auxstep)
+        """
         if isinstance(i, int):
+            i = self._check_index(i)
             return self._go_to_step(i)
         elif isinstance(i, (list, np.ndarray)):
-            return self._list_iter(i)
+            return self._list_iter([self._check_index(x) for x in i])
         elif isinstance(i, slice):
-            return self._slice_iter(i)
+            start = i.start or 0
+            stop = i.stop or self.n_steps-1
+            start = self._check_index(start)
+            stop = self._check_index(stop)
+            step = i.step or 1
+            if not isinstance(step, int) or step < 1:
+                raise ValueError("Step must be positive integer") # allow -ve?
+            if start > stop:
+                raise IndexError("Stop frame is lower than start frame")
+            return self._slice_iter(slice(start,stop,step))
+        else:
+            raise TypeError("Index must be integer, list of integers or slice")
+
+    def _check_index(self, i):
+        if not isinstance(i, (int, np.integer)):
+                raise TypeError("Step indices must be integers")
+        if i < 0:
+            i = i + self.n_steps
+        if i < 0 or i >= self.n_steps:
+            raise IndexError("{} is out of range of auxiliary (num. steps "
+                             "{})".format(i, self.n_steps))
+        return i
 
     def _list_iter(self, i):
         for j in i:
             yield self._go_to_step(j)
 
     def _slice_iter(self, i):
-        #TODO - check slice is valid etc
         for j in range(i.start, i.stop, i.step):
             yield self._go_to_step(j)
-            
 
     def _go_to_step(self, i):
         """ Move to and read i-th auxiliary step. """
@@ -536,7 +576,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         ValueError
             When *i* not in valid range
         """
-        if i not in range(self.n_steps):
+        if i >= self.n_steps:
             raise ValueError("{0} is not a valid step index (total number of "
                              "steps is {1})".format(i, self.n_steps))
         if self.constant_dt:
@@ -585,9 +625,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             if attr == '_data_input':
                 description['auxdata'] = getattr(self, attr)
             else:
-                # assumes all required attributes are passed in to add_auxiliary
-                # with the same name/keyword, minus leading underscores
-                description[attr.lstrip('_')] = getattr(self, attr)
+                description[attr] = getattr(self, attr)
         return description
 
     def __eq__(self, other):
@@ -716,7 +754,7 @@ class AuxFileReader(AuxReader):
         is reached. Overwrite if this can be done more efficiently.
         """
         ## could seek instead?
-        if i not in range(self.n_steps):
+        if i >= self.n_steps:
             raise ValueError("Step index {0} is not valid for auxiliary "
                              "(num. steps {1}!".format(i, self.n_steps))
         value = self.rewind()
