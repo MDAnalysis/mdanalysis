@@ -420,12 +420,14 @@ The following methods must be implemented in a Reader class.
 
  ``__init__(filename, **kwargs)``
      open *filename*; other *kwargs* are processed as needed and the
-     Reader is free to ignore them. Typically, MDAnalysis supplies as
-     much information as possible to the Reader in `kwargs`; at the moment the
-     following data are supplied in keywords when a trajectory is loaded from
-     within :class:`MDAnalysis.Universe`:
+     Reader is free to ignore them. Typically, when MDAnalysis creates
+     a Reader from :class:`MDAnalysis.Universe` it supplies as much
+     information as possible in `kwargs`; at the moment the following
+     data are supplied:
 
-      - *n_atoms*: the number of atoms (known from the topology)
+      - *n_atoms*: the number of atoms from the supplied topology.  This is
+                   not required for all readers and can be ignored if not
+                   required.
 
  ``__iter__()``
      allow iteration from beginning to end::
