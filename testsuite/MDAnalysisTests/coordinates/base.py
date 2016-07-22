@@ -1007,7 +1007,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                                   err_msg='Timestep forces', verbose=verbose)
 
     ## Temp fix so doesn't check when testing writer
-    for aux in A.aux.keys():
+    for aux in A.aux.__dict__.keys():
         assert_almost_equal(getattr(A.aux, aux), getattr(B.aux, aux), 
                                    err_msg='Auxiliary values do not match: '
                                    'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))

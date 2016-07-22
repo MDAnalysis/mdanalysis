@@ -186,7 +186,8 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     ----------
     auxname : str, optional
         Name for auxiliary data. When added to a trajectory, the representative 
-        auxiliary value(s) for the timestep are stored as ``ts.aux.auxname``.
+        auxiliary value(s) for the timestep are accessed as ``ts.aux.auxname`` 
+        or ``ts.aux['auxname']``.
     represent_ts_as : {'closest', 'average'}
         How to calculate representative value of auxiliary data for a 
         trajectory timestep. Currently available:
@@ -301,7 +302,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         auxiliary steps.
 
         If ``auxname`` is set, the representative value will also be added to the
-        timestep as ``ts.aux.auxname``.
+        timestep, accessible as ``ts.aux.auxname`` or ``ts.aux['auxname']``.
 
         Parameters
         ----------

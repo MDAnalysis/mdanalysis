@@ -1331,7 +1331,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
 
         The representative value for the current timestep may then be accessed 
-        as ``u.trajectory.ts.aux.pull``.
+        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull'].
 
         See Also
         --------

@@ -1293,5 +1293,5 @@ class Namespace(object):
         return str(self.__dict__)
     def __len__(self):
         return len(self.__dict__)
-    def keys(self):
-        return self.__dict__.keys()
+    def __getitem__(self, key):
+        return self.__dict__[key]
