@@ -21,6 +21,8 @@
 Fast C-routines to calculate distance arrays from coordinate
 arrays. Many of the functions also exist in parallel versions, that
 typically provide higher performance than the serial code.
+The boolean attribute MDAnalysis.lib.distances.USED_OPENMP can be
+checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -109,6 +111,8 @@ from .c_distances import (calc_distance_array,
                           calc_dihedral_triclinic,
                           ortho_pbc,
                           triclinic_pbc)
+
+from c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
 def _box_check(box):
