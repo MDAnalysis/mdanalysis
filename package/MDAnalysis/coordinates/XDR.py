@@ -142,10 +142,6 @@ class XDRBaseReader(base.Reader):
             except Exception as e:
                 warnings.warn("Couldn't save offsets because: {}".format(e))
 
-    def rewind(self):
-        """Read the first frame again"""
-        self._read_frame(0)
-
     @property
     def n_frames(self):
         """number of frames in trajectory"""
