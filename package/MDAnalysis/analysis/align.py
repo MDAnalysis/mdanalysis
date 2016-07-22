@@ -165,6 +165,7 @@ Helper functions
 The following functions are used by the other functions in this
 module. They are probably of more interest to developers than to
 normal users.
+
 .. autofunction:: _fit_to
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
@@ -198,6 +199,7 @@ def rotation_matrix(a, b, weights=None):
     reference structure):
 
     .. math::
+
         \vec{b} = \bold{R} \dot \vec{a}
 
     Parameters
@@ -239,9 +241,10 @@ def rotation_matrix(a, b, weights=None):
 
     See Also
     --------
-    :func:`rmsd` calculates the RMSD between *a* and *b*; for fitting a whole
-    trajectory it is more efficient to use :func:`rms_fit_trj`. A complete fit
-    of two structures can be done with :func:`alignto`. """
+    MDAnalysis.analysis.rms.rmsd: Calculates the RMSD between *a* and *b*.
+    alignto: A complete fit of two structures.
+    AlignTraj: Fit a whole trajectory.
+    """
 
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
@@ -382,8 +385,10 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     new_rmsd
         RMSD after spatial alignment.
 
-    .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
-                 use :class:`AlignTraj`.
+    See Also
+    --------
+    AlignTraj: More efficient method for RMSD-fitting trajectories.
+
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -393,7 +398,6 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        Uses :func:`get_matching_atoms` to work with incomplete selections
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
-
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')

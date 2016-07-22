@@ -25,10 +25,11 @@ atoms or groups of atoms.
 :func:`dist` and :func:`between` can take atom groups that do not even
 have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
-.. SeeAlso:: :mod:`MDAnalysis.lib.distances` 
+.. SeeAlso:: :mod:`MDAnalysis.lib.distances`
 """
 
-__all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
+__all__ = ['distance_array', 'self_distance_array',
+           'contact_matrix', 'dist', 'between']
 
 import numpy as np
 
@@ -84,12 +85,12 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
 
     Note
     ----
-    :module:`scipy.sparse` is require for using *sparse* matrices; if it cannot
+    :mod:`scipy.sparse` is require for using *sparse* matrices; if it cannot
     be imported then an `ImportError` is raised.
+
 
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
-
     '''
 
     if returntype == "numpy":
@@ -124,8 +125,7 @@ def dist(A, B, offset=0):
 
     Arguments
     ---------
-
-    A, B: AtomGroup instances
+    A, B : AtomGroup
        :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
        same number of atoms
     offset : integer or tuple, optional, default 0
@@ -145,7 +145,6 @@ def dist(A, B, offset=0):
        residue ids of the `B` group (possibly changed with `offset`)
     distances : array
        distances between the atoms
-
     """
     if A.atoms.n_atoms != B.atoms.n_atoms:
         raise ValueError("AtomGroups A and B do not have the same number of atoms")
@@ -171,7 +170,6 @@ def between(group, A, B, distance):
 
     Parameters
     ----------
-
     group : AtomGroup
         Find members of `group` that are between `A` and `B`
     A, B : AtomGroups
@@ -185,11 +183,11 @@ def between(group, A, B, distance):
     Returns
     -------
     AtomGroup
-       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` of atoms that
-       fulfill the criterion
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup` of atoms that
+        fulfill the criterion
+
 
     .. versionadded: 0.7.5
-
     """
     from MDAnalysis.core.AtomGroup import AtomGroup
 

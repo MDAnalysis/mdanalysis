@@ -96,7 +96,6 @@ The trajectory is included with the test data files. The data in
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
 
 
-
 Functions
 ---------
 
@@ -325,13 +324,13 @@ class RMSD(object):
         ref_frame : int (optional)
              frame index to select frame from `reference`
 
+
         .. _ClustalW: http://www.clustal.org/
         .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
            *groupselections* added
-
         """
         self.universe = traj
         if reference is None:
@@ -580,8 +579,9 @@ class RMSF(object):
 
         References
         ----------
-        [Welford1962] B. P. Welford (1962). "Note on a Method for Calculating
-           Corrected Sums of Squares and Products." Technometrics 4(3):419-420.
+        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+           Calculating Corrected Sums of Squares and Products." Technometrics
+           4(3):419-420.
         """
         sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         means = np.array(sumsquares)
