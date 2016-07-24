@@ -27,7 +27,8 @@ from MDAnalysisTests.datafiles import PDB, XTC
 class TestPCA(object):
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
-        self.pca = pca.PCA(self.u, select='backbone and name CA')
+        self.pca = pca.PCA(self.u.atoms, select='backbone and name CA')
+        self.pca.run()
         self.cumulated_variance, self.pcs = self.pca.fit()
         self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
 
@@ -39,10 +40,13 @@ class TestPCA(object):
         assert_equal(self.pcs.shape, (self.n_atoms*3, self.n_atoms*3))
 
     def test_different_steps(self):
-        cum_var, pcs = self.pca.fit(step=3)
+        self.pca.run()
+        cum_var = self.pca.cumulated_variance
+        pcs = self.pca.p_components
 
     def test_transform(self):
         self.n_components = 1
-        pca_space = self.pca.transform(n_components=self.n_components)
+        self.ag = self.u.select_atoms('backbone and name CA')
+        pca_space = self.pca.transform(self.ag, n_components=self.n_components)
         assert_equal(pca_space.shape,
                      (self.u.trajectory.n_frames, self.n_components))

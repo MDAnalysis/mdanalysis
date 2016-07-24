@@ -77,6 +77,7 @@ data are left to the user.
 """
 from six.moves import range
 import logging
+import warnings
 
 import numpy as np
 from MDAnalysis import Universe
@@ -113,7 +114,7 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, select='All', n_components=None,
+    def __init__(self, atomgroup, select='all', n_components=None,
                  **kwargs):
         """
         Parameters
@@ -135,7 +136,10 @@ class PCA(AnalysisBase):
         """
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
-
+        self._u = atomgroup.universe
+        self.start = kwargs.get('start')
+        self.stop = kwargs.get('stop')
+        self.step = kwargs.get('step')
         self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
@@ -155,8 +159,9 @@ class PCA(AnalysisBase):
         p_components: array, (n_components, n_atoms * 3)
 
         """
-        return (self.cumulated_variance[:n_components],
-                self.p_components[:n_components])
+        self.run()
+        return (self.cumulated_variance[:self.n_components],
+                self.p_components[:self.n_components])
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
@@ -194,21 +199,15 @@ class PCA(AnalysisBase):
         -------
         pca_space : array, shape (number of frames, number of components)
         """
-        if atomgroup is not None:
-            atoms = atomgroup
-        else:
-            atoms = self._atoms
 
-        if self._atoms != atoms:
+        if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        xyz = np.array([atoms.positions.copy() for ts in self._u.trajectory])
+        xyz = np.array([atomgroup.positions.copy() for ts in self._u.trajectory])
         xyz = xyz.reshape(self._u.trajectory.n_frames,
                           self._n_atoms*3, order='F')
-        if n_components is None:
-            return np.dot(xyz, self.p_components.T)
-        else:
-            return np.dot(xyz, self.p_components[:n_components].T)
+
+        return np.dot(xyz, self.p_components[:n_components].T)
 
     def inverse_tranform(self, pca_space):
         """ Transform PCA-transformed data back to original configuration space.
