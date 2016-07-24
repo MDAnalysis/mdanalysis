@@ -113,27 +113,13 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, u, select='all'):
+    def __init__(self, atomgroup, select='All', n_components=None,
+                 **kwargs):
         """
         Parameters
         ----------
-        u : MDAnalysis Universe
-            The universe containing the trajectory frames for Principal
-            Component Analysis.
-        """
-        self._u = u
-        self._atoms = self._u.select_atoms(select)
-        self._n_atoms = self._atoms.n_atoms
-        self._calculated = False
-
-    def fit(self, n_components=None, start=None, stop=None,
-            step=None):
-        """ Use a subset of frames from the trajectory to generate the
-            principal components.
-
-        Parameters
-        ----------
-
+        atomgroup: MDAnalysis atomgroup
+            AtomGroup to be used for fitting.
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: -1
@@ -146,7 +132,21 @@ class PCA(AnalysisBase):
         step : int, optional
             Step between frames of trajectory to use for generation
             of covariance matrix, Default: 1
+        """
+        super(PCA, self).__init__(atomgroup.universe.trajectory,
+                                  **kwargs)
 
+        self._atoms = atomgroup.select_atoms(select)
+        self.n_components = n_components
+        self._n_atoms = self._atoms.n_atoms
+        self._calculated = False
+
+    def fit(self):
+        """ Use a subset of frames from the trajectory to generate the
+            principal components.
+
+        Parameters
+        ----------
         Return
         ------
         cumulated_variance: array, (n_components, )
@@ -155,20 +155,8 @@ class PCA(AnalysisBase):
         p_components: array, (n_components, n_atoms * 3)
 
         """
-        self._setup_frames(self._u.trajectory, start, stop, step)
-        self.start = start
-        self.stop = stop
-        self.step = step
-
-        self.n_components = n_components
-        self.run()
-        self._calculated = True
-
-        if n_components is None:
-            return self.cumulated_variance, self.p_components
-        else:
-            return (self.cumulated_variance[:n_components],
-                    self.p_components[:n_components])
+        return (self.cumulated_variance[:n_components],
+                self.p_components[:n_components])
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
@@ -192,8 +180,9 @@ class PCA(AnalysisBase):
         self.p_components = e_vects[sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
+        self._calculated = True
 
-    def transform(self, atomgroup=None, n_components=None):
+    def transform(self, atomgroup, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -220,7 +209,6 @@ class PCA(AnalysisBase):
             return np.dot(xyz, self.p_components.T)
         else:
             return np.dot(xyz, self.p_components[:n_components].T)
-
 
     def inverse_tranform(self, pca_space):
         """ Transform PCA-transformed data back to original configuration space.
