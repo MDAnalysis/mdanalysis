@@ -114,25 +114,25 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, select='all', mean_free=True, reference=None,
+    def __init__(self, atomgroup, demean=True, reference=None,
                  n_components=None, **kwargs):
         """
         Parameters
         ----------
         atomgroup: MDAnalysis atomgroup
-            AtomGroup to be used for fitting.
+            AtomGroup to be used for PCA.
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: -1
         start : int, optional
             First frame of trajectory to use for generation
-            of covariance matrix, Default: 0
+            of covariance matrix, Default: None
         stop : int, optional
             Last frame of trajectory to use for generation
-            of covariance matrix, Default: -1
+            of covariance matrix, Default: None
         step : int, optional
             Step between frames of trajectory to use for generation
-            of covariance matrix, Default: 1
+            of covariance matrix, Default: None
         """
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
@@ -140,15 +140,22 @@ class PCA(AnalysisBase):
         self.start = kwargs.get('start')
         self.stop = kwargs.get('stop')
         self.step = kwargs.get('step')
-        if mean_free:
-            if reference is None:
-                self.reference = self.atomgroup
+
+        if demean:
+            if frame is None:
+                self.reference = self._u
             else:
-                self.reference = reference
-        self._atoms = atomgroup.select_atoms(select)
+                # change u to traj number for fitting
+                self._u.trajectory[frame]
+                self.reference = self._u
+            aligned = align.AlignTraj(self.reference, self._u).run()
+            # need help here
+            self._u = mda.Universe(aligned.filename,)
+            atomgroup.universe = self._u
+
+        self._atoms = atomgroup
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
-        self._calculated = False
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
@@ -158,6 +165,7 @@ class PCA(AnalysisBase):
         for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
             x = self._atoms.positions.ravel()
             self.mean += x
+
         self.mean /= self.n_frames
 
     def _single_frame(self):
@@ -173,24 +181,6 @@ class PCA(AnalysisBase):
         self.p_components = e_vects[sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
-        self._calculated = True
-
-    def fit(self):
-        """ Use a subset of frames from the trajectory to generate the
-            principal components.
-
-        Parameters
-        ----------
-        Return
-        ------
-        cumulated_variance: array, (n_components, )
-            The amount of variance explained by the nth component and the n-1
-            components preceding it.
-        p_components: array, (n_components, n_atoms * 3)
-        """
-        self.run()
-        return (self.cumulated_variance[:self.n_components],
-                self.p_components[:self.n_components])
 
     def transform(self, atomgroup, n_components=None):
         """Apply the dimensionality reduction on a trajectory
