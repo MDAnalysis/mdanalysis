@@ -56,7 +56,6 @@ PCA class.
 
 First load all modules and test data ::
     >>> import MDAnalysis as mda
-    >>> import numpy as np
     >>> import MDAnalysis.analysis.pca as pca
     >>> from MDAnalysis.tests.datafiles import PSF, DCD
 
@@ -86,6 +85,7 @@ from .base import AnalysisBase
 
 logger = logging.getLogger(__name__)
 
+
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory
 
@@ -114,8 +114,8 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, select='all', n_components=None,
-                 **kwargs):
+    def __init__(self, atomgroup, select='all', mean_free=True, reference=None,
+                 n_components=None, **kwargs):
         """
         Parameters
         ----------
@@ -140,33 +140,21 @@ class PCA(AnalysisBase):
         self.start = kwargs.get('start')
         self.stop = kwargs.get('stop')
         self.step = kwargs.get('step')
+        if mean_free:
+            if reference is None:
+                self.reference = self.atomgroup
+            else:
+                self.reference = reference
         self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
 
-    def fit(self):
-        """ Use a subset of frames from the trajectory to generate the
-            principal components.
-
-        Parameters
-        ----------
-        Return
-        ------
-        cumulated_variance: array, (n_components, )
-            The amount of variance explained by the nth component and the n-1
-            components preceding it.
-        p_components: array, (n_components, n_atoms * 3)
-
-        """
-        self.run()
-        return (self.cumulated_variance[:self.n_components],
-                self.p_components[:self.n_components])
-
     def _prepare(self):
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
         self.mean = np.zeros(n_dim,)
+
         for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
             x = self._atoms.positions.ravel()
             self.mean += x
@@ -187,6 +175,23 @@ class PCA(AnalysisBase):
                                    np.sum(self.variance))
         self._calculated = True
 
+    def fit(self):
+        """ Use a subset of frames from the trajectory to generate the
+            principal components.
+
+        Parameters
+        ----------
+        Return
+        ------
+        cumulated_variance: array, (n_components, )
+            The amount of variance explained by the nth component and the n-1
+            components preceding it.
+        p_components: array, (n_components, n_atoms * 3)
+        """
+        self.run()
+        return (self.cumulated_variance[:self.n_components],
+                self.p_components[:self.n_components])
+
     def transform(self, atomgroup, n_components=None):
         """Apply the dimensionality reduction on a trajectory
 
@@ -203,11 +208,13 @@ class PCA(AnalysisBase):
         if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        xyz = np.array([atomgroup.positions.copy() for ts in self._u.trajectory])
-        xyz = xyz.reshape(self._u.trajectory.n_frames,
-                          self._n_atoms*3, order='F')
+        dot = np.zeros((u.trajectory.n_frames, ca.n_atoms*3))
 
-        return np.dot(xyz, self.p_components[:n_components].T)
+        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+            xyz = atomgroup.positions.ravel()
+            dot[i] = np.dot(xyz, self.p_components[:n_components].T)
+
+        return dot
 
     def inverse_tranform(self, pca_space):
         """ Transform PCA-transformed data back to original configuration space.
