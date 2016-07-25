@@ -13,6 +13,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+TRR trajectory files --- :mod:`MDAnalysis.coordinates.TRR`
+==========================================================
+
+Read and write GROMACS TRR trajectories.
+
+See Also
+--------
+MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
+"""
+
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
@@ -28,8 +39,8 @@ class TRRWriter(XDRBaseWriter):
     corresponding value will be used as the lambda value for written TRR file.
     If None is found the lambda is set to 0.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     n_atoms : int
@@ -100,8 +111,8 @@ class TRRReader(XDRBaseReader):
 
     The lambda value is written in the data dictionary of the returned TimeStep
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     convert_units : bool (optional)
