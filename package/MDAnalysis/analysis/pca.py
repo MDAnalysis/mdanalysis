@@ -139,10 +139,6 @@ class PCA(AnalysisBase):
                                   **kwargs)
         self._u = atomgroup.universe
         # for transform function
-        self.start = kwargs.get('start')
-        self.stop = kwargs.get('stop')
-        self.step = kwargs.get('step')
-
         if demean_ref:
             self._demean = True
             self._reference = demean_ref
@@ -152,6 +148,7 @@ class PCA(AnalysisBase):
         self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
+        self._calculated = False
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
@@ -181,6 +178,7 @@ class PCA(AnalysisBase):
         self.p_components = e_vects[sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
+        self._calculated = True
 
     def transform(self, atomgroup, n_components=None):
         """Apply the dimensionality reduction on a trajectory
@@ -194,11 +192,13 @@ class PCA(AnalysisBase):
         -------
         pca_space : array, shape (number of frames, number of components)
         """
+        if not self._calculated:
+            self.run()
         # TODO has to accept universe or trajectory slice here
         if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        dot = np.zeros((self._u.trajectory.n_frames, ca.n_atoms*3))
+        dot = np.zeros((self._u.trajectory.n_frames, atomgroup.n_atoms*3))
 
         for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
             xyz = atomgroup.positions.ravel()
