@@ -50,14 +50,14 @@ def make_bundle(simulations, topology=None, univ_kwargs=None, names=None,
     stored.
 
     """
-    # TODO - check length of various lists match + all of same type
+    # TODO - check length of various lists match 
     # TODO - use Group
     # TODO - careful about overwriting existing sims/category values
 
     if names is None:
         # if names not provided, use the index for name
         names = map(str, range(len(simulations)))
-    if isinstance(simulations[0], str):
+    if all(isinstance(s, str) for s in simulations):
         # assume passing in traj/top
         trajs = simulations
         if not topology:
@@ -70,18 +70,19 @@ def make_bundle(simulations, topology=None, univ_kwargs=None, names=None,
             tops = [tops]*len(trajs)
         bundle = dtr.Bundle([Sim(name, new=True) for name in names])
         for i, sim in enumerate(bundle):
-            sim.universe = Universe(tops[i], trajs[i], **univ_kwargs)
-    elif isinstance(simulations[0], Universe):
+            sim.universe = Universe(tops[i], trajs[i], **uargs)
+    elif all(isinstance(s, Universe) for s in simulations):
         # assume we've passed in list of Universes
         bundle = dtr.Bundle([Sim(name, new=True) for name in names])
         for i, sim in enumerate(bundle):
             sim.universe = simulations[i]
-    elif isinstance(simulations[0], Sim):
+    elif all(isinstance(s, Sim) for s in simulations):
         # assume we've passed in a list of Sims
         bundle = dtr.Bundle(simulations)
     else:
-        raise TypeError('simulations must be trajectory filenames, '
-                        'Universes or MDSynthesis Sims')
+        raise TypeError('Simulations must be passed in all as trajectory '
+                        'filenames, all as Universes, or all as MDSynthesis '
+                        'Sims')
 
     ## Add any auxiliaries
     auxargs = aux_kwargs if aux_kwargs is not None else {}
