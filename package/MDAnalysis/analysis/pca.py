@@ -80,6 +80,7 @@ import warnings
 
 import numpy as np
 from MDAnalysis import Universe
+from MDAnalysis.analysis.align import _fit_to
 
 from .base import AnalysisBase
 
@@ -137,22 +138,13 @@ class PCA(AnalysisBase):
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
         self._u = atomgroup.universe
+        self.reference = reference
+        # for transform function
         self.start = kwargs.get('start')
         self.stop = kwargs.get('stop')
         self.step = kwargs.get('step')
 
-        if demean:
-            if frame is None:
-                self.reference = self._u
-            else:
-                # change u to traj number for fitting
-                self._u.trajectory[frame]
-                self.reference = self._u
-            aligned = align.AlignTraj(self.reference, self._u).run()
-            # need help here
-            self._u = mda.Universe(aligned.filename,)
-            atomgroup.universe = self._u
-
+        self.demean = demean
         self._atoms = atomgroup
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
@@ -160,17 +152,21 @@ class PCA(AnalysisBase):
     def _prepare(self):
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
-        self.mean = np.zeros(n_dim,)
-
-        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
-            x = self._atoms.positions.ravel()
-            self.mean += x
-
-        self.mean /= self.n_frames
+        if self.demean:
+            self._ref_atoms = self.reference.atoms
+            self.ref_cog = self.ref_atoms.center_of_geometry
 
     def _single_frame(self):
-        x = self._atoms.positions.ravel()
-        x -= self.mean
+        if self.demean:
+            # TODO make this more functional, initial proof of concept
+            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+                                             self._ref_atoms.positons,
+                                             self._atoms, self._ref_cog,
+                                             self._atoms.center_of_geometry)
+            # now all structures are aligned to reference
+            x = mobile_atoms.positions.ravel()
+        else:
+            x = self._atoms.positions.ravel()
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
@@ -194,11 +190,11 @@ class PCA(AnalysisBase):
         -------
         pca_space : array, shape (number of frames, number of components)
         """
-
+        # TODO has to accept universe or trajectory slice here
         if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        dot = np.zeros((u.trajectory.n_frames, ca.n_atoms*3))
+        dot = np.zeros((self._u.trajectory.n_frames, ca.n_atoms*3))
 
         for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
             xyz = atomgroup.positions.ravel()
