@@ -115,7 +115,7 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, demean=True, reference=None,
+    def __init__(self, atomgroup, select='All', demean_ref=None,
                  n_components=None, **kwargs):
         """
         Parameters
@@ -138,31 +138,35 @@ class PCA(AnalysisBase):
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
         self._u = atomgroup.universe
-        self.reference = reference
         # for transform function
         self.start = kwargs.get('start')
         self.stop = kwargs.get('stop')
         self.step = kwargs.get('step')
 
-        self.demean = demean
-        self._atoms = atomgroup
+        if demean_ref:
+            self._demean = True
+            self._reference = demean_ref
+        else:
+            self._demean = False
+
+        self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
-        if self.demean:
-            self._ref_atoms = self.reference.atoms
-            self.ref_cog = self.ref_atoms.center_of_geometry
+        if self._demean:
+            self._ref_atoms = self._reference
+            self._ref_cog = self._ref_atoms.center_of_geometry()
 
     def _single_frame(self):
-        if self.demean:
+        if self._demean:
             # TODO make this more functional, initial proof of concept
             mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
-                                             self._ref_atoms.positons,
+                                             self._ref_atoms.positions,
                                              self._atoms, self._ref_cog,
-                                             self._atoms.center_of_geometry)
+                                             self._atoms.center_of_geometry())
             # now all structures are aligned to reference
             x = mobile_atoms.positions.ravel()
         else:
