@@ -556,7 +556,7 @@ class RMSF(object):
         self.atomgroup = atomgroup
         self._rmsf = None
 
-    def run(self, start=0, stop=-1, step=1, progout=10, quiet=False):
+    def run(self, start=None, stop=None, step=None, progout=10, quiet=False):
         """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
@@ -565,11 +565,11 @@ class RMSF(object):
         Parameters
         ----------
         start : int (optional)
-            starting frame [0]
+            starting frame, default None becomes 0.
         stop : int (optional)
-            stopping frame [-1]
+            stopping frame, default None becomes n_frames.
         step : int (optional)
-            step between frames [1]
+            step between frames, default None becomes 1.
         progout : int (optional)
             number of frames to iterate through between updates to progress
             output; ``None`` for no updates [10]
@@ -583,6 +583,9 @@ class RMSF(object):
            Calculating Corrected Sums of Squares and Products." Technometrics
            4(3):419-420.
         """
+        start, stop, step = self.atomgroup.universe.check_slice_indices(start,
+                                                                        stop,
+                                                                        step)
         sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         means = np.array(sumsquares)
 
