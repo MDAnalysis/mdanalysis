@@ -67,7 +67,7 @@ class MMTFParser(base.TopologyReader):
                     group['formalChargeList'],
                     group['elementList'])):
                 altLoc = top.alt_loc_list[atom_offset + j]
-                occupancy = top.occupancy_list[atom_offset + j]
+                #occupancy = top.occupancy_list[atom_offset + j]
                 bfactor = top.b_factor_list[atom_offset + j]
 
                 # atom id as defined in mmtf

@@ -12,8 +12,6 @@ class MMTFReader(base.SingleFrameReader):
     format = 'MMTF'
 
     def _read_first_frame(self):
-        # TODO: Add occupancy reading
-        #       See: PDB? reader that does it
         # TOOD: Check units?
         top = mmtf.parse(self.filename)
         self.n_atoms = top.num_atoms
@@ -24,6 +22,8 @@ class MMTFReader(base.SingleFrameReader):
         ts._pos[:, 1] = top.y_coord_list.copy()
         ts._pos[:, 2] = top.z_coord_list.copy()
         ts.dimensions = top.unit_cell
+
+        ts.data['occupancy'] = top.occupancy_list.copy()
 
         return ts
 
