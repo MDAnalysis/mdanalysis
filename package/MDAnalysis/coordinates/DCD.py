@@ -523,9 +523,9 @@ class DCDReader(base.Reader):
         # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
         # from trajectory file instead of an entire timestep
         # XXX needs to be implemented
-        return self._read_timeseries(atom_numbers, start, stop, skip, format)
+        return self._read_timeseries(atom_numbers, start, stop, step, format)
 
-    def correl(self, timeseries, start=None, stop=None, skip=None):
+    def correl(self, timeseries, start=None, stop=None, step=None):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
         :Arguments:
@@ -543,7 +543,7 @@ class DCDReader(base.Reader):
         atomcounts = timeseries._getAtomCounts()
         auxdata = timeseries._getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata,
-                                     sizedata, lowerb, upperb, start, stop, skip)
+                                     sizedata, lowerb, upperb, start, stop, step)
 
     def close(self):
         if self.dcdfile is not None:
