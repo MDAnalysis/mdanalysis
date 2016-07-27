@@ -498,7 +498,8 @@ class DCDReader(base.Reader):
         ts.frame = frame
         return ts
 
-    def timeseries(self, asel, start=None, stop=None, step=None, format='afc'):
+    def timeseries(self, asel, start=None, stop=-1, step=None, skip=None,
+                   format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         :Arguments:
@@ -514,7 +515,11 @@ class DCDReader(base.Reader):
                where the shape is (frame, number of atoms,
                coordinates)
         """
-        start, stop, skip = self.check_slice_indices(start, stop, step)
+        if skip is not None:
+            step = skip
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        # for old cython _read_timeseries code
+        skip = step
         if len(asel) == 0:
             raise NoDataError("Timeseries requires at least one atom to analyze")
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
@@ -523,7 +528,7 @@ class DCDReader(base.Reader):
         # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
         # from trajectory file instead of an entire timestep
         # XXX needs to be implemented
-        return self._read_timeseries(atom_numbers, start, stop, step, format)
+        return self._read_timeseries(atom_numbers, start, stop, skip, format)
 
     def correl(self, timeseries, start=None, stop=None, step=None):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory

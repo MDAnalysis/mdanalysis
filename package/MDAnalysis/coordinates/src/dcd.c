@@ -435,13 +435,10 @@ __read_timeseries(PyObject *self, PyObject *args)
    int rc;
    int i, j, index;
    int n_atoms = 0, n_frames = 0;
-<<<<<<< HEAD
-   int start = 0, stop = -1, skip = 1, numskip = 0;
-=======
+
    /* Stop = -1 is incorrect and causes an error, look for a fix of this in line
    469 */
    int start = 0, stop = -1, skip = 1, numskip = 0, remaining_frames=0;
->>>>>>> Added test for slicing, slowly changing DCD source for timeseries slicing.
    dcdhandle *dcd = NULL;
    int *atomlist = NULL;
    npy_intp dimensions[3];
@@ -542,7 +539,7 @@ __read_timeseries(PyObject *self, PyObject *args)
    for (i=0;i<n_frames;i++) {
       if (skip > 1) {
          // Figure out how many steps to skip
-         numskip = skip-1;
+         numskip = skip;
          if(remaining_frames < numskip){
             numskip = 1;
          }
@@ -560,7 +557,7 @@ __read_timeseries(PyObject *self, PyObject *args)
          dcd->reverse, dcd->charmm);
       dcd->first = 0;
       dcd->setsread += numskip;
-      remaining_frames = stop - dcd->setsread++;
+      remaining_frames = stop - dcd->setsread;
       if (rc < 0) {
          // return an exception
          PyErr_SetString(PyExc_IOError, "Error reading frame from DCD file");
@@ -568,7 +565,6 @@ __read_timeseries(PyObject *self, PyObject *args)
 
          }
 
-      }
 
       // Copy into Numeric array only those atoms we are interested in
       for (j=0;j<n_atoms;j++) {
