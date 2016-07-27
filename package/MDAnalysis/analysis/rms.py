@@ -584,9 +584,8 @@ class RMSF(object):
            Calculating Corrected Sums of Squares and Products." Technometrics
            4(3):419-420.
         """
-        start, stop, step = self.atomgroup.universe.check_slice_indices(start,
-                                                                        stop,
-                                                                        step)
+        traj = self.atomgroup.universe.trajectory
+        start, stop, step = traj.check_slice_indices(start, stop, step)
         sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         means = np.array(sumsquares)
 
