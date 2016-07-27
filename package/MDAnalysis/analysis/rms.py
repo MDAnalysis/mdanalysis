@@ -567,7 +567,8 @@ class RMSF(object):
         start : int (optional)
             starting frame, default None becomes 0.
         stop : int (optional)
-            stopping frame, default None becomes n_frames.
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number.
         step : int (optional)
             step between frames, default None becomes 1.
         progout : int (optional)
