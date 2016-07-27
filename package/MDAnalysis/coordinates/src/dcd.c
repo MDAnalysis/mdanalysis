@@ -435,7 +435,13 @@ __read_timeseries(PyObject *self, PyObject *args)
    int rc;
    int i, j, index;
    int n_atoms = 0, n_frames = 0;
+<<<<<<< HEAD
    int start = 0, stop = -1, skip = 1, numskip = 0;
+=======
+   /* Stop = -1 is incorrect and causes an error, look for a fix of this in line
+   469 */
+   int start = 0, stop = -1, skip = 1, numskip = 0, remaining_frames=0;
+>>>>>>> Added test for slicing, slowly changing DCD source for timeseries slicing.
    dcdhandle *dcd = NULL;
    int *atomlist = NULL;
    npy_intp dimensions[3];
@@ -464,8 +470,10 @@ __read_timeseries(PyObject *self, PyObject *args)
    Py_DECREF(temp);
 
    // Assume that start and stop are valid
-   if (stop == -1) { stop = dcd->nsets; }
-   n_frames = (stop-start+1) / skip;
+
+   if (stop == -1) { stop = dcd->nsets -1; }
+   n_frames = ((stop-start) / skip)+1;
+
    //n_frames = dcd->nsets / skip;
    n_atoms = PyList_Size((PyObject*)atoms);
    if (n_atoms == 0) {
@@ -497,20 +505,15 @@ __read_timeseries(PyObject *self, PyObject *args)
    // Figure out the format string
    if (strncasecmp(format, "afc", 3) == 0) {
       dimensions[0] = n_atoms; dimensions[1] = n_frames; dimensions[2] = 3;
-   } else
-   if (strncasecmp(format, "acf", 3) == 0) {
+   } else if (strncasecmp(format, "acf", 3) == 0) {
       dimensions[0] = n_atoms; dimensions[1] = 3; dimensions[2] = n_frames;
-   } else
-   if (strncasecmp(format, "fac", 3) == 0) {
+   } else if (strncasecmp(format, "fac", 3) == 0) {
       dimensions[0] = n_frames; dimensions[1] = n_atoms; dimensions[2] = 3;
-   } else
-   if (strncasecmp(format, "fca", 3) == 0) {
+   } else if (strncasecmp(format, "fca", 3) == 0) {
       dimensions[0] = n_frames; dimensions[1] = 3; dimensions[2] = n_atoms;
-   } else
-   if (strncasecmp(format, "caf", 3) == 0) {
+   } else if (strncasecmp(format, "caf", 3) == 0) {
       dimensions[0] = 3; dimensions[1] = n_atoms; dimensions[2] = n_frames;
-   } else
-   if (strncasecmp(format, "cfa", 3) == 0) {
+   } else if (strncasecmp(format, "cfa", 3) == 0) {
       dimensions[0] = 3; dimensions[1] = n_frames; dimensions[2] = n_atoms;
    }
 
@@ -534,32 +537,43 @@ __read_timeseries(PyObject *self, PyObject *args)
       goto error;
    }
 
-   for (i=0;i<n_frames;i++)
-   {
+   /*Should actually be number of frames, not true yet*/
+   remaining_frames = stop;
+   for (i=0;i<n_frames;i++) {
       if (skip > 1) {
          // Figure out how many steps to skip
-         numskip = skip - (dcd->setsread % skip) - 1;
+         numskip = skip-1;
+         if(remaining_frames < numskip){
+            numskip = 1;
+         }
+         printf("%d numskip, %d skip %d stop %d setsread %d n_frames %d i %d remaining_frames \n", numskip, skip, stop, dcd->setsread, n_frames, i, remaining_frames);
          rc = skip_dcdstep(dcd->fd, dcd->natoms, dcd->nfixed, dcd->charmm, numskip);
          if (rc < 0) {
             // return an exception
             PyErr_SetString(PyExc_IOError, "Error skipping frame from DCD file");
             goto error;
          }
-         dcd->setsread+=numskip;
       }
+      //now read from subset
       rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
          unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
          dcd->reverse, dcd->charmm);
       dcd->first = 0;
-      dcd->setsread++;
+      dcd->setsread += numskip;
+      remaining_frames = stop - dcd->setsread++;
       if (rc < 0) {
          // return an exception
          PyErr_SetString(PyExc_IOError, "Error reading frame from DCD file");
          goto error;
+
+         }
+
       }
+
       // Copy into Numeric array only those atoms we are interested in
       for (j=0;j<n_atoms;j++) {
          index = atomlist[j]-lowerb;
+
          /*
          * coord[a][b][c] = *(float*)(coord->data + a*coord->strides[0] + b*coord->strides[1] + c*coord->strides[2])
          */
@@ -615,6 +629,7 @@ __read_timeseries(PyObject *self, PyObject *args)
    if (tempZ != NULL) free(tempZ);
    return NULL;
 }
+
 
 static PyObject *
 __read_next_frame(PyObject *self, PyObject *args)
