@@ -34,7 +34,8 @@ Fixes
   * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
   * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
   * fixed incompatibility with newer matplotlib in analysis.hole
-        
+  * Fixed modules that improperly documented and/or used frame slicing 
+    defaults (#914)
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase
