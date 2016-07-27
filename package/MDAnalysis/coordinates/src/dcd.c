@@ -535,15 +535,14 @@ __read_timeseries(PyObject *self, PyObject *args)
    }
 
    /*Should actually be number of frames, not true yet*/
-   remaining_frames = stop;
+   remaining_frames = stop-start;
    for (i=0;i<n_frames;i++) {
-      if (skip > 1) {
+      if (skip > 1 && i>0) {
          // Figure out how many steps to skip
-         numskip = skip;
+         numskip = skip -1;
          if(remaining_frames < numskip){
             numskip = 1;
          }
-         printf("%d numskip, %d skip %d stop %d setsread %d n_frames %d i %d remaining_frames \n", numskip, skip, stop, dcd->setsread, n_frames, i, remaining_frames);
          rc = skip_dcdstep(dcd->fd, dcd->natoms, dcd->nfixed, dcd->charmm, numskip);
          if (rc < 0) {
             // return an exception
@@ -551,12 +550,13 @@ __read_timeseries(PyObject *self, PyObject *args)
             goto error;
          }
       }
+      dcd->setsread += numskip;
       //now read from subset
       rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
          unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
          dcd->reverse, dcd->charmm);
       dcd->first = 0;
-      dcd->setsread += numskip;
+      dcd->setsread += 1;
       remaining_frames = stop - dcd->setsread;
       if (rc < 0) {
          // return an exception
