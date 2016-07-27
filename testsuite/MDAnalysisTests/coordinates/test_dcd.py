@@ -137,6 +137,15 @@ class TestDCDReader(_TestDCD):
                             err_msg="wrong volume for unitcell (no unitcell "
                             "in DCD so this should be 0)")
 
+    def test_timeseries_slicing(self):
+        # check that slicing behaves correctly
+        # should fail before issue #914 resolved
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, skip=10)
+        assert_array_almost_equal(ts[:,::10], ts_skip, 5)
+
+
 def test_DCDReader_set_dt(dt=100., frame=3):
     u = mda.Universe(PSF, DCD, dt=dt)
     assert_almost_equal(u.trajectory[frame].time, frame*dt,
