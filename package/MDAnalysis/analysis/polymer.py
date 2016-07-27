@@ -59,11 +59,13 @@ class PersistenceLength(AnalysisBase):
             List of atomgroups.  Each atomgroup should represent a single
             polymer chain, ordered in the correct order.
         start : int, optional
-            First frame of trajectory to analyse, Default: 0
+            First frame of trajectory to analyse, Default: None becomes 0.
         stop : int, optional
-            Last frame of trajectory to analyse, Default: -1
+            Last frame of trajectory to analyse, Default: None becomes
+            n_frames.
         step : int, optional
-            Step between frames to analyse, Default: 1
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number.
         """
         super(PersistenceLength, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)
