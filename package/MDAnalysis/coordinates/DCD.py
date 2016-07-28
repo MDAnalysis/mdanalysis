@@ -73,6 +73,7 @@ import errno
 import numpy as np
 import struct
 import types
+from numpy.lib.utils import deprecate
 
 from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
@@ -498,6 +499,7 @@ class DCDReader(base.Reader):
         ts.frame = frame
         return ts
 
+
     def timeseries(self, asel, start=None, stop=None, step=None, skip=None,
                    format='afc'):
         """Return a subset of coordinate data for an AtomGroup
@@ -514,9 +516,15 @@ class DCDReader(base.Reader):
                of 'a', 'f', 'c' are allowed ie "fac" - return array
                where the shape is (frame, number of atoms,
                coordinates)
+        :Deprecated:
+            *skip*
+                Skip has been deprecated in favor of the standard keyword step.
         """
         if skip is not None:
             step = skip
+
+            @deprecate(new_name="step",
+                       message="This parameter will be removed in 0.17")
         start, stop, step = self.check_slice_indices(start, stop, step)
         if len(asel) == 0:
             raise NoDataError("Timeseries requires at least one atom to analyze")
@@ -528,7 +536,7 @@ class DCDReader(base.Reader):
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
-    def correl(self, timeseries, start=None, stop=None, step=None):
+    def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
         :Arguments:
@@ -537,7 +545,15 @@ class DCDReader(base.Reader):
             *start, stop, step*
                A subset of the trajectory to use, with start being inclusive
                and stop being exclusive.
+        :Deprecated:
+            *skip*
+                Skip has been deprecated in favor of the standard keyword step.
         """
+        if skip is not None:
+            step = skip
+
+            @deprecate(new_name="step",
+                       message="This parameter will be removed in 0.17")
         start, stop, step = self.check_slice_indices(start, stop, step)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
