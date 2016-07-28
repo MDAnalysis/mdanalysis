@@ -102,7 +102,14 @@ class PCA(AnalysisBase):
         Percentage of variance explained by each of the selected components.
         If a subset of components is not chosen then all components are stored
         and the sum of explained variances is equal to 1.0.
-
+    start: int
+        The index of the first frame to be used for the creation of the
+        covariance matrix.
+    stop: int
+        The index to stop before in the creation of the covariance matrix.
+    step: int
+        The amount of frames stepped between in the creation of the covariance
+        matrix.
     Methods
     -------
     fit(traj=None, select='All', start=None, stop=None, step=None)
