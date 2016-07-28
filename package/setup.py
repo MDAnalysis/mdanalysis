@@ -468,7 +468,8 @@ if __name__ == '__main__':
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
           requires=['numpy (>=1.5.0)', 'biopython',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'],
+                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'
+                    'mmtf'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
