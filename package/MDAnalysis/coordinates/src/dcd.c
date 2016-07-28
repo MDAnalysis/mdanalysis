@@ -467,8 +467,12 @@ __read_timeseries(PyObject *self, PyObject *args)
    Py_DECREF(temp);
 
    // Assume that start and stop are valid
+<<<<<<< HEAD
 
    if (stop == -1) { stop = dcd->nsets -1; }
+=======
+   if (stop == dcd->nsets) { stop = dcd->nsets -1; }
+>>>>>>> Change to ++
    n_frames = ((stop-start) / skip)+1;
 
    //n_frames = dcd->nsets / skip;
@@ -556,7 +560,7 @@ __read_timeseries(PyObject *self, PyObject *args)
          unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
          dcd->reverse, dcd->charmm);
       dcd->first = 0;
-      dcd->setsread += 1;
+      dcd->setsread++;
       remaining_frames = stop - dcd->setsread;
       if (rc < 0) {
          // return an exception
