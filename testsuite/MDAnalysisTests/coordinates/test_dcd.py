@@ -142,7 +142,7 @@ class TestDCDReader(_TestDCD):
         # should fail before issue #914 resolved
         self.u = mda.Universe(PSF, DCD)
         ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, skip=10)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, step=10)
         assert_array_almost_equal(ts[:,::10], ts_skip, 5)
 
 
