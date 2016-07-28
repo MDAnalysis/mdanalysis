@@ -568,7 +568,8 @@ class RMSF(object):
             starting frame, default None becomes 0.
         stop : int (optional)
             Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number.
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
         step : int (optional)
             step between frames, default None becomes 1.
         progout : int (optional)
