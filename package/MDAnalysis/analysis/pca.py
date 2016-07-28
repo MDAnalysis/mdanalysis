@@ -194,14 +194,27 @@ class PCA(AnalysisBase):
                                    np.sum(self.variance))
         self._calculated = True
 
-    def transform(self, atomgroup, n_components=None):
+    def transform(self, atomgroup, n_components=None, start=None, stop=None,
+                  step=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
         ----------
+        atomgroup: MDAnalysis atomgroup
+            The atoms to be PCA transformed.
         n_components: int, optional
-            The number of components to be projected onto, default maps onto
-            all components.
+            The number of components to be projected onto, Default none: maps
+            onto all components.
+        start: int, optional
+            The frame to start on for the PCA transform. Default: None becomes
+            0, the first frame index.
+        stop: int, optional
+            Frame index to stop PCA transform. Default: None becomes n_frames.
+            Iteration stops *before* this frame number, which means that the
+            trajectory would be read until the end.
+        step: int, optional
+            Number of frames to skip over for PCA transform. Default: None
+            becomes 1.
         Returns
         -------
         pca_space : array, shape (number of frames, number of components)
@@ -212,9 +225,11 @@ class PCA(AnalysisBase):
         if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        dot = np.zeros((self._u.trajectory.n_frames, n_components))
+        traj = atomgroup.universe.trajectory
+        start, stop, step = traj.check_slice_indices(start, stop, step)
+        dot = np.zeros((traj.n_frames, n_components))
 
-        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+        for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel()
             dot[i] = np.dot(xyz, self.p_components[:n_components].T)
 
