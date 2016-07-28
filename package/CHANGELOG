@@ -24,6 +24,7 @@ Enhancements
   with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the
   class itself.
+  * Added ability to read MMTF format files (Issue #907)
 
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
