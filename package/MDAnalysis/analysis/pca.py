@@ -122,13 +122,19 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, select='All', demean_ref=None,
+    def __init__(self, atomgroup, select='all', demean=True,
                  n_components=None, **kwargs):
         """
         Parameters
         ----------
         atomgroup: MDAnalysis atomgroup
             AtomGroup to be used for PCA.
+        select: string, optional
+            A valid selection statement for choosing a subset of atoms from
+            the atomgroup.
+        demean: boolean, optional
+            If False, the trajectory will not be aligned to a reference
+            and there will be no demeaning of covariance data.
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: -1
@@ -146,11 +152,12 @@ class PCA(AnalysisBase):
                                   **kwargs)
         self._u = atomgroup.universe
         # for transform function
-        if demean_ref:
-            self._demean = True
-            self._reference = demean_ref
+        if demean:
+            self._demean = demean
+            self._u.trajectory[0]
+            self._reference = self._u.atoms.select_atoms(select)
         else:
-            self._demean = False
+            self._demean = demean
 
         self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
@@ -205,7 +212,7 @@ class PCA(AnalysisBase):
         if self._atoms != atomgroup:
             warnings.warn('This is a transform for different atom types.')
 
-        dot = np.zeros((self._u.trajectory.n_frames, atomgroup.n_atoms*3))
+        dot = np.zeros((self._u.trajectory.n_frames, n_components))
 
         for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
             xyz = atomgroup.positions.ravel()
