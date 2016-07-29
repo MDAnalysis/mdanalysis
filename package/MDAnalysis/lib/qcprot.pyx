@@ -47,6 +47,7 @@
 #
 #    Copyright (c) 2009-2010, Pu Liu and Douglas L. Theobald
 #    Copyright (c) 2011       Joshua L. Adelman
+#    Copyright (c) 2016       Robert R. Delgado
 #    All rights reserved.
 #
 #    Redistribution and use in source and binary forms, with or without modification, are permitted
@@ -79,8 +80,9 @@ Fast QCP RMSD structure alignment --- :mod:`MDAnalysis.lib.qcprot`
 ==================================================================
 
 :Author:   Joshua L. Adelman, University of Pittsburgh
+:Author:   Robert R. Delgado, Cornell University and Arizona State University
 :Contact:  jla65@pitt.edu
-:Year:     2011
+:Year:     2011, 2016
 :Licence:  BSD
 
 PyQCPROT_ is a python/cython implementation of Douglas Theobald's QCP
@@ -94,6 +96,10 @@ be found at http://theobald.brandeis.edu/qcp/
 .. SeeAlso:: The :func:`CalcRMSDRotationalMatrix` function is used in
              :mod:`MDAnalysis.analysis.align` and
              :mod:`MDAnalysis.analysis.rmsd`.
+
+.. versionchanged:: 0.16.0
+   Call signatures were changed to directly interface with MDAnalysis
+   coordinate arrays: shape (N, 3) and dtype numpy.float64.
 
 References
 ----------
@@ -135,7 +141,9 @@ cdef extern from "math.h":
     double fabs(double x)
 
 @cython.boundscheck(False)
-@cython.wraparound(False)
+@cython.wraparound(False) 
+
+
 def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
                  np.ndarray[np.float64_t,ndim=2] coords1,
                  np.ndarray[np.float64_t,ndim=2] coords2,
@@ -156,6 +164,8 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
     weights : ndarray np.float64_t (optional)
         use to calculate weighted inner product
 
+
+
     Returns
     -------
     E0 : float
@@ -166,12 +176,10 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
     1. You MUST center the structures, coords1 and coords2, before calling this
        function.
 
-    2. Please note how the structure coordinates are stored as 3xN arrays,
-       not Nx3 arrays as is also commonly used. The difference is
-       something like this for storage of a structure with 8 atoms::
+    2. Coordinates are stored as Nx3 arrays (as everywhere else in MDAnalysis).
 
-          Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
-          3xN: xxxxxxxxyyyyyyyyzzzzzzzz
+    .. versionchanged:: 0.16.0
+       Array size changed from 3xN to Nx3.
 
     """
 
@@ -186,15 +194,15 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     if (weight is not None):
         for i in range(N):
-            x1 = weight[i] * coords1[0,i]
-            y1 = weight[i] * coords1[1,i]
-            z1 = weight[i] * coords1[2,i]
+            x1 = weight[i] * coords1[i,0]
+            y1 = weight[i] * coords1[i,1]
+            z1 = weight[i] * coords1[i,2]
 
-            G1 += x1*coords1[0,i] + y1*coords1[1,i] + z1*coords1[2,i]
+            G1 += x1*coords1[i,0] + y1*coords1[i,1] + z1*coords1[i,2]
 
-            x2 = coords2[0,i]
-            y2 = coords2[1,i]
-            z2 = coords2[2,i]
+            x2 = coords2[i,0]
+            y2 = coords2[i,1]
+            z2 = coords2[i,2]
 
             G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)
 
@@ -212,15 +220,15 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     else:
         for i in range(N):
-            x1 = coords1[0,i]
-            y1 = coords1[1,i]
-            z1 = coords1[2,i]
+            x1 = coords1[i,0]
+            y1 = coords1[i,1]
+            z1 = coords1[i,2]
 
             G1 += (x1*x1 + y1*y1 + z1*z1)
 
-            x2 = coords2[0,i]
-            y2 = coords2[1,i]
-            z2 = coords2[2,i]
+            x2 = coords2[i,0]
+            y2 = coords2[i,1]
+            z2 = coords2[i,2]
 
             G2 += (x2*x2 + y2*y2 + z2*z2)
 
@@ -238,8 +246,41 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     return (G1 + G2) * 0.5
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
+def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
+                             np.ndarray[np.float64_t,ndim=2] conf,
+                             int N,
+                             np.ndarray[np.float64_t,ndim=1] rot,
+                             np.ndarray[np.float64_t,ndim=1] weights):
+    """
+    Calculate the RMSD & rotational matrix.
+
+    Parameters
+    ----------
+    ref : ndarray, np.float64_t
+        reference structure coordinates
+    conf : ndarray, np.float64_t
+        condidate structure coordinates
+    N : int
+        size of the system
+    rot : ndarray, np.float64_t
+        array to store rotation matrix. Must be flat
+    weights : ndarray, npfloat64_t (optional)
+        weights for each component
+
+    Returns
+    -------
+    rmsd : float
+        RMSD value
+
+    .. versionchanged:: 0.16.0
+       Array size changed from 3xN to Nx3.
+    """
+    cdef double E0
+    cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,dtype = np.float64)
+
+    E0 = InnerProduct(A,conf,ref,N,weights)
+    return FastCalcRMSDAndRotation(rot,A,E0,N)
+
 def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
                             np.ndarray[np.float64_t,ndim=1] A,
                             double E0, int N):
@@ -261,6 +302,10 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
     -------
     rmsd : float
         RMSD value for two structures
+
+
+    .. versionchanged:: 0.16.0
+       Array sized changed from 3xN to Nx3.
     """
     cdef double rmsd
     cdef double Sxx, Sxy, Sxz, Syx, Syy, Syz, Szx, Szy, Szz
@@ -450,34 +495,3 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
 
     return rms
 
-def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
-                             np.ndarray[np.float64_t,ndim=2] conf,
-                             int N,
-                             np.ndarray[np.float64_t,ndim=1] rot,
-                             np.ndarray[np.float64_t,ndim=1] weights):
-    """
-    Calculate the RMSD & rotational matrix.
-
-    Parameters
-    ----------
-    ref : ndarray, np.float64_t
-        reference structure coordinates
-    conf : ndarray, np.float64_t
-        condidate structure coordinates
-    N : int
-        size of the system
-    rot : ndarray, np.float64_t
-        array to store rotation matrix. Must be flat
-    weights : ndarray, npfloat64_t (optional)
-        weights for each component
-
-    Returns
-    -------
-    rmsd : float
-        RMSD value
-    """
-    cdef double E0
-    cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
-
-    E0 = InnerProduct(A,conf,ref,N,weights)
-    return FastCalcRMSDAndRotation(rot,A,E0,N)

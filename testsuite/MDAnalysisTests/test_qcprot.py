@@ -46,8 +46,8 @@ def rmsd(a, b):
 
 def test_CalcRMSDRotationalMatrix():
     # Setup coordinates
-    frag_a = np.zeros((3, 7), dtype=np.float64)
-    frag_b = np.zeros((3, 7), dtype=np.float64)
+    frag_a = np.zeros((3, 7), dtype=np.float32)
+    frag_b = np.zeros((3, 7), dtype=np.float32)
     N = 7
 
     frag_a[0][0] = -2.803
@@ -106,7 +106,7 @@ def test_CalcRMSDRotationalMatrix():
     frag_b = frag_b - comB.reshape(3, 1)
 
     # Calculate rmsd and rotation matrix
-    qcp_rmsd = qcp.CalcRMSDRotationalMatrix(frag_a, frag_b, N, rot, None)
+    qcp_rmsd = qcp.CalcRMSDRotationalMatrix(frag_a.T, frag_b.T, N, rot, None)
 
     #print 'qcp rmsd = ',rmsd
     #print 'rotation matrix:'
