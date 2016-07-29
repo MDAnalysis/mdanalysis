@@ -438,7 +438,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 
    /* Stop = -1 is incorrect and causes an error, look for a fix of this in line
    469 */
-   int start = 0, stop = -1, skip = 1, numskip = 0, remaining_frames=0;
+   int start = 0, stop = -1, step = 1, numskip = 0, remaining_frames=0;
    dcdhandle *dcd = NULL;
    int *atomlist = NULL;
    npy_intp dimensions[3];
@@ -448,12 +448,12 @@ __read_timeseries(PyObject *self, PyObject *args)
    if (!self) {
       /* we were in fact called as a module function, try to retrieve
       a matching object from args */
-      if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &skip, &format) )
+      if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &step, &format) )
       return NULL;
    } else {
       /* we were obviously called as an object method so args should
       only have the int value. */
-      if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &skip, &format) )
+      if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &step, &format) )
       return NULL;
    }
 
@@ -472,9 +472,13 @@ __read_timeseries(PyObject *self, PyObject *args)
    if (stop == -1) { stop = dcd->nsets -1; }
 =======
    if (stop == dcd->nsets) { stop = dcd->nsets -1; }
+<<<<<<< HEAD
 >>>>>>> Change to ++
    n_frames = ((stop-start) / skip)+1;
 
+=======
+   n_frames = ((stop-start) / step)+1;
+>>>>>>> Fixed silly correl bug
    //n_frames = dcd->nsets / skip;
    n_atoms = PyList_Size((PyObject*)atoms);
    if (n_atoms == 0) {
@@ -541,9 +545,9 @@ __read_timeseries(PyObject *self, PyObject *args)
    /*Should actually be number of frames, not true yet*/
    remaining_frames = stop-start;
    for (i=0;i<n_frames;i++) {
-      if (skip > 1 && i>0) {
+      if (step > 1 && i>0) {
          // Figure out how many steps to skip
-         numskip = skip -1;
+         numskip = step -1;
          if(remaining_frames < numskip){
             numskip = 1;
          }
