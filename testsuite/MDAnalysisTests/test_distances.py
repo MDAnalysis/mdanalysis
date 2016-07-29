@@ -715,3 +715,5 @@ class TestDistanceBackendSelection(object):
                                       backend="not_implemented_stuff")
 
 
+def test_used_openmpflag():
+    assert_(isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool))
