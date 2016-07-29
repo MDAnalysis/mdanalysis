@@ -556,6 +556,7 @@ class DCDReader(base.Reader):
                           "in 1.0. Use step instead.",
                           category=DeprecationWarning)
 
+        start, stop, step = self.check_slice_indices(start, stop, step)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
         lowerb, upperb = timeseries._getBounds()
