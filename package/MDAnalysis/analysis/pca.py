@@ -229,24 +229,6 @@ class PCA(AnalysisBase):
 
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel()
-            dot[i] = np.dot(xyz, self.p_components[:n_components].T)
+            dot[i] = np.dot(xyz, self.p_components[:, :n_components])
 
         return dot
-
-    def inverse_transform(self, pca_space):
-        """ Transform PCA-transformed data back to original configuration space.
-
-        Parameters
-        ----------
-        pca_space : array
-            The space corresponding to the trajectory coordinates after the PCA
-            transformation. Assumes current principal components were the
-            components projected onto to create the pca_space.
-
-        Returns
-        -------
-        original_traj : array, shape (number of frames, number of atoms*3)
-        """
-        inv = np.linalg.pinv(self.p_components[:pca_space.shape[1]])
-        original = np.dot(pca_space, inv.T)
-        return original

@@ -46,6 +46,9 @@ class TestPCA(object):
 
     def test_transform(self):
         self.ag = self.u.select_atoms('backbone and name CA')
-        pca_space = self.pca.transform(self.ag, n_components=1)
-        assert_equal(pca_space.shape,
+        self.pca_space = self.pca.transform(self.ag, n_components=1)
+        assert_equal(self.pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
+
+    # TODO test different inputs
+    # TODO test cosine content
