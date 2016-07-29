@@ -73,7 +73,7 @@ import errno
 import numpy as np
 import struct
 import types
-from numpy.lib.utils import deprecate
+import warnings
 
 from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
@@ -84,6 +84,7 @@ from . import core
 from . import _dcdmodule
 # dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
 from . import dcdtimeseries
+
 
 
 class Timestep(base.Timestep):
@@ -499,7 +500,6 @@ class DCDReader(base.Reader):
         ts.frame = frame
         return ts
 
-
     def timeseries(self, asel, start=None, stop=None, step=None, skip=None,
                    format='afc'):
         """Return a subset of coordinate data for an AtomGroup
@@ -522,9 +522,10 @@ class DCDReader(base.Reader):
         """
         if skip is not None:
             step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
 
-            @deprecate(new_name="step",
-                       message="This parameter will be removed in 0.17")
         start, stop, step = self.check_slice_indices(start, stop, step)
         if len(asel) == 0:
             raise NoDataError("Timeseries requires at least one atom to analyze")
@@ -551,10 +552,10 @@ class DCDReader(base.Reader):
         """
         if skip is not None:
             step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
 
-            @deprecate(new_name="step",
-                       message="This parameter will be removed in 0.17")
-        start, stop, step = self.check_slice_indices(start, stop, step)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
         lowerb, upperb = timeseries._getBounds()
