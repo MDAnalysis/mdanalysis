@@ -55,7 +55,17 @@ class TestDCDReaderClass(TestCase):
             err_msg="with_statement: DCDReader does not read all frames")
 
 
-class TestDCDReader(_TestDCD):
+class TestDCDReader(object):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        self.dcd = self.universe.trajectory
+        self.ts = self.universe.coord
+
+    def tearDown(self):
+        del self.universe
+        del self.dcd
+        del self.ts
+
     def test_rewind_dcd(self):
         self.dcd.rewind()
         assert_equal(self.ts.frame, 0, "rewinding to frame 0")
@@ -154,7 +164,12 @@ class TestDCDReader(_TestDCD):
         ts = self.u.trajectory.timeseries(self.u.atoms)
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
-
+    
+    def test_slice_generation_test(self):
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, 0, 4, 4)
+        assert_array_almost_equal(ts[:, 0:4:4,:], ts_skip, 5)
 
 def test_DCDReader_set_dt(dt=100., frame=3):
     u = mda.Universe(PSF, DCD, dt=dt)

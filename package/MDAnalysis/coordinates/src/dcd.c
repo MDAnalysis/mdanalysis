@@ -466,19 +466,10 @@ __read_timeseries(PyObject *self, PyObject *args)
    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
    Py_DECREF(temp);
 
-   // Assume that start and stop are valid
-<<<<<<< HEAD
 
-   if (stop == -1) { stop = dcd->nsets -1; }
-=======
    if (stop == dcd->nsets) { stop = dcd->nsets -1; }
-<<<<<<< HEAD
->>>>>>> Change to ++
-   n_frames = ((stop-start) / skip)+1;
-
-=======
-   n_frames = ((stop-start) / step)+1;
->>>>>>> Fixed silly correl bug
+   n_frames = ((stop-start) / step)+ 1;
+   if ((stop-start) == step) { n_frames = 1;}
    //n_frames = dcd->nsets / skip;
    n_atoms = PyList_Size((PyObject*)atoms);
    if (n_atoms == 0) {
