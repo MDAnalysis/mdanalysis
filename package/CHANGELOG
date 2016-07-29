@@ -24,6 +24,8 @@ Enhancements
   with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the
   class itself.
+  * Added boolean flag at lib.distances.USED_OPENMP to reveal if
+    OpenMP was used in compilation (Issue #883)
 
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
