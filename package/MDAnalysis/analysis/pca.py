@@ -152,13 +152,11 @@ class PCA(AnalysisBase):
                                   **kwargs)
         self._u = atomgroup.universe
         # for transform function
-        if demean:
-            self._demean = demean
-            self._u.trajectory[0]
-            self._reference = self._u.atoms.select_atoms(select)
-        else:
-            self._demean = demean
-
+        self._demean = demean
+        # access 0th index
+        self._u.trajectory[0]
+        # reference will be 0th index
+        self._reference = self._u.atoms.select_atoms(select)
         self._atoms = atomgroup.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
@@ -235,7 +233,7 @@ class PCA(AnalysisBase):
 
         return dot
 
-    def inverse_tranform(self, pca_space):
+    def inverse_transform(self, pca_space):
         """ Transform PCA-transformed data back to original configuration space.
 
         Parameters
@@ -249,5 +247,6 @@ class PCA(AnalysisBase):
         -------
         original_traj : array, shape (number of frames, number of atoms*3)
         """
-        inv = np.linalg.inv(self.p_components)
-        return np.dot(pca_space, inv)
+        inv = np.linalg.pinv(self.p_components[:pca_space.shape[1]])
+        original = np.dot(pca_space, inv.T)
+        return original
