@@ -151,9 +151,9 @@ class TestDCDReader(object):
         # check that slicing behaves correctly
         # should fail before issue #914 resolved
         x = []
-        for i in range(10):
-            for j in range(i+1, 11):
-                for k in range(j, 11):
+        for i in range(5):
+            for j in range(i+1, 6):
+                for k in range(j, 6):
                     tuples = (i, j, k)
                     x.append(tuples)
         for start, stop, step in x:
@@ -165,11 +165,6 @@ class TestDCDReader(object):
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
     
-    def test_slice_generation_test(self):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, 0, 4, 4)
-        assert_array_almost_equal(ts[:, 0:4:4,:], ts_skip, 5)
 
 def test_DCDReader_set_dt(dt=100., frame=3):
     u = mda.Universe(PSF, DCD, dt=dt)
