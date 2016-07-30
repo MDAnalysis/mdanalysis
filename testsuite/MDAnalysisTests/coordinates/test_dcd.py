@@ -23,18 +23,6 @@ def TestDCD_Issue32():
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 
-class _TestDCD(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
-        self.ts = self.universe.coord
-
-    def tearDown(self):
-        del self.universe
-        del self.dcd
-        del self.ts
-
-
 class TestDCDReaderClass(TestCase):
     def test_with_statement(self):
         from MDAnalysis.coordinates.DCD import DCDReader
@@ -150,12 +138,8 @@ class TestDCDReader(object):
     def test_timeseries_slicing(self):
         # check that slicing behaves correctly
         # should fail before issue #914 resolved
-        x = []
-        for i in range(5):
-            for j in range(i+1, 6):
-                for k in range(j, 6):
-                    tuples = (i, j, k)
-                    x.append(tuples)
+        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
+             (0, 5, 5), (3, 5, 1)]
         for start, stop, step in x:
             yield self._slice_generation_test, start, stop, step
 
@@ -164,7 +148,7 @@ class TestDCDReader(object):
         ts = self.u.trajectory.timeseries(self.u.atoms)
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
-    
+
 
 def test_DCDReader_set_dt(dt=100., frame=3):
     u = mda.Universe(PSF, DCD, dt=dt)
@@ -445,7 +429,7 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.frame))
 
 
-class TestDCDCorrel(_TestDCD):
+class TestDCDCorrel(TestCase):
     def setUp(self):
         # Note: setUp is executed for *every* test !
         super(TestDCDCorrel, self).setUp()
