@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -52,6 +52,7 @@ Timeseries of observables
 .. autoclass:: WaterDipole
 
 """
+import warnings
 
 from . import AtomGroup
 
@@ -104,16 +105,30 @@ class TimeseriesCollection(object):
         '''clear the timeseries collection'''
         self.timeseries = []
 
-    def compute(self, trj, start=0, stop=-1, skip=1):
+    def compute(self, trj, start=None, stop=None, skip=None, step=None):
         '''Iterate through the trajectory *trj* and compute the time series.
 
          *trj*
             dcd trajectory object (i.e. :attr:`Universe.trajectory`)
+         *start*
+            First frame of trajectory to analyse, Default: None becomes 0.
+         *stop*
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
+         *step*
+            Step between frames to analyse, Default: None becomes 1.
+         *Deprecated*
+            Skip is deprecated in favor of step.
 
-         *start, stop, skip*
-            Frames to calculate parts of the trajectory. It is important to
-            note that *start* and *stop* are inclusive
         '''
+        if skip is not None:
+            step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
+
+        start, stop, step = trj.check_slice_indices(start, stop, skip)
         self.data = trj.correl(self, start, stop, skip)
         # Now remap the timeseries data to each timeseries
         typestr = "|f8"

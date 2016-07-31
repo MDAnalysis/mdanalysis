@@ -59,7 +59,7 @@ cdef extern from "correl.h":
 
 import numpy as np
 
-def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int skip):
+def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int step):
     cdef dcdhandle* dcd
     cdef numpy.ndarray atomlist, atomcountslist, auxlist
     cdef numpy.ndarray data, temp
@@ -69,8 +69,10 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
 
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
     cdef int n_frames
-    if (stop == -1): stop = dcd.nsets
-    n_frames = (stop-start+1) / skip
+
+    if stop == dcd.nsets: stop -= 1;
+    n_frames = ((stop-start) / step) + 1;
+    if (stop-start) % step == 0: n_frames -= 1;
     cdef int numdata
     numdata = len(format)
     if numdata==0:
@@ -109,18 +111,25 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef int index, numskip
     cdef int i, j
     cdef float unitcell[6]
+    cdef int remaining_frames = stop-start
+    numskip = 0
+    print n_frames
     for i from 0 <= i < n_frames:
-        if (skip > 1):
+        if (step > 1 and i > 0):
             # Check if we have fixed atoms
             # XXX not done
-            numskip = skip - (dcd.setsread % skip) - 1
+            numskip = step - 1
+            if(remaining_frames < numskip):
+               numskip = 1
+
             rc = skip_dcdstep(dcd.fd, dcd.natoms, dcd.nfixed, dcd.charmm, numskip)
             if (rc < 0):
                 raise IOError("Error skipping frame from DCD file")
-            dcd.setsread = dcd.setsread + numskip
+        dcd.setsread = dcd.setsread + numskip
         rc = read_dcdsubset(dcd.fd, dcd.natoms, lowerb, upperb, tempX, tempY, tempZ, unitcell, dcd.nfixed, dcd.first, dcd.freeind, dcd.fixedcoords, dcd.reverse, dcd.charmm)
-        dcd.first=0
-        dcd.setsread = dcd.setsread + 1
+        dcd.first = 0
+        dcd.setsread += 1
+        remaining_frames = stop - dcd.setsread
         if (rc < 0):
             raise IOError("Error reading frame from DCD file")
         # Copy into data array based on format
