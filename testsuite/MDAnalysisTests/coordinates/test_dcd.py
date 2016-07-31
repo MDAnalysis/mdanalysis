@@ -432,9 +432,10 @@ class TestNCDF2DCD(TestCase):
 class TestDCDCorrel(TestCase):
     def setUp(self):
         # Note: setUp is executed for *every* test !
-        super(TestDCDCorrel, self).setUp()
         import MDAnalysis.core.Timeseries as TS
-
+        self.universe = mda.Universe(PSF, DCD)
+        self.dcd = self.universe.trajectory
+        self.ts = self.universe.coord
         self.collection = TS.TimeseriesCollection()
         C = self.collection
         all = self.universe.atoms
@@ -458,7 +459,9 @@ class TestDCDCorrel(TestCase):
 
     def tearDown(self):
         del self.collection
-        super(TestDCDCorrel, self).tearDown()
+        del self.universe
+        del self.dcd
+        del self.ts
 
     def test_correl(self):
         assert_equal(len(self.collection), 10, "Correl: len(collection)")
