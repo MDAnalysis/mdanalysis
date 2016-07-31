@@ -128,8 +128,8 @@ class TimeseriesCollection(object):
                           "in 1.0. Use step instead.",
                           category=DeprecationWarning)
 
-        start, stop, step = trj.check_slice_indices(start, stop, skip)
-        self.data = trj.correl(self, start, stop, skip)
+        start, stop, step = trj.check_slice_indices(start, stop, step)
+        self.data = trj.correl(self, start, stop, step)
         # Now remap the timeseries data to each timeseries
         typestr = "|f8"
         start = 0
