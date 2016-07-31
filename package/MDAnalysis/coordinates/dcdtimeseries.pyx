@@ -70,9 +70,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
     cdef int n_frames
 
-    if stop == dcd.nsets: stop -= 1;
-    n_frames = ((stop-start) / step) + 1;
-    if (stop-start) % step == 0: n_frames -= 1;
+    n_frames = ((stop-start) / step);
+    if (stop-start) % step > 0 : n_frames += 1;
     cdef int numdata
     numdata = len(format)
     if numdata==0:
@@ -113,7 +112,6 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef float unitcell[6]
     cdef int remaining_frames = stop-start
     numskip = 0
-    print n_frames
     for i from 0 <= i < n_frames:
         if (step > 1 and i > 0):
             # Check if we have fixed atoms
