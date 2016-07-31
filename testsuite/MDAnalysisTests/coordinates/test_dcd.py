@@ -536,6 +536,8 @@ class TestDCDCorrel(TestCase):
     def test_Atom_slicing(self):
         assert_equal(self.collection_slicing[0].shape, (2, 3, 10),
                      "Correl: Atom positions")
+        assert_array_almost_equal(self.collection[0][:, :, ::10],
+                                  self.collection_slicing[0])
 
 # notes:
 def compute_correl_references():
