@@ -531,12 +531,17 @@ __read_timeseries(PyObject *self, PyObject *args)
       goto error;
    }
 
-   /*Should actually be number of frames, not true yet*/
    remaining_frames = stop-start;
    for (i=0;i<n_frames;i++) {
       if (step > 1 && i>0) {
-         // Figure out how many steps to skip
+         /* Figure out how many steps to step over, if step = n, np array
+            slicing treats this as skip over n-1, read the nth. */
          numskip = step -1;
+         /* If the number to skip is greater than the number of frames left
+            to be jumped over, just take one more step to reflect np slicing
+            if there is a remainder, guaranteed to have at least one more
+            frame.
+         */
          if(remaining_frames < numskip){
             numskip = 1;
          }
@@ -547,6 +552,7 @@ __read_timeseries(PyObject *self, PyObject *args)
             goto error;
          }
       }
+      // on first iteration, numskip == 0, first set is always read.
       dcd->setsread += numskip;
       //now read from subset
       rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
