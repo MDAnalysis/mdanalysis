@@ -115,15 +115,21 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     for i from 0 <= i < n_frames:
         if (step > 1 and i > 0):
             # Check if we have fixed atoms
-            # XXX not done
+            # Figure out how many steps to step over, if step = n, np array
+            # slicing treats this as skip over n-1, read the nth.
             numskip = step - 1
+            # If the number to skip is greater than the number of frames left
+            # to be jumped over, just take one more step to reflect np slicing
+            # if there is a remainder, guaranteed to have at least one more
+            # frame.
             if(remaining_frames < numskip):
                numskip = 1
 
             rc = skip_dcdstep(dcd.fd, dcd.natoms, dcd.nfixed, dcd.charmm, numskip)
             if (rc < 0):
                 raise IOError("Error skipping frame from DCD file")
-        dcd.setsread = dcd.setsread + numskip
+        # on first iteration, numskip = 0, first set is always read.
+        dcd.setsread += numskip
         rc = read_dcdsubset(dcd.fd, dcd.natoms, lowerb, upperb, tempX, tempY, tempZ, unitcell, dcd.nfixed, dcd.first, dcd.freeind, dcd.fixedcoords, dcd.reverse, dcd.charmm)
         dcd.first = 0
         dcd.setsread += 1
