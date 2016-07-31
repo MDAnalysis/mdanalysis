@@ -437,7 +437,9 @@ class TestDCDCorrel(TestCase):
         self.dcd = self.universe.trajectory
         self.ts = self.universe.coord
         self.collection = TS.TimeseriesCollection()
+        self.collection_slicing = TS.TimeseriesCollection()
         C = self.collection
+        C_step = self.collection_slicing
         all = self.universe.atoms
         ca = self.universe.s4AKE.CA
         ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
@@ -454,11 +456,16 @@ class TestDCDCorrel(TestCase):
         C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
         C.addTimeseries(TS.CenterOfMass(all))  # 8
         C.addTimeseries(TS.CenterOfGeometry(all))  # 9
+
+        C_step.addTimeseries(TS.Atom('v', ca_termini))
+
         # cannot test WaterDipole because there's no water in the test dcd
         C.compute(self.dcd)
+        C_step.compute(self.dcd, step=10)
 
     def tearDown(self):
         del self.collection
+        del self.collection_slicing
         del self.universe
         del self.dcd
         del self.ts
@@ -526,6 +533,9 @@ class TestDCDCorrel(TestCase):
         C.clear()
         assert_equal(len(C), 0, "Correl: clear()")
 
+    def test_Atom_slicing(self):
+        assert_equal(self.collection_slicing[0].shape, (2, 3, 10),
+                     "Correl: Atom positions")
 
 # notes:
 def compute_correl_references():
