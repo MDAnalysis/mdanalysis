@@ -467,8 +467,8 @@ __read_timeseries(PyObject *self, PyObject *args)
    Py_DECREF(temp);
 
 
-   if (stop == dcd->nsets) { stop = dcd->nsets -1; }
-   n_frames = ((stop-start) / step)+ 1;
+   if (stop == dcd->nsets) { stop = dcd->nsets - 1; }
+   n_frames = ((stop-start) / step) + 1;
    if ((stop-start) % step == 0) { n_frames--;}
    //n_frames = dcd->nsets / skip;
    n_atoms = PyList_Size((PyObject*)atoms);
