@@ -534,6 +534,8 @@ __read_timeseries(PyObject *self, PyObject *args)
    remaining_frames = stop-start;
    for (i=0;i<n_frames;i++) {
       if (step > 1 && i>0) {
+         // Check if we have fixed atoms
+-        // XXX not done
          /* Figure out how many steps to step over, if step = n, np array
             slicing treats this as skip over n-1, read the nth. */
          numskip = step -1;
