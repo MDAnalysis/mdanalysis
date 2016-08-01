@@ -15,9 +15,9 @@
 #
 import six
 from six.moves import zip, range
-from MDAnalysisTests.datafiles import TRZ, TRZ_psf
-from MDAnalysisTests import module_not_found
-from numpy.testing import assert_array_almost_equal, assert_raises, assert_, dec
+from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
+from MDAnalysisTests import module_not_found, tempdir
+from numpy.testing import assert_, assert_array_almost_equal, assert_raises, assert_, dec
 import numpy as np
 
 import MDAnalysis as mda
@@ -27,9 +27,9 @@ from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 class TestHydrogenBondAutocorrel(object):
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
-        self.H = u.atoms.Hn
-        self.N = u.atoms.N
-        self.O = u.atoms.O
+        self.H = u.atoms.select_atoms('name Hn')
+        self.N = u.atoms.select_atoms('name N')
+        self.O = u.atoms.select_atoms('name O')
         self.excl_list = (np.array(range(len(self.H))),
                           np.array(range(len(self.O))))
 
@@ -38,6 +38,7 @@ class TestHydrogenBondAutocorrel(object):
         del self.N
         del self.O
         del self.u
+        del self.excl_list
 
     # regression tests for different conditions
     def test_continuous(self):
@@ -94,6 +95,24 @@ class TestHydrogenBondAutocorrel(object):
                      dtype=np.float32)
         )
 
+
+    def test_intermittent_timecut(self):
+        hbond = HBAC(self.u,
+                     hydrogens=self.H,
+                     acceptors=self.O,
+                     donors=self.N,
+                     bond_type='intermittent',
+                     time_cut=0.01,  # time cut at traj.dt == continuous
+                     sample_time=0.06,
+        )
+        hbond.run()
+
+        assert_array_almost_equal(
+            hbond.solution['results'],
+            np.array([ 1.        ,  0.92668623,  0.83137828,
+                       0.74486804,  0.67741936,  0.60263932],
+                     dtype=np.float32)
+        )
 
     def test_intermittent_excl(self):
         hbond = HBAC(self.u,
@@ -169,6 +188,23 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
+    def test_save(self):
+        hbond = HBAC(self.u,
+                     hydrogens=self.H,
+                     acceptors=self.O,
+                     donors=self.N,
+                     bond_type='continuous',
+                     sample_time=0.06,
+        )
+        hbond.run()
+
+        with tempdir.in_tempdir():
+            hbond.save_results('hbondout.npz')
+
+            loaded = np.load('hbondout.npz')
+            assert_('time' in loaded)
+            assert_('results' in loaded)
+
     # setup errors
     def test_wronglength_DA(self):
         assert_raises(ValueError,
@@ -214,6 +250,30 @@ class TestHydrogenBondAutocorrel(object):
                      sample_time=0.06,
         )
         assert_raises(ValueError, hbond.solve)
+
+    def test_unslicable_traj_VE(self):
+        u = mda.Universe(PRM, TRJ)
+        H = u.atoms[:10]
+        O = u.atoms[10:20]
+        N = u.atoms[20:30]
+        assert_raises(ValueError, HBAC,
+                      u,
+                      hydrogens=H,
+                      acceptors=O,
+                      donors=N,
+                      bond_type='continuous',
+                      sample_time=0.06
+        )
+
+    def test_save_without_run_VE(self):
+        hbond = HBAC(self.u,
+                     hydrogens=self.H,
+                     acceptors=self.O,
+                     donors=self.N,
+                     bond_type='continuous',
+                     sample_time=0.06,
+        )
+        assert_raises(ValueError, hbond.save_results)
 
     def test_repr(self):
         hbond = HBAC(self.u,
