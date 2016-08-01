@@ -17,6 +17,8 @@ from __future__ import print_function
 import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
+from MDAnalysis.analysis.align import _fit_to
+
 from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal,raises)
 
@@ -31,6 +33,24 @@ class TestPCA(object):
                 demean=True)
         self.pca.run()
         self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
+
+    def test_cov(self):
+        atoms = self.u.select_atoms('backbone and name CA')
+        reference = atoms.positions
+        reference -= atoms.center_of_geometry()
+        ref_cog = atoms.center_of_geometry()
+        xyz = np.zeros((10, 642))
+        for i, ts in enumerate(self.u.trajectory):
+            mobile_cog = atoms.center_of_geometry()
+            mobile_atoms, old_rmsd = _fit_to(atoms.positions,
+                                             reference,
+                                             atoms,
+                                             mobile_com=mobile_cog,
+                                             ref_com=ref_cog)
+            xyz[i] = mobile_atoms.positions.ravel()
+
+        cov = np.cov(xyz, rowvar=0)
+        assert_array_almost_equal(self.pca.cov, cov, 5)
 
     def test_cum_var(self):
         assert_almost_equal(self.pca.cumulated_variance[-1], 1)
