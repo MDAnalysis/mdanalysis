@@ -13,10 +13,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import six
 from six.moves import zip, range
 from MDAnalysisTests.datafiles import TRZ, TRZ_psf
 from MDAnalysisTests import module_not_found
-from numpy.testing import assert_array_almost_equal, assert_raises, dec
+from numpy.testing import assert_array_almost_equal, assert_raises, assert_, dec
 import numpy as np
 
 import MDAnalysis as mda
@@ -112,6 +113,8 @@ class TestHydrogenBondAutocorrel(object):
                      dtype=np.float32)
         )
 
+    # For `solve` the test trajectories aren't long enough
+    # So spoof the results and check that solver finds solution
     @dec.skipif(module_not_found('scipy'))
     def test_solve_continuous(self):
         hbond = HBAC(self.u,
@@ -121,12 +124,21 @@ class TestHydrogenBondAutocorrel(object):
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        hbond.run()
+
+        def actual_function_cont(t):
+            A1 = 0.75
+            A2 = 0.25
+            tau1 = 0.5
+            tau2 = 0.1
+            return A1 * np.exp(-t/tau1) + A2 * np.exp(-t/tau2)
+        hbond.solution['time'] = time = np.arange(0, 0.06, 0.001)
+        hbond.solution['results'] = actual_function_cont(time)
+
         hbond.solve()
 
         assert_array_almost_equal(
             hbond.solution['fit'],
-            np.array([ 0.52727374,  0.10231721,  0.10231605])
+            np.array([0.75, 0.5, 0.1]),
         )
 
     @dec.skipif(module_not_found('scipy'))
@@ -138,13 +150,23 @@ class TestHydrogenBondAutocorrel(object):
                      bond_type='intermittent',
                      sample_time=0.06,
         )
-        hbond.run()
+
+        def actual_function_int(t):
+            A1 = 0.33
+            A2 = 0.33
+            A3 = 0.34
+            tau1 = 5
+            tau2 = 1
+            tau3 = 0.1
+            return A1 * np.exp(-t/tau1) + A2 * np.exp(-t/tau2) + A3 * np.exp(-t/tau3)
+        hbond.solution['time'] = time = np.arange(0, 6.0, 0.01)
+        hbond.solution['results'] = actual_function_int(time)
+
         hbond.solve()
 
         assert_array_almost_equal(
             hbond.solution['fit'],
-            np.array([  6.13695140e-01,   3.30614269e-06,   5.90645176e+00,
-                        2.00072251e-01,   4.15492813e-02])
+            np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
     # setup errors
@@ -192,3 +214,13 @@ class TestHydrogenBondAutocorrel(object):
                      sample_time=0.06,
         )
         assert_raises(ValueError, hbond.solve)
+
+    def test_repr(self):
+        hbond = HBAC(self.u,
+                     hydrogens=self.H,
+                     acceptors=self.O,
+                     donors=self.N,
+                     bond_type='continuous',
+                     sample_time=0.06,
+        )
+        assert_(isinstance(repr(hbond), six.string_types))
