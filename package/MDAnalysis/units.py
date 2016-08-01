@@ -250,6 +250,10 @@ speedUnit_factor = {
     'Angstrom/ps': 1.0, 'A/ps': 1.0, '\u212b/ps': 1.0,
     'Angstrom/picosecond': 1.0,
     'angstrom/picosecond': 1.0,  # 1
+    'Angstrom/fs': 1.0 * 1e3,
+    'Angstrom/femtosecond': 1.0 * 1e3,
+    'angstrom/femtosecond': 1.0 * 1e3,
+    'angstrom/fs': 1.0 * 1e3,
     'Angstrom/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
     'nm/ns': 0.1 / 1e-3,

@@ -33,6 +33,9 @@ class LammpsBase(ParserBase):
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges']
 
+    def test_n_atom_types(self):
+        assert_equal(len(set(self.top.types.values)), self.expected_n_atom_types)
+
     def test_n_bonds(self):
         if self.ref_n_bonds:
             assert_equal(len(self.top.bonds.values),
@@ -88,8 +91,9 @@ class TestLammpsData(LammpsBase):
     test_coordinates
     """
     filename = LAMMPSdata
-    expected_n_atoms = 18360
-    expected_n_residues = 24
+    expected_n_atoms = 18364
+    expected_n_atom_types = 10
+    expected_n_residues = 25
     ref_n_bonds = 18336
     ref_bond = (12, 14)
     ref_n_angles = 29904
@@ -102,6 +106,7 @@ class TestLammpsData(LammpsBase):
 class TestLAMMPSCNT(LammpsBase):
     filename = LAMMPScnt
     expected_n_atoms = 604
+    expected_n_atom_types = 1
     expected_n_residues = 1
     ref_n_bonds = 906
     ref_bond = (9, 467)
@@ -120,6 +125,7 @@ class TestLAMMPSCNT2(TestLAMMPSCNT):
 class TestLAMMPSHYD(LammpsBase):
     filename = LAMMPShyd
     expected_n_atoms = 2
+    expected_n_atom_types = 1
     expected_n_residues = 1
     ref_n_bonds = 1
     ref_bond = (0, 1)
