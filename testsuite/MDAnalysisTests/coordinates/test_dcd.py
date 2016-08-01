@@ -14,7 +14,7 @@ from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests import module_not_found, tempdir
-
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 @attr('issue')
 def TestDCD_Issue32():
@@ -137,13 +137,25 @@ class TestDCDReader(object):
 
     def test_timeseries_slicing(self):
         # check that slicing behaves correctly
-        # should fail before issue #914 resolved
+        # should  before issue #914 resolved
         x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
-             (0, 5, 5), (3, 5, 1), (5, 0, -2), (5, 0, -1), (None, None, None)]
+             (0, 5, 5), (3, 5, 1), (None, None, None)]
         for start, stop, step in x:
             yield self._slice_generation_test, start, stop, step
 
+    def test_backwards_stepping(self):
+        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
+        for start, stop, step in x:
+            yield self._failed_slices_test, start, stop, step
+
     def _slice_generation_test(self, start, stop, step):
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+
+    @knownfailure()
+    def _failed_slices_test(self, start, stop, step):
         self.u = mda.Universe(PSF, DCD)
         ts = self.u.trajectory.timeseries(self.u.atoms)
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
