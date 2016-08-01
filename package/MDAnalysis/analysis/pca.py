@@ -168,14 +168,17 @@ class PCA(AnalysisBase):
         if self._demean:
             self._ref_atoms = self._reference
             self._ref_cog = self._ref_atoms.center_of_geometry()
+            self._ref_atoms.positions -= self._ref_cog
 
     def _single_frame(self):
         if self._demean:
             # TODO make this more functional, initial proof of concept
+            mobile_cog = self._atoms.center_of_geometry()
             mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
                                              self._ref_atoms.positions,
-                                             self._atoms, self._ref_cog,
-                                             self._atoms.center_of_geometry())
+                                             self._atoms,
+                                             mobile_com=mobile_cog,
+                                             ref_com=self._ref_cog)
             # now all structures are aligned to reference
             x = mobile_atoms.positions.ravel()
         else:
