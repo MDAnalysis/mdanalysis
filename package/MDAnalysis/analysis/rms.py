@@ -177,6 +177,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
        *superposition* keyword added
 
     """
+    
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
@@ -189,6 +190,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
             raise ValueError('weights must have same length as a/b')
         # weights are constructed as relative to the mean
         relative_weights = np.asarray(weights) / np.mean(weights)
+        relative_weights = relative_weights.astype(np.float64)
     else:
         relative_weights = None
 
@@ -200,7 +202,9 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         b = b - np.average(b, axis=0, weights=weights)
 
     if superposition:
-        return qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, None,
+        if relative_weights is not None:
+            relative_weights = relative_weights.astype(np.float64)
+        return qcp.CalcRMSDRotationalMatrix(a, b, N, None,
                                             relative_weights)
     else:
         if weights is not None:
@@ -424,6 +428,7 @@ class RMSD(object):
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
             weight = self.ref_atoms.masses / self.ref_atoms.masses.mean()
+            weight = weight.astype(np.float64)
         else:
             weight = None
 
@@ -438,13 +443,13 @@ class RMSD(object):
             # makes a copy
             ref_coordinates = self.ref_atoms.positions - ref_com
             if self.groupselections_atoms:
-                groupselections_ref_coords_T_64 = [
-                    self.reference.select_atoms(*s['reference']).positions.T.astype(np.float64) for s in
+                groupselections_ref_coords_64 = [
+                    self.reference.select_atoms(*s['reference']).positions.astype(np.float64) for s in
                     self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
-        ref_coordinates_T_64 = ref_coordinates.T.astype(np.float64)
+        ref_coordinates_64 = ref_coordinates.astype(np.float64)
 
         # allocate the array for selection atom coords
         traj_coordinates = traj_atoms.positions.copy()
@@ -471,7 +476,7 @@ class RMSD(object):
         for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
-            x_com = traj_atoms.center_of_mass().astype(np.float32)
+            x_com = traj_atoms.center_of_mass().astype(np.float64)
             traj_coordinates[:] = traj_atoms.positions - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time
@@ -484,8 +489,8 @@ class RMSD(object):
                 # that R acts **to the left** and can be broadcasted; we're
                 # saving one transpose. [orbeckst])
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_T_64,
-                    traj_coordinates.T.astype(np.float64), natoms, rot, weight)
+                    ref_coordinates_64,
+                    traj_coordinates.astype(np.float64), natoms, rot, weight)
                 R[:, :] = rot.reshape(3, 3)
 
                 # Transform each atom in the trajectory (use inplace ops to
@@ -498,18 +503,17 @@ class RMSD(object):
 
                 # 2) calculate secondary RMSDs
                 for igroup, (refpos, atoms) in enumerate(
-                        zip(groupselections_ref_coords_T_64,
+                        zip(groupselections_ref_coords_64,
                             self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(
-                        refpos, atoms['mobile'].positions.T.astype(np.float64),
+                        refpos, atoms['mobile'].positions.astype(np.float64),
                         atoms['mobile'].n_atoms, None, weight)
             else:
                 # only calculate RMSD by setting the Rmatrix to None (no need
                 # to carry out the rotation as we already get the optimum RMSD)
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_T_64,
-                    traj_coordinates.T.astype(np.float64),
-                    natoms, None, weight)
+                    ref_coordinates_64.astype(np.float64),
+                    traj_coordinates.astype(np.float64), natoms, None, weight)
 
             percentage.echo(ts.frame, rmsd=rmsd[k, 2])
         self.rmsd = rmsd

@@ -99,7 +99,7 @@ be found at http://theobald.brandeis.edu/qcp/
 
 .. versionchanged:: 0.16.0
    Call signatures were changed to directly interface with MDAnalysis
-   coordinate arrays: shape (N, 3) and dtype numpy.float64.
+   coordinate arrays: shape (N, 3)
 
 References
 ----------
@@ -180,7 +180,6 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     .. versionchanged:: 0.16.0
        Array size changed from 3xN to Nx3.
-
     """
 
     cdef double          x1, x2, y1, y2, z1, z2

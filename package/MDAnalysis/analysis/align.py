@@ -261,7 +261,7 @@ def rotation_matrix(a, b, weights=None):
     # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
     # so that R acts **to the left** and can be broadcasted; we're saving
     # one transpose. [orbeckst])
-    rmsd = qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, rot, weights)
+    rmsd = qcp.CalcRMSDRotationalMatrix(a, b, N, rot, weights)
     return np.matrix(rot.reshape(3, 3)), rmsd
 
 
@@ -736,7 +736,7 @@ def rms_fit_trj(
     for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
-        x_com = traj_atoms.center_of_mass().astype(np.float32)
+        x_com = traj_atoms.center_of_mass().astype(np.float64)
         traj_coordinates[:] = traj_atoms.positions - x_com
 
         # Need to transpose coordinates such that the coordinate array is
@@ -745,8 +745,8 @@ def rms_fit_trj(
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(
-            ref_coordinates.T.astype(
-                np.float64), traj_coordinates.T.astype(
+            ref_coordinates.astype(
+                np.float64), traj_coordinates.astype(
                 np.float64), natoms, rot, weights)
         R[:, :] = rot.reshape(3, 3)
 
