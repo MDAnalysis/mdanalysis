@@ -227,11 +227,13 @@ class DistanceMatrix(AnalysisBase):
         weights : array, optional
             Weights to be given to coordinates for metric calculation
         start : int, optional
-            First frame of trajectory to analyse, Default: 0
+            First frame of trajectory to analyse, Default: None becomes 0.
         stop : int, optional
-            Last frame of trajectory to analyse, Default: -1
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
         step : int, optional
-            Step between frames to analyse, Default: 1
+            Step between frames to analyse, Default: None becomes 1.
         """
         self._u = u
         traj = self._u.trajectory
