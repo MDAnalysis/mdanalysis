@@ -1230,7 +1230,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ----------
         start, stop, step : int or None
           Values representing the slice indices.
-          Can use `None` to use defaults of (0, -1, and 1)
+          Can use `None` to use defaults of (0, n_frames, and 1)
           respectively.
 
         Returns
