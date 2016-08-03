@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst
-        
+
   * 0.15.1
 
 Enhancements
@@ -36,8 +36,9 @@ Fixes
   * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
   * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
   * fixed incompatibility with newer matplotlib in analysis.hole
-  * Fixed modules that improperly documented and/or used frame slicing 
+  * Fixed modules that improperly documented and/or used frame slicing
     defaults (#914)
+  * Fixed same interRDF can be run twice (Issue #924)
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase

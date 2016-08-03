@@ -87,7 +87,9 @@ class InterRDF(AnalysisBase):
 
         self.rdf_settings = {'bins': nbins,
                              'range': range}
+        self._exclusion_block = exclusion_block
 
+    def _prepare(self):
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
@@ -103,12 +105,11 @@ class InterRDF(AnalysisBase):
         self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
         # If provided exclusions, create a mask of _result which
         # lets us take these out
-        if exclusion_block is not None:
-            self._exclusion_block = exclusion_block
-            self._exclusion_mask = blocks_of(self._result, *exclusion_block)
-            self._maxrange = range[1] + 1.0
+        if self._exclusion_block is not None:
+            self._exclusion_mask = blocks_of(self._result,
+                                             *self._exclusion_block)
+            self._maxrange = self.rdf_settings['range'][1] + 1.0
         else:
-            self._exclusion_block = None
             self._exclusion_mask = None
 
     def _single_frame(self):
