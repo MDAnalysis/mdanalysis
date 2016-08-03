@@ -357,8 +357,12 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     def step_to_frame(self, step, ts):
         """ Calculate closest trajectory frame for auxiliary step *step*.
 
-        Calculated given dt and offset from *ts* as::
-            frame = math.floor((self.step_to_time(step)-offset+ts.dt/2.)/ts.dt)
+        Calculated given dt, time and frame from *ts*::
+            time_frame_0 = ts.time - ts.frame*ts.dt   # time at frame 0
+            frame = math.floor((self.step_to_time(step)-time_frame_0+ts.dt/2.)
+                                                                        /ts.dt))
+
+        (Assumes trajectory dt is constant). 
 
         Parameters
         ----------
@@ -382,8 +386,9 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         """
         if step >= self.n_steps:
             return None 
-        offset = ts.data.get('time_offset', 0)
-        return int(math.floor((self.step_to_time(step)-offset+ts.dt/2.)/ts.dt))
+        time_frame_0 = ts.time - ts.frame*ts.dt  # assimes ts.dt is constant
+        return int(math.floor((self.step_to_time(step)-time_frame_0+ts.dt/2.)
+                                                                       /ts.dt))
 
     def move_to_ts(self, ts):
         """ Position auxiliary reader just before trajectory timestep *ts*.
@@ -443,10 +448,14 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         elif isinstance(i, (list, np.ndarray)):
             return self._list_iter([self._check_index(x) for x in i])
         elif isinstance(i, slice):
-            start = i.start or 0
-            stop = i.stop or self.n_steps-1
-            start = self._check_index(start)
-            stop = self._check_index(stop)
+            # default start to first frame (ie. 0)
+            start = self._check_index(i.start) if i.start is not None else 0
+            # default stop to after last frame (i.e. n_steps)
+            # n_steps is a valid stop index but will fail _check_index; 
+            # deal with separately
+            stop = (i.stop if i.stop == self.n_steps 
+                    else self._check_index(i.stop) if i.stop is not None 
+                    else self.n_steps)
             step = i.step or 1
             if not isinstance(step, int) or step < 1:
                 raise ValueError("Step must be positive integer") # allow -ve?
