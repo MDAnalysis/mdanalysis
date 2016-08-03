@@ -48,15 +48,19 @@ def uncomment(lines):
         The next non-comment line, with any trailing comments removed
     """
     for line in lines:
+        stripped_line = line.strip()
+        # ignore blank lines
+        if not stripped_line:
+            continue
         # '@' must be at the beginning of a line to be a grace instruction
-        if line.lstrip()[0] == '@':
+        if stripped_line[0] == '@':
             continue
         # '#' can be anywhere in the line, everything after is a comment
-        comment_position = line.find('#')
-        if comment_position > 0 and line[:comment_position]:
-            yield line[:comment_position]
-        elif comment_position < 0 and line:
-            yield line
+        comment_position = stripped_line.find('#')
+        if comment_position > 0 and stripped_line[:comment_position]:
+            yield stripped_line[:comment_position]
+        elif comment_position < 0 and stripped_line:
+            yield stripped_line
         # if comment_position == 0, then the line is empty
 
 class XVGStep(base.AuxStep):
@@ -124,6 +128,9 @@ class XVGReader(base.AuxReader):
 
     The file is assumed to be of a size such that reading and storing the full 
     contents is practical.
+
+    Multiple datasets, separated in the .xvg file by '&', is currently not 
+    supported (the reader will stop at the first line starting '&'). 
     """
 
     format = "XVG"
@@ -136,6 +143,9 @@ class XVGReader(base.AuxReader):
         auxdata = []
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
+           if line.lstrip()[0] == '&':
+               # multiple data sets not supported; stop at the end of the first
+               break
            auxdata.append([float(l) for l in line.split()])
            # check the number of columns is consistent
            if len(auxdata[i]) != len(auxdata[0]):
@@ -225,27 +235,29 @@ class XVGFileReader(base.AuxFileReader):
     def _read_next_step(self):
         """ Read next recorded step in xvg file. """
         line = self.auxfile.readline()
-        if line:
-            auxstep = self.auxstep
-            # xvg has both comments '#' and grace instructions '@'
-            while line.lstrip()[0] in ['#', '@']:
-                line = self.auxfile.readline()
-            # remove end of line comments
-            line_no_comment = line.split('#')[0]
-            auxstep.step = self.step + 1
-            auxstep._data = [float(i) for i in line_no_comment.split()]
-            try: 
-                n_cols = auxstep._n_cols
-            except AttributeError:
-                auxstep._n_cols = len(auxstep._data)
-            if len(auxstep._data) != auxstep._n_cols:
-                raise ValueError('Step {0} has {1} columns instead of '
-                                 '{2}'.format(self.step, len(auxstep._data),
-                                             auxstep._n_cols))
-            return auxstep
-        else:
-            self.rewind()
-            raise StopIteration
+        while True:
+            if not line or (line.strip() and line.strip()[0] == '&'):
+                # at end of file or end of first set of data (multiple sets
+                # currently not supported)
+                self.rewind()
+                raise StopIteration
+            # uncomment the line
+            for uncommented in uncomment([line]):
+                # line has data in it; add to auxstep + return
+                auxstep = self.auxstep
+                auxstep.step = self.step + 1
+                auxstep._data = [float(i) for i in uncommented.split()]
+                try:
+                    n_cols = auxstep._n_cols
+                except AttributeError:
+                    auxstep._n_cols = len(auxstep._data)
+                if len(auxstep._data) != auxstep._n_cols:
+                    raise ValueError('Step {0} has {1} columns instead of '
+                                     '{2}'.format(self.step, len(auxstep._data),
+                                                  auxstep._n_cols))
+                return auxstep
+            # line is comment only - move to next
+            line = self.auxfile.readline()
 
     def _count_n_steps(self):
         """ Iterate through all steps to count total number.
