@@ -30,27 +30,28 @@ class TestPCA(object):
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
         self.pca = pca.PCA(self.u.atoms, select='backbone and name CA',
-                demean=True)
+                align=True)
         self.pca.run()
         self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
 
     def test_cov(self):
         atoms = self.u.select_atoms('backbone and name CA')
         reference = atoms.positions
-        reference -= atoms.center_of_geometry()
+
         ref_cog = atoms.center_of_geometry()
+        reference -= ref_cog
         xyz = np.zeros((10, 642))
         for i, ts in enumerate(self.u.trajectory):
             mobile_cog = atoms.center_of_geometry()
             mobile_atoms, old_rmsd = _fit_to(atoms.positions,
                                              reference,
-                                             atoms,
+                                             mobile_atoms=atoms,
                                              mobile_com=mobile_cog,
                                              ref_com=ref_cog)
             xyz[i] = mobile_atoms.positions.ravel()
 
         cov = np.cov(xyz, rowvar=0)
-        assert_array_almost_equal(self.pca.cov, cov, 5)
+        assert_array_almost_equal(self.pca.cov, cov, 4)
 
     def test_cum_var(self):
         assert_almost_equal(self.pca.cumulated_variance[-1], 1)

@@ -122,7 +122,7 @@ class PCA(AnalysisBase):
         Take a pca_space and map it back onto the trajectory used to create it.
     """
 
-    def __init__(self, atomgroup, select='all', demean=True,
+    def __init__(self, atomgroup, select='all', align=False, mean=None,
                  n_components=None, **kwargs):
         """
         Parameters
@@ -132,9 +132,12 @@ class PCA(AnalysisBase):
         select: string, optional
             A valid selection statement for choosing a subset of atoms from
             the atomgroup.
-        demean: boolean, optional
-            If False, the trajectory will not be aligned to a reference
-            and there will be no demeaning of covariance data.
+        align: boolean, optional
+            If True, the trajectory will be aligned to a reference
+            structure.
+        mean: MDAnalysis atomgroup, option
+            An optional reference structure to be used as the mean of the
+            covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
             all principal components, Default: -1
@@ -152,30 +155,48 @@ class PCA(AnalysisBase):
                                   **kwargs)
         self._u = atomgroup.universe
         # for transform function
-        self._demean = demean
+        self.align = align
         # access 0th index
         self._u.trajectory[0]
         # reference will be 0th index
-        self._reference = self._u.atoms.select_atoms(select)
-        self._atoms = atomgroup.select_atoms(select)
+        self._reference = self._u.select_atoms(select)
+        self._atoms = self._u.select_atoms(select)
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
+        if mean is None:
+            self.mean = np.zeros(642)
+        else:
+            self.mean = mean.positions
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
-        if self._demean:
-            self._ref_atoms = self._reference
-            self._ref_cog = self._ref_atoms.center_of_geometry()
-            self._ref_atoms.positions -= self._ref_cog
+        self._ref_atom_positions = self._reference.positions
+        self._ref_cog = self._reference.center_of_geometry()
+        self._ref_atom_positions -= self._ref_cog
+
+        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+            if self.align:
+                mobile_cog = self._atoms.center_of_geometry()
+                mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+                                                 self._ref_atom_positions,
+                                                 self._atoms,
+                                                 mobile_com=mobile_cog,
+                                                 ref_com=self._ref_cog)
+                self.mean += mobile_atoms.positions.ravel()
+            else:
+                self.mean += self._atoms.positions.ravel()
+
+        self.mean /= self.n_frames
+    # TODO if not quiet, inform user about double iteration
+        # TODO mean structure should be accessible as an atomgroup object
 
     def _single_frame(self):
-        if self._demean:
-            # TODO make this more functional, initial proof of concept
+        if self.align:
             mobile_cog = self._atoms.center_of_geometry()
             mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
-                                             self._ref_atoms.positions,
+                                             self._ref_atom_positions,
                                              self._atoms,
                                              mobile_com=mobile_cog,
                                              ref_com=self._ref_cog)
@@ -183,6 +204,8 @@ class PCA(AnalysisBase):
             x = mobile_atoms.positions.ravel()
         else:
             x = self._atoms.positions.ravel()
+
+        x -= self.mean
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
@@ -190,7 +213,7 @@ class PCA(AnalysisBase):
         e_vals, e_vects = np.linalg.eig(self.cov)
         sort_idx = np.argsort(e_vals)[::-1]
         self.variance = e_vals[sort_idx]
-        self.p_components = e_vects[sort_idx]
+        self.p_components = e_vects[:, sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
         self._calculated = True
@@ -223,7 +246,7 @@ class PCA(AnalysisBase):
         if not self._calculated:
             self.run()
         # TODO has to accept universe or trajectory slice here
-        if self._atoms != atomgroup:
+        if self._atoms.atoms != atomgroup.atoms:
             warnings.warn('This is a transform for different atom types.')
 
         traj = atomgroup.universe.trajectory
@@ -232,6 +255,6 @@ class PCA(AnalysisBase):
 
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel()
-            dot[i] = np.dot(xyz, self.p_components[:, :n_components])
+            dot[i] = np.dot(xyz, self.p_components[:,:n_components])
 
         return dot
