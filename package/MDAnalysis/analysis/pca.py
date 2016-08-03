@@ -140,7 +140,7 @@ class PCA(AnalysisBase):
             covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
-            all principal components, Default: -1
+            all principal components, Default: None
         start : int, optional
             First frame of trajectory to use for generation
             of covariance matrix, Default: None
@@ -154,6 +154,8 @@ class PCA(AnalysisBase):
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
         self._u = atomgroup.universe
+        if self._quiet:
+            logging.disable(logging.WARN)
         # for transform function
         self.align = align
         # access 0th index
@@ -165,9 +167,14 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
         if mean is None:
+            logger.warn('In order to demean to generate the covariance matrix\n'
+                        + 'the frames have to be iterated over twice. To avoid\n'
+                        'this slowdown, provide an atomgroup for demeaning.')
             self.mean = np.zeros(642)
+            self._calc_mean = True
         else:
             self.mean = mean.positions
+            self._calc_mean = False
 
     def _prepare(self):
         n_dim = self._n_atoms * 3
@@ -176,20 +183,21 @@ class PCA(AnalysisBase):
         self._ref_cog = self._reference.center_of_geometry()
         self._ref_atom_positions -= self._ref_cog
 
-        for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
-            if self.align:
-                mobile_cog = self._atoms.center_of_geometry()
-                mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
-                                                 self._ref_atom_positions,
-                                                 self._atoms,
-                                                 mobile_com=mobile_cog,
-                                                 ref_com=self._ref_cog)
+        if self._calc_mean:
+            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+                if self.align:
+                    mobile_cog = self._atoms.center_of_geometry()
+                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+                                                     self._ref_atom_positions,
+                                                     self._atoms,
+                                                     mobile_com=mobile_cog,
+                                                     ref_com=self._ref_cog)
                 self.mean += mobile_atoms.positions.ravel()
             else:
                 self.mean += self._atoms.positions.ravel()
 
-        self.mean /= self.n_frames
-    # TODO if not quiet, inform user about double iteration
+            self.mean /= self.n_frames
+
         # TODO mean structure should be accessible as an atomgroup object
 
     def _single_frame(self):
