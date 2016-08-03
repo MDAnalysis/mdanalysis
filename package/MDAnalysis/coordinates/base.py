@@ -126,11 +126,12 @@ from __future__ import absolute_import
 
 from six.moves import range
 import six
-
-import warnings
-
-import numpy as np
+from contextlib import contextmanager
 import copy
+import itertools
+import numpy as np
+import os.path
+import warnings
 import weakref
 
 from .. import (
@@ -141,6 +142,7 @@ from .. import (
 from ..core import flags
 from .. import units
 from ..lib.util import asiterable, Namespace
+from ..lib import util
 from . import core
 from .. import NoDataError
 
@@ -1628,6 +1630,100 @@ class Reader(ProtoReader):
         for aux in self.aux_list:
             self._auxs[aux].close()
         self.close()
+
+
+class NewReader(ProtoReader):
+    """Super top secret magical class that fixes all known (and unknown) bugs"""
+    def __init__(self, filename, convert_units=None, **kwargs):
+        self.filename = filename
+        self._last_fh_pos = 0  # last known position of file handle
+
+        if convert_units is None:
+            convert_units = flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self._auxs = {}
+        ts_kwargs = {}
+        for att in ('dt', 'time_offset'):
+            try:
+                val = kwargs[att]
+            except KeyError:
+                pass
+            else:
+                ts_kwargs[att] = val
+
+        self._ts_kwargs = ts_kwargs
+
+    def _full_iter(self):
+        self._reopen()
+        with util.openany(self.filename, 'r') as self._file:
+            while True:
+                try:
+                    ts = self._read_next_timestep()
+                    for auxname in self.aux_list:
+                        ts = self._auxs[auxname].update_ts(ts)
+                    yield ts
+                except (EOFError, IOError):
+                    # goto start of file
+                    self._read_frame_with_aux(0)
+                    self._last_fh_pos = self._file.tell()
+                    raise StopIteration
+
+    def _sliced_iter(self, start, stop, step):
+        with util.openany(self.filename, 'r') as self._file:
+            for f in range(start, stop, step):
+                yield self._read_frame_with_aux(f)
+
+            self._read_frame_with_aux(0)
+            self._last_fh_pos = self._file.tell()
+        raise StopIteration
+
+    def _goto_frame(self, i):
+        with util.openany(self.filename, 'r') as self._file:
+            ts = self._read_frame_with_aux(i)
+        return ts
+
+    def __iter__(self):
+        return self._full_iter()
+
+    def __getitem__(self, item):
+        def apply_limits(frame):
+            if frame < 0:
+                frame += len(self)
+            if frame < 0 or frame >= len(self):
+                raise IndexError("Index {} exceeds length of trajectory ({})."
+                                 "".format(frame, len(self)))
+            return frame
+
+        if isinstance(item, int):
+            return self._goto_frame(apply_limits(item))
+        elif isinstance(item, (list, np.ndarray)):
+            return self._sliced_iter(item)
+        elif isinstance(item, slice):  # TODO Fix me!
+            start, stop, step = self.check_slice_indices(
+                item.start, item.stop, item.step)
+
+            return self._sliced_iter(start, stop, step)
+
+    def __next__(self):
+        with util.openany(self.filename, 'r') as self._file:
+            try:
+                self._file.seek(self._last_fh_pos)
+                ts = self._read_next_timestep()
+            except (EOFError, IOError):
+                self.rewind()
+                raise StopIteration
+            else:
+                self._last_fh_pos = self._file.tell()
+                for auxname in self.aux_list:
+                    ts = self._auxs[auxname].update_ts(ts)
+                return ts
+
+    next = __next__
+
+    def close(self):
+        # "close" by moving last position to start
+        self._last_fh_pos = 0
 
 
 class _Writermeta(type):
