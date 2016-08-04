@@ -1212,12 +1212,14 @@ def cached(key):
     return cached_lookup
 
 
-def unique_rows(arr):
+def unique_rows(arr, return_index=False):
     """Return the unique rows from an array
 
     Arguments
     ---------
-    arr - np.array of shape (n1, m)
+    arr : np.array of shape (n1, m)
+    return_index : bool, optional
+      If True, returns indices of arr that formed answer (see np.unique)
 
     Returns
     -------
@@ -1235,10 +1237,16 @@ def unique_rows(arr):
     # https://mail.scipy.org/pipermail/scipy-user/2011-December/031200.html
     m = arr.shape[1]
 
-    u = np.unique(arr.view(
-        dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
-    ))
-    return u.view(arr.dtype).reshape(-1, m)
+    if return_index:
+        u, r_idx = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype)
+                                                      for i in xrange(m)])),
+                             return_index=True)
+        return u.view(arr.dtype).reshape(-1, m), r_idx
+    else:
+        u = np.unique(arr.view(
+            dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
+        ))
+        return u.view(arr.dtype).reshape(-1, m) 
 
 
 def blocks_of(a, n, m):
