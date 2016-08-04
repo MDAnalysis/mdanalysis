@@ -32,7 +32,7 @@ from numpy.testing import (TestCase, dec, raises, assert_equal,
                            assert_allclose)
 from nose.plugins.attrib import attr
 
-import pytest
+from unittest import skip
 
 import os
 import itertools
@@ -40,24 +40,24 @@ import itertools
 from MDAnalysisTests import parser_not_found, tempdir
 
 
-class TestAtom:
+class TestAtom(TestCase):
     """Tests of Atom."""
 
     # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def setup_class(cls):
+    def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
-        cls.universe = MDAnalysis.Universe(PSF, DCD)
-        cls.atom = cls.universe.atoms[1000]  # Leu67:CG
-        cls.known_pos = np.array([3.94543672, -12.4060812, -7.26820087],
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.atom = self.universe.atoms[1000]  # Leu67:CG
+        self.known_pos = np.array([3.94543672, -12.4060812, -7.26820087],
                                   dtype=np.float32)
 
     # VALID
-    def teardown_class(cls):
-        del cls.universe
-        del cls.atom
-        del cls.known_pos
+    def tearDown(self):
+        del self.universe
+        del self.atom
+        del self.known_pos
 
     # VALID
     def test_attributes_names(self):
@@ -66,7 +66,7 @@ class TestAtom:
         assert_equal(a.resname, 'LEU')
 
     # INVALID: got rid of pos
-    @pytest.mark.skip
+    @skip
     def test_attributes_pos(self):
         # old pos property
         assert_almost_equal(self.atom.pos, self.known_pos)
@@ -98,7 +98,7 @@ class TestAtom:
         assert_equal(a.residue, u.residues[66])
 
     # VALID: shows we need to raise TypError here
-    @pytest.mark.skip
+    @skip
     def test_bad_add(self):
         def bad_add():
             return self.atom + 1
@@ -122,12 +122,12 @@ class TestAtom:
         assert_raises(NoDataError, lookup_velo)
 
     # INVALID
-    @pytest.mark.skip
+    @skip
     def test_atom_centroid(self):
         assert_equal(self.atom.position, self.atom.centroid())
 
     # INVALID: cannot build atoms like this; they must be part of a Universe
-    @pytest.mark.skip
+    @skip
     def test_no_uni(self):
         at = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
 
@@ -142,14 +142,14 @@ class TestAtom:
         assert_equal(ref, list(at.bonded_atoms))
     
     # INVALID: should raise AttributeError, as it does
-    @pytest.mark.skip
+    @skip
     @raises(NoDataError)
     def test_undefined_occupancy(self):
         self.universe.atoms[0].occupancy
 
     # INVALID: Atom objects are created when doing, e.g. self.universe.atoms[0].
     # attributes are not propagated to tables of attributes in this way
-    @pytest.mark.skip
+    @skip
     def test_set_undefined_occupancy(self):
         self.universe.atoms[0].occupancy = .5
         assert_equal(self.universe.atoms[0].occupancy, .5)
@@ -158,20 +158,20 @@ class TestAtom:
 
 # INVALID: cannot create Atoms in isolation like this;
 # will require refactor to build empty Universe and add atoms to it
-@pytest.mark.skip
-class TestAtomComparisons:
+@skip
+class TestAtomComparisons(TestCase):
     """Test the comparison operators for Atom"""
-    def setup_class(cls):
-        cls.at1 = Atom(1, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        cls.at2 = Atom(2, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        cls.at3 = Atom(3, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        cls.at4 = Atom(4, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+    def setUp(self):
+        self.at1 = Atom(1, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at2 = Atom(2, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at3 = Atom(3, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at4 = Atom(4, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
 
-    def teardown_class(cls):
-        del cls.at1
-        del cls.at2
-        del cls.at3
-        del cls.at4
+    def tearDown(self):
+        del self.at1
+        del self.at2
+        del self.at3
+        del self.at4
 
     def test_lt(self):
         assert_(self.at1 < self.at2)
@@ -221,13 +221,13 @@ class TestAtomComparisons:
 
 # VALID: these attributes exist always and are pulled from trajectory;
 # they give NoDataError if the reader doesn't give this information
-class TestAtomNoForceNoVel:
-    def setup_class(cls):
-        cls.u = MDAnalysis.Universe(XYZ_mini)
-        cls.a = cls.u.atoms[0]
+class TestAtomNoForceNoVel(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(XYZ_mini)
+        self.a = self.u.atoms[0]
 
-    def teardown_class(cls):
-        del cls.u
+    def tearDown(self):
+        del self.u
 
     def test_velocity_fail(self):
         assert_raises(NoDataError, getattr, self.a, 'velocity')
@@ -243,7 +243,7 @@ class TestAtomNoForceNoVel:
         assert_raises(NoDataError, setattr, self.a, 'force', [1.0, 1.0, 1.0])
 
 
-class TestAtomGroup:
+class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
     # all tests are done with the AdK system (PSF and DCD) sequence:
     # http://www.uniprot.org/uniprot/P69441.fasta
@@ -258,14 +258,14 @@ class TestAtomGroup:
     # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def setup_class(cls):
+    def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
-        cls.universe = MDAnalysis.Universe(PSF, DCD)
-        cls.ag = cls.universe.atoms  # prototypical AtomGroup
-        cls.dih_prec = 2
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.ag = self.universe.atoms  # prototypical AtomGroup
+        self.dih_prec = 2
 
     # INVALID: cannot use class in core to build AtomGroups for any Universe
-    @pytest.mark.skip
+    @skip
     def test_newAtomGroup(self):
         newag = MDAnalysis.core.groups.AtomGroup(self.ag[1000:2000:200])
         assert_equal(type(newag), type(self.ag),
@@ -278,18 +278,18 @@ class TestAtomGroup:
     
     # INVALID: there is no such property `_atoms` for an AtomGroup
     # could check that `self.universe.atoms.ix[0]` is same as `self.universe.atoms[0].ix`
-    @pytest.mark.skip
+    @skip
     def test_getitem_int(self):
         assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
 
     # INVALID: see above for alternative test
-    @pytest.mark.skip
+    @skip
     def test_getitem_slice(self):
         assert_equal(self.universe.atoms[0:4]._atoms,
                      self.universe.atoms._atoms[:4])
 
     # INVALID: see above for alternative test
-    @pytest.mark.skip
+    @skip
     def test_getitem_slice2(self):
         assert_equal(self.universe.atoms[0:8:2]._atoms,
                      self.universe.atoms._atoms[0:8:2])
@@ -297,7 +297,7 @@ class TestAtomGroup:
     # INVALID: we don't support getitem with names anymore.
     # it could be supported by making the Atomnames topologyattr transplant
     # a wrapped __getitem__ onto AtomGroup
-    @pytest.mark.skip
+    @skip
     def test_getitem_str(self):
         ag1 = self.universe.atoms['HT1']
         # select_atoms always returns an AtomGroup even if single result
@@ -306,7 +306,7 @@ class TestAtomGroup:
 
     # INVALID: can't use `AtomGroup` class directly;
     # getitem with list works fine though
-    @pytest.mark.skip
+    @skip
     def test_getitem_list(self):
         sel = [0, 1, 4]
         ag1 = self.universe.atoms[sel]
@@ -315,7 +315,7 @@ class TestAtomGroup:
 
     # INVALID: can't use `AtomGroup` class directly;
     # getitem with array works fine though
-    @pytest.mark.skip
+    @skip
     def test_getitem_nparray(self):
         sel = np.arange(5)
         ag1 = self.universe.atoms[sel]
@@ -323,15 +323,15 @@ class TestAtomGroup:
         assert_equal(ag1._atoms, ag2._atoms)
 
     # VALID: we should raise TypeError for this; currently get IndexError
-    @pytest.mark.skip
+    @skip
     def test_getitem_TE(self):
         d = {'A': 1}
-        pytest.raises(TypeError, self.universe.atoms.__getitem__, d)
+        raises(TypeError, self.universe.atoms.__getitem__, d)
 
     # INVALID: can't build AtomGroup directly like this
-    @pytest.mark.skip
+    @skip
     def test_bad_make(self):
-        pytest.raises(TypeError, AtomGroup, ['these', 'are', 'not', 'atoms'])
+        raises(TypeError, AtomGroup, ['these', 'are', 'not', 'atoms'])
 
     # VALID
     def test_n_atoms(self):
@@ -350,7 +350,7 @@ class TestAtomGroup:
         assert_equal(len(self.ag.resids), len(self.ag))
 
     # INVALID: this topology doesn't include resnums, so we don't have any
-    @pytest.mark.skip
+    @skip
     def test_resnums_dim(self):
         assert_equal(len(self.ag.resnums), len(self.ag))
 
@@ -370,7 +370,7 @@ class TestAtomGroup:
                                             -0.03505163], dtype=np.float32))
 
     # INVALID: AtomGroup only has center_of_mass method if topology has masses
-    @pytest.mark.skip
+    @skip
     def test_center_of_mass(self):
         assert_array_almost_equal(self.ag.center_of_mass(),
                                   np.array([-0.01094035, 0.05727601,
@@ -388,7 +388,7 @@ class TestAtomGroup:
                      dtype=np.float32))
 
     # INVALID: AtomGroup only has principal_axes method if topology has masses
-    @pytest.mark.skip
+    @skip
     def test_principal_axes(self):
         assert_array_almost_equal(
             self.ag.principal_axes(),
@@ -397,14 +397,14 @@ class TestAtomGroup:
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
 
     # VALID: need to set precision to correct within 5 decimal points
-    @pytest.mark.skip
+    @skip
     def test_total_charge(self):
         assert_almost_equal(self.ag.total_charge(), -4.0)
 
     # VALID: need to set precision to correct within 2 decimal points
     # perhaps we should use a higher precision float for masses in 
     # PSF parser
-    @pytest.mark.skip
+    @skip
     def test_total_mass(self):
         assert_almost_equal(self.ag.total_mass(), 23582.043)
 
@@ -425,12 +425,12 @@ class TestAtomGroup:
         assert_array_equal(self.ag.residues.resids, np.arange(1, 215))
 
     # INVALID: this topology doesn't give resnums, so no such property exists
-    @pytest.mark.skip
+    @skip
     def test_resnums_ndarray(self):
         assert_equal(isinstance(self.ag.residues.resnums, np.ndarray), True)
 
     # INVALID: see above
-    @pytest.mark.skip
+    @skip
     def test_resnums(self):
         assert_array_equal(self.ag.residues.resnums, np.arange(1, 215))
 
@@ -462,12 +462,12 @@ class TestAtomGroup:
         assert_array_equal(segids[0], np.array(["4AKE"]))
 
     # INVALID: this topology doesn't give masses
-    @pytest.mark.skip
+    @skip
     def test_masses_ndarray(self):
         assert_equal(isinstance(self.ag.masses, np.ndarray), True)
 
     # INVALID: this topology doesn't give masses
-    @pytest.mark.skip
+    @skip
     def test_masses(self):
         masses = self.ag.masses
         assert_array_equal(masses[0:3], np.array([14.007, 1.008, 1.008]))
@@ -482,37 +482,39 @@ class TestAtomGroup:
                                   np.array([-0.09, 0.09, -0.47, 0.51, 0.09]))
 
     # INVALID: this topology doesn't give atom radii
-    @pytest.mark.skip
+    @skip
     def test_radii_ndarray(self):
         assert_equal(isinstance(self.ag.radii, np.ndarray), True)
 
     # INVALID: this topology doesn't give atom radii
-    @pytest.mark.skip
+    @skip
     def test_radii(self):
         radii = self.ag.radii
         assert_array_equal(radii[0:3], np.array([None, None, None]))
 
     # INVALID: this topology doesn't give bfactors
-    @pytest.mark.skip
+    @skip
     def test_bfactors_ndarray(self):
         assert_equal(isinstance(self.ag.bfactors, np.ndarray), True)
 
     # INVALID: this topology doesn't give bfactors
-    @pytest.mark.skip
+    @skip
     def test_bfactors(self):
         bfactors = self.ag.bfactors  # property, not method!
         assert_array_equal(bfactors[0:3], np.array([None, None, None]))
 
     # INVALID: we give AttributeError since occupancies attribute not present
     # if topology doesn't provide them
-    @pytest.mark.skip
+    @skip
     def test_occupancies(self):
         assert_raises(NoDataError, getattr, self.ag, 'occupancies')
         self.ag.occupancies = 0.25
         assert_array_almost_equal(self.ag.occupancies,
                                   np.ones(len(self.ag)) * 0.25)
-
     
+    # INVALID: AtomGroup no longer gets a sequence method; only in ResidueGroup
+    # if resnames in topology
+    @skip
     def test_sequence_from_atoms(self):
         p = self.universe.select_atoms("protein")
         assert_equal(p.sequence(format="string"),
@@ -2292,7 +2294,7 @@ class TestGuessBonds(TestCase):
 
 
 # VALID: need to refactor to not use global lists of properties
-@pytest.mark.skip(reason="need alternative to _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES")
+@skip("need alternative to _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES")
 class TestAtomGroupProperties(object):
     """Test working with the properties of Atoms via AtomGroups
 
