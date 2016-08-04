@@ -73,4 +73,10 @@ class TestPCA(object):
                      (self.u.trajectory.n_frames, 1))
 
 
-    # TODO test different inputs
+    # Accepts universe as input, but shapes are not aligned
+    @raises(ValueError)
+    def test_transform_inputs(self):
+        self.ag = self.u.select_atoms('backbone and name CA')
+        self.pca_space = self.pca.transform(self.u, n_components=1)
+        assert_equal(self.pca_space.shape,
+                     (self.u.trajectory.n_frames, 1))

@@ -256,6 +256,8 @@ class PCA(AnalysisBase):
         # TODO has to accept universe or trajectory slice here
         if self._atoms.atoms != atomgroup.atoms:
             warnings.warn('This is a transform for different atom types.')
+        if isinstance(atomgroup, Universe):
+            atomgroup = atomgroup.atoms
 
         traj = atomgroup.universe.trajectory
         start, stop, step = traj.check_slice_indices(start, stop, step)
