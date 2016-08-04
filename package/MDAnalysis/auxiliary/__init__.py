@@ -283,7 +283,7 @@ The following methods are inherited from
   ``rewind()``
     Reposition to first step.
 
-  ``read_ts(ts)``
+  ``update_ts(ts)``
     Read auxiliary steps assigned to trajectory step `ts`; if ``name`` is set, 
     update the representative value stored in `ts`, and return.
 
@@ -379,3 +379,4 @@ _AUXREADERS = {}
 
 from . import base
 from . import XVG
+from .core import auxreader

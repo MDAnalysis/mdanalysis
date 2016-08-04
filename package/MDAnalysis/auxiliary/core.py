@@ -19,6 +19,7 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 ===========================================================================
 
 .. autofunction:: get_auxreader_for
+.. autofunction:: auxreader
 """
 
 from six import string_types
@@ -43,7 +44,7 @@ def get_auxreader_for(auxdata=None, format=None):
 
     Returns
     -------
-    An AuxReader object
+    AuxReader class
 
     Raises
     ------
@@ -60,15 +61,40 @@ def get_auxreader_for(auxdata=None, format=None):
             ## assume it's a filename?
             format = util.guess_format(auxdata)
         else:
-            ## arrays etc
+            ## arrays etc, TBA
             pass
         format = format.upper()
         try:
             return _AUXREADERS[format]
         except KeyError:
-            raise ValueError("Unknown auxiliary data format for {0}".format(auxdata))
+            raise ValueError("Unknown auxiliary data format for auxdata: "
+                             "{0}".format(auxdata))
     else:
         try:
             return _AUXREADERS[format]
         except KeyError:
             raise ValueError("Unknown auxiliary data format {0}".format(format))
+
+def auxreader(auxdata, format=None, **kwargs):
+    """ Return an auxiliary reader instance for *auxdata*.
+
+    :function:`get_auxreader_for` is used to find an appropriate auxiliary
+    reader class.
+
+    Parameters
+    ----------
+    auxdata
+        The auxiliary data (e.g. array) or filename of file containing
+        auxiliary data.
+    format
+        (Optional). The format of *auxdata*, if known.
+    **kwargs
+         Additional AuxReader options.
+
+    Returns
+    -------
+    AuxReader instance
+    """
+    reader = get_auxreader_for(auxdata, format=format)
+    return reader(auxdata, **kwargs)
+

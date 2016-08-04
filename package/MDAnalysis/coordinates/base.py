@@ -141,7 +141,7 @@ from . import core
 from .. import NoDataError
 
 from ..auxiliary.base import AuxReader
-from ..auxiliary.core import get_auxreader_for
+from ..auxiliary.core import auxreader
 
 class Timestep(object):
     """Timestep data for one frame
@@ -1080,7 +1080,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             raise StopIteration
         else:
             for auxname in self.aux_list:
-                ts = self._auxs[auxname].read_ts(ts)
+                ts = self._auxs[auxname].update_ts(ts)
         return ts
 
     def __next__(self):
@@ -1225,7 +1225,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """Move to *frame*, updating ts with trajectory and auxiliary data."""
         ts = self._read_frame(frame)
         for aux in self.aux_list:
-            ts = self._auxs[aux].read_ts(ts) 
+            ts = self._auxs[aux].update_ts(ts) 
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1351,10 +1351,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             aux = auxdata
             aux.auxname = auxname
         else:
-            auxreader = get_auxreader_for(auxdata, format=format)
-            aux = auxreader(auxdata, auxname=auxname, **kwargs)
+            aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
         self._auxs[auxname] = aux
-        self.ts = aux.read_ts(self.ts)
+        self.ts = aux.update_ts(self.ts)
     
     def remove_auxiliary(self, auxname):
         """Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`

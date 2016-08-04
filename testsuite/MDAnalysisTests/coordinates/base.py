@@ -1028,8 +1028,6 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     # Check we've got auxiliaries before comparing values (auxiliaries aren't written 
     # so we won't have aux values to compare when testing writer)
     if len(A.aux) > 0 and len(B.aux) > 0: 
-        for name in A.aux.__dict__:
-            assert_equal(A.aux[name], B.aux[name], 
-                         err_msg='Auxiliary values do not match: '
-                                 'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
+        assert_equal(A.aux, B.aux, err_msg='Auxiliary values do not match: '
+                                  'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
 

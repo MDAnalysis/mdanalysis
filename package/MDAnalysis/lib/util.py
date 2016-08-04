@@ -166,6 +166,7 @@ import warnings
 from functools import wraps
 import numpy as np
 import functools
+from numpy.testing import assert_equal
 
 from ..exceptions import StreamWarning
 
@@ -1276,7 +1277,6 @@ def blocks_of(a, n, m):
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
 
-
 class Namespace(object):
     """Class to allow storing attributes in new namespace. """
     def __getattr__(self, key):
@@ -1288,10 +1288,18 @@ class Namespace(object):
     def __delattr__(self, key):
         del self.__dict__[key]
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        try:
+            # this'll allow us to compare if we're storing arrays
+            assert_equal(self.__dict__, other.__dict__)
+        except AssertionError:
+            return False
+        return True
     def __str__(self):
         return str(self.__dict__)
     def __len__(self):
         return len(self.__dict__)
     def __getitem__(self, key):
         return self.__dict__[key]
+    def __iter__(self):
+        for i in self.__dict__:
+            yield i            

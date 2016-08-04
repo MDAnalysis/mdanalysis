@@ -243,14 +243,14 @@ class BaseAuxReaderTest(object):
         ts = self.ref.lower_freq_ts
         aux_before = ts.copy().aux
         # read ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         # current aux timespace should be unchanged
-        assert_equal(ts.aux.__dict__, aux_before.__dict__)
+        assert_equal(ts.aux, aux_before)
 
     def test_read_lower_freq_timestep(self):
         # test reading a timestep with lower frequency
         ts = self.ref.lower_freq_ts       
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         # check the value set in ts is as we expect
         assert_almost_equal(ts.aux.test, self.ref.lowf_closest_rep,
                             err_msg="Representative value in ts.aux does not match")
@@ -261,7 +261,7 @@ class BaseAuxReaderTest(object):
         self.reader.represent_ts_as = 'average'
         # read timestep; use the low freq timestep
         ts = self.ref.lower_freq_ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         # check the representative value set in ts is as expected
         assert_almost_equal(ts.aux.test, self.ref.lowf_average_rep, 
                             err_msg="Representative value does not match when "
@@ -273,7 +273,7 @@ class BaseAuxReaderTest(object):
         self.reader.cutoff = self.ref.cutoff
         # read timestep; use the low frequency timestep
         ts = self.ref.lower_freq_ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         # check representative value set in ts is as expected
         assert_almost_equal(ts.aux.test, self.ref.lowf_cutoff_average_rep,
                             err_msg="Representative value does not match when "
@@ -282,7 +282,7 @@ class BaseAuxReaderTest(object):
     def test_read_offset_timestep(self):
         # try reading a timestep offset from auxiliary
         ts = self.ref.offset_ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         assert_almost_equal(ts.aux.test, self.ref.offset_closest_rep,
                             err_msg="Representative value in ts.aux does not match")
 
@@ -292,7 +292,7 @@ class BaseAuxReaderTest(object):
         self.reader.cutoff = self.ref.cutoff
         # read timestep; use the offset timestep
         ts = self.ref.offset_ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         # check representative value set in ts is as expected
         assert_almost_equal(ts.aux.test, self.ref.offset_cutoff_closest_rep,
                             err_msg="Representative value does not match when "
@@ -301,7 +301,7 @@ class BaseAuxReaderTest(object):
     def test_read_higher_freq_timestep(self):
         # try reading a timestep with higher frequency
         ts = self.ref.higher_freq_ts
-        self.reader.read_ts(ts)
+        self.reader.update_ts(ts)
         assert_almost_equal(ts.aux.test, self.ref.highf_rep,
                             err_msg="Representative value in ts.aux does not match")
 
@@ -344,12 +344,8 @@ class BaseAuxReaderTest(object):
 
     def test_load_from_description(self):
         description = self.reader.get_description()
-        # pop values of auxdata and format, as we want to load directly as 
-        # an auxreader instead of passing to add_auxiliary to add to a trajectory
-        auxdata = description.pop('auxdata')
-        format = description.pop('format')
-        reader = mda.auxiliary.core.get_auxreader_for(format=format)
-        assert_equal(reader(auxdata, **description), self.reader,
+        new = mda.auxiliary.core.auxreader(**description)
+        assert_equal(new, self.reader,
                      "AuxReader reloaded from description does not match")
 
 

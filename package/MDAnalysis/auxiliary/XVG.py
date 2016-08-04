@@ -18,13 +18,45 @@
 XVG auxiliary reader --- :mod:`MDAnalysis.auxiliary.XVG`
 ========================================================
 
-.. autofunction:: uncomment
+xvg files are produced by Gromacs during simulation or analysis, formatted
+for plotting data with Grace. 
+
+Data is column-formatted; time/data selection is enabled by providing column 
+indicies. 
+
+Note
+----
+By default, the time of each step is assumed to be stored in the first column, 
+in units of ps.
+
+
+.. autoclass:: XVGStep
+   :members:
+
+
+XVG Readers
+-----------
+The default (:class:`XVGReader`) reads and stores the full contents of the .xvg 
+file on initialisation, while a second reader (:class:`XVGFileReader`) that 
+reads steps one at a time as required is also provided for when a lower memory 
+footprint is desired.
+
+Note
+----
+Data is assumed to be time-ordered.
+
+Multiple datasets, separated in the .xvg file by '&', is currently not 
+supported (the readers will stop at the first line starting '&'). 
+
 
 .. autoclass:: XVGReader
    :members:
 
 .. autoclass:: XVGFileReader
    :members:
+
+
+.. autofunction:: uncomment
 
 """
 
@@ -64,17 +96,31 @@ def uncomment(lines):
         # if comment_position == 0, then the line is empty
 
 class XVGStep(base.AuxStep):
-    """ AuxStep class for .xvg file format 
+    """ AuxStep class for .xvg file format.
+
+    Extends the base AuxStep class to allow selection of time and 
+    data-of-interest fields from the full set of data read each step.
 
     Parameters
     ----------
-    time_selector : int
+    time_selector : int | None, optional
         Index of column in .xvg file storing time, assumed to be in ps. Default
-        value is 0. 
-    data_selector : list of int
+        value is 0 (i.e. first column).
+    data_selector : list of int | None, optional
         Indices of columns in .xvg file containing data of interest to be 
         stored in ``data``. Default value is ``None``.
+    **kwargs
+        Other AuxStep options.
+
+    See Also
+    --------
+    :class:`~MDAnalysis.auxiliary.base.AuxStep`
     """
+    def __init__(self, time_selector=0, data_selector=None, **kwargs):
+        super(XVGStep, self).__init__(time_selector=time_selector,
+                                      data_selector=data_selector,
+                                      **kwargs)
+
     def _select_time(self, key):
         if key is None:
             # here so that None is a valid value; just return
@@ -97,19 +143,13 @@ class XVGStep(base.AuxStep):
         else:
             return np.array([self._select_data(i) for i in key])
 
-    def _empty_data(self):
-        return np.array([np.nan]*len(self.data))
-
 
 class XVGReader(base.AuxReader):
     """ Auxiliary reader to read data from an .xvg file.
 
-    All data from the file will be read and stored on initialisation. This is
-    the default reader for .xvg files.
+    Detault reader of .xvg files. All data from the file will be read and stored 
+    on initialisation.
     
-    xvg files are produced by Gromacs during simulation or analysis, formatted
-    for plotting data with Grace.
-
     Parameters
     ----------
     filename : str
@@ -123,45 +163,50 @@ class XVGReader(base.AuxReader):
 
     Note
     ----
-    The time of each step is assumed to stored in the first column, in units of 
-    ps, and data is assumed to be time-ordered.
-
     The file is assumed to be of a size such that reading and storing the full 
     contents is practical.
-
-    Multiple datasets, separated in the .xvg file by '&', is currently not 
-    supported (the reader will stop at the first line starting '&'). 
     """
 
     format = "XVG"
     _Auxstep = XVGStep
 
-    def __init__(self, filename, time_selector=0, data_selector=None, **kwargs):
-        self._data_input = os.path.abspath(filename)
+    def __init__(self, filename, **kwargs):
+        self._auxdata = os.path.abspath(filename)
         with open(filename) as xvg_file:
             lines = xvg_file.readlines()
-        auxdata = []
+        auxdata_values = []
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
            if line.lstrip()[0] == '&':
                # multiple data sets not supported; stop at the end of the first
                break
-           auxdata.append([float(l) for l in line.split()])
+           auxdata_values.append([float(l) for l in line.split()])
            # check the number of columns is consistent
-           if len(auxdata[i]) != len(auxdata[0]):
+           if len(auxdata_values[i]) != len(auxdata_values[0]):
                 raise ValueError('Step {0} has {1} columns instead of '
-                                 '{2}'.format(i, auxdata[i], auxdata[0]))
-        self._auxdata = np.array(auxdata)
-        self._n_steps = len(self._auxdata)
-        super(XVGReader, self).__init__(time_selector=time_selector, 
-                                        data_selector=data_selector, **kwargs)
+                                 '{2}'.format(i, auxdata_values[i], 
+                                              auxdata_values[0]))
+        self._auxdata_values = np.array(auxdata_values)
+        self._n_steps = len(self._auxdata_values)
+        super(XVGReader, self).__init__(**kwargs)
 
     def _read_next_step(self):
-        """ Read next auxiliary step. """
+        """ Read next auxiliary step and update ``auxstep``.
+
+        Returns
+        -------
+        AuxStep object
+            Updated with the data for the new step.
+
+        Raises
+        ------
+        StopIteration
+            When end of auxiliary data set is reached.
+        """
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            auxstep._data = self._auxdata[new_step]
+            auxstep._data = self._auxdata_values[new_step]
             auxstep.step = new_step
             return auxstep
         else:
@@ -181,7 +226,7 @@ class XVGReader(base.AuxReader):
         ValueError
             If step index not in valid range.
         """
-        if i >= self.n_steps:
+        if i >= self.n_steps or i < 0:
             raise ValueError("Step index {0} is not valid for auxiliary "
                              "(num. steps {1})".format(i, self.n_steps))
         self.auxstep.step = i-1
@@ -189,14 +234,14 @@ class XVGReader(base.AuxReader):
         return self.auxstep
 
     def read_all_times(self):
-        """ Get list of time of each step.
+        """ Get list of time at each step.
 
         Returns
         -------
         list of float
-            Time of each step
+            Time at each step.
         """
-        return self._auxdata[:,self.time_selector]
+        return self._auxdata_values[:,self.time_selector]
 
 
 class XVGFileReader(base.AuxFileReader):
@@ -216,24 +261,32 @@ class XVGFileReader(base.AuxFileReader):
     See Also
     --------
     :class:`XVGReader`
+    :class:`~MDAnalysis.auxiliary.base.AuxFileReader`
 
     Note
     ----
     The default reader for .xvg files is :class:`XVGReader`.
-
-    The time of each step is assumed to stored in the first column, in units of 
-    ps, and data is assumed to be time-ordered.
     """
 
     format = 'XVG-F'
     _Auxstep = XVGStep
 
-    def __init__(self, filename, time_selector=0, **kwargs):
-        super(XVGFileReader, self).__init__(filename, time_selector=time_selector, 
-                                            **kwargs)
+    def __init__(self, filename, **kwargs):
+        super(XVGFileReader, self).__init__(filename, **kwargs)
 
     def _read_next_step(self):
-        """ Read next recorded step in xvg file. """
+        """ Read next recorded step in xvg file and update ``austep``.
+
+        Returns
+        -------
+        AuxStep object
+            Updated with the data for the new step.
+
+        Raises
+        ------
+        StopIteration
+            When end of file or end of first data set is reached.
+        """
         line = self.auxfile.readline()
         while True:
             if not line or (line.strip() and line.strip()[0] == '&'):
@@ -247,9 +300,11 @@ class XVGFileReader(base.AuxFileReader):
                 auxstep = self.auxstep
                 auxstep.step = self.step + 1
                 auxstep._data = [float(i) for i in uncommented.split()]
+                # see if we've set n_cols yet...
                 try:
-                    n_cols = auxstep._n_cols
+                    auxstep._n_cols
                 except AttributeError:
+                    # haven't set n_cols yet; set now
                     auxstep._n_cols = len(auxstep._data)
                 if len(auxstep._data) != auxstep._n_cols:
                     raise ValueError('Step {0} has {1} columns instead of '
@@ -267,11 +322,17 @@ class XVGFileReader(base.AuxFileReader):
         int
             Total number of steps
         """
-        if self.constant_dt:
-            # will have to iterate through all to built times list anyway
-            return len(self.read_all_times())
+        if not self.constant_dt:
+            # check if we've already iterated through to build _times list
+            try:
+                return len(self._times)
+            except AttributeError:
+                # might as well build _times now, since we'll need to iterate 
+                # through anyway
+                self._times = self.read_all_times()
+                return len(self.read_all_times())
         else:
-            # iterate here instead
+            # don't need _times; iterate here instead
             self._restart()
             count = 0
             for step in self:
