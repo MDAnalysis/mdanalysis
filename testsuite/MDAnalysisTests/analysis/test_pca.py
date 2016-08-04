@@ -18,6 +18,7 @@ import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis.align import _fit_to
+from scipy.integrate import simps
 
 from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal,raises)
@@ -30,7 +31,7 @@ class TestPCA(object):
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
         self.pca = pca.PCA(self.u.atoms, select='backbone and name CA',
-                align=True)
+                           align=True)
         self.pca.run()
         self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
 
@@ -71,5 +72,5 @@ class TestPCA(object):
         assert_equal(self.pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
+
     # TODO test different inputs
-    # TODO test cosine content

@@ -192,9 +192,9 @@ class PCA(AnalysisBase):
                                                      self._atoms,
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
-                self.mean += mobile_atoms.positions.ravel()
-            else:
-                self.mean += self._atoms.positions.ravel()
+                    self.mean += mobile_atoms.positions.ravel()
+                else:
+                    self.mean += self._atoms.positions.ravel()
 
             self.mean /= self.n_frames
 
