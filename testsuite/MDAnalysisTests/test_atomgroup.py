@@ -1882,6 +1882,7 @@ class _WriteAtoms(TestCase):
     ext = None  # override to test various output writers
     precision = 3
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -1890,23 +1891,28 @@ class _WriteAtoms(TestCase):
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
 
+    # VALID
     def tearDown(self):
         del self.universe
         del self.tempdir
 
+    # VALID
     def universe_from_tmp(self):
         return MDAnalysis.Universe(self.outfile, convert_units=True)
 
+    # VALID
     def test_write_atoms(self):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
         assert_array_almost_equal(self.universe.atoms.positions, u2.atoms.positions, self.precision,
                                   err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
+    # VALID
     def test_write_empty_atomgroup(self):
         sel = self.universe.select_atoms('name doesntexist')
         assert_raises(IndexError, sel.write, self.outfile)
 
+    # VALID
     def test_write_selection(self):
         CA = self.universe.select_atoms('name CA')
         CA.write(self.outfile)
@@ -1916,6 +1922,8 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(CA2.positions, CA.positions, self.precision,
                             err_msg="CA coordinates do not agree with original")
 
+    # INVALID: Only `AtomGroup`s have `write` method. Must do `G.atoms.write`
+    @skip
     def test_write_Residue(self):
         G = self.universe.s4AKE.ARG[-2]  # 2nd but last Arg
         G.write(self.outfile)
@@ -1925,6 +1933,8 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="Residue R206 coordinates do not agree with original")
 
+    # INVALID: Only `AtomGroup`s have `write` method. Must do `G.atoms.write`
+    @skip
     def test_write_ResidueGroup(self):
         G = self.universe.s4AKE.LEU
         G.write(self.outfile)
@@ -1934,6 +1944,8 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="ResidueGroup LEU coordinates do not agree with original")
 
+    # INVALID: Only `AtomGroup`s have `write` method. Must do `G.atoms.write`
+    @skip
     def test_write_Segment(self):
         G = self.universe.s4AKE
         G.write(self.outfile)
@@ -1943,6 +1955,7 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
+    # VALID
     def test_write_Universe(self):
         U = self.universe
         W = MDAnalysis.Writer(self.outfile)
@@ -1971,6 +1984,8 @@ class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
+    # INVALID: flags should be retired(?)
+    @skip
     def test_flag_convert_length(self):
         assert_equal(MDAnalysis.core.flags['convert_lengths'], True,
                      "The flag convert_lengths SHOULD be True by default! "
@@ -1978,6 +1993,7 @@ class TestWriteGRO(_WriteAtoms):
                      "testing suite.)")
 
 
+# VALID
 @attr("issue")
 @dec.skipif(parser_not_found('DCD'),
             'DCD parser not available. Are you using python 3?')
@@ -1997,6 +2013,7 @@ def test_generated_residueselection():
     del universe
 
 
+# VALID
 @attr('issue')
 @dec.skipif(parser_not_found('DCD'),
             'DCD parser not available. Are you using python 3?')
