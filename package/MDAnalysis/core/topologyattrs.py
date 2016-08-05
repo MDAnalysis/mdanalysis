@@ -26,7 +26,7 @@ import itertools
 import numpy as np
 
 from . import flags
-from ..lib.util import cached
+from ..lib.util import cached, convert_aa_code
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
@@ -290,6 +290,10 @@ class Atomnames(AtomAttr):
     transplants['residue'].append(
         ('__getattr__', getattr__))
 
+    # this is also getitem for a residue
+    transplants['residue'].append(
+        ('__getitem__', getattr__))
+
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -317,7 +321,7 @@ class Atomnames(AtomAttr):
     transplants['residue'].append(
         ('_get_named_atom', _get_named_atom))
 
-    def phi_selection(self):
+    def phi_selection(residue):
         """AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
 
@@ -327,9 +331,9 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
         """
-        sel = self.universe.select_atoms(
-            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
-              self['N'] + self['CA'] + self['C']
+        sel = residue.universe.select_atoms(
+            'segid %s and resid %d and name C' % (residue.segment.segid, residue.resid - 1)) + \
+              residue['N'] + residue['CA'] + residue['C']
         if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
         else:
@@ -337,7 +341,7 @@ class Atomnames(AtomAttr):
 
     transplants['residue'].append(('phi_selection', phi_selection))
 
-    def psi_selection(self):
+    def psi_selection(residue):
         """AtomGroup corresponding to the psi protein backbone dihedral
         N-CA-C-N'.
 
@@ -347,9 +351,9 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
         """
-        sel = self['N'] + self['CA'] + self['C'] + \
-              self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+        sel = residue['N'] + residue['CA'] + residue['C'] + \
+              residue.universe.select_atoms(
+                  'segid %s and resid %d and name N' % (residue.segment.segid, residue.resid + 1))
         if len(sel) == 4:
             return sel
         else:
@@ -357,7 +361,7 @@ class Atomnames(AtomAttr):
 
     transplants['residue'].append(('psi_selection', psi_selection))
 
-    def omega_selection(self):
+    def omega_selection(residue):
         """AtomGroup corresponding to the omega protein backbone dihedral
         CA-C-N'-CA'.
 
@@ -372,10 +376,10 @@ class Atomnames(AtomAttr):
             previous residue (by resid) then this method returns ``None``.
 
         """
-        nextres = self.id + 1
-        segid = self.segment.id
-        sel = self['CA'] + self['C'] + \
-              self.universe.select_atoms(
+        nextres = residue.resid + 1
+        segid = residue.segment.segid
+        sel = residue['CA'] + residue['C'] + \
+              residue.universe.select_atoms(
                   'segid %s and resid %d and name N' % (segid, nextres),
                   'segid %s and resid %d and name CA' % (segid, nextres))
         if len(sel) == 4:
@@ -385,7 +389,7 @@ class Atomnames(AtomAttr):
 
     transplants['residue'].append(('omega_selection', omega_selection))
 
-    def chi1_selection(self):
+    def chi1_selection(residue):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
         
         Returns
@@ -397,7 +401,7 @@ class Atomnames(AtomAttr):
         .. versionadded:: 0.7.5
         """
         try:
-            return self['N'] + self['CA'] + self['CB'] + self['CG']
+            return residue['N'] + residue['CA'] + residue['CB'] + residue['CG']
         except (SelectionError, NoDataError):
             return None
 
@@ -1021,7 +1025,7 @@ class Resnames(ResidueAttr):
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
                     format, ", ".join(formats)))
         try:
-            sequence = "".join([util.convert_aa_code(r) for r in self.residues.resnames])
+            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
             raise ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "

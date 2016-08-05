@@ -9,6 +9,7 @@ import itertools
 import MDAnalysis
 from ..lib import mdamath
 from ..lib import util
+from ..lib import distances 
 from . import selection
 from . import flags
 from . import levels
@@ -984,7 +985,7 @@ class AtomGroup(object):
                      'residue': 'resindices'}
 
         if level == "atom":
-            return [self[[a.index]] for a in self]
+            return [self._u.atoms[[a.ix]] for a in self]
 
         # higher level groupings
         try:
