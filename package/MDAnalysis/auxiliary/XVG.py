@@ -22,7 +22,7 @@ xvg files are produced by Gromacs during simulation or analysis, formatted
 for plotting data with Grace. 
 
 Data is column-formatted; time/data selection is enabled by providing column 
-indicies. 
+indices. 
 
 Note
 ----
@@ -36,7 +36,7 @@ in units of ps.
 
 XVG Readers
 -----------
-The default (:class:`XVGReader`) reads and stores the full contents of the .xvg 
+The default :class:`XVGReader` reads and stores the full contents of the .xvg 
 file on initialisation, while a second reader (:class:`XVGFileReader`) that 
 reads steps one at a time as required is also provided for when a lower memory 
 footprint is desired.
@@ -45,7 +45,7 @@ Note
 ----
 Data is assumed to be time-ordered.
 
-Multiple datasets, separated in the .xvg file by '&', is currently not 
+Multiple datasets, separated in the .xvg file by '&', are currently not 
 supported (the readers will stop at the first line starting '&'). 
 
 
@@ -99,7 +99,8 @@ class XVGStep(base.AuxStep):
     """ AuxStep class for .xvg file format.
 
     Extends the base AuxStep class to allow selection of time and 
-    data-of-interest fields from the full set of data read each step.
+    data-of-interest fields (by column index) from the full set of data read 
+    each step.
 
     Parameters
     ----------
@@ -107,8 +108,8 @@ class XVGStep(base.AuxStep):
         Index of column in .xvg file storing time, assumed to be in ps. Default
         value is 0 (i.e. first column).
     data_selector : list of int | None, optional
-        Indices of columns in .xvg file containing data of interest to be 
-        stored in ``data``. Default value is ``None``.
+        List of indices of columns in .xvg file containing data of interest to
+        be stored in ``data``. Default value is ``None``.
     **kwargs
         Other AuxStep options.
 
@@ -147,7 +148,7 @@ class XVGStep(base.AuxStep):
 class XVGReader(base.AuxReader):
     """ Auxiliary reader to read data from an .xvg file.
 
-    Detault reader of .xvg files. All data from the file will be read and stored 
+    Detault reader for .xvg files. All data from the file will be read and stored 
     on initialisation.
     
     Parameters
@@ -248,7 +249,7 @@ class XVGFileReader(base.AuxFileReader):
     """ Auxiliary reader to read (step at a time) from an .xvg file.
 
     An alternative XVG reader which reads each step from the .xvg file as 
-    needed (rather than reading + storing all from the start), for a lower 
+    needed (rather than reading and storing all from the start), for a lower 
     memory footprint.     
     
     Parameters
@@ -260,8 +261,8 @@ class XVGFileReader(base.AuxFileReader):
 
     See Also
     --------
-    :class:`XVGReader`
     :class:`~MDAnalysis.auxiliary.base.AuxFileReader`
+
 
     Note
     ----

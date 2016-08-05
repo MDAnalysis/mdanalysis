@@ -128,6 +128,11 @@ class BaseReference(object):
                                [2 ** 6], # frame 3 = 3ps = step 6
                                [2 ** 8], # frame 4 = 4ps = step 8
                               ]
+        self.aux_highf_n_steps = 10
+        self.aux_highf_all_data = [[2 ** i] for i in range(self.aux_highf_n_steps)] 
+
+        self.aux_offset_by = 0.25 
+
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
@@ -308,6 +313,41 @@ class BaseReaderTest(object):
             assert_timestep_almost_equal(ts, 
                        self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
                        decimal=self.ref.prec)
+
+    def test_iter_auxiliary(self):
+        # should go through all steps in 'highf'
+        for i, auxstep in enumerate(self.reader.iter_auxiliary('highf')):
+            assert_almost_equal(auxstep.data, self.ref.aux_highf_all_data[i],
+                                err_msg="Auxiliary data does not match for "
+                                        "step {}".format(i))
+
+    def test_get_aux_attribute(self):
+        assert_equal(self.reader.get_aux_attribute('lowf', 'dt'),
+                     self.ref.aux_lowf_dt)
+
+    def test_iter_as_aux_cutoff(self):
+        # load an auxiliary with the same dt but offset from trajectory, and a 
+        # cutoff of 0
+        self.reader.add_auxiliary('offset', self.ref.aux_lowf, 
+                                  dt=self.ref.dt, time_selector=None,
+                                  initial_time=self.ref.aux_offset_by,
+                                  cutoff=0)
+        # no auxiliary steps will fall within the cutoff for any frame, so 
+        # iterating using iter_as_aux should give us nothing
+        num_frames = len([i for i in self.reader.iter_as_aux('offset')])
+        assert_equal(num_frames, 0, "iter_as_aux should iterate over 0 frames,"
+                                    " not {}".format(num_frames))
+
+    def test_rename_aux(self):
+        self.reader.rename_aux('lowf', 'lowf_renamed')
+        # data should now be in aux namespace under new name
+        assert_equal(self.reader.ts.aux.lowf_renamed, self.ref.aux_lowf_data[0])
+        # old name should be removed
+        assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')
+        # new name should be retained
+        next(self.reader)
+        assert_equal(self.reader.ts.aux.lowf_renamed, self.ref.aux_lowf_data[1])       
+
 
     def test_reload_auxiliaries_from_description(self):
         # get auxiliary desscriptions form existing reader

@@ -36,15 +36,15 @@ def get_auxreader_for(auxdata=None, format=None):
     Parameters
     ----------
     auxdata
-        (Optional) The auxiliary data (e.g. array) or filename of file containing
-        auxiliary data.
+        (Optional) The auxiliary data (e.g. filename of file containing
+        auxiliary data).
     format
-        (Optional). Known format of *auxdata*; if not provided, will be guessed 
-        from datatype/file extension.
+        (Optional). Known format of *auxdata*.
 
     Returns
     -------
-    AuxReader class
+    :class:`~MDAnalysis.auxiliary.base.AuxReader`
+        AuxReader class corresponding to the supplied/guessed format.
 
     Raises
     ------
@@ -61,7 +61,7 @@ def get_auxreader_for(auxdata=None, format=None):
             ## assume it's a filename?
             format = util.guess_format(auxdata)
         else:
-            ## arrays etc, TBA
+            ## TBA if add non-file-format readers
             pass
         format = format.upper()
         try:
@@ -78,14 +78,14 @@ def get_auxreader_for(auxdata=None, format=None):
 def auxreader(auxdata, format=None, **kwargs):
     """ Return an auxiliary reader instance for *auxdata*.
 
-    :function:`get_auxreader_for` is used to find an appropriate auxiliary
-    reader class.
+    An appropriate reader class is first obtained using 
+    :func:`get_auxreader_for`, and an auxiliary reader instance for *auxdata*
+    then created and returned.
 
     Parameters
     ----------
     auxdata
-        The auxiliary data (e.g. array) or filename of file containing
-        auxiliary data.
+        Auxiliary data (e.g. filename of file containing auxiliary data).
     format
         (Optional). The format of *auxdata*, if known.
     **kwargs
@@ -93,7 +93,8 @@ def auxreader(auxdata, format=None, **kwargs):
 
     Returns
     -------
-    AuxReader instance
+    :class:`~MDAnalysis.auxiliary.base.AuxReader` instance
+        Appropriate auxiliary reader instance for *auxdata*.
     """
     reader = get_auxreader_for(auxdata, format=format)
     return reader(auxdata, **kwargs)

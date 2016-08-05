@@ -14,7 +14,7 @@ def test_get_bad_auxreader_format_raises_ValueError():
 class BaseAuxReference(object):
     ## assumes the reference auxiliary data has 5 steps, with three values 
     ## for each step: i, 2*i and 2^i, where i is the step number.
-    ## If a particular AuxReader is such that auxiliary data is read in in a 
+    ## If a particular AuxReader is such that auxiliary data is read in a 
     ## format other than np.array([i, 2*i, 2**i]), format_data() should be 
     ## overwritten tp return the appropriate format
 
@@ -234,18 +234,12 @@ class BaseAuxReaderTest(object):
             assert_equal(val.time, self.ref.select_time_ref[i], 
                          "data for step {} does not match".format(i))
 
-    def test_not_setting_auxname(self):
-        # if we read a timestep without setting *auxname*, no aux value will
-        #   be added/set in the timestep's aux namespace
+    @raises(ValueError)
+    def test_update_ts_without_auxname_raises_ValueError(self):
         # reload reader without auxname
         self.reader = self.ref.reader(self.ref.testdata)
-        # get a copy of the current aux namespace...
-        ts = self.ref.lower_freq_ts
-        aux_before = ts.copy().aux
-        # read ts
+        ts = self.ref.lower_freq_ts       
         self.reader.update_ts(ts)
-        # current aux timespace should be unchanged
-        assert_equal(ts.aux, aux_before)
 
     def test_read_lower_freq_timestep(self):
         # test reading a timestep with lower frequency
