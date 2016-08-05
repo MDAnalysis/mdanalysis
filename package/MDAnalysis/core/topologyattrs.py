@@ -891,6 +891,15 @@ class Resids(ResidueAttr):
     singular = 'resid'
     target_levels = ['atom', 'residue']
 
+    def set_atoms(self, ag, newval):
+        #1 find index that corresponds to this resid
+        try:
+            dest = np.where(self.top.resids.values == newval)[0]
+        except IndexError:  # if where finds nothing
+            raise ValueError("That resid doesn't exist!")
+        #2 update the transtable
+        self.top.tt.move_atom(ag.ix, dest)
+
 
 #TODO: update docs to property doc
 class Resnames(ResidueAttr):

@@ -5,9 +5,12 @@ Should work with both a single or an array of indices
 """
 from numpy.testing import (
     assert_,
+    assert_equal,
     assert_array_equal,
 )
 import numpy as np
+
+from MDAnalysisTests.datafiles import PSF, DCD
 
 from MDAnalysis.core.topology import Topology, TransTable
 
@@ -30,11 +33,10 @@ class TestTopology(object):
 
 
 class TestTransTable(object):
-    # Reference data
-    Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
-    Sidx = np.array([0, 1, 1, 0])
-
     def setUp(self):
+        # Reference data
+        self.Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
+        self.Sidx = np.array([0, 1, 1, 0])
         self.tt = TransTable(10, 4, 2, self.Ridx, self.Sidx)
 
     def tearDown(self):
@@ -129,3 +131,53 @@ class TestTransTable(object):
             answer = self.tt.segments2atoms_2d(six)
             for a1, a2 in zip(answer, aix):
                 assert_array_equal(a1, a2)
+
+    # Moving within transtable without resizes
+    def test_move_atom_simple(self):
+        tt = self.tt
+        assert_equal(tt.atoms2residues(1), 0)
+        assert_equal(len(tt.residues2atoms_1d(0)), 2)
+        assert_equal(len(tt.residues2atoms_1d(3)), 2)
+
+        # move 2nd atom to 4th residue (atom1 -> res3)
+        tt.move_atom(1, 3)
+
+        assert_equal(tt.atoms2residues(1), 3)  # identity of parent changed
+        assert_equal(len(tt.residues2atoms_1d(0)), 1)  # 1 fewer here
+        assert_equal(len(tt.residues2atoms_1d(3)), 3)  # 1 more here
+
+    def test_move_residue_simple(self):
+        tt = self.tt
+        assert_equal(tt.residues2segments(1), 1)
+        assert_equal(len(tt.segments2residues_1d(0)), 2)
+        assert_equal(len(tt.segments2residues_1d(1)), 2)
+
+        # move 2nd residue to 1st segment (res1 -> seg0)
+        tt.move_residue(1, 0)
+
+        assert_equal(tt.residues2segments(1), 0)
+        assert_equal(len(tt.segments2residues_1d(0)), 3)
+        assert_equal(len(tt.segments2residues_1d(1)), 1)
+
+
+class TestResidueMoves(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def move_atom(self):
+        at = self.u.atoms[0]
+        
+        assert_equal(at.resid, 1)
+        assert_equal(at.resname, 'MET')
+        assert_equal(len(self.u.residues[0]), 19)
+        assert_equal(len(self.u.residues[4]), 19)
+
+        at.resid = 5
+
+        assert_equal(at.resid, 5)
+        assert_equal(at.resname, 'LEU')
+        assert_equal(len(self.u.residues[0]), 18)
+        assert_equal(len(self.u.residues[4]), 20)

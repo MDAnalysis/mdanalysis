@@ -17,6 +17,20 @@
 Topology object --- :mod:`MDAnalysis.core.topology'
 ===================================================================
 
+
+"""
+
+"""
+# second docstring == multiline comment
+
+TODO Notes:
+  Could make downshift tables lazily built! This would
+    a) Make these not get built when not used
+    b) Optimise moving multiple atoms between residues as only built once afterwards
+
+  Could optimise moves by only updating the two parent tables rather than rebuilding everything!
+
+
 """
 from six.moves import zip
 import numpy as np
@@ -109,7 +123,7 @@ class TransTable(object):
         if atom_resindex is None:
             self._AR = np.zeros(n_atoms, dtype=np.int64)
         else:
-            self._AR = atom_resindex
+            self._AR = atom_resindex.copy()
             if not len(self._AR) == n_atoms:
                 raise ValueError("atom_resindex must be len n_atoms")
         self._RA = make_downshift_arrays(self._AR)
@@ -118,7 +132,7 @@ class TransTable(object):
         if residue_segindex is None:
             self._RS = np.zeros(n_residues, dtype=np.int64)
         else:
-            self._RS = residue_segindex
+            self._RS = residue_segindex.copy()
             if not len(self._RS) == n_residues:
                 raise ValueError("residue_segindex must be len n_residues")
         self._SR = make_downshift_arrays(self._RS)
@@ -291,12 +305,13 @@ class TransTable(object):
 
         Returns
         -------
-        saix
+        saix : list
             each element corresponds to a segment index, in order given in
             `six`, with each element being an array of the atom indices present
             in that segment
 
         """
+        # residues in EACH 
         rixs = self.segments2residues_2d(six)
 
         if isinstance(rixs, np.ndarray):
@@ -308,14 +323,15 @@ class TransTable(object):
     #TODO: movers and resizers
 
     # Move between different groups.
-    # In general, delete old address, add new address
     def move_atom(self, aix, rix):
         """Move aix to be in rix"""
-        pass
+        self._AR[aix] = rix
+        self._RA = make_downshift_arrays(self._AR)
 
     def move_residue(self, rix, six):
         """Move rix to be in six"""
-        pass
+        self._RS[rix] = six
+        self._SR = make_downshift_arrays(self._RS)
 
     def resize(self):
         pass
