@@ -29,6 +29,7 @@ import functools
 from ..lib.mdamath import norm, dihedral
 from ..lib.mdamath import angle as slowang
 from ..lib.util import cached
+from ..lib import util
 from ..lib import distances
 
 
@@ -99,12 +100,12 @@ class TopologyObject(object):
         return hash((self._u, tuple(self.indices)))
 
     def __repr__(self):
+        indices = sorted(self.indices)
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
-                "Atom {num}".format(
-                    num=a.index)
-                for a in self.atoms]))
+                "Atom {0}".format(i)
+                for i in indices]))
 
     def __contains__(self, other):
         """Check whether an atom is in this :class:`TopologyObject`"""
@@ -438,9 +439,8 @@ class TopologyDict(object):
                 selection = self.dict[key[::-1]]
 
             bix = np.vstack([s.indices for s in selection])
-            types = np.vstack([s.type for s in selection])
 
-            return TopologyGroup(bix, self._u, self.toptype, types)
+            return TopologyGroup(bix, self._u, btype=self.toptype)
         else:
             raise KeyError(key)
 
@@ -522,12 +522,15 @@ class TopologyGroup(object):
             type = np.array([None for x in bondidx]).reshape(len(bondidx), 1)
         split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
         if len(bondidx) > 0:
-            unique_records = np.unique((np.rec.fromarrays([bondidx[:, i] for i in xrange(split_index)] + [type])))
-            self._bix = np.vstack([unique_records[unique_records.dtype.names[i]] for i in xrange(split_index)]).T
-            self._bondtypes = unique_records[unique_records.dtype.names[bondidx.shape[1]]]
+            uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
+            uniq_types = type[uniq_idx]
+
+            self._bix = uniq
+            self._bondtypes = uniq_types
+
             # Create vertical AtomGroups
-            self._ags = [universe.atoms[bondidx[:,i]]
-                         for i in xrange(bondidx.shape[1])]
+            self._ags = [universe.atoms[self._bix[:,i]]
+                         for i in xrange(self._bix.shape[1])]
         else:
             self._bix = np.array([])
             self._bondtypes = np.array([])
@@ -658,29 +661,27 @@ class TopologyGroup(object):
                                      other.universe,
                                      other.btype,
                                      other._bondtypes)
-
-        # add TO to me
-        if isinstance(other, TopologyObject):
+        else:
             if not other.btype == self.btype:
                 raise TypeError("Cannot add different types of "
                                 "TopologyObjects together")
-            return TopologyGroup(
-                np.concatenate([self.indices, other.indices[None, :]]),
-                self.universe,
-                self.btype,
-                np.concatenate([self._bondtypes,
-                                np.array([other._bondtype])])
+            if isinstance(other, TopologyObject):
+                # add TO to me
+                return TopologyGroup(
+                    np.concatenate([self.indices, other.indices[None, :]]),
+                    self.universe,
+                    self.btype,
+                    np.concatenate([self._bondtypes,
+                                    np.array([other._bondtype])])
                 )
-
-        # add TG to me
-        if self.btype != other.btype:
-            raise TypeError(
-                "Can only combine TopologyGroups of the same type")
-        return TopologyGroup(
-            np.concatenate([self.indices, other.indices]),
-            self.universe,
-            self.btype,
-            np.concatenate([self._bondtypes, other._bondtypes]))
+            else:
+                # add TG to me
+                return TopologyGroup(
+                    np.concatenate([self.indices, other.indices]),
+                    self.universe,
+                    self.btype,
+                    np.concatenate([self._bondtypes, other._bondtypes])
+                )
 
     def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
@@ -695,10 +696,15 @@ class TopologyGroup(object):
                         'angle':Angle,
                         'dihedral':Dihedral,
                         'improper':ImproperDihedral}[self.btype]
-            return outclass(self._bix[item], self._u, type=self._bondtypes[item])
-        # Slice my index array with the item
-        return self.__class__(self._bix[item], self._u, btype=self.btype,\
-                              type=self._bondtypes[item])
+            return outclass(self._bix[item],
+                            self._u,
+                            type=self._bondtypes[item])
+        else:
+            # Slice my index array with the item
+            return self.__class__(self._bix[item],
+                                  self._u,
+                                  btype=self.btype,
+                                  type=self._bondtypes[item])
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""

@@ -2,16 +2,17 @@ import os
 import numpy as np
 
 import MDAnalysis as mda
+from MDAnalysis import NoDataError
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
-                           assert_)
+                           assert_, assert_array_almost_equal)
 from unittest import TestCase
 
+from MDAnalysisTests import tempdir
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
-from MDAnalysis.tests.datafiles import LAMMPScnt
-from MDAnalysisTests import tempdir
+from MDAnalysis.tests.datafiles import LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
 
 
 def test_datareader_ValueError():
@@ -38,7 +39,7 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.atoms[0].position, self.pos_atom1)
 
     def test_velos(self):
-        assert_equal(self.u.atoms[0].velocity, self.vel_atom1)
+        assert_almost_equal(self.u.atoms[0].velocity, self.vel_atom1)
 
     def test_dimensions(self):
         assert_equal(self.u.dimensions, self.dimensions)
@@ -64,6 +65,104 @@ class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
 
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
     pass
+
+class _TestLAMMPSDATAWriter(TestCase):
+    all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
+    all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
+
+    def setUp(self):
+        self.u = mda.Universe(self.filename)
+        # dummy output file
+        ext = os.path.splitext(self.filename)[1]
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,  'lammps-data-writer-test' + ext)
+
+        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms) as W:
+            W.write(self.u.atoms)
+        self.u_ref = mda.Universe(self.filename)
+        self.u_new = mda.Universe(self.outfile)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.u_new
+        del self.u_ref
+        del self.tmpdir
+
+    def test_Writer_dimensions(self):
+        assert_almost_equal(self.u_ref.dimensions, self.u_new.dimensions,
+                         err_msg="attributes different after writing")
+
+    def test_Writer_atoms(self):
+        for attr in self.all_attrs:
+            if hasattr(self.u_ref.atoms, attr):
+                assert_equal(getattr(self.u_ref.atoms, attr),\
+                             getattr(self.u_new.atoms, attr),
+                             err_msg="attributes different after writing")
+            else:
+                try:
+                    assert_equal(len(getattr(self.u_new.atoms,attr)), 0)
+                except (AttributeError, NoDataError):
+                    pass
+
+        for attr in self.all_numerical_attrs:
+            if hasattr(self.u_ref.atoms, attr):
+                assert_almost_equal(getattr(self.u_ref.atoms,attr),\
+                                    getattr(self.u_new.atoms,attr),\
+                                 err_msg="attributes different after writing",
+                                 decimal=6)
+            else:
+                try:
+                    assert_almost_equal(len(getattr(self.u_new.atoms,attr)), 0)
+                except (AttributeError, NoDataError):
+                    pass
+
+class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata
+
+class TestLAMMPSDATAWriter_mini(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata_mini
+
+class TestLAMMPSDATAWriter_cnt(_TestLAMMPSDATAWriter):
+    filename = LAMMPScnt
+
+class TestLAMMPSDATAWriter_hyd(_TestLAMMPSDATAWriter):
+    filename = LAMMPShyd
+
+class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
+    filename = LAMMPSdata
+    N_kept = 5
+
+    def setUp(self):
+        self.u = mda.Universe(self.filename)
+        # dummy output file
+        ext = os.path.splitext(self.filename)[1]
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,
+                'lammps-data-writer-test' + ext)
+
+        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms) as W:
+            W.write(self.u.atoms[:self.N_kept])
+        self.u_ref = mda.Universe(self.filename)
+        self.u_new = mda.Universe(self.outfile)
+
+    def test_Writer_atoms(self):
+        for attr in self.all_numerical_attrs:
+            if hasattr(self.u_ref.atoms, attr):
+                assert_almost_equal(getattr(self.u_ref.atoms[:self.N_kept], attr),
+                                    getattr(self.u_new.atoms, attr),
+                                 err_msg="attributes different after writing",
+                                 decimal=6)
+            else:
+                try:
+                    assert_almost_equal(len(getattr(self.u_new.atoms,attr)), 0)
+                except (AttributeError, NoDataError):
+                    pass
+
+        assert_equal(len(self.u_new.atoms.bonds), 4)
+        assert_equal(len(self.u_new.atoms.angles), 4)
 
 # need more tests of the LAMMPS DCDReader
 
