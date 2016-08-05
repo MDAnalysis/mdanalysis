@@ -1650,6 +1650,9 @@ class TestResidueGroup(TestCase):
 class TestSegment(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
+
+    # INVALID: no `set_segids` method for ResidueGroup; c
+    @skip
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.universe.residues[:100].set_segids("A")  # make up some segments
@@ -1657,28 +1660,44 @@ class TestSegment(TestCase):
         self.universe.residues[150:].set_segids("C")
         self.sB = self.universe.segments[1]
 
+    # INVALID: `Segment` from a particular Universe will not be the same class
+    # in core; each Universe generates its own set of classes based on topology
+    @skip
     def test_type(self):
         assert_equal(type(self.sB), MDAnalysis.core.groups.Segment)
         assert_equal(self.sB.name, "B")
 
+    # INVALID: `Segment` doesn't behave as a `ResidueGroup`;
+    # no index behavior
+    @skip
     def test_index(self):
         s = self.sB
         res = s[5]
         assert_equal(type(res), MDAnalysis.core.groups.Residue)
 
+    # INVALID: `Segment` doesn't behave as a `ResidueGroup`;
+    # no slicing behavior
+    @skip
     def test_slicing(self):
         res = self.sB[5:10]
         assert_equal(len(res), 5)
         assert_equal(type(res), MDAnalysis.core.groups.ResidueGroup)
 
+    # INVALID: `Segment` doesn't behave as a `ResidueGroup`;
+    # no slicing behavior
+    @skip
     def test_advanced_slicing(self):
         res = self.sB[[3, 7, 2, 4]]
         assert_equal(len(res), 4)
         assert_equal(type(res), MDAnalysis.core.groups.ResidueGroup)
 
+    # INVALID: no `name` or `id` attribute for `Segment`; only `segid`
+    @skip
     def test_id(self):
         assert_equal(self.sB.name, self.sB.id)
 
+    # INVALID: no `name` or `id` attribute for `Segment`; only `segid`
+    @skip
     def test_set_id(self):
         # Test setting the name via the id attribute
         new = 'something'
@@ -1688,6 +1707,7 @@ class TestSegment(TestCase):
 
 
 class TestSegmentGroup(TestCase):
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -1695,6 +1715,7 @@ class TestSegmentGroup(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.g = self.universe.atoms.segments
 
+    # VALID
     def test_newSegmentGroup(self):
         """test that slicing a SegmentGroup returns a new SegmentGroup (Issue 135)"""
         g = self.universe.atoms.segments
@@ -1702,21 +1723,30 @@ class TestSegmentGroup(TestCase):
         assert_equal(type(newg), type(g), "Failed to make a new SegmentGroup: type mismatch")
         assert_equal(len(newg), len(g))
 
+    # VALID
     def test_n_atoms(self):
         assert_equal(self.g.n_atoms, 3341)
 
+    # VALID
     def test_n_residues(self):
         assert_equal(self.g.n_residues, 214)
 
+    # INVALID: `SegmentGroup.resids` gives list of arrays, one array for each segment
+    @skip
     def test_resids_dim(self):
         assert_equal(len(self.g.resids), len(self.g.residues))
 
+    # INVALID: topology has no resnums
+    @skip
     def test_resnums_dim(self):
         assert_equal(len(self.g.resnums), len(self.g.residues))
 
+    # VALID
     def test_segids_dim(self):
         assert_equal(len(self.g.segids), len(self.g))
 
+    # INVALID: cannot set resids from `SegmentGroup`; no `set_resids` method
+    @skip
     def test_set_resids(self):
         g = self.universe.select_atoms("bynum 12:42").segments
         resid = 999
@@ -1729,6 +1759,8 @@ class TestSegmentGroup(TestCase):
         assert_equal(g.residues.resids, resid * np.ones(g.n_residues),
                      err_msg="failed to set_resid of segments belonging to atoms 12:42 to same resid")
 
+    # INVALID: cannot set resids from `SegmentGroup`; no `set_resids` method
+    @skip
     def test_set_resids(self):
         g = self.universe.select_atoms("resid 10:18").segments
         resid = 999
@@ -1737,18 +1769,24 @@ class TestSegmentGroup(TestCase):
         assert_equal(g.resids, [resid],
                      err_msg="failed to set_resid  in Segment {0}".format(g))
 
+    # INVALID: no `set_segids` method; use `segids` property directly
+    @skip
     def test_set_segids(self):
         s = self.universe.select_atoms('all').segments
         s.set_segids(['ADK'])
         assert_equal(self.universe.segments.segids, ['ADK'],
                      err_msg="failed to set_segid on segments")
 
+    # INVALID: no `set_segids` method; use `segids` property directly
+    @skip
     def test_set_segid_updates_self(self):
         g = self.universe.select_atoms("resid 10:18").segments
         g.set_segids('ADK')
         assert_equal(g.segids, ['ADK'],
                      err_msg="old selection was not changed in place after set_segid")
 
+    # INVALID: no `set_segids` method; use `segids` property directly
+    @skip
     def test_set_masses(self):
         g = self.universe.select_atoms("bynum 12:42 and name H*").segments
         mass = 2.0
@@ -1758,6 +1796,8 @@ class TestSegmentGroup(TestCase):
                      mass * np.ones(g.n_atoms),
                      err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {0}".format(mass))
 
+    # INVALID: no `set_segids` method; use `segids` property directly
+    @skip
     def test_set_segid_ValueError(self):
         assert_raises(ValueError, self.g.set_resids, [1, 2, 3, 4])
 
@@ -1765,15 +1805,19 @@ class TestSegmentGroup(TestCase):
 class TestAtomGroupVelocities(TestCase):
     """Tests of velocity-related functions in AtomGroup"""
 
+    # VALID
     def setUp(self):
         self.universe = MDAnalysis.Universe(GRO, TRR)
         self.ag = self.universe.select_atoms("bynum 12:42")
 
+    # INVALID: no `get_velocities` method; use `velocities` property directly
+    @skip
     @dec.slow
     def test_get_velocities(self):
         v = self.ag.get_velocities()
         assert_(np.any(np.abs(v) > 1e-6), "velocities should be non-zero")
 
+    # VALID
     @dec.slow
     def test_velocities(self):
         ag = self.universe.atoms[42:45]
@@ -1784,6 +1828,8 @@ class TestAtomGroupVelocities(TestCase):
         v = ag.velocities
         assert_almost_equal(v, ref_v, err_msg="velocities were not read correctly")
 
+    # INVALID: no `get_velocities` method; use `velocities` property directly
+    @skip
     @dec.slow
     def test_set_velocities(self):
         ag = self.ag
@@ -1796,16 +1842,20 @@ class TestAtomGroupVelocities(TestCase):
 class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
+    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.prec = 6
 
+    # VALID
     def tearDown(self):
         del self.universe
         del self.prec
 
+    
+    # VALID: but should be testing non-hidden attributes
     def test_partial_timestep(self):
         ag = self.universe.select_atoms('name Ca')
         idx = ag.indices
@@ -1819,6 +1869,8 @@ class TestAtomGroupTimestep(TestCase):
                                       err_msg="Partial timestep coordinates wrong")
 
 
+# INVALID: AtomGroups can't exist without a Universe
+@skip
 def test_empty_AtomGroup():
     """Test that an empty AtomGroup can be constructed (Issue 12)"""
     ag = MDAnalysis.core.groups.AtomGroup([])
