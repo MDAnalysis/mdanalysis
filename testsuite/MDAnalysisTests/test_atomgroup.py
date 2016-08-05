@@ -1167,35 +1167,50 @@ class TestAtomGroup(TestCase):
 
 
 class TestAtomGroupNoTop(TestCase):
+
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
         self.ag = self.u.atoms[:10]
 
+    # VALID
     def tearDown(self):
         del self.u
         del self.ag
 
+    # INVALID: no bonds attribute if not bonds in topology
+    @skip
     def test_nobonds(self):
         assert_equal(self.ag.bonds, [])
 
+    # INVALID: no angles attribute if not bonds in topology
+    @skip
     def test_noangles(self):
         assert_equal(self.ag.angles, [])
 
+    # INVALID: no dihedrals attribute if not bonds in topology
+    @skip
     def test_nodihedrals(self):
         assert_equal(self.ag.dihedrals, [])
 
+    # INVALID: no impropers attribute if not bonds in topology
+    @skip
     def test_noimps(self):
         assert_equal(self.ag.impropers, [])
 
     # Because I'm messing with atom info, I've put these here separated from
     # other tests
+    # INVALID: AtomGroups keep no caches now
+    @skip
     def test_clear_cache(self):
         self.ag._clear_caches()
 
         assert_equal(self.ag._cache, dict())
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_rebuild_cache_residues(self):
         assert_equal(len(self.ag.residues), 1)
 
@@ -1211,6 +1226,8 @@ class TestAtomGroupNoTop(TestCase):
         self.ag._rebuild_caches()
         assert_equal(len(self.ag.residues), 2)
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_rebuild_cache_segments(self):
         # This test is similar to above, but a second segment has to be taken
         # from a new universe
@@ -1223,6 +1240,8 @@ class TestAtomGroupNoTop(TestCase):
         self.ag._rebuild_caches()
         assert_equal(len(self.ag.segments), 2)
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_atom_cachesize_change(self):
         # By default 10,000 atoms are required to necessitate cache lookup, we
         # can change this though
@@ -1237,18 +1256,24 @@ class TestAtomGroupNoTop(TestCase):
         # Check if cache was built this time
         assert_equal('atoms' in ag._cache, True)
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_atomcache_use(self):
         # Tests that lookup with 'atoms' cache works
         ag = self.u.atoms[:100]
         ag._atomcache_size = 50
         assert_equal(self.u.atoms[50] in ag, True)
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_rebuild_atomcache_no(self):
         # Don't always add atoms into cache
         ag = self.u.atoms[:100]
         ag._rebuild_caches()
         assert_equal('atoms' in ag._cache, False)
 
+    # INVALID: no caches in AtomGroups anymore
+    @skip
     def test_rebuild_atomcache(self):
         # Tests that 'atoms' is built into cache if size is enough
         ag = self.u.atoms[:100]
@@ -1256,6 +1281,8 @@ class TestAtomGroupNoTop(TestCase):
         ag._rebuild_caches()
         assert_equal('atoms' in ag._cache, True)
 
+    # INVALID: can only set dimensions from the Universe
+    @skip
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90])
@@ -1267,14 +1294,18 @@ class TestAtomGroupNoTop(TestCase):
 class TestUniverseSetTopology(TestCase):
     """Tests setting of bonds/angles/dihedrals/impropers from Universe."""
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 
+    # VALID
     def tearDown(self):
         del self.u
 
+    # INVALID: universe doesn't have bonds; AtomGroups do, though
+    @skip
     def test_set_bonds(self):
         assert_equal(len(self.u.bonds), 3365)
         assert_equal(len(self.u.atoms[0].bonds), 4)
@@ -1284,6 +1315,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal(len(self.u.bonds), 0)
         assert_equal(len(self.u.atoms[0].bonds), 0)
 
+    # INVALID: universe doesn't have angles; AtomGroups do, though
+    @skip
     def test_set_angles(self):
         assert_equal(len(self.u.angles), 6123)
         assert_equal(len(self.u.atoms[0].angles), 9)
@@ -1293,6 +1326,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal(len(self.u.angles), 0)
         assert_equal(len(self.u.atoms[0].angles), 0)
 
+    # INVALID: universe doesn't have dihedrals; AtomGroups do, though
+    @skip
     def test_set_dihedrals(self):
         assert_equal(len(self.u.dihedrals), 8921)
         assert_equal(len(self.u.atoms[0].dihedrals), 14)
@@ -1302,6 +1337,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal(len(self.u.dihedrals), 0)
         assert_equal(len(self.u.atoms[0].dihedrals), 0)
 
+    # INVALID: universe doesn't have impropers; AtomGroups do, though
+    @skip
     def test_set_impropers(self):
         assert_equal(len(self.u.impropers), 541)
         assert_equal(len(self.u.atoms[4].impropers), 1)
@@ -1316,6 +1353,9 @@ class TestUniverseSetTopology(TestCase):
     # Assert it's in cache
     # Delete
     # Assert it's not in cache
+
+    # INVALID: universe has no direct bonds access
+    @skip
     def test_bonds_delete(self):
         self.u.bonds
         self.u.atoms[0].bonds
@@ -1328,6 +1368,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('bonds' in self.u._cache, False)
         assert_equal('bondDict' in self.u._cache, False)
 
+    # INVALID: universe has no direct angles access
+    @skip
     def test_angles_delete(self):
         self.u.angles
         self.u.atoms[0].angles
@@ -1340,6 +1382,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('angles' in self.u._cache, False)
         assert_equal('angleDict' in self.u._cache, False)
 
+    # INVALID: universe has no direct dihedrals access
+    @skip
     def test_dihedrals_delete(self):
         self.u.dihedrals
         self.u.atoms[0].dihedrals
@@ -1352,6 +1396,8 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('dihedrals' in self.u._cache, False)
         assert_equal('dihedralDict' in self.u._cache, False)
 
+    # INVALID: universe has no direct impropers access
+    @skip
     def test_impropers_delete(self):
         self.u.impropers
         self.u.atoms[0].impropers
@@ -1366,17 +1412,24 @@ class TestUniverseSetTopology(TestCase):
 
 
 class TestResidue(TestCase):
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.res = self.universe.residues[100]
 
+    # INVALID: a Universe has its own Residue class, so comparing
+    # to base class definition isn't meaningful
+    @skip
     def test_type(self):
         assert_equal(type(self.res), MDAnalysis.core.groups.Residue)
         assert_equal(self.res.name, "ILE")
         assert_equal(self.res.id, 101)
 
+    # INVALID: residues do not behave like AtomGroups anymore,
+    # so cannot index in this way; should use `res.atoms[2]`
+    @skip
     def test_index(self):
         atom = self.res[2]
         assert_equal(type(atom), MDAnalysis.core.groups.Atom)
@@ -1384,11 +1437,17 @@ class TestResidue(TestCase):
         assert_equal(atom.index, 1522)
         assert_equal(atom.resid, 101)
 
+    # INVALID: residues do not behave like AtomGroups anymore,
+    # so cannot slice in this way
+    @skip
     def test_slicing(self):
         atoms = self.res[2:10:2]
         assert_equal(len(atoms), 4)
         assert_equal(type(atoms), MDAnalysis.core.groups.AtomGroup)
 
+    # INVALID: residues do not behave like AtomGroups anymore,
+    # so cannot slice in this way
+    @skip
     def test_advanced_slicing(self):
         atoms = self.res[[0, 2, -2, -1]]
         assert_equal(len(atoms), 4)
@@ -1399,11 +1458,13 @@ class TestResidue(TestCase):
 class TestResidueGroup(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
+    # VALID
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.rg = self.universe.atoms.residues
 
+    # VALID
     def test_newResidueGroup(self):
         """test that slicing a ResidueGroup returns a new ResidueGroup
         (Issue 135)"""
@@ -1413,26 +1474,35 @@ class TestResidueGroup(TestCase):
                      "Failed to make a new ResidueGroup: type mismatch")
         assert_equal(len(newrg), len(rg[10:20:2]))
 
+    # VALID
     def test_n_atoms(self):
         assert_equal(self.rg.n_atoms, 3341)
 
+    # VALID
     def test_n_residues(self):
         assert_equal(self.rg.n_residues, 214)
 
+    # VALID
     def test_resids_dim(self):
         assert_equal(len(self.rg.resids), len(self.rg))
 
+    # INVALID: this topology has no resnums, so no resnums property
+    @skip
     def test_resnums_dim(self):
         assert_equal(len(self.rg.resnums), len(self.rg))
 
+    # VALID
     def test_segids_dim(self):
         assert_equal(len(self.rg.segids), len(self.rg))
 
+    # VALID
     def test_len(self):
         """testing that len(residuegroup) == residuegroup.n_residues"""
         assert_equal(len(self.rg), self.rg.n_residues,
                      "len and n_residues disagree")
 
+    # INVALID: set resids with `ResidueGroup.resids` property; no `set_resids` method
+    @skip
     def test_set_resids(self):
         rg = self.universe.select_atoms("bynum 12:42").residues
         resid = 999
@@ -1446,6 +1516,8 @@ class TestResidueGroup(TestCase):
                      err_msg="failed to set_resid of residues belonging to "
                      "atoms 12:42 to same resid")
 
+    # INVALID: set resids with `ResidueGroup.resids` property; no `set_resids` method
+    @skip
     def test_set_resids(self):
         """test_set_resid: set ResidueGroup resids on a per-residue basis"""
         rg = self.universe.select_atoms("resid 10:18").residues
@@ -1467,6 +1539,8 @@ class TestResidueGroup(TestCase):
                      err_msg="failed to set_resid of residues belonging to "
                      "residues 10:18 to new resids")
 
+    # INVALID: set resids with `ResidueGroup.resids` property; no `set_resids` method
+    @skip
     def test_set_resids_updates_self(self):
         rg = self.universe.select_atoms("resid 10:18").residues
         resids = np.array(rg.resids) + 1000
@@ -1475,6 +1549,8 @@ class TestResidueGroup(TestCase):
                      err_msg="old selection was not changed in place "
                      "after set_resid")
 
+    # INVALID: no resnums in this topology, so no resnums property
+    @skip
     def test_set_resnum_single(self):
         rg = self.universe.residues[:3]
         new = 22
@@ -1484,6 +1560,8 @@ class TestResidueGroup(TestCase):
         for r in rg:
             assert_equal(r.resnum, new)
 
+    # INVALID: no resnums in this topology, so no resnums property
+    @skip
     def test_set_resnum_many(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24]
@@ -1493,12 +1571,16 @@ class TestResidueGroup(TestCase):
         for r, v in zip(rg, new):
             assert_equal(r.resnum, v)
 
+    # INVALID: no resnums in this topology, so no resnums property
+    @skip
     def test_set_resnum_ValueError(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24, 25]
 
         assert_raises(ValueError, rg.set_resnums, new)
 
+    # INVALID: no `set_resnames` method; use `resnames` property directly
+    @skip
     def test_set_resname_single(self):
         rg = self.universe.residues[:3]
         new = 'newname'
@@ -1508,6 +1590,8 @@ class TestResidueGroup(TestCase):
         for r in rg:
             assert_equal(r.name, new)
 
+    # INVALID: no `set_resnames` method; use `resnames` property directly
+    @skip
     def test_set_resname_many(self):
         rg = self.universe.residues[:3]
         new = ['a', 'b', 'c']
@@ -1517,12 +1601,18 @@ class TestResidueGroup(TestCase):
         for r, v in zip(rg, new):
             assert_equal(r.name, v)
 
+    # INVALID: no `set_resnames` method; use `resnames` property directly
+    @skip
     def test_set_resname_ValueError(self):
         rg = self.universe.residues[:3]
         new = ['a', 'b', 'c', 'd']
 
         assert_raises(ValueError, rg.set_resnames, new)
 
+    # INVALID: no `set_resids` method; also, residues are not mergeable
+    # by setting resids; resids are not necessarily unique; atoms must
+    # have their resindex set to change residue membership
+    @skip
     def test_merge_residues(self):
         rg = self.universe.select_atoms("resid 12:14").residues
         nres_old = self.universe.atoms.n_residues
@@ -1545,6 +1635,8 @@ class TestResidueGroup(TestCase):
                      "do not agree after residue "
                              "merge.")
 
+    # INVALID: no `set_masses` method; use `masses` property directly    
+    @skip
     def test_set_masses(self):
         rg = self.universe.select_atoms("bynum 12:42 and name H*").residues
         mass = 2.0
