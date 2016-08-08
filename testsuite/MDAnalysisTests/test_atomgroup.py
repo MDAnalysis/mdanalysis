@@ -2025,11 +2025,13 @@ def test_instantselection_termini():
 
 
 class TestUniverse(TestCase):
+    # VALID
     def test_load(self):
         # Universe(top, trj)
         u = MDAnalysis.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_load_bad_topology(self):
@@ -2039,6 +2041,7 @@ class TestUniverse(TestCase):
 
         assert_raises(ValueError, bad_load)
 
+    # VALID
     @attr('issue')
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -2047,6 +2050,7 @@ class TestUniverse(TestCase):
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
@@ -2057,6 +2061,7 @@ class TestUniverse(TestCase):
 
         assert_raises(ValueError, bad_load, u)
 
+    # VALID 
     def test_load_structure(self):
         # Universe(struct)
         ref = MDAnalysis.Universe(PSF, PDB_small)
@@ -2064,6 +2069,7 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_almost_equal(u.atoms.positions, ref.atoms.positions)
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_load_multiple_list(self):
@@ -2073,6 +2079,7 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_load_multiple_args(self):
@@ -2082,12 +2089,14 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_pickle_raises_NotImplementedError(self):
         u = MDAnalysis.Universe(PSF, DCD)
         assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 
+    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_set_dimensions(self):
@@ -2096,6 +2105,7 @@ class TestUniverse(TestCase):
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
+    # VALID
     @staticmethod
     def test_universe_kwargs():
         u = MDAnalysis.Universe(PSF, PDB_small, fake_kwarg=True)
@@ -2110,6 +2120,8 @@ class TestUniverse(TestCase):
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
 
+# INVALID: no flags in new system
+@skip
 class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
@@ -2153,6 +2165,7 @@ class TestPBCFlag(TestCase):
         }
         self.ag = self.universe.residues[0:3]
 
+    # INVALID: no flags in new system
     def tearDown(self):
         MDAnalysis.core.flags['use_pbc'] = False
         del self.universe
@@ -2160,10 +2173,12 @@ class TestPBCFlag(TestCase):
         del self.ref_PBC
         del self.ag
 
+    # INVALID: no flags in new system
     def test_flag(self):
         # Test default setting of flag
         assert_equal(MDAnalysis.core.flags['use_pbc'], False)
 
+    # VALID
     def test_default(self):
         # Test regular behaviour
         assert_almost_equal(self.ag.center_of_geometry(), self.ref_noPBC['COG'], self.prec)
@@ -2177,6 +2192,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principal_axes(), self.ref_noPBC['PAxes'], self.prec)
 
+    # VALID
     def test_pbcflag(self):
         # Test using ag method flag
         assert_almost_equal(self.ag.center_of_geometry(pbc=True), self.ref_PBC['COG'], self.prec)
@@ -2190,6 +2206,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.bsphere(pbc=True)[1], self.ref_PBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principal_axes(pbc=True), self.ref_PBC['PAxes'], self.prec)
 
+    # INVALID: no flags in new system
     def test_usepbc_flag(self):
         # Test using the core.flags flag
         MDAnalysis.core.flags['use_pbc'] = True
@@ -2205,6 +2222,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.principal_axes(), self.ref_PBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
 
+    # INVALID: no flags in new system
     def test_override_flag(self):
         # Test using the core.flags flag, then overriding
         MDAnalysis.core.flags['use_pbc'] = True
@@ -2222,31 +2240,34 @@ class TestPBCFlag(TestCase):
 
 
 # INVALID: not including as_Universe, since not clear what it does that's different from `Universe()`
-#class TestAsUniverse(TestCase):
-#    @dec.skipif(parser_not_found('DCD'),
-#                'DCD parser not available. Are you using python 3?')
-#    def setUp(self):
-#        self.u = MDAnalysis.Universe(PSF_notop, DCD)
-#
-#    def tearDown(self):
-#        del self.u
-#
-#    def test_empty_TypeError(self):
-#        assert_raises(TypeError, as_Universe)
-#
-#    def test_passback(self):
-#        returnval = as_Universe(self.u)
-#
-#        assert_equal(returnval is self.u, True)
-#
-#    def test_makeuni(self):
-#        returnval = as_Universe(PSF_notop, DCD)
-#
-#        ## __eq__ method for Universe doesn't exist, make one up here
-#        assert_equal(set(returnval.atoms), set(self.u.atoms))
-#
+@skip
+class TestAsUniverse(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF_notop, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_empty_TypeError(self):
+        assert_raises(TypeError, as_Universe)
+
+    def test_passback(self):
+        returnval = as_Universe(self.u)
+
+        assert_equal(returnval is self.u, True)
+
+    def test_makeuni(self):
+        returnval = as_Universe(PSF_notop, DCD)
+
+        ## __eq__ method for Universe doesn't exist, make one up here
+        assert_equal(set(returnval.atoms), set(self.u.atoms))
+
 
 class TestFragments(TestCase):
+    # INVALID: `Universe._topology` doesn't work this way anymore
+    @skip
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -2257,6 +2278,8 @@ class TestFragments(TestCase):
     def tearDown(self):
         del self.u
 
+    # INVALID: Only `AtomGroup` has a `fragments` property
+    @skip
     def test_nobondsfail(self):
         u2 = MDAnalysis.Universe(XYZ_mini)
 
@@ -2265,6 +2288,8 @@ class TestFragments(TestCase):
 
         assert_raises(NoDataError, query_frag, u2)
 
+    # INVALID: Only `AtomGroup` has a `fragments` property
+    @skip
     def test_make_fragments(self):
         # Test that the Universe method for making fragments works
         # This checks that the correct number of fragments are made
@@ -2272,10 +2297,13 @@ class TestFragments(TestCase):
 
         assert_equal(len(frag), 2)  # normally has one but I removed a bond
 
+    # VALID
     def test_single_fragment(self):
         # I removed the bond from this atom so it's in a fragment on its own
         assert_equal(len(self.u.atoms[2].fragment), 1)
 
+    # INVALID: Only `AtomGroup` has a `fragments` property
+    @skip
     def test_fragment_coverage(self):
         # Test that fragments contain all the atoms in Universe
         frags = self.u.fragments
@@ -2284,6 +2312,8 @@ class TestFragments(TestCase):
 
         assert_equal(natoms, len(self.u.atoms))
 
+    # INVALID: now called `Universe._fragdict`
+    @skip
     def test_make_fragDict(self):
         # Test that the fragDict contains all Atoms
         fd = self.u._fragmentDict
@@ -2291,10 +2321,12 @@ class TestFragments(TestCase):
         for a in self.u.atoms:
             assert_equal(a in fd, True)
 
+    # VALID
     def test_atom_lookup(self):
         # check that looking up a fragment from an Atom when "cold" works
         assert_equal(self.u.atoms[0].fragment is self.u.atoms[4].fragment, True)
 
+    # VALID
     def test_atomgroup_lookup(self):
         # check that atomgroups return the fragments ok
         ag = self.u.atoms[100:200]
@@ -2302,14 +2334,18 @@ class TestFragments(TestCase):
 
 
 class TestUniverseCache(TestCase):
+    # VALID: we should support building Universes with empty Topologies somehow
     def setUp(self):
         self.u = MDAnalysis.Universe()  # not using atoms so just blank universe
         self.fill = [1, 2, 3]
 
+    # VALID
     def tearDown(self):
         del self.u
         del self.fill
 
+    # INVALID: no caches at all in Universe
+    @skip
     def test_add_to_cache(self):
         # add an item to cache and see if it sticks
         cache = 'aa'
@@ -2318,6 +2354,8 @@ class TestUniverseCache(TestCase):
         assert_equal('aa' in self.u._cache, True)
         assert_equal(self.u._cache[cache], self.fill)
 
+    # INVALID: no caches at all in Universe
+    @skip
     def test_remove_single(self):
         # remove a single item from cache
         cache = 'bb'
@@ -2330,6 +2368,8 @@ class TestUniverseCache(TestCase):
 
         assert_equal(cache in self.u._cache, False)
 
+    # INVALID: no caches at all in Universe
+    @skip
     def test_remove_list(self):
         # remove a few things from cache
         caches = ['cc', 'dd']
@@ -2344,6 +2384,8 @@ class TestUniverseCache(TestCase):
         for c in caches:
             assert_equal(c in self.u._cache, False)
 
+    # INVALID: no caches at all in Universe
+    @skip
     def test_clear_all(self):
         # remove everything from cache
         caches = ['ee', 'ff', 'gg']
@@ -2354,7 +2396,7 @@ class TestUniverseCache(TestCase):
 
         assert_equal(self.u._cache, dict())
 
-
+# VALID
 class TestUnorderedResidues(TestCase):
     """
     This pdb file has resids that are non sequential
@@ -2362,12 +2404,15 @@ class TestUnorderedResidues(TestCase):
     This (previously) led to too many residues being found.
     """
 
+    # VALID
     def setUp(self):
         self.u = MDAnalysis.Universe(unordered_res)
 
+    # VALID
     def tearDown(self):
         del self.u
 
+    # VALID
     @attr("issue")
     def test_build_residues(self):
         assert_equal(len(self.u.residues), 35)
@@ -2377,6 +2422,7 @@ class TestCustomReaders(TestCase):
     """
     Can pass a reader as kwarg on Universe creation
     """
+    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def test_custom_reader(self):
@@ -2384,6 +2430,7 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
         assert_equal(len(u.atoms), 8184)
 
+    # VALID
     def test_custom_reader_singleframe(self):
         T = MDAnalysis.topology.GROParser.GROParser
         R = MDAnalysis.coordinates.GRO.GROReader
@@ -2391,6 +2438,7 @@ class TestCustomReaders(TestCase):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
+    # VALID
     def test_custom_reader_singleframe_2(self):
         # Same as before, but only one argument to Universe
         T = MDAnalysis.topology.GROParser.GROParser
@@ -2399,6 +2447,7 @@ class TestCustomReaders(TestCase):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
+    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def test_custom_parser(self):
@@ -2406,6 +2455,7 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
+    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def test_custom_both(self):
@@ -2416,22 +2466,27 @@ class TestCustomReaders(TestCase):
 
 
 class TestWrap(TestCase):
+    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:100]
 
+    # VALID
     def tearDown(self):
         del self.u
         del self.ag
 
+    # VALID
     def test_wrap_comp_fail(self):
         assert_raises(ValueError, self.ag.wrap, compound='strawberries')
 
+    # VALID
     def test_wrap_cent_fail(self):
         assert_raises(ValueError, self.ag.wrap, compound='residues', center='avacado')
 
+    # VALID
     def test_wrap_box_fail(self):
         assert_raises(ValueError, self.ag.wrap, box=np.array([0, 1]))
 
@@ -2441,12 +2496,14 @@ class TestWrap(TestCase):
 
         return (coords >= 0.0).all() and (coords <= box).all()
 
+    # VALID
     def test_wrap_atoms(self):
         ag = self.u.atoms[100:200]
         ag.wrap(compound='atoms')
 
         assert_equal(self._in_box(ag.positions), True)
 
+    # VALID
     def test_wrap_group(self):
         ag = self.u.atoms[:100]
         ag.wrap(compound='group')
@@ -2455,6 +2512,8 @@ class TestWrap(TestCase):
 
         assert_equal(self._in_box(cen), True)
 
+    # INVALID: must do `r.atoms.center_of_mass()`
+    @skip
     def test_wrap_residues(self):
         ag = self.u.atoms[300:400]
         ag.wrap(compound='residues')
@@ -2463,6 +2522,8 @@ class TestWrap(TestCase):
 
         assert_equal(self._in_box(cen), True)
 
+    # INVALID: must do `s.atoms.center_of_mass()`
+    @skip
     def test_wrap_segments(self):
         ag = self.u.atoms[1000:1200]
         ag.wrap(compound='segments')
@@ -2471,6 +2532,7 @@ class TestWrap(TestCase):
 
         assert_equal(self._in_box(cen), True)
 
+    # VALID
     def test_wrap_fragments(self):
         ag = self.u.atoms[:250]
         ag.wrap(compound='fragments')
@@ -2490,12 +2552,15 @@ class TestGuessBonds(TestCase):
      - fail properly if not
      - work again if vdwradii are passed.
     """
+    # VALID
     def setUp(self):
         self.vdw = {'A':1.05, 'B':0.4}
 
+    # VALID
     def tearDown(self):
         del self.vdw
 
+    # INVALID: Universe has no bonds; AtomGroup does
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
         assert_equal(len(u.bonds), 4)
@@ -2658,6 +2723,7 @@ class TestAtomGroupProperties(object):
             yield self._change_ag_check_atoms, att, vals, ag, ag_set
 
 
+# VALID
 class TestOrphans(object):
     """Test moving Universes out of scope and having A/AG persist
 
@@ -2665,6 +2731,7 @@ class TestOrphans(object):
       - should have access to Universe
       - should be able to use the Reader (coordinates)
     """
+    # VALID
     def test_atom(self):
         u = MDAnalysis.Universe(two_water_gro)
 
@@ -2678,6 +2745,7 @@ class TestOrphans(object):
         assert_(len(atom.universe.atoms) == len(u.atoms))
         assert_array_almost_equal(atom.position, u.atoms[1].position)
 
+    # VALID
     def test_atomgroup(self):
         u = MDAnalysis.Universe(two_water_gro)
 
@@ -2694,11 +2762,14 @@ class TestOrphans(object):
 
 class TestCrossUniverse(object):
     """Test behaviour when we mix Universes"""
+
+    # VALID
     def _check_badadd(self, a, b):
         def add(x, y):
             return x + y
         assert_raises(ValueError, add, a, b)
 
+    # VALID: currently gives TypeError and unhelpful message
     def test_add_mixed_universes(self):
         # Issue #532
         # Checks that adding objects from different universes
@@ -2713,6 +2784,9 @@ class TestCrossUniverse(object):
         for x, y in itertools.product(A, B):
             yield self._check_badadd, x, y
 
+    # INVALID: AtomGroups cannot exist in isolation; must be obtained from a
+    # Universe
+    @skip
     def test_adding_empty_ags(self):
         # Check that empty AtomGroups don't trip up on the Universe check
         u = MDAnalysis.Universe(two_water_gro)
