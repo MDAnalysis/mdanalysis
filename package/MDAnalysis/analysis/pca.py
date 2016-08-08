@@ -31,7 +31,7 @@ eigenvectors of this matrix.
 
 For each eigenvector, its eigenvalue reflects the variance that the eigenvector
 explains. This value is made into a ratio. Stored in
-:attribute:`explained_variance`, this ratio divides the accumulated variance
+:attribute:`cumulat_variance`, this ratio divides the accumulated variance
 of the nth eigenvector and the n-1 eigenvectors preceding the eigenvector by
 the total variance in the data. For most data, :attribute:`explained_variance`
 will be approximately equal to one for some n that is significantly smaller
@@ -39,20 +39,16 @@ than the total number of components, these are the components of interest given
 by Principal Component Analysis.
 
 From here, we can project a trajectory onto these principal components and
-attempt to retrieve some structure from our high dimensional data. We have
-provided a [notebook](# TODO edit max's notebook to use the new module)
-containing a thorough demonstration of Principal Component Analysis.
+attempt to retrieve some structure from our high dimensional data.
 
 For a basic introduction to the module, the :ref:`PCA-tutorial` shows how
 to perform Principal Component Analysis.
-
 
 .. _PCA-tutorial:
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
 PCA class.
-
 
 First load all modules and test data ::
     >>> import MDAnalysis as mda
@@ -62,14 +58,20 @@ First load all modules and test data ::
 Given a universe containing trajectory data we can perform PCA using
 :class:`PCA`:: and retrieve the principal components.
     >>> u = mda.Universe(PSF,DCD)
-    >>> PSF_pca = pca.PCA(u)
-    >>> cumulated_variance, principal_components = PSF_pca.fit()
+    >>> PSF_pca = pca.PCA(u, select='backbone')
+    >>> PSF_pca.run()
 
 Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
-variance is explained by the components.
-    >>> n_pcs = next(x[0] for x in enumerate(cumulated_variance) if x[1] > 0.95)
-    >>> pca_space = PSF_pca.transform(n_components=n_pcs)
+variance is explained by the components. This cumulated variance by the
+components is conveniently stored in the one-dimensional array attribute
+`cumulated_variance`. The value at the ith index of `cumulated_variance` is the
+sum of the variances from 0 to i.
+
+    >>> n_pcs = next(x[0] for x in enumerate(PSF_pca.cumulated_variance)
+    >>> if x[1] > 0.95)
+    >>> atomgroup = u.select_atoms('backbone')
+    >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
 From here, inspection of the pca_space and conclusions to be drawn from the
 data are left to the user.
@@ -79,12 +81,13 @@ import logging
 import warnings
 
 import numpy as np
+
+from MDAnalysis.core import AtomGroup
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
+from MDAnalysis.lib.log import ProgressMeter
 
 from .base import AnalysisBase
-
-logger = logging.getLogger(__name__)
 
 
 class PCA(AnalysisBase):
@@ -92,16 +95,23 @@ class PCA(AnalysisBase):
 
     Attributes
     ----------
-    p_components: array, (n_components, n_atoms)
+    p_components: array, (n_components, n_atoms * 3)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
     variance : array (n_components, )
         The raw variance explained by each eigenvector of the covariance
         matrix.
-    explained_variance : array, (n_components, )
-        Percentage of variance explained by each of the selected components.
-        If a subset of components is not chosen then all components are stored
-        and the sum of explained variances is equal to 1.0.
+    cumulated_variance : array, (n_components, )
+        Percentage of variance explained by the selected components and the sum
+        of the components preceding it. If a subset of components is not chosen
+        then all components are stored and the cumulated variance will converge
+        to 1.
+    pca_space : array (n_frames, n_components)
+        After running :method:`pca.transform(atomgroup)` the projection of the
+        positions onto the principal components will exist here.
+    mean_atoms: MDAnalyis atomgroup
+        After running :method:`PCA.run()`, the mean position of all the atoms
+        used for the creation of the covariance matrix will exist here.
     start: int
         The index of the first frame to be used for the creation of the
         covariance matrix.
@@ -112,14 +122,10 @@ class PCA(AnalysisBase):
         matrix.
     Methods
     -------
-    fit(traj=None, select='All', start=None, stop=None, step=None)
-        Find the principal components of selected atoms in a subset of the
-        trajectory.
-    transform(traj=None, n_components=None)
-        Take the original trajectory and project it onto the principal
-        components.
-    inverse_tranform(pca_space)
-        Take a pca_space and map it back onto the trajectory used to create it.
+    transform(atomgroup, n_components=None)
+        Take an atomgroup or universe with the same number of atoms as was
+        used for the calculation in :method:`PCA.run()` and project it onto the
+        principal components.
     """
 
     def __init__(self, atomgroup, select='all', align=False, mean=None,
@@ -135,7 +141,7 @@ class PCA(AnalysisBase):
         align: boolean, optional
             If True, the trajectory will be aligned to a reference
             structure.
-        mean: MDAnalysis atomgroup, option
+        mean: MDAnalysis atomgroup, optional
             An optional reference structure to be used as the mean of the
             covariance matrix.
         n_components : int, optional
@@ -153,7 +159,12 @@ class PCA(AnalysisBase):
         """
         super(PCA, self).__init__(atomgroup.universe.trajectory,
                                   **kwargs)
+        if self.n_frames == 1:
+            raise ValueError('No covariance information can be gathered from a'
+                             'single trajectory frame.\n')
+
         self._u = atomgroup.universe
+
         if self._quiet:
             logging.disable(logging.WARN)
         # for transform function
@@ -167,10 +178,10 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
         if mean is None:
-            logger.warn('In order to demean to generate the covariance matrix\n'
-                        + 'the frames have to be iterated over twice. To avoid\n'
-                        'this slowdown, provide an atomgroup for demeaning.')
-            self.mean = np.zeros(642)
+            logging.warn('In order to demean to generate the covariance matrix\n'
+                         'the frames have to be iterated over twice. To avoid\n'
+                         'this slowdown, provide an atomgroup for demeaning.')
+            self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
             self.mean = mean.positions
@@ -184,6 +195,10 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
+            interval = int(self.n_frames // 100)
+            interval = interval if interval > 0 else 1
+            mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
+                                    interval=interval, quiet=self._quiet)
             for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
@@ -195,10 +210,12 @@ class PCA(AnalysisBase):
                     self.mean += mobile_atoms.positions.ravel()
                 else:
                     self.mean += self._atoms.positions.ravel()
-
+                mean_pm.echo(i)
             self.mean /= self.n_frames
 
-        # TODO mean structure should be accessible as an atomgroup object
+        atom_positions = self.mean.reshape(self._n_atoms, 3)
+        self.mean_atoms = AtomGroup.AtomGroup(self._atoms)
+        self.mean_atoms.positions = atom_positions
 
     def _single_frame(self):
         if self.align:
@@ -212,7 +229,6 @@ class PCA(AnalysisBase):
             x = mobile_atoms.positions.ravel()
         else:
             x = self._atoms.positions.ravel()
-
         x -= self.mean
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
@@ -221,7 +237,8 @@ class PCA(AnalysisBase):
         e_vals, e_vects = np.linalg.eig(self.cov)
         sort_idx = np.argsort(e_vals)[::-1]
         self.variance = e_vals[sort_idx]
-        self.p_components = e_vects[:, sort_idx]
+        self.variance = self.variance[:self.n_components]
+        self.p_components = e_vects[:self.n_components, sort_idx]
         self.cumulated_variance = (np.cumsum(self.variance) /
                                    np.sum(self.variance))
         self._calculated = True
@@ -232,8 +249,8 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        atomgroup: MDAnalysis atomgroup
-            The atoms to be PCA transformed.
+        atomgroup: MDAnalysis atomgroup/ Universe
+            The atomgroup or universe containing atoms to be PCA transformed.
         n_components: int, optional
             The number of components to be projected onto, Default none: maps
             onto all components.
@@ -253,18 +270,29 @@ class PCA(AnalysisBase):
         """
         if not self._calculated:
             self.run()
-        # TODO has to accept universe or trajectory slice here
-        if self._atoms.atoms != atomgroup.atoms:
-            warnings.warn('This is a transform for different atom types.')
+
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
+        if(self._n_atoms != atomgroup.n_atoms):
+            raise ValueError('PCA has been fit for'
+                             '{} atoms. Your atomgroup'
+                             'has {} atoms'.format(self._n_atoms,
+                                                   atomgroup.n_atoms))
+        if not (self._atoms.types == atomgroup.types).all():
+            warnings.warn('Atom types do not match with types used to fit PCA')
+
         traj = atomgroup.universe.trajectory
         start, stop, step = traj.check_slice_indices(start, stop, step)
-        dot = np.zeros((traj.n_frames, n_components))
+        n_frames = len(range(start, stop, step))
+
+        dim = (n_components if n_components is not None else
+               self.p_components.shape[1])
+
+        dot = np.zeros((n_frames, dim))
 
         for i, ts in enumerate(traj[start:stop:step]):
-            xyz = atomgroup.positions.ravel()
-            dot[i] = np.dot(xyz, self.p_components[:,:n_components])
+            xyz = atomgroup.positions.ravel() - self.mean
+            dot[i] = np.dot(xyz, self.p_components[:, :n_components])
 
         return dot

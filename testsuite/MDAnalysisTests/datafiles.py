@@ -116,7 +116,9 @@ __all__ = [
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
     "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
-    "ENT" #for testing ENT file extension
+    "ENT", #for testing ENT file extension
+    "RANDOM_WALK",
+    "RANDOM_WALK_TOPO" # garbage topology to go along with XTC positions above
 ]
 
 from pkg_resources import resource_filename
@@ -329,6 +331,8 @@ Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilay
 # Contains one of each residue in 'nucleic' selections
 NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
 
+RANDOM_WALK = resource_filename(__name__, 'data/xyz_random_walk.xtc')
+RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 # This should be the last line: clean up namespace
 del resource_filename
