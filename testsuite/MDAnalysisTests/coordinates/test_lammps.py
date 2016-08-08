@@ -4,10 +4,10 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
-                           assert_)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_raises, assert_, assert_array_almost_equal)
 from unittest import TestCase
 
+from MDAnalysisTests import tempdir
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
