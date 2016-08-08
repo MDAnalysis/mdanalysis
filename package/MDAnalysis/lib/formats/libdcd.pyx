@@ -66,9 +66,14 @@ cdef class DCDFile:
             raise IOError("unkown mode '{}', use either r or w".format(mode))
         ok = fio_open(self.fname, fio_mode, <fio_fd*> &self.fp)
         if ok != 0:
-            raise IOError("couldn't open file: {}".format(filename))
+            raise IOError("couldn't open file: {}\n"
+                          "ErrorCode: {}".format(self.fname, ok))
+        self.is_open = True
 
     def close(self):
-        ok = fio_fclose(self.fp)
-        if ok != 0:
-            raise IOError("couldn't close file: {}".format(self.fname))
+        if self.is_open:
+            ok = fio_fclose(self.fp)
+            self.is_open = False
+            if ok != 0:
+                raise IOError("couldn't close file: {}\n"
+                            "ErrorCode: {}".format(self.fname, ok))
