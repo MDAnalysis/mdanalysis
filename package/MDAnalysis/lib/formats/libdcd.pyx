@@ -69,7 +69,6 @@ cdef class DCDFile:
             raise IOError("couldn't open file: {}".format(filename))
 
     def close(self):
-        pass
         ok = fio_fclose(self.fp)
         if ok != 0:
             raise IOError("couldn't close file: {}".format(self.fname))
