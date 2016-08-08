@@ -44,9 +44,18 @@ cdef class DCDFile:
         self.is_open = False
         self.open(self.fname, mode)
 
-
     def __dealloc__(self):
         self.close()
+
+    def __enter__(self):
+        """Support context manager"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Support context manager"""
+        self.close()
+        # always propagate exceptions forward
+        return False
 
     def open(self, filename, mode='r'):
         if mode == 'r':
