@@ -584,9 +584,9 @@ class GroupBase(object):
 
 # TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE
         if center.lower() in ('com', 'centerofmass'):
-            centers = np.vstack([o.center_of_mass() for o in objects])
+            centers = np.vstack([o.atoms.center_of_mass() for o in objects])
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
-            centers = np.vstack([o.center_of_geometry() for o in objects])
+            centers = np.vstack([o.atoms.center_of_geometry() for o in objects])
         else:
             raise ValueError("Unrecognised center definition: {0}"
                              "Please use one of 'com' or 'cog'".format(center))
@@ -602,7 +602,7 @@ class GroupBase(object):
         for o, s in itertools.izip(objects, shifts):
             # Save some needless shifts
             if not all(s == 0.0):
-                o.translate(s)
+                o.atoms.translate(s)
 
 
 class AtomGroup(object):
