@@ -14,16 +14,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+# This is not tested but should serve as an example how to enable windows
+# support in the future
 IF UNAME_SYSNAME == "Windows":
     cdef extern from 'windows.h':
         ctypedef HANDLE fio_fd
-        ctypedef LONGLONG fio_size_t;
-        ctypedef void * fio_caddr_t;
 ELSE:
     from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END, FILE
     ctypedef FILE * fio_fd;
-    ctypedef size_t fio_size_t;
-    ctypedef void * fio_caddr_t;
     _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                     "FIO_SEEK_CUR": SEEK_CUR,
                     "FIO_SEEK_END": SEEK_END}
@@ -33,11 +31,13 @@ cdef enum:
     FIO_WRITE = 0x02
 
 cdef extern from 'include/fastio.h':
-    ctypedef struct fio_iovec:
-        pass
+    int fio_open(const char *filename, int mode, fio_fd *fd)
+    int fio_fclose(fio_fd fd)
 
 cdef class DCDFile:
     cdef fio_fd fp
+    cdef readonly fname
+    cdef int is_open
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -46,23 +46,21 @@ cdef class DCDFile:
 
 
     def __dealloc__(self):
-        # call a close_dcd_read
         self.close()
 
-    def open(self, filename, mode):
-        # NOTE: to make handling easier lets disallow read/write mode
+    def open(self, filename, mode='r'):
         if mode == 'r':
             fio_mode = FIO_READ
         elif mode == 'w':
             fio_mode = FIO_WRITE
         else:
             raise IOError("unkown mode '{}', use either r or w".format(mode))
-        # ok = fio_open(self.fname, fio_mode, self.fp)
-        # if ok != 0:
-        #     raise IOError("couldn't open file: {}".format(filename))
+        ok = fio_open(self.fname, fio_mode, <fio_fd*> &self.fp)
+        if ok != 0:
+            raise IOError("couldn't open file: {}".format(filename))
 
     def close(self):
         pass
-        # ok = fio_close(self.fp)
-        # if ok != 0:
-        #     raise IOError("couldn't close file: {}".format(self.fname))
+        ok = fio_fclose(self.fp)
+        if ok != 0:
+            raise IOError("couldn't close file: {}".format(self.fname))
