@@ -30,14 +30,66 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
+cdef enum:
+DCD_ERRORS = {
+    0: 'No Problem',
+    -1: 'Normal EOF',
+    -2: 'DCD file does not exist',
+    -3: 'Open of DCD file failed',
+    -4: 'read call on DCD file failed',
+    -5: 'premature EOF found in DCD file',
+    -6: 'format of DCD file is wrong',
+    -7: 'output file already exiss',
+    -8: 'malloc failed'
+}
+
+
 cdef extern from 'include/fastio.h':
     int fio_open(const char *filename, int mode, fio_fd *fd)
     int fio_fclose(fio_fd fd)
+# need to find a typedef for off_t
+#    fio_size_t fio_ftell(fio_fd fd)
+
+cdef extern from 'include/readdcd.h':
+    int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart,
+                       int *nsavc, double *delta, int *nfixed, int **freeind,
+                       float **fixedcoords, int *reverse, int *charmm,
+                       char **remarks, int *len_remarks)
+    int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z,
+                     float *unitcell, int nfixed, int first, int *freeind,
+                     float *fixedcoords, int reverse, int charmm)
+    int read_dcdsubset(fio_fd fd, int natoms, int lowerb, int upperb, float *x,
+                       float *y, float *z, float *unitcell, int nfixed,
+                       int first, int *freeind, float *fixedcoords, int reverse,
+                       int charmm)
+    int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numstep)
+    void close_dcd_read(int *freeind, float *fixedcoords)
+    int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
+                        int istart, int nsavc, double delta, int with_unitcell,
+                        int charmm)
+    int write_dcdstep(fio_fd fd, int curstep, int curframe,
+                      int natoms, const float *x, const float *y, const float *z,
+                      const double *unitcell, int charmm)
+    int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numsteps)
+
 
 cdef class DCDFile:
     cdef fio_fd fp
     cdef readonly fname
     cdef int is_open
+
+    cdef int natoms
+    cdef int nsets
+    cdef int istart
+    cdef int nsavc
+    cdef double delta
+    cdef int nfixed
+    cdef int **freeind
+    cdef float **fixedcords
+    cdef int reverse
+    cdef int charmm
+    cdef char **remarks
+    cdef int len_remarks
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -77,3 +129,15 @@ cdef class DCDFile:
             if ok != 0:
                 raise IOError("couldn't close file: {}\n"
                             "ErrorCode: {}".format(self.fname, ok))
+
+    def read_header(self):
+        if not self.is_open:
+            raise RuntimeError("No file open")
+
+        ok = read_dcdheader(self.fd, <int*>&self.natoms, <int*>&self.nsets,
+                            <int*>&self.istart, <int*>&self.nsavc, self.delta,
+                            <int*>self.nfixed, self.freeind, self.fixedcoords,
+                            <int*>self.reverse, <int>*self.reverse,
+                            self.remarks, <int*>&self.len_remarks)
+        if ok != 0:
+            raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
