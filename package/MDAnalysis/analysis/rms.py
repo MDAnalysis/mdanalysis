@@ -476,7 +476,7 @@ class RMSD(object):
         for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
-            x_com = traj_atoms.center_of_mass().astype(np.float64)
+            x_com = traj_atoms.center_of_mass()
             traj_coordinates[:] = traj_atoms.positions - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time
@@ -512,7 +512,7 @@ class RMSD(object):
                 # only calculate RMSD by setting the Rmatrix to None (no need
                 # to carry out the rotation as we already get the optimum RMSD)
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_64.astype(np.float64),
+                    ref_coordinates_64,
                     traj_coordinates.astype(np.float64), natoms, None, weight)
 
             percentage.echo(ts.frame, rmsd=rmsd[k, 2])

@@ -57,17 +57,17 @@ class Testrmsd(object):
 
     def test_no_center(self):
         rmsd = rms.rmsd(self.a, self.b, center=False)
-        assert_almost_equal(rmsd, 1.0,5)
+        assert_almost_equal(rmsd, 1.0)
 
     def test_center(self):
         rmsd = rms.rmsd(self.a, self.b, center=True)
-        assert_almost_equal(rmsd, 0.0,5)
+        assert_almost_equal(rmsd, 0.0)
 
     def test_list(self):
         rmsd = rms.rmsd(self.a.tolist(),
                         self.b.tolist(),
                         center=False)
-        assert_almost_equal(rmsd, 1.0,5)
+        assert_almost_equal(rmsd, 1.0)
 
     def test_superposition(self):
         bb = self.u.atoms.select_atoms('backbone')
@@ -75,7 +75,7 @@ class Testrmsd(object):
         self.u.trajectory[-1]
         b = bb.positions.copy()
         rmsd = rms.rmsd(a, b, superposition=True)
-        assert_almost_equal(rmsd, 6.820321761927005,7)
+        assert_almost_equal(rmsd, 6.820321761927005)
 
     def test_weights(self):
         weights = np.zeros(len(self.a))
@@ -130,7 +130,7 @@ class Testrmsd(object):
         B = self.p_last.positions
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
-        assert_almost_equal(rmsd, rmsd_superposition,5)
+        assert_almost_equal(rmsd, rmsd_superposition)
 
 class TestRMSD(object):
     @dec.skipif(parser_not_found('DCD'),
@@ -140,7 +140,7 @@ class TestRMSD(object):
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
         self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
-        self.correct_values_group = [[0 , 0, 0, 0, 0],
+        self.correct_values_group = [[0, 0, 0, 0, 0],
                                      [49, 48.9999, 4.7857, 4.7002,
                                       4.68981]]
 
@@ -159,7 +159,7 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
         RMSD.run(start=5, stop=6)
         single_frame = [[ 5, 5, 0.91544906]]
-        assert_array_almost_equal(RMSD.rmsd, single_frame, 5,
+        assert_array_almost_equal(RMSD.rmsd, single_frame, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 
@@ -168,7 +168,7 @@ class TestRMSD(object):
         RMSD.run(step=49, mass_weighted= True)
         RMSD.save(self.outfile)
         saved = np.loadtxt(self.outfile)
-        assert_array_almost_equal(RMSD.rmsd, saved, 5,
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
                                   err_msg="error: rmsd profile should match " +
                                           "test values")
 

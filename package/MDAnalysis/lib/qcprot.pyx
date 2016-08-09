@@ -141,14 +141,12 @@ cdef extern from "math.h":
     double fabs(double x)
 
 @cython.boundscheck(False)
-@cython.wraparound(False) 
-
-
-def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
-                 np.ndarray[np.float64_t,ndim=2] coords1,
-                 np.ndarray[np.float64_t,ndim=2] coords2,
+@cython.wraparound(False)
+def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
+                 np.ndarray[np.float64_t, ndim=2] coords1,
+                 np.ndarray[np.float64_t, ndim=2] coords2,
                  int N,
-                 np.ndarray[np.float64_t,ndim=1] weight):
+                 np.ndarray[np.float64_t, ndim=1] weight):
     """Calculate the inner product of two structures.
 
     Parameters
@@ -193,17 +191,17 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     if (weight is not None):
         for i in range(N):
-            x1 = weight[i] * coords1[i,0]
-            y1 = weight[i] * coords1[i,1]
-            z1 = weight[i] * coords1[i,2]
+            x1 = weight[i] * coords1[i, 0]
+            y1 = weight[i] * coords1[i, 1]
+            z1 = weight[i] * coords1[i, 2]
 
-            G1 += x1*coords1[i,0] + y1*coords1[i,1] + z1*coords1[i,2]
+            G1 += x1 * coords1[i, 0] + y1 * coords1[i, 1] + z1 * coords1[i, 2]
 
-            x2 = coords2[i,0]
-            y2 = coords2[i,1]
-            z2 = coords2[i,2]
+            x2 = coords2[i, 0]
+            y2 = coords2[i, 1]
+            z2 = coords2[i, 2]
 
-            G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)
+            G2 += weight[i] * (x2 * x2 + y2 * y2 + z2 * z2)
 
             A[0] +=  (x1 * x2)
             A[1] +=  (x1 * y2)
@@ -219,17 +217,17 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     else:
         for i in range(N):
-            x1 = coords1[i,0]
-            y1 = coords1[i,1]
-            z1 = coords1[i,2]
+            x1 = coords1[i, 0]
+            y1 = coords1[i, 1]
+            z1 = coords1[i, 2]
 
-            G1 += (x1*x1 + y1*y1 + z1*z1)
+            G1 += (x1 * x1 + y1 * y1 + z1 * z1)
 
-            x2 = coords2[i,0]
-            y2 = coords2[i,1]
-            z2 = coords2[i,2]
+            x2 = coords2[i, 0]
+            y2 = coords2[i, 1]
+            z2 = coords2[i, 2]
 
-            G2 += (x2*x2 + y2*y2 + z2*z2)
+            G2 += (x2 * x2 + y2 * y2 + z2 * z2)
 
             A[0] +=  (x1 * x2)
             A[1] +=  (x1 * y2)
@@ -245,11 +243,13 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     return (G1 + G2) * 0.5
 
-def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
-                             np.ndarray[np.float64_t,ndim=2] conf,
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t, ndim=2] ref,
+                             np.ndarray[np.float64_t, ndim=2] conf,
                              int N,
-                             np.ndarray[np.float64_t,ndim=1] rot,
-                             np.ndarray[np.float64_t,ndim=1] weights):
+                             np.ndarray[np.float64_t, ndim=1] rot,
+                             np.ndarray[np.float64_t, ndim=1] weights):
     """
     Calculate the RMSD & rotational matrix.
 
@@ -275,13 +275,13 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
        Array size changed from 3xN to Nx3.
     """
     cdef double E0
-    cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,dtype = np.float64)
+    cdef np.ndarray[np.float64_t, ndim = 1] A = np.zeros(9,dtype = np.float64)
 
-    E0 = InnerProduct(A,conf,ref,N,weights)
-    return FastCalcRMSDAndRotation(rot,A,E0,N)
+    E0 = InnerProduct(A, conf, ref, N, weights)
+    return FastCalcRMSDAndRotation(rot, A, E0, N)
 
-def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
-                            np.ndarray[np.float64_t,ndim=1] A,
+def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
+                            np.ndarray[np.float64_t, ndim=1] A,
                             double E0, int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
@@ -313,7 +313,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
     cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef np.ndarray[np.float64_t,ndim=1] C = np.zeros(4,)
+    cdef np.ndarray[np.float64_t, ndim=1] C = np.zeros(4,)
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0
@@ -350,7 +350,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
     Szy2 = Szy * Szy
     Szx2 = Szx * Szx
 
-    SyzSzymSyySzz2 = 2.0*(Syz*Szy - Syy*Szz)
+    SyzSzymSyySzz2 = 2.0 * (Syz*Szy - Syy*Szz)
     Sxx2Syy2Szz2Syz2Szy2 = Syy2 + Szz2 - Sxx2 + Syz2 + Szy2
 
     C[2] = -2.0 * (Sxx2 + Syy2 + Szz2 + Sxy2 + Syx2 + Sxz2 + Szx2 + Syz2 + Szy2)

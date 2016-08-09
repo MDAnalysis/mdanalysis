@@ -14,8 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-         euhruska, orbeckst
-
+         euhruska, orbeckst, rbrtdlg
+        
   * 0.15.1
 
 Enhancements
@@ -46,6 +46,8 @@ Changes
     as Bauhaus style. (Issue #845)
   * Added new diffusionmap module for dimension reduction that follows the
     Bauhaus API. (Issue #857)
+  * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
+    40% speed up. (PR #930)
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
