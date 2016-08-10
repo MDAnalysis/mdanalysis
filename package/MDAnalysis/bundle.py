@@ -45,13 +45,19 @@ def make_bundle(simulations, topology=None, univ_kwargs=None, names=None,
     Metadata and auxiliary data may be added on initialisation using the *data*  
     and *auxs* kwargs, respectively, passing in the (ordered) list of 
     values/auxiliary filenames etc for each simulation keyworded by metadata/auxiliary
-    name. If additional kwargs are requried for adding auxiliaries, these may 
-    be supplied with *aux_kwargs*. e.g.::
+    name; for metadata where all simulations have the same value, a single value
+    may be gien in place of a list. e.g.::
+
         make_bundle([Sim1, Sim2], auxs={'pull_f': ['sim1.xvg', 'sim2.xvg']},
-                    data = {'dist':[1,2]}, aux_kwargs={'pull_f': {'dt': 400}})
+                    data = {'dist':[1,2], 'temp':300}
 
+    If additional kwargs are requried for adding auxiliaries, these may 
+    be supplied with *aux_kwargs*::
 
-    The returned Bundle may the be used as outlines in [MDSynthesis/datreant 
+        make_bundle([Sim1, Sim2], auxs={'pull_f': ['sim1.xvg', 'sim2.xvg']},
+                     aux_kwargs={'pull_f': {'dt': 400}})
+
+    The returned Bundle may the be used as outlined in [MDSynthesis/datreant 
     documentation] - e.g. individual simulations may be accessed by index or name::
         bund = make_bundle([Univ1, Univ2], names=['A', 'B'])
         bund[0]                 # returns the Sim for Univ1
@@ -112,7 +118,7 @@ def make_bundle(simulations, topology=None, univ_kwargs=None, names=None,
 
     ## Add any metadata
     data = data if data is not None else {}
-    for i, sim in enumerate(bundle):
-        sim.categories.add({key: value[i] for key, value in data.items()})
+    for key, values in data.items():
+        bundle.categories[key] = values
 
     return bundle
