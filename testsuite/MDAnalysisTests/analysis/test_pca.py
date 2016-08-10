@@ -24,7 +24,8 @@ from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal, raises)
 
 
-from MDAnalysisTests.datafiles import PDB, XTC, RANDOM_WALK, waterPSF, waterDCD
+from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
+                                       waterPSF, waterDCD)
 
 class TestPCA(object):
     def setUp(self):
@@ -76,7 +77,7 @@ class TestPCA(object):
         pca_test.transform(u2)
 
     def test_cosine_content(self):
-        rand = MDAnalysis.Universe(RANDOM_WALK)
+        rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand.atoms).run()
         dot = pca_random.transform(rand.atoms)
         content = cosine_content(dot, 0)
