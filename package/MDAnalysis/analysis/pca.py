@@ -197,8 +197,11 @@ class PCA(AnalysisBase):
         if self._calc_mean:
             interval = int(self.n_frames // 100)
             interval = interval if interval > 0 else 1
+            format = ("Mean Calculation Step"
+                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
             mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                    interval=interval, quiet=self._quiet)
+                                    interval=interval, quiet=self._quiet,
+                                    format= format)
             for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
