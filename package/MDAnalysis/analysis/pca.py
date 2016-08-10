@@ -305,11 +305,8 @@ class PCA(AnalysisBase):
         """Measure the cosine content of the PCA projection.
 
         Cosine content is used as a measure of convergence for a protein
-        simulation. If this function is used in a publication, please cite:
-
-        .. [BerkHess1]
-        Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
-        65, 031910 (2002).
+        simulation. If this function is used in a publication, please cite
+        [BerkHess1]_.
 
         Parameters
         ----------
@@ -317,6 +314,18 @@ class PCA(AnalysisBase):
             The PCA space to be analyzed.
         i: int
             The index of the pca_space to be analyzed for cosine content
+
+        Returns
+        -------
+        A float reflecting the cosine content of the ith projection in the PCA
+        space. The output is bounded by 0 and 1, with 1 reflecting an agreement
+        with cosine while 0 reflects complete disagreement.
+
+        References
+        ----------
+        .. [BerkHess1]
+        Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
+        65, 031910 (2002).
         """
         t = np.arange(len(pca_space))
         T = len(pca_space)
