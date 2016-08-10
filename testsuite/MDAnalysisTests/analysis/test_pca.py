@@ -18,14 +18,13 @@ import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
 from MDAnalysis.analysis.align import _fit_to
-from scipy.integrate import simps
 
 from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal, raises)
 
-
 from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
+
 
 class TestPCA(object):
     def setUp(self):
@@ -80,12 +79,5 @@ class TestPCA(object):
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand.atoms).run()
         dot = pca_random.transform(rand.atoms)
-        content = cosine_content(dot, 0)
+        content = pca_random.cosine_content(dot, 0)
         assert_almost_equal(content, .99, 1)
-
-
-def cosine_content(pc, i):
-    t = np.arange(len(pc))
-    T = len(pc)
-    cos = np.cos(np.pi * t * (i + 1) / T)
-    return (2.0 / T) * (simps(cos*pc[:, i])) ** 2 / simps(pc[:, i] ** 2)

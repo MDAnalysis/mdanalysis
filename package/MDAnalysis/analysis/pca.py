@@ -82,6 +82,7 @@ import warnings
 
 import numpy as np
 
+from scipy.integrate import simps
 from MDAnalysis.core import AtomGroup
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -299,3 +300,26 @@ class PCA(AnalysisBase):
             dot[i] = np.dot(xyz, self.p_components[:, :n_components])
 
         return dot
+
+    def cosine_content(self, pca_space, i):
+        """Measure the cosine content of the PCA projection.
+
+        Cosine content is used as a measure of convergence for a protein
+        simulation. If this function is used in a publication, please cite:
+
+        .. [BerkHess1]
+        Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
+        65, 031910 (2002).
+
+        Parameters
+        ----------
+        pca_space: array, shape (number of frames, number of components)
+            The PCA space to be analyzed.
+        i: int
+            The index of the pca_space to be analyzed for cosine content
+        """
+        t = np.arange(len(pca_space))
+        T = len(pca_space)
+        cos = np.cos(np.pi * t * (i + 1) / T)
+        return ((2.0 / T) * (simps(cos*pca_space[:, i])) ** 2 /
+                simps(pca_space[:, i] ** 2))
