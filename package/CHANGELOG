@@ -14,12 +14,16 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-         euhruska, orbeckst
+         euhruska, orbeckst, abiedermann
 
   * 0.15.1
 
 Enhancements
 
+  * Added state_dynamics.py to MDAnalysis.analysis, enabling calculation
+  of residence time and state distributions
+  * Added MSD.py to MDAnalysis.analysis, enabling calculation of position
+  dependent diffusion coeffients
   * All classes derived from 'AnalysisBase' now display a ProgressMeter
   with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the

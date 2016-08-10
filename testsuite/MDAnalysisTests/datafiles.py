@@ -116,7 +116,8 @@ __all__ = [
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
     "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
-    "ENT" #for testing ENT file extension
+    "ENT", #for testing ENT file extension
+    "SD_DATA"
 ]
 
 from pkg_resources import resource_filename
@@ -286,6 +287,8 @@ capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro.bz2")
 contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro.bz2")
 contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
+
+SD_DATA = resource_filename(__name__,"data/state_dynamics.p")
 
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")

@@ -144,6 +144,24 @@ static void _calc_distance_array(coordinate* ref, int numref, coordinate* conf,
   }
 }
 
+static void _calc_squared_distance_vector(coordinate* ref, int numref, coordinate* conf,
+                                  double* distances)
+{
+  int i;
+  double dx[3];
+
+#ifdef PARALLEL
+#pragma omp parallel for private(i, dx) shared(distances)
+#endif
+  for (i=0; i<numref; i++) {
+    dx[0] = conf[i][0] - ref[i][0];
+    dx[1] = conf[i][1] - ref[i][1];
+    dx[2] = conf[i][2] - ref[i][2];
+    
+    *(distances+i) = (dx[0]*dx[0]) + (dx[1]*dx[1]) + (dx[2]*dx[2]);
+  }
+}
+
 static void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* conf,
                                        int numconf, float* box, double* distances)
 {
