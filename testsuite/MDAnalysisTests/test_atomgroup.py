@@ -110,11 +110,6 @@ class TestAtom(TestCase):
 
         assert_raises(NoDataError, lookup_velo)
 
-    # INVALID
-    @skip
-    def test_atom_centroid(self):
-        assert_equal(self.atom.position, self.atom.centroid())
-
     # INVALID: cannot build atoms like this; they must be part of a Universe
     @skip
     def test_no_uni(self):
