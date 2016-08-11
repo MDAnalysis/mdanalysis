@@ -19,8 +19,7 @@
 # Released under the  GNU Public Licence, v2
 
 
-"""
-Gromacs portable run input TPR format parser
+"""Gromacs portable run input TPR format parser
 ============================================
 
 The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a
@@ -54,8 +53,8 @@ approximate Gromacs release numbers are listed in the table
    103        26             5.1                  yes
    ========== ============== ==================== =====
 
-For further discussion and notes see `Issue 2`_. Also add a comment to
-`Issue 2`_ if a new or different TPR file format version should be
+For further discussion and notes see `Issue 2`_. Please *open a new issue* in
+the `Issue Tracker`_ when a new or different TPR file format version should be
 supported.
 
 Bonded interactions available in Gromacs are described in table 5.5 of the
@@ -122,9 +121,11 @@ has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 .. _Gromacs: http://www.gromacs.org
 .. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf
 .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
+.. _`Issue Tracker`: https://github.com/MDAnalysis/mdanalysis/issues
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
+
 """
 from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
