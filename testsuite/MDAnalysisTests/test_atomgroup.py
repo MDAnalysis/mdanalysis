@@ -65,6 +65,35 @@ class TestAtom(TestCase):
         assert_equal(a.name, 'CG')
         assert_equal(a.resname, 'LEU')
 
+    def test_setting_attribute_name(self):
+        self.atom.name = 'AA'
+        assert_equal(self.atom.name, 'AA')
+
+    def test_setting_attribute_type(self):
+        self.atom.type = 'Z'
+        assert_equal(self.atom.type, 'Z')
+
+    #INVALID
+    @skip
+    def test_setting_attribute_resname(self):
+        self.atom.resname  = 'RR'
+        assert_equal(self.atom.resname, 'RR')
+
+    #INVALID
+    @skip
+    def test_setting_attribute_resid(self):
+        self.atom.resid = 42
+        assert_equal(self.atom.resid, 42)
+
+    #INVALID
+    @skip
+    def test_setting_attribute_mass(self):
+        assert_equal(self.atom.mass, 13)
+
+    def test_setting_attributes_charge(self):
+        self.atom.charge = 6
+        assert_equal(self.atom.charge, 6)
+
     # VALID
     def test_attributes_positions(self):
         a = self.atom
