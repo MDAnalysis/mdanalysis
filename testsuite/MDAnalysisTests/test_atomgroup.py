@@ -65,17 +65,6 @@ class TestAtom(TestCase):
         assert_equal(a.name, 'CG')
         assert_equal(a.resname, 'LEU')
 
-    # INVALID: got rid of pos
-    @skip
-    def test_attributes_pos(self):
-        # old pos property
-        assert_almost_equal(self.atom.pos, self.known_pos)
-
-        def set_pos():
-            self.atom.pos = self.known_pos + 3.14
-
-        assert_raises(AttributeError, set_pos)
-
     # VALID
     def test_attributes_positions(self):
         a = self.atom
@@ -140,7 +129,7 @@ class TestAtom(TestCase):
         at = self.universe.atoms[0]
         ref = [b.partner(at) for b in at.bonds]
         assert_equal(ref, list(at.bonded_atoms))
-    
+
     # INVALID: should raise AttributeError, as it does
     @skip
     @raises(NoDataError)
@@ -275,7 +264,7 @@ class TestAtomGroup(TestCase):
         # check any special method
         assert_almost_equal(newag.total_mass(), 40.044999999999995)
 
-    
+
     # INVALID: there is no such property `_atoms` for an AtomGroup
     # could check that `self.universe.atoms.ix[0]` is same as `self.universe.atoms[0].ix`
     @skip
@@ -402,7 +391,7 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(self.ag.total_charge(), -4.0)
 
     # VALID: need to set precision to correct within 2 decimal points
-    # perhaps we should use a higher precision float for masses in 
+    # perhaps we should use a higher precision float for masses in
     # PSF parser
     @skip
     def test_total_mass(self):
@@ -511,7 +500,7 @@ class TestAtomGroup(TestCase):
         self.ag.occupancies = 0.25
         assert_array_almost_equal(self.ag.occupancies,
                                   np.ones(len(self.ag)) * 0.25)
-    
+
     # INVALID: AtomGroup no longer gets a sequence method; only in ResidueGroup
     # if resnames in topology
     @skip
@@ -763,7 +752,7 @@ class TestAtomGroup(TestCase):
         assert_array_equal(u.atoms[0:0], [],
                            "making an empty AtomGroup failed")
 
-    # VALID: 
+    # VALID:
     def test_index_advancedslice(self):
         u = self.universe
         aslice = [0, 10, 20, -1, 10]
@@ -952,13 +941,13 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[:2]
         assert_raises(ValueError, getattr, ag, 'angle')
 
-    # INVALID: this topology has no masses, so no `shape_parameter` method 
+    # INVALID: this topology has no masses, so no `shape_parameter` method
     @skip
     def test_shape_parameter(self):
         s = self.universe.s4AKE.shape_parameter()
         assert_almost_equal(s, 0.00240753939086033, 6)
 
-    # INVALID: this topology has no masses, so no `asphericity` method 
+    # INVALID: this topology has no masses, so no `asphericity` method
     @skip
     def test_asphericity(self):
         a = self.universe.s4AKE.asphericity()
@@ -1635,7 +1624,7 @@ class TestResidueGroup(TestCase):
                      "do not agree after residue "
                              "merge.")
 
-    # INVALID: no `set_masses` method; use `masses` property directly    
+    # INVALID: no `set_masses` method; use `masses` property directly
     @skip
     def test_set_masses(self):
         rg = self.universe.select_atoms("bynum 12:42 and name H*").residues
@@ -1854,7 +1843,7 @@ class TestAtomGroupTimestep(TestCase):
         del self.universe
         del self.prec
 
-    
+
     # VALID: but should be testing non-hidden attributes
     def test_partial_timestep(self):
         ag = self.universe.select_atoms('name Ca')
@@ -2061,7 +2050,7 @@ class TestUniverse(TestCase):
 
         assert_raises(ValueError, bad_load, u)
 
-    # VALID 
+    # VALID
     def test_load_structure(self):
         # Universe(struct)
         ref = MDAnalysis.Universe(PSF, PDB_small)
