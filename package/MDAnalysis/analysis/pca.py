@@ -75,6 +75,11 @@ sum of the variances from 0 to i.
 
 From here, inspection of the pca_space and conclusions to be drawn from the
 data are left to the user.
+
+Functions
+---------
+.. autoclass:: PCA
+.. autofunction:: cosine_content
 """
 from six.moves import range
 import logging
@@ -301,34 +306,35 @@ class PCA(AnalysisBase):
 
         return dot
 
-    def cosine_content(self, pca_space, i):
-        """Measure the cosine content of the PCA projection.
 
-        Cosine content is used as a measure of convergence for a protein
-        simulation. If this function is used in a publication, please cite
-        [BerkHess1]_.
+def cosine_content(pca_space, i):
+    """Measure the cosine content of the PCA projection.
 
-        Parameters
-        ----------
-        pca_space: array, shape (number of frames, number of components)
-            The PCA space to be analyzed.
-        i: int
-            The index of the pca_space to be analyzed for cosine content
+    Cosine content is used as a measure of convergence for a protein
+    simulation. If this function is used in a publication, please cite
+    [BerkHess1]_.
 
-        Returns
-        -------
-        A float reflecting the cosine content of the ith projection in the PCA
-        space. The output is bounded by 0 and 1, with 1 reflecting an agreement
-        with cosine while 0 reflects complete disagreement.
+    Parameters
+    ----------
+    pca_space: array, shape (number of frames, number of components)
+        The PCA space to be analyzed.
+    i: int
+        The index of the pca_space to be analyzed for cosine content
 
-        References
-        ----------
-        .. [BerkHess1]
-        Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
-        65, 031910 (2002).
-        """
-        t = np.arange(len(pca_space))
-        T = len(pca_space)
-        cos = np.cos(np.pi * t * (i + 1) / T)
-        return ((2.0 / T) * (simps(cos*pca_space[:, i])) ** 2 /
-                simps(pca_space[:, i] ** 2))
+    Returns
+    -------
+    A float reflecting the cosine content of the ith projection in the PCA
+    space. The output is bounded by 0 and 1, with 1 reflecting an agreement
+    with cosine while 0 reflects complete disagreement.
+
+    References
+    ----------
+    .. [BerkHess1]
+    Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
+    65, 031910 (2002).
+    """
+    t = np.arange(len(pca_space))
+    T = len(pca_space)
+    cos = np.cos(np.pi * t * (i + 1) / T)
+    return ((2.0 / T) * (simps(cos*pca_space[:, i])) ** 2 /
+            simps(pca_space[:, i] ** 2))

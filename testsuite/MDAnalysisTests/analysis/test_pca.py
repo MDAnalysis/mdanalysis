@@ -79,5 +79,5 @@ class TestPCA(object):
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand.atoms).run()
         dot = pca_random.transform(rand.atoms)
-        content = pca_random.cosine_content(dot, 0)
+        content = pca.cosine_content(dot, 0)
         assert_almost_equal(content, .99, 1)
