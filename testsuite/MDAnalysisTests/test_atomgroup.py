@@ -125,9 +125,8 @@ class TestAtom(TestCase):
         ref = [b.partner(at) for b in at.bonds]
         assert_equal(ref, list(at.bonded_atoms))
 
-    # INVALID: should raise AttributeError, as it does
-    @skip
-    @raises(NoDataError)
+    # VALID
+    @raises(AttributeError)
     def test_undefined_occupancy(self):
         self.universe.atoms[0].occupancy
 
