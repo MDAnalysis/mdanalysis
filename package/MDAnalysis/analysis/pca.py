@@ -74,7 +74,7 @@ components is conveniently stored in the one-dimensional array attribute
 `cumulated_variance`. The value at the ith index of `cumulated_variance` is the
 sum of the variances from 0 to i.
 
-    >>> n_pcs = np.where(PSF_pca.cumilated_var > 0.95)[0][0]
+    >>> n_pcs = np.where(PSF_pca.cumulated_var > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
     >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
@@ -109,7 +109,7 @@ class PCA(AnalysisBase):
     variance will be available for analysis. As an example:
         >>> pca = PCA(atomgroup, select='backbone').run()
         >>> pca_space =  pca.transform(atomgroup.select_atoms('backbone'), 3)
-    geneates the principal components of the backbone of the atomgroup and
+    generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
     instructions.
