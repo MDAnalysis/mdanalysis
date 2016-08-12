@@ -113,3 +113,4 @@ Dimension Reduction
    :maxdepth: 1
 
    analysis/diffusionmap
+   analysis/pca

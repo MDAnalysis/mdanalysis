@@ -31,7 +31,7 @@ Principal Component Analysis, please refer to the :ref:`PCA-tutorial`.
 
 This module constructs a covariance matrix wherein each element of the matrix
 is denoted by (i,j) row-column coordinates. The (i,j) coordinate is the
-influence of the of the ith frame's coordinates on the jth frame's coordinates
+influence of the of the ith coordinates on the jth coordinates
 of a given trajectory. The eponymous components are the
 eigenvectors of this matrix.
 
@@ -106,8 +106,13 @@ class PCA(AnalysisBase):
 
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
-    variance will be available for analysis. Please refer to the
-    :ref:`PCA-tutorial` for more detailed instructions.
+    variance will be available for analysis. As an example:
+        >>> pca = PCA(atomgroup, select='backbone').run()
+        >>> pca_space =  pca.transform(atomgroup.select_atoms('backbone'), 3)
+    geneates the principal components of the backbone of the atomgroup and
+    then transforms those atomgroup coordinates by the direction of those
+    variances. Please refer to the :ref:`PCA-tutorial` for more detailed
+    instructions.
 
     Attributes
     ----------
