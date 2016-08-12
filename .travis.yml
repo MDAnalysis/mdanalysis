@@ -8,7 +8,7 @@ os:
   - linux
   - osx
 
-language: Python
+language: $PYTHON_VERSION
 
 env:
   global:
