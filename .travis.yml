@@ -7,6 +7,9 @@ branches:
 os:
   - linux
   - osx
+
+language: Python
+
 env:
   global:
     - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
@@ -71,7 +74,7 @@ script:
      (cd ./package/doc/sphinx && make clean html) || \
      true
 after_success:
-  - coveralls
+  - if [[ $SETUP == 'full' ]]; then coveralls; fi
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
