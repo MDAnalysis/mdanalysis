@@ -22,20 +22,26 @@ Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 :Year: 2016
 :Copyright: GNU Public License v3
 
-This module contains the linear dimension reduction method Principal
-Component Analysis. This module constructs a covariance matrix wherein each
-element of the matrix is denoted by (i,j) row-column coordinates. The (i,j)
-coordinate reflects the influence of the of the ith frame's coordinates on the
-jth frame's coordinates of a given trajectory. The eponymous components are the
+This module contains the linear dimensions reduction method Principal Component
+Analysis (PCA). PCA sorts a simulation into 3N directions of descending
+variance, with N being the number of atoms. These directions are called
+the principal components. The dimensions to be analyzed are reduced by only
+looking at a few projections of the first principal components. To run a
+Principal Component Analysis, please refer to the :ref:`PCA-tutorial`.
+
+This module constructs a covariance matrix wherein each element of the matrix
+is denoted by (i,j) row-column coordinates. The (i,j) coordinate is the
+influence of the of the ith frame's coordinates on the jth frame's coordinates
+of a given trajectory. The eponymous components are the
 eigenvectors of this matrix.
 
-For each eigenvector, its eigenvalue reflects the variance that the eigenvector
-explains. This value is made into a ratio. Stored in
-:attribute:`cumulat_variance`, this ratio divides the accumulated variance
-of the nth eigenvector and the n-1 eigenvectors preceding the eigenvector by
-the total variance in the data. For most data, :attribute:`explained_variance`
-will be approximately equal to one for some n that is significantly smaller
-than the total number of components, these are the components of interest given
+For each eigenvector, its eigenvalue is the variance that the eigenvector
+explains. Stored in :attribute:`cumulated_variance`, a ratio for each number of
+eigenvectors up to index i is provided to quickly find out how many principal
+components are needed to explain the amount of variance reflected by those i
+eigenvectors. For most data, :attribute:`cumulated_variance` will be
+approximately equal to one for some n that is significantly smaller than the
+total number of components, these are the components of interest given
 by Principal Component Analysis.
 
 From here, we can project a trajectory onto these principal components and
@@ -68,8 +74,7 @@ components is conveniently stored in the one-dimensional array attribute
 `cumulated_variance`. The value at the ith index of `cumulated_variance` is the
 sum of the variances from 0 to i.
 
-    >>> n_pcs = next(x[0] for x in enumerate(PSF_pca.cumulated_variance)
-    >>> if x[1] > 0.95)
+    >>> n_pcs = np.where(PSF_pca.cumilated_var > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
     >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
@@ -97,7 +102,12 @@ from .base import AnalysisBase
 
 
 class PCA(AnalysisBase):
-    """Principal component analysis on an MD trajectory
+    """Principal component analysis on an MD trajectory.
+
+    After initializing and calling method with a universe or an atom group,
+    principal components ordering the atom coordinate data by decreasing
+    variance will be available for analysis. Please refer to the
+    :ref:`PCA-tutorial` for more detailed instructions.
 
     Attributes
     ----------
@@ -118,14 +128,7 @@ class PCA(AnalysisBase):
     mean_atoms: MDAnalyis atomgroup
         After running :method:`PCA.run()`, the mean position of all the atoms
         used for the creation of the covariance matrix will exist here.
-    start: int
-        The index of the first frame to be used for the creation of the
-        covariance matrix.
-    stop: int
-        The index to stop before in the creation of the covariance matrix.
-    step: int
-        The amount of frames stepped between in the creation of the covariance
-        matrix.
+
     Methods
     -------
     transform(atomgroup, n_components=None)
@@ -183,10 +186,12 @@ class PCA(AnalysisBase):
         self.n_components = n_components
         self._n_atoms = self._atoms.n_atoms
         self._calculated = False
+
         if mean is None:
-            logging.warn('In order to demean to generate the covariance matrix\n'
-                         'the frames have to be iterated over twice. To avoid\n'
-                         'this slowdown, provide an atomgroup for demeaning.')
+            warnings.warn('In order to demean to generate the covariance '
+                          'matrix the frames have to be iterated over twice. '
+                          'To avoid this slowdown, provide an atomgroup for '
+                          'demeaning.')
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
@@ -207,8 +212,9 @@ class PCA(AnalysisBase):
                       "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
             mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
                                     interval=interval, quiet=self._quiet,
-                                    format= format)
-            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:self.step]):
+                                    format=format)
+            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:
+                                                      self.step]):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
                     mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
@@ -216,7 +222,6 @@ class PCA(AnalysisBase):
                                                      self._atoms,
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
-                    self.mean += mobile_atoms.positions.ravel()
                 else:
                     self.mean += self._atoms.positions.ravel()
                 mean_pm.echo(i)
@@ -273,6 +278,7 @@ class PCA(AnalysisBase):
         step: int, optional
             Number of frames to skip over for PCA transform. Default: None
             becomes 1.
+
         Returns
         -------
         pca_space : array, shape (number of frames, number of components)
@@ -310,16 +316,18 @@ class PCA(AnalysisBase):
 def cosine_content(pca_space, i):
     """Measure the cosine content of the PCA projection.
 
-    Cosine content is used as a measure of convergence for a protein
-    simulation. If this function is used in a publication, please cite
-    [BerkHess1]_.
+    The cosine content of pca projections can be used as an indicator if a
+    simulation is converged. Values close to 1 are an indicator that the
+    simulation isn't converged. For values below 0.7 no statement can be made.
+    If you use this function please cite [BerkHess1]_.
+
 
     Parameters
     ----------
     pca_space: array, shape (number of frames, number of components)
         The PCA space to be analyzed.
     i: int
-        The index of the pca_space to be analyzed for cosine content
+        The index of the pca_component projectection to be analyzed.
 
     Returns
     -------

@@ -36,7 +36,7 @@ class TestPCA(object):
 
     def test_cov(self):
         atoms = self.u.select_atoms('backbone and name CA')
-        xyz = np.zeros((10, 642))
+        xyz = np.zeros((self.pca.n_frames, self.pca._n_atoms*3))
         for i, ts in enumerate(self.u.trajectory):
             xyz[i] = atoms.positions.ravel()
 
@@ -45,6 +45,9 @@ class TestPCA(object):
 
     def test_cum_var(self):
         assert_almost_equal(self.pca.cumulated_variance[-1], 1)
+        l = self.pca.cumulated_variance
+        l = np.sort(l)
+        assert_almost_equal(self.pca.cumulated_variance, l, 5)
 
     def test_pcs(self):
         assert_equal(self.pca.p_components.shape,
@@ -69,13 +72,15 @@ class TestPCA(object):
         assert_equal(self.pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
-    def test_transform_universe(self):
+    @staticmethod
+    def test_transform_universe():
         u1 = MDAnalysis.Universe(waterPSF, waterDCD)
         u2 = MDAnalysis.Universe(waterPSF, waterDCD)
         pca_test = pca.PCA(u1).run()
         pca_test.transform(u2)
 
-    def test_cosine_content(self):
+    @staticmethod
+    def test_cosine_content():
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand.atoms).run()
         dot = pca_random.transform(rand.atoms)
