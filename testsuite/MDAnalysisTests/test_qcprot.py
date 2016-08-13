@@ -34,8 +34,10 @@ import numpy as np
 
 import MDAnalysis.lib.qcprot as qcp
 
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_array_almost_equal
 from nose.plugins.attrib import attr
+import MDAnalysis.analysis.rms as rms
+
 
 
 # Calculate rmsd after applying rotation
@@ -106,7 +108,7 @@ def test_CalcRMSDRotationalMatrix():
     frag_b = frag_b - comB.reshape(3, 1)
 
     # Calculate rmsd and rotation matrix
-    qcp_rmsd = qcp.CalcRMSDRotationalMatrix(frag_a, frag_b, N, rot, None)
+    qcp_rmsd = qcp.CalcRMSDRotationalMatrix(frag_a.T, frag_b.T, N, rot, None)
 
     #print 'qcp rmsd = ',rmsd
     #print 'rotation matrix:'
@@ -125,3 +127,42 @@ def test_CalcRMSDRotationalMatrix():
         [-0.0271479, -0.67963547, 0.73304748]])
     assert_almost_equal(rot.reshape((3, 3)), expected_rot, 6,
                         "Rotation matrix for aliging B to A does not have expected values.")
+def test_innerproduct():
+    a = 2450.0
+    b = np.array([430, 452, 474, 500, 526, 552, 570, 600, 630])
+    c = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
+    d = np.array([[13,14,15], [16,17,18], [19,20,21], [22,23,24]])
+    e = np.zeros(9,dtype = np.float64)
+    g = qcp.InnerProduct(e, c.astype(np.float64), d.astype(np.float64), 4, None)
+    assert_almost_equal(a, g)
+    assert_array_almost_equal(b, e)
+
+def test_RMSDmatrix():
+    c = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
+    d = np.array([[13,14,15], [16,17,18], [19,20,21], [22,23,24]])
+    f = np.zeros(9,dtype = np.float64)
+    h = 20.73219522556076
+    i = np.array([0.9977195, 0.02926979, 0.06082009, -.0310942, 0.9990878, 0.02926979, -0.05990789, -.0310942, 0.9977195])
+    j = qcp.CalcRMSDRotationalMatrix(c.astype(np.float64), d.astype(np.float64), 4 , f, None)
+    assert_almost_equal(h, j)
+    assert_array_almost_equal(f, i, 6)
+    
+def test_rmsd():
+    c = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
+    d = np.array([[13,14,15], [16,17,18], [19,20,21], [22,23,24]])
+    k = np.array([[.9977195, .02926979, .06082009], [-.0310942, .9990878, .02926979], [-.05990789, -.0310942, .9977195]])
+    l = np.dot(d, k)
+    m = rms.rmsd(l, c)
+    h = 20.73219522556076
+    assert_almost_equal(m, h, 6)
+
+def test_weights():
+    c = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
+    d = np.array([[13,14,15], [16,17,18], [19,20,21], [22,23,24]])
+    n = np.array([1,2,3,4]).astype(np.float64)
+    o = np.zeros(9,dtype=np.float64)
+    p = qcp.CalcRMSDRotationalMatrix(c.astype(np.float64), d.astype(np.float64), 4, o, n)
+    assert_almost_equal(p, 32.798779202159416)
+    q = np.array([0.99861395, .022982, .04735006, -.02409085, .99944556, .022982, -.04679564, -.02409085, .99861395])
+    np.testing.assert_almost_equal(q, o)
+

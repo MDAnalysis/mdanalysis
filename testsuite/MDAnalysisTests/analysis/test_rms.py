@@ -140,7 +140,7 @@ class TestRMSD(object):
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
         self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
-        self.correct_values_group = [[0 , 0, 0, 0, 0],
+        self.correct_values_group = [[0, 0, 0, 0, 0],
                                      [49, 48.9999, 4.7857, 4.7002,
                                       4.68981]]
 
