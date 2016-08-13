@@ -27,6 +27,7 @@ from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
 
 
 class TestPCA(object):
+    """ Test the PCA class """
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
         self.pca = pca.PCA(self.u.atoms, select='backbone and name CA',

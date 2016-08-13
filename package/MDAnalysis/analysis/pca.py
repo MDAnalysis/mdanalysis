@@ -26,14 +26,13 @@ This module contains the linear dimensions reduction method Principal Component
 Analysis (PCA). PCA sorts a simulation into 3N directions of descending
 variance, with N being the number of atoms. These directions are called
 the principal components. The dimensions to be analyzed are reduced by only
-looking at a few projections of the first principal components. To run a
-Principal Component Analysis, please refer to the :ref:`PCA-tutorial`.
+looking at a few projections of the first principal components. To learn how to
+run a Principal Component Analysis, please refer to the :ref:`PCA-tutorial`.
 
-This module constructs a covariance matrix wherein each element of the matrix
-is denoted by (i,j) row-column coordinates. The (i,j) coordinate is the
-influence of the of the ith coordinates on the jth coordinates
-of a given trajectory. The eponymous components are the
-eigenvectors of this matrix.
+The PCA problem is solved by solving the eigenvalue problem of the covariance
+matrix, a 3N x 3N matrix where the element (i, j) is the covariance between
+coordinates i and j. The principal components are the eigenvectors of this
+matrix.
 
 For each eigenvector, its eigenvalue is the variance that the eigenvector
 explains. Stored in :attribute:`cumulated_variance`, a ratio for each number of
@@ -56,13 +55,14 @@ The example uses files provided as part of the MDAnalysis test suite
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
 PCA class.
 
-First load all modules and test data ::
+First load all modules and test data
     >>> import MDAnalysis as mda
     >>> import MDAnalysis.analysis.pca as pca
     >>> from MDAnalysis.tests.datafiles import PSF, DCD
 
-Given a universe containing trajectory data we can perform PCA using
-:class:`PCA`:: and retrieve the principal components.
+Given a universe containing trajectory data we can perform Principal Component
+Analyis by using the class :class:`PCA` and retrieving the principal
+components.
     >>> u = mda.Universe(PSF,DCD)
     >>> PSF_pca = pca.PCA(u, select='backbone')
     >>> PSF_pca.run()
