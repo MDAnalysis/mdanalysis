@@ -26,7 +26,8 @@ Enhancements
   class itself.
   * Added boolean flag at lib.distances.USED_OPENMP to reveal if
     OpenMP was used in compilation (Issue #883)
-
+  * Added Principal Component Analysis module for linear dimensionality
+    reduction.
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
