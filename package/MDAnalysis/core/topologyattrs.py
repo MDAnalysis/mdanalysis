@@ -31,6 +31,8 @@ from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
 from . import flags
+from .groups import (GroupBase, Atom, Residue, Segment,
+                     AtomGroup, ResidueGroup, SegmentGroup)
 
 
 class TopologyAttr(object):
@@ -122,7 +124,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
-    target_levels = ['atom']
+    target_classes = [Atom]
 
     def __init__(self):
         pass
@@ -158,7 +160,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
 
     def __init__(self):
         pass
@@ -202,7 +204,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
 
     def __init__(self):
         pass
@@ -232,7 +234,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    target_levels = ['atom']
+    target_classes = [Atom]
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -284,14 +286,14 @@ class Atomnames(AtomAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     atomgroup.__class__.__name__, name))
 
-    transplants['atomgroup'].append(
+    transplants[AtomGroup].append(
         ('__getattr__', getattr__))
 
-    transplants['residue'].append(
+    transplants[Residue].append(
         ('__getattr__', getattr__))
 
     # this is also getitem for a residue
-    transplants['residue'].append(
+    transplants[Residue].append(
         ('__getitem__', getattr__))
 
     def _get_named_atom(group, name):
@@ -315,10 +317,10 @@ class Atomnames(AtomAttr):
             # XXX: but inconsistent (see residues and Issue 47)
             return atomlist
 
-    transplants['atomgroup'].append(
+    transplants[AtomGroup].append(
         ('_get_named_atom', _get_named_atom))
 
-    transplants['residue'].append(
+    transplants[Residue].append(
         ('_get_named_atom', _get_named_atom))
 
     def phi_selection(residue):
@@ -339,7 +341,7 @@ class Atomnames(AtomAttr):
         else:
             return None
 
-    transplants['residue'].append(('phi_selection', phi_selection))
+    transplants[Residue].append(('phi_selection', phi_selection))
 
     def psi_selection(residue):
         """AtomGroup corresponding to the psi protein backbone dihedral
@@ -359,7 +361,7 @@ class Atomnames(AtomAttr):
         else:
             return None
 
-    transplants['residue'].append(('psi_selection', psi_selection))
+    transplants[Residue].append(('psi_selection', psi_selection))
 
     def omega_selection(residue):
         """AtomGroup corresponding to the omega protein backbone dihedral
@@ -387,7 +389,7 @@ class Atomnames(AtomAttr):
         else:
             return None
 
-    transplants['residue'].append(('omega_selection', omega_selection))
+    transplants[Residue].append(('omega_selection', omega_selection))
 
     def chi1_selection(residue):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
@@ -405,7 +407,7 @@ class Atomnames(AtomAttr):
         except (SelectionError, NoDataError):
             return None
 
-    transplants['residue'].append(('chi1_selection', chi1_selection))
+    transplants[Residue].append(('chi1_selection', chi1_selection))
 
 
 #TODO: update docs to property doc
@@ -461,7 +463,7 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     groupdoc = """Mass of each component in the Group.
@@ -530,7 +532,7 @@ class Masses(AtomAttr):
         return np.sum(positions * masses[:, np.newaxis],
                       axis=0) / masses.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
 
     def total_mass(group):
@@ -539,7 +541,7 @@ class Masses(AtomAttr):
         """
         return group.masses.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('total_mass', total_mass))
 
     def moment_of_inertia(group, **kwargs):
@@ -593,7 +595,7 @@ class Masses(AtomAttr):
 
         return tens
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('moment_of_inertia', moment_of_inertia))
 
     def radius_of_gyration(group, **kwargs):
@@ -624,7 +626,7 @@ class Masses(AtomAttr):
 
         return np.sqrt(rog_sq)
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('radius_of_gyration', radius_of_gyration))
 
     def shape_parameter(group, **kwargs):
@@ -669,7 +671,7 @@ class Masses(AtomAttr):
 
         return shape
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('shape_parameter', shape_parameter))
 
     def asphericity(group, **kwargs):
@@ -716,7 +718,7 @@ class Masses(AtomAttr):
 
         return shape
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('asphericity', asphericity))
 
     def principal_axes(group, **kwargs):
@@ -758,7 +760,7 @@ class Masses(AtomAttr):
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:, indices].T
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('principal_axes', principal_axes))
 
     def align_principal_axis(group, axis, vector):
@@ -787,7 +789,7 @@ class Masses(AtomAttr):
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
 
 
@@ -796,7 +798,7 @@ class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
     per_object = 'atom'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def get_residues(self, rg):
@@ -825,7 +827,7 @@ class Charges(AtomAttr):
         """
         return group.charges.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('total_charge', total_charge))
 
 
@@ -865,7 +867,7 @@ class ResidueAttr(TopologyAttr):
     """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    target_levels = ['residue']
+    target_classes = [Residue]
     per_object = 'residue'
 
     def get_atoms(self, ag):
@@ -893,14 +895,14 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
 
 
 #TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
     transplants = defaultdict(list)
 
     def getattr__(residuegroup, resname):
@@ -910,9 +912,9 @@ class Resnames(ResidueAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     residuegroup.__class__.__name__, resname))
 
-    transplants['residuegroup'].append(('__getattr__', getattr__))
+    transplants[ResidueGroup].append(('__getattr__', getattr__))
 
-    transplants['segment'].append(('__getattr__', getattr__))
+    transplants[Segment].append(('__getattr__', getattr__))
 
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
@@ -938,10 +940,10 @@ class Resnames(ResidueAttr):
             # XXX: but inconsistent (see residues and Issue 47)
             return residues
 
-    transplants['residuegroup'].append(
+    transplants[ResidueGroup].append(
         ('_get_named_residue', _get_named_residue))
 
-    transplants['segment'].append(
+    transplants[Segment].append(
         ('_get_named_residue', _get_named_residue))
 
     def sequence(self, **kwargs):
@@ -1037,14 +1039,14 @@ class Resnames(ResidueAttr):
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
-    transplants['residuegroup'].append(
+    transplants[ResidueGroup].append(
         ('sequence', sequence))
 
 #TODO: update docs to property doc
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
 
 
 ## segment attributes
@@ -1055,7 +1057,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    target_levels = ['segment']
+    target_classes = [Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
@@ -1077,7 +1079,7 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def getattr__(segmentgroup, segid):
@@ -1087,7 +1089,7 @@ class Segids(SegmentAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     segmentgroup.__class__.__name__, segid))
 
-    transplants['segmentgroup'].append(
+    transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
 
     def _get_named_segment(group, segid):
@@ -1113,7 +1115,7 @@ class Segids(SegmentAttr):
             # XXX: but inconsistent (see residues and Issue 47)
             return segment 
 
-    transplants['segmentgroup'].append(
+    transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
 
@@ -1178,7 +1180,7 @@ class Bonds(AtomAttr):
         idx = [b.partner(self).index for b in self.bonds]
         return self._u.atoms[idx]
 
-    transplants['atom'].append(
+    transplants[Atom].append(
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
@@ -1200,11 +1202,11 @@ class Bonds(AtomAttr):
         """
         return tuple(set(a.fragment for a in self))
 
-    transplants['atom'].append(
+    transplants[Atom].append(
         ('fragment', property(fragment, None, None,
                               fragment.__doc__)))
 
-    transplants['atomgroup'].append(
+    transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
                                fragments.__doc__)))
 

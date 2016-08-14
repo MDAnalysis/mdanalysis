@@ -37,84 +37,156 @@ def make_classes():
 
     Returns
     -------
-    A dictionary with a copy of all MDA container classes
+    Two dictionaries. One with a set of :class:`TopologyAttrContainer` classes 
+    to serve as bases for universe-specific MDA container classes. Another,
+    with the final merged versions of those classes. The classes themselves are
+    used as hashing keys.
     """
-    def copy_class(newname, *parents):
-        return type(newname, tuple(parents), {})
-
-    classdict = {}
-    # The 'GB' middle man is needed so that a single topologyattr
+    bases = {}
+    classes = {}
+    # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
-    GB = classdict['group'] = copy_class(
-        'Group', GroupBase)
-    AG = classdict['atomgroup'] = copy_class(
-        'AtomGroupBase', GB)
-    RG = classdict['residuegroup'] = copy_class(
-        'ResidueGroupBase', GB)
-    SG = classdict['segmentgroup'] = copy_class(
-        'SegmentGroupBase', GB)
+    GBase = bases[GroupBase] = _make_attr_container()
+    AGBase = bases[AtomGroup] = _make_attr_container(base=GBase)
+    RGBase = bases[ResidueGroup] = _make_attr_container(base=GBase)
+    SGBase = bases[SegmentGroup] = _make_attr_container(base=GBase)
     # In the current Group-centered topology scheme no attributes apply only
     #  to ComponentBase, so no need to have a 'CB' middle man.
-    #CB = classdict['component'] = copy_class(
-    #    'ComponentBase', ComponentBase)
-    A = classdict['atom'] = copy_class(
-        'AtomBase', ComponentBase)
-    R = classdict['residue'] = copy_class(
-        'ResidueBase', ComponentBase)
-    S = classdict['segment'] = copy_class(
-        'SegmentBase', ComponentBase)
+    #CBase = _make_attr_container(singular=True)
+    ABase = bases[Atom] = _make_attr_container(singular=True)
+    RBase = bases[Residue] = _make_attr_container(singular=True)
+    SBase = bases[Segment] = _make_attr_container(singular=True)
 
-    return classdict
+    # Initializes the class cache.
+    classes[AtomGroup] = AGBase._mix('AtomGroup', AtomGroup)
+    classes[ResidueGroup] = RGBase._mix('ResidueGroup', ResidueGroup)
+    classes[SegmentGroup] = SGBase._mix('SegmentGroup', SegmentGroup)
+
+    classes[Atom] = ABase._mix('Atom', Atom)
+    classes[Residue] = RBase._mix('Residue', Residue)
+    classes[Segment] = SBase._mix('Segment', Segment)
+
+    return bases, classes
+
+
+class TopologyAttrContainer(object):
+    """Template for the subclasses built by :func:`_make_attr_container`.
+
+    """
+    _singular = False
+
+    def __init__(self, *args, **kwargs):
+        raise TypeError("Classes of type {} serve only as base classes to "
+            "merge with (possibly via their '_mix' classmethod). They "
+            "cannot be instantiated.".format(self.__class__))
+
+    @classmethod
+    def _add_prop(cls, attr):
+        """Add attr into the namespace for this class
+
+        Parameters
+        ----------
+
+        attr : A TopologyAttr object
+        """
+        getter = lambda self: attr.__getitem__(self)
+        setter = lambda self, values: attr.__setitem__(self, values)
+
+        if cls._singular:
+            setattr(cls, attr.singular, 
+                    property(getter, setter, None, attr.singledoc))
+        else:
+            setattr(cls, attr.attrname,
+                    property(getter, setter, None, attr.groupdoc))
+
+    @classmethod
+    def _mix(cls, cls_name, other):
+        """Returns a class mixed with ourselves with a bypassed :meth:`__new__`.
+
+        Classes merged at this point always override :meth:`__new__`, causing
+        further instantiations to shortcut to :meth:`object.__new__`, skipping
+        the cache-fetch process.
+
+        Parameters
+        ----------
+        cls_name : str
+            The name of the returned class.
+
+        other : type
+            The class to mix with ourselves.
+
+        Returns
+        -------
+        type
+            A class of name *cls_name* and parents :class:`_ImmutableBase`, 
+            *other* and this class.
+        """
+        return type(cls_name, (_ImmutableBase, other, cls), {})
+
+# This function could be blended into the code of TopologyAttrContainer by
+#  setting the __new__ class method. However, there would be no protection
+#  against inadvertent initialization of the class.
+def _make_attr_container(base=TopologyAttrContainer, singular=False):
+    """Factory function that returns :class:`TopologyAttrContainer` subclasses.
+
+    Parameters
+    ----------
+
+    singular : bool
+        The :attr:`_singular` of the returned class will be set to *singular*.
+        It controls the type of :class:`TopologyAttr` addition.
+
+    Returns
+    -------
+    type
+        A subclass of :class:`TopologyAttrContainer`, with the same name. 
+    """
+    return type(base.__name__, (base,), {'_singular':singular})
 
 
 class _MutableBase(object):
     """
-    Base class that merges appropriate :class:`TopologyAttr` container classes.
+    Base class that merges appropriate :class:`TopologyAttrContainer` classes.
 
-    Implements :meth:`__new__`. In it the instantiating class is merged with
-    the appropriate base from :attr:`Universe._classes`. The resulting class is
-    saved in the :attr:`Universe._class_cache` dictionary. The instantiating
-    class itself is used as the dictionary key, for simplicity in cache
-    retrieval.
-    
-    The resulting merged class is also cached using itself as the key, to
-    simplify class reuse. This is unneeded in practice because
-    :class:`_ImmutableBase` is also merged in, with higher MRO precedence, and
-    its :meth:`__new__` shortcuts to :meth:`object.__new__`, skipping the
-    cache-fetch process when directly reusing an already-merged class.
+    Implements :meth:`__new__`. In it the instantiating class is fetched from
+    :attr:`Universe._classes`. If there is a cache miss, a merged class is made
+    with a base from :attr:`Universe._class_bases` and cached.
+
+    The classes themselves are used as the cache dictionary keys for simplcity
+    in cache retrieval.
     """
     # This signature must be kept in sync with the __init__ signature of
     #  GroupBase and ComponentBase.
     def __new__(cls, ix, u):
         try:
-            # Kept terse so that cache lookup has minimal performance impact.
-            return object.__new__(u._class_cache[cls])
+            return object.__new__(u._classes[cls])
         except KeyError:
-            if cls.order == 'component':
-                objtype = cls.level.name
-            else:
-                objtype = cls.level.name + cls.order
+            # Cache miss. Let's find which kind of class this is and merge.
             try:
-                # The _ImmutableBase parent is added with priority so that
-                #  direct class reusal bypasses the call to this __new__.
-                newcls = type(cls.__name__, (_ImmutableBase, cls, u._classes[objtype]), {})
-            except KeyError:
-                raise TypeError("Attempted to instantiate class '{}' but its "
-                                "level/order combination ('{}') is "
-                                "unsupported. Currently implemented "
-                                "combinations are: {}".format(cls.__name__,
-                                    objtype, str(sorted(u._classes.keys()))))
-            u._class_cache[cls] = u._class_cache[newcls] = newcls
+                parent_cls = next(u._class_bases[parent]
+                                  for parent in cls.mro()
+                                  if parent in u._class_bases)
+            except StopIteration:
+                raise TypeError("Attempted to instantiate class '{}' but "
+                                "none of its parents are known to the "
+                                "universe. Currently possible parent "
+                                "classes are: {}".format(cls.__name__,
+                                    str(sorted(u._class_bases.keys()))))
+            newcls = u._classes[cls] = parent_cls._mix(cls.__name__, cls)
             return object.__new__(newcls)
 
+
 class _ImmutableBase(object):
-    # Since this class will come first when mixed with AtomGroup,
-    #  setting __new__ like this will avoid having to go through the
+    """Class used to shortcut :meth:`__new__` to :meth:`object.__new__`.
+    
+    """
+    # When mixed via TopologyAttrContainer._mix this class has MRO priority.
+    #  Setting __new__ like this will avoid having to go through the
     #  cache lookup if the class is reused (as in ag.__class__(...)).
     __new__ = object.__new__
 
 
-class GroupBase(object):
+class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
     """
@@ -123,20 +195,6 @@ class GroupBase(object):
         self._ix = ix
         self._u = u
         self._cache = dict()
-
-    @classmethod
-    def _add_prop(cls, attr):
-        """Add attr into the namespace for this class
-
-        Arguments
-        ---------
-        attr - A TopologyAttr object
-        """
-        getter = lambda self: attr.__getitem__(self)
-        setter = lambda self, values: attr.__setitem__(self, values)
-
-        setattr(cls, attr.attrname,
-                property(getter, setter, None, attr.groupdoc))
 
     def __len__(self):
         return len(self._ix)
@@ -155,6 +213,7 @@ class GroupBase(object):
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
+                # TODO: what about tuples?
                 item = np.array(item)
             return self.__class__(self._ix[item], self._u)
 
@@ -653,7 +712,7 @@ class GroupBase(object):
                 o.atoms.translate(s)
 
 
-class AtomGroup(_MutableBase):
+class AtomGroup(GroupBase):
     """A group of atoms.
 
     An AtomGroup is an ordered collection of atoms. Typically, an AtomGroup is
@@ -712,9 +771,6 @@ class AtomGroup(_MutableBase):
     .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
-
-    order = 'group'
-
     @property
     def atoms(self):
         """Get another AtomGroup identical to this one.
@@ -1192,7 +1248,7 @@ class AtomGroup(_MutableBase):
                 writer.close()
 
 
-class ResidueGroup(_MutableBase):
+class ResidueGroup(GroupBase):
     """ResidueGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1201,8 +1257,6 @@ class ResidueGroup(_MutableBase):
     ResidueGroups.
 
     """
-    order = 'group'
-
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this ResidueGroup.
@@ -1262,7 +1316,7 @@ class ResidueGroup(_MutableBase):
         return self._u.residues[np.unique(self.ix)]
 
 
-class SegmentGroup(_MutableBase):
+class SegmentGroup(GroupBase):
     """SegmentGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1271,8 +1325,6 @@ class SegmentGroup(_MutableBase):
     SegmentGroups.
 
     """
-    order = 'group'
-
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this SegmentGroup. 
@@ -1336,7 +1388,7 @@ class SegmentGroup(_MutableBase):
 
 
 @functools.total_ordering
-class ComponentBase(object):
+class ComponentBase(_MutableBase):
     """Base class from which a Universe's Component class is built.
 
     Components are the individual objects that are found in Groups.
@@ -1379,8 +1431,11 @@ class ComponentBase(object):
         
         """
         if self.level != other.level:
-            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
-                            ' to Atom'.format(other.__class__.__name__))
+            raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
+                            ' to {0}'.format(self.level.singular.__name__,
+                                             self.level.plural.__name__,
+                                             other.level.singular.__name__,
+                                             other.level.plural.__name__))
 
         if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
@@ -1446,7 +1501,7 @@ class ComponentBase(object):
         return self._ix
 
 
-class Atom(_MutableBase):
+class Atom(ComponentBase):
     """Atom base class.
 
     This class is used by a Universe for generating its Topology-specific Atom
@@ -1454,8 +1509,6 @@ class Atom(_MutableBase):
     this class only includes ad-hoc methods specific to Atoms.
 
     """
-    order = 'component'
-
     @property
     def residue(self):
         residueclass = self.level.parent.singular
@@ -1541,7 +1594,7 @@ class Atom(_MutableBase):
             raise NoDataError("Timestep does not contain forces")
 
 
-class Residue(_MutableBase):
+class Residue(ComponentBase):
     """Residue base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1550,8 +1603,6 @@ class Residue(_MutableBase):
     Residues.
 
     """
-    order = 'component'
-
     @property
     def atoms(self):
         atomsclass = self.level.child.plural
@@ -1565,7 +1616,7 @@ class Residue(_MutableBase):
                             self._u)
 
 
-class Segment(_MutableBase):
+class Segment(ComponentBase):
     """Segment base class.
 
     This class is used by a Universe for generating its Topology-specific Segment
@@ -1573,8 +1624,6 @@ class Segment(_MutableBase):
     this class only includes ad-hoc methods specific to Segments.
 
     """
-    order = 'component'
-
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
@@ -1589,21 +1638,21 @@ class Segment(_MutableBase):
 
 # Define relationships between these classes
 # with Level objects
-Atomlevel = levels.Level('atom', Atom, AtomGroup)
-Residuelevel = levels.Level('residue', Residue, ResidueGroup)
-Segmentlevel = levels.Level('segment', Segment, SegmentGroup)
+ATOMLEVEL = levels.Level('atom', Atom, AtomGroup)
+RESIDUELEVEL = levels.Level('residue', Residue, ResidueGroup)
+SEGMENTLEVEL = levels.Level('segment', Segment, SegmentGroup)
 
-Atomlevel.parent = Residuelevel
-Atomlevel.child = None
-Residuelevel.parent = Segmentlevel
-Residuelevel.child = Atomlevel
-Segmentlevel.parent = None
-Segmentlevel.child = Residuelevel
+ATOMLEVEL.parent = RESIDUELEVEL
+ATOMLEVEL.child = None
+RESIDUELEVEL.parent = SEGMENTLEVEL
+RESIDUELEVEL.child = ATOMLEVEL
+SEGMENTLEVEL.parent = None
+SEGMENTLEVEL.child = RESIDUELEVEL
 
-Atom.level = Atomlevel
-AtomGroup.level = Atomlevel
-Residue.level = Residuelevel
-ResidueGroup.level = Residuelevel
-Segment.level = Segmentlevel
-SegmentGroup.level = Segmentlevel
+Atom.level = ATOMLEVEL
+AtomGroup.level = ATOMLEVEL
+Residue.level = RESIDUELEVEL
+ResidueGroup.level = RESIDUELEVEL
+Segment.level = SEGMENTLEVEL
+SegmentGroup.level = SEGMENTLEVEL
 
