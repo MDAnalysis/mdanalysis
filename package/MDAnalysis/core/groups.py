@@ -1,3 +1,18 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 """Containers for objects in MDA
 
 
@@ -28,48 +43,81 @@ def make_classes():
         return type(newname, tuple(parents), {})
 
     classdict = {}
+    # The 'GB' middle man is needed so that a single topologyattr
+    #  patching applies automatically to all groups.
     GB = classdict['group'] = copy_class(
         'Group', GroupBase)
     AG = classdict['atomgroup'] = copy_class(
-        'AtomGroup', GB, AtomGroup)
+        'AtomGroupBase', GB)
     RG = classdict['residuegroup'] = copy_class(
-        'ResidueGroup', GB, ResidueGroup)
+        'ResidueGroupBase', GB)
     SG = classdict['segmentgroup'] = copy_class(
-        'SegmentGroup', GB, SegmentGroup)
+        'SegmentGroupBase', GB)
+    # In the current Group-centered topology scheme no attributes apply only
+    #  to ComponentBase, so no need to have a 'CB' middle man.
+    #CB = classdict['component'] = copy_class(
+    #    'ComponentBase', ComponentBase)
     A = classdict['atom'] = copy_class(
-        'Atom', Atom)
+        'AtomBase', ComponentBase)
     R = classdict['residue'] = copy_class(
-        'Residue', Residue)
+        'ResidueBase', ComponentBase)
     S = classdict['segment'] = copy_class(
-        'Segment', Segment)
-
-    # Define relationships between these classes
-    # with Level objects
-    Atomlevel = levels.Level('atom', A, AG)
-    Residuelevel = levels.Level('residue', R, RG)
-    Segmentlevel = levels.Level('segment', S, SG)
-
-    Atomlevel.parent = Residuelevel
-    Atomlevel.child = None
-    Residuelevel.parent = Segmentlevel
-    Residuelevel.child = Atomlevel
-    Segmentlevel.parent = None
-    Segmentlevel.child = Residuelevel
-
-    A.level = Atomlevel
-    AG.level = Atomlevel
-    R.level = Residuelevel
-    RG.level = Residuelevel
-    S.level = Segmentlevel
-    SG.level = Segmentlevel
+        'SegmentBase', ComponentBase)
 
     return classdict
 
+
+class _MutableBase(object):
+    """
+    Base class that merges appropriate :class:`TopologyAttr` container classes.
+
+    Implements :attr:`__new__`. In it the instantiating class is merged with
+    the appropriate base from :attr:`Universe._classes`. The resulting class is
+    saved in the :attr:`Universe._class_cache` dictionary. The instantiating
+    class itself is used as the dictionary key, for simplicity in cache
+    retrieval.
+    
+    The resulting merged class is also cached using itself as the key, to
+    simplify class reuse. This is unneeded in practice because
+    :class:`GroupBase` and :class:`ComponentBase` shortcut their
+    :attr:`__new__` to :attr:`object.__new__`, skipping this process when
+    reusing an already-merged class.
+    """
+    # This signature must be kept in sync with the __init__ signature of
+    #  GroupBase and ComponentBase.
+    def __new__(cls, ix, u):
+        try:
+            # Kept terse so that cache lookup has minimal performance impact.
+            return object.__new__(u._class_cache[cls])
+        except KeyError:
+            if cls.order == 'component':
+                objtype = cls.level.name
+            else:
+                objtype = cls.level.name + cls.order
+            try:
+                # The base classes should have MRO priority, so that the
+                #  __new__ shortcut in Group/ComponentBase can kick in.
+                # OTOH, this prevents overriding TopologyAttr properties
+                # when subclassing Atom/Residue/SegmentGroups.
+                newcls = type(cls.__name__, (u._classes[objtype], cls), {})
+            except KeyError:
+                raise TypeError("Attempted to instantiate class '{}' but its "
+                                "level/order combination ('{}') is "
+                                "unsupported. Currently implemented "
+                                "combinations are: {}".format(cls.__name__,
+                                    objtype, str(sorted(u._classes.keys()))))
+            u._class_cache[cls] = u._class_cache[newcls] = newcls
+            return object.__new__(newcls)
 
 class GroupBase(object):
     """Base class from which a Universe's Group class is built.
 
     """
+    # Since this class will come first when mixed with AtomGroup,
+    #  setting __new__ like this will avoid having to go through the
+    #  cache lookup if the class is reused (as in ag.__class__(...)).
+    __new__ = object.__new__
+
     def __init__(self, ix, u):
         # indices for the objects I hold
         self._ix = ix
@@ -133,7 +181,7 @@ class GroupBase(object):
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
         if not self._u is other._u:
-            raise ValueError("Can't add objects from different Universe")
+            raise ValueError("Can't add objects from different Universes")
         
         # for the case where other is a Component, and so other._ix is an
         # integer
@@ -605,7 +653,7 @@ class GroupBase(object):
                 o.atoms.translate(s)
 
 
-class AtomGroup(object):
+class AtomGroup(_MutableBase):
     """A group of atoms.
 
     An AtomGroup is an ordered collection of atoms. Typically, an AtomGroup is
@@ -665,7 +713,7 @@ class AtomGroup(object):
 
     """
 
-    level = 'atom'
+    order = 'group'
 
     @property
     def atoms(self):
@@ -1144,8 +1192,16 @@ class AtomGroup(object):
                 writer.close()
 
 
-class ResidueGroup(object):
-    level = 'residue'
+class ResidueGroup(_MutableBase):
+    """ResidueGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    ResidueGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    ResidueGroups.
+
+    """
+    order = 'group'
 
     @property
     def atoms(self):
@@ -1206,7 +1262,7 @@ class ResidueGroup(object):
         return self._u.residues[np.unique(self.ix)]
 
 
-class SegmentGroup(object):
+class SegmentGroup(_MutableBase):
     """SegmentGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1215,7 +1271,7 @@ class SegmentGroup(object):
     SegmentGroups.
 
     """
-    level = 'segment'
+    order = 'group'
 
     @property
     def atoms(self):
@@ -1285,6 +1341,9 @@ class ComponentBase(object):
 
     Components are the individual objects that are found in Groups.
     """
+    # See the comment on the __new__ of GroupBase.
+    __new__ = object.__new__
+
     def __init__(self, ix, u):
         # index of component
         self._ix = ix
@@ -1390,7 +1449,7 @@ class ComponentBase(object):
         return self._ix
 
 
-class Atom(ComponentBase):
+class Atom(_MutableBase):
     """Atom base class.
 
     This class is used by a Universe for generating its Topology-specific Atom
@@ -1398,7 +1457,7 @@ class Atom(ComponentBase):
     this class only includes ad-hoc methods specific to Atoms.
 
     """
-    level = 'atom'
+    order = 'component'
 
     @property
     def residue(self):
@@ -1485,7 +1544,7 @@ class Atom(ComponentBase):
             raise NoDataError("Timestep does not contain forces")
 
 
-class Residue(ComponentBase):
+class Residue(_MutableBase):
     """Residue base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1494,7 +1553,7 @@ class Residue(ComponentBase):
     Residues.
 
     """
-    level = 'residue'
+    order = 'component'
 
     @property
     def atoms(self):
@@ -1509,7 +1568,7 @@ class Residue(ComponentBase):
                             self._u)
 
 
-class Segment(ComponentBase):
+class Segment(_MutableBase):
     """Segment base class.
 
     This class is used by a Universe for generating its Topology-specific Segment
@@ -1517,7 +1576,7 @@ class Segment(ComponentBase):
     this class only includes ad-hoc methods specific to Segments.
 
     """
-    level = 'segment'
+    order = 'component'
 
     def __getattr__(self, attr):
         if attr.startswith('r'):
@@ -1541,3 +1600,24 @@ class Segment(ComponentBase):
         residuesclass = self.level.child.plural
         return residuesclass(self._u._topology.resindices[self],
                              self._u)
+
+# Define relationships between these classes
+# with Level objects
+Atomlevel = levels.Level('atom', Atom, AtomGroup)
+Residuelevel = levels.Level('residue', Residue, ResidueGroup)
+Segmentlevel = levels.Level('segment', Segment, SegmentGroup)
+
+Atomlevel.parent = Residuelevel
+Atomlevel.child = None
+Residuelevel.parent = Segmentlevel
+Residuelevel.child = Atomlevel
+Segmentlevel.parent = None
+Segmentlevel.child = Residuelevel
+
+Atom.level = Atomlevel
+AtomGroup.level = Atomlevel
+Residue.level = Residuelevel
+ResidueGroup.level = Residuelevel
+Segment.level = Segmentlevel
+SegmentGroup.level = Segmentlevel
+
