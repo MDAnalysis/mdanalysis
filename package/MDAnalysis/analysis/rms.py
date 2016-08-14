@@ -329,7 +329,7 @@ class RMSD(AnalysisBase):
         .. versionchanged:: 0.8
            *groupselections* added
         .. versionchanged: 0.15.1
-            Refactor to fit with Bauhaus API
+            Refactor to fit with AnalysisBase API
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
