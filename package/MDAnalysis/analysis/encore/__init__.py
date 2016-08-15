@@ -21,4 +21,14 @@ __all__ = [
     'clustering'
 ]
 
-from .similarity import hes, ces, dres, ces_convergence, dres_convergence
+from .similarity import hes, ces, dres, \
+    ces_convergence, dres_convergence
+
+from .clustering.ClusterCollection import ClusterCollection, Cluster
+from .clustering.ClusteringMethod import *
+from .clustering.cluster import cluster
+from .dimensionality_reduction.DimensionalityReductionMethod import *
+from .dimensionality_reduction.reduce_dimensionality import (
+    reduce_dimensionality)
+from .confdistmatrix import get_distance_matrix
+from utils import merge_universes

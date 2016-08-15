@@ -103,6 +103,8 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
 	int conv_reached = 0;        // convergence flag
 	int has_cluster = 0;         // found clusters flag
 	float lamprev = 1.0 - lambda;     // 1-lambda
+	int n_clusters = 0; 			// number of clusters
+
 
     if (noise != 0) { // Add noise to data
         for (int i=0;i<n*(n+1)/2;i++) {
@@ -213,7 +215,7 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
         if (has_cluster != 0) {
             conv_count++;
             for (j=0;j<n;j++) { // check if exemplars have changed. If they have changed, or if no clusters have been identified, reset convergence counter.
-                if (! exemplars[j] == old_exemplars[j]) {
+                if (exemplars[j] != old_exemplars[j]) {
                     conv_count = 0;
                     break;
                 }
@@ -227,20 +229,38 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
     } // start a new iteration. If convergence or max_iterations reached
 
     //printf("Preference %3.2f: Convergence reached at iteration %d!\n",currit); // print convergence info
+
+    // find number of clusters
+	for (int i=0;i<n;i++) {
+		idx = sqmIndex(n,i,i);
+		if (r[idx]+a[idx] > 0) {
+			exemplars[n_clusters] = i;
+			n_clusters++;
+		}
+	}
+
     for (int i=0;i<n;i++) { // assign elements to clusters
         idx = sqmIndex(n,i,0);
         maxsim = r[idx]+a[idx];
+        k=0;
 	//printf("%3.1f, ",maxsim);
         for (k=1;k<n;k++) {
             idx = sqmIndex(n,i,k);
             tmpsum = r[idx]+a[idx];
-		//Zprintf("%3.1f, ",tmpsum);
-            if (tmpsum > maxsim) {
+            if (tmpsum >= maxsim) {
                 clusters[i] = k;
                 maxsim = tmpsum;
             }
         }
     }
+
+	for (int i=0;i<n_clusters;i++) {
+		clusters[exemplars[i]] = exemplars[i];
+	} 
+
+
+
+
 
     //Free memory anyway
     free(r);

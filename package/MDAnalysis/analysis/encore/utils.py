@@ -17,10 +17,10 @@
 
 from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
-from numpy import savez, load, array, float64, sqrt, zeros
+import numpy as np
 import sys
-import logging
-import traceback
+import MDAnalysis as mda
+from ...coordinates.memory import MemoryReader
 
 class TriangularMatrix(object):
     """Triangular matrix class. This class is designed to provide a
@@ -67,11 +67,11 @@ class TriangularMatrix(object):
             return
         if type(size) == int:
             self.size = size
-            self._elements = zeros((size + 1) * size / 2, dtype=float64)
+            self._elements = np.zeros((size + 1) * size / 2, dtype=np.float64)
             return
         if type(size) == SynchronizedArray:
-            self._elements = array(size.get_obj(), dtype=float64)
-            self.size = int((sqrt(1 + 8 * len(size)) - 1) / 2)
+            self._elements = np.array(size.get_obj(), dtype=np.float64)
+            self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
             return
         else:
             raise TypeError
@@ -88,6 +88,13 @@ class TriangularMatrix(object):
             x, y = y, x
         self._elements[x * (x + 1) / 2 + y] = val
 
+    def as_array(self):
+        """Return standard numpy array equivalent"""
+        a = np.zeros((self.size, self.size))
+        a[np.tril_indices(self.size)] = self._elements
+        a[np.triu_indices(self.size)] = a.T[np.triu_indices(self.size)]
+        return a
+
     def savez(self, fname):
         """Save matrix in the npz compressed numpy format. Save metadata and
         data as well.
@@ -98,7 +105,7 @@ class TriangularMatrix(object):
         `fname` : str
             Name of the file to be saved.
         """
-        savez(fname, elements=self._elements, metadata=self.metadata)
+        np.savez(fname, elements=self._elements, metadata=self.metadata)
 
     def loadz(self, fname):
         """Load matrix from the npz compressed numpy format.
@@ -109,7 +116,7 @@ class TriangularMatrix(object):
         `fname` : str
             Name of the file to be loaded.
         """
-        loaded = load(fname)
+        loaded = np.load(fname)
 
         if loaded['metadata'].shape != ():
             if loaded['metadata']['number of frames'] != self.size:
@@ -120,12 +127,23 @@ class TriangularMatrix(object):
                 raise TypeError
         self._elements = loaded['elements']
 
-    def change_sign(self):
+    def __mul__(self, scalar):
+        """Multiply with scalar.
+
+        Parameters
+        ----------
+
+        `scalar` : float
+            Scalar to multiply with.
         """
-        Change sign of each element of the matrix
-        """
-        for k, v in enumerate(self._elements):
-            self._elements[k] = -v
+        newMatrix = TriangularMatrix(self.size)
+        newMatrix._elements = self._elements * scalar;
+        return newMatrix
+
+    __rmul__ = __mul__
+
+    def __str__(self):
+        return str(self.as_array())
 
 
 class ParallelCalculation(object):
@@ -180,7 +198,11 @@ class ParallelCalculation(object):
 
         # args[i] should be a list of args, one for each run
         self.ncores = ncores
-        self.function = function
+        self.functions = function
+        if not hasattr(self.functions, '__iter__'):
+            self.functions = [self.functions]*len(args)
+        if len(self.functions) != len(args):
+            self.functions = self.functions[:]*(len(args)/len(self.functions))
 
         # Arguments should be present
         if args is None:
@@ -215,7 +237,14 @@ class ParallelCalculation(object):
             i = q.get()
             if i == 'STOP':
                 return
-            results.put((i, self.function(*self.args[i], **self.kwargs[i])))
+
+            # print("\n\n\nHELLO: %s\n\n\n" % self.functions[i])
+            # print("\n\n\nHELLO: %s\n\n\n" % self.)
+            # print("\n\n\nHELLO: %s\n\n\n" % self.args[i])
+            # print("*%s*"%self.functions[i](*self.args[i]))
+            # print("\n\n\nHELLO: %s\n\n\n" % self.args[i])
+            # print("\n\n\nHEY: %s\n\n\n" % self.functions[i])
+            results.put((i, self.functions[i](*self.args[i], **self.kwargs[i])))
 
     def run(self):
         """
@@ -237,13 +266,13 @@ class ParallelCalculation(object):
         workers = [Process(target=self.worker, args=(q, results)) for i in
                    range(self.ncores)]
 
-        for w in workers:
-            w.start()
-
         for i in range(self.nruns):
             q.put(i)
         for w in workers:
             q.put('STOP')
+
+        for w in workers:
+            w.start()
 
         for w in workers:
             w.join()
@@ -361,7 +390,7 @@ def trm_indeces(a, b):
         j += 1
 
 
-def trm_indeces_nodiag(n):
+def trm_indices_nodiag(n):
     """generate (i,j) indeces of a triangular matrix of n rows (or columns),
     without diagonal (e.g. no elements (0,0),(1,1),...,(n,n))
 
@@ -377,7 +406,7 @@ def trm_indeces_nodiag(n):
             yield (i, j)
 
 
-def trm_indeces_diag(n):
+def trm_indices_diag(n):
     """generate (i,j) indeces of a triangular matrix of n rows (or columns),
     with diagonal
 
@@ -391,3 +420,27 @@ def trm_indeces_diag(n):
     for i in xrange(0, n):
         for j in xrange(i+1):
             yield (i, j)
+
+
+def merge_universes(ensembles):
+    """
+    Merge list of ensembles into one
+
+    Parameters
+    ----------
+    `ensembles` : list of Universe objects
+
+
+    Returns
+    ----------
+    Universe object
+    """
+
+    for ensemble in ensembles:
+        ensemble.transfer_to_memory()
+
+    return mda.Universe(
+        ensembles[0].filename,
+        np.concatenate(tuple([e.trajectory.timeseries() for e in ensembles]),
+        axis=1),
+        format=MemoryReader)

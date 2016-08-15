@@ -29,23 +29,26 @@ available.
 :Copyright: GNU Public License v3
 :Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
-.. versionadded:: 0.15.0
+.. versionadded:: 0.16.0
 
 """
 
+import numpy as np
 from multiprocessing import Process, Array, RawValue
-from numpy import (sum, average, transpose, dot, ones, asarray, mean,
-                   float64, object, bool, array, int)
 from ctypes import c_float
 from getpass import getuser
 from socket import gethostname
 from datetime import datetime
 from time import sleep
+import logging
+
+from ...core.AtomGroup import Universe
 
 from ..align import rotation_matrix
 
 from .cutils import PureRMSD
-from .utils import TriangularMatrix, trm_indeces, AnimatedProgressBar
+from .utils import TriangularMatrix, trm_indeces, \
+    AnimatedProgressBar
 
 
 
@@ -105,7 +108,7 @@ def conformational_distance_matrix(ensemble,
 
     # Prepare metadata recarray
     if metadata:
-        metadata = array([(gethostname(),
+        metadata = np.array([(gethostname(),
                            getuser(),
                            str(datetime.now()),
                            ensemble.filename,
@@ -148,10 +151,10 @@ def conformational_distance_matrix(ensemble,
         else:
             subset_masses = None
     else:
-        masses = ones((ensemble.trajectory.timeseries(
+        masses = np.ones((ensemble.trajectory.timeseries(
             ensemble.select_atoms(selection))[0].shape[0]))
         if pairwise_align:
-            subset_masses = ones((fit_coords[0].shape[0]))
+            subset_masses = np.ones((fit_coords[0].shape[0]))
         else:
             subset_masses = None
 
@@ -177,10 +180,10 @@ def conformational_distance_matrix(ensemble,
     b = [0, 0]
     tasks_per_worker = []
     for n,r in enumerate(runs_per_worker):
-        while i * (i - 1) / 2 < sum(runs_per_worker[:n + 1]):
+        while i * (i - 1) / 2 < np.sum(runs_per_worker[:n + 1]):
             i += 1
         b = [i - 2,
-             sum(runs_per_worker[0:n + 1]) - (i - 2) * (i - 1) / 2 - 1]
+             np.sum(runs_per_worker[0:n + 1]) - (i - 2) * (i - 1) / 2 - 1]
         tasks_per_worker.append((tuple(a), tuple(b)))
         if b[0] == b[1]:
             a[0] = b[0] + 1
@@ -269,30 +272,30 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
 
     if fit_coords is None and fit_masses is None:
         for i, j in trm_indeces(tasks[0], tasks[1]):
-            summasses = sum(masses)
-            rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(float64),
-                                                    coords[j].astype(float64),
+            summasses = np.sum(masses)
+            rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(np.float64),
+                                                    coords[j].astype(np.float64),
                                                     coords[j].shape[0], 
                                                     masses,
                                                     summasses)
 
     elif fit_coords is not None and fit_coords is not None:
         for i, j in trm_indeces(tasks[0], tasks[1]):
-            summasses = sum(masses)
-            subset_weights = asarray(fit_masses) / mean(fit_masses)
-            com_i = average(fit_coords[i], axis=0,
+            summasses = np.sum(masses)
+            subset_weights = np.asarray(fit_masses) / np.mean(fit_masses)
+            com_i = np.average(fit_coords[i], axis=0,
                             weights=fit_masses)
             translated_i = coords[i] - com_i
             subset1_coords = fit_coords[i] - com_i
-            com_j = average(fit_coords[j], axis=0,
+            com_j = np.average(fit_coords[j], axis=0,
                             weights=fit_masses)
             translated_j = coords[j] - com_j
             subset2_coords = fit_coords[j] - com_j
             rotamat = rotation_matrix(subset1_coords, subset2_coords,
                                       subset_weights)[0]
-            rotated_i = transpose(dot(rotamat, transpose(translated_i)))
+            rotated_i = np.transpose(np.dot(rotamat, np.transpose(translated_i)))
             rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(
-                rotated_i.astype(float64), translated_j.astype(float64),
+                rotated_i.astype(np.float64), translated_j.astype(np.float64),
                 coords[j].shape[0], masses, summasses)
 
     else: 
@@ -333,3 +336,125 @@ def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
         pbar.update(val)
         pbar.show_progress()
         sleep(update_interval)
+
+
+
+def get_distance_matrix(ensemble,
+                        selection="name CA",
+                        load_matrix=None,
+                        save_matrix=None,
+                        superimpose=True,
+                        superimposition_subset="name CA",
+                        mass_weighted=True,
+                        ncores=1,
+                        *conf_dist_args,
+                        **conf_dist_kwargs):
+    """
+    Retrieves or calculates the conformational distance (RMSD)
+    matrix. The distance matrix is calculated between all the frames of all
+    the :class:`~MDAnalysis.core.AtomGroup.Universe` objects given as input.
+    The order of the matrix elements depends on the order of the coordinates
+    of the ensembles and on the order of the input ensembles themselves,
+    therefore the order of the input list is significant.
+
+    The distance matrix can either be calculated from input ensembles or
+    loaded from an input numpy binary file.
+
+    Please notice that the .npz file does not contain a bidimensional array,
+    but a flattened representation that is meant to represent the elements of
+    an encore.utils.TriangularMatrix object.
+
+
+    Parameters
+    ----------
+
+    ensemble : Universe
+
+    selection : str
+        Atom selection string in the MDAnalysis format. Default is "name CA"
+
+    load_matrix : str, optional
+        Load similarity/dissimilarity matrix from numpy binary file instead
+        of calculating it (default is None). A filename is required.
+
+    save_matrix : bool, optional
+        Save calculated matrix as numpy binary file (default is None). A
+        filename is required.
+
+    superimpose : bool, optional
+        Whether to superimpose structures before calculating distance
+        (default is True).
+
+    superimposition_subset : str, optional
+        Group for superimposition using MDAnalysis selection syntax
+        (default is CA atoms: "name CA")
+
+    mass_weighted : bool, optional
+        calculate a mass-weighted RMSD (default is True). If set to False
+        the superimposition will also not be mass-weighted.
+
+    ncores : int, optional
+        Maximum number of cores to be used (default is 1)
+
+    Returns
+    -------
+
+    confdistmatrix : encore.utils.TriangularMatrix
+        Conformational distance matrix. .
+    """
+
+    # Load the matrix if required
+    if load_matrix:
+        logging.info(
+            "        Loading similarity matrix from: {0}".format(load_matrix))
+        confdistmatrix = \
+            TriangularMatrix(
+                size=ensemble.trajectory.timeseries(
+                    ensemble.select_atoms(selection),
+                    format='fac').shape[0],
+                loadfile=load_matrix)
+        logging.info("        Done!")
+        for key in confdistmatrix.metadata.dtype.names:
+            logging.info("        {0} : {1}".format(
+                key, str(confdistmatrix.metadata[key][0])))
+
+        # Check matrix size for consistency
+        if not confdistmatrix.size == \
+                ensemble.trajectory.timeseries(
+                    ensemble.select_atoms(selection),
+                    format='fac').shape[0]:
+            logging.error(
+                "ERROR: The size of the loaded matrix and of the ensemble"
+                " do not match")
+            return None
+
+
+    # Calculate the matrix
+    else:
+        logging.info(
+            "        Perform pairwise alignment: {0}".format(str(superimpose)))
+        logging.info("        Mass-weighted alignment and RMSD: {0}"
+            .format(str(mass_weighted)))
+        if superimpose:
+            logging.info(
+                "        Atoms subset for alignment: {0}"
+                    .format(superimposition_subset))
+        logging.info("    Calculating similarity matrix . . .")
+
+        # Use superimposition subset, if necessary. If the pairwise alignment
+        # is not required, it will not be performed anyway.
+        confdistmatrix = conformational_distance_matrix(ensemble,
+                                                conf_dist_function=set_rmsd_matrix_elements,
+                                                selection=selection,
+                                                pairwise_align=superimpose,
+                                                mass_weighted=mass_weighted,
+                                                ncores=ncores,
+                                                *conf_dist_args,
+                                                kwargs=conf_dist_kwargs)
+
+        logging.info("    Done!")
+
+        if save_matrix:
+            confdistmatrix.savez(save_matrix)
+
+    return confdistmatrix

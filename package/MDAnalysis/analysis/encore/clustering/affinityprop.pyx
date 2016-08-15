@@ -90,7 +90,7 @@ cdef class AffinityPropagation(object):
             for i in xrange(s.size):
                 s[i,i] = <float>preference
         else:
-            raise TypeError
+            raise TypeError ("Preference should be of type float")
         
         logging.info("Preference %3.2f: starting Affinity Propagation" % (preference))
 
@@ -100,23 +100,41 @@ cdef class AffinityPropagation(object):
         
         # run C module Affinity Propagation
         iterations = caffinityprop.CAffinityPropagation( <float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
-        # Check results and return them
-        if iterations > 0:
-            centroids = numpy.unique(clusters)
-            for i in centroids:
-                if clusters[i] != i:
-                    logging.info("Preference %3.2f: Clustering converged, but clusters were malformed. Increase the convergence limit." % (preference))
-                    return None
-            
-            logging.info("Preference %3.2f: converged in %d iterations" % (preference, iterations))
 
-        else:
+        # Provide warning in case of lack of convergence
+        if iterations == 0:
             logging.info("Preference %3.2f: could not converge in %d iterations" % (preference, -iterations))
             import warnings
             warnings.warn("Clustering with preference {0:3.2f} did not fully converge in {1:d} iterations".format(preference, -iterations))
 
+        # Find centroids
+        centroids = numpy.unique(clusters)
+        for k in numpy.arange(centroids.shape[0]):
+            ii = numpy.where(clusters == centroids[k])[0]
+            small_mat = numpy.zeros((ii.shape[0], ii.shape[0]))
+            for ii1 in numpy.arange(ii.shape[0]):
+                for ii2 in numpy.arange(ii.shape[0]):
+                    small_mat[ii1,ii2] = s[ ii[ii1], ii[ii2] ]
+            j = numpy.argmax(numpy.sum(small_mat, axis=0))
+
+            centroids[k] = ii[j]
+
+        # Similarity to centroids
+        S_centroids = numpy.zeros((s.size, centroids.shape[0]))
+        for line in numpy.arange(s.size):
+            for c in numpy.arange(centroids.shape[0]):
+                S_centroids[line,c] = s[line, centroids[c]]
+
+        # Center values for each observation
+        c = numpy.argmax(S_centroids, axis=1)
+
+        # Centroids should point to themselves
+        c[centroids] = numpy.arange(centroids.shape[0])
+
+        # Assign centroid indices to all observables
+        clusters = centroids[c]
+
+        logging.info("Preference %3.2f: converged in %d iterations" % (preference, iterations))
+
         return clusters
 
-    def __call__(self, *args):
-        results = self.run(*args)
-        return results

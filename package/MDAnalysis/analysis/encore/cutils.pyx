@@ -24,7 +24,7 @@ Mixed Cython utils for ENCORE
 :Copyright: GNU Public License v3
 :Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
-.. versionadded:: 0.15.0
+.. versionadded:: 0.16.0
 """
 
 

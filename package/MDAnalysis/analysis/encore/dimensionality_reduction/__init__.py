@@ -1,1 +1,6 @@
-from .stochasticproxembed import StochasticProximityEmbedding
+from . import DimensionalityReductionMethod
+
+__all__ = [
+    'DimensionalityReductionMethod.StochasticProximityEmbeddingNative',
+    'DimensionalityReductionMethod.PrincipleComponentAnalysis'
+]

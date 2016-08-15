@@ -90,7 +90,7 @@ cdef class StochasticProximityEmbedding:
         finalstress = cstochasticproxembed.CStochasticProximityEmbedding( <double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
         
         logging.info("Stochastic Proximity Embedding finished. Residual stress: %.3f" % finalstress)
-          
+
         return (finalstress, d_coords.reshape((-1,dim)).T)
 	
     def __call__(self, *args):
