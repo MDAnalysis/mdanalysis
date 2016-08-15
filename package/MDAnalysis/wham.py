@@ -18,21 +18,19 @@ from six.moves import range
 import numpy as np
 import warnings
 import os
+import shutil
+from subprocess import check_output
 
 import datreant.core as dtr
 
-## TODO - ARGS are all over the place at the moment; need to move bits around
-## so not needing to list them all out in multiple places...
+## TODO - args still a bit over the place
 
 ## TODO - NAMING. Currently named in line with docs for Grossfield wham, but
 ## some of these aren't very clear/nice so likely to change...
-def wham(bundle, spring='spring', loc_win_min='loc_win_min', 
-         temperature='temperature', correl_time=None, 
-         timeseries_data='timeseries_data', energy='energy',
-         timeseries_type='coord', calc_temperature=None,
-         run_bootstrap=True, hist_max=None, hist_min=None,
-         start_time=None, end_time=None, 
-         energy_units='kcal', keep_files=False, file_root='./', **wham_args):
+def wham(bundle, data_names=None, timeseries_type='coord', 
+         calc_temperature=None, hist_max=None, hist_min=None,
+         start_time=None, end_time=None, run_bootstrap=True, 
+         energy_units='kcal', keep_files=False, root='./WHAM_TEMP', **wham_args):
     """ Wrapper for the Grossfield implementation of WHAM.
 
     [link documentation]
@@ -40,80 +38,71 @@ def wham(bundle, spring='spring', loc_win_min='loc_win_min',
     Each simulation must have the appropriate metadata (spring constant,
     restrained value, temperature) and auxiliary data (timeseries data as
     either reaction coordinate value, difference from restrained value, or
-    value of the restraining force). If using MC bootstrap error analysis,
+    value of the restraining force); if names differ from the defaults they
+    must be specified in ``data_names``. If using MC bootstrap error analysis,
     can also specify a correlation time for each window. If simulations were
     performed at different temperatures, a potential energy auxiliary must also
-    be provided. If any names differ from the default values they must be 
-    specified.
+    be provided in ``data_names``.
 
-    Various wham paramaters, etc etc [TBA]
+    [[ Various wham paramaters; examples; TBA... ]]
 
-    [[ ARGS NEED SORTING ]]
 
     Parameters
     ----------
     bundle : datreant Bundle
         Bundle of the simulations WHAM is to be performed for.
-    spring : str, optional
-        Name of metadata storing the spring constant that each simulation uses,
-        assuming biasing potential has form 1/2 k(x-x0)^2. [[<--format]]
-        [[Some simulation packages don't use the 1/2 - so have to pass 2*the 
-        restraint const instead?]].
-        Must match the units used for energy + the reaction coordinate. [examples?].
-    loc_win_min : str, optional
-        Name of metadata field storing the reaction coordinate value that is
-        the minimum of the biasing potential in each window, ie x0 above.
-    temperature : str, optional
-        Name of metadata field storing each window's temperature (in Kelvin)
-    correl_time : str, optional
-        Name of metadata field storing decorrelation time for each window, in 
-        time step units. Only used for boostrap error; will be set to 1 for 
-        each window if not provided.
-    timeseries_data : str, optional
-        Name of the auxiliary containing the force/reaction coordinate value 
-        throughout simulation.
+    data_names : dict, optional
+        Dictionary of the names of the auxiliary/metadata, if not defaults;
+        see :func:`check_names` for names and defaults.
     timeseries_type : str, optional
         What value is recorded in timeseries_data; for available options see
-        ``calc_reaction_cood``.
-    energy : str, optional
-        Name of the auxiliary containing potential energy. [Currently must be
-        at exactly the same same steps as timeseries above (ie same dt and 
-        initial time)]. [I assume units must match energy_units?]. Only
-        required if simulations performed at different temperatures.
+        :func:`calc_reaction_coord`.
     calc_temperature : float, optional
-        Temperature at which to perform wham calculation (in Kelvin). If not 
-        specified, assume simulation are performed at the same temperature and 
-        set to that.
+        Temperature at which to perform wham calculation (in Kelvin). Must be
+        specified if simulations are perfored at different temperatures; 
+        otherwise the common simulation temperature is used.
     hist_min, hist_max : float, optional
         Min/max values of reaction coordinate to use in calculation. If None 
         (default), will set to the lowest/highest value of the reaction 
-        coordinate.
-    run_boostrap : bool, optional
-        Whether to run Monte Carlo bootstrap error analysis.
+        coordinate across all simulations.
     start_time, end_time : float, optional
         Start/end time (in ps) to use when calculating profile; data outside
-        of this time range will be ignored. 
-    energy_units : str, optional
-        Free energy units to use [[kcal, kJ, ...]]
-    keep_files : bool, optional
-        Whether to keep files generated by wham
-    file_root : str
-        [[ directory/prefix for input/output files ]]
+        of this time range will be ignored.
+    run_boostrap : bool, optional
+        Whether to run Monte Carlo bootstrap error analysis.
     **wham_args
         Other arguments to pass to run_grossfield_wham
+
+    Returns
+    -------
+    profile : Numpy ndarray
+        The PMF profile calculated by WHAM, as a (n_bins, 3) array with 
+        reaction coordinate values in the first column, energy value in the 
+        second (with units ``energy_units``) and error in the third (if 
+        bootstrap error estimation is turned off with ``run_bootstrap``, this
+        third column will contain only zeros).
+
+    Other parameters
+    ----------------
+    energy_units : str, optional
+        [[ Free energy units to use: kcal, kJ, ...]]
+    keep_files : bool, optional
+        [[ Whether to keep files generated by wham ]]
+    file_root : str
+        [[ Name for folder in which to write input/outfiles from WHAM; will be
+        removed unless ``keep_files`` is True. ]]
     """
-    if not isinstance(bundle, dtr.Bundle):
-        TypeError('{} is not a bundle'.format(bundle))
-    
-    # check the bundle has all the specified auxiliaries/metadata
-    check_bundle_metadata(bundle, [spring, loc_win_min, temperature])
-    if correl_time:
-        check_bundle_metadata(bundle, correl_time)
-    check_bundle_auxiliaries(bundle, [timeseries_data])
-    multi_temp, calc_temperature = _check_temperatures(bundle, temperature,
-                                                       calc_temperature)
-    if multi_temp:
-        check_bundle_auxiliaries(bundle, [energy])
+    # check all our auxiliary/metadata are present...
+    data_names = check_names(bundle, **(data_names or {}))
+    # check if simulations have different temperatures...
+    if not _check_multi_temp(bundle, data_names['temperature'], calc_temperature):
+        # set energy to None if not already to flag as single-temperature
+        data_names['energy'] = None
+        calc_temperature = bundle.categories[data_names['temperature']][0]
+    elif data_names['energy'] is None:
+        # must provide energy if multi-temperature!
+        raise TypeError("Auxiliary containing energy values must be provided if"
+                        " simulations were performed at different temperatures")
 
     calc_reaction_coord(1, timeseries_type, 1 ,1)    # TODO - make this nicer
 
@@ -125,54 +114,108 @@ def wham(bundle, spring='spring', loc_win_min='loc_win_min',
                                                           start_time, end_time))
 
     # TODO - UNITS. Check option is valid. Then change somehow? Would adjusting
-    # temperature work?
-    # TODO - check file_root?
+    # temperature work? Allow to set both input/output energies?
 
-    # set all out file names
-    metafile_name = file_root+'metafile.dat'
-    timeseriesfile_name = file_root+'timeseries_{}.dat'
-    outfile_name = file_root+'output.dat'
+    try:
+        os.makedirs(root)
+    except OSError:
+        ## TODO - do we want an option to overwrite folder if it does exist?
+        raise ValueError("Folder {} already exists".format(root))
+    meta_fname = root+'/metadatafile.dat'
+    data_fname = './timeseries_{}.dat' # assuming they're in the same dir as meta
+    out_fname = root+'/output.dat'
 
     # check all our wham parameters are valid before we start writing files
     run_grossfield_wham(check_only=True, calc_temperature=calc_temperature,
                         hist_max=hist_max, hist_min=hist_min, 
-                        outfile=outfile_name, metafile=metafile_name,
-                        **wham_args)
+                        outfile=out_fname, metafile=meta_fname, **wham_args)
 
     # write input files
-    hist_min, hist_max = write_grossfield_input(multi_temp=multi_temp, 
-                                        energy=energy, hist_max=hist_max, 
-                                        hist_min=hist_min, bundle=bundle,
-                                        timeseries_data=timeseries_data, 
-                                        timeseries_type=timeseries_type,
-                                        metafile_name=metafile_name,
-                                        timeseriesfile_name=timeseriesfile_name,
-                                        spring=spring, loc_win_min=loc_win_min,
-                                        start_time=start_time, end_time=end_time,
-                                        temperature=temperature,
-                                        correl_time=correl_time)
+    min_max = write_grossfield_input(bundle, data_names=data_names, 
+                                     filename=meta_fname, data_fname=data_fname,
+                                     hist_max=hist_max, hist_min=hist_min, 
+                                     start_time=start_time, end_time=end_time,
+                                     timeseries_type=timeseries_type, checked=True)
+    # set our hist min/max values if not specified in args
+    hist_min = min_max[0] if hist_min is None else hist_min
+    hist_max = min_max[1] if hist_max is None else hist_max
+
     # run!
     run_grossfield_wham(calc_temperature=calc_temperature, hist_max=hist_max, 
-                        hist_min=hist_min, metafile=metafile_name,
-                        outfile=outfile_name, **wham_args)
+                        hist_min=hist_min, metafile=meta_fname,
+                        outfile=out_fname, run_bootstrap=run_bootstrap, 
+                        **wham_args)
     # read the output    
-    profile = read_grossfield_output(outfile_name)
+    profile = read_grossfield_output(out_fname)
 
     # clear our files
     if not keep_files:
-        # TODO - best way to remove files? 
-          # keep a list of all files we write?
-        os.remove(metafile_name)
-        os.remove(outfile_name)
-        for sim in bundle:
-            os.remove(timeseriesfile_name.format(sim.name)) # or use a wildcard
-            # TODO - may not write all!
+        # TODO - make sure we're not removing anything important. 
+        # Do another way - keep a record of files we wrote instead?
+        shutil.rmtree(root)
 
     return profile
     # TODO - in the outfile we also get the probability + it's error in [:,3] 
     # and [:,4]; and the 'F-values' for each simulation (that we didn't skip);
     # option to get prob instead of PMF? option to return Fvalues as well (tuple?)
 
+
+def check_names(bundle, spring='spring', loc_win_min='loc_win_min', 
+         temperature='temperature', correl_time=None, 
+         timeseries_data='timeseries_data', energy=None,
+         ):
+    """ Check *bundle* contains the appropriate metadata/auxiliaries for WHAM.
+
+    In simplest use, each simulation in the bundle must have *spring*, 
+    *loc_win_min* and *temperature* metadata, and a *timeseries_data* auxiliary.
+    If simulations are performed at different temperatures, an *energy* 
+    auxiliary is also required. If bootstrap error analysis is to be used,
+    a *correl_time* metadata may also be specified.
+
+    Parameters
+    ----------
+    bundle : datreant Bundle
+        Bundle of simulations
+    spring : str
+        Name of metadata storing the spring constant that each simulation uses,
+        assuming biasing potential has form 1/2 k(x-x0)^2. [[ <--format ]]
+        [[ Some simulation packages don't use the 1/2 - so have to pass 2*the 
+        restraint const instead? ]].
+        Must match the units used for energy + the reaction coordinate. [examples?].
+    loc_win_min : str
+        Name of metadata field storing the reaction coordinate value that is
+        the minimum of the biasing potential in each window, ie x0 above.
+    temperature : str
+        Name of metadata field storing each window's temperature (in Kelvin)
+    correl_time : str, optional
+        Name of metadata field storing decorrelation time for each window, in 
+        time step units. Only used for boostrap error; will be set to 1 for 
+        each window if not provided.
+    timeseries_data : str
+        Name of the auxiliary containing the force/reaction coordinate value 
+        throughout simulation.
+    energy : str, optional
+        Name of the auxiliary containing potential energy. [Currently must be
+        at exactly the same same steps as timeseries above (ie same dt and 
+        initial time)]. [I assume units must match energy_units?]. Only
+        required if simulations performed at different temperatures.
+
+    Returns
+    -------
+    data_names : dict
+        Dictionary containing the set if auxiliary/metadata names for *bundle*.
+    """
+    if not isinstance(bundle, dtr.Bundle):
+        TypeError('{} is not a bundle'.format(bundle))
+    check_bundle_metadata(bundle, [spring, loc_win_min, temperature])
+    if correl_time:
+        check_bundle_metadata(bundle, correl_time)
+    check_bundle_auxiliaries(bundle, [timeseries_data])
+    if energy:
+        check_bundle_auxiliaries(bundle, [energy])
+    data_names = locals()
+    data_names.pop('bundle')
+    return data_names
 
 
 def run_grossfield_wham(periodicity='', hist_min=None, 
@@ -243,20 +286,15 @@ def run_grossfield_wham(periodicity='', hist_min=None,
         randSeed = 1 # TODO - how to deal with random seed - should make an argument?
         if run_bootstrap:
             run_command = run_command+[num_MC_trials, randSeed]
-        os.system(list_to_string(run_command))
+        check_output(list_to_string(run_command), shell=True)
         ## TODO - switch to subprocess; [+ catch any errors etc]
 
 
 
-def write_grossfield_input(metafile_name='metadatafile.dat', 
-                           timeseriesfile_name='timeseries_{}.dat', 
-                           multi_temp=False, energy='energy',
-                           timeseries_data='timeseries_data', 
-                           timeseries_type='coord', 
-                           hist_max=None, hist_min=None, bundle=None,
-                           spring='spring', loc_win_min='loc_win_min',
-                           start_time=None, end_time=None, correl_time=None,
-                           temperature='temperature'):
+def write_grossfield_input(bundle, filename='metadatafile.dat', 
+                           data_fname='timeseries_{}.dat', 
+                           data_names=None,
+                           checked=False, **kwargs):
     """
     [[ Write the appropriate metafile + timeseries files to run Grossfield wham
     implementation on *bundle*.
@@ -266,94 +304,140 @@ def write_grossfield_input(metafile_name='metadatafile.dat',
 
     [[ ARGS NEED SORTING ]]
 
-    """
-    # TODO - check metafile/timeseries are valid here?
-    with open(metafile_name, 'w') as metafile:
-        global_min_val = None
-        global_max_val = None
-        passed_sims=[] #keep track of which simulations we actually feed through
-                       # to wham (so we don't try run with none...)
-        for sim in bundle:
-            k = sim.categories[spring]
-            x0 = sim.categories[loc_win_min]
-            try:
-                start, end = _get_start_end_step(sim, timeseries_data, 
-                                                 start_time, end_time)
-            except TypeError:
-                # TODO - will this come up in other circumstances? 
-                # might need something more specific
-                continue
-            filename = timeseriesfile_name.format(sim.name)
+    Parameters
+    ----------
+    bundle
+    metafile_name
+    timeseriesfile_name
+    data_names
+    checked
+    **kwargs
+        To be passed onto write_timeseries_file
 
-            min_val, max_val = write_timeseries_file(sim, filename=filename, 
-                                                multi_temp=multi_temp, 
-                                                start=start, 
-                                                end=end, energy=energy,
-                                                timeseries_data=timeseries_data, 
-                                                timeseries_type=timeseries_type,
-                                                k=k, x0=x0)
-            if (hist_max is not None and min_val > hist_max or
-                hist_min is not None and max_val < hist_min):
-                warnings.warn('Reaction coordinate range of simulation {} '
-                              '({}-{}) does not fall within WHAM range ({}-{}); '
-                              'will be skipped'.format(sim.name, min_val, max_val,
-                                      hist_min if hist_min is not None else '_', 
-                                      hist_max if hist_max is not None else '_'))
+    """
+    if not checked:
+        data_names = check_names(bundle, **(data_names or {}))
+
+    # TODO - check metafile/timeseries are valid here?
+    with open(filename, 'w') as metafile:
+        global_min_max = (None, None)
+        inrange_sims=[] # keep track of which simulations we actually feed through
+                        # to wham (so we don't try run with none...)
+        for sim in bundle:
+            datafile = data_fname.format(sim.name)
+            try:
+                min_max = write_timeseries_file(sim, filename=datafile, 
+                                                data_names=data_names, 
+                                                checked=True, **kwargs)
+
+            except ValueError as err:
                 continue
             # write to metafile
-            if correl_time:
-                correl = sim.categories[correl_time]
+            if data_names['correl_time']:
+                correl = sim.categories[data_names['correl_time']]
             else:
                 # only used if doing bootstrap but need as a placeholder if
                 # specifying temperatures; this seems to be the default
                 # value used in wham so should be fine here too
                 correl = 1
-            metafile_info = [filename, x0, k, correl]
-            if multi_temp:
+            k = sim.categories[data_names['spring']]
+            x0 = sim.categories[data_names['loc_win_min']]
+            metafile_info = [datafile, x0, k, correl]
+            if data_names['energy']:
                 metafile_info.append(sim.categories[temperature])
             metafile.write(list_to_string(metafile_info)+'\n')
-            passed_sims.append(sim.name)
-            global_min_val = update_min(min_val, global_min_val)
-            global_max_val = update_max(max_val, global_max_val)
+            inrange_sims.append(sim.name)
+            global_min_max = update_min_max(min_max, global_min_max)
 
-        if len(passed_sims) == 0:
-            raise ValueError('Aborting (all simulations skipped). Try increasing '
-                             'time or reaction coordinate range.')
-    return (hist_min if hist_min is not None else global_min_val, 
-           hist_max if hist_max is not None else global_max_val)
+        if len(inrange_sims) == 0:
+            raise ValueError('Aborting (all simulations skipped). Try '
+                             'increasing time or reaction coordinate range.')
+    return global_min_max
 
+ 
 
-
-def write_timeseries_file(sim, filename=None, multi_temp=False, start=0, 
-                          end=-1, energy='energy', timeseries_type='coord',
-                          timeseries_data='timeseries_data', k=None, x0=None):
+def write_timeseries_file(sim, filename='timeseries.dat', data_names=None, 
+                          start_time=None, end_time=None, hist_min=None,
+                          hist_max=None, timeseries_type=None, checked=False):
     """
-    [[ Write timeseries file for *sim*. Will return min/max value of reaction
-    coordinate for *sim* (in the specified range) ]]
+    Write a Grossfield-WHAM 'timeseries file' for the simulation *sim*
 
-    [[ ARGS NEED SORTING ]]
+    Parameters
+    ----------
+    sim : mdsynthesis.Sim object
+        Simulation to write a 'timeseries file' for
+    filename : str
+        Filename for timeseries file; defaults to 'timeseries.dat'
+    data_names : dict, optional
+        dictionary containing names for the relevant metadata/auxiliaries in 
+        *sim*
+    start_time, end_time: float, optional
+        Start/end time 
+    dataseries_type : 
+    checked :
+    hist_min, hist_max : float
+
+
+    Return
+    ------
+    (min, max)
+        Tuple with minimum and maximum values of the reaction coordinate
+        between *start_time* and *end_time*
+
+    Raises
+    ------
+    ValueError
+        If no datapoints are within the time range *start_time* to *end_time*.
+
+    Note
+    ----
+    In the case energies are needed, currently assumes 'timeseries data' and
+    energies steps coincide.
     """
-    max_val = None
-    min_val = None
+    if not checked:
+        data_names = check_names(dtr.Bundle(sim), **(data_names or {}))
+    start, end = _get_start_end_step(sim, data_names['timeseries_data'], 
+                                     start_time, end_time)
+    # check we've ended up with a valid slice
+
+    if start == end:
+        raise ValueError("hi")#_outofrange_msg('time', sim.name, 
+                              #           (start_time, end_time)))
+    k = sim.categories[data_names['spring']]
+    x0 = sim.categories[data_names['loc_win_min']]
+    min_max = (None, None)
     with open(filename, 'w') as timeseriesfile:
         traj = sim.universe.trajectory
-        if multi_temp:
-            ## TODO - remember still assuming energy/timeseries points directly match...
-            ## TODO - find a way to do this as we're looping timeseries so we're not
-            ## storing this big list?
+        if data_names['energy']:
+            ## TODO - find a way to do this as we're looping timeseries so we're 
+            ## not storing this big list?
             energies = [i.data[0] for i in traj.iter_auxiliary(energy, 
                                                          start=start, stop=end)]
-        timeseries_iter = traj.iter_auxiliary(timeseries_data, start=start, stop=end)
+        timeseries_iter = traj.iter_auxiliary(data_names['timeseries_data'], 
+                                              start=start, stop=end)
         for i, auxstep in enumerate(timeseries_iter):
             x = calc_reaction_coord(auxstep.data[0], timeseries_type, k, x0)
-            min_val = update_min(x, min_val)
-            max_val = update_max(x, max_val)
+            min_max = update_min_max((x, x), min_max)
             line = [auxstep.time, x]
-            if multi_temp:
+            if data_names['energy']:
                 line.append(energies[i])
             timeseriesfile.write(list_to_string(line)+'\n')
-    return min_val, max_val
+    if (hist_min is not None and hist_min > min_max[0] or
+        hist_max is not None and hist_max < min_max[1]):
+        raise ValueError("hi")#_outofrange_msg('reaction coordinate', sim.name,
+                               #          (hist_min, hist_max), min_max))
+    return min_max
 
+
+def _outofrange_msg(type, sim_name, w_range, s_range=None):
+    w_start = w_range[0] if w_range[0] is not None else '_'
+    w_end = w_range[1] if w_range[1] is not None else '_'
+    if s_range is None:
+       sim_range = '({}-{})'.format(s_start, s_end)
+    else:
+       sim_range = ''
+    return ("No points from simulation {} {} are within WHAM {} range ({}-{}); "
+           "will be skipped".format(sim_name, sim_range, type, w_start, w_end))
 
 def read_grossfield_output(outfile, bootstrap=True):
     outfiledata = np.genfromtxt(outfile)
@@ -376,7 +460,7 @@ def calc_reaction_coord(value, value_type, k, x0):
                  potential; x = delta_x + x0
     [...]
     """
-    if value_type == 'coord':
+    if value_type == 'coord' or value_type is None:
         x = value
     elif value_type == 'force':
         # F = -k delta_x; does the missing 1/2 factor matter here?
@@ -389,32 +473,24 @@ def calc_reaction_coord(value, value_type, k, x0):
     return x
 
 
-
-
-def _get_start_end_step(sim, timeseries_data, start_time, end_time):
-    """ Given start_time and end_time, return the start_step and end_step of
-    the slice of *sim* this corresponds to. Return None and warn if this is
-    out of range """
-    step_to_time = sim.universe.trajectory.get_aux_attribute(timeseries_data, 'step_to_time')
-    n_steps = sim.universe.trajectory.get_aux_attribute(timeseries_data, 'n_steps')
-    start_step = 0 if start_time is None else None
-    end_step = n_steps if end_time is None else None
+def _get_start_end_step(sim, aux_name, start_time, end_time):
+    """ Return the start/end step that corresponds to the range *start_time* to
+    *end_time* in the auxiliary *aux_name* of the simulation *sim*.
+    """
+    step_to_time = sim.universe.trajectory.get_aux_attribute(aux_name, 
+                                                             'step_to_time')
+    n_steps = sim.universe.trajectory.get_aux_attribute(aux_name, 'n_steps')
+    # default start step to first step (i.e. 0) and end step to after last step
+    # (i.e. n_steps).
+    start_step = 0
+    end_step = n_steps
     for i in range(n_steps):
-        if start_step is None and step_to_time(i) > start_time:
-            start_step = i
-        if end_step is None and step_to_time(i) > end_time:
-            end_step = i
-        if end_step is not None:
+        if start_time is not None and step_to_time(i) < start_time:
+            start_step = i + 1
+        if end_time is not None and step_to_time(i) < end_time:
+            end_step = i + 1
+        else:
             break
-    end_step = end_step if end_step is not None else n_steps
-    if start_step is None or end_step == 0:
-        warnings.warn("Time range of simulation {} ({}-{}ps) does not fall "
-                      "within timerange for WHAM ({}-{}ps); will be skipped."
-                      "".format(sim.name, step_to_time(0),
-                                step_to_time(n_steps-1),
-                                start_time if start_time is not None else '_', 
-                                end_time if end_time is not None else '_'))
-        return
     return start_step, end_step    
 
 
@@ -440,8 +516,7 @@ def check_bundle_auxiliaries(bundle, expected):
                                  " {}".format(sim.name, aux))
             ## TODO - also check it's got the right length/type?
 
-
-def _check_temperatures(bundle, metaname, calc_temperature):
+def _check_multi_temp(bundle, metaname, calc_temperature):
     """
     Check if simulations in *bundle* were all performed at the same temperature
     or different temperatures. If same, raise ValueError if this disagrees with
@@ -450,29 +525,24 @@ def _check_temperatures(bundle, metaname, calc_temperature):
 
     Returns
     -------
-    multi_temp : bool
-        whether simulations are at different temperatures or not
-    calc_temperature : float
-        temperature to perform WHAM at, possibly updated from input
+    bool
+        Whether simulations are performed at different temperatures or not
     """
     temps = bundle.categories[metaname]
     if all(t == temps[0] for t in temps):
         # all same temperature. This'll be the temperature we calculate at
-        multi_temp = False
-        if calc_temperature is None:
-            calc_temperature = temps[0]
-        elif float(calc_temperature) != temps[0]:
+        if calc_temperature and calc_temperature != temps[0]:
             ## would there be a situation where we want them to be different?
             raise ValueError('Simulations all have temperature {} but calc_temperature '
                              '{} does not match'.format(temps[0], calc_temperature))
+        return False
     else:
         # different temperatures. Will need a run temperature and a potential 
         # energy for every step
-        multi_temp = True
         if calc_temperature is None:
             raise TypeError('Must provide a calc_temperature if simulations are '
                             'performed at different temperatures')
-    return multi_temp, calc_temperature
+        return True
 
 
 def _check_number(value, name, integer=False, positive=False):
@@ -484,8 +554,13 @@ def _check_number(value, name, integer=False, positive=False):
 def list_to_string(lst):
     return ' '.join([str(i) for i in lst])
 
-def update_min(new, curr):
-    return new if curr is None else new if new < curr else curr
-
-def update_max(new, curr):
-    return new if curr is None else new if new > curr else curr
+def update_min_max(new, curr):
+    """
+    """
+    new_min = (new[0] if curr[0] is None 
+              else new[0] if new[0] < curr[0] 
+              else curr[0])
+    new_max = (new[1] if curr[1] is None 
+              else new[1] if new[1] > curr[1] 
+              else curr[1])
+    return (new_min, new_max)
