@@ -17,13 +17,15 @@
 Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 ==========================================================================
 
-:Author: Oliver Beckstein, David L. Dotson
-:Year: 2012
+:Author: Oliver Beckstein, David L. Dotson, John Detlefs
+:Year: 2016
 :Copyright: GNU Public License v2
 
 .. versionadded:: 0.7.7
 .. versionchanged:: 0.11.0
    Added :class:`RMSF` analysis.
+.. versionchanged:: 0.15.1
+   Refactored RMSD to fit AnalysisBase API
 
 The module contains code to analyze root mean square quantities such
 as the coordinat root mean square distance (:class:`RMSD`) or the
@@ -268,6 +270,19 @@ def process_selection(select):
 
 
 class RMSD(AnalysisBase):
+    """Class to perform RMSD analysis on a trajectory.
+
+    Run the analysis with :meth:`RMSD.run`, which stores the results
+    in the array :attr:`RMSD.rmsd`::
+
+       frame    time (ps)    RMSD (A)
+
+    This class uses Douglas Theobald's fast QCP algorithm
+    [Theobald2005]_ to calculate the RMSD.
+
+    .. versionadded:: 0.7.7
+    """
+
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
                  mass_weighted=False, tol_mass=0.1, ref_frame=0, **kwargs):
@@ -404,6 +419,8 @@ class RMSD(AnalysisBase):
         # necessary for throwing error in save, let me know if there is a
         # better way
         self.rmsd = None
+
+
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
