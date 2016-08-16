@@ -288,23 +288,16 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(newag.total_mass(), 40.044999999999995)
 
 
-    # INVALID: there is no such property `_atoms` for an AtomGroup
-    # could check that `self.universe.atoms.ix[0]` is same as `self.universe.atoms[0].ix`
-    @skip
     def test_getitem_int(self):
-        assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
+        assert_equal(self.universe.atoms[0].ix, self.universe.atoms.ix[0])
 
-    # INVALID: see above for alternative test
-    @skip
     def test_getitem_slice(self):
-        assert_equal(self.universe.atoms[0:4]._atoms,
-                     self.universe.atoms._atoms[:4])
+        assert_array_equal(self.universe.atoms[0:4].ix,
+                           self.universe.atoms.ix[:4])
 
-    # INVALID: see above for alternative test
-    @skip
     def test_getitem_slice2(self):
-        assert_equal(self.universe.atoms[0:8:2]._atoms,
-                     self.universe.atoms._atoms[0:8:2])
+        assert_equal(self.universe.atoms[0:8:2].ix,
+                     self.universe.atoms.ix[0:8:2])
 
     # INVALID: we don't support getitem with names anymore.
     # it could be supported by making the Atomnames topologyattr transplant
