@@ -124,6 +124,8 @@ class Universe(object):
             return
 
         coordinatefile = args[1:]
+        if not coordinatefile:
+            coordinatefile = None
 
         # if we're given a Topology object, we don't need to parse anything
         if isinstance(args[0], Topology):
@@ -152,8 +154,6 @@ class Universe(object):
                     if (fmt in MDAnalysis.coordinates._READERS
                         and fmt in MDAnalysis.topology._PARSERS):
                         coordinatefile = self.filename
-                if len(coordinatefile) == 0:
-                    coordinatefile = None
 
             # build the topology (or at least a list of atoms)
             try:  # Try and check if the topology format is a TopologyReader
