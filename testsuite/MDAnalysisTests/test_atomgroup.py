@@ -556,13 +556,14 @@ class TestAtomGroup(TestCase):
         s = p.residues.sequence(format="Seq")
         assert_equal(s.tostring(), self.ref_adk_sequence)
 
-    # INVALID: should set resnames with `AG.residues.resnames = 'MSE'`
+    # INVALID: currently raises AttributeError
     @skip
     def test_sequence_nonIUPACresname(self):
         """test_sequence_nonIUPACresname: non recognized amino acids raise
         ValueError"""
         # fake non-IUPAC residue name for this test
-        self.universe.select_atoms("resname MET").residues.set_resnames("MSE")
+        residues = self.universe.select_atoms("resname MET").residues
+        residues.resnames = "MSE"
 
         def wrong_res():
             self.universe.atoms.sequence()
