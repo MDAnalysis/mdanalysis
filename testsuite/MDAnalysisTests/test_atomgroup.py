@@ -632,12 +632,10 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resnum, v)
         assert_equal(all(ag.resnums == new), True)
 
-    # INVALID: set resnames with `ag.residues.resnames = new`
-    @skip
     def test_set_resname_single(self):
         ag = self.universe.atoms[:3]
         new = 'abc'
-        ag.set_resnames(new)
+        ag.residues.resnames = new
         for at in ag:
             assert_equal(at.resname, new)
         assert_equal(all(ag.resnames == new), True)
