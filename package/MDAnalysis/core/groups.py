@@ -79,9 +79,9 @@ class _MutableBase(object):
     
     The resulting merged class is also cached using itself as the key, to
     simplify class reuse. This is unneeded in practice because
-    :class:`GroupBase` and :class:`ComponentBase` shortcut their
-    :attr:`__new__` to :attr:`object.__new__`, skipping this process when
-    reusing an already-merged class.
+    :class:`_ImmutableBase` is also merged in, with higher MRO precedence, and
+    its :attr:`__new__` shortcuts to :attr:`object.__new__`, skipping the
+    cache-fetch process when directly reusing an already-merged class.
     """
     # This signature must be kept in sync with the __init__ signature of
     #  GroupBase and ComponentBase.
@@ -95,11 +95,9 @@ class _MutableBase(object):
             else:
                 objtype = cls.level.name + cls.order
             try:
-                # The base classes should have MRO priority, so that the
-                #  __new__ shortcut in Group/ComponentBase can kick in.
-                # OTOH, this prevents overriding TopologyAttr properties
-                # when subclassing Atom/Residue/SegmentGroups.
-                newcls = type(cls.__name__, (u._classes[objtype], cls), {})
+                # The _ImmutableBase parent is added with priority so that
+                #  direct class reusal bypasses the call to this __new__.
+                newcls = type(cls.__name__, (_ImmutableBase, cls, u._classes[objtype]), {})
             except KeyError:
                 raise TypeError("Attempted to instantiate class '{}' but its "
                                 "level/order combination ('{}') is "
@@ -109,15 +107,17 @@ class _MutableBase(object):
             u._class_cache[cls] = u._class_cache[newcls] = newcls
             return object.__new__(newcls)
 
-class GroupBase(object):
-    """Base class from which a Universe's Group class is built.
-
-    """
+class _ImmutableBase(object):
     # Since this class will come first when mixed with AtomGroup,
     #  setting __new__ like this will avoid having to go through the
     #  cache lookup if the class is reused (as in ag.__class__(...)).
     __new__ = object.__new__
 
+
+class GroupBase(object):
+    """Base class from which a Universe's Group class is built.
+
+    """
     def __init__(self, ix, u):
         # indices for the objects I hold
         self._ix = ix
@@ -1341,9 +1341,6 @@ class ComponentBase(object):
 
     Components are the individual objects that are found in Groups.
     """
-    # See the comment on the __new__ of GroupBase.
-    __new__ = object.__new__
-
     def __init__(self, ix, u):
         # index of component
         self._ix = ix
