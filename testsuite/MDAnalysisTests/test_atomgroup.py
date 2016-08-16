@@ -731,7 +731,9 @@ class TestAtomGroup(TestCase):
                       [1.35541916, 2.0690732, 4.67488003],
                       [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
 
-    # INVALID: no `_atoms` property for ResidueGroup or AtomGroup; use `.atoms` instead
+    # INVALID: no `_atoms` property for ResidueGroup or AtomGroup; use `.atoms`
+    # which won't work because they are compared by reference in the default.
+    # But is also doesn't work to use `ix` as they will differ.
     @skip
     def test_residues(self):
         u = self.universe
