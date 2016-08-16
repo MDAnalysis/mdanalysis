@@ -27,7 +27,7 @@ import datreant.core as dtr
 
 ## TODO - NAMING. Currently named in line with docs for Grossfield wham, but
 ## some of these aren't very clear/nice so likely to change...
-def wham(bundle, data_names=None, timeseries_type='coord', 
+def wham(bundle, data_names=None, timeseries_type=None, 
          calc_temperature=None, hist_max=None, hist_min=None,
          start_time=None, end_time=None, run_bootstrap=True, 
          energy_units='kcal', keep_files=False, root='./WHAM_TEMP', **wham_args):
@@ -55,8 +55,8 @@ def wham(bundle, data_names=None, timeseries_type='coord',
         Dictionary of the names of the auxiliary/metadata, if not defaults;
         see :func:`check_names` for names and defaults.
     timeseries_type : str, optional
-        What value is recorded in timeseries_data; for available options see
-        :func:`calc_reaction_coord`.
+        What value is recorded in timeseries_data; for available options and 
+        default behaviour see :func:`calc_reaction_coord`.
     calc_temperature : float, optional
         Temperature at which to perform wham calculation (in Kelvin). Must be
         specified if simulations are perfored at different temperatures; 
@@ -94,19 +94,20 @@ def wham(bundle, data_names=None, timeseries_type='coord',
     """
     # check all our auxiliary/metadata are present...
     data_names = check_names(bundle, **(data_names or {}))
+
     # check if simulations have different temperatures...
     if not _check_multi_temp(bundle, data_names['temperature'], calc_temperature):
         # set energy to None if not already to flag as single-temperature
         data_names['energy'] = None
         calc_temperature = bundle.categories[data_names['temperature']][0]
     elif data_names['energy'] is None:
-        # must provide energy if multi-temperature!
         raise TypeError("Auxiliary containing energy values must be provided if"
                         " simulations were performed at different temperatures")
 
-    calc_reaction_coord(1, timeseries_type, 1 ,1)    # TODO - make this nicer
+    # check our reaction coord type option...
+    calc_reaction_coord(timeseries_type)
 
-    # check start/end time values
+    # check start/end time values...
     _check_number(start_time, "start time")
     _check_number(end_time, "end time")
     if not None in [start_time, end_time] and start_time >= end_time:
@@ -416,7 +417,7 @@ def write_timeseries_file(sim, filename='timeseries.dat', data_names=None,
         timeseries_iter = traj.iter_auxiliary(data_names['timeseries_data'], 
                                               start=start, stop=end)
         for i, auxstep in enumerate(timeseries_iter):
-            x = calc_reaction_coord(auxstep.data[0], timeseries_type, k, x0)
+            x = calc_reaction_coord(timeseries_type, auxstep.data[0], k=k, x0=x0)
             min_max = update_min_max((x, x), min_max)
             line = [auxstep.time, x]
             if data_names['energy']:
@@ -448,30 +449,65 @@ def read_grossfield_output(outfile, bootstrap=True):
     return profile
 
 
-def calc_reaction_coord(value, value_type, k, x0):
+def calc_reaction_coord(val_type=None, value=None, k=None, x0=None):
     """ Calculate value of reaction coordinate corresponding to *value*.
 
-    Calculate the reaction coordinate at a particular time point from *value*,
-    depending on *value_type*. Currently allowed types are:
-        - coord: reaction coordinate value
-        - force: value of the restraining force; harmonic potential is assumed
-                 so x = -F/k + x0
-        - delta: difference in reaction coord value and minimum of restraining
-                 potential; x = delta_x + x0
-    [...]
-    """
-    if value_type == 'coord' or value_type is None:
-        x = value
-    elif value_type == 'force':
-        # F = -k delta_x; does the missing 1/2 factor matter here?
-        x = -value/k + x0
-    elif value_type == 'delta':
-        # delta_x = x-x0
-        x = value + x0
-    else:
-        raise ValueError('{} is not a valid timeseries data type'.format(value_type))
-    return x
+    Calculate the reaction coordinate ``x`` at a particular time point from 
+    *value*, depending on it's *type*. The spring constant ``k`` and the minimum 
+    of the restraining potential ``x0`` may also be required (depending on 
+    *type*).
 
+    Current possible values of *type* are:
+        - ``coord``: (DEFAULT) reaction coordinate value ``x``
+        - ``force``: value of the restraining force ``F``; assuming a harmonic 
+                     potential, ``x = -F/k + x0``
+        - ``delta``: difference `delta_x`` in reaction coord value and minimum 
+                     of restraining potential; ``x = delta_x + x0``
+
+    Can be run without passing in a *value* to check that *val_type* is valid.
+
+    Parameters
+    ----------
+    val_type : str, optional
+        Keyword indicating what *value* represents. See above for valid options,
+        descriptions and default.
+    value : float, optional
+        Value related to reaction coordinate obtained from simulation.
+    k : float, optional
+        Value of the spring constant; used if calculating from a force value.
+        Assumed to match the units used in the force value.
+    x0 : float, optional
+        Minimum of the restraining potential along the reaction coordiante; 
+        used e.g. if calculating from a force value.
+
+    Returns
+    -------
+    float
+        Value of the reaction coordinate 
+    """
+    def coord(value, k, x0):
+        return value
+    def delta(value, k, x0):
+        if x0 is None:
+            raise ValueError('Must provide x0 when using a difference-in-'
+                             'reaction-coordinate value')
+        return value + x0
+    def force(value, k, x0):
+        if x0 is None or k is None:
+             raise ValueError('Must provide x0 and k when using a force value')
+        return -value/k + x0
+
+    options = {'coord': coord, 'delta': delta, 'force': force}
+    default = 'coord'
+
+    try:
+        calc = options[val_type or default]
+    except KeyError:
+        raise ValueError("{} is not a valid timeseries data type; valid "
+                         "options are: {}".format(val_type, options.keys()))
+    if value is not None:
+        return calc(value, k, x0)
+        
 
 def _get_start_end_step(sim, aux_name, start_time, end_time):
     """ Return the start/end step that corresponds to the range *start_time* to
