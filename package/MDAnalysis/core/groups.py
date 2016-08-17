@@ -71,7 +71,7 @@ class _MutableBase(object):
     """
     Base class that merges appropriate :class:`TopologyAttr` container classes.
 
-    Implements :attr:`__new__`. In it the instantiating class is merged with
+    Implements :meth:`__new__`. In it the instantiating class is merged with
     the appropriate base from :attr:`Universe._classes`. The resulting class is
     saved in the :attr:`Universe._class_cache` dictionary. The instantiating
     class itself is used as the dictionary key, for simplicity in cache
@@ -80,7 +80,7 @@ class _MutableBase(object):
     The resulting merged class is also cached using itself as the key, to
     simplify class reuse. This is unneeded in practice because
     :class:`_ImmutableBase` is also merged in, with higher MRO precedence, and
-    its :attr:`__new__` shortcuts to :attr:`object.__new__`, skipping the
+    its :meth:`__new__` shortcuts to :meth:`object.__new__`, skipping the
     cache-fetch process when directly reusing an already-merged class.
     """
     # This signature must be kept in sync with the __init__ signature of
