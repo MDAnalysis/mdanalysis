@@ -30,7 +30,8 @@ import datreant.core as dtr
 def wham(bundle, data_names=None, timeseries_type=None, 
          calc_temperature=None, hist_max=None, hist_min=None,
          start_time=None, end_time=None, run_bootstrap=True, 
-         energy_units='kcal', keep_files=False, root='./WHAM_TEMP', **wham_args):
+         energy_units_in=None, energy_units_out=None, 
+         keep_files=False, root='./WHAM_TEMP', **wham_args):
     """ Wrapper for the Grossfield implementation of WHAM.
 
     [link documentation]
@@ -108,15 +109,15 @@ def wham(bundle, data_names=None, timeseries_type=None,
     calc_reaction_coord(timeseries_type)
 
     # check start/end time values...
-    _check_number(start_time, "start time")
-    _check_number(end_time, "end time")
-    if not None in [start_time, end_time] and start_time >= end_time:
-        raise ValueError('start time {} is greater than end time {}'.format(
-                                                          start_time, end_time))
+    _check_min_max(start_time, "start time", end_time, "end_time")
 
-    # TODO - UNITS. Check option is valid. Then change somehow? Would adjusting
-    # temperature work? Allow to set both input/output energies?
+    # check our energy unit options...
+    convert_energy(unitin=energy_units_in, unitout=energy_units_out)
+    energy_units_wham = 'kcal'
+    ## TODO - we still need to know if wham is configured for kcal or kj - 
+    ## check this from the file, or require as user input?
 
+    # set up files...
     try:
         os.makedirs(root)
     except OSError:
@@ -136,7 +137,11 @@ def wham(bundle, data_names=None, timeseries_type=None,
                                      filename=meta_fname, data_fname=data_fname,
                                      hist_max=hist_max, hist_min=hist_min, 
                                      start_time=start_time, end_time=end_time,
-                                     timeseries_type=timeseries_type, checked=True)
+                                     timeseries_type=timeseries_type, 
+                                     ener_units=energy_units_in, 
+                                     wham_units=energy_units_wham,
+                                     checked=True)
+
     # set our hist min/max values if not specified in args
     hist_min = min_max[0] if hist_min is None else hist_min
     hist_max = min_max[1] if hist_max is None else hist_max
@@ -147,7 +152,9 @@ def wham(bundle, data_names=None, timeseries_type=None,
                         outfile=out_fname, run_bootstrap=run_bootstrap, 
                         **wham_args)
     # read the output    
-    profile = read_grossfield_output(out_fname)
+    profile = read_grossfield_output(out_fname, ener_units=energy_units_out,
+                                     wham_units=energy_units_wham,
+                                     temperature=calc_temperature)
 
     # clear our files
     if not keep_files:
@@ -261,17 +268,12 @@ def run_grossfield_wham(periodicity='', hist_min=None,
 
     # check everything here to catch issues before launching the command (and
     # so we don't run something we don't want...)
-    _check_number(hist_min, 'hist_min')
-    _check_number(hist_max, 'hist_max')        
+    _check_min_max(hist_min, 'hist_min', hist_max, 'hist_max')
     _check_number(num_bins, 'number of bins', positive=True, integer=True)
     _check_number(tol, 'tolerance', positive=True)
     _check_number(calc_temperature, 'calculation temperature', positive=True)
     _check_number(numpad, 'numpad', integer=True)
     _check_number(num_MC_trials, 'num_MC_trials', positive=True, integer=True)
-    if hist_min is not None and hist_max is not None:
-        if hist_min >= hist_max:
-            raise ValueError('hist_min {} is greater than hist_max {}'.format(
-                                                            hist_min, hist_max))
     if periodicity not in ['', 'P', 'Ppi']: # OR 'P<val>'!
         raise ValueError('Periodicity not valid...') ###
         ## TODO - pass as something else? + Sort out P<val>
@@ -294,7 +296,7 @@ def run_grossfield_wham(periodicity='', hist_min=None,
 
 def write_grossfield_input(bundle, filename='metadatafile.dat', 
                            data_fname='timeseries_{}.dat', 
-                           data_names=None,
+                           data_names=None, ener_units=None, wham_units=None,
                            checked=False, **kwargs):
     """
     [[ Write the appropriate metafile + timeseries files to run Grossfield wham
@@ -329,6 +331,8 @@ def write_grossfield_input(bundle, filename='metadatafile.dat',
             try:
                 min_max = write_timeseries_file(sim, filename=datafile, 
                                                 data_names=data_names, 
+                                                ener_units=ener_units,
+                                                wham_units=wham_units,
                                                 checked=True, **kwargs)
 
             except ValueError as err:
@@ -341,9 +345,11 @@ def write_grossfield_input(bundle, filename='metadatafile.dat',
                 # specifying temperatures; this seems to be the default
                 # value used in wham so should be fine here too
                 correl = 1
-            k = sim.categories[data_names['spring']]
+            k_user_units = sim.categories[data_names['spring']]
+            k_wham_units = convert_energy(k_user_units, unitin=ener_units,
+                                          unitout=wham_units)
             x0 = sim.categories[data_names['loc_win_min']]
-            metafile_info = [datafile, x0, k, correl]
+            metafile_info = [datafile, x0, k_wham_units, correl]
             if data_names['energy']:
                 metafile_info.append(sim.categories[temperature])
             metafile.write(list_to_string(metafile_info)+'\n')
@@ -359,7 +365,8 @@ def write_grossfield_input(bundle, filename='metadatafile.dat',
 
 def write_timeseries_file(sim, filename='timeseries.dat', data_names=None, 
                           start_time=None, end_time=None, hist_min=None,
-                          hist_max=None, timeseries_type=None, checked=False):
+                          hist_max=None, timeseries_type=None, checked=False,
+                          ener_units=None, wham_units=None):
     """
     Write a Grossfield-WHAM 'timeseries file' for the simulation *sim*
 
@@ -402,8 +409,8 @@ def write_timeseries_file(sim, filename='timeseries.dat', data_names=None,
     # check we've ended up with a valid slice
 
     if start == end:
-        raise ValueError("hi")#_outofrange_msg('time', sim.name, 
-                              #           (start_time, end_time)))
+        raise ValueError(_outofrange_msg('time', sim.name, 
+                                         (start_time, end_time)))
     k = sim.categories[data_names['spring']]
     x0 = sim.categories[data_names['loc_win_min']]
     min_max = (None, None)
@@ -421,12 +428,14 @@ def write_timeseries_file(sim, filename='timeseries.dat', data_names=None,
             min_max = update_min_max((x, x), min_max)
             line = [auxstep.time, x]
             if data_names['energy']:
-                line.append(energies[i])
+                ener_wham_units=convert_energy(energies[i], unitin=ener_unit,
+                                               unitout=wham_unit)
+                line.append(ener_wham_units)
             timeseriesfile.write(list_to_string(line)+'\n')
     if (hist_min is not None and hist_min > min_max[0] or
         hist_max is not None and hist_max < min_max[1]):
-        raise ValueError("hi")#_outofrange_msg('reaction coordinate', sim.name,
-                               #          (hist_min, hist_max), min_max))
+        raise ValueError(_outofrange_msg('reaction coordinate', sim.name,
+                                         (hist_min, hist_max), min_max))
     return min_max
 
 
@@ -440,12 +449,13 @@ def _outofrange_msg(type, sim_name, w_range, s_range=None):
     return ("No points from simulation {} {} are within WHAM {} range ({}-{}); "
            "will be skipped".format(sim_name, sim_range, type, w_start, w_end))
 
-def read_grossfield_output(outfile, bootstrap=True):
+def read_grossfield_output(outfile, ener_units=None, wham_units=None, 
+                           temperature=None):
     outfiledata = np.genfromtxt(outfile)
-    if not bootstrap:
-        profile = outfiledata[:,:2]
-    if bootstrap:
-        profile = outfiledata[:,:3]
+    time = outfiledata[:,0]
+    profile = outfiledata[:,:3]
+    profile[:,1:3] = convert_energy(profile[:,1:3], unitin=wham_units,
+                                    unitout=ener_units, temperature=temperature)
     return profile
 
 
@@ -529,7 +539,28 @@ def _get_start_end_step(sim, aux_name, start_time, end_time):
             break
     return start_step, end_step    
 
-
+def convert_energy(value=None, unitin=None, unitout=None, temperature=-1):
+    """
+    """
+    unit_conversions = {'kcal': 1, # kilocalorie, 1 kCal = 1 kCal
+                        'kj': 0.239006, # kiloJoule, 1 kJ = 0.239006 kCal
+                        'kt': -1*0.239006 # kT
+                        }
+    default = 'kcal'
+    unitin = unitin if unitin is not None else default
+    unitout = unitout if unitout is not None else unitin
+    to_kJ = {}
+    for unit, name in zip([unitin, unitout], ['in', 'out']):
+        try:
+            to_kJ[name] = unit_conversions[unit.lower()]
+        except KeyError:
+            raise ValueError("{} is not a valid energy unit; valid options "
+                             "are {}".format(unit, conversions.keys()))
+    # if we haven't passed a value, assume we're just checking the options are
+    # valid
+    if value is not None:
+        new_val = value * to_kJ['in']/to_kJ['out']
+        return new_val
 
 
 def check_bundle_metadata(bundle, expected):
@@ -586,6 +617,16 @@ def _check_number(value, name, integer=False, positive=False):
         types = (int) if integer else (int, float)
         if not isinstance(value, types) or (positive and not value > 0):
             raise TypeError("Invalid {} ({})".format(name, value))
+            # TODO - be more specific here
+
+
+def _check_min_max(minval, minname, maxval, maxname, positive=False,
+                                                     integer=False):
+    _check_number(minval, minname, positive=positive, integer=integer)
+    _check_number(maxval, maxname, positive=positive, integer=integer)
+    if minval is not None and maxval is not None and minval >= maxval:
+        raise ValueError('{} ({}) is greater than {} ({})'
+                         ''.format(minname, minval, maxname, maxval))
 
 def list_to_string(lst):
     return ' '.join([str(i) for i in lst])
