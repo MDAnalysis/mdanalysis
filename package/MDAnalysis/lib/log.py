@@ -267,6 +267,9 @@ class ProgressMeter(object):
 
         .. versionchanged:: 0.8
            Keyword argument *quiet* was added.
+
+        .. versionchanged:: 0.16
+           Keyword argument *dynamic* replaces ``\r`` in the format.
         """
         self.numsteps = numsteps
         self.interval = int(interval)
