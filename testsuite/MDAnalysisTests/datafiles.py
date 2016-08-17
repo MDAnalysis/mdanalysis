@@ -58,8 +58,8 @@ __all__ = [
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
-    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510",
-    "TPR510_bonded",
+    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
+    "TPR510_bonded", "TPR2016_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -214,12 +214,14 @@ TPR502 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.2.tpr')
 TPR504 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.4.tpr')
 TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
 TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
+TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 # all bonded interactions
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
+TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
