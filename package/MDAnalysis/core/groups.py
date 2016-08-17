@@ -1575,17 +1575,6 @@ class Segment(_MutableBase):
     """
     order = 'component'
 
-    def __getattr__(self, attr):
-        if attr.startswith('r'):
-            resnum = int(attr[1:]) - 1
-            return self.residues[resnum]
-        else:
-            # resname from segment
-            rg = self.residues[self.residues.resnames == attr]
-            if rg:
-                return rg
-        raise AttributeError
-
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
