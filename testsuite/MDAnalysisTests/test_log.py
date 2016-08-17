@@ -82,24 +82,24 @@ class TestProgressMeter(TestCase):
     def _assert_in(self, output, string):
         assert_(string in output,
                 "Output '{0}' does not match required format '{1}'.".format(
-                output.replace('\r', '\\r'), string))
+                output.replace('\r', '\\r'), string.replace('\r', '\\r')))
 
     def test_default_ProgressMeter(self, n=101, interval=10):
-        format = "\rStep {step:5d}/{numsteps} [{percentage:5.1f}%]"
+        format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
         with RedirectedStderr(self.buf):
             pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval)
             for frame in range(n):
                 pm.echo(frame)
         self.buf.seek(0)
         output = "".join(self.buf.readlines())
-        self._assert_in(output, format.format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
+        self._assert_in(output, ('\r' + format).format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
         # last line always ends with \n!
         self._assert_in(output,
-                        (format + '\n').format(**{'step': n, 'numsteps': n,
+                        ('\r' + format + '\n').format(**{'step': n, 'numsteps': n,
                                                   'percentage': 100.}))
 
     def test_custom_ProgressMeter(self, n=51, interval=7):
-        format = "\rRMSD {rmsd:5.2f} at {step:03d}/{numsteps:4d} [{percentage:5.1f}%]"
+        format = "RMSD {rmsd:5.2f} at {step:03d}/{numsteps:4d} [{percentage:5.1f}%]"
         with RedirectedStderr(self.buf):
             pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
                                                   format=format, offset=1)
@@ -109,10 +109,23 @@ class TestProgressMeter(TestCase):
         self.buf.seek(0)
         output = "".join(self.buf.readlines())
         self._assert_in(output,
-                        format.format(**{'rmsd': 0.0, 'step': 1,
+                        ('\r' + format).format(**{'rmsd': 0.0, 'step': 1,
                                          'numsteps': n, 'percentage': 100./n}))
         # last line always ends with \n!
         self._assert_in(output,
-                        (format + '\n').format(
+                        ('\r' + format + '\n').format(
                             **{'rmsd': 0.02*n, 'step': n,
                                'numsteps': n, 'percentage': 100.0}))
+
+    def test_not_dynamic_ProgressMeter(self, n=51, interval=10):
+        format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
+        with RedirectedStderr(self.buf):
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
+                                                  dynamic=False)
+            for frame in range(n):
+                pm.echo(frame)
+        self.buf.seek(0)
+        output = "".join(self.buf.readlines())
+        self._assert_in(output, (format + '\n').format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
+        self._assert_in(output, (format + '\n').format(**{'step': n, 'numsteps': n, 'percentage': 100.}))
+

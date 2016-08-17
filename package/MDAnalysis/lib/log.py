@@ -162,9 +162,27 @@ class NullHandler(logging.Handler):
         pass
 
 
-def echo(s=''):
-    """Simple string output that immediately prints to the console."""
-    print(s, file=sys.stderr, end='')
+def echo(s='', replace=False, newline=True):
+    """Simple string output that immediately prints to the console.
+    
+    Parameters
+    ==========
+
+    s: str
+        The string to output.
+    replace: bool
+        If ``True``, the string will be printed on top of the current line. In
+        practice, ``\r`` is added at the beginning og the string.
+    newline: bool
+        If ``True``, a new line id added at the end of the string.
+    """
+    if replace:
+        s = '\r' + s
+    if newline:
+        end='\n'
+    else:
+        end=''
+    print(s, file=sys.stderr, end=end)
     sys.stderr.flush()
 
 
@@ -186,23 +204,26 @@ class ProgressMeter(object):
        Step   200/10000 [  2.0%]
        ...
 
-    The default *format* string ::
+    The default *format* string is::
 
-        \rStep {step:5d}/{numsteps} [{percentage:5.1f}%]
+        Step {step:5d}/{numsteps} [{percentage:5.1f}%]
 
-    The `\r` at the beginning makes the lines print on top of each other.
+    By default, each line of the progress meter is displayed on top of the
+    previous one. To prevent this behaviour, set the *dynamic* keyword to
+    ``False``.
 
     It is possible to embed (almost) arbitrary additional data in the
     format string, for example a current RMSD value::
 
-        format_line = "\rRMSD {rmsd:5.2f} at {step:5d}/{numsteps} [{percentage:5.1f}%]"
+        format_line = "RMSD {rmsd:5.2f} at {step:5d}/{numsteps} [{percentage:5.1f}%]"
         pm = ProgressMeter(u.trajectory.n_frames,
                            interval=100, format=format_line)
         for ts in u.trajectory:
            pm.echo(ts.frame, rmsd=current_rmsd)
            ...
 
-    This will print something like
+    This will print something like::
+
        RMSD   1.02 at  100/10000 [  1.0%]
        RMSD   1.89 at  200/10000 [  2.0%]
        ...
@@ -210,7 +231,7 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 quiet=False):
+                 quiet=False, dynamic=True):
         r"""
         Parameters
         ==========
@@ -232,7 +253,7 @@ class ProgressMeter(object):
 
             If *format* is ``None`` then the default is used::
 
-                \rStep {step:5d}/{numsteps} [{percentage:5.1f}%]
+                Step {step:5d}/{numsteps} [{percentage:5.1f}%]
 
         offset: int
             number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
@@ -240,6 +261,9 @@ class ProgressMeter(object):
         quiet: bool
             If ``True``, disable all output, ``False`` print all messages as
             specified, [``False``]
+        dynamic: bool
+            If ``True``, each line will be printed on top of the previous one.
+            This is done by prepedind the format with ``\r``. [``True``]
 
         .. versionchanged:: 0.8
            Keyword argument *quiet* was added.
@@ -247,12 +271,12 @@ class ProgressMeter(object):
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
+        self.dynamic = dynamic
         self.numouts = -1
         self.quiet = quiet
         if format is None:
-            format = "\rStep {step:5d}/{numsteps} [{percentage:5.1f}%]"
+            format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
         self.format = format
-        self.last_newline = '\n'
         self.step = 0
         self.percentage = 0.0
         assert numsteps > 0, "numsteps step must be >0"
@@ -293,10 +317,12 @@ class ProgressMeter(object):
             return
         self.update(step, **kwargs)
         format = self.format
+        newline = not self.dynamic
         if self.step == self.numsteps:
-            format = self.format + self.last_newline
+            newline = True
         elif self.numouts % self.interval == 0:
             pass
         else:
             return
-        echo(format.format(**vars(self)))
+        echo(format.format(**vars(self)),
+             replace=self.dynamic, newline=newline)
