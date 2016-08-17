@@ -23,13 +23,13 @@ from subprocess import check_output
 
 import datreant.core as dtr
 
-## TODO - args still a bit over the place
+## TODO - args still a bit over the place - change to a class??
 
 ## TODO - NAMING. Currently named in line with docs for Grossfield wham, but
 ## some of these aren't very clear/nice so likely to change...
 def wham(bundle, data_names=None, timeseries_type=None, 
          calc_temperature=None, hist_max=None, hist_min=None,
-         start_time=None, end_time=None, run_bootstrap=True, 
+         start_time=None, end_time=None,  
          energy_units_in=None, energy_units_out=None, 
          keep_files=False, root='./WHAM_TEMP', **wham_args):
     """ Wrapper for the Grossfield implementation of WHAM.
@@ -69,8 +69,6 @@ def wham(bundle, data_names=None, timeseries_type=None,
     start_time, end_time : float, optional
         Start/end time (in ps) to use when calculating profile; data outside
         of this time range will be ignored.
-    run_boostrap : bool, optional
-        Whether to run Monte Carlo bootstrap error analysis.
     **wham_args
         Other arguments to pass to run_grossfield_wham
 
@@ -121,8 +119,10 @@ def wham(bundle, data_names=None, timeseries_type=None,
     try:
         os.makedirs(root)
     except OSError:
-        ## TODO - do we want an option to overwrite folder if it does exist?
-        raise ValueError("Folder {} already exists".format(root))
+        if not keep_files:
+            raise ValueError("Folder {} already exists".format(root))
+        # otherwise assume it's fine to overwrite stuff?
+    # TODO - also allow different names for these...
     meta_fname = root+'/metadatafile.dat'
     data_fname = './timeseries_{}.dat' # assuming they're in the same dir as meta
     out_fname = root+'/output.dat'
@@ -149,8 +149,7 @@ def wham(bundle, data_names=None, timeseries_type=None,
     # run!
     run_grossfield_wham(calc_temperature=calc_temperature, hist_max=hist_max, 
                         hist_min=hist_min, metafile=meta_fname,
-                        outfile=out_fname, run_bootstrap=run_bootstrap, 
-                        **wham_args)
+                        outfile=out_fname, **wham_args)
     # read the output    
     profile = read_grossfield_output(out_fname, ener_units=energy_units_out,
                                      wham_units=energy_units_wham,
@@ -158,8 +157,7 @@ def wham(bundle, data_names=None, timeseries_type=None,
 
     # clear our files
     if not keep_files:
-        # TODO - make sure we're not removing anything important. 
-        # Do another way - keep a record of files we wrote instead?
+        # should only have been created by us, so should be good to remove...
         shutil.rmtree(root)
 
     return profile
@@ -258,7 +256,9 @@ def run_grossfield_wham(periodicity='', hist_min=None,
     check_only : bool
         [[ (Default False). If True, only check values are valid; exit before 
          running wham command ]]
-    calc_temperature, hist_min, hist_max, run_bootstrap
+    run_boostrap : bool, optional
+        Whether to run Monte Carlo bootstrap error analysis.
+    calc_temperature, hist_min, hist_max
         [[ TBA?, see wham above ]]
     """
     wham_args = locals()
@@ -290,7 +290,7 @@ def run_grossfield_wham(periodicity='', hist_min=None,
         if run_bootstrap:
             run_command = run_command+[num_MC_trials, randSeed]
         check_output(list_to_string(run_command), shell=True)
-        ## TODO - switch to subprocess; [+ catch any errors etc]
+        ## TODO - catch specific errors etc?
 
 
 
@@ -544,7 +544,7 @@ def convert_energy(value=None, unitin=None, unitout=None, temperature=-1):
     """
     unit_conversions = {'kcal': 1, # kilocalorie, 1 kCal = 1 kCal
                         'kj': 0.239006, # kiloJoule, 1 kJ = 0.239006 kCal
-                        'kt': -1*0.239006 # kT
+                        'kt': temperature*0.239006 # kT
                         }
     default = 'kcal'
     unitin = unitin if unitin is not None else default
@@ -616,9 +616,10 @@ def _check_number(value, name, integer=False, positive=False):
     if value is not None:
         types = (int) if integer else (int, float)
         if not isinstance(value, types) or (positive and not value > 0):
-            raise TypeError("Invalid {} ({})".format(name, value))
-            # TODO - be more specific here
-
+            msg = (('positive ' if positive else '') + 
+                  ('integer' if integer else 'float'))
+            raise TypeError("Invalid {} ({}). Should be {}".format(name, value, 
+                                                                   msg))
 
 def _check_min_max(minval, minname, maxval, maxname, positive=False,
                                                      integer=False):
