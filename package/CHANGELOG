@@ -28,6 +28,9 @@ Enhancements
     OpenMP was used in compilation (Issue #883)
   * Added Principal Component Analysis module for linear dimensionality
     reduction.
+  * Added Auxiliary module for reading additional timeseries data alongside
+    trajectories (Issue #785)
+
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)

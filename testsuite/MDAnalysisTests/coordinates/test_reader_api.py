@@ -30,11 +30,13 @@ class AmazingMultiFrameReader(Reader):
         self.filename = filename
         self.n_frames = 10
         self.n_atoms = 10
+        self._auxs = {}
         # ts isn't a real timestep, but just an integer
         # whose value represents the frame number (0 based)
         self.ts = Timestep(self.n_atoms)
         self.ts.frame = -1
         self._read_next_timestep()
+
 
     def _read_next_timestep(self):
         self.ts.frame += 1
