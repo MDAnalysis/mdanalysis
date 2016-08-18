@@ -618,7 +618,7 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     resamples = []
     if not ens_id_max:
         ens_id_max = nensembles + 1
-    for i in range(ens_id_min, ens_id_max + 1):
+    for i in range(ens_id_min, ens_id_max):
         this_embedded = embedded_space.transpose()[np.where(
             np.logical_and(ensemble_assignment >= ens_id_min,
                               ensemble_assignment <= i))].transpose()
@@ -1568,7 +1568,7 @@ def ces_convergence(original_ensemble,
         for j in range(len(ensembles)):
             out[-1][j] = cumulative_clustering_ensemble_similarity(
                 cc,
-                len(ensembles) + 1,
+                len(ensembles),
                 j + 1)
 
     out = np.array(out).T
@@ -1657,7 +1657,7 @@ def dres_convergence(original_ensemble,
             cumulative_gen_kde_pdfs(
                 coordinates[i],
                 ensemble_assignment=ensemble_assignment,
-                nensembles=len(ensembles) - 1,
+                nensembles=len(ensembles),
                 nsamples=nsamples)
 
         for j in range(len(ensembles)):
