@@ -117,6 +117,24 @@ class TestProgressMeter(TestCase):
                             **{'rmsd': 0.02*n, 'step': n,
                                'numsteps': n, 'percentage': 100.0}))
 
+    def test_legacy_ProgressMeter(self, n=51, interval=7):
+        format = "RMSD %(rmsd)5.2f at %(step)03d/%(numsteps)4d [%(percentage)5.1f%%]"
+        with RedirectedStderr(self.buf):
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
+                                                  format=format, offset=1)
+            for frame in range(n):
+                rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
+                pm.echo(frame, rmsd=rmsd)
+        self.buf.seek(0)
+        output = "".join(self.buf.readlines())
+        self._assert_in(output,
+                        ('\r' + format) % {'rmsd': 0.0, 'step': 1,
+                                           'numsteps': n, 'percentage': 100./n})
+        # last line always ends with \n!
+        self._assert_in(output,
+                        ('\r' + format + '\n') % {'rmsd': 0.02*n, 'step': n,
+                                                  'numsteps': n, 'percentage': 100.0})
+
     def test_not_dynamic_ProgressMeter(self, n=51, interval=10):
         format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
         with RedirectedStderr(self.buf):

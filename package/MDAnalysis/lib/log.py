@@ -75,6 +75,7 @@ from __future__ import print_function, division
 
 import sys
 import logging
+import re
 
 from .. import version
 
@@ -186,6 +187,28 @@ def echo(s='', replace=False, newline=True):
     sys.stderr.flush()
 
 
+def _new_format(template, variables):
+    """Format a string that follows the {}-based syntax.
+    """
+    return template.format(**variables)
+
+
+def _legacy_format(template, variables):
+    """Format a string that follows the %-based syntax.
+    """
+    return template % variables
+
+
+def _guess_string_format(template):
+    """Guess if the template follow {}-based or %-based syntax.
+    """
+    match = re.search(r'%\((step|numsteps|percentage)\)', template)
+    if match is None:
+        return _new_format
+    else:
+        return _legacy_format
+
+
 class ProgressMeter(object):
     r"""Simple progress meter
 
@@ -231,7 +254,7 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 quiet=False, dynamic=True):
+                 quiet=False, dynamic=True, format_handling='auto'):
         r"""
         Parameters
         ==========
@@ -264,6 +287,13 @@ class ProgressMeter(object):
         dynamic: bool
             If ``True``, each line will be printed on top of the previous one.
             This is done by prepedind the format with ``\r``. [``True``]
+        format_handling: str
+            how to handle the format string. Allowed values are:
+
+            * *new*: the format string uses {}-based formating
+            * *legacy*: the format string uses %-basedd formating
+            * *auto*: default, try to guess how the format string should be
+              handled
 
         .. versionchanged:: 0.8
            Keyword argument *quiet* was added.
@@ -279,6 +309,13 @@ class ProgressMeter(object):
         self.quiet = quiet
         if format is None:
             format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
+            self.format_handler = _new_format
+        else:
+            if format_handling == 'auto':
+                self.format_handler = _guess_string_format(format)
+            else:
+                self.format_handler = {'new': _new_format,
+                                       'legacy': _legacy_format}[format_handling]
         self.format = format
         self.step = 0
         self.percentage = 0.0
@@ -327,5 +364,5 @@ class ProgressMeter(object):
             pass
         else:
             return
-        echo(format.format(**vars(self)),
+        echo(self.format_handler(format, vars(self)),
              replace=self.dynamic, newline=newline)
