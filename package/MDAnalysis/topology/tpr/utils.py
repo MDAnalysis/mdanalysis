@@ -87,11 +87,22 @@ def define_unpack_real(prec, data):
     else:
         raise ValueError("unsupported precision: {0}".format(prec))
 
+def do_string(data):
+    """Emulate gmx_fio_do_string
+
+    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
+    python unpack_string, gmx_fio_do_string reads the size as an unsigned
+    interger before reading the actual string.
+
+    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
+    """
+    data.unpack_int()
+    return data.unpack_string()
+
 
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
-    number = data.unpack_int()  # ?
-    ver_str = data.unpack_string()  # version string e.g. VERSION 4.0.5
+    ver_str = do_string(data)  # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fver = data.unpack_int()  # version of tpx file
@@ -104,13 +115,7 @@ def read_tpxheader(data):
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    if fver >= 80:
-        data.unpack_int()  # the value is 8, but haven't found the
-        # corresponding code in the
-        # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c yet.
-        file_tag = data.unpack_string()
-    else:
-        file_tag = S.TPX_TAG_RELEASE
+    file_tag = do_string(data) if fver >= 81 else S.TPX_TAG_RELEASE
 
     natoms = data.unpack_int()  # total number of atoms
     ngtc = data.unpack_int() if fver >= 28 else 0  # number of groups for T-coupling
@@ -132,7 +137,7 @@ def read_tpxheader(data):
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
 
-    th = obj.TpxHeader(number, ver_str, precision,
+    th = obj.TpxHeader(ver_str, precision,
                        fver, fgen, file_tag, natoms, ngtc, fep_state, lamb,
                        bIr, bTop, bX, bV, bF, bBox)
     return th

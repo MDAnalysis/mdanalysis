@@ -233,7 +233,6 @@ class TPRParser(TopologyReader):
         logger.info("Gromacs version   : {0}".format(th.ver_str))
         logger.info("tpx version       : {0}".format(th.fver))
         logger.info("tpx generation    : {0}".format(th.fgen))
-        logger.info("tpx number        : {0}".format(th.number))
         logger.info("tpx precision     : {0}".format(th.precision))
         logger.info("tpx file_tag      : {0}".format(th.file_tag))
         logger.info("tpx natoms        : {0}".format(th.natoms))
