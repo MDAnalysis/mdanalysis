@@ -47,6 +47,20 @@ from ...core.AtomGroup import Atom
 from . import obj
 from . import setting as S
 
+
+def do_string(data):
+    """Emulate gmx_fio_do_string
+
+    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
+    python unpack_string, gmx_fio_do_string reads the size as an unsigned
+    interger before reading the actual string.
+
+    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
+    """
+    data.unpack_int()
+    return data.unpack_string()
+
+
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
     return [data.unpack_int() for i in range(n)]
@@ -86,19 +100,6 @@ def define_unpack_real(prec, data):
         data.unpack_real = data.unpack_double
     else:
         raise ValueError("unsupported precision: {0}".format(prec))
-
-
-def do_string(data):
-    """Emulate gmx_fio_do_string
-
-    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
-    python unpack_string, gmx_fio_do_string reads the size as an unsigned
-    interger before reading the actual string.
-
-    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
-    """
-    data.unpack_int()
-    return data.unpack_string()
 
 
 def read_tpxheader(data):
@@ -152,11 +153,11 @@ def read_tpxheader(data):
     return th
 
 
-def extract_box_info(data, fver):
+def extract_box_info(data, fileVersion):
     box = ndo_rvec(data, S.DIM)
-    box_rel = ndo_rvec(data, S.DIM) if fver >= 51 else 0
-    box_v = ndo_rvec(data, S.DIM) if fver >= 28 else None
-    if (fver < 56):
+    box_rel = ndo_rvec(data, S.DIM) if fileVersion >= 51 else 0
+    box_v = ndo_rvec(data, S.DIM) if fileVersion >= 28 else None
+    if (fileVersion < 56):
         ndo_rvec(data, S.DIM)  # mdum?
 
     return obj.Box(box, box_rel, box_v)
@@ -230,8 +231,7 @@ def do_symtab(data):
     symtab_nr = data.unpack_int()  # number of symbols
     symtab = []
     for i in range(symtab_nr):
-        j = data.unpack_fstring(1)  # strings are separated by void
-        j = data.unpack_string()
+        j = do_string(data)
         symtab.append(j)
     return symtab
 
