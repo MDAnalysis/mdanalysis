@@ -108,6 +108,12 @@ def read_tpxheader(data):
     fver = data.unpack_int()  # version of tpx file
     fver_err(fver)
 
+    # This is for backward compatibility with development version 77-79 where
+    # the tag was, mistakenly, placed before the generation.
+    if 77 <= fver <= 79:
+        data.unpack_int()  # the value is 8, but haven't found the
+        file_tag = do_string(data)
+
     fgen = data.unpack_int() if fver >= 26 else 0  # generation of tpx file, e.g. 17
 
     # Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag
