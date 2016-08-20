@@ -179,7 +179,7 @@ class TestRMSD(object):
                                             groupselections=
                                             ['backbone', 'name CA'],
                                             step=49).run()
-        assert_array_almost_equal(RMSD.rmsd, self.correct_values_group, 4,
+        assert_array_almost_equal(RMSD.rmsd, self.correct_values_group, 3,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 

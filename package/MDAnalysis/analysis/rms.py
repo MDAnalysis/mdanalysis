@@ -428,7 +428,7 @@ class RMSD(AnalysisBase):
                         if self.mass_weighted else None)
 
         # reference centre of mass system
-        current_frame = self.reference.trajectory.ts.frame - 1
+        current_frame = self.reference.trajectory.ts.frame
 
         try:
             # Move to the ref_frame
@@ -491,7 +491,7 @@ class RMSD(AnalysisBase):
             self.mobile_atoms.positions -= mobile_com
             # R acts to the left & is broadcasted N times.
             self.mobile_atoms.positions = (self.mobile_atoms.positions *
-                                           self._R)
+                                                 self._R)
             self.mobile_atoms.positions += self._ref_com
 
             # 2) calculate secondary RMSDs
