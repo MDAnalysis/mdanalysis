@@ -7,6 +7,7 @@ import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
 from . import groups
+from .groups import AtomGroup, ResidueGroup, SegmentGroup
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -123,6 +124,8 @@ class Universe(object):
             return
 
         coordinatefile = args[1:]
+        if not coordinatefile:
+            coordinatefile = None
 
         # if we're given a Topology object, we don't need to parse anything
         if isinstance(args[0], Topology):
@@ -151,8 +154,6 @@ class Universe(object):
                     if (fmt in MDAnalysis.coordinates._READERS
                         and fmt in MDAnalysis.topology._PARSERS):
                         coordinatefile = self.filename
-                if len(coordinatefile) == 0:
-                    coordinatefile = None
 
             # build the topology (or at least a list of atoms)
             try:  # Try and check if the topology format is a TopologyReader
@@ -182,21 +183,26 @@ class Universe(object):
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
+        self._class_cache = {}
         self._classes = groups.make_classes()
 
         # Put Group level stuff from topology into class
         for attr in self._topology.attrs:
             self._process_attr(attr)
 
-        # Generate atoms, residues and segments
-        self.atoms = self._classes['atomgroup'](
-                np.arange(self._topology.n_atoms), self)
+        # Generate atoms, residues and segments.
+        # These are the first such groups generated for this universe, so
+        #  there are no cached merged classes yet. Otherwise those could be
+        #  used directly to get a (very) small speedup. (Only really pays off
+        #  the readability loss if instantiating millions of AtomGroups at
+        #  once.)
+        self.atoms = AtomGroup(np.arange(self._topology.n_atoms), self)
 
-        self.residues = self._classes['residuegroup'](
-                np.arange( self._topology.n_residues), self)
+        self.residues = ResidueGroup(
+                np.arange(self._topology.n_residues), self)
 
-        self.segments = self._classes['segmentgroup'](np.arange(
-            self._topology.n_segments), self)
+        self.segments = SegmentGroup(
+                np.arange(self._topology.n_segments), self)
 
         # Update Universe namespace with segids
         for seg in self.segments:
@@ -462,9 +468,8 @@ class Universe(object):
                       for a, val in f.items() if not val))
 
         # All the unique values in f are the fragments
-        AG = self._classes['atomgroup']
-        frags = tuple([AG(np.array([at.index for at in ag]), self)
-                       for ag in set(f.values())])
+        frags = tuple([AtomGroup(np.array([at.index for at in ag]), self)
+                        for ag in set(f.values())])
 
         fragdict = {}
         for f in frags:

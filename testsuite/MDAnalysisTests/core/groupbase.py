@@ -21,36 +21,7 @@ from MDAnalysis.core import groups
 
 def make_Universe():
     """Make a dummy reference Universe"""
-    u = mda.Universe()
-
-    u._topology = make_topology()
-
-    # generate Universe version of each class
-    # AG, RG, SG, A, R, S
-    u._classes = groups.make_classes()
-
-    # Put Group level stuff from topology into class
-    for attr in u._topology.attrs:
-        u._process_attr(attr)
-
-    # Generate atoms, residues and segments
-    u.atoms = u._classes['atomgroup'](
-        np.arange(u._topology.n_atoms), u)
-    u.residues = u._classes['residuegroup'](
-        np.arange( u._topology.n_residues), u)
-    u.segments = u._classes['segmentgroup'](np.arange(
-        u._topology.n_segments), u)
-
-    # Update Universe namespace with segids
-    for seg in u.segments:
-        if hasattr(seg, 'segid'):
-            if seg.segid[0].isdigit():
-                name = 's' + seg.segid
-            else:
-                name = seg.segid
-            u.__dict__[name] = seg
-
-    return u
+    return mda.Universe(make_topology())
 
 def make_topology():
     """Reference topology system
