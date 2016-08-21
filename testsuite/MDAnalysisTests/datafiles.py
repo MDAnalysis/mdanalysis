@@ -43,6 +43,7 @@ __all__ = [
     "PDB_multiframe",
     "PDB_helix",
     "PDB_conect",
+    "PDB_conect2TER",  # Conect record to a TER entry (Issue 936)
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
@@ -172,6 +173,7 @@ PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
+PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')

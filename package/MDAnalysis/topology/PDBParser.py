@@ -180,8 +180,14 @@ class PDBParser(TopologyReader):
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
-                    bond = tuple([mapping[atom], mapping[a]])
-                    bonds.add(bond)
+                    try:
+                        bond = tuple([mapping[atom], mapping[a]])
+                    except KeyError:
+                        # Bonds to TER records have no mapping
+                        # Ignore these as they are not real atoms
+                        pass
+                    else:
+                        bonds.add(bond)
 
         bonds = tuple(bonds)
 
