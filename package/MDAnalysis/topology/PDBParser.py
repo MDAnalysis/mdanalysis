@@ -216,6 +216,10 @@ def _parse_conect(conect):
     """
     atom_id = np.int(conect[6:11])
     n_bond_atoms = len(conect[11:]) // 5
+    if n_bond_atoms == 0:
+        # Conect record with only one entry (CONECT A\n)
+        return atom_id, []  # return empty list to allow iteration over nothing
+
     if len(conect[11:]) % n_bond_atoms != 0:
         raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
                            "record: {}".format(conect))

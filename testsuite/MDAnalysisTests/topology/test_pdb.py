@@ -16,6 +16,7 @@
 from numpy.testing import assert_
 from MDAnalysisTests.datafiles import (
     PDB_conect2TER,
+    PDB_singleconect,
 )
 
 import MDAnalysis as mda
@@ -28,3 +29,11 @@ def test_conect2ter():
 
     assert_('bonds' in struc)
     assert_(len(struc['bonds']) == 4)
+
+
+def test_single_conect():
+    with PDBParser(PDB_singleconect) as p:
+        struc = p.parse()
+
+    assert_('bonds' in struc)
+    assert_(len(struc['bonds']) == 2)
