@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud
-        
+
   * 0.15.1
 
 Enhancements
@@ -30,7 +30,7 @@ Enhancements
     reduction.
   * Added Auxiliary module for reading additional timeseries data alongside
     trajectories (Issue #785)
-
+  * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
