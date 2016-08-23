@@ -63,7 +63,7 @@ install:
 
 # command to run tests
 script:
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 --with-memleak
+  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 --with-memleak --with-universe
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
