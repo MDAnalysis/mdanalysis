@@ -56,7 +56,10 @@ Changes
     Bauhaus API. (Issue #857)
   * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
     40% speed up. (PR #930)
-  * The ProgressMeter class now has a `dynamic` keyword argument. (PR #944)
+  * The ProgressMeter class now has a `dynamic` keyword argument. It is now
+    recommended to provide format strings using the new python format syntax,
+    the old %-based syntax is still available but will be deprecated.
+    (PR #944)
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
