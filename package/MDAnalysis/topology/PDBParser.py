@@ -96,64 +96,64 @@ class PDBParser(TopologyReader):
         iatom = 0
         atoms = []
 
+        resid_prev = 0  # resid looping hack
         with openany(self.filename, 'rt') as f:
-            resid_prev = 0  # resid looping hack
-            for i, line in enumerate(f):
+            for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
                     continue
-                record = line[:6].strip()
 
-                if record.startswith('END'):
+                if line.startswith('END'):
                     break
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    try:
-                        serial = int(line[6:11])
-                    except ValueError:
-                        # serial can become '***' when they get too high
-                        self._wrapped_serials = True
-                        serial = None
-                    name = line[12:16].strip()
-                    altLoc = line[16:17].strip()
-                    resName = line[17:21].strip()
-                    # empty chainID is a single space ' '!
-                    chainID = line[21:22].strip()
-                    if self.format == "XPDB":  # fugly but keeps code DRY
-                        # extended non-standard format used by VMD
-                        resSeq = int(line[22:27])
-                        resid = resSeq
-                    else:
-                        resSeq = int(line[22:26])
-                        resid = resSeq
+                elif not line.startswith(('ATOM  ', 'HETATM')):
+                    continue
 
-                        while resid - resid_prev < -5000:
-                            resid += 10000
-                        resid_prev = resid
-                        # insertCode = _c(27, 27, str)  # not used
-                        # occupancy = float(line[54:60])
-                    try:
-                        tempFactor = float(line[60:66])
-                    except ValueError:
-                        tempFactor = 0.0
-                    segID = line[66:76].strip()
-                    element = line[76:78].strip()
+                try:
+                    serial = int(line[6:11])
+                except ValueError:
+                    # serial can become '***' when they get too high
+                    self._wrapped_serials = True
+                    serial = None
+                name = line[12:16].strip()
+                altLoc = line[16:17].strip()
+                resName = line[17:21].strip()
+                # empty chainID is a single space ' '!
+                chainID = line[21:22].strip()
+                if self.format == "XPDB":  # fugly but keeps code DRY
+                    # extended non-standard format used by VMD
+                    resSeq = int(line[22:27])
+                    resid = resSeq
+                else:
+                    resSeq = int(line[22:26])
+                    resid = resSeq
 
-                    segid = segID.strip() or chainID.strip() or "SYSTEM"
+                    while resid - resid_prev < -5000:
+                        resid += 10000
+                    resid_prev = resid
+                # insertCode = _c(27, 27, str)  # not used
+                # occupancy = float(line[54:60])
+                try:
+                    tempFactor = float(line[60:66])
+                except ValueError:
+                    tempFactor = 0.0
+                segID = line[66:76].strip()
+                element = line[76:78].strip()
 
-                    elem = guess_atom_element(name)
+                segid = segID.strip() or chainID.strip() or "SYSTEM"
 
-                    atomtype = element or elem
-                    mass = get_atom_mass(elem)
-                    # charge = guess_atom_charge(name)
-                    charge = 0.0
+                elem = guess_atom_element(name)
+                atomtype = element or elem
+                mass = get_atom_mass(elem)
+                # charge = guess_atom_charge(name)
+                charge = 0.0
 
-                    atom = Atom(iatom, name, atomtype, resName, resid,
-                                segid, mass, charge,
-                                bfactor=tempFactor, serial=serial,
-                                altLoc=altLoc, universe=self._u,
-                                resnum=resSeq)
-                    iatom += 1
-                    atoms.append(atom)
+                atom = Atom(iatom, name, atomtype, resName, resid,
+                            segid, mass, charge,
+                            bfactor=tempFactor, serial=serial,
+                            altLoc=altLoc, universe=self._u,
+                            resnum=resSeq)
+                iatom += 1
+                atoms.append(atom)
 
         return atoms
 
@@ -175,9 +175,9 @@ class PDBParser(TopologyReader):
         mapping = dict((a.serial, a.index) for a in atoms)
 
         bonds = set()
-        with openany(self.filename, "rt") as f:
-            lines = (line for line in f if line[:6] == "CONECT")
-            for line in lines:
+
+        with openany(self.filename, 'rt') as f:
+            for line in (x for x in f if x[:6] == 'CONECT'):
                 atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
                     try:
@@ -185,7 +185,9 @@ class PDBParser(TopologyReader):
                     except KeyError:
                         # Bonds to TER records have no mapping
                         # Ignore these as they are not real atoms
-                        pass
+                        warnings.warn(
+                            "PDB file contained CONECT record to TER entry. "
+                            "These are not included in bonds.")
                     else:
                         bonds.add(bond)
 
@@ -216,13 +218,16 @@ def _parse_conect(conect):
     """
     atom_id = np.int(conect[6:11])
     n_bond_atoms = len(conect[11:]) // 5
-    if n_bond_atoms == 0:
+
+    try:
+        if len(conect[11:]) % n_bond_atoms != 0:
+            raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
+                               "record: {}".format(conect))
+    except ZeroDivisionError:
         # Conect record with only one entry (CONECT A\n)
+        warnings.warn("Found CONECT record with single entry, ignoring this")
         return atom_id, []  # return empty list to allow iteration over nothing
 
-    if len(conect[11:]) % n_bond_atoms != 0:
-        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
-                           "record: {}".format(conect))
     bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
                   range(n_bond_atoms))
     return atom_id, bond_atoms
