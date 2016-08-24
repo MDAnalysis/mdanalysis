@@ -16,11 +16,12 @@
 
 import os
 import glob
+import MDAnalysisTests
 
 class TestRelativeImports(object):
     '''Relative imports are banned in unit testing modules (Issue #189), so run tests to enforce this policy.'''
 
-    path_to_testing_modules = os.curdir
+    path_to_testing_modules = MDAnalysisTests.__path__[0]
 
     @staticmethod
     def _run_test_relative_import(testing_module):
