@@ -37,48 +37,91 @@ def make_classes():
 
     Returns
     -------
-    Two dictionaries. One with a set of :class:`TopologyAttrContainer` classes 
+    Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes 
     to serve as bases for universe-specific MDA container classes. Another,
     with the final merged versions of those classes. The classes themselves are
     used as hashing keys.
     """
     bases = {}
     classes = {}
+    groups = (AtomGroup, ResidueGroup, SegmentGroup)
+    components = (Atom, Residue, Segment)
+
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
-    GBase = bases[GroupBase] = _make_attr_container()
-    AGBase = bases[AtomGroup] = _make_attr_container(base=GBase)
-    RGBase = bases[ResidueGroup] = _make_attr_container(base=GBase)
-    SGBase = bases[SegmentGroup] = _make_attr_container(base=GBase)
+    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass()
+    for cls in groups:
+        bases[cls] = GBase._subclass()
+
     # In the current Group-centered topology scheme no attributes apply only
     #  to ComponentBase, so no need to have a 'CB' middle man.
-    #CBase = _make_attr_container(singular=True)
-    ABase = bases[Atom] = _make_attr_container(singular=True)
-    RBase = bases[Residue] = _make_attr_container(singular=True)
-    SBase = bases[Segment] = _make_attr_container(singular=True)
+    #CBase = _TopologyAttrContainer(singular=True)
+    for cls in components:
+        bases[cls] = _TopologyAttrContainer._subclass(singular=True)
 
     # Initializes the class cache.
-    classes[AtomGroup] = AGBase._mix('AtomGroup', AtomGroup)
-    classes[ResidueGroup] = RGBase._mix('ResidueGroup', ResidueGroup)
-    classes[SegmentGroup] = SGBase._mix('SegmentGroup', SegmentGroup)
-
-    classes[Atom] = ABase._mix('Atom', Atom)
-    classes[Residue] = RBase._mix('Residue', Residue)
-    classes[Segment] = SBase._mix('Segment', Segment)
+    for cls in groups + components:
+        classes[cls] = bases[cls]._mix(cls)
 
     return bases, classes
 
 
-class TopologyAttrContainer(object):
-    """Template for the subclasses built by :func:`_make_attr_container`.
+class _TopologyAttrContainer(object):
+    """Class factory for receiving sets of :class:`TopologyAttr` objects.
 
+    :class:`_TopologyAttrContainer` is a convenience class to encapsulate the
+    functions that deal with:
+    * the import and namespace transplant of :class:`TopologyAttr` objects;
+    * the copying (subclassing) of itself to create distinct bases for the
+      different container classes (:class:`AtomGroup`, :class:`ResidueGroup`,
+      :class:`SegmentGroup`, :class:`Atom`, :class:`Residue`, :class:`Segment`,
+      and subclasses thereof);
+    * the mixing (subclassing and co-inheritance) with the container classes.
+      The mixed subclasses become the final container classes specific to each
+      :class:`Universe`.
     """
     _singular = False
 
-    def __init__(self, *args, **kwargs):
-        raise TypeError("Classes of type {} serve only as base classes to "
-            "merge with (possibly via their '_mix' classmethod). They "
-            "cannot be instantiated.".format(self.__class__))
+    @classmethod
+    def _subclass(cls, singular=None):
+        """Factory method returning :class:`_TopologyAttrContainer` subclasses.
+
+        Parameters
+        ----------
+        singular : bool
+            The :attr:`_singular` of the returned class will be set to
+            *singular*. It controls the type of :class:`TopologyAttr` addition.
+
+        Returns
+        -------
+        type
+            A subclass of :class:`_TopologyAttrContainer`, with the same name. 
+        """
+        if singular is not None:
+            return type(cls.__name__, (cls,), {'_singular':bool(singular)})
+        else:
+            return type(cls.__name__, (cls,), {})
+
+    @classmethod
+    def _mix(cls, other):
+        """Creates a subclass with ourselves and another class as parents.
+
+        Classes mixed at this point always override :meth:`__new__`, causing
+        further instantiations to shortcut to :meth:`object.__new__` (skipping
+        the cache-fetch process for :class:`_MutableBase` subclasses).
+
+        Parameters
+        ----------
+        other : type
+            The class to mix with ourselves.
+
+        Returns
+        -------
+        type
+            A class of parents :class:`_ImmutableBase`, *other* and this class.
+            Its name is the same as *other*'s.
+        """
+        return type(other.__name__, (_ImmutableBase, other, cls), {})
 
     @classmethod
     def _add_prop(cls, attr):
@@ -86,7 +129,6 @@ class TopologyAttrContainer(object):
 
         Parameters
         ----------
-
         attr : A TopologyAttr object
         """
         getter = lambda self: attr.__getitem__(self)
@@ -98,50 +140,6 @@ class TopologyAttrContainer(object):
         else:
             setattr(cls, attr.attrname,
                     property(getter, setter, None, attr.groupdoc))
-
-    @classmethod
-    def _mix(cls, cls_name, other):
-        """Returns a class mixed with ourselves with a bypassed :meth:`__new__`.
-
-        Classes merged at this point always override :meth:`__new__`, causing
-        further instantiations to shortcut to :meth:`object.__new__`, skipping
-        the cache-fetch process.
-
-        Parameters
-        ----------
-        cls_name : str
-            The name of the returned class.
-
-        other : type
-            The class to mix with ourselves.
-
-        Returns
-        -------
-        type
-            A class of name *cls_name* and parents :class:`_ImmutableBase`, 
-            *other* and this class.
-        """
-        return type(cls_name, (_ImmutableBase, other, cls), {})
-
-# This function could be blended into the code of TopologyAttrContainer by
-#  setting the __new__ class method. However, there would be no protection
-#  against inadvertent initialization of the class.
-def _make_attr_container(base=TopologyAttrContainer, singular=False):
-    """Factory function that returns :class:`TopologyAttrContainer` subclasses.
-
-    Parameters
-    ----------
-
-    singular : bool
-        The :attr:`_singular` of the returned class will be set to *singular*.
-        It controls the type of :class:`TopologyAttr` addition.
-
-    Returns
-    -------
-    type
-        A subclass of :class:`TopologyAttrContainer`, with the same name. 
-    """
-    return type(base.__name__, (base,), {'_singular':singular})
 
 
 class _MutableBase(object):
@@ -180,7 +178,7 @@ class _ImmutableBase(object):
     """Class used to shortcut :meth:`__new__` to :meth:`object.__new__`.
     
     """
-    # When mixed via TopologyAttrContainer._mix this class has MRO priority.
+    # When mixed via _TopologyAttrContainer._mix this class has MRO priority.
     #  Setting __new__ like this will avoid having to go through the
     #  cache lookup if the class is reused (as in ag.__class__(...)).
     __new__ = object.__new__
@@ -213,7 +211,6 @@ class GroupBase(_MutableBase):
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
-                # TODO: what about tuples?
                 item = np.array(item)
             return self.__class__(self._ix[item], self._u)
 
@@ -1469,21 +1466,6 @@ class ComponentBase(_MutableBase):
             raise TypeError("unsupported operand type(s) for +:"+
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
-
-    @classmethod
-    def _add_prop(cls, attr):
-        """Add attr into the namespace for this class
-
-        Arguments
-        ---------
-        attr 
-            TopologyAttr object to add
-        """
-        getter = lambda self: attr.__getitem__(self)
-        setter = lambda self, values: attr.__setitem__(self, values)
-
-        setattr(cls, attr.singular,
-                property(getter, setter, None, attr.singledoc))
 
     @property
     def universe(self):
