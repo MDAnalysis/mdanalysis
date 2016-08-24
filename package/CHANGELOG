@@ -44,6 +44,8 @@ Fixes
     defaults (#914)
   * Fixed same interRDF can be run twice (Issue #924)
   * Support for TPR files produced by Gromacs-2016 (Issue #932)
+  * Fixed parsing PDB files with CONECT records to TER entries (Issue #936)
+  * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
   * Progress meters are now displayed as expected on jupyter notebooks
     (Issue #927)
 
