@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud
-        
+
   * 0.15.1
 
 Enhancements
@@ -30,7 +30,7 @@ Enhancements
     reduction.
   * Added Auxiliary module for reading additional timeseries data alongside
     trajectories (Issue #785)
-
+  * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
@@ -46,6 +46,8 @@ Fixes
   * Support for TPR files produced by Gromacs-2016 (Issue #932)
   * Fixed parsing PDB files with CONECT records to TER entries (Issue #936)
   * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
+  * Progress meters are now displayed as expected on jupyter notebooks
+    (Issue #927)
 
 Changes
   * Added protected variable _frame_index to to keep track of frame iteration
@@ -56,6 +58,10 @@ Changes
     Bauhaus API. (Issue #857)
   * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
     40% speed up. (PR #930)
+  * The ProgressMeter class now has a `dynamic` keyword argument. It is now
+    recommended to provide format strings using the new python format syntax,
+    the old %-based syntax is still available but will be deprecated.
+    (PR #944)
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
