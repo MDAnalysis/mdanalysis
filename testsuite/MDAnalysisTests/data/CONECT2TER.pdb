@@ -1,5 +1,5 @@
 HEADER    ISSUE936 Test File
-REMARK    Contains a CONECT record to a TER entry
+REMARK    Contains a CONECT record to a TER entry (line 11)
 MODEL 1
 CRYST1  216.489  216.489  216.489  90.00  90.00  90.00 P 1           1
 ATOM      1 CA   ABC A   1     111.252  98.373  98.187
