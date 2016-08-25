@@ -65,16 +65,34 @@ class TestAtom(TestCase):
         assert_equal(a.name, 'CG')
         assert_equal(a.resname, 'LEU')
 
-    # INVALID: got rid of pos
+    def test_setting_attribute_name(self):
+        self.atom.name = 'AA'
+        assert_equal(self.atom.name, 'AA')
+
+    def test_setting_attribute_type(self):
+        self.atom.type = 'Z'
+        assert_equal(self.atom.type, 'Z')
+
+    #INVALID
     @skip
-    def test_attributes_pos(self):
-        # old pos property
-        assert_almost_equal(self.atom.pos, self.known_pos)
+    def test_setting_attribute_resname(self):
+        self.atom.resname  = 'RR'
+        assert_equal(self.atom.resname, 'RR')
 
-        def set_pos():
-            self.atom.pos = self.known_pos + 3.14
+    #INVALID
+    @skip
+    def test_setting_attribute_resid(self):
+        self.atom.resid = 42
+        assert_equal(self.atom.resid, 42)
 
-        assert_raises(AttributeError, set_pos)
+    #INVALID
+    @skip
+    def test_setting_attribute_mass(self):
+        assert_equal(self.atom.mass, 13)
+
+    def test_setting_attributes_charge(self):
+        self.atom.charge = 6
+        assert_equal(self.atom.charge, 6)
 
     # VALID
     def test_attributes_positions(self):
@@ -121,11 +139,6 @@ class TestAtom(TestCase):
 
         assert_raises(NoDataError, lookup_velo)
 
-    # INVALID
-    @skip
-    def test_atom_centroid(self):
-        assert_equal(self.atom.position, self.atom.centroid())
-
     # INVALID: cannot build atoms like this; they must be part of a Universe
     @skip
     def test_no_uni(self):
@@ -140,10 +153,9 @@ class TestAtom(TestCase):
         at = self.universe.atoms[0]
         ref = [b.partner(at) for b in at.bonds]
         assert_equal(ref, list(at.bonded_atoms))
-    
-    # INVALID: should raise AttributeError, as it does
-    @skip
-    @raises(NoDataError)
+
+    # VALID
+    @raises(AttributeError)
     def test_undefined_occupancy(self):
         self.universe.atoms[0].occupancy
 
@@ -275,24 +287,17 @@ class TestAtomGroup(TestCase):
         # check any special method
         assert_almost_equal(newag.total_mass(), 40.044999999999995)
 
-    
-    # INVALID: there is no such property `_atoms` for an AtomGroup
-    # could check that `self.universe.atoms.ix[0]` is same as `self.universe.atoms[0].ix`
-    @skip
+
     def test_getitem_int(self):
-        assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
+        assert_equal(self.universe.atoms[0].ix, self.universe.atoms.ix[0])
 
-    # INVALID: see above for alternative test
-    @skip
     def test_getitem_slice(self):
-        assert_equal(self.universe.atoms[0:4]._atoms,
-                     self.universe.atoms._atoms[:4])
+        assert_array_equal(self.universe.atoms[0:4].ix,
+                           self.universe.atoms.ix[:4])
 
-    # INVALID: see above for alternative test
-    @skip
     def test_getitem_slice2(self):
-        assert_equal(self.universe.atoms[0:8:2]._atoms,
-                     self.universe.atoms._atoms[0:8:2])
+        assert_equal(self.universe.atoms[0:8:2].ix,
+                     self.universe.atoms.ix[0:8:2])
 
     # INVALID: we don't support getitem with names anymore.
     # it could be supported by making the Atomnames topologyattr transplant
@@ -402,7 +407,7 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(self.ag.total_charge(), -4.0)
 
     # VALID: need to set precision to correct within 2 decimal points
-    # perhaps we should use a higher precision float for masses in 
+    # perhaps we should use a higher precision float for masses in
     # PSF parser
     @skip
     def test_total_mass(self):
@@ -511,7 +516,7 @@ class TestAtomGroup(TestCase):
         self.ag.occupancies = 0.25
         assert_array_almost_equal(self.ag.occupancies,
                                   np.ones(len(self.ag)) * 0.25)
-    
+
     # INVALID: AtomGroup no longer gets a sequence method; only in ResidueGroup
     # if resnames in topology
     @skip
@@ -551,13 +556,14 @@ class TestAtomGroup(TestCase):
         s = p.residues.sequence(format="Seq")
         assert_equal(s.tostring(), self.ref_adk_sequence)
 
-    # INVALID: should set resnames with `AG.residues.resnames = 'MSE'`
+    # INVALID: currently raises AttributeError
     @skip
     def test_sequence_nonIUPACresname(self):
         """test_sequence_nonIUPACresname: non recognized amino acids raise
         ValueError"""
         # fake non-IUPAC residue name for this test
-        self.universe.select_atoms("resname MET").residues.set_resnames("MSE")
+        residues = self.universe.select_atoms("resname MET").residues
+        residues.resnames = "MSE"
 
         def wrong_res():
             self.universe.atoms.sequence()
@@ -626,12 +632,10 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resnum, v)
         assert_equal(all(ag.resnums == new), True)
 
-    # INVALID: set resnames with `ag.residues.resnames = new`
-    @skip
     def test_set_resname_single(self):
         ag = self.universe.atoms[:3]
         new = 'abc'
-        ag.set_resnames(new)
+        ag.residues.resnames = new
         for at in ag:
             assert_equal(at.resname, new)
         assert_equal(all(ag.resnames == new), True)
@@ -727,7 +731,9 @@ class TestAtomGroup(TestCase):
                       [1.35541916, 2.0690732, 4.67488003],
                       [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
 
-    # INVALID: no `_atoms` property for ResidueGroup or AtomGroup; use `.atoms` instead
+    # INVALID: no `_atoms` property for ResidueGroup or AtomGroup; use `.atoms`
+    # which won't work because they are compared by reference in the default.
+    # But is also doesn't work to use `ix` as they will differ.
     @skip
     def test_residues(self):
         u = self.universe
@@ -763,7 +769,7 @@ class TestAtomGroup(TestCase):
         assert_array_equal(u.atoms[0:0], [],
                            "making an empty AtomGroup failed")
 
-    # VALID: 
+    # VALID:
     def test_index_advancedslice(self):
         u = self.universe
         aslice = [0, 10, 20, -1, 10]
@@ -952,13 +958,13 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[:2]
         assert_raises(ValueError, getattr, ag, 'angle')
 
-    # INVALID: this topology has no masses, so no `shape_parameter` method 
+    # INVALID: this topology has no masses, so no `shape_parameter` method
     @skip
     def test_shape_parameter(self):
         s = self.universe.s4AKE.shape_parameter()
         assert_almost_equal(s, 0.00240753939086033, 6)
 
-    # INVALID: this topology has no masses, so no `asphericity` method 
+    # INVALID: this topology has no masses, so no `asphericity` method
     @skip
     def test_asphericity(self):
         a = self.universe.s4AKE.asphericity()
@@ -1635,7 +1641,7 @@ class TestResidueGroup(TestCase):
                      "do not agree after residue "
                              "merge.")
 
-    # INVALID: no `set_masses` method; use `masses` property directly    
+    # INVALID: no `set_masses` method; use `masses` property directly
     @skip
     def test_set_masses(self):
         rg = self.universe.select_atoms("bynum 12:42 and name H*").residues
@@ -1854,7 +1860,7 @@ class TestAtomGroupTimestep(TestCase):
         del self.universe
         del self.prec
 
-    
+
     # VALID: but should be testing non-hidden attributes
     def test_partial_timestep(self):
         ag = self.universe.select_atoms('name Ca')
@@ -2061,7 +2067,7 @@ class TestUniverse(TestCase):
 
         assert_raises(ValueError, bad_load, u)
 
-    # VALID 
+    # VALID
     def test_load_structure(self):
         # Universe(struct)
         ref = MDAnalysis.Universe(PSF, PDB_small)
