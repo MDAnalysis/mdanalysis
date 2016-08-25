@@ -7,7 +7,8 @@ import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
 from . import groups
-from .groups import AtomGroup, ResidueGroup, SegmentGroup
+from .groups import (GroupBase, Atom, Residue, Segment,
+                     AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -183,8 +184,7 @@ class Universe(object):
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
-        self._class_cache = {}
-        self._classes = groups.make_classes()
+        self._class_bases, self._classes = groups.make_classes()
 
         # Put Group level stuff from topology into class
         for attr in self._topology.attrs:
@@ -392,19 +392,19 @@ class Universe(object):
                                  n=n_dict[attr.per_object],
                                  m=len(attr)))
 
-        self._classes['group']._add_prop(attr)
+        self._class_bases[GroupBase]._add_prop(attr)
 
-        for level in attr.target_levels:
+        for cls in attr.target_classes:
             try:
-                self._classes[level]._add_prop(attr)
+                self._class_bases[cls]._add_prop(attr)
             except (KeyError, AttributeError):
                 pass
 
-        for dest in ['atom', 'residue', 'segment', 'group',
-                     'atomgroup', 'residuegroup', 'segmentgroup']:
+        for cls in (Atom, Residue, Segment, GroupBase,
+                     AtomGroup, ResidueGroup, SegmentGroup):
             try:
-                for funcname, meth in attr.transplants[dest]:
-                    setattr(self._classes[dest], funcname, meth)
+                for funcname, meth in attr.transplants[cls]:
+                    setattr(self._class_bases[cls], funcname, meth)
             except AttributeError:
                 # not every Attribute will have a transplant dict
                 pass
@@ -670,12 +670,8 @@ def Merge(*args):
                    atom_resindex=residx,
                    residue_segindex=segidx)
 
-    # Create blank Universe and put topology in it
-    u = Universe()
-    u._topology = top
-
-    # Generate universe and populate namespace
-    u._generate_from_topology()
+    # Create blank Universe only from topology
+    u = Universe(top)
 
     # Take one frame of coordinates from combined atomgroups
     coords = np.vstack([a.positions for a in args])
