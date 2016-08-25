@@ -13,9 +13,10 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/16 jbarnoud, orbeckst, fiona-naughton
+??/??/16 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo
 
   * 0.15.1
+    - test_imports now always uses the correct source directory (Issue #939).
     - Added a plugin to list the non-closed file handle (Issue #853, PR #874).
       The plugin can be disabled with --no-open-files.
     - The test_failure test can be made fail by setting the MDA_FAILURE_TEST
