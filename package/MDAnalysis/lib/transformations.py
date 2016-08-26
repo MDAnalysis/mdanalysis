@@ -1421,11 +1421,17 @@ def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
 
 
 def random_quaternion(rand=None):
-    """Return uniform random unit quaternion.
+    """Creates a uniform random unit quaternion.
 
-    rand: array like or None
+    Parameters
+    ----------
+    rand : array like
         Three independent random variables that are uniformly distributed
         between 0 and 1.
+
+    Returns
+    -------
+    A uniform random unit quaternion.
 
     >>> q = random_quaternion()
     >>> np.allclose(1.0, vector_norm(q))
@@ -1453,11 +1459,17 @@ def random_quaternion(rand=None):
 
 
 def random_rotation_matrix(rand=None):
-    """Return uniform random rotation matrix.
+    """Creates a uniform random rotation matrix.
 
-    rnd: array like
+    Parameters
+    ----------
+    rand : array like
         Three independent random variables that are uniformly distributed
         between 0 and 1 for each returned quaternion.
+
+    Returns
+    -------
+    A uniform random rotation matrix.
 
     >>> R = random_rotation_matrix()
     >>> np.allclose(np.dot(R.T, R), np.identity(4))
