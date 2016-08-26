@@ -28,8 +28,8 @@ from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
 
-
 from MDAnalysisTests.datafiles import Make_Whole
+from MDAnalysisTests.rng import RandomState
 
 
 def check_parse_residue(rstring, residue):
@@ -154,8 +154,9 @@ class TestFilename(TestCase):
         assert_equal(ns.name, self.filename2)
 
 
-class TestGeometryFunctions(TestCase):
+class TestGeometryFunctions(RandomState):
     def setUp(self):
+        super(TestGeometryFunctions, self).setUp()
         self.e1 = np.array([1., 0, 0])
         self.e2 = np.array([0, 1., 0])
         self.e3 = np.array([0, 0, 1.])
@@ -182,8 +183,8 @@ class TestGeometryFunctions(TestCase):
         assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
 
     def testAngleRandom(self):
-        for x in np.random.uniform(0, np.pi, 20):
-            r = np.random.uniform(0, 1000)
+        for x in self.np_random.uniform(0, np.pi, 20):
+            r = self.np_random.uniform(0, 1000)
             v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
@@ -195,8 +196,8 @@ class TestGeometryFunctions(TestCase):
         assert_equal(mdamath.norm(self.null), 0.0)
 
     def testNormRandom(self):
-        for x in np.random.uniform(0, np.pi, 20):
-            r = np.random.uniform(0, 1000)
+        for x in self.np_random.uniform(0, np.pi, 20):
+            r = self.np_random.uniform(0, 1000)
             v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.norm(v), r, 6)
 

@@ -27,6 +27,7 @@ from numpy.testing import (
 
 from MDAnalysisTests.datafiles import Plength
 from MDAnalysisTests import module_not_found
+from MDAnalysisTests.rng import RandomState
 
 
 class TestPersistenceLength(object):
@@ -65,8 +66,9 @@ class TestPersistenceLength(object):
         assert_(len(p.fit) == len(p.results))
 
 
-class TestFitExponential(object):
+class TestFitExponential(RandomState):
     def setUp(self):
+        super(TestFitExponential, self).setUp()
         self.x = np.linspace(0, 250, 251)
         self.a_ref = 20.0
         self.y = np.exp(-self.x/self.a_ref)
@@ -85,6 +87,6 @@ class TestFitExponential(object):
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_fit_noisy(self):
-        y2 = self.y + (np.random.random(len(self.y)) - 0.5) * 0.05
+        y2 = self.y + (self.np_random.rand(len(self.y)) - 0.5) * 0.05
         a = polymer.fit_exponential_decay(self.x, y2)
         assert_(np.rint(a) == self.a_ref)

@@ -28,9 +28,10 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import TPR, XTC
 from MDAnalysisTests import module_not_found, tempdir
+from MDAnalysisTests.rng import RandomState
 
 
-class TestDensity(TestCase):
+class TestDensity(RandomState):
     nbins = 3, 4, 5
     counts = 100
     Lmax = 10.
@@ -40,8 +41,10 @@ class TestDensity(TestCase):
     def setUp(self):
         import MDAnalysis.analysis.density
 
+        super(TestDensity, self).setUp()
         self.bins = [np.linspace(0, self.Lmax, n+1) for n in self.nbins]
-        h, edges = np.histogramdd(self.Lmax*np.random.random((self.counts, 3)), bins=self.bins)
+        h, edges = np.histogramdd(self.Lmax * self.np_random.rand(self.counts, 3),
+                                  bins=self.bins)
         self.D = MDAnalysis.analysis.density.Density(h, edges,
                                                      parameters={'isDensity': False},
                                                      units={'length': 'A'})
