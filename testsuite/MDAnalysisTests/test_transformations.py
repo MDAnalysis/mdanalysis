@@ -17,8 +17,8 @@
 from six.moves import range
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_equal, TestCase
-import math
+from numpy.testing import assert_allclose, assert_equal
+
 import random
 
 from MDAnalysis.lib import transformations as t
@@ -73,7 +73,7 @@ class TestIdentityMatrixCy(_IdentityMatrix):
 
 class _TranslationMatrix(object):
     def test_translation_matrix(self):
-        v = np.random.random(3) - 0.5
+        v = np.array([0.2, 0.2, 0.2])
         assert_allclose(v, self.f(v)[:3, 3])
 
 class TestTranslationMatrixNP(_TranslationMatrix):
@@ -85,15 +85,14 @@ class TestTranslationMatrixCy(_TranslationMatrix):
 
 def test_translation_from_matrix():
     # doesn't seem to have a Cython backend
-    v0 = np.random.random(3) - 0.5
+    v0 = np.array([0.2, 0.2, 0.2])
     v1 = t.translation_from_matrix(t.translation_matrix(v0))
     assert_allclose(v0, v1)
 
 class _ReflectionMatrix(object):
     def test_reflection_matrix(self):
-        v0 = np.random.random(4) - 0.5
-        v0[3] = 1.0
-        v1 = np.random.random(3) - 0.5
+        v0 = np.array([0.2, 0.2, 0.2, 1.0])
+        v1 = np.array([0.4, 0.4, 0.4])
         R = self.f(v0, v1)
         assert_allclose(2., np.trace(R))
         assert_allclose(v0, np.dot(R, v0))
@@ -111,8 +110,8 @@ class TestReflectionMatrixCy(_ReflectionMatrix):
 
 
 def test_reflection_from_matrix():
-    v0 = np.random.random(3) - 0.5
-    v1 = np.random.random(3) - 0.5
+    v0 = np.array([0.2, 0.2, 0.2])
+    v1 = np.array([0.4, 0.4, 0.4])
     M0 = t.reflection_matrix(v0, v1)
     point, normal = t.reflection_from_matrix(M0)
     M1 = t.reflection_matrix(point, normal)
@@ -122,9 +121,9 @@ class _RotationMatrix(object):
     def test_rotation_matrix(self):
         R = self.f(np.pi/2.0, [0, 0, 1], [1, 0, 0])
         assert_allclose(np.dot(R, [0, 0, 0, 1]), [ 1., -1.,  0.,  1.])
-        angle = (random.random() - 0.5) * (2*np.pi)
-        direc = np.random.random(3) - 0.5
-        point = np.random.random(3) - 0.5
+        angle = (0.7 - 0.5) * (2*np.pi)
+        direc = np.array([0.2, 0.2, 0.2])
+        point = np.array([0.4, 0.4, 0.4])
         R0 = self.f(angle, direc, point)
         R1 = self.f(angle-2*np.pi, direc, point)
         assert_equal(t.is_same_transform(R0, R1), True)
@@ -143,9 +142,9 @@ class TestRotationMatrixCy(_RotationMatrix):
 
 
 def test_rotation_from_matrix():
-    angle = (random.random() - 0.5) * (2*np.pi)
-    direc = np.random.random(3) - 0.5
-    point = np.random.random(3) - 0.5
+    angle = (0.7 - 0.5) * (2*np.pi)
+    direc = np.array([0.2, 0.2, 0.2])
+    point = np.array([0.4, 0.4, 0.4])
     R0 = t.rotation_matrix(angle, direc, point)
     angle, direc, point = t.rotation_from_matrix(R0)
     R1 = t.rotation_matrix(angle, direc, point)
@@ -153,8 +152,7 @@ def test_rotation_from_matrix():
 
 class _ScaleMatrix(object):
     def test_scale_matrix(self):
-        v = (np.random.rand(4, 5) - 0.5) * 20.0
-        v[3] = 1.0
+        v = np.array([14.1, 15.1, 16.1, 1])
         S = self.f(-1.234)
         assert_allclose(np.dot(S, v)[:3], -1.234*v[:3])
 
@@ -165,9 +163,9 @@ class TestScaleMatrixCy(_ScaleMatrix):
     f = staticmethod(t.scale_matrix)
 
 def test_scale_from_matrix():
-    factor = random.random() * 10 - 5
-    origin = np.random.random(3) - 0.5
-    direct = np.random.random(3) - 0.5
+    factor = 7
+    origin = np.array([0.2, 0.2, 0.2])
+    direct = np.array([0.4, 0.4, 0.4])
     S0 = t.scale_matrix(factor, origin)
     factor, origin, direction = t.scale_from_matrix(S0)
     S1 = t.scale_matrix(factor, origin, direction)
@@ -183,10 +181,11 @@ class _ProjectionMatrix(object):
         assert_allclose(P[1:, 1:], np.identity(4)[1:, 1:], atol=_ATOL)
 
     def test_projection_matrix_2(self):
-        point = np.random.random(3) - 0.5
-        normal = np.random.random(3) - 0.5
-        direct = np.random.random(3) - 0.5
-        persp = np.random.random(3) - 0.5
+        point = np.array([0.2, 0.2, 0.2])
+        normal = np.array([0.4, 0.4, 0.4])
+        direct = np.array([0.6, 0.6, 0.6])
+        persp = np.array([0.8, 0.8, 0.8])
+
         P0 = self.f(point, normal)
         P1 = self.f(point, normal, direction=direct)
         P2 = self.f(point, normal, perspective=persp)
@@ -195,8 +194,7 @@ class _ProjectionMatrix(object):
 
     def test_projection_matrix_3(self):
         P = self.f((3, 0, 0), (1, 1, 0), (1, 0, 0))
-        v0 = (np.random.rand(4, 5) - 0.5) * 20.0
-        v0[3] = 1.0
+        v0 = np.array([14.1, 15.1, 16.1, 1])
         v1 = np.dot(P, v0)
         assert_allclose(v1[1], v0[1], atol=_ATOL)
         assert_allclose(v1[0], 3.0-v1[1], atol=_ATOL)
@@ -208,12 +206,12 @@ class TestProjectionMatrixCy(_ProjectionMatrix):
     f = staticmethod(t.projection_matrix)
 
 
-class TestProjectionFromMatrix(TestCase):
+class TestProjectionFromMatrix(object):
     def setUp(self):
-        self.point = np.random.random(3) - 0.5
-        self.normal = np.random.random(3) - 0.5
-        self.direct = np.random.random(3) - 0.5
-        self.persp = np.random.random(3) - 0.5
+        self.point = np.array([0.2, 0.2, 0.2])
+        self.normal = np.array([0.4, 0.4, 0.4])
+        self.direct = np.array([0.6, 0.6, 0.6])
+        self.persp = np.array([0.8, 0.8, 0.8])
 
     def test_projection_from_matrix_1(self):
         P0 = t.projection_matrix(self.point, self.normal)
@@ -244,7 +242,7 @@ class TestProjectionFromMatrix(TestCase):
 
 class _ClipMatrix(object):
     def test_clip_matrix_1(self):
-        frustrum = np.random.rand(6)
+        frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
         frustrum[1] += frustrum[0]
         frustrum[3] += frustrum[2]
         frustrum[5] += frustrum[4]
@@ -255,7 +253,7 @@ class _ClipMatrix(object):
                          np.array([ 1.,  1.,  1.,  1.]))
 
     def test_clip_matrix_2(self):
-        frustrum = np.random.rand(6)
+        frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
         frustrum[1] += frustrum[0]
         frustrum[3] += frustrum[2]
         frustrum[5] += frustrum[4]
@@ -276,10 +274,10 @@ class TestClipMatrixCy(_ClipMatrix):
 
 class _ShearMatrix(object):
     def test_shear_matrix(self):
-        angle = (random.random() - 0.5) * 4*np.pi
-        direct = np.random.random(3) - 0.5
-        point = np.random.random(3) - 0.5
-        normal = np.cross(direct, np.random.random(3))
+        angle = (0.7 - 0.5) * 4*np.pi
+        direct = np.array([0.2, 0.2, 0.2])
+        point = np.array([0.3, 0.4, 0.5])
+        normal = np.cross(direct, np.array([0.8, 0.6, 0.4]))
         S = self.f(angle, direct, point, normal)
         assert_allclose(1.0, np.linalg.det(S), atol=_ATOL)
 
@@ -293,7 +291,7 @@ class TestShearMatrixCy(_ShearMatrix):
 def test_shear_from_matrix():
     # This seems to fail sometimes if the random numbers
     # roll certain values....
-    # angle = (random.random() - 0.5) * 4*math.pi
+    # angle = (random.random() - 0.5) * 4*np.pi
     # direct = np.random.random(3) - 0.5
     # point = np.random.random(3) - 0.5
     # normal = np.cross(direct, np.random.random(3))
@@ -311,7 +309,7 @@ def test_shear_from_matrix():
     S1 = t.shear_matrix(angle, direct, point, normal)
     assert_equal(t.is_same_transform(S0, S1), True)
 
-class TestDecomposeMatrix(TestCase):
+class TestDecomposeMatrix(object):
     def test_decompose_matrix_1(self):
         T0 = t.translation_matrix((1, 2, 3))
         scale, shear, angles, trans, persp = t.decompose_matrix(T0)
@@ -331,11 +329,12 @@ class TestDecomposeMatrix(TestCase):
 
 
 def test_compose_matrix():
-    scale = np.random.random(3) - 0.5
-    shear = np.random.random(3) - 0.5
-    angles = (np.random.random(3) - 0.5) * (2*math.pi)
-    trans = np.random.random(3) - 0.5
-    persp = np.random.random(4) - 0.5
+    scale = np.array([0.2, 0.2, 0.2])
+    shear = np.array([0.4, 0.4, 0.4])
+    angles = np.array([0.6, 0.6, 0.6]) * 2 * np.pi
+    trans = np.array([0.8, 0.8, 0.8])
+    persp = np.array([0.9, 0.9, 0.9, 0.9])
+
     M0 = t.compose_matrix(scale, shear, angles, trans, persp)
     result = t.decompose_matrix(M0)
     M1 = t.compose_matrix(*result)
@@ -359,24 +358,24 @@ class TestOrthogonalizationMatrixCy(_OrthogonalizationMatrix):
 
 class _SuperimpositionMatrix(object):
     def test_superimposition_matrix(self):
-        v0 = np.random.rand(3, 10)
+        v0 = np.sin(np.linspace(0, 0.99, 30)).reshape(3, 10)
         M = self.f(v0, v0)
         assert_allclose(M, np.identity(4), atol=_ATOL)
 
-        R = t.random_rotation_matrix(np.random.random(3))
+        R = t.random_rotation_matrix(np.array([0.3, 0.4, 0.5]))
         v0 = ((1,0,0), (0,1,0), (0,0,1), (1,1,1))
         v1 = np.dot(R, v0)
         M = self.f(v0, v1)
         assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
-        v0 = (np.random.rand(4, 100) - 0.5) * 20.0
+        v0 = np.sin(np.linspace(-1, 1, 400)).reshape(4, 100)
         v0[3] = 1.0
         v1 = np.dot(R, v0)
         M = self.f(v0, v1)
         assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
-        S = t.scale_matrix(random.random())
-        T = t.translation_matrix(np.random.random(3)-0.5)
+        S = t.scale_matrix(0.45)
+        T = t.translation_matrix(np.array([0.2, 0.2, 0.2])-0.5)
         M = t.concatenate_matrices(T, R, S)
         v1 = np.dot(M, v0)
         v0[:3] += np.random.normal(0.0, 1e-9, 300).reshape(3, -1)
@@ -422,7 +421,7 @@ class _EulerFromMatrix(object):
         assert_allclose(R0, R1)
 
     def test_euler_from_matrix_2(self):
-        angles = (4.0*math.pi) * (np.random.random(3) - 0.5)
+        angles = (4.0*np.pi) * (np.array([0.2, 0.2, 0.2]) - 0.5)
         for axes in t._AXES2TUPLE.keys():
             R0 = t.euler_matrix(axes=axes, *angles)
             R1 = t.euler_matrix(axes=axes, *self.f(R0, axes))
@@ -581,10 +580,10 @@ class _QuaternionSlerp(object):
         assert_allclose(q, q1, atol=_ATOL)
 
         q = self.f(q0, q1, 0.5)
-        angle = math.acos(np.dot(q0, q))
+        angle = np.arccos(np.dot(q0, q))
 
-        check = (np.allclose(2.0, math.acos(np.dot(q0, q1)) / angle) or
-                 np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle))
+        check = (np.allclose(2.0, np.arccos(np.dot(q0, q1)) / angle) or
+                 np.allclose(2.0, np.arccos(-np.dot(q0, q1)) / angle))
 
         assert_equal(check, True)
 
@@ -601,7 +600,7 @@ class _RandomQuaternion(object):
         assert_allclose(1.0, t.vector_norm(q))
 
     def test_random_quaternion_2(self):
-        q = self.f(np.random.random(3))
+        q = self.f(np.array([0.2, 0.2, 0.2]))
         assert_equal(len(q.shape), 1)
         assert_equal(q.shape[0] == 4, True)
 
@@ -625,15 +624,19 @@ class TestRandomRotationMatrixCy(_RandomRotationMatrix):
 
 
 class _InverseMatrix(object):
+    def _check_inverse(self, size):
+        #M0 = np.random.rand(size, size)
+        M0 = np.sin(np.linspace(0.1, 0.9, size * size)).reshape(size, size)
+        M1 = self.f(M0)
+        assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size))
+
     def test_inverse_matrix(self):
         M0 = t.random_rotation_matrix()
         M1 = self.f(M0.T)
         assert_allclose(M1, np.linalg.inv(M0.T))
 
         for size in range(1, 7):
-            M0 = np.random.rand(size, size)
-            M1 = self.f(M0)
-            assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size))
+            yield self._check_inverse, size
 
 class TestInverseMatrixNP(_InverseMatrix):
     f = staticmethod(t._py_inverse_matrix)
@@ -675,7 +678,7 @@ class TestRandomVectorCy(_RandomVector):
 
 class _UnitVector(object):
     def test_unit_vector_1(self):
-        v0 = np.random.random(3)
+        v0 = np.array([0.2, 0.2, 0.2])
         v1 = self.f(v0)
         assert_allclose(v1, v0 / np.linalg.norm(v0), atol=_ATOL)
 
@@ -713,7 +716,7 @@ class TestUnitVectorCy(_UnitVector):
 
 class _VectorNorm(object):
     def test_vector_norm_1(self):
-        v = np.random.random(3)
+        v = np.array([0.2, 0.2, 0.2])
         n = self.f(v)
         assert_allclose(n, np.linalg.norm(v), atol=_ATOL)
 
