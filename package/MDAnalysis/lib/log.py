@@ -79,6 +79,7 @@ Other functions and classes for logging purposes
 """
 from __future__ import print_function, division
 
+import datetime
 import sys
 import logging
 import re
@@ -331,8 +332,18 @@ class ProgressMeter(object):
             * *step*: current step
             * *numsteps*: total number of steps as supplied in *numsteps*
             * *percentage*: percentage of total
+            * *elapsed*: time elapsed since the first update
+            * *time_per_iteration*: average time between updates
+            * *estimate_time_to_completion* or *etc*: estimate time to
+              completion
 
-            The last call to :meth:`ProgressMeter.print` will automatically
+            Time tracking and estimate time to completion are not available
+            with {}-based format syntax. *estimate_time_to_completion* is a
+            :class:`datetime.datetime` instance, *elapsed* and
+            *time_per_iteration* are :class:`datetime.timedelta` instances;
+            they can be formated as such.
+
+            The last call to :meth:`ProgressMeter.echo` will automatically
             issue a newline ``\n``.
 
             If *format* is ``None`` then the default is used::
@@ -356,14 +367,22 @@ class ProgressMeter(object):
             * *auto*: default, try to guess how the format string should be
               handled
 
+            When using the *legacy*, %-based, formated syntax, the time
+            tracking and estimate time to completion are not available.
+
         .. versionchanged:: 0.8
            Keyword argument *quiet* was added.
 
-        .. versionchanged:: 0.16
-           Keyword argument *dynamic* replaces ``\r`` in the format.
-
         .. deprecated:: 0.16
            Keyword argument *quiet* is deprecated in favor of *verbose*.
+
+        .. versionchanged:: 0.16
+           Keyword argument *dynamic* replaces ``\r`` in the format.
+           Keyword argument *dynamic* replaces ``\r`` in the format. The
+           {}-based formating syntax is recommended for the *format* argument,
+           and some time tracking (*elapsed*, *time_per_iteration*, and
+           *estimate_time_to_completion* template variable and attributes) are
+           added.
         """
         self.numsteps = numsteps
         self.interval = int(interval)
@@ -389,6 +408,14 @@ class ProgressMeter(object):
         assert numsteps > 0, "numsteps step must be >0"
         assert interval > 0, "interval step must be >0"
 
+        # Time tracking stuff
+        self._start_time = None
+        self._last_time = None
+        self.elapsed = None
+        self.time_per_iteration = None
+        self.estimate_time_to_completion = None
+        self.etc = None
+
     def update(self, step, **kwargs):
         """Update the state of the ProgressMeter.
 
@@ -402,6 +429,19 @@ class ProgressMeter(object):
 
         self.numouts += 1
 
+        # Update time tracking and estimate time to completion
+        self._last_time = datetime.datetime.now()
+        if self._start_time is None:
+            self._start_time = self._last_time
+        self.elapsed = self._last_time - self._start_time
+        self.time_per_iteration = datetime.timedelta(
+            seconds=self.elapsed.total_seconds() / self.step)
+        remaining = self.numsteps - self.step
+        self.estimate_time_to_completion = (self._last_time
+                                            + remaining
+                                            * self.time_per_iteration)
+        self.etc = self.estimate_time_to_completion
+       
     def echo(self, step, **kwargs):
         """Print the state to stderr, but only every *interval* steps.
 
