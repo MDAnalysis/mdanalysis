@@ -18,7 +18,7 @@ from six.moves import range
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
-
+import itertools
 import random
 
 from MDAnalysis.lib import transformations as t
@@ -625,10 +625,26 @@ class TestRandomRotationMatrixCy(_RandomRotationMatrix):
 
 class _InverseMatrix(object):
     def _check_inverse(self, size):
+        def makearr(size):
+            # Makes an array of shape (size,size) filled with
+            # unique, fairly unrelated numbers
+            def numgen():
+                for val in itertools.permutations(
+                        '123456789', 3):
+                    yield float(''.join(val))
+            num = numgen()
+    
+            arr = np.zeros((size, size))
+            for i in range(size):
+                for j in range(size):
+                    arr[i][j] = next(num)
+            return arr
+
         #M0 = np.random.rand(size, size)
-        M0 = np.sin(np.linspace(0.1, 0.9, size * size)).reshape(size, size)
+        M0 = makearr(size)
         M1 = self.f(M0)
-        assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size))
+        assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size),
+                        atol=_ATOL)
 
     def test_inverse_matrix(self):
         M0 = t.random_rotation_matrix()
