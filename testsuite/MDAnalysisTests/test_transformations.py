@@ -18,7 +18,6 @@ from six.moves import range
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
-import itertools
 
 from MDAnalysis.lib import transformations as t
 
@@ -624,22 +623,10 @@ class TestRandomRotationMatrixCy(_RandomRotationMatrix):
 
 class _InverseMatrix(object):
     def _check_inverse(self, size):
-        def makearr(size):
-            # Makes an array of shape (size,size) filled with
-            # unique, fairly unrelated numbers
-            def numgen():
-                for val in itertools.permutations(
-                        '123456789', 3):
-                    yield float(''.join(val))
-            num = numgen()
-    
-            arr = np.zeros((size, size))
-            for i in range(size):
-                for j in range(size):
-                    arr[i][j] = next(num)
-            return arr
-
-        M0 = makearr(size)
+        # Create a known random state to generate numbers from
+        # these numbers will then be uncorrelated but deterministic
+        rs = np.random.RandomState(1234)
+        M0 = rs.randn(size, size)
         M1 = self.f(M0)
         assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size),
                         atol=_ATOL)
