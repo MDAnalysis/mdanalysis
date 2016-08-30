@@ -378,7 +378,7 @@ class _SuperimpositionMatrix(object):
         T = t.translation_matrix(np.array([0.2, 0.2, 0.2])-0.5)
         M = t.concatenate_matrices(T, R, S)
         v1 = np.dot(M, v0)
-        v0[:3] += np.random.normal(0.0, 1e-9, 300).reshape(3, -1)
+        v0[:3] += np.sin(np.linspace(0.0, 1e-9, 300)).reshape(3, -1)
         M = self.f(v0, v1, scaling=True)
         assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
@@ -640,7 +640,6 @@ class _InverseMatrix(object):
                     arr[i][j] = next(num)
             return arr
 
-        #M0 = np.random.rand(size, size)
         M0 = makearr(size)
         M1 = self.f(M0)
         assert_allclose(M1, np.linalg.inv(M0), err_msg=str(size),
@@ -699,19 +698,19 @@ class _UnitVector(object):
         assert_allclose(v1, v0 / np.linalg.norm(v0), atol=_ATOL)
 
     def test_unit_vector_2(self):
-        v0 = np.random.rand(5, 4, 3)
+        v0 = np.sin(np.linspace(0, 10, 5 * 4 * 3)).reshape(5, 4, 3)
         v1 = self.f(v0, axis=-1)
         v2 = v0 / np.expand_dims(np.sqrt(np.sum(v0*v0, axis=2)), 2)
         assert_allclose(v1, v2, atol=_ATOL)
 
     def test_unit_vector_3(self):
-        v0 = np.random.rand(5, 4, 3)
+        v0 = np.sin(np.linspace(0, 10, 5 * 4 * 3)).reshape(5, 4, 3)
         v1 = self.f(v0, axis=1)
         v2 = v0 / np.expand_dims(np.sqrt(np.sum(v0*v0, axis=1)), 1)
         assert_allclose(v1, v2, atol=_ATOL)
 
     def test_unit_vector_4(self):
-        v0 = np.random.rand(5, 4, 3)
+        v0 = np.sin(np.linspace(0, 10, 5 * 4 * 3)).reshape(5, 4, 3)
         v1 = np.empty((5, 4, 3), dtype=np.float64)
         v2 = v0 / np.expand_dims(np.sqrt(np.sum(v0*v0, axis=1)), 1)
         self.f(v0, axis=1, out=v1)
@@ -737,17 +736,17 @@ class _VectorNorm(object):
         assert_allclose(n, np.linalg.norm(v), atol=_ATOL)
 
     def test_vector_norm_2(self):
-        v = np.random.rand(6, 5, 3)
+        v = np.sin(np.linspace(0, 10, 6 * 5 * 3)).reshape(6, 5, 3)
         n = self.f(v, axis=-1)
         assert_allclose(n, np.sqrt(np.sum(v*v, axis=2)), atol=_ATOL)
 
     def test_vector_norm_3(self):
-        v = np.random.rand(6, 5, 3)
+        v = np.sin(np.linspace(0, 10, 6 * 5 * 3)).reshape(6, 5, 3)
         n = self.f(v, axis=1)
         assert_allclose(n, np.sqrt(np.sum(v*v, axis=1)), atol=_ATOL)
 
     def test_vector_norm_4(self):
-        v = np.random.rand(5, 4, 3)
+        v = np.sin(np.linspace(0, 10, 5 * 4 * 3)).reshape(5, 4, 3)
         n = np.empty((5, 3), dtype=np.float64)
         self.f(v, axis=1, out=n)
         assert_allclose(n, np.sqrt(np.sum(v*v, axis=1)), atol=_ATOL)
