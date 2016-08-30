@@ -173,6 +173,7 @@ class AnalysisBase(object):
         """Perform the calculation"""
         logger.info("Starting preparation")
         self._prepare()
+        self._pm.start()
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
             self._frame_index = i

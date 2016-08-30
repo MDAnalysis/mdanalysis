@@ -416,6 +416,9 @@ class ProgressMeter(object):
         self.estimate_time_to_completion = None
         self.etc = None
 
+    def start(self):
+        self._start_time = datetime.datetime.now()
+
     def update(self, step, **kwargs):
         """Update the state of the ProgressMeter.
 
