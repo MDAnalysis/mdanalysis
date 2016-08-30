@@ -15,13 +15,19 @@
 #
 
 import os
-import glob
 import MDAnalysisTests
 
 class TestRelativeImports(object):
-    '''Relative imports are banned in unit testing modules (Issue #189), so run tests to enforce this policy.'''
+    """Relative imports are banned in unit testing modules (Issue #189), so run tests to enforce this policy."""
 
     path_to_testing_modules = MDAnalysisTests.__path__[0]
+    # Exclusion path relative to MDAnalysisTests
+    exclusions = ['/plugins']
+
+    @classmethod
+    def is_excluded(cls, path):
+        leaf = path[len(cls.path_to_testing_modules):]
+        return leaf in cls.exclusions
 
     @staticmethod
     def _run_test_relative_import(testing_module):
@@ -34,6 +40,11 @@ class TestRelativeImports(object):
                         "module {testing_module} at linenumber {lineno}.".format(**vars()))
 
     def test_relative_imports(self):
-        list_testing_modules = glob.glob(os.path.join(self.path_to_testing_modules, '*.py'))
-        for testing_module in list_testing_modules:
-            yield self._run_test_relative_import, testing_module
+        for dirpath, dirnames, files in os.walk(self.path_to_testing_modules):
+            if self.is_excluded(dirpath):
+                continue
+            for f in filter(lambda x: x.endswith('.py'), files):
+                fpath = os.path.join(dirpath, f)
+                if self.is_excluded(fpath):
+                    continue
+                yield self._run_test_relative_import, fpath

@@ -16,6 +16,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 ??/??/16 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
 
   * 0.15.1
+    - test_imports now recursively checks subdirectories (Issue #964).
     - test_imports now always uses the correct source directory (Issue #939).
     - Added a plugin to list the non-closed file handle (Issue #853, PR #874).
       The plugin can be disabled with --no-open-files.
