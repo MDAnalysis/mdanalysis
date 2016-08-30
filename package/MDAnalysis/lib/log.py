@@ -270,6 +270,93 @@ def _set_verbose(verbose, quiet, default=True,
         return verbose
 
 
+class _ProgressBar(object):
+    def __init__(self, pm):
+        self._pm = pm
+        self.default_length = 20
+
+    def __format__(self, format_spec=None):
+        split_spec = format_spec.split('-')
+        if len(split_spec) == 2:
+            full_symbol, empty_symbol = split_spec[0]
+            length = int(split_spec[1])
+        elif len(split_spec) == 1:
+            try:
+                length = int(format_spec)
+            except ValueError:
+                length = self.default_length
+            full_symbol = '#'
+            empty_symbol = '='
+        else:
+            raise ValueError()
+
+        n_full = int(length * self._pm.percentage / 100)
+        n_empty = int(length - n_full)
+        return full_symbol * n_full + empty_symbol * n_empty
+
+
+class _TimeDelta(datetime.timedelta):
+    _fmt_map = {
+        'h': 'remain_hours',
+        'm': 'remain_minutes',
+        's': 'remain_seconds',
+        'D': 'in_days',
+        'H': 'in_hours',
+        'M': 'in_minutes',
+        'S': 'in_seconds',
+    }
+
+    def _sub_format(self, format_spec, i):
+        if format_spec[i + 1] == '%':
+            return i + 2, '%'
+        key = format_spec[i + 1]
+        i += 2
+        return i, str(getattr(self, self._fmt_map[key]))
+
+    def __format__(self, format_spec):
+        if not format_spec:
+            return self.__str__()
+
+        formatted = ''
+        i = 0
+        while i < len(format_spec):
+            if format_spec[i] != '%':
+                formatted += format_spec[i]
+                i += 1
+            else:
+                i, chunck = self._sub_format(format_spec, i)
+                formatted += chunck
+        return formatted
+
+    @property
+    def in_days(self):
+        return int(self.total_seconds() // (3600 * 24))
+
+    @property
+    def in_hours(self):
+        return int(self.total_seconds() // 3600)
+
+    @property
+    def in_minutes(self):
+        return int(self.total_seconds() // 60)
+
+    @property
+    def in_seconds(self):
+        return int(self.total_seconds())
+
+    @property
+    def remain_hours(self):
+        return int((self.total_seconds() % (3600 * 24)) // 3600)
+
+    @property
+    def remain_minutes(self):
+        return int((self.total_seconds() % 3600) // 60)
+
+    @property
+    def remain_seconds(self):
+        return int(self.total_seconds() - self.in_minutes * 60)
+
+
 class ProgressMeter(object):
     r"""Simple progress meter
 
@@ -405,6 +492,8 @@ class ProgressMeter(object):
         self.format = format
         self.step = 0
         self.percentage = 0.0
+        self.progress = _ProgressBar(self)
+
         assert numsteps > 0, "numsteps step must be >0"
         assert interval > 0, "interval step must be >0"
 
@@ -436,15 +525,16 @@ class ProgressMeter(object):
         self._last_time = datetime.datetime.now()
         if self._start_time is None:
             self._start_time = self._last_time
-        self.elapsed = self._last_time - self._start_time
-        self.time_per_iteration = datetime.timedelta(
+        self.elapsed = _TimeDelta(
+            seconds=(self._last_time - self._start_time).total_seconds())
+        self.time_per_iteration = _TimeDelta(
             seconds=self.elapsed.total_seconds() / self.step)
         remaining = self.numsteps - self.step
         self.estimate_time_to_completion = (self._last_time
                                             + remaining
                                             * self.time_per_iteration)
         self.etc = self.estimate_time_to_completion
-       
+
     def echo(self, step, **kwargs):
         """Print the state to stderr, but only every *interval* steps.
 
