@@ -49,7 +49,7 @@ class TopologyAttr(object):
         the name used for the attribute when attached to a ``Topology`` object
     top : Topology
         handle for the Topology object TopologyAttr is associated with
-        
+
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
@@ -119,7 +119,7 @@ class Atomindices(TopologyAttr):
 
     If the group is a ResidueGroup or SegmentGroup, then this gives the indices
     of each atom represented in the group in a 1-D array, in the order of the
-    elements in that group. 
+    elements in that group.
 
     """
     attrname = 'indices'
@@ -155,7 +155,7 @@ class Resindices(TopologyAttr):
 
     If the group is a ResidueGroup or SegmentGroup, then this gives the
     resindices of each residue represented in the group in a 1-D array, in the
-    order of the elements in that group. 
+    order of the elements in that group.
 
     """
     attrname = 'resindices'
@@ -196,10 +196,10 @@ class Segindices(TopologyAttr):
     the group. This unambiguously determines each atom's segment membership.
     It is not possible to set these, since membership in a segment is an
     attribute of each atom's residue.
-    
+
     If the group is a ResidueGroup or SegmentGroup, then this gives the
     segindices of each segment represented in the group in a 1-D array, in the
-    order of the elements in that group. 
+    order of the elements in that group.
 
     """
     attrname = 'segindices'
@@ -393,10 +393,10 @@ class Atomnames(AtomAttr):
 
     def chi1_selection(residue):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
-        
+
         Returns
         -------
-        AtomGroup 
+        AtomGroup
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
@@ -537,7 +537,7 @@ class Masses(AtomAttr):
 
     def total_mass(group):
         """Total mass of the Group.
-        
+
         """
         return group.masses.sum()
 
@@ -748,17 +748,13 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-
-        if pbc:
-            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=True))
-        else:
-            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=False))
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
-        indices = np.argsort(eigenval)
+        indices = np.argsort(e_val)
         # Return transposed in more logical form. See Issue 33.
-        return eigenvec[:, indices].T
+        return e_vec[:, indices].T
 
     transplants[GroupBase].append(
         ('principal_axes', principal_axes))
@@ -823,7 +819,7 @@ class Charges(AtomAttr):
 
     def total_charge(group):
         """Total charge of the Group.
-        
+
         """
         return group.charges.sum()
 
@@ -1113,7 +1109,7 @@ class Segids(SegmentAttr):
             return segments[0]
         else:
             # XXX: but inconsistent (see residues and Issue 47)
-            return segment 
+            return segment
 
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
