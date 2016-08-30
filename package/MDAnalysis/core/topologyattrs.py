@@ -30,7 +30,6 @@ from ..lib.util import cached, convert_aa_code
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
-from . import flags
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 
