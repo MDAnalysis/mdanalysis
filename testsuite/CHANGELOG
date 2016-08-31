@@ -17,6 +17,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
   * 0.15.1
     - test_imports now recursively checks subdirectories (Issue #964).
+    - removed usage of random numbers from tests (Issue #958)
     - test_imports now always uses the correct source directory (Issue #939).
     - Added a plugin to list the non-closed file handle (Issue #853, PR #874).
       The plugin can be disabled with --no-open-files.
@@ -26,7 +27,6 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - install external packages on Travis (SETUP == full: HOLE, clustalw)
       to test additional analysis code (Issue #898)
     - add tests for new auxiliary module
-    - removed usage of random numbers from tests (Issue #958)
 
 05/15/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
