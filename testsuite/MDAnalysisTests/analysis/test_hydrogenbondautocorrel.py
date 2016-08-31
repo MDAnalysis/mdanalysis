@@ -24,7 +24,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
-class TestHydrogenBondAutocorrel(object):
+class NotTestHydrogenBondAutocorrel(object):
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.H = u.atoms.select_atoms('name Hn')
