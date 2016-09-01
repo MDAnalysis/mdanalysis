@@ -63,8 +63,10 @@ def make_downshift_arrays(upshift):
     borders = [None] + list(np.nonzero(np.diff(upshift_sorted))[0] + 1) + [None]
 
     # returns an array of arrays
-    return np.array([order[x:y]
-                     for x, y in zip(borders[:-1], borders[1:])],
+    # Add None to end of array to force it to be of type Object
+    # Without this, a rectangular array gets squashed into a single array
+    return np.array([np.array(order[x:y], copy=True, dtype=np.int)
+                     for x, y in zip(borders[:-1], borders[1:])] + [None],
                     dtype=object)
 
 class TransTable(object):
