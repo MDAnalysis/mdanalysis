@@ -25,6 +25,10 @@ class DummyGroup(object):
     def __len__(self):
         return len(self._ix)
 
+    @property
+    def ix(self):
+        return self._ix
+
 
 class TopologyAttrMixin(object):
     """Mixin to test the common elements to all TopologyAttrs.
@@ -164,11 +168,11 @@ class TestResids(TestResidueAttr):
 
         """
         # set with array
-        self.attr.set_atoms([3, 7], np.array([11, 20]))
-        assert_array_equal(self.attr.get_atoms([3, 7]), np.array([11, 20]))
+        self.attr.set_atoms(DummyGroup([3, 7]), np.array([11, 20]))
+        assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])), np.array([11, 20]))
 
         # set to resid that no residue has (should raise exception)
-        assert_raises(NoDataError, self.attr.set_atoms, [3, 7], np.array([11, 21]))
+        assert_raises(NoDataError, self.attr.set_atoms, DummyGroup([3, 7]), np.array([11, 21]))
 
     def test_set_residues(self):
         self.attr.set_residues(DummyGroup([3, 0, 1]),

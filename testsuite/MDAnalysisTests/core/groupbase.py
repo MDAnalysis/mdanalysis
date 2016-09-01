@@ -14,10 +14,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
+import string
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core import groups
+from MDAnalysis.core.topologyattrs import Resnames, Resids, Segids
 
 def make_Universe():
     """Make a dummy reference Universe"""
@@ -59,6 +61,14 @@ def make_topology():
     25 residue
     5 segments
     """
+    # resnames are AAA BBB CCC etc
+    resids = Resids(np.arange(25) + 1)  # 1 based
+    resnames = Resnames(np.array([a*3 for a in string.ascii_uppercase[:25]]))
+    # segids are SegA SegB etc
+    segids = Segids(np.array(['Seg{}'.format(a) for a in string.ascii_uppercase[:5]]))
+
     return Topology(125, 25, 5,
                     atom_resindex=np.repeat(np.arange(25), 5),
-                    residue_segindex=np.repeat(np.arange(5), 5))
+                    residue_segindex=np.repeat(np.arange(5), 5),
+                    attrs=[resids, resnames, segids],
+    )

@@ -10,7 +10,7 @@ from numpy.testing import (
 )
 import numpy as np
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.core.groupbase import make_Universe
 
 from MDAnalysis.core.topology import Topology, TransTable
 
@@ -160,24 +160,32 @@ class TestTransTable(object):
         assert_equal(len(tt.segments2residues_1d(1)), 1)
 
 
-class TestResidueMoves(object):
+class TestLevelMoves(object):
     def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+        self.u = make_Universe()
 
     def tearDown(self):
         del self.u
 
-    def move_atom(self):
+    def test_move_atom(self):
+        # move an atom between residues based on resid
+        # resid must already exist
         at = self.u.atoms[0]
         
         assert_equal(at.resid, 1)
-        assert_equal(at.resname, 'MET')
-        assert_equal(len(self.u.residues[0]), 19)
-        assert_equal(len(self.u.residues[4]), 19)
+        assert_equal(at.resname, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
 
         at.resid = 5
 
         assert_equal(at.resid, 5)
-        assert_equal(at.resname, 'LEU')
-        assert_equal(len(self.u.residues[0]), 18)
-        assert_equal(len(self.u.residues[4]), 20)
+        assert_equal(at.resname, 'EEE')
+        assert_equal(len(self.u.residues[0].atoms), 4)
+        assert_equal(len(self.u.residues[4].atoms), 6)
+
+    def test_move_segment(self):
+        res = self.u.residues[0]
+
+        assert_equal(res.segid, 'SegA')
+
