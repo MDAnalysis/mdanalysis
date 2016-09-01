@@ -20,6 +20,9 @@ _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
                 "FIO_SEEK_END": SEEK_END}
 
+from libc.stdint cimport uintptr_t
+from libc.stdlib cimport free
+
 cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
@@ -65,8 +68,6 @@ cdef class DCDFile:
     cdef float *fixedcoords
     cdef int reverse
     cdef int charmm
-    cdef char *remarks
-    cdef int len_remarks
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -101,9 +102,7 @@ cdef class DCDFile:
 
     def close(self):
         if self.is_open:
-            print("closing", self.freeind == NULL, self.fixedcoords == NULL)
             if self.freeind != NULL:
-                print("freeing memory")
                 close_dcd_read(self.freeind, self.fixedcoords);
 
             ok = fio_fclose(self.fp)
@@ -116,11 +115,18 @@ cdef class DCDFile:
         if not self.is_open:
             raise RuntimeError("No file open")
 
+        cdef char *remarks
+        cdef int len_remarks
+
+        print("reading", <uintptr_t>self.freeind, self.fixedcoords == NULL)
         ok = read_dcdheader(self.fp, &self.natoms, &self.nsets, &self.istart,
                             &self.nsavc, &self.delta, &self.nfixed, &self.freeind,
                             &self.fixedcoords, &self.reverse,
-                            &self.charmm, &self.remarks, &self.len_remarks)
+                            &self.charmm, &remarks, &len_remarks)
+        print("reading", <uintptr_t>self.freeind, self.fixedcoords == NULL)
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+        if remarks != NULL:
+            free(remarks)
 
         print(self.natoms)
