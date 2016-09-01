@@ -48,6 +48,7 @@ cdef extern from 'include/readdcd.h':
                        int *nsavc, double *delta, int *nfixed, int **freeind,
                        float **fixedcoords, int *reverse, int *charmm,
                        char **remarks, int *len_remarks)
+    void close_dcd_read(int *freeind, float *fixedcoords);
 
 
 cdef class DCDFile:
@@ -100,6 +101,11 @@ cdef class DCDFile:
 
     def close(self):
         if self.is_open:
+            print("closing", self.freeind == NULL, self.fixedcoords == NULL)
+            if self.freeind != NULL:
+                print("freeing memory")
+                close_dcd_read(self.freeind, self.fixedcoords);
+
             ok = fio_fclose(self.fp)
             self.is_open = False
             if ok != 0:
