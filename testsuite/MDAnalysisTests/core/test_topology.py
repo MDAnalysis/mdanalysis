@@ -167,11 +167,12 @@ class TestLevelMoves(object):
     def tearDown(self):
         del self.u
 
-    def test_move_atom(self):
+    def test_move_atom_via_resid(self):
         # move an atom between residues based on resid
-        # resid must already exist
+        # residue must already exist!
         at = self.u.atoms[0]
         
+        assert_equal(at.resindex, 0)
         assert_equal(at.resid, 1)
         assert_equal(at.resname, 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
@@ -179,13 +180,40 @@ class TestLevelMoves(object):
 
         at.resid = 5
 
+        assert_equal(at.resindex, 4)
         assert_equal(at.resid, 5)
         assert_equal(at.resname, 'EEE')
         assert_equal(len(self.u.residues[0].atoms), 4)
         assert_equal(len(self.u.residues[4].atoms), 6)
 
-    def test_move_segment(self):
+    def test_move_atom_via_resindex(self):
+        # move an atom between residues based on resindex
+        # residue must already exist!
+        at = self.u.atoms[0]
+        
+        assert_equal(at.resindex, 0)
+        assert_equal(at.resname, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
+
+        at.resindex = 4
+
+        assert_equal(at.resindex, 4)
+        assert_equal(at.resname, 'EEE')
+        assert_equal(len(self.u.residues[0].atoms), 4)
+        assert_equal(len(self.u.residues[4].atoms), 6)
+
+    def test_move_residue_via_segid(self):
         res = self.u.residues[0]
 
         assert_equal(res.segid, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+
+        res.segid = 'SegB'
+
+        assert_equal(res.segid, 'SegB')
+        assert_equal(len(self.u.segments[0].residues), 4)
+        assert_equal(len(self.u.segments[1].residues), 6)
+
 
