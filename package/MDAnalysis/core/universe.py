@@ -7,6 +7,8 @@ import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
 from . import groups
+from .groups import (GroupBase, Atom, Residue, Segment,
+                     AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -123,6 +125,8 @@ class Universe(object):
             return
 
         coordinatefile = args[1:]
+        if not coordinatefile:
+            coordinatefile = None
 
         # if we're given a Topology object, we don't need to parse anything
         if isinstance(args[0], Topology):
@@ -151,8 +155,6 @@ class Universe(object):
                     if (fmt in MDAnalysis.coordinates._READERS
                         and fmt in MDAnalysis.topology._PARSERS):
                         coordinatefile = self.filename
-                if len(coordinatefile) == 0:
-                    coordinatefile = None
 
             # build the topology (or at least a list of atoms)
             try:  # Try and check if the topology format is a TopologyReader
@@ -182,21 +184,25 @@ class Universe(object):
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
-        self._classes = groups.make_classes()
+        self._class_bases, self._classes = groups.make_classes()
 
         # Put Group level stuff from topology into class
         for attr in self._topology.attrs:
             self._process_attr(attr)
 
-        # Generate atoms, residues and segments
-        self.atoms = self._classes['atomgroup'](
-                np.arange(self._topology.n_atoms), self)
+        # Generate atoms, residues and segments.
+        # These are the first such groups generated for this universe, so
+        #  there are no cached merged classes yet. Otherwise those could be
+        #  used directly to get a (very) small speedup. (Only really pays off
+        #  the readability loss if instantiating millions of AtomGroups at
+        #  once.)
+        self.atoms = AtomGroup(np.arange(self._topology.n_atoms), self)
 
-        self.residues = self._classes['residuegroup'](
-                np.arange( self._topology.n_residues), self)
+        self.residues = ResidueGroup(
+                np.arange(self._topology.n_residues), self)
 
-        self.segments = self._classes['segmentgroup'](np.arange(
-            self._topology.n_segments), self)
+        self.segments = SegmentGroup(
+                np.arange(self._topology.n_segments), self)
 
         # Update Universe namespace with segids
         for seg in self.segments:
@@ -386,19 +392,19 @@ class Universe(object):
                                  n=n_dict[attr.per_object],
                                  m=len(attr)))
 
-        self._classes['group']._add_prop(attr)
+        self._class_bases[GroupBase]._add_prop(attr)
 
-        for level in attr.target_levels:
+        for cls in attr.target_classes:
             try:
-                self._classes[level]._add_prop(attr)
+                self._class_bases[cls]._add_prop(attr)
             except (KeyError, AttributeError):
                 pass
 
-        for dest in ['atom', 'residue', 'segment', 'group',
-                     'atomgroup', 'residuegroup', 'segmentgroup']:
+        for cls in (Atom, Residue, Segment, GroupBase,
+                     AtomGroup, ResidueGroup, SegmentGroup):
             try:
-                for funcname, meth in attr.transplants[dest]:
-                    setattr(self._classes[dest], funcname, meth)
+                for funcname, meth in attr.transplants[cls]:
+                    setattr(self._class_bases[cls], funcname, meth)
             except AttributeError:
                 # not every Attribute will have a transplant dict
                 pass
@@ -462,9 +468,8 @@ class Universe(object):
                       for a, val in f.items() if not val))
 
         # All the unique values in f are the fragments
-        AG = self._classes['atomgroup']
-        frags = tuple([AG(np.array([at.index for at in ag]), self)
-                       for ag in set(f.values())])
+        frags = tuple([AtomGroup(np.array([at.index for at in ag]), self)
+                        for ag in set(f.values())])
 
         fragdict = {}
         for f in frags:
@@ -665,12 +670,8 @@ def Merge(*args):
                    atom_resindex=residx,
                    residue_segindex=segidx)
 
-    # Create blank Universe and put topology in it
-    u = Universe()
-    u._topology = top
-
-    # Generate universe and populate namespace
-    u._generate_from_topology()
+    # Create blank Universe only from topology
+    u = Universe(top)
 
     # Take one frame of coordinates from combined atomgroups
     coords = np.vstack([a.positions for a in args])
