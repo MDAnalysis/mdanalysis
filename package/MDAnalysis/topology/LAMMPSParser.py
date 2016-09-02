@@ -256,8 +256,12 @@ class DATAParser(TopologyReader):
         """Strip coordinate info into np array"""
         for line in datalines:
             line = line.split()
+            n = len(line)
             idx = int(line[0]) - 1
-            x, y, z = map(float, line[-3:])
+            if n in (7, 10):
+                x, y, z = map(float, line[4:7])
+            elif n in (6, 9):
+                x, y, z = map(float, line[3:6])
             pos[idx] = x, y, z
 
     def _parse_vel(self, datalines, vel):
