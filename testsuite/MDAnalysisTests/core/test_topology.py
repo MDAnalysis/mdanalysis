@@ -243,17 +243,66 @@ class TestLevelMoves(object):
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 7)
 
+    def test_move_residue_via_segindex(self):
+        res = self.u.residues[0]
+
+        assert_equal(res.segindex, 0)
+        assert_equal(res.segid, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+
+        res.segindex = 1
+
+        assert_equal(res.segindex, 1)
+        assert_equal(res.segid, 'SegB')
+        assert_equal(len(self.u.segments[0].residues), 4)
+        assert_equal(len(self.u.segments[1].residues), 6)
+
     def test_move_residue_via_segid(self):
         res = self.u.residues[0]
 
+        assert_equal(res.segindex, 0)
         assert_equal(res.segid, 'SegA')
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
 
         res.segid = 'SegB'
 
+        assert_equal(res.segindex, 1)
         assert_equal(res.segid, 'SegB')
         assert_equal(len(self.u.segments[0].residues), 4)
         assert_equal(len(self.u.segments[1].residues), 6)
+
+    def test_move_residuegroup_via_segindex(self):
+        rg = self.u.residues[[1, 3]]
+
+        assert_equal(rg.segindices, 0)
+        assert_equal(rg.segids, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+
+        # TODO: Provide array ie [1, 2]
+        rg.segindices = 1
+
+        assert_equal(rg.segindices, 1)
+        assert_equal(rg.segids, 'SegB')
+        assert_equal(len(self.u.segments[0].residues), 3)
+        assert_equal(len(self.u.segments[1].residues), 7)
+
+
+    def test_move_residuegroup_via_segid(self):
+        rg = self.u.residues[[1, 3]]
+
+        assert_equal(rg.segindices, 0)
+        assert_equal(rg.segids, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+
+        rg.segids = 'SegB'
+
+        assert_equal(rg.segindices, 1)
+        assert_equal(rg.segids, 'SegB')
+        assert_equal(len(self.u.segments[0].residues), 3)
+        assert_equal(len(self.u.segments[1].residues), 7)
 
 

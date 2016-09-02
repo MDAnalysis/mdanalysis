@@ -217,6 +217,9 @@ class Segindices(TopologyAttr):
     def get_residues(self, rg):
         return self.top.tt.residues2segments(rg._ix)
 
+    def set_residues(self, rg, values):
+        self.top.tt.move_residue(rg.ix, values)
+
     def get_segments(self, sg):
         return sg._ix
 
@@ -891,16 +894,16 @@ class Resids(ResidueAttr):
     singular = 'resid'
     target_levels = ['atom', 'residue']
 
-    def set_atoms(self, ag, newval):
+    def set_atoms(self, ag, values):
         # setting via resids provides a nicer way
         # rather than dealing with resindices
         # * 1 find index that corresponds to this resid
         try:
-            dest = np.where(self.top.resids.values == newval)[0]
+            dest = np.where(self.top.resids.values == values)[0]
         except IndexError:  # if where finds nothing
             raise NotImplementedError("That resid doesn't exist!")
         # * 2 update the transtable
-        ag.resindices = dest
+        # can't set resindices as atom.resindex!
         self.top.tt.move_atom(ag.ix, dest)
 
 
@@ -1028,6 +1031,14 @@ class Segids(SegmentAttr):
 
     transplants['segmentgroup'].append(
         ('_get_named_segment', _get_named_segment))
+
+    def set_residues(self, rg, values):
+        # convienience method for moving residues between segments
+        try:
+            dest = np.where(self.top.segids.values == values)[0]
+        except IndexError:
+            raise NotImplementedError("That segid doesn't exist!")
+        self.top.tt.move_residue(rg.ix, dest)
 
 
 #TODO: update docs to property doc
