@@ -203,6 +203,46 @@ class TestLevelMoves(object):
         assert_equal(len(self.u.residues[0].atoms), 4)
         assert_equal(len(self.u.residues[4].atoms), 6)
 
+    def test_move_atomgroup_via_resid(self):
+        # move some atoms between residues based on resid
+        # residue must already exist!
+        ag = self.u.atoms[[1, 3]]
+        
+        assert_equal(ag.resindices, 0)
+        assert_equal(ag.resids, 1)
+        assert_equal(ag.resnames, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
+
+        # TODO!
+        # Should also be able to supply an array of len(ag)
+        # to set atoms to different residues each
+        # ie ag.resids = [4, 5]
+        ag.resids = 5
+
+        assert_equal(ag.resindices, 4)
+        assert_equal(ag.resids, 5)
+        assert_equal(ag.resnames, 'EEE')
+        assert_equal(len(self.u.residues[0].atoms), 3)
+        assert_equal(len(self.u.residues[4].atoms), 7)
+
+    def test_move_atomgroup_via_resindex(self):
+        # move some atoms between residues based on resindex
+        # residue must already exist!
+        ag = self.u.atoms[[1, 3]]
+        
+        assert_equal(ag.resindices, 0)
+        assert_equal(ag.resnames, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
+
+        ag.resindices = 4
+
+        assert_equal(ag.resindices, 4)
+        assert_equal(ag.resnames, 'EEE')
+        assert_equal(len(self.u.residues[0].atoms), 3)
+        assert_equal(len(self.u.residues[4].atoms), 7)
+
     def test_move_residue_via_segid(self):
         res = self.u.residues[0]
 
