@@ -4,7 +4,8 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_almost_equal, assert_raises, assert_, assert_array_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
+                           assert_, assert_array_almost_equal)
 from unittest import TestCase
 
 from MDAnalysisTests import tempdir
@@ -12,7 +13,7 @@ from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
 from MDAnalysis.tests.datafiles import LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
-from MDAnalysisTests import tempdir
+
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
