@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -79,19 +79,17 @@ class InterRDF(AnalysisBase):
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
-                 start=None, stop=None, step=None):
+                 **kwargs):
+        super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
         self.g2 = g2
         self.u = g1.universe
 
-        self._setup_frames(self.u.trajectory,
-                           start=start,
-                           stop=stop,
-                           step=step)
+        self.rdf_settings = {'bins': nbins,
+                             'range': range}
+        self._exclusion_block = exclusion_block
 
-        self.rdf_settings = {'bins':nbins,
-                             'range':range}
-
+    def _prepare(self):
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
@@ -107,12 +105,11 @@ class InterRDF(AnalysisBase):
         self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
         # If provided exclusions, create a mask of _result which
         # lets us take these out
-        if exclusion_block is not None:
-            self._exclusion_block = exclusion_block
-            self._exclusion_mask = blocks_of(self._result, *exclusion_block)
-            self._maxrange = range[1] + 1.0
+        if self._exclusion_block is not None:
+            self._exclusion_mask = blocks_of(self._result,
+                                             *self._exclusion_block)
+            self._maxrange = self.rdf_settings['range'][1] + 1.0
         else:
-            self._exclusion_block = None
             self._exclusion_mask = None
 
     def _single_frame(self):
@@ -144,9 +141,9 @@ class InterRDF(AnalysisBase):
         vol *= 4/3.0 * np.pi
 
         # Average number density
-        box_vol = self.volume / self.nframes
+        box_vol = self.volume / self.n_frames
         density = N / box_vol
 
-        rdf = self.count / (density * vol * self.nframes)
+        rdf = self.count / (density * vol * self.n_frames)
 
         self.rdf = rdf

@@ -235,17 +235,13 @@ class _GromacsReader(TestCase):
                             self.universe.atoms.positions, self.prec)
 
     @dec.slow
-    def test_EOFraisesIOErrorEIO(self):
+    def test_EOFraisesStopIteration(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
             self.universe.trajectory.next()
 
-        assert_raises(IOError, go_beyond_EOF)
-        try:
-            go_beyond_EOF()
-        except IOError as err:
-            assert_equal(err.errno, errno.EIO,
-                         "IOError produces wrong error code")
+        assert_raises(StopIteration, go_beyond_EOF)
+
 
 
 class TestXTCReader(_GromacsReader):

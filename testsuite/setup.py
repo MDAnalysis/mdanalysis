@@ -200,6 +200,7 @@ For details see the report for `Issue 87`_.
                          'data/dlpoly/HISTORY*',
                          'data/*.xml',
                          'data/coordinates/*',
+                         'data/*xvg',
                         ],
           },
           classifiers=CLASSIFIERS,
@@ -208,6 +209,7 @@ For details see the report for `Issue 87`_.
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'numpy>=1.5',
               'nose>=1.3.7',
+              'psutil>=4.0.2',
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

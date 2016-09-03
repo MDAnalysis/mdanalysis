@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -161,8 +161,9 @@ from .lib.log import start_logging, stop_logging
 logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
-# DeprecationWarnings are loud by default
-warnings.simplefilter('once', DeprecationWarning)
+# only MDAnalysis DeprecationWarnings are loud by default
+warnings.filterwarnings(action='once', category=DeprecationWarning,
+                        module='MDAnalysis')
 
 
 from . import units

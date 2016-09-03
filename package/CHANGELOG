@@ -13,14 +13,49 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16
+??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
+         euhruska, orbeckst, rbrtdlg, jbarnoud
+        
+  * 0.15.1
 
+Enhancements
 
-  * 0.15.1 kain88-de
+  * All classes derived from 'AnalysisBase' now display a ProgressMeter
+  with 'quiet=False'
+  * The 'run' method from all 'AnalysisBase' derived classes return the
+  class itself.
+  * Added boolean flag at lib.distances.USED_OPENMP to reveal if
+    OpenMP was used in compilation (Issue #883)
+  * Added Principal Component Analysis module for linear dimensionality
+    reduction.
+  * Added Auxiliary module for reading additional timeseries data alongside
+    trajectories (Issue #785)
 
 Fixes
-
+  * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
+  * fix __iter__/next redundancy (Issue #869)
+  * SingleFrameReader now raises StopIteration instead of IOError on calling
+    next (Issue #869)
+  * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
+  * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
+  * fixed incompatibility with newer matplotlib in analysis.hole
+  * Fixed modules that improperly documented and/or used frame slicing
+    defaults (#914)
+  * Fixed same interRDF can be run twice (Issue #924)
+  * Support for TPR files produced by Gromacs-2016 (Issue #932)
+Changes
+  * Added protected variable _frame_index to to keep track of frame iteration
+    number in AnalysisBase
+  * Added new AlignTraj class for alignment that follows the new analysis API known
+    as Bauhaus style. (Issue #845)
+  * Added new diffusionmap module for dimension reduction that follows the
+    Bauhaus API. (Issue #857)
+  * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
+    40% speed up. (PR #930)
+
+Deprecations (Issue #599)
+  * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
@@ -63,7 +98,6 @@ Fixes
   * Fixed HistoryReader returning 1 based frame indices (Issue #851)
 
 Changes
-
   * Added zero_based indices for HBondsAnalysis. (Issue #807)
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of

@@ -22,18 +22,18 @@ A typical usage pattern is to iterate through a trajectory and analyze
 coordinates for every frame. In the following example the end-to-end distance
 of a protein and the radius of gyration of the backbone atoms are calculated::
 
-  import MDAnalysis
-  from MDAnalysis.tests.datafiles import PSF,DCD   # test trajectory
-  import numpy.linalg
-  u = MDAnalysis.Universe(PSF,DCD)                 # always start with a Universe
-  nterm = u.s4AKE.N[0]   # can access structure via segid (s4AKE) and atom name
-  cterm = u.s4AKE.C[-1]  # ... takes the last atom named 'C'
-  bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
-  for ts in u.trajectory:     # iterate through all frames
-    r = cterm.pos - nterm.pos # end-to-end vector from atom positions
-    d = numpy.linalg.norm(r)  # end-to-end distance
-    rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
-    print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
+    import MDAnalysis
+    from MDAnalysis.tests.datafiles import PSF,DCD  # test trajectory
+    import numpy.linalg
+    u = MDAnalysis.Universe(PSF,DCD)  # always start with a Universe
+    nterm = u.s4AKE.N[0]  # can access structure via segid (s4AKE) and atom name
+    cterm = u.s4AKE.C[-1]  # ... takes the last atom named 'C'
+    bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
+    for ts in u.trajectory:  # iterate through all frames
+        r = cterm.pos - nterm.pos  # end-to-end vector from atom positions
+        d = numpy.linalg.norm(r)   # end-to-end distance
+        rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
+        print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
 
 
 .. _NumPy:   http://numpy.scipy.org
@@ -56,12 +56,12 @@ from within the interpreter::
  from MDAnalysis import *
 
 or ::
- 
+
  import MDAnalysis
 
 The idea behind MDAnalysis is to get trajectory data into NumPy_
 :class:`numpy.ndarray` arrays, where it can then be easily manipulated using
-all the power in NumPy_ and SciPy_. 
+all the power in NumPy_ and SciPy_.
 
 MDAnalysis works well both in scripts and in interactive use. The developers
 very much recommend using MDAnalysis from within the IPython_ Python shell.  It
@@ -90,7 +90,7 @@ as :class:`MDAnalysis.Universe`)::
 For the remainder of this introduction we are using a short example trajectory
 that is provided with MDAnalysis (as part of the `MDAnalysis test suite`_). The
 trajectory is loaded with ::
- 
+
   >>> from MDAnalysis import Universe
   >>> from MDAnalysis.tests.datafiles import PSF,DCD
   >>> u = Universe(PSF, DCD)
@@ -169,7 +169,7 @@ Code snippets
 
 The source code distribution comes with a directory `examples`_ that
 contains a number of code snippets that show how to use certain
-aspects of MDAnalysis. 
+aspects of MDAnalysis.
 
 For instance, there is code that shows how to
 

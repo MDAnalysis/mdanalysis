@@ -162,14 +162,12 @@ class TestContacts(object):
     def _run_Contacts(self, **kwargs):
         acidic = self.universe.select_atoms(self.sel_acidic)
         basic = self.universe.select_atoms(self.sel_basic)
-        Contacts = contacts.Contacts(
+        return contacts.Contacts(
             self.universe,
             selection=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
-            **kwargs)
-        Contacts.run()
-        return Contacts
+            **kwargs).run()
 
     def test_startframe(self):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of

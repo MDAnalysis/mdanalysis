@@ -1,8 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning,
+# Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -18,8 +19,7 @@
 # Released under the  GNU Public Licence, v2
 
 
-"""
-Gromacs portable run input TPR format parser
+"""Gromacs portable run input TPR format parser
 ============================================
 
 The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a
@@ -51,10 +51,12 @@ approximate Gromacs release numbers are listed in the table
                              5.0.3,5.0.4, 5.0.5
 
    103        26             5.1                  yes
+
+   110        26             2016                 yes
    ========== ============== ==================== =====
 
-For further discussion and notes see `Issue 2`_. Also add a comment to
-`Issue 2`_ if a new or different TPR file format version should be
+For further discussion and notes see `Issue 2`_. Please *open a new issue* in
+the `Issue Tracker`_ when a new or different TPR file format version should be
 supported.
 
 Bonded interactions available in Gromacs are described in table 5.5 of the
@@ -78,7 +80,7 @@ Bonded interactions available in Gromacs are described in table 5.5 of the
 
 
 Classes
----------
+-------
 
 .. autoclass:: TPRParser
    :members:
@@ -121,9 +123,11 @@ has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 .. _Gromacs: http://www.gromacs.org
 .. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf
 .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
+.. _`Issue Tracker`: https://github.com/MDAnalysis/mdanalysis/issues
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
+
 """
 from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
@@ -142,8 +146,6 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 class TPRParser(TopologyReader):
     """Read topology information from a Gromacs_ TPR_ file.
 
-    .. SeeAlso:: :mod:`MDAnalysis.topology.TPR`
-
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
@@ -152,7 +154,9 @@ class TPRParser(TopologyReader):
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
-        :Returns: ``structure`` dict
+        Returns
+        -------
+        structure : dict
         """
         #ndo_int = U.ndo_int
         ndo_real = U.ndo_real

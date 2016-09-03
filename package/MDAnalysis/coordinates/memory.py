@@ -57,7 +57,7 @@ This two step process can also be done in one go:
     universe = Universe(PDB_small, DCD, in_memory=True)
 
 """
-
+import logging
 import errno
 import numpy as np
 
@@ -117,6 +117,9 @@ class MemoryReader(base.ProtoReader):
             where the shape is (frame, number of atoms,
             coordinates)
         """
+
+        super(MemoryReader, self).__init__()        
+
         self.set_array(np.asarray(coordinate_array), format)
         self.n_frames = self.coordinate_array.shape[self.format.find('f')]
         self.n_atoms = self.coordinate_array.shape[self.format.find('a')]
@@ -126,7 +129,8 @@ class MemoryReader(base.ProtoReader):
         self.ts.dt = dt
         if dimensions is not None:
             self.ts.dimensions = dimensions
-        # self.ts.frame = -1
+        self.ts.frame = -1
+        self.ts.time = -1
         self._read_next_timestep()
 
     def set_array(self, coordinate_array, format='afc'):
@@ -156,8 +160,9 @@ class MemoryReader(base.ProtoReader):
     def _reopen(self):
         """Reset iteration to first frame"""
         self.ts.frame = -1
+        self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, skip=1, format='afc'):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column format. If no selection is given, it will return a view of
         the underlying array, while a copy is returned otherwise.
@@ -175,6 +180,7 @@ class MemoryReader(base.ProtoReader):
             where the shape is (frame, number of atoms,
             coordinates)
         """
+
         array = self.get_array()
         if format == self.format:
             pass
@@ -197,7 +203,7 @@ class MemoryReader(base.ProtoReader):
         if stop_index == 0:
             stop_index = None
         basic_slice = ([slice(None)]*(f_index) +
-                       [slice(start, stop_index, skip)] +
+                       [slice(start, stop_index, step)] +
                        [slice(None)]*(2-f_index))
 
         # Return a view if either:

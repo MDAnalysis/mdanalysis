@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 from numpy.testing import raises
 
 import MDAnalysis as mda
@@ -12,6 +13,7 @@ from numpy.testing import assert_equal
 class MemoryReference(BaseReference):
     def __init__(self):
         super(MemoryReference, self).__init__()
+        
         self.topology = PSF
         self.trajectory = DCD
         self.universe = mda.Universe(PSF, DCD)
@@ -45,7 +47,6 @@ class MemoryReference(BaseReference):
         self.jump_to_frame.frame = 3
         self.jump_to_frame.time = self.jump_to_frame.frame*self.dt
 
-
     def reader(self, trajectory):
         return mda.Universe(self.topology,
                             trajectory, in_memory=True).trajectory
@@ -58,9 +59,9 @@ class MemoryReference(BaseReference):
 
 class TestMemoryReader(BaseReaderTest):
     def __init__(self):
+
         reference = MemoryReference()
-        self.ref = reference
-        self.reader = self.ref.reader(self.ref.trajectory)
+        super(TestMemoryReader, self).__init__(reference)
 
     def test_iteration(self):
         frames = 0
@@ -92,7 +93,7 @@ class TestMemoryReader(BaseReaderTest):
 
     def test_timeseries_skip10(self):
         # Check that timeseries skip works similar to numpy slicing
-        array1 = self.reader.timeseries(skip=10)
+        array1 = self.reader.timeseries(step=10)
         array2 = self.reader.timeseries()[:,::10,:]
         assert_equal(array1, array2)
 
@@ -104,7 +105,7 @@ class TestMemoryReader(BaseReaderTest):
         assert_equal(
             self.reader.timeseries(start=5,
                                    stop=15,
-                                   skip=2,
+                                   step=2,
                                    format='fac').base is self.reader.get_array(),
                      True)
 

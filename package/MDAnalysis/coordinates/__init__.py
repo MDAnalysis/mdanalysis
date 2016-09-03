@@ -65,6 +65,11 @@ the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
 :class:`~MDAnalysis.core.AtomGroup.Universe`).
 
+If additional simulation data is available, it may be added to and read 
+alongside a trajectory using 
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary`. See the 
+:ref:`Auxiliary API`.
+
 
 Writers
 -------
@@ -370,6 +375,8 @@ Attributes
       in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
+  ``aux``
+      namespace for the representative values of any added auxiliary data.
 
 
 Private attributes
@@ -420,12 +427,14 @@ The following methods must be implemented in a Reader class.
 
  ``__init__(filename, **kwargs)``
      open *filename*; other *kwargs* are processed as needed and the
-     Reader is free to ignore them. Typically, MDAnalysis supplies as
-     much information as possible to the Reader in `kwargs`; at the moment the
-     following data are supplied in keywords when a trajectory is loaded from
-     within :class:`MDAnalysis.Universe`:
+     Reader is free to ignore them. Typically, when MDAnalysis creates
+     a Reader from :class:`MDAnalysis.Universe` it supplies as much
+     information as possible in `kwargs`; at the moment the following
+     data are supplied:
 
-      - *n_atoms*: the number of atoms (known from the topology)
+      - *n_atoms*: the number of atoms from the supplied topology.  This is
+                   not required for all readers and can be ignored if not
+                   required.
 
  ``__iter__()``
      allow iteration from beginning to end::
@@ -547,6 +556,11 @@ Attributes
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
      frame number of the current time step (0-based)
+ ``aux_list``
+     list of the names of any added auxiliary data.
+ ``_auxs``
+     dictionary of the :class:`~MDAnalysis.auxiliary.base.AuxReader`
+     instances for any added auxiliary data.
 
 **Optional attributes**
 

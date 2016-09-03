@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -30,7 +30,7 @@ cite these references when using this module.).
 Typically, one selects a group of atoms (such as the C-alphas),
 calculates the RMSD and transformation matrix, and applys the
 transformation to the current frame of a trajectory to obtain the
-rotated structure. The :func:`alignto` and :func:`rms_fit_trj`
+rotated structure. The :func:`alignto` and :class:`AlignTraj`
 functions can be used to do this for individual frames and
 trajectories respectively.
 
@@ -121,11 +121,12 @@ This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).
 
 To **fit a whole trajectory** to a reference structure with the
-:func:`rms_fit_trj` function::
+:class:`AlignTraj` class::
 
    >>> ref = Universe(PSF, PDB_small)   # reference structure 1AKE
    >>> trj = Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
-   >>> rms_fit_trj(trj, ref, filename='rmsfit.dcd')
+   >>> align =  AlignTraj(trj, ref, filename='rmsfit.dcd')
+   >>> align.run()
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
@@ -133,10 +134,11 @@ fitting of structural homologs or wild type and mutant.
 
 If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
-function and then feed the resulting dictionary to :func:`rms_fit_trj`::
+function and then feed the resulting dictionary to :class:`AlignTraj`::
 
    >>> seldict = fasta2select('sequences.aln')
-   >>> rms_fit_trj(trj, ref, filename='rmsfit.dcd', select=seldict)
+   >>> align = AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict)
+   >>> align.run()
 
 (See the documentation of the functions for this advanced usage.)
 
@@ -145,13 +147,17 @@ Functions
 ---------
 
 .. autofunction:: alignto
-.. autofunction:: rms_fit_trj
+.. autoclass:: AlignTraj
 .. autofunction:: rotation_matrix
 
 .. versionchanged:: 0.10.0
    Function :func:`~MDAnalysis.analysis.rms.rmsd` was removed from
    this module and is now exclusively accessible as
    :func:`~MDAnalysis.analysis.rms.rmsd`.
+
+.. versionchanged:: 0.15.1
+   Function :func:`~MDAnalysis.analysis.align.rms_fit_trj` deprecated
+   in favor of AlignTraj class.
 
 Helper functions
 ----------------
@@ -160,6 +166,7 @@ The following functions are used by the other functions in this
 module. They are probably of more interest to developers than to
 normal users.
 
+.. autofunction:: _fit_to
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
 
@@ -168,14 +175,18 @@ normal users.
 import os.path
 from six.moves import range, zip, zip_longest
 import numpy as np
+from numpy.lib.utils import deprecate
 import warnings
 import logging
 
+import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
-from MDAnalysis.lib.log import ProgressMeter
 import MDAnalysis.analysis.rms as rms
+# remove after rms_fit_trj deprecation over
+from MDAnalysis.lib.log import ProgressMeter
 
+from .base import AnalysisBase
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -188,6 +199,7 @@ def rotation_matrix(a, b, weights=None):
     reference structure):
 
     .. math::
+
         \vec{b} = \bold{R} \dot \vec{a}
 
     Parameters
@@ -229,25 +241,70 @@ def rotation_matrix(a, b, weights=None):
 
     See Also
     --------
-    :func:`rmsd` calculates the RMSD between *a* and *b*; for fitting a whole
-    trajectory it is more efficient to use :func:`rms_fit_trj`. A complete fit
-    of two structures can be done with :func:`alignto`. """
-    if weights is not None:
-        # weights are constructed as relative to the mean
-        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+    MDAnalysis.analysis.rms.rmsd: Calculates the RMSD between *a* and *b*.
+    alignto: A complete fit of two structures.
+    AlignTraj: Fit a whole trajectory.
+    """
 
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
 
+    if weights is not None:
+        # qcp does NOT divide weights relative to the mean
+        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+
     rot = np.zeros(9, dtype=np.float64)
-    rmsd = qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, rot, weights)
+
+    # Need to transpose coordinates such that the coordinate array is
+    # 3xN instead of Nx3. Also qcp requires that the dtype be float64
+    # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
+    # so that R acts **to the left** and can be broadcasted; we're saving
+    # one transpose. [orbeckst])
+    rmsd = qcp.CalcRMSDRotationalMatrix(a, b, N, rot, weights)
     return np.matrix(rot.reshape(3, 3)), rmsd
+
+
+def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
+            mobile_com, ref_com, weights=None):
+    """Perform an rmsd-fitting to determine rotation matrix and align atoms
+
+    Parameters
+    ----------
+    mobile_coordinates : array
+        Coordinates of atoms to be aligned
+    ref_coordinates : array
+        Coordinates of atoms to be fit against
+    mobile_atoms : AtomGroup
+        Atoms to be translated
+    mobile_com: ndarray
+        array of xyz coordinate of mobile center of mass
+    ref_com: ndarray
+        array of xyz coordinate of reference center of mass
+    weights : numpy array, optional
+        Array to be used for weighted rmsd
+
+    Returns
+    -------
+    mobile_atoms
+        AtomGroup of translated and rotated atoms
+    min_rmsd
+        Minimum rmsd of coordinates
+    """
+    R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates,
+                                  weights=weights)
+
+    mobile_atoms.translate(-mobile_com)
+    mobile_atoms.rotate(R)
+    mobile_atoms.translate(ref_com)
+
+    return mobile_atoms, min_rmsd
 
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
             subselection=None, tol_mass=0.1, strict=False):
-    """Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.
+    """Spatially align *mobile* to *reference* by doing a RMSD fit on
+        *select* atoms.
 
     The superposition is done in the following way:
 
@@ -271,43 +328,45 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     .. Warning:: The atom order for *mobile* and *reference* is *only*
        preserved when *select* is either "all" or ``None``. In any other case,
        a new selection will be made that will sort the resulting AtomGroup by
-       index and therefore destroy the correspondence between the two groups. **It
-       is safest not to mix ordered AtomGroups with selection strings.**
+       index and therefore destroy the correspondence between the two groups.
+       **It is safest not to mix ordered AtomGroups with selection strings.**
 
-    :Arguments:
-      *mobile*
-         structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-         or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
-      *reference*
+    Parameters
+    ----------
+      mobile : Universe or AtomGroup
+         structure to be aligned, a
+         :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or a whole
+         :class:`~MDAnalysis.core.AtomGroup.Universe`
+      reference : Universe or AtomGroup
          reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
-      *select*
+      select: string or dict, optional
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
-            selections in *mobile* and *reference*; or
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
+            produces identical selections in *mobile* and *reference*; or
          2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
             (the :func:`fasta2select` function returns such a
             dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
          3.  tuple ``(sel1, sel2)``
 
-         When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
-         a list of selection strings (to generate a AtomGroup with defined atom order as
-         described under :ref:`ordered-selections-label`).
-      *mass_weighted* : boolean
+         When using 2. or 3. with *sel1* and *sel2* then these selections can
+         also each be a list of selection strings (to generate a AtomGroup with
+         defined atom order as described under :ref:`ordered-selections-label`).
+      mass_weighted : boolean, optional
          ``True`` uses the masses :meth:`reference.masses` as weights for the
          RMSD fit.
-      *tol_mass*
+      tol_mass: float, optional
          Reject match if the atomic masses for matched atoms differ by more than
-         *tol_mass* [0.1]
-      *strict*
+         *tol_mass*, default [0.1]
+      strict: boolean, optional
          ``True``
-             Will raise :exc:`SelectioError` if a single atom does not
+             Will raise :exc:`SelectionError` if a single atom does not
              match between the two selections.
          ``False`` [default]
              Will try to prepare a matching selection by dropping
              residues with non-matching atoms. See :func:`get_matching_atoms`
              for details.
-      *subselection*
+      subselection : string, optional
          Apply the transformation only to this selection.
 
          ``None`` [default]
@@ -319,10 +378,17 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
              Apply to the arbitrary group of atoms
 
-    :Returns: RMSD before and after spatial alignment.
+    Returns
+    -------
+    old_rmsd
+        RMSD before spatial alignment
+    new_rmsd
+        RMSD after spatial alignment.
 
-    .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
-                 use :func:`rms_fit_trj`.
+    See Also
+    --------
+    AlignTraj: More efficient method for RMSD-fitting trajectories.
+
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -340,15 +406,18 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
         mobile_atoms = mobile.atoms
         ref_atoms = reference.atoms
     else:
-        select = rms._process_selection(select)
+        select = rms.process_selection(select)
         mobile_atoms = mobile.select_atoms(*select['mobile'])
         ref_atoms = reference.select_atoms(*select['reference'])
 
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
-                                                 tol_mass=tol_mass, strict=strict)
+                                                 tol_mass=tol_mass,
+                                                 strict=strict)
 
     if mass_weighted:
-        weights = ref_atoms.masses / np.mean(ref_atoms.masses)
+        # division by the mean is done in rmsd, not done in qcp, but is done in
+        # _fit_to
+        weights = ref_atoms.masses
         ref_com = ref_atoms.center_of_mass()
         mobile_com = mobile_atoms.center_of_mass()
     else:
@@ -359,30 +428,180 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     ref_coordinates = ref_atoms.positions - ref_com
     mobile_coordinates = mobile_atoms.positions - mobile_com
 
-    old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates)
-
-    R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
+    old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates, weights)
 
     if subselection is None:
-        atoms = mobile.universe.atoms
-    elif type(subselection) is str:
-        atoms = mobile.select_atoms(subselection)
+        # mobile_atoms is Universe
+        mobile_atoms = mobile.universe.atoms
+    elif isinstance(subselection, str):
+        # select mobile_atoms from string
+        mobile_atoms = mobile.select_atoms(subselection)
     else:
         try:
-            atoms = subselection.atoms
+            # treat subselection as AtomGroup
+            mobile_atoms = subselection.atoms
         except AttributeError:
-            raise TypeError("subselection must be a selection string, a AtomGroup or Universe or None")
+            raise TypeError("subselection must be a selection string, an"
+                            " AtomGroup or Universe or None")
 
-    atoms.translate(-mobile_com)
-    atoms.rotate(R)
-    atoms.translate(ref_com)
-
+    # _fit_to DOES subtract center of mass, will provide proper min_rmsd
+    mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,
+                                     mobile_atoms, mobile_com, ref_com,
+                                     weights=weights)
     return old_rmsd, new_rmsd
 
 
-def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
-                mass_weighted=False, tol_mass=0.1, strict=False, force=True, quiet=False,
-                in_memory=False, **kwargs):
+class AlignTraj(AnalysisBase):
+    """rms_align trajectory to a reference structure using a selection.
+
+    Both reference *ref* and trajectory *mobile* must be
+    :class:`MDAnalysis.Universe` instances. If they contain a
+    trajectory then it is used. The output file format is determined
+    by the file extension of *filename*. One can also use the same
+    universe if one wants to fit to the current frame.
+
+    Attributes
+    ----------
+    reference_atoms : AtomGroup
+        Atoms of the reference structure to be aligned against
+    mobile_atoms : AtomGroup
+        Atoms inside each trajectory frame to be rmsd_aligned
+    rmsd : Array
+        Array of the rmsd values of the least rmsd between the mobile_atoms
+        and reference_atoms after superposition and minimimization of rmsd
+    filename : string
+        String reflecting the filename of the file where mobile_atoms positions
+        will be written to upon running RMSD alignment
+    """
+
+    def __init__(self, mobile, reference, select='all', filename=None,
+                 prefix='rmsfit_', mass_weighted=False, tol_mass=0.1,
+                 strict=False, force=True, **kwargs):
+        """Initialization
+
+        Parameters
+        ----------
+        mobile : Universe
+            Universe containing trajectory to be fitted to reference
+        reference : Universe
+            Universe containing trajectory frame to be used as reference
+        select : string, optional
+            Set as default to all, is used for Universe.select_atoms to choose
+            subdomain to be fitted against
+        filename : string, optional
+            Provide a filename for results to be written to
+        prefix : string, optional
+            Provide a string to prepend to filename for results to be written
+            to
+        mass_weighted : boolean, optional
+            Boolean, if true will rmsd will be mass-weighted corresponding to
+            the atoms selected in the reference trajectory
+        tol_mass : float, optional
+            Tolerance given to `get_matching_atoms` to find appropriate atoms
+        strict : boolean, optional
+            Force `get_matching_atoms` to fail if atoms can't be found using
+            exact methods
+        force : boolean, optional
+            Force overwrite of filename for rmsd-fitting
+        quiet : boolean, optional
+            Set logger to show minimal information
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+
+        Notes
+        -----
+        If set to quiet, it is recommended to wrap the statement in a try ...
+        finally to guarantee restoring of the log level in the case of an
+        exception
+
+        """
+        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
+        if self._quiet:
+            logging.disable(logging.WARN)
+
+        select = rms.process_selection(select)
+        self.ref_atoms = reference.select_atoms(*select['reference'])
+        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
+
+        if filename is None:
+            path, fn = os.path.split(self._trajectory.filename)
+            filename = os.path.join(path, prefix + fn)
+            logger.info('filename of rms_align with no filename given'
+                        ': {0}'.format(filename))
+
+        if os.path.exists(filename) and not force:
+            raise IOError(
+                'Filename already exists in path and force is not set'
+                ' to True')
+        self.filename = filename
+
+        natoms = self.mobile_atoms.n_atoms
+        self.ref_atoms, self.mobile_atoms = get_matching_atoms(
+            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
+            strict=strict)
+
+        self._writer = mda.Writer(self.filename, natoms)
+
+        if mass_weighted:
+            # if performing a mass-weighted alignment/rmsd calculation
+            self._weights = self.ref_atoms.masses
+        else:
+            self._weights = None
+
+        logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
+
+    def _prepare(self):
+        # reference centre of mass system
+        self._ref_com = self.ref_atoms.center_of_mass()
+        self._ref_coordinates = self.ref_atoms.positions - self._ref_com
+        # allocate the array for selection atom coords
+        self.rmsd = np.zeros((self.n_frames,))
+
+    def _single_frame(self):
+        index = self._ts.frame
+        mobile_com = self.mobile_atoms.center_of_mass()
+        mobile_coordinates = self.mobile_atoms.positions - mobile_com
+        mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
+                                                 self._ref_coordinates,
+                                                 self.mobile_atoms,
+                                                 mobile_com,
+                                                 self._ref_com, self._weights)
+        # write whole aligned input trajectory system
+        self._writer.write(mobile_atoms)
+
+    def _conclude(self):
+        self._writer.close()
+        if self._quiet:
+            logging.disable(logging.NOTSET)
+
+    def save(self, rmsdfile):
+        # these are the values of the new rmsd between the aligned trajectory
+        # and reference structure
+        np.savetxt(rmsdfile, self.rmsd)
+        logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
+
+
+@deprecate(
+    new_name="AlignTraj",
+    message="This function will be removed in 0.17")
+def rms_fit_trj(
+        traj,
+        reference,
+        select='all',
+        filename=None,
+        rmsdfile=None,
+        prefix='rmsfit_',
+        mass_weighted=False,
+        tol_mass=0.1,
+        strict=False,
+        force=True,
+        quiet=False,
+        in_memory=False,
+        **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
     Both reference *ref* and trajectory *traj* must be
@@ -399,16 +618,15 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          (uses the current time step of the object)
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
-            selections in *mobile* and *reference*; or
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
+            produces identical selections in *mobile* and *reference*; or
          2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
             :func:`fasta2select` function returns such a
             dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
          3. a tuple ``(sel1, sel2)``
-
-         When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
-         a list of selection strings (to generate a AtomGroup with defined atom order as
-         described under :ref:`ordered-selections-label`).
+         When using 2. or 3. with *sel1* and *sel2* then these selections can
+         also each be a list of selection strings (to generate a AtomGroup with
+         defined atom order as described under :ref:`ordered-selections-label`).
       *filename*
          file name for the RMS-fitted trajectory or pdb; defaults to the
          original trajectory filename (from *traj*) with *prefix* prepended
@@ -423,7 +641,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          *tol_mass* [0.1]
       *strict*
          Default: ``False``
-         - ``True``: Will raise :exc:`SelectioError` if a single atom does not
+         - ``True``: Will raise :exc:`SelectionError` if a single atom does not
            match between the two selections.
          - ``False``: Will try to prepare a matching selection by dropping
            residues with non-matching atoms. See :func:`get_matching_atoms`
@@ -463,7 +681,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     """
     frames = traj.trajectory
     if quiet:
-        # should be part of a try ... finally to guarantee restoring the log level
+        # should be part of a try ... finally to guarantee restoring the log
+        # level
         logging.disable(logging.WARN)
 
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
@@ -485,21 +704,20 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
             return filename
         writer = _Writer(filename, **kwargs)
         del _Writer
-
-    select = rms._process_selection(select)
+    select = rms.process_selection(select)
     ref_atoms = reference.select_atoms(*select['reference'])
     traj_atoms = traj.select_atoms(*select['mobile'])
     natoms = traj_atoms.n_atoms
 
-    ref_atoms, traj_atoms = get_matching_atoms(ref_atoms, traj_atoms,
-                                                 tol_mass=tol_mass, strict=strict)
+    ref_atoms, traj_atoms = get_matching_atoms(
+        ref_atoms, traj_atoms, tol_mass=tol_mass, strict=strict)
 
     logger.info("RMS-fitting on {0:d} atoms.".format(len(ref_atoms)))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weight = ref_atoms.masses / ref_atoms.masses.mean()
+        weights = ref_atoms.masses
     else:
-        weight = None
+        weights = None
 
     # reference centre of mass system
     ref_com = ref_atoms.center_of_mass()
@@ -509,8 +727,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     traj_coordinates = traj_atoms.positions.copy()
 
     # RMSD timeseries
-    nframes = len(frames)
-    rmsd = np.zeros((nframes,))
+    n_frames = len(frames)
+    rmsd = np.zeros((n_frames,))
 
     # R: rotation matrix that aligns r-r_com, x~-x~com
     #    (x~: selected coordinates, x: all coordinates)
@@ -518,13 +736,16 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     rot = np.zeros(9, dtype=np.float64)  # allocate space for calculation
     R = np.matrix(rot.reshape(3, 3))
 
-    percentage = ProgressMeter(nframes, interval=10, quiet=quiet,
-                               format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+    percentage = ProgressMeter(
+        n_frames,
+        interval=10,
+        quiet=quiet,
+        format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]      r")
 
     for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
-        x_com = traj_atoms.center_of_mass().astype(np.float32)
+        x_com = traj_atoms.center_of_mass()
         traj_coordinates[:] = traj_atoms.positions - x_com
 
         # Need to transpose coordinates such that the coordinate array is
@@ -532,75 +753,88 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])
-        rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype(np.float64),
-                                               traj_coordinates.T.astype(np.float64),
-                                               natoms, rot, weight)
+        rmsd[k] = qcp.CalcRMSDRotationalMatrix(
+            ref_coordinates.astype(np.float64), 
+            traj_coordinates.astype(np.float64), natoms, rot, weights)
         R[:, :] = rot.reshape(3, 3)
 
         # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
         # (Marginally (~3%) faster than "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
         ts.positions -= x_com
-        ts.positions[:] = ts.positions * R  # R acts to the left & is broadcasted N times.
+        # R acts to the left & is broadcasted N times.
+        ts.positions[:] = ts.positions * R
         ts.positions += ref_com
 
         if writer is not None:
             writer.write(traj.atoms)  # write whole input trajectory system
-        percentage.echo(ts.frame)
+            percentage.echo(ts.frame)
+    logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
+            frames.n_frames, filename)
 
-    if writer is not None:
-        logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
-                    frames.n_frames, filename)
     if rmsdfile is not None:
         np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
     if quiet:
-        # should be part of a try ... finally to guarantee restoring the log level
+        # should be part of a try ... finally to guarantee restoring the log
+        # level
         logging.disable(logging.NOTSET)
 
     return filename
 
 
-def sequence_alignment(mobile, reference, **kwargs):
-    """Generate a global sequence alignment between residues in *reference* and *mobile*.
+def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
+                       gap_penalty=-2, gapextension_penalty=-0.1):
+    """Generate a global sequence alignment between two residue groups.
 
-    The global alignment uses the Needleman-Wunsch algorith as
+    The residues in `reference` and `mobile` will be globally aligned.
+    The global alignment uses the Needleman-Wunsch algorithm as
     implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic
     programming algorithm can be tuned with the keywords. The defaults
     should be suitable for two similar sequences. For sequences with
     low sequence identity, more specialized tools such as clustalw,
     muscle, tcoffee, or similar should be used.
 
-    :Arguments:
-       *mobile*
-          protein atom group
-       *reference*
-          protein atom group
-
-    :Keywords:
-      *match_score*
-         score for matching residues [2]
-      *mismatch_penalty*
-         penalty for residues that do not match [-1]
-      *gap_penalty*
+    Parameters
+    ----------
+    mobile : AtomGroup
+        Atom group to be aligned
+    reference : AtomGroup
+        Atom group to be aligned against
+    match_score : float, optional, default 2
+         score for matching residues, default 2
+    mismatch_penalty : float, optional, default -1
+         penalty for residues that do not match , default : -1
+    gap_penalty : float, optional, default -2
          penalty for opening a gap; the high default value creates compact
          alignments for highly identical sequences but might not be suitable
-         for sequences with low identity [-2]
-      *gapextension_penalty*
-         penalty for extending a gap [-0.1]
+         for sequences with low identity, default : -2
+    gapextension_penalty : float, optional, default -0.1
+         penalty for extending a gap, default: -0.1
+
+    Returns
+    -------
+    aln[0]
+        Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
+        begin, end)`
+
+    See Also
+    --------
+    BioPython documentation for `pairwise2`_. Alternatively, use
+    :func:`fasta2select` with :program:`clustalw2` and the option
+    ``is_aligned=False``.
+
+    .. _`pairwise2`: http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
 
     .. versionadded:: 0.10.0
+
     """
     import Bio.pairwise2
-    kwargs.setdefault('match_score', 2)
-    kwargs.setdefault('mismatch_penalty', -1)
-    kwargs.setdefault('gap_penalty', -2)
-    kwargs.setdefault('gapextension_penalty', -0.1)
 
     aln = Bio.pairwise2.align.globalms(
-        reference.sequence(format="string"), mobile.sequence(format="string"),
-        kwargs['match_score'], kwargs['mismatch_penalty'],
-        kwargs['gap_penalty'], kwargs['gapextension_penalty'])
+        reference.residues.sequence(format="string"),
+        mobile.residues.sequence(format="string"),
+        match_score, mismatch_penalty, gap_penalty, gapextension_penalty)
     # choose top alignment
     return aln[0]
 
@@ -636,40 +870,51 @@ def fasta2select(fastafilename, is_aligned=False,
 
     (This translation table *is* combined with any value for *xxx_offset*!)
 
-    :Arguments:
-      *fastafilename*
-         FASTA file with first sequence as reference and
-         second the one to be aligned (ORDER IS IMPORTANT!)
-      *is_aligned*
-         False: run clustalw for sequence alignment; True: use
-         the alignment in the file (e.g. from STAMP) [``False``]
-      *ref_offset*
-         add this number to the column number in the FASTA file
-         to get the original residue number
-      *target_offset*
-         same for the target
-      *ref_resids*
-         sequence of resids as they appear in the reference structure
-      *target_resids*
-         sequence of resids as they appear in the target
-      *alnfilename*
-         filename of ClustalW alignment (clustal format) that is
-         produced by *clustalw* when *is_aligned* = ``False``.
-         ``None`` uses the name and path of *fastafilename* and
-         subsititutes the suffix with '.aln'.[``None``]
-      *treefilename*
-         filename of ClustalW guide tree (Newick format);
-         if ``None``  the the filename is generated from *alnfilename*
-         with the suffix '.dnd' instead of '.aln' [``None``]
-      *clustalw*
-         path to the ClustalW (or ClustalW2) binary; only
-         needed for *is_aligned* = ``False`` ["clustalw2"]
+    Parameters
+    ----------
+    fastafilename : str, path to filename
+        FASTA file with first sequence as reference and
+        second the one to be aligned (ORDER IS IMPORTANT!)
+    is_aligned : boolean, optional
+        ``False`` : [default]
+            run clustalw for sequence alignment;
+        ``True``
+            use the alignment in the file (e.g. from STAMP) [``False``]
+    ref_offset : int, optional
+        add this number to the column number in the FASTA file
+        to get the original residue number, default: 0
+    target_offset : int, optional
+        add this number to the column number in the FASTA file
+        to get the original residue number, default: 0
+    ref_resids : str, optional
+        sequence of resids as they appear in the reference structure
+    target_resids : str, optional
+        sequence of resids as they appear in the target
+    alnfilename : str, optional
+        filename of ClustalW alignment (clustal format) that is
+        produced by *clustalw* when *is_aligned* = ``False``.
+        default ``None`` uses the name and path of *fastafilename* and
+        subsititutes the suffix with '.aln'.
+    treefilename: str, optional
+        filename of ClustalW guide tree (Newick format);
+        if default ``None``  the the filename is generated from *alnfilename*
+        with the suffix '.dnd' instead of '.aln'
+    clustalw : str, optional
+        path to the ClustalW (or ClustalW2) binary; only
+        needed for *is_aligned* = ``False``, default: "ClustalW2"
 
-    :Returns:
-      *select_dict*
-          dictionary with 'reference' and 'mobile' selection string
-          that can be used immediately in :func:`rms_fit_trj` as
-          ``select=select_dict``.
+    Returns
+    -------
+    select_dict : dict
+        dictionary with 'reference' and 'mobile' selection string
+        that can be used immediately in :func:`rms_fit_trj` as
+        ``select=select_dict``.
+
+    See Also
+    --------
+    :func:`sequence_alignment`, which does not require external
+    programs.
+
     """
     import Bio.SeqIO
     import Bio.AlignIO
@@ -680,7 +925,8 @@ def fasta2select(fastafilename, is_aligned=False,
     if is_aligned:
         logger.info("Using provided alignment %r", fastafilename)
         with open(fastafilename) as fasta:
-            alignment = Bio.AlignIO.read(fasta, "fasta", alphabet=protein_gapped)
+            alignment = Bio.AlignIO.read(
+                fasta, "fasta", alphabet=protein_gapped)
     else:
         from Bio.Align.Applications import ClustalwCommandline
         import os.path
@@ -691,29 +937,42 @@ def fasta2select(fastafilename, is_aligned=False,
         if treefilename is None:
             filepath, ext = os.path.splitext(alnfilename)
             treefilename = filepath + '.dnd'
-        run_clustalw = ClustalwCommandline(clustalw, infile=fastafilename, type="protein",
-                                           align=True, outfile=alnfilename, newtree=treefilename)
-        logger.debug("Aligning sequences in %(fastafilename)r with %(clustalw)r.", vars())
+        run_clustalw = ClustalwCommandline(
+            clustalw,
+            infile=fastafilename,
+            type="protein",
+            align=True,
+            outfile=alnfilename,
+            newtree=treefilename)
+        logger.debug(
+            "Aligning sequences in %(fastafilename)r with %(clustalw)r.",
+            vars())
         logger.debug("ClustalW commandline: %r", str(run_clustalw))
         try:
             stdout, stderr = run_clustalw()
         except:
             logger.exception("ClustalW %(clustalw)r failed", vars())
-            logger.info("(You can get clustalw2 from http://www.clustal.org/clustal2/)")
+            logger.info(
+                "(You can get clustalw2 from http://www.clustal.org/clustal2/)")
             raise
         with open(alnfilename) as aln:
-            alignment = Bio.AlignIO.read(aln, "clustal", alphabet=protein_gapped)
-        logger.info("Using clustalw sequence alignment {0!r}".format(alnfilename))
-        logger.info("ClustalW Newick guide tree was also produced: {0!r}".format(treefilename))
+            alignment = Bio.AlignIO.read(
+                aln, "clustal", alphabet=protein_gapped)
+        logger.info(
+            "Using clustalw sequence alignment {0!r}".format(alnfilename))
+        logger.info(
+            "ClustalW Newick guide tree was also produced: {0!r}".format(treefilename))
 
     nseq = len(alignment)
     if nseq != 2:
-        raise ValueError("Only two sequences in the alignment can be processed.")
+        raise ValueError(
+            "Only two sequences in the alignment can be processed.")
 
     orig_resids = [ref_resids, target_resids]  # implict assertion that
     # we only have two sequences in the alignment
     offsets = [ref_offset, target_offset]
-    for iseq, a in enumerate(alignment):  # need iseq index to change orig_resids
+    for iseq, a in enumerate(
+            alignment):  # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
@@ -723,7 +982,12 @@ def fasta2select(fastafilename, is_aligned=False,
         else:
             orig_resids[iseq] = np.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
-    seq2resids = [resids + offset for resids, offset in zip(orig_resids, offsets)]
+    seq2resids = [
+        resids +
+        offset for resids,
+        offset in zip(
+            orig_resids,
+            offsets)]
     del orig_resids
     del offsets
 
@@ -773,11 +1037,13 @@ def fasta2select(fastafilename, is_aligned=False,
     res_list = []  # collect individual selection string
     # could collect just resid and type (with/without CB) and
     # then post-process and use ranges for continuous stretches, eg
-    # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone ) ...
+    # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone )
 
-    GAP = alignment[0].seq.alphabet.gap_char  # should be the same for both seqs
+    # should be the same for both seqs
+    GAP = alignment[0].seq.alphabet.gap_char
     if GAP != alignment[1].seq.alphabet.gap_char:
-        raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
+        raise ValueError(
+            "Different gap characters in sequence 'target' and 'mobile'.")
     for ipos in range(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
@@ -818,29 +1084,41 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     The log file (see :func:`MDAnalysis.start_logging`) will contain detailed
     information about mismatches.
 
-    :Arguments:
-      *ag1*, *ag2*
-         :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances that are compared
-    :Keywords:
-      *tol_mass*
+    Parameters
+    ----------
+    ag1 : AtomGroup
+        First :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance that is
+        compared
+    ag2 : AtomGroup
+        Second :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance that is
+        compared
+    tol_mass : float, optional
          Reject if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
-      *strict*
-         ``True``
-             Will raise :exc:`SelectioError` if a single atom does not
-             match between the two selections.
-         ``False`` [default]
-             Will try to prepare a matching selection by dropping
-             residues with non-matching atoms. See :func:`get_matching_atoms`
-             for details.
+    strict : boolean, optional
+        ``True``
+            Will raise :exc:`SelectionError` if a single atom does not
+            match between the two selections.
+        ``False`` [default]
+            Will try to prepare a matching selection by dropping
+            residues with non-matching atoms. See :func:`get_matching_atoms`
+            for details.
 
-    :Returns: Tuple ``(g1, g2)`` with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances
-              that match, atom by atom. The groups are either the original groups if all matches
-              or slices of the original groups.
+    Returns
+    -------
+    ``(g1, g2)``
+        Tuple with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances
+        that match, atom by atom. The groups are either the original groups if all matches
+        or slices of the original groups.
 
-    :Raises: :exc:`SelectionError` if the number of residues does not match or if in the final
-             matching masses differ by more than *tol*.
+    Raises
+    ------
+    :exc:`SelectionError`
+        Error raised if the number of residues does not match or if in the final
+        matching masses differ by more than *tol*.
 
+    Notes
+    -----
     The algorithm could be improved by using e.g. the Needleman-Wunsch
     algorithm in :mod:`Bio.profile2` to align atoms in each residue (doing a
     global alignment is too expensive).
@@ -866,11 +1144,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 ag1.n_atoms, ag2.n_atoms,
                 ag1.n_residues, ag2.n_residues)
             dbgmsg = "mismatched residue numbers\n" + \
-                "\n".join(["{0} | {1}"  for r1, r2 in
+                "\n".join(["{0} | {1}" for r1, r2 in
                            zip_longest(ag1.resids, ag2.resids)])
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
+
         else:
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
@@ -880,8 +1159,9 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 raise SelectionError(msg)
 
             # continue with trying to creating a valid selection
-            warnings.warn(msg + "\nbut we attempt to create a valid selection.",
-                          category=SelectionWarning)
+            warnings.warn(
+                msg + "\nbut we attempt to create a valid selection.",
+                category=SelectionWarning)
 
         # continue with trying to salvage the selection:
         # - number of atoms is different
@@ -894,10 +1174,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         # pairwise2 consumes too much memory for thousands of characters in
         # each sequence. Perhaps a solution would be pairwise alignment per residue.
         #
-        # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names]),
-        #    "".join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names]),
-        #                               2, -1, -1, -0.1,
-        #                               one_alignment_only=True)
+        # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.
+        # core.guess_atom_element(n) for n in gref.atoms.names]),
+        # "".join([MDAnalysis.topology.core.guess_atom_element(n)
+        # for n in models[0].atoms.names]),
+        # 2, -1, -1, -0.1,
+        # one_alignment_only=True)
 
         # For now, just remove the residues that don't have matching numbers
         rsize1 = np.array([r.n_atoms for r in ag1.residues])
@@ -908,42 +1190,56 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             if strict:
                 # diagnostics
                 mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
-                def log_mismatch(number, ag, rsize, mismatch_resindex=mismatch_resindex):
+
+                def log_mismatch(
+                        number,
+                        ag,
+                        rsize,
+                        mismatch_resindex=mismatch_resindex):
                     logger.error("Offending residues: group {0}: {1}".format(
-                            number,
-                            ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                       zip(ag.resnames[mismatch_resindex],
-                                           ag.resids[mismatch_resindex],
-                                           rsize[mismatch_resindex]
+                        number,
+                        ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
+                                   zip(ag.resnames[mismatch_resindex],
+                                       ag.resids[mismatch_resindex],
+                                       rsize[mismatch_resindex]
                                        )])))
                 logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
-                        mismatch_mask.sum()))
+                    mismatch_mask.sum()))
                 log_mismatch(1, ag1, rsize1)
                 log_mismatch(2, ag2, rsize2)
 
-                raise SelectionError("Different number of atoms in some residues. "
-                                     "(Use strict=False to attempt using matching atoms only.)")
+                raise SelectionError(
+                    "Different number of atoms in some residues. "
+                    "(Use strict=False to attempt using matching atoms only.)")
 
             def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
-                # not pretty... but need to do things on a per-atom basis in order
-                # to preserve original selection
+                # not pretty... but need to do things on a per-atom basis in
+                # order to preserve original selection
                 ag = g.atoms
                 good = ag.resids[match_mask]
                 resids = np.array([a.resid for a in ag])  # resid for each atom
-                ix_good = np.in1d(resids, good)   # boolean array for all matching atoms
-                return ag[np.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
+                # boolean array for all matching atoms
+                ix_good = np.in1d(resids, good)
+                # workaround for missing boolean indexing
+                return ag[np.arange(len(ag))[ix_good]]
             _ag1 = get_atoms_byres(ag1)
             _ag2 = get_atoms_byres(ag2)
 
             # diagnostics
             # (ugly workaround for missing boolean indexing of AtomGroup)
-            # note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]
+            # note: ag[arange(len(ag))[boolean]] is ~2x faster than
+            # ag[where[boolean]]
             mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
             logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
-                    mismatch_mask.sum()))
-            logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids[mismatch_resindex]))
-            logger.debug("Removed residue ids: group 2: {0}".format(ag2.resids[mismatch_resindex]))
-            # replace after logging (still need old ag1 and ag2 for diagnostics)
+                mismatch_mask.sum()))
+            logger.debug(
+                "Removed residue ids: group 1: {0}".format(
+                    ag1.resids[mismatch_resindex]))
+            logger.debug(
+                "Removed residue ids: group 2: {0}".format(
+                    ag2.resids[mismatch_resindex]))
+            # replace after logging (still need old ag1 and ag2 for
+            # diagnostics)
             ag1 = _ag1
             ag2 = _ag2
             del _ag1, _ag2
@@ -958,10 +1254,20 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
         logger.error("Atoms: reference | trajectory")
         for ar, at in zip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
-            logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                          at.segid, at.resid, at.resname, at.name, at.mass))
-        errmsg = ("Inconsistent selections, masses differ by more than {0}; " + \
-            "mis-matching atoms are shown above.").format(tol_mass)
+            logger.error(
+                "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
+                    ar.segid,
+                    ar.resid,
+                    ar.resname,
+                    ar.name,
+                    ar.mass,
+                    at.segid,
+                    at.resid,
+                    at.resname,
+                    at.name,
+                    at.mass))
+        errmsg = ("Inconsistent selections, masses differ by more than {0}; " +
+                  "mis-matching atoms are shown above.").format(tol_mass)
         logger.error(errmsg)
         raise SelectionError(errmsg)
     return ag1, ag2

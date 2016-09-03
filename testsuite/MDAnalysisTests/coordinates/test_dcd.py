@@ -14,25 +14,13 @@ from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests import module_not_found, tempdir
-
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 @attr('issue')
 def TestDCD_Issue32():
     """Test for Issue 32: 0-size dcds lead to a segfault: now caught with
     IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
-
-
-class _TestDCD(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
-        self.ts = self.universe.coord
-
-    def tearDown(self):
-        del self.universe
-        del self.dcd
-        del self.ts
 
 
 class TestDCDReaderClass(TestCase):
@@ -55,7 +43,17 @@ class TestDCDReaderClass(TestCase):
             err_msg="with_statement: DCDReader does not read all frames")
 
 
-class TestDCDReader(_TestDCD):
+class TestDCDReader(object):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        self.dcd = self.universe.trajectory
+        self.ts = self.universe.coord
+
+    def tearDown(self):
+        del self.universe
+        del self.dcd
+        del self.ts
+
     def test_rewind_dcd(self):
         self.dcd.rewind()
         assert_equal(self.ts.frame, 0, "rewinding to frame 0")
@@ -136,6 +134,33 @@ class TestDCDReader(_TestDCD):
         assert_almost_equal(self.ts.volume, 0.0, 3,
                             err_msg="wrong volume for unitcell (no unitcell "
                             "in DCD so this should be 0)")
+
+    def test_timeseries_slicing(self):
+        # check that slicing behaves correctly
+        # should  before issue #914 resolved
+        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
+             (0, 5, 5), (3, 5, 1), (None, None, None)]
+        for start, stop, step in x:
+            yield self._slice_generation_test, start, stop, step
+
+    def test_backwards_stepping(self):
+        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
+        for start, stop, step in x:
+            yield self._failed_slices_test, start, stop, step
+
+    def _slice_generation_test(self, start, stop, step):
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+
+    @knownfailure()
+    def _failed_slices_test(self, start, stop, step):
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+
 
 def test_DCDReader_set_dt(dt=100., frame=3):
     u = mda.Universe(PSF, DCD, dt=dt)
@@ -416,14 +441,17 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.frame))
 
 
-class TestDCDCorrel(_TestDCD):
+class TestDCDCorrel(TestCase):
     def setUp(self):
         # Note: setUp is executed for *every* test !
-        super(TestDCDCorrel, self).setUp()
         import MDAnalysis.core.Timeseries as TS
-
+        self.universe = mda.Universe(PSF, DCD)
+        self.dcd = self.universe.trajectory
+        self.ts = self.universe.coord
         self.collection = TS.TimeseriesCollection()
+        self.collection_slicing = TS.TimeseriesCollection()
         C = self.collection
+        C_step = self.collection_slicing
         all = self.universe.atoms
         ca = self.universe.s4AKE.CA
         ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
@@ -440,12 +468,19 @@ class TestDCDCorrel(_TestDCD):
         C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
         C.addTimeseries(TS.CenterOfMass(all))  # 8
         C.addTimeseries(TS.CenterOfGeometry(all))  # 9
+
+        C_step.addTimeseries(TS.Atom('v', ca_termini))
+
         # cannot test WaterDipole because there's no water in the test dcd
         C.compute(self.dcd)
+        C_step.compute(self.dcd, step=10)
 
     def tearDown(self):
         del self.collection
-        super(TestDCDCorrel, self).tearDown()
+        del self.collection_slicing
+        del self.universe
+        del self.dcd
+        del self.ts
 
     def test_correl(self):
         assert_equal(len(self.collection), 10, "Correl: len(collection)")
@@ -510,6 +545,11 @@ class TestDCDCorrel(_TestDCD):
         C.clear()
         assert_equal(len(C), 0, "Correl: clear()")
 
+    def test_Atom_slicing(self):
+        assert_equal(self.collection_slicing[0].shape, (2, 3, 10),
+                     "Correl: Atom positions")
+        assert_array_almost_equal(self.collection[0][:, :, ::10],
+                                  self.collection_slicing[0])
 
 # notes:
 def compute_correl_references():

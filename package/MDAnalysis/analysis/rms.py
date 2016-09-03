@@ -96,7 +96,6 @@ The trajectory is included with the test data files. The data in
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
 
 
-
 Functions
 ---------
 
@@ -178,6 +177,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
        *superposition* keyword added
 
     """
+    
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
@@ -190,6 +190,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
             raise ValueError('weights must have same length as a/b')
         # weights are constructed as relative to the mean
         relative_weights = np.asarray(weights) / np.mean(weights)
+        relative_weights = relative_weights.astype(np.float64)
     else:
         relative_weights = None
 
@@ -201,7 +202,9 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         b = b - np.average(b, axis=0, weights=weights)
 
     if superposition:
-        return qcp.CalcRMSDRotationalMatrix(a.T, b.T, N, None,
+        if relative_weights is not None:
+            relative_weights = relative_weights.astype(np.float64)
+        return qcp.CalcRMSDRotationalMatrix(a, b, N, None,
                                             relative_weights)
     else:
         if weights is not None:
@@ -211,7 +214,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
             return np.sqrt(np.sum((a - b) ** 2) / N)
 
 
-def _process_selection(select):
+def process_selection(select):
     """Return a canonical selection dictionary.
 
     Parameters
@@ -325,22 +328,22 @@ class RMSD(object):
         ref_frame : int (optional)
              frame index to select frame from `reference`
 
+
         .. _ClustalW: http://www.clustal.org/
         .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
            *groupselections* added
-
         """
         self.universe = traj
         if reference is None:
             self.reference = self.universe
         else:
             self.reference = reference
-        self.select = _process_selection(select)
+        self.select = process_selection(select)
         if groupselections is not None:
-            self.groupselections = [_process_selection(s) for s in groupselections]
+            self.groupselections = [process_selection(s) for s in groupselections]
         else:
             self.groupselections = []
         self.mass_weighted = mass_weighted
@@ -351,12 +354,12 @@ class RMSD(object):
         self.ref_atoms = self.reference.select_atoms(*self.select['reference'])
         self.traj_atoms = self.universe.select_atoms(*self.select['mobile'])
         if len(self.ref_atoms) != len(self.traj_atoms):
-            logger.exception()
-            raise SelectionError("Reference and trajectory atom selections do "
-                                 "not contain the same number of atoms: "
-                                 "N_ref={0:d}, N_traj={1:d}".format(
-                                     self.ref_atoms.n_atoms,
-                                     self.traj_atoms.n_atoms))
+            errmsg = ("Reference and trajectory atom selections do "+
+                      "not contain the same number of atoms: "+
+                      "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
+                                                        self.traj_atoms.n_atoms))
+            logger.exception(errmsg)
+            raise SelectionError(errmsg)
         logger.info("RMS calculation for {0:d} atoms.".format(len(self.ref_atoms)))
         mass_mismatches = (np.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
         if np.any(mass_mismatches):
@@ -366,8 +369,9 @@ class RMSD(object):
                 if ar.name != at.name:
                     logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                                  at.segid, at.resid, at.resname, at.name, at.mass))
-            errmsg = "Inconsistent selections, masses differ by more than {0:f}; mis-matching atoms are shown above.".format( \
-                     self.tol_mass)
+            errmsg = ("Inconsistent selections, masses differ by more than"
+                     + "{0:f}; mis-matching atoms are shown above.".format(
+                     self.tol_mass))
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches
@@ -386,7 +390,7 @@ class RMSD(object):
         for igroup, (sel, atoms) in enumerate(zip(self.groupselections,
                                                   self.groupselections_atoms)):
             if len(atoms['mobile']) != len(atoms['reference']):
-                logger.exception()
+                logger.exception('SelectionError: Group Selection')
                 raise SelectionError(
                     "Group selection {0}: {1} | {2}: Reference and trajectory "
                     "atom selections do not contain the same number of atoms: "
@@ -424,6 +428,7 @@ class RMSD(object):
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
             weight = self.ref_atoms.masses / self.ref_atoms.masses.mean()
+            weight = weight.astype(np.float64)
         else:
             weight = None
 
@@ -438,13 +443,13 @@ class RMSD(object):
             # makes a copy
             ref_coordinates = self.ref_atoms.positions - ref_com
             if self.groupselections_atoms:
-                groupselections_ref_coords_T_64 = [
-                    self.reference.select_atoms(*s['reference']).positions.T.astype(np.float64) for s in
+                groupselections_ref_coords_64 = [
+                    self.reference.select_atoms(*s['reference']).positions.astype(np.float64) for s in
                     self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
-        ref_coordinates_T_64 = ref_coordinates.T.astype(np.float64)
+        ref_coordinates_64 = ref_coordinates.astype(np.float64)
 
         # allocate the array for selection atom coords
         traj_coordinates = traj_atoms.positions.copy()
@@ -461,17 +466,17 @@ class RMSD(object):
             rot = None
 
         # RMSD timeseries
-        nframes = len(np.arange(0, len(trajectory))[start:stop:step])
-        rmsd = np.zeros((nframes, 3 + len(self.groupselections_atoms)))
+        n_frames = len(np.arange(0, len(trajectory))[start:stop:step])
+        rmsd = np.zeros((n_frames, 3 + len(self.groupselections_atoms)))
 
         percentage = ProgressMeter(
-            nframes, interval=10, format="RMSD %(rmsd)5.2f A at frame "
+            n_frames, interval=10, format="RMSD %(rmsd)5.2f A at frame "
             "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
         for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
-            x_com = traj_atoms.center_of_mass().astype(np.float32)
+            x_com = traj_atoms.center_of_mass()
             traj_coordinates[:] = traj_atoms.positions - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time
@@ -484,8 +489,8 @@ class RMSD(object):
                 # that R acts **to the left** and can be broadcasted; we're
                 # saving one transpose. [orbeckst])
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_T_64,
-                    traj_coordinates.T.astype(np.float64), natoms, rot, weight)
+                    ref_coordinates_64,
+                    traj_coordinates.astype(np.float64), natoms, rot, weight)
                 R[:, :] = rot.reshape(3, 3)
 
                 # Transform each atom in the trajectory (use inplace ops to
@@ -498,18 +503,17 @@ class RMSD(object):
 
                 # 2) calculate secondary RMSDs
                 for igroup, (refpos, atoms) in enumerate(
-                        zip(groupselections_ref_coords_T_64,
+                        zip(groupselections_ref_coords_64,
                             self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(
-                        refpos, atoms['mobile'].positions.T.astype(np.float64),
+                        refpos, atoms['mobile'].positions.astype(np.float64),
                         atoms['mobile'].n_atoms, None, weight)
             else:
                 # only calculate RMSD by setting the Rmatrix to None (no need
                 # to carry out the rotation as we already get the optimum RMSD)
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_T_64,
-                    traj_coordinates.T.astype(np.float64),
-                    natoms, None, weight)
+                    ref_coordinates_64,
+                    traj_coordinates.astype(np.float64), natoms, None, weight)
 
             percentage.echo(ts.frame, rmsd=rmsd[k, 2])
         self.rmsd = rmsd
@@ -556,7 +560,7 @@ class RMSF(object):
         self.atomgroup = atomgroup
         self._rmsf = None
 
-    def run(self, start=0, stop=-1, step=1, progout=10, quiet=False):
+    def run(self, start=None, stop=None, step=None, progout=10, quiet=False):
         """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
@@ -565,11 +569,13 @@ class RMSF(object):
         Parameters
         ----------
         start : int (optional)
-            starting frame [0]
+            starting frame, default None becomes 0.
         stop : int (optional)
-            stopping frame [-1]
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
         step : int (optional)
-            step between frames [1]
+            step between frames, default None becomes 1.
         progout : int (optional)
             number of frames to iterate through between updates to progress
             output; ``None`` for no updates [10]
@@ -579,9 +585,12 @@ class RMSF(object):
 
         References
         ----------
-        [Welford1962] B. P. Welford (1962). "Note on a Method for Calculating
-           Corrected Sums of Squares and Products." Technometrics 4(3):419-420.
+        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+           Calculating Corrected Sums of Squares and Products." Technometrics
+           4(3):419-420.
         """
+        traj = self.atomgroup.universe.trajectory
+        start, stop, step = traj.check_slice_indices(start, stop, step)
         sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         means = np.array(sumsquares)
 
