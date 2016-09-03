@@ -720,7 +720,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('asphericity', asphericity))
 
-    def principal_axes(group, **kwargs):
+    def principal_axes(group, pbc=None):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -732,7 +732,7 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            calculation. If ``None`` use value defined in setup flags.
 
         .. note::
             The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
@@ -747,7 +747,8 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        if pbc is None:
+            pbc = flags['use_pbc']
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
