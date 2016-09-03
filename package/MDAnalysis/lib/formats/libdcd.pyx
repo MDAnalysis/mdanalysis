@@ -102,6 +102,8 @@ cdef class DCDFile:
 
     def close(self):
         if self.is_open:
+            # In case there are fixed atoms we should free the memory again.
+            # Both pointers are guaranted to be non NULL if either one is.
             if self.freeind != NULL:
                 close_dcd_read(self.freeind, self.fixedcoords);
 
