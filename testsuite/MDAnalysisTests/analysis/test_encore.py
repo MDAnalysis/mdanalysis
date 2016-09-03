@@ -220,7 +220,7 @@ class TestEncore(TestCase):
                                          in_memory=True,
                                          in_memory_frame_interval=interval)
         filtered_frames = len(filtered_ensemble.trajectory.timeseries(format='fac'))
-        assert_equal(filtered_frames, total_frames//interval,
+        assert_equal(filtered_frames, len(self.ens1.trajectory.timeseries(format='fac')[::interval]),
                      err_msg="Incorrect frame number in Ensemble filtering: {0:f} out of {1:f}"
                      .format(filtered_frames, total_frames//interval))
 
