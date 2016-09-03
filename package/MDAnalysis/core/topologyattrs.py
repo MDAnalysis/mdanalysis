@@ -673,7 +673,7 @@ class Masses(AtomAttr):
     transplants[GroupBase].append(
         ('shape_parameter', shape_parameter))
 
-    def asphericity(group, **kwargs):
+    def asphericity(group, pbc=None):
         """Asphericity.
 
         See [Dima2004]_ for background information.
@@ -682,7 +682,8 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            calculation. If ``None`` use value defined in
+            MDAnalysis.core.flags['use_pbc']
 
         .. note::
             The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
@@ -697,23 +698,26 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc is None:
+            pbc = flags['use_pbc']
         masses = atomgroup.masses
 
         if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+            recenteredpos = (atomgroup.pack_into_box(inplace=False) -
+                             atomgroup.center_of_mass(pbc=True))
         else:
-            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+            recenteredpos = (atomgroup.positions -
+                             atomgroup.center_of_mass(pbc=False))
 
         tensor = np.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                              recenteredpos[x, :])
+            tensor += masses[x] * np.outer(recenteredpos[x],
+                                           recenteredpos[x])
 
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * np.sum(np.power(eig_vals - np.mean(eig_vals), 2)) / np.power(
-            np.sum(eig_vals), 2)
+        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                               np.sum(eig_vals)**2)
 
         return shape
 
