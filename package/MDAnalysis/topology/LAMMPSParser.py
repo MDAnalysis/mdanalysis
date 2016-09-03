@@ -259,10 +259,9 @@ class DATAParser(TopologyReader):
             n = len(line)
             idx = int(line[0]) - 1
             if n in (7, 10):
-                x, y, z = map(float, line[4:7])
+                pos[idx] = line[4:7]
             elif n in (6, 9):
-                x, y, z = map(float, line[3:6])
-            pos[idx] = x, y, z
+                pos[idx] = line[3:6]
 
     def _parse_vel(self, datalines, vel):
         """Strip velocity info into np array in place"""
