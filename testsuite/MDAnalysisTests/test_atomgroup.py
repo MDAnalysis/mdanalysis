@@ -392,8 +392,7 @@ class TestAtomGroup(TestCase):
                       [-13.26763439, 4.90658951, 10.6880455]],
                      dtype=np.float32))
 
-    # INVALID: AtomGroup only has principal_axes method if topology has masses
-    @skip
+    # VALID
     def test_principal_axes(self):
         assert_array_almost_equal(
             self.ag.principal_axes(),
