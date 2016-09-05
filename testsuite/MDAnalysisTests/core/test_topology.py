@@ -3,6 +3,8 @@
 Should convert between indices (*ix)
 Should work with both a single or an array of indices
 """
+from six.moves import zip
+
 from numpy.testing import (
     assert_,
     assert_equal,
@@ -12,7 +14,11 @@ import numpy as np
 
 from MDAnalysisTests.core.groupbase import make_Universe
 
-from MDAnalysis.core.topology import Topology, TransTable
+from MDAnalysis.core.topology import (
+    Topology,
+    TransTable,
+    make_downshift_arrays,
+)
 
 
 class TestTopology(object):
@@ -306,3 +312,52 @@ class TestLevelMoves(object):
         assert_equal(len(self.u.segments[1].residues), 7)
 
 
+class TestDownshiftArrays(object):
+    def setUp(self):
+        # test for square and ragged shapes
+        # square shapes sometimes simplify to 2d array
+        # which is bad!
+        self.square = np.array([0, 1, 2, 0, 1, 2, 0, 1, 2])
+        self.square_result = np.array([[0, 3, 6], [1, 4, 7], [2, 5, 8]])
+        self.ragged = np.array([0, 1, 2, 2, 0, 1, 2, 0, 1, 2])
+        self.ragged_result = np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]])
+
+    def tearDown(self):
+        del self.square
+        del self.square_result
+        del self.ragged
+        del self.ragged_result
+
+    # The array as a whole must be dtype object
+    # While the subarrays must be integers
+    def test_downshift_dtype_square(self):
+        out = make_downshift_arrays(self.square)
+        assert_(out.dtype == object)
+        assert_(out[0].dtype == np.int64)
+
+    def test_downshift_dtype_ragged(self):
+        out = make_downshift_arrays(self.ragged)
+        assert_(out.dtype == object)
+        assert_(out[0].dtype == np.int64)
+
+    # Check shape and size
+    # Shape should be size N+1 as None is appended
+    def test_shape_square(self):
+        out = make_downshift_arrays(self.square)
+        assert_(out.shape == (4,))
+        assert_(out[-1] is None)
+
+    def test_shape_ragged(self):
+        out = make_downshift_arrays(self.ragged)
+        assert_(out.shape == (4,))
+        assert_(out[-1] is None)
+
+    def test_contents_square(self):
+        out = make_downshift_arrays(self.square)
+        for row, ref in zip(out, self.square_result):
+            assert_array_equal(row, ref)
+
+    def test_contents_ragged(self):
+        out = make_downshift_arrays(self.ragged)
+        for row, ref in zip(out, self.ragged_result):
+            assert_array_equal(row, ref)
