@@ -42,20 +42,36 @@ from .topologyattrs import Atomindices, Resindices, Segindices
 def make_downshift_arrays(upshift):
     """From an upwards translation table, create the opposite direction
 
-    Turns a many to one mapping to a one to many mapping
+    Turns a many to one mapping (eg atoms to residues) to a one to many mapping
+    (residues to atoms)
 
-    Eg :: 
-      AR = np.array([0, 1, 0, 2, 2, 0, 2])
-    
-      make_downshift_arrays(AR)
-      array([array([0, 2, 5]), array([1]), array([3, 4, 6])], dtype=object)
-
-    So entry 0 informs that items 0, 2 & 5 all belong to group 0.
+    Parameters
+    ----------
+    upshift : array_like
+        Array of integers describing which parent each item belongs to
 
     Returns
     -------
-    Numpy array of numpy arrays (dtype object)
-    Length : 
+    downshift : array_like (dtype object)
+        An array of arrays, each containing the indices of the children
+        of each parent
+
+    Examples
+    --------
+    
+    To find the residue to atom mappings for a given atom to residue mapping:
+
+    >>> atom2res = np.array([0, 1, 0, 2, 2, 0, 2])
+    >>> make_downshift_arrays(atom2res)
+    array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)
+
+    Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 & 5
+
+    Notes
+    -----
+    The final entry in the return array will be ``None`` to ensure that the
+    dtype of the array is object.  This means negative indexing should
+    not be used ever with these arrays.
     """
     order = np.argsort(upshift)
 
