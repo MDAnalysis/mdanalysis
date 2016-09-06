@@ -59,7 +59,6 @@ class MemoryReference(BaseReference):
 
 class TestMemoryReader(BaseReaderTest):
     def __init__(self):
-
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)
 
@@ -98,10 +97,14 @@ class TestMemoryReader(BaseReaderTest):
         assert_equal(array1, array2)
 
     def test_timeseries_view(self):
+        # timeseries() is expected to provide a view of the underlying array
         assert_equal(self.reader.timeseries().base is self.reader.get_array(),
                      True)
 
-    def test_timeseries_view2(self):
+    def test_timeseries_subarray_view(self):
+        # timeseries() is expected to provide a view of the underlying array
+        # also in the case where we slice the array using the start, stop and
+        # step options.
         assert_equal(
             self.reader.timeseries(start=5,
                                    stop=15,
@@ -109,19 +112,25 @@ class TestMemoryReader(BaseReaderTest):
                                    format='fac').base is self.reader.get_array(),
                      True)
 
-    def test_timeseries_view3(self):
+    def test_timeseries_view_from_universe_atoms(self):
+        # timeseries() is expected to provide a view of the underlying array
+        # also in the special case when asel=universe.atoms.
         selection = self.ref.universe.atoms
         assert_equal(self.reader.timeseries(
             asel=selection).base is self.reader.get_array(),
             True)
 
-    def test_timeseries_view4(self):
+    def test_timeseries_view_from_select_all(self):
+        # timeseries() is expected to provide a view of the underlying array
+        # also in the special case when using "all" in selections.
         selection = self.ref.universe.select_atoms("all")
         assert_equal(self.reader.timeseries(
             asel=selection).base is self.reader.get_array(),
             True)
 
     def test_timeseries_noview(self):
+        # timeseries() is expected NOT to provide a view of the underlying array
+        # for any other selection than "all".
         selection = self.ref.universe.select_atoms("name CA")
         assert_equal(self.reader.timeseries(
             asel=selection).base is self.reader.get_array(),

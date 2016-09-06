@@ -70,16 +70,6 @@ class MemoryReader(base.ProtoReader):
     For compatibility with the timeseries interface, support is provided for
     specifying the order of columns through the format option.
 
-    Parameter
-    ---------
-    filename : str
-        filename of the trajectory
-    n_atoms : int
-        number of atoms to write
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    precision : float (optional)
-        set precision of saved trajectory to this number of decimal places.
     """
 
     format = 'memory'
@@ -104,18 +94,26 @@ class MemoryReader(base.ProtoReader):
 
     def __init__(self, coordinate_array, format='afc',
                  dimensions = None, dt=1, **kwargs):
-        """Constructor
+        """
 
         Parameters
         ---------
         coordinate_array : :class:`~numpy.ndarray object
             The underlying array of coordinates
-        format : str
+        format : str, optional
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
+        dimensions: (*A*, *B*, *C*, *alpha*, *beta*, *gamma*), optional
+            unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+            lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
+            angles are in degrees.
+        dt: float, optional
+            The time difference between frames (ps).  If :attr:`time`
+            is set, then `dt` will be ignored.
         """
 
         super(MemoryReader, self).__init__()        
@@ -124,7 +122,14 @@ class MemoryReader(base.ProtoReader):
         self.n_frames = self.coordinate_array.shape[self.format.find('f')]
         self.n_atoms = self.coordinate_array.shape[self.format.find('a')]
 
-        kwargs.pop("n_atoms", None)
+        provided_n_atoms = kwargs.pop("n_atoms", None)
+        if provided_n_atoms is not None:
+            # test that provided value for n_atoms matches the one just
+            # calculated
+            if provided_n_atoms != self.n_atoms:
+                raise ValueError("The provided value for n_atoms does not match"
+                                 "the shape of the coordinate array")
+
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
         if dimensions is not None:
@@ -202,9 +207,9 @@ class MemoryReader(base.ProtoReader):
         stop_index = stop+1
         if stop_index == 0:
             stop_index = None
-        basic_slice = ([slice(None)]*(f_index) +
+        basic_slice = ([slice(None)] * f_index +
                        [slice(start, stop_index, step)] +
-                       [slice(None)]*(2-f_index))
+                       [slice(None)] * (2-f_index))
 
         # Return a view if either:
         #   1) asel is None
@@ -235,7 +240,8 @@ class MemoryReader(base.ProtoReader):
 
     def _read_frame(self, i):
         """read frame i"""
-        self.ts.frame = i-1
+        # Frame number is incremented to zero by _read_next_timestep()
+        self.ts.frame = i - 1
         return self._read_next_timestep()
 
     def __repr__(self):
