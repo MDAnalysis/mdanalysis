@@ -1405,11 +1405,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         
         aux = self._check_for_aux(auxname)
         ts = self.ts
-        print("start", ts.frame, aux.step)
         # catch up auxiliary if it starts earlier than trajectory
         while aux.step_to_frame(aux.step+1, ts) < 0:
             next(aux)
-            print("nextaux", ts.frame, aux.step)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
         if next_frame is None:
@@ -1420,9 +1418,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         while self.frame != next_frame or getattr(self, '_frame', 0) == -1:
             # iterate trajectory until frame is reached
             ts = self.next()       
-            print("secondwhile",ts.frame, aux.step)
-        print "-----"
-        return ts 
+        return ts
 
     def iter_as_aux(self, auxname):
         """Iterate through timesteps for which there is at least one assigned 
