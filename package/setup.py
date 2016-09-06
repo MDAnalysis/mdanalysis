@@ -510,6 +510,8 @@ if __name__ == '__main__':
                   'scipy',
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
+                  'sklearn',  # For clustering and dimensionality reduction
+                              # functionality in encore
               ],
           },
           test_suite="MDAnalysisTests",

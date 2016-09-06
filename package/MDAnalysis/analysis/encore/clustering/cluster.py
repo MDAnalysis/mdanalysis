@@ -16,7 +16,7 @@
 
 """
 clustering frontend --- :mod:`MDAnalysis.analysis.encore.clustering.cluster`
-=====================================================================
+============================================================================
 
 The module defines a function serving as front-end for various clustering
 algorithms, wrapping them to allow them to be used interchangably.

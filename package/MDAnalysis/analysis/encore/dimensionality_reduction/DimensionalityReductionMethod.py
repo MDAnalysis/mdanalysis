@@ -17,7 +17,7 @@
 
 """
 dimensionality reduction frontend --- :mod:`MDAnalysis.analysis.encore.clustering.DimensionalityReductionMethod`
-=====================================================================
+================================================================================================================
 
 The module defines classes for interfacing to various dimensionality reduction
 algorithms. One has been implemented natively, and will always be available,

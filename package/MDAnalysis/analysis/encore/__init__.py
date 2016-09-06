@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 __all__ = [
     'covariance',
     'similarity',
@@ -31,4 +33,4 @@ from .dimensionality_reduction.DimensionalityReductionMethod import *
 from .dimensionality_reduction.reduce_dimensionality import (
     reduce_dimensionality)
 from .confdistmatrix import get_distance_matrix
-from utils import merge_universes
+from .utils import merge_universes

@@ -388,7 +388,7 @@ class TestEncore(TestCase):
 
         assert_almost_equal(expected_average, average, decimal=1, 
                             err_msg="Unexpected average value for bootstrapped samples in Harmonic Ensemble imilarity")
-        assert_almost_equal(expected_average, average, decimal=1, 
+        assert_almost_equal(expected_stdev, stdev, decimal=1,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
     @dec.slow
@@ -404,7 +404,7 @@ class TestEncore(TestCase):
 
         assert_almost_equal(expected_average, average, decimal=1, 
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
-        assert_almost_equal(expected_average, average, decimal=1, 
+        assert_almost_equal(expected_stdev, stdev, decimal=1,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")        
 
     @dec.slow
@@ -495,8 +495,8 @@ class TestEncoreClustering(TestCase):
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_sklearn_affinity_propagation(self):
         cc1 = encore.cluster([self.ens1])
         cc2 = encore.cluster([self.ens1],
