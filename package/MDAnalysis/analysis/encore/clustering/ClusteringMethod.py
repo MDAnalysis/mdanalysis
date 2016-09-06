@@ -32,6 +32,7 @@ others are available only if scikit-learn is installed
 """
 
 import numpy as np
+import warnings
 import logging
 
 # Import native affinity propagation implementation
