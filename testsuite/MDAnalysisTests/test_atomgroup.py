@@ -2051,7 +2051,7 @@ class TestInMemoryUniverse(TestCase):
         universe = MDAnalysis.Universe(PSF, DCD, in_memory=True,
                                        in_memory_frame_interval=10)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 9, 3),
+                     (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
