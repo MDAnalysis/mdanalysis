@@ -34,6 +34,7 @@ while others are available only if scikit-learn is installed
 
 import numpy as np
 import logging
+import warnings
 
 # Import native affinity propagation implementation
 from . import stochasticproxembed
@@ -46,7 +47,7 @@ except ImportError:
    msg = "sklearn.decomposition could not be imported: some functionality will " \
          "not be available in encore.dimensionality_reduction()"
    warnings.warn(msg, category=ImportWarning)
-   logger.warn(msg)
+   logging.warn(msg)
    del msg
 
 
