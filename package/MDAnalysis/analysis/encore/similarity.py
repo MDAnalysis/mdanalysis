@@ -1128,8 +1128,8 @@ def ces(ensembles,
 
     # Register which ensembles the samples belong to
     ensemble_assignment = []
-    for i in range(len(ensembles)):
-        ensemble_assignment += [i+1]*len(ensembles[i].trajectory)
+    for i, ensemble in enumerate(ensembles):
+        ensemble_assignment += [i+1]*len(ensemble.trajectory)
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
@@ -1392,8 +1392,8 @@ def dres(ensembles,
 
     # Register which ensembles the samples belong to
     ensemble_assignment = []
-    for i in range(len(ensembles)):
-        ensemble_assignment += [i+1]*len(ensembles[i].trajectory)
+    for i, ensemble in enumerate(ensembles):
+        ensemble_assignment += [i+1]*len(ensemble.trajectory)
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
@@ -1565,7 +1565,7 @@ def ces_convergence(original_ensemble,
         if cc.clusters is None:
             continue
         out.append(np.zeros(len(ensembles)))
-        for j in range(len(ensembles)):
+        for j, ensemble in enumerate(ensembles):
             out[-1][j] = cumulative_clustering_ensemble_similarity(
                 cc,
                 len(ensembles),
@@ -1644,12 +1644,12 @@ def dres_convergence(original_ensemble,
             ncores=ncores)
 
     ensemble_assignment = []
-    for i in range(len(ensembles)):
-        ensemble_assignment += [i+1]*len(ensembles[i].trajectory)
+    for i, ensemble in enumerate(ensembles):
+        ensemble_assignment += [i+1]*len(ensemble.trajectory)
     ensemble_assignment = np.array(ensemble_assignment)
 
     out = []
-    for i in range(len(coordinates)):
+    for i, _ in enumerate(coordinates):
 
         out.append(np.zeros(len(ensembles)))
 
@@ -1660,7 +1660,7 @@ def dres_convergence(original_ensemble,
                 nensembles=len(ensembles),
                 nsamples=nsamples)
 
-        for j in range(len(ensembles)):
+        for j, ensemble in enumerate(ensembles):
             out[-1][j] = dimred_ensemble_similarity(kdes[-1],
                                                     resamples[-1],
                                                     kdes[j],

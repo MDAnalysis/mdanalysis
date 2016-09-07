@@ -208,8 +208,8 @@ def cluster(ensembles,
     metadata = None
     if ensembles is not None:
         ensemble_assignment = []
-        for i in range(len(ensembles)):
-            ensemble_assignment += [i+1]*len(ensembles[i].trajectory)
+        for i, ensemble in enumerate(ensembles):
+            ensemble_assignment += [i+1]*len(ensemble.trajectory)
         ensemble_assignment = np.array(ensemble_assignment)
         metadata = {'ensemble_membership': ensemble_assignment}
 

@@ -56,8 +56,7 @@ def encode_centroid_info(clusters, cluster_centers_indices):
     as described in documentation for ClusterCollection
     """
     values, indices = np.unique(clusters, return_inverse=True)
-    for i in range(len(cluster_centers_indices)):
-        c_center = cluster_centers_indices[i]
+    for c_center in cluster_centers_indices:
         if clusters[c_center] != c_center:
             values[indices[c_center]] = c_center
     return values[indices]
@@ -287,8 +286,8 @@ if sklearn:
                 list of cluster indices
 
             """
-            logging.info("Starting DBSCAN" %
-                         (self.dbscan.get_params()))
+            logging.info("Starting DBSCAN: {0}".format(
+                self.dbscan.get_params()))
             clusters = self.dbscan.fit_predict(distance_matrix.as_array())
             if np.min(clusters == -1):
                 clusters += 1

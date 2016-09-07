@@ -311,7 +311,7 @@ class TestEncore(TestCase):
     def test_ces_to_self(self):
         results, details = \
             encore.ces([self.ens1, self.ens1],
-            clustering_method=encore.AffinityPropagation(preference = -3.0))
+            clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
@@ -398,7 +398,7 @@ class TestEncore(TestCase):
         averages, stdevs = encore.ces([self.ens1, self.ens1],
                                       estimate_error = True,
                                       bootstrapping_samples=10,
-                                      clustering_method=encore.AffinityPropagation(preference=-2.0))
+                                      clustering_method=encore.AffinityPropagationNative(preference=-2.0))
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -460,8 +460,8 @@ class TestEncoreClustering(TestCase):
     def test_clustering_two_methods(self):
         cluster_collection = encore.cluster(
             [self.ens1],
-            method=[encore.AffinityPropagation(),
-                    encore.AffinityPropagation()])
+            method=[encore.AffinityPropagationNative(),
+                    encore.AffinityPropagationNative()])
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
@@ -489,6 +489,8 @@ class TestEncoreClustering(TestCase):
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_clustering_two_methods_one_w_no_distance_matrix(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -593,10 +595,10 @@ class TestEncoreClusteringSklearn(TestCase):
         distances += YY
         np.maximum(distances, 0, out=distances)
         distances.flat[::distances.shape[0] + 1] = 0.0
-        # self.X = X
+        dimension = len(distances)
         self.distance_matrix = encore.utils.TriangularMatrix(len(distances))
-        for i in range(len(distances)):
-            for j in range(i,len(distances)):
+        for i in range(dimension):
+            for j in range(i,dimension):
                 self.distance_matrix[i, j] = distances[i,j]
 
     def test_one(self):
@@ -656,6 +658,8 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_different_method(self):
         dimension = 3
         coordinates, details = \
@@ -676,6 +680,8 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_equal(coordinates[1].shape[0], dims[1])
 
     @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_two_different_methods(self):
         dims = [2,3]
         coordinates, details = \

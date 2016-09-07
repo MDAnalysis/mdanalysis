@@ -214,8 +214,8 @@ def reduce_dimensionality(ensembles,
     details = {}
     if ensembles is not None:
         ensemble_assignment = []
-        for i in range(len(ensembles)):
-            ensemble_assignment += [i+1]*len(ensembles[i].trajectory)
+        for i, ensemble in enumerate(ensembles):
+            ensemble_assignment += [i+1]*len(ensemble.trajectory)
         ensemble_assignment = np.array(ensemble_assignment)
         details['ensemble_membership'] = ensemble_assignment
 

@@ -123,10 +123,8 @@ class MemoryReader(base.ProtoReader):
         self.n_atoms = self.coordinate_array.shape[self.format.find('a')]
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
-        if provided_n_atoms is not None:
-            # test that provided value for n_atoms matches the one just
-            # calculated
-            if provided_n_atoms != self.n_atoms:
+        if (provided_n_atoms is not None and
+            provided_n_atoms != self.n_atoms):
                 raise ValueError("The provided value for n_atoms does not match"
                                  "the shape of the coordinate array")
 
