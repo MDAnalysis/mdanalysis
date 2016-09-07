@@ -238,12 +238,6 @@ class ParallelCalculation(object):
             if i == 'STOP':
                 return
 
-            # print("\n\n\nHELLO: %s\n\n\n" % self.functions[i])
-            # print("\n\n\nHELLO: %s\n\n\n" % self.)
-            # print("\n\n\nHELLO: %s\n\n\n" % self.args[i])
-            # print("*%s*"%self.functions[i](*self.args[i]))
-            # print("\n\n\nHELLO: %s\n\n\n" % self.args[i])
-            # print("\n\n\nHEY: %s\n\n\n" % self.functions[i])
             results.put((i, self.functions[i](*self.args[i], **self.kwargs[i])))
 
     def run(self):
@@ -259,29 +253,33 @@ class ParallelCalculation(object):
                 corresponding calculation. For instance, in (3, output), output
                 is the return of function(\*args[3], \*\*kwargs[3]).
         """
-        manager = Manager()
-        q = manager.Queue()
-        results = manager.Queue()
-
-        workers = [Process(target=self.worker, args=(q, results)) for i in
-                   range(self.ncores)]
-
-        for i in range(self.nruns):
-            q.put(i)
-        for w in workers:
-            q.put('STOP')
-
-        for w in workers:
-            w.start()
-
-        for w in workers:
-            w.join()
-
         results_list = []
+        if self.ncores == 1:
+            for i in range(self.nruns):
+                results_list.append((i, self.functions[i](*self.args[i],
+                                                          **self.kwargs[i])))
+        else:
+            manager = Manager()
+            q = manager.Queue()
+            results = manager.Queue()
 
-        results.put('STOP')
-        for i in iter(results.get, 'STOP'):
-            results_list.append(i)
+            workers = [Process(target=self.worker, args=(q, results)) for i in
+                       range(self.ncores)]
+
+            for i in range(self.nruns):
+                q.put(i)
+            for w in workers:
+                q.put('STOP')
+
+            for w in workers:
+                w.start()
+
+            for w in workers:
+                w.join()
+
+            results.put('STOP')
+            for i in iter(results.get, 'STOP'):
+                results_list.append(i)
 
         return tuple(sorted(results_list, key=lambda x: x[0]))
 

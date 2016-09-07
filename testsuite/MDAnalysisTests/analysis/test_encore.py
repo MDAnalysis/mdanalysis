@@ -466,6 +466,54 @@ class TestEncoreClustering(TestCase):
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
+    def test_clustering_AffinityPropagationNative_direct(self):
+        method = encore.AffinityPropagationNative()
+        distance_matrix = encore.get_distance_matrix(self.ens1)
+        cluster_assignment, details = method(distance_matrix)
+        expected_value = 17
+        assert_equal(len(set(cluster_assignment)), expected_value,
+                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     cluster_assignment))
+
+    @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
+    def test_clustering_AffinityPropagation_direct(self):
+        method = encore.AffinityPropagation()
+        distance_matrix = encore.get_distance_matrix(self.ens1)
+        cluster_assignment, details = method(distance_matrix)
+        expected_value = 17
+        assert_equal(len(set(cluster_assignment)), expected_value,
+                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     cluster_assignment))
+
+    @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
+    def test_clustering_KMeans_direct(self):
+        clusters = 10
+        method = encore.KMeans(clusters)
+        coordinates = self.ens1.trajectory.timeseries(format='fac')
+        coordinates = np.reshape(coordinates,
+                                 (coordinates.shape[0], -1))
+        cluster_assignment, details = method(coordinates)
+        assert_equal(len(set(cluster_assignment)), clusters,
+                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     cluster_assignment))
+
+    @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
+    def test_clustering_DBSCAN_direct(self):
+        method = encore.DBSCAN()
+        distance_matrix = encore.get_distance_matrix(self.ens1)
+        cluster_assignment, details = method(distance_matrix)
+        expected_value = 5
+        assert_equal(len(set(cluster_assignment)), expected_value,
+                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     cluster_assignment))
+
+    @dec.slow
     @dec.skipif(module_not_found('sklearn'),
                 "Test skipped because sklearn is not available.")
     def test_clustering_two_different_methods(self):
@@ -656,6 +704,30 @@ class TestEncoreDimensionalityReduction(TestCase):
             method=encore.StochasticProximityEmbeddingNative(dimension=dimension))
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
+
+    @dec.slow
+    def test_dimensionality_reduction_SPENative_direct(self):
+        dimension = 2
+        method = encore.StochasticProximityEmbeddingNative(dimension=dimension)
+        distance_matrix = encore.get_distance_matrix(self.ens1)
+        coordinates, details = method(distance_matrix)
+        assert_equal(coordinates.shape[0], dimension,
+                     err_msg="Unexpected result in dimensionality reduction: {0}".format(
+                     coordinates))
+
+    @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
+    def test_dimensionality_reduction_PCA_direct(self):
+        dimension = 2
+        method = encore.PrincipleComponentAnalysis(dimension=dimension)
+        coordinates = self.ens1.trajectory.timeseries(format='fac')
+        coordinates = np.reshape(coordinates,
+                                 (coordinates.shape[0], -1))
+        coordinates, details = method(coordinates)
+        assert_equal(coordinates.shape[0], dimension,
+                     err_msg="Unexpected result in dimensionality reduction: {0}".format(
+                     coordinates))
 
     @dec.slow
     @dec.skipif(module_not_found('sklearn'),
