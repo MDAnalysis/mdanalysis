@@ -466,6 +466,8 @@ class TestEncoreClustering(TestCase):
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_clustering_two_different_methods(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -476,6 +478,8 @@ class TestEncoreClustering(TestCase):
                      err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     def test_clustering_method_w_no_distance_matrix(self):
         cluster_collection = encore.cluster(
             [self.ens1],
