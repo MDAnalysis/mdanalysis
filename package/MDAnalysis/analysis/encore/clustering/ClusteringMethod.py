@@ -407,8 +407,8 @@ if sklearn:
             numpy.array
                 list of cluster indices
             """
-            logging.info("Starting Kmeans" %
-                         (self.kmeans.get_params()))
+            logging.info("Starting Kmeans: {0}".format(
+                         (self.kmeans.get_params())))
             clusters = self.kmeans.fit_predict(coordinates)
             distances = self.kmeans.transform(coordinates)
             cluster_center_indices = np.argmin(distances, axis=0)
