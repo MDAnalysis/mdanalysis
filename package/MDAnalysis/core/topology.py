@@ -337,9 +337,6 @@ class TransTable(object):
         else:
             return (self.residues2atoms_1d(rix) for rix in rixs)
 
-
-    #TODO: movers and resizers
-
     # Move between different groups.
     def move_atom(self, aix, rix):
         """Move aix to be in rix"""
@@ -352,6 +349,7 @@ class TransTable(object):
         self._SR = make_downshift_arrays(self._RS)
 
     def resize(self):
+        #TODO: resizers
         pass
 
 

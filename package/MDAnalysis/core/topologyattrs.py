@@ -27,10 +27,15 @@ import numpy as np
 
 from . import flags
 from ..lib.util import cached
+from ..lib.util import iterable as is_iterable
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
 from . import flags
+
+_LENGTH_VALUEERROR = \
+("Setting {group} with wrong sized array. "
+ "Length {group}: {lengroup}, length values: {lenvalues}")
 
 
 class TopologyAttr(object):
@@ -175,6 +180,9 @@ class Resindices(TopologyAttr):
         another residue.
 
         """
+        if is_iterable(values) and not len(values) == len(ag):
+            raise ValueError(_LENGTH_VALUEERROR.format(
+                group='atomgroup', lengroup=len(ag), lenvalues=len(values)))
         self.top.tt.move_atom(ag._ix, values)
 
     def get_residues(self, rg):
@@ -218,6 +226,9 @@ class Segindices(TopologyAttr):
         return self.top.tt.residues2segments(rg._ix)
 
     def set_residues(self, rg, values):
+        if is_iterable(values) and not len(values) == len(rg):
+            raise ValueError(_LENGTH_VALUEERROR.format(
+                group='residuegroup', lengroup=len(rg), lenvalues=len(values)))
         self.top.tt.move_residue(rg.ix, values)
 
     def get_segments(self, sg):
@@ -898,10 +909,20 @@ class Resids(ResidueAttr):
         # setting via resids provides a nicer way
         # rather than dealing with resindices
         # * 1 find index that corresponds to this resid
-        try:
-            dest = np.where(self.top.resids.values == values)[0]
-        except IndexError:  # if where finds nothing
-            raise NotImplementedError("That resid doesn't exist!")
+        if is_iterable(values):
+            if not len(values) == len(ag):
+                raise ValueError(_LENGTH_VALUEERROR.format(
+                    group='atomgroup', lengroup=len(ag), lenvalues=len(values)))
+            try:
+                dest = [np.where(self.top.resids.values == val)[0]
+                        for val in values]
+            except IndexError:
+                raise NotImplementedError
+        else:
+            try:
+                dest = np.where(self.top.resids.values == values)[0]
+            except IndexError:  # if where finds nothing
+                raise NotImplementedError("That resid doesn't exist!")
         # * 2 update the transtable
         # can't set resindices as atom.resindex!
         self.top.tt.move_atom(ag.ix, dest)
@@ -1034,10 +1055,20 @@ class Segids(SegmentAttr):
 
     def set_residues(self, rg, values):
         # convienience method for moving residues between segments
-        try:
-            dest = np.where(self.top.segids.values == values)[0]
-        except IndexError:
-            raise NotImplementedError("That segid doesn't exist!")
+        if is_iterable(values):
+            if not len(values) == len(rg):
+                raise ValueError(_LENGTH_VALUEERROR.format(
+                    group='residuegroup', lengroup=len(rg), lenvalues=len(values)))
+            try:
+                dest = [np.where(self.top.segids.values == val)[0]
+                        for val in values]
+            except IndexError:
+                raise NotImplementedError
+        else:
+            try:
+                dest = np.where(self.top.segids.values == values)[0]
+            except IndexError:
+                raise NotImplementedError("That segid doesn't exist!")
         self.top.tt.move_residue(rg.ix, dest)
 
 
