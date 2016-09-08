@@ -3,6 +3,7 @@
 Should convert between indices (*ix)
 Should work with both a single or an array of indices
 """
+import six
 from six.moves import zip
 
 from numpy.testing import (
@@ -168,17 +169,59 @@ class TestTransTable(object):
 
 
 class TestLevelMoves(object):
+    """Tests for moving atoms/residues between residues/segments
+
+    Moves are performed by setting either [res/seg]indices or [res/seg]ids
+
+    
+    """
     def setUp(self):
         self.u = make_Universe()
 
     def tearDown(self):
         del self.u
 
+    @staticmethod
+    def assert_group_attr_equal(group, attr, value):
+        """Check *group* *attr* (and all items within) are equal to value"""
+        def singular(thing):
+            """Convert resindices -> resindex or resids -> resid"""
+            if thing.endswith('ices'):
+                return thing[:-4] + 'ex'
+            else:
+                return thing[:-1]
+
+        def magic_iter(value):
+            """Either iterate over value, or repeatedly return value
+
+            Hack for dealing with single or iterable reference values in zip
+            """
+            def iterable(val):
+                if isinstance(val, six.string_types):
+                    return False
+                try:
+                    val[0]
+                except TypeError:
+                    return False
+                else:
+                    return True
+
+            if not iterable(value):
+                while True:
+                    yield value
+            else:
+                for val in value:
+                    yield val
+
+        assert_equal(getattr(group, attr), value)
+        for item, refval in zip(group, magic_iter(value)):
+            assert_equal(getattr(item, singular(attr)), refval)
+
     def test_move_atom_via_resid(self):
         # move an atom between residues based on resid
         # residue must already exist!
         at = self.u.atoms[0]
-        
+
         assert_equal(at.resindex, 0)
         assert_equal(at.resid, 1)
         assert_equal(at.resname, 'AAA')
@@ -197,7 +240,7 @@ class TestLevelMoves(object):
         # move an atom between residues based on resindex
         # residue must already exist!
         at = self.u.atoms[0]
-        
+
         assert_equal(at.resindex, 0)
         assert_equal(at.resname, 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
@@ -214,18 +257,18 @@ class TestLevelMoves(object):
         # move some atoms between residues based on resid
         # residue must already exist!
         ag = self.u.atoms[[1, 3]]
-        
-        assert_equal(ag.resindices, 0)
-        assert_equal(ag.resids, 1)
-        assert_equal(ag.resnames, 'AAA')
+
+        self.assert_group_attr_equal(ag, 'resindices', 0)
+        self.assert_group_attr_equal(ag, 'resids', 1)
+        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
         assert_equal(len(self.u.residues[4].atoms), 5)
 
         ag.resids = 5
 
-        assert_equal(ag.resindices, 4)
-        assert_equal(ag.resids, 5)
-        assert_equal(ag.resnames, 'EEE')
+        self.assert_group_attr_equal(ag, 'resindices', 4)
+        self.assert_group_attr_equal(ag, 'resids', 5)
+        self.assert_group_attr_equal(ag, 'resnames', 'EEE')
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 7)
 
@@ -233,34 +276,34 @@ class TestLevelMoves(object):
         # move some atoms between residues based on resindex
         # residue must already exist!
         ag = self.u.atoms[[1, 3]]
-        
-        assert_equal(ag.resindices, 0)
-        assert_equal(ag.resnames, 'AAA')
+
+        self.assert_group_attr_equal(ag, 'resindices', 0)
+        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
         assert_equal(len(self.u.residues[4].atoms), 5)
 
         ag.resindices = 4
 
-        assert_equal(ag.resindices, 4)
-        assert_equal(ag.resnames, 'EEE')
+        self.assert_group_attr_equal(ag, 'resindices', 4)
+        self.assert_group_attr_equal(ag, 'resnames', 'EEE')
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 7)
 
     def test_move_atomgroup_via_resid_with_iterable(self):
         ag = self.u.atoms[[1, 3]]
 
-        assert_equal(ag.resindices, 0)
-        assert_equal(ag.resids, 1)
-        assert_equal(ag.resnames, 'AAA')
+        self.assert_group_attr_equal(ag, 'resindices', 0)
+        self.assert_group_attr_equal(ag, 'resids', 1)
+        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
         assert_equal(len(self.u.residues[4].atoms), 5)
         assert_equal(len(self.u.residues[3].atoms), 5)
 
         ag.resids = (5, 4)
 
-        assert_equal(ag.resindices, (4, 3))
-        assert_equal(ag.resids, (5, 4))
-        assert_equal(ag.resnames, ('EEE', 'DDD'))
+        self.assert_group_attr_equal(ag, 'resindices', (4, 3))
+        self.assert_group_attr_equal(ag, 'resids', (5, 4))
+        self.assert_group_attr_equal(ag, 'resnames', ('EEE', 'DDD'))
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 6)
         assert_equal(len(self.u.residues[3].atoms), 6)
@@ -276,18 +319,18 @@ class TestLevelMoves(object):
     def test_move_atomgroup_via_resindex_with_iterable(self):
         ag = self.u.atoms[[1, 3]]
 
-        assert_equal(ag.resindices, 0)
-        assert_equal(ag.resids, 1)
-        assert_equal(ag.resnames, 'AAA')
+        self.assert_group_attr_equal(ag, 'resindices', 0)
+        self.assert_group_attr_equal(ag, 'resids', 1)
+        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
         assert_equal(len(self.u.residues[0].atoms), 5)
         assert_equal(len(self.u.residues[4].atoms), 5)
         assert_equal(len(self.u.residues[3].atoms), 5)
 
         ag.resindices = (4, 3)
 
-        assert_equal(ag.resindices, (4, 3))
-        assert_equal(ag.resids, (5, 4))
-        assert_equal(ag.resnames, ('EEE', 'DDD'))
+        self.assert_group_attr_equal(ag, 'resindices', (4, 3))
+        self.assert_group_attr_equal(ag, 'resids', (5, 4))
+        self.assert_group_attr_equal(ag, 'resnames', ('EEE', 'DDD'))
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 6)
         assert_equal(len(self.u.residues[3].atoms), 6)
@@ -333,46 +376,46 @@ class TestLevelMoves(object):
     def test_move_residuegroup_via_segindex(self):
         rg = self.u.residues[[1, 3]]
 
-        assert_equal(rg.segindices, 0)
-        assert_equal(rg.segids, 'SegA')
+        self.assert_group_attr_equal(rg, 'segindices', 0)
+        self.assert_group_attr_equal(rg, 'segids', 'SegA')
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
 
         rg.segindices = 1
 
-        assert_equal(rg.segindices, 1)
-        assert_equal(rg.segids, 'SegB')
+        self.assert_group_attr_equal(rg, 'segindices', 1)
+        self.assert_group_attr_equal(rg, 'segids', 'SegB')
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 7)
 
     def test_move_residuegroup_via_segid(self):
         rg = self.u.residues[[1, 3]]
 
-        assert_equal(rg.segindices, 0)
-        assert_equal(rg.segids, 'SegA')
+        self.assert_group_attr_equal(rg, 'segindices', 0)
+        self.assert_group_attr_equal(rg, 'segids', 'SegA')
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
 
         rg.segids = 'SegB'
 
-        assert_equal(rg.segindices, 1)
-        assert_equal(rg.segids, 'SegB')
+        self.assert_group_attr_equal(rg, 'segindices', 1)
+        self.assert_group_attr_equal(rg, 'segids', 'SegB')
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 7)
 
     def test_move_residuegroup_via_segindex_with_iterable(self):
         rg = self.u.residues[[1, 3]]
 
-        assert_equal(rg.segindices, 0)
-        assert_equal(rg.segids, 'SegA')
+        self.assert_group_attr_equal(rg, 'segindices', 0)
+        self.assert_group_attr_equal(rg, 'segids', 'SegA')
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
         assert_equal(len(self.u.segments[3].residues), 5)
 
         rg.segindices = (1, 3)
 
-        assert_equal(rg.segindices, (1, 3))
-        assert_equal(rg.segids, ('SegB', 'SegD'))
+        self.assert_group_attr_equal(rg, 'segindices', (1, 3))
+        self.assert_group_attr_equal(rg, 'segids', ('SegB', 'SegD'))
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 6)
         assert_equal(len(self.u.segments[3].residues), 6)
@@ -387,16 +430,16 @@ class TestLevelMoves(object):
     def test_move_residuegroup_via_segid_with_iterable(self):
         rg = self.u.residues[[1, 3]]
 
-        assert_equal(rg.segindices, 0)
-        assert_equal(rg.segids, 'SegA')
+        self.assert_group_attr_equal(rg, 'segindices', 0)
+        self.assert_group_attr_equal(rg, 'segids', 'SegA')
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
         assert_equal(len(self.u.segments[3].residues), 5)
 
         rg.segids = ('SegB', 'SegD')
 
-        assert_equal(rg.segindices, (1, 3))
-        assert_equal(rg.segids, ('SegB', 'SegD'))
+        self.assert_group_attr_equal(rg, 'segindices', (1, 3))
+        self.assert_group_attr_equal(rg, 'segids', ('SegB', 'SegD'))
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 6)
         assert_equal(len(self.u.segments[3].residues), 6)
