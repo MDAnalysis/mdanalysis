@@ -9,6 +9,7 @@ from numpy.testing import (
     assert_,
     assert_equal,
     assert_array_equal,
+    assert_raises,
 )
 import numpy as np
 
@@ -220,10 +221,6 @@ class TestLevelMoves(object):
         assert_equal(len(self.u.residues[0].atoms), 5)
         assert_equal(len(self.u.residues[4].atoms), 5)
 
-        # TODO!
-        # Should also be able to supply an array of len(ag)
-        # to set atoms to different residues each
-        # ie ag.resids = [4, 5]
         ag.resids = 5
 
         assert_equal(ag.resindices, 4)
@@ -248,6 +245,60 @@ class TestLevelMoves(object):
         assert_equal(ag.resnames, 'EEE')
         assert_equal(len(self.u.residues[0].atoms), 3)
         assert_equal(len(self.u.residues[4].atoms), 7)
+
+    def test_move_atomgroup_via_resid_with_iterable(self):
+        ag = self.u.atoms[[1, 3]]
+
+        assert_equal(ag.resindices, 0)
+        assert_equal(ag.resids, 1)
+        assert_equal(ag.resnames, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
+        assert_equal(len(self.u.residues[3].atoms), 5)
+
+        ag.resids = (5, 4)
+
+        assert_equal(ag.resindices, (4, 3))
+        assert_equal(ag.resids, (5, 4))
+        assert_equal(ag.resnames, ('EEE', 'DDD'))
+        assert_equal(len(self.u.residues[0].atoms), 3)
+        assert_equal(len(self.u.residues[4].atoms), 6)
+        assert_equal(len(self.u.residues[3].atoms), 6)
+
+    def test_move_atomgroup_via_resid_with_iterable_VE(self):
+        def set_resid():
+            ag = self.u.atoms[[1, 3]]
+            # wrong sized iterable raises VE
+            ag.resids = (4, 5, 6)
+
+        assert_raises(ValueError, set_resid)
+
+    def test_move_atomgroup_via_resindex_with_iterable(self):
+        ag = self.u.atoms[[1, 3]]
+
+        assert_equal(ag.resindices, 0)
+        assert_equal(ag.resids, 1)
+        assert_equal(ag.resnames, 'AAA')
+        assert_equal(len(self.u.residues[0].atoms), 5)
+        assert_equal(len(self.u.residues[4].atoms), 5)
+        assert_equal(len(self.u.residues[3].atoms), 5)
+
+        ag.resindices = (4, 3)
+
+        assert_equal(ag.resindices, (4, 3))
+        assert_equal(ag.resids, (5, 4))
+        assert_equal(ag.resnames, ('EEE', 'DDD'))
+        assert_equal(len(self.u.residues[0].atoms), 3)
+        assert_equal(len(self.u.residues[4].atoms), 6)
+        assert_equal(len(self.u.residues[3].atoms), 6)
+
+    def test_move_atomgroup_via_resindex_with_iterable_VE(self):
+        def set_resindex():
+            ag = self.u.atoms[[1, 3]]
+            # wrong sized iterable raises VE
+            ag.resindices = (4, 5, 6)
+
+        assert_raises(ValueError, set_resindex)
 
     def test_move_residue_via_segindex(self):
         res = self.u.residues[0]
@@ -287,14 +338,12 @@ class TestLevelMoves(object):
         assert_equal(len(self.u.segments[0].residues), 5)
         assert_equal(len(self.u.segments[1].residues), 5)
 
-        # TODO: Provide array ie [1, 2]
         rg.segindices = 1
 
         assert_equal(rg.segindices, 1)
         assert_equal(rg.segids, 'SegB')
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 7)
-
 
     def test_move_residuegroup_via_segid(self):
         rg = self.u.residues[[1, 3]]
@@ -310,6 +359,54 @@ class TestLevelMoves(object):
         assert_equal(rg.segids, 'SegB')
         assert_equal(len(self.u.segments[0].residues), 3)
         assert_equal(len(self.u.segments[1].residues), 7)
+
+    def test_move_residuegroup_via_segindex_with_iterable(self):
+        rg = self.u.residues[[1, 3]]
+
+        assert_equal(rg.segindices, 0)
+        assert_equal(rg.segids, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+        assert_equal(len(self.u.segments[3].residues), 5)
+
+        rg.segindices = (1, 3)
+
+        assert_equal(rg.segindices, (1, 3))
+        assert_equal(rg.segids, ('SegB', 'SegD'))
+        assert_equal(len(self.u.segments[0].residues), 3)
+        assert_equal(len(self.u.segments[1].residues), 6)
+        assert_equal(len(self.u.segments[3].residues), 6)
+
+    def test_move_residuegroup_via_segindex_with_iterable_VE(self):
+        def set_segindex():
+            rg = self.u.residues[[1, 3]]
+            rg.segindices = (1, 3, 5)
+
+        assert_raises(ValueError, set_segindex)
+
+    def test_move_residuegroup_via_segid_with_iterable(self):
+        rg = self.u.residues[[1, 3]]
+
+        assert_equal(rg.segindices, 0)
+        assert_equal(rg.segids, 'SegA')
+        assert_equal(len(self.u.segments[0].residues), 5)
+        assert_equal(len(self.u.segments[1].residues), 5)
+        assert_equal(len(self.u.segments[3].residues), 5)
+
+        rg.segids = ('SegB', 'SegD')
+
+        assert_equal(rg.segindices, (1, 3))
+        assert_equal(rg.segids, ('SegB', 'SegD'))
+        assert_equal(len(self.u.segments[0].residues), 3)
+        assert_equal(len(self.u.segments[1].residues), 6)
+        assert_equal(len(self.u.segments[3].residues), 6)
+
+    def test_move_residuegroup_via_segid_with_iterable_VE(self):
+        def set_segid():
+            rg = self.u.residues[[1, 3]]
+            rg.segids = (1, 3, 5)
+
+        assert_raises(ValueError, set_segid)
 
 
 class TestDownshiftArrays(object):
