@@ -29,16 +29,54 @@ from MDAnalysisTests import parser_not_found, module_not_found
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
 
+
 class TestEncore(TestCase):
+
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.ens1 = mda.Universe(PSF, DCD)
-        self.ens2 = mda.Universe(PSF, DCD2)
+        # Create universe from templates defined in setUpClass
+        self.ens1 = mda.Universe(
+            self.ens1_template.filename,
+            self.ens1_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
+
+        self.ens2 = mda.Universe(
+            self.ens2_template.filename,
+            self.ens2_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
 
     def tearDown(self):
         del self.ens1
         del self.ens2
+
+    @classmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUpClass(cls):
+        # To speed up tests, we read in trajectories from file only once,
+        # and then recreate them from their coordinate array for each test
+        super(TestEncore, cls).setUpClass()
+        cls.ens1_template = mda.Universe(PSF, DCD)
+        cls.ens2_template = mda.Universe(PSF, DCD2)
+
+        cls.ens1_template.transfer_to_memory()
+        cls.ens2_template.transfer_to_memory()
+
+        # Filter ensembles to only include every 5th frame
+        cls.ens1_template = mda.Universe(
+            cls.ens1_template.filename,
+            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+        cls.ens2_template = mda.Universe(
+            cls.ens2_template.filename,
+            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.ens1_template
+        del cls.ens2_template
 
     @staticmethod
     def test_triangular_matrix():
@@ -99,137 +137,40 @@ class TestEncore(TestCase):
                                 err_msg = "calculated RMSD values differ from the reference implementation")            
 
     def test_rmsd_matrix_without_superimposition(self):
-        
-        # calculated with gromacs - gmx rms -fit none
-        reference_rmsd =[0.0000001,
-                         0.0425684,
-                         0.0595158,
-                         0.0738680,
-                         0.0835519,
-                         0.0924640,
-                         0.1010487,
-                         0.1131771,
-                         0.1227527,
-                         0.1343707,
-                         0.1433841,
-                         0.1545489,
-                         0.1638420,
-                         0.1720007,
-                         0.1818408,
-                         0.1897694,
-                         0.1979185,
-                         0.2050228,
-                         0.2190710,
-                         0.2282337,
-                         0.2392368,
-                         0.2467754,
-                         0.2559295,
-                         0.2634292,
-                         0.2758299,
-                         0.2815295,
-                         0.2889598,
-                         0.2988116,
-                         0.3075704,
-                         0.3168339,
-                         0.3252532,
-                         0.3335701,
-                         0.3421980,
-                         0.3499905,
-                         0.3576347,
-                         0.3648850,
-                         0.3746280,
-                         0.3787407,
-                         0.3876532,
-                         0.3949267,
-                         0.4022163,
-                         0.4123725,
-                         0.4171653,
-                         0.4270313,
-                         0.4339235,
-                         0.4441433,
-                         0.4535998,
-                         0.4629753,
-                         0.4738565,
-                         0.4778692,
-                         0.4846473,
-                         0.4921997,
-                         0.5025109,
-                         0.5078515,
-                         0.5176530,
-                         0.5236758,
-                         0.5279259,
-                         0.5359889,
-                         0.5479882,
-                         0.5513062,
-                         0.5550882,
-                         0.5616842,
-                         0.5691664,
-                         0.5797819,
-                         0.5860255,
-                         0.5929349,
-                         0.6031308,
-                         0.6075997,
-                         0.6206015,
-                         0.6300921,
-                         0.6396201,
-                         0.6409384,
-                         0.6439900,
-                         0.6467734,
-                         0.6527478,
-                         0.6543783,
-                         0.6585453,
-                         0.6659292,
-                         0.6674148,
-                         0.6699741,
-                         0.6713669,
-                         0.6696672,
-                         0.6695362,
-                         0.6699672,
-                         0.6765218,
-                         0.6806746,
-                         0.6801361,
-                         0.6786651,
-                         0.6828524,
-                         0.6851146,
-                         0.6872993,
-                         0.6837722,
-                         0.6852713,
-                         0.6838173,
-                         0.6822636,
-                         0.6829022,
-                         0.6846855,
-                         0.6843332 ]
+
+        reference_rmsd = [ 0.        ,
+                           0.91544908,
+                           1.41318953,
+                           1.8726356 ,
+                           2.35668635,
+                           2.78433418,
+                           3.20966768,
+                           3.59671712,
+                           3.95373368,
+                           4.36574793,
+                           4.76120567,
+                           5.16000462,
+                           5.48962498,
+                           5.87683058,
+                           6.35305309,
+                           6.49553633,
+                           6.6803894 ,
+                           6.7652216 ,
+                           6.83341503,
+                           6.8028388 ]
 
         selection_string = "name CA"
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
                             self.ens1,
                             encore.confdistmatrix.set_rmsd_matrix_elements,
-                            selection = "name CA",
+                            selection = selection_string,
                             pairwise_align = False,
                             mass_weighted = True,
                             ncores = 1)
-        
-        for i,rmsd in enumerate(reference_rmsd):
-            assert_almost_equal(confdist_matrix[0,i]/10.0, rmsd, decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")
-        
-    def test_ensemble_frame_filtering(self):
-        total_frames = len(self.ens1.trajectory.timeseries(format='fac'))
-        interval = 10
-        filtered_ensemble = mda.Universe(PSF, DCD,
-                                         in_memory=True,
-                                         in_memory_frame_interval=interval)
-        filtered_frames = len(filtered_ensemble.trajectory.timeseries(format='fac'))
-        assert_equal(filtered_frames, len(self.ens1.trajectory.timeseries(format='fac')[::interval]),
-                     err_msg="Incorrect frame number in Ensemble filtering: {0:f} out of {1:f}"
-                     .format(filtered_frames, total_frames//interval))
 
-    def test_ensemble_atom_selection_default(self):
-        coordinates_per_frame_default = len(self.ens1.atoms.coordinates())
-        expected_value = 3341
-        assert_equal(coordinates_per_frame_default, expected_value,
-                     err_msg="Unexpected atom number in default selection: {0:f}. "
-                             "Expected {1:f}.".format(coordinates_per_frame_default, expected_value))
+        print (repr(confdist_matrix.as_array()[0,:]))
+        assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd,
+                            err_msg="calculated RMSD values differ from reference")
 
     @staticmethod
     def test_ensemble_superimposition():
@@ -283,7 +224,6 @@ class TestEncore(TestCase):
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
                              "than ensemble aligned on only CAs.")
 
-    @dec.slow
     def test_hes_to_self(self):
         results, details = encore.hes([self.ens1, self.ens1])
         result_value = results[0,1]
@@ -291,23 +231,20 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    @dec.slow
     def test_hes(self):
         results, details = encore.hes([self.ens1, self.ens2], mass_weighted=True)
         result_value = results[0,1]
-        expected_value = 38279683.96
-        assert_almost_equal(result_value, expected_value, decimal=2,
-                            err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
+        min_bound = 1E5
+        self.assertGreater(result_value, min_bound,
+                           msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
 
-    @dec.slow
     def test_hes_align(self):
         results, details = encore.hes([self.ens1, self.ens2], align=True)
         result_value = results[0,1]
-        expected_value = 6888.15
+        expected_value = 2047.05
         assert_almost_equal(result_value, expected_value, decimal=-3,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    @dec.slow
     def test_ces_to_self(self):
         results, details = \
             encore.ces([self.ens1, self.ens1],
@@ -317,15 +254,13 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    @dec.slow
     def test_ces(self):
         results, details = encore.ces([self.ens1, self.ens2])
         result_value = results[0,1]
-        expected_value = 0.68070
+        expected_value = 0.51
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
         
-    @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_to_self(self):
@@ -335,17 +270,15 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres(self):
-        results, details = encore.dres([self.ens1, self.ens2])
+        results, details = encore.dres([self.ens1, self.ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
-        expected_value = 0.68
-        assert_almost_equal(result_value, expected_value, decimal=1,
-                            err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
+        upper_bound = 0.6
+        self.assertLess(result_value, upper_bound,
+                        msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound))
 
-    @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_without_superimposition(self):
@@ -359,68 +292,87 @@ class TestEncore(TestCase):
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
         
-    @dec.slow
     def test_ces_convergence(self):
-        expected_values = [ 0.48194205,  0.40284672,  0.31699026,  0.25220447,  0.19829817,
-         0.14642725,  0.09911411,  0.05667391,  0.        ]
-        results = encore.ces_convergence(self.ens1, 10)
+        expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
+        results = encore.ces_convergence(self.ens1, 5)
+        print (results)
         for i,ev in enumerate(expected_values):
-            assert_almost_equal(ev, results[i], decimal=2, 
+            assert_almost_equal(ev, results[i], decimal=2,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
-    @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_convergence(self):
-        expected_values = [ 0.53998088,  0.40466411,  0.30709079,  0.26811765,  0.19571984,
-         0.11489109,  0.06484937,  0.02803273,  0.        ]
+        expected_values = [ 0.3, 0.]
         results = encore.dres_convergence(self.ens1, 10)
-        for i,ev in enumerate(expected_values):
-            assert_almost_equal(ev, results[i], decimal=1, 
-                                err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
+        assert_almost_equal(results[:,0], expected_values, decimal=1,
+                            err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
 
     @dec.slow
     def test_hes_error_estimation(self):
-        expected_average = 0.086
-        expected_stdev = 0.009
-        averages, stdevs = encore.hes([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10)
+        expected_average = 10
+        expected_stdev = 12
+        averages, stdevs = encore.hes([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(expected_average, average, decimal=1, 
+        assert_almost_equal(average, expected_average, decimal=-2,
                             err_msg="Unexpected average value for bootstrapped samples in Harmonic Ensemble imilarity")
-        assert_almost_equal(expected_stdev, stdev, decimal=1,
+        assert_almost_equal(stdev, expected_stdev, decimal=-2,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
     @dec.slow
     def test_ces_error_estimation(self):
-        expected_average = 0.02
-        expected_stdev = 0.008
+        expected_average = 0.03
+        expected_stdev = 0.31
         averages, stdevs = encore.ces([self.ens1, self.ens1],
                                       estimate_error = True,
                                       bootstrapping_samples=10,
-                                      clustering_method=encore.AffinityPropagationNative(preference=-2.0))
+                                      clustering_method=encore.AffinityPropagationNative(preference=-2.0),
+                                      selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(expected_average, average, decimal=1, 
+        assert_almost_equal(average, expected_average, decimal=1,
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
-        assert_almost_equal(expected_stdev, stdev, decimal=1,
+        assert_almost_equal(stdev, expected_stdev, decimal=0,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")        
+
+    @dec.slow
+    def test_ces_error_estimation_ensemble_bootstrap(self):
+        # Error estimation using a method that does not take a distance
+        # matrix as input, and therefore relies on bootstrapping the ensembles
+        # instead
+        expected_average = 0.03
+        expected_stdev = 0.02
+        averages, stdevs = encore.ces([self.ens1, self.ens1],
+                                      estimate_error = True,
+                                      bootstrapping_samples=10,
+                                      clustering_method=encore.KMeans(n_clusters=2),
+                                      selection="name CA and resnum 1-10")
+        average = averages[0,1]
+        stdev = stdevs[0,1]
+
+        assert_almost_equal(average, expected_average, decimal=1,
+                            err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
+        assert_almost_equal(stdev, expected_stdev, decimal=1,
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
     @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_error_estimation(self):
-        expected_average = 0.02
-        expected_stdev = 0.01
-        averages, stdevs = encore.dres([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10)
+        expected_average = 0.13
+        stdev_upper_bound = 0.2
+        averages, stdevs = encore.dres([self.ens1, self.ens1], estimate_error = True,
+                                       bootstrapping_samples=10,
+                                       selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(expected_average, average, decimal=1, 
+        assert_almost_equal(average, expected_average, decimal=1,
                             err_msg="Unexpected average value for bootstrapped samples in Dim. reduction Ensemble similarity")
-        assert_almost_equal(expected_average, average, decimal=1, 
-                            err_msg="Unexpected standard daviation for bootstrapped samples in Dim. reduction Ensemble imilarity")        
+        self.assertLess(stdev, stdev_upper_bound,
+                            msg="Unexpected standard daviation for bootstrapped samples in Dim. reduction Ensemble imilarity")
 
 
 
@@ -428,33 +380,69 @@ class TestEncoreClustering(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.ens1 = mda.Universe(PSF, DCD)
-        self.ens2 = mda.Universe(PSF, DCD2)
+        # Create universe from templates defined in setUpClass
+        self.ens1 = mda.Universe(
+            self.ens1_template.filename,
+            self.ens1_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
 
-    def tearDown(self):
+        self.ens2 = mda.Universe(
+            self.ens2_template.filename,
+            self.ens2_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
+
+    def tearDownClass(self):
         del self.ens1
         del self.ens2
+
+    @classmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUpClass(cls):
+        # To speed up tests, we read in trajectories from file only once,
+        # and then recreate them from their coordinate array for each test
+        super(TestEncoreClustering, cls).setUpClass()
+        cls.ens1_template = mda.Universe(PSF, DCD)
+        cls.ens2_template = mda.Universe(PSF, DCD2)
+
+        cls.ens1_template.transfer_to_memory()
+        cls.ens2_template.transfer_to_memory()
+
+        # Filter ensembles to only include every 5th frame
+        cls.ens1_template = mda.Universe(
+            cls.ens1_template.filename,
+            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+        cls.ens2_template = mda.Universe(
+            cls.ens2_template.filename,
+            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.ens1_template
+        del cls.ens2_template
 
     @dec.slow
     def test_clustering_one_ensemble(self):
         cluster_collection = encore.cluster(self.ens1)
-        expected_value = 17
+        expected_value = 7
         assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
     def test_clustering_two_ensembles(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2])
-        expected_value = 35
+        expected_value = 14
         assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Clustering two DCD ensembles provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
     def test_clustering_three_ensembles_two_identical(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2, self.ens1])
-        expected_value = 50
+        expected_value = 40
         assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
     def test_clustering_two_methods(self):
@@ -463,16 +451,16 @@ class TestEncoreClustering(TestCase):
             method=[encore.AffinityPropagationNative(),
                     encore.AffinityPropagationNative()])
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
-                     err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
     def test_clustering_AffinityPropagationNative_direct(self):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(self.ens1)
         cluster_assignment, details = method(distance_matrix)
-        expected_value = 17
+        expected_value = 7
         assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
     @dec.slow
@@ -482,9 +470,9 @@ class TestEncoreClustering(TestCase):
         method = encore.AffinityPropagation()
         distance_matrix = encore.get_distance_matrix(self.ens1)
         cluster_assignment, details = method(distance_matrix)
-        expected_value = 17
+        expected_value = 7
         assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
     @dec.slow
@@ -498,19 +486,19 @@ class TestEncoreClustering(TestCase):
                                  (coordinates.shape[0], -1))
         cluster_assignment, details = method(coordinates)
         assert_equal(len(set(cluster_assignment)), clusters,
-                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
     @dec.slow
     @dec.skipif(module_not_found('sklearn'),
                 "Test skipped because sklearn is not available.")
     def test_clustering_DBSCAN_direct(self):
-        method = encore.DBSCAN()
+        method = encore.DBSCAN(eps=0.5, min_samples=2)
         distance_matrix = encore.get_distance_matrix(self.ens1)
         cluster_assignment, details = method(distance_matrix)
-        expected_value = 5
+        expected_value = 2
         assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Clustering the DCD ensemble provides unexpected results: {0}".format(
+                     err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
     @dec.slow
@@ -520,10 +508,11 @@ class TestEncoreClustering(TestCase):
         cluster_collection = encore.cluster(
             [self.ens1],
             method=[encore.AffinityPropagation(preference=-7.5),
-                    encore.DBSCAN()])
+                    encore.DBSCAN(min_samples=2)])
+        print(cluster_collection)
         print (cluster_collection)
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
-                     err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
     @dec.skipif(module_not_found('sklearn'),
@@ -534,7 +523,7 @@ class TestEncoreClustering(TestCase):
             method=encore.KMeans(10))
         print(cluster_collection)
         assert_equal(len(cluster_collection), 10,
-                     err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
     @dec.skipif(module_not_found('sklearn'),
@@ -546,7 +535,7 @@ class TestEncoreClustering(TestCase):
                     encore.AffinityPropagationNative()])
         print(cluster_collection)
         assert_equal(len(cluster_collection[0]), len(cluster_collection[0]),
-                     err_msg="Clustering three DCD ensemble provides unexpected results: {0}".format(cluster_collection))
+                     err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
     @dec.skipif(module_not_found('sklearn'),
@@ -664,12 +653,48 @@ class TestEncoreDimensionalityReduction(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.ens1 = mda.Universe(PSF, DCD)
-        self.ens2 = mda.Universe(PSF, DCD2)
+        # Create universe from templates defined in setUpClass
+        self.ens1 = mda.Universe(
+            self.ens1_template.filename,
+            self.ens1_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
 
-    def tearDown(self):
+        self.ens2 = mda.Universe(
+            self.ens2_template.filename,
+            self.ens2_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
+
+    def tearDownClass(self):
         del self.ens1
         del self.ens2
+
+    @classmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUpClass(cls):
+        # To speed up tests, we read in trajectories from file only once,
+        # and then recreate them from their coordinate array for each test
+        super(TestEncoreDimensionalityReduction, cls).setUpClass()
+        cls.ens1_template = mda.Universe(PSF, DCD)
+        cls.ens2_template = mda.Universe(PSF, DCD2)
+
+        cls.ens1_template.transfer_to_memory()
+        cls.ens2_template.transfer_to_memory()
+
+        # Filter ensembles to only include every 5th frame
+        cls.ens1_template = mda.Universe(
+            cls.ens1_template.filename,
+            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+        cls.ens2_template = mda.Universe(
+            cls.ens2_template.filename,
+            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls.ens1_template
+        del cls.ens2_template
 
     @dec.slow
     def test_dimensionality_reduction_one_ensemble(self):

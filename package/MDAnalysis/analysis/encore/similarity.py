@@ -892,6 +892,11 @@ def hes(ensembles,
         for ensemble in ensembles:
             ensemble.transfer_to_memory()
 
+    if calc_diagonal:
+        pairs_indices = list(trm_indices_diag(len(ensembles)))
+    else:
+        pairs_indices = list(trm_indices_nodiag(len(ensembles)))
+
     logging.info("Chosen metric: Harmonic similarity")
     if cov_estimator == "shrinkage":
         covariance_estimator = shrinkage_covariance_estimator
@@ -916,28 +921,36 @@ def hes(ensembles,
 
     if estimate_error:
         data = []
+        ensembles_list = []
+        for i, ensemble in enumerate(ensembles):
+            ensembles_list.append(
+                get_ensemble_bootstrap_samples(
+                    ensemble,
+                    samples=bootstrapping_samples))
         for t in range(bootstrapping_samples):
             logging.info("The coordinates will be bootstrapped.")
+
             xs = []
             sigmas = []
             values = np.zeros((out_matrix_eln, out_matrix_eln))
-            for e in ensembles:
-                this_coords = bootstrap_coordinates(
-                    e.trajectory.timeseries(e.select_atoms(selection),
-                                            format='fac'),
-                    1)[0]
-                xs.append(np.average(this_coords, axis=0).flatten())
-                sigmas.append(covariance_matrix(e,
+            for i, e_orig in enumerate(ensembles):
+                xs.append(np.average(
+                    ensembles_list[i][t].trajectory.timeseries(
+                        e_orig.select_atoms(selection),
+                        format=('fac')),
+                    axis=0).flatten())
+                sigmas.append(covariance_matrix(ensembles_list[i][t],
                                                 mass_weighted=True,
                                                 estimator=covariance_estimator,
                                                 selection=selection))
-            for i, j in pairs_indices:
-                value = harmonic_ensemble_similarity(x1=xs[i],
-                                                     x2=xs[j],
-                                                     sigma1=sigmas[i],
-                                                     sigma2=sigmas[j])
-                values[i, j] = value
-                values[j, i] = value
+
+            for pair in pairs_indices:
+                value = harmonic_ensemble_similarity(x1=xs[pair[0]],
+                                                     x2=xs[pair[1]],
+                                                     sigma1=sigmas[pair[0]],
+                                                     sigma2=sigmas[pair[1]])
+                values[pair[0], pair[1]] = value
+                values[pair[1], pair[0]] = value
             data.append(values)
         avgs = np.average(data, axis=0)
         stds = np.std(data, axis=0)
@@ -1153,8 +1166,9 @@ def ces(ensembles,
                         samples=bootstrapping_samples))
             ensembles = []
             for j in range(bootstrapping_samples):
-                ensembles.append(ensembles_list[i,j] for i
-                                 in range(ensembles_list.shape[0]))
+                ensembles.append([])
+                for i in range(len(ensembles_list)):
+                    ensembles[-1].append(ensembles_list[i][j])
         else:
             # if all methods accept distances matrices, duplicate
             # ensemble so that it matches size of distance matrices

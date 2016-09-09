@@ -33,6 +33,7 @@ objects) or distance matrices, by resampling with replacement.
 
 import numpy as np
 import logging
+import MDAnalysis as mda
 from .utils import TriangularMatrix, ParallelCalculation
 
 
@@ -140,10 +141,13 @@ def get_ensemble_bootstrap_samples(ensemble,
     ensemble.transfer_to_memory()
 
     ensembles = []
-    for sample in samples:
+    for i in range(samples):
         indices = np.random.randint(
             low=0,
-            high=ensemble.trajectory.timeseries().shape[0]+1,
-            size=ensemble.trajectory.timeseries().shape[0])
-        ensembles.append(ensemble.trajectory.timeseries()[indices,:,:])
+            high=ensemble.trajectory.timeseries().shape[1],
+            size=ensemble.trajectory.timeseries().shape[1])
+        ensembles.append(
+            mda.Universe(ensemble.filename,
+                        ensemble.trajectory.timeseries(format='afc')[:,indices,:],
+                         format=mda.coordinates.memory.MemoryReader))
     return ensembles
