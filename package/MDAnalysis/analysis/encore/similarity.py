@@ -1132,8 +1132,8 @@ def ces(ensembles,
             ensembles = []
             for j in range(bootstrapping_samples):
                 ensembles.append([])
-                for i in range(len(ensembles_list)):
-                    ensembles[-1].append(ensembles_list[i][j])
+                for i, e in enumerate(ensembles_list):
+                    ensembles[-1].append(e[j])
         else:
             # if all methods accept distances matrices, duplicate
             # ensemble so that it matches size of distance matrices

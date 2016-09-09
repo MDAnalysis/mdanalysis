@@ -311,12 +311,9 @@ class BaseReaderTest(object):
         # auxiliary has a lower frequency, so iter_as_aux should iterate over
         # only frames where there is a corresponding auxiliary value
         for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
-            print("THISONE")
-            assert_timestep_almost_equal(ts, 
-                           self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
-                           decimal=self.ref.prec)
-            print "done"
-
+            assert_timestep_almost_equal(ts,
+                       self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
+                       decimal=self.ref.prec)
 
     def test_iter_auxiliary(self):
         # should go through all steps in 'highf'
@@ -345,8 +342,6 @@ class BaseReaderTest(object):
     def test_rename_aux(self):
         self.reader.rename_aux('lowf', 'lowf_renamed')
         # data should now be in aux namespace under new name
-        print(self.reader.ts.aux.lowf_renamed)
-	print(self.ref.aux_lowf_data)
         assert_equal(self.reader.ts.aux.lowf_renamed, self.ref.aux_lowf_data[0])
         # old name should be removed
         assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')

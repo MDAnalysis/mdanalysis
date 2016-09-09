@@ -335,8 +335,10 @@ class TestEncore(TestCase):
         assert_almost_equal(average, expected_average, decimal=1,
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
         assert_almost_equal(stdev, expected_stdev, decimal=0,
-                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")        
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
+    @dec.skipif(module_not_found('sklearn'),
+                "Test skipped because sklearn is not available.")
     @dec.slow
     def test_ces_error_estimation_ensemble_bootstrap(self):
         # Error estimation using a method that does not take a distance
