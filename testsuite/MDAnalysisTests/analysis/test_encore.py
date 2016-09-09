@@ -363,7 +363,7 @@ class TestEncore(TestCase):
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_error_estimation(self):
-        expected_average = 0.13
+        average_upper_bound = 0.3
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([self.ens1, self.ens1], estimate_error = True,
                                        bootstrapping_samples=10,
@@ -371,10 +371,10 @@ class TestEncore(TestCase):
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(average, expected_average, decimal=1,
-                            err_msg="Unexpected average value for bootstrapped samples in Dim. reduction Ensemble similarity")
+        self.assertLess(average, average_upper_bound,
+                            msg="Unexpected average value for bootstrapped samples in Dim. reduction Ensemble similarity")
         self.assertLess(stdev, stdev_upper_bound,
-                            msg="Unexpected standard daviation for bootstrapped samples in Dim. reduction Ensemble imilarity")
+                            msg="Unexpected standard deviation for bootstrapped samples in Dim. reduction Ensemble imilarity")
 
 
 
