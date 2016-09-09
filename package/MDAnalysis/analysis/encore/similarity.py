@@ -671,41 +671,6 @@ def write_output(matrix, base_fname=None, header="", suffix="",
     matrix.square_print(header=header, fname=fname)
 
 
-def bootstrap_coordinates(coords, times):
-    """
-    Bootstrap conformations in a :class:`~MDAnalysis.core.AtomGroup.Universe`.
-    This means drawing from the encore.Ensemble.coordinates numpy array with
-    replacement "times" times and returning the outcome.
-
-    Parameters
-    ----------
-
-    coords : numpy.array
-         3-dimensional coordinates array
-
-    times : int
-        Number of times the coordinates will be bootstrapped
-
-    Returns
-    -------
-
-    out : list
-        Bootstrapped coordinates list. len(out) = times.
-        """
-    out = []
-    for t in range(times):
-        this_coords = np.zeros(coords.shape)
-        for c in range(this_coords.shape[0]):
-            this_coords[c, :, :] = \
-                coords[np.random.randint(low=0,
-                                            high=this_coords.shape[0]),
-                       :,
-                       :]
-        out.append(this_coords)
-    return out
-
-
-
 def prepare_ensembles_for_convergence_increasing_window(ensemble,
                                                         window_size,
                                                         selection="name CA"):
