@@ -121,6 +121,7 @@ module. The derived classes must follow the Trajectory API in
 from six.moves import range
 import six
 
+import logging as log
 import itertools
 import os.path
 import warnings
@@ -1401,6 +1402,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         --------
         :meth:`iter_as_aux`
         """
+        
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
@@ -1416,7 +1418,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         while self.frame != next_frame or getattr(self, '_frame', 0) == -1:
             # iterate trajectory until frame is reached
             ts = self.next()       
-        return ts 
+        return ts
 
     def iter_as_aux(self, auxname):
         """Iterate through timesteps for which there is at least one assigned 

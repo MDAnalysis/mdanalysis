@@ -600,6 +600,7 @@ def rms_fit_trj(
         strict=False,
         force=True,
         quiet=False,
+        in_memory=False,
         **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
@@ -652,7 +653,10 @@ def rms_fit_trj(
          - ``True``: suppress progress and logging for levels INFO and below.
          - ``False``: show all status messages and do not change the the logging
            level (default)
-
+      *in_memory*
+         Default: ``False``
+         - ``True``: Switch to an in-memory trajectory so that alignment can
+           be done in-place.
 
       *kwargs*
          All other keyword arguments are passed on the trajectory
@@ -660,7 +664,7 @@ def rms_fit_trj(
          trajectories on the fly (e.g. change the output format by changing the extension of *filename*
          and setting different parameters as described for the corresponding writer).
 
-    :Returns: *filename* (either provided or auto-generated)
+    :Returns: *filename* (either provided or auto-generated), or None if in_memory=True
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -682,19 +686,24 @@ def rms_fit_trj(
         logging.disable(logging.WARN)
 
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
-    if filename is None:
-        path, fn = os.path.split(frames.filename)
-        filename = os.path.join(path, prefix + fn)
-        _Writer = frames.Writer
+    writer = None
+    if in_memory:
+        traj.transfer_to_memory()
+        frames = traj.trajectory
+        filename = None
+        logger.info("Moved trajectory to in-memory representation")
     else:
-        _Writer = frames.OtherWriter
-    if os.path.exists(filename) and not force:
-        logger.warn(
-            "{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
-        return filename
-    writer = _Writer(filename, **kwargs)
-    del _Writer
-
+        if filename is None:
+            path, fn = os.path.split(frames.filename)
+            filename = os.path.join(path, prefix + fn)
+            _Writer = frames.Writer
+        else:
+            _Writer = frames.OtherWriter
+        if os.path.exists(filename) and not force:
+            logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
+            return filename
+        writer = _Writer(filename, **kwargs)
+        del _Writer
     select = rms.process_selection(select)
     ref_atoms = reference.select_atoms(*select['reference'])
     traj_atoms = traj.select_atoms(*select['mobile'])
@@ -756,10 +765,11 @@ def rms_fit_trj(
         ts.positions[:] = ts.positions * R
         ts.positions += ref_com
 
-        writer.write(traj.atoms)  # write whole input trajectory system
-        percentage.echo(ts.frame)
+        if writer is not None:
+            writer.write(traj.atoms)  # write whole input trajectory system
+            percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
-                frames.n_frames, filename)
+            frames.n_frames, filename)
 
     if rmsdfile is not None:
         np.savetxt(rmsdfile, rmsd)

@@ -709,6 +709,7 @@ from . import TRR
 from . import TRZ
 from . import XTC
 from . import XYZ
+from . import memory
 
 try:
     from . import DCD
