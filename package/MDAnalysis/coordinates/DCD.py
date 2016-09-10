@@ -507,6 +507,8 @@ class DCDReader(base.Reader):
         :Arguments:
             *asel*
                :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+               Defaults to None, in which case the full set of coordinate data
+               is returned.
             *start, stop, step*
                A range of the trajectory to access, with start being inclusive
                and stop being exclusive.

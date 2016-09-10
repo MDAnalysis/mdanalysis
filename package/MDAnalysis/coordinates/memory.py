@@ -173,7 +173,10 @@ class MemoryReader(base.ProtoReader):
         Parameters
         ---------
         asel : :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
-            Atom selection
+            Atom selection. Defaults to None, in which case the full set of
+            coordinate data is returned. Note that in this case, a view
+            of the underlying numpy array is returned, while a copy of the
+            data is returned whenever asel is different from None.
         start, stop, skip : int
             range of trajectory to access, start and stop are inclusive
         format : str
