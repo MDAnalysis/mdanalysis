@@ -40,3 +40,11 @@ class TestNuclinfo(object):
     def test_wc_pair_2(self):
         val = nuclinfo.wc_pair(self.u, 22, 23, seg1='RNAA', seg2='RNAA')
         assert_almost_equal(val, 4.601, decimal=3)
+
+    def test_minor_pair_1(self):
+        val = nuclinfo.minor_pair(self.u, 3, 17, seg1='RNAA', seg2='RNAA')
+        assert_almost_equal(val, 16.649, decimal=3)
+
+    def test_minor_pair_2(self):
+        val = nuclinfo.minor_pair(self.u, 20, 5, seg1='RNAA', seg2='RNAA')
+        assert_almost_equal(val, 4.356, decimal=3)
