@@ -420,13 +420,13 @@ def trm_indices_diag(n):
             yield (i, j)
 
 
-def merge_universes(ensembles):
+def merge_universes(universes):
     """
-    Merge list of ensembles into one
+    Merge list of universes into one
 
     Parameters
     ----------
-    `ensembles` : list of Universe objects
+    `universes` : list of Universe objects
 
 
     Returns
@@ -434,11 +434,11 @@ def merge_universes(ensembles):
     Universe object
     """
 
-    for ensemble in ensembles:
-        ensemble.transfer_to_memory()
+    for universe in universes:
+        universe.transfer_to_memory()
 
     return mda.Universe(
-        ensembles[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries() for e in ensembles]),
+        universes[0].filename,
+        np.concatenate(tuple([e.trajectory.timeseries() for e in universes]),
         axis=1),
         format=MemoryReader)
