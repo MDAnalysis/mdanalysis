@@ -1,12 +1,10 @@
 import numpy as np
-import logging
-from numpy.testing import raises
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               BaseReaderTest)
-from MDAnalysis.coordinates.memory import MemoryReader
+from MDAnalysis.coordinates.memory import Timestep
 from numpy.testing import assert_equal
 
 
@@ -26,17 +24,17 @@ class MemoryReference(BaseReference):
         self.totaltime = self.universe.trajectory.totaltime
         self.volume = self.universe.trajectory.ts.volume
 
-        self.first_frame = MemoryReader.MemoryTimestep(self.n_atoms)
+        self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.array(self.universe.trajectory[0])
         self.first_frame.frame = 0
         self.first_frame.time = self.first_frame.frame*self.dt
 
-        self.second_frame = MemoryReader.MemoryTimestep(self.n_atoms)
+        self.second_frame = Timestep(self.n_atoms)
         self.second_frame.positions = np.array(self.universe.trajectory[1])
         self.second_frame.frame = 1
         self.second_frame.time = self.second_frame.frame*self.dt
 
-        self.last_frame = MemoryReader.MemoryTimestep(self.n_atoms)
+        self.last_frame = Timestep(self.n_atoms)
         self.last_frame.positions = \
             np.array(self.universe.trajectory[self.n_frames - 1])
         self.last_frame.frame = self.n_frames - 1

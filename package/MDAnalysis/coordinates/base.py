@@ -121,7 +121,6 @@ module. The derived classes must follow the Trajectory API in
 from six.moves import range
 import six
 
-import logging as log
 import itertools
 import os.path
 import warnings
