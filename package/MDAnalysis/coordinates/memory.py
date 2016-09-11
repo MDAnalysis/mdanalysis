@@ -20,10 +20,10 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 :Author: Wouter Boomsma
 :Year: 2016
 :Copyright: GNU Public License v2
-:Maintainer: Wouter Boomsma <wb@bio.ku.dk>, wouterboomsma on github
+:Maintainer: Wouter Boomsma <wb@di.ku.dk>, wouterboomsma on github
 
 
-.. versionadded:: 0.15.0
+.. versionadded:: 0.16.0
 
 The module contains a trajectory reader that operates on an array
 in memory, rather than reading from file. This makes it possible to
@@ -44,7 +44,7 @@ array extracted from a DCD timeseries
 
     from MDAnalysis import Universe
     from MDAnalysisTests.datafiles import DCD, PDB_small
-    from MDAnalysis.coordinates.array import ArrayReader
+    from MDAnalysis.coordinates.memory import MemoryReader
 
     universe = Universe(PDB_small, DCD)
     coordinates = universe.trajectory.timeseries(universe.atoms)
@@ -64,6 +64,23 @@ import numpy as np
 from . import base
 
 
+class Timestep(base.Timestep):
+    """
+    Overrides the positions property in base.Timestep to
+    use avoid duplication of the array.
+    """
+
+    @property
+    def positions(self):
+        return base.Timestep.positions.fget(self)
+
+    @positions.setter
+    def positions(self, new):
+        self.has_positions = True
+        # Use reference to original rather than a copy
+        self._pos = new
+
+
 class MemoryReader(base.ProtoReader):
     """
     A trajectory reader interface to a numpy array of the coordinates.
@@ -73,24 +90,7 @@ class MemoryReader(base.ProtoReader):
     """
 
     format = 'memory'
-
-    class MemoryTimestep(base.Timestep):
-        """
-        Overrides the positions property in base.Timestep to
-        use avoid duplication of the array.
-        """
-
-        @property
-        def positions(self):
-            return base.Timestep.positions.fget(self)
-
-        @positions.setter
-        def positions(self, new):
-            self.has_positions = True
-            # Use reference to original rather than a copy
-            self._pos = new
-
-    _Timestep = MemoryTimestep
+    _Timestep = Timestep
 
     def __init__(self, coordinate_array, format='afc',
                  dimensions = None, dt=1, **kwargs):
@@ -108,7 +108,6 @@ class MemoryReader(base.ProtoReader):
             coordinates)
         dimensions: (*A*, *B*, *C*, *alpha*, *beta*, *gamma*), optional
             unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
             lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
             angles are in degrees.
         dt: float, optional
@@ -118,9 +117,12 @@ class MemoryReader(base.ProtoReader):
 
         super(MemoryReader, self).__init__()        
 
+        self.stored_format = format
         self.set_array(np.asarray(coordinate_array), format)
-        self.n_frames = self.coordinate_array.shape[self.format.find('f')]
-        self.n_atoms = self.coordinate_array.shape[self.format.find('a')]
+        self.n_frames = \
+            self.coordinate_array.shape[self.stored_format.find('f')]
+        self.n_atoms = \
+            self.coordinate_array.shape[self.stored_format.find('a')]
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
@@ -152,7 +154,7 @@ class MemoryReader(base.ProtoReader):
             coordinates)
         """
         self.coordinate_array = coordinate_array
-        self.format = format
+        self.stored_format = format
 
     def get_array(self):
         """
@@ -188,18 +190,18 @@ class MemoryReader(base.ProtoReader):
         """
 
         array = self.get_array()
-        if format == self.format:
+        if format == self.stored_format:
             pass
-        elif format[0] == self.format[0]:
+        elif format[0] == self.stored_format[0]:
             array = np.swapaxes(array, 1, 2)
-        elif format[1] == self.format[1]:
+        elif format[1] == self.stored_format[1]:
             array = np.swapaxes(array, 0, 2)
-        elif format[2] == self.format[2]:
+        elif format[2] == self.stored_format[2]:
             array = np.swapaxes(array, 0, 1)
-        elif self.format[1] == format[0]:
+        elif format[0] == self.stored_format[1]:
             array = np.swapaxes(array, 1, 0)
             array = np.swapaxes(array, 1, 2)
-        elif self.format[2] == format[0]:
+        elif format[0] == self.stored_format[2]:
             array = np.swapaxes(array, 2, 0)
             array = np.swapaxes(array, 1, 2)
 
@@ -230,7 +232,7 @@ class MemoryReader(base.ProtoReader):
         if ts is None:
             ts = self.ts
         ts.frame += 1
-        f_index = self.format.find('f')
+        f_index = self.stored_format.find('f')
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))

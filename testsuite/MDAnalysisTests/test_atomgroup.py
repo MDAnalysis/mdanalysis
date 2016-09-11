@@ -2026,6 +2026,7 @@ class TestCustomReaders(TestCase):
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
+
 class TestInMemoryUniverse(TestCase):
 
     @staticmethod
@@ -2059,7 +2060,7 @@ class TestInMemoryUniverse(TestCase):
         universe = MDAnalysis.Universe(GRO, TRR, in_memory=True,
                                        in_memory_frame_interval=3)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (47681, 3, 3),
+                     (47681, 4, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
@@ -2071,7 +2072,6 @@ class TestInMemoryUniverse(TestCase):
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
-
 
     @staticmethod
     @dec.skipif(parser_not_found('DCD'),

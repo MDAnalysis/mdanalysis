@@ -5051,7 +5051,7 @@ class Universe(object):
 
         from ..coordinates.memory import MemoryReader
 
-        if self.trajectory.format != "array":
+        if self.trajectory.format != "memory":
 
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain
@@ -5065,7 +5065,7 @@ class Universe(object):
             except AttributeError:
                 coordinates = \
                     np.array([ts.positions for ts in
-                            self.trajectory[frame_interval-1::frame_interval]])
+                            self.trajectory[::frame_interval]])
                 coordinates = coordinates.swapaxes(0, 1)
 
             # Overwrite trajectory in universe with an MemoryReader
