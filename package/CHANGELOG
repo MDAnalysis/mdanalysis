@@ -20,8 +20,7 @@ The rules for this file:
 
 Enhancements
 
-  * Added regression tests for MDAnalysis.analysis.nuclinfo.minor_pair
-    (Issue #790)
+  * Added regression tests for MDAnalysis.analysis.nuclinfo (Issue #790)
   * All classes derived from 'AnalysisBase' now display a ProgressMeter
   with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the
