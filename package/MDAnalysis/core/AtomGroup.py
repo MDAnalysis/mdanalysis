@@ -5051,7 +5051,7 @@ class Universe(object):
 
         from ..coordinates.memory import MemoryReader
 
-        if self.trajectory.format != "memory":
+        if self.trajectory.format != MemoryReader.format:
 
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain

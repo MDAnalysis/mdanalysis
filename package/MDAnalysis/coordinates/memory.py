@@ -89,7 +89,7 @@ class MemoryReader(base.ProtoReader):
 
     """
 
-    format = 'memory'
+    format = 'MEMORY'
     _Timestep = Timestep
 
     def __init__(self, coordinate_array, format='afc',
