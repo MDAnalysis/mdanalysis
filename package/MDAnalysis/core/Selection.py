@@ -182,7 +182,7 @@ class AllSelection(Selection):
         # in the corresponding universe, in which case this
         # is returned directly. This works since the Universe.atoms
         # are unique by construction.
-        if group.universe and group is group.universe.atoms:
+        if group is group.universe.atoms:
             return group
         return unique(group[:])
 
