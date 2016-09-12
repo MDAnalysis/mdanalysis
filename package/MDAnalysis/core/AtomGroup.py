@@ -5064,7 +5064,7 @@ class Universe(object):
             # fall back to a slower approach
             except AttributeError:
                 coordinates = \
-                    np.array([ts.positions for ts in
+                    np.array([np.copy(ts.positions[:]) for ts in
                             self.trajectory[::frame_interval]])
                 coordinates = coordinates.swapaxes(0, 1)
 

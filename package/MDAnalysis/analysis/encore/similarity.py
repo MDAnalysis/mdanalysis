@@ -153,7 +153,6 @@ import MDAnalysis as mda
 import numpy as np
 import warnings
 import logging
-from time import sleep
 try:
     from scipy.stats import gaussian_kde
 except ImportError:
@@ -877,10 +876,6 @@ def hes(ensembles,
 
     out_matrix_eln = len(ensembles)
 
-    if calc_diagonal:
-        pairs_indices = list(trm_indices_diag(out_matrix_eln))
-    else:
-        pairs_indices = list(trm_indices_nodiag(out_matrix_eln))
     xs = []
     sigmas = []
 
