@@ -59,14 +59,14 @@ def reduce_dimensionality(ensembles,
     ensembles : MDAnalysis.Universe, or list or list of list thereof
         The function takes either a single Universe object, a list of Universe
         objects or a list of lists of Universe objects. If given a single
-        universe, it simply works the conformations in the trajectory. If
+        universe, it simply works on the conformations in the trajectory. If
         given a list of ensembles, it will merge them and analyse them together,
         keeping track of the ensemble to which each of the conformations belong.
         Finally, if passed a list of list of ensembles, the function will just
         repeat the functionality just described - merging ensembles for each
         ensemble in the outer loop.
 
-    method :
+    method : MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod or list
         A single or a list of instances of the DimensionalityReductionMethod
         classes from the dimensionality_reduction module. A separate analysis
         will be run for each method. Note that different parameters for the
@@ -77,7 +77,7 @@ def reduce_dimensionality(ensembles,
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     distance_matrix : encore.utils.TriangularMatrix
-        distance matrix for affinity propagation. If this parameter
+        distance matrix for stochastic proximity embedding. If this parameter
         is not supplied the matrix will be calculated on the fly.
         If several distance matrices are supplied, an analysis will be done
         for each of them. The number of provided distance matrices should
@@ -163,7 +163,7 @@ def reduce_dimensionality(ensembles,
 
     # Check whether any of the methods can make use of a distance matrix
     any_method_accept_distance_matrix = \
-        np.any([method.accepts_distance_matrix for method in
+        np.any([_method.accepts_distance_matrix for _method in
                 methods])
 
     print "1: ", merged_ensembles

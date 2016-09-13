@@ -32,7 +32,6 @@ while others are available only if scikit-learn is installed
 
 """
 
-import numpy as np
 import logging
 import warnings
 
@@ -90,33 +89,27 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
                  min_lam = 0.1,
                  max_lam = 2.0,
                  ncycle = 100,
-                 nstep = 10000,
-                 stressfreq = -1):
+                 nstep = 10000,):
         """
         Parameters
         ----------
 
         dimension : int
-            Number of dimensions to which the conformational space will be reduced
-            to (default is 3).
+            Number of dimensions to which the conformational space will be 
+            reduced to (default is 3).
 
         min_lam : float, optional
-            Final lambda learning rate (default is 0.1). Parameter
-            for Stochastic Proximity Embedding calculations.
+            Final lambda learning rate (default is 0.1). 
 
         max_lam : float, optional
-            Starting lambda learning rate parameter (default is 2.0). Parameter
-            for Stochastic Proximity Embedding calculations.
+            Starting lambda learning rate parameter (default is 2.0). 
 
         ncycle : int, optional
             Number of cycles per run (default is 100). At the end of every
-            cycle, lambda is changed.
+            cycle, lambda is updated.
 
         nstep : int, optional
             Number of steps per cycle (default is 10000)
-
-        `stressfreq` : int
-            calculate and report stress value every stressfreq cycle
 
         """
         self.dimension = dimension
@@ -125,7 +118,7 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
         self.max_lam = max_lam
         self.ncycle = ncycle
         self.nstep = nstep
-        self.stressfreq = stressfreq
+        self.stressfreq = -1
 
     def __call__(self, distance_matrix):
         """
@@ -151,7 +144,7 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
             maxlam = self.max_lam,
             ncycle = self.ncycle,
             nstep = self.nstep,
-            stressfreq=-1
+            stressfreq = self.stressfreq
         )
         return coordinates, {"final_stress": final_stress}
 

@@ -175,7 +175,8 @@ from .dimensionality_reduction.DimensionalityReductionMethod import (
     StochasticProximityEmbeddingNative)
 from .dimensionality_reduction.reduce_dimensionality import (
     reduce_dimensionality)
-from .covariance import covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator
+from .covariance import (
+    covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator)
 from .utils import merge_universes
 from .utils import trm_indices_diag, trm_indices_nodiag
 
@@ -234,10 +235,10 @@ def discrete_jensen_shannon_divergence(pA, pB):
 
 
 # calculate harmonic similarity
-def harmonic_ensemble_similarity(sigma1=None,
-                                 sigma2=None,
-                                 x1=None,
-                                 x2=None):
+def harmonic_ensemble_similarity(sigma1,
+                                 sigma2,
+                                 x1,
+                                 x2):
     """
     Calculate the harmonic ensemble similarity measure
     as defined in 
@@ -249,26 +250,18 @@ def harmonic_ensemble_similarity(sigma1=None,
     ----------
 
     sigma1 : numpy.array
-        Covariance matrix for the first ensemble. If this None, calculate
-        it from ensemble1 using covariance_estimator
+        Covariance matrix for the first ensemble.
 
     sigma2 : numpy.array
-        Covariance matrix for the second ensemble. If this None, calculate
-        it from ensemble1 using covariance_estimator
+        Covariance matrix for the second ensemble.
 
     x1: numpy.array
         Mean for the estimated normal multivariate distribution of the first
-        ensemble. If this is None, calculate it from ensemble1
+        ensemble.
 
     x2: numpy.array
-        Mean for the estimated normal multivariate distribution of the first
-        ensemble.. If this is None, calculate it from ensemble2
-
-    mass_weighted : bool
-        Whether to perform mass-weighted covariance matrix estimation
-
-    covariance_estimator : function
-        Covariance estimator to be used
+        Mean for the estimated normal multivariate distribution of the second
+        ensemble.
 
     Returns
     -------
@@ -303,25 +296,25 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     Parameters
     ----------
 
-    cc : encore.ClustersCollection
+    cc : encore.clustering.ClustersCollection
         Collection from cluster calculated by a clustering algorithm
         (e.g. Affinity propagation)
 
     ens1 : :class:`~MDAnalysis.core.AtomGroup.Universe`
         First ensemble to be used in comparison
 
-    ens2 : :class:`~MDAnalysis.core.AtomGroup.Universe`
-        Second ensemble to be used in comparison
-
     ens1_id : int
         First ensemble id as detailed in the ClustersCollection metadata
+
+    ens2 : :class:`~MDAnalysis.core.AtomGroup.Universe`
+        Second ensemble to be used in comparison
 
     ens2_id : int
         Second ensemble id as detailed in the ClustersCollection metadata
 
     selection : str
-        Atom selection string in the MDAnalysis format. Default is "name CA"
-
+        Atom selection string in the MDAnalysis format. Default is "name CA".
+        XXX remove this?
     Returns
     -------
 
@@ -476,8 +469,8 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     """
     Calculate the Jensen-Shannon divergence according the the
     Dimensionality reduction method. In this case, we have continuous
-    probability densities we have to integrate over the measureable space.
-    Our target is calculating Kullback-Liebler, which is defined as:
+    probability densities, this we need to integrate over the measureable 
+    space. The aim is calculating Kullback-Liebler, which is defined as:
 
     .. math::
         D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P
@@ -539,7 +532,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         reduction method
 
     """
-
+    # XXX change if
     if not ln_P1_exp_P1 and not ln_P2_exp_P2 and not ln_P1P2_exp_P1 and not \
             ln_P1P2_exp_P2:
         ln_P1_exp_P1 = np.average(np.log(kde1.evaluate(resamples1)))
@@ -587,7 +580,9 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
         Minimum ID of the ensemble to be considered; see description
 
     ens_id_max : int
-        Maximum ID of the ensemble to be considered; see description
+        Maximum ID of the ensemble to be considered; see description. If None,
+        it will be set to the maximum possible value given the number of
+        ensembles.
 
     Returns
     -------
@@ -626,6 +621,7 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
             gaussian_kde(this_embedded))
 
     # Set number of samples
+    # XXX to be removed in order to be consistent with the other function
     if not nsamples:
         nsamples = this_embedded.shape[1] * 10
 
@@ -649,10 +645,10 @@ def write_output(matrix, base_fname=None, header="", suffix="",
 
     base_fname : str
         Basic filename for output. If None, no files will be written, and
-        the matrix will be just printed on screen
+        the matrix will be just printed on standard output
 
     header : str
-            Line to be written just before the matrix
+            Text to be written just before the matrix
 
     suffix : str
         String to be concatenated to basename, in order to get the final
@@ -694,7 +690,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     -------
 
     tmp_ensembles : 
-        the original ensemble is divided into ensembles, each being
+        the original ensemble is divided into different ensembles, each bein
         a window_size-long slice of the original ensemble. The last
         ensemble will be bigger if the length of the input ensemble
         is not exactly divisible by window_size.
@@ -743,8 +739,8 @@ def hes(ensembles,
     ----------
 
     ensembles : list
-        List of universe objects for similarity measurements.
-
+        List of Universe objects for similarity measurements.
+        #XXX get rid of Ensemble objects in the text
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
@@ -771,7 +767,7 @@ def hes(ensembles,
 
     bootstrapping_samples : int, optional
         Number of times the similarity matrix will be bootstrapped (default
-        is 100).
+        is 100), only if estimate_error is True.
 
 
     Returns
@@ -799,10 +795,11 @@ def hes(ensembles,
 
     For each ensemble, the  mean conformation is estimated as the average over
     the ensemble, and the covariance matrix is calculated by default using a
-    shrinkage estimate method (or by a maximum-likelihood method, optionally).
+    shrinkage estimation method (or by a maximum-likelihood method, 
+    optionally).
 
     In the Harmonic Ensemble Similarity measurement no upper bound exists and
-    the measurement can therefore best be used for relative comparison between
+    the measurement can therefore be used for absolute comparison between
     multiple ensembles.
 
     When using this similarity measure, consider whether you want to align
@@ -1023,19 +1020,20 @@ def ces(ensembles,
     -------
 
     ces, details : numpy.array, numpy.array
+
         ces contains the similarity values, arranged in a numpy.array.
-        if one similarity value is provided as a floating point number,
-        the output will be a 2-dimensional square symmetrical numpy.array.
-        the order of the matrix elements depends on the order of the input
-        ensemble: for instance, if
+        if one preference value is provided as a floating point number to 
+        Affinity Propagation, the output will be a 2-dimensional square 
+        symmetrical numpy.array. The order of the matrix elements depends on 
+        the order of the input ensembles: for instance, if
 
             ensemble = [ens1, ens2, ens3]
 
         the matrix elements [0,2] and [2,0] will contain the similarity values
         between ensembles ens1 and ens3.
-        If similarity values are supplied as a list, the array will be 3-d
+        If preference values are supplied as a list, the array will be 3-d
         with the first two dimensions running over the ensembles and
-        the third dimension running over the values of the preferences
+        the third dimension running over the values of the preference
         parameter.
         Elaborating on the previous example, if preference_values are provided
         as [-1.0, -2.0] the output will be a (3,3,2) array, with element [0,2]
@@ -1053,13 +1051,11 @@ def ces(ensembles,
     no similarity between the two ensembles, the lower bound, 0.0,
     signifies identical ensembles.
 
-    To calculate the CES, the affinity propagation method are used
-    for clustering to partition the whole space of conformations in to clusters
-    of structures. After the structures are clustered, the population of each
-    ensemble in each cluster as a probability distribution of conformations are
-    calculated. The obtained probability distribution are then compared using
-    the Jensen-Shannon divergence measure between probability distributions.
-
+    To calculate the CES, the affinity propagation method (or others, if 
+    specified) is used to partition the whole space of conformations. The
+    population of each ensemble in each cluster is then taken as a probability
+    density function. Different probability density functions from each 
+    ensemble are finally compared using the Jensen-Shannon divergence measure.
 
     Example
     -------
@@ -1255,12 +1251,13 @@ def dres(ensembles,
         the same dimensionality reduction class.
 
     distance_matrix : encore.utils.TriangularMatrix
-        conformational distance matrix
+        conformational distance matrix, It will be calculated on the fly
+        from the ensemble data if it is not provided.
 
     nsamples : int, optional
         Number of samples to be drawn from the ensembles (default is 1000).
-        Parameter used in Kernel Density Estimates (KDE) from embedded
-        spaces.
+        This is used to resample the density estimates and calculate the 
+        Jensen-Shannon divergence between ensembles.
 
     estimate_error : bool, optional
         Whether to perform error estimation (default is False)
@@ -1288,7 +1285,7 @@ def dres(ensembles,
         dres contains the similarity values, arranged in numpy.array.
         if one number of dimensions is provided as an integer,
         the output will be a 2-dimensional square symmetrical numpy.array.
-        the order of the matrix elements depends on the order of the 
+        The order of the matrix elements depends on the order of the 
         input ensemble: for instance, if
 
             ensemble = [ens1, ens2, ens3]
@@ -1310,10 +1307,10 @@ def dres(ensembles,
     -----
 
     To calculate the similarity the method first projects the ensembles into
-    lower dimensions by using the Stochastic Proximity Embedding algorithm. A
-    gaussian kernel-based density estimation method is then used to estimate
-    the probability density for each ensemble which is then used to estimate
-    the Jensen-shannon divergence between each pair of ensembles.
+    lower dimensions by using the Stochastic Proximity Embedding (or others) 
+    algorithm. A gaussian kernel-based density estimation method is then used 
+    to estimate the probability density for each ensemble which is then used 
+    to compute the Jensen-shannon divergence between each pair of ensembles.
 
     In the Jensen-Shannon divergence the upper bound of ln(2) signifies
     no similarity between the two ensembles, the lower bound, 0.0,
@@ -1321,8 +1318,8 @@ def dres(ensembles,
     the dimensional reduction in :func:`dres`, two identical ensembles will 
     not necessarily result in an exact 0.0 estimate of the similarity but 
     will be very close. For the same reason, calculating the similarity with
-    the :func:`dres` twice will not result in two identical numbers but 
-    instead small differences.  
+    the :func:`dres` twice will not result in two identical numbers; small 
+    differences have to be expected.
 
     Example
     -------
@@ -1492,7 +1489,7 @@ def ces_convergence(original_ensemble,
     ensemble and windows of such trajectory of increasing sizes, so that 
     the similarity values should gradually drop to zero. The rate at which 
     the value reach zero will be indicative of how much the trajectory 
-    keeps on resampling the same ares of the conformational space, and
+    keeps on resampling the same regions of the conformational space, and
     therefore of convergence.
 
 
@@ -1508,7 +1505,7 @@ def ces_convergence(original_ensemble,
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
-    clustering_method :
+    clustering_method : MDAnalysis.analysis.encore.clustering.ClusteringMethod
         A single or a list of instances of the ClusteringMethod classes from
         the clustering module. Different parameters for the same clustering
         method can be explored by adding different instances of the same
@@ -1591,9 +1588,8 @@ def dres_convergence(original_ensemble,
 
     nsamples : int, optional
         Number of samples to be drawn from the ensembles (default is 1000).
-        Parameter used in Kernel Density Estimates (KDE) from embedded
-        spaces.
-
+        This is akin to the nsamples parameter of dres().
+        
     ncores  : int, optional
         Maximum number of cores to be used (default is 1).
 

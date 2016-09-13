@@ -55,7 +55,7 @@ def cluster(ensembles,
     Parameters
     ----------
 
-    ensembles : MDAnalysis.Universe, or list or list of list thereof
+    ensembles : MDAnalysis.Universe, or list, or list of list thereof
         The function takes either a single Universe object, a list of Universe
         objects or a list of lists of Universe objects. If given a single
         universe, it simply clusters the conformations in the trajectory. If
@@ -160,7 +160,7 @@ def cluster(ensembles,
     # Check whether any of the clustering methods can make use of a distance
     # matrix
     any_method_accept_distance_matrix = \
-        np.any([method.accepts_distance_matrix for method in methods])
+        np.any([_method.accepts_distance_matrix for _method in methods])
 
     # If distance matrices are provided, check that it matches the number
     # of ensembles
