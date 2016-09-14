@@ -18,7 +18,6 @@ from six.moves import range
 
 import numpy as np
 from numpy.testing import(
-    TestCase,
     dec,
     assert_equal,
     assert_array_almost_equal,
@@ -38,6 +37,7 @@ from MDAnalysis.core.topologyobjects import TopologyGroup
 from MDAnalysis.core.selection import Parser
 from MDAnalysis import SelectionError
 
+from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
@@ -50,7 +50,7 @@ from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
 
-class TestSelectionsCHARMM(TestCase):
+class TestSelectionsCHARMM(object):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -307,7 +307,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_array_equal(ag2.indices, ag1.indices)
 
 
-class TestSelectionsAMBER(TestCase):
+class TestSelectionsAMBER(object):
     def setUp(self):
         """Set up AMBER system"""
         self.universe = MDAnalysis.Universe(PRMpbc, TRJpbc_bz2)
@@ -330,7 +330,7 @@ class TestSelectionsAMBER(TestCase):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-class TestSelectionsNAMD(TestCase):
+class TestSelectionsNAMD(object):
     def setUp(self):
         """Set up NAMD system"""
         self.universe = MDAnalysis.Universe(PSF_NAMD, PDB_NAMD)
@@ -360,7 +360,7 @@ class TestSelectionsNAMD(TestCase):
         assert_array_equal(sel.names, ['HN', 'HN', 'HN', 'HH', 'HN'])
 
 
-class TestSelectionsGRO(TestCase):
+class TestSelectionsGRO(object):
     def setUp(self):
         """Set up GRO system (implicit types, charges, masses, ...)"""
         self.universe = MDAnalysis.Universe(GRO)
@@ -405,7 +405,7 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 1556)
 
 
-class TestSelectionsXTC(TestCase):
+class TestSelectionsXTC(object):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
@@ -422,7 +422,7 @@ class TestSelectionsXTC(TestCase):
             "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
 
 
-class TestSelectionsNucleicAcids(TestCase):
+class TestSelectionsNucleicAcids(object):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
 
@@ -472,7 +472,8 @@ class BaseDistanceSelection(object):
                ('distmat', True),
                ('distmat', False)]
 
-    def choosemeth(self, sel, meth, periodic):
+    @staticmethod
+    def choosemeth(sel, meth, periodic):
         """hack in the desired apply method"""
         if meth == 'kdtree':
             sel.apply = sel._apply_KDTree
@@ -681,55 +682,45 @@ class TestPropSelection(object):
                'charge': 'charges'}
 
     def _check_lt(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
-
-        sel = ag.select_atoms('prop {0} < 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} < 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) < 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) < 1.5].indices))
 
     def _check_le(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
-
-        sel = ag.select_atoms('prop {0} <= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} <= 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) <= 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) <= 1.5].indices))
 
     def _check_gt(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
-
-        sel = ag.select_atoms('prop {0} > 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} > 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) > 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) > 1.5].indices))
 
     def _check_ge(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
-
-        sel = ag.select_atoms('prop {0} >= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} >= 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) >= 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) >= 1.5].indices))
 
     def _check_eq(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
+        setattr(ag[::2], self.plurals[prop], 1.5)
 
-        sel = ag.select_atoms('prop {0} == 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} == 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) == 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) == 1.5].indices))
 
     def _check_ne(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 500.0)
-
-        sel = ag.select_atoms('prop {0} != 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} != 1.5'.format(prop))
 
         assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))
+                     set(ag[getattr(ag, self.plurals[prop]) != 1.5].indices))
 
     def test_props(self):
-        u = mda.Universe(PSF, DCD)
+        u = make_Universe('masses', 'charges')
 
         for prop in ['mass', 'charge']:
             for ag in [u.atoms, u.atoms[:100]]:
@@ -765,10 +756,9 @@ class TestBondedSelection(object):
 
 
 class TestSelectionErrors(object):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+        self.u = make_Universe('names', 'masses',
+                               'resids', 'resnames', 'resnums')
 
     def tearDown(self):
         del self.u
@@ -801,18 +791,20 @@ class TestSelectionErrors(object):
 
 
 def test_segid_and_resid():
-    u = mda.Universe(PDB_full)
+    u = make_Universe('segids', 'resids')
 
-    ag = u.select_atoms('segid B and resid 1-100')
+    ag = u.select_atoms('segid SegB and resid 1-100')
 
-    ref = ag.select_atoms('segid B').select_atoms('resid 1-100')
+    ref = ag.select_atoms('segid SegB').select_atoms('resid 1-100')
 
     assert_array_equal(ag.indices, ref.indices)
 
 
 class TestImplicitOr(object):
     def setUp(self):
-        self.u = mda.Universe(PSF)
+        self.u = make_Universe('names', 'types',
+                               'resids', 'resnums',
+                               'resnames', 'segids')
 
     def tearDown(self):
         del self.u
@@ -825,23 +817,17 @@ class TestImplicitOr(object):
 
     def test_string_selections(self):
         for ref, sel in (
-                ('name HT1 or name HT2 or name HT3', 'name HT1 HT2 HT3'),
-                ('type 2 or type 3 or type 4', 'type 2 3 4'),
-                ('resname MET or resname GLY', 'resname MET GLY'),
-                ('name H* or name N', 'name H* N'),
-                ('(name N or name HT1) and (resname MET or resname GLY)',
-                 'name N HT1 and resname MET GLY'),
+                ('name NameABA or name NameACA or name NameADA',
+                 'name NameABA NameACA NameADA'),
+                ('type TypeE or type TypeD or type TypeB',
+                 'type TypeE TypeD TypeB'),
+                ('resname RsC or resname RsY', 'resname RsC RsY'),
+                ('name NameAB* or name NameACC', 'name NameAB* NameACC'),
+                ('(name NameABC or name NameABB) and (resname RsD or resname RsF)',
+                 'name NameABC NameABB and resname RsD RsF'),
+                ('segid SegA or segid SegC', 'segid SegA SegC'),
         ):
             yield self._check_sels, ref, sel
-
-    def test_segids(self):
-        # Don't put me into generator, I use a different Universe
-        # (With multiple segids)
-        u = mda.Universe(PDB_full)
-        ref = u.select_atoms('segid A or segid B')
-        ag = u.select_atoms('segid A B')
-
-        assert_array_equal(ref.indices, ag.indices)
 
     def test_range_selections(self):
         # All these selections just use numeric types,
