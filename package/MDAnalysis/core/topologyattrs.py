@@ -19,6 +19,10 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 
 Common TopologyAttrs used by most topology parsers.
 
+TopologyAttrs are used to contain attributes such as atom names or resids.
+These are usually read by the TopologyParser.
+
+
 """
 from six.moves import zip
 from collections import defaultdict
@@ -1119,24 +1123,9 @@ class Segids(SegmentAttr):
         ('_get_named_segment', _get_named_segment))
 
 
-#TODO: update docs to property doc
-class Bonds(AtomAttr):
-    """Bonds for atoms"""
-    attrname = 'bonds'
-    # Singular is the same because one Atom might have
-    # many bonds, so still asks for "bonds" in the plural
-    singular = 'bonds'
-    transplants = defaultdict(list)
-
+class _Connection(AtomAttr):
+    """Base class for connectivity between atoms"""
     def __init__(self, values, types=None):
-        """
-        Arguments
-        ---------
-        values - list of tuples of indices.  Should be zero based
-        to match the atom indices
-
-        Eg:  [(0, 1), (1, 2), (2, 3)]
-        """
         self.values = values
         if types is None:
             types = [None for value in values]
@@ -1175,6 +1164,23 @@ class Bonds(AtomAttr):
         types = types.ravel()
         return TopologyGroup(bond_idx, ag._u, self.singular[:-1], types)
 
+
+class Bonds(_Connection):
+    """Bonds between two atoms
+
+    Must be initialised by a list of zero based tuples.
+    These indices refer to the atom indices.
+        Eg:  [(0, 1), (1, 2), (2, 3)]
+
+    Also adds the `bonded_atoms`, `fragment` and `fragments`
+    attributes.
+    """
+    attrname = 'bonds'
+    # Singular is the same because one Atom might have
+    # many bonds, so still asks for "bonds" in the plural
+    singular = 'bonds'
+    transplants = defaultdict(list)
+
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""
         idx = [b.partner(self).index for b in self.bonds]
@@ -1211,21 +1217,29 @@ class Bonds(AtomAttr):
                                fragments.__doc__)))
 
 
-#TODO: update docs to property doc
-class Angles(Bonds):
-    """Angles for atoms"""
+class Angles(_Connection):
+    """Angles between three atoms
+
+    Initialise with a list of 3 long tuples
+    Eg:
+      [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+
+    These indices refer to the atom indices.
+    """
     attrname = 'angles'
     singular = 'angles'
+    transplants = defaultdict(list)
 
 
-#TODO: update docs to property doc
-class Dihedrals(Bonds):
-    """Dihedrals for atoms"""
+class Dihedrals(_Connection):
+    """A connection between four sequential atoms"""
     attrname = 'dihedrals'
     singular = 'dihedrals'
+    transplants = defaultdict(list)
 
 
-#TODO: update docs to property doc
-class Impropers(Bonds):
+class Impropers(_Connection):
+    """An imaginary dihedral between four atoms"""
     attrname = 'impropers'
     singular = 'impropers'
+    transplants = defaultdict(list)
