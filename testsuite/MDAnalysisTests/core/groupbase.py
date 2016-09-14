@@ -13,23 +13,122 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""Mock Universe and Topology for testing purposes
+
+
+
+"""
+from __future__ import division
+
+from six.moves import range
+
 import numpy as np
+import string
+import itertools
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core import groups
+import MDAnalysis.core.topologyattrs as ta
 
-def make_Universe():
+# Dimensions of the standard mock Universe
+# 5 atoms per residues, 5 residues per segment
+_N_ATOMS = 125
+_N_RESIDUES = 25
+_N_SEGMENTS = 5
+_ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
+_RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
+
+def make_Universe(*extras):
     """Make a dummy reference Universe"""
-    return mda.Universe(make_topology())
+    return mda.Universe(make_topology(*extras))
 
-def make_topology():
+
+def make_topology(*extras):
     """Reference topology system
 
     125 atoms
     25 residue
     5 segments
     """
-    return Topology(125, 25, 5,
-                    atom_resindex=np.repeat(np.arange(25), 5),
-                    residue_segindex=np.repeat(np.arange(5), 5))
+    attrs = [_menu[extra]() for extra in extras]
+
+    return Topology(_N_ATOMS, _N_RESIDUES, _N_SEGMENTS,
+                    attrs = attrs,
+                    atom_resindex=np.repeat(
+                        np.arange(_N_RESIDUES), _ATOMS_PER_RES),
+                    residue_segindex=np.repeat(
+                        np.arange(_N_SEGMENTS), _RESIDUES_PER_SEG))
+
+def make_resnames(size=None):
+    """Creates residues named RsA RsB ... """
+    if size is None:
+        size = _N_RESIDUES
+    return ta.Resnames(np.array(['Rs{}'.format(string.uppercase[i])
+                                 for i in range(size)], dtype=object))
+
+def make_segids(size=None):
+    """Segids SegA -> SegY"""
+    if size is None:
+        size = _N_SEGMENTS
+    return ta.Segids(np.array(['Seg{}'.format(string.uppercase[i])
+                               for i in range(size)], dtype=object))
+
+def make_types(size=None):
+    """Atoms are given types TypeA -> TypeE on a loop"""
+    if size is None:
+        size = _N_ATOMS
+    types = itertools.cycle(string.uppercase[:5])
+    return ta.Atomtypes(np.array(
+        ['Type{}'.format(next(types))
+         for _ in range(size)], dtype=object))
+
+def make_names(size=None):
+    """Atom names NameAAA -> NameZZZ (all unique)"""
+    if size is None:
+        size = _N_ATOMS
+    # produces, AAA, AAB, AAC, ABA etc
+    names = itertools.product(*[string.uppercase] * 3)
+    return ta.Atomnames(np.array(
+        ['Name{}'.format(''.join(next(names)))
+         for _ in range(size)], dtype=object))
+
+def make_masses(size=None):
+    """Atom masses (5.1, 4.2, 3.3, 1.5, 0.5) repeated"""
+    if size is None:
+        size = _N_ATOMS
+    masses = itertools.cycle([5.1, 4.2, 3.3, 1.5, 0.5])
+    return ta.Masses(np.array([next(masses)
+                               for _ in range(size)]))
+
+def make_charges(size=None):
+    """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
+    if size is None:
+        size = _N_ATOMS
+    charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
+    return ta.Charges(np.array([next(charges)
+                                for _ in range(size)]))
+
+def make_resnums(size=None):
+    """Resnums 1 and upwards"""
+    if size is None:
+        size = _N_RESIDUES
+    return ta.Resnums(np.arange(size, dtype=np.int64) + 1)
+
+def make_resids(size=None):
+    """Resids 1 and upwards"""
+    if size is None:
+        size = _N_RESIDUES
+    return ta.Resids(np.arange(size, dtype=np.int64) + 1)
+
+# Available extra TopologyAttrs to a dummy Universe
+_menu = {
+    'names': make_names,
+    'types': make_types,
+    'charges': make_charges,
+    'masses': make_masses,
+    'resnames': make_resnames,
+    'resnums': make_resnums,
+    'resids': make_resids,
+    'segids': make_segids,
+}
