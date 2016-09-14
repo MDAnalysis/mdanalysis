@@ -14,6 +14,7 @@
 #
 from numpy.testing import (
     assert_,
+    assert_equal,
 )
 
 import MDAnalysis as mda
