@@ -76,6 +76,11 @@ class GROParser(TopologyReader):
                     raise IOError(
                         "Couldn't read the following line of the .gro file:\n"
                         "{0}".format(line))
+        # Check all lines had names
+        if not np.all(names):
+            missing = np.where(names == '')
+            raise IOError("Missing atom name on line: {0}"
+                          "".format(missing[0][0] + 3))  # 2 header, 1 based
 
         residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
