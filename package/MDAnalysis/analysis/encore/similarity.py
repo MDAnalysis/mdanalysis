@@ -30,21 +30,19 @@ ensembles described in [Lindorff-Larsen2009]_. The implementation and examples
 are described in [Tiberti2015]_.
 
 The module includes facilities for handling ensembles and trajectories through
-the :class:`Ensemble` class, performing clustering or dimensionality reduction
+the :class:`Universe` class, performing clustering or dimensionality reduction
 of the ensemble space, estimating multivariate probability distributions from
 the input data, and more. ENCORE can be used to compare experimental and
 simulation-derived ensembles, as well as estimate the convergence of
 trajectories from time-dependent simulations.
 
 ENCORE includes three different methods for calculations of similarity measures
-between ensembles implemented in individual functions as well as a class to
-handle the ensembles:
+between ensembles implemented in individual functions:
 
 
     + **Harmonic Ensemble Similarity** : :func:`hes`
     + **Clustering Ensemble Similarity** : :func:`ces`
     + **Dimensional Reduction Ensemble Similarity** : :func:`dres`
-    + **Ensemble class** : :class:`Ensemble`
 
 When using this module in published work please cite [Tiberti2015]_.
 
@@ -64,17 +62,19 @@ of two simple ensembles. The ensembles are obtained from the MDAnalysis
 test suite for two different simulations of the protein AdK. To run the
 examples first execute: ::
 
+    >>> from MDAnalysis import Universe
     >>> import MDAnalysis.analysis.encore as encore
-    >>> from MDAnalysis.tests.datafiles import PDB_small, DCD, DCD2
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
+
 
 To calculate the Harmonic Ensemble Similarity (:func:`hes`)
 two ensemble objects are first created and then used for calculation: ::
 
-    >>> ens1 = encore.Ensemble(topology=PDB_small, trajectory=DCD)
-    >>> ens2 = encore.Ensemble(topology=PDB_small, trajectory=DCD2)
+    >>> ens1 = Universe(PSF, DCD)
+    >>> ens2 = Universe(PSF, DCD2)
     >>> print encore.hes([ens1, ens2])
-    (array([[        0.        ,  13946090.57640726],
-            [ 13946090.57640726,         0.        ]]), None)
+    (array([[        0.        ,  38279683.95892926],
+            [ 38279683.95892926,         0.        ]]), None)
 
 Here None is returned in the array as the default details parameter is False. 
 HES can assume any non-negative value, i.e. no upper bound exists and the
@@ -83,57 +83,60 @@ measurement can therefore be used as an absolute scale.
 The calculation of the Clustering Ensemble Similarity (:func:`ces`)
 is computationally more expensive. It is based on the Affinity Propagation
 clustering algorithm that in turns requires a similarity matrix between
-the frames the ensembles are made of (By default we use -RMSD; therefore
-a full RMSD matrix between each pairs of elements needs to be computed.)
-To decrease the computational load the :class:`Ensemble` object can be 
-initialized by only loading every nth frame from the trajectory using the 
-parameter `frame_interval`. Additionally, by saving the calculated 
- matrix using the `save_matrix` parameter, the computational cost
-can be reduced for future calculations using e.g. different parameters
-for the clustering algorithm, or can be reused for DRES: ::
+the frames the ensembles are made of, which is derived from a distance 
+matrix (By default an RMSD matrix; a full RMSD matrix between each pairs of 
+elements needs to be computed). The RMSD matrix is automatically calculated. ::
 
-    >>> ens1 = encore.Ensemble( topology = PDB_small, 
-                                trajectory = DCD, 
-                                frame_interval=3 )
-    >>> ens2 = encore.Ensemble( topology = PDB_small, 
-                                trajectory = DCD2, 
-                                frame_interval=3)
-    >>> print encore.ces([ens1, ens2], save_matrix = "minusrmsd.npz")
-    (array([[ 0.        ,  0.08093055],
-           [ 0.08093055,  0.        ]]), None)
+    >>> ens1 = Universe(PSF, DCD)
+    >>> ens2 = Universe(PSF, DCD2)
+    >>> print encore.ces([ens1, ens2])[0]
+    [[ 0.          0.68070702]
+    [ 0.68070702  0.        ]]
+
+However, we may want to reuse the RMSD matrix in other calculations (for 
+instance, running CES with different parameters or running DRES). In this
+case we first compute the RMSD matrix alone:
+
+    >>> rmsd_matrix = encore.get_distance_matrix(
+                                    encore.utils.merge_universes([ens1, ens2]),
+                                    save_matrix="rmsd.npz")
+                                    
+In the above example the RMSD matrix was also saved in rmsd.npz on disk, and 
+so can be loaded and re-used at later times, instead of being recomputed:
+
+    >>> rmsd_matrix = encore.get_distance_matrix(
+                                    encore.utils.merge_universes([ens1, ens2]),
+                                    load_matrix="rmsd.npz")
 
 
-In the above example the negative RMSD-matrix was saved as minusrmsd.npz and
-can now be used as an input in further calculations of the
-Dimensional Reduction Ensemble Similarity (:func:`dres`).
+For instance, the rmsd_matrix object can be re-used as input for the 
+Dimensional Reduction Ensemble Similarity (:func:`dres`) method.
 DRES is based on the estimation of the probability density in 
 a dimensionally-reduced conformational space of the ensembles, obtained from 
 the original space using the Stochastic proximity embedding algorithm.
 As SPE requires the distance matrix calculated on the original space, we 
-can reuse the previously-calculated -RMSD matrix with sign changed.
+can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3: ::
 
-    >>> print encore.dres(  [ens1, ens2], 
-                            dimensions = 3, 
-                            load_matrix = "minusrmsd.npz", 
-                            change_sign = True )
-    (array([[ 0.        ,  0.68108127],
-           [ 0.68108127,  0.        ]]), None)
+    >>> print encore.dres([ens1, ens2], 
+                          distance_matrix = rmsd_matrix)
 
-Due to the stocastic nature of SPE, two
-identical ensembles will not necessarily result in excatly 0 estimate of 
-the similarity, but will be very close. For the same reason, calculating the 
-similarity with the :func:`dres` twice will not result in 
-necessarily identical values. 
+    (array([[ 0.        ,   0.67453198],
+           [  0.67453198,  0.        ]]), None)
 
-It should be noted that both in :func:`ces` and :func:`dres` 
-the similarity is evaluated using the Jensen-Shannon 
-divergence resulting in an upper bound of ln(2), which indicates no similarity
-between the ensembles and a lower bound of 0.0 signifying two identical 
-ensembles. Therefore using CES and DRES ensembles can be compared in a more
-relative sense respect to HES, i.e. they can be used to understand whether
-ensemble A is closer to ensemble B respect to C, but absolute 
-values are less meaningful as they also depend on the chosen parameters.
+Due to the stocastic nature of SPE, two identical ensembles will not 
+necessarily result in excatly 0 estimate of the similarity, but will be very 
+close. For the same reason, calculating the similarity with the :func:`dres` 
+twice will not result in necessarily identical values. 
+
+It should be noted that both in :func:`ces` and :func:`dres` the similarity is 
+evaluated using the Jensen-Shannon divergence resulting in an upper bound of 
+ln(2), which indicates no similarity between the ensembles and a lower bound 
+of 0.0 signifying two identical ensembles. Therefore using CES and DRES 
+ensembles can be compared in a more relative sense respect to HES, i.e. they 
+can be used to understand whether ensemble A is closer to ensemble B respect to
+ C, but absolute  values are less meaningful as they also depend on the chosen 
+ parameters.
 
 
 Functions
@@ -314,7 +317,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
 
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA".
-        XXX remove this?
+
     Returns
     -------
 
@@ -532,7 +535,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         reduction method
 
     """
-    # XXX change if
+
     if not ln_P1_exp_P1 and not ln_P2_exp_P2 and not ln_P1P2_exp_P1 and not \
             ln_P1P2_exp_P2:
         ln_P1_exp_P1 = np.average(np.log(kde1.evaluate(resamples1)))
@@ -547,7 +550,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
 
 
 def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
-                            nsamples=None, ens_id_min=1, ens_id_max=None):
+                            nsamples, ens_id_min=1, ens_id_max=None):
     """
     Generate Kernel Density Estimates (KDE) from embedded spaces and
     elaborate the coordinates for later use. However, consider more than
@@ -619,11 +622,6 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
         embedded_ensembles.append(this_embedded)
         kdes.append(
             gaussian_kde(this_embedded))
-
-    # Set number of samples
-    # XXX to be removed in order to be consistent with the other function
-    if not nsamples:
-        nsamples = this_embedded.shape[1] * 10
 
     # Resample according to probability distributions
     for this_kde in kdes:
@@ -740,7 +738,7 @@ def hes(ensembles,
 
     ensembles : list
         List of Universe objects for similarity measurements.
-        #XXX get rid of Ensemble objects in the text
+
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
@@ -814,12 +812,11 @@ def hes(ensembles,
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
 
-    >>> ens1 = Universe(PDB_small, DCD)
-    >>> ens2 = Universe(PDB_small, DCD2)
-    >>> print encore.hes([ens1, ens2])
-    (array([[        0.        ,  13946090.57640726],
-           [ 13946090.57640726,         0.        ]]), None)
-
+    >>> ens1 = Universe(PSF, DCD)
+    >>> ens2 = Universe(PSF, DCD2)
+    >>> print encore.hes([ens1, ens2])[0]
+    [[        0.          38279683.95892926]
+    [ 38279683.95892926         0.        ]]
 
     Here None is returned in the array as no details has been requested.
 
@@ -827,17 +824,19 @@ def hes(ensembles,
     align everything to the current timestep in the first ensemble. Note that
     this changes the ens1 and ens2 objects:
 
-    >>> print encore.hes([ens1, ens2], align=True)
-    (array([[    0.        ,  6868.27953491],
-           [ 6868.27953491,     0.        ]]), None)
+    >>> print encore.hes([ens1, ens2], align=True)[0]
+    [[    0.          6880.34140106]
+    [ 6880.34140106     0.        ]]
+ 
     Alternatively, for greater flexibility in how the alignment should be done
     you can call the rms_fit_trj function manually:
 
+    >>> from MDAnalysis.analysis import align
     >>> align.rms_fit_trj(ens1, ens1, select="name CA", in_memory=True)
     >>> align.rms_fit_trj(ens2, ens1, select="name CA", in_memory=True)
     >>> print encore.hes([ens1, ens2])
-    (array([[    0.        ,  6935.99303895],
-           [ 6935.99303895,     0.        ]]), None)
+    [[    0.          7032.19607004]
+    [ 7032.19607004     0.        ]]
     """
 
     # Ensure in-memory trajectories either by calling align
@@ -1067,14 +1066,12 @@ def ces(ensembles,
     Here the simplest case of just two :class:`Ensemble`s used for comparison
     are illustrated: ::
 
-        >>> ens1 = Universe(PDB_small, DCD)
-        >>> ens2 = Universe(PDB_small, DCD2)
+        >>> ens1 = Universe(PSF, DCD)
+        >>> ens2 = Universe(PSF, DCD2)
         >>> CES = encore.ces([ens1,ens2])
-        >>> print CES
-            (array([[[ 0.          0.55392484]
-                     [ 0.55392484  0.        ]]],None)
-
-    Here None is returned in the array as no details has been requested.
+        >>> print CES[0]
+            [[ 0.          0.68070702]
+             [ 0.68070702  0.        ]]
 
     """
 
@@ -1336,11 +1333,9 @@ def dres(ensembles,
         >>> ens1 = Universe(PDB_small,DCD)
         >>> ens2 = Universe(PDB_small,DCD2)
         >>> DRES = encore.dres([ens1,ens2])
-        >>> print DRES
-           (array( [[[ 0.          0.67383396]
-                 [ 0.67383396  0.        ]], None]
-
-    Here None is returned in the array as no details has been requested.
+        >>> print DRES[0]
+            [[ 0.          0.67996043]
+            [ 0.67996043  0.        ]]
 
     """
 

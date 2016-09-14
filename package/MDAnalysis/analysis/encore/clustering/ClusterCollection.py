@@ -45,9 +45,9 @@ class Cluster(object):
         Cluster ID number. Useful for the ClustersCollection class
 
     metadata : iterable
-        dict of lists, containing metadata for the cluster elements. The
-        iterable must return the same number of elements as those that
-        belong to the cluster.
+        dict of lists or numpy.array, containing metadata for the cluster 
+        elements. The iterable must return the same number of elements as 
+        those that belong to the cluster.
 
     size : int
         number of elements.
@@ -67,16 +67,15 @@ class Cluster(object):
         ----------
 
         elem_list : numpy.array or None
-            numpy array of cluster elements. if None, the cluster will be
-            initialized as empty.
+            numpy array of cluster elements
 
         centroid : None or element object
-            centroid object
+            centroid 
 
         idn : int
             cluster ID
 
-        metadata : {str:iterable, ...}
+        metadata : iterable
             metadata, one value for each cluster element. The iterable
             must have the same length as the elements array.
 
@@ -145,7 +144,7 @@ class ClusterCollection(object):
     def __init__(self, elements=None, metadata=None):
         """Class constructor. If elements is None, an empty cluster collection
             will be created. Otherwise, the constructor takes as input an
-            iterable of ints with the following format:
+            iterable of ints, for instance:
 
             [ a, a, a, a, b, b, b, c, c, ... , z, z ]
 

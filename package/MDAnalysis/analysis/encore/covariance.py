@@ -34,7 +34,6 @@ import numpy as np
 def ml_covariance_estimator(coordinates, reference_coordinates=None):
     """
     Standard maximum likelihood estimator of the covariance matrix.
-    The generated object acts as a functor.
 
     Parameters
     ----------
@@ -186,12 +185,15 @@ def covariance_matrix(ensemble,
     selection : str
         Atom selection string in the MDAnalysis format.
 
-    estimator : MLEstimator or ShrinkageEstimator object
-        Which estimator type to use (maximum likelihood, shrinkage). This
-        object is required to have a __call__ function defined.
+    estimator : function
+        Function that estimates the covariance matrix. It requires at least
+        a "coordinates" numpy array (of shape (N,M,3), where N is the number
+        of frames and M the number of atoms). See ml_covariance_estimator and
+        shrinkage_covariance_estimator for reference.
+
 
     mass_weighted : bool
-        Whether to do a mass-weighted analysis
+        Whether to do a mass-weighted analysis (default is True)
 
     reference : MDAnalysis.Universe object
         Use the distances to a specific reference structure rather than the
