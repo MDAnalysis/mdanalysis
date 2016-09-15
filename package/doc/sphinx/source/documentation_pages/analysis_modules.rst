@@ -75,7 +75,7 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
-   analysis/x3dna
+   analysis/legacy/x3dna
 
 Polymers
 ========
@@ -107,10 +107,23 @@ Volumetric analysis
    analysis/lineardensity
    analysis/waterdynamics
 
-Dimension Reduction
-===================
+Dimensionality Reduction
+========================
 .. toctree::
    :maxdepth: 1
 
    analysis/diffusionmap
    analysis/pca
+
+
+Legacy analysis modules
+=======================
+
+The :mod:`MDAnalysis.analysis.legacy` module contains code that for a
+range of reasons is not as well maintained and tested as the other
+analysis modules. *Use with care.*
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/legacy_module

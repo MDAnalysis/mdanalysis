@@ -16,10 +16,9 @@ The rules for this file:
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud
 
-  * 0.15.1
+  * 0.16.0
 
 Enhancements
-
   * Added regression tests for MDAnalysis.analysis.nuclinfo (Issue #790)
   * All classes derived from 'AnalysisBase' now display a ProgressMeter
   with 'quiet=False'
@@ -32,6 +31,9 @@ Enhancements
   * Added Auxiliary module for reading additional timeseries data alongside
     trajectories (Issue #785)
   * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
+  * Established the MDAnalysis.analysis.legacy module for unmaintained
+    analysis code (Issue #743)
+        
 Fixes
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
@@ -66,7 +68,8 @@ Changes
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
-
+  * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
+        
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
 
