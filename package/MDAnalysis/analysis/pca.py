@@ -14,13 +14,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
+"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 =====================================================================
 
 :Authors: John Detlefs
 :Year: 2016
 :Copyright: GNU Public License v3
+
+.. versionadded:: 0.16.0
 
 This module contains the linear dimensions reduction method Principal Component
 Analysis (PCA). PCA sorts a simulation into 3N directions of descending
@@ -30,18 +31,18 @@ looking at a few projections of the first principal components. To learn how to
 run a Principal Component Analysis, please refer to the :ref:`PCA-tutorial`.
 
 The PCA problem is solved by solving the eigenvalue problem of the covariance
-matrix, a 3N x 3N matrix where the element (i, j) is the covariance between
-coordinates i and j. The principal components are the eigenvectors of this
-matrix.
+matrix, a :math:`3N \times 3N` matrix where the element :math:`(i, j)` is the
+covariance between coordinates :math:`i` and :math:`j`. The principal
+components are the eigenvectors of this matrix.
 
 For each eigenvector, its eigenvalue is the variance that the eigenvector
-explains. Stored in :attribute:`cumulated_variance`, a ratio for each number of
-eigenvectors up to index i is provided to quickly find out how many principal
-components are needed to explain the amount of variance reflected by those i
-eigenvectors. For most data, :attribute:`cumulated_variance` will be
-approximately equal to one for some n that is significantly smaller than the
-total number of components, these are the components of interest given
-by Principal Component Analysis.
+explains. Stored in :attr:`PCA.cumulated_variance`, a ratio for each number of
+eigenvectors up to index :math:`i` is provided to quickly find out how many
+principal components are needed to explain the amount of variance reflected by
+those :math:`i` eigenvectors. For most data, :attr:`PCA.cumulated_variance`
+will be approximately equal to one for some :math:`n` that is significantly
+smaller than the total number of components, these are the components of
+interest given by Principal Component Analysis.
 
 From here, we can project a trajectory onto these principal components and
 attempt to retrieve some structure from our high dimensional data.
@@ -50,6 +51,10 @@ For a basic introduction to the module, the :ref:`PCA-tutorial` shows how
 to perform Principal Component Analysis.
 
 .. _PCA-tutorial:
+
+PCA Tutorial
+------------
+
 The example uses files provided as part of the MDAnalysis test suite
 (in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
@@ -63,7 +68,7 @@ First load all modules and test data
 Given a universe containing trajectory data we can perform Principal Component
 Analyis by using the class :class:`PCA` and retrieving the principal
 components.
-    >>> u = mda.Universe(PSF,DCD)
+    >>> u = mda.Universe(PSF, DCD)
     >>> PSF_pca = pca.PCA(u, select='backbone')
     >>> PSF_pca.run()
 
@@ -71,28 +76,29 @@ Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-`cumulated_variance`. The value at the ith index of `cumulated_variance` is the
+``cumulated_variance``. The value at the ith index of `cumulated_variance` is the
 sum of the variances from 0 to i.
 
     >>> n_pcs = np.where(PSF_pca.cumulated_var > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
     >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
-From here, inspection of the pca_space and conclusions to be drawn from the
+From here, inspection of the ``pca_space`` and conclusions to be drawn from the
 data are left to the user.
 
 Functions
 ---------
 .. autoclass:: PCA
 .. autofunction:: cosine_content
+
 """
 from six.moves import range
 import logging
 import warnings
 
 import numpy as np
-
 from scipy.integrate import simps
+
 from MDAnalysis.core import AtomGroup
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -128,17 +134,17 @@ class PCA(AnalysisBase):
         then all components are stored and the cumulated variance will converge
         to 1.
     pca_space : array (n_frames, n_components)
-        After running :method:`pca.transform(atomgroup)` the projection of the
+        After running :meth:`pca.transform` the projection of the
         positions onto the principal components will exist here.
     mean_atoms: MDAnalyis atomgroup
-        After running :method:`PCA.run()`, the mean position of all the atoms
+        After running :meth:`PCA.run`, the mean position of all the atoms
         used for the creation of the covariance matrix will exist here.
 
     Methods
     -------
     transform(atomgroup, n_components=None)
         Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :method:`PCA.run()` and project it onto the
+        used for the calculation in :meth:`PCA.run` and project it onto the
         principal components.
     """
 
@@ -342,9 +348,8 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. [BerkHess1]
-    Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
-    65, 031910 (2002).
+    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
+                   65, 031910 (2002).
     """
     t = np.arange(len(pca_space))
     T = len(pca_space)

@@ -126,4 +126,4 @@ analysis modules. *Use with care.*
 .. toctree::
    :maxdepth: 1
 
-   analysis/legacy_module
+   analysis/legacy_modules

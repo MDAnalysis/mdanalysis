@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -15,14 +15,20 @@
 #
 
 """
-Generation and Analysis of X3DNA helicoidal parameter profiles --- :mod:`MDAnalysis.analysis.x3dna`
-===================================================================================================
+Generation and Analysis of X3DNA helicoidal parameter profiles --- :mod:`MDAnalysis.analysis.legacy.x3dna`
+==========================================================================================================
 
 :Author: Elizabeth Denning
 :Year: 2013-2014
 :Copyright: GNU Public License v2
 
-.. versionadded: 0.8
+.. versionadded:: 0.8
+.. versionchanged:: 0.16.0
+   This module is difficult to test due to restrictions on the X3DNA_ code. It
+   is therefore considered unmaintained and legacy code. It was moved to the
+   :mod:`MDAnalysis.analysis.legacy` package (see `issue 906`_)
+
+.. _`issue 906`: https://github.com/MDAnalysis/mdanalysis/issues/906
 
 With the help of this module, X3DNA_ can be run on frames in a trajectory. Data
 can be combined and analyzed. X3DNA_ [Lu2003]_ [Lu2008]_ must be installed
@@ -44,8 +50,8 @@ separately.
 .. _X3DNA: http://x3dna.org/
 
 
-Examples
---------
+Example applications
+--------------------
 
 Single structure
 ~~~~~~~~~~~~~~~~
@@ -80,8 +86,8 @@ next example.
 
 
 
-Analysis
---------
+Analysis classes
+----------------
 
 .. autoclass:: X3DNA
    :members:
@@ -110,7 +116,6 @@ Utilities
 ---------
 
 .. autoclass:: ApplicationError
-
 
 """
 from __future__ import print_function

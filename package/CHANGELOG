@@ -30,9 +30,9 @@ Enhancements
     to do in-place (in-memory) alignment of trajectories.
   * Added regression tests for MDAnalysis.analysis.nuclinfo (Issue #790)
   * All classes derived from 'AnalysisBase' now display a ProgressMeter
-  with 'quiet=False'
+    with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the
-  class itself.
+    class itself.
   * Added boolean flag at lib.distances.USED_OPENMP to reveal if
     OpenMP was used in compilation (Issue #883)
   * Added Principal Component Analysis module for linear dimensionality
@@ -62,12 +62,13 @@ Fixes
     (Issue #927)
 
 Changes
+  * Started unifying the API of analysis classes (named internally
+    "Bauhaus" style; see Issue #719)
   * Added protected variable _frame_index to to keep track of frame iteration
     number in AnalysisBase
-  * Added new AlignTraj class for alignment that follows the new analysis API known
-    as Bauhaus style. (Issue #845)
-  * Added new diffusionmap module for dimension reduction that follows the
-    Bauhaus API. (Issue #857)
+  * Added new AlignTraj class for alignment. (Issue #845)
+  * Added new diffusionmap module for dimension reduction (Issue #857)
+  * Added new PCA module for dimension reduction (PR #896)
   * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
     40% speed up. (PR #930)
   * The ProgressMeter class now has a `dynamic` keyword argument. It is now
