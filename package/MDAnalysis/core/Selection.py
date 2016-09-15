@@ -178,6 +178,12 @@ class AllSelection(Selection):
         pass
 
     def apply(self, group):
+        # Check whether group is identical to the one stored
+        # in the corresponding universe, in which case this
+        # is returned directly. This works since the Universe.atoms
+        # are unique by construction.
+        if group is group.universe.atoms:
+            return group
         return unique(group[:])
 
 

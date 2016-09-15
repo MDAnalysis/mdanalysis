@@ -2027,6 +2027,65 @@ class TestCustomReaders(TestCase):
         assert_equal(len(u.atoms), 8184)
 
 
+class TestInMemoryUniverse(TestCase):
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+               'DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries():
+        universe = MDAnalysis.Universe(PSF, DCD, in_memory=True)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 98, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    def test_reader_wo_timeseries():
+        universe = MDAnalysis.Universe(GRO, TRR, in_memory=True)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (47681, 10, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+               'DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries_frame_interval():
+        universe = MDAnalysis.Universe(PSF, DCD, in_memory=True,
+                                       in_memory_frame_interval=10)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 10, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    def test_reader_wo_timeseries_frame_interval():
+        universe = MDAnalysis.Universe(GRO, TRR, in_memory=True,
+                                       in_memory_frame_interval=3)
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (47681, 4, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def test_existing_universe():
+        universe = MDAnalysis.Universe(PDB_small, DCD)
+        universe.transfer_to_memory()
+        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
+                     (3341, 98, 3),
+                     err_msg="Unexpected shape of trajectory timeseries")
+
+    @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def test_frame_interval_convention():
+        universe1 = MDAnalysis.Universe(PSF, DCD)
+        array1 = universe1.trajectory.timeseries(skip=10)
+        universe2 = MDAnalysis.Universe(PSF, DCD, in_memory=True,
+                                        in_memory_frame_interval=10)
+        array2 = universe2.trajectory.timeseries()
+        assert_equal(array1, array2,
+                     err_msg="Unexpected differences between arrays.")
+
+
 class TestWrap(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
