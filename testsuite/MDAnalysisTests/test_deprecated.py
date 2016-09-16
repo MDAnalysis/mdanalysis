@@ -18,9 +18,7 @@
 # - in particular stubs introduced in 0.11.0 (and which
 #   will be removed in 1.0)
 
-from numpy.testing import TestCase
-
-class TestImports(TestCase):
+class TestImports(object):
     def test_core_units(self):
         try:
             import MDAnalysis.core.units
@@ -63,4 +61,10 @@ class TestImports(TestCase):
         except ImportError:
             raise AssertionError("MDAnalysis.KDTree not available")
 
+    def test_analysis_x3dna(self):
+        try:
+            import MDAnalysis.analysis.x3dna
+            from MDAnalysis.analysis.x3dna import X3DNA
+        except ImportError:
+            raise AssertionError("MDAnalysis.analysis.x3dna not available")
 

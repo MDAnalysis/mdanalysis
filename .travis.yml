@@ -1,3 +1,5 @@
+language: python
+
 # Only build for develop and master (and PRs)
 branches:
   only:
@@ -7,6 +9,7 @@ branches:
 os:
   - linux
   - osx
+
 env:
   global:
     - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
@@ -22,6 +25,7 @@ env:
       #- SETUP=minimal PYTHON_VERSION=3.3
       #- SETUP=full PYTHON_VERSION=3.3
 matrix:
+  fast_finish: true
   allow_failures:
       #- env: SETUP=minimal PYTHON_VERSION=3.3
       #- env: SETUP=full PYTHON_VERSION=3.3
@@ -72,7 +76,7 @@ script:
      (cd ./package/doc/sphinx && make clean html) || \
      true
 after_success:
-  - coveralls
+  - if [[ $SETUP == 'full' ]]; then coveralls; fi
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \

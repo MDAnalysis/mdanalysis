@@ -155,7 +155,7 @@ Functions
    this module and is now exclusively accessible as
    :func:`~MDAnalysis.analysis.rms.rmsd`.
 
-.. versionchanged:: 0.15.1
+.. versionchanged:: 0.16.0
    Function :func:`~MDAnalysis.analysis.align.rms_fit_trj` deprecated
    in favor of AlignTraj class.
 
@@ -756,7 +756,7 @@ def rms_fit_trj(
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(
-            ref_coordinates.astype(np.float64), 
+            ref_coordinates.astype(np.float64),
             traj_coordinates.astype(np.float64), natoms, rot, weights)
         R[:, :] = rot.reshape(3, 3)
 

@@ -136,7 +136,7 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 from ..lib.util import anyopen
-from .tpr import utils as U
+from .tpr import utils as tpr_utils
 from .base import TopologyReader
 
 import logging
@@ -158,15 +158,10 @@ class TPRParser(TopologyReader):
         -------
         structure : dict
         """
-        #ndo_int = U.ndo_int
-        ndo_real = U.ndo_real
-        #ndo_rvec = U.ndo_rvec
-        #ndo_ivec = U.ndo_ivec
-
         tprf = anyopen(self.filename, mode='rb').read()
         data = xdrlib.Unpacker(tprf)
         try:
-            th = U.read_tpxheader(data)                    # tpxheader
+            th = tpr_utils.read_tpxheader(data)                    # tpxheader
         except EOFError:
             msg = "{0}: Invalid tpr file or cannot be recognized".format(self.filename)
             logger.critical(msg)
@@ -178,18 +173,18 @@ class TPRParser(TopologyReader):
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            U.extract_box_info(data, V)
+            tpr_utils.extract_box_info(data, V)
 
         if state_ngtc > 0 and V >= 28:
             if V < 69:                      # redundancy due to  different versions
-                ndo_real(data, state_ngtc)
-            ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
+                tpr_utils.ndo_real(data, state_ngtc)
+            tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
         if V < 26:
-            U.fver_err(V)
+            tpr_utils.fileVersion_err(V)
 
         if th.bTop:
-            tpr_top = U.do_mtop(data, V, self._u)
+            tpr_top = tpr_utils.do_mtop(data, V, self._u)
             structure = {
                 'atoms': tpr_top.atoms,
                 'bonds': tpr_top.bonds,
@@ -233,7 +228,6 @@ class TPRParser(TopologyReader):
         logger.info("Gromacs version   : {0}".format(th.ver_str))
         logger.info("tpx version       : {0}".format(th.fver))
         logger.info("tpx generation    : {0}".format(th.fgen))
-        logger.info("tpx number        : {0}".format(th.number))
         logger.info("tpx precision     : {0}".format(th.precision))
         logger.info("tpx file_tag      : {0}".format(th.file_tag))
         logger.info("tpx natoms        : {0}".format(th.natoms))

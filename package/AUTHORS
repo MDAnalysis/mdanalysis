@@ -6,8 +6,8 @@
 
 MDAnalysis was originally written by Naveen Michaud-Agrawal.
 
-Oliver Beckstein and Elizabeth J. Denning are maintaining the project
-and contributing to the development.
+The project is maintained by the MDAnalysis Core Developer Team
+(@MDAnalysis/coredevs on https://github.com/MDAnalysis).
 
 All contributing authors are listed in this file below. The repository
 history at https://github.com/MDAnalysis/mdanalysis and the CHANGELOG
@@ -75,6 +75,7 @@ Chronological list of authors
   - Bart Bruininks
   - Fiona Naughton
   - Robert Delgado
+  - Wouter Boomsma
 
 External code
 -------------
@@ -99,9 +100,6 @@ xdrfile
    modifications). Also for clarity we now name the resulting enhanced
    xdr-reading library, complete with cython bindings, 'libmdaxdr'.
 
-KDTree
-  - Thomas Hamelryck <thamelry@binf.ku.dk>
-
 DCD reader from catdcd
   - Justin Gullingsrud
 
@@ -111,11 +109,6 @@ transformations
 pyqcprot
   - Joshua L. Adelman, University of Pittsburgh <jla65@pitt.edu>
   - https://github.com/synapticarbors/pyqcprot
-
-helanal
-  - Benjamin Hall, University of Oxford <benjamin.hall@bioch.ox.ac.uk>
-  - based on HELANAL from
-    http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 
 Other contributions
