@@ -19,7 +19,6 @@ The rules for this file:
   * 0.16.0
 
 Enhancements
-  * Added unit tests for bad file mode passed to SelectionWriter
   * Added 'MemoryReader' class to allow manipulation of trajectory data
     in-memory, which can provide substantial speed-ups to certain
     calculations.
@@ -29,7 +28,6 @@ Enhancements
     this transfer after construction of the universe
   * Added 'in_memory' option to 'rms_fit_trj', which makes it possible
     to do in-place (in-memory) alignment of trajectories.
-  * Added regression tests for MDAnalysis.analysis.nuclinfo (Issue #790)
   * All classes derived from 'AnalysisBase' now display a ProgressMeter
     with 'quiet=False'
   * The 'run' method from all 'AnalysisBase' derived classes return the

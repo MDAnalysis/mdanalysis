@@ -14,8 +14,11 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
 ??/??/16 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
+         tyler.je.reddy
 
   * 0.15.1
+    - Added unit tests for bad file mode passed to SelectionWriter
+    - Added regression tests for MDAnalysis.analysis.nuclinfo (Issue #790)
     - test_imports now recursively checks subdirectories (Issue #964).
     - removed usage of random numbers from tests (Issue #958)
     - test_imports now always uses the correct source directory (Issue #939).
