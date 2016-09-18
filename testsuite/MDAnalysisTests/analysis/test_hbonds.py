@@ -41,7 +41,7 @@ class TestHydrogenBondAnalysis(TestCase):
         }
         # ideal helix with 1 proline:
         self.values = {
-            'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
+            'num_bb_hbonds':  u.atoms.n_residues - u.select_atoms('resname PRO').n_residues - 4,
             'donor_resid': np.array([5,  6,  8,  9, 10, 11, 12, 13]),
             'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA'], dtype='U4'),
             }

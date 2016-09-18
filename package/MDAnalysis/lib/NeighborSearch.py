@@ -50,6 +50,7 @@ class AtomNeighborSearch(object):
           slow down the search.
         """
         self.atom_group = atom_group
+        self._u = atom_group.universe
         self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
         self.kdtree.set_coords(atom_group.positions)
 
@@ -92,12 +93,12 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
-        n_atom_list = [self.atom_group[i] for i in indices]
+        n_atom_list = self.atom_group[indices]
         if level == 'A':
             if len(n_atom_list) == 0:
                 return []
             else:
-                return AtomGroup(n_atom_list)
+                return n_atom_list
         elif level == 'R':
             return list({a.residue for a in n_atom_list})
         elif level == 'S':
