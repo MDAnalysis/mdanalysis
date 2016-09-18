@@ -61,6 +61,10 @@ class _SelectionWriter(TestCase):
         g.write_selection(self.namedfile, **kwargs)
         return g
 
+    def test_write_bad_mode(self):
+        with self.assertRaises(ValueError):
+            self._write(name=self.ref_name, mode='a+')
+
 
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
@@ -97,10 +101,6 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
         self._write_selection(name=self.ref_name)
         self._assert_indices()
 
-    def test_write_ndx_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
-
 
 class TestSelectionWriter_Charmm(_SelectionWriter):
     filename = "CA.str"
@@ -129,9 +129,6 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
         self._write_selection(name=self.ref_name)
         self._assert_selectionstring()
 
-    def test_write_str_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
 
 
 class TestSelectionWriter_PyMOL(_SelectionWriter):
@@ -158,9 +155,6 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
         self._write_selection(name=self.ref_name)
         self._assert_selectionstring()
 
-    def test_write_pml_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
 
 
 class TestSelectionWriter_VMD(_SelectionWriter):
@@ -184,10 +178,6 @@ class TestSelectionWriter_VMD(_SelectionWriter):
     def test_writeselection_vmd(self):
         self._write_selection(name=self.ref_name)
         self._assert_selectionstring()
-
-    def test_write_vmd_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
 
 
 def spt2array(line):
@@ -221,6 +211,3 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
         assert_array_equal(indices, self.ref_indices,
                            err_msg="SPT indices were not written correctly")
 
-    def test_write_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
