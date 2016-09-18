@@ -1513,7 +1513,7 @@ class Atom(ComponentBase):
                   frame from the trajectory will replace the change with that
                   from the file
         """
-        return self._u.trajectory.ts.positions[self._ix]
+        return self._u.trajectory.ts.positions[self._ix].copy()
 
     @position.setter
     def position(self, values):
@@ -1535,7 +1535,7 @@ class Atom(ComponentBase):
         """
         ts = self._u.trajectory.ts
         try:
-            return ts.velocities[self._ix]
+            return ts.velocities[self._ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -1563,7 +1563,7 @@ class Atom(ComponentBase):
         """
         ts = self._u.trajectory.ts
         try:
-            return ts.forces[self._ix]
+            return ts.forces[self._ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
