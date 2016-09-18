@@ -31,7 +31,7 @@ import warnings
 
 import MDAnalysis
 import MDAnalysis as mda
-import MDAnalysis.core.Selection
+import MDAnalysis.core.selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.topologyobjects import TopologyGroup
 from MDAnalysis.core.selection import Parser
