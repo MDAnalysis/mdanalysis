@@ -65,7 +65,6 @@ class _SelectionWriter(TestCase):
         with self.assertRaises(ValueError):
             self._write(name=self.ref_name, mode='a+')
 
-
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
     return np.array(" ".join(lines).replace("\n", "").split(), dtype=int)
@@ -130,7 +129,6 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
         self._assert_selectionstring()
 
 
-
 class TestSelectionWriter_PyMOL(_SelectionWriter):
     filename = "CA.pml"
     ref_name = "CA_selection"
@@ -154,7 +152,6 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
     def test_writeselection_pml(self):
         self._write_selection(name=self.ref_name)
         self._assert_selectionstring()
-
 
 
 class TestSelectionWriter_VMD(_SelectionWriter):
@@ -210,4 +207,3 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
                      err_msg="SPT file has wrong selection name")
         assert_array_equal(indices, self.ref_indices,
                            err_msg="SPT indices were not written correctly")
-
