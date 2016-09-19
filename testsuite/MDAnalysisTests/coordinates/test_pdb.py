@@ -573,7 +573,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_first_residue(self):
         # First residue is a MET, shouldn't be smushed together
         # with a water
-        assert_(len(self.universe.residues[0]) == 19)
+        assert_(len(self.universe.residues[0].atoms) == 19)
 
 
 class TestIncompletePDB(object):
@@ -622,21 +622,6 @@ class TestIncompletePDB(object):
     def test_reading_trajectory(self):
         for ts in self.u.trajectory:
             pass
-
-    def test_occupancy(self):
-        occupancies = self.u.atoms.occupancies
-        assert_array_almost_equal(occupancies, np.ones(len(occupancies)))
-
-    def test_set_occupancy(self):
-        for atom in self.u.atoms:
-            atom.occupancy = 0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
-
-    def test_set_occupancies(self):
-        self.u.atoms.occupancies = 0.0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
 
 
 class TestPDBXLSerial(object):
