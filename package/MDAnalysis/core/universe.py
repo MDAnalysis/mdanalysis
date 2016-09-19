@@ -305,6 +305,22 @@ class Universe(object):
     def select_atoms(self, sel, *othersel, **selgroups):
         return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
+    @property
+    def bonds(self):
+        return self.atoms.bonds
+
+    @property
+    def angles(self):
+        return self.atoms.angles
+
+    @property
+    def dihedrals(self):
+        return self.atoms.dihedrals
+
+    @property
+    def impropers(self):
+        return self.atoms.impropers
+
     def __repr__(self):
         #return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
