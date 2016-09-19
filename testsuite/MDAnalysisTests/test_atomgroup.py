@@ -168,69 +168,6 @@ class TestAtom(TestCase):
         assert_equal(self.universe.atoms[1].occupancy, 1)
 
 
-# INVALID: cannot create Atoms in isolation like this;
-# will require refactor to build empty Universe and add atoms to it
-@skip
-class TestAtomComparisons(TestCase):
-    """Test the comparison operators for Atom"""
-    def setUp(self):
-        self.at1 = Atom(1, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        self.at2 = Atom(2, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        self.at3 = Atom(3, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-        self.at4 = Atom(4, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
-
-    def tearDown(self):
-        del self.at1
-        del self.at2
-        del self.at3
-        del self.at4
-
-    def test_lt(self):
-        assert_(self.at1 < self.at2)
-        assert_(not (self.at3 < self.at2))
-        assert_(not (self.at2 < self.at2))
-
-    def test_gt(self):
-        assert_(self.at2 > self.at1)
-        assert_(not (self.at2 > self.at3))
-        assert_(not (self.at2 > self.at2))
-
-    def test_eq(self):
-        assert_(self.at2 == self.at2)
-        assert_(not (self.at2 == self.at3))
-
-        # We only check index of atom, so these are equal
-        # despite being different objects.
-        pseudo_at2 = Atom(2, 'b', 'tb', 'rm', 2, 's2', 0.02, 0.02)
-        assert_(self.at2 == pseudo_at2)
-
-    def test_neq(self):
-        assert_(self.at2 != self.at3)
-        assert_(not (self.at2 != self.at2))
-
-    def test_geq(self):
-        assert_(self.at2 >= self.at1)
-        assert_(self.at2 >= self.at2)
-        assert_(not (self.at2 >= self.at3))
-
-    def test_leq(self):
-        assert_(self.at2 <= self.at3)
-        assert_(self.at2 <= self.at2)
-        assert_(not (self.at2 <= self.at1))
-
-    def test_sorting_1(self):
-        l = [self.at1, self.at2, self.at3, self.at4]
-        assert_(sorted(l) == l)
-
-    def test_sorting_2(self):
-        l = [self.at2, self.at3, self.at1, self.at4]
-        assert_(sorted(l) == [self.at1, self.at2, self.at3, self.at4])
-
-    def test_sorting_3(self):
-        l = [self.at2, self.at2, self.at3, self.at1]
-        assert_(sorted(l) == [self.at1, self.at2, self.at2, self.at3])
-
-
 # VALID: these attributes exist always and are pulled from trajectory;
 # they give NoDataError if the reader doesn't give this information
 class TestAtomNoForceNoVel(TestCase):
@@ -2790,12 +2727,9 @@ class TestCrossUniverse(object):
         for x, y in itertools.product(A, B):
             yield self._check_badadd, x, y
 
-    # INVALID: AtomGroups cannot exist in isolation; must be obtained from a
-    # Universe
-    @skip
     def test_adding_empty_ags(self):
         # Check that empty AtomGroups don't trip up on the Universe check
         u = MDAnalysis.Universe(two_water_gro)
 
-        assert_(len(AtomGroup([]) + u.atoms[:3]) == 3)
-        assert_(len(u.atoms[:3] + AtomGroup([])) == 3)
+        assert_(len(u.atoms[[]] + u.atoms[:3]) == 3)
+        assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
