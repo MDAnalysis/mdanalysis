@@ -190,7 +190,7 @@ class GroupBase(_MutableBase):
     """
     def __init__(self, ix, u):
         # indices for the objects I hold
-        self._ix = ix
+        self._ix = np.asarray(ix, dtype=np.int64)
         self._u = u
         self._cache = dict()
 
