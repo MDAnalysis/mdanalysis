@@ -469,7 +469,6 @@ class RMSD(AnalysisBase):
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center_of_mass().astype(np.float64)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
-        logger.info('frame number {}'.format(self._ts.frame))
         self.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         if self._groupselections_atoms:
@@ -484,25 +483,23 @@ class RMSD(AnalysisBase):
                 mobile_coordinates.astype(np.float64), self._n_atoms,
                 self._rot, self._weights)
 
-            logger.info('mobile atom positions {}'.format(self.mobile_atoms.positions[0]))
-            logger.info('self.ref_coordinates_64 {}'.format(self._ref_coordinates_64[0]))
+            #logger.info('mobile atom positions {}'.format(self.mobile_atoms.positions[0]))
+            #logger.info('self.ref_coordinates_64 {}'.format(self._ref_coordinates_64[0]))
             self._R[:,:] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
             # avoid copying arrays) (Marginally (~3%) faster than
             # "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
-            self.mobile_atoms.positions[:] -= mobile_com
+            self.mobile_atoms.positions -= mobile_com
 
             # R acts to the left & is broadcasted N times.
-            self.mobile_atoms.positions[:, :] = (self.mobile_atoms.positions.astype(np.float64) *
+            self.mobile_atoms.positions[:,:] = (self.mobile_atoms.positions.astype(np.float64) *
                                                  self._R)
-            self.mobile_atoms.positions[:] += self._ref_com
+            self.mobile_atoms.positions += self._ref_com
 
             # 2) calculate secondary RMSDs
             for igroup, (refpos, atoms) in enumerate(
                     zip(self._groupselections_ref_coords_64,
                         self._groupselections_atoms), 3):
-                logger.info('mobile atom positions {}'.format(atoms['mobile'].positions[0]))
-                logger.info('refpos {}'.format(refpos[0]))
                 self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
                     refpos, atoms['mobile'].positions.astype(np.float64),
                     atoms['mobile'].n_atoms, None, self._weights)
