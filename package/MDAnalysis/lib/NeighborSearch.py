@@ -70,7 +70,7 @@ class AtomNeighborSearch(object):
           *radius* of *atoms*.
         """
         if isinstance(atoms, Atom):
-            positions = Atom.position.reshape(1, 3)
+            positions = atoms.position.reshape(1,3)
         else:
             positions = atoms.positions
 
@@ -93,11 +93,11 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
-        n_atom_list = self.atom_group[indices]
         if level == 'A':
-            if len(n_atom_list) == 0:
+            if len(indices) == 0:
                 return []
             else:
+                n_atom_list = self.atom_group[indices]
                 return n_atom_list
         elif level == 'R':
             return list({a.residue for a in n_atom_list})

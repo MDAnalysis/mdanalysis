@@ -93,7 +93,8 @@ class _TestLAMMPSDATAWriter(TestCase):
 
     def test_Writer_dimensions(self):
         assert_almost_equal(self.u_ref.dimensions, self.u_new.dimensions,
-                         err_msg="attributes different after writing")
+                         err_msg="attributes different after writing",
+                         decimal=6)
 
     def test_Writer_atoms(self):
         for attr in self.all_attrs:

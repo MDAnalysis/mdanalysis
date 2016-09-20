@@ -263,7 +263,13 @@ class PSFParser(TopologyReader):
         masses = np.zeros(numlines, dtype=np.float32)
 
         for i in xrange(numlines):
-            line = lines()
+            try:
+                line = lines()
+            except StopIteration:
+                err = ("{0} is not valid PSF file"
+                       "".format(self.filename))
+                logger.error(err)
+                raise ValueError(err)
             try:
                 vals = set_type(atom_parser(line))
             except ValueError:
