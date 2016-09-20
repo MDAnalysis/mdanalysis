@@ -127,6 +127,32 @@ class TriangularMatrix(object):
                 raise TypeError
         self._elements = loaded['elements']
 
+    def __add__(self, scalar):
+        """Add scalar to matrix elements.
+
+        Parameters
+        ----------
+
+        `scalar` : float
+            Scalar to be added.
+        """
+        newMatrix = self.__class__(self.size)
+        newMatrix._elements = self._elements + scalar;
+        return newMatrix
+
+    def __iadd__(self, scalar):
+        """Add scalar to matrix elements.
+
+        Parameters
+        ----------
+
+        `scalar` : float
+            Scalar to be added.
+        """
+        self._elements += scalar
+        return self
+
+
     def __mul__(self, scalar):
         """Multiply with scalar.
 
@@ -136,9 +162,24 @@ class TriangularMatrix(object):
         `scalar` : float
             Scalar to multiply with.
         """
-        newMatrix = TriangularMatrix(self.size)
+        newMatrix = self.__class__(self.size)
         newMatrix._elements = self._elements * scalar;
         return newMatrix
+
+    def __imul__(self, scalar):
+        """Multiply with scalar.
+
+        Parameters
+        ----------
+
+        `scalar` : float
+            Scalar to multiply with.
+        """
+        self._elements *= scalar
+        return self
+
+
+
 
     __rmul__ = __mul__
 
