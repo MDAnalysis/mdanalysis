@@ -27,7 +27,13 @@ import itertools
 import warnings
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
+# For type guessing:
+from MDAnalysis.topology.core import guess_atom_type
+from MDAnalysis.core.topologyattrs import Atomtypes
 
+def guess_types(names):
+    """GRO doesn't supply types, this returns an Attr"""
+    return Atomtypes(np.array(map(guess_atom_type, names), dtype=object))
 
 class TestHydrogenBondAnalysis(object):
     def setUp(self):
@@ -77,6 +83,7 @@ class TestHydrogenBondAnalysis(object):
     @staticmethod
     def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
+        u.add_TopologyAttr(guess_types(u.atoms.names))
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u,'protein','resname ASP', distance=3.0, angle=120.0)
         h.run()
         assert_equal(len(h.timeseries), 10)
