@@ -70,7 +70,7 @@ class AtomNeighborSearch(object):
           *radius* of *atoms*.
         """
         if isinstance(atoms, Atom):
-            positions = Atom.position.reshape(1, 3)
+            positions = atoms.position.reshape(1, 3)
         else:
             positions = atoms.positions
 
@@ -78,7 +78,7 @@ class AtomNeighborSearch(object):
         for pos in positions:
             self.kdtree.search(pos, radius)
             indices.append(self.kdtree.get_indices())
-        unique_idx = np.unique([i for l in indices for i in l])
+        unique_idx = np.unique([i for l in indices for i in l]).astype(np.int64)
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
