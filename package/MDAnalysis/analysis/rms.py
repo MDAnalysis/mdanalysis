@@ -24,7 +24,7 @@ Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 .. versionadded:: 0.7.7
 .. versionchanged:: 0.11.0
    Added :class:`RMSF` analysis.
-.. versionchanged:: 0.15.1
+.. versionchanged:: 0.16.0
    Refactored RMSD to fit AnalysisBase API
 
 The module contains code to analyze root mean square quantities such
@@ -348,7 +348,7 @@ class RMSD(AnalysisBase):
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
-        self.universe = atomgroup
+        self.universe = atomgroup.universe
         self.reference = reference if reference is not None else self.universe
 
         select = process_selection(select)
