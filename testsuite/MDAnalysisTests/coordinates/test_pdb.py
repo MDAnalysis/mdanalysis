@@ -198,7 +198,7 @@ class TestPDBWriter(TestCase):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
-        u.atoms[2000].position[1] = -999.9995
+        u.atoms[2000].position = [0, -999.9995, 22.8]
         assert_raises(ValueError, u.atoms.write, self.outfile)
 
     @attr('issue')
@@ -209,7 +209,7 @@ class TestPDBWriter(TestCase):
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
         # OB: 9999.99951 is not caught by '<=' ?!?
-        u.atoms[1000].position[1] = 9999.9996
+        u.atoms[1000].position = [90.889, 9999.9996, 12.2]
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 

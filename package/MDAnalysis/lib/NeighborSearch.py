@@ -95,7 +95,7 @@ class AtomNeighborSearch(object):
         """
         n_atom_list = self.atom_group[indices]
         if level == 'A':
-            if len(n_atom_list) == 0:
+            if not n_atom_list:
                 return []
             else:
                 return n_atom_list
