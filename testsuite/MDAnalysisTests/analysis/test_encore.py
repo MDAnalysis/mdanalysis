@@ -80,6 +80,7 @@ class TestEncore(TestCase):
 
     @staticmethod
     def test_triangular_matrix():
+        scalar = 2
         size = 3
         expected_value = 1.984
         filename = tempfile.mktemp()+".npz"
@@ -103,6 +104,27 @@ class TestEncore(TestCase):
         triangular_matrix_3.loadz(filename)
         assert_equal(triangular_matrix_3[0,1], expected_value, 
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
+
+        incremented_triangular_matrix = triangular_matrix + scalar
+        assert_equal(incremented_triangular_matrix[0,1], expected_value + scalar,
+                        err_msg="Error in TriangularMatrix: addition of scalar gave\
+inconsistent results")
+        
+        triangular_matrix += scalar
+        assert_equal(triangular_matrix[0,1], expected_value + scalar,
+                        err_msg="Error in TriangularMatrix: addition of scalar gave\
+inconsistent results")
+
+        multiplied_triangular_matrix_2 = triangular_matrix_2 * scalar
+        assert_equal(multiplied_triangular_matrix_2[0,1], expected_value * scalar,
+			err_msg="Error in TriangularMatrix: multiplication by scalar gave\
+inconsistent results")
+
+        triangular_matrix_2 *= scalar
+        assert_equal(triangular_matrix_2[0,1], expected_value * scalar,
+                        err_msg="Error in TriangularMatrix: multiplication by scalar gave\
+inconsistent results")
+
 
     @staticmethod
     def test_parallel_calculation():
