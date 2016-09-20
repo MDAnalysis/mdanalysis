@@ -1940,12 +1940,13 @@ class TestWriteGRO(_WriteAtoms):
 @dec.skipif(parser_not_found('DCD'),
             'DCD parser not available. Are you using python 3?')
 def test_generated_residueselection():
-    """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
+    """Test that a generated residue group always returns a ResidueGroup (Issue 47)
+    unless there is a single residue (Issue 363 change)"""
     universe = MDAnalysis.Universe(PSF, DCD)
     # only a single Cys in AdK
     cys = universe.s4AKE.CYS
-    assert_(isinstance(cys, MDAnalysis.core.groups.ResidueGroup),
-            "Single Cys77 is NOT returned as a ResidueGroup with a single Residue (Issue 47)")
+    assert_(isinstance(cys, MDAnalysis.core.groups.Residue),
+            "Single Cys77 is NOT returned as a single Residue (Issue 47)")
 
     # multiple Met
     met = universe.s4AKE.MET
