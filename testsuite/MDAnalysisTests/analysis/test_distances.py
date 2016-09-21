@@ -124,3 +124,9 @@ class TestDist(TestCase):
                 offset=33)[:2]
         assert_equal(actual, np.array([self.ag.atoms.resids + 33,
                                        self.ag2.atoms.resids + 33]))
+
+    def test_mismatch_exception(self):
+        '''A ValueError should be raised if the two atomgroups
+        don't have the same number of atoms.'''
+        with self.assertRaises(ValueError):
+            MDAnalysis.analysis.distances.dist(self.ag[:19], self.ag2)
