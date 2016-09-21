@@ -17,6 +17,7 @@
 from six.moves import range
 
 import numpy as np
+import unittest
 from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysis.lib import transformations as t
@@ -238,7 +239,7 @@ class TestProjectionFromMatrix(object):
         assert_equal(t.is_same_transform(P0, P1), True)
 
 
-class _ClipMatrix(object):
+class _ClipMatrix(unittest.TestCase):
     def test_clip_matrix_1(self):
         frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])  # arbitrary values
         frustrum[1] += frustrum[0]
@@ -262,6 +263,24 @@ class _ClipMatrix(object):
         v = np.dot(M, [frustrum[1], frustrum[3], frustrum[4], 1.0])
         assert_allclose(v / v[3],
                         np.array([ 1.,  1., -1.,  1.]))
+
+    def test_clip_matrix_frustrum_left_right_bounds(self):
+        '''ValueError should be raised if left > right.'''
+        frustrum = np.array([0.4, 0.3, 0.3, 0.7, 0.5, 1.1])
+        with self.assertRaises(ValueError):
+           self.f(*frustrum)
+
+    def test_clip_matrix_frustrum_bottom_top_bounds(self):
+        '''ValueError should be raised if bottom > top.'''
+        frustrum = np.array([0.1, 0.3, 0.71, 0.7, 0.5, 1.1])
+        with self.assertRaises(ValueError):
+           self.f(*frustrum)
+
+    def test_clip_matrix_frustrum_near_far_bounds(self):
+        '''ValueError should be raised if near > far.'''
+        frustrum = np.array([0.1, 0.3, 0.3, 0.7, 1.5, 1.1])
+        with self.assertRaises(ValueError):
+           self.f(*frustrum)
 
 class TestClipMatrixNP(_ClipMatrix):
     f = staticmethod(t._py_clip_matrix)
