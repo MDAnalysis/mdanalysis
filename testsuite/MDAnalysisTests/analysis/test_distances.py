@@ -130,3 +130,53 @@ class TestDist(TestCase):
         don't have the same number of atoms.'''
         with self.assertRaises(ValueError):
             MDAnalysis.analysis.distances.dist(self.ag[:19], self.ag2)
+
+class TestBetween(TestCase):
+    '''Tests for MDAnalysis.analysis.distances.between().
+    Imports do not happen at the top level of the module
+    because of the scipy dependency.'''
+
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
+
+    def setUp(self):
+        import MDAnalysis.analysis.distances
+        import scipy
+        import scipy.spatial
+        self.u = MDAnalysis.Universe(GRO)
+        self.ag = self.u.atoms[:10]
+        self.ag2 = self.u.atoms[12:33]
+        self.group = self.u.atoms[40:]
+        self.distance = 5.9
+        self.distance_matrix_1 = scipy.spatial.distance.cdist(self.group.positions,
+                                                              self.ag.positions)
+        self.mask_1 = np.unique(np.where(self.distance_matrix_1 <= self.distance)[0])
+        self.group_filtered = self.group[self.mask_1]
+        self.distance_matrix_2 = scipy.spatial.distance.cdist(self.group_filtered.positions,
+                                                              self.ag2.positions)
+        self.mask_2 = np.unique(np.where(self.distance_matrix_2 <= self.distance)[0])
+        self.expected = self.group_filtered[self.mask_2].indices
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+        del self.ag2
+        del self.group
+        del self.distance
+        del self.distance_matrix_1
+        del self.distance_matrix_2
+        del self.mask_1
+        del self.mask_2
+        del self.group_filtered
+        del self.expected
+
+    def test_between_simple_case_indices_only(self):
+        '''Test MDAnalysis.analysis.distances.between() for
+        a simple input case. Checks the sorted atom indices
+        of returned AtomGroup against sorted expected index
+        values.'''
+        actual = sorted(MDAnalysis.analysis.distances.between(self.group,
+                                                              self.ag,
+                                                              self.ag2,
+                                                              self.distance).indices)
+        assert_equal(actual, self.expected)
