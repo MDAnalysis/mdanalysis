@@ -17,6 +17,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
          tyler.je.reddy
 
   * 0.16
+    - Added unit tests for MDAnalysis.analysis.psa exception handling
     - Added unit test for MDAnalysis.analysis.distances.between()
     - Added unit tests for MDAnalysis.analysis.distances.dist()
     - Added unit tests for clip_matrix frustrum boundary checks
