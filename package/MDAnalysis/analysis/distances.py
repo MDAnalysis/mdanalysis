@@ -35,6 +35,7 @@ import numpy as np
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
+from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 import warnings
 import logging
@@ -192,6 +193,6 @@ def between(group, A, B, distance):
     from MDAnalysis.core.AtomGroup import AtomGroup
 
     ns_group = AtomNeighborSearch(group)
-    resA = set(ns_group.search_list(A, distance))
-    resB = set(ns_group.search_list(B, distance))
+    resA = set(ns_group.search(A, distance))
+    resB = set(ns_group.search(B, distance))
     return AtomGroup(resB.intersection(resA))
