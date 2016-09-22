@@ -2,6 +2,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 import logging
 from itertools import groupby
+import copy
 
 import MDAnalysis
 from ..lib import util
@@ -113,6 +114,10 @@ class Universe(object):
         from ..topology.core import get_parser_for
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
+
+        # hold on to copy of kwargs; used by external libraries that
+        # reinitialize universes
+        self.kwargs = copy.deepcopy(kwargs)
 
         # managed attribute holding Reader
         self._trajectory = None
