@@ -43,6 +43,7 @@ Enhancements
     analysis code (Issue #743)
         
 Fixes
+  * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
   * fix __iter__/next redundancy (Issue #869)
