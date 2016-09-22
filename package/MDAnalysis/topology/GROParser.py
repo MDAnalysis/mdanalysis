@@ -20,7 +20,7 @@ GRO topology parser
 Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to
 build a basic topology.
 
-Atom types, masses and charges are guessed.
+Atom types and masses are guessed.
 
 .. SeeAlso:: :mod:`MDAnalysis.coordinates.GRO`
 
@@ -43,12 +43,27 @@ from ..core.topologyattrs import (
     Resnames,
     Atomids,
     Atomnames,
+    Masses,
+    Atomtypes,
 )
 from ..core.topology import Topology
 from .base import TopologyReader, squash_by
+from . import guessers
 
 
 class GROParser(TopologyReader):
+    """Reads a Gromacs GRO file
+
+    Reads the following attributes:
+      - resids
+      - resanmes
+      - atomids
+      - atomnames
+
+    Guesses the following attributes
+      - types
+      - masses
+    """
     format = 'GRO'
 
     def parse(self):
@@ -82,17 +97,25 @@ class GROParser(TopologyReader):
             raise IOError("Missing atom name on line: {0}"
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
 
+        # Guess types and masses
+        types = guessers.guess_types(names)
+        masses = guessers.guess_masses(types)
+
         residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]
-        atomnames = Atomnames(names)
-        atomids = Atomids(indices)
-        residueids = Resids(new_resids)
-        residuenames = Resnames(new_resnames)
+        attrs = [
+            Atomnames(names),
+            Atomids(indices),
+            Resids(new_resids),
+            Resnames(new_resnames),
+            Atomtypes(types),
+            Masses(masses),
+        ]
 
         top = Topology(n_atoms=n_atoms, n_res=len(new_resids), n_seg=1,
-                       attrs=[atomnames, atomids, residueids, residuenames],
+                       attrs=attrs,
                        atom_resindex=residx,
                        residue_segindex=None)
 
