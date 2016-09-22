@@ -2583,8 +2583,6 @@ class TestGuessBonds(TestCase):
         self._check_atomgroup(ag, u)
 
 
-# VALID: need to refactor to not use global lists of properties
-@skip("need alternative to _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES")
 class TestAtomGroupProperties(object):
     """Test working with the properties of Atoms via AtomGroups
 
@@ -2593,7 +2591,8 @@ class TestAtomGroupProperties(object):
     - setting properties from AG changes the Atom
     - setting the property on Atom changes AG
     """
-    def get_new(self, att_type):
+    @staticmethod
+    def get_new(att_type):
         """Return enough values to change the small g"""
         if att_type == 'string':
             return ['A', 'B', 'C', 'D', 'E', 'F']
@@ -2601,12 +2600,6 @@ class TestAtomGroupProperties(object):
             return [0.001, 0.002, 0.003, 0.005, 0.012, 0.025]
         elif att_type == 'int':
             return [4, 6, 8, 1, 5, 4]
-
-    def _check_plural(self, singular, plural):
-        assert_equal(_PLURAL_PROPERTIES[singular], plural)
-
-    def _check_singular(self, singular, plural):
-        assert_equal(_SINGULAR_PROPERTIES[plural], singular)
 
     def _check_ag_matches_atom(self, att, atts, ag):
         """Checking Atomgroup property matches Atoms"""
@@ -2617,25 +2610,16 @@ class TestAtomGroupProperties(object):
         assert_equal(ref, getattr(ag, atts),
                      err_msg="AtomGroup doesn't match Atoms for property: {0}".format(att))
 
-    def _change_atom_check_ag(self, att, vals, ag):
+    def _change_atom_check_ag(self, att, atts, vals, ag):
         """Changing Atom, checking AtomGroup matches this"""
         # Set attributes via Atoms
         for atom, val in zip(ag, vals):
             setattr(atom, att, val)
-        ag._clear_caches()
         # Check that AtomGroup returns new values
-        other = getattr(ag, _PLURAL_PROPERTIES[att])
+        other = getattr(ag, atts)
 
         assert_equal(vals, other,
                      err_msg="Change to Atoms not reflected in AtomGroup for property: {0}".format(att))
-
-    def _change_ag_check_atoms(self, att, vals, ag, ag_setter):
-        """Changing AtomGroup via setter method, checking Atoms"""
-        ag_setter(vals)
-
-        for atom, val in zip(ag, vals):
-            assert_equal(getattr(atom, att), val,
-                         err_msg="Change to AtomGroup not reflected in Atoms for propert: {0}".format(att))
 
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -2660,10 +2644,8 @@ class TestAtomGroupProperties(object):
                 ('occupancy', 'occupancies', 'float')
         ):
             vals = self.get_new(att_type)
-            yield self._check_plural, att, atts
-            yield self._check_singular, att, atts
             yield self._check_ag_matches_atom, att, atts, ag
-            yield self._change_atom_check_ag, att, vals, ag
+            yield self._change_atom_check_ag, att, atts, vals, ag
 
 
 # VALID
