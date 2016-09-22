@@ -2646,25 +2646,24 @@ class TestAtomGroupProperties(object):
         idx = [0, 1, 4, 7, 11, 14]
         ag = master[idx]
 
-        for att, atts, att_type, ag_set in (
-                ('name', 'names', 'string', ag.set_names),
-                ('resid', 'resids', 'int', ag.set_resids),
-                ('segid', 'segids', 'string', ag.set_segids),
-                ('type', 'types', 'string', ag.set_types),
-                ('altLoc', 'altLocs', 'string', ag.set_altLocs),
-                ('serial', 'serials', 'int', ag.set_serials),
-                ('charge', 'charges', 'float', ag.set_charges),
-                ('mass', 'masses', 'float', ag.set_masses),
-                ('radius', 'radii', 'float', ag.set_radii),
-                ('bfactor', 'bfactors', 'float', ag.set_bfactors),
-                ('occupancy', 'occupancies', 'float', ag.set_occupancies)
+        for att, atts, att_type in (
+                ('name', 'names', 'string'),
+                ('resid', 'resids', 'int'),
+                ('segid', 'segids', 'string'),
+                ('type', 'types', 'string'),
+                ('altLoc', 'altLocs', 'string'),
+                ('serial', 'serials', 'int'),
+                ('charge', 'charges', 'float'),
+                ('mass', 'masses', 'float'),
+                ('radius', 'radii', 'float'),
+                ('bfactor', 'bfactors', 'float'),
+                ('occupancy', 'occupancies', 'float')
         ):
             vals = self.get_new(att_type)
             yield self._check_plural, att, atts
             yield self._check_singular, att, atts
             yield self._check_ag_matches_atom, att, atts, ag
             yield self._change_atom_check_ag, att, vals, ag
-            yield self._change_ag_check_atoms, att, vals, ag, ag_set
 
 
 # VALID
