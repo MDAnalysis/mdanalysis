@@ -110,8 +110,8 @@ class GROParser(TopologyReader):
             Atomids(indices),
             Resids(new_resids),
             Resnames(new_resnames),
-            Atomtypes(types),
-            Masses(masses),
+            Atomtypes(types, guessed=True),
+            Masses(masses, guessed=True),
         ]
 
         top = Topology(n_atoms=n_atoms, n_res=len(new_resids), n_seg=1,

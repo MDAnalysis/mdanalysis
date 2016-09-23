@@ -348,3 +348,13 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+
+    @property
+    def guessed_attributes(self):
+        """A list of the guessed attributes in this topology"""
+        return filter(lambda x: x.is_guessed, self.attrs)
+
+    @property
+    def read_attributes(self):
+        """A list of the attributes read from the topology"""
+        return filter(lambda x: not x.is_guessed, self.attrs)

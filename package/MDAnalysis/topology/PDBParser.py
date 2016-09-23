@@ -202,7 +202,7 @@ class PDBParser(TopologyReader):
         # masses from types
         # OPT: We do this check twice, maybe could refactor to avoid this
         masses = guess_masses(atomtypes)
-        attrs.append(Masses(masses))
+        attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
         resnames = np.array(resnames, dtype=object)

@@ -61,8 +61,9 @@ class TopologyAttr(object):
     groupdoc = None
     singledoc = None
 
-    def __init__(self, values):
+    def __init__(self, values, guessed=False):
         self.values = values
+        self._guessed = guessed
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -84,6 +85,11 @@ class TopologyAttr(object):
             return self.set_residues(group, values)
         elif group.level == 'segment':
             return self.set_segments(group, values)
+
+    @property
+    def is_guessed(self):
+        """Bool of if the source of this information is a guess"""
+        return self._guessed
 
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
@@ -130,7 +136,7 @@ class Atomindices(TopologyAttr):
     target_classes = [Atom]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -166,7 +172,7 @@ class Resindices(TopologyAttr):
     target_classes = [Atom, Residue]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -210,7 +216,7 @@ class Segindices(TopologyAttr):
     target_classes = [Atom, Residue, Segment]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -1125,11 +1131,12 @@ class Segids(SegmentAttr):
 
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
-    def __init__(self, values, types=None):
+    def __init__(self, values, types=None, guessed=False):
         self.values = values
         if types is None:
             types = [None for value in values]
         self.types = types
+        self._guessed = guessed
         self._cache = dict()
 
     def __len__(self):
