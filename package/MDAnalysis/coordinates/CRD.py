@@ -23,7 +23,11 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 """
 
+from six.moves import zip
+
+import itertools
 import numpy as np
+import warnings
 
 from ..lib import util
 from . import base
@@ -103,6 +107,13 @@ class CRDWriter(base.Writer):
     It automatically writes the CHARMM EXT extended format if there
     are more than 99,999 atoms.
 
+    Requires the following attributes:
+    - resids
+    - resnames
+    - names
+    - chainIDs
+    - tempfactors
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
@@ -146,35 +157,69 @@ class CRDWriter(base.Writer):
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
-        with util.openany(self.filename, 'w') as self.crd:
-            self._TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
-            self._TITLE("")
-            self._NUMATOMS(len(atoms))
+
+        # Check for attributes, use defaults for missing ones
+        attrs = {}
+        missing_topology = []
+        for attr, default in (
+                ('chainIDs', 'A'),
+                ('resids', 1),
+                ('resnames', 'UNK'),
+                ('names', 'X'),
+                ('tempfactors', 0.0),
+        ):
+            try:
+                attrs[attr] = getattr(atoms, attr)
+            except (NoDataError, AttributeError):
+                attrs[attr] = itertools.cycle((default,))
+                missing_topology.append(attr)
+        if missed_attrs:
+            warnings.warn(
+                "Supplied AtomGroup was missing the following attributes: "
+                "{miss}. These will be written with default values. "
+                "Alternatively these can be supplied as keyword arguments."
+                "".format(miss=', '.join(missing_topology)))
+
+        with util.openany(self.filename, 'w') as crd:
+            # Write Title
+            crd.write(self.fmt['TITLE'] % " FRAME " + str(frame) + " FROM " + str(u.trajectory.filename)))
+            crd.write(self.fmt['TITLE'] % "")
+
+            # Write NUMATOMS
+            if n_atoms > 99999:
+                crd.write(self.fmt['NUMATOMS_EXT'] % n_atoms)
+            else:
+                crd.write(self.fmt['NUMATOMS'] % n_atoms)
+
+            # Write all atoms
+            n_atoms = len(atoms)
+            # Detect which format string we're using to output (EXT or not)
+            # *cut refers to how to truncate various things,
+            # depending on output format!
+            if n_atoms > 99999:
+                at_fmt = 'ATOM_EXT'
+                serialcut = -10
+                namecut = resnamecut = chainidcut = 8
+                residcut = -8
+                totrescut = -10
+            else:
+                at_fmt = 'ATOM'
+                serialcut = -5
+                namecut = resnamecut = chainidcut = 4
+                residcut = -4
+                totrescut = -5
+
             current_resid = 0
-            for i, atom in enumerate(atoms):
+            for i, (atom, ) in enumerate(zip(atoms)):
                 if atoms[i].resid != atoms[i - 1].resid:
                     # note that this compares first and LAST atom on first iteration... but it works
                     current_resid += 1
+
+                crd.write(at_fmt % serial=i+1 )
+
                 self._ATOM(serial=i + 1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
                            x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], chainID=atom.segid,
                            tempFactor=atom.bfactor, TotRes=current_resid, n_atoms=len(atoms))
-
-    def _TITLE(self, *title):
-        """Write TITLE record.
-        """
-        line = " ".join(title)  # should do continuation automatically
-        line = line.strip()
-        if len(line) > 0:
-            line = " " + line
-        self.crd.write(self.fmt['TITLE'] % line)
-
-    def _NUMATOMS(self, n_atoms):
-        """Write generic total number of atoms in system)
-        """
-        if n_atoms > 99999:
-            self.crd.write(self.fmt['NUMATOMS_EXT'] % n_atoms)
-        else:
-            self.crd.write(self.fmt['NUMATOMS'] % n_atoms)
 
     def _ATOM(self, serial=None, resSeq=None, resName=None, name=None, x=None, y=None, z=None, chainID=None,
               tempFactor=0.0, TotRes=None, n_atoms=None):
@@ -187,11 +232,6 @@ class CRDWriter(base.Writer):
 
         .. Warning:: Floats are not checked and can potentially screw up the format.
         """
-        if tempFactor is None:
-            tempFactor = 0.0  # atom.bfactor is None by default
-        for arg in ('serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z', 'tempFactor'):
-            if locals()[arg] is None:
-                raise ValueError('parameter ' + arg + ' must be defined.')
 
         chainID = chainID or ""  # or should we provide a chainID such as 'A'?
         if n_atoms > 99999:
