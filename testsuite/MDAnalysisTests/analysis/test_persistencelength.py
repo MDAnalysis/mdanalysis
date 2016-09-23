@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import MDAnalysis
 from MDAnalysis.analysis import polymer
+from MDAnalysis.exceptions import NoDataError
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -64,6 +65,27 @@ class TestPersistenceLength(object):
         assert_almost_equal(p.lp, 6.504, 3)
         assert_(len(p.fit) == len(p.results))
 
+    @dec.skipif(module_not_found('matplotlib'),
+                "Test skipped because matplotlib is not available.")
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
+    def test_plot_ax_return(self):
+        '''Ensure that a matplotlib axis object is
+        returned when plot() is called.'''
+        import matplotlib
+        p = self._make_p()
+        p.run()
+        p.perform_fit()
+        actual = p.plot()
+        expected = matplotlib.axes.Axes
+        assert_(isinstance(actual, expected))
+
+    def test_raise_NoDataError(self):
+        '''Ensure that a NoDataError is raised if
+        perform_fit() is called before the run()
+        method of AnalysisBase.'''
+        p = self._make_p()
+        assert_raises(NoDataError, p.perform_fit)
 
 class TestFitExponential(object):
     def setUp(self):
