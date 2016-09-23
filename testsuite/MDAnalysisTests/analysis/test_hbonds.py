@@ -154,48 +154,56 @@ class TestHydrogenBondAnalysisChecking(object):
         return h
 
     def test_check_static_selections(self):
-        def run_HBA(s1, s2, s1type):
-            """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
-            # no donors/acceptors; only raises error if no updates
-            return self._run(selection1=s1, selection2=s2,
-                             update_selection1=False, update_selection2=False,
-                             selection1_type=s1type,
-            )
-        protein = "protein"
-        nothing = "resname ALA and not backbone"
-        for s1, s2, s1type in itertools.product((protein, nothing),
-                                                (protein, nothing),
-                                                ("donor", "acceptor", "both")):
-            if s1 == s2 == protein:
-                def runOK():
-                    """test that HydrogenBondAnalysis() works for protein/protein"""
-                    try:
-                        h = run_HBA(s1, s2, s1type)
-                    except:
-                        raise AssertionError("HydrogenBondAnalysis protein/protein failed")
-                    else:
-                        return True
-                yield runOK
-            else:
-                yield assert_raises, SelectionError, run_HBA, s1, s2, s1type
+        self._setUp()
+        try:
+            def run_HBA(s1, s2, s1type):
+                """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
+                # no donors/acceptors; only raises error if no updates
+                return self._run(selection1=s1, selection2=s2,
+                                 update_selection1=False, update_selection2=False,
+                                 selection1_type=s1type,
+                )
+            protein = "protein"
+            nothing = "resname ALA and not backbone"
+            for s1, s2, s1type in itertools.product((protein, nothing),
+                                                    (protein, nothing),
+                                                    ("donor", "acceptor", "both")):
+                if s1 == s2 == protein:
+                    def runOK():
+                        """test that HydrogenBondAnalysis() works for protein/protein"""
+                        try:
+                            h = run_HBA(s1, s2, s1type)
+                        except:
+                            raise AssertionError("HydrogenBondAnalysis protein/protein failed")
+                        else:
+                            return True
+                    yield runOK
+                else:
+                    yield assert_raises, SelectionError, run_HBA, s1, s2, s1type
+        finally:
+            self._tearDown()
 
     def test_run_empty_selections(self):
-        def run_HBA(s1, s2, s1type):
-            # no donors/acceptors; should not raise error because updates=True
-            return self._run(selection1=s1, selection2=s2,
-                             update_selection1=True, update_selection2=True,
-                             selection1_type=s1type,
-            )
-        protein = "protein"
-        nothing = "resname ALA and not backbone"
-        for s1, s2, s1type in itertools.product((protein, nothing),
-                                                (protein, nothing),
-                                                ("donor", "acceptor", "both")):
-            def run_HBA_dynamic_selections(*args):
-                try:
-                    h = run_HBA(*args)
-                except:
-                    raise AssertionError("HydrogenBondAnalysis with update=True failed")
-                else:
-                    return True
-            yield run_HBA_dynamic_selections, s1, s2, s1type
+        self._setUp()
+        try:
+            def run_HBA(s1, s2, s1type):
+                # no donors/acceptors; should not raise error because updates=True
+                return self._run(selection1=s1, selection2=s2,
+                                 update_selection1=True, update_selection2=True,
+                                 selection1_type=s1type,
+                )
+            protein = "protein"
+            nothing = "resname ALA and not backbone"
+            for s1, s2, s1type in itertools.product((protein, nothing),
+                                                    (protein, nothing),
+                                                    ("donor", "acceptor", "both")):
+                def run_HBA_dynamic_selections(*args):
+                    try:
+                        h = run_HBA(*args)
+                    except:
+                        raise AssertionError("HydrogenBondAnalysis with update=True failed")
+                    else:
+                        return True
+                yield run_HBA_dynamic_selections, s1, s2, s1type
+        finally:
+            self._tearDown()
