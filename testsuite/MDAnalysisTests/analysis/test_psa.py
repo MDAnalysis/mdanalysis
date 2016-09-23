@@ -72,3 +72,24 @@ class TestPSAnalysis(TestCase):
     def test_reversal_frechet(self):
         err_msg = "Frechet distances did not increase after path reversal"
         assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)
+
+class TestPSAExceptions(TestCase):
+    '''Tests for exceptions that should be raised
+    or caught by code in the psa module.'''
+
+    def test_get_path_metric_func_bad_key(self):
+        '''Test that KeyError is caught by
+        get_path_metric_func().'''
+
+        try:
+           MDAnalysis.analysis.psa.get_path_metric_func('123456')
+        except KeyError:
+            self.fail('KeyError should be caught')
+
+    def test_get_coord_axes_bad_dims(self):
+        '''Test that ValueError is raised when
+        numpy array with incorrect dimensions 
+        is fed to get_coord_axes().'''
+
+        with self.assertRaises(ValueError):
+            MDAnalysis.analysis.psa.get_coord_axes(np.zeros((5,5,5,5)))

@@ -332,7 +332,7 @@ def get_coord_axes(path):
     else:
         err_str = "Path must have 2 or 3 dimensions; the first dimensions (axis"\
                 + " 0) must correspond to frames, axis 1 (and axis 2, if"       \
-                + " present) must contain atomic coordinates.".format(N)
+                + " present) must contain atomic coordinates."
         raise ValueError(err_str)
     return N, axis
 
