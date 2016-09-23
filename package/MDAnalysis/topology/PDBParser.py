@@ -47,6 +47,7 @@ from __future__ import absolute_import, print_function
 import numpy as np
 import warnings
 
+from .guessers import guess_masses
 from ..lib import util
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
@@ -59,6 +60,7 @@ from ..core.topologyattrs import (
     ICodes,
     ChainIDs,
     Occupancies,
+    Masses,
     Resids,
     Resnames,
     Resnums,
@@ -66,6 +68,12 @@ from ..core.topologyattrs import (
     Bonds,
     AtomAttr,
 )
+
+def float_or_default(val, default):
+    try:
+        return float(val)
+    except ValueError:
+        return default
 
 
 class PDBParser(TopologyReader):
@@ -78,6 +86,9 @@ class PDBParser(TopologyReader):
      - resids
      - resnames
      - segids
+
+    Guesses the following Attributes:
+     - masses
     """
     format = ['PDB','ENT']
 
@@ -141,11 +152,7 @@ class PDBParser(TopologyReader):
                 names.append(line[12:16].strip())
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
-                # empty chainID is a single space ' '!
-                chainid = line[21:22].strip()
-                if not chainid:
-                    chainid = None
-                chainids.append(chainid)
+                chainids.append(line[21:22].strip())
 
                 # Resids are optional
                 try:
@@ -161,23 +168,13 @@ class PDBParser(TopologyReader):
                         resid_prev = resid
                 except ValueError:
                     warnings.warn("PDB file is missing resid information.  "
-                                  "Defaulted to '0'")
-                    resid = 0
+                                  "Defaulted to '1'")
+                    resid = 1
                 finally:
                     resids.append(resid)
 
-                try:
-                    occupancy = float(line[54:60])
-                except ValueError:
-                    occupancy = None
-                occupancies.append(occupancy)
-
-                try:
-                    # bfactor
-                    tempFactor = float(line[60:66])
-                except ValueError:
-                    tempFactor = None
-                tempfactors.append(tempFactor)
+                occupancies.append(float_or_default(line[54:60]), 0.0)
+                tempfactors.append(float_or_default(line[60:66]), 1.0)  # AKA bfactor
 
                 segids.append(line[66:76].strip())
                 atomtypes.append(line[76:78].strip())
@@ -191,6 +188,7 @@ class PDBParser(TopologyReader):
         n_atoms = len(serials)
         attrs = []
         attrs.append(Atomnames(np.array(names, dtype=object)))
+
         # Optional attributes
         for vals, Attr, dtype in (
                 (icodes, ICodes, object),
@@ -207,9 +205,16 @@ class PDBParser(TopologyReader):
             # - all entries are empty
             if vals is None:
                 continue
-            if any(v == None for v in vals):
+            elif any(v is None for v in vals):
                 continue
-            attrs.append(Attr(np.array(vals, dtype=dtype)))
+            else:
+                attrs.append(Attr(np.array(vals, dtype=dtype)))
+        # Guessed attributes
+        # masses from types
+        # OPT: We do this check twice, maybe could refactor to avoid this
+        if atomtypes is not None and not (v is None for v in atomtypes):
+            masses = guess_masses(atomtypes)
+            attrs.append(Masses(masses))
 
         # Residue level stuff from here
         resnames = np.array(resnames, dtype=object)
