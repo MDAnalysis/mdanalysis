@@ -20,7 +20,6 @@ from MDAnalysis.analysis import polymer
 from MDAnalysis.exceptions import NoDataError
 import numpy as np
 from numpy.testing import (
-    TestCase,
     assert_,
     assert_almost_equal,
     assert_raises,
@@ -31,7 +30,7 @@ from MDAnalysisTests.datafiles import Plength
 from MDAnalysisTests import module_not_found
 
 
-class TestPersistenceLength(TestCase):
+class TestPersistenceLength(object):
     def setUp(self):
         self.u = MDAnalysis.Universe(Plength)
 
@@ -79,15 +78,14 @@ class TestPersistenceLength(TestCase):
         p.perform_fit()
         actual = p.plot()
         expected = matplotlib.axes.Axes
-        self.assertIsInstance(actual, expected)
+        assert_(isinstance(actual, expected))
 
     def test_raise_NoDataError(self):
         '''Ensure that a NoDataError is raised if
         perform_fit() is called before the run()
         method of AnalysisBase.'''
-        with self.assertRaises(NoDataError):
-            p = self._make_p()
-            p.perform_fit()
+        p = self._make_p()
+        assert_raises(NoDataError, p.perform_fit)
 
 class TestFitExponential(object):
     def setUp(self):
