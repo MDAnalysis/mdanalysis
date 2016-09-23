@@ -126,7 +126,6 @@ class PDBParser(TopologyReader):
         atomtypes = []
 
         resids = []
-        resnums = []
         resnames = []
 
         segids = []
@@ -208,17 +207,13 @@ class PDBParser(TopologyReader):
         # Residue level stuff from here
         resnames = np.array(resnames, dtype=object)
         resids = np.array(resids, dtype=np.int32)
+        resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
-        if resnums:
-            resnums = np.array(resnums, dtype=np.int32)
-            residx, resids, (resnames, resnums, segids) = squash_by(
-                resids, resnames, resnums, segids)
-            attrs.append(Resnums(resnums))
-        else:
-            residx, resids, (resnames, segids) = squash_by(
-                resids, resnames, segids)
+        residx, resids, (resnames, resnums, segids) = squash_by(
+            resids, resnames, resnums, segids)
         n_residues = len(resids)
+        attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))
 
