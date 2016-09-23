@@ -17,13 +17,15 @@
 Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 ==========================================================================
 
-:Author: Oliver Beckstein, David L. Dotson
-:Year: 2012
+:Author: Oliver Beckstein, David L. Dotson, John Detlefs
+:Year: 2016
 :Copyright: GNU Public License v2
 
 .. versionadded:: 0.7.7
 .. versionchanged:: 0.11.0
    Added :class:`RMSF` analysis.
+.. versionchanged:: 0.16.0
+   Refactored RMSD to fit AnalysisBase API
 
 The module contains code to analyze root mean square quantities such
 as the coordinat root mean square distance (:class:`RMSD`) or the
@@ -127,7 +129,9 @@ import numpy as np
 import logging
 import warnings
 
+
 import MDAnalysis.lib.qcprot as qcp
+from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable
@@ -177,7 +181,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
        *superposition* keyword added
 
     """
-    
+
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
@@ -265,7 +269,7 @@ def process_selection(select):
     return select
 
 
-class RMSD(object):
+class RMSD(AnalysisBase):
     """Class to perform RMSD analysis on a trajectory.
 
     Run the analysis with :meth:`RMSD.run`, which stores the results
@@ -279,9 +283,9 @@ class RMSD(object):
     .. versionadded:: 0.7.7
     """
 
-    def __init__(self, traj, reference=None, select='all',
+    def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
-                 mass_weighted=False, tol_mass=0.1, ref_frame=0):
+                 mass_weighted=False, tol_mass=0.1, ref_frame=0, **kwargs):
         """Setting up the RMSD analysis.
 
         The RMSD will be computed between *select* and *reference* for
@@ -289,10 +293,14 @@ class RMSD(object):
 
         Parameters
         ----------
-        traj : :class:`MDAnalysis.Universe`
-            universe that contains a trajectory
-        reference : :class:`MDAnalysis.Universe` (optional)
-            reference coordinates, if ``None`` current frame of *traj* is used
+        atomgroup : :class:`MDAnalysis.AtomGroup` or
+                    :class:`MDAnalysis.Universe`
+            MDAnlysis AtomGroup or Universe with an associated Trajectory
+            to be RMSD fit.
+        reference : :class:`MDAnalysis.AtomGroup` or
+                    :class:`MDAnalysis.Universe`, optional
+            Reference coordinates, if ``None`` current frame of *atomgroup* is
+            used
         select : str / dict / tuple (optional)
             The selection to operate on; can be one of:
 
@@ -335,43 +343,53 @@ class RMSD(object):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
            *groupselections* added
+        .. versionchanged: 0.15.1
+            Refactor to fit with AnalysisBase API
         """
-        self.universe = traj
-        if reference is None:
-            self.reference = self.universe
-        else:
-            self.reference = reference
-        self.select = process_selection(select)
-        if groupselections is not None:
-            self.groupselections = [process_selection(s) for s in groupselections]
-        else:
-            self.groupselections = []
+        super(RMSD, self).__init__(atomgroup.universe.trajectory,
+                                   **kwargs)
+        self.universe = atomgroup.universe
+        self.reference = reference if reference is not None else self.universe
+
+        select = process_selection(select)
+        self.groupselections = ([process_selection(s) for s in groupselections]
+                                if groupselections is not None else [])
         self.mass_weighted = mass_weighted
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.filename = filename
 
-        self.ref_atoms = self.reference.select_atoms(*self.select['reference'])
-        self.traj_atoms = self.universe.select_atoms(*self.select['mobile'])
-        if len(self.ref_atoms) != len(self.traj_atoms):
-            errmsg = ("Reference and trajectory atom selections do "+
-                      "not contain the same number of atoms: "+
-                      "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
-                                                        self.traj_atoms.n_atoms))
-            logger.exception(errmsg)
-            raise SelectionError(errmsg)
-        logger.info("RMS calculation for {0:d} atoms.".format(len(self.ref_atoms)))
-        mass_mismatches = (np.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
+        self.ref_atoms = self.reference.select_atoms(*select['reference'])
+        self.mobile_atoms = self.universe.select_atoms(*select['mobile'])
+
+        if len(self.ref_atoms) != len(self.mobile_atoms):
+            err = ("Reference and trajectory atom selections do "
+                   "not contain the same number of atoms: "
+                   "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
+                                                      self.mobile_atoms.n_atoms))
+            logger.exception(err)
+            raise SelectionError(err)
+        logger.info("RMS calculation "
+                    "for {0:d} atoms.".format(len(self.ref_atoms)))
+        mass_mismatches = (np.absolute((self.ref_atoms.masses -
+                                        self.mobile_atoms.masses)) >
+                           self.tol_mass)
+
         if np.any(mass_mismatches):
             # diagnostic output:
-            logger.error("Atoms: reference | trajectory")
-            for ar, at in zip(self.ref_atoms, self.traj_atoms):
+            logger.error("Atoms: reference | mobile")
+            for ar, at in zip(self.ref_atoms, self.mobile_atoms):
                 if ar.name != at.name:
-                    logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                                 at.segid, at.resid, at.resname, at.name, at.mass))
+                    logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}"
+                                 "|  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3}"
+                                 "{9:6.3f}".format(ar.segid, ar.resid,
+                                                   ar.resname, ar.name,
+                                                   ar.mass, at.segid, at.resid,
+                                                   at.resname, at.name,
+                                                   at.mass))
             errmsg = ("Inconsistent selections, masses differ by more than"
-                     + "{0:f}; mis-matching atoms are shown above.".format(
-                     self.tol_mass))
+                      "{0:f}; mis-matching atoms"
+                      "are shown above.".format(self.tol_mass))
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches
@@ -380,7 +398,7 @@ class RMSD(object):
         # - make a group comparison a class that contains the checks above
         # - use this class for the *select* group and the additional
         #   *groupselections* groups each a dict with reference/mobile
-        self.groupselections_atoms = [
+        self._groupselections_atoms = [
             {
                 'reference': self.reference.select_atoms(*s['reference']),
                 'mobile': self.universe.select_atoms(*s['mobile']),
@@ -388,7 +406,7 @@ class RMSD(object):
             for s in self.groupselections]
         # sanity check
         for igroup, (sel, atoms) in enumerate(zip(self.groupselections,
-                                                  self.groupselections_atoms)):
+                                                  self._groupselections_atoms)):
             if len(atoms['mobile']) != len(atoms['reference']):
                 logger.exception('SelectionError: Group Selection')
                 raise SelectionError(
@@ -397,126 +415,96 @@ class RMSD(object):
                     "N_ref={3}, N_traj={4}".format(
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
-
+        # initialized to note for testing the save function
         self.rmsd = None
 
-    def run(self, start=None, stop=None, step=None,
-            mass_weighted=None, ref_frame=None):
-        """Perform RMSD analysis on the trajectory.
 
-        A number of parameters can be changed from the defaults. The
-        result is stored as the array :attr:`RMSD.rmsd`.
+    def _prepare(self):
+        self._n_atoms = self.mobile_atoms.n_atoms
 
-        Parameters
-        ----------
-        start, stop, step : int (optional)
-            start and stop frame index with step size
-        mass_weighted : bool (optional)
-            overwrite object default to do a mass-weighted RMSD fit
-        ref_frame : int
-             frame index to select frame from *reference*
-        """
-        if mass_weighted is None:
-            mass_weighted = self.mass_weighted
-        if ref_frame is None:
-            ref_frame = self.ref_frame
+        self._weights = ((self.ref_atoms.masses / self.ref_atoms.masses.mean())
+                        if self.mass_weighted else None)
 
-        natoms = self.traj_atoms.n_atoms
-        trajectory = self.universe.trajectory
-        traj_atoms = self.traj_atoms
+        current_frame = self.reference.trajectory.ts.frame
 
-        if mass_weighted:
-            # if performing a mass-weighted alignment/rmsd calculation
-            weight = self.ref_atoms.masses / self.ref_atoms.masses.mean()
-            weight = weight.astype(np.float64)
-        else:
-            weight = None
-
-        # reference centre of mass system
-        current_frame = self.reference.trajectory.ts.frame - 1
         try:
             # Move to the ref_frame
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
-            self.reference.trajectory[ref_frame]
-            ref_com = self.ref_atoms.center_of_mass()
+            self.reference.trajectory[self.ref_frame]
+            self._ref_com = self.ref_atoms.center_of_mass()
             # makes a copy
-            ref_coordinates = self.ref_atoms.positions - ref_com
-            if self.groupselections_atoms:
-                groupselections_ref_coords_64 = [
-                    self.reference.select_atoms(*s['reference']).positions.astype(np.float64) for s in
+            self._ref_coordinates = self.ref_atoms.positions - self._ref_com
+            if self._groupselections_atoms:
+                self._groupselections_ref_coords_64 = [(self.reference.
+                    select_atoms(*s['reference']).
+                    positions.astype(np.float64)) for s in
                     self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
-        ref_coordinates_64 = ref_coordinates.astype(np.float64)
 
-        # allocate the array for selection atom coords
-        traj_coordinates = traj_atoms.positions.copy()
+        self._ref_coordinates_64 = self._ref_coordinates.astype(np.float64)
 
-        if self.groupselections_atoms:
+        if self._groupselections_atoms:
             # Only carry out a rotation if we want to calculate secondary
             # RMSDs.
             # R: rotation matrix that aligns r-r_com, x~-x~com
             #    (x~: selected coordinates, x: all coordinates)
             # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-            rot = np.zeros(9, dtype=np.float64)  # allocate space
-            R = np.matrix(rot.reshape(3, 3))
+            self._rot = np.zeros(9, dtype=np.float64)  # allocate space
+            self._R = np.matrix(self._rot.reshape(3, 3))
         else:
-            rot = None
+            self._rot = None
 
-        # RMSD timeseries
-        n_frames = len(np.arange(0, len(trajectory))[start:stop:step])
-        rmsd = np.zeros((n_frames, 3 + len(self.groupselections_atoms)))
+        self.rmsd = np.zeros((self.n_frames,
+                              3 + len(self._groupselections_atoms)))
 
-        percentage = ProgressMeter(
-            n_frames, interval=10, format="RMSD %(rmsd)5.2f A at frame "
-            "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+        self._pm.format = ("RMSD %(rmsd)5.2f A at frame "
+                           "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+        self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
-        for k, ts in enumerate(trajectory[start:stop:step]):
-            # shift coordinates for rotation fitting
-            # selection is updated with the time frame
-            x_com = traj_atoms.center_of_mass()
-            traj_coordinates[:] = traj_atoms.positions - x_com
+    def _single_frame(self):
+        mobile_com = self.mobile_atoms.center_of_mass().astype(np.float64)
+        self._mobile_coordinates64[:] = self.mobile_atoms.positions
+        self._mobile_coordinates64 -= mobile_com
 
-            rmsd[k, :2] = ts.frame, trajectory.time
+        self.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
-            if self.groupselections_atoms:
-                # 1) superposition structures Need to transpose coordinates
-                # such that the coordinate array is 3xN instead of Nx3. Also
-                # qcp requires that the dtype be float64 (I think we swapped
-                # the position of ref and traj in CalcRMSDRotationalMatrix so
-                # that R acts **to the left** and can be broadcasted; we're
-                # saving one transpose. [orbeckst])
-                rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_64,
-                    traj_coordinates.astype(np.float64), natoms, rot, weight)
-                R[:, :] = rot.reshape(3, 3)
+        if self._groupselections_atoms:
+            # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate array with float64
+            # datatype (float32 leads to errors up to 1e-3 in RMSD).
+            # Note that R is defined in such a way that it acts **to the left** so that we can easily
+            # use broadcasting and save one expensive numpy transposition.
 
-                # Transform each atom in the trajectory (use inplace ops to
-                # avoid copying arrays) (Marginally (~3%) faster than
-                # "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
-                ts.positions -= x_com
-                # R acts to the left & is broadcasted N times.
-                ts.positions[:] = ts.positions * R
-                ts.positions += ref_com
+            self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+                self._ref_coordinates_64, self._mobile_coordinates64,
+                self._n_atoms, self._rot, self._weights)
 
-                # 2) calculate secondary RMSDs
-                for igroup, (refpos, atoms) in enumerate(
-                        zip(groupselections_ref_coords_64,
-                            self.groupselections_atoms), 3):
-                    rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(
-                        refpos, atoms['mobile'].positions.astype(np.float64),
-                        atoms['mobile'].n_atoms, None, weight)
-            else:
-                # only calculate RMSD by setting the Rmatrix to None (no need
-                # to carry out the rotation as we already get the optimum RMSD)
-                rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(
-                    ref_coordinates_64,
-                    traj_coordinates.astype(np.float64), natoms, None, weight)
+            self._R[:, :] = self._rot.reshape(3, 3)
+            # Transform each atom in the trajectory (use inplace ops to
+            # avoid copying arrays) (Marginally (~3%) faster than
+            # "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
+            self._ts.positions[:] -= mobile_com
 
-            percentage.echo(ts.frame, rmsd=rmsd[k, 2])
-        self.rmsd = rmsd
+            # R acts to the left & is broadcasted N times.
+            self._ts.positions[:,:] = (self._mobile_coordinates64[:] *
+                                                 self._R)
+            self._ts.positions[:] += self._ref_com
+
+            # 2) calculate secondary RMSDs
+            for igroup, (refpos, atoms) in enumerate(
+                    zip(self._groupselections_ref_coords_64,
+                        self._groupselections_atoms), 3):
+                self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
+                    refpos, atoms['mobile'].positions.astype(np.float64),
+                    atoms['mobile'].n_atoms, None, self._weights)
+        else:
+            # only calculate RMSD by setting the Rmatrix to None (no need
+            # to carry out the rotation as we already get the optimum RMSD)
+            self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+                self._ref_coordinates_64, self._mobile_coordinates64,
+                self._n_atoms, None, self._weights)
 
     def save(self, filename=None):
         """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.

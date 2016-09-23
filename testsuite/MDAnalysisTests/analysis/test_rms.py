@@ -88,20 +88,21 @@ class Testrmsd(object):
     def test_weights_and_superposition_1(self):
         weights = np.ones(len(self.u.trajectory[0]))
         weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
-            weights=weights, superposition=True)
+                            weights=weights, superposition=True)
         firstCoords = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
-            superposition=True)
+                               superposition=True)
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
     def test_weights_and_superposition_2(self):
         weights = np.zeros(len(self.u.trajectory[0]))
         weights[:100] = 1
         weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[-1],
-            weights=weights, superposition=True)
-        firstCoords = rms.rmsd(self.u.trajectory[0][:100], self.u.trajectory[-1][:100],
-            superposition=True)
-        #very close to zero, change significant decimal places to 5
-        assert_almost_equal(weighted, firstCoords, decimal = 5)
+                            weights=weights, superposition=True)
+        firstCoords = rms.rmsd(self.u.trajectory[0][:100],
+                               self.u.trajectory[-1][:100],
+                               superposition=True)
+        # very close to zero, change significant decimal places to 5
+        assert_almost_equal(weighted, firstCoords, decimal=5)
 
     @staticmethod
     @raises(ValueError)
@@ -149,23 +150,24 @@ class TestRMSD(object):
         del self.tempdir
 
     def test_rmsd(self):
-        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
-        RMSD.run(step=49)
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            step=49)
+        RMSD.run()
         assert_array_almost_equal(RMSD.rmsd, self.correct_values, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 
     def test_rmsd_single_frame(self):
-        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
-        RMSD.run(start=5, stop=6)
-        single_frame = [[ 5, 5, 0.91544906]]
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            start=5, stop=6).run()
+        single_frame = [[5, 5, 0.91544906]]
         assert_array_almost_equal(RMSD.rmsd, single_frame, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 
     def test_mass_weighted_and_save(self):
-        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA')
-        RMSD.run(step=49, mass_weighted= True)
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            step=49, mass_weighted=True).run()
         RMSD.save(self.outfile)
         saved = np.loadtxt(self.outfile)
         assert_array_almost_equal(RMSD.rmsd, saved, 4,
@@ -175,13 +177,11 @@ class TestRMSD(object):
     def test_rmsd_group_selections(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
                                             groupselections=
-                                            ['backbone','name CA'])
-        RMSD.run(step=49)
-
+                                            ['backbone', 'name CA'],
+                                            step=49).run()
         assert_array_almost_equal(RMSD.rmsd, self.correct_values_group, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
-
 
     @raises(SelectionError)
     def test_ref_length_unequal_len(self):
