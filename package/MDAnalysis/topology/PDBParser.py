@@ -173,8 +173,8 @@ class PDBParser(TopologyReader):
                 finally:
                     resids.append(resid)
 
-                occupancies.append(float_or_default(line[54:60]), 0.0)
-                tempfactors.append(float_or_default(line[60:66]), 1.0)  # AKA bfactor
+                occupancies.append(float_or_default(line[54:60], 0.0))
+                tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
                 atomtypes.append(line[76:78].strip())
@@ -182,15 +182,13 @@ class PDBParser(TopologyReader):
         # If segids not present, try to use chainids
         if not any(segids):
             segids, chainids = chainids, None
-        if not icodes:
-            icodes = None
 
         n_atoms = len(serials)
-        attrs = []
-        attrs.append(Atomnames(np.array(names, dtype=object)))
 
-        # Optional attributes
+        attrs = []
+        # Make TopologyAttrs
         for vals, Attr, dtype in (
+                (names, Atomnames, object),
                 (icodes, ICodes, object),
                 (atomtypes, Atomtypes, object),
                 (altlocs, AltLocs, object),
@@ -199,22 +197,13 @@ class PDBParser(TopologyReader):
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
-            # Skip if:
-            # - vals is None
-            # - any entries are None
-            # - all entries are empty
-            if vals is None:
-                continue
-            elif any(v is None for v in vals):
-                continue
-            else:
+            if not vals is None:
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         # Guessed attributes
         # masses from types
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if atomtypes is not None and not (v is None for v in atomtypes):
-            masses = guess_masses(atomtypes)
-            attrs.append(Masses(masses))
+        masses = guess_masses(atomtypes)
+        attrs.append(Masses(masses))
 
         # Residue level stuff from here
         resnames = np.array(resnames, dtype=object)

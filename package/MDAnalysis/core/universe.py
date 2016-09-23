@@ -403,6 +403,7 @@ class Universe(object):
         n_dict = {'atom': self._topology.n_atoms,
                   'residue': self._topology.n_residues,
                   'segment': self._topology.n_segments}
+        logger.debug("_process_attr: Adding {0} to topology".format(attr))
         if hasattr(attr, 'per_object') and \
                 len(attr) != n_dict[attr.per_object]:
             raise ValueError('Length of {attr} does not'
