@@ -18,7 +18,7 @@ from __future__ import print_function
 import MDAnalysis
 import MDAnalysis.analysis.gnm
 
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal)
 import numpy as np
 
 from nose.plugins.attrib import attr
@@ -26,7 +26,7 @@ from nose.plugins.attrib import attr
 from MDAnalysisTests.datafiles import GRO, XTC
 from MDAnalysisTests import tempdir
 
-class TestGNM(TestCase):
+class TestGNM(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.universe = MDAnalysis.Universe(GRO, XTC)
