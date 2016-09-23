@@ -111,7 +111,7 @@ class LeafletFinder(object):
         universe = MDAnalysis.as_Universe(universe)
         self.universe = universe
         self.selectionstring = selectionstring
-        if type(self.selectionstring) == MDAnalysis.core.AtomGroup.AtomGroup:
+        if isinstance(self.selectionstring, MDAnalysis.core.groups.AtomGroup):
             self.selection = self.selectionstring
         else:
             self.selection = universe.select_atoms(self.selectionstring)
@@ -192,8 +192,8 @@ class LeafletFinder(object):
     def group(self, component_index):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*."""
         # maybe cache this?
-        return MDAnalysis.core.AtomGroup.AtomGroup(
-            [self.selection[i] for i in self.components[component_index]])
+        indices = [i for i in self.components[component_index]]
+        return self.selection[indices]
 
     def groups_iter(self):
         """Iterator over all leaflet :meth:`groups`"""
