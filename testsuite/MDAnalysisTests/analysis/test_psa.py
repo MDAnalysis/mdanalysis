@@ -93,3 +93,46 @@ class TestPSAExceptions(TestCase):
 
         with self.assertRaises(ValueError):
             MDAnalysis.analysis.psa.get_coord_axes(np.zeros((5,5,5,5)))
+
+class TestHausdorffDistance(TestCase):
+    '''Unit tests for various Hausdorff distance
+    calculation properties.'''
+
+    def setUp(self):
+        self.random_angles = np.random.random((100,)) * np.pi * 2
+        self.random_columns = np.column_stack((self.random_angles,
+                                               self.random_angles,
+                                               np.zeros((100,))))
+        self.random_columns[...,0] = np.cos(self.random_columns[...,0])
+        self.random_columns[...,1] = np.sin(self.random_columns[...,1])
+        self.random_columns_2 = np.column_stack((self.random_angles,
+                                                 self.random_angles,
+                                                 np.zeros((100,))))
+        self.random_columns_2[1:,0] = np.cos(self.random_columns_2[1:,0]) * 2.0
+        self.random_columns_2[1:,1] = np.sin(self.random_columns_2[1:,1]) * 2.0
+        # move one point farther out so we don't have two perfect circles
+        self.random_columns_2[0,0] = np.cos(self.random_columns_2[0,0]) * 3.3
+        self.random_columns_2[0,1] = np.sin(self.random_columns_2[0,1]) * 3.3
+        self.path_1 = self.random_columns
+        self.path_2 = self.random_columns_2
+
+    def tearDown(self):
+        del self.random_angles
+        del self.random_columns
+        del self.random_columns_2
+        del self.path_1
+        del self.path_2
+
+    def test_hausdorff_wavg_asymmetry(self):
+        '''Ensure that weighted Hausdorff distance
+        is asymmetric. This is a general property
+        of maximum functions. Compare an inner and
+        outer circle, the latter with single point
+        beyond the circle.'''
+        forward = MDAnalysis.analysis.psa.hausdorff(self.path_1,
+                                                         self.path_2)
+        reverse = MDAnalysis.analysis.psa.hausdorff(self.path_2,
+                                                         self.path_1)
+        self.assertNotEqual(forward, reverse)
+
+
