@@ -338,7 +338,7 @@ def get_coord_axes(path):
 
 
 def hausdorff(P, Q):
-    r"""Calculate the Hausdorff distance between two paths.
+    r"""Calculate the undirected Hausdorff distance between two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
@@ -377,7 +377,8 @@ def hausdorff(P, Q):
 
 
 def hausdorff_wavg(P, Q):
-    r"""Calculate the weighted average Hausdorff distance between two paths.
+    r"""Calculate the weighted average (undirected) Hausdorff distance between
+    two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
@@ -421,7 +422,7 @@ def hausdorff_wavg(P, Q):
 
 
 def hausdorff_avg(P, Q):
-    r"""Calculate the average Hausdorff distance between two paths.
+    r"""Calculate the average (undirected) Hausdorff distance between two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
