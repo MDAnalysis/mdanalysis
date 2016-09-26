@@ -377,7 +377,7 @@ def hausdorff(P, Q):
 
 
 def hausdorff_wavg(P, Q):
-    r"""Calculate the weighted average  Hausdorff distance between two paths.
+    r"""Calculate the weighted average Hausdorff distance between two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
