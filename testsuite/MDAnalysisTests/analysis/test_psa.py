@@ -19,11 +19,12 @@ import MDAnalysis
 import MDAnalysis.analysis.psa
 
 from numpy.testing import (TestCase, dec, assert_array_less,
-                           assert_array_almost_equal, assert_)
+                           assert_array_almost_equal, assert_,
+                           assert_almost_equal)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
-from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests import parser_not_found, tempdir, module_not_found
 
 
 class TestPSAnalysis(TestCase):
@@ -93,3 +94,110 @@ class TestPSAExceptions(TestCase):
 
         with self.assertRaises(ValueError):
             MDAnalysis.analysis.psa.get_coord_axes(np.zeros((5,5,5,5)))
+
+class _BaseHausdorffDistance(TestCase):
+    '''Base Class setup and unit tests
+    for various Hausdorff distance
+    calculation properties.'''
+
+    @dec.skipif(module_not_found('scipy'),
+                'scipy not available')
+
+    def setUp(self):
+        self.random_angles = np.random.random((100,)) * np.pi * 2
+        self.random_columns = np.column_stack((self.random_angles,
+                                               self.random_angles,
+                                               np.zeros((100,))))
+        self.random_columns[...,0] = np.cos(self.random_columns[...,0])
+        self.random_columns[...,1] = np.sin(self.random_columns[...,1])
+        self.random_columns_2 = np.column_stack((self.random_angles,
+                                                 self.random_angles,
+                                                 np.zeros((100,))))
+        self.random_columns_2[1:,0] = np.cos(self.random_columns_2[1:,0]) * 2.0
+        self.random_columns_2[1:,1] = np.sin(self.random_columns_2[1:,1]) * 2.0
+        # move one point farther out so we don't have two perfect circles
+        self.random_columns_2[0,0] = np.cos(self.random_columns_2[0,0]) * 3.3
+        self.random_columns_2[0,1] = np.sin(self.random_columns_2[0,1]) * 3.3
+        self.path_1 = self.random_columns
+        self.path_2 = self.random_columns_2
+
+    def tearDown(self):
+        del self.random_angles
+        del self.random_columns
+        del self.random_columns_2
+        del self.path_1
+        del self.path_2
+
+    def test_symmetry(self):
+        '''Ensure that the undirected (symmetric)
+        Hausdorff distance is actually symmetric
+        for a given Hausdorff metric, h.'''
+        forward = self.h(self.path_1, self.path_2)
+        reverse = self.h(self.path_2, self.path_1)
+        self.assertEqual(forward, reverse)
+
+    def test_hausdorff_value(self):
+        '''Test that the undirected Hausdorff
+        distance matches expected value for
+        the simple case here.'''
+        actual = self.h(self.path_1, self.path_2)
+        # unless I pin down the random generator
+        # seems unstable to use decimal > 2
+        assert_almost_equal(actual, self.expected,
+                            decimal=2)
+
+class TestHausdorffSymmetric(_BaseHausdorffDistance):
+    '''Tests for conventional and symmetric (undirected)
+    Hausdorff distance between point sets in 3D.'''
+
+    def setUp(self):
+        super(TestHausdorffSymmetric, self).setUp()
+        self.h = MDAnalysis.analysis.psa.hausdorff
+        # radii differ by ~ 2.3 for outlier
+        self.expected = 2.3
+
+class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
+    '''Tests for weighted average and symmetric (undirected)
+    Hausdorff distance between point sets in 3D.'''
+    def setUp(self):
+        super(TestWeightedAvgHausdorffSymmetric, self).setUp()
+        import scipy
+        import scipy.spatial
+        self.h = MDAnalysis.analysis.psa.hausdorff_wavg
+        self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
+                                                            self.path_2)
+        self.expected = (np.mean(np.amin(self.distance_matrix, axis=0)) +
+                         np.mean(np.amin(self.distance_matrix, axis = 1))) / 2.
+
+    def test_asymmetric_weight(self):
+        '''Test to ensure that increasing N points in one of the paths
+        does NOT increase the weight of its contributions.'''
+        inflated_path_1 = np.concatenate((self.path_1, self.path_1))
+        inflated_path_2 = np.concatenate((self.path_2, self.path_2))
+        d_inner_inflation = self.h(inflated_path_1, self.path_2)
+        d_outer_inflation = self.h(self.path_1, inflated_path_2)
+        assert_almost_equal(d_inner_inflation,
+                            d_outer_inflation)
+
+class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
+    '''Tests for unweighted average and symmetric (undirected)
+    Hausdorff distance between point sets in 3D.'''
+    def setUp(self):
+        super(TestAvgHausdorffSymmetric, self).setUp()
+        import scipy
+        import scipy.spatial
+        self.h = MDAnalysis.analysis.psa.hausdorff_avg
+        self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
+                                                            self.path_2)
+        self.expected = np.mean(np.append(np.amin(self.distance_matrix, axis=0),
+                                np.amin(self.distance_matrix, axis = 1)))
+
+    def test_asymmetric_weight(self):
+        '''Test to ensure that increasing N points in one of the paths
+        increases the weight of its contributions.'''
+        inflated_path_1 = np.concatenate((self.path_1, self.path_1))
+        inflated_path_2 = np.concatenate((self.path_2, self.path_2))
+        d_inner_inflation = self.h(inflated_path_1, self.path_2)
+        d_outer_inflation = self.h(self.path_1, inflated_path_2)
+        assert_array_less(d_inner_inflation,
+                          d_outer_inflation)
