@@ -1,4 +1,4 @@
-# cluster.py --- Common function for calling clustering algorithms
+    # cluster.py --- Common function for calling clustering algorithms
 # Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
 #
 # This program is free software: you can redistribute it and/or modify

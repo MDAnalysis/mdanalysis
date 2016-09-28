@@ -43,7 +43,7 @@ try:
     import sklearn.decomposition
 except ImportError:
    sklearn = None
-   msg = "sklearn.decomposition could not be imported: some functionality will " \
+   msg = "sklearn.decomposition could not be imported: some functionality will"\
          "not be available in encore.dimensionality_reduction()"
    warnings.warn(msg, category=ImportWarning)
    logging.warn(msg)
@@ -169,8 +169,8 @@ if sklearn:
             ----------
 
             dimension : int
-                Number of dimensions to which the conformational space will be reduced
-                to (default is 3).
+                Number of dimensions to which the conformational space will be
+                reduced to (default is 3).
             """
             self.pca = sklearn.decomposition.PCA(n_components=dimension,
                                                  **kwargs)

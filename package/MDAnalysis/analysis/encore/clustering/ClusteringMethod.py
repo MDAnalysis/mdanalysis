@@ -112,7 +112,8 @@ class AffinityPropagationNative(ClusteringMethod):
             clusters.
 
         max_iter : int, optional
-            Maximum number of iterations for affinity propagation (default is 500).
+            Maximum number of iterations for affinity propagation (default is
+            500).
 
         convergence_iter : int, optional
             Minimum number of unchanging iterations to achieve convergence
@@ -175,13 +176,14 @@ if sklearn:
                 Propagation for clustering.
 
             preference : float, optional
-                Preference parameter used in the Affinity Propagation algorithm for
-                clustering  (default -1.0). A high preference value results in
-                many clusters, a low preference will result in fewer numbers of
-                clusters.
+                Preference parameter used in the Affinity Propagation algorithm
+                for clustering  (default -1.0). A high preference value results
+                in many clusters, a low preference will result in fewer numbers
+                of clusters.
 
             max_iter : int, optional
-                Maximum number of iterations for affinity propagation (default is 500).
+                Maximum number of iterations for affinity propagation (default
+                is 500).
 
             convergence_iter : int, optional
                 Minimum number of unchanging iterations to achieve convergence
@@ -190,12 +192,13 @@ if sklearn:
 
             """
             self.ap = \
-                sklearn.cluster.AffinityPropagation(damping=damping,
-                                                    preference=preference,
-                                                    max_iter=max_iter,
-                                                    convergence_iter=convergence_iter,
-                                                    affinity="precomputed",
-                                                    **kwargs)
+                sklearn.cluster.AffinityPropagation(
+                    damping=damping,
+                    preference=preference,
+                    max_iter=max_iter,
+                    convergence_iter=convergence_iter,
+                    affinity="precomputed",
+                    **kwargs)
 
         def __call__(self, distance_matrix):
             """
@@ -242,8 +245,9 @@ if sklearn:
                 considered as in the same neighborhood.
 
             min_samples : int, optional (default = 5)
-                The number of samples (or total weight) in a neighborhood for a point
-                to be considered as a core point. This includes the point itself.
+                The number of samples (or total weight) in a neighborhood for
+                a point to be considered as a core point. This includes the
+                point itself.
 
             algorithm : {'auto', 'ball_tree', 'kd_tree', 'brute'}, optional
                 The algorithm to be used by the NearestNeighbors module
@@ -251,15 +255,15 @@ if sklearn:
                 See NearestNeighbors module documentation for details.
 
             leaf_size : int, optional (default = 30)
-                Leaf size passed to BallTree or cKDTree. This can affect the speed
-                of the construction and query, as well as the memory required
-                to store the tree. The optimal value depends
+                Leaf size passed to BallTree or cKDTree. This can affect the
+                speed of the construction and query, as well as the memory
+                required to store the tree. The optimal value depends
                 on the nature of the problem.
 
             sample_weight : array, shape (n_samples,), optional
-                Weight of each sample, such that a sample with a weight of at least
-                ``min_samples`` is by itself a core sample; a sample with negative
-                weight may inhibit its eps-neighbor from being core.
+                Weight of each sample, such that a sample with a weight of at
+                least ``min_samples`` is by itself a core sample; a sample with
+                negative weight may inhibit its eps-neighbor from being core.
                 Note that weights are absolute, and default to 1.
 
             """
@@ -326,10 +330,10 @@ if sklearn:
                 The number of clusters to form as well as the number of
                 centroids to generate.
 
-            max_iter : int, optional, default 300
+            max_iter : int, optional (default 300)
                 Maximum number of iterations of the k-means algorithm to run.
 
-            n_init : int, optional, default: 10
+            n_init : int, optional (default 10)
                 Number of time the k-means algorithm will be run with different
                 centroid seeds. The final results will be the best output of
                 n_init consecutive runs in terms of inertia.
@@ -341,23 +345,24 @@ if sklearn:
                 Notes in k_init for more details.
                 'random': generate k centroids from a Gaussian with mean and
                 variance estimated from the data.
-                If an ndarray is passed, it should be of shape (n_clusters, n_features)
-                and gives the initial centers.
+                If an ndarray is passed, it should be of shape
+                (n_clusters, n_features) and gives the initial centers.
                 If a callable is passed, it should take arguments X, k and
-                and a random state and return an initialization.
+                and a ranndom state and return an initialization.
 
             precompute_distances : {'auto', True, False}
                 Precompute distances (faster but takes more memory).
-                'auto' : do not precompute distances if n_samples * n_clusters > 12
-                million. This corresponds to about 100MB overhead per job using
-                double precision.
+                'auto' : do not precompute distances if
+                n_samples * n_clusters > 12 million. This corresponds to about
+                100MB overhead per job using double precision.
                 True : always precompute distances
                 False : never precompute distances
 
-            tol : float, optional
-                The relative increment in the results before declaring convergence.
+            tol : float, optional (default 1e-4)
+                The relative increment in the results before declaring
+                convergence.
 
-            verbose : boolean, optional
+            verbose : boolean, optional (default False)
                 Verbosity mode.
 
             random_state : integer or numpy.RandomState, optional
@@ -366,19 +371,20 @@ if sklearn:
                 number generator.
 
             copy_x : boolean, optional
-                When pre-computing distances it is more numerically accurate to center
-                the data first.  If copy_x is True, then the original data is not
-                modified.  If False, the original data is modified, and put back before
-                the function returns, but small numerical differences may be introduced
-                by subtracting and then adding the data mean.
+                When pre-computing distances it is more numerically accurate to
+                center the data first.  If copy_x is True, then the original
+                data is not modified.  If False, the original data is modified,
+                and put back before the function returns, but small numerical
+                differences may be introduced by subtracting and then adding
+                the data mean.
 
             n_jobs : int
-                The number of jobs to use for the computation. This works by computing
-                each of the n_init runs in parallel.
-                If -1 all CPUs are used. If 1 is given, no parallel computing code is
-                used at all, which is useful for debugging. For n_jobs below -1,
-                (n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all CPUs but one
-                are used.
+                The number of jobs to use for the computation. This works by
+                computing each of the n_init runs in parallel. If -1 all CPUs
+                are used. If 1 is given, no parallel computing code is used at
+                all, which is useful for debugging. For n_jobs below -1,
+                (n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all CPUs
+                but one are used.
 
             """
             self.kmeans = sklearn.cluster.KMeans(n_clusters = n_clusters,

@@ -71,21 +71,22 @@ def reduce_dimensionality(ensembles,
         classes from the dimensionality_reduction module. A separate analysis
         will be run for each method. Note that different parameters for the
         same method can be explored by adding different instances of
-        the same dimensionality reduction class.
+        the same dimensionality reduction class. Options are Stochastic
+        Proximity Embedding or Principle Component Analysis.
 
-    selection : str
-        Atom selection string in the MDAnalysis format. Default is "name CA"
+    selection : str, optional
+        Atom selection string in the MDAnalysis format (default is "name CA")
 
-    distance_matrix : encore.utils.TriangularMatrix
-        distance matrix for stochastic proximity embedding. If this parameter
-        is not supplied the matrix will be calculated on the fly.
+    distance_matrix : encore.utils.TriangularMatrix, optional
+        Distance matrix for stochastic proximity embedding. If this parameter
+        is not supplied the matrix will be calculated on the fly (default) .
         If several distance matrices are supplied, an analysis will be done
         for each of them. The number of provided distance matrices should
         match the number of provided ensembles.
 
-    allow_collapsed_result: bool
+    allow_collapsed_result: bool, optional
         Whether a return value of a list of one value should be collapsed
-        into just the value.
+        into just the value (default = True).
 
     ncores : int, optional
         Maximum number of cores to be used (default is 1).
@@ -119,8 +120,7 @@ def reduce_dimensionality(ensembles,
     You can change the parameters of the dimensionality reduction method
     by explicitly specifying the method ::
         >>> coordinates, details = \
-                encore.reduce_dimensionality( \
-                     [ens1,ens2], \
+                encore.reduce_dimensionality([ens1,ens2], \
                      method=encore.StochasticProximityEmbeddingNative(dimension=3))
 
     Here is an illustration using Principle Component Analysis, instead
@@ -166,8 +166,8 @@ def reduce_dimensionality(ensembles,
         np.any([_method.accepts_distance_matrix for _method in
                 methods])
 
-    print "1: ", merged_ensembles
-    print "2: ", distance_matrix
+
+
     # If distance matrices are provided, check that it matches the number
     # of ensembles
     if distance_matrix:
