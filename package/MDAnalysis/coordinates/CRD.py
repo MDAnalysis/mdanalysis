@@ -133,7 +133,7 @@ class CRDWriter(base.Writer):
         "ATOM": ("{serial:5d}{totRes:5d} {resname:<4.4s} {name:<4.4s}"
                  "{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f} "
                  "{chainID:<4.4s} {resSeq:<4d}{tempfactor:10.5f}\n"),
-        "TITLE": " FRAME {frame} FROM {where}\n",
+        "TITLE": "* FRAME {frame} FROM {where}\n",
         "NUMATOMS": "{0:5d}\n",
     }
 
@@ -180,7 +180,6 @@ class CRDWriter(base.Writer):
         attrs = {}
         missing_topology = []
         for attr, default in (
-                ('chainIDs', itertools.cycle(('',))),
                 ('resnames', itertools.cycle(('UNK',))),
                 # Resids *must* be an array because we index it later
                 ('resids', np.ones(n_atoms)),
@@ -191,6 +190,16 @@ class CRDWriter(base.Writer):
                 attrs[attr] = getattr(atoms, attr)
             except (NoDataError, AttributeError):
                 attrs[attr] = default
+                missing_topology.append(attr)
+        # ChainIDs - Try ChainIDs first, fall back to Segids
+        try:
+            attrs['chainIDs'] = atoms.chainIDs
+        except (NoDataError, AttributeError):
+            # try looking for segids instead
+            try:
+                attrs['chainIDs'] = atoms.segids
+            except (NoDataError, AttributeError):
+                attrs['chainIDs'] = itertools.cycle(('',))
                 missing_topology.append(attr)
         if missing_topology:
             warnings.warn(
@@ -203,7 +212,7 @@ class CRDWriter(base.Writer):
             # Write Title
             crd.write(self.fmt['TITLE'].format(
                 frame=frame, where=u.trajectory.filename))
-            crd.write("\n")
+            crd.write("*\n")
 
             # Write NUMATOMS
             if n_atoms > 99999:

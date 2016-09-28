@@ -1917,11 +1917,6 @@ class TestWritePDB(_WriteAtoms):
 import MDAnalysis.coordinates
 
 
-class TestWriteCRD(_WriteAtoms):
-    ext = "crd"
-    precision = 5
-
-
 class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
