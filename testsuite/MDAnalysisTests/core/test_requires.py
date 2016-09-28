@@ -55,8 +55,11 @@ class TestRequires(object):
         try:
             animal_print(u.atoms)
         except NoDataError as e:
+            message = e.args[0]
             # Test function name gets returned (for debug)
-            assert_('animal_print' in e.message)
-            assert_('cats' in e.message)
-            assert_('dogs' in e.message)
-            assert_('frogs' in e.message)
+            assert_('animal_print' in message)
+            assert_('cats' in message)
+            assert_('dogs' in message)
+            assert_('frogs' in message)
+        else:
+            raise AssertionError("Should raise NoDataError")
