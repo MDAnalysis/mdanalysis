@@ -1638,3 +1638,30 @@ ResidueGroup.level = RESIDUELEVEL
 Segment.level = SEGMENTLEVEL
 SegmentGroup.level = SEGMENTLEVEL
 
+
+def requires(*attrs):
+    """Decorator to check if all AtomGroup arguments have certain attributes
+
+    Example
+    -------
+    When used to wrap a function, will check all AtomGroup arguments for the
+    listed requirements
+
+    @requires('masses', 'charges')
+    def mass_times_charge(atomgroup):
+        return atomgroup.masses * atomgroup.charges
+
+    """
+    def require_dec(func):
+        @functools.wraps(func)
+        def check_args(*args, **kwargs):
+            for a in args:  # for each argument
+                if isinstance(a, AtomGroup):
+                    for attr in attrs:  # check required attributes
+                        if not hasattr(a, attr):
+                            raise NoDataError(
+                                "AtomGroup is missing {}".format(attr))
+            return func(*args, **kwargs)
+        return check_args
+    return require_dec
+
