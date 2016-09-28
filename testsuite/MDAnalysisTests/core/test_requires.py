@@ -43,3 +43,20 @@ class TestRequires(object):
         result = mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
         assert_(isinstance(result, np.ndarray))
+
+    def test_failure_errormessage(self):
+        # failures should list all required attributes not
+        # just the first one
+        @requires('cats', 'dogs', 'frogs')
+        def animal_print(ag):
+            return len(ag.cats), len(ag.dogs), len(ag.frogs)
+
+        u = make_Universe()
+        try:
+            animal_print(u.atoms)
+        except NoDataError as e:
+            # Test function name gets returned (for debug)
+            assert_('animal_print' in e.message)
+            assert_('cats' in e.message)
+            assert_('dogs' in e.message)
+            assert_('frogs' in e.message)

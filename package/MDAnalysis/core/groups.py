@@ -1657,10 +1657,16 @@ def requires(*attrs):
         def check_args(*args, **kwargs):
             for a in args:  # for each argument
                 if isinstance(a, AtomGroup):
-                    for attr in attrs:  # check required attributes
-                        if not hasattr(a, attr):
-                            raise NoDataError(
-                                "AtomGroup is missing {}".format(attr))
+                    # Make list of missing attributes
+                    missing = [attr for attr in attrs
+                               if not hasattr(a, attr)]
+                    if missing:
+                        raise NoDataError(
+                            "{funcname} failed. "
+                            "AtomGroup is missing the following required "
+                            "attributes: {attrs}".format(
+                                funcname=func.__name__,
+                                attrs=', '.join(missing)))
             return func(*args, **kwargs)
         return check_args
     return require_dec
