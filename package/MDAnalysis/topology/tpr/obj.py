@@ -31,7 +31,7 @@ from collections import namedtuple
 
 TpxHeader = namedtuple(
     "TpxHeader", [
-        "number", "ver_str", "precision",
+        "ver_str", "precision",
         "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
         "bIr", "bTop", "bX", "bV", "bF", "bBox"])
 Box = namedtuple("Box", "size rel v")

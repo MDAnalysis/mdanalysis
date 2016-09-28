@@ -93,14 +93,15 @@ class Cluster(object):
         self.metadata = {}
         self.elements = elem_list
         if centroid not in self.elements:
-            raise LookupError
+            raise LookupError("Centroid of cluster not found in the element list")
 
         self.centroid = centroid
         self.size = self.elements.shape[0]
         if metadata:
             for name, data in six.iteritems(metadata):
                 if len(data) != self.size:
-                    raise TypeError
+                    raise TypeError("Size of metadata having label \"{0}\"\
+is not equal to the number of cluster elmements".format(name))
             self.add_metadata(name, data)
 
     def __iter__(self):
@@ -117,7 +118,8 @@ class Cluster(object):
 
     def add_metadata(self, name, data):
         if len(data) != self.size:
-            raise TypeError
+            raise TypeError("Size of metadata is not equal to the number of\
+ cluster elmements")
         self.metadata[name] = np.array(data)
 
     def __repr__(self):
@@ -179,13 +181,14 @@ class ClusterCollection(object):
             return
 
         if not len(set(map(type, elements))) == 1:
-            raise TypeError
+            raise TypeError("all the elements must have the same type")
         self.clusters = []
         elements_array = np.array(elements)
         centroids = np.unique(elements_array)
         for i in centroids:
             if elements[i] != i:
-                raise AssertionError
+                raise ValueError("element {0}, which is a centroid, doesn't \
+belong to its own cluster".format(elements[i]))
         for c in centroids:
             this_metadata = {}
             this_array = np.where(elements_array == c)

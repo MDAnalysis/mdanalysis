@@ -13,7 +13,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 """
 Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 ============================================================
@@ -22,9 +21,15 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
-from six.moves import range
+from six.moves import range, zip
 
+import inspect
 import logging
+import numpy as np
+import six
+
+from MDAnalysis import coordinates
+from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger(__name__)
@@ -32,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 class AnalysisBase(object):
     """Base class for defining multi frame analysis
-    
+
     The class it is designed as a template for creating multiframe analyses.
     This class will automatically take care of setting up the trajectory
     reader for iterating, and it offers to show a progress meter.
@@ -77,6 +82,7 @@ class AnalysisBase(object):
        print(na.result)
 
     """
+
     def __init__(self, trajectory, start=None,
                  stop=None, step=None, quiet=True):
         """
@@ -96,8 +102,7 @@ class AnalysisBase(object):
         self._quiet = quiet
         self._setup_frames(trajectory, start, stop, step)
 
-    def _setup_frames(self, trajectory, start=None,
-                      stop=None, step=None):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
         Pass a Reader object and define the desired iteration pattern
         through the trajectory
@@ -114,8 +119,7 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         """
         self._trajectory = trajectory
-        start, stop, step = trajectory.check_slice_indices(
-            start, stop, step)
+        start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
         self.step = step
@@ -163,3 +167,144 @@ class AnalysisBase(object):
         logger.info("Finishing up")
         self._conclude()
         return self
+
+
+class AnalysisFromFunction(AnalysisBase):
+    """
+    Create an analysis from a function working on AtomGroups
+
+    Attributes
+    ----------
+    results : ndarray
+        results of calculation are stored after call to ``run``
+
+    Example
+    -------
+    >>> def rotation_matrix(mobile, ref):
+    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+    >>> rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()
+    >>> print(rot.results)
+
+    Raises
+    ------
+    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+    """
+
+    def __init__(self, function, trajectory=None, *args, **kwargs):
+        """Parameters
+        ----------
+        function : callable
+            function to evaluate at each frame
+        trajectory : mda.coordinates.Reader (optional)
+            trajectory to iterate over. If ``None`` the first AtomGroup found in
+            args and kwargs is used as a source for the trajectory.
+        *args : list
+           arguments for ``function``
+        **kwargs : dict
+           arugments for ``function`` and ``AnalysisBase``
+
+        """
+        if (trajectory is not None) and (not isinstance(
+                trajectory, coordinates.base.Reader)):
+            args = args + (trajectory, )
+            trajectory = None
+
+        if trajectory is None:
+            for arg in args:
+                if isinstance(arg, AtomGroup):
+                    trajectory = arg.universe.trajectory
+            # when we still didn't find anything
+            if trajectory is None:
+                for arg in six.itervalues(kwargs):
+                    if isinstance(arg, AtomGroup):
+                        trajectory = arg.universe.trajectory
+
+        if trajectory is None:
+            raise ValueError("Couldn't find a trajectory")
+
+        self.function = function
+        self.args = args
+        base_kwargs, self.kwargs = _filter_baseanalysis_kwargs(self.function,
+                                                               kwargs)
+
+        super(AnalysisFromFunction, self).__init__(trajectory, **base_kwargs)
+
+    def _prepare(self):
+        self.results = []
+
+    def _single_frame(self):
+        self.results.append(self.function(*self.args, **self.kwargs))
+
+    def _conclude(self):
+        self.results = np.asarray(self.results)
+
+
+def analysis_class(function):
+    """
+    Transform a function operating on a single frame to an analysis class
+
+    For an usage in a library we recommend the following style:
+
+    >>> def rotation_matrix(mobile, ref):
+    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+    >>> RotationMatrix = analysis_class(rotation_matrix)
+
+    It can also be used as a decorator:
+
+    >>> @analysis_class
+    >>> def RotationMatrix(mobile, ref):
+    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+    >>> rot = RotationMatrix(u.trajectory, mobile, ref, step=2).run()
+    >>> print(rot.results)
+    """
+
+    class WrapperClass(AnalysisFromFunction):
+        def __init__(self, trajectory=None, *args, **kwargs):
+            super(WrapperClass, self).__init__(function, trajectory,
+                                               *args, **kwargs)
+
+    return WrapperClass
+
+
+def _filter_baseanalysis_kwargs(function, kwargs):
+    """
+    create two dictionaries with kwargs separated for function and AnalysisBase
+
+    Parameters
+    ----------
+    function : callable
+        function to be called
+    kwargs : dict
+        keyword argument dictionary
+
+    Returns
+    -------
+    base_args : dict
+        dictionary of AnalysisBase kwargs
+    kwargs : dict
+        kwargs without AnalysisBase kwargs
+
+    Raises
+    ------
+    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+    """
+    base_argspec = inspect.getargspec(AnalysisBase.__init__)
+    n_base_defaults = len(base_argspec.defaults)
+    base_kwargs = {name: val
+                   for name, val in zip(base_argspec.args[-n_base_defaults:],
+                                        base_argspec.defaults)}
+
+    argspec = inspect.getargspec(function)
+    for base_kw in six.iterkeys(base_kwargs):
+        if base_kw in argspec.args:
+            raise ValueError(
+                "argument name '{}' clashes with AnalysisBase argument."
+                "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
+
+    base_args = {}
+    for argname, default in six.iteritems(base_kwargs):
+        base_args[argname] = kwargs.pop(argname, default)
+
+    return base_args, kwargs

@@ -85,6 +85,10 @@ class TestFitExponential(object):
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_fit_noisy(self):
-        y2 = self.y + (np.random.random(len(self.y)) - 0.5) * 0.05
+        noise = np.sin(self.x) * 0.01
+        y2 = noise + self.y
+
         a = polymer.fit_exponential_decay(self.x, y2)
-        assert_(np.rint(a) == self.a_ref)
+
+        assert_almost_equal(a, self.a_ref, decimal=3)
+        #assert_(np.rint(a) == self.a_ref)

@@ -155,7 +155,7 @@ Functions
    this module and is now exclusively accessible as
    :func:`~MDAnalysis.analysis.rms.rmsd`.
 
-.. versionchanged:: 0.15.1
+.. versionchanged:: 0.16.0
    Function :func:`~MDAnalysis.analysis.align.rms_fit_trj` deprecated
    in favor of AlignTraj class.
 
@@ -183,6 +183,7 @@ import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
+from MDAnalysis.coordinates.memory import MemoryReader
 # remove after rms_fit_trj deprecation over
 from MDAnalysis.lib.log import ProgressMeter
 
@@ -656,7 +657,8 @@ def rms_fit_trj(
       *in_memory*
          Default: ``False``
          - ``True``: Switch to an in-memory trajectory so that alignment can
-           be done in-place.
+           be done in-place, which can improve performance substantially in
+           some cases.
 
       *kwargs*
          All other keyword arguments are passed on the trajectory
@@ -687,7 +689,7 @@ def rms_fit_trj(
 
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
     writer = None
-    if in_memory:
+    if in_memory or isinstance(traj.trajectory, MemoryReader):
         traj.transfer_to_memory()
         frames = traj.trajectory
         filename = None
@@ -754,7 +756,7 @@ def rms_fit_trj(
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(
-            ref_coordinates.astype(np.float64), 
+            ref_coordinates.astype(np.float64),
             traj_coordinates.astype(np.float64), natoms, rot, weights)
         R[:, :] = rot.reshape(3, 3)
 
