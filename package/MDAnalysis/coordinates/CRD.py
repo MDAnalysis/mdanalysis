@@ -29,6 +29,7 @@ import itertools
 import numpy as np
 import warnings
 
+from ..exceptions import NoDataError
 from ..lib import util
 from . import base
 
@@ -123,15 +124,17 @@ class CRDWriter(base.Writer):
     fmt = {
         #crdtype = 'extended'
         #fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'
-        'ATOM_EXT': "%(serial)10d%(TotRes)10d  %(resName)-8s  %(name)-8s%(x)20.10f%(y)20.10f%(z)20.10f  %(chainID)-8s "
-                    " %(resSeq)-8d%(tempFactor)20.10f\n",
-        'NUMATOMS_EXT': "%10d  EXT\n",
+        "ATOM_EXT": ("{serial:10d}{totRes:10d}  {resname:<8.8s}  {name:<8.8s}"
+                     "{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}  "
+                     "{chainID:<8.8s}  {resSeq:<8d}{tempfactor:20.10f}\n"),
+        "NUMATOMS_EXT": "{0:10d} EXT\n",
         #crdtype = 'standard'
         #fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'
-        'ATOM': "%(serial)5d%(TotRes)5d %(resName)-4s %(name)-4s%(x)10.5f%(y)10.5f%(z)10.5f %(chainID)-4s %("
-                "resSeq)-4d%(tempFactor)10.5f\n",
-        'TITLE': "*%s\n",
-        'NUMATOMS': "%5d\n",
+        "ATOM": ("{serial:5d}{totRes:5d} {resname:<4.4s} {name:<4.4s}"
+                 "{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f} "
+                 "{chainID:<4.4s} {resSeq:<4d}{tempfactor:10.5f}\n"),
+        "TITLE": " FRAME {frame} FROM {where}\n",
+        "NUMATOMS": "{0:5d}\n",
     }
 
     def __init__(self, filename, **kwargs):
@@ -158,22 +161,38 @@ class CRDWriter(base.Writer):
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
 
+        n_atoms = len(atoms)
+        # Detect which format string we're using to output (EXT or not)
+        # *len refers to how to truncate various things,
+        # depending on output format!
+        if n_atoms > 99999:
+            at_fmt = self.fmt['ATOM_EXT']
+            serial_len = 10
+            resid_len = 8
+            totres_len = 10
+        else:
+            at_fmt = self.fmt['ATOM']
+            serial_len = 5
+            resid_len = 4
+            totres_len = 5
+
         # Check for attributes, use defaults for missing ones
         attrs = {}
         missing_topology = []
         for attr, default in (
-                ('chainIDs', 'A'),
-                ('resids', 1),
-                ('resnames', 'UNK'),
-                ('names', 'X'),
-                ('tempfactors', 0.0),
+                ('chainIDs', itertools.cycle(('',))),
+                ('resnames', itertools.cycle(('UNK',))),
+                # Resids *must* be an array because we index it later
+                ('resids', np.ones(n_atoms)),
+                ('names', itertools.cycle(('X',))),
+                ('tempfactors', itertools.cycle((0.0,))),
         ):
             try:
                 attrs[attr] = getattr(atoms, attr)
             except (NoDataError, AttributeError):
-                attrs[attr] = itertools.cycle((default,))
+                attrs[attr] = default
                 missing_topology.append(attr)
-        if missed_attrs:
+        if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
@@ -182,72 +201,34 @@ class CRDWriter(base.Writer):
 
         with util.openany(self.filename, 'w') as crd:
             # Write Title
-            crd.write(self.fmt['TITLE'] % " FRAME " + str(frame) + " FROM " + str(u.trajectory.filename)))
-            crd.write(self.fmt['TITLE'] % "")
+            crd.write(self.fmt['TITLE'].format(
+                frame=frame, where=u.trajectory.filename))
+            crd.write("\n")
 
             # Write NUMATOMS
             if n_atoms > 99999:
-                crd.write(self.fmt['NUMATOMS_EXT'] % n_atoms)
+                crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
             else:
-                crd.write(self.fmt['NUMATOMS'] % n_atoms)
+                crd.write(self.fmt['NUMATOMS'].format(n_atoms))
 
             # Write all atoms
-            n_atoms = len(atoms)
-            # Detect which format string we're using to output (EXT or not)
-            # *cut refers to how to truncate various things,
-            # depending on output format!
-            if n_atoms > 99999:
-                at_fmt = 'ATOM_EXT'
-                serialcut = -10
-                namecut = resnamecut = chainidcut = 8
-                residcut = -8
-                totrescut = -10
-            else:
-                at_fmt = 'ATOM'
-                serialcut = -5
-                namecut = resnamecut = chainidcut = 4
-                residcut = -4
-                totrescut = -5
 
             current_resid = 0
-            for i, (atom, ) in enumerate(zip(atoms)):
-                if atoms[i].resid != atoms[i - 1].resid:
-                    # note that this compares first and LAST atom on first iteration... but it works
+            resids = attrs['resids']
+            for i, pos, resname, name, chainID, resid, tempfactor in zip(
+                    range(n_atoms), coor, attrs['resnames'], attrs['names'],
+                    attrs['chainIDs'], attrs['resids'], attrs['tempfactors']):
+                if resids[i] != resids[i-1]:
+                    # note that this compares first and LAST atom on
+                    # first iteration... but it works
                     current_resid += 1
 
-                crd.write(at_fmt % serial=i+1 )
+                # Truncate numbers
+                serial = int(str(i + 1)[-serial_len:])
+                resid = int(str(resid)[-resid_len:])
+                current_resid = int(str(current_resid)[-totres_len:])
 
-                self._ATOM(serial=i + 1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                           x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], chainID=atom.segid,
-                           tempFactor=atom.bfactor, TotRes=current_resid, n_atoms=len(atoms))
-
-    def _ATOM(self, serial=None, resSeq=None, resName=None, name=None, x=None, y=None, z=None, chainID=None,
-              tempFactor=0.0, TotRes=None, n_atoms=None):
-        """Write ATOM record.
-
-        All inputs are cut to the maximum allowed length. For integer
-        numbers the highest-value digits are chopped (so that the
-        serial and reSeq wrap); for strings the trailing characters
-        are chopped.
-
-        .. Warning:: Floats are not checked and can potentially screw up the format.
-        """
-
-        chainID = chainID or ""  # or should we provide a chainID such as 'A'?
-        if n_atoms > 99999:
-            serial = int(str(serial)[-10:])  # check for overflow here?
-            name = name[:8]
-            resName = resName[:8]
-            chainID = chainID[:8]
-            resSeq = int(str(resSeq)[-8:])  # check for overflow here?
-            TotRes = int(str(TotRes)[-10:])
-            self.crd.write(self.fmt['ATOM_EXT'] % vars())
-        else:
-            serial = int(str(serial)[-5:])  # check for overflow here?
-            name = name[:4]
-            resName = resName[:4]
-            chainID = chainID[:4]
-            resSeq = int(str(resSeq)[-4:])  # check for overflow here?
-            TotRes = int(str(TotRes)[-5:])
-            self.crd.write(self.fmt['ATOM'] % vars())
-
+                crd.write(at_fmt.format(
+                    serial=serial, totRes=current_resid, resname=resname,
+                    name=name, pos=pos, chainID=chainID,
+                    resSeq=resid, tempfactor=tempfactor))
