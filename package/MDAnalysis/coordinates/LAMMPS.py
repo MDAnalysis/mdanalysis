@@ -104,6 +104,7 @@ from six.moves import zip, range
 import numpy as np
 
 from ..core import flags
+from ..core.groups import requires
 from ..lib import util, mdamath
 from . import DCD
 from .. import units
@@ -334,6 +335,7 @@ class DATAWriter(base.Writer):
                 xy=triv[1][0], xz=triv[2][0], yz=triv[2][1]))
         self.f.write('\n')
 
+    @requires('types', 'masses')
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file, including
         sections Atoms, Masses, Velocities, Bonds, Angles, Dihedrals, and
