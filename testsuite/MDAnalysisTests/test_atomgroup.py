@@ -38,6 +38,7 @@ import os
 import itertools
 
 from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestAtom(TestCase):
@@ -2592,7 +2593,7 @@ class TestAtomGroupProperties(object):
         if att_type == 'string':
             return ['A', 'B', 'C', 'D', 'E', 'F']
         elif att_type == 'float':
-            return [0.001, 0.002, 0.003, 0.005, 0.012, 0.025]
+            return np.array([0.001, 0.002, 0.003, 0.005, 0.012, 0.025], dtype=np.float32)
         elif att_type == 'int':
             return [4, 6, 8, 1, 5, 4]
 
@@ -2619,7 +2620,8 @@ class TestAtomGroupProperties(object):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_attributes(self):
-        u = MDAnalysis.Universe(PSF, DCD)
+        u = make_Universe('names', 'resids', 'segids', 'types', 'altLocs', 'serials', 'charges',
+                          'masses', 'radii', 'bfactors', 'occupancies')
         u.atoms.occupancies = 1.0
         master = u.atoms
         idx = [0, 1, 4, 7, 11, 14]

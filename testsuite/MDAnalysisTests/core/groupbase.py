@@ -61,6 +61,27 @@ def make_topology(*extras):
                     residue_segindex=np.repeat(
                         np.arange(_N_SEGMENTS), _RESIDUES_PER_SEG))
 
+def make_altLocs(size=None):
+    """AltLocs cycling through A B C D E"""
+    if size is None:
+        size = _N_ATOMS
+    alts = itertools.cycle(('A', 'B', 'C', 'D', 'E'))
+    return ta.AltLocs(np.array(['{}'.format(next(alts)) for _ in range(size)],
+                               dtype=object))
+
+def make_bfactors(size=None):
+    if size is None:
+        size = _N_ATOMS
+    return ta.Bfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+
+def make_charges(size=None):
+    """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
+    if size is None:
+        size = _N_ATOMS
+    charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
+    return ta.Charges(np.array([next(charges)
+                                for _ in range(size)]))
+
 def make_resnames(size=None):
     """Creates residues named RsA RsB ... """
     if size is None:
@@ -94,6 +115,22 @@ def make_names(size=None):
         ['Name{}'.format(''.join(next(names)))
          for _ in range(size)], dtype=object))
 
+def make_occupancies(size=None):
+    if size is None:
+        size = _N_ATOMS
+    return ta.Occupancies(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+
+def make_radii(size=None):
+    if size is None:
+        size = _N_ATOMS
+    return ta.Radii(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+
+def make_serials(size=None):
+    """Serials go from 10 to size+10"""
+    if size is None:
+        size = _N_ATOMS
+    return ta.Atomids(np.arange(size) + 10)
+
 def make_masses(size=None):
     """Atom masses (5.1, 4.2, 3.3, 1.5, 0.5) repeated"""
     if size is None:
@@ -101,14 +138,6 @@ def make_masses(size=None):
     masses = itertools.cycle([5.1, 4.2, 3.3, 1.5, 0.5])
     return ta.Masses(np.array([next(masses)
                                for _ in range(size)]))
-
-def make_charges(size=None):
-    """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
-    if size is None:
-        size = _N_ATOMS
-    charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
-    return ta.Charges(np.array([next(charges)
-                                for _ in range(size)]))
 
 def make_resnums(size=None):
     """Resnums 1 and upwards"""
@@ -124,13 +153,21 @@ def make_resids(size=None):
 
 # Available extra TopologyAttrs to a dummy Universe
 _menu = {
-    'names': make_names,
-    'types': make_types,
+    # Atoms
+    'altLocs': make_altLocs,
+    'bfactors': make_bfactors,
     'charges': make_charges,
+    'names': make_names,
+    'occupancies': make_occupancies,
+    'radii': make_radii,
+    'serials': make_serials,
+    'types': make_types,
     'masses': make_masses,
+    # Residues
     'resnames': make_resnames,
     'resnums': make_resnums,
     'resids': make_resids,
+    # Segments
     'segids': make_segids,
 }
 
