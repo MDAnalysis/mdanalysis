@@ -162,7 +162,7 @@ def resid_change_squash(resids, *other_attrs):
 
     # 2) Allocate new arrays
     # Per atom record of what residue they belong to
-    residx = np.zeros_like(resids)
+    residx = np.zeros_like(resids, dtype=np.int)
     # Per residue record of various attributes
     new_resids = np.zeros(nres, dtype=resids.dtype)
     new_others = [np.zeros(nres, dtype=o.dtype) for o in other_attrs]
