@@ -4515,8 +4515,8 @@ class Universe(object):
         .. versionadded:: 0.9.0
 
         .. versionchanged:: 0.16.0
-           Fragments are sorted by their forst atom index so their order is
-           predictable.
+           Fragment atoms are sorted by their index, and framgents are sorted
+           by their first atom index so their order is predictable.
         """
         # Check that bond information is present, else inform
         bonds = self.bonds
@@ -4571,7 +4571,7 @@ class Universe(object):
         # All the unique values in f are the fragments
         frags = tuple(
             sorted(
-                [AtomGroup(list(a.ats)) for a in set(f.values())],
+                [AtomGroup(list(sorted(a.ats))) for a in set(f.values())],
                 key=lambda x: x[0].index
             )
         )
