@@ -228,7 +228,8 @@ class XYZWriter(base.Writer):
                                  'different number ({}) then expected ({})'
                                  ''.format(ts.n_atoms, self.n_atoms))
         else:
-            if len(self.atomnames) != ts.n_atoms:
+            if (not isinstance(self.atomnames, itertools.cycle) and
+                len(self.atomnames) != ts.n_atoms):
                 logger.info('Trying to write a TimeStep with unkown atoms. '
                             'Expected {}, got {}. Try using "write" if you are '
                             'using "write_next_timestep" directly'.format(
