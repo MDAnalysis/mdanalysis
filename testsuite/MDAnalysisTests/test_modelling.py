@@ -20,7 +20,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     capping_input, capping_output, capping_ace, capping_nma, \
     merge_protein, merge_ligand, merge_water
 import MDAnalysis.core.groups
-from MDAnalysis.core.groups import make_classes, AtomGroup
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis import NoDataError
 from MDAnalysisTests import parser_not_found, tempdir
 
@@ -34,21 +34,15 @@ import os
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
 
-AtomGroup = make_classes()[1][AtomGroup]
 
 def capping(ref, ace, nma, output):
     resids = ref.select_atoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
-    # There is probably some cache i need to update both the atom and residues
-    for a in ace.atoms:
-        a.resid += resid_min - max(ace.atoms.resids)
     for r in ace.residues:
-        r.id += resid_min - max(ace.atoms.resids)
-    for a in nma.atoms:
-        a.resid = resid_max
+        r.resid += resid_min - max(ace.atoms.resids)
     for r in nma.residues:
-        r.id = resid_max
+        r.resid = resid_max
 
     # TODO pick the first residue in the protein (how should we cap the chains?)
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a
@@ -204,8 +198,9 @@ class TestMerge(TestCase):
         assert_raises(TypeError, Merge, ['1', 2])
 
     def test_emptyAG_ValueError(self):
-        a = AtomGroup([], None)
-        b = AtomGroup([], None)
+        u = self.universes[0]
+        a = AtomGroup([], u)
+        b = AtomGroup([], u)
 
         assert_raises(ValueError, Merge, a, b)
 
