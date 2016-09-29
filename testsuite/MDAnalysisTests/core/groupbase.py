@@ -28,6 +28,7 @@ import itertools
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
+from MDAnalysis.coordinates.base import SingleFrameReader
 from MDAnalysis.core import groups
 import MDAnalysis.core.topologyattrs as ta
 
@@ -132,3 +133,16 @@ _menu = {
     'resids': make_resids,
     'segids': make_segids,
 }
+
+class FakeReader(SingleFrameReader):
+    def __init__(self, n_atoms=None):
+        self.n_atoms = n_atoms if not n_atoms is None else _N_ATOMS
+        self.filename = 'FakeReader'
+        self.n_frames = 1
+        self._read_first_frame()
+
+    def _read_first_frame(self):
+        self.ts = self._Timestep(self.n_atoms)
+        self.ts.positions = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3)
+        self.ts.frame = 0
+
