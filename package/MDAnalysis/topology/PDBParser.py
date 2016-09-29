@@ -47,7 +47,7 @@ from __future__ import absolute_import, print_function
 import numpy as np
 import warnings
 
-from .guessers import guess_masses
+from .guessers import guess_masses, guess_types
 from ..lib import util
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
@@ -199,9 +199,13 @@ class PDBParser(TopologyReader):
             if not vals is None:
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         # Guessed attributes
-        # masses from types
+        # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        masses = guess_masses(atomtypes)
+        if not any(atomtypes):
+            types = guess_types(names)
+        else:
+            types = atomtypes
+        masses = guess_masses(types)
         attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
