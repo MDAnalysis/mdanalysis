@@ -1912,6 +1912,10 @@ class TestFragments(TestCase):
         ag = self.u.atoms[100:200]
         assert_equal(len(ag.fragments), 1)
 
+    def test_fragment_order(self):
+        # check the fragments are ordered by their first atom index
+        assert_(self.u.fragments[0][0].index < self.u.fragments[1][0].index)
+
 
 class TestUniverseCache(TestCase):
     def setUp(self):
