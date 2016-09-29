@@ -18,7 +18,7 @@ from six.moves import cPickle
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDB_small, GRO, XTC, TRR
 import MDAnalysis.core.AtomGroup
-from MDAnalysis.core.AtomGroup import AtomGroup
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.coordinates import XDR
 
 import numpy as np
