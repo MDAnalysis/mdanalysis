@@ -454,13 +454,6 @@ class ChainIDs(AtomAttr):
     per_object = 'atom'
 
 
-class ICodes(AtomAttr):
-    """Insertion code for Atoms"""
-    attrname = 'icodes'
-    singular = 'icode'
-    per_object = 'atom'
-
-
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
     attrname = 'tempfactors'
@@ -1057,6 +1050,12 @@ class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
     target_classes = [Atom, Residue]
+
+
+class ICodes(ResidueAttr):
+    """Insertion code for Atoms"""
+    attrname = 'icodes'
+    singular = 'icode'
 
 
 ## segment attributes
