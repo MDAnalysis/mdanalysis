@@ -16,6 +16,8 @@
 
 from os import path
 
+cimport numpy as np
+
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
@@ -29,6 +31,9 @@ cdef extern from 'sys/types.h':
 
 ctypedef int fio_fd;
 ctypedef off_t fio_size_t
+
+ctypedef np.float32_t DTYPE_t
+DTYPE = np.float32
 
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
@@ -62,9 +67,13 @@ cdef extern from 'include/fastio.h':
 cdef extern from 'include/readdcd.h':
     int read_dcdheader(fio_fd fd, int *n_atoms, int *nsets, int *istart,
                        int *nsavc, double *delta, int *nfixed, int **freeind,
-                       float **fixedcoords, int *reverse, int *charmm,
+                       float **fixedcoords, int *reverse_endian, int *charmm,
                        char **remarks, int *len_remarks)
-    void close_dcd_read(int *freeind, float *fixedcoords);
+    void close_dcd_read(int *freeind, float *fixedcoords)
+    int read_dcdstep(fio_fd fd, int n_atoms, float *X, float *Y, float *Z,
+                     float *unitcell, int num_fixed,
+                     int first, int *indexes, float *fixedcoords,
+                     int reverse_endian, int charmm)
 
 
 cdef class DCDFile:
@@ -79,10 +88,11 @@ cdef class DCDFile:
     cdef readonly int nfixed
     cdef int *freeind
     cdef float *fixedcoords
-    cdef int reverse
+    cdef int reverse_endian
     cdef int charmm
     cdef readonly int n_dims
     cdef readonly int n_frames
+    cdef bint b_read_header
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -115,6 +125,7 @@ cdef class DCDFile:
             raise IOError("couldn't open file: {}\n"
                           "ErrorCode: {}".format(self.fname, ok))
         self.is_open = True
+        self.read_header = False
 
     def close(self):
         if self.is_open:
@@ -138,7 +149,7 @@ cdef class DCDFile:
 
         ok = read_dcdheader(self.fp, &self.n_atoms, &self.nsets, &self.istart,
                             &self.nsavc, &self.delta, &self.nfixed, &self.freeind,
-                            &self.fixedcoords, &self.reverse,
+                            &self.fixedcoords, &self.reverse_endian,
                             &self.charmm, &c_remarks, &len_remarks)
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
@@ -152,6 +163,7 @@ cdef class DCDFile:
         self.n_dims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
         self.n_frames = self._estimate_n_frames()
 
+        self.read_header = True
         return py_remarks
 
     def _estimate_n_frames(self):
@@ -172,3 +184,28 @@ cdef class DCDFile:
     def periodic(self):
           return bool((self.charmm & DCD_IS_CHARMM) and
                       (self.charmm & DCD_HAS_EXTRA_BLOCK))
+
+
+    def _read_next_frame(self):
+        if not self.is_open:
+            raise RuntimeError("No file open")
+        if not self.read_header:
+            raise IOError("didn't read DCD header before reading frame")
+
+        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
+                                       order='F')
+        cdef np.ndarray dimensions = np.empty(6, dtype=DTYPE)
+
+        cdef DTYPE_t[::1] x = xyz[:, 0]
+        cdef DTYPE_t[::1] y = xyz[:, 1]
+        cdef DTYPE_t[::1] z = xyz[:, 2]
+
+        ok = read_dcdstep(self.fp, self.n_atoms, <DTYPE_t*> &x[0],
+                          <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
+                          <DTYPE_t*> dimensions.data, self.nfixed, self.first,
+                          self.freeind, self.fixedcoords,
+                          self.reverse_endian, self.charmm)
+        if ok != 0:
+            raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+
+        return xyz
