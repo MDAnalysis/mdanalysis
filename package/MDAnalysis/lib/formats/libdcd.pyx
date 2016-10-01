@@ -47,7 +47,7 @@ cdef extern from 'include/fastio.h':
 #    fio_size_t fio_ftell(fio_fd fd)
 
 cdef extern from 'include/readdcd.h':
-    int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart,
+    int read_dcdheader(fio_fd fd, int *n_atoms, int *nsets, int *istart,
                        int *nsavc, double *delta, int *nfixed, int **freeind,
                        float **fixedcoords, int *reverse, int *charmm,
                        char **remarks, int *len_remarks)
@@ -58,7 +58,7 @@ cdef class DCDFile:
     cdef fio_fd fp
     cdef readonly fname
     cdef int is_open
-    cdef int natoms
+    cdef readonly int n_atoms
     cdef int nsets
     cdef int istart
     cdef int nsavc
@@ -71,6 +71,7 @@ cdef class DCDFile:
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
+        self.n_atoms = 0
         self.is_open = False
         self.open(self.fname, mode)
 
@@ -120,17 +121,17 @@ cdef class DCDFile:
         cdef char* c_remarks
         cdef int len_remarks = 0
 
-        ok = read_dcdheader(self.fp, &self.natoms, &self.nsets, &self.istart,
+        ok = read_dcdheader(self.fp, &self.n_atoms, &self.nsets, &self.istart,
                             &self.nsavc, &self.delta, &self.nfixed, &self.freeind,
                             &self.fixedcoords, &self.reverse,
                             &self.charmm, &c_remarks, &len_remarks)
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+
         if c_remarks != NULL:
             py_remarks = <bytes> c_remarks[:len_remarks]
             free(c_remarks)
         else:
             py_remarks = ""
 
-        print(self.natoms)
         return py_remarks
