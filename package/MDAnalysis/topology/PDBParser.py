@@ -49,7 +49,7 @@ import warnings
 
 from .guessers import guess_masses, guess_types
 from ..lib import util
-from .base import TopologyReader, squash_by
+from .base import TopologyReader, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -185,10 +185,9 @@ class PDBParser(TopologyReader):
         n_atoms = len(serials)
 
         attrs = []
-        # Make TopologyAttrs
+        # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
                 (names, Atomnames, object),
-                (icodes, ICodes, object),
                 (atomtypes, Atomtypes, object),
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
@@ -209,20 +208,22 @@ class PDBParser(TopologyReader):
         attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
-        resnames = np.array(resnames, dtype=object)
         resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+        icodes = np.array(icodes, dtype=object)
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
-        residx, resids, (resnames, resnums, segids) = squash_by(
-            resids, resnames, resnums, segids)
+        residx, (resids, resnames, icodes, resnums, segids) = change_squash(
+            (resids, icodes), (resids, resnames, icodes, resnums, segids))
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
+        attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
         if any(segids) and not any(val == None for val in segids):
-            segidx, segids = squash_by(segids)[:2]
+            segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
         else:

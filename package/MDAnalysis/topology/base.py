@@ -28,10 +28,12 @@ Classes
    :inherited-members:
 
 """
-import numpy as np
-import warnings
 import six
 from six.moves import zip
+
+import itertools
+import numpy as np
+import warnings
 
 from . import _PARSERS
 from ..coordinates.base import IObase
@@ -105,30 +107,22 @@ def squash_by(child_parent_ids, *attributes):
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
 
 
-def _string_diff(array):
-    """Drop in replacement for np.diff that works on strings"""
-    return np.array([0 if x == y else 1
-                     for x, y in zip(array[:-1], array[1:])])
-
-
-def resid_change_squash(resids, *other_attrs):
+def change_squash(criteria, to_squash):
     """Squash per atom data to per residue according to changes in resid
 
     Parameters
     ----------
-    resids : numpy ndarray
-      The array of values which define the identity of the Residue. When
-      this changes a new residue has been started
-    other_attrs : multiple numpy ndarrays
-      Other attributes which get squashed 
+    criteria : list of numpy ndarray
+      Arrays which when changing indicate a new residue
+    to_squash : list of numpy arrays
+      Arrays which get squashed according to the criteria arrays
 
     Returns
     -------
-    residx
+    residx : numpy array
       The Residue *index* that each Atom gets assigned to. [len(resids)]
-    new_resids
-      The resid of each new 
-    other_attrs
+    squashed : numpy array
+      The to_squash arrays reduced down to per Residue values
       
 
     Example
@@ -137,44 +131,46 @@ def resid_change_squash(resids, *other_attrs):
     resnames = np.array(['RsA', 'RsA', 'RsB', 'RsB', 'RsC', 'RsC'])
     segids = np.array(['A', 'A', 'A', 'A', 'B', 'B'])
 
-    residx, new_resids, (new_resnames, new_segids) = resid_change_squash(resids, resnames, segids)
+    residx, (new_resids, new_resnames, new_segids) = resid_change_squash(
+                                                      (resids,), (resids, resnames, segids))
 
     # Per atom res index
     residx: [0, 0, 1, 1, 2, 2]
-    # Per residue record of attribute
-    resids: [2, 3, 2]
-    resnames: ['RsA', 'RsB', 'RsC']
-    # Segids now per residue, can squash again in same function to find per-segment
-    segids: ['A', 'A', 'B']
+    # Per residue record of each attribute
+    new_resids: [2, 3, 2]
+    new_resnames: ['RsA', 'RsB', 'RsC']
+    new_segids: ['A', 'A', 'B']
     """
-    # TODO: Add error checking to inputs ^_^"
+    def get_borders(*arrays):
+        """Generator of indices to slice arrays when they change"""
+        borders = np.nonzero(reduce(np.logical_or,
+                                    (a[:-1] != a[1:] for a in arrays)))
+        # Add Nones so we can slice from start to end
+        return [None] + list(borders[0] + 1) + [None]
+
+    l0 = len(criteria[0])
+    if not all(len(other) == l0
+               for other in itertools.chain(criteria[1:], to_squash)):
+        raise ValueError("All arrays must be equally sized")
 
     # 1) Detect where resids change
-    try:
-        diff = np.diff(resids)
-    except TypeError:
-        # np.diff uses '-', use slower string version
-        diff = _string_diff(resids)
-    finally:
-        diff = np.nonzero(diff)[0]
-    # Number of unique residues
-    nres = len(diff) + 1
+    borders = get_borders(*criteria)
+    # Number of groups = number of changes + 1
+    # 2 `None`s have been added, so -1
+    nres = len(borders) - 1
 
     # 2) Allocate new arrays
     # Per atom record of what residue they belong to
-    residx = np.zeros_like(resids, dtype=np.int)
+    residx = np.zeros_like(criteria[0], dtype=np.int)
     # Per residue record of various attributes
-    new_resids = np.zeros(nres, dtype=resids.dtype)
-    new_others = [np.zeros(nres, dtype=o.dtype) for o in other_attrs]
+    new_others = [np.zeros(nres, dtype=o.dtype) for o in to_squash]
 
     # 3) Slice through resids and others to find values
-    chops = [None] + list(diff + 1) + [None]
-    for i, (x, y) in enumerate(zip(chops[:-1], chops[1:])):
+    for i, (x, y) in enumerate(zip(borders[:-1], borders[1:])):
         residx[x:y] = i  # atoms between x & y are in the i'th residue
-        new_resids[i] = resids[x:y][0]
-        for attr, new in zip(other_attrs, new_others):
-            new[i] = attr[x:y][0]  # TODO: Check that x:y is the same
+        for old, new in zip(to_squash, new_others):
+            new[i] = old[x:y][0]  # TODO: Check that x:y is the same
             # Should be the same for self consistency...
 
-    return residx, new_resids, new_others
+    return residx, new_others
             

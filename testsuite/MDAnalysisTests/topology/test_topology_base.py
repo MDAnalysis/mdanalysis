@@ -3,7 +3,7 @@ from numpy.testing import (
     assert_array_equal,
 )
 
-from MDAnalysis.topology.base import squash_by, resid_change_squash
+from MDAnalysis.topology.base import squash_by, change_squash
 
 class TestSquash(object):
     atom_resids = np.array([2, 2, 1, 1, 5, 5, 4, 4])
@@ -19,7 +19,7 @@ class TestSquash(object):
         assert_array_equal(resnames, np.array(['B', 'A', 'D', 'C']))
 
 
-class TestResidChangeSquash(object):
+class TestChangeSquash(object):
     def test_resid_squash(self):
         # System of 6 atoms in 3 residues
         # Residues 1 & 2 are Segid A, Residue 3 is Segid B
@@ -28,8 +28,8 @@ class TestResidChangeSquash(object):
         resnames = np.array(['RsA', 'RsA', 'RsB', 'RsB', 'RsC', 'RsC'])
         segids = np.array(['A', 'A', 'A', 'A', 'B', 'B'])
 
-        residx, new_resids, (new_resnames, new_segids) = resid_change_squash(
-            resids, resnames, segids)
+        residx, (new_resids, new_resnames, new_segids) = change_squash(
+            (resids,), (resids, resnames, segids))
 
         assert_array_equal(residx, np.array([0, 0, 1, 1, 2, 2]))
         assert_array_equal(new_resids, np.array([2, 3, 2]))
@@ -39,8 +39,7 @@ class TestResidChangeSquash(object):
     def test_segid_squash(self):
         segids = np.array(['A', 'A', 'B'])
 
-        segidx, new_segids, _ = resid_change_squash(
-            segids)
+        segidx, (new_segids,) = change_squash((segids,), (segids,))
 
         assert_array_equal(segidx, np.array([0, 0, 1]))
         assert_array_equal(new_segids, np.array(['A', 'B']))

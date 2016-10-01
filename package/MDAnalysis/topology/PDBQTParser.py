@@ -47,7 +47,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from ..lib import util
-from .base import TopologyReader, resid_change_squash
+from .base import TopologyReader, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -124,22 +124,23 @@ class PDBQTParser(TopologyReader):
                 (serials, Atomids, np.int32),
                 (names, Atomnames, object),
                 (altlocs, AltLocs, object),
-                (icodes, ICodes, object),
                 (occupancies, Occupancies, np.float32),
                 (tempfactors, Tempfactors, np.float32),
                 (charges, Charges, np.float32),
                 (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
+
         resids = np.array(resids, dtype=np.int32)
+        icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)
-        residx, resids, (resnames, chainids) = resid_change_squash(
-            resids, resnames, chainids)
+        residx, (resids, icodes, resnames, chainids) = change_squash(
+            (resids, icodes) (resids, icodes, resnames, chainids))
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))
-        segidx, segids, _ = resid_change_squash(chainids)
+        segidx, (segids,) = change_squash((chainids,), (chainids,))
         n_segments = len(segids)
         attrs.append(Segids(segids))
 
