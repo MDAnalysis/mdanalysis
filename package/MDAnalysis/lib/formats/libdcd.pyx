@@ -117,18 +117,20 @@ cdef class DCDFile:
         if not self.is_open:
             raise RuntimeError("No file open")
 
-        cdef char *remarks
-        cdef int len_remarks
+        cdef char* c_remarks
+        cdef int len_remarks = 0
 
-        print("reading", <uintptr_t>self.freeind, self.fixedcoords == NULL)
         ok = read_dcdheader(self.fp, &self.natoms, &self.nsets, &self.istart,
                             &self.nsavc, &self.delta, &self.nfixed, &self.freeind,
                             &self.fixedcoords, &self.reverse,
-                            &self.charmm, &remarks, &len_remarks)
-        print("reading", <uintptr_t>self.freeind, self.fixedcoords == NULL)
+                            &self.charmm, &c_remarks, &len_remarks)
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
-        if remarks != NULL:
-            free(remarks)
+        if c_remarks != NULL:
+            py_remarks = <bytes> c_remarks[:len_remarks]
+            free(c_remarks)
+        else:
+            py_remarks = ""
 
         print(self.natoms)
+        return py_remarks
