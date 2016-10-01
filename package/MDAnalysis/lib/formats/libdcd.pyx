@@ -60,10 +60,10 @@ cdef class DCDFile:
     cdef int is_open
     cdef readonly int n_atoms
     cdef int nsets
-    cdef int istart
-    cdef int nsavc
+    cdef readonly int istart
+    cdef readonly int nsavc
     cdef readonly double delta
-    cdef int nfixed
+    cdef readonly int nfixed
     cdef int *freeind
     cdef float *fixedcoords
     cdef int reverse
