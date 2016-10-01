@@ -14,11 +14,21 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from os import path
+
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
-ctypedef int fio_fd;
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
                 "FIO_SEEK_END": SEEK_END}
+
+# Tell cython about the off_t type. It doesn't need to match exactly what is
+# defined since we don't expose it to python but the cython compiler needs to
+# know about it.
+cdef extern from 'sys/types.h':
+    ctypedef int off_t
+
+ctypedef int fio_fd;
+ctypedef off_t fio_size_t
 
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
@@ -44,12 +54,10 @@ DCD_ERRORS = {
     -8: 'malloc failed'
 }
 
-
 cdef extern from 'include/fastio.h':
     int fio_open(const char *filename, int mode, fio_fd *fd)
     int fio_fclose(fio_fd fd)
-# need to find a typedef for off_t
-#    fio_size_t fio_ftell(fio_fd fd)
+    fio_size_t fio_ftell(fio_fd fd)
 
 cdef extern from 'include/readdcd.h':
     int read_dcdheader(fio_fd fd, int *n_atoms, int *nsets, int *istart,
@@ -73,6 +81,8 @@ cdef class DCDFile:
     cdef float *fixedcoords
     cdef int reverse
     cdef int charmm
+    cdef readonly int n_dims
+    cdef readonly int n_frames
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -139,8 +149,24 @@ cdef class DCDFile:
         else:
             py_remarks = ""
 
+        self.n_dims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
+        self.n_frames = self._estimate_n_frames()
 
         return py_remarks
+
+    def _estimate_n_frames(self):
+        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
+        firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
+        framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
+                     extrablocksize)
+        filesize = path.getsize(self.fname)
+        # It's safe to use ftell, even though ftell returns a long, because the
+        # header size is < 4GB.
+        header_size = fio_ftell(self.fp)
+        # TODO: check that nframessize is larger then 0, the c-implementation
+        # used to do that.
+        nframessize = filesize - header_size - firstframesize
+        return nframessize / framesize + 1
 
     @property
     def periodic(self):
