@@ -62,7 +62,7 @@ cdef class DCDFile:
     cdef int nsets
     cdef int istart
     cdef int nsavc
-    cdef double delta
+    cdef readonly double delta
     cdef int nfixed
     cdef int *freeind
     cdef float *fixedcoords
