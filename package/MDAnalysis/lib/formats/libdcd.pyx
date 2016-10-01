@@ -27,6 +27,11 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
+cdef enum:
+    DCD_IS_CHARMM       = 0x01
+    DCD_HAS_4DIMS       = 0x02
+    DCD_HAS_EXTRA_BLOCK = 0x04
+
 DCD_ERRORS = {
     0: 'No Problem',
     -1: 'Normal EOF',
@@ -134,4 +139,10 @@ cdef class DCDFile:
         else:
             py_remarks = ""
 
+
         return py_remarks
+
+    @property
+    def periodic(self):
+          return bool((self.charmm & DCD_IS_CHARMM) and
+                      (self.charmm & DCD_HAS_EXTRA_BLOCK))
