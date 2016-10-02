@@ -136,7 +136,7 @@ class PDBQTParser(TopologyReader):
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)
         residx, (resids, icodes, resnames, chainids) = change_squash(
-            (resids, icodes) (resids, icodes, resnames, chainids))
+            (resids, icodes), (resids, icodes, resnames, chainids))
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))

@@ -210,6 +210,8 @@ class PDBParser(TopologyReader):
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
+        if self.format == 'XPDB':  # XPDB doesn't have icodes
+            icodes = [''] * n_atoms
         icodes = np.array(icodes, dtype=object)
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
