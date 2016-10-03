@@ -673,7 +673,7 @@ class TopologyGroup(object):
                                      other.universe,
                                      btype=other.btype,
                                      type=np.array([other._bondtype]),
-                                     guessed=other.is_guessed)
+                                     guessed=np.array([other.is_guessed]))
             else:
                 return TopologyGroup(other.indices,
                                      other.universe,
@@ -693,7 +693,7 @@ class TopologyGroup(object):
                     type=np.concatenate([self._bondtypes,
                                          np.array([other._bondtype])]),
                     guessed=np.concatenate([self._guessed,
-                                            np.array([other.is_guessed])]),
+                                            np.array([[other.is_guessed]])]),
                 )
             else:
                 # add TG to me

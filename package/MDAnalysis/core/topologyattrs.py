@@ -1131,7 +1131,7 @@ class Segids(SegmentAttr):
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
     def __init__(self, values, types=None, guessed=False):
-        self.values = values
+        self.values = list(values)
         if types is None:
             types = [None] * len(values)
         self.types = types

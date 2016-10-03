@@ -389,7 +389,7 @@ class TestMultiPDBReader(TestCase):
                                                 if not b.is_guessed])
         assert_equal(conect, desired, err_msg="The bond list does not match "
                      "the test reference; len(actual) is %d, len(desired) "
-                     "is %d" % (len(u._topology['bonds']), len(desired)))
+                     "is %d" % (len(u._topology.bonds.values), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
