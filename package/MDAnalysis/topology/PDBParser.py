@@ -130,6 +130,8 @@ class PDBParser(TopologyReader):
 
         segids = []
 
+        self._wrapped_serials = False  # did serials go over 100k?
+        last_wrapped_serial = 100000  # if serials wrap, start from here
         with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
@@ -145,8 +147,10 @@ class PDBParser(TopologyReader):
                 except ValueError:
                     # serial can become '***' when they get too high
                     self._wrapped_serials = True
-                    serial = None
-                serials.append(serial)
+                    serial = last_wrapped_serial
+                    last_wrapped_serial += 1
+                finally:
+                    serials.append(serial)
 
                 names.append(line[12:16].strip())
                 altlocs.append(line[16:17].strip())
@@ -177,6 +181,11 @@ class PDBParser(TopologyReader):
 
                 segids.append(line[66:76].strip())
                 atomtypes.append(line[76:78].strip())
+
+        # Warn about wrapped serials
+        if self._wrapped_serials:
+            warnings.warn("Serial numbers went over 100,000.  "
+                          "Higher serials have been guessed")
 
         # If segids not present, try to use chainids
         if not any(segids):
