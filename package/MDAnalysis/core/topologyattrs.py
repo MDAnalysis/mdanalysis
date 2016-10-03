@@ -1133,8 +1133,12 @@ class _Connection(AtomAttr):
     def __init__(self, values, types=None, guessed=False):
         self.values = values
         if types is None:
-            types = [None for value in values]
+            types = [None] * len(values)
         self.types = types
+        if guessed in (True, False):
+            # if single value passed, multiply this across
+            # all bonds
+            guessed = [guessed] * len(values)
         self._guessed = guessed
         self._cache = dict()
 
@@ -1147,7 +1151,7 @@ class _Connection(AtomAttr):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b, t in zip(self.values, self.types):
+        for b, t, g in zip(self.values, self.types, self._guessed):
             # We always want the first index
             # to be less than the last
             # eg (0, 1) not (1, 0)
@@ -1155,7 +1159,7 @@ class _Connection(AtomAttr):
             if b[0] > b[-1]:
                 b = b[::-1]
             for a in b:
-                bd[a].append((b, t))
+                bd[a].append((b, t, g))
         return bd
 
     def get_atoms(self, ag):
@@ -1165,10 +1169,32 @@ class _Connection(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag._ix]
-        bond_idx, types = np.hsplit(np.array(sorted(unique_bonds)), 2)
+        bond_idx, types, guessed = np.hsplit(np.array(sorted(unique_bonds)), 3)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
-        return TopologyGroup(bond_idx, ag._u, self.singular[:-1], types)
+        guessed = guessed.ravel()
+        return TopologyGroup(bond_idx, ag._u,
+                             self.singular[:-1],
+                             types,
+                             guessed)
+
+    def add_bonds(self, values, types=None, guessed=True):
+        if types is None:
+            types = itertools.cycle((None,))
+        if guessed in (True, False):
+            guessed = itertools.cycle((guessed,))
+
+        existing = set(self.values)
+        for v, t, g in zip(values, types, guessed):
+            if not v in existing:
+                self.values.append(v)
+                self.types.append(t)
+                self._guessed.append(g)
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
 
 
 class Bonds(_Connection):

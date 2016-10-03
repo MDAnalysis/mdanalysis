@@ -1098,6 +1098,46 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 np.unique(levelindices)]
 
+    def guess_bonds(self, vdwradii=None):
+        """Guess bonds that exist within this AtomGroup and add to Universe
+        
+        Parameters
+        ----------
+        vdwradii : dict, optional
+          Dict relating atom type: vdw radii
+
+        See Also
+        --------
+        :func:`MDAnalysis.topology.core.guess_bonds` for details on the
+        algorithm used to guess bonds.
+
+        .. versionadded:: 0.10.0
+        """
+        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
+        from .topologyattrs import Bonds, Angles, Dihedrals
+
+        def get_TopAttr(u, name, cls):
+            """either get *name* or create one from *cls*"""
+            try:
+                return getattr(u._topology, name)
+            except AttributeError:
+                attr = cls([])
+                u.add_TopologyAttr(attr)
+                return attr
+
+        # indices of bonds
+        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
+        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        bondattr.add_bonds(b, guessed=True)
+        
+        a = guess_angles(self.bonds)
+        angleattr = get_TopAttr(self.universe, 'angles', Angles)
+        angleattr.add_bonds(a, guessed=True)
+
+        d = guess_dihedrals(self.angles)
+        diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
+        diheattr.add_bonds(d)
+
     @property
     def bond(self):
         """This AtomGroup represented as a Bond object

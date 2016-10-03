@@ -41,7 +41,6 @@ from .guessers import (
     get_atom_mass, guess_atom_mass, guess_atom_charge,
     guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
 )
-from ..lib import distances
 from ..lib.util import cached
 from ..lib import util
 

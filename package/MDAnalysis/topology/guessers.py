@@ -23,6 +23,7 @@ while `guess_Xs` will work on an array of many atoms.
 import numpy as np
 import warnings
 
+from ..lib import distances
 from . import tables
 
 
