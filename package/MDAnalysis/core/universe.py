@@ -186,6 +186,10 @@ class Universe(object):
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
 
+        # Check for guess_bonds
+        if kwargs.pop('guess_bonds', False):
+            self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
+
     def _generate_from_topology(self):
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
