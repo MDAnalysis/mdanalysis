@@ -1238,7 +1238,10 @@ class Bonds(_Connection):
 
         .. versionadded 0.9.0
         """
-        return tuple(set(a.fragment for a in self))
+        return tuple(sorted(
+            set(a.fragment for a in self),
+            key=lambda x: x[0].index
+        ))
 
     transplants[Atom].append(
         ('fragment', property(fragment, None, None,

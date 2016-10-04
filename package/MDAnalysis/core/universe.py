@@ -447,8 +447,14 @@ class Universe(object):
     @property
     @cached('fragments')
     def _fragdict(self):
+        """
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.16.0
+           Fragment atoms are sorted by their index, and framgents are sorted
+           by their first atom index so their order is predictable.
+        """
         bonds = self.atoms.bonds
-        
+
         class _fragset(object):
             __slots__ = ['ats']
             """Normal sets aren't hashable, this is"""
@@ -494,8 +500,10 @@ class Universe(object):
                       for a, val in f.items() if not val))
 
         # All the unique values in f are the fragments
-        frags = tuple([AtomGroup(np.array([at.index for at in ag]), self)
-                        for ag in set(f.values())])
+        frags = tuple(
+            [AtomGroup(np.sort(np.array([at.index for at in ag])), self)
+             for ag in set(f.values())],
+        )
 
         fragdict = {}
         for f in frags:
