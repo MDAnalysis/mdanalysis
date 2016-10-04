@@ -2336,27 +2336,6 @@ class TestUniverseCache(TestCase):
 
         assert_equal(self.u._cache, dict())
 
-# VALID
-class TestUnorderedResidues(TestCase):
-    """
-    This pdb file has resids that are non sequential
-
-    This (previously) led to too many residues being found.
-    """
-
-    # VALID
-    def setUp(self):
-        self.u = MDAnalysis.Universe(unordered_res)
-
-    # VALID
-    def tearDown(self):
-        del self.u
-
-    # VALID
-    @attr("issue")
-    def test_build_residues(self):
-        assert_equal(len(self.u.residues), 35)
-
 
 class TestCustomReaders(TestCase):
     """
