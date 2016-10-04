@@ -2530,8 +2530,9 @@ class TestAtomGroupProperties(object):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_attributes(self):
-        u = make_Universe('names', 'resids', 'segids', 'types', 'altLocs', 'serials', 'charges',
-                          'masses', 'radii', 'bfactors', 'occupancies')
+        u = make_Universe('names', 'resids', 'segids', 'types', 'altLocs',
+                          'charges', 'masses', 'radii', 'bfactors',
+                          'occupancies')
         u.atoms.occupancies = 1.0
         master = u.atoms
         idx = [0, 1, 4, 7, 11, 14]
@@ -2539,11 +2540,8 @@ class TestAtomGroupProperties(object):
 
         for att, atts, att_type in (
                 ('name', 'names', 'string'),
-                ('resid', 'resids', 'int'),
-                ('segid', 'segids', 'string'),
                 ('type', 'types', 'string'),
                 ('altLoc', 'altLocs', 'string'),
-                ('serial', 'serials', 'int'),
                 ('charge', 'charges', 'float'),
                 ('mass', 'masses', 'float'),
                 ('radius', 'radii', 'float'),
