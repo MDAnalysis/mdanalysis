@@ -15,8 +15,11 @@
 #
 
 from os import path
+import numpy as np
+from collections import namedtuple
 
 cimport numpy as np
+
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
@@ -75,6 +78,7 @@ cdef extern from 'include/readdcd.h':
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
 
+DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
 cdef class DCDFile:
     cdef fio_fd fp
@@ -93,6 +97,8 @@ cdef class DCDFile:
     cdef readonly int n_dims
     cdef readonly int n_frames
     cdef bint b_read_header
+    cdef int current_frame
+    cdef readonly remarks
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -125,7 +131,8 @@ cdef class DCDFile:
             raise IOError("couldn't open file: {}\n"
                           "ErrorCode: {}".format(self.fname, ok))
         self.is_open = True
-        self.read_header = False
+        self.current_frame = 0
+        self.remarks = self._read_header()
 
     def close(self):
         if self.is_open:
@@ -140,7 +147,8 @@ cdef class DCDFile:
                 raise IOError("couldn't close file: {}\n"
                             "ErrorCode: {}".format(self.fname, ok))
 
-    def read_header(self):
+
+    def _read_header(self):
         if not self.is_open:
             raise RuntimeError("No file open")
 
@@ -162,8 +170,8 @@ cdef class DCDFile:
 
         self.n_dims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
         self.n_frames = self._estimate_n_frames()
+        self.b_read_header = True
 
-        self.read_header = True
         return py_remarks
 
     def _estimate_n_frames(self):
@@ -186,10 +194,10 @@ cdef class DCDFile:
                       (self.charmm & DCD_HAS_EXTRA_BLOCK))
 
 
-    def _read_next_frame(self):
+    def read(self):
         if not self.is_open:
             raise RuntimeError("No file open")
-        if not self.read_header:
+        if not self.b_read_header:
             raise IOError("didn't read DCD header before reading frame")
 
         cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
@@ -200,12 +208,16 @@ cdef class DCDFile:
         cdef DTYPE_t[::1] y = xyz[:, 1]
         cdef DTYPE_t[::1] z = xyz[:, 2]
 
+        first_frame = self.current_frame == 0
+
         ok = read_dcdstep(self.fp, self.n_atoms, <DTYPE_t*> &x[0],
                           <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
-                          <DTYPE_t*> dimensions.data, self.nfixed, self.first,
+                          <DTYPE_t*> dimensions.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-        return xyz
+        self.current_frame += 1
+
+        return DCDFrame(xyz, dimensions)
