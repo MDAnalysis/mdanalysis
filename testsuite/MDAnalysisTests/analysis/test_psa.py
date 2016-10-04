@@ -201,3 +201,36 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         d_outer_inflation = self.h(self.path_1, inflated_path_2)
         assert_array_less(d_inner_inflation,
                           d_outer_inflation)
+
+class DiscreteFrechetDistance(TestCase):
+    # unit tests for the discrete Frechet distance
+
+    def setUp(self):
+        np.random.seed(50)
+        random_angles = np.random.random((100,)) * np.pi * 2
+        random_columns = np.column_stack((random_angles, random_angles,
+                                          np.zeros((100,))))
+        random_columns[...,0] = np.cos(random_columns[...,0])
+        random_columns[...,1] = np.sin(random_columns[...,1])
+        random_columns_2 = np.column_stack((random_angles, random_angles,
+                                            np.zeros((100,))))
+        random_columns_2[...,0] = np.cos(random_columns_2[...,0]) * 5.5
+        random_columns_2[...,1] = np.sin(random_columns_2[...,1]) * 5.5
+        self.path_1 = random_columns
+        self.path_2 = random_columns_2
+
+    def tearDown(self):
+        del self.path_1
+        del self.path_2
+
+    def test_discrete_Frechet_concentric_circles(self):
+        # test for the simple case of the discrete Frechet distance
+        # between concentric circular paths, which for a sufficiently
+        # high random discrete point density around each circle
+        # should be the absolute difference between their respective
+        # radii
+
+        expected = 4.5
+        actual = MDAnalysis.analysis.psa.discrete_frechet(self.path_1,
+                                                          self.path_2)
+        assert_almost_equal(actual, expected)
