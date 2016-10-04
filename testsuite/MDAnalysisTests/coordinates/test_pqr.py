@@ -78,7 +78,7 @@ class TestPQRWriter(TestCase, RefAdKSmall):
     # Not sure if this should be a segid or chainID?
     # Topology system now allows for both of these
     def test_write_withChainID(self):
-        self.universe.atoms.set_segids('A')
+        self.universe.segments.segids = 'A'
         assert_equal(self.universe.segments.segids[0], 'A')  # sanity check
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
