@@ -2514,9 +2514,8 @@ class TestGuessBonds(TestCase):
     def test_universe_guess_bonds_off(self):
         u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=False)
 
-        assert_equal(len(u.bonds), 0)
-        assert_equal(len(u.angles), 0)
-        assert_equal(len(u.dihedrals), 0)
+        for attr in ('bonds', 'angles', 'dihedrals'):
+            assert_(not hasattr(u, attr))
         assert_(u.kwargs['guess_bonds'] is False)
 
     def _check_atomgroup(self, ag, u):
