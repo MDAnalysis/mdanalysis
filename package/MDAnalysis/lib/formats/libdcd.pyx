@@ -94,11 +94,13 @@ cdef class DCDFile:
     cdef float *fixedcoords
     cdef int reverse_endian
     cdef int charmm
+    cdef str mode
     cdef readonly int n_dims
     cdef readonly int n_frames
     cdef bint b_read_header
     cdef int current_frame
     cdef readonly remarks
+    cdef int reached_eof
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -119,13 +121,36 @@ cdef class DCDFile:
         # always propagate exceptions forward
         return False
 
+    def __iter__(self):
+        self.close()
+        self.open(self.fname, self.mode)
+        return self
+
+    def __next__(self):
+        if self.reached_eof:
+            raise StopIteration
+        return self.read()
+
+    def __len__(self):
+        if not self.is_open:
+            raise RuntimeError('No file currently opened')
+        return self.n_frames
+
+    def tell(self):
+        return self.current_frame
+
     def open(self, filename, mode='r'):
+        if self.is_open:
+            self.close()
+
         if mode == 'r':
             fio_mode = FIO_READ
         elif mode == 'w':
             fio_mode = FIO_WRITE
         else:
             raise IOError("unkown mode '{}', use either r or w".format(mode))
+        self.mode = mode
+
         ok = fio_open(self.fname, fio_mode, <fio_fd*> &self.fp)
         if ok != 0:
             raise IOError("couldn't open file: {}\n"
@@ -133,6 +158,7 @@ cdef class DCDFile:
         self.is_open = True
         self.current_frame = 0
         self.remarks = self._read_header()
+        self.reached_eof = False
 
     def close(self):
         if self.is_open:
@@ -195,14 +221,17 @@ cdef class DCDFile:
 
 
     def read(self):
+        if self.reached_eof:
+            raise RuntimeError('Reached last frame in TRR, seek to 0')
         if not self.is_open:
             raise RuntimeError("No file open")
-        if not self.b_read_header:
-            raise IOError("didn't read DCD header before reading frame")
+        if self.mode != 'r':
+            raise RuntimeError('File opened in mode: {}. Reading only allow '
+                               'in mode "r"'.format('self.mode'))
 
         cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
                                        order='F')
-        cdef np.ndarray dimensions = np.empty(6, dtype=DTYPE)
+        cdef np.ndarray unitcell = np.empty(6, dtype=DTYPE)
 
         cdef DTYPE_t[::1] x = xyz[:, 0]
         cdef DTYPE_t[::1] y = xyz[:, 1]
@@ -212,12 +241,17 @@ cdef class DCDFile:
 
         ok = read_dcdstep(self.fp, self.n_atoms, <DTYPE_t*> &x[0],
                           <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
-                          <DTYPE_t*> dimensions.data, self.nfixed, first_frame,
+                          <DTYPE_t*> unitcell.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
-        if ok != 0:
+        if ok != 0 and ok != -4:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+
+        # we couldn't read any more frames.
+        if ok == -4:
+            self.reached_eof = True
+            raise StopIteration
 
         self.current_frame += 1
 
-        return DCDFrame(xyz, dimensions)
+        return DCDFrame(xyz, unitcell)
