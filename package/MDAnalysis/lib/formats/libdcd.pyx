@@ -66,6 +66,7 @@ cdef extern from 'include/fastio.h':
     int fio_open(const char *filename, int mode, fio_fd *fd)
     int fio_fclose(fio_fd fd)
     fio_size_t fio_ftell(fio_fd fd)
+    fio_size_t fio_fseek(fio_fd fd, fio_size_t offset, int whence)
 
 cdef extern from 'include/readdcd.h':
     int read_dcdheader(fio_fd fd, int *n_atoms, int *nsets, int *istart,
@@ -101,6 +102,9 @@ cdef class DCDFile:
     cdef int current_frame
     cdef readonly remarks
     cdef int reached_eof
+    cdef int firstframesize
+    cdef int framesize
+    cdef int header_size
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -198,21 +202,25 @@ cdef class DCDFile:
         self.n_frames = self._estimate_n_frames()
         self.b_read_header = True
 
+        # make sure fixed atoms have been read
+        self.read()
+        self.seek(0)
+
         return py_remarks
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
-        framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
-                     extrablocksize)
+        self.firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
+        self.framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
+                          extrablocksize)
         filesize = path.getsize(self.fname)
         # It's safe to use ftell, even though ftell returns a long, because the
         # header size is < 4GB.
-        header_size = fio_ftell(self.fp)
+        self.header_size = fio_ftell(self.fp)
         # TODO: check that nframessize is larger then 0, the c-implementation
         # used to do that.
-        nframessize = filesize - header_size - firstframesize
-        return nframessize / framesize + 1
+        nframessize = filesize - self.header_size - self.firstframesize
+        return nframessize / self.framesize + 1
 
     @property
     def periodic(self):
@@ -255,3 +263,36 @@ cdef class DCDFile:
         self.current_frame += 1
 
         return DCDFrame(xyz, unitcell)
+
+    def seek(self, frame):
+        """Seek to Frame.
+
+        Please note that this function will generate internal file offsets if
+        they haven't been set before. For large file this means the first seek
+        can be very slow. Later seeks will be very fast.
+
+        Parameters
+        ----------
+        frame : int
+            seek the file to given frame
+
+        Raises
+        ------
+        IOError
+            If you seek for more frames than are available or if the
+            seek fails (the low-level system error is reported).
+        """
+        if frame >= self.n_frames:
+            raise IOError('Trying to seek over max number of frames')
+        self.reached_eof = False
+
+        cdef fio_size_t offset
+        if frame == 0:
+            offset = self.header_size
+        else:
+            offset = self.header_size + self.firstframesize + self.framesize * (frame - 1)
+
+        ok = fio_fseek(self.fp, offset, _whence_vals["FIO_SEEK_SET"])
+        if ok != 0:
+            raise IOError("DCD seek failed with system errno={}".format(ok))
+        self.current_frame = frame
