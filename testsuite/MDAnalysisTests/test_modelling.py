@@ -52,18 +52,20 @@ def capping(ref, ace, nma, output):
             "reference": "resid {0} and backbone".format(resid_min)},
             strict=True)
     alignto(nma, ref, select={
-            "mobile": "resid {0} and backbone and not (resname NMA or resname NME)".format(resid_max),
+            "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
             "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
             strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
+    nma.residues.resids = 16
     u = Merge(ace.select_atoms("resname ACE"),
               ref.select_atoms(
-                  "not (resid {0} and name HT*) and not (resid {1} and (name HT* or name OT1))"
+                  "not (resid {0} and name HT*) and not (resid {1} and (name HT* OT1))"
                   "".format(resid_min, resid_max)),
-              nma.select_atoms("resname NME or resname NMA"))
+              nma.select_atoms("resname NME NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
+    u.atoms.write('cap.pdb')
     return u
 
 
@@ -94,9 +96,10 @@ class TestCapping(TestCase):
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)
-        assert_equal(nma.resids[0], 15)
+        assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
+        assert_array_equal(peptide.trajectory.ts.dimensions,
+                           u.trajectory.ts.dimensions)
 
     def test_capping_inmemory(self):
         peptide = MDAnalysis.Universe(capping_input)
@@ -105,16 +108,18 @@ class TestCapping(TestCase):
         nma = MDAnalysis.Universe(capping_nma)
 
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal(len(u.select_atoms("not name H*")), len(ref.select_atoms("not name H*")))
+        assert_equal(len(u.select_atoms("not name H*")),
+                     len(ref.select_atoms("not name H*")))
 
         ace = u.select_atoms("resname ACE")
         nma = u.select_atoms("resname NMA")
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)
-        assert_equal(nma.resids[0], 15)
+        assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
+        assert_array_equal(peptide.trajectory.ts.dimensions,
+                           u.trajectory.ts.dimensions)
 
 class TestMerge(TestCase):
     ext = "pdb"
