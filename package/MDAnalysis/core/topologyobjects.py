@@ -540,7 +540,7 @@ class TopologyGroup(object):
         else:
             guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
         if order is None:
-            order = np.repeat(None, nbonds).reshape(len(bondidx, 1))
+            order = np.repeat(None, nbonds).reshape(nbonds, 1)
 
         split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
 
@@ -708,7 +708,7 @@ class TopologyGroup(object):
                     guessed=np.concatenate([self._guessed,
                                             np.array([[other.is_guessed]])]),
                     order=np.concatenate([self._order,
-                                          np.array([[other.order]])]),
+                                          np.array([other.order])]),
                 )
             else:
                 # add TG to me

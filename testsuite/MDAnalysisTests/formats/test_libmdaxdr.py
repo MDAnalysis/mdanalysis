@@ -28,7 +28,8 @@ from MDAnalysis.lib.formats.libmdaxdr import XTCFile
 from MDAnalysisTests.datafiles import XTC_single_frame
 from MDAnalysisTests.datafiles import XTC_multi_frame
 
-from tempdir import run_in_tempdir
+from MDAnalysisTests import tempdir
+from MDAnalysisTests.tempdir import run_in_tempdir
 import numpy as np
 
 
