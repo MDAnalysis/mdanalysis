@@ -1130,7 +1130,7 @@ class Segids(SegmentAttr):
 
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms"""
-    def __init__(self, values, types=None, guessed=False):
+    def __init__(self, values, types=None, guessed=False, order=None):
         self.values = list(values)
         if types is None:
             types = [None] * len(values)
@@ -1140,6 +1140,9 @@ class _Connection(AtomAttr):
             # all bonds
             guessed = [guessed] * len(values)
         self._guessed = guessed
+        if order is None:
+            order = [None] * len(values)
+        self.order = order
         self._cache = dict()
 
     def __len__(self):
@@ -1151,7 +1154,8 @@ class _Connection(AtomAttr):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b, t, g in zip(self.values, self.types, self._guessed):
+        for b, t, g, o in zip(self.values, self.types,
+                              self._guessed, self.order):
             # We always want the first index
             # to be less than the last
             # eg (0, 1) not (1, 0)
@@ -1159,7 +1163,7 @@ class _Connection(AtomAttr):
             if b[0] > b[-1]:
                 b = b[::-1]
             for a in b:
-                bd[a].append((b, t, g))
+                bd[a].append((b, t, g, o))
         return bd
 
     def get_atoms(self, ag):
@@ -1169,27 +1173,33 @@ class _Connection(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag._ix]
-        bond_idx, types, guessed = np.hsplit(np.array(sorted(unique_bonds)), 3)
+        bond_idx, types, guessed, order = np.hsplit(
+            np.array(sorted(unique_bonds)), 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
+        order = order.ravel()
         return TopologyGroup(bond_idx, ag._u,
                              self.singular[:-1],
                              types,
-                             guessed)
+                             guessed,
+                             order)
 
-    def add_bonds(self, values, types=None, guessed=True):
+    def add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
             guessed = itertools.cycle((guessed,))
+        if order is None:
+            order = itertools.cycle((None,))
 
         existing = set(self.values)
-        for v, t, g in zip(values, types, guessed):
+        for v, t, g, o in zip(values, types, guessed, order):
             if not v in existing:
                 self.values.append(v)
                 self.types.append(t)
                 self._guessed.append(g)
+                self.order.append(o)
         # kill the old cache of bond Dict
         try:
             del self._cache['bd']
