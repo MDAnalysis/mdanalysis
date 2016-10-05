@@ -769,11 +769,20 @@ class AtomGroup(GroupBase):
 
     """
     def __getattr__(self, attr):
-        if attr in ('fragments',):
+        # is this a known attribute failure?
+        if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
+            # eg: 
+            # if attr in _ATTR_ERRORS:
+            # raise NDE(_ATTR_ERRORS[attr])
             raise NoDataError("AtomGroup has no fragments this requires Bonds")
-        else:
-            raise AttributeError("{cls} has no attribute {attr}".format(
-                cls=self.__class__.__name__, attr=attr))
+        elif hasattr(self.universe._topology, 'names'):
+            # Ugly hack to make multiple __getattr__s work
+            try:
+                return self._get_named_atom(attr)
+            except selection.SelectionError:
+                pass
+        raise AttributeError("{cls} has no attribute {attr}".format(
+            cls=self.__class__.__name__, attr=attr))
 
     @property
     def atoms(self):

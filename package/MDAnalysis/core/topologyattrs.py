@@ -295,16 +295,6 @@ class Atomnames(AtomAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     atomgroup.__class__.__name__, name))
 
-    transplants[AtomGroup].append(
-        ('__getattr__', getattr__))
-
-    transplants[Residue].append(
-        ('__getattr__', getattr__))
-
-    # this is also getitem for a residue
-    transplants[Residue].append(
-        ('__getitem__', getattr__))
-
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -325,6 +315,17 @@ class Atomnames(AtomAttr):
         else:
             # XXX: but inconsistent (see residues and Issue 47)
             return atomlist
+
+    # AtomGroup already has a getattr
+#    transplants[AtomGroup].append(
+#        ('__getattr__', getattr__))
+
+    transplants[Residue].append(
+        ('__getattr__', getattr__))
+
+    # this is also getitem for a residue
+    transplants[Residue].append(
+        ('__getitem__', getattr__))
 
     transplants[AtomGroup].append(
         ('_get_named_atom', _get_named_atom))
