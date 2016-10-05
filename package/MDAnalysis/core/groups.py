@@ -768,6 +768,13 @@ class AtomGroup(GroupBase):
     .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
+    def __getattr__(self, attr):
+        if attr in ('fragments',):
+            raise NoDataError("AtomGroup has no fragments this requires Bonds")
+        else:
+            raise AttributeError("{cls} has no attribute {attr}".format(
+                cls=self.__class__.__name__, attr=attr))
+
     @property
     def atoms(self):
         """Get another AtomGroup identical to this one.
@@ -1531,6 +1538,14 @@ class Atom(ComponentBase):
     this class only includes ad-hoc methods specific to Atoms.
 
     """
+    def __getattr__(self, attr):
+        """Try and catch known attributes and give better error message"""
+        if attr in ('fragment',):
+            raise NoDataError("Atom has no fragment data, this requires Bonds")
+        else:
+            raise AttributeError("{cls} has no attribute {attr}".format(
+                cls=self.__class__.__name__, attr=attr))
+
     @property
     def residue(self):
         residueclass = self.level.parent.singular

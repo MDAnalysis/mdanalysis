@@ -639,10 +639,10 @@ class TestPDBXLSerial(object):
 
     def test_serials(self):
         # These should be none
-        assert_(self.u.atoms[0].serial == 99998)
-        assert_(self.u.atoms[1].serial == 99999)
-        assert_(self.u.atoms[2].serial is None)
-        assert_(self.u.atoms[3].serial is None)
+        assert_(self.u.atoms[0].id == 99998)
+        assert_(self.u.atoms[1].id == 99999)
+        assert_(self.u.atoms[2].id == 100000)
+        assert_(self.u.atoms[3].id == 100001)
 
 
 # Does not implement Reader.remarks, Reader.header, Reader.title,

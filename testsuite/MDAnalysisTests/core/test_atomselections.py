@@ -290,7 +290,7 @@ class TestSelectionsCHARMM(object):
     # TODO:
     # test for checking ordering and multiple comma-separated selections
     def test_concatenated_selection(self):
-        E151 = self.universe.s4AKE.r151
+        E151 = self.universe.s4AKE.atoms.select_atoms('resid 151')
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = E151.atoms.select_atoms('name HN', 'name N', 'name CA', 'name CB')
         assert_equal(len(phi151), 4)

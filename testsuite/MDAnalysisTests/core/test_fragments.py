@@ -149,10 +149,10 @@ class TestFragments(object):
         # should raise NDE
         u = make_Universe()
 
-        assert_raises(NoDataError, getattr(u.atoms[:10], 'fragments'))
+        assert_raises(NoDataError, getattr, u.atoms[:10], 'fragments')
 
     def test_atom_fragment_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
 
-        assert_raises(NoDataError, getattr(u.atoms[10], 'fragment'))
+        assert_raises(NoDataError, getattr, u.atoms[10], 'fragment')
