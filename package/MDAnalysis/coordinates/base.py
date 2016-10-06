@@ -336,6 +336,9 @@ class Timestep(object):
 
         return True
 
+    def __ne__(self, other):
+        return not self == other
+    
     def __getitem__(self, atoms):
         """Get a selection of coordinates
 

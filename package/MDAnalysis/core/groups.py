@@ -1465,6 +1465,9 @@ class ComponentBase(_MutableBase):
             raise TypeError("Can't compare different level objects")
         return self.ix == other.ix
 
+    def __ne__(self, other):
+        return not self == other
+    
     def __hash__(self):
         return hash(self.ix)
 

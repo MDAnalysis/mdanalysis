@@ -746,6 +746,9 @@ class NamedStream(io.IOBase):
     def __eq__(self, x):
         return self.name == x
 
+    def __ne__(self, x):
+        return not self == x
+    
     def __lt__(self, x):
         return self.name < x
 
