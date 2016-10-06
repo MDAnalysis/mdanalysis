@@ -17,6 +17,8 @@
 
 
 """
+from six.moves import zip
+
 import numpy as np
 import functools
 import itertools
@@ -806,6 +808,33 @@ class AtomGroup(GroupBase):
         """
         return self._u.residues[np.unique(self.resindices)]
 
+    @residues.setter
+    def residues(self, new):
+        # Can set with Res, ResGroup or list/tuple of Res
+        if isinstance(new, Residue):
+            rix = itertools.cycle((new.resindex,))
+        elif isinstance(new, ResidueGroup):
+            rix = new.resindices
+        else:
+            try:
+                rix = [r.resindex for r in new]
+            except AttributeError:
+                raise TypeError("Can only set AtomGroup residues to Residue "
+                                "or ResidueGroup not {}".format(
+                                    ', '.join(type(r) for r in new
+                                              if not isinstance(r, Residue))
+                                ))
+        if not isinstance(rix, itertools.cycle) and len(rix) != len(self):
+            raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
+                             "".format(len(new), len(self)))
+        # Optimisation TODO:
+        # This currently rebuilds the tt len(self) times
+        # Ideally all changes would happen and *afterwards* tables are built
+        # Alternatively, if the changes didn't rebuild table, this list
+        # comprehension isn't terrible.
+        for at, r in zip(self, rix):
+            self.universe._topology.tt.move_atom(at.ix, r)
+
     @property
     def n_residues(self):
         """Number of unique residues represented in the AtomGroup.
@@ -822,7 +851,12 @@ class AtomGroup(GroupBase):
 
         """
         return self._u.segments[np.unique(self.segindices)]
-                                                
+
+    @segments.setter
+    def segments(self, new):
+        raise NotImplementedError("Cannot assign Segments to AtomGroup. "
+                                  "Segments are assigned to Residues")
+
     @property
     def n_segments(self):
         """Number of unique segments represented in the AtomGroup.
@@ -1351,7 +1385,34 @@ class ResidueGroup(GroupBase):
 
         """
         return self._u.segments[np.unique(self.segindices)]
-                                                
+
+    @segments.setter
+    def segments(self, new):
+        # Can set with Seg, SegGroup or list/tuple of Seg
+        if isinstance(new, Segment):
+            six = itertools.cycle((new.segindex,))
+        elif isinstance(new, SegmentGroup):
+            six = new.segindices
+        else:
+            try:
+                six = [s.segindex for s in new]
+            except AttributeError:
+                raise TypeError("Can only set ResidueGroup residues to Segment "
+                                "or ResidueGroup not {}".format(
+                                    ', '.join(type(r) for r in new
+                                              if not isinstance(r, Segment))
+                                ))
+        if not isinstance(six, itertools.cycle) and len(six) != len(self):
+            raise ValueError("Incorrect size: {} for ResidueGroup of size: {}"
+                             "".format(len(new), len(self)))
+        # Optimisation TODO:
+        # This currently rebuilds the tt len(self) times
+        # Ideally all changes would happen and *afterwards* tables are built
+        # Alternatively, if the changes didn't rebuild table, this list
+        # comprehension isn't terrible.
+        for r, s in zip(self, six):
+            self.universe._topology.tt.move_residue(r.ix, s)
+
     @property
     def n_segments(self):
         """Number of unique segments represented in the ResidueGroup.
@@ -1564,11 +1625,23 @@ class Atom(ComponentBase):
         return residueclass(self._u._topology.resindices[self],
                             self._u)
 
+    @residue.setter
+    def residue(self, new):
+        if not isinstance(new, Residue):
+            raise TypeError(
+                "Can only set Atom residue to Residue, not {}".format(type(new)))
+        self.universe._topology.tt.move_atom(self.ix, new.resindex)
+    
     @property
     def segment(self):
         segmentclass = self.level.parent.parent.singular
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
+
+    @segment.setter
+    def segment(self, new):
+        raise NotImplementedError("Cannot set atom segment.  "
+                                  "Segments are assigned to Residues")
 
     @property
     def position(self):
@@ -1664,6 +1737,13 @@ class Residue(ComponentBase):
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
+    @segment.setter
+    def segment(self, new):
+        if not isinstance(new, Segment):
+            raise TypeError(
+                "Can only set Residue segment to Segment, not {}".format(type(new)))
+        self.universe._topology.tt.move_residue(self.ix, new.segindex)
+    
 
 class Segment(ComponentBase):
     """Segment base class.

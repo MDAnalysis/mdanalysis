@@ -185,13 +185,6 @@ class Resindices(TopologyAttr):
     def get_atoms(self, ag):
         return self.top.tt.atoms2residues(ag._ix)
 
-    def set_atoms(self, ag, values):
-        """Set resindex for each atom given. Effectively moves each atom to
-        another residue.
-
-        """
-        self.top.tt.move_atom(ag._ix, values)
-
     def get_residues(self, rg):
         return rg._ix
 
@@ -1127,7 +1120,7 @@ class Segids(SegmentAttr):
             return segments[0]
         else:
             # XXX: but inconsistent (see residues and Issue 47)
-            return segment
+            return segments
 
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))

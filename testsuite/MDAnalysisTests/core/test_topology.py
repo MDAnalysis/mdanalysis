@@ -5,6 +5,7 @@ Should work with both a single or an array of indices
 """
 import six
 from six.moves import zip
+import itertools
 
 from numpy.testing import (
     assert_,
@@ -21,6 +22,7 @@ from MDAnalysis.core.topology import (
     TransTable,
     make_downshift_arrays,
 )
+from MDAnalysis.core import groups
 
 
 class TestTopology(object):
@@ -171,285 +173,295 @@ class TestTransTable(object):
 class TestLevelMoves(object):
     """Tests for moving atoms/residues between residues/segments
 
+    
+    Atoms can move between residues by setting .residue with a Residue
+    Residues can move between segments by setting .segment with a Segment
+
     Moves are performed by setting either [res/seg]indices or [res/seg]ids
 
     
     """
     def setUp(self):
-        self.u = make_Universe()
+        self.u = make_Universe('resids', 'resnames', 'segids')
 
     def tearDown(self):
         del self.u
 
     @staticmethod
-    def assert_group_attr_equal(group, attr, value):
-        """Check *group* *attr* (and all items within) are equal to value"""
-        def singular(thing):
-            """Convert resindices -> resindex or resids -> resid"""
-            if thing.endswith('ices'):
-                return thing[:-4] + 'ex'
-            else:
-                return thing[:-1]
+    def assert_atoms_match_residue(atom, residue):
+        # check that an Atom's residue level properties match the residue
+        if isinstance(atom, groups.Atom):
+            atom = [atom]  # can work with either Atom or AG
+        if isinstance(residue, groups.Residue):
+            residue = itertools.cycle((residue,))  # either R or RG or [R, R]
+        for at, r in zip(atom, residue):
+            assert_(at.resindex == r.resindex)
+            assert_(at.resid == r.resid)
+            assert_(at.resname == r.resname)
 
-        def magic_iter(value):
-            """Either iterate over value, or repeatedly return value
-
-            Hack for dealing with single or iterable reference values in zip
-            """
-            def iterable(val):
-                if isinstance(val, six.string_types):
-                    return False
-                try:
-                    val[0]
-                except TypeError:
-                    return False
-                else:
-                    return True
-
-            if not iterable(value):
-                while True:
-                    yield value
-            else:
-                for val in value:
-                    yield val
-
-        assert_equal(getattr(group, attr), value)
-        for item, refval in zip(group, magic_iter(value)):
-            assert_equal(getattr(item, singular(attr)), refval)
-
-    def test_move_atom_via_resid(self):
-        # move an atom between residues based on resid
-        # residue must already exist!
+    def test_move_atom(self):
+        # move a single atom by providing a new Residue object
         at = self.u.atoms[0]
+        source = self.u.residues[0]
+        dest = self.u.residues[4]
 
-        assert_equal(at.resindex, 0)
-        assert_equal(at.resid, 1)
-        assert_equal(at.resname, 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
+        assert_(at in source.atoms)
+        assert_(not at in dest.atoms)
+        self.assert_atoms_match_residue(at, source)
+        assert_equal(len(source.atoms), 5)
+        assert_equal(len(dest.atoms), 5)
 
-        at.resid = 5
+        at.residue = dest
 
-        assert_equal(at.resindex, 4)
-        assert_equal(at.resid, 5)
-        assert_equal(at.resname, 'EEE')
-        assert_equal(len(self.u.residues[0].atoms), 4)
-        assert_equal(len(self.u.residues[4].atoms), 6)
+        assert_(not at in source.atoms)
+        assert_(at in dest.atoms)
+        self.assert_atoms_match_residue(at, dest)
+        assert_equal(len(source.atoms), 4)
+        assert_equal(len(dest.atoms), 6)
 
-    def test_move_atom_via_resindex(self):
-        # move an atom between residues based on resindex
-        # residue must already exist!
-        at = self.u.atoms[0]
-
-        assert_equal(at.resindex, 0)
-        assert_equal(at.resname, 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
-
-        at.resindex = 4
-
-        assert_equal(at.resindex, 4)
-        assert_equal(at.resname, 'EEE')
-        assert_equal(len(self.u.residues[0].atoms), 4)
-        assert_equal(len(self.u.residues[4].atoms), 6)
-
-    def test_move_atomgroup_via_resid(self):
-        # move some atoms between residues based on resid
-        # residue must already exist!
+    def test_move_atomgroup_single_residue(self):
+        # move contents of AtomGroup into Residue object
         ag = self.u.atoms[[1, 3]]
+        source = self.u.residues[0]
+        dest = self.u.residues[4]
 
-        self.assert_group_attr_equal(ag, 'resindices', 0)
-        self.assert_group_attr_equal(ag, 'resids', 1)
-        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
+        for at in ag:
+            assert_(at in source.atoms)
+            assert_(not at in dest.atoms)
+        self.assert_atoms_match_residue(ag, source)
+        assert_equal(len(source.atoms), 5)
+        assert_equal(len(dest.atoms), 5)
 
-        ag.resids = 5
+        ag.residues = dest
 
-        self.assert_group_attr_equal(ag, 'resindices', 4)
-        self.assert_group_attr_equal(ag, 'resids', 5)
-        self.assert_group_attr_equal(ag, 'resnames', 'EEE')
-        assert_equal(len(self.u.residues[0].atoms), 3)
-        assert_equal(len(self.u.residues[4].atoms), 7)
+        for at in ag:
+            assert_(not at in source.atoms)
+            assert_(at in dest.atoms)
+        self.assert_atoms_match_residue(ag, dest)
+        assert_equal(len(source.atoms), 3)
+        assert_equal(len(dest.atoms), 7)
 
-    def test_move_atomgroup_via_resindex(self):
-        # move some atoms between residues based on resindex
-        # residue must already exist!
+    def test_move_atomgroup_residuegroup(self):
+        # move contents of AtomGroup into Residue object
         ag = self.u.atoms[[1, 3]]
+        source = self.u.residues[0]
+        dest = self.u.residues[4] + self.u.residues[5]
 
-        self.assert_group_attr_equal(ag, 'resindices', 0)
-        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
+        for at in ag:
+            assert_(at in source.atoms)
+            assert_(not at in dest.atoms)
+        self.assert_atoms_match_residue(ag, source)
+        assert_equal(len(source.atoms), 5)
+        assert_equal(len(dest[0].atoms), 5)
+        assert_equal(len(dest[1].atoms), 5)
 
-        ag.resindices = 4
+        ag.residues = dest
 
-        self.assert_group_attr_equal(ag, 'resindices', 4)
-        self.assert_group_attr_equal(ag, 'resnames', 'EEE')
-        assert_equal(len(self.u.residues[0].atoms), 3)
-        assert_equal(len(self.u.residues[4].atoms), 7)
+        for at in ag:
+            assert_(not at in source.atoms)
+            assert_(at in dest.atoms)
+        self.assert_atoms_match_residue(ag, dest)
+        assert_equal(len(source.atoms), 3)
+        assert_equal(len(dest[0].atoms), 6)
+        assert_equal(len(dest[1].atoms), 6)
 
-    def test_move_atomgroup_via_resid_with_iterable(self):
+    def test_move_atomgroup_residue_list(self):
+        # move contents of AtomGroup into Residue object
         ag = self.u.atoms[[1, 3]]
+        source = self.u.residues[0]
+        dest = [self.u.residues[4], self.u.residues[5]]
 
-        self.assert_group_attr_equal(ag, 'resindices', 0)
-        self.assert_group_attr_equal(ag, 'resids', 1)
-        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
-        assert_equal(len(self.u.residues[3].atoms), 5)
+        for at, d in zip(ag, dest):
+            assert_(at in source.atoms)
+            assert_(not at in d.atoms)
+        self.assert_atoms_match_residue(ag, source)
+        assert_equal(len(source.atoms), 5)
+        assert_equal(len(dest[0].atoms), 5)
+        assert_equal(len(dest[1].atoms), 5)
 
-        ag.resids = (5, 4)
+        ag.residues = dest
 
-        self.assert_group_attr_equal(ag, 'resindices', (4, 3))
-        self.assert_group_attr_equal(ag, 'resids', (5, 4))
-        self.assert_group_attr_equal(ag, 'resnames', ('EEE', 'DDD'))
-        assert_equal(len(self.u.residues[0].atoms), 3)
-        assert_equal(len(self.u.residues[4].atoms), 6)
-        assert_equal(len(self.u.residues[3].atoms), 6)
+        for at, d in zip(ag, dest):
+            assert_(not at in source.atoms)
+            assert_(at in d.atoms)
+        self.assert_atoms_match_residue(ag, dest)
+        assert_equal(len(source.atoms), 3)
+        assert_equal(len(dest[0].atoms), 6)
+        assert_equal(len(dest[1].atoms), 6)
 
-    def test_move_atomgroup_via_resid_with_iterable_VE(self):
-        def set_resid():
-            ag = self.u.atoms[[1, 3]]
-            # wrong sized iterable raises VE
-            ag.resids = (4, 5, 6)
+    # Wrong size argument for these operations
+    def test_move_atom_residuegroup_TE(self):
+        assert_raises(TypeError,
+                      setattr, self.u.atoms[0], 'residue', self.u.atoms[1:3])
 
-        assert_raises(ValueError, set_resid)
+    def test_move_atom_residue_list_TE(self):
+        dest = [self.u.residues[1], self.u.residues[3]]
+        assert_raises(TypeError,
+                      setattr, self.u.atoms[0], 'residue', dest)
+        
+    def test_move_atomgroup_residuegroup_VE(self):
+        ag = self.u.atoms[:2]
+        dest = self.u.residues[5:10]
 
-    def test_move_atomgroup_via_resindex_with_iterable(self):
-        ag = self.u.atoms[[1, 3]]
+        assert_raises(ValueError, setattr, ag, 'residues', dest)
 
-        self.assert_group_attr_equal(ag, 'resindices', 0)
-        self.assert_group_attr_equal(ag, 'resids', 1)
-        self.assert_group_attr_equal(ag, 'resnames', 'AAA')
-        assert_equal(len(self.u.residues[0].atoms), 5)
-        assert_equal(len(self.u.residues[4].atoms), 5)
-        assert_equal(len(self.u.residues[3].atoms), 5)
+    def test_move_atomgroup_residue_list_VE(self):
+        ag = self.u.atoms[:2]
+        dest = [self.u.residues[0], self.u.residues[10], self.u.residues[15]]
 
-        ag.resindices = (4, 3)
+        assert_raises(ValueError, setattr, ag, 'residues', dest)
 
-        self.assert_group_attr_equal(ag, 'resindices', (4, 3))
-        self.assert_group_attr_equal(ag, 'resids', (5, 4))
-        self.assert_group_attr_equal(ag, 'resnames', ('EEE', 'DDD'))
-        assert_equal(len(self.u.residues[0].atoms), 3)
-        assert_equal(len(self.u.residues[4].atoms), 6)
-        assert_equal(len(self.u.residues[3].atoms), 6)
+    # Setting to non-Residue/ResidueGroup raises TE
+    def test_move_atom_TE(self):
+        assert_raises(TypeError,
+                      setattr, self.u.atoms[0], 'residue', 14)
 
-    def test_move_atomgroup_via_resindex_with_iterable_VE(self):
-        def set_resindex():
-            ag = self.u.atoms[[1, 3]]
-            # wrong sized iterable raises VE
-            ag.resindices = (4, 5, 6)
+    def test_move_atomgroup_TE(self):
+        assert_raises(TypeError,
+                      setattr, self.u.atoms[:5], 'residues', 15)
 
-        assert_raises(ValueError, set_resindex)
+    def test_move_atomgroup_list_TE(self):
+        assert_raises(TypeError,
+                      setattr, self.u.atoms[:5], 'residues', [14, 12])
+        
+    # Test illegal moves - Atom.segment can't be changed
+    def test_move_atom_segment_NIE(self):
+        assert_raises(NotImplementedError,
+                      setattr, self.u.atoms[0], 'segment', self.u.segments[1])
 
-    def test_move_residue_via_segindex(self):
+    def test_move_atomgroup_segment_NIE(self):
+        assert_raises(NotImplementedError,
+                      setattr, self.u.atoms[:3], 'segments', self.u.segments[1])
+
+    @staticmethod
+    def assert_residue_matches_segment(res, seg):
+        if isinstance(res, groups.Residue):
+            res = [res]
+        if isinstance(seg, groups.Segment):
+            seg = itertools.cycle((seg,))
+        for r, s in zip(res, seg):
+            assert_(r.segindex == s.segindex)
+            assert_(r.segid == s.segid)
+
+    def test_move_residue(self):
         res = self.u.residues[0]
+        source = self.u.segments[0]
+        dest = self.u.segments[2]
 
-        assert_equal(res.segindex, 0)
-        assert_equal(res.segid, 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
+        assert_(res in source.residues)
+        assert_(not res in dest.residues)
+        self.assert_residue_matches_segment(res, source)
+        assert_equal(len(source.residues), 5)
+        assert_equal(len(dest.residues), 5)
 
-        res.segindex = 1
+        res.segment = dest
 
-        assert_equal(res.segindex, 1)
-        assert_equal(res.segid, 'SegB')
-        assert_equal(len(self.u.segments[0].residues), 4)
-        assert_equal(len(self.u.segments[1].residues), 6)
+        assert_(not res in source.residues)
+        assert_(res in dest.residues)
+        self.assert_residue_matches_segment(res, dest)
+        assert_equal(len(source.residues), 4)
+        assert_equal(len(dest.residues), 6)
 
-    def test_move_residue_via_segid(self):
-        res = self.u.residues[0]
+    def test_move_residuegroup_single_segment(self):
+        res = self.u.residues[[1, 3]]
+        source = self.u.segments[0]
+        dest = self.u.segments[2]
 
-        assert_equal(res.segindex, 0)
-        assert_equal(res.segid, 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
+        for r in res:
+            assert_(r in source.residues)
+            assert_(not r in dest.residues)
+        self.assert_residue_matches_segment(res, source)
+        assert_equal(len(source.residues), 5)
+        assert_equal(len(dest.residues), 5)
 
-        res.segid = 'SegB'
+        res.segments = dest
 
-        assert_equal(res.segindex, 1)
-        assert_equal(res.segid, 'SegB')
-        assert_equal(len(self.u.segments[0].residues), 4)
-        assert_equal(len(self.u.segments[1].residues), 6)
+        for r in res:
+            assert_(not r in source.residues)
+            assert_(r in dest.residues)
+        self.assert_residue_matches_segment(res, dest)
+        assert_equal(len(source.residues), 3)
+        assert_equal(len(dest.residues), 7)
 
-    def test_move_residuegroup_via_segindex(self):
-        rg = self.u.residues[[1, 3]]
+    def test_move_residuegroup_segmentgroup(self):
+        res = self.u.residues[[1, 3]]
+        source = self.u.segments[0]
+        dest = self.u.segments[2] + self.u.segments[3]
 
-        self.assert_group_attr_equal(rg, 'segindices', 0)
-        self.assert_group_attr_equal(rg, 'segids', 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
+        for r in res:
+            assert_(r in source.residues)
+            assert_(not r in dest.residues)
+        self.assert_residue_matches_segment(res, source)
+        assert_equal(len(source.residues), 5)
+        assert_equal(len(dest[0].residues), 5)
+        assert_equal(len(dest[1].residues), 5)
 
-        rg.segindices = 1
+        res.segments = dest
 
-        self.assert_group_attr_equal(rg, 'segindices', 1)
-        self.assert_group_attr_equal(rg, 'segids', 'SegB')
-        assert_equal(len(self.u.segments[0].residues), 3)
-        assert_equal(len(self.u.segments[1].residues), 7)
+        for r in res:
+            assert_(not r in source.residues)
+            assert_(r in dest.residues)
+        self.assert_residue_matches_segment(res, dest)
+        assert_equal(len(source.residues), 3)
+        assert_equal(len(dest[0].residues), 6)
+        assert_equal(len(dest[1].residues), 6)
 
-    def test_move_residuegroup_via_segid(self):
-        rg = self.u.residues[[1, 3]]
+    def test_move_residuegroup_segment_list(self):
+        res = self.u.residues[[1, 3]]
+        source = self.u.segments[0]
+        dest = [self.u.segments[2], self.u.segments[3]]
 
-        self.assert_group_attr_equal(rg, 'segindices', 0)
-        self.assert_group_attr_equal(rg, 'segids', 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
+        for r, d in zip(res, dest):
+            assert_(r in source.residues)
+            assert_(not r in d.residues)
+        self.assert_residue_matches_segment(res, source)
+        assert_equal(len(source.residues), 5)
+        assert_equal(len(dest[0].residues), 5)
+        assert_equal(len(dest[1].residues), 5)
 
-        rg.segids = 'SegB'
+        res.segments = dest
 
-        self.assert_group_attr_equal(rg, 'segindices', 1)
-        self.assert_group_attr_equal(rg, 'segids', 'SegB')
-        assert_equal(len(self.u.segments[0].residues), 3)
-        assert_equal(len(self.u.segments[1].residues), 7)
+        for r, d in zip(res, dest):
+            assert_(not r in source.residues)
+            assert_(r in d.residues)
+        self.assert_residue_matches_segment(res, dest)
+        assert_equal(len(source.residues), 3)
+        assert_equal(len(dest[0].residues), 6)
+        assert_equal(len(dest[1].residues), 6)
 
-    def test_move_residuegroup_via_segindex_with_iterable(self):
-        rg = self.u.residues[[1, 3]]
+    def test_move_residue_segmentgroup_TE(self):
+        assert_raises(TypeError,
+                      setattr, self.u.residues[0], 'segment', self.u.segments[:4])
 
-        self.assert_group_attr_equal(rg, 'segindices', 0)
-        self.assert_group_attr_equal(rg, 'segids', 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
-        assert_equal(len(self.u.segments[3].residues), 5)
+    def test_move_residue_list_TE(self):
+        dest = [self.u.segments[3], self.u.segments[4]]
+        assert_raises(TypeError,
+                      setattr, self.u.residues[0], 'segment', dest)
 
-        rg.segindices = (1, 3)
+    def test_move_residuegroup_segmentgroup_VE(self):
+        rg = self.u.residues[:3]
+        sg = self.u.segments[1:]
 
-        self.assert_group_attr_equal(rg, 'segindices', (1, 3))
-        self.assert_group_attr_equal(rg, 'segids', ('SegB', 'SegD'))
-        assert_equal(len(self.u.segments[0].residues), 3)
-        assert_equal(len(self.u.segments[1].residues), 6)
-        assert_equal(len(self.u.segments[3].residues), 6)
+        assert_raises(ValueError, setattr, rg, 'segments', sg)
 
-    def test_move_residuegroup_via_segindex_with_iterable_VE(self):
-        def set_segindex():
-            rg = self.u.residues[[1, 3]]
-            rg.segindices = (1, 3, 5)
+    def test_move_residuegroup_list_VE(self):
+        rg = self.u.residues[:2]
+        sg = [self.u.segments[1], self.u.segments[2], self.u.segments[3]]
 
-        assert_raises(ValueError, set_segindex)
+        assert_raises(ValueError, setattr, rg, 'segments', sg)
 
-    def test_move_residuegroup_via_segid_with_iterable(self):
-        rg = self.u.residues[[1, 3]]
 
-        self.assert_group_attr_equal(rg, 'segindices', 0)
-        self.assert_group_attr_equal(rg, 'segids', 'SegA')
-        assert_equal(len(self.u.segments[0].residues), 5)
-        assert_equal(len(self.u.segments[1].residues), 5)
-        assert_equal(len(self.u.segments[3].residues), 5)
+    def test_move_residue_TE(self):
+        assert_raises(TypeError,
+                      self.u.residues[0], 'segment', 1)
 
-        rg.segids = ('SegB', 'SegD')
+    def test_move_residuegroup_TE(self):
+        assert_raises(TypeError,
+                      self.u.residues[:3], 'segments', 4)
 
-        self.assert_group_attr_equal(rg, 'segindices', (1, 3))
-        self.assert_group_attr_equal(rg, 'segids', ('SegB', 'SegD'))
-        assert_equal(len(self.u.segments[0].residues), 3)
-        assert_equal(len(self.u.segments[1].residues), 6)
-        assert_equal(len(self.u.segments[3].residues), 6)
-
-    def test_move_residuegroup_via_segid_with_iterable_VE(self):
-        def set_segid():
-            rg = self.u.residues[[1, 3]]
-            rg.segids = (1, 3, 5)
-
-        assert_raises(ValueError, set_segid)
+    def test_move_residuegroup_list_TE(self):
+        assert_raises(TypeError,
+                      self.u.residues[:3], 'segments', [1, 2, 3])
 
 
 class TestDownshiftArrays(object):
