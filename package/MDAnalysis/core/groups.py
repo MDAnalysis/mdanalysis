@@ -1,3 +1,18 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 """Containers for objects in MDA
 
 
@@ -9,6 +24,7 @@ import itertools
 import MDAnalysis
 from ..lib import mdamath
 from ..lib import util
+from ..lib import distances 
 from . import selection
 from . import flags
 from . import levels
@@ -21,73 +37,162 @@ def make_classes():
 
     Returns
     -------
-    A dictionary with a copy of all MDA container classes
+    Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes 
+    to serve as bases for universe-specific MDA container classes. Another,
+    with the final merged versions of those classes. The classes themselves are
+    used as hashing keys.
     """
-    def copy_class(newname, *parents):
-        return type(newname, tuple(parents), {})
+    bases = {}
+    classes = {}
+    groups = (AtomGroup, ResidueGroup, SegmentGroup)
+    components = (Atom, Residue, Segment)
 
-    classdict = {}
-    GB = classdict['group'] = copy_class(
-        'Group', GroupBase)
-    AG = classdict['atomgroup'] = copy_class(
-        'AtomGroup', GB, AtomGroup)
-    RG = classdict['residuegroup'] = copy_class(
-        'ResidueGroup', GB, ResidueGroup)
-    SG = classdict['segmentgroup'] = copy_class(
-        'SegmentGroup', GB, SegmentGroup)
-    A = classdict['atom'] = copy_class(
-        'Atom', Atom)
-    R = classdict['residue'] = copy_class(
-        'Residue', Residue)
-    S = classdict['segment'] = copy_class(
-        'Segment', Segment)
+    # The 'GBase' middle man is needed so that a single topologyattr
+    #  patching applies automatically to all groups.
+    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass()
+    for cls in groups:
+        bases[cls] = GBase._subclass()
 
-    # Define relationships between these classes
-    # with Level objects
-    Atomlevel = levels.Level('atom', A, AG)
-    Residuelevel = levels.Level('residue', R, RG)
-    Segmentlevel = levels.Level('segment', S, SG)
+    # In the current Group-centered topology scheme no attributes apply only
+    #  to ComponentBase, so no need to have a 'CB' middle man.
+    #CBase = _TopologyAttrContainer(singular=True)
+    for cls in components:
+        bases[cls] = _TopologyAttrContainer._subclass(singular=True)
 
-    Atomlevel.parent = Residuelevel
-    Atomlevel.child = None
-    Residuelevel.parent = Segmentlevel
-    Residuelevel.child = Atomlevel
-    Segmentlevel.parent = None
-    Segmentlevel.child = Residuelevel
+    # Initializes the class cache.
+    for cls in groups + components:
+        classes[cls] = bases[cls]._mix(cls)
 
-    A.level = Atomlevel
-    AG.level = Atomlevel
-    R.level = Residuelevel
-    RG.level = Residuelevel
-    S.level = Segmentlevel
-    SG.level = Segmentlevel
-
-    return classdict
+    return bases, classes
 
 
-class GroupBase(object):
-    """Base class from which a Universe's Group class is built.
+class _TopologyAttrContainer(object):
+    """Class factory for receiving sets of :class:`TopologyAttr` objects.
 
+    :class:`_TopologyAttrContainer` is a convenience class to encapsulate the
+    functions that deal with:
+    * the import and namespace transplant of :class:`TopologyAttr` objects;
+    * the copying (subclassing) of itself to create distinct bases for the
+      different container classes (:class:`AtomGroup`, :class:`ResidueGroup`,
+      :class:`SegmentGroup`, :class:`Atom`, :class:`Residue`, :class:`Segment`,
+      and subclasses thereof);
+    * the mixing (subclassing and co-inheritance) with the container classes.
+      The mixed subclasses become the final container classes specific to each
+      :class:`Universe`.
     """
-    def __init__(self, ix, u):
-        # indices for the objects I hold
-        self._ix = ix
-        self._u = u
-        self._cache = dict()
+    _singular = False
+
+    @classmethod
+    def _subclass(cls, singular=None):
+        """Factory method returning :class:`_TopologyAttrContainer` subclasses.
+
+        Parameters
+        ----------
+        singular : bool
+            The :attr:`_singular` of the returned class will be set to
+            *singular*. It controls the type of :class:`TopologyAttr` addition.
+
+        Returns
+        -------
+        type
+            A subclass of :class:`_TopologyAttrContainer`, with the same name. 
+        """
+        if singular is not None:
+            return type(cls.__name__, (cls,), {'_singular':bool(singular)})
+        else:
+            return type(cls.__name__, (cls,), {})
+
+    @classmethod
+    def _mix(cls, other):
+        """Creates a subclass with ourselves and another class as parents.
+
+        Classes mixed at this point always override :meth:`__new__`, causing
+        further instantiations to shortcut to :meth:`object.__new__` (skipping
+        the cache-fetch process for :class:`_MutableBase` subclasses).
+
+        Parameters
+        ----------
+        other : type
+            The class to mix with ourselves.
+
+        Returns
+        -------
+        type
+            A class of parents :class:`_ImmutableBase`, *other* and this class.
+            Its name is the same as *other*'s.
+        """
+        return type(other.__name__, (_ImmutableBase, other, cls), {})
 
     @classmethod
     def _add_prop(cls, attr):
         """Add attr into the namespace for this class
 
-        Arguments
-        ---------
-        attr - A TopologyAttr object
+        Parameters
+        ----------
+        attr : A TopologyAttr object
         """
         getter = lambda self: attr.__getitem__(self)
         setter = lambda self, values: attr.__setitem__(self, values)
 
-        setattr(cls, attr.attrname,
-                property(getter, setter, None, attr.groupdoc))
+        if cls._singular:
+            setattr(cls, attr.singular, 
+                    property(getter, setter, None, attr.singledoc))
+        else:
+            setattr(cls, attr.attrname,
+                    property(getter, setter, None, attr.groupdoc))
+
+
+class _MutableBase(object):
+    """
+    Base class that merges appropriate :class:`TopologyAttrContainer` classes.
+
+    Implements :meth:`__new__`. In it the instantiating class is fetched from
+    :attr:`Universe._classes`. If there is a cache miss, a merged class is made
+    with a base from :attr:`Universe._class_bases` and cached.
+
+    The classes themselves are used as the cache dictionary keys for simplcity
+    in cache retrieval.
+    """
+    # This signature must be kept in sync with the __init__ signature of
+    #  GroupBase and ComponentBase.
+    def __new__(cls, ix, u):
+        try:
+            return object.__new__(u._classes[cls])
+        except KeyError:
+            # Cache miss. Let's find which kind of class this is and merge.
+            try:
+                parent_cls = next(u._class_bases[parent]
+                                  for parent in cls.mro()
+                                  if parent in u._class_bases)
+            except StopIteration:
+                raise TypeError("Attempted to instantiate class '{}' but "
+                                "none of its parents are known to the "
+                                "universe. Currently possible parent "
+                                "classes are: {}".format(cls.__name__,
+                                    str(sorted(u._class_bases.keys()))))
+            newcls = u._classes[cls] = parent_cls._mix(cls.__name__, cls)
+            return object.__new__(newcls)
+
+
+class _ImmutableBase(object):
+    """Class used to shortcut :meth:`__new__` to :meth:`object.__new__`.
+    
+    """
+    # When mixed via _TopologyAttrContainer._mix this class has MRO priority.
+    #  Setting __new__ like this will avoid having to go through the
+    #  cache lookup if the class is reused (as in ag.__class__(...)).
+    __new__ = object.__new__
+
+
+class GroupBase(_MutableBase):
+    """Base class from which a Universe's Group class is built.
+
+    """
+    def __init__(self, ix, u):
+        # indices for the objects I hold
+        self._ix = np.asarray(ix, dtype=np.int64)
+        self._u = u
+        self._cache = dict()
 
     def __len__(self):
         return len(self._ix)
@@ -132,7 +237,7 @@ class GroupBase(object):
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
         if not self._u is other._u:
-            raise ValueError("Can't add objects from different Universe")
+            raise ValueError("Can't add objects from different Universes")
         
         # for the case where other is a Component, and so other._ix is an
         # integer
@@ -583,9 +688,9 @@ class GroupBase(object):
 
 # TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE
         if center.lower() in ('com', 'centerofmass'):
-            centers = np.vstack([o.center_of_mass() for o in objects])
+            centers = np.vstack([o.atoms.center_of_mass() for o in objects])
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
-            centers = np.vstack([o.center_of_geometry() for o in objects])
+            centers = np.vstack([o.atoms.center_of_geometry() for o in objects])
         else:
             raise ValueError("Unrecognised center definition: {0}"
                              "Please use one of 'com' or 'cog'".format(center))
@@ -601,10 +706,10 @@ class GroupBase(object):
         for o, s in itertools.izip(objects, shifts):
             # Save some needless shifts
             if not all(s == 0.0):
-                o.translate(s)
+                o.atoms.translate(s)
 
 
-class AtomGroup(object):
+class AtomGroup(GroupBase):
     """A group of atoms.
 
     An AtomGroup is an ordered collection of atoms. Typically, an AtomGroup is
@@ -663,8 +768,21 @@ class AtomGroup(object):
     .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
-
-    level = 'atom'
+    def __getattr__(self, attr):
+        # is this a known attribute failure?
+        if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
+            # eg: 
+            # if attr in _ATTR_ERRORS:
+            # raise NDE(_ATTR_ERRORS[attr])
+            raise NoDataError("AtomGroup has no fragments this requires Bonds")
+        elif hasattr(self.universe._topology, 'names'):
+            # Ugly hack to make multiple __getattr__s work
+            try:
+                return self._get_named_atom(attr)
+            except selection.SelectionError:
+                pass
+        raise AttributeError("{cls} has no attribute {attr}".format(
+            cls=self.__class__.__name__, attr=attr))
 
     @property
     def atoms(self):
@@ -984,7 +1102,7 @@ class AtomGroup(object):
                      'residue': 'resindices'}
 
         if level == "atom":
-            return [self[[a.index]] for a in self]
+            return [self._u.atoms[[a.ix]] for a in self]
 
         # higher level groupings
         try:
@@ -995,6 +1113,46 @@ class AtomGroup(object):
 
         return [self[levelindices == index] for index in
                 np.unique(levelindices)]
+
+    def guess_bonds(self, vdwradii=None):
+        """Guess bonds that exist within this AtomGroup and add to Universe
+        
+        Parameters
+        ----------
+        vdwradii : dict, optional
+          Dict relating atom type: vdw radii
+
+        See Also
+        --------
+        :func:`MDAnalysis.topology.core.guess_bonds` for details on the
+        algorithm used to guess bonds.
+
+        .. versionadded:: 0.10.0
+        """
+        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
+        from .topologyattrs import Bonds, Angles, Dihedrals
+
+        def get_TopAttr(u, name, cls):
+            """either get *name* or create one from *cls*"""
+            try:
+                return getattr(u._topology, name)
+            except AttributeError:
+                attr = cls([])
+                u.add_TopologyAttr(attr)
+                return attr
+
+        # indices of bonds
+        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
+        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        bondattr.add_bonds(b, guessed=True)
+        
+        a = guess_angles(self.bonds)
+        angleattr = get_TopAttr(self.universe, 'angles', Angles)
+        angleattr.add_bonds(a, guessed=True)
+
+        d = guess_dihedrals(self.angles)
+        diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
+        diheattr.add_bonds(d)
 
     @property
     def bond(self):
@@ -1143,9 +1301,15 @@ class AtomGroup(object):
                 writer.close()
 
 
-class ResidueGroup(object):
-    level = 'residue'
+class ResidueGroup(GroupBase):
+    """ResidueGroup base class.
 
+    This class is used by a Universe for generating its Topology-specific
+    ResidueGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    ResidueGroups.
+
+    """
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this ResidueGroup.
@@ -1204,101 +1368,8 @@ class ResidueGroup(object):
         """
         return self._u.residues[np.unique(self.ix)]
 
-    def sequence(self, **kwargs):
-        """Returns the amino acid sequence.
 
-        The format of the sequence is selected with the keyword *format*:
-
-        ============== ============================================
-        *format*       description
-        ============== ============================================
-        'SeqRecord'    :class:`Bio.SeqRecord.SeqRecord` (default)
-        'Seq'          :class:`Bio.Seq.Seq`
-        'string'       string
-        ============== ============================================
-
-        The sequence is returned by default (keyword ``format = 'SeqRecord'``)
-        as a :class:`Bio.SeqRecord.SeqRecord` instance, which can then be
-        further processed. In this case, all keyword arguments (such as the
-        *id* string or the *name* or the *description*) are directly passed to
-        :class:`Bio.SeqRecord.SeqRecord`.
-
-        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored
-        and a :class:`Bio.Seq.Seq` instance is returned. The difference to the
-        record is that the record also contains metadata and can be directly
-        used as an input for other functions in :mod:`Bio`.
-
-        If the keyword *format* is set to ``'string'``, all *kwargs* are
-        ignored and a Python string is returned.
-
-        .. rubric:: Example: Write FASTA file
-
-        Use :func:`Bio.SeqIO.write`, which takes sequence records::
-
-           import Bio.SeqIO
-
-           # get the sequence record of a protein component of a Universe
-           protein = u.select_atoms("protein")
-           record = protein.sequence(id="myseq1", name="myprotein")
-
-           Bio.SeqIO.write(record, "single.fasta", "fasta")
-
-        A FASTA file with multiple entries can be written with ::
-
-           Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
-
-        :Keywords:
-            *format*
-
-                - ``"string"``: return sequence as a string of 1-letter codes
-                - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
-                - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
-                  instance
-
-                Default is ``"SeqRecord"``
-
-             *id*
-                Sequence ID for SeqRecord (should be different for different
-                sequences)
-             *name*
-                Name of the protein.
-             *description*
-                Short description of the sequence.
-             *kwargs*
-                Any other keyword arguments that are understood by
-                :class:`Bio.SeqRecord.SeqRecord`.
-
-        :Raises: :exc:`ValueError` if a residue name cannot be converted to a
-                 1-letter IUPAC protein amino acid code; make sure to only
-                 select protein residues. Raises :exc:`TypeError` if an unknown
-                 *format* is selected.
-
-        .. versionadded:: 0.9.0
-        """
-        import Bio.Seq
-        import Bio.SeqRecord
-        import Bio.Alphabet
-        formats = ('string', 'Seq', 'SeqRecord')
-
-        format = kwargs.pop("format", "SeqRecord")
-        if format not in formats:
-            raise TypeError("Unknown format='{0}': must be one of: {1}".format(
-                    format, ", ".join(formats)))
-        try:
-            sequence = "".join([util.convert_aa_code(r) for r in self.residues.resnames])
-        except KeyError as err:
-            raise ValueError("AtomGroup contains a residue name '{0}' that "
-                             "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message))
-        if format == "string":
-            return sequence
-        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
-        if format == "Seq":
-            return seq
-        return Bio.SeqRecord.SeqRecord(seq, **kwargs)
-
-
-class SegmentGroup(object):
+class SegmentGroup(GroupBase):
     """SegmentGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -1307,8 +1378,6 @@ class SegmentGroup(object):
     SegmentGroups.
 
     """
-    level = 'segment'
-
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this SegmentGroup. 
@@ -1372,7 +1441,7 @@ class SegmentGroup(object):
 
 
 @functools.total_ordering
-class ComponentBase(object):
+class ComponentBase(_MutableBase):
     """Base class from which a Universe's Component class is built.
 
     Components are the individual objects that are found in Groups.
@@ -1415,8 +1484,11 @@ class ComponentBase(object):
         
         """
         if self.level != other.level:
-            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
-                            ' to Atom'.format(other.__class__.__name__))
+            raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
+                            ' to {0}'.format(self.level.singular.__name__,
+                                             self.level.plural.__name__,
+                                             other.level.singular.__name__,
+                                             other.level.plural.__name__))
 
         if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
@@ -1451,21 +1523,6 @@ class ComponentBase(object):
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
 
-    @classmethod
-    def _add_prop(cls, attr):
-        """Add attr into the namespace for this class
-
-        Arguments
-        ---------
-        attr 
-            TopologyAttr object to add
-        """
-        getter = lambda self: attr.__getitem__(self)
-        setter = lambda self, values: attr.__setitem__(self, values)
-
-        setattr(cls, attr.singular,
-                property(getter, setter, None, attr.singledoc))
-
     @property
     def universe(self):
         return self._u
@@ -1490,7 +1547,13 @@ class Atom(ComponentBase):
     this class only includes ad-hoc methods specific to Atoms.
 
     """
-    level = 'atom'
+    def __getattr__(self, attr):
+        """Try and catch known attributes and give better error message"""
+        if attr in ('fragment',):
+            raise NoDataError("Atom has no fragment data, this requires Bonds")
+        else:
+            raise AttributeError("{cls} has no attribute {attr}".format(
+                cls=self.__class__.__name__, attr=attr))
 
     @property
     def residue(self):
@@ -1514,7 +1577,7 @@ class Atom(ComponentBase):
                   frame from the trajectory will replace the change with that
                   from the file
         """
-        return self._u.trajectory.ts.positions[self._ix]
+        return self._u.trajectory.ts.positions[self._ix].copy()
 
     @position.setter
     def position(self, values):
@@ -1536,7 +1599,7 @@ class Atom(ComponentBase):
         """
         ts = self._u.trajectory.ts
         try:
-            return ts.velocities[self._ix]
+            return ts.velocities[self._ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -1564,7 +1627,7 @@ class Atom(ComponentBase):
         """
         ts = self._u.trajectory.ts
         try:
-            return ts.forces[self._ix]
+            return ts.forces[self._ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -1586,8 +1649,6 @@ class Residue(ComponentBase):
     Residues.
 
     """
-    level = 'residue'
-
     @property
     def atoms(self):
         atomsclass = self.level.child.plural
@@ -1609,19 +1670,6 @@ class Segment(ComponentBase):
     this class only includes ad-hoc methods specific to Segments.
 
     """
-    level = 'segment'
-
-    def __getattr__(self, attr):
-        if attr.startswith('r'):
-            resnum = int(attr[1:]) - 1
-            return self.residues[resnum]
-        else:
-            # resname from segment
-            rg = self.residues[self.residues.resnames == attr]
-            if rg:
-                return rg
-        raise AttributeError
-
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
@@ -1633,3 +1681,57 @@ class Segment(ComponentBase):
         residuesclass = self.level.child.plural
         return residuesclass(self._u._topology.resindices[self][0],
                              self._u)
+
+# Define relationships between these classes
+# with Level objects
+ATOMLEVEL = levels.Level('atom', Atom, AtomGroup)
+RESIDUELEVEL = levels.Level('residue', Residue, ResidueGroup)
+SEGMENTLEVEL = levels.Level('segment', Segment, SegmentGroup)
+
+ATOMLEVEL.parent = RESIDUELEVEL
+ATOMLEVEL.child = None
+RESIDUELEVEL.parent = SEGMENTLEVEL
+RESIDUELEVEL.child = ATOMLEVEL
+SEGMENTLEVEL.parent = None
+SEGMENTLEVEL.child = RESIDUELEVEL
+
+Atom.level = ATOMLEVEL
+AtomGroup.level = ATOMLEVEL
+Residue.level = RESIDUELEVEL
+ResidueGroup.level = RESIDUELEVEL
+Segment.level = SEGMENTLEVEL
+SegmentGroup.level = SEGMENTLEVEL
+
+
+def requires(*attrs):
+    """Decorator to check if all AtomGroup arguments have certain attributes
+
+    Example
+    -------
+    When used to wrap a function, will check all AtomGroup arguments for the
+    listed requirements
+
+    @requires('masses', 'charges')
+    def mass_times_charge(atomgroup):
+        return atomgroup.masses * atomgroup.charges
+
+    """
+    def require_dec(func):
+        @functools.wraps(func)
+        def check_args(*args, **kwargs):
+            for a in args:  # for each argument
+                if isinstance(a, AtomGroup):
+                    # Make list of missing attributes
+                    missing = [attr for attr in attrs
+                               if not hasattr(a, attr)]
+                    if missing:
+                        raise NoDataError(
+                            "{funcname} failed. "
+                            "AtomGroup is missing the following required "
+                            "attributes: {attrs}".format(
+                                funcname=func.__name__,
+                                attrs=', '.join(missing)))
+            return func(*args, **kwargs)
+        return check_args
+    return require_dec
+

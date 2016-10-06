@@ -711,7 +711,7 @@ class HydrogenBondAnalysis(object):
         .. versionadded:: 0.7.6
         """
         try:
-            return atom.residue.select_atoms(
+            return atom.residue.atoms.select_atoms(
                 "(name H* 1H* 2H* 3H* or type H) and around {0:f} name {1!s}"
                 "".format(self.r_cov[atom.name[0]], atom.name))
         except NoDataError:

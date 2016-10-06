@@ -20,7 +20,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     capping_input, capping_output, capping_ace, capping_nma, \
     merge_protein, merge_ligand, merge_water
 import MDAnalysis.core.groups
-from MDAnalysis.core.groups import make_classes
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis import NoDataError
 from MDAnalysisTests import parser_not_found, tempdir
 
@@ -34,22 +34,15 @@ import os
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
 
-AtomGroup = make_classes()['atomgroup']
-
 
 def capping(ref, ace, nma, output):
     resids = ref.select_atoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
-    # There is probably some cache i need to update both the atom and residues
-    for a in ace.atoms:
-        a.resid += resid_min - max(ace.atoms.resids)
     for r in ace.residues:
-        r.id += resid_min - max(ace.atoms.resids)
-    for a in nma.atoms:
-        a.resid = resid_max
+        r.resid += resid_min - max(ace.atoms.resids)
     for r in nma.residues:
-        r.id = resid_max
+        r.resid = resid_max
 
     # TODO pick the first residue in the protein (how should we cap the chains?)
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a
@@ -59,18 +52,20 @@ def capping(ref, ace, nma, output):
             "reference": "resid {0} and backbone".format(resid_min)},
             strict=True)
     alignto(nma, ref, select={
-            "mobile": "resid {0} and backbone and not (resname NMA or resname NME)".format(resid_max),
+            "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
             "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
             strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
+    nma.residues.resids = 16
     u = Merge(ace.select_atoms("resname ACE"),
               ref.select_atoms(
-                  "not (resid {0} and name HT*) and not (resid {1} and (name HT* or name OT1))"
+                  "not (resid {0} and name HT*) and not (resid {1} and (name HT* OT1))"
                   "".format(resid_min, resid_max)),
-              nma.select_atoms("resname NME or resname NMA"))
+              nma.select_atoms("resname NME NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
+    u.atoms.write('cap.pdb')
     return u
 
 
@@ -101,9 +96,10 @@ class TestCapping(TestCase):
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)
-        assert_equal(nma.resids[0], 15)
+        assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
+        assert_array_equal(peptide.trajectory.ts.dimensions,
+                           u.trajectory.ts.dimensions)
 
     def test_capping_inmemory(self):
         peptide = MDAnalysis.Universe(capping_input)
@@ -112,16 +108,18 @@ class TestCapping(TestCase):
         nma = MDAnalysis.Universe(capping_nma)
 
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal(len(u.select_atoms("not name H*")), len(ref.select_atoms("not name H*")))
+        assert_equal(len(u.select_atoms("not name H*")),
+                     len(ref.select_atoms("not name H*")))
 
         ace = u.select_atoms("resname ACE")
         nma = u.select_atoms("resname NMA")
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)
-        assert_equal(nma.resids[0], 15)
+        assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
+        assert_array_equal(peptide.trajectory.ts.dimensions,
+                           u.trajectory.ts.dimensions)
 
 class TestMerge(TestCase):
     ext = "pdb"
@@ -205,8 +203,9 @@ class TestMerge(TestCase):
         assert_raises(TypeError, Merge, ['1', 2])
 
     def test_emptyAG_ValueError(self):
-        a = AtomGroup([], None)
-        b = AtomGroup([], None)
+        u = self.universes[0]
+        a = AtomGroup([], u)
+        b = AtomGroup([], u)
 
         assert_raises(ValueError, Merge, a, b)
 

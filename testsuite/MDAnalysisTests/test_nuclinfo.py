@@ -43,20 +43,20 @@ class TestNuclinfo(TestCase):
         del self.universe
 
     def test_wc_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
         wc = nuclinfo.wc_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(wc, 2.9810174, err_msg="Watson-Crick distance does not match expected value.")
 
     def test_major_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
         maj = nuclinfo.major_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(maj, 2.9400151, err_msg="Watson-Crick distance does not match expected value.")
 
     def test_minor_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
 
         minor = nuclinfo.minor_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
@@ -81,8 +81,8 @@ class TestNuclinfo(TestCase):
                                   err_msg="RNA hydroxyl dihedrals do not match")
 
     def test_pseudo_dihe_baseflip(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
 
         # There is not really a baseflip, just testing the code...
         flip = nuclinfo.pseudo_dihe_baseflip(self.universe, 4, 20, 5, seg1=seg1, seg2=seg2, seg3=seg1)

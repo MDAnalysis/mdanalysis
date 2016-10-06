@@ -48,19 +48,26 @@ class TopologyObject(object):
     .. versionadded:: 0.11.0
        Added the `value` method to return the size of the object
     """
-    __slots__ = ("_ix", "_u", "btype", "_bondtype")
+    __slots__ = ("_ix", "_u", "btype", "_bondtype", "_guessed", "order")
 
-    def __init__(self, ix, universe, type=None):
+    def __init__(self, ix, universe, type=None, guessed=False, order=None):
         """Create a topology object
 
-        Arguments
-        ---------
-        ix - indices of the Atoms (np array)
-        universe - Universe that the Atoms belong to
+        Parameters
+        ----------
+        ix : numpy array
+          indices of the Atoms
+        universe : MDAnalysis.Universe
+        type : optional
+          Type of the bond
+        guessed : optional
+          If the Bond is guessed
         """
         self._ix = ix
         self._u = universe
         self._bondtype = type
+        self._guessed = guessed
+        self.order = order
 
     @property
     def atoms(self):
@@ -95,6 +102,10 @@ class TopologyObject(object):
             return self._bondtype
         else:
             return tuple(self.atoms.types)
+
+    @property
+    def is_guessed(self):
+        return bool(self._guessed)
 
     def __hash__(self):
         return hash((self._u, tuple(self.indices)))
@@ -505,7 +516,8 @@ class TopologyGroup(object):
     """
     _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
 
-    def __init__(self, bondidx, universe, btype=None, type=None):
+    def __init__(self, bondidx, universe, btype=None, type=None, guessed=None,
+                 order=None):
         if btype is None:
             # guess what I am
             # difference between dihedral and improper
@@ -517,23 +529,38 @@ class TopologyGroup(object):
             raise ValueError("Unsupported btype, use one of {}"
                              "".format(self._allowed_types))
 
+        nbonds = len(bondidx)
         # remove duplicate bonds
         if type is None:
-            type = np.array([None for x in bondidx]).reshape(len(bondidx), 1)
+            type = np.repeat(None, nbonds).reshape(nbonds, 1)
+        if guessed is None:
+            guessed = np.repeat(True, nbonds).reshape(nbonds, 1)
+        elif guessed is True or guessed is False:
+            guessed = np.repeat(guessed, nbonds).reshape(nbonds, 1)
+        else:
+            guessed = np.asarray(guessed, dtype=np.bool).reshape(nbonds, 1)
+        if order is None:
+            order = np.repeat(None, nbonds).reshape(nbonds, 1)
+
         split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
-        if len(bondidx) > 0:
+
+        if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
-            uniq_types = type[uniq_idx]
 
             self._bix = uniq
-            self._bondtypes = uniq_types
+            self._bondtypes = type[uniq_idx]
+            self._guessed = guessed[uniq_idx]
+            self._order = order[uniq_idx]
 
             # Create vertical AtomGroups
-            self._ags = [universe.atoms[self._bix[:,i]]
+            self._ags = [universe.atoms[self._bix[:, i]]
                          for i in xrange(self._bix.shape[1])]
         else:
+            # Empty TopologyGroup
             self._bix = np.array([])
             self._bondtypes = np.array([])
+            self._guessed = np.array([])
+            self._order = np.array([])
             self._ags = []
         self._u = universe
 
@@ -653,14 +680,19 @@ class TopologyGroup(object):
                 # Reshape indices to be 2d array
                 return TopologyGroup(other.indices[None, :],
                                      other.universe,
-                                     other.btype,
-                                     np.array([other._bondtype])
+                                     btype=other.btype,
+                                     type=np.array([other._bondtype]),
+                                     guessed=np.array([other.is_guessed]),
+                                     order=np.array([other.order]),
                 )
             else:
                 return TopologyGroup(other.indices,
                                      other.universe,
-                                     other.btype,
-                                     other._bondtypes)
+                                     btype=other.btype,
+                                     type=other._bondtypes,
+                                     guessed=other._guessed,
+                                     order=other._order,
+                )
         else:
             if not other.btype == self.btype:
                 raise TypeError("Cannot add different types of "
@@ -670,17 +702,23 @@ class TopologyGroup(object):
                 return TopologyGroup(
                     np.concatenate([self.indices, other.indices[None, :]]),
                     self.universe,
-                    self.btype,
-                    np.concatenate([self._bondtypes,
-                                    np.array([other._bondtype])])
+                    btype=self.btype,
+                    type=np.concatenate([self._bondtypes,
+                                         np.array([other._bondtype])]),
+                    guessed=np.concatenate([self._guessed,
+                                            np.array([[other.is_guessed]])]),
+                    order=np.concatenate([self._order,
+                                          np.array([other.order])]),
                 )
             else:
                 # add TG to me
                 return TopologyGroup(
                     np.concatenate([self.indices, other.indices]),
                     self.universe,
-                    self.btype,
-                    np.concatenate([self._bondtypes, other._bondtypes])
+                    btype=self.btype,
+                    type=np.concatenate([self._bondtypes, other._bondtypes]),
+                    guessed=np.concatenate([self._guessed, other._guessed]),
+                    order=np.concatenate([self._order, other._order]),
                 )
 
     def __getitem__(self, item):
@@ -698,13 +736,19 @@ class TopologyGroup(object):
                         'improper':ImproperDihedral}[self.btype]
             return outclass(self._bix[item],
                             self._u,
-                            type=self._bondtypes[item])
+                            type=self._bondtypes[item],
+                            guessed=self._guessed[item],
+                            order=self._order[item]
+            )
         else:
             # Slice my index array with the item
             return self.__class__(self._bix[item],
                                   self._u,
                                   btype=self.btype,
-                                  type=self._bondtypes[item])
+                                  type=self._bondtypes[item],
+                                  guessed=self._guessed[item],
+                                  order=self._order[item],
+            )
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""
@@ -861,7 +905,7 @@ class TopologyGroup(object):
               allows a predefined results array to be used, note that this
               will be overwritten
            *pbc*
-v              apply periodic boundary conditions when calculating angles
+              apply periodic boundary conditions when calculating angles
               [``False``] this is important when connecting vectors between
               atoms might require minimum image convention
 

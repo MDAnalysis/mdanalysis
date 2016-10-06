@@ -198,7 +198,7 @@ class TestPDBWriter(TestCase):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
-        u.atoms[2000].position[1] = -999.9995
+        u.atoms[2000].position = [0, -999.9995, 22.8]
         assert_raises(ValueError, u.atoms.write, self.outfile)
 
     @attr('issue')
@@ -209,7 +209,7 @@ class TestPDBWriter(TestCase):
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
         # OB: 9999.99951 is not caught by '<=' ?!?
-        u.atoms[1000].position[1] = 9999.9996
+        u.atoms[1000].position = [90.889, 9999.9996, 12.2]
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
@@ -389,7 +389,7 @@ class TestMultiPDBReader(TestCase):
                                                 if not b.is_guessed])
         assert_equal(conect, desired, err_msg="The bond list does not match "
                      "the test reference; len(actual) is %d, len(desired) "
-                     "is %d" % (len(u._topology['bonds']), len(desired)))
+                     "is %d" % (len(u._topology.bonds.values), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
@@ -573,7 +573,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_first_residue(self):
         # First residue is a MET, shouldn't be smushed together
         # with a water
-        assert_(len(self.universe.residues[0]) == 19)
+        assert_(len(self.universe.residues[0].atoms) == 19)
 
 
 class TestIncompletePDB(object):
@@ -623,21 +623,6 @@ class TestIncompletePDB(object):
         for ts in self.u.trajectory:
             pass
 
-    def test_occupancy(self):
-        occupancies = self.u.atoms.occupancies
-        assert_array_almost_equal(occupancies, np.ones(len(occupancies)))
-
-    def test_set_occupancy(self):
-        for atom in self.u.atoms:
-            atom.occupancy = 0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
-
-    def test_set_occupancies(self):
-        self.u.atoms.occupancies = 0.0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
-
 
 class TestPDBXLSerial(object):
     """For Issue #446"""
@@ -654,10 +639,10 @@ class TestPDBXLSerial(object):
 
     def test_serials(self):
         # These should be none
-        assert_(self.u.atoms[0].serial == 99998)
-        assert_(self.u.atoms[1].serial == 99999)
-        assert_(self.u.atoms[2].serial is None)
-        assert_(self.u.atoms[3].serial is None)
+        assert_(self.u.atoms[0].id == 99998)
+        assert_(self.u.atoms[1].id == 99999)
+        assert_(self.u.atoms[2].id == 100000)
+        assert_(self.u.atoms[3].id == 100001)
 
 
 # Does not implement Reader.remarks, Reader.header, Reader.title,

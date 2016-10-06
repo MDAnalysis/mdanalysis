@@ -2,13 +2,21 @@ from six.moves import range, zip
 
 import MDAnalysis as mda
 import numpy as np
+import os
+from numpy.testing import (
+    assert_array_almost_equal,
+    raises,
+    assert_array_equal,
+    assert_,
+)
 
-from numpy.testing import assert_array_almost_equal, raises
+from MDAnalysis.coordinates.XYZ import XYZWriter
 
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest)
-
+from MDAnalysisTests.core.groupbase import make_Universe, FakeReader
+from MDAnalysisTests import tempdir
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -91,3 +99,52 @@ class Test_XYZBZReader(TestXYZReader):
 class Test_XYZBZWriter(TestXYZWriter):
     def __init__(self):
         super(Test_XYZBZWriter, self).__init__(XYZ_BZ_Reference())
+
+
+class TestXYZWriterNames(object):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/outfile.xyz'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.outfile
+        del self.tmpdir
+
+    def test_no_names(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        w = XYZWriter(self.outfile)
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == 'X'))
+
+    def test_single_name(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        w = XYZWriter(self.outfile, atoms='ABC')
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == 'ABC'))
+
+    def test_list_names(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        names = ['A', 'B', 'C', 'D', 'E'] * 25
+
+        w = XYZWriter(self.outfile, atoms=names)
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == names))

@@ -14,6 +14,8 @@
 #
 from numpy.testing import (
     assert_,
+    assert_equal,
+    assert_raises,
 )
 import MDAnalysis as mda
 
@@ -25,9 +27,11 @@ from MDAnalysisTests.datafiles import (
 )
 
 
+_PDBPARSER = mda.topology.PDBParser.PDBParser
+
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
-    parser = mda.topology.PrimitivePDBParser.PrimitivePDBParser
+    parser = mda.topology.PDBParser.PDBParser
     filename = PDB
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames']
@@ -38,7 +42,7 @@ class TestPDBParser(ParserBase):
 
 class TestPDBParserSegids(ParserBase):
     """Has segids"""
-    parser = mda.topology.PrimitivePDBParser.PrimitivePDBParser
+    parser = mda.topology.PDBParser.PDBParser
     filename = PDB_small
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames', 'segids']
@@ -47,7 +51,7 @@ class TestPDBParserSegids(ParserBase):
     expected_n_segments = 1
 
 class TestPDBConect(object):
-    """Testing PDB topology parsing (PrimitivePDB)"""
+    """Testing PDB topology parsing (PDB)"""
     @staticmethod
     def test_conect_parser():
         lines = ("CONECT1233212331",
@@ -65,13 +69,15 @@ class TestPDBConect(object):
                    (12337, [7718, 8408, 12340, 12344]),
                    (12338, [12339, 12340, 12341, 12345]))
         for line, res in zip(lines, results):
-            bonds = mda.topology.PrimitivePDBParser._parse_conect(line)
+            bonds = mda.topology.PDBParser._parse_conect(line)
             assert_equal(bonds[0], res[0])
             for bond, res_bond in zip(bonds[1], res[1]):
                 assert_equal(bond, res_bond)
 
+    @staticmethod
+    def test_conect_parser_runtime():
         assert_raises(RuntimeError,
-                      mda.topology.PrimitivePDBParser._parse_conect,
+                      mda.topology.PDBParser._parse_conect,
                       'CONECT12337 7718 84081234012344123')
 
     @staticmethod
@@ -79,6 +85,6 @@ class TestPDBConect(object):
         """Check that the parser works as intended,
         and that the returned value is a dictionary
         """
-        with mda.topology.PrimitivePDBParser(PDB_conect) as p:
+        with _PDBPARSER(PDB_conect) as p:
             top = p.parse()
             assert_(isinstance(top, mda.core.topology.Topology))

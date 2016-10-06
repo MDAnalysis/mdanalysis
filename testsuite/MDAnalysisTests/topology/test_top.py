@@ -23,6 +23,7 @@ from MDAnalysisTests.datafiles import (
     PRM,  # ache.prmtop
     PRM12,  # anti.top
     PRM7,  # tz2.truncoct.parm7.bz2
+    PRMpbc,
 )
 
 

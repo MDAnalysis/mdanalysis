@@ -373,3 +373,59 @@ class TestGroupLevelTransition(object):
         assert_(len(sg) == 3)
         assert_(len(sg.unique) == 2)
         assert_(isinstance(sg.unique, mda.core.groups.SegmentGroup))
+
+
+class TestComponentComparisons(object):
+    """Use of operators (< > == != <= >=) with Atom, Residue, and Segment"""
+    @staticmethod
+    def _check_lt(a, b, c):
+        assert_(a < b)
+        assert_(a < c)
+        assert_(not b < a)
+        assert_(not a < a)
+
+    @staticmethod
+    def _check_gt(a, b, c):
+        assert_(b > a)
+        assert_(c > a)
+        assert_(not a > c)
+        assert_(not a > a)
+
+    @staticmethod
+    def _check_ge(a, b, c):
+        assert_(b >= a)
+        assert_(c >= a)
+        assert_(b >= b)
+        assert_(not b >= c)
+
+    @staticmethod
+    def _check_le(a, b, c):
+        assert_(b <= c)
+        assert_(b <= b)
+        assert_(not b <= a)
+
+    @staticmethod
+    def _check_neq(a, b, c):
+        assert_(a != b)
+        assert_(not a != a)
+
+    @staticmethod
+    def _check_eq(a, b, c):
+        assert_(a == a)
+        assert_(not a == b)
+
+    @staticmethod
+    def _check_sorting(a, b, c):
+        assert_(sorted([b, a, c]) == [a, b, c])
+
+    def test_comparions(self):
+        u = make_Universe()
+        for level in [u.atoms, u.residues, u.segments]:
+            a, b, c = level[0], level[1], level[2]
+            yield self._check_lt, a, b, c
+            yield self._check_gt, a, b, c
+            yield self._check_ge, a, b, c
+            yield self._check_le, a, b, c
+            yield self._check_neq, a, b, c
+            yield self._check_eq, a, b, c
+            yield self._check_sorting, a, b, c

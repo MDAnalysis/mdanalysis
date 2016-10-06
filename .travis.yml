@@ -3,6 +3,7 @@ branches:
   only:
     - master
     - develop
+    - issue-363
 
 os:
   - linux

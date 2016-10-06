@@ -18,7 +18,7 @@ import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-from numpy.testing import assert_equal, TestCase
+from numpy.testing import assert_equal, assert_array_equal, TestCase
 
 import os
 from MDAnalysisTests import tempdir
@@ -49,8 +49,8 @@ class TestPDBQT(TestCase):
     def test_protein(self):
         sel = self.universe.select_atoms('protein')
         assert_equal(sel.n_atoms, 1805, "failed to select protein")
-        assert_equal(sel._atoms, self.universe.atoms._atoms,
-                     "selected protein is not the same as auto-generated protein segment A+B")
+        assert_array_equal(sel.atoms.ix, self.universe.atoms.ix,
+                           "selected protein is not the same as auto-generated protein segment A+B")
 
     def test_backbone(self):
         sel = self.universe.select_atoms('backbone')
@@ -70,9 +70,9 @@ class TestPDBQT(TestCase):
         assert_equal(len(residue_neighbors), 80)
 
     def test_writer(self):
-        self.universe.A.write(self.outfile)
+        self.universe.A.atoms.write(self.outfile)
         uA = MDAnalysis.Universe(self.outfile)
-        assert_equal(uA.atoms._atoms, self.universe.A.atoms._atoms,
+        assert_array_equal(uA.atoms.positions, self.universe.A.atoms.positions,
                      "Writing and reading of chain A does not recover same atoms")
         del uA
 

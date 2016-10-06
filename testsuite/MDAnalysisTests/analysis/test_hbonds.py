@@ -19,7 +19,7 @@ import MDAnalysis
 import MDAnalysis.analysis.hbonds
 from MDAnalysis import SelectionError, SelectionWarning
 
-from numpy.testing import (TestCase, assert_, assert_equal, assert_array_equal,
+from numpy.testing import (assert_, assert_equal, assert_array_equal,
                            assert_raises)
 import numpy as np
 
@@ -27,9 +27,15 @@ import itertools
 import warnings
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
+# For type guessing:
+from MDAnalysis.topology.core import guess_atom_type
+from MDAnalysis.core.topologyattrs import Atomtypes
 
+def guess_types(names):
+    """GRO doesn't supply types, this returns an Attr"""
+    return Atomtypes(np.array(map(guess_atom_type, names), dtype=object))
 
-class TestHydrogenBondAnalysis(TestCase):
+class TestHydrogenBondAnalysis(object):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.kwargs = {
@@ -41,7 +47,7 @@ class TestHydrogenBondAnalysis(TestCase):
         }
         # ideal helix with 1 proline:
         self.values = {
-            'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
+            'num_bb_hbonds':  u.atoms.n_residues - u.select_atoms('resname PRO').n_residues - 4,
             'donor_resid': np.array([5,  6,  8,  9, 10, 11, 12, 13]),
             'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA'], dtype='U4'),
             }
@@ -77,6 +83,7 @@ class TestHydrogenBondAnalysis(TestCase):
     @staticmethod
     def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
+        u.add_TopologyAttr(guess_types(u.atoms.names))
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u,'protein','resname ASP', distance=3.0, angle=120.0)
         h.run()
         assert_equal(len(h.timeseries), 10)
@@ -147,7 +154,7 @@ class TestHydrogenBondAnalysisChecking(object):
         return h
 
     def test_check_static_selections(self):
-        self._setUp()  # manually set up (because with yield cannot use TestCase)
+        self._setUp()
         try:
             def run_HBA(s1, s2, s1type):
                 """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
@@ -155,7 +162,7 @@ class TestHydrogenBondAnalysisChecking(object):
                 return self._run(selection1=s1, selection2=s2,
                                  update_selection1=False, update_selection2=False,
                                  selection1_type=s1type,
-                                 )
+                )
             protein = "protein"
             nothing = "resname ALA and not backbone"
             for s1, s2, s1type in itertools.product((protein, nothing),
@@ -174,18 +181,17 @@ class TestHydrogenBondAnalysisChecking(object):
                 else:
                     yield assert_raises, SelectionError, run_HBA, s1, s2, s1type
         finally:
-            self._tearDown() # manually tear down (because with yield cannot use TestCase)
-
+            self._tearDown()
 
     def test_run_empty_selections(self):
-        self._setUp()  # manually set up (because with yield cannot use TestCase)
+        self._setUp()
         try:
             def run_HBA(s1, s2, s1type):
                 # no donors/acceptors; should not raise error because updates=True
                 return self._run(selection1=s1, selection2=s2,
                                  update_selection1=True, update_selection2=True,
                                  selection1_type=s1type,
-                                 )
+                )
             protein = "protein"
             nothing = "resname ALA and not backbone"
             for s1, s2, s1type in itertools.product((protein, nothing),
@@ -200,4 +206,4 @@ class TestHydrogenBondAnalysisChecking(object):
                         return True
                 yield run_HBA_dynamic_selections, s1, s2, s1type
         finally:
-            self._tearDown() # manually tear down (because with yield cannot use TestCase)
+            self._tearDown()

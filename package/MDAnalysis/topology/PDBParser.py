@@ -47,8 +47,9 @@ from __future__ import absolute_import, print_function
 import numpy as np
 import warnings
 
+from .guessers import guess_masses, guess_types
 from ..lib import util
-from .base import TopologyReader, squash_by
+from .base import TopologyReader, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -59,6 +60,7 @@ from ..core.topologyattrs import (
     ICodes,
     ChainIDs,
     Occupancies,
+    Masses,
     Resids,
     Resnames,
     Resnums,
@@ -66,6 +68,12 @@ from ..core.topologyattrs import (
     Bonds,
     AtomAttr,
 )
+
+def float_or_default(val, default):
+    try:
+        return float(val)
+    except ValueError:
+        return default
 
 
 class PDBParser(TopologyReader):
@@ -78,6 +86,9 @@ class PDBParser(TopologyReader):
      - resids
      - resnames
      - segids
+
+    Guesses the following Attributes:
+     - masses
     """
     format = ['PDB','ENT']
 
@@ -115,11 +126,12 @@ class PDBParser(TopologyReader):
         atomtypes = []
 
         resids = []
-        resnums = []
         resnames = []
 
         segids = []
 
+        self._wrapped_serials = False  # did serials go over 100k?
+        last_wrapped_serial = 100000  # if serials wrap, start from here
         with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
@@ -135,17 +147,15 @@ class PDBParser(TopologyReader):
                 except ValueError:
                     # serial can become '***' when they get too high
                     self._wrapped_serials = True
-                    serial = None
-                serials.append(serial)
+                    serial = last_wrapped_serial
+                    last_wrapped_serial += 1
+                finally:
+                    serials.append(serial)
 
                 names.append(line[12:16].strip())
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
-                # empty chainID is a single space ' '!
-                chainid = line[21:22].strip()
-                if not chainid:
-                    chainid = None
-                chainids.append(chainid)
+                chainids.append(line[21:22].strip())
 
                 # Resids are optional
                 try:
@@ -161,39 +171,32 @@ class PDBParser(TopologyReader):
                         resid_prev = resid
                 except ValueError:
                     warnings.warn("PDB file is missing resid information.  "
-                                  "Defaulted to '0'")
-                    resid = 0
+                                  "Defaulted to '1'")
+                    resid = 1
                 finally:
                     resids.append(resid)
 
-                try:
-                    occupancy = float(line[54:60])
-                except ValueError:
-                    occupancy = None
-                occupancies.append(occupancy)
-
-                try:
-                    # bfactor
-                    tempFactor = float(line[60:66])
-                except ValueError:
-                    tempFactor = None
-                tempfactors.append(tempFactor)
+                occupancies.append(float_or_default(line[54:60], 0.0))
+                tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
                 atomtypes.append(line[76:78].strip())
 
+        # Warn about wrapped serials
+        if self._wrapped_serials:
+            warnings.warn("Serial numbers went over 100,000.  "
+                          "Higher serials have been guessed")
+
         # If segids not present, try to use chainids
         if not any(segids):
             segids, chainids = chainids, None
-        if not icodes:
-            icodes = None
 
         n_atoms = len(serials)
+
         attrs = []
-        attrs.append(Atomnames(np.array(names, dtype=object)))
-        # Optional attributes
+        # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
-                (icodes, ICodes, object),
+                (names, Atomnames, object),
                 (atomtypes, Atomtypes, object),
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
@@ -201,35 +204,37 @@ class PDBParser(TopologyReader):
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
-            # Skip if:
-            # - vals is None
-            # - any entries are None
-            # - all entries are empty
-            if vals is None:
-                continue
-            if any(v == None for v in vals):
-                continue
-            attrs.append(Attr(np.array(vals, dtype=dtype)))
+            if not vals is None:
+                attrs.append(Attr(np.array(vals, dtype=dtype)))
+        # Guessed attributes
+        # masses from types if they exist
+        # OPT: We do this check twice, maybe could refactor to avoid this
+        if not any(atomtypes):
+            types = guess_types(names)
+        else:
+            types = atomtypes
+        masses = guess_masses(types)
+        attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
-        resnames = np.array(resnames, dtype=object)
         resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+        if self.format == 'XPDB':  # XPDB doesn't have icodes
+            icodes = [''] * n_atoms
+        icodes = np.array(icodes, dtype=object)
+        resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
-        if resnums:
-            resnums = np.array(resnums, dtype=np.int32)
-            residx, resids, (resnames, resnums, segids) = squash_by(
-                resids, resnames, resnums, segids)
-            attrs.append(Resnums(resnums))
-        else:
-            residx, resids, (resnames, segids) = squash_by(
-                resids, resnames, segids)
+        residx, (resids, resnames, icodes, resnums, segids) = change_squash(
+            (resids, icodes), (resids, resnames, icodes, resnums, segids))
         n_residues = len(resids)
+        attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
+        attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
         if any(segids) and not any(val == None for val in segids):
-            segidx, segids = squash_by(segids)[:2]
+            segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
         else:

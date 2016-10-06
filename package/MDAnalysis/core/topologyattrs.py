@@ -19,6 +19,10 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 
 Common TopologyAttrs used by most topology parsers.
 
+TopologyAttrs are used to contain attributes such as atom names or resids.
+These are usually read by the TopologyParser.
+
+
 """
 from six.moves import zip
 from collections import defaultdict
@@ -26,12 +30,12 @@ import itertools
 import numpy as np
 
 from . import flags
-from ..lib.util import cached
-from ..lib.util import iterable as is_iterable
+from ..lib.util import cached, convert_aa_code
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
-from . import flags
+from .groups import (GroupBase, Atom, Residue, Segment,
+                     AtomGroup, ResidueGroup, SegmentGroup)
 
 _LENGTH_VALUEERROR = \
 ("Setting {group} with wrong sized array. "
@@ -52,7 +56,7 @@ class TopologyAttr(object):
         the name used for the attribute when attached to a ``Topology`` object
     top : Topology
         handle for the Topology object TopologyAttr is associated with
-        
+
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
@@ -61,8 +65,9 @@ class TopologyAttr(object):
     groupdoc = None
     singledoc = None
 
-    def __init__(self, values):
+    def __init__(self, values, guessed=False):
         self.values = values
+        self._guessed = guessed
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -84,6 +89,11 @@ class TopologyAttr(object):
             return self.set_residues(group, values)
         elif group.level == 'segment':
             return self.set_segments(group, values)
+
+    @property
+    def is_guessed(self):
+        """Bool of if the source of this information is a guess"""
+        return self._guessed
 
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
@@ -122,15 +132,15 @@ class Atomindices(TopologyAttr):
 
     If the group is a ResidueGroup or SegmentGroup, then this gives the indices
     of each atom represented in the group in a 1-D array, in the order of the
-    elements in that group. 
+    elements in that group.
 
     """
     attrname = 'indices'
     singular = 'index'
-    target_levels = ['atom']
+    target_classes = [Atom]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -158,15 +168,15 @@ class Resindices(TopologyAttr):
 
     If the group is a ResidueGroup or SegmentGroup, then this gives the
     resindices of each residue represented in the group in a 1-D array, in the
-    order of the elements in that group. 
+    order of the elements in that group.
 
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -180,9 +190,6 @@ class Resindices(TopologyAttr):
         another residue.
 
         """
-        if is_iterable(values) and not len(values) == len(ag):
-            raise ValueError(_LENGTH_VALUEERROR.format(
-                group='atomgroup', lengroup=len(ag), lenvalues=len(values)))
         self.top.tt.move_atom(ag._ix, values)
 
     def get_residues(self, rg):
@@ -202,18 +209,18 @@ class Segindices(TopologyAttr):
     the group. This unambiguously determines each atom's segment membership.
     It is not possible to set these, since membership in a segment is an
     attribute of each atom's residue.
-    
+
     If the group is a ResidueGroup or SegmentGroup, then this gives the
     segindices of each segment represented in the group in a 1-D array, in the
-    order of the elements in that group. 
+    order of the elements in that group.
 
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
 
     def __init__(self):
-        pass
+        self._guessed = False
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -224,12 +231,6 @@ class Segindices(TopologyAttr):
 
     def get_residues(self, rg):
         return self.top.tt.residues2segments(rg._ix)
-
-    def set_residues(self, rg, values):
-        if is_iterable(values) and not len(values) == len(rg):
-            raise ValueError(_LENGTH_VALUEERROR.format(
-                group='residuegroup', lengroup=len(rg), lenvalues=len(values)))
-        self.top.tt.move_residue(rg.ix, values)
 
     def get_segments(self, sg):
         return sg._ix
@@ -246,7 +247,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    target_levels = ['atom']
+    target_classes = [Atom]
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -298,12 +299,6 @@ class Atomnames(AtomAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     atomgroup.__class__.__name__, name))
 
-    transplants['atomgroup'].append(
-        ('__getattr__', getattr__))
-
-    transplants['residue'].append(
-        ('__getattr__', getattr__))
-
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -325,13 +320,24 @@ class Atomnames(AtomAttr):
             # XXX: but inconsistent (see residues and Issue 47)
             return atomlist
 
-    transplants['atomgroup'].append(
+    # AtomGroup already has a getattr
+#    transplants[AtomGroup].append(
+#        ('__getattr__', getattr__))
+
+    transplants[Residue].append(
+        ('__getattr__', getattr__))
+
+    # this is also getitem for a residue
+    transplants[Residue].append(
+        ('__getitem__', getattr__))
+
+    transplants[AtomGroup].append(
         ('_get_named_atom', _get_named_atom))
 
-    transplants['residue'].append(
+    transplants[Residue].append(
         ('_get_named_atom', _get_named_atom))
 
-    def phi_selection(self):
+    def phi_selection(residue):
         """AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
 
@@ -341,17 +347,17 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
         """
-        sel = self.universe.select_atoms(
-            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
-              self['N'] + self['CA'] + self['C']
+        sel = residue.universe.select_atoms(
+            'segid %s and resid %d and name C' % (residue.segment.segid, residue.resid - 1)) + \
+              residue['N'] + residue['CA'] + residue['C']
         if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
         else:
             return None
 
-    transplants['residue'].append(('phi_selection', phi_selection))
+    transplants[Residue].append(('phi_selection', phi_selection))
 
-    def psi_selection(self):
+    def psi_selection(residue):
         """AtomGroup corresponding to the psi protein backbone dihedral
         N-CA-C-N'.
 
@@ -361,17 +367,17 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
         """
-        sel = self['N'] + self['CA'] + self['C'] + \
-              self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+        sel = residue['N'] + residue['CA'] + residue['C'] + \
+              residue.universe.select_atoms(
+                  'segid %s and resid %d and name N' % (residue.segment.segid, residue.resid + 1))
         if len(sel) == 4:
             return sel
         else:
             return None
 
-    transplants['residue'].append(('psi_selection', psi_selection))
+    transplants[Residue].append(('psi_selection', psi_selection))
 
-    def omega_selection(self):
+    def omega_selection(residue):
         """AtomGroup corresponding to the omega protein backbone dihedral
         CA-C-N'-CA'.
 
@@ -386,10 +392,10 @@ class Atomnames(AtomAttr):
             previous residue (by resid) then this method returns ``None``.
 
         """
-        nextres = self.id + 1
-        segid = self.segment.id
-        sel = self['CA'] + self['C'] + \
-              self.universe.select_atoms(
+        nextres = residue.resid + 1
+        segid = residue.segment.segid
+        sel = residue['CA'] + residue['C'] + \
+              residue.universe.select_atoms(
                   'segid %s and resid %d and name N' % (segid, nextres),
                   'segid %s and resid %d and name CA' % (segid, nextres))
         if len(sel) == 4:
@@ -397,25 +403,25 @@ class Atomnames(AtomAttr):
         else:
             return None
 
-    transplants['residue'].append(('omega_selection', omega_selection))
+    transplants[Residue].append(('omega_selection', omega_selection))
 
-    def chi1_selection(self):
+    def chi1_selection(residue):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
-        
+
         Returns
         -------
-        AtomGroup 
+        AtomGroup
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
         .. versionadded:: 0.7.5
         """
         try:
-            return self['N'] + self['CA'] + self['CB'] + self['CG']
+            return residue['N'] + residue['CA'] + residue['CB'] + residue['CG']
         except (SelectionError, NoDataError):
             return None
 
-    transplants['residue'].append(('chi1_selection', chi1_selection))
+    transplants[Residue].append(('chi1_selection', chi1_selection))
 
 
 #TODO: update docs to property doc
@@ -453,13 +459,6 @@ class ChainIDs(AtomAttr):
     per_object = 'atom'
 
 
-class ICodes(AtomAttr):
-    """Insertion code for Atoms"""
-    attrname = 'icodes'
-    singular = 'icode'
-    per_object = 'atom'
-
-
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
     attrname = 'tempfactors'
@@ -471,7 +470,7 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     groupdoc = """Mass of each component in the Group.
@@ -540,16 +539,16 @@ class Masses(AtomAttr):
         return np.sum(positions * masses[:, np.newaxis],
                       axis=0) / masses.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
 
     def total_mass(group):
         """Total mass of the Group.
-        
+
         """
         return group.masses.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('total_mass', total_mass))
 
     def moment_of_inertia(group, **kwargs):
@@ -603,7 +602,7 @@ class Masses(AtomAttr):
 
         return tens
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('moment_of_inertia', moment_of_inertia))
 
     def radius_of_gyration(group, **kwargs):
@@ -634,7 +633,7 @@ class Masses(AtomAttr):
 
         return np.sqrt(rog_sq)
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('radius_of_gyration', radius_of_gyration))
 
     def shape_parameter(group, **kwargs):
@@ -679,10 +678,10 @@ class Masses(AtomAttr):
 
         return shape
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('shape_parameter', shape_parameter))
 
-    def asphericity(group, **kwargs):
+    def asphericity(group, pbc=None):
         """Asphericity.
 
         See [Dima2004]_ for background information.
@@ -691,7 +690,8 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            calculation. If ``None`` use value defined in
+            MDAnalysis.core.flags['use_pbc']
 
         .. note::
             The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
@@ -706,30 +706,33 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc is None:
+            pbc = flags['use_pbc']
         masses = atomgroup.masses
 
         if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+            recenteredpos = (atomgroup.pack_into_box(inplace=False) -
+                             atomgroup.center_of_mass(pbc=True))
         else:
-            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+            recenteredpos = (atomgroup.positions -
+                             atomgroup.center_of_mass(pbc=False))
 
         tensor = np.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                              recenteredpos[x, :])
+            tensor += masses[x] * np.outer(recenteredpos[x],
+                                           recenteredpos[x])
 
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * np.sum(np.power(eig_vals - np.mean(eig_vals), 2)) / np.power(
-            np.sum(eig_vals), 2)
+        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                               np.sum(eig_vals)**2)
 
         return shape
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('asphericity', asphericity))
 
-    def principal_axes(group, **kwargs):
+    def principal_axes(group, pbc=None):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -741,7 +744,7 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            calculation. If ``None`` use value defined in setup flags.
 
         .. note::
             The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
@@ -756,19 +759,16 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-
-        if pbc:
-            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=True))
-        else:
-            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=False))
+        if pbc is None:
+            pbc = flags['use_pbc']
+        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
-        indices = np.argsort(eigenval)
+        indices = np.argsort(e_val)
         # Return transposed in more logical form. See Issue 33.
-        return eigenvec[:, indices].T
+        return e_vec[:, indices].T
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('principal_axes', principal_axes))
 
     def align_principal_axis(group, axis, vector):
@@ -797,7 +797,7 @@ class Masses(AtomAttr):
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
 
 
@@ -806,7 +806,7 @@ class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
     per_object = 'atom'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def get_residues(self, rg):
@@ -831,11 +831,11 @@ class Charges(AtomAttr):
 
     def total_charge(group):
         """Total charge of the Group.
-        
+
         """
         return group.charges.sum()
 
-    transplants['group'].append(
+    transplants[GroupBase].append(
         ('total_charge', total_charge))
 
 
@@ -875,7 +875,7 @@ class ResidueAttr(TopologyAttr):
     """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    target_levels = ['residue']
+    target_classes = [Residue]
     per_object = 'residue'
 
     def get_atoms(self, ag):
@@ -903,36 +903,14 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    target_levels = ['atom', 'residue']
-
-    def set_atoms(self, ag, values):
-        # setting via resids provides a nicer way
-        # rather than dealing with resindices
-        # * 1 find index that corresponds to this resid
-        if is_iterable(values):
-            if not len(values) == len(ag):
-                raise ValueError(_LENGTH_VALUEERROR.format(
-                    group='atomgroup', lengroup=len(ag), lenvalues=len(values)))
-            try:
-                dest = [np.where(self.top.resids.values == val)[0]
-                        for val in values]
-            except IndexError:
-                raise NotImplementedError
-        else:
-            try:
-                dest = np.where(self.top.resids.values == values)[0]
-            except IndexError:  # if where finds nothing
-                raise NotImplementedError("That resid doesn't exist!")
-        # * 2 update the transtable
-        # can't set resindices as atom.resindex!
-        self.top.tt.move_atom(ag.ix, dest)
+    target_classes = [Atom, Residue]
 
 
 #TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
     transplants = defaultdict(list)
 
     def getattr__(residuegroup, resname):
@@ -942,9 +920,9 @@ class Resnames(ResidueAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     residuegroup.__class__.__name__, resname))
 
-    transplants['residuegroup'].append(('__getattr__', getattr__))
+    transplants[ResidueGroup].append(('__getattr__', getattr__))
 
-    transplants['segment'].append(('__getattr__', getattr__))
+    transplants[Segment].append(('__getattr__', getattr__))
 
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
@@ -970,18 +948,119 @@ class Resnames(ResidueAttr):
             # XXX: but inconsistent (see residues and Issue 47)
             return residues
 
-    transplants['residuegroup'].append(
+    transplants[ResidueGroup].append(
         ('_get_named_residue', _get_named_residue))
 
-    transplants['segment'].append(
+    transplants[Segment].append(
         ('_get_named_residue', _get_named_residue))
 
+    def sequence(self, **kwargs):
+        """Returns the amino acid sequence.
+
+        The format of the sequence is selected with the keyword *format*:
+
+        ============== ============================================
+        *format*       description
+        ============== ============================================
+        'SeqRecord'    :class:`Bio.SeqRecord.SeqRecord` (default)
+        'Seq'          :class:`Bio.Seq.Seq`
+        'string'       string
+        ============== ============================================
+
+        The sequence is returned by default (keyword ``format = 'SeqRecord'``)
+        as a :class:`Bio.SeqRecord.SeqRecord` instance, which can then be
+        further processed. In this case, all keyword arguments (such as the
+        *id* string or the *name* or the *description*) are directly passed to
+        :class:`Bio.SeqRecord.SeqRecord`.
+
+        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored
+        and a :class:`Bio.Seq.Seq` instance is returned. The difference to the
+        record is that the record also contains metadata and can be directly
+        used as an input for other functions in :mod:`Bio`.
+
+        If the keyword *format* is set to ``'string'``, all *kwargs* are
+        ignored and a Python string is returned.
+
+        .. rubric:: Example: Write FASTA file
+
+        Use :func:`Bio.SeqIO.write`, which takes sequence records::
+
+           import Bio.SeqIO
+
+           # get the sequence record of a protein component of a Universe
+           protein = u.select_atoms("protein")
+           record = protein.sequence(id="myseq1", name="myprotein")
+
+           Bio.SeqIO.write(record, "single.fasta", "fasta")
+
+        A FASTA file with multiple entries can be written with ::
+
+           Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
+
+        :Keywords:
+            *format*
+
+                - ``"string"``: return sequence as a string of 1-letter codes
+                - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
+                - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
+                  instance
+
+                Default is ``"SeqRecord"``
+
+             *id*
+                Sequence ID for SeqRecord (should be different for different
+                sequences)
+             *name*
+                Name of the protein.
+             *description*
+                Short description of the sequence.
+             *kwargs*
+                Any other keyword arguments that are understood by
+                :class:`Bio.SeqRecord.SeqRecord`.
+
+        :Raises: :exc:`ValueError` if a residue name cannot be converted to a
+                 1-letter IUPAC protein amino acid code; make sure to only
+                 select protein residues. Raises :exc:`TypeError` if an unknown
+                 *format* is selected.
+
+        .. versionadded:: 0.9.0
+        """
+        import Bio.Seq
+        import Bio.SeqRecord
+        import Bio.Alphabet
+        formats = ('string', 'Seq', 'SeqRecord')
+
+        format = kwargs.pop("format", "SeqRecord")
+        if format not in formats:
+            raise TypeError("Unknown format='{0}': must be one of: {1}".format(
+                    format, ", ".join(formats)))
+        try:
+            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
+        except KeyError as err:
+            raise ValueError("AtomGroup contains a residue name '{0}' that "
+                             "does not have a IUPAC protein 1-letter "
+                             "character".format(err.message))
+        if format == "string":
+            return sequence
+        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        if format == "Seq":
+            return seq
+        return Bio.SeqRecord.SeqRecord(seq, **kwargs)
+
+    transplants[ResidueGroup].append(
+        ('sequence', sequence))
 
 #TODO: update docs to property doc
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    target_levels = ['atom', 'residue']
+    target_classes = [Atom, Residue]
+
+
+class ICodes(ResidueAttr):
+    """Insertion code for Atoms"""
+    attrname = 'icodes'
+    singular = 'icode'
 
 
 ## segment attributes
@@ -992,7 +1071,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    target_levels = ['segment']
+    target_classes = [Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
@@ -1014,7 +1093,7 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    target_levels = ['atom', 'residue', 'segment']
+    target_classes = [Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def getattr__(segmentgroup, segid):
@@ -1024,7 +1103,7 @@ class Segids(SegmentAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     segmentgroup.__class__.__name__, segid))
 
-    transplants['segmentgroup'].append(
+    transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
 
     def _get_named_segment(group, segid):
@@ -1048,52 +1127,27 @@ class Segids(SegmentAttr):
             return segments[0]
         else:
             # XXX: but inconsistent (see residues and Issue 47)
-            return segment 
+            return segment
 
-    transplants['segmentgroup'].append(
+    transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
-    def set_residues(self, rg, values):
-        # convienience method for moving residues between segments
-        if is_iterable(values):
-            if not len(values) == len(rg):
-                raise ValueError(_LENGTH_VALUEERROR.format(
-                    group='residuegroup', lengroup=len(rg), lenvalues=len(values)))
-            try:
-                dest = [np.where(self.top.segids.values == val)[0]
-                        for val in values]
-            except IndexError:
-                raise NotImplementedError
-        else:
-            try:
-                dest = np.where(self.top.segids.values == values)[0]
-            except IndexError:
-                raise NotImplementedError("That segid doesn't exist!")
-        self.top.tt.move_residue(rg.ix, dest)
 
-
-#TODO: update docs to property doc
-class Bonds(AtomAttr):
-    """Bonds for atoms"""
-    attrname = 'bonds'
-    # Singular is the same because one Atom might have
-    # many bonds, so still asks for "bonds" in the plural
-    singular = 'bonds'
-    transplants = defaultdict(list)
-
-    def __init__(self, values, types=None):
-        """
-        Arguments
-        ---------
-        values - list of tuples of indices.  Should be zero based
-        to match the atom indices
-
-        Eg:  [(0, 1), (1, 2), (2, 3)]
-        """
-        self.values = values
+class _Connection(AtomAttr):
+    """Base class for connectivity between atoms"""
+    def __init__(self, values, types=None, guessed=False, order=None):
+        self.values = list(values)
         if types is None:
-            types = [None for value in values]
+            types = [None] * len(values)
         self.types = types
+        if guessed in (True, False):
+            # if single value passed, multiply this across
+            # all bonds
+            guessed = [guessed] * len(values)
+        self._guessed = guessed
+        if order is None:
+            order = [None] * len(values)
+        self.order = order
         self._cache = dict()
 
     def __len__(self):
@@ -1105,7 +1159,8 @@ class Bonds(AtomAttr):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b, t in zip(self.values, self.types):
+        for b, t, g, o in zip(self.values, self.types,
+                              self._guessed, self.order):
             # We always want the first index
             # to be less than the last
             # eg (0, 1) not (1, 0)
@@ -1113,7 +1168,7 @@ class Bonds(AtomAttr):
             if b[0] > b[-1]:
                 b = b[::-1]
             for a in b:
-                bd[a].append((b, t))
+                bd[a].append((b, t, g, o))
         return bd
 
     def get_atoms(self, ag):
@@ -1123,17 +1178,62 @@ class Bonds(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag._ix]
-        bond_idx, types = np.hsplit(np.array(sorted(unique_bonds)), 2)
+        bond_idx, types, guessed, order = np.hsplit(
+            np.array(sorted(unique_bonds)), 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
-        return TopologyGroup(bond_idx, ag._u, self.singular[:-1], types)
+        guessed = guessed.ravel()
+        order = order.ravel()
+        return TopologyGroup(bond_idx, ag._u,
+                             self.singular[:-1],
+                             types,
+                             guessed,
+                             order)
+
+    def add_bonds(self, values, types=None, guessed=True, order=None):
+        if types is None:
+            types = itertools.cycle((None,))
+        if guessed in (True, False):
+            guessed = itertools.cycle((guessed,))
+        if order is None:
+            order = itertools.cycle((None,))
+
+        existing = set(self.values)
+        for v, t, g, o in zip(values, types, guessed, order):
+            if not v in existing:
+                self.values.append(v)
+                self.types.append(t)
+                self._guessed.append(g)
+                self.order.append(o)
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
+
+
+class Bonds(_Connection):
+    """Bonds between two atoms
+
+    Must be initialised by a list of zero based tuples.
+    These indices refer to the atom indices.
+        Eg:  [(0, 1), (1, 2), (2, 3)]
+
+    Also adds the `bonded_atoms`, `fragment` and `fragments`
+    attributes.
+    """
+    attrname = 'bonds'
+    # Singular is the same because one Atom might have
+    # many bonds, so still asks for "bonds" in the plural
+    singular = 'bonds'
+    transplants = defaultdict(list)
 
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""
         idx = [b.partner(self).index for b in self.bonds]
         return self._u.atoms[idx]
 
-    transplants['atom'].append(
+    transplants[Atom].append(
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
@@ -1153,32 +1253,43 @@ class Bonds(AtomAttr):
 
         .. versionadded 0.9.0
         """
-        return tuple(set(a.fragment for a in self))
+        return tuple(sorted(
+            set(a.fragment for a in self),
+            key=lambda x: x[0].index
+        ))
 
-    transplants['atom'].append(
+    transplants[Atom].append(
         ('fragment', property(fragment, None, None,
                               fragment.__doc__)))
 
-    transplants['atomgroup'].append(
+    transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
                                fragments.__doc__)))
 
 
-#TODO: update docs to property doc
-class Angles(Bonds):
-    """Angles for atoms"""
+class Angles(_Connection):
+    """Angles between three atoms
+
+    Initialise with a list of 3 long tuples
+    Eg:
+      [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+
+    These indices refer to the atom indices.
+    """
     attrname = 'angles'
     singular = 'angles'
+    transplants = defaultdict(list)
 
 
-#TODO: update docs to property doc
-class Dihedrals(Bonds):
-    """Dihedrals for atoms"""
+class Dihedrals(_Connection):
+    """A connection between four sequential atoms"""
     attrname = 'dihedrals'
     singular = 'dihedrals'
+    transplants = defaultdict(list)
 
 
-#TODO: update docs to property doc
-class Impropers(Bonds):
+class Impropers(_Connection):
+    """An imaginary dihedral between four atoms"""
     attrname = 'impropers'
     singular = 'impropers'
+    transplants = defaultdict(list)

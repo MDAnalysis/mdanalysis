@@ -221,7 +221,7 @@ class GNMAnalysis(object):
             natoms += 1
 
         matrix = np.zeros((natoms, natoms), "float")
-        [res_positions, grid, low_x, low_y, low_z] = generate_grid(positions, self.cutoff)
+        res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
         icounter = 0
         for icounter in range(natoms):
             #find neighbours from the grid
@@ -247,7 +247,7 @@ class GNMAnalysis(object):
                     matrix[jcounter][icounter] = -1.0
                     matrix[icounter][icounter] = matrix[icounter][icounter] + 1
                     matrix[jcounter][jcounter] = matrix[jcounter][jcounter] + 1
-        return (matrix)
+        return matrix
 
     def run(self, skip=1):
         '''Analyze trajectory and produce timeseries.
@@ -321,8 +321,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
         natoms = len(self.ca.atoms)
         nresidues = len(self.ca.residues)
         positions = self.ca.positions
-        [res_positions, grid, low_x, low_y, low_z] = generate_grid(positions, self.cutoff)
-        residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue]
+        res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
+        residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue.atoms]
         matrix = np.zeros((nresidues, nresidues), "float")
         for icounter in range(natoms):
             neighbour_atoms = []
@@ -340,13 +340,13 @@ class closeContactGNMAnalysis(GNMAnalysis):
                     0] - positions[jcounter][0]) ** 2 +
                         (positions[icounter][1] - positions[jcounter][1]) ** 2 +
                         (positions[icounter][2] - positions[jcounter][2]) ** 2) <= self.cutoff ** 2:
-                    [iresidue, jresidue] = [residue_index_map[icounter], residue_index_map[jcounter]]
+                    iresidue, jresidue = residue_index_map[icounter], residue_index_map[jcounter]
                     if self.MassWeight:
-                        contact = 1.0 / ((len(self.ca.residues[iresidue])) * (len(self.ca.residues[jresidue]))) ** 0.5
+                        contact = 1.0 / (len(self.ca.residues[iresidue].atoms) * len(self.ca.residues[jresidue].atoms)) ** 0.5
                     else:
                         contact = 1.0
                     matrix[iresidue][jresidue] = matrix[iresidue][jresidue] - contact
                     matrix[jresidue][iresidue] = matrix[jresidue][iresidue] - contact
                     matrix[iresidue][iresidue] = matrix[iresidue][iresidue] + contact
                     matrix[jresidue][jresidue] = matrix[jresidue][jresidue] + contact
-        return (matrix)
+        return matrix

@@ -236,8 +236,8 @@ class _TestTriclinicDistances(TestCase):
         self.box = MDAnalysis.coordinates.core.triclinic_vectors(self.universe.dimensions)
         self.boxV = MDAnalysis.coordinates.core.triclinic_box(self.box[0], self.box[1], self.box[2])
 
-        self.S_mol1 = np.array([self.universe.atoms[383].pos])
-        self.S_mol2 = np.array([self.universe.atoms[390].pos])
+        self.S_mol1 = np.array([self.universe.atoms[383].position])
+        self.S_mol2 = np.array([self.universe.atoms[390].position])
 
     def tearDown(self):
         del self.universe

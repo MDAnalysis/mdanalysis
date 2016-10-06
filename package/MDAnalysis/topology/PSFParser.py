@@ -51,6 +51,7 @@ from ..core.topologyattrs import (
     Masses,
     Charges,
     Resids,
+    Resnums,
     Resnames,
     Segids,
     Bonds,
@@ -263,7 +264,13 @@ class PSFParser(TopologyReader):
         masses = np.zeros(numlines, dtype=np.float32)
 
         for i in xrange(numlines):
-            line = lines()
+            try:
+                line = lines()
+            except StopIteration:
+                err = ("{0} is not valid PSF file"
+                       "".format(self.filename))
+                logger.error(err)
+                raise ValueError(err)
             try:
                 vals = set_type(atom_parser(line))
             except ValueError:
@@ -299,6 +306,7 @@ class PSFParser(TopologyReader):
             resids, resnames, segids)
         # transform from atom:Rid to atom:Rix
         residueids = Resids(new_resids)
+        residuenums = Resnums(new_resids.copy())
         residuenames = Resnames(new_resnames)
 
         # Segment
@@ -308,7 +316,7 @@ class PSFParser(TopologyReader):
         top = Topology(len(atomids), len(new_resids), len(segids),
                        attrs=[atomids, atomnames, atomtypes,
                               charges, masses,
-                              residueids, residuenames,
+                              residueids, residuenums, residuenames,
                               segids],
                        atom_resindex=residx,
                        residue_segindex=segidx)

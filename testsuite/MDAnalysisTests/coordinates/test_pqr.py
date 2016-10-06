@@ -30,13 +30,15 @@ class TestPQRReader(_SingleFrameReader):
     # Note that the whole system gets the sysID 'SYSTEM' for the PQR file (when
     # read with a PSF it is 's4AKE')
     def test_ArgCACharges(self):
+        ag = self.universe.select_atoms('resname ARG and name CA')
         assert_almost_equal(
-            self.universe.SYSTEM.ARG.CA.charges, self.ref_charmm_ArgCAcharges,
+            ag.charges, self.ref_charmm_ArgCAcharges,
             3, "Charges for CA atoms in Arg residues do not match.")
 
     def test_ProNCharges(self):
+        ag = self.universe.select_atoms('resname PRO and name N')
         assert_almost_equal(
-            self.universe.SYSTEM.PRO.N.charges, self.ref_charmm_ProNcharges, 3,
+            ag.charges, self.ref_charmm_ProNcharges, 3,
             "Charges for N atoms in Pro residues do not match.")
 
 
@@ -72,8 +74,11 @@ class TestPQRWriter(TestCase, RefAdKSmall):
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original radii")
 
+    # 363 TODO:
+    # Not sure if this should be a segid or chainID?
+    # Topology system now allows for both of these
     def test_write_withChainID(self):
-        self.universe.atoms.set_segids('A')
+        self.universe.segments.segids = 'A'
         assert_equal(self.universe.segments.segids[0], 'A')  # sanity check
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)

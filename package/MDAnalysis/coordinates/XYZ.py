@@ -69,13 +69,15 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
 """
-
+import six
 from six.moves import range, zip
+
+import itertools
 import os
 import errno
 import numpy as np
 import logging
-logger = logging.getLogger('MDAnalysis.analysis.psa')
+logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
 from . import base
 from ..core import flags
@@ -100,8 +102,8 @@ class XYZWriter(base.Writer):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, atoms='X', convert_units=None,
-                 remark='default', **kwargs):
+    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=None,
+                 remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
         Parameters
@@ -125,7 +127,7 @@ class XYZWriter(base.Writer):
             :meth:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
         remark: str (optional)
-            single line of text ("molecule name"). By default write MDAnalysis
+            single line of text ("molecule name"). By default writes MDAnalysis
             version
         """
         self.filename = filename
@@ -137,30 +139,27 @@ class XYZWriter(base.Writer):
         self.atomnames = self._get_atomnames(atoms)
         default_remark = "Written by {0} (release {1})".format(
             self.__class__.__name__, __version__)
-        self.remark = default_remark if remark == 'default' else remark
+        self.remark = default_remark if remark is None else remark
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""
-        # AtomGroup
-        try:
-            return atoms.names
-        except AttributeError:
-            pass
-        # universe?
+        # Default case
+        if atoms is None:
+            return itertools.cycle(('X',))
+        # Single atom name provided
+        elif isinstance(atoms, six.string_types):
+            return itertools.cycle((atoms,))
+        # List of atom names providded
+        elif isinstance(atoms, list):
+            return atoms
+        # AtomGroup or Universe, grab the names else default
+        # (AtomGroup.atoms just returns AtomGroup)
         try:
             return atoms.atoms.names
-        except AttributeError:
-            pass
-        # list or string (can be a single atom name... deal with this in
-        # write_next_timestep() once we know n_atoms)
-        if self.n_atoms is None:
-            return np.asarray(util.asiterable(atoms))
-        if isinstance(atoms, list):
-            return atoms
-        else:
-            return np.asarray([atoms for _ in range(self.n_atoms)])
+        except (AttributeError, NoDataError):
+            return itertools.cycle(('X',))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -191,8 +190,11 @@ class XYZWriter(base.Writer):
         try:
             atoms = obj.atoms
         except AttributeError:
-            atoms = None
-        if atoms:  # have a AtomGroup
+            if isinstance(obj, base.Timestep):
+                ts = obj
+            else:
+                raise TypeError("No Timestep found in obj argument")
+        else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
                 ts_full = obj.universe.trajectory.ts
@@ -205,12 +207,7 @@ class XYZWriter(base.Writer):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
-            self.atomnames = atoms.names
-        else:
-            if isinstance(obj, base.Timestep):
-                ts = obj
-            else:
-                raise TypeError("No Timestep found in obj argument")
+            self.atomnames = self._get_atomnames(atoms)
 
         self.write_next_timestep(ts)
 
@@ -231,7 +228,8 @@ class XYZWriter(base.Writer):
                                  'different number ({}) then expected ({})'
                                  ''.format(ts.n_atoms, self.n_atoms))
         else:
-            if len(self.atomnames) != ts.n_atoms:
+            if (not isinstance(self.atomnames, itertools.cycle) and
+                len(self.atomnames) != ts.n_atoms):
                 logger.info('Trying to write a TimeStep with unkown atoms. '
                             'Expected {}, got {}. Try using "write" if you are '
                             'using "write_next_timestep" directly'.format(
