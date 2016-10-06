@@ -1108,6 +1108,11 @@ class TestAtomGroup(TestCase):
             self.universe.atoms.NO_SUCH_ATOM
         assert_raises(AttributeError, access_nonexistent_instantselector)
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.atoms.indices,
+                     sorted(self.universe.atoms.indices))
+
 
 class TestAtomGroupNoTop(TestCase):
 
@@ -1397,6 +1402,11 @@ class TestResidue(TestCase):
         assert_equal(type(atoms), MDAnalysis.core.groups.AtomGroup)
         assert_equal(atoms.names, ["N", "CA", "C", "O"])
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.res.atoms.indices,
+                     sorted(self.res.atoms.indices))
+
 
 class TestResidueGroup(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -1589,6 +1599,11 @@ class TestResidueGroup(TestCase):
                      mass * np.ones(rg.n_atoms),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.residues.atoms.indices,
+                     sorted(self.universe.residues.atoms.indices))
+
 
 class TestSegment(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -1602,6 +1617,10 @@ class TestSegment(TestCase):
         self.universe.residues[100:150].set_segids("B")
         self.universe.residues[150:].set_segids("C")
         self.sB = self.universe.segments[1]
+
+    # VALID but temporary
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
 
     # INVALID: `Segment` from a particular Universe will not be the same class
     # in core; each Universe generates its own set of classes based on topology
@@ -1647,6 +1666,11 @@ class TestSegment(TestCase):
         self.sB.id = new
         for val in [self.sB.id, self.sB.name]:
             assert_equal(val, new)
+
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.segments[0].atoms.indices,
+                     sorted(self.universe.segments[0].atoms.indices))
 
 
 class TestSegmentGroup(TestCase):
@@ -1743,6 +1767,11 @@ class TestSegmentGroup(TestCase):
     @skip
     def test_set_segid_ValueError(self):
         assert_raises(ValueError, self.g.set_resids, [1, 2, 3, 4])
+
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.segments.atoms.indices,
+                     sorted(self.universe.segments.atoms.indices))
 
 
 class TestAtomGroupVelocities(TestCase):
