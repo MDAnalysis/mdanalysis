@@ -42,6 +42,7 @@ class TestPSAnalysis(TestCase):
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
+        self._plot()
 
     def _run(self):
         self.psa.run(metric='hausdorff')
