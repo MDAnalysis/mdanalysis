@@ -1238,8 +1238,8 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self._ix, self.universe)
 
-    def write(self, filename=None, format="PDB",
-              filenamefmt="%(trjname)s_%(frame)d", **kwargs):
+    def write(self, filename=None, file_format="PDB",
+              filenamefmt="{trjname}_{frame}", **kwargs):
         """Write AtomGroup to a file.
 
         AtomGroup.write(filename[,format])
@@ -1280,29 +1280,28 @@ class AtomGroup(GroupBase):
 
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
-            filename = filenamefmt % vars()
-        filename = util.filename(filename, ext=format.lower(), keep=True)
+            filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
+        filename = util.filename(filename, ext=file_format.lower(), keep=True)
 
         # From the following blocks, one must pass.
         # Both can't pass as the extensions don't overlap.
         try:
             writer = MDAnalysis.coordinates.writer(filename, **kwargs)
+            coords = True
         except TypeError:
             # might be selections format
             coords = False
-        else:
-            coords = True
 
         try:
-            SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
-        except (TypeError, NotImplementedError):
-            selection = False
-        else:
+            SelectionWriter = MDAnalysis.selections.get_writer(filename,
+                                                               file_format)
             writer = SelectionWriter(filename, **kwargs)
             selection = True
+        except (TypeError, NotImplementedError):
+            selection = False
 
         if not (coords or selection):
-            raise ValueError("No writer found for format: {0}".format(filename))
+            raise ValueError("No writer found for format: {}".format(filename))
         else:
             writer.write(self.atoms)
             if coords:  # only these writers have a close method
