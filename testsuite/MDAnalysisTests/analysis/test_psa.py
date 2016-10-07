@@ -51,6 +51,9 @@ class TestPSAnalysis(TestCase):
         self.hausd_dists = self.hausd_matrix[self.iu1]
         self.frech_dists = self.frech_matrix[self.iu1]
 
+    def _plot(self):
+        self.plot_data = self.psa.plot()
+
     def tearDown(self):
         del self.universe1
         del self.universe2
@@ -72,3 +75,7 @@ class TestPSAnalysis(TestCase):
     def test_reversal_frechet(self):
         err_msg = "Frechet distances did not increase after path reversal"
         assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)
+
+    def check_dendrogram_produced(self):
+        err_msg = "Dendrogram dictionary object was not produced"
+        assert_(type(self.plot_data[1]) is dict, err_msg)
