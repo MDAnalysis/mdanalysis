@@ -435,6 +435,13 @@ class Element(AtomAttr):
     singular = 'element'
 
 
+class Isotopes(AtomAttr):
+    """Isotopic composition for each atom (or united atom)"""
+    attrname = 'isotopes'
+    singular = 'isotope'
+    per_object = 'atom'
+
+
 #TODO: update docs to property doc
 class Radii(AtomAttr):
     """Radii for each atom"""
