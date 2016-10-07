@@ -76,6 +76,6 @@ class TestPSAnalysis(TestCase):
         err_msg = "Frechet distances did not increase after path reversal"
         assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)
 
-    def check_dendrogram_produced(self):
+    def test_dendrogram_produced(self):
         err_msg = "Dendrogram dictionary object was not produced"
         assert_(type(self.plot_data[1]) is dict, err_msg)
