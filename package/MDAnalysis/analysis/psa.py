@@ -1728,7 +1728,7 @@ class PSAnalysis(object):
         """
         import matplotlib
         from scipy.cluster.hierarchy import linkage, dendrogram
-        from brewer2mpl import get_map
+        # from brewer2mpl import get_map
 
         # color_list = get_map('Set1', 'qualitative', 9).mpl_colors
         matplotlib.rcParams['lines.linewidth'] = 0.5
