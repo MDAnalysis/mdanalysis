@@ -103,3 +103,11 @@ class TestAtomGroupWriting(object):
     def test_write_selection(self):
         with tempdir.in_tempdir():
             self.u.atoms.write("test.vmd")
+
+
+class TestAtomGroupTransformations(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
