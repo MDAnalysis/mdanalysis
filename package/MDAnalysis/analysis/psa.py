@@ -1730,14 +1730,13 @@ class PSAnalysis(object):
         from scipy.cluster.hierarchy import linkage, dendrogram
         from brewer2mpl import get_map
 
-        color_list = get_map('Set1', 'qualitative', 9).mpl_colors
+        # color_list = get_map('Set1', 'qualitative', 9).mpl_colors
         matplotlib.rcParams['lines.linewidth'] = 0.5
 
         Z = linkage(distArray, method=method)
-        dgram = dendrogram(Z, no_labels=no_labels, orientation='right',         \
+        dgram = dendrogram(Z, no_labels=no_labels, orientation='left',          \
                            count_sort=count_sort, distance_sort=distance_sort,  \
-                           no_plot=no_plot, color_threshold=color_threshold,    \
-                           color_list=color_list)
+                           no_plot=no_plot, color_threshold=color_threshold)
         return Z, dgram
 
 
