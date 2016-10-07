@@ -14,9 +14,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from glob import glob
+from os import path
+
 from numpy.testing import (
     assert_,
     assert_raises,
+    assert_equal,
+    raises
 )
 
 
@@ -28,7 +33,8 @@ from MDAnalysis.core.topologyobjects import (
     ImproperDihedral,
 )
 
-from MDAnalysis.tests.datafiles import (PSF, DCD)
+from MDAnalysisTests.datafiles import (PSF, DCD)
+from MDAnalysisTests import tempdir
 
 
 class TestAtomGroupToTopology(object):
@@ -68,3 +74,32 @@ class TestAtomGroupToTopology(object):
         for btype in ('bond', 'angle', 'dihedral', 'improper'):
             yield self._check_VE, btype
 
+
+class TestAtomGroupWriting(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_write_no_args(self):
+        with tempdir.in_tempdir():
+            self.u.atoms.write()
+            files = glob('*')
+            assert_equal(len(files), 1)
+
+            name = path.splitext(path.basename(DCD))[0]
+            assert_equal(files[0], "{}_0.pdb".format(name))
+
+    @raises(ValueError)
+    def test_raises(self):
+        with tempdir.in_tempdir():
+            self.u.atoms.write('useless.format123')
+
+    def test_write_coordinates(self):
+        with tempdir.in_tempdir():
+            self.u.atoms.write("test.xtc")
+
+    def test_write_selection(self):
+        with tempdir.in_tempdir():
+            self.u.atoms.write("test.vmd")
