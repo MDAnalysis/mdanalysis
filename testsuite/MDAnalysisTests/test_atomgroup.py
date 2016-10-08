@@ -20,7 +20,8 @@ from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
                                         TRZ, TRZ_psf, PSF_notop,
                                         PSF_BAD, unordered_res,
                                         XYZ_mini, two_water_gro,
-                                        two_water_gro_nonames)
+                                        two_water_gro_nonames,
+                                        COORDINATES_XYZ, COORDINATES_TRR)
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import Atom, AtomGroup
 from MDAnalysis import NoDataError
@@ -1808,6 +1809,40 @@ class TestAtomGroupVelocities(TestCase):
         v = ag.get_velocities() - 2.7271
         ag.set_velocities(v)
         assert_almost_equal(ag.get_velocities(), v,
+                            err_msg="messages were not set to new value")
+
+
+class TestAtomGroupForces(TestCase):
+    """Tests of velocity-related functions in AtomGroup"""
+
+    # VALID
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(COORDINATES_XYZ, COORDINATES_TRR)
+        self.ag = self.universe.select_atoms("bynum 12:42")
+
+    # INVALID: no `get_forces` method; use `forces` property directly
+    @skip
+    @dec.slow
+    def test_get_forces(self):
+        v = self.ag.get_forces()
+        assert_(np.any(np.abs(v) > 1e-6), "forces should be non-zero")
+
+    # VALID
+    @dec.slow
+    def test_forces(self):
+        ag = self.universe.atoms[1:4]
+        ref_v = np.arange(9).reshape(3, 3) * .01 + .03
+        v = ag.forces
+        assert_almost_equal(v, ref_v, err_msg="forces were not read correctly")
+
+    # INVALID: no `get_forces` method; use `forces` property directly
+    @skip
+    @dec.slow
+    def test_set_forces(self):
+        ag = self.ag
+        v = ag.get_forces() - 2.7271
+        ag.set_forces(v)
+        assert_almost_equal(ag.get_forces(), v,
                             err_msg="messages were not set to new value")
 
 
