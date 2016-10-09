@@ -19,7 +19,7 @@ class TestGroupSlicing(object):
     TopologyGroup is technically called group, add this in too!
     """
     # test Universe is 5:1 mapping 3 times
-    length = {'atom':125, 'residue':25, 'segment':5}
+    length = {'atom': 125, 'residue': 25, 'segment': 5}
 
     def test_groups(self):
         u = make_Universe()
@@ -27,13 +27,13 @@ class TestGroupSlicing(object):
         lvls = self.length.keys()
 
         nparrays = {
-            lvl:np.arange(self.length[lvl])
+            lvl: np.arange(self.length[lvl])
             for lvl in lvls
         }
         groups = {
-            'atom':u.atoms,
-            'residue':u.residues,
-            'segment':u.segments
+            'atom': u.atoms,
+            'residue': u.residues,
+            'segment': u.segments
         }
 
         for group in [u.atoms, u.residues, u.segments]:
@@ -67,9 +67,9 @@ class TestGroupSlicing(object):
                     yield self._check_slice, group, nparrays[lvl], func(idx)
 
         singulars = {
-            'atom':mda.core.groups.Atom,
-            'residue':mda.core.groups.Residue,
-            'segment':mda.core.groups.Segment
+            'atom': mda.core.groups.Atom,
+            'residue': mda.core.groups.Residue,
+            'segment': mda.core.groups.Segment
         }
         for lvl in lvls:
             # Check integer getitem access
@@ -90,7 +90,7 @@ class TestGroupSlicing(object):
             if ref:
                 assert_(val in result)
             else:
-                assert_(not val in result)
+                assert_(val not in result)
 
     def _check_indexerror(self, group):
         assert_raises(IndexError, group.__getitem__, self.length[group.level])
@@ -106,7 +106,7 @@ class TestGroupSlicing(object):
             if o in other:
                 assert_(g in g2)
             else:
-                assert_(not g in g2)
+                assert_(g not in g2)
 
     def _check_integer_getitem(self, group, nparray, idx, singular):
         a = group[idx]
@@ -136,25 +136,26 @@ class TestGroupAddition(object):
 
         levels = ['atom', 'residue', 'segment']
         groups = {
-            'atom':u.atoms[:5],
-            'residue':u.residues[:5],
-            'segment':u.segments[:5],
+            'atom': u.atoms[:5],
+            'residue': u.residues[:5],
+            'segment': u.segments[:5],
         }
         singles = {
-            'atom':u.atoms[0],
-            'residue':u.residues[0],
-            'segment':u.segments[0],
+            'atom': u.atoms[0],
+            'residue': u.residues[0],
+            'segment': u.segments[0],
         }
 
         groupclasses = {
-            'atom':mda.core.groups.AtomGroup,
-            'residue':mda.core.groups.ResidueGroup,
-            'segment':mda.core.groups.SegmentGroup,
+            'atom': mda.core.groups.AtomGroup,
+            'residue': mda.core.groups.ResidueGroup,
+            'segment': mda.core.groups.SegmentGroup,
         }
+        # TODO: actually use this
         singleclasses = {
-            'atom':mda.core.groups.Atom,
-            'residue':mda.core.groups.Residue,
-            'segment':mda.core.groups.Segment
+            'atom': mda.core.groups.Atom,
+            'residue': mda.core.groups.Residue,
+            'segment': mda.core.groups.Segment
         }
 
         for level in levels:
@@ -209,7 +210,7 @@ class TestGroupAddition(object):
 
         assert_(isinstance(summed, refclass))
         assert_equal(len(summed),
-            len(self.itr(a)) + len(self.itr(b)) + len(self.itr(c)))
+                     len(self.itr(a)) + len(self.itr(b)) + len(self.itr(c)))
         for x, y in zip(summed,
                         itertools.chain(self.itr(a), self.itr(b), self.itr(c))):
             assert_(x == y)

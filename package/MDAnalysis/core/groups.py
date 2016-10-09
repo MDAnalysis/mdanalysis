@@ -22,11 +22,12 @@ from six.moves import zip
 import numpy as np
 import functools
 import itertools
+import os
 
 import MDAnalysis
-from ..lib import mdamath
 from ..lib import util
-from ..lib import distances 
+from ..lib import distances
+from ..lib import transformations
 from . import selection
 from . import flags
 from . import levels
@@ -39,7 +40,7 @@ def make_classes():
 
     Returns
     -------
-    Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes 
+    Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes
     to serve as bases for universe-specific MDA container classes. Another,
     with the final merged versions of those classes. The classes themselves are
     used as hashing keys.
@@ -97,10 +98,10 @@ class _TopologyAttrContainer(object):
         Returns
         -------
         type
-            A subclass of :class:`_TopologyAttrContainer`, with the same name. 
+            A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
         if singular is not None:
-            return type(cls.__name__, (cls,), {'_singular':bool(singular)})
+            return type(cls.__name__, (cls,), {'_singular': bool(singular)})
         else:
             return type(cls.__name__, (cls,), {})
 
@@ -133,11 +134,14 @@ class _TopologyAttrContainer(object):
         ----------
         attr : A TopologyAttr object
         """
-        getter = lambda self: attr.__getitem__(self)
-        setter = lambda self, values: attr.__setitem__(self, values)
+        def getter(self):
+            return attr.__getitem__(self)
+
+        def setter(self, values):
+            return attr.__setitem__(self, values)
 
         if cls._singular:
-            setattr(cls, attr.singular, 
+            setattr(cls, attr.singular,
                     property(getter, setter, None, attr.singledoc))
         else:
             setattr(cls, attr.attrname,
@@ -170,15 +174,15 @@ class _MutableBase(object):
                 raise TypeError("Attempted to instantiate class '{}' but "
                                 "none of its parents are known to the "
                                 "universe. Currently possible parent "
-                                "classes are: {}".format(cls.__name__,
-                                    str(sorted(u._class_bases.keys()))))
+                                "classes are: {}".format(
+                                    cls.__name__, str(sorted(u._class_bases.keys()))))
             newcls = u._classes[cls] = parent_cls._mix(cls.__name__, cls)
             return object.__new__(newcls)
 
 
 class _ImmutableBase(object):
     """Class used to shortcut :meth:`__new__` to :meth:`object.__new__`.
-    
+
     """
     # When mixed via _TopologyAttrContainer._mix this class has MRO priority.
     #  Setting __new__ like this will avoid having to go through the
@@ -234,13 +238,13 @@ class GroupBase(_MutableBase):
         -------
         Group
             Group with elements of `self` and `other` concatenated
-        
+
         """
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
-        if not self._u is other._u:
+        if self._u is not other._u:
             raise ValueError("Can't add objects from different Universes")
-        
+
         # for the case where other is a Component, and so other._ix is an
         # integer
         if isinstance(other._ix, int):
@@ -268,7 +272,7 @@ class GroupBase(_MutableBase):
         if other == 0:
             return self.__class__(self._ix, self._u)
         else:
-            raise TypeError("unsupported operand type(s) for +:"+
+            raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
 
@@ -293,7 +297,7 @@ class GroupBase(_MutableBase):
 
         """
         return self._ix
-    
+
     @property
     def dimensions(self):
         return self._u.trajectory.ts.dimensions
@@ -315,7 +319,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = self.atoms
-        
+
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         if pbc:
             return np.sum(atomgroup.pack_into_box(inplace=False), axis=0) / len(atomgroup)
@@ -380,7 +384,7 @@ class GroupBase(_MutableBase):
         -------
         R : float
             Radius of bounding sphere.
-        center : array 
+        center : array
             Coordinates of sphere center as ``[xcen,ycen,zcen]``.
 
         .. versionadded:: 0.7.3
@@ -471,7 +475,7 @@ class GroupBase(_MutableBase):
 
         """
         atomgroup = self.atoms.unique
-        
+
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
@@ -610,7 +614,7 @@ class GroupBase(_MutableBase):
 
         """
         atomgroup = self.atoms.unique
-        if box is None:  #Try and auto detect box dimensions
+        if box is None:  # Try and auto detect box dimensions
             box = atomgroup.dimensions  # Can accept any box
 
         if box.shape == (3, 3):
@@ -619,7 +623,7 @@ class GroupBase(_MutableBase):
                 raise ValueError("One or more box dimensions is zero."
                                  "  You can specify a boxsize with 'box ='")
         else:
-            if (box == 0).any():  #Check that a box dimension isn't zero
+            if (box == 0).any():  # Check that a box dimension isn't zero
                 raise ValueError("One or more box dimensions is zero."
                                  "  You can specify a boxsize with 'box='")
 
@@ -773,7 +777,7 @@ class AtomGroup(GroupBase):
     def __getattr__(self, attr):
         # is this a known attribute failure?
         if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
-            # eg: 
+            # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
             raise NoDataError("AtomGroup has no fragments this requires Bonds")
@@ -879,15 +883,16 @@ class AtomGroup(GroupBase):
 
         The positions can be changed by assigning an array of the appropriate
         shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
-        the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
-        will move all particles to the origin).
+        the *same* coordinate to all atoms (e.g. ``ag.positions =
+        array([0,0,0])`` will move all particles to the origin).
 
-        .. note:: changing the position is not reflected in any files; reading any
-                  frame from the trajectory will replace the change with that
-                  from the file
+        .. note:: changing the position is not reflected in any files; reading
+                  any frame from the trajectory will replace the change with
+                  that from the file
+
         """
         return self._u.trajectory.ts.positions[self._ix]
-    
+
     @positions.setter
     def positions(self, values):
         ts = self._u.trajectory.ts
@@ -941,7 +946,7 @@ class AtomGroup(GroupBase):
     def forces(self, values):
         ts = self._u.trajectory.ts
         try:
-            ts.forces[self._ix, :] = forces
+            ts.forces[self._ix, :] = values
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
 
@@ -1115,6 +1120,7 @@ class AtomGroup(GroupBase):
            Added *group* and *fullgroup* selections.
         .. versionchanged:: 0.13.0
            Added *bonded* selection
+
         """
         atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
         if othersel:
@@ -1129,7 +1135,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         level : {'atom', 'residue', 'segment'}
-            
+
         .. versionadded:: 0.9.0
         """
         accessors = {'segment': 'segindices',
@@ -1142,15 +1148,16 @@ class AtomGroup(GroupBase):
         try:
             levelindices = getattr(self, accessors[level])
         except KeyError:
-            raise ValueError("level = '{0}' not supported, must be one of {1}".format(
-                    level, accessors.keys()))
+            raise ValueError("level = '{0}' not supported, "
+                             "must be one of {1}".format(level,
+                                                         accessors.keys()))
 
         return [self[levelindices == index] for index in
                 np.unique(levelindices)]
 
     def guess_bonds(self, vdwradii=None):
         """Guess bonds that exist within this AtomGroup and add to Universe
-        
+
         Parameters
         ----------
         vdwradii : dict, optional
@@ -1179,7 +1186,7 @@ class AtomGroup(GroupBase):
         b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr.add_bonds(b, guessed=True)
-        
+
         a = guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr.add_bonds(a, guessed=True)
@@ -1264,8 +1271,8 @@ class AtomGroup(GroupBase):
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self._ix, self.universe)
 
-    def write(self, filename=None, format="PDB",
-              filenamefmt="%(trjname)s_%(frame)d", **kwargs):
+    def write(self, filename=None, file_format="PDB",
+              filenamefmt="{trjname}_{frame}", **kwargs):
         """Write AtomGroup to a file.
 
         AtomGroup.write(filename[,format])
@@ -1300,35 +1307,34 @@ class AtomGroup(GroupBase):
             raise IndexError("Cannot write an AtomGroup with 0 atoms")
 
         trj = self.universe.trajectory  # unified trajectory API
-        frame = trj.ts.frame
 
-        if trj.n_frames == 1: kwargs.setdefault("multiframe", False)
+        if trj.n_frames == 1:
+            kwargs.setdefault("multiframe", False)
 
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
-            filename = filenamefmt % vars()
-        filename = util.filename(filename, ext=format.lower(), keep=True)
+            filename = filenamefmt.format(trjname=trjname, frame=trj.frame)
+        filename = util.filename(filename, ext=file_format.lower(), keep=True)
 
         # From the following blocks, one must pass.
         # Both can't pass as the extensions don't overlap.
         try:
             writer = MDAnalysis.coordinates.writer(filename, **kwargs)
+            coords = True
         except TypeError:
             # might be selections format
             coords = False
-        else:
-            coords = True
 
         try:
-            SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
-        except (TypeError, NotImplementedError):
-            selection = False
-        else:
+            SelectionWriter = MDAnalysis.selections.get_writer(filename,
+                                                               file_format)
             writer = SelectionWriter(filename, **kwargs)
             selection = True
+        except (TypeError, NotImplementedError):
+            selection = False
 
         if not (coords or selection):
-            raise ValueError("No writer found for format: {0}".format(filename))
+            raise ValueError("No writer found for format: {}".format(filename))
         else:
             writer.write(self.atoms)
             if coords:  # only these writers have a close method
@@ -1358,7 +1364,7 @@ class ResidueGroup(GroupBase):
     def n_atoms(self):
         """Number of atoms represented in ResidueGroup, including duplicate
         residues.
-        
+
         Equivalent to ``len(self.atoms)``.
 
         """
@@ -1441,7 +1447,7 @@ class SegmentGroup(GroupBase):
     """
     @property
     def atoms(self):
-        """Get an AtomGroup of atoms represented in this SegmentGroup. 
+        """Get an AtomGroup of atoms represented in this SegmentGroup.
 
         The atoms are ordered locally by residue, which are further ordered by
         segment in the SegmentGroup. No duplicates are removed.
@@ -1453,7 +1459,7 @@ class SegmentGroup(GroupBase):
     def n_atoms(self):
         """Number of atoms represented in SegmentGroup, including duplicate
         segments.
-        
+
         Equivalent to ``len(self.atoms)``.
 
         """
@@ -1461,7 +1467,7 @@ class SegmentGroup(GroupBase):
 
     @property
     def residues(self):
-        """Get a ResidueGroup of residues represented in this SegmentGroup. 
+        """Get a ResidueGroup of residues represented in this SegmentGroup.
 
         The residues are ordered locally by segment in the SegmentGroup.
         No duplicates are removed.
@@ -1473,7 +1479,7 @@ class SegmentGroup(GroupBase):
     def n_residues(self):
         """Number of residues represented in SegmentGroup, including duplicate
         segments.
-        
+
         Equivalent to ``len(self.residues)``.
 
         """
@@ -1485,7 +1491,7 @@ class SegmentGroup(GroupBase):
 
         """
         return self._u.segments[self.ix]
-                                                
+
     @property
     def n_segments(self):
         """Number of segments in SegmentGroup. Equivalent to ``len(self)``.
@@ -1545,7 +1551,7 @@ class ComponentBase(_MutableBase):
         -------
         Group
             Group with elements of `self` and `other` concatenated
-        
+
         """
         if self.level != other.level:
             raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
@@ -1554,7 +1560,7 @@ class ComponentBase(_MutableBase):
                                              other.level.singular.__name__,
                                              other.level.plural.__name__))
 
-        if not self.universe is other.universe:
+        if self.universe is not other.universe:
             raise ValueError("Can only add objects from the same Universe")
 
         if isinstance(other.ix, int):
@@ -1583,7 +1589,7 @@ class ComponentBase(_MutableBase):
         if other == 0:
             return self.level.plural(np.array([self._ix]), self._u)
         else:
-            raise TypeError("unsupported operand type(s) for +:"+
+            raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
 
@@ -1647,8 +1653,8 @@ class Atom(ComponentBase):
     def position(self):
         """Coordinates of the atom.
 
-        The position can be changed by assigning an array of length (3,). 
-        
+        The position can be changed by assigning an array of length (3,).
+
         .. note:: changing the position is not reflected in any files; reading any
                   frame from the trajectory will replace the change with that
                   from the file
@@ -1663,8 +1669,8 @@ class Atom(ComponentBase):
     def velocity(self):
         """Velocity of the atom.
 
-        The velocity can be changed by assigning an array of shape (3,). 
-        
+        The velocity can be changed by assigning an array of shape (3,).
+
         .. note:: changing the velocity is not reflected in any files; reading any
                   frame from the trajectory will replace the change with that
                   from the file
@@ -1691,8 +1697,8 @@ class Atom(ComponentBase):
     def force(self):
         """Force on the atom.
 
-        The force can be changed by assigning an array of shape (3,). 
-        
+        The force can be changed by assigning an array of shape (3,).
+
         .. note:: changing the force is not reflected in any files; reading any
                   frame from the trajectory will replace the change with that
                   from the file
@@ -1728,7 +1734,7 @@ class Residue(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self.level.child.plural
-        return atomsclass(self._u._topology.indices[self][0],
+        return atomsclass(self._u._topology.indices[self],
                           self._u)
 
     @property
@@ -1748,21 +1754,22 @@ class Residue(ComponentBase):
 class Segment(ComponentBase):
     """Segment base class.
 
-    This class is used by a Universe for generating its Topology-specific Segment
-    class. All the TopologyAttr components are obtained from ComponentBase, so
-    this class only includes ad-hoc methods specific to Segments.
+    This class is used by a Universe for generating its Topology-specific
+    Segment class. All the TopologyAttr components are obtained from
+    ComponentBase, so this class only includes ad-hoc methods specific to
+    Segments.
 
     """
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
-        return atomsclass(self._u._topology.indices[self][0],
+        return atomsclass(self._u._topology.indices[self],
                           self._u)
 
     @property
     def residues(self):
         residuesclass = self.level.child.plural
-        return residuesclass(self._u._topology.resindices[self][0],
+        return residuesclass(self._u._topology.resindices[self],
                              self._u)
 
 # Define relationships between these classes

@@ -20,7 +20,8 @@ from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
                                         TRZ, TRZ_psf, PSF_notop,
                                         PSF_BAD, unordered_res,
                                         XYZ_mini, two_water_gro,
-                                        two_water_gro_nonames)
+                                        two_water_gro_nonames,
+                                        COORDINATES_XYZ, COORDINATES_TRR)
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import Atom, AtomGroup
 from MDAnalysis import NoDataError
@@ -1108,6 +1109,11 @@ class TestAtomGroup(TestCase):
             self.universe.atoms.NO_SUCH_ATOM
         assert_raises(AttributeError, access_nonexistent_instantselector)
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.atoms.indices,
+                     sorted(self.universe.atoms.indices))
+
 
 class TestAtomGroupNoTop(TestCase):
 
@@ -1397,6 +1403,11 @@ class TestResidue(TestCase):
         assert_equal(type(atoms), MDAnalysis.core.groups.AtomGroup)
         assert_equal(atoms.names, ["N", "CA", "C", "O"])
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.res.atoms.indices,
+                     sorted(self.res.atoms.indices))
+
 
 class TestResidueGroup(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -1589,6 +1600,11 @@ class TestResidueGroup(TestCase):
                      mass * np.ones(rg.n_atoms),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.residues.atoms.indices,
+                     sorted(self.universe.residues.atoms.indices))
+
 
 class TestSegment(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -1602,6 +1618,10 @@ class TestSegment(TestCase):
         self.universe.residues[100:150].set_segids("B")
         self.universe.residues[150:].set_segids("C")
         self.sB = self.universe.segments[1]
+
+    # VALID but temporary
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
 
     # INVALID: `Segment` from a particular Universe will not be the same class
     # in core; each Universe generates its own set of classes based on topology
@@ -1647,6 +1667,11 @@ class TestSegment(TestCase):
         self.sB.id = new
         for val in [self.sB.id, self.sB.name]:
             assert_equal(val, new)
+
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.segments[0].atoms.indices,
+                     sorted(self.universe.segments[0].atoms.indices))
 
 
 class TestSegmentGroup(TestCase):
@@ -1744,6 +1769,11 @@ class TestSegmentGroup(TestCase):
     def test_set_segid_ValueError(self):
         assert_raises(ValueError, self.g.set_resids, [1, 2, 3, 4])
 
+    # VALID
+    def test_atom_order(self):
+        assert_equal(self.universe.segments.atoms.indices,
+                     sorted(self.universe.segments.atoms.indices))
+
 
 class TestAtomGroupVelocities(TestCase):
     """Tests of velocity-related functions in AtomGroup"""
@@ -1779,6 +1809,40 @@ class TestAtomGroupVelocities(TestCase):
         v = ag.get_velocities() - 2.7271
         ag.set_velocities(v)
         assert_almost_equal(ag.get_velocities(), v,
+                            err_msg="messages were not set to new value")
+
+
+class TestAtomGroupForces(TestCase):
+    """Tests of velocity-related functions in AtomGroup"""
+
+    # VALID
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(COORDINATES_XYZ, COORDINATES_TRR)
+        self.ag = self.universe.select_atoms("bynum 12:42")
+
+    # INVALID: no `get_forces` method; use `forces` property directly
+    @skip
+    @dec.slow
+    def test_get_forces(self):
+        v = self.ag.get_forces()
+        assert_(np.any(np.abs(v) > 1e-6), "forces should be non-zero")
+
+    # VALID
+    @dec.slow
+    def test_forces(self):
+        ag = self.universe.atoms[1:4]
+        ref_v = np.arange(9).reshape(3, 3) * .01 + .03
+        v = ag.forces
+        assert_almost_equal(v, ref_v, err_msg="forces were not read correctly")
+
+    # INVALID: no `get_forces` method; use `forces` property directly
+    @skip
+    @dec.slow
+    def test_set_forces(self):
+        ag = self.ag
+        v = ag.get_forces() - 2.7271
+        ag.set_forces(v)
+        assert_almost_equal(ag.get_forces(), v,
                             err_msg="messages were not set to new value")
 
 
