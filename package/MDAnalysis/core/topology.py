@@ -81,7 +81,7 @@ def make_downshift_arrays(upshift):
     # returns an array of arrays
     # Add None to end of array to force it to be of type Object
     # Without this, a rectangular array gets squashed into a single array
-    return np.array([np.array(order[x:y], copy=True, dtype=np.int)
+    return np.array([np.sort(np.array(order[x:y], copy=True, dtype=np.int))
                      for x, y in zip(borders[:-1], borders[1:])] + [None],
                     dtype=object)
 
