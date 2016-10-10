@@ -1734,7 +1734,7 @@ class Residue(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self.level.child.plural
-        return atomsclass(self._u._topology.indices[self],
+        return atomsclass(self._u._topology.indices[self][0],
                           self._u)
 
     @property
@@ -1763,13 +1763,13 @@ class Segment(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
-        return atomsclass(self._u._topology.indices[self],
+        return atomsclass(self._u._topology.indices[self][0],
                           self._u)
 
     @property
     def residues(self):
         residuesclass = self.level.child.plural
-        return residuesclass(self._u._topology.resindices[self],
+        return residuesclass(self._u._topology.resindices[self][0],
                              self._u)
 
 # Define relationships between these classes
