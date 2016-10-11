@@ -54,13 +54,18 @@ class TopologyAttr(object):
     ----------
     attrname : str
         the name used for the attribute when attached to a ``Topology`` object
+    singular : str
+        name for the attribute on a singular object (Atom/Residue/Segment)
+    per_object : str
+        If there is a strict mapping between Component and Attribute
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
-    top = None
+    per_object = None  # ie Resids per_object = 'residue'
+    top = None  # pointer to Topology object
 
     groupdoc = None
     singledoc = None
@@ -144,7 +149,7 @@ class Atomindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_atoms)
+        return self.top.n_atoms
 
     def set_atoms(self, ag, values):
         raise AttributeError("Atom indices are fixed; they cannot be reset")
@@ -180,7 +185,7 @@ class Resindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_residues)
+        return self.top.n_residues
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2residues(ag._ix)
@@ -217,7 +222,7 @@ class Segindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_segments)
+        return self.top.n_segments
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2segments(ag._ix)

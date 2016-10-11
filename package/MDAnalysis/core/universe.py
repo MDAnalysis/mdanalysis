@@ -1,12 +1,12 @@
 import numpy as np
 from numpy.lib.utils import deprecate
 import logging
-from itertools import groupby
 import copy
 
 import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
+from ..exceptions import NoDataError
 from . import groups
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
@@ -408,8 +408,8 @@ class Universe(object):
                   'residue': self._topology.n_residues,
                   'segment': self._topology.n_segments}
         logger.debug("_process_attr: Adding {0} to topology".format(attr))
-        if hasattr(attr, 'per_object') and \
-                len(attr) != n_dict[attr.per_object]:
+        if (attr.per_object is not None and
+            len(attr) != n_dict[attr.per_object]):
             raise ValueError('Length of {attr} does not'
                              ' match number of {obj}s.\n'
                              'Expect: {n:d} Have: {m:d}'.format(
@@ -434,6 +434,49 @@ class Universe(object):
             except AttributeError:
                 # not every Attribute will have a transplant dict
                 pass
+
+    def add_Residue(self, segment=None, **attrs):
+        """Add a new Residue to this Universe
+
+        Parameters
+        ----------
+        segment : MDAnalysis.Segment
+          If there are multiple segments, then the Segment that the new
+          Residue will belong in must be specified.
+        attrs : dict
+          For each Residue attribute, the value for the new Residue must be
+          specified
+
+        Returns
+        -------
+        A reference to the new Residue
+
+        Raises
+        ------
+        NoDataError
+          If any information was missing.  This happens before any changes have
+          been made, ie the change is rolled back.
+
+        """
+        if len(self.segments) == 1:  # if only one segment, use this
+            segment = self.segments[0]
+        if segment is None:
+            raise NoDataError("")
+        # pass this information to the topology
+        residx = self._topology.add_Residue(segment, **attrs)
+        # resize my residues
+        self.residues = ResidueGroup(np.arange(self._topology.n_residues), self)
+
+        # return the new residue
+        return self.residues[residx]
+
+    def add_Segment(self, **attrs):
+        # pass this information to the topology
+        segidx = self._topology.add_Segment(**attrs)
+        # resize my segments
+        self.segments = SegmentGroup(np.arange(self._topology.n_segments), self)
+        # return the new segment 
+        return self.segments[segidx]
 
     # TODO: Maybe put this as a Bond attribute transplant
     # Problems: Can we transplant onto Universe?

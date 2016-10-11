@@ -35,11 +35,10 @@ TODO Notes:
 from six.moves import zip
 import numpy as np
 
-from ..lib.mdamath import one_to_many_pointers
 from .topologyattrs import Atomindices, Resindices, Segindices
+from ..exceptions import NoDataError
 
-
-def make_downshift_arrays(upshift):
+def make_downshift_arrays(upshift, nparents):
     """From an upwards translation table, create the opposite direction
 
     Turns a many to one mapping (eg atoms to residues) to a one to many mapping
@@ -49,12 +48,14 @@ def make_downshift_arrays(upshift):
     ----------
     upshift : array_like
         Array of integers describing which parent each item belongs to
+    nparents : integer
+        Total number of parents that exist.
 
     Returns
     -------
     downshift : array_like (dtype object)
         An array of arrays, each containing the indices of the children
-        of each parent
+        of each parent.  Length `nparents` + 1
 
     Examples
     --------
@@ -79,11 +80,25 @@ def make_downshift_arrays(upshift):
     borders = [None] + list(np.nonzero(np.diff(upshift_sorted))[0] + 1) + [None]
 
     # returns an array of arrays
+    downshift = []
+    counter = -1
+    # don't use enumerate, we modify counter in place
+    for x, y in zip(borders[:-1], borders[1:]):
+        counter += 1
+        # If parent is skipped, eg (0, 0, 2, 2, etc)
+        while counter != upshift[order[x:y][0]]:
+            downshift.append(np.array([], dtype=np.int))
+            counter += 1
+        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.int)))
+    # Add entries for childless parents at end of range
+    while counter < (nparents - 1):
+        downshift.append(np.array([], dtype=np.int))
+        counter += 1
     # Add None to end of array to force it to be of type Object
     # Without this, a rectangular array gets squashed into a single array
-    return np.array([np.sort(np.array(order[x:y], copy=True, dtype=np.int))
-                     for x, y in zip(borders[:-1], borders[1:])] + [None],
-                    dtype=object)
+    downshift.append(None)
+    return np.array(downshift, dtype=object)
+
 
 class TransTable(object):
     """Membership tables with methods to translate indices across levels.
@@ -144,7 +159,7 @@ class TransTable(object):
             self._AR = atom_resindex.copy()
             if not len(self._AR) == n_atoms:
                 raise ValueError("atom_resindex must be len n_atoms")
-        self._RA = make_downshift_arrays(self._AR)
+        self._RA = make_downshift_arrays(self._AR, n_residues)
 
         # built residue-to-segment mapping, and vice-versa
         if residue_segindex is None:
@@ -153,7 +168,7 @@ class TransTable(object):
             self._RS = residue_segindex.copy()
             if not len(self._RS) == n_residues:
                 raise ValueError("residue_segindex must be len n_residues")
-        self._SR = make_downshift_arrays(self._RS)
+        self._SR = make_downshift_arrays(self._RS, n_segments)
 
     @property
     def size(self):
@@ -341,16 +356,28 @@ class TransTable(object):
     def move_atom(self, aix, rix):
         """Move aix to be in rix"""
         self._AR[aix] = rix
-        self._RA = make_downshift_arrays(self._AR)
+        self._RA = make_downshift_arrays(self._AR, self.n_residues)
 
     def move_residue(self, rix, six):
         """Move rix to be in six"""
         self._RS[rix] = six
-        self._SR = make_downshift_arrays(self._RS)
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
 
-    def resize(self):
-        #TODO: resizers
-        pass
+    def add_Residue(self, segidx):
+        # segidx - index of parent
+        self.n_residues += 1
+        self._RA = make_downshift_arrays(self._AR, self.n_residues)
+        self._RS = np.concatenate([self._RS, np.array([segidx])])
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+
+        return self.n_residues - 1
+
+    def add_Segment(self):
+        self.n_segments += 1
+        # self._RS remains the same, no residues point to the new segment yet
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+
+        return self.n_segments - 1
 
 
 class Topology(object):
@@ -380,9 +407,6 @@ class Topology(object):
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
-        self.n_atoms = n_atoms
-        self.n_residues = n_res
-        self.n_segments = n_seg
         if attrs is None:
             attrs = []
         self.tt = TransTable(n_atoms, n_res, n_seg,
@@ -398,6 +422,18 @@ class Topology(object):
         self.attrs = []
         for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
+
+    @property
+    def n_atoms(self):
+        return self.tt.n_atoms
+
+    @property
+    def n_residues(self):
+        return self.tt.n_residues
+
+    @property
+    def n_segments(self):
+        return self.tt.n_segments
 
     def add_TopologyAttr(self, topologyattr):
         """Add a new TopologyAttr to the Topology.
@@ -420,3 +456,51 @@ class Topology(object):
     def read_attributes(self):
         """A list of the attributes read from the topology"""
         return filter(lambda x: not x.is_guessed, self.attrs)
+
+    def add_Residue(self, segment, **new_attrs):
+        """
+        Returns
+        -------
+        residx of the new Residue
+
+        Raises
+        ------
+        NoDataError
+          If not all data was provided.  This error is raised before any
+        """
+        # Add Residue to all topology tables
+
+        # Check that all data is here before making any changes
+        for attr in self.attrs:
+            if not attr.per_object == 'residue':
+                continue
+            if not attr.singular in new_attrs:
+                raise NoDataError("")
+
+        # Resize topology table
+        residx = self.tt.add_Residue(segment.segindex)
+        
+        # Add new value to each attribute
+        for attr in self.attrs:
+            if not attr.per_object == 'residue':
+                continue
+            newval = new_attrs[attr.singular]
+            attr.values = np.concatenate([attr.values, np.array([newval])])
+
+        return residx
+
+    def add_Segment(self, **new_attrs):
+        for attr in self.attrs:
+            if attr.per_object == 'segment':
+                if not attr.singular in new_attrs:
+                    raise NoDataError
+
+        segidx = self.tt.add_Segment()
+
+        for attr in self.attrs:
+            if not attr.per_object == 'segment':
+                continue
+            newval = new_attrs[attr.singular]
+            attr.values = np.concatenate([attr.values, np.array([newval])])
+        
+        return segidx

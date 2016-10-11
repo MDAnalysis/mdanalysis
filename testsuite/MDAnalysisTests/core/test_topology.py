@@ -23,6 +23,7 @@ from MDAnalysis.core.topology import (
     make_downshift_arrays,
 )
 from MDAnalysis.core import groups
+import MDAnalysis
 
 
 class TestTopology(object):
@@ -84,7 +85,7 @@ class TestTransTable(object):
                 assert_array_equal(a1, a2)
 
     def test_r2s(self):
-        for rix, six in zip(
+        for rix, sidx in zip(
                 [np.array([0, 1]),
                  np.array([2, 1, 0]),
                  np.array([1, 1, 1])],
@@ -92,10 +93,10 @@ class TestTransTable(object):
                  np.array([1, 1, 0]),
                  np.array([1, 1, 1])]
         ):
-            assert_array_equal(self.tt.residues2segments(rix), six)
+            assert_array_equal(self.tt.residues2segments(rix), sidx)
 
     def test_s2r_1d(self):
-        for six, rix in zip(
+        for sidx, rix in zip(
                 [[0, 1],
                  [1, 0],
                  [1, 1]],
@@ -103,10 +104,10 @@ class TestTransTable(object):
                  [1, 2, 0, 3],
                  [1, 2, 1, 2]]
                 ):
-            assert_array_equal(self.tt.segments2residues_1d(six), rix)
+            assert_array_equal(self.tt.segments2residues_1d(sidx), rix)
 
     def test_s2r_2d(self):
-        for six, rix in zip(
+        for sidx, rix in zip(
                 [[0, 1],
                  [1, 0],
                  [1, 1]],
@@ -114,12 +115,12 @@ class TestTransTable(object):
                  [[1, 2], [0, 3]],
                  [[1, 2], [1, 2]]]
         ):
-            answer = self.tt.segments2residues_2d(six)
+            answer = self.tt.segments2residues_2d(sidx)
             for a1, a2 in zip(answer, rix):
                 assert_array_equal(a1, a2)
 
     def test_s2a_1d(self):
-        for six, aix in zip(
+        for sidx, aix in zip(
                 [[0, 1],
                  [1, 0],
                  [1, 1]],
@@ -127,10 +128,10 @@ class TestTransTable(object):
                  [4, 5, 8, 2, 3, 9, 0, 1, 6, 7],
                  [4, 5, 8, 2, 3, 9, 4, 5, 8, 2, 3, 9]],
         ):
-            assert_array_equal(self.tt.segments2atoms_1d(six), aix)
+            assert_array_equal(self.tt.segments2atoms_1d(sidx), aix)
 
     def test_s2a_2d(self):
-        for six, aix in zip(
+        for sidx, aix in zip(
                 [[0, 1],
                  [1, 0],
                  [1, 1]],
@@ -138,7 +139,7 @@ class TestTransTable(object):
                  [[4, 5, 8, 2, 3, 9], [0, 1, 6, 7]],
                  [[4, 5, 8, 2, 3, 9], [4, 5, 8, 2, 3, 9]]],
         ):
-            answer = self.tt.segments2atoms_2d(six)
+            answer = self.tt.segments2atoms_2d(sidx)
             for a1, a2 in zip(answer, aix):
                 assert_array_equal(a1, a2)
 
@@ -470,8 +471,10 @@ class TestDownshiftArrays(object):
         # square shapes sometimes simplify to 2d array
         # which is bad!
         self.square = np.array([0, 1, 2, 0, 1, 2, 0, 1, 2])
+        self.square_size = 3
         self.square_result = np.array([[0, 3, 6], [1, 4, 7], [2, 5, 8]])
         self.ragged = np.array([0, 1, 2, 2, 0, 1, 2, 0, 1, 2])
+        self.ragged_size = 3
         self.ragged_result = np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]])
 
     def tearDown(self):
@@ -480,36 +483,123 @@ class TestDownshiftArrays(object):
         del self.ragged
         del self.ragged_result
 
+    @staticmethod
+    def assert_rows_match(a, b):
+        for row_a, row_b in zip(a, b):
+            assert_array_equal(row_a, row_b)
+        
     # The array as a whole must be dtype object
     # While the subarrays must be integers
     def test_downshift_dtype_square(self):
-        out = make_downshift_arrays(self.square)
+        out = make_downshift_arrays(self.square, self.square_size)
         assert_(out.dtype == object)
         assert_(out[0].dtype == np.int64)
 
     def test_downshift_dtype_ragged(self):
-        out = make_downshift_arrays(self.ragged)
+        out = make_downshift_arrays(self.ragged, self.ragged_size)
         assert_(out.dtype == object)
         assert_(out[0].dtype == np.int64)
 
     # Check shape and size
     # Shape should be size N+1 as None is appended
     def test_shape_square(self):
-        out = make_downshift_arrays(self.square)
+        out = make_downshift_arrays(self.square, self.square_size)
         assert_(out.shape == (4,))
         assert_(out[-1] is None)
 
     def test_shape_ragged(self):
-        out = make_downshift_arrays(self.ragged)
+        out = make_downshift_arrays(self.ragged, self.ragged_size)
         assert_(out.shape == (4,))
         assert_(out[-1] is None)
 
     def test_contents_square(self):
-        out = make_downshift_arrays(self.square)
-        for row, ref in zip(out, self.square_result):
-            assert_array_equal(row, ref)
+        out = make_downshift_arrays(self.square, self.square_size)
+        self.assert_rows_match(out, self.square_result)
 
     def test_contents_ragged(self):
-        out = make_downshift_arrays(self.ragged)
-        for row, ref in zip(out, self.ragged_result):
-            assert_array_equal(row, ref)
+        out = make_downshift_arrays(self.ragged, self.ragged_size)
+        self.assert_rows_match(out, self.ragged_result)
+
+    def test_missing_intra_values(self):
+        out = make_downshift_arrays(
+            np.array([0, 0, 2, 2, 3, 3]), 4)
+        self.assert_rows_match(out,
+                               np.array([np.array([0, 1]),
+                                         np.array([], dtype=np.int),
+                                         np.array([2, 3]),
+                                         np.array([4, 5]),
+                                         None], dtype=object))
+
+    def test_missing_intra_values_2(self):
+        out = make_downshift_arrays(
+            np.array([0, 0, 3, 3, 4, 4]), 5)
+        self.assert_rows_match(out,
+                               np.array([np.array([0, 1]),
+                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=np.int),
+                                         np.array([2, 3]),
+                                         np.array([4, 5]),
+                                         None], dtype=object))
+
+    def test_missing_end_values(self):
+        out = make_downshift_arrays(np.array([0, 0, 1, 1, 2, 2]), 4)
+        self.assert_rows_match(out,
+                               np.array([np.array([0, 1]),
+                                         np.array([2, 3]),
+                                         np.array([4, 5]),
+                                         np.array([], dtype=np.int),
+                                         None], dtype=object))
+
+    def test_missing_end_values_2(self):
+        out = make_downshift_arrays(np.array([0, 0, 1, 1, 2, 2]), 6)
+        self.assert_rows_match(out,
+                               np.array([np.array([0, 1]),
+                                         np.array([2, 3]),
+                                         np.array([4, 5]),
+                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=np.int),
+                                         None], dtype=object))
+
+
+class TestAddingResidues(object):
+    """Tests for adding residues and segments to a Universe
+
+    Adding Residues
+    Adding Segments
+
+    Adding Residue without an attr
+    Adding Residue with ambiguous segment
+    Adding Segment without an attr
+
+    Adding Residue and moving atoms to it
+    Adding Segment and moving residues to it
+    """
+    def test_add_segment_no_attrs(self):
+        u = make_Universe()
+
+        assert_(len(u.segments) == 5)
+        s = u.add_Segment()
+        assert_(isinstance(s, MDAnalysis.core.groups.Segment))
+        assert_(len(u.segments) == 6)
+
+    def test_add_residue_no_attrs(self):
+        u = make_Universe()
+
+        assert_(len(u.residues) == 25)
+        assert_(len(u.segments[1].residues) == 5)
+
+        res = u.add_Residue(segment=u.segments[1])
+
+        assert_(len(u.residues) == 26)
+        assert_(len(u.segments[1].residues) == 6)
+        assert_(res in u.segments[1].residues)
+
+    def test_add_residue_no_attrs_one_segment(self):
+        pass
+    
+    def test_missing_attr_NDE_Residue(self):
+        pass
+
+    def test_missing_attr_NDE_Segment(self):
+        pass
+
