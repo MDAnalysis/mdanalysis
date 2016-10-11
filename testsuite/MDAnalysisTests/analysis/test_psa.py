@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import MDAnalysis
 import MDAnalysis.analysis.psa
+from MDAnalysisTests import module_not_found
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_)
