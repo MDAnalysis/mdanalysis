@@ -310,7 +310,7 @@ class BaseReaderTest(object):
         # auxiliary has a lower frequency, so iter_as_aux should iterate over
         # only frames where there is a corresponding auxiliary value
         for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
-            assert_timestep_almost_equal(ts, 
+            assert_timestep_almost_equal(ts,
                        self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
                        decimal=self.ref.prec)
 
