@@ -438,6 +438,10 @@ class Universe(object):
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
 
+        New Residues will not contain any Atoms, but can be assigned to Atoms
+        as per usual.  If the Universe contains multiple segments, this must
+        be specified as a keyword.
+
         Parameters
         ----------
         segment : MDAnalysis.Segment
@@ -457,6 +461,17 @@ class Universe(object):
           If any information was missing.  This happens before any changes have
           been made, ie the change is rolled back.
 
+
+        Example
+        -------
+
+        Adding a new GLY residue, then placing atoms within it:
+
+        >>> newres = u.add_Residue(segment=u.segments[0], resid=42, resname='GLY')
+        >>> u.atoms[[1, 2, 3]].residues = newres
+        >>> u.select_atoms('resname GLY and resid 42')
+        <AtomGroup with 3 atoms>
+
         """
         if len(self.segments) == 1:  # if only one segment, use this
             segment = self.segments[0]
@@ -471,6 +486,24 @@ class Universe(object):
         return self.residues[residx]
 
     def add_Segment(self, **attrs):
+        """Add a new Segment to this Universe
+
+        Parameters
+        ----------
+        attrs : dict
+            For each Segment attribute as a key, give the value in the new
+            Segment
+
+        Returns
+        -------
+        A reference to the new Segment
+
+        Raises
+        ------
+        NoDataError
+            If any attributes were not specified as a keyword.
+
+        """
         # pass this information to the topology
         segidx = self._topology.add_Segment(**attrs)
         # resize my segments

@@ -23,6 +23,7 @@ from MDAnalysis.core.topology import (
     make_downshift_arrays,
 )
 from MDAnalysis.core import groups
+from MDAnalysis import NoDataError
 import MDAnalysis
 
 
@@ -596,10 +597,51 @@ class TestAddingResidues(object):
 
     def test_add_residue_no_attrs_one_segment(self):
         pass
+
+    def test_add_Residue_ambiguous_segment_NDE(self):
+        u = make_Universe()
+
+        assert_raises(NoDataError, u.add_Residue)
     
-    def test_missing_attr_NDE_Residue(self):
-        pass
+    def test_add_Residue_missing_attr_NDE(self):
+        u = make_Universe('resids')
+
+        assert_raises(NoDataError, u.add_Residue, segment=u.segments[0])
+
+    def test_add_Residue_NDE_message(self):
+        # check error message asks for missing attr
+        u = make_Universe('resnames', 'resids')
+
+        try:
+            u.add_Residue(segment=u.segments[0], resid=42)
+        except NoDataError as e:
+            assert_('resname' in e[0])
+        else:
+            raise AssertionError
+
+    def test_add_Residue_NDE_message_2(self):
+        # multiple missing attrs, check all get mentioned in error
+        u = make_Universe('resnames', 'resids')
+
+        try:
+            u.add_Residue(segment=u.segments[0])
+        except NoDataError as e:
+            assert_('resname' in e[0])
+            assert_('resid' in e[0])
+        else:
+            raise AssertionError
 
     def test_missing_attr_NDE_Segment(self):
-        pass
+        u = make_Universe('segids')
 
+        assert_raises(NoDataError, u.add_Segment)
+
+    def test_add_Segment_NDE_message(self):
+        u = make_Universe('segids')
+
+        try:
+            u.add_Segment()
+        except NoDataError as e:
+            assert_('segid' in e[0])
+        else:
+            raise AssertionError

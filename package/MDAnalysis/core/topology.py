@@ -468,18 +468,20 @@ class Topology(object):
         NoDataError
           If not all data was provided.  This error is raised before any
         """
-        # Add Residue to all topology tables
-
         # Check that all data is here before making any changes
         for attr in self.attrs:
             if not attr.per_object == 'residue':
                 continue
             if not attr.singular in new_attrs:
-                raise NoDataError("")
+                missing = (attr.singular for attr in self.attrs
+                           if (attr.per_object == 'residue' and
+                               not attr.singular in new_attrs))
+                raise NoDataError("Missing the following attributes for the new"
+                                  " Residue: {}".format(', '.join(missing)))
 
         # Resize topology table
         residx = self.tt.add_Residue(segment.segindex)
-        
+
         # Add new value to each attribute
         for attr in self.attrs:
             if not attr.per_object == 'residue':
@@ -493,7 +495,12 @@ class Topology(object):
         for attr in self.attrs:
             if attr.per_object == 'segment':
                 if not attr.singular in new_attrs:
-                    raise NoDataError
+                    missing = (attr.singular for attr in self.attrs
+                               if (attr.per_object == 'segment' and
+                                   not attr.singular in new_attrs))
+                    raise NoDataError("Missing the following attributes for the"
+                                      " new Segment: {}"
+                                      "".format(', '.join(missing)))
 
         segidx = self.tt.add_Segment()
 
@@ -502,5 +509,5 @@ class Topology(object):
                 continue
             newval = new_attrs[attr.singular]
             attr.values = np.concatenate([attr.values, np.array([newval])])
-        
+
         return segidx
