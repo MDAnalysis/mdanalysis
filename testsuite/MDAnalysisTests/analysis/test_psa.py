@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import MDAnalysis
 import MDAnalysis.analysis.psa
+from MDAnalysisTests import module_not_found
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
@@ -30,6 +31,10 @@ from MDAnalysisTests import parser_not_found, tempdir, module_not_found
 class TestPSAnalysis(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
+    @dec.skipif(module_not_found('matplotlib'),
+                "Test skipped because matplotlib is not available.")
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
@@ -43,6 +48,7 @@ class TestPSAnalysis(TestCase):
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
+        self._plot()
 
     def _run(self):
         self.psa.run(metric='hausdorff')
@@ -51,6 +57,9 @@ class TestPSAnalysis(TestCase):
         self.frech_matrix = self.psa.get_pairwise_distances()
         self.hausd_dists = self.hausd_matrix[self.iu1]
         self.frech_dists = self.frech_matrix[self.iu1]
+
+    def _plot(self):
+        self.plot_data = self.psa.plot()
 
     def tearDown(self):
         del self.universe1
@@ -74,6 +83,11 @@ class TestPSAnalysis(TestCase):
         err_msg = "Frechet distances did not increase after path reversal"
         assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)
 
+    def test_dendrogram_produced(self):
+        err_msg = "Dendrogram dictionary object was not produced"
+        assert_(type(self.plot_data[1]) is dict, err_msg)
+
+
 class TestPSAExceptions(TestCase):
     '''Tests for exceptions that should be raised
     or caught by code in the psa module.'''
@@ -89,7 +103,7 @@ class TestPSAExceptions(TestCase):
 
     def test_get_coord_axes_bad_dims(self):
         '''Test that ValueError is raised when
-        numpy array with incorrect dimensions 
+        numpy array with incorrect dimensions
         is fed to get_coord_axes().'''
 
         with self.assertRaises(ValueError):
@@ -234,3 +248,5 @@ class DiscreteFrechetDistance(TestCase):
         actual = MDAnalysis.analysis.psa.discrete_frechet(self.path_1,
                                                           self.path_2)
         assert_almost_equal(actual, expected)
+
+
