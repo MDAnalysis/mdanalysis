@@ -16,16 +16,19 @@
 
 from glob import glob
 from os import path
+import numpy as np
 
 from numpy.testing import (
     assert_,
     assert_raises,
     assert_equal,
+    assert_array_almost_equal,
     raises
 )
 
 
 import MDAnalysis as mda
+from MDAnalysis.lib import transformations
 from MDAnalysis.core.topologyobjects import (
     Bond,
     Angle,
@@ -108,6 +111,15 @@ class TestAtomGroupWriting(object):
 class TestAtomGroupTransformations(object):
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
+        self.coords = self.u.atoms.positions.copy()
+        self.cog = self.u.atoms.center_of_geometry()
 
     def tearDown(self):
         del self.u
+
+    def test_translate(self):
+        disp = np.ones(3)
+        self.u.atoms.translate(disp)
+        cog = self.u.atoms.center_of_geometry()
+        diff = cog - self.cog
+        assert_array_almost_equal(diff, disp, decimal=5)
