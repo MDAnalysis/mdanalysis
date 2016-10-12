@@ -184,7 +184,7 @@ class TestLevelMoves(object):
     
     """
     def setUp(self):
-        self.u = make_Universe('resids', 'resnames', 'segids')
+        self.u = make_Universe(('resids', 'resnames', 'segids'))
 
     def tearDown(self):
         del self.u
@@ -596,7 +596,11 @@ class TestAddingResidues(object):
         assert_(res in u.segments[1].residues)
 
     def test_add_residue_no_attrs_one_segment(self):
-        pass
+        u = make_Universe(extras=[], size=(125, 25, 1))
+
+        res = u.add_Residue()
+
+        assert_(isinstance(res, MDAnalysis.core.groups.Residue))
 
     def test_add_Residue_ambiguous_segment_NDE(self):
         u = make_Universe()
@@ -604,13 +608,13 @@ class TestAddingResidues(object):
         assert_raises(NoDataError, u.add_Residue)
     
     def test_add_Residue_missing_attr_NDE(self):
-        u = make_Universe('resids')
+        u = make_Universe(('resids',))
 
         assert_raises(NoDataError, u.add_Residue, segment=u.segments[0])
 
     def test_add_Residue_NDE_message(self):
         # check error message asks for missing attr
-        u = make_Universe('resnames', 'resids')
+        u = make_Universe(('resnames', 'resids'))
 
         try:
             u.add_Residue(segment=u.segments[0], resid=42)
@@ -621,7 +625,7 @@ class TestAddingResidues(object):
 
     def test_add_Residue_NDE_message_2(self):
         # multiple missing attrs, check all get mentioned in error
-        u = make_Universe('resnames', 'resids')
+        u = make_Universe(('resnames', 'resids'))
 
         try:
             u.add_Residue(segment=u.segments[0])
@@ -632,12 +636,12 @@ class TestAddingResidues(object):
             raise AssertionError
 
     def test_missing_attr_NDE_Segment(self):
-        u = make_Universe('segids')
+        u = make_Universe(('segids',))
 
         assert_raises(NoDataError, u.add_Segment)
 
     def test_add_Segment_NDE_message(self):
-        u = make_Universe('segids')
+        u = make_Universe(('segids',))
 
         try:
             u.add_Segment()

@@ -720,7 +720,7 @@ class TestPropSelection(object):
                      set(ag[getattr(ag, self.plurals[prop]) != 1.5].indices))
 
     def test_props(self):
-        u = make_Universe('masses', 'charges')
+        u = make_Universe(('masses', 'charges'))
 
         for prop in ['mass', 'charge']:
             for ag in [u.atoms, u.atoms[:100]]:
@@ -757,8 +757,8 @@ class TestBondedSelection(object):
 
 class TestSelectionErrors(object):
     def setUp(self):
-        self.u = make_Universe('names', 'masses',
-                               'resids', 'resnames', 'resnums')
+        self.u = make_Universe(('names', 'masses',
+                                'resids', 'resnames', 'resnums'))
 
     def tearDown(self):
         del self.u
@@ -791,7 +791,7 @@ class TestSelectionErrors(object):
 
 
 def test_segid_and_resid():
-    u = make_Universe('segids', 'resids')
+    u = make_Universe(('segids', 'resids'))
 
     ag = u.select_atoms('segid SegB and resid 1-100')
 
@@ -802,10 +802,10 @@ def test_segid_and_resid():
 
 class TestImplicitOr(object):
     def setUp(self):
-        self.u = make_Universe('names', 'types',
-                               'resids', 'resnums',
-                               'resnames', 'segids')
-
+        self.u = make_Universe(('names', 'types',
+                                'resids', 'resnums',
+                                'resnames', 'segids'))
+                               
     def tearDown(self):
         del self.u
 
