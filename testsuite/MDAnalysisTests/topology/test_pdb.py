@@ -104,8 +104,8 @@ def test_conect2ter():
     assert_warns(UserWarning, parse)
     struc = parse()
 
-    assert_('bonds' in struc)
-    assert_(len(struc['bonds']) == 4)
+    assert_(hasattr(struc, 'bonds'))
+    assert_(len(struc.bonds.values) == 4)
 
 
 def test_single_conect():
@@ -115,5 +115,5 @@ def test_single_conect():
         return struc
     assert_warns(UserWarning, parse)
     struc = parse()
-    assert_('bonds' in struc)
-    assert_(len(struc['bonds']) == 2)
+    assert_(hasattr(struc, 'bonds'))
+    assert_(len(struc.bonds.values) == 2)
