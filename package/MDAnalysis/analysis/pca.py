@@ -99,7 +99,6 @@ import warnings
 import numpy as np
 from scipy.integrate import simps
 
-from MDAnalysis.core import AtomGroup
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressMeter
@@ -238,9 +237,8 @@ class PCA(AnalysisBase):
                 mean_pm.echo(i)
             self.mean /= self.n_frames
 
-        atom_positions = self.mean.reshape(self._n_atoms, 3)
-        self.mean_atoms = AtomGroup.AtomGroup(self._atoms)
-        self.mean_atoms.positions = atom_positions
+        self.mean_atoms = self._atoms
+        self.mean_atoms.positions = self._atoms.positions
 
     def _single_frame(self):
         if self.align:

@@ -155,7 +155,7 @@ def dist(A, B, offset=0):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    r = A.coordinates() - B.coordinates()
+    r = A.positions - B.positions
     d = np.sqrt(np.sum(r * r, axis=1))
     return np.array([residues_A, residues_B, d])
 
