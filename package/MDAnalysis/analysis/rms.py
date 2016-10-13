@@ -422,8 +422,8 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        self._weights = ((self.ref_atoms.masses / self.ref_atoms.masses.mean())
-                        if self.mass_weighted else None)
+        self._weights = ((self.ref_atoms.masses / self.ref_atoms.masses.mean()).astype(np.float64)
+                         if self.mass_weighted else None)
 
         current_frame = self.reference.trajectory.ts.frame
 

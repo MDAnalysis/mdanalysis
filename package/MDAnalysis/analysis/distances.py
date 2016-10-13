@@ -190,9 +190,7 @@ def between(group, A, B, distance):
 
     .. versionadded: 0.7.5
     """
-    from MDAnalysis.core.AtomGroup import AtomGroup
-
     ns_group = AtomNeighborSearch(group)
     resA = set(ns_group.search(A, distance))
     resB = set(ns_group.search(B, distance))
-    return AtomGroup(resB.intersection(resA))
+    return sum(sorted(resB.intersection(resA)))
