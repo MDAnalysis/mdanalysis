@@ -516,7 +516,6 @@ class GroupBase(_MutableBase):
         x[idx] = np.dot(x[idx], R.T)
         return R
 
-# TODO: re-add ability to use AtomGroups as input
     def rotateby(self, angle, axis, point=None):
         """Apply a rotation to the selection's coordinates.
 
@@ -524,9 +523,13 @@ class GroupBase(_MutableBase):
         ----------
         angle : float
             Rotation angle in degrees.
-        axis : array_like
-            Rotation axis vector.
-        point : array_like
+        axis : array_like or tuple of 2 AtomGroups
+            Rotation axis vector. If a tuple is given the axis will be
+            determined by the difference vector of the centroid for both
+            AtomGroups.
+        point : array_like (optional)
+            Point around which the
+
             Point on the rotation axis; if ``None`` the center of geometry of
             the selection is chosen .
 
@@ -550,6 +553,7 @@ class GroupBase(_MutableBase):
 
         """
         alpha = np.radians(angle)
+
         try:
             sel1, sel2 = axis
             x1, x2 = sel1.centroid(), sel2.centroid()
@@ -559,6 +563,7 @@ class GroupBase(_MutableBase):
                 point = x1
         except (ValueError, AttributeError):
             n = np.asarray(axis)
+
         if point is None:
             p = self.centroid()
         else:
@@ -566,6 +571,7 @@ class GroupBase(_MutableBase):
                 p = point.centroid()
             except AttributeError:
                 p = np.asarray(point)
+
         M = transformations.rotation_matrix(alpha, n, point=p)
         self.transform(M)
         return M
