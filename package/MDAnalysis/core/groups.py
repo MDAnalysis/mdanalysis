@@ -485,7 +485,8 @@ class GroupBase(_MutableBase):
         """Apply a rotation matrix `R` to the selection's coordinates.
 
         No translation is done before the rotation is applied, so coordinates
-        are rotated about the origin.
+        are rotated about the origin. This differs from the behavior of
+        ``rotateby``.
 
         Parameters
         ----------
@@ -499,6 +500,7 @@ class GroupBase(_MutableBase):
 
         See Also
         --------
+        rotateby : rotate around given axis and angle
         MDAnalysis.lib.transformations : module of all coordinate transforms
 
         Notes
@@ -509,7 +511,9 @@ class GroupBase(_MutableBase):
         .. math::
 
             \mathbf{x}' = \mathsf{R}\mathbf{x}
+
         """
+        R = np.asarray(R)
         # changes the coordinates (in place)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
@@ -528,10 +532,9 @@ class GroupBase(_MutableBase):
             determined by the difference vector of the centroid for both
             AtomGroups.
         point : array_like (optional)
-            Point around which the
-
-            Point on the rotation axis; if ``None`` the center of geometry of
-            the selection is chosen .
+            Center of rotation. If ``None`` then the center of geometry of this
+            group is used if ``axis`` is an array. If ``axis`` is a tuple of
+            atomgroups the centroid of the first atomgroup is used.
 
         Returns
         -------
