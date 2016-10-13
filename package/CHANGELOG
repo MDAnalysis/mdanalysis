@@ -108,6 +108,7 @@ Enhancements
   * Iteration and seeking in PDB files made faster (Issue #848)
 
 Fixes
+  * Fixed TypeError in PSAnalysis heatmap-dendrogram plotting (Issue #1018)
   * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
