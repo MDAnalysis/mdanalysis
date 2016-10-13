@@ -1537,7 +1537,7 @@ class ComponentBase(_MutableBase):
 
     def __ne__(self, other):
         return not self == other
-    
+
     def __hash__(self):
         return hash(self.ix)
 
@@ -1640,7 +1640,7 @@ class Atom(ComponentBase):
             raise TypeError(
                 "Can only set Atom residue to Residue, not {}".format(type(new)))
         self.universe._topology.tt.move_atom(self.ix, new.resindex)
-    
+
     @property
     def segment(self):
         segmentclass = self.level.parent.parent.singular
@@ -1752,7 +1752,7 @@ class Residue(ComponentBase):
             raise TypeError(
                 "Can only set Residue segment to Segment, not {}".format(type(new)))
         self.universe._topology.tt.move_residue(self.ix, new.segindex)
-    
+
 
 class Segment(ComponentBase):
     """Segment base class.
@@ -1827,4 +1827,3 @@ def requires(*attrs):
             return func(*args, **kwargs)
         return check_args
     return require_dec
-
