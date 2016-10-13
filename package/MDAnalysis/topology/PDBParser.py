@@ -266,10 +266,10 @@ class PDBParser(TopologyReader):
         # so the "break" call happens before bonds are reached.
 
         # If the serials wrapped, this won't work
-        if hasattr(self, '_wrapped_serials'):
+        if self._wrapped_serials:
             warnings.warn("Invalid atom serials were present, bonds will not"
                           " be parsed")
-            return tuple([])
+            raise AttributeError  # gets caught in parse
 
         # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file
