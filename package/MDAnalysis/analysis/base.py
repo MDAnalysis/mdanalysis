@@ -29,7 +29,7 @@ import numpy as np
 import six
 
 from MDAnalysis import coordinates
-from MDAnalysis.core.AtomGroup import AtomGroup
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger(__name__)
