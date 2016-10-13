@@ -510,13 +510,10 @@ class GroupBase(_MutableBase):
 
             \mathbf{x}' = \mathsf{R}\mathbf{x}
         """
-        atomgroup = self.atoms
-
-        R = np.matrix(R, copy=False, dtype=np.float32)
         # changes the coordinates (in place)
-        x = atomgroup.universe.trajectory.ts.positions
-        idx = atomgroup.indices
-        x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
+        x = self.atoms.unique.universe.trajectory.ts.positions
+        idx = self.atoms.unique.indices
+        x[idx] = np.dot(x[idx], R.T)
         return R
 
 # TODO: re-add ability to use AtomGroups as input
