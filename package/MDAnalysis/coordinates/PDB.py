@@ -318,9 +318,6 @@ class PDBReader(base.Reader):
         kwargs.setdefault('multiframe', self.n_frames > 1)
         return PDBWriter(filename, **kwargs)
 
-    def rewind(self):
-        self._read_frame(0)
-
     def _reopen(self):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame

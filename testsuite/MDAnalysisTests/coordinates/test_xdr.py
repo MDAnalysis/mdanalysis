@@ -234,17 +234,13 @@ class _GromacsReader(TestCase):
                             self.universe.atoms.positions, self.prec)
 
     @dec.slow
-    def test_EOFraisesIOErrorEIO(self):
+    def test_EOFraisesStopIteration(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
             self.universe.trajectory.next()
 
-        assert_raises(IOError, go_beyond_EOF)
-        try:
-            go_beyond_EOF()
-        except IOError as err:
-            assert_equal(err.errno, errno.EIO,
-                         "IOError produces wrong error code")
+        assert_raises(StopIteration, go_beyond_EOF)
+
 
 
 class TestXTCReader(_GromacsReader):
@@ -659,7 +655,7 @@ class TRRReference(BaseReference):
         self.changing_dimensions = True
         self.reader = mda.coordinates.TRR.TRRReader
         self.writer = mda.coordinates.TRR.TRRWriter
-        self.ext = 'xtc'
+        self.ext = 'trr'
         self.prec = 3
         self.first_frame.velocities = self.first_frame.positions / 10
         self.first_frame.forces = self.first_frame.positions / 100
@@ -695,6 +691,18 @@ class TestTRRWriter_2(BaseWriterTest):
         if reference is None:
             reference = TRRReference()
         super(TestTRRWriter_2, self).__init__(reference)
+
+    # tests writing and reading in one!
+    def test_lambda(self):
+        outfile = self.tmp_file('write-lambda-test')
+        with self.ref.writer(outfile, self.reader.n_atoms) as W:
+            for i, ts in enumerate(self.reader):
+                ts.data['lambda'] = i / float(self.reader.n_frames)
+                W.write(ts)
+
+        reader = self.ref.reader(outfile)
+        for i, ts in enumerate(reader):
+            assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(TestCase):

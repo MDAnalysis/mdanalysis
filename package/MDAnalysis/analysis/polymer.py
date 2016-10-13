@@ -1,9 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -32,7 +32,6 @@ import numpy as np
 import logging
 
 from .. import NoDataError
-from ..lib.util import blocks_of
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
 
@@ -51,8 +50,7 @@ class PersistenceLength(AnalysisBase):
 
     .. versionadded:: 0.13.0
     """
-    def __init__(self, atomgroups,
-                 start=None, stop=None, step=None):
+    def __init__(self, atomgroups, **kwargs):
         """Calculate the persistence length for polymer chains
 
         Parameters
@@ -61,22 +59,23 @@ class PersistenceLength(AnalysisBase):
             List of atomgroups.  Each atomgroup should represent a single
             polymer chain, ordered in the correct order.
         start : int, optional
-            First frame of trajectory to analyse, Default: 0
+            First frame of trajectory to analyse, Default: None becomes 0.
         stop : int, optional
-            Last frame of trajectory to analyse, Default: -1
+            Last frame of trajectory to analyse, Default: None becomes
+            n_frames.
         step : int, optional
-            Step between frames to analyse, Default: 1
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number.
         """
+        super(PersistenceLength, self).__init__(
+            atomgroups[0].universe.trajectory, **kwargs)
         self._atomgroups = atomgroups
 
         # Check that all chains are the same length
         lens = [len(ag) for ag in atomgroups]
         chainlength = len(atomgroups[0])
-        if not all( l == chainlength for l in lens):
+        if not all(l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
-
-        self._setup_frames(atomgroups[0].universe.trajectory,
-                           start, stop, step)
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
@@ -84,7 +83,7 @@ class PersistenceLength(AnalysisBase):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
-        # decorrel for that 
+        # decorrel for that
         n = len(self._atomgroups[0])
 
         for chain in self._atomgroups:
@@ -101,7 +100,7 @@ class PersistenceLength(AnalysisBase):
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * self.nframes
+        norm *= len(self._atomgroups) * self.n_frames
 
         self.results = self._results / norm
         self._calc_bond_length()
@@ -117,10 +116,9 @@ class PersistenceLength(AnalysisBase):
 
     def perform_fit(self):
         """Fit the results to an exponential decay"""
-        from scipy.optimize import curve_fit
 
         try:
-            results = self.results
+            self.results
         except AttributeError:
             raise NoDataError("Use the run method first")
         self.x = np.arange(len(self.results)) * self.lb
@@ -129,15 +127,16 @@ class PersistenceLength(AnalysisBase):
 
         self.fit = np.exp(-self.x/self.lp)
 
-    def plot(self):
+    def plot(self, ax=None):
         """Oooh fancy"""
         import matplotlib.pyplot as plt
-        plt.ylabel('C(x)')
-        plt.xlabel('x')
-        plt.xlim([0.0, 40 * self.lb])
-        plt.plot(self.x, self.results, 'ro')
-        plt.plot(self.x, self.fit)
-        plt.show()
+        if ax is None:
+            ax = plt.gca()
+        ax.plot(self.x, self.results, 'ro', label='Result')
+        ax.plot(self.x, self.fit, label='Fit')
+        ax.set(xlabel='x', ylabel='C(x)', xlim=[0.0, 40 * self.lb])
+        ax.legend(loc='best')
+        return ax
 
 
 def fit_exponential_decay(x, y):
@@ -169,5 +168,3 @@ def fit_exponential_decay(x, y):
     a = curve_fit(expfunc, x, y)[0][0]
 
     return a
-
-    

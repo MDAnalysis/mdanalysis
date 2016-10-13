@@ -41,7 +41,9 @@ class TestDensity(TestCase):
         import MDAnalysis.analysis.density
 
         self.bins = [np.linspace(0, self.Lmax, n+1) for n in self.nbins]
-        h, edges = np.histogramdd(self.Lmax*np.random.random((self.counts, 3)), bins=self.bins)
+        h, edges = np.histogramdd(
+            self.Lmax * np.sin(np.linspace(0, 1, self.counts * 3)).reshape(self.counts, 3),
+            bins=self.bins)
         self.D = MDAnalysis.analysis.density.Density(h, edges,
                                                      parameters={'isDensity': False},
                                                      units={'length': 'A'})

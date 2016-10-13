@@ -364,12 +364,6 @@ class XYZReader(base.Reader):
         except (ValueError, IndexError) as err:
             raise EOFError(err)
 
-    def rewind(self):
-        """reposition on first frame"""
-        self._reopen()
-        # the next method calls _read_next_timestep
-        self.next()
-
     def _reopen(self):
         self.close()
         self.open_trajectory()

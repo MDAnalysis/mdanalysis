@@ -1,8 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning,
+# Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -18,8 +19,7 @@
 # Released under the  GNU Public Licence, v2
 
 
-"""
-Gromacs portable run input TPR format parser
+"""Gromacs portable run input TPR format parser
 ============================================
 
 The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a
@@ -51,10 +51,12 @@ approximate Gromacs release numbers are listed in the table
                              5.0.3,5.0.4, 5.0.5
 
    103        26             5.1                  yes
+
+   110        26             2016                 yes
    ========== ============== ==================== =====
 
-For further discussion and notes see `Issue 2`_. Also add a comment to
-`Issue 2`_ if a new or different TPR file format version should be
+For further discussion and notes see `Issue 2`_. Please *open a new issue* in
+the `Issue Tracker`_ when a new or different TPR file format version should be
 supported.
 
 Bonded interactions available in Gromacs are described in table 5.5 of the
@@ -78,7 +80,7 @@ Bonded interactions available in Gromacs are described in table 5.5 of the
 
 
 Classes
----------
+-------
 
 .. autoclass:: TPRParser
    :members:
@@ -121,9 +123,11 @@ has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 .. _Gromacs: http://www.gromacs.org
 .. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf
 .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
+.. _`Issue Tracker`: https://github.com/MDAnalysis/mdanalysis/issues
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
+
 """
 from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
@@ -132,7 +136,7 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 from ..lib.util import anyopen
-from .tpr import utils as U
+from .tpr import utils as tpr_utils
 from .base import TopologyReader
 
 import logging
@@ -142,8 +146,6 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 class TPRParser(TopologyReader):
     """Read topology information from a Gromacs_ TPR_ file.
 
-    .. SeeAlso:: :mod:`MDAnalysis.topology.TPR`
-
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
@@ -152,17 +154,14 @@ class TPRParser(TopologyReader):
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
-        :Returns: ``structure`` dict
+        Returns
+        -------
+        structure : dict
         """
-        #ndo_int = U.ndo_int
-        ndo_real = U.ndo_real
-        #ndo_rvec = U.ndo_rvec
-        #ndo_ivec = U.ndo_ivec
-
         tprf = anyopen(self.filename, mode='rb').read()
         data = xdrlib.Unpacker(tprf)
         try:
-            th = U.read_tpxheader(data)                    # tpxheader
+            th = tpr_utils.read_tpxheader(data)                    # tpxheader
         except EOFError:
             msg = "{0}: Invalid tpr file or cannot be recognized".format(self.filename)
             logger.critical(msg)
@@ -174,18 +173,18 @@ class TPRParser(TopologyReader):
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            U.extract_box_info(data, V)
+            tpr_utils.extract_box_info(data, V)
 
         if state_ngtc > 0 and V >= 28:
             if V < 69:                      # redundancy due to  different versions
-                ndo_real(data, state_ngtc)
-            ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
+                tpr_utils.ndo_real(data, state_ngtc)
+            tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
         if V < 26:
-            U.fver_err(V)
+            tpr_utils.fileVersion_err(V)
 
         if th.bTop:
-            tpr_top = U.do_mtop(data, V)
+            tpr_top = tpr_utils.do_mtop(data, V)
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
@@ -222,7 +221,6 @@ class TPRParser(TopologyReader):
         logger.info("Gromacs version   : {0}".format(th.ver_str))
         logger.info("tpx version       : {0}".format(th.fver))
         logger.info("tpx generation    : {0}".format(th.fgen))
-        logger.info("tpx number        : {0}".format(th.number))
         logger.info("tpx precision     : {0}".format(th.precision))
         logger.info("tpx file_tag      : {0}".format(th.file_tag))
         logger.info("tpx natoms        : {0}".format(th.natoms))

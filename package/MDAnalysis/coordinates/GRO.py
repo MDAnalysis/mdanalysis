@@ -330,9 +330,10 @@ class GROWriter(base.Writer):
             for atom_index, resid, resname, name in zip(
                     range(len(atoms)), resids, resnames, names):
                 truncated_atom_index = int(str(atom_index + 1)[-5:])
+                truncated_resid = int(str(resid)[:5])
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
-                        resid=resid,
+                        resid=truncated_resid,
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,
@@ -341,7 +342,7 @@ class GROWriter(base.Writer):
                     ))
                 else:
                     output_gro.write(self.fmt['xyz'].format(
-                        resid=resid,
+                        resid=truncated_resid,
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,

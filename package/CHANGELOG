@@ -13,11 +13,76 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16
+??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
+         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma
 
-  * 0.15.1
+  * 0.16.0
 
+Enhancements
+  * Added 'MemoryReader' class to allow manipulation of trajectory data
+    in-memory, which can provide substantial speed-ups to certain
+    calculations.
+  * Universe creation now takes an 'in_memory' option, which will
+    transfer the corresponding trajectory to memory. Likewise a new
+    'Universe.transfer_to_memory()' method makes it possible to make
+    this transfer after construction of the universe
+  * Added 'in_memory' option to 'rms_fit_trj', which makes it possible
+    to do in-place (in-memory) alignment of trajectories.
+  * All classes derived from 'AnalysisBase' now display a ProgressMeter
+    with 'quiet=False'
+  * The 'run' method from all 'AnalysisBase' derived classes return the
+    class itself.
+  * Added boolean flag at lib.distances.USED_OPENMP to reveal if
+    OpenMP was used in compilation (Issue #883)
+  * Added Principal Component Analysis module for linear dimensionality
+    reduction.
+  * Added Auxiliary module for reading additional timeseries data alongside
+    trajectories (Issue #785)
+  * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
+  * Established the MDAnalysis.analysis.legacy module for unmaintained
+    analysis code (Issue #743)
+        
+Fixes
+  * MDAnalysis.analysis.distances.between() is no longer broken
+  * GROWriter resids now truncated properly (Issue #886)
+  * reading/writing lambda value in trr files (Issue #859)
+  * fix __iter__/next redundancy (Issue #869)
+  * SingleFrameReader now raises StopIteration instead of IOError on calling
+    next (Issue #869)
+  * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
+  * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
+  * fixed incompatibility with newer matplotlib in analysis.hole
+  * Fixed modules that improperly documented and/or used frame slicing
+    defaults (#914)
+  * Fixed same interRDF can be run twice (Issue #924)
+  * Support for TPR files produced by Gromacs-2016 (Issue #932)
+  * Fixed parsing PDB files with CONECT records to TER entries (Issue #936)
+  * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
+  * Progress meters are now displayed as expected on jupyter notebooks
+    (Issue #927)
 
+Changes
+  * Started unifying the API of analysis classes (named internally
+    "Bauhaus" style; see Issue #719)
+  * Added protected variable _frame_index to to keep track of frame iteration
+    number in AnalysisBase
+  * Added new AlignTraj class for alignment. (Issue #845)
+  * Added new diffusionmap module for dimension reduction (Issue #857)
+  * Added new PCA module for dimension reduction (PR #896)
+  * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
+    40% speed up. (PR #930)
+  * The ProgressMeter class now has a `dynamic` keyword argument. It is now
+    recommended to provide format strings using the new python format syntax,
+    the old %-based syntax is still available but will be deprecated.
+    (PR #944)
+  * Analysis.rms.RMSD now confirms to standard analysis API (Issue #893)
+  * Fragments in Universe.fragment are now sorted by the index of their first
+    atom. (Issue 1007)
+
+Deprecations (Issue #599)
+  * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
+  * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
+        
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
 
@@ -43,6 +108,7 @@ Enhancements
   * Iteration and seeking in PDB files made faster (Issue #848)
 
 Fixes
+  * Fixed TypeError in PSAnalysis heatmap-dendrogram plotting (Issue #1018)
   * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
@@ -59,7 +125,6 @@ Fixes
   * Fixed HistoryReader returning 1 based frame indices (Issue #851)
 
 Changes
-
   * Added zero_based indices for HBondsAnalysis. (Issue #807)
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of

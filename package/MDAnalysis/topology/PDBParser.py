@@ -28,6 +28,11 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+.. Note::
+
+   The parser processes atoms and their names. Masses are guessed and set to 0
+   if unknown. Partial charges are not set.
+
 .. SeeAlso::
 
    * :mod:`MDAnalysis.topology.ExtendedPDBParser`
@@ -77,7 +82,7 @@ def float_or_default(val, default):
 
 
 class PDBParser(TopologyReader):
-    """Read minimum topology information from a PDB file.
+    """Parser that obtains a list of atoms from a standard PDB file.
 
     Creates the following Attributes:
      - names
@@ -89,9 +94,14 @@ class PDBParser(TopologyReader):
 
     Guesses the following Attributes:
      - masses
+
+    See Also
+    --------
+    :class:`MDAnalysis.coordinates.PDB.PDBReader`
+
+    .. versionadded:: 0.8
     """
     format = ['PDB','ENT']
-
 
     def parse(self):
         """Parse atom information from PDB file
@@ -255,6 +265,12 @@ class PDBParser(TopologyReader):
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
+        # If the serials wrapped, this won't work
+        if hasattr(self, '_wrapped_serials'):
+            warnings.warn("Invalid atom serials were present, bonds will not"
+                          " be parsed")
+            return tuple([])
+
         # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file
         mapping = dict((s, i) for i, s in enumerate(serials))
@@ -265,8 +281,16 @@ class PDBParser(TopologyReader):
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
-                    bond = tuple([mapping[atom], mapping[a]])
-                    bonds.add(bond)
+                    try:
+                        bond = tuple([mapping[atom], mapping[a]])
+                    except KeyError:
+                        # Bonds to TER records have no mapping
+                        # Ignore these as they are not real atoms
+                        warnings.warn(
+                            "PDB file contained CONECT record to TER entry. "
+                            "These are not included in bonds.")
+                    else:
+                        bonds.add(bond)
 
         bonds = tuple(bonds)
 
@@ -295,9 +319,16 @@ def _parse_conect(conect):
     """
     atom_id = np.int(conect[6:11])
     n_bond_atoms = len(conect[11:]) // 5
-    if len(conect[11:]) % n_bond_atoms != 0:
-        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
-                           "record: {}".format(conect))
+
+    try:
+        if len(conect[11:]) % n_bond_atoms != 0:
+            raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
+                               "record: {}".format(conect))
+    except ZeroDivisionError:
+        # Conect record with only one entry (CONECT A\n)
+        warnings.warn("Found CONECT record with single entry, ignoring this")
+        return atom_id, []  # return empty list to allow iteration over nothing
+
     bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
                   range(n_bond_atoms))
     return atom_id, bond_atoms

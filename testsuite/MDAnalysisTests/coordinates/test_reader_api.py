@@ -30,11 +30,13 @@ class AmazingMultiFrameReader(Reader):
         self.filename = filename
         self.n_frames = 10
         self.n_atoms = 10
+        self._auxs = {}
         # ts isn't a real timestep, but just an integer
         # whose value represents the frame number (0 based)
         self.ts = Timestep(self.n_atoms)
         self.ts.frame = -1
         self._read_next_timestep()
+
 
     def _read_next_timestep(self):
         self.ts.frame += 1
@@ -102,6 +104,11 @@ class _TestReader(object):
         l = len(self.reader)
 
         assert_equal(l, self.n_frames)
+
+    def test_raises_StopIteration(self):
+        self.reader[-1]
+
+        assert_raises(StopIteration, next, self.reader)
 
 
 class _Multi(_TestReader):
@@ -220,7 +227,7 @@ class _Single(_TestReader):
 
 class TestSingleFrameReader(_Single):
     def test_next(self):
-        assert_raises(IOError, self.reader.next)
+        assert_raises(StopIteration, self.reader.next)
 
     # Getitem tests
     # only 0 & -1 should work
@@ -264,3 +271,4 @@ class TestSingleFrameReader(_Single):
 
     def test_read_frame(self):
         assert_raises(IndexError, self.reader._read_frame, 1)
+

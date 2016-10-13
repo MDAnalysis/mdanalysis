@@ -13,6 +13,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+TRR trajectory files --- :mod:`MDAnalysis.coordinates.TRR`
+==========================================================
+
+Read and write GROMACS TRR trajectories.
+
+See Also
+--------
+MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
+"""
+
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
@@ -24,8 +35,12 @@ class TRRWriter(XDRBaseWriter):
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
 
-    Parameter
-    ---------
+    If the data dictionary of a TimeStep contains the key 'lambda' the
+    corresponding value will be used as the lambda value for written TRR file.
+    If None is found the lambda is set to 0.
+
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     n_atoms : int
@@ -34,6 +49,7 @@ class TRRWriter(XDRBaseWriter):
         convert into MDAnalysis units
     precision : float (optional)
         set precision of saved trjactory to this number of decimal places.
+
     """
 
     format = 'TRR'
@@ -79,7 +95,12 @@ class TRRWriter(XDRBaseWriter):
 
         box = triclinic_vectors(dimensions)
 
-        self._xdr.write(xyz, velo, forces, box, step, time, 1, self.n_atoms)
+        lmbda = 0
+        if 'lambda' in ts.data:
+            lmbda = ts.data['lambda']
+
+        self._xdr.write(xyz, velo, forces, box, step, time, lmbda,
+                        self.n_atoms)
 
 
 class TRRReader(XDRBaseReader):
@@ -88,8 +109,10 @@ class TRRReader(XDRBaseReader):
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
 
-    Parameter
-    ---------
+    The lambda value is written in the data dictionary of the returned TimeStep
+
+    Parameters
+    ----------
     filename : str
         filename of the trajectory
     convert_units : bool (optional)
@@ -143,5 +166,7 @@ class TRRReader(XDRBaseReader):
                 ts.forces = frame.f
             if self.convert_units:
                 self.convert_forces_from_native(ts.forces)
+
+        ts.data['lambda'] = frame.lmbda
 
         return ts

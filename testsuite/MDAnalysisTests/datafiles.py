@@ -43,6 +43,8 @@ __all__ = [
     "PDB_multiframe",
     "PDB_helix",
     "PDB_conect",
+    "PDB_conect2TER",  # Conect record to a TER entry (Issue 936)
+    "PDB_singleconect",  # Conect record with one entry (Issue 937)
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
@@ -58,8 +60,8 @@ __all__ = [
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
-    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510",
-    "TPR510_bonded",
+    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
+    "TPR510_bonded", "TPR2016_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -78,7 +80,7 @@ __all__ = [
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "PDB_HOLE",  # gramicidin A
-    "XTC_HOLE",  # gramicidin A, all frames identical, for Issue 129
+    "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
@@ -116,11 +118,19 @@ __all__ = [
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
     "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
-    "ENT" #for testing ENT file extension
+    "ENT", #for testing ENT file extension
+    "RANDOM_WALK",
+    "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
+    "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
+    "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
 ]
 
 from pkg_resources import resource_filename
 
+AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
+AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
+XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')
+AUX_XVG = resource_filename(__name__, 'data/test.xvg')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
@@ -164,6 +174,8 @@ PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
+PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
+PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
@@ -212,12 +224,14 @@ TPR502 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.2.tpr')
 TPR504 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.4.tpr')
 TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
 TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
+TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 # all bonded interactions
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
+TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -255,7 +269,7 @@ HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matri
 
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
-XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
+MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
 
@@ -329,6 +343,8 @@ Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilay
 # Contains one of each residue in 'nucleic' selections
 NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
 
+RANDOM_WALK = resource_filename(__name__, 'data/xyz_random_walk.xtc')
+RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 # This should be the last line: clean up namespace
 del resource_filename

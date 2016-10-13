@@ -21,16 +21,20 @@ import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import TestCase, assert_almost_equal, raises, assert_
+from numpy.testing import (TestCase, dec,
+                           assert_almost_equal, raises, assert_,
+                           assert_array_almost_equal)
+
 import numpy as np
 
 import os
 
+from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, parser_not_found
 
 
-class TestRMSD(object):
+class Testrmsd(object):
     def __init__(self):
         shape = (5, 3)
         # vectors with length one
@@ -84,20 +88,21 @@ class TestRMSD(object):
     def test_weights_and_superposition_1(self):
         weights = np.ones(len(self.u.trajectory[0]))
         weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
-            weights=weights, superposition=True)
+                            weights=weights, superposition=True)
         firstCoords = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
-            superposition=True)
+                               superposition=True)
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
     def test_weights_and_superposition_2(self):
         weights = np.zeros(len(self.u.trajectory[0]))
         weights[:100] = 1
         weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[-1],
-            weights=weights, superposition=True)
-        firstCoords = rms.rmsd(self.u.trajectory[0][:100], self.u.trajectory[-1][:100],
-            superposition=True)
-        #very close to zero, change significant decimal places to 5
-        assert_almost_equal(weighted, firstCoords, decimal = 5)
+                            weights=weights, superposition=True)
+        firstCoords = rms.rmsd(self.u.trajectory[0][:100],
+                               self.u.trajectory[-1][:100],
+                               superposition=True)
+        # very close to zero, change significant decimal places to 5
+        assert_almost_equal(weighted, firstCoords, decimal=5)
 
     @staticmethod
     @raises(ValueError)
@@ -128,6 +133,83 @@ class TestRMSD(object):
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
         assert_almost_equal(rmsd, rmsd_superposition)
 
+class TestRMSD(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
+        self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
+        self.correct_values_group = [[0, 0, 0, 0, 0],
+                                     [49, 48.9999, 4.7857, 4.7002,
+                                      4.68981]]
+
+    def tearDown(self):
+        del self.universe
+        del self.tempdir
+
+    def test_rmsd(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            step=49)
+        RMSD.run()
+        assert_array_almost_equal(RMSD.rmsd, self.correct_values, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
+
+    def test_rmsd_single_frame(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            start=5, stop=6).run()
+        single_frame = [[5, 5, 0.91544906]]
+        assert_array_almost_equal(RMSD.rmsd, single_frame, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
+
+    def test_mass_weighted_and_save(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            step=49, mass_weighted=True).run()
+        RMSD.save(self.outfile)
+        saved = np.loadtxt(self.outfile)
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
+                                  err_msg="error: rmsd profile should match " +
+                                          "test values")
+
+    def test_rmsd_group_selections(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            groupselections=
+                                            ['backbone', 'name CA'],
+                                            step=49).run()
+        assert_array_almost_equal(RMSD.rmsd, self.correct_values_group, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
+
+    @raises(SelectionError)
+    def test_ref_length_unequal_len(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms = reference.atoms[:-1]
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference)
+
+    @raises(SelectionError)
+    def test_mass_mismatches(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms.masses = 10
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference)
+
+
+    @raises(SelectionError)
+    def test_group_selections_unequal_len(self):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        reference.atoms[0].resname='NOTMET'
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
+                                            reference=reference,
+                                            groupselections=
+                                            ['resname MET','type NH3'])
+    @raises(NoDataError)
+    def test_save_before_run(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe)
+        RMSD.save('blah')
 
 class TestRMSF(TestCase):
     def setUp(self):

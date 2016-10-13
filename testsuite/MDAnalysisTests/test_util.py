@@ -18,8 +18,7 @@ import six
 
 import numpy as np
 from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_, assert_array_equal,
-                           TestCase)
+                           assert_array_almost_equal, assert_, assert_array_equal)
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
@@ -93,7 +92,7 @@ def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
     assert_equal(root, ref[0], err_msg="root incorrect")
     assert_equal(ext, ref[1], err_msg="extension incorrect")
 
-class TestIterable(TestCase):
+class TestIterable(object):
     def test_lists(self):
         assert_equal(util.iterable([1, 2, 3]), True)
         assert_equal(util.iterable([]), True)
@@ -117,7 +116,7 @@ class TestIterable(TestCase):
         assert_equal(util.iterable(u"unicode string"), False)
 
 
-class TestFilename(TestCase):
+class TestFilename(object):
     def setUp(self):
         self.root = "foo"
         self.filename = "foo.psf"
@@ -154,7 +153,7 @@ class TestFilename(TestCase):
         assert_equal(ns.name, self.filename2)
 
 
-class TestGeometryFunctions(TestCase):
+class TestGeometryFunctions(object):
     def setUp(self):
         self.e1 = np.array([1., 0, 0])
         self.e2 = np.array([0, 1., 0])
@@ -162,45 +161,51 @@ class TestGeometryFunctions(TestCase):
         self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
         self.null = np.zeros(3)
 
-    def testAngleUnitvectors(self):
+    def test_AngleUnitvectors(self):
         assert_equal(mdamath.angle(self.e1, self.e2), np.pi / 2)
         assert_equal(mdamath.angle(self.e1, self.a), np.pi / 3)
 
-    def testAngleVectors(self):
+    def test_AngleVectors(self):
         assert_equal(mdamath.angle(2 * self.e1, self.e2), np.pi / 2)
         assert_equal(mdamath.angle(-2 * self.e1, self.e2), np.pi - np.pi / 2)
         assert_equal(mdamath.angle(23.3 * self.e1, self.a), np.pi / 3)
 
-    def testAngleNullVector(self):
+    def test_AngleNullVector(self):
         assert_equal(mdamath.angle(self.e1, self.null), np.nan)
 
-    def testAngleColinear(self):
+    def test_AngleColinear(self):
         assert_equal(mdamath.angle(self.a, self.a), 0.0)
 
-    def testAnglePi(self):
+    def test_AnglePi(self):
         assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), np.pi)
         assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
 
-    def testAngleRandom(self):
-        for x in np.random.uniform(0, np.pi, 20):
-            r = np.random.uniform(0, 1000)
-            v = r * np.array([np.cos(x), np.sin(x), 0])
-            assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
+    def _check_AngleRange(self, x):
+        r = 1000.
+        v = r * np.array([np.cos(x), np.sin(x), 0])
+        assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
-    def testNorm(self):
+    def test_AngleRange(self):
+        for x in np.linspace(0, np.pi, 20):
+            yield self._check_AngleRange, x
+
+    def test_Norm(self):
         assert_equal(mdamath.norm(self.e3), 1)
         assert_equal(mdamath.norm(self.a), np.linalg.norm(self.a))
 
-    def testNormNullVector(self):
+    def test_NormNullVector(self):
         assert_equal(mdamath.norm(self.null), 0.0)
 
-    def testNormRandom(self):
-        for x in np.random.uniform(0, np.pi, 20):
-            r = np.random.uniform(0, 1000)
-            v = r * np.array([np.cos(x), np.sin(x), 0])
-            assert_almost_equal(mdamath.norm(v), r, 6)
+    def _check_NormRange(self, x):
+        r = 1000.
+        v = r * np.array([np.cos(x), np.sin(x), 0])
+        assert_almost_equal(mdamath.norm(v), r, 6)
 
-    def testNormal(self):
+    def test_NormRange(self):
+        for x in np.linspace(0, np.pi, 20):
+            yield self._check_NormRange, x
+
+    def test_Normal(self):
         assert_equal(mdamath.normal(self.e1, self.e2), self.e3)
         # add more non-trivial tests
 
@@ -429,7 +434,7 @@ class Class_with_Caches(object):
         self._cache[name] = value
 
 
-class TestCachedDecorator(TestCase):
+class TestCachedDecorator(object):
     def setUp(self):
         self.obj = Class_with_Caches()
 
@@ -695,7 +700,7 @@ class TestUniqueRows(object):
                            np.array([[0, 1, 2], [2, 3, 4]]))
 
 
-class TestGetWritterFor(TestCase):
+class TestGetWritterFor(object):
     def test_no_arguments(self):
         """Does ``get_writer_for`` fails as expected when provided no
         arguments

@@ -329,7 +329,7 @@ class TRJReader(base.Reader):
             while True:
                 next(self)
                 counter += 1
-        except EOFError:
+        except StopIteration:
             self.rewind()
 
         return counter
@@ -363,11 +363,6 @@ class TRJReader(base.Reader):
             return
         self.trjfile.close()
         self.trjfile = None
-
-    def rewind(self):
-        """Reposition at the beginning of the trajectory"""
-        self._reopen()
-        next(self)
 
 
 class NCDFReader(base.Reader):

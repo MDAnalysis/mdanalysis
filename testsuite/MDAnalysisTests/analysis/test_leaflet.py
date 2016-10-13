@@ -27,9 +27,11 @@ class TestLeafletFinder(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(Martini_membrane_gro, Martini_membrane_gro)
         self.lipid_heads = self.universe.select_atoms("name PO4")
+        self.lipid_head_string = "name PO4"
 
     def tearDown(self):
         del self.universe
+        del self.lipid_head_string
 
     def test_leaflet_finder(self):
         from MDAnalysis.analysis.leaflet import LeafletFinder
@@ -42,3 +44,11 @@ class TestLeafletFinder(TestCase):
         assert_equal(bottom_heads.indices, np.arange(2521,4670,12), err_msg="Found wrong leaflet lipids")
 
 
+    def test_string_vs_atomgroup_proper(self):
+        from MDAnalysis.analysis.leaflet import LeafletFinder
+        lfls_ag = LeafletFinder(self.universe, self.lipid_heads, pbc=True)
+        lfls_string = LeafletFinder(self.universe, self.lipid_head_string, pbc=True)
+        groups_ag = lfls_ag.groups()
+        groups_string = lfls_string.groups()
+        assert_equal(groups_string[0].indices, groups_ag[0].indices)
+        assert_equal(groups_string[1].indices, groups_ag[1].indices)

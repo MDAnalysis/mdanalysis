@@ -305,18 +305,21 @@ def get_coord_axes(path):
     The *path* is assumed to be a :class:`numpy.ndarray` where the 0th axis
     corresponds to a frame (a snapshot of coordinates). The :math:`3N`
     (Cartesian) coordinates are assumed to be either:
-        (1) all in the 1st axis, starting with the x,y,z coordinates of the
-            first atom, followed by the *x*,*y*,*z* coordinates of the 2nd, etc.
-        (2) in the 1st *and* 2nd axis, where the 1st axis indexes the atom
-            number and the 2nd axis contains the *x*,*y*,*z* coordinates of each
-            atom.
+
+    1. all in the 1st axis, starting with the x,y,z coordinates of the
+       first atom, followed by the *x*,*y*,*z* coordinates of the 2nd, etc.
+    2. in the 1st *and* 2nd axis, where the 1st axis indexes the atom
+       number and the 2nd axis contains the *x*,*y*,*z* coordinates of
+       each atom.
 
     :Arguments:
       *path*
          :class:`numpy.ndarray` representing a path
 
     :Returns:
-      (int, (int, ...)), the number of atoms and the axes containing coordinates
+      ``(int, (int, ...))``, the number of atoms and the axes
+      containing coordinates
+
     """
     path_dimensions = len(path.shape)
     if path_dimensions == 3:
@@ -329,7 +332,7 @@ def get_coord_axes(path):
     else:
         err_str = "Path must have 2 or 3 dimensions; the first dimensions (axis"\
                 + " 0) must correspond to frames, axis 1 (and axis 2, if"       \
-                + " present) must contain atomic coordinates.".format(N)
+                + " present) must contain atomic coordinates."
         raise ValueError(err_str)
     return N, axis
 
@@ -462,11 +465,6 @@ def hausdorff_avg(P, Q):
 
 def hausdorff_neighbors(P, Q):
     r"""Calculate the Hausdorff distance between two paths.
-
-    .. |3Dp| replace:: :math:`N_p \times N \times 3`
-    .. |2Dp| replace:: :math:`N_p \times (3N)`
-    .. |3Dq| replace:: :math:`N_q \times N \times 3`
-    .. |2Dq| replace:: :math:`N_q \times (3N)`
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
@@ -824,10 +822,11 @@ class Path(object):
     def get_num_atoms(self):
         """Return the number of atoms used to construct the :class:`Path`.
 
-        Must run :method:`Path.to_path()` prior to calling this method.
+        Must run :meth:`Path.to_path` prior to calling this method.
 
         :Returns:
-          int, the number of atoms in the :class:`Path`
+          ``int``, the number of atoms in the :class:`Path`
+
         """
         if self.natoms is None:
             err_str = "No path data; do 'Path.to_path()' first."
@@ -928,7 +927,7 @@ class PSAPair(object):
         *distances* for *this* pair of paths corresponding to distance matrix
         indices (*i*,*j*).
 
-        :method:`PSAPair.compute_nearest_neighbors` calls
+        :meth:`PSAPair.compute_nearest_neighbors` calls
         :func:`hausdorff_neighbors` to populate the dictionary of the nearest
         neighbor lists of frames (by index) and distances
         (:attr:`PSAPair.nearest_neighbors`). This method must explicitly take as
@@ -952,8 +951,8 @@ class PSAPair(object):
     def find_hausdorff_pair(self):
         r"""Find the Hausdorff pair (of frames) for *this* pair of paths.
 
-        :method:`PSAPair.find_hausdorff_pair` requires that
-        `:method:`PSAPair.compute_nearest_neighbors` be called first to
+        :meth:`PSAPair.find_hausdorff_pair` requires that
+        `:meth:`PSAPair.compute_nearest_neighbors` be called first to
         generate the nearest neighbors (and corresponding distances) for each
         path in *this* :class:`PSAPair`. The Hausdorff pair is the nearest
         neighbor pair (of snapshots/frames), one in the first path and one in
@@ -982,9 +981,9 @@ class PSAPair(object):
         """Returns the nearest neighbor frame indices, distances, or both, for
         each path in *this* :class:`PSAPair`.
 
-        :method:`PSAPair.get_nearest_neighbors` requires that the nearest
+        :meth:`PSAPair.get_nearest_neighbors` requires that the nearest
         neighbors (:attr:`nearest_neighbors`) be initially computed by first
-        calling :method:`compute_nearest_neighbors`. At least one of *frames*
+        calling :meth:`compute_nearest_neighbors`. At least one of *frames*
         or *distances* must be ``True``, or else a ``NoDataError`` is raised.
 
         :Arguments:
@@ -1026,9 +1025,9 @@ class PSAPair(object):
         """Returns the Hausdorff pair of frames indices, the Hausdorff distance,
         or both, for the paths in *this* :class:`PSAPair`.
 
-        :method:`PSAPair.get_hausdorff_pair` requires that the Hausdorff pair
+        :meth:`PSAPair.get_hausdorff_pair` requires that the Hausdorff pair
         (and distance) be initially found by first calling
-        :method:`find_hausdorff_pair`. At least one of *frames* or *distance*
+        :meth:`find_hausdorff_pair`. At least one of *frames* or *distance*
         must be ``True``, or else a ``NoDataError`` is raised.
 
         :Arguments:
@@ -1728,16 +1727,13 @@ class PSAnalysis(object):
         """
         import matplotlib
         from scipy.cluster.hierarchy import linkage, dendrogram
-        from brewer2mpl import get_map
 
-        color_list = get_map('Set1', 'qualitative', 9).mpl_colors
         matplotlib.rcParams['lines.linewidth'] = 0.5
 
         Z = linkage(distArray, method=method)
-        dgram = dendrogram(Z, no_labels=no_labels, orientation='right',         \
+        dgram = dendrogram(Z, no_labels=no_labels, orientation='left',          \
                            count_sort=count_sort, distance_sort=distance_sort,  \
-                           no_plot=no_plot, color_threshold=color_threshold,    \
-                           color_list=color_list)
+                           no_plot=no_plot, color_threshold=color_threshold)
         return Z, dgram
 
 
@@ -1768,13 +1764,12 @@ class PSAnalysis(object):
 
 
     def get_num_atoms(self):
-        """Return the number of atoms used to construct the :class:`Path`s in
+        """Return the number of atoms used to construct the :class:`Path` instances in
         :class:`PSA`.
 
         .. note::
-
-        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
-        method.
+           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+           method.
 
         :Returns:
           int, the number of atoms in :class:`PSA`'s :class:`Path`s'
@@ -1789,9 +1784,8 @@ class PSAnalysis(object):
         """Return the number of paths in :class:`PSA`.
 
         .. note::
-
-        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
-        method.
+           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+           method.
 
         :Returns:
           int, the number of paths in :class:`PSA`
@@ -1806,9 +1800,8 @@ class PSAnalysis(object):
         """Return the paths in :class:`PSA`.
 
         .. note::
-
-        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
-        method.
+           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+           method.
 
         :Returns:
           list of :class:`numpy.ndarray` representations of paths in
@@ -1824,9 +1817,8 @@ class PSAnalysis(object):
         """Return the distance matrix (or vector) of pairwise path distances.
 
         .. note::
-
-        Must run :method:`PSAnalysis.run(store=True)` prior to calling this
-        method.
+           Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
+           calling this method.
 
         :Arguments:
           *vectorform*
@@ -1835,6 +1827,7 @@ class PSAnalysis(object):
         :Returns:
           :class:`numpy.ndarray` representation of the distance matrix (or
           vector)
+
         """
         if self.D is None:
             err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
@@ -1848,11 +1841,11 @@ class PSAnalysis(object):
 
     @property
     def psa_pairs(self):
-        """Get the list of :class:`PSAPair`s for each pair of paths.
+        """Get the list of :class:`PSAPair` instances for each pair of paths.
 
-        :method:`psa_pairs` is a list of :class:`PSAPair` whose elements are
+        :meth:`psa_pairs` is a list of :class:`PSAPair` whose elements are
         pairs of paths that have been compared using
-        :method:`PSAnalysis.run_pairs_analysis()`. Each :class:`PSAPair`
+        :meth:`PSAnalysis.run_pairs_analysis`. Each :class:`PSAPair`
         contains nearest neighbor and Hausdorff pair information specific to a
         pair of paths. The nearest neighbor frames and distances for a
         :class:`PSAPair` can be accessed in the nearest neighbor dictionary
@@ -1864,12 +1857,12 @@ class PSAnalysis(object):
         'distance'.
 
         .. note::
-
-        Must run :method:`PSAnalysis.run_pairs_analysis()` prior to calling this
-        method.
+           Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
+           method.
 
         :Returns:
           list of all :class:`PSAPair` objects (in distance vector order)
+
         """
         if self._psa_pairs is None:
             err_str = "No nearest neighbors data; do"                           \
@@ -1885,16 +1878,16 @@ class PSAnalysis(object):
         This method returns a list of Hausdorff pair information, where each
         element is a dictionary containing the pair of frames and the
         (Hausdorff) distance between a pair of paths. See
-        :method:`PSAnalysis.psa_pairs` and :attr:`PSAPair.hausdorff_pair` for
+        :meth:`PSAnalysis.psa_pairs` and :attr:`PSAPair.hausdorff_pair` for
         more information about accessing Hausdorff pair data.
 
         .. note::
-
-        Must run :method:`PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)`
-        prior to calling this method.
+           Must run :meth:`PSAnalysis.run_pairs_analysis` with
+           ``hausdorff_pairs=True`` prior to calling this method.
 
         :Returns:
           list of all Hausdorff pairs (in distance vector order)
+
         """
         if self._HP is None:
             err_str = "No Hausdorff pairs data; do "                            \
@@ -1909,17 +1902,17 @@ class PSAnalysis(object):
 
         This method returns a list of nearest neighbor information, where each
         element is a dictionary containing the nearest neighbor frames and
-        distances between a pair of paths. See :method:`PSAnalysis.psa_pairs`
+        distances between a pair of paths. See :meth:`PSAnalysis.psa_pairs`
         and :attr:`PSAPair.nearest_neighbors` for more information about
         accessing nearest neighbor data.
 
         .. note::
-
-        Must run :method:`PSAnalysis.run_pairs_analysis(neighbors=True)` prior
-        to calling this method.
+           Must run :meth:`PSAnalysis.run_pairs_analysis` with
+           ``neighbors=True`` prior to calling this method.
 
         :Returns:
           list of all nearest neighbors (in distance vector order)
+
         """
         if self._NN is None:
             err_str = "No nearest neighbors data; do"                           \

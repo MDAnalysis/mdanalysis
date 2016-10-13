@@ -63,12 +63,12 @@ __write_dcd_header(PyObject *self, PyObject *args)
     charmm |= DCD_HAS_EXTRA_BLOCK;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "Oi|iids", &self, &natoms, &istart, &nsavc, &delta, &remarks) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
     if( !PyArg_ParseTuple(args, "i|iids", &natoms, &istart, &nsavc, &delta, &remarks) )
       return NULL;
@@ -80,23 +80,23 @@ __write_dcd_header(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
     return NULL;
   }
-  
+
   if ((temp = PyObject_GetAttrString(self, "dcdfile")) == NULL) { // This gives me a New Reference
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
     return NULL;
   }
-  
+
   if (!PyFile_CheckExact(temp)) {
     // Raise exception
     PyErr_SetString(PyExc_TypeError, "dcdfile does not refer to a file object");
     Py_DECREF(temp);
     return NULL;
   }
-  fd = fileno(PyFile_AsFile(temp)); 
+  fd = fileno(PyFile_AsFile(temp));
   // No longer need the reference to temp
   Py_DECREF(temp);
-  
+
   dcd = (dcdhandle *)malloc(sizeof(dcdhandle));
   memset(dcd, 0, sizeof(dcdhandle));
   dcd->fd = fd;
@@ -122,7 +122,7 @@ __write_dcd_header(PyObject *self, PyObject *args)
     return NULL;
   }
   Py_DECREF(temp);
-  
+
   // For debugging purposes
   temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle)); // Creates a New Reference
   if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
@@ -132,7 +132,7 @@ __write_dcd_header(PyObject *self, PyObject *args)
     return NULL;
   }
   Py_DECREF(temp);
-  
+
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -146,14 +146,14 @@ __write_next_frame(PyObject *self, PyObject *args)
   int rc, curstep;
   float* uc_array;
   double unitcell[6];
-	
+
   if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "OO!O!O!O!", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
     if( !PyArg_ParseTuple(args, "O!O!O!O!", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
       return NULL;
@@ -198,29 +198,29 @@ __finish_dcd_write(PyObject *self, PyObject *args)
   //PyObject* temp;
   //dcdhandle *dcd;
 
-  if (! self) { 
-    /* we were in fact called as a module function, try to retrieve 
+  if (! self) {
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
       return NULL;
-  } else { 
-    /* we were obviously called as an object method so args should 
+  } else {
+    /* we were obviously called as an object method so args should
        only have the int value. */
     if( !PyArg_ParseTuple(args, "") )
-      return NULL; 
-  } 
+      return NULL;
+  }
 
   /*if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
   // Raise exception
   PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
   return NULL;
   }
-  
+
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
   // Raise exception
   PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
   return NULL;
-  } 
+  }
   dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   free(dcd);
   Py_DECREF(temp);*/
@@ -250,16 +250,16 @@ __read_dcd_header(PyObject *self, PyObject *args)
   dcdhandle *dcd = NULL;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
-       a matching object from args */ 
-    if( !PyArg_ParseTuple(args, "O", &self) ) 
-      return NULL; 
-  } else { 
-    /* we were obviously called as an object method so args should 
-       only have the int value. */ 
-    if( !PyArg_ParseTuple(args, "") ) 
-      return NULL; 
-  } 
+    /* we were in fact called as a module function, try to retrieve
+       a matching object from args */
+    if( !PyArg_ParseTuple(args, "O", &self) )
+      return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
+    if( !PyArg_ParseTuple(args, "") )
+      return NULL;
+  }
 
   // Get the file object from the class
   if (!PyObject_HasAttrString(self, "dcdfile")) {
@@ -273,7 +273,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
     return NULL;
   }
-	
+
   if (!PyFile_CheckExact(temp)) {
     // Raise exception
     PyErr_SetString(PyExc_TypeError, "dcdfile does not refer to a file object");
@@ -282,7 +282,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
   fd = fileno(PyFile_AsFile(temp));
   // No longer need the reference to temp
   Py_DECREF(temp);
-	
+
   dcd = (dcdhandle *)malloc(sizeof(dcdhandle));
   memset(dcd, 0, sizeof(dcdhandle));
   dcd->fd = fd;
@@ -295,7 +295,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
 
-  /* 
+  /*
    * Check that the file is big enough to really hold all the frames it claims to have
    */
   {
@@ -319,8 +319,8 @@ __read_dcd_header(PyObject *self, PyObject *args)
     // Size of header
     dcd->header_size = fio_ftell(dcd->fd);
 
-    /* 
-     * It's safe to use ftell, even though ftell returns a long, because the 
+    /*
+     * It's safe to use ftell, even though ftell returns a long, because the
      * header size is < 4GB.
      */
     filesize = stbuf.st_size - fio_ftell(dcd->fd) - firstframesize;
@@ -384,7 +384,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
   Py_DECREF(temp);
-	
+
   temp = PyCObject_FromVoidPtr(dcd, NULL);
   if (temp == NULL) goto error;
   if (PyObject_SetAttrString(self, "_dcd_C_ptr", temp) == -1) {
@@ -404,7 +404,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
   Py_DECREF(temp);
-	
+
   // For debugging purposes
   temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle));
   if (temp == NULL) goto error;
@@ -427,213 +427,210 @@ __read_dcd_header(PyObject *self, PyObject *args)
 static PyObject *
 __read_timeseries(PyObject *self, PyObject *args)
 {
-  PyObject *temp = NULL;
-  PyArrayObject *coord = NULL;
-  PyListObject *atoms = NULL;
-  int lowerb = 0, upperb = 0, range=0;
-  float *tempX = NULL, *tempY = NULL, *tempZ = NULL;
-  int rc;
-  int i, j, index;
-  int n_atoms = 0, n_frames = 0;
-  int start = 0, stop = -1, skip = 1, numskip = 0;
-  dcdhandle *dcd = NULL;
-  int *atomlist = NULL;
-  npy_intp dimensions[3];
-  float unitcell[6];
-  const char* format = "afc";
-	
-  if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
-       a matching object from args */
-    if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &skip, &format) )
-      return NULL; 
-  } else {
-    /* we were obviously called as an object method so args should 
-       only have the int value. */
-    if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &skip, &format) )
+   PyObject *temp = NULL;
+   PyArrayObject *coord = NULL;
+   PyListObject *atoms = NULL;
+   int lowerb = 0, upperb = 0, range=0;
+   float *tempX = NULL, *tempY = NULL, *tempZ = NULL;
+   int rc;
+   int i, j, index;
+   int n_atoms = 0, n_frames = 0;
+
+   /* Stop = -1 is incorrect and causes an error, look for a fix of this in line
+   469 */
+   int start = 0, stop = -1, step = 1, numskip = 0, remaining_frames=0;
+   dcdhandle *dcd = NULL;
+   int *atomlist = NULL;
+   npy_intp dimensions[3];
+   float unitcell[6];
+   const char* format = "afc";
+
+   if (!self) {
+      /* we were in fact called as a module function, try to retrieve
+      a matching object from args */
+      if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &step, &format) )
       return NULL;
-  }
+   } else {
+      /* we were obviously called as an object method so args should
+      only have the int value. */
+      if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &step, &format) )
+      return NULL;
+   }
 
-  if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
-    // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
-    return NULL;
-  }
+   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
+      // Raise exception
+      PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
+      return NULL;
+   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
-  Py_DECREF(temp);
+   dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+   Py_DECREF(temp);
 
-  // Assume that start and stop are valid
-  if (stop == -1) { stop = dcd->nsets; }
-  n_frames = (stop-start+1) / skip;
-  //n_frames = dcd->nsets / skip;
-  n_atoms = PyList_Size((PyObject*)atoms);
-  if (n_atoms == 0) {
-    PyErr_SetString(PyExc_Exception, "No atoms passed into _read_timeseries function");
-    return NULL;
-  }
-  atomlist = (int*)malloc(sizeof(int)*n_atoms);
-  memset(atomlist, 0, sizeof(int)*n_atoms);
+   n_frames = ((stop-start) / step);
+   if ((stop-start) % step > 0) { n_frames++; }
+   //n_frames = dcd->nsets / skip;
+   n_atoms = PyList_Size((PyObject*)atoms);
+   if (n_atoms == 0) {
+      PyErr_SetString(PyExc_Exception, "No atoms passed into _read_timeseries function");
+      return NULL;
+   }
+   atomlist = (int*)malloc(sizeof(int)*n_atoms);
+   memset(atomlist, 0, sizeof(int)*n_atoms);
 
-  // Get the atom indexes
-  for (i=0;i<n_atoms;i++) {
-    temp = PyList_GetItem((PyObject*)atoms, i); // Borrowed Reference
-    if (temp==NULL) goto error;
-    // Make sure temp is an integer
-    /* TODO: this is not the proper check but [OB] cannot figure out how
-       to check if this is a numpy.int64 or similar; PyInt_Check would fail
-       on those (Issue 18)
-    */
-    if (!PyArray_IsAnyScalar((PyObject*)temp)) {
-      PyErr_SetString(PyExc_ValueError, "Atom number is not an integer");
-      goto error;
-    }
-    atomlist[i] = PyInt_AsLong(temp);
-  }
-
-  lowerb = atomlist[0]; upperb = atomlist[n_atoms-1];
-  range = upperb-lowerb+1;
-	
-  // Figure out the format string
-  if (strncasecmp(format, "afc", 3) == 0) {
-    dimensions[0] = n_atoms; dimensions[1] = n_frames; dimensions[2] = 3;
-  } else
-    if (strncasecmp(format, "acf", 3) == 0) {
-      dimensions[0] = n_atoms; dimensions[1] = 3; dimensions[2] = n_frames;
-    } else
-      if (strncasecmp(format, "fac", 3) == 0) {
-	dimensions[0] = n_frames; dimensions[1] = n_atoms; dimensions[2] = 3;
-      } else
-	if (strncasecmp(format, "fca", 3) == 0) {
-	  dimensions[0] = n_frames; dimensions[1] = 3; dimensions[2] = n_atoms;
-	} else
-	  if (strncasecmp(format, "caf", 3) == 0) {
-	    dimensions[0] = 3; dimensions[1] = n_atoms; dimensions[2] = n_frames;
-	  } else
-	    if (strncasecmp(format, "cfa", 3) == 0) {
-	      dimensions[0] = 3; dimensions[1] = n_frames; dimensions[2] = n_atoms;
-	    }
-	
-  coord = (PyArrayObject*) PyArray_SimpleNew(3, dimensions, NPY_DOUBLE);
-  if (coord == NULL) goto error;
-
-  // Reset trajectory
-  rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
-  dcd->setsread = 0;
-  dcd->first = 1;
-
-  // Jump to starting frame
-  jump_to_frame(dcd, start);
-	
-  // Now read through trajectory and get the atom pos
-  tempX = (float*)malloc(sizeof(float)*range);
-  tempY = (float*)malloc(sizeof(float)*range);
-  tempZ = (float*)malloc(sizeof(float)*range);
-  if ((tempX == NULL) | (tempY == NULL) || (tempZ == NULL)) {
-    PyErr_SetString(PyExc_MemoryError, "Can't allocate temporary space for coordinate arrays");
-    goto error;
-  }
-	
-  for (i=0;i<n_frames;i++)
-    {
-      if (skip > 1) {
-	/*if (dcd->first && dcd->nfixed) {
-	  rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
-	  unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
-	  dcd->reverse, dcd->charmm);
-	  dcd->first=0;
-	  if (rc < 0) {
-          // return an exception
-          PyErr_SetString(PyExc_IOError, "Error reading first frame from DCD file");
-          //fprintf(stderr, "read_dcdstep returned %d\n", rc);
-          return NULL;
-          //return MOLFILE_ERROR;
-	  }
-	  dcd->setsread++;
-	  }*/
-	// Figure out how many steps to skip
-	numskip = skip - (dcd->setsread % skip) - 1;
-	rc = skip_dcdstep(dcd->fd, dcd->natoms, dcd->nfixed, dcd->charmm, numskip);
-    	if (rc < 0) {
-	  // return an exception
-	  PyErr_SetString(PyExc_IOError, "Error skipping frame from DCD file");
-	  goto error;
-    	}
-    	dcd->setsread+=numskip;                                                                              
+   // Get the atom indexes
+   for (i=0;i<n_atoms;i++) {
+      temp = PyList_GetItem((PyObject*)atoms, i); // Borrowed Reference
+      if (temp==NULL) goto error;
+      // Make sure temp is an integer
+      /* TODO: this is not the proper check but [OB] cannot figure out how
+      to check if this is a numpy.int64 or similar; PyInt_Check would fail
+      on those (Issue 18)
+      */
+      if (!PyArray_IsAnyScalar((PyObject*)temp)) {
+         PyErr_SetString(PyExc_ValueError, "Atom number is not an integer");
+         goto error;
       }
+      atomlist[i] = PyInt_AsLong(temp);
+   }
+
+   lowerb = atomlist[0]; upperb = atomlist[n_atoms-1];
+   range = upperb-lowerb+1;
+
+   // Figure out the format string
+   if (strncasecmp(format, "afc", 3) == 0) {
+      dimensions[0] = n_atoms; dimensions[1] = n_frames; dimensions[2] = 3;
+   } else if (strncasecmp(format, "acf", 3) == 0) {
+      dimensions[0] = n_atoms; dimensions[1] = 3; dimensions[2] = n_frames;
+   } else if (strncasecmp(format, "fac", 3) == 0) {
+      dimensions[0] = n_frames; dimensions[1] = n_atoms; dimensions[2] = 3;
+   } else if (strncasecmp(format, "fca", 3) == 0) {
+      dimensions[0] = n_frames; dimensions[1] = 3; dimensions[2] = n_atoms;
+   } else if (strncasecmp(format, "caf", 3) == 0) {
+      dimensions[0] = 3; dimensions[1] = n_atoms; dimensions[2] = n_frames;
+   } else if (strncasecmp(format, "cfa", 3) == 0) {
+      dimensions[0] = 3; dimensions[1] = n_frames; dimensions[2] = n_atoms;
+   }
+
+   coord = (PyArrayObject*) PyArray_SimpleNew(3, dimensions, NPY_DOUBLE);
+   if (coord == NULL) goto error;
+
+   // Reset trajectory
+   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
+   dcd->setsread = 0;
+   dcd->first = 1;
+
+   // Jump to starting frame
+   jump_to_frame(dcd, start);
+
+   // Now read through trajectory and get the atom pos
+   tempX = (float*)malloc(sizeof(float)*range);
+   tempY = (float*)malloc(sizeof(float)*range);
+   tempZ = (float*)malloc(sizeof(float)*range);
+   if ((tempX == NULL) | (tempY == NULL) || (tempZ == NULL)) {
+      PyErr_SetString(PyExc_MemoryError, "Can't allocate temporary space for coordinate arrays");
+      goto error;
+   }
+
+   remaining_frames = stop-start;
+   for (i=0;i<n_frames;i++) {
+      if (step > 1 && i>0) {
+         // Check if we have fixed atoms
+         // XXX not done
+         /* Figure out how many steps to step over, if step = n, np array
+            slicing treats this as skip over n-1, read the nth. */
+         numskip = step -1;
+         /* If the number to skip is greater than the number of frames left
+            to be jumped over, just take one more step to reflect np slicing
+            if there is a remainder, guaranteed to have at least one more
+            frame.
+         */
+         if(remaining_frames < numskip){
+            numskip = 1;
+         }
+         rc = skip_dcdstep(dcd->fd, dcd->natoms, dcd->nfixed, dcd->charmm, numskip);
+         if (rc < 0) {
+            // return an exception
+            PyErr_SetString(PyExc_IOError, "Error skipping frame from DCD file");
+            goto error;
+         }
+      }
+      // on first iteration, numskip == 0, first set is always read.
+      dcd->setsread += numskip;
+      //now read from subset
       rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
-			  unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
-			  dcd->reverse, dcd->charmm);
+         unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
+         dcd->reverse, dcd->charmm);
       dcd->first = 0;
       dcd->setsread++;
+      remaining_frames = stop - dcd->setsread;
       if (rc < 0) {
-    	// return an exception
-    	PyErr_SetString(PyExc_IOError, "Error reading frame from DCD file");
-    	goto error;
-      }
+         // return an exception
+         PyErr_SetString(PyExc_IOError, "Error reading frame from DCD file");
+         goto error;
+
+         }
+
+
       // Copy into Numeric array only those atoms we are interested in
       for (j=0;j<n_atoms;j++) {
-	index = atomlist[j]-lowerb;
-	/* 
-	 * coord[a][b][c] = *(float*)(coord->data + a*coord->strides[0] + b*coord->strides[1] + c*coord->strides[2])
-	 */
-	if (strncasecmp(format, "afc", 3) == 0) {
-	  *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 0*coord->strides[2]) = tempX[index];
-	  *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 1*coord->strides[2]) = tempY[index];
-	  *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 2*coord->strides[2]) = tempZ[index];
-	} else
-	  if (strncasecmp(format, "acf", 3) == 0) {
-	    *(double*)(coord->data + j*coord->strides[0] + 0*coord->strides[1] + i*coord->strides[2]) = tempX[index];
-	    *(double*)(coord->data + j*coord->strides[0] + 1*coord->strides[1] + i*coord->strides[2]) = tempY[index];
-	    *(double*)(coord->data + j*coord->strides[0] + 2*coord->strides[1] + i*coord->strides[2]) = tempZ[index];
-	  } else
-	    if (strncasecmp(format, "fac", 3) == 0) {
-	      *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 0*coord->strides[2]) = tempX[index];
-	      *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 1*coord->strides[2]) = tempY[index];
-	      *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 2*coord->strides[2]) = tempZ[index];
-	    } else
-	      if (strncasecmp(format, "fca", 3) == 0) {
-		*(double*)(coord->data + i*coord->strides[0] + 0*coord->strides[1] + j*coord->strides[2]) = tempX[index];
-		*(double*)(coord->data + i*coord->strides[0] + 1*coord->strides[1] + j*coord->strides[2]) = tempY[index];
-		*(double*)(coord->data + i*coord->strides[0] + 2*coord->strides[1] + j*coord->strides[2]) = tempZ[index];
-	      } else
-  		if (strncasecmp(format, "caf", 3) == 0) {
-		  *(double*)(coord->data + 0*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempX[index];
-		  *(double*)(coord->data + 1*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempY[index];
-		  *(double*)(coord->data + 2*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempZ[index];
-  		} else
-		  if (strncasecmp(format, "cfa", 3) == 0) {
-		    *(double*)(coord->data + 0*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempX[index];
-		    *(double*)(coord->data + 1*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempY[index];
-		    *(double*)(coord->data + 2*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempZ[index];
-		  }
+         index = atomlist[j]-lowerb;
+
+         /*
+         * coord[a][b][c] = *(float*)(coord->data + a*coord->strides[0] + b*coord->strides[1] + c*coord->strides[2])
+         */
+         if (strncasecmp(format, "afc", 3) == 0) {
+            *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 0*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 1*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + j*coord->strides[0] + i*coord->strides[1] + 2*coord->strides[2]) = tempZ[index];
+         } else if (strncasecmp(format, "acf", 3) == 0) {
+            *(double*)(coord->data + j*coord->strides[0] + 0*coord->strides[1] + i*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + j*coord->strides[0] + 1*coord->strides[1] + i*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + j*coord->strides[0] + 2*coord->strides[1] + i*coord->strides[2]) = tempZ[index];
+         } else if (strncasecmp(format, "fac", 3) == 0) {
+            *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 0*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 1*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + i*coord->strides[0] + j*coord->strides[1] + 2*coord->strides[2]) = tempZ[index];
+         } else if (strncasecmp(format, "fca", 3) == 0) {
+            *(double*)(coord->data + i*coord->strides[0] + 0*coord->strides[1] + j*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + i*coord->strides[0] + 1*coord->strides[1] + j*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + i*coord->strides[0] + 2*coord->strides[1] + j*coord->strides[2]) = tempZ[index];
+         } else if (strncasecmp(format, "caf", 3) == 0) {
+            *(double*)(coord->data + 0*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + 1*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + 2*coord->strides[0] + j*coord->strides[1] + i*coord->strides[2]) = tempZ[index];
+         } else if (strncasecmp(format, "cfa", 3) == 0) {
+            *(double*)(coord->data + 0*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempX[index];
+            *(double*)(coord->data + 1*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempY[index];
+            *(double*)(coord->data + 2*coord->strides[0] + i*coord->strides[1] + j*coord->strides[2]) = tempZ[index];
+         }
       }
       // Check if we've been interupted by the user
       if (PyErr_CheckSignals() == 1) goto error;
-    }
+   }
 
-  // Reset trajectory
-  rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
-  dcd->setsread = 0;
-  dcd->first = 1;	
-  free(atomlist);
-  free(tempX);
-  free(tempY);
-  free(tempZ);
-  return PyArray_Return(coord);
+   // Reset trajectory
+   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
+   dcd->setsread = 0;
+   dcd->first = 1;
+   free(atomlist);
+   free(tempX);
+   free(tempY);
+   free(tempZ);
+   return PyArray_Return(coord);
 
- error:
-  // Reset trajectory
-  rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
-  dcd->setsread = 0;
-  dcd->first = 1;	
-  Py_XDECREF(coord);
-  if (atomlist != NULL) free(atomlist);
-  if (tempX != NULL) free(tempX);
-  if (tempY != NULL) free(tempY);
-  if (tempZ != NULL) free(tempZ);
-  return NULL;
+   error:
+   // Reset trajectory
+   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
+   dcd->setsread = 0;
+   dcd->first = 1;
+   Py_XDECREF(coord);
+   if (atomlist != NULL) free(atomlist);
+   if (tempX != NULL) free(tempX);
+   if (tempY != NULL) free(tempY);
+   if (tempZ != NULL) free(tempZ);
+   return NULL;
 }
+
 
 static PyObject *
 __read_next_frame(PyObject *self, PyObject *args)
@@ -645,16 +642,16 @@ __read_next_frame(PyObject *self, PyObject *args)
   int rc,numskip;
   float* unitcell;
   float alpha, beta, gamma;
-	
+
   if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "OO!O!O!O!|i", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) )
-      return NULL; 
+      return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "O!O!O!O!|i", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) ) 
+    if( !PyArg_ParseTuple(args, "O!O!O!O!|i", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) )
       return NULL;
   }
 
@@ -669,7 +666,7 @@ __read_next_frame(PyObject *self, PyObject *args)
 
   unitcell = (float*) uc->data;
   unitcell[0] = unitcell[2] = unitcell[5] = 0.0f;
-  unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;                                                                     
+  unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;
 
   /* Check for EOF here; that way all EOF's encountered later must be errors */
   if (dcd->setsread == dcd->nsets) {
@@ -722,7 +719,7 @@ __read_next_frame(PyObject *self, PyObject *args)
     //fprintf(stderr, "read_dcdstep returned %d\n", rc);
     return NULL;
     //return MOLFILE_ERROR;
-  }                                                                                            
+  }
 
   if (unitcell[1] >= -1.0 && unitcell[1] <= 1.0 &&
       unitcell[3] >= -1.0 && unitcell[3] <= 1.0 &&
@@ -746,7 +743,7 @@ __read_next_frame(PyObject *self, PyObject *args)
   unitcell[4] = alpha;
   unitcell[3] = beta;
   unitcell[1] = gamma;
-	
+
   // Return the frame read
   temp = Py_BuildValue("i", dcd->setsread);
   return temp;
@@ -759,17 +756,17 @@ __finish_dcd_read(PyObject *self, PyObject *args)
   dcdhandle *dcd;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
-       a matching object from args */ 
+    /* we were in fact called as a module function, try to retrieve
+       a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
-      return NULL; 
-  } else { 
-    /* we were obviously called as an object method so args should 
-       only have the int value. */ 
+      return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
     if( !PyArg_ParseTuple(args, "") )
-      return NULL; 
+      return NULL;
   }
- 
+
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
@@ -783,13 +780,13 @@ __finish_dcd_read(PyObject *self, PyObject *args)
   }
 
   dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
-	
+
   close_dcd_read(dcd->freeind, dcd->fixedcoords);
   free(dcd);
   Py_DECREF(temp);
   Py_INCREF(Py_None);
   return Py_None;
-}                                                                                                                      
+}
 int jump_to_frame(dcdhandle *dcd, int frame)
 {
   int rc;
@@ -828,23 +825,23 @@ __jump_to_frame(PyObject *self, PyObject *args)
   int frame;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "Oi", &self, &frame) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
     if( !PyArg_ParseTuple(args, "i", &frame) )
       return NULL;
-  }             
-  
+  }
+
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
     return NULL;
-  } 
-  
+  }
+
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
@@ -852,7 +849,7 @@ __jump_to_frame(PyObject *self, PyObject *args)
   }
   dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   Py_DECREF(temp);
-	
+
   /*if (frame > dcd->nsets) {
     PyErr_SetString(PyExc_IndexError, "Invalid frame");
     return NULL;
@@ -865,7 +862,7 @@ __jump_to_frame(PyObject *self, PyObject *args)
     extrablocksize = dcd->charmm & DCD_HAS_EXTRA_BLOCK ? 48 + 8 : 0;
     ndims = dcd->charmm & DCD_HAS_4DIMS ? 4 : 3;
     firstframesize = (dcd->natoms+2) * ndims * sizeof(float) + extrablocksize;
-    framesize = (dcd->natoms-dcd->nfixed+2) * ndims * sizeof(float) 
+    framesize = (dcd->natoms-dcd->nfixed+2) * ndims * sizeof(float)
     + extrablocksize;
     // Use zero indexing
     if (frame == 0) {
@@ -890,18 +887,18 @@ __reset_dcd_read(PyObject *self, PyObject *args)
   PyObject* temp;
   dcdhandle *dcd;
   int rc;
-	
+
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
     if( !PyArg_ParseTuple(args, "") )
       return NULL;
-  }                                                                                                                    
+  }
 
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
@@ -943,4 +940,3 @@ init_dcdmodule(void)
   (void) Py_InitModule("_dcdmodule", DCDMethods);
   import_array();
 }
-

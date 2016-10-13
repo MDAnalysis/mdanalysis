@@ -102,6 +102,7 @@ Containers and lists
 .. autofunction:: iterable
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
+.. autoclass:: Namespace
 
 File parsing
 ------------
@@ -165,6 +166,7 @@ import warnings
 from functools import wraps
 import numpy as np
 import functools
+from numpy.testing import assert_equal
 
 from ..exceptions import StreamWarning
 
@@ -1314,3 +1316,30 @@ def blocks_of(a, n, m):
                    a.strides[0], a.strides[1])
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
+
+class Namespace(object):
+    """Class to allow storing attributes in new namespace. """
+    def __getattr__(self, key):
+        # a.this causes a __getattr__ call for key = 'this' 
+        return self.__dict__[key]
+    def __setattr__(self, key, value):
+        # a.this = 10 causes a __setattr__ call for key='this' value=10
+        self.__dict__[key] = value
+    def __delattr__(self, key):
+        del self.__dict__[key]
+    def __eq__(self, other):
+        try:
+            # this'll allow us to compare if we're storing arrays
+            assert_equal(self.__dict__, other.__dict__)
+        except AssertionError:
+            return False
+        return True
+    def __str__(self):
+        return str(self.__dict__)
+    def __len__(self):
+        return len(self.__dict__)
+    def __getitem__(self, key):
+        return self.__dict__[key]
+    def __iter__(self):
+        for i in self.__dict__:
+            yield i            

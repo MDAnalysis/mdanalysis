@@ -16,6 +16,7 @@ from numpy.testing import (
     assert_,
     assert_equal,
     assert_raises,
+    assert_warns,
 )
 import MDAnalysis as mda
 
@@ -23,11 +24,16 @@ from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
     PDB_small,
-    PDB_conect
+    PDB_conect,
+    PDB_conect2TER,
+    PDB_singleconect,
+
 )
+from MDAnalysis.topology.PDBParser import PDBParser
 
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
+
 
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
@@ -88,3 +94,26 @@ class TestPDBConect(object):
         with _PDBPARSER(PDB_conect) as p:
             top = p.parse()
             assert_(isinstance(top, mda.core.topology.Topology))
+
+
+def test_conect2ter():
+    def parse():
+        with PDBParser(PDB_conect2TER) as p:
+            struc = p.parse()
+        return struc
+    assert_warns(UserWarning, parse)
+    struc = parse()
+
+    assert_('bonds' in struc)
+    assert_(len(struc['bonds']) == 4)
+
+
+def test_single_conect():
+    def parse():
+        with PDBParser(PDB_singleconect) as p:
+            struc = p.parse()
+        return struc
+    assert_warns(UserWarning, parse)
+    struc = parse()
+    assert_('bonds' in struc)
+    assert_(len(struc['bonds']) == 2)

@@ -61,6 +61,9 @@ class _SelectionWriter(TestCase):
         g.write(self.namedfile, **kwargs)
         return g
 
+    def test_write_bad_mode(self):
+        with self.assertRaises(ValueError):
+            self._write(name=self.ref_name, mode='a+')
 
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
