@@ -42,7 +42,7 @@ from datetime import datetime
 from time import sleep
 import logging
 
-from ...core.AtomGroup import Universe
+from ..core.universe import Universe
 
 from ..align import rotation_matrix
 
