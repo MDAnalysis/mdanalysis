@@ -130,7 +130,7 @@ class TopologyObject(object):
                 or (self.indices[::-1] == other.indices).all())
 
     def __ne__(self, other):
-        return not self.__eq__(other)
+        return not self == other
 
     def __lt__(self, other):
         return tuple(self.indices) < tuple(other.indices)
@@ -763,7 +763,7 @@ class TopologyGroup(object):
         return (self.indices == other.indices).all()
 
     def __ne__(self, other):
-        return not self.__eq__(other)
+        return not self == other
 
     def __nonzero__(self):
         return not len(self) == 0

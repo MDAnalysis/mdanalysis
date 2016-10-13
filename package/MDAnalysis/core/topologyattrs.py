@@ -37,6 +37,10 @@ from . import selection
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 
+_LENGTH_VALUEERROR = \
+("Setting {group} with wrong sized array. "
+ "Length {group}: {lengroup}, length values: {lenvalues}")
+
 
 class TopologyAttr(object):
     """Base class for Topology attributes.
@@ -50,13 +54,18 @@ class TopologyAttr(object):
     ----------
     attrname : str
         the name used for the attribute when attached to a ``Topology`` object
+    singular : str
+        name for the attribute on a singular object (Atom/Residue/Segment)
+    per_object : str
+        If there is a strict mapping between Component and Attribute
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
-    top = None
+    per_object = None  # ie Resids per_object = 'residue'
+    top = None  # pointer to Topology object
 
     groupdoc = None
     singledoc = None
@@ -140,7 +149,7 @@ class Atomindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_atoms)
+        return self.top.n_atoms
 
     def set_atoms(self, ag, values):
         raise AttributeError("Atom indices are fixed; they cannot be reset")
@@ -176,17 +185,10 @@ class Resindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_residues)
+        return self.top.n_residues
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2residues(ag._ix)
-
-    def set_atoms(self, ag, values):
-        """Set resindex for each atom given. Effectively moves each atom to
-        another residue.
-
-        """
-        self.top.tt.move_atom(ag._ix, values)
 
     def get_residues(self, rg):
         return rg._ix
@@ -220,7 +222,7 @@ class Segindices(TopologyAttr):
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
-        return len(self.top.n_segments)
+        return self.top.n_segments
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2segments(ag._ix)
@@ -1123,7 +1125,7 @@ class Segids(SegmentAttr):
             return segments[0]
         else:
             # XXX: but inconsistent (see residues and Issue 47)
-            return segment
+            return segments
 
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))

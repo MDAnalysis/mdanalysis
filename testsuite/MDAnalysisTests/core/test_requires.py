@@ -19,7 +19,7 @@ class TestRequires(object):
         def mass_multiplier(ag1, ag2, scalar):
             return (ag1.masses + ag2.masses) * scalar
 
-        u = make_Universe('charges')
+        u = make_Universe(('charges',))
 
         assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
 
@@ -29,7 +29,7 @@ class TestRequires(object):
             return (ag1.masses + ag2.charges) * scalar
         
 
-        u = make_Universe('masses', 'types')
+        u = make_Universe(('masses', 'types'))
 
         assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
 
@@ -38,7 +38,7 @@ class TestRequires(object):
         def mass_multiplier(ag1, ag2, scalar):
             return (ag1.masses + ag2.masses) * scalar
 
-        u = make_Universe('masses')
+        u = make_Universe(('masses',))
 
         result = mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 

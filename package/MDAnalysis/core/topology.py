@@ -17,11 +17,87 @@
 Topology object --- :mod:`MDAnalysis.core.topology'
 ===================================================================
 
+
 """
+
+"""
+# second docstring == multiline comment
+
+TODO Notes:
+  Could make downshift tables lazily built! This would
+    a) Make these not get built when not used
+    b) Optimise moving multiple atoms between residues as only built once afterwards
+
+  Could optimise moves by only updating the two parent tables rather than rebuilding everything!
+
+
+"""
+from six.moves import zip
 import numpy as np
 
-from ..lib.mdamath import one_to_many_pointers
 from .topologyattrs import Atomindices, Resindices, Segindices
+from ..exceptions import NoDataError
+
+def make_downshift_arrays(upshift, nparents):
+    """From an upwards translation table, create the opposite direction
+
+    Turns a many to one mapping (eg atoms to residues) to a one to many mapping
+    (residues to atoms)
+
+    Parameters
+    ----------
+    upshift : array_like
+        Array of integers describing which parent each item belongs to
+    nparents : integer
+        Total number of parents that exist.
+
+    Returns
+    -------
+    downshift : array_like (dtype object)
+        An array of arrays, each containing the indices of the children
+        of each parent.  Length `nparents` + 1
+
+    Examples
+    --------
+    
+    To find the residue to atom mappings for a given atom to residue mapping:
+
+    >>> atom2res = np.array([0, 1, 0, 2, 2, 0, 2])
+    >>> make_downshift_arrays(atom2res)
+    array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)
+
+    Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 & 5
+
+    Notes
+    -----
+    The final entry in the return array will be ``None`` to ensure that the
+    dtype of the array is object.  This means negative indexing should
+    not be used ever with these arrays.
+    """
+    order = np.argsort(upshift)
+
+    upshift_sorted = upshift[order]
+    borders = [None] + list(np.nonzero(np.diff(upshift_sorted))[0] + 1) + [None]
+
+    # returns an array of arrays
+    downshift = []
+    counter = -1
+    # don't use enumerate, we modify counter in place
+    for x, y in zip(borders[:-1], borders[1:]):
+        counter += 1
+        # If parent is skipped, eg (0, 0, 2, 2, etc)
+        while counter != upshift[order[x:y][0]]:
+            downshift.append(np.array([], dtype=np.int))
+            counter += 1
+        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.int)))
+    # Add entries for childless parents at end of range
+    while counter < (nparents - 1):
+        downshift.append(np.array([], dtype=np.int))
+        counter += 1
+    # Add None to end of array to force it to be of type Object
+    # Without this, a rectangular array gets squashed into a single array
+    downshift.append(None)
+    return np.array(downshift, dtype=object)
 
 
 class TransTable(object):
@@ -45,22 +121,27 @@ class TransTable(object):
     ----------
     n_atoms, n_residues, n_segments : int
         number of atoms, residues, segments in topology
-    AR : 1-D array
-        resindex for each atom in the topology; allows fast upward translation
-        from atoms to residues 
-    RA : sparse matrix
-        row ``i`` corresponds to the residue with resindex ``i``, with each
-        column giving 1 if the atom with atomindex ``j`` is a member or 0 if it
-        is not; this matrix has dimension (nres x natoms); allows fast downward
-        translation from residues to atoms
-    RS : 1-D array
-        segindex for each residue in the topology; allows fast upward
-        translation from residues to segments 
-    SR : sparse matrix
-        row ``i`` corresponds to the segment with segindex ``i``, with each
-        column giving 1 if the residue with resindex ``j`` is a member or 0 if
-        it is not; this matrix has dimension (nseg x nres); allows fast
-        downward translation from segments to residues 
+    size
+        tuple describing the shape of the TransTable
+
+    Methods
+    -------
+    atoms2residues(aix)
+        Returns the residue index for many atom indices
+    residues2atoms_1d(rix)
+        All atoms in the residues represented by *rix*
+    residues2atoms_2d(rix)
+        List of atom indices for each residue in *rix*
+    residues2segments(rix)
+        Segment indices for each residue in *rix*
+    segments2residues_1d(six)
+        Similar to `residues2atoms_1d`
+    segments2residues_2d(six)
+        Similar to `residues2atoms_2d`
+    segments2atoms_1d(six)
+        Similar to `residues2atoms_1d`
+    segments2atoms_2d(six)
+        Similar to `residues2atoms_2d`
 
     """
     def __init__(self,
@@ -73,19 +154,21 @@ class TransTable(object):
 
         # built atom-to-residue mapping, and vice-versa
         if atom_resindex is None:
-            self.AR = np.zeros(n_atoms, dtype=np.int64)
+            self._AR = np.zeros(n_atoms, dtype=np.int64)
         else:
-            self.AR = atom_resindex
-        self._atom_order, self._res_ptrs = one_to_many_pointers(
-                n_atoms, n_residues, self.AR)
+            self._AR = atom_resindex.copy()
+            if not len(self._AR) == n_atoms:
+                raise ValueError("atom_resindex must be len n_atoms")
+        self._RA = make_downshift_arrays(self._AR, n_residues)
 
         # built residue-to-segment mapping, and vice-versa
         if residue_segindex is None:
-            self.RS = np.zeros(n_residues, dtype=np.int64)
+            self._RS = np.zeros(n_residues, dtype=np.int64)
         else:
-            self.RS = residue_segindex
-        self._res_order, self._seg_ptrs = one_to_many_pointers(
-                n_residues, n_segments, self.RS)
+            self._RS = residue_segindex.copy()
+            if not len(self._RS) == n_residues:
+                raise ValueError("residue_segindex must be len n_residues")
+        self._SR = make_downshift_arrays(self._RS, n_segments)
 
     @property
     def size(self):
@@ -106,7 +189,7 @@ class TransTable(object):
             residue index for each atom 
 
         """
-        return self.AR[aix]
+        return self._AR[aix]
 
     def residues2atoms_1d(self, rix):
         """Get atom indices collectively represented by given residue indices.
@@ -123,11 +206,9 @@ class TransTable(object):
 
         """
         try:
-            return np.concatenate([self._atom_order[x:y]
-                                   for x, y in self._res_ptrs[rix]])
-        except TypeError:
-            x, y = self._res_ptrs[rix]
-            return self._atom_order[x:y]
+            return np.concatenate([self._RA[r] for r in rix])
+        except TypeError:  # integers aren't iterable, raises TypeError
+            return self._RA[rix].copy()  # don't accidentally send a view!
 
     def residues2atoms_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -139,17 +220,16 @@ class TransTable(object):
 
         Returns
         -------
-        raix : tuple
+        raix : list
             each element corresponds to a residue index, in order given in
             `rix`, with each element being an array of the atom indices present
             in that residue
 
         """
         try:
-            return [self._atom_order[x:y] for x, y in self._res_ptrs[rix]]
+            return [self._RA[r].copy() for r in rix]
         except TypeError:
-            x, y = self._res_ptrs[rix]
-            return self._atom_order[x:y]
+            return [self._RA[rix].copy()]  # why would this be singular for 2d?
 
     def residues2segments(self, rix):
         """Get segment indices for each residue.
@@ -165,7 +245,7 @@ class TransTable(object):
             segment index for each residue
 
         """
-        return self.RS[rix]
+        return self._RS[rix]
 
     def segments2residues_1d(self, six):
         """Get residue indices collectively represented by given segment indices
@@ -182,11 +262,9 @@ class TransTable(object):
 
         """
         try:
-            return np.concatenate([self._res_order[x:y]
-                                   for x, y in self._seg_ptrs[six]])
+            return np.concatenate([self._SR[s] for s in six])
         except TypeError:
-            x, y = self._seg_ptrs[six]
-            return self._res_order[x:y]
+            return self._SR[six].copy()
 
     def segments2residues_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -198,17 +276,16 @@ class TransTable(object):
 
         Returns
         -------
-        srix : sparse matrix 
+        srix : list
             each element corresponds to a segment index, in order given in
             `six`, with each element being an array of the residue indices present
             in that segment
 
         """
         try:
-            return [self._res_order[x:y] for x, y in self._seg_ptrs[six]]
+            return [self._SR[s].copy() for s in six]
         except TypeError:
-            x, y = self._seg_ptrs[six]
-            return self._res_order[x:y]
+            return [self._SR[six].copy()]
 
     # Compound moves, does 2 translations
     def atoms2segments(self, aix):
@@ -261,12 +338,13 @@ class TransTable(object):
 
         Returns
         -------
-        saix : sparse matrix 
+        saix : list
             each element corresponds to a segment index, in order given in
             `six`, with each element being an array of the atom indices present
             in that segment
 
         """
+        # residues in EACH 
         rixs = self.segments2residues_2d(six)
 
         if isinstance(rixs, np.ndarray):
@@ -274,21 +352,32 @@ class TransTable(object):
         else:
             return (self.residues2atoms_1d(rix) for rix in rixs)
 
-
-#TODO: movers and resizers
-
     # Move between different groups.
-    # In general, delete old address, add new address
     def move_atom(self, aix, rix):
         """Move aix to be in rix"""
-        pass
+        self._AR[aix] = rix
+        self._RA = make_downshift_arrays(self._AR, self.n_residues)
 
     def move_residue(self, rix, six):
         """Move rix to be in six"""
-        pass
+        self._RS[rix] = six
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
 
-    def resize(self):
-        pass
+    def add_Residue(self, segidx):
+        # segidx - index of parent
+        self.n_residues += 1
+        self._RA = make_downshift_arrays(self._AR, self.n_residues)
+        self._RS = np.concatenate([self._RS, np.array([segidx])])
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+
+        return self.n_residues - 1
+
+    def add_Segment(self):
+        self.n_segments += 1
+        # self._RS remains the same, no residues point to the new segment yet
+        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+
+        return self.n_segments - 1
 
 
 class Topology(object):
@@ -318,9 +407,6 @@ class Topology(object):
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
-        self.n_atoms = n_atoms
-        self.n_residues = n_res
-        self.n_segments = n_seg
         if attrs is None:
             attrs = []
         self.tt = TransTable(n_atoms, n_res, n_seg,
@@ -336,6 +422,18 @@ class Topology(object):
         self.attrs = []
         for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
+
+    @property
+    def n_atoms(self):
+        return self.tt.n_atoms
+
+    @property
+    def n_residues(self):
+        return self.tt.n_residues
+
+    @property
+    def n_segments(self):
+        return self.tt.n_segments
 
     def add_TopologyAttr(self, topologyattr):
         """Add a new TopologyAttr to the Topology.
@@ -358,3 +456,58 @@ class Topology(object):
     def read_attributes(self):
         """A list of the attributes read from the topology"""
         return filter(lambda x: not x.is_guessed, self.attrs)
+
+    def add_Residue(self, segment, **new_attrs):
+        """
+        Returns
+        -------
+        residx of the new Residue
+
+        Raises
+        ------
+        NoDataError
+          If not all data was provided.  This error is raised before any
+        """
+        # Check that all data is here before making any changes
+        for attr in self.attrs:
+            if not attr.per_object == 'residue':
+                continue
+            if not attr.singular in new_attrs:
+                missing = (attr.singular for attr in self.attrs
+                           if (attr.per_object == 'residue' and
+                               not attr.singular in new_attrs))
+                raise NoDataError("Missing the following attributes for the new"
+                                  " Residue: {}".format(', '.join(missing)))
+
+        # Resize topology table
+        residx = self.tt.add_Residue(segment.segindex)
+
+        # Add new value to each attribute
+        for attr in self.attrs:
+            if not attr.per_object == 'residue':
+                continue
+            newval = new_attrs[attr.singular]
+            attr.values = np.concatenate([attr.values, np.array([newval])])
+
+        return residx
+
+    def add_Segment(self, **new_attrs):
+        for attr in self.attrs:
+            if attr.per_object == 'segment':
+                if not attr.singular in new_attrs:
+                    missing = (attr.singular for attr in self.attrs
+                               if (attr.per_object == 'segment' and
+                                   not attr.singular in new_attrs))
+                    raise NoDataError("Missing the following attributes for the"
+                                      " new Segment: {}"
+                                      "".format(', '.join(missing)))
+
+        segidx = self.tt.add_Segment()
+
+        for attr in self.attrs:
+            if not attr.per_object == 'segment':
+                continue
+            newval = new_attrs[attr.singular]
+            attr.values = np.concatenate([attr.values, np.array([newval])])
+
+        return segidx

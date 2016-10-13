@@ -308,6 +308,7 @@ class TestGroupLevelTransition(object):
     def test_residue_to_atomgroup(self):
         ag = self.u.residues[0].atoms
         assert_(isinstance(ag, mda.core.groups.AtomGroup))
+        assert_(len(ag) == 5)
 
     def test_residue_to_segment(self):
         seg = self.u.residues[0].segment
@@ -316,10 +317,12 @@ class TestGroupLevelTransition(object):
     def test_segment_to_atomgroup(self):
         ag = self.u.segments[0].atoms
         assert_(isinstance(ag, mda.core.groups.AtomGroup))
+        assert_(len(ag) == 25)
 
     def test_segment_to_residuegroup(self):
         rg = self.u.segments[0].residues
         assert_(isinstance(rg, mda.core.groups.ResidueGroup))
+        assert_(len(rg) == 5)
 
     def test_atomgroup_to_residuegroup_unique(self):
         ag = self.u.atoms[:5] + self.u.atoms[10:15] + self.u.atoms[:5]

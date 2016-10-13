@@ -40,116 +40,107 @@ _N_SEGMENTS = 5
 _ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
 _RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
 
-def make_Universe(*extras):
+def make_Universe(extras=None, size=None):
     """Make a dummy reference Universe"""
-    return mda.Universe(make_topology(*extras))
+    return mda.Universe(make_topology(extras, size=size))
 
 
-def make_topology(*extras):
+def make_topology(extras=None, size=None):
     """Reference topology system
 
-    125 atoms
-    25 residue
-    5 segments
+    extras - attributes to add to the Universe
+    size - tuple of natoms, nres, nseg, by default:
+      125 atoms, 25 residue, 5 segments
     """
-    attrs = [_menu[extra]() for extra in extras]
-
-    return Topology(_N_ATOMS, _N_RESIDUES, _N_SEGMENTS,
-                    attrs = attrs,
-                    atom_resindex=np.repeat(
-                        np.arange(_N_RESIDUES), _ATOMS_PER_RES),
-                    residue_segindex=np.repeat(
-                        np.arange(_N_SEGMENTS), _RESIDUES_PER_SEG))
-
-def make_altLocs(size=None):
-    """AltLocs cycling through A B C D E"""
+    if extras is None:
+        extras = []
     if size is None:
-        size = _N_ATOMS
+        size = _N_ATOMS, _N_RESIDUES, _N_SEGMENTS
+    attrs = [_menu[extra](size) for extra in extras]
+
+    return Topology(size[0], size[1], size[2],
+                    attrs=attrs,
+                    atom_resindex=np.repeat(
+                        np.arange(size[1]), size[0] // size[1]),
+                    residue_segindex=np.repeat(
+                        np.arange(size[2]), size[1] // size[2]))
+
+def make_altLocs(size):
+    """AltLocs cycling through A B C D E"""
+    na, nr, ns = size
     alts = itertools.cycle(('A', 'B', 'C', 'D', 'E'))
-    return ta.AltLocs(np.array(['{}'.format(next(alts)) for _ in range(size)],
+    return ta.AltLocs(np.array(['{}'.format(next(alts)) for _ in range(na)],
                                dtype=object))
 
-def make_bfactors(size=None):
-    if size is None:
-        size = _N_ATOMS
-    return ta.Bfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+def make_bfactors(size):
+    na, nr, ns = size
+    return ta.Bfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
 
-def make_charges(size=None):
+def make_charges(size):
     """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
-    if size is None:
-        size = _N_ATOMS
+    na, nr, ns = size
     charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
     return ta.Charges(np.array([next(charges)
-                                for _ in range(size)]))
+                                for _ in range(na)]))
 
-def make_resnames(size=None):
+def make_resnames(size):
     """Creates residues named RsA RsB ... """
-    if size is None:
-        size = _N_RESIDUES
+    na, nr, ns = size
     return ta.Resnames(np.array(['Rs{}'.format(string.uppercase[i])
-                                 for i in range(size)], dtype=object))
+                                 for i in range(nr)], dtype=object))
 
-def make_segids(size=None):
+def make_segids(size):
     """Segids SegA -> SegY"""
-    if size is None:
-        size = _N_SEGMENTS
+    na, nr, ns = size
     return ta.Segids(np.array(['Seg{}'.format(string.uppercase[i])
-                               for i in range(size)], dtype=object))
+                               for i in range(ns)], dtype=object))
 
-def make_types(size=None):
+def make_types(size):
     """Atoms are given types TypeA -> TypeE on a loop"""
-    if size is None:
-        size = _N_ATOMS
+    na, nr, ns = size
     types = itertools.cycle(string.uppercase[:5])
     return ta.Atomtypes(np.array(
         ['Type{}'.format(next(types))
-         for _ in range(size)], dtype=object))
+         for _ in range(na)], dtype=object))
 
-def make_names(size=None):
+def make_names(size):
     """Atom names NameAAA -> NameZZZ (all unique)"""
-    if size is None:
-        size = _N_ATOMS
+    na, nr, ns = size
     # produces, AAA, AAB, AAC, ABA etc
     names = itertools.product(*[string.uppercase] * 3)
     return ta.Atomnames(np.array(
         ['Name{}'.format(''.join(next(names)))
-         for _ in range(size)], dtype=object))
+         for _ in range(na)], dtype=object))
 
-def make_occupancies(size=None):
-    if size is None:
-        size = _N_ATOMS
-    return ta.Occupancies(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+def make_occupancies(size):
+    na, nr, ns = size
+    return ta.Occupancies(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
 
-def make_radii(size=None):
-    if size is None:
-        size = _N_ATOMS
-    return ta.Radii(np.tile(np.array([1.0, 2, 3, 4, 5]), 25))
+def make_radii(size):
+    na, nr, ns = size
+    return ta.Radii(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
 
-def make_serials(size=None):
+def make_serials(size):
     """Serials go from 10 to size+10"""
-    if size is None:
-        size = _N_ATOMS
-    return ta.Atomids(np.arange(size) + 10)
+    na, nr, ns = size
+    return ta.Atomids(np.arange(na) + 10)
 
-def make_masses(size=None):
+def make_masses(size):
     """Atom masses (5.1, 4.2, 3.3, 1.5, 0.5) repeated"""
-    if size is None:
-        size = _N_ATOMS
+    na, nr, ns = size
     masses = itertools.cycle([5.1, 4.2, 3.3, 1.5, 0.5])
     return ta.Masses(np.array([next(masses)
-                               for _ in range(size)]))
+                               for _ in range(na)]))
 
-def make_resnums(size=None):
+def make_resnums(size):
     """Resnums 1 and upwards"""
-    if size is None:
-        size = _N_RESIDUES
-    return ta.Resnums(np.arange(size, dtype=np.int64) + 1)
+    na, nr, ns = size
+    return ta.Resnums(np.arange(nr, dtype=np.int64) + 1)
 
-def make_resids(size=None):
+def make_resids(size):
     """Resids 1 and upwards"""
-    if size is None:
-        size = _N_RESIDUES
-    return ta.Resids(np.arange(size, dtype=np.int64) + 1)
+    na, nr, ns = size
+    return ta.Resids(np.arange(nr, dtype=np.int64) + 1)
 
 # Available extra TopologyAttrs to a dummy Universe
 _menu = {

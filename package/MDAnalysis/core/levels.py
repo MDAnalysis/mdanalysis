@@ -62,6 +62,9 @@ class Level(object):
             value = other.value
         return self.value == value
 
+    def __ne__(self, other):
+        return not self == other
+    
     def __lt__(self, other):
         if isinstance(other, basestring):
             value = _LEVEL_VALUES[other]
