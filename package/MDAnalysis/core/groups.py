@@ -433,7 +433,7 @@ class GroupBase(_MutableBase):
         """
         R = M[:3, :3]
         t = M[:3, 3]
-        return self.rotate(R).translate(t)
+        return self.rotate(R, [0, 0, 0]).translate(t)
 
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
@@ -469,7 +469,7 @@ class GroupBase(_MutableBase):
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
         return self
 
-    def rotate(self, R):
+    def rotate(self, R, point=None):
         """Apply a rotation matrix `R` to the selection's coordinates.
 
         No translation is done before the rotation is applied, so coordinates
@@ -480,6 +480,9 @@ class GroupBase(_MutableBase):
         ----------
         R : array_like
             3x3 rotation matrix to use for applying rotation.
+        point : array_like (optional)
+            Center of rotation. If ``None`` then the center of geometry of this
+            group is used.
 
         Returns
         -------
@@ -501,10 +504,15 @@ class GroupBase(_MutableBase):
 
         """
         R = np.asarray(R)
+        point = np.asarray(point) if point is not None else self.centroid()
+
+        self.translate(-point)
         # changes the coordinates (in place)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
+        self.translate(point)
+
         return self
 
     def rotateby(self, angle, axis, point=None):
@@ -541,8 +549,7 @@ class GroupBase(_MutableBase):
         axis = np.asarray(axis)
         point = np.asarray(point) if point is not None else self.centroid()
         M = transformations.rotation_matrix(alpha, axis, point=point)
-        self.transform(M)
-        return self
+        return self.transform(M)
 
     def pack_into_box(self, box=None, inplace=True):
         """Shift all atoms in this group to be within the primary unit cell.

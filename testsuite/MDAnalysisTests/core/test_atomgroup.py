@@ -140,7 +140,7 @@ class TestAtomGroupTransformations(object):
         for angle in np.linspace(0, np.pi):
             R = transformations.rotation_matrix(angle, axis)
             ag.positions = vec.copy()
-            res_ag = ag.rotate(R[:3, :3])
+            res_ag = ag.rotate(R[:3, :3], [0., 0., 0.])
             assert_equal(ag, res_ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
