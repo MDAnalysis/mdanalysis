@@ -213,6 +213,74 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             "not reproduce original coordinates")
 
     @dec.slow
+    def test_writer_no_resnames_consistency(self):
+        self.universe.residues.resnames = ''
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.atoms.resnames, self.universe.atoms.resnames)
+
+    @dec.slow
+    def test_writer_no_resnames_UNK(self):
+        self.universe.residues.resnames = ''
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['UNK'] * self.universe.atoms.n_atoms)
+        assert_equal(u.atoms.resnames, expected)
+
+    @dec.slow
+    def test_writer_None_resnames(self):
+        self.universe.residues.resnames = None
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.atoms.resnames, self.universe.atoms.resnames)
+
+    @dec.slow
+    def test_writer_no_resids(self):
+        self.universe.residues.resids = []
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.residues.resids, self.universe.residues.resids)
+
+    @dec.slow
+    def test_writer_None_resids(self):
+        self.universe.residues.resids = None
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.residues.resids, self.universe.residues.resids)
+
+    @dec.slow
+    def test_writer_None_resids_1_val(self):
+        self.universe.residues.resids = None
+        self.universe.atoms.write(self.outfile)
+        expected = np.ones(self.universe.atoms.n_residues)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_resids_1_val(self):
+        self.universe.residues.resids = []
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones(self.universe.atoms.n_residues)
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_atom_names(self):
+        self.universe.atoms.names = ''
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.universe.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
+
+    @dec.slow
+    def test_writer_None_atom_names(self):
+        self.universe.atoms.names = None
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.universe.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
+
+    @dec.slow
     def test_timestep_not_modified_by_writer(self):
         ts = self.universe.trajectory.ts
         x = ts._pos.copy()
@@ -221,7 +289,6 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                      x,
                      err_msg="Positions in Timestep were modified by writer.")
 
-    @dec.slow
     @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
