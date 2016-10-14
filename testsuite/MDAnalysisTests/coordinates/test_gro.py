@@ -296,8 +296,8 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
         GRO files (Issue 886)."""
         outfile = os.path.join(self.tmpdir.name, 'outfile2.gro')
         target_resname = self.large_universe.residues[-1].resname
-        resid_value = 999999999999999999999
-        self.large_universe.residues[-1].atoms.resids = resid_value
+        resid_value = 9999999
+        self.large_universe.residues[-1].resid = resid_value
         self.large_universe.atoms.write(outfile)
         with open(outfile, 'rt') as mda_output:
             output_lines = mda_output.readlines()
