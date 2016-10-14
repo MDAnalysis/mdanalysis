@@ -146,6 +146,13 @@ class TestAtomGroupTransformations(object):
                                                         np.sin(angle),
                                                         0])
 
+            ag.positions = vec.copy()
+            ag.rotate(R[:3, :3], vec[0])
+            assert_array_almost_equal(ag.positions[0], vec[0])
+            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
+                                                        - 2 * np.sin(angle),
+                                                        0])
+
     def test_rotateby(self):
         R = np.eye(3)
         self.u.atoms.rotate(R)
@@ -164,6 +171,13 @@ class TestAtomGroupTransformations(object):
             assert_equal(res_ag, ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
+                                                        0])
+
+            ag.positions = vec.copy()
+            ag.rotateby(np.rad2deg(angle), axis, point=vec[0])
+            assert_array_almost_equal(ag.positions[0], vec[0])
+            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
+                                                        - 2 * np.sin(angle),
                                                         0])
 
     def test_transform_rotation_only(self):
