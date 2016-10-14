@@ -60,6 +60,7 @@ Fixes
   * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
   * Progress meters are now displayed as expected on jupyter notebooks
     (Issue #927)
+  * Reset trajectory to 0 after sliced iteration (Issue #1031)
 
 Changes
   * Started unifying the API of analysis classes (named internally
