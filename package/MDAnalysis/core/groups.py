@@ -444,7 +444,6 @@ class GroupBase(_MutableBase):
 
         return R
 
-# TODO: re-add ability to use AtomGroups as input
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
 
@@ -475,7 +474,6 @@ class GroupBase(_MutableBase):
 
         """
         atomgroup = self.atoms.unique
-
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
@@ -527,14 +525,11 @@ class GroupBase(_MutableBase):
         ----------
         angle : float
             Rotation angle in degrees.
-        axis : array_like or tuple of 2 AtomGroups
-            Rotation axis vector. If a tuple is given the axis will be
-            determined by the difference vector of the centroid for both
-            AtomGroups.
+        axis : array_like
+            Rotation axis vector.
         point : array_like (optional)
             Center of rotation. If ``None`` then the center of geometry of this
-            group is used if ``axis`` is an array. If ``axis`` is a tuple of
-            atomgroups the centroid of the first atomgroup is used.
+            group is used.
 
         Returns
         -------
@@ -556,26 +551,9 @@ class GroupBase(_MutableBase):
 
         """
         alpha = np.radians(angle)
-
-        try:
-            sel1, sel2 = axis
-            x1, x2 = sel1.centroid(), sel2.centroid()
-            v = x2 - x1
-            n = v / np.linalg.norm(v)
-            if point is None:
-                point = x1
-        except (ValueError, AttributeError):
-            n = np.asarray(axis)
-
-        if point is None:
-            p = self.centroid()
-        else:
-            try:
-                p = point.centroid()
-            except AttributeError:
-                p = np.asarray(point)
-
-        M = transformations.rotation_matrix(alpha, n, point=p)
+        axis = np.asarray(axis)
+        point = np.asarray(point) if point is not None else self.centroid()
+        M = transformations.rotation_matrix(alpha, axis, point=point)
         self.transform(M)
         return M
 
