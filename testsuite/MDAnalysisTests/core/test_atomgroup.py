@@ -131,16 +131,16 @@ class TestAtomGroupTransformations(object):
         self.u.atoms.rotate(R)
         assert_array_almost_equal(self.u.atoms.positions, self.coords)
 
-        vec = np.array([1, 0, 0])
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
 
-        ag = self.u.atoms.select_atoms('bynum 1')
+        ag = self.u.atoms[:2]
         ag.positions = vec
 
         for angle in np.linspace(0, np.pi):
             R = transformations.rotation_matrix(angle, axis)
             ag.positions = vec.copy()
-            res_ag = ag.rotate(R[:3, :3], [0., 0., 0.])
+            res_ag = ag.rotate(R[:3, :3])
             assert_equal(ag, res_ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
@@ -151,16 +151,16 @@ class TestAtomGroupTransformations(object):
         self.u.atoms.rotate(R)
         assert_array_almost_equal(self.u.atoms.positions, self.coords)
 
-        vec = np.array([1, 0, 0])
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
 
-        ag = self.u.atoms.select_atoms('bynum 1')
+        ag = self.u.atoms[:2]
         ag.positions = vec
 
         for angle in np.linspace(0, np.pi):
             ag.positions = vec.copy()
             # needs to be rotated about origin
-            res_ag = ag.rotateby(np.rad2deg(angle), axis, [0, 0, 0])
+            res_ag = ag.rotateby(np.rad2deg(angle), axis)
             assert_equal(res_ag, ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
@@ -171,10 +171,10 @@ class TestAtomGroupTransformations(object):
         self.u.atoms.rotate(R)
         assert_array_almost_equal(self.u.atoms.positions, self.coords)
 
-        vec = np.array([1, 0, 0])
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
 
-        ag = self.u.atoms.select_atoms('bynum 1')
+        ag = self.u.atoms[:2]
         ag.positions = vec
 
         for angle in np.linspace(0, np.pi):
@@ -202,8 +202,8 @@ class TestAtomGroupTransformations(object):
         T = transformations.rotation_matrix(angle, axis)
         T[:3, 3] = disp
 
-        ag = self.u.select_atoms('bynum 1')
-        ag.positions = [1, 0, 0]
+        ag = self.u.atoms[:2]
+        ag.positions = [[1, 0, 0], [-1, 0, 0]]
         ag.transform(T)
 
         assert_array_almost_equal(ag.positions[0], [np.cos(angle) + 1,
