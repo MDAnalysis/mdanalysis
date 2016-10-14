@@ -16,16 +16,19 @@
 
 from glob import glob
 from os import path
+import numpy as np
 
 from numpy.testing import (
     assert_,
     assert_raises,
     assert_equal,
+    assert_array_almost_equal,
     raises
 )
 
 
 import MDAnalysis as mda
+from MDAnalysis.lib import transformations
 from MDAnalysis.core.topologyobjects import (
     Bond,
     Angle,
@@ -108,6 +111,115 @@ class TestAtomGroupWriting(object):
 class TestAtomGroupTransformations(object):
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
+        self.coords = self.u.atoms.positions.copy()
+        self.cog = self.u.atoms.center_of_geometry()
 
     def tearDown(self):
         del self.u
+
+    def test_translate(self):
+        disp = np.ones(3)
+        ag = self.u.atoms.translate(disp)
+        assert_equal(ag, self.u.atoms)
+
+        cog = self.u.atoms.center_of_geometry()
+        diff = cog - self.cog
+        assert_array_almost_equal(diff, disp, decimal=5)
+
+    def test_rotate(self):
+        R = np.eye(3)
+        self.u.atoms.rotate(R)
+        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
+        axis = np.array([0, 0, 1])
+
+        ag = self.u.atoms[:2]
+        ag.positions = vec
+
+        for angle in np.linspace(0, np.pi):
+            R = transformations.rotation_matrix(angle, axis)
+            ag.positions = vec.copy()
+            res_ag = ag.rotate(R[:3, :3])
+            assert_equal(ag, res_ag)
+            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+                                                        np.sin(angle),
+                                                        0])
+
+            ag.positions = vec.copy()
+            ag.rotate(R[:3, :3], vec[0])
+            assert_array_almost_equal(ag.positions[0], vec[0])
+            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
+                                                        - 2 * np.sin(angle),
+                                                        0])
+
+    def test_rotateby(self):
+        R = np.eye(3)
+        self.u.atoms.rotate(R)
+        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
+        axis = np.array([0, 0, 1])
+
+        ag = self.u.atoms[:2]
+        ag.positions = vec
+
+        for angle in np.linspace(0, np.pi):
+            ag.positions = vec.copy()
+            # needs to be rotated about origin
+            res_ag = ag.rotateby(np.rad2deg(angle), axis)
+            assert_equal(res_ag, ag)
+            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+                                                        np.sin(angle),
+                                                        0])
+
+            ag.positions = vec.copy()
+            ag.rotateby(np.rad2deg(angle), axis, point=vec[0])
+            assert_array_almost_equal(ag.positions[0], vec[0])
+            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
+                                                        - 2 * np.sin(angle),
+                                                        0])
+
+    def test_transform_rotation_only(self):
+        R = np.eye(3)
+        self.u.atoms.rotate(R)
+        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+
+        vec = np.array([[1, 0, 0], [-1, 0, 0]])
+        axis = np.array([0, 0, 1])
+
+        ag = self.u.atoms[:2]
+        ag.positions = vec
+
+        for angle in np.linspace(0, np.pi):
+            R = transformations.rotation_matrix(angle, axis)
+            ag.positions = vec.copy()
+            ag.transform(R)
+            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+                                                        np.sin(angle),
+                                                        0])
+
+    def test_transform_translation_only(self):
+        disp = np.ones(3)
+        T = np.eye(4)
+        T[:3, 3] = disp
+        ag = self.u.atoms.transform(T)
+        assert_equal(ag, self.u.atoms)
+        cog = self.u.atoms.center_of_geometry()
+        diff = cog - self.cog
+        assert_array_almost_equal(diff, disp, decimal=5)
+
+    def test_transform_translation_and_rotation(self):
+        angle = np.pi / 4
+        axis = [0, 0, 1]
+        disp = np.ones(3)
+        T = transformations.rotation_matrix(angle, axis)
+        T[:3, 3] = disp
+
+        ag = self.u.atoms[:2]
+        ag.positions = [[1, 0, 0], [-1, 0, 0]]
+        ag.transform(T)
+
+        assert_array_almost_equal(ag.positions[0], [np.cos(angle) + 1,
+                                                    np.sin(angle) + 1,
+                                                    1])

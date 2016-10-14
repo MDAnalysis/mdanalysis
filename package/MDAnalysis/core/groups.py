@@ -415,8 +415,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        R : array
-            Rotation matrix applied to coordinates.
+        self
 
         See Also
         --------
@@ -432,19 +431,10 @@ class GroupBase(_MutableBase):
            \mathbf{x}' = \mathsf{R}\mathbf{x} + \mathbf{t}
 
         """
-        atomgroup = self.atoms.unique
         R = M[:3, :3]
         t = M[:3, 3]
+        return self.rotate(R, [0, 0, 0]).translate(t)
 
-        # changes the coordinates (in place)
-        x = atomgroup.universe.trajectory.ts.positions
-        idx = atomgroup.indices
-        x[idx] = np.dot(x[idx], R.T)
-        x[idx] += t
-
-        return R
-
-# TODO: re-add ability to use AtomGroups as input
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
 
@@ -457,8 +447,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        t : array
-            vector coordinates translated with
+        self
 
         See Also
         --------
@@ -475,30 +464,33 @@ class GroupBase(_MutableBase):
 
         """
         atomgroup = self.atoms.unique
-
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
-        return vector
+        return self
 
-    def rotate(self, R):
+    def rotate(self, R, point=None):
         """Apply a rotation matrix `R` to the selection's coordinates.
 
         No translation is done before the rotation is applied, so coordinates
-        are rotated about the origin.
+        are rotated about the origin. This differs from the behavior of
+        ``rotateby``.
 
         Parameters
         ----------
         R : array_like
             3x3 rotation matrix to use for applying rotation.
+        point : array_like (optional)
+            Center of rotation. If ``None`` then the center of geometry of this
+            group is used.
 
         Returns
         -------
-        R : array
-            Rotation matrix applied to coordinates.
+        self
 
         See Also
         --------
+        rotateby : rotate around given axis and angle
         MDAnalysis.lib.transformations : module of all coordinate transforms
 
         Notes
@@ -509,17 +501,20 @@ class GroupBase(_MutableBase):
         .. math::
 
             \mathbf{x}' = \mathsf{R}\mathbf{x}
+
         """
-        atomgroup = self.atoms
+        R = np.asarray(R)
+        point = np.asarray(point) if point is not None else self.centroid()
 
-        R = np.matrix(R, copy=False, dtype=np.float32)
+        self.translate(-point)
         # changes the coordinates (in place)
-        x = atomgroup.universe.trajectory.ts.positions
-        idx = atomgroup.indices
-        x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
-        return R
+        x = self.atoms.unique.universe.trajectory.ts.positions
+        idx = self.atoms.unique.indices
+        x[idx] = np.dot(x[idx], R.T)
+        self.translate(point)
 
-# TODO: re-add ability to use AtomGroups as input
+        return self
+
     def rotateby(self, angle, axis, point=None):
         """Apply a rotation to the selection's coordinates.
 
@@ -529,15 +524,13 @@ class GroupBase(_MutableBase):
             Rotation angle in degrees.
         axis : array_like
             Rotation axis vector.
-        point : array_like
-            Point on the rotation axis; if ``None`` the center of geometry of
-            the selection is chosen .
+        point : array_like (optional)
+            Center of rotation. If ``None`` then the center of geometry of this
+            group is used.
 
         Returns
         -------
-        M : array
-            The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``
-            and the translation vector ``M[:3,3]``.
+        self
 
         Notes
         -----
@@ -553,25 +546,10 @@ class GroupBase(_MutableBase):
 
         """
         alpha = np.radians(angle)
-        try:
-            sel1, sel2 = axis
-            x1, x2 = sel1.centroid(), sel2.centroid()
-            v = x2 - x1
-            n = v / np.linalg.norm(v)
-            if point is None:
-                point = x1
-        except (ValueError, AttributeError):
-            n = np.asarray(axis)
-        if point is None:
-            p = self.centroid()
-        else:
-            try:
-                p = point.centroid()
-            except AttributeError:
-                p = np.asarray(point)
-        M = transformations.rotation_matrix(alpha, n, point=p)
-        self.transform(M)
-        return M
+        axis = np.asarray(axis)
+        point = np.asarray(point) if point is not None else self.centroid()
+        M = transformations.rotation_matrix(alpha, axis, point=point)
+        return self.transform(M)
 
     def pack_into_box(self, box=None, inplace=True):
         """Shift all atoms in this group to be within the primary unit cell.
@@ -1534,7 +1512,7 @@ class ComponentBase(_MutableBase):
 
     def __ne__(self, other):
         return not self == other
-    
+
     def __hash__(self):
         return hash(self.ix)
 
@@ -1637,7 +1615,7 @@ class Atom(ComponentBase):
             raise TypeError(
                 "Can only set Atom residue to Residue, not {}".format(type(new)))
         self.universe._topology.tt.move_atom(self.ix, new.resindex)
-    
+
     @property
     def segment(self):
         segmentclass = self.level.parent.parent.singular
@@ -1749,7 +1727,7 @@ class Residue(ComponentBase):
             raise TypeError(
                 "Can only set Residue segment to Segment, not {}".format(type(new)))
         self.universe._topology.tt.move_residue(self.ix, new.segindex)
-    
+
 
 class Segment(ComponentBase):
     """Segment base class.
@@ -1824,4 +1802,3 @@ def requires(*attrs):
             return func(*args, **kwargs)
         return check_args
     return require_dec
-
