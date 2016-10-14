@@ -415,8 +415,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        R : array
-            Rotation matrix applied to coordinates.
+        self
 
         See Also
         --------
@@ -432,17 +431,9 @@ class GroupBase(_MutableBase):
            \mathbf{x}' = \mathsf{R}\mathbf{x} + \mathbf{t}
 
         """
-        atomgroup = self.atoms.unique
         R = M[:3, :3]
         t = M[:3, 3]
-
-        # changes the coordinates (in place)
-        x = atomgroup.universe.trajectory.ts.positions
-        idx = atomgroup.indices
-        x[idx] = np.dot(x[idx], R.T)
-        x[idx] += t
-
-        return R
+        return self.rotate(R).translate(t)
 
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
@@ -456,8 +447,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        t : array
-            vector coordinates translated with
+        self
 
         See Also
         --------
@@ -477,7 +467,7 @@ class GroupBase(_MutableBase):
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
-        return vector
+        return self
 
     def rotate(self, R):
         """Apply a rotation matrix `R` to the selection's coordinates.
@@ -493,8 +483,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        R : array
-            Rotation matrix applied to coordinates.
+        self
 
         See Also
         --------
@@ -516,7 +505,7 @@ class GroupBase(_MutableBase):
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
-        return R
+        return self
 
     def rotateby(self, angle, axis, point=None):
         """Apply a rotation to the selection's coordinates.
@@ -533,9 +522,7 @@ class GroupBase(_MutableBase):
 
         Returns
         -------
-        M : array
-            The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``
-            and the translation vector ``M[:3,3]``.
+        self
 
         Notes
         -----
@@ -555,7 +542,7 @@ class GroupBase(_MutableBase):
         point = np.asarray(point) if point is not None else self.centroid()
         M = transformations.rotation_matrix(alpha, axis, point=point)
         self.transform(M)
-        return M
+        return self
 
     def pack_into_box(self, box=None, inplace=True):
         """Shift all atoms in this group to be within the primary unit cell.

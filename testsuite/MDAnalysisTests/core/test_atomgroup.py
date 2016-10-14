@@ -119,7 +119,9 @@ class TestAtomGroupTransformations(object):
 
     def test_translate(self):
         disp = np.ones(3)
-        self.u.atoms.translate(disp)
+        ag = self.u.atoms.translate(disp)
+        assert_equal(ag, self.u.atoms)
+
         cog = self.u.atoms.center_of_geometry()
         diff = cog - self.cog
         assert_array_almost_equal(diff, disp, decimal=5)
@@ -138,7 +140,8 @@ class TestAtomGroupTransformations(object):
         for angle in np.linspace(0, np.pi):
             R = transformations.rotation_matrix(angle, axis)
             ag.positions = vec.copy()
-            ag.rotate(R[:3, :3])
+            res_ag = ag.rotate(R[:3, :3])
+            assert_equal(ag, res_ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
                                                         0])
@@ -157,7 +160,8 @@ class TestAtomGroupTransformations(object):
         for angle in np.linspace(0, np.pi):
             ag.positions = vec.copy()
             # needs to be rotated about origin
-            ag.rotateby(np.rad2deg(angle), axis, [0, 0, 0])
+            res_ag = ag.rotateby(np.rad2deg(angle), axis, [0, 0, 0])
+            assert_equal(res_ag, ag)
             assert_array_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
                                                         0])
@@ -185,7 +189,8 @@ class TestAtomGroupTransformations(object):
         disp = np.ones(3)
         T = np.eye(4)
         T[:3, 3] = disp
-        self.u.atoms.transform(T)
+        ag = self.u.atoms.transform(T)
+        assert_equal(ag, self.u.atoms)
         cog = self.u.atoms.center_of_geometry()
         diff = cog - self.cog
         assert_array_almost_equal(diff, disp, decimal=5)
