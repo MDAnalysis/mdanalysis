@@ -289,6 +289,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                      x,
                      err_msg="Positions in Timestep were modified by writer.")
 
+    @dec.slow
     @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
