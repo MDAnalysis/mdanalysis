@@ -41,7 +41,7 @@ Enhancements
   * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
   * Established the MDAnalysis.analysis.legacy module for unmaintained
     analysis code (Issue #743)
-        
+
 Fixes
   * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
@@ -78,11 +78,15 @@ Changes
   * Analysis.rms.RMSD now confirms to standard analysis API (Issue #893)
   * Fragments in Universe.fragment are now sorted by the index of their first
     atom. (Issue 1007)
+  * atoms.tranform/translate/rotate/rotateby return original atomgroup (Issue #1010)
+  * atoms.translate/rotateby don't accept AtomGroup tuples as parameters anymore (Issue #1025)
+  * atoms.rotate by default now uses the centroid as center of rotation like rotateby (Issue #1022)
+
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
   * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
-        
+
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
 
