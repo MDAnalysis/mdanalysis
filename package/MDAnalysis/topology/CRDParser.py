@@ -34,7 +34,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from ..lib.util import openany, FORTRANReader
-from .base import TopologyReader, squash_by
+from .base import TopologyReader, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -119,9 +119,10 @@ class CRDParser(TopologyReader):
         resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
-        atom_residx, res_resids, (res_resnames, res_resnums, res_segids) = squash_by(
-            resids, resnames, resnums, segids)
-        res_segidx, seg_segids = squash_by(res_segids)[:2]
+        atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
+            (resids, resnames), (resids, resnames, resnums, segids))
+        res_segidx, (seg_segids,) = change_squash(
+            (res_segids,), (res_segids,))
 
         top = Topology(len(atomids), len(res_resids), len(seg_segids),
                        attrs=[

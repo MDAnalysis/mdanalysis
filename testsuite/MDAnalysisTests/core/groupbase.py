@@ -40,9 +40,12 @@ _N_SEGMENTS = 5
 _ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
 _RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
 
-def make_Universe(extras=None, size=None):
+def make_Universe(extras=None, size=None, trajectory=False):
     """Make a dummy reference Universe"""
-    return mda.Universe(make_topology(extras, size=size))
+    u = mda.Universe(make_topology(extras, size=size))
+    if trajectory:
+        u.trajectory = FakeReader(len(u.atoms))
+    return u
 
 
 def make_topology(extras=None, size=None):
@@ -76,6 +79,10 @@ def make_bfactors(size):
     na, nr, ns = size
     return ta.Bfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
 
+def make_tempfactors(size):
+    na, nr, ns = size
+    return ta.Tempfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
+
 def make_charges(size):
     """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
     na, nr, ns = size
@@ -104,12 +111,12 @@ def make_types(size):
          for _ in range(na)], dtype=object))
 
 def make_names(size):
-    """Atom names NameAAA -> NameZZZ (all unique)"""
+    """Atom names AAA -> ZZZ (all unique)"""
     na, nr, ns = size
     # produces, AAA, AAB, AAC, ABA etc
     names = itertools.product(*[string.uppercase] * 3)
     return ta.Atomnames(np.array(
-        ['Name{}'.format(''.join(next(names)))
+        ['{}'.format(''.join(next(names)))
          for _ in range(na)], dtype=object))
 
 def make_occupancies(size):
@@ -152,6 +159,7 @@ _menu = {
     'occupancies': make_occupancies,
     'radii': make_radii,
     'serials': make_serials,
+    'tempfactors': make_tempfactors,
     'types': make_types,
     'masses': make_masses,
     # Residues

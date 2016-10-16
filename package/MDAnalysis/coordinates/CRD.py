@@ -182,7 +182,7 @@ class CRDWriter(base.Writer):
         for attr, default in (
                 ('resnames', itertools.cycle(('UNK',))),
                 # Resids *must* be an array because we index it later
-                ('resids', np.ones(n_atoms)),
+                ('resids', np.ones(n_atoms, dtype=np.int)),
                 ('names', itertools.cycle(('X',))),
                 ('tempfactors', itertools.cycle((0.0,))),
         ):
@@ -222,14 +222,12 @@ class CRDWriter(base.Writer):
 
             # Write all atoms
 
-            current_resid = 0
+            current_resid = 1
             resids = attrs['resids']
             for i, pos, resname, name, chainID, resid, tempfactor in zip(
                     range(n_atoms), coor, attrs['resnames'], attrs['names'],
                     attrs['chainIDs'], attrs['resids'], attrs['tempfactors']):
-                if resids[i] != resids[i-1]:
-                    # note that this compares first and LAST atom on
-                    # first iteration... but it works
+                if not i == 0 and resids[i] != resids[i-1]:
                     current_resid += 1
 
                 # Truncate numbers

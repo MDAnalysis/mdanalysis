@@ -2,13 +2,16 @@ from six.moves import zip
 import os
 from numpy.testing import (
     assert_,
+    assert_equal,
     assert_array_equal,
+    assert_warns,
 )
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import CRD
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 class TestCRDWriter(object):
     def setUp(self):
@@ -54,3 +57,45 @@ class TestCRDWriter(object):
         # Must have *lots* of atoms, maybe fake the system
         # to make tests faster
         pass
+
+class TestCRDWriterMissingAttrs(object):
+    # All required attributes with the default value
+    req_attrs = {'resnames': 'UNK',
+                 'resids': 1,
+                 'names': 'X',
+                 'tempfactors': 0.0,
+                 }
+
+    def _check_warns(self, missing_attr):
+        attrs = list(self.req_attrs.keys())
+        attrs.remove(missing_attr)
+        u = make_Universe(attrs, trajectory=True)
+
+        tmpdir = tempdir.TempDir()
+        outfile = tmpdir.name + '/out.crd'
+        assert_warns(UserWarning,
+                     u.atoms.write, outfile)
+
+    def _check_write(self, missing_attr):
+        attrs = list(self.req_attrs.keys())
+        attrs.remove(missing_attr)
+        u = make_Universe(attrs, trajectory=True)
+
+        tmpdir = tempdir.TempDir()
+        outfile = tmpdir.name + '/out.crd'
+        u.atoms.write(outfile)
+        u2 = mda.Universe(outfile)
+
+        # Check all other attrs aren't disturbed
+        for attr in attrs:
+            assert_equal(getattr(u.atoms, attr),
+                         getattr(u2.atoms, attr))
+        # Check missing attr is as expected
+        assert_equal(getattr(u2.atoms, missing_attr),
+                     self.req_attrs[missing_attr])
+
+    def test_crdwriter(self):
+        for attr in self.req_attrs:
+            yield self._check_warns, attr
+            yield self._check_write, attr
+            
