@@ -26,7 +26,6 @@ from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
 
 
@@ -154,6 +153,7 @@ class TestChainReader(TestCase):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(ts_orig.frame))
+
 
 class TestChainReaderCommonDt(TestCase):
 
