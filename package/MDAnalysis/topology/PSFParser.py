@@ -17,9 +17,10 @@
 PSF topology parser
 ===================
 
-Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. Currently uses
-the list of atoms (including atom types, which can be either integers
-or strings, masses and partial charges) and the bond connectivity.
+Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. The topology will
+contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
+charges and masses. Atom elements are guessed based on the atom type.  Bonds,
+angles, dihedrals and impropers are also read from the file.
 
 It reads both standard and extended ("EXT") PSF formats and can also parse NAMD
 space-separated "PSF" file variants.
@@ -43,11 +44,13 @@ from math import ceil
 import numpy as np
 
 from ..lib.util import openany
+from . import guessers
 from .base import TopologyReader, squash_by
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
+    Elements,
     Masses,
     Charges,
     Resids,
@@ -80,6 +83,9 @@ class PSFParser(TopologyReader):
     - angles
     - dihedrals
     - impropers
+
+    Guesses the following attributes:
+    - elements
 
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
     """
@@ -292,7 +298,10 @@ class PSFParser(TopologyReader):
             atomtypes[i] = vals[5]
             charges[i] = vals[6]
             masses[i] = vals[7]
-            
+
+        # Guess elements
+        elements = Elements(guessers.guess_types(atomtypes))
+
         # Atom
         atomids = Atomids(atomids)
         atomnames = Atomnames(atomnames)
@@ -315,7 +324,7 @@ class PSFParser(TopologyReader):
 
         top = Topology(len(atomids), len(new_resids), len(segids),
                        attrs=[atomids, atomnames, atomtypes,
-                              charges, masses,
+                              elements, charges, masses,
                               residueids, residuenums, residuenames,
                               segids],
                        atom_resindex=residx,

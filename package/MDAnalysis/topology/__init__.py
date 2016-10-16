@@ -39,9 +39,12 @@ the attributes they provide.
    ================= ==========  ==============  =============================================================
    Name              extension   attributes      remarks
    ================= ==========  ==============  =============================================================
-   CHARMM/XPLOR PSF  psf                         reads either format, atoms, bonds, angles,
-                                                 torsions/dihedrals information is all used;
-                                                 :mod:`MDAnalysis.topology.PSFParser`
+   CHARMM/XPLOR PSF  psf         resnames,       :mod:`MDAnalysis.topology.PSFParser`
+                                 names, types,
+                                 charges,
+                                 bonds, angles,
+                                 dihedrals,
+                                 impropers
 
    CHARMM CARD [#a]_ crd         names           "CARD" coordinate output from CHARMM; deals with
                                  tempfactors,    either standard or EXTended format;
