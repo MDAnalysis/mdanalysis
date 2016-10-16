@@ -431,7 +431,7 @@ class Atomtypes(AtomAttr):
 
 
 #TODO: update docs to property doc
-class Element(AtomAttr):
+class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'

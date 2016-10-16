@@ -17,8 +17,16 @@
 CRD topology parser
 ===================
 
-Read a list of atoms from a CHARMM CARD coordinate file (CRD)
-to build a basic topology.
+Read a list of atoms from a CHARMM CARD coordinate file (CRD_)
+to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
+resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
+(SEGID) and tempfactor (Weighting).  Atom element and mass are guessed based on
+the name of the atom.
+
+Residues are detected through a change is either resid or resname
+while segments are detected according to changes in segid.
+
+.. _CRD: https://www.charmmtutorial.org/index.php/CHARMM:The_Basics
 
 
 Classes
@@ -35,15 +43,18 @@ import numpy as np
 
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReader, change_squash
+from . import guessers
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Tempfactors,
+    Elements,
+    Masses,
     Resids,
     Resnames,
     Resnums,
     Segids,
+    Tempfactors,
 )
 
 
@@ -96,19 +107,19 @@ class CRDParser(TopologyReader):
                     continue
                 # anything else should be an atom
                 try:
-                    (serial, TotRes, resName, name,
-                     x, y, z, chainID, resSeq, tempFactor) = r.read(line)
+                    (serial, resnum, resName, name,
+                     x, y, z, segid, resid, tempFactor) = r.read(line)
                 except:
                     raise ValueError("Check CRD format at line {0}: {1}"
-                                     "".format(linenum, line.rstrip()))
+                                     "".format(linenum + 1, line.rstrip()))
 
                 atomids.append(serial)
                 atomnames.append(name)
                 tempfactors.append(tempFactor)
-                resids.append(TotRes)
+                resids.append(resid)
                 resnames.append(resName)
-                resnums.append(resSeq)
-                segids.append(chainID)
+                resnums.append(resnum)
+                segids.append(segid)
 
         # Convert to np arrays
         atomids = np.array(atomids, dtype=np.int32)
@@ -119,6 +130,10 @@ class CRDParser(TopologyReader):
         resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
+        # Guess some attributes
+        elements = guessers.guess_types(atomnames)
+        masses = guessers.guess_masses(elements)
+
         atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
             (resids, resnames), (resids, resnames, resnums, segids))
         res_segidx, (seg_segids,) = change_squash(
@@ -128,6 +143,8 @@ class CRDParser(TopologyReader):
                        attrs=[
                            Atomids(atomids),
                            Atomnames(atomnames),
+                           Elements(elements),
+                           Masses(masses),
                            Tempfactors(tempfactors),
                            Resids(res_resids),
                            Resnames(res_resnames),

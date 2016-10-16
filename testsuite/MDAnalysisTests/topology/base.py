@@ -25,6 +25,8 @@ class ParserBase(object):
 
     All Parsers must subclass this class!
     """
+    expected_attrs = []
+
     def setUp(self):
         with self.parser(self.filename) as p:
             self.top = p.parse()
@@ -39,10 +41,21 @@ class ParserBase(object):
 
         assert_(isinstance(top, Topology))
 
+    def test_mandatory_attributes(self):
+        # attributes required as part of the API
+        # ALL parsers must provide these
+        mandatory_attrs = ['ids', 'masses', 'elements',
+                           'resids', 'resnums', 'segids']
+
+        for attr in mandatory_attrs:
+            assert_(hasattr(self.top, attr),
+                    'Missing required attribute: {}'.format(attr))
+
     def test_expected_attributes(self):
+        # Extra attributes as declared in specific implementations
         for attr in self.expected_attrs:
             assert_(hasattr(self.top, attr),
-                    'Missing attribute: {}'.format(attr))
+                    'Missing expected attribute: {}'.format(attr))
 
     def test_size(self):
         """Check that the Topology is correctly sized"""
