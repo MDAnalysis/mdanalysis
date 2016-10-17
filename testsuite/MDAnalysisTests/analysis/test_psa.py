@@ -15,8 +15,9 @@
 #
 from __future__ import print_function
 
-import MDAnalysis
+import MDAnalysis as mda
 import MDAnalysis.analysis.psa
+from MDAnalysis.analysis.psa import PSAnalysis
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
@@ -31,19 +32,20 @@ class TestPSAnalysis(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     @dec.skipif(module_not_found('matplotlib'),
-                "Test skipped because matplotlib is not available.")
+                'Test skipped because matplotlib is not available.')
     @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
+                'Test skipped because scipy is not available.')
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
-        self.universe1 = MDAnalysis.Universe(PSF, DCD)
-        self.universe2 = MDAnalysis.Universe(PSF, DCD2)
-        self.universe_rev = MDAnalysis.Universe(PSF, DCD)
+        self.universe1 = mda.Universe(PSF, DCD)
+        self.universe2 = mda.Universe(PSF, DCD2)
+        self.universe_rev = mda.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
-                                               path_select='name CA',           \
-                                                      targetdir=self.tmpdir.name)
+        self.psa = PSAnalysis(self.universes,
+                              path_select='name CA',
+                              targetdir=self.tmpdir.name)
+
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -247,5 +249,3 @@ class DiscreteFrechetDistance(TestCase):
         actual = MDAnalysis.analysis.psa.discrete_frechet(self.path_1,
                                                           self.path_2)
         assert_almost_equal(actual, expected)
-
-
