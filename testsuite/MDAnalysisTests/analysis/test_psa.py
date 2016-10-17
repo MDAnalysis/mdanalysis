@@ -17,15 +17,36 @@ from __future__ import print_function
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.psa
-from MDAnalysis.analysis.psa import PSAnalysis
+from MDAnalysis.analysis.psa import PSAnalysis, PDBToBinaryTraj
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
                            assert_almost_equal)
 import numpy as np
 
-from MDAnalysisTests.datafiles import PSF, DCD, DCD2
+from MDAnalysisTests.datafiles import PSF, DCD, DCD2, PDB_multiframe
 from MDAnalysisTests import parser_not_found, tempdir, module_not_found
+
+
+class TestPDBToBinaryTraj(TestCase):
+    def setUp(self):
+        self.multiverse = mda.Universe(PDB_multiframe,
+                                       guess_bonds=True)
+        self.multiverse.build_topology()
+        self.converter = PDBToBinaryTraj(self.multiverse)
+
+    def tearDown(self):
+        del self.multiverse
+        del self.converter
+
+    def test_extracted_topology(self):
+        pass
+
+    def test_write_trajectory(self):
+        pass
+
+    def test_check_trajectories_match(self):
+        pass
 
 
 class TestPSAnalysis(TestCase):
