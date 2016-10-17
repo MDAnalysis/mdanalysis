@@ -602,20 +602,24 @@ def dist_mat_to_vec(N, i, j):
 
 class PDBToBinaryTraj(object):
 
-    def __init__(self, universe, output_type='.dcd', infix=''):
+    def __init__(self, universe, output_type='.dcd', infix='_conv'):
         self.universe = universe
-        self.universe.atoms.write('new_top.pdb') # write first frame as topology
-
         self.frames = self.universe.trajectory
+
         base, ext = os.path.splitext(self.frames.filename)
         path, name = os.path.split(base)
-        self.newname = name + infix + output_type
+        newname = name + infix
+
+        self.new_top_name = newname + '.pdb'
+        self.new_trj_name = newname + output_type
 
     def convert(self):
-        w = MDAnalysis.Writer(self.newname, self.frames.numatoms)
+        self.universe.atoms.write(self.new_top_name)  # first frame is topology
+
+        w = MDAnalysis.Writer(self.new_trj_name, self.frames.n_atoms)
         for ts in self.frames:
             w.write(ts)
-        w.close_trajectory()
+        w.close()
 
 
 class Path(object):
