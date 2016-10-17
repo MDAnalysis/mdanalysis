@@ -17,7 +17,7 @@
 AMBER PRMTOP topology parser
 ============================
 
-Reads a  AMBER top file to build the system.
+Reads an AMBER top file to build the system.
 
 Amber keywords are turned into the following attributes:
 
@@ -28,7 +28,7 @@ Amber keywords are turned into the following attributes:
 +-----------------+----------------------+
 | CHARGE          | charges              |
 +-----------------+----------------------+
-| ATOMIC_NUMBER   | numbers              |
+| ATOMIC_NUMBER   | elements             |
 +-----------------+----------------------+
 | MASS            | masses               |
 +-----------------+----------------------+
@@ -68,24 +68,24 @@ from six.moves import range, zip
 import functools
 from math import ceil
 
+from . import guessers
+from .tables import NUMBER_TO_ELEMENT
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomtypes,
+    Atomids,
     Charges,
+    Elements,
     Masses,
     Resnames,
+    Resids,
+    Resnums,
+    Segids,
     AtomAttr,
 )
-
-
-class Atomnumbers(AtomAttr):
-    """Atom number for each Atom"""
-    attrname = 'numbers'
-    singular = 'number'
-    level = 'atom'
 
 
 class TypeIndices(AtomAttr):
@@ -102,7 +102,7 @@ class TOPParser(TopologyReader):
     - Atomnames
     - Charges
     - Masses
-    - Atomnumbers
+    - Elements
     - Atomtypes
     - Resnames
     - Type_indices
@@ -130,7 +130,7 @@ class TOPParser(TopologyReader):
         sections = {
             "ATOM_NAME": (1, 20, self.parse_names, "name", 0),
             "CHARGE": (1, 5, self.parse_charges, "charge", 0),
-            "ATOMIC_NUMBER": (1, 10, self.parse_numbers, "atom_number", 0),
+            "ATOMIC_NUMBER": (1, 10, self.parse_elements, "elements", 0),
             "MASS": (1, 5, self.parse_masses, "mass", 0),
             "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
@@ -194,7 +194,20 @@ class TOPParser(TopologyReader):
         for i, (x, y) in enumerate(zip(resptrs[:-1], resptrs[1:])):
             residx[x:y] = i
 
-        top = Topology(n_atoms, len(attrs['resname']), 1,
+        n_res = len(attrs['resname'])
+
+        # Guess elements if not in topology
+        if not 'elements' in attrs:
+            attrs['elements'] = Elements(
+                guessers.guess_types(attrs['types'].values))
+
+        # atom ids are mandatory
+        attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
+        attrs['resids'] = Resids(np.arange(n_res) + 1)
+        attrs['resnums'] = Resnums(np.arange(n_res) + 1)
+        attrs['segids'] = Segids(np.array(['SYSTEM'], dtype=object))
+
+        top = Topology(n_atoms, n_res, 1,
                        attrs=attrs.values(),
                        atom_resindex=residx,
                        residue_segindex=None)
@@ -234,10 +247,10 @@ class TOPParser(TopologyReader):
         attr = Masses(np.array(vals, dtype=np.float32))
         return attr
 
-    def parse_numbers(self, atoms_per, numlines):
+    def parse_elements(self, atoms_per, numlines):
         vals = self.parsesection_mapper(
-            atoms_per, numlines, lambda x: int(x))
-        attr = Atomnumbers(np.array(vals, dtype=np.int32))
+            atoms_per, numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
+        attr = Elements(np.array(vals, dtype=object))
         return attr
 
     def parse_types(self, atoms_per, numlines):

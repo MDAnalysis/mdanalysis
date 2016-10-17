@@ -40,8 +40,6 @@ class TOPBase(ParserBase):
         assert_(len(self.top.charges) == self.expected_n_atoms)
         assert_(len(self.top.masses) == self.expected_n_atoms)
         assert_(len(self.top.resnames) == self.expected_n_residues)
-        if "numbers" in self.expected_attrs:
-            assert_(len(self.top.numbers) == self.expected_n_atoms)
 
 
 class TestPRMParser(TOPBase):
@@ -52,7 +50,6 @@ class TestPRMParser(TOPBase):
 
 class TestPRM12Parser(TOPBase):
     expected_attrs = ["names", "types", "type_indices", "charges", "masses",
-                      "numbers",
                       "resnames"]
     filename = PRM12
     expected_n_atoms = 8923
