@@ -57,6 +57,10 @@ class XYZParser(TopologyReader):
     Creates the following attributes:
      - Atomnames
 
+    Guesses the following attributes:
+     - Elements
+     - Masses
+
     .. versionadded:: 0.9.1
     """
     format = 'XYZ'
@@ -85,8 +89,8 @@ class XYZParser(TopologyReader):
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Elements(elements),
-                 Masses(masses),
+                 Elements(elements, guessed=True),
+                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),

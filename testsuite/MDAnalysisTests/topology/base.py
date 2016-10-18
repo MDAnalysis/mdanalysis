@@ -26,6 +26,7 @@ class ParserBase(object):
     All Parsers must subclass this class!
     """
     expected_attrs = []
+    guessed_attrs = []
 
     def setUp(self):
         with self.parser(self.filename) as p:
@@ -56,6 +57,15 @@ class ParserBase(object):
         for attr in self.expected_attrs:
             assert_(hasattr(self.top, attr),
                     'Missing expected attribute: {}'.format(attr))
+
+    def test_guessed_attributes(self):
+        # guessed attributes must be declared as guessed
+        for attr in self.top.attrs:
+            val = attr.is_guessed
+            if not val in (True, False):  # only for simple yes/no cases
+                continue
+            assert_(val == (attr.attrname in self.guessed_attrs),
+                    'Attr "{}" guessed= {}'.format(attr, val))
 
     def test_size(self):
         """Check that the Topology is correctly sized"""

@@ -31,7 +31,8 @@ from MDAnalysisTests.datafiles import (
 class TestGROParser(ParserBase):
     parser = mda.topology.GROParser.GROParser
     filename = GRO
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses', 'types']
+    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
+    guessed_attrs = ['masses', 'elements']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1

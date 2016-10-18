@@ -39,12 +39,15 @@ from six.moves import range
 
 from ..lib.util import openany
 from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+    Atomids,
+    Elements,
+    Masses,
     Resids,
     Resnames,
-    Atomids,
-    Atomnames,
-    Masses,
-    Atomtypes,
+    Resnums,
+    Segids,
 )
 from ..core.topology import Topology
 from .base import TopologyReader, squash_by
@@ -61,7 +64,7 @@ class GROParser(TopologyReader):
       - atomnames
 
     Guesses the following attributes
-      - types
+      - elements
       - masses
     """
     format = 'GRO'
@@ -98,8 +101,8 @@ class GROParser(TopologyReader):
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
 
         # Guess types and masses
-        types = guessers.guess_types(names)
-        masses = guessers.guess_masses(types)
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
 
         residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
@@ -108,10 +111,12 @@ class GROParser(TopologyReader):
         attrs = [
             Atomnames(names),
             Atomids(indices),
+            Elements(elements, guessed=True),
             Resids(new_resids),
+            Resnums(new_resids.copy()),
             Resnames(new_resnames),
-            Atomtypes(types, guessed=True),
             Masses(masses, guessed=True),
+            Segids(np.array(['SYSTEM'], dtype=object))
         ]
 
         top = Topology(n_atoms=n_atoms, n_res=len(new_resids), n_seg=1,

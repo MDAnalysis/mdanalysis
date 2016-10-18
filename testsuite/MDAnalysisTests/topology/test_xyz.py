@@ -31,6 +31,7 @@ class XYZBase(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
     expected_attrs = ['names']
+    guessed_attrs = ['elements', 'masses']
 
 
 class TestXYZMini(XYZBase):

@@ -300,7 +300,7 @@ class PSFParser(TopologyReader):
             masses[i] = vals[7]
 
         # Guess elements
-        elements = Elements(guessers.guess_types(atomtypes))
+        elements = Elements(guessers.guess_types(atomtypes), guessed=True)
 
         # Atom
         atomids = Atomids(atomids)

@@ -61,7 +61,7 @@ from ..core.topologyattrs import (
 class CRDParser(TopologyReader):
     """Parse a CHARMM CARD coordinate file for topology information.
 
-    Creates the following Attributes:
+    Reads the following Attributes:
      - Atomids
      - Atomnames
      - Tempfactors
@@ -69,6 +69,10 @@ class CRDParser(TopologyReader):
      - Resnames
      - Resnums
      - Segids
+
+    Guesses the following attributes:
+     - elements
+     - masses
     """
     format = 'CRD'
 
@@ -143,8 +147,8 @@ class CRDParser(TopologyReader):
                        attrs=[
                            Atomids(atomids),
                            Atomnames(atomnames),
-                           Elements(elements),
-                           Masses(masses),
+                           Elements(elements, guessed=True),
+                           Masses(masses, guessed=True),
                            Tempfactors(tempfactors),
                            Resids(res_resids),
                            Resnames(res_resnames),

@@ -98,7 +98,7 @@ class TypeIndices(AtomAttr):
 class TOPParser(TopologyReader):
     """Reads topology information from an AMBER top file.
 
-    Creates the following Attributes if possible:
+    Reads the following Attributes if in topology:
     - Atomnames
     - Charges
     - Masses
@@ -106,6 +106,9 @@ class TOPParser(TopologyReader):
     - Atomtypes
     - Resnames
     - Type_indices
+
+    Guesses the following attributes:
+     - Elements (if not included in topology)
 
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
@@ -199,7 +202,8 @@ class TOPParser(TopologyReader):
         # Guess elements if not in topology
         if not 'elements' in attrs:
             attrs['elements'] = Elements(
-                guessers.guess_types(attrs['types'].values))
+                guessers.guess_types(attrs['types'].values),
+                guessed=True)
 
         # atom ids are mandatory
         attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)

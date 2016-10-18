@@ -38,6 +38,7 @@ class TestPSFParser(ParserBase):
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['elements']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
@@ -96,6 +97,7 @@ class TestNAMDPSFParser(ParserBase):
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['elements']
     expected_n_atoms = 130
     expected_n_residues = 6
     expected_n_segments = 1
