@@ -84,21 +84,6 @@ Classes, methods, and functions
 .. autofunction:: discrete_frechet
 .. autofunction:: dist_mat_to_vec
 
-.. autoclass:: PDBToBinaryTraj
-   :members:
-
-   .. attribute:: universe
-
-      :class:`MDAnalysis.Universe` object with a trajectory
-
-   .. attribute:: frames
-
-      :attr:`MDAnalysis.Universe.trajectory`
-
-   .. attribute:: newname
-
-      string, filename for converted trajectory, including file extension
-
 .. autoclass:: Path
    :members:
 
@@ -598,41 +583,6 @@ def dist_mat_to_vec(N, i, j):
         err_str = "Error in processing matrix indices; i and j must be integers"\
                 + " less than integer N = {0:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
-
-
-class PDBToBinaryTraj(object):
-
-    def __init__(self, universe,
-                 outfile=None, infix='_conv', output_type='dcd'):
-        self.universe = universe
-        self.frames = self.universe.trajectory
-
-        if outfile is None:
-            base, ext = os.path.splitext(self.frames.filename)
-            path, name = os.path.split(base)
-            self.outfile = name + infix
-        else:
-            self.outfile = outfile
-
-        self.new_top_name = self.outfile + '.' + 'pdb'
-        self.new_trj_name = self.outfile + '.' + output_type
-
-    def convert(self):
-        self.universe.atoms.write(self.new_top_name)  # first frame is topology
-
-        w = MDAnalysis.Writer(self.new_trj_name, self.frames.n_atoms)
-        for ts in self.frames:
-            w.write(ts)
-        w.close()
-
-    @property
-    def outfile(self):
-        """Get the new name for the new topology and binary trajectory
-
-        :Returns:
-          str, the base name of the new topolgy and trajectory files
-        """
-        return self.outfile
 
 
 class Path(object):

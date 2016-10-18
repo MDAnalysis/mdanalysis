@@ -16,56 +16,15 @@
 from __future__ import print_function
 
 import MDAnalysis as mda
-import MDAnalysis.analysis.psa
-from MDAnalysis.analysis.psa import PSAnalysis, PDBToBinaryTraj
+import MDAnalysis.analysis.psa as PSA
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
                            assert_almost_equal)
 import numpy as np
 
-from MDAnalysisTests.datafiles import PSF, DCD, DCD2, PDB_multiframe
+from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 from MDAnalysisTests import parser_not_found, tempdir, module_not_found
-
-
-class TestPDBToBinaryTraj(TestCase):
-    def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe)
-
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/test'
-        self.converter = PDBToBinaryTraj(self.multiverse, outfile=self.outfile)
-        self.converter.convert()
-
-        self.dcd = self.outfile + '.dcd'
-        self.top = self.outfile + '.pdb'
-
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.multiverse
-        del self.converter
-
-    def test_write_trajectory(self):
-        u = mda.Universe(self.top, self.dcd)
-
-        # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in zip(self.multiverse.trajectory,
-                                       u.trajectory):
-        assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
-                                  err_msg="coordinate mismatch between "
-                                  "original and written trajectory at "
-                                  "frame %d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
-
-    def test_single_frame(self):
-        u = mda.Universe(self.top, self.dcd)
-        assert_almost_equal(u.atoms.positions,
-                            self.multiverse.atoms.positions,
-                            3,
-                            err_msg="coordinates do not match")
 
 
 class TestPSAnalysis(TestCase):
@@ -82,7 +41,7 @@ class TestPSAnalysis(TestCase):
         self.universe2 = mda.Universe(PSF, DCD2)
         self.universe_rev = mda.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = PSAnalysis(self.universes,
+        self.psa = PSA.PSAnalysis(self.universes,
                               path_select='name CA',
                               targetdir=self.tmpdir.name)
 
@@ -138,7 +97,7 @@ class TestPSAExceptions(TestCase):
         get_path_metric_func().'''
 
         try:
-           MDAnalysis.analysis.psa.get_path_metric_func('123456')
+           PSA.get_path_metric_func('123456')
         except KeyError:
             self.fail('KeyError should be caught')
 
@@ -148,7 +107,7 @@ class TestPSAExceptions(TestCase):
         is fed to get_coord_axes().'''
 
         with self.assertRaises(ValueError):
-            MDAnalysis.analysis.psa.get_coord_axes(np.zeros((5,5,5,5)))
+            PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
 class _BaseHausdorffDistance(TestCase):
     '''Base Class setup and unit tests
@@ -207,7 +166,7 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
 
     def setUp(self):
         super(TestHausdorffSymmetric, self).setUp()
-        self.h = MDAnalysis.analysis.psa.hausdorff
+        self.h = PSA.hausdorff
         # radii differ by ~ 2.3 for outlier
         self.expected = 2.3
 
@@ -218,7 +177,7 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         super(TestWeightedAvgHausdorffSymmetric, self).setUp()
         import scipy
         import scipy.spatial
-        self.h = MDAnalysis.analysis.psa.hausdorff_wavg
+        self.h = PSA.hausdorff_wavg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)
         self.expected = (np.mean(np.amin(self.distance_matrix, axis=0)) +
@@ -241,7 +200,7 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         super(TestAvgHausdorffSymmetric, self).setUp()
         import scipy
         import scipy.spatial
-        self.h = MDAnalysis.analysis.psa.hausdorff_avg
+        self.h = PSA.hausdorff_avg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)
         self.expected = np.mean(np.append(np.amin(self.distance_matrix, axis=0),
@@ -286,6 +245,6 @@ class DiscreteFrechetDistance(TestCase):
         # radii
 
         expected = 4.5
-        actual = MDAnalysis.analysis.psa.discrete_frechet(self.path_1,
+        actual = PSA.discrete_frechet(self.path_1,
                                                           self.path_2)
         assert_almost_equal(actual, expected)
