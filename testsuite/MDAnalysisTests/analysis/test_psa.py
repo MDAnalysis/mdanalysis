@@ -41,8 +41,8 @@ class TestPSAnalysis(TestCase):
         self.universe2 = mda.Universe(PSF, DCD2)
         self.universe_rev = mda.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = PSA.PSAnalysis(self.universes,                               \
-                                  path_select='name CA',                        \
+        self.psa = PSA.PSAnalysis(self.universes,
+                                  path_select='name CA',
                                   targetdir=self.tmpdir.name)
 
         self.psa.generate_paths(align=True)
@@ -75,8 +75,8 @@ class TestPSAnalysis(TestCase):
 
     def test_reversal_hausdorff(self):
         err_msg = "Hausdorff distances changed after path reversal"
-        assert_array_almost_equal(self.hausd_matrix[1,2],                       \
-                                  self.hausd_matrix[0,1],                       \
+        assert_array_almost_equal(self.hausd_matrix[1,2],
+                                  self.hausd_matrix[0,1],
                                   decimal=3, err_msg=err_msg)
 
     def test_reversal_frechet(self):
@@ -246,5 +246,5 @@ class DiscreteFrechetDistance(TestCase):
 
         expected = 4.5
         actual = PSA.discrete_frechet(self.path_1,
-                                                          self.path_2)
+                                      self.path_2)
         assert_almost_equal(actual, expected)
