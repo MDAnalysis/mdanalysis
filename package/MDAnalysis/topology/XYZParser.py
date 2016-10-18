@@ -36,11 +36,18 @@ from __future__ import absolute_import
 import numpy as np
 from six.moves import range
 
+from . import guessers
 from ..lib.util import openany
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
+    Atomids,
+    Elements,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
 )
 
 
@@ -72,8 +79,20 @@ class XYZParser(TopologyReader):
                 name = inf.readline().split()[0]
                 names[i] = name
 
-        names = Atomnames(names)
+        # Guessing time
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+
+        attrs = [Atomnames(names),
+                 Atomids(np.arange(natoms) + 1),
+                 Elements(elements),
+                 Masses(masses),
+                 Resids(np.array([1])),
+                 Resnums(np.array([1])),
+                 Segids(np.array(['SYSTEM'], dtype=object)),
+                 ]
+
         top = Topology(natoms, 1, 1,
-                       attrs=[names])
+                       attrs=attrs)
 
         return top

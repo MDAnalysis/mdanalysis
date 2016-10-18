@@ -70,9 +70,10 @@ the attributes they provide.
    GROMOS96 [#a]_    gro                         GROMOS96 coordinate file;
                                                  :mod:`MDAnalysis.topology.GROParser`
 
-   AMBER             top,                        simple AMBER format reader (only supports a subset
-                     prmtop,                     of flags);
-                     parm7                       :mod:`MDAnalysis.topology.TOPParser`
+   AMBER             top,        names, charges  simple AMBER format reader (only supports a subset
+                     prmtop,     type_indices,   of flags);
+                     parm7       types,          :mod:`MDAnalysis.topology.TOPParser`
+                                 resnames,
 
    DESRES [#a]_      dms                         DESRES molecular sturcture reader (only supports
                                                  the atom and bond records);
@@ -89,7 +90,7 @@ the attributes they provide.
    LAMMPS [#a]_      data                        LAMMPS Data file parser
                                                  :mod:`MDAnalysis.topology.LAMMPSParser`
 
-   XYZ [#a]_         xyz                         XYZ File Parser.  Reads only the labels from atoms and
+   XYZ [#a]_         xyz         names           XYZ File Parser.  Reads only the labels from atoms and
                                                  constructs minimal topology data.
                                                  :mod:`MDAnalysis.topology.XYZParser`
 
