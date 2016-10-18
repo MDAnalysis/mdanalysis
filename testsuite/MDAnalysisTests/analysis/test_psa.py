@@ -30,23 +30,42 @@ from MDAnalysisTests import parser_not_found, tempdir, module_not_found
 
 class TestPDBToBinaryTraj(TestCase):
     def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe,
-                                       guess_bonds=True)
-        self.multiverse.build_topology()
-        self.converter = PDBToBinaryTraj(self.multiverse)
+        self.multiverse = mda.Universe(PDB_multiframe)
+
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/test'
+        self.converter = PDBToBinaryTraj(self.multiverse, outfile=self.outfile)
+        self.converter.convert()
+
+        self.dcd = self.outfile + '.dcd'
+        self.top = self.outfile + '.pdb'
 
     def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
         del self.multiverse
         del self.converter
 
-    def test_extracted_topology(self):
-        pass
-
     def test_write_trajectory(self):
-        pass
+        u = mda.Universe(self.top, self.dcd)
 
-    def test_check_trajectories_match(self):
-        pass
+        # check that the coordinates are identical for each time step
+        for orig_ts, written_ts in zip(self.multiverse.trajectory,
+                                       u.trajectory):
+        assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                  err_msg="coordinate mismatch between "
+                                  "original and written trajectory at "
+                                  "frame %d (orig) vs %d (written)" % (
+                                      orig_ts.frame, written_ts.frame))
+
+    def test_single_frame(self):
+        u = mda.Universe(self.top, self.dcd)
+        assert_almost_equal(u.atoms.positions,
+                            self.multiverse.atoms.positions,
+                            3,
+                            err_msg="coordinates do not match")
 
 
 class TestPSAnalysis(TestCase):

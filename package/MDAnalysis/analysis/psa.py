@@ -602,16 +602,20 @@ def dist_mat_to_vec(N, i, j):
 
 class PDBToBinaryTraj(object):
 
-    def __init__(self, universe, output_type='.dcd', infix='_conv'):
+    def __init__(self, universe,
+                 outfile=None, infix='_conv', output_type='dcd'):
         self.universe = universe
         self.frames = self.universe.trajectory
 
-        base, ext = os.path.splitext(self.frames.filename)
-        path, name = os.path.split(base)
-        newname = name + infix
+        if outfile is None:
+            base, ext = os.path.splitext(self.frames.filename)
+            path, name = os.path.split(base)
+            self.outfile = name + infix
+        else:
+            self.outfile = outfile
 
-        self.new_top_name = newname + '.pdb'
-        self.new_trj_name = newname + output_type
+        self.new_top_name = self.outfile + '.' + 'pdb'
+        self.new_trj_name = self.outfile + '.' + output_type
 
     def convert(self):
         self.universe.atoms.write(self.new_top_name)  # first frame is topology
@@ -620,6 +624,15 @@ class PDBToBinaryTraj(object):
         for ts in self.frames:
             w.write(ts)
         w.close()
+
+    @property
+    def outfile(self):
+        """Get the new name for the new topology and binary trajectory
+
+        :Returns:
+          str, the base name of the new topolgy and trajectory files
+        """
+        return self.outfile
 
 
 class Path(object):
