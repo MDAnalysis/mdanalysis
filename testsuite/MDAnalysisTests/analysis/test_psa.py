@@ -41,9 +41,9 @@ class TestPSAnalysis(TestCase):
         self.universe2 = mda.Universe(PSF, DCD2)
         self.universe_rev = mda.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = PSA.PSAnalysis(self.universes,
-                              path_select='name CA',
-                              targetdir=self.tmpdir.name)
+        self.psa = PSA.PSAnalysis(self.universes,                               \
+                                  path_select='name CA',                        \
+                                  targetdir=self.tmpdir.name)
 
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
