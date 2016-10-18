@@ -16,6 +16,7 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -190,6 +191,9 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
+        self.u_no_resnames = make_Universe(['names', 'resids'])
+        self.u_no_resids = make_Universe(['names', 'resnames'])
+        self.u_no_names = make_Universe(['resids', 'resnames'])
 
     def tearDown(self):
         try:
@@ -202,6 +206,9 @@ class TestGROWriter(TestCase, tempdir.TempDir):
             pass
         del self.universe
         del self.tmpdir
+        del self.u_no_resnames
+        del self.u_no_resids
+        del self.u_no_names
 
     @dec.slow
     def test_writer(self):
@@ -213,69 +220,22 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             "not reproduce original coordinates")
 
     @dec.slow
-    def test_writer_no_resnames_consistency(self):
-        self.universe.residues.resnames = ''
-        self.universe.atoms.write(self.outfile)
+    def test_writer_no_resnames(self):
+        self.u_no_resnames.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_equal(u.atoms.resnames, self.universe.atoms.resnames)
-
-    @dec.slow
-    def test_writer_no_resnames_UNK(self):
-        self.universe.residues.resnames = ''
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array(['UNK'] * self.universe.atoms.n_atoms)
+        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
     @dec.slow
-    def test_writer_None_resnames(self):
-        self.universe.residues.resnames = None
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        assert_equal(u.atoms.resnames, self.universe.atoms.resnames)
-
-    @dec.slow
     def test_writer_no_resids(self):
-        self.universe.residues.resids = []
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        assert_equal(u.residues.resids, self.universe.residues.resids)
-
-    @dec.slow
-    def test_writer_None_resids(self):
-        self.universe.residues.resids = None
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        assert_equal(u.residues.resids, self.universe.residues.resids)
-
-    @dec.slow
-    def test_writer_None_resids_1_val(self):
-        self.universe.residues.resids = None
-        self.universe.atoms.write(self.outfile)
-        expected = np.ones(self.universe.atoms.n_residues)
-        u = mda.Universe(self.outfile)
-        assert_equal(u.residues.resids, expected)
-
-    @dec.slow
-    def test_writer_no_resids_1_val(self):
-        self.universe.residues.resids = []
-        self.universe.atoms.write(self.outfile)
+        self.u_no_resids.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.ones(self.universe.atoms.n_residues)
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
     def test_writer_no_atom_names(self):
-        self.universe.atoms.names = ''
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        expected = np.array(['X'] * self.universe.atoms.n_atoms)
-        assert_equal(u.atoms.names, expected)
-
-    @dec.slow
-    def test_writer_None_atom_names(self):
-        self.universe.atoms.names = None
-        self.universe.atoms.write(self.outfile)
+        self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array(['X'] * self.universe.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
