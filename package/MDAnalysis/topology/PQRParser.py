@@ -39,13 +39,17 @@ from __future__ import absolute_import
 
 import numpy as np
 
+from . import guessers
 from ..lib.util import openany
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Charges,
+    Elements,
+    Masses,
     Radii,
     Resids,
+    Resnums,
     Resnames,
     Segids,
 )
@@ -64,6 +68,10 @@ class PQRParser(TopologyReader):
      - Resids
      - Resnames
      - Segids
+
+    Guesses the following:
+     - elements
+     - masses
 
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
@@ -108,10 +116,16 @@ class PQRParser(TopologyReader):
                     chainIDs.append(chainID)
 
         n_atoms = len(serials)
+
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+
         attrs = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        attrs.append(Elements(elements, guessed=True))
+        attrs.append(Masses(masses, guessed=True))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
         resids = np.array(resids, dtype=np.int32)
@@ -123,6 +137,7 @@ class PQRParser(TopologyReader):
 
         n_residues = len(resids)
         attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
 
         segidx, chainIDs = squash_by(chainIDs)[:2]
