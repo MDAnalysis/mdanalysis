@@ -42,12 +42,19 @@ from __future__ import absolute_import
 import re
 import numpy as np
 
+from . import guessers
 from ..lib.util import openany
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
+    Atomids,
     Atomnames,
     Atomtypes,
+    Elements,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
 )
 
 
@@ -57,6 +64,8 @@ class GMSParser(TopologyReader):
     Creates the following Attributes:
      - names
      - types
+    Guesses:
+     - masses
 
     .. versionadded:: 0.9.1
     """
@@ -65,7 +74,7 @@ class GMSParser(TopologyReader):
     def parse(self):
         """Read list of atoms from a GAMESS file."""
         names = []
-        elems = []
+        types = []
 
         with openany(self.filename, 'rt') as inf:
             while True:
@@ -85,14 +94,26 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 if _m is None:
                     break
                 name = _m.group(1)
-                elem = int(float(_m.group(2)))
+                attype = int(float(_m.group(2)))
 
                 names.append(name)
-                elems.append(elem)
+                types.append(attype)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
 
-        top = Topology(len(names), 1, 1,
-                       attrs=[Atomnames(np.array(names, dtype=object)),
-                              Atomtypes(np.array(elems, dtype=np.int32))])
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+        n_atoms = len(names)
+        attrs = [
+            Atomids(np.arange(n_atoms) + 1),
+            Atomnames(np.array(names, dtype=object)),
+            Atomtypes(np.array(types, dtype=np.int32)),
+            Elements(elements, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
         return top
