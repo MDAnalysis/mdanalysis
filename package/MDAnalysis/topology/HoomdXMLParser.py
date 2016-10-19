@@ -21,11 +21,10 @@ HOOMD XML topology parser
 The :class:`HoomdXMLParser` generates a topology from files for the HOOMD_ code.
 
 Read a list of atoms from a `HOOMD XML`_ file to build a basic topology.
-Atom names are set to atom type if not present (which they probably aren't).
 Elements are guessed based on atom types.
 Masses and charges are set to zero if not present in the XML file.
 Hoomd XML does not identify molecules or residues, so placeholder values
-are used for residue numbers and residue names.
+are used for residue numbers.
 Bonds and angles are read if present.
 
 .. _HOOMD: http://codeblue.umich.edu/hoomd-blue/index.html
@@ -44,43 +43,47 @@ from __future__ import absolute_import
 import xml.etree.ElementTree as ET
 import numpy as np
 
+from . import guessers
 from ..lib.util import openany
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomtypes,
-    Masses,
-    Charges,
-    Bonds,
+    Atomids,
     Angles,
+    Bonds,
+    Charges,
     Dihedrals,
+    Elements,
     Impropers,
-    AtomAttr,
+    Masses,
+    Radii,
+    Resids,
+    Resnums,
+    Segids,
 )
 
 
-class Atomelements(AtomAttr):
-    attrname = 'elements'
-    singular = 'element'
-    level = 'atom'
-
-
 class HoomdXMLParser(TopologyReader):
-    """Creates a Topology object with the following Attributes
+    """Parses a Hoomd XML file to create a Topology
 
+    Reads the following Attributes:
      - Atomtypes
-     - Atomnames
      - Bonds
      - Angles
      - Dihedrals
      - Impropers
+     - Radii
+     - Masses
+    Guesses the following:
+     - Elements
 
     """
     format = 'XML'
 
     def parse(self):
-        """Parse Hoomd XML file *filename* and return the dict `structure`.
+        """Parse Hoomd XML file
 
         Hoomd XML format does not contain a node for names. The parser will
         look for a name node anyway, and if it doesn't find one, it will use
@@ -92,10 +95,6 @@ class HoomdXMLParser(TopologyReader):
         Because Hoomd uses unitless mass, charge, etc., if they are not present
         they will not be guessed - they will be set to zero.
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                        :func:`MDAnalysis.topology.base`.
 
         .. versionadded:: 0.11.0
         """
@@ -105,17 +104,16 @@ class HoomdXMLParser(TopologyReader):
         configuration = root.find('configuration')
         natoms = int(configuration.get('natoms'))
 
-        attrs = []
+        attrs = {}
 
         atype = configuration.find('type')
         atypes = atype.text.strip().split('\n')
         if len(atypes) != natoms:
             raise IOError("Number of types does not equal natoms.")
-        attrs.append(Atomtypes(np.array(atypes, dtype=object)))
+        attrs['types'] = Atomtypes(np.array(atypes, dtype=object))
 
         for attrname, attr, mapper, dtype in (
-                ('name', Atomnames, lambda x:x, object),
-                ('element', Atomelements, lambda x:x, object),
+                ('diameter', Radii, lambda x: float(x) / 2., np.float32),
                 ('mass', Masses, float, np.float32),
                 ('charge', Charges, float, np.float32),
         ):
@@ -125,7 +123,7 @@ class HoomdXMLParser(TopologyReader):
             except:
                 pass
             else:
-                attrs.append(attr(np.array(vals, dtype=dtype)))
+                attrs[attrname] = attr(np.array(vals, dtype=dtype))
 
         for attrname, attr, in (
                 ('bond', Bonds),
@@ -142,7 +140,22 @@ class HoomdXMLParser(TopologyReader):
                 pass
             else:
                 if vals:
-                    attrs.append(attr(vals))
+                    attrs[attrname] = attr(vals)
+
+        elements = guessers.guess_types(attrs['types'].values)
+        attrs['elements'] = Elements(elements, guessed=True)
+
+        if not 'masses' in attrs:
+            attrs['masses'] = Masses(np.zeros(natoms, dtype=np.float32))
+        if not 'charges' in attrs:
+            attrs['charges'] = Charges(np.zeros(natoms, dtype=np.float32))
+
+        attrs = list(attrs.values())
+
+        attrs.append(Atomids(np.arange(natoms) + 1))
+        attrs.append(Resids(np.array([1])))
+        attrs.append(Resnums(np.array([1])))
+        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
