@@ -16,6 +16,7 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -190,6 +191,12 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
+        self.u_no_resnames = make_Universe(['names', 'resids'],
+                                            trajectory=True)
+        self.u_no_resids = make_Universe(['names', 'resnames'],
+                                          trajectory=True)
+        self.u_no_names = make_Universe(['resids', 'resnames'],
+                                          trajectory=True)
 
     def tearDown(self):
         try:
@@ -202,6 +209,9 @@ class TestGROWriter(TestCase, tempdir.TempDir):
             pass
         del self.universe
         del self.tmpdir
+        del self.u_no_resnames
+        del self.u_no_resids
+        del self.u_no_names
 
     @dec.slow
     def test_writer(self):
@@ -211,6 +221,27 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             self.universe.atoms.positions, self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
+
+    @dec.slow
+    def test_writer_no_resnames(self):
+        self.u_no_resnames.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+        assert_equal(u.atoms.resnames, expected)
+
+    @dec.slow
+    def test_writer_no_resids(self):
+        self.u_no_resids.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones((1,))
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_atom_names(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
 
     @dec.slow
     def test_timestep_not_modified_by_writer(self):
@@ -296,8 +327,8 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
         GRO files (Issue 886)."""
         outfile = os.path.join(self.tmpdir.name, 'outfile2.gro')
         target_resname = self.large_universe.residues[-1].resname
-        resid_value = 999999999999999999999
-        self.large_universe.residues[-1].atoms.resids = resid_value
+        resid_value = 9999999
+        self.large_universe.residues[-1].resid = resid_value
         self.large_universe.atoms.write(outfile)
         with open(outfile, 'rt') as mda_output:
             output_lines = mda_output.readlines()
