@@ -21,6 +21,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -143,6 +144,13 @@ class TestPDBWriter(TestCase):
         ext = ".pdb"
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/primitive-pdb-writer' + ext
+        self.u_no_resnames = make_Universe(['names', 'resids'],
+                                            trajectory=True)
+        self.u_no_resids = make_Universe(['names', 'resnames'],
+                                            trajectory=True)
+        self.u_no_names = make_Universe(['resids', 'resnames'],
+                                            trajectory=True)
+
 
     def tearDown(self):
         try:
@@ -150,6 +158,7 @@ class TestPDBWriter(TestCase):
         except OSError:
             pass
         del self.universe, self.universe2
+        del self.u_no_resnames, self.u_no_resids, self.u_no_names
         del self.tmpdir
 
     def test_writer(self):
@@ -160,6 +169,27 @@ class TestPDBWriter(TestCase):
                             self.universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PDBWriter "
                             "does not reproduce original coordinates")
+
+    @dec.slow
+    def test_writer_no_resnames(self):
+        self.u_no_resnames.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+        assert_equal(u.atoms.resnames, expected)
+
+    @dec.slow
+    def test_writer_no_resids(self):
+        self.u_no_resids.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones((1,))
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_atom_names(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
 
     @attr('issue')
     def test_write_single_frame_Writer(self):
