@@ -191,9 +191,12 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
-        self.u_no_resnames = make_Universe(['names', 'resids'])
-        self.u_no_resids = make_Universe(['names', 'resnames'])
-        self.u_no_names = make_Universe(['resids', 'resnames'])
+        self.u_no_resnames = make_Universe(['names', 'resids'],
+                                            trajectory=True)
+        self.u_no_resids = make_Universe(['names', 'resnames'],
+                                          trajectory=True)
+        self.u_no_names = make_Universe(['resids', 'resnames'],
+                                          trajectory=True)
 
     def tearDown(self):
         try:
