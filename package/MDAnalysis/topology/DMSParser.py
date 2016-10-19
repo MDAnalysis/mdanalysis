@@ -38,6 +38,7 @@ import numpy as np
 import sqlite3
 import os
 
+from . import guessers
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
 from ..core.topologyattrs import (
@@ -45,12 +46,14 @@ from ..core.topologyattrs import (
     Atomnames,
     Bonds,
     Charges,
+    ChainIDs,
+    Elements,
     Masses,
     Resids,
+    Resnums,
     Resnames,
     Segids,
     AtomAttr,  # for custom Attributes
-    ChainIDs,
 )
 
 
@@ -78,6 +81,8 @@ class DMSParser(TopologyReader):
         - resid
       Segment:
         - segid
+    Guesses the following attributes
+     - Elements
 
     .. _DESRES: http://www.deshawresearch.com
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
@@ -149,6 +154,7 @@ class DMSParser(TopologyReader):
                 attrs['bond'] = bondlist
                 attrs['bondorder'] = bondorder
 
+        elements = guessers.guess_types(attrs['name'])
         topattrs = []
         # Bundle in Atom level objects
         for attr, cls in [
@@ -160,11 +166,13 @@ class DMSParser(TopologyReader):
                 ('chain', ChainIDs),
         ]:
             topattrs.append(cls(attrs[attr]))
+        topattrs.append(Elements(elements, guessed=True))
 
         # Residues
         atom_residx, res_resids, (res_resnames, res_segids) = squash_by(
             attrs['resid'], attrs['resname'], attrs['segid'])
         topattrs.append(Resids(res_resids))
+        topattrs.append(Resnums(res_resids.copy()))
         topattrs.append(Resnames(res_resnames))
 
         # Segments
