@@ -233,14 +233,14 @@ class TestGROWriter(TestCase, tempdir.TempDir):
     def test_writer_no_resids(self):
         self.u_no_resids.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        expected = np.ones(self.universe.atoms.n_residues)
+        expected = np.ones((1,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
     def test_writer_no_atom_names(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        expected = np.array(['X'] * self.universe.atoms.n_atoms)
+        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
     @dec.slow
