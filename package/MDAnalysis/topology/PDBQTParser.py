@@ -46,6 +46,7 @@ from __future__ import absolute_import
 
 import numpy as np
 
+from . import guessers
 from ..lib import util
 from .base import TopologyReader, change_squash
 from ..core.topology import Topology
@@ -53,14 +54,17 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     AltLocs,
-    Resids,
-    Resnames,
-    ICodes,
-    Occupancies,
-    Tempfactors,
-    Charges,
     Atomtypes,
+    Charges,
+    Elements,
+    ICodes,
+    Masses,
+    Occupancies,
+    Resids,
+    Resnums,
+    Resnames,
     Segids,
+    Tempfactors,
 )
 
 
@@ -68,17 +72,21 @@ class PDBQTParser(TopologyReader):
     """Read topology from a PDBQT file.
 
     Creates the following Attributes:
-     - id (serial)
-     - name
-     - altLoc
-     - resname
-     - chainID (becomes segid)
-     - resid
-     - icode
-     - occupancy
-     - tempfactor
-     - charge
-     - type
+     - atom ids (serial)
+     - atom types
+     - atom names
+     - altLocs
+     - resnames
+     - chainIDs (becomes segid)
+     - resids
+     - icodes
+     - occupancies
+     - tempfactors
+     - charges
+
+    Guesses the following:
+     - elements
+     - masses
     """
     format = 'PDBQT'
 
@@ -119,6 +127,10 @@ class PDBQTParser(TopologyReader):
                 atomtypes.append(line[77:80].strip())
 
         n_atoms = len(serials)
+
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+
         attrs = []
         for attrlist, Attr, dtype in (
                 (serials, Atomids, np.int32),
@@ -130,16 +142,21 @@ class PDBQTParser(TopologyReader):
                 (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
+        attrs.append(Elements(elements, guessed=True))
+        attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)
         icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)
+
         residx, (resids, icodes, resnames, chainids) = change_squash(
             (resids, icodes), (resids, icodes, resnames, chainids))
         n_residues = len(resids)
         attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
+
         segidx, (segids,) = change_squash((chainids,), (chainids,))
         n_segments = len(segids)
         attrs.append(Segids(segids))
