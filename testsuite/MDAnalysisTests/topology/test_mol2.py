@@ -29,6 +29,7 @@ class MOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
     expected_attrs = ['ids', 'names', 'types', 'charges',
                       'resids', 'resnames', 'bonds']
+    guessed_attrs = ['elements', 'masses']
     expected_n_atoms = 49
     expected_n_residues = 1
     expected_n_segments = 1

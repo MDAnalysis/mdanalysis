@@ -38,16 +38,21 @@ from __future__ import absolute_import
 import os
 import numpy as np
 
+from . import guessers
 from ..lib.util import openany
 from .base import TopologyReader, squash_by
 from ..core.topologyattrs import (
-    Resids,
-    Resnames,
     Atomids,
     Atomnames,
     Atomtypes,
-    Charges,
     Bonds,
+    Charges,
+    Elements,
+    Masses,
+    Resids,
+    Resnums,
+    Resnames,
+    Segids,
 )
 from ..core.topology import Topology
 
@@ -63,6 +68,10 @@ class MOL2Parser(TopologyReader):
      - Resids,
      - Resnames
      - Bonds
+
+    Guesses the following:
+     - masses
+     - elements
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
@@ -130,11 +139,17 @@ class MOL2Parser(TopologyReader):
             charges.append(charge)
 
         n_atoms = len(ids)
+
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        attrs.append(Elements(elements, guessed=True))
+        attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
@@ -143,7 +158,10 @@ class MOL2Parser(TopologyReader):
             resids, resnames)
         n_residues = len(resids)
         attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
+
+        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         bonds = []
         bondorder = {}
