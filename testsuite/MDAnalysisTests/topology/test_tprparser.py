@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import TestCase, dec, assert_
+from numpy.testing import assert_
 import functools
 
 from MDAnalysis.tests.datafiles import (
@@ -27,13 +27,17 @@ from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
 
 
-class TestTPR(ParserBase):
+class TPRAttrs(ParserBase):
+    parser = MDAnalysis.topology.TPRParser.TPRParser
+    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    guessed_attrs = ['elements']
+
+
+class TestTPR(TPRAttrs):
     """
     this test the data/adk_oplsaa.tpr which is of tpx version 58
     """
     filename = TPR
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 3
@@ -43,9 +47,7 @@ class TestTPR(ParserBase):
 # FORMAT: TPRABC, where numbers ABC indicates the version of gromacs that
 # generates the corresponding tpr file
 
-class TPRBase(ParserBase):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+class TPRBase(TPRAttrs):
     expected_n_atoms = 2263
     expected_n_residues = 230
     expected_n_segments = 2
@@ -71,6 +73,9 @@ class TestTPR405(TPRBase):
 class TestTPR406(TPRBase):
     filename = TPR406
 
+class TestTPR407(TPRBase):
+    filename = TPR407
+
 class TestTPR450(TPRBase):
     filename = TPR450
 
@@ -89,9 +94,7 @@ class TestTPR454(TPRBase):
 class TestTPR455(TPRBase):
     filename = TPR455
 
-class TPRDouble(ParserBase):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+class TPRDouble(TPRAttrs):
     expected_n_atoms = 21692
     expected_n_residues = 4352
     expected_n_segments = 7
@@ -100,9 +103,7 @@ class TestTPR455Double(TPRDouble):
     filename = TPR455Double
 
 
-class TPR46xBase(ParserBase):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+class TPR46xBase(TPRAttrs):
     expected_n_atoms = 44052
     expected_n_residues = 10712
     expected_n_segments = 8

@@ -135,9 +135,11 @@ __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
+from . import guessers
 from ..lib.util import anyopen
 from .tpr import utils as tpr_utils
 from .base import TopologyReader
+from ..core.topologyattrs import Elements, Resnums
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
@@ -190,6 +192,11 @@ class TPRParser(TopologyReader):
             logger.critical(msg)
             raise IOError(msg)
 
+        # Guess elements
+        elements = guessers.guess_types(tpr_top.types.values)
+        tpr_top.add_TopologyAttr(Elements(elements, guessed=True))
+        tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
+        
         return tpr_top
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
