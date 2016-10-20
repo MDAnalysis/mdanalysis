@@ -236,39 +236,56 @@ class Universe(object):
         # It is also cleaner than a weakref.
         return self
 
-    def load_new(self, filename, **kwargs):
-        """Load coordinates from *filename*, using the suffix to detect file format.
+    def load_new(self, filename, format=None, in_memory=False, **kwargs):
+        """Load coordinates from *filename*, using the suffix to detect file
+        format.
 
-        :Arguments:
-             *filename*
-                 the coordinate file (single frame or trajectory) *or* a list of
-                 filenames, which are read one after another.
-             *format*
-                 provide the file format of the coordinate or trajectory file;
-                 ``None`` guesses it from the file extension. Note that this
-                 keyword has no effect if a list of file names is supplied because
-                 the "chained" reader has to guess the file format for each
-                 individual list member [``None``]
-                 Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`
-                 to define a custom reader to be used on the trajectory file.
-             *kwargs*
-                 Other kwargs are passed to the trajectory reader (only for advanced use)
+        Parameters
+        ----------
+        filename : str
+            the coordinate file (single frame or trajectory) *or* a list of
+            filenames, which are read one after another.
+        format : str (optional)
+            provide the file format of the coordinate or trajectory file;
+            ``None`` guesses it from the file extension. Note that this
+            keyword has no effect if a list of file names is supplied because
+            the "chained" reader has to guess the file format for each
+            individual list member [``None``] Can also pass a subclass of
+            :class:`MDAnalysis.coordinates.base.Reader` to define a custom
+            reader to be used on the trajectory file.
+        in_memory : bool (optional)
+            Directly load trajectory into memory
+        kwargs : dict
+            Other kwargs are passed to the trajectory reader (only for
+            advanced use)
 
-        :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``
-        :Raises: :exc:`TypeError` if trajectory format can not be
+
+        # TODO: check what happens if filename is None
+        Returns
+        -------
+        filename : str
+        trajectory_format : str
+
+        # TODO: look up raises doc formating
+        Raises
+        ------
+        TypeError if trajectory format can not be
                   determined or no appropriate trajectory reader found
 
         .. versionchanged:: 0.8
-           If a list or sequence that is provided for *filename*  only contains a single entry
-           then it is treated as single coordinate file. This has the consequence that it is
-           not read by the :class:`~MDAnalysis.coordinates.base.ChainReader` but directly by
-           its specialized file format reader, which typically has more features than the
+           If a list or sequence that is provided for *filename* only contains
+           a single entry then it is treated as single coordinate file. This
+           has the consequence that it is not read by the
+           :class:`~MDAnalysis.coordinates.base.ChainReader` but directly by
+           its specialized file format reader, which typically has more
+           features than the
            :class:`~MDAnalysis.coordinates.base.ChainReader`.
+
         """
+        # TODO: is this really sensible? Why not require a filename arg?
         if filename is None:
             return
 
-        import MDAnalysis.core
         from ..coordinates.core import get_reader_for
         from ..coordinates.base import ProtoReader
 
@@ -277,7 +294,7 @@ class Universe(object):
             filename = util.asiterable(filename)[0]
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
 
-        reader_format = kwargs.pop('format', None)
+        reader_format = format
         reader = None
 
         # Check if we were passed a Reader to use
@@ -287,12 +304,12 @@ class Universe(object):
         except TypeError:
             pass
 
-        if not reader:
+        if reader is None:
             # Check if we need to use Chain reader
             if util.iterable(filename):
                 # Save the format and pass this to ChainReader
-                kwargs.update({'format': reader_format})
-                reader_format='CHAIN'
+                reader_format = 'CHAIN'
+                kwargs['format'] = reader_format
             try:
                 reader = get_reader_for(filename,
                                         format=reader_format)
@@ -301,9 +318,9 @@ class Universe(object):
                     "Cannot find an appropriate coordinate reader for file '{0}'.\n"
                     "           {1}".format(filename, err))
         # supply number of atoms for readers that cannot do it for themselves
-        kwargs['n_atoms'] = len(self.atoms)
+        kwargs['n_atoms'] = self.atoms.n_atoms
 
-        self.trajectory = reader(filename, **kwargs)    # unified trajectory API
+        self.trajectory = reader(filename, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
             raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
@@ -314,7 +331,7 @@ class Universe(object):
                                  fname=filename,
                                  trj_n_atoms=self.trajectory.n_atoms))
 
-        if kwargs.get("in_memory"):
+        if in_memory:
             self.transfer_to_memory(kwargs.get("in_memory_frame_interval", 1))
 
         return filename, self.trajectory.format
@@ -356,7 +373,7 @@ class Universe(object):
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,
                 dt=self.trajectory.ts.dt)
-    
+
     def select_atoms(self, sel, *othersel, **selgroups):
         return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
@@ -554,7 +571,7 @@ class Universe(object):
         segidx = self._topology.add_Segment(**attrs)
         # resize my segments
         self.segments = SegmentGroup(np.arange(self._topology.n_segments), self)
-        # return the new segment 
+        # return the new segment
         return self.segments[segidx]
 
     # TODO: Maybe put this as a Bond attribute transplant
@@ -727,7 +744,7 @@ def Merge(*args):
 
     # Create a new topology using the intersection of topology attributes
     blank_topology_attrs = set(dir(Topology(attrs=[])))
-    common_attrs = set.intersection(*[set(dir(ag.universe._topology)) 
+    common_attrs = set.intersection(*[set(dir(ag.universe._topology))
                                       for ag in args])
     tops = set(['bonds', 'angles', 'dihedrals', 'impropers'])
 
