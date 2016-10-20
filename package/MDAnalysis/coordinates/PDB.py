@@ -850,6 +850,8 @@ class PDBWriter(base.Writer):
         <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
         details.
         """
+        if atomname == '':
+            return ''
         if len(atomname) >= 4:
             return atomname[:4]
         elif len(atomname) == 1:
@@ -913,13 +915,13 @@ class PDBWriter(base.Writer):
                                   "".format(attrname, default))
                 return np.array([default] * len(atoms))
         altlocs = get_attr('altLocs', ' ')
-        resnames = get_attr('resnames', ' ')
+        resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
-        atomnames = get_attr('names', ' ')
+        atomnames = get_attr('names', 'X')
 
         for i, atom in enumerate(atoms):
             vals = {}
