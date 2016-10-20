@@ -195,7 +195,7 @@ class TestPDBWriter(TestCase):
     def test_writer_no_altlocs(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        expected = np.array([' '] * self.u_no_names.atoms.n_atoms)
+        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.altLocs, expected)
 
     @attr('issue')
