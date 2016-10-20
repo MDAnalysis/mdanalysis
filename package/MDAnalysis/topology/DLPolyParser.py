@@ -22,20 +22,28 @@ Read DL Poly_ format topology files
 DLPoly files have the following Attributes:
  - Atomnames
  - Atomids
+Guesses the following attributes:
+ - Elements
+ - Masses
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from six.moves import zip
 import numpy as np
 
+from . import guessers
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
+    Elements,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
 )
 from ..lib.util import openany
 
@@ -79,6 +87,7 @@ class ConfigParser(TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
             names = np.array(names, dtype=object)
@@ -86,13 +95,22 @@ class ConfigParser(TopologyReader):
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
 
-        names = Atomnames(names)
-        ids = Atomids(ids)
-        top = Topology(len(ids), 1, 1,
-                       attrs = [ids, names])
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Elements(elements, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
         return top
 
@@ -136,6 +154,7 @@ class HistoryParser(TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
             names = np.array(names, dtype=object)
@@ -143,11 +162,21 @@ class HistoryParser(TopologyReader):
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
-        names = Atomnames(names)
-        ids = Atomids(ids)
-        top = Topology(len(ids), 1, 1,
-                       attrs = [ids, names])
+        elements = guessers.guess_types(names)
+        masses = guessers.guess_masses(elements)
+            
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Elements(elements, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
         return top
