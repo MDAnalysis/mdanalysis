@@ -90,6 +90,8 @@ def guess_atom_element(atomname):
     .. SeeAlso:: :func:`guess_atom_type` and
                  :mod:`MDAnalysis.topology.tables` (where the data are stored)
     """
+    if atomname == '':
+        return ''
     try:
         return tables.atomelements[atomname]
     except KeyError:
