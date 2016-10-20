@@ -51,8 +51,8 @@ class TestTopologyObjects(object):
 
         self.TO1 = TopologyObject(self.a1.indices, self.u)
         self.TO2 = TopologyObject(self.a2.indices, self.u)
-        # this atom only has one bond, so the order bonds are done (random because of sets)
-        # won't come back to bite us
+        # this atom only has one bond, so the order bonds are done (random
+        # because of sets) won't come back to bite us
         self.b = self.u.atoms[12].bonds[0]
 
     def tearDown(self):
