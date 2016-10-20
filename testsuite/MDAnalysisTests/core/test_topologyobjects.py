@@ -25,6 +25,7 @@ from numpy.testing import (
 import MDAnalysis as mda
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
+    # TODO: the following items are not used
     Bond, Angle, Dihedral, ImproperDihedral,
 )
 
