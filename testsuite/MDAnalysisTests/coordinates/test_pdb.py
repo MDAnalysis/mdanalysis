@@ -191,6 +191,13 @@ class TestPDBWriter(TestCase):
         expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
+    @dec.slow
+    def test_writer_no_altlocs(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array([' '] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.altLocs, expected)
+
     @attr('issue')
     def test_write_single_frame_Writer(self):
         """Test writing a single frame from a DCD trajectory to a PDB using
