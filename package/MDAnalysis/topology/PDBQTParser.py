@@ -57,7 +57,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     Elements,
-    ICodes,
     Masses,
     Occupancies,
     Resids,

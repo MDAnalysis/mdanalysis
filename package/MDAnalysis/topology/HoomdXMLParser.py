@@ -48,7 +48,6 @@ from ..lib.util import openany
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
-    Atomnames,
     Atomtypes,
     Atomids,
     Angles,

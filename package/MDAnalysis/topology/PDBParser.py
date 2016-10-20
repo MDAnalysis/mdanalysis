@@ -85,6 +85,7 @@ class PDBParser(TopologyReader):
 
     Creates the following Attributes:
      - names
+     - chainids
      - bfactors
      - occupancies
      - resids

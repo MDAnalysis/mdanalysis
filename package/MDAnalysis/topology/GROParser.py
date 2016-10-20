@@ -59,7 +59,7 @@ class GROParser(TopologyReader):
 
     Reads the following attributes:
       - resids
-      - resanmes
+      - resnames
       - atomids
       - atomnames
 
