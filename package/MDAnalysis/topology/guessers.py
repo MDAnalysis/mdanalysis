@@ -170,14 +170,15 @@ def guess_bonds(atoms, coords, **kwargs):
     if user_vdwradii:  # this should make algo use their values over defaults
         vdwradii.update(user_vdwradii)
 
+    # Try using types, then elements
     try:
-        atomtypes = set(atoms.types)
+        atomtypes = atoms.types
     except AttributeError:  # sometimes atoms is just list of atoms not AG
-        atomtypes = {a.type for a in atoms}
+        atomtypes = atoms.elements
     # check that all types have a defined vdw
-    if not all( val in vdwradii for val in atomtypes):
+    if not all(val in vdwradii for val in set(atomtypes)):
         raise ValueError(("vdw radii for types: " +
-                          ", ".join([t for t in atomtypes if
+                          ", ".join([t for t in set(atomtypes) if
                                      not t in vdwradii]) +
                           ". These can be defined manually using the" +
                           " keyword 'vdwradii'"))
@@ -194,7 +195,7 @@ def guess_bonds(atoms, coords, **kwargs):
     bonds = []
 
     for i, atom in enumerate(atoms[:-1]):
-        vdw_i = vdwradii[atom.type]
+        vdw_i = vdwradii[atomtypes[i]]
         max_d = (vdw_i + max_vdw) * fudge_factor
 
         # using self_distance_array scales O(n^2)
@@ -204,9 +205,10 @@ def guess_bonds(atoms, coords, **kwargs):
         idx = np.where((dist > lower_bound) & (dist <= max_d))[0]
 
         for a in idx:
-            atom_j = atoms[i + 1 + a]
+            j = i + 1 + a
+            atom_j = atoms[j]
 
-            if dist[a] < (vdw_i + vdwradii[atom_j.type]) * fudge_factor:
+            if dist[a] < (vdw_i + vdwradii[atomtypes[j]]) * fudge_factor:
                 # because of method used, same bond won't be seen twice,
                 # so don't need to worry about duplicates
                 bonds.append((atom.index, atom_j.index))
