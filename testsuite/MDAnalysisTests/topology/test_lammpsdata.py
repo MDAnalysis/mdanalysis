@@ -32,6 +32,7 @@ class LammpsBase(ParserBase):
     parser = mda.topology.LAMMPSParser.DATAParser
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges']
+    guessed_attrs = ['elements']
 
     def test_n_atom_types(self):
         assert_equal(len(set(self.top.types.values)), self.expected_n_atom_types)

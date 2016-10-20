@@ -44,19 +44,24 @@ import logging
 import string
 import functools
 
+from . import guessers
 from ..lib.util import openany, anyopen, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomtypes,
+    Atomids,
+    Angles,
+    Bonds,
     Charges,
+    Dihedrals,
+    Elements,
+    Impropers,
     Masses,
     Resids,
-    Bonds,
-    Angles,
-    Dihedrals,
-    Impropers,
+    Resnums,
+    Segids,
 )
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
@@ -342,6 +347,8 @@ class DATAParser(TopologyReader):
 
         attrs = []
         attrs.append(Atomtypes(types))
+        elements = guessers.guess_types(types)
+        attrs.append(Elements(elements, guessed=True))
         if has_charge:
             attrs.append(Charges(charges))
         if massdict is not None:
@@ -349,10 +356,18 @@ class DATAParser(TopologyReader):
             for i, at in enumerate(types):
                 masses[i] = massdict[at]
             attrs.append(Masses(masses))
+        else:
+            # Guess them
+            masses = guessers.guess_masses(elements)
+            attrs.append(Masses(masses, guessed=True))
 
         residx, resids = squash_by(resids)[:2]
         n_residues = len(resids)
+
+        attrs.append(Atomids(np.arange(n_atoms) + 1))
         attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
+        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         top = Topology(n_atoms, n_residues, 1,
                        attrs=attrs,
