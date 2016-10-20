@@ -198,6 +198,34 @@ class TestPDBWriter(TestCase):
         expected = np.array([''] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.altLocs, expected)
 
+    @dec.slow
+    def test_writer_no_icodes(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.icodes, expected)
+
+    @dec.slow
+    def test_writer_no_segids(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['SYSTEM'] * self.u_no_names.atoms.n_atoms)
+        assert_equal([atom.segid for atom in u.atoms], expected)
+
+    @dec.slow
+    def test_writer_no_occupancies(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones(self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.occupancies, expected)
+
+    @dec.slow
+    def test_writer_no_tempfactors(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.zeros(self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.tempfactors, expected)
+
     @attr('issue')
     def test_write_single_frame_Writer(self):
         """Test writing a single frame from a DCD trajectory to a PDB using
