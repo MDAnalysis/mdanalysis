@@ -17,26 +17,24 @@
 Topology object --- :mod:`MDAnalysis.core.topology'
 ===================================================================
 
-
 """
 
-"""
-# second docstring == multiline comment
-
-TODO Notes:
-  Could make downshift tables lazily built! This would
-    a) Make these not get built when not used
-    b) Optimise moving multiple atoms between residues as only built once afterwards
-
-  Could optimise moves by only updating the two parent tables rather than rebuilding everything!
-
-
-"""
 from six.moves import zip
 import numpy as np
 
 from .topologyattrs import Atomindices, Resindices, Segindices
 from ..exceptions import NoDataError
+
+
+# TODO Notes:
+#   Could make downshift tables lazily built! This would
+#     a) Make these not get built when not used
+#     b) Optimise moving multiple atoms between residues as only built once
+#     afterwards
+
+#   Could optimise moves by only updating the two parent tables rather than
+#   rebuilding everything!
+
 
 def make_downshift_arrays(upshift, nparents):
     """From an upwards translation table, create the opposite direction
@@ -59,7 +57,7 @@ def make_downshift_arrays(upshift, nparents):
 
     Examples
     --------
-    
+
     To find the residue to atom mappings for a given atom to residue mapping:
 
     >>> atom2res = np.array([0, 1, 0, 2, 2, 0, 2])
@@ -108,14 +106,14 @@ class TransTable(object):
     n_atoms, n_residues, n_segments : int
         number of atoms, residues, segments in topology
     atom_resindex : 1-D array
-        resindex for each atom in the topology; the number of unique values in this
-        array must be <= `n_residues`, and the array must be length `n_atoms`;
-        giving None defaults to placing all atoms in residue 0
+        resindex for each atom in the topology; the number of unique values in
+        this array must be <= `n_residues`, and the array must be length
+        `n_atoms`; giving None defaults to placing all atoms in residue 0
     residue_segindex : 1-D array
-        segindex for each residue in the topology; the number of unique values in this
-        array must be <= `n_segments`, and the array must be length `n_residues`;
-        giving None defaults to placing all residues in segment 0
- 
+        segindex for each residue in the topology; the number of unique values
+        in this array must be <= `n_segments`, and the array must be length
+        `n_residues`; giving None defaults to placing all residues in segment 0
+
 
     Attributes
     ----------
@@ -147,7 +145,7 @@ class TransTable(object):
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
                  atom_resindex=None, residue_segindex=None,  # Contents of tables
-                ):
+                 ):
         self.n_atoms = n_atoms
         self.n_residues = n_residues
         self.n_segments = n_segments
@@ -186,7 +184,7 @@ class TransTable(object):
         Returns
         -------
         rix : array
-            residue index for each atom 
+            residue index for each atom
 
         """
         return self._AR[aix]
@@ -237,7 +235,7 @@ class TransTable(object):
         Parameters
         ----------
         rix : array
-            residue indices 
+            residue indices
 
         Returns
         -------
@@ -278,8 +276,8 @@ class TransTable(object):
         -------
         srix : list
             each element corresponds to a segment index, in order given in
-            `six`, with each element being an array of the residue indices present
-            in that segment
+            `six`, with each element being an array of the residue indices
+            present in that segment
 
         """
         try:
@@ -344,7 +342,7 @@ class TransTable(object):
             in that segment
 
         """
-        # residues in EACH 
+        # residues in EACH
         rixs = self.segments2residues_2d(six)
 
         if isinstance(rixs, np.ndarray):
@@ -400,7 +398,7 @@ class Topology(object):
         1-D array giving the resindex of each atom in the system
     residue_segindex : array
         1-D array giving the segindex of each residue in the system
- 
+
     """
 
     def __init__(self, n_atoms=1, n_res=1, n_seg=1,
@@ -472,10 +470,10 @@ class Topology(object):
         for attr in self.attrs:
             if not attr.per_object == 'residue':
                 continue
-            if not attr.singular in new_attrs:
+            if attr.singular not in new_attrs:
                 missing = (attr.singular for attr in self.attrs
                            if (attr.per_object == 'residue' and
-                               not attr.singular in new_attrs))
+                               attr.singular not in new_attrs))
                 raise NoDataError("Missing the following attributes for the new"
                                   " Residue: {}".format(', '.join(missing)))
 
@@ -494,10 +492,10 @@ class Topology(object):
     def add_Segment(self, **new_attrs):
         for attr in self.attrs:
             if attr.per_object == 'segment':
-                if not attr.singular in new_attrs:
+                if attr.singular not in new_attrs:
                     missing = (attr.singular for attr in self.attrs
                                if (attr.per_object == 'segment' and
-                                   not attr.singular in new_attrs))
+                                   attr.singular not in new_attrs))
                     raise NoDataError("Missing the following attributes for the"
                                       " new Segment: {}"
                                       "".format(', '.join(missing)))
