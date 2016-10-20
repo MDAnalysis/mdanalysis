@@ -676,9 +676,6 @@ def as_Universe(*args, **kwargs):
         return args[0]
     return Universe(*args, **kwargs)
 
-# TODO: when was this deprecated can we already delete it?
-asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
-
 
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
