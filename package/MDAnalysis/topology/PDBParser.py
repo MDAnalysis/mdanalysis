@@ -58,20 +58,19 @@ from .base import TopologyReader, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
-    Atomtypes,
     Atomids,
     AltLocs,
-    Tempfactors,
-    ICodes,
+    Bonds,
     ChainIDs,
-    Occupancies,
+    Elements,
+    ICodes,
     Masses,
+    Occupancies,
     Resids,
     Resnames,
     Resnums,
     Segids,
-    Bonds,
-    AtomAttr,
+    Tempfactors,
 )
 
 def float_or_default(val, default):
@@ -133,7 +132,7 @@ class PDBParser(TopologyReader):
         icodes = []
         tempfactors = []
         occupancies = []
-        atomtypes = []
+        elements = []
 
         resids = []
         resnames = []
@@ -190,7 +189,7 @@ class PDBParser(TopologyReader):
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
-                atomtypes.append(line[76:78].strip())
+                elements.append(line[76:78].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
@@ -207,7 +206,6 @@ class PDBParser(TopologyReader):
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
                 (names, Atomnames, object),
-                (atomtypes, Atomtypes, object),
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
                 (serials, Atomids, np.int32),
@@ -219,11 +217,13 @@ class PDBParser(TopologyReader):
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(atomtypes):
-            types = guess_types(names)
+        if not any(elements):
+            elements = guess_types(names)
+            attrs.append(Elements(elements, guessed=True))
         else:
-            types = atomtypes
-        masses = guess_masses(types)
+            attrs.append(Elements(elements))
+
+        masses = guess_masses(elements)
         attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here
@@ -240,6 +240,7 @@ class PDBParser(TopologyReader):
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
@@ -249,6 +250,7 @@ class PDBParser(TopologyReader):
             attrs.append(Segids(segids))
         else:
             n_segments = 1
+            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
 
         top = Topology(n_atoms, n_residues, n_segments,
