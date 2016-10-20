@@ -107,13 +107,8 @@ class TopologyObject(object):
     def is_guessed(self):
         return bool(self._guessed)
 
-    # TODO: which one to use?
     def __hash__(self):
         return hash((self._u, tuple(self.indices)))
-
-    def __hash__(self):
-        """Makes the object hashable"""
-        return hash(self._cmp_key())
 
     def __repr__(self):
         indices = sorted(self.indices)
@@ -149,11 +144,6 @@ class TopologyObject(object):
 
     def __len__(self):
         return len(self._ix)
-
-    def _cmp_key(self):
-        """Unique key for the object to be used to generate the object hash"""
-        # This key must be equal for two object considered as equal by __eq__
-        return self.__class__, tuple(sorted(self.indices))
 
 
 class Bond(TopologyObject):
