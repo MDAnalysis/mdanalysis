@@ -222,7 +222,7 @@ class PDBParser(TopologyReader):
             atomtypes = guess_types(names)
             attrs.append(Atomtypes(atomtypes, guessed=True))
         else:
-            attrs.append(Atomtypes(atomtypes))
+            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
