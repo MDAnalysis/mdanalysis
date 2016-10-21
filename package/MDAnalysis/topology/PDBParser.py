@@ -62,7 +62,7 @@ from ..core.topologyattrs import (
     AltLocs,
     Bonds,
     ChainIDs,
-    Elements,
+    Atomtypes,
     ICodes,
     Masses,
     Occupancies,
@@ -133,7 +133,7 @@ class PDBParser(TopologyReader):
         icodes = []
         tempfactors = []
         occupancies = []
-        elements = []
+        atomtypes = []
 
         resids = []
         resnames = []
@@ -190,7 +190,7 @@ class PDBParser(TopologyReader):
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
-                elements.append(line[76:78].strip())
+                atomtypes.append(line[76:78].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
@@ -218,13 +218,13 @@ class PDBParser(TopologyReader):
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(elements):
-            elements = guess_types(names)
-            attrs.append(Elements(elements, guessed=True))
+        if not any(atomtypes):
+            atomtypes = guess_types(names)
+            attrs.append(Atomtypes(atomtypes, guessed=True))
         else:
-            attrs.append(Elements(elements))
+            attrs.append(Atomtypes(atomtypes))
 
-        masses = guess_masses(elements)
+        masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
 
         # Residue level stuff from here

@@ -47,7 +47,7 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     ChainIDs,
-    Elements,
+    Atomtypes,
     Masses,
     Resids,
     Resnums,
@@ -70,19 +70,19 @@ class DMSParser(TopologyReader):
 
     Reads the following attributes:
       Atom:
-        - atomid
-        - atomnum
-        - atomname
-        - mass
-        - charge
-        - chainids
+        - Atomids
+        - Atomnums
+        - Atomnames
+        - Masses
+        - Charges
+        - Chainids
       Residue:
-        - resname
-        - resid
+        - Resnames
+        - Resids
       Segment:
-        - segid
+        - Segids
     Guesses the following attributes
-     - Elements
+     - Atomtypes
 
     .. _DESRES: http://www.deshawresearch.com
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
@@ -154,7 +154,7 @@ class DMSParser(TopologyReader):
                 attrs['bond'] = bondlist
                 attrs['bondorder'] = bondorder
 
-        elements = guessers.guess_types(attrs['name'])
+        atomtypes = guessers.guess_types(attrs['name'])
         topattrs = []
         # Bundle in Atom level objects
         for attr, cls in [
@@ -166,7 +166,7 @@ class DMSParser(TopologyReader):
                 ('chain', ChainIDs),
         ]:
             topattrs.append(cls(attrs[attr]))
-        topattrs.append(Elements(elements, guessed=True))
+        topattrs.append(Atomtypes(atomtypes, guessed=True))
 
         # Residues
         atom_residx, res_resids, (res_resnames, res_segids) = squash_by(

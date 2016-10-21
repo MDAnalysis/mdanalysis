@@ -29,7 +29,6 @@ class TestHoomdXMLParser(ParserBase):
     filename = HoomdXMLdata
     expected_attrs = ['types', 'masses', 'charges', 'radii',
                       'bonds', 'angles', 'dihedrals']
-    guessed_attrs = ['elements']
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1

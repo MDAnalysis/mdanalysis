@@ -45,7 +45,7 @@ class ParserBase(object):
     def test_mandatory_attributes(self):
         # attributes required as part of the API
         # ALL parsers must provide these
-        mandatory_attrs = ['ids', 'masses', 'elements',
+        mandatory_attrs = ['ids', 'masses', 'types',
                            'resids', 'resnums', 'segids']
 
         for attr in mandatory_attrs:

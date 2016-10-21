@@ -30,7 +30,7 @@ class TestCRDParser(ParserBase):
     expected_attrs = ['ids', 'names', 'tempfactors',
                       'resids', 'resnames', 'resnums',
                       'segids']
-    guessed_attrs = ['masses', 'elements']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1

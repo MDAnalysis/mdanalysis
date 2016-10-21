@@ -56,7 +56,6 @@ from ..core.topologyattrs import (
     AltLocs,
     Atomtypes,
     Charges,
-    Elements,
     Masses,
     Occupancies,
     Resids,
@@ -127,8 +126,7 @@ class PDBQTParser(TopologyReader):
 
         n_atoms = len(serials)
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        masses = guessers.guess_masses(atomtypes)
 
         attrs = []
         for attrlist, Attr, dtype in (
@@ -141,7 +139,6 @@ class PDBQTParser(TopologyReader):
                 (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
-        attrs.append(Elements(elements, guessed=True))
         attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)

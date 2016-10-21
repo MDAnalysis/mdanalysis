@@ -43,7 +43,7 @@ from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
-    Elements,
+    Atomtypes,
     Masses,
     Resids,
     Resnums,
@@ -58,7 +58,7 @@ class XYZParser(TopologyReader):
      - Atomnames
 
     Guesses the following attributes:
-     - Elements
+     - Atomtypes
      - Masses
 
     .. versionadded:: 0.9.1
@@ -84,12 +84,12 @@ class XYZParser(TopologyReader):
                 names[i] = name
 
         # Guessing time
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Elements(elements, guessed=True),
+                 Atomtypes(atomtypes, guessed=True),
                  Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),

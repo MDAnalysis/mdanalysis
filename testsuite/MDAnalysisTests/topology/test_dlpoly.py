@@ -37,7 +37,7 @@ class DLPUniverse(ParserBase):
         
 class DLPBase2(DLPUniverse):
     expected_attrs = ['ids', 'names']
-    guessed_attrs = ['elements', 'masses']
+    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 216
     expected_n_residues = 1
     expected_n_segments = 1
@@ -61,7 +61,7 @@ class TestDLPConfigParser(DLPBase2):
 
 class DLPBase(DLPUniverse):
     expected_attrs = ['ids', 'names']
-    guessed_attrs = ['elements', 'masses']
+    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3
     expected_n_residues = 1
     expected_n_segments = 1

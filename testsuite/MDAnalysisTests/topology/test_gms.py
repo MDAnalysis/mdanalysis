@@ -29,8 +29,8 @@ from MDAnalysisTests.datafiles import (
 
 class GMSBase(ParserBase):
     parser = mda.topology.GMSParser.GMSParser
-    expected_attrs = ['names', 'types']
-    guessed_attrs = ['masses', 'elements']
+    expected_attrs = ['names', 'atomiccharges']
+    guessed_attrs = ['masses', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
 
@@ -44,7 +44,7 @@ class TestGMSASYMOPT(GMSBase):
                            ['O', 'H', 'H', 'O', 'H', 'H'])
 
     def test_types(self):
-        assert_array_equal(self.top.types.values,
+        assert_array_equal(self.top.atomiccharges.values,
                            [8, 1, 1, 8, 1, 1])
 
 
@@ -57,7 +57,7 @@ class TestGMSSYMOPT(GMSBase):
                            ['CARBON', 'CARBON', 'HYDROGEN', 'HYDROGEN'])
 
     def test_types(self):
-        assert_array_equal(self.top.types.values,
+        assert_array_equal(self.top.atomiccharges.values,
                            [6, 6, 1, 1])
 
 class TestGMSASYMSURF(TestGMSASYMOPT):

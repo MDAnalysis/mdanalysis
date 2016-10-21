@@ -44,8 +44,8 @@ from ..lib.util import openany
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
+    Atomtypes,
     Charges,
-    Elements,
     Masses,
     Radii,
     Resids,
@@ -70,7 +70,7 @@ class PQRParser(TopologyReader):
      - Segids
 
     Guesses the following:
-     - elements
+     - atomtypes
      - masses
 
     .. versionchanged:: 0.9.0
@@ -117,14 +117,14 @@ class PQRParser(TopologyReader):
 
         n_atoms = len(serials)
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
         attrs = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Elements(elements, guessed=True))
+        attrs.append(Atomtypes(atomtypes, guessed=True))
         attrs.append(Masses(masses, guessed=True))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 

@@ -22,7 +22,7 @@ such as B-factors, partial charges, etc. The details depend on the file format
 and not every topology file provides all (or even any) additional data. This
 data is made accessible through AtomGroup properties.
 
-As a minimum, all topology parsers will provide atom ids, atom elements, masses,
+As a minimum, all topology parsers will provide atom ids, atom types, masses,
 resids, resnums and segids as well as assigning all atoms to residues and all
 residues to segments.  For systems without residues and segments, this results
 in there being a single residue and segment to which all atoms belong. Often
@@ -52,7 +52,7 @@ the attributes they provide.
 
    Brookhaven [#a]_  pdb/ent   names, bonds,     a simplified PDB format (as used in MD simulations)
                                resids, resnums,  is read by default
-                               elements,
+                               types,
                                chainids,
                                occupancies,
                                bfactors,
@@ -67,7 +67,7 @@ the attributes they provide.
                                                   Module :mod:`MDAnalysis.coordinates.PDB`
 
    PQR [#a]_         pqr       names, charges,   PDB-like but whitespace-separated files with charge
-                               elements,         and radius information;
+                               types,            and radius information;
                                radii, resids,    :mod:`MDAnalysis.topology.PQRParser`
                                resnames, segids
 
@@ -114,7 +114,7 @@ the attributes they provide.
                                                  :mod:`MDAnalysis.topology.XYZParser`
 
    GAMESS [#a]_      gms,      names,            GAMESS output parser. Read only atoms of assembly
-                     log       types,            section (atom, elems and coords) and construct
+                     log       atomic charges,   section (atom, elems and coords) and construct
                                                  topology.
                                                  :mod:`MDAnalysis.topology.GMSParser`
 

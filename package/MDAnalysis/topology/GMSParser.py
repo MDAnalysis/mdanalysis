@@ -50,12 +50,17 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
-    Elements,
     Masses,
     Resids,
     Resnums,
     Segids,
+    AtomAttr,
 )
+
+class AtomicCharges(AtomAttr):
+    attrname = 'atomiccharges'
+    singular = 'atomiccharge'
+    per_object = 'atom'
 
 
 class GMSParser(TopologyReader):
@@ -63,8 +68,9 @@ class GMSParser(TopologyReader):
 
     Creates the following Attributes:
      - names
-     - types
+     - atomic charges
     Guesses:
+     - types
      - masses
 
     .. versionadded:: 0.9.1
@@ -74,7 +80,7 @@ class GMSParser(TopologyReader):
     def parse(self):
         """Read list of atoms from a GAMESS file."""
         names = []
-        types = []
+        at_charges = []
 
         with openany(self.filename, 'rt') as inf:
             while True:
@@ -94,20 +100,20 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 if _m is None:
                     break
                 name = _m.group(1)
-                attype = int(float(_m.group(2)))
+                at_charge = int(float(_m.group(2)))
 
                 names.append(name)
-                types.append(attype)
+                at_charges.append(at_charge)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
         n_atoms = len(names)
         attrs = [
             Atomids(np.arange(n_atoms) + 1),
             Atomnames(np.array(names, dtype=object)),
-            Atomtypes(np.array(types, dtype=np.int32)),
-            Elements(elements, guessed=True),
+            AtomicCharges(np.array(at_charges, dtype=np.int32)),
+            Atomtypes(atomtypes, guessed=True),
             Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),

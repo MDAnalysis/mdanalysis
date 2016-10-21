@@ -30,7 +30,7 @@ class TestDMSParser(ParserBase):
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
-    guessed_attrs = ['elements']
+    guessed_attrs = ['types']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1

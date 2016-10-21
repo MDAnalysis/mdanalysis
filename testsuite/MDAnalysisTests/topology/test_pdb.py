@@ -41,7 +41,7 @@ class TestPDBParser(ParserBase):
     filename = PDB
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames']
-    guessed_attrs = ['elements', 'masses']
+    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
@@ -53,7 +53,7 @@ class TestPDBParserSegids(ParserBase):
     filename = PDB_small
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames', 'segids']
-    guessed_attrs = ['elements', 'masses']
+    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1

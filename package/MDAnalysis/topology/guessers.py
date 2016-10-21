@@ -173,10 +173,8 @@ def guess_bonds(atoms, coords, **kwargs):
         vdwradii.update(user_vdwradii)
 
     # Try using types, then elements
-    try:
-        atomtypes = atoms.types
-    except AttributeError:  # sometimes atoms is just list of atoms not AG
-        atomtypes = atoms.elements
+    atomtypes = atoms.types
+
     # check that all types have a defined vdw
     if not all(val in vdwradii for val in set(atomtypes)):
         raise ValueError(("vdw radii for types: " +

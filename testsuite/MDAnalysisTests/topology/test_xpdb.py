@@ -29,6 +29,7 @@ class TestXPDBParser(ParserBase):
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames',
                       'segids']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1

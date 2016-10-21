@@ -42,7 +42,6 @@ from ..core.topologyattrs import (
     Atomnames,
     Atomtypes,
     Atomids,
-    Elements,
     Masses,
     Resids,
     Resnames,
@@ -64,7 +63,7 @@ class GROParser(TopologyReader):
       - atomnames
 
     Guesses the following attributes
-      - elements
+      - atomtypes
       - masses
     """
     format = 'GRO'
@@ -101,8 +100,8 @@ class GROParser(TopologyReader):
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
 
         # Guess types and masses
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
         residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
@@ -111,7 +110,7 @@ class GROParser(TopologyReader):
         attrs = [
             Atomnames(names),
             Atomids(indices),
-            Elements(elements, guessed=True),
+            Atomtypes(atomtypes, guessed=True),
             Resids(new_resids),
             Resnums(new_resids.copy()),
             Resnames(new_resnames),

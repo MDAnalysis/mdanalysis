@@ -19,8 +19,8 @@ PSF topology parser
 
 Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges and masses. Atom elements are guessed based on the atom type.  Bonds,
-angles, dihedrals and impropers are also read from the file.
+charges and masses. Bonds, angles, dihedrals and impropers are also read from
+the file.
 
 It reads both standard and extended ("EXT") PSF formats and can also parse NAMD
 space-separated "PSF" file variants.
@@ -50,7 +50,6 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
-    Elements,
     Masses,
     Charges,
     Resids,
@@ -83,9 +82,6 @@ class PSFParser(TopologyReader):
     - angles
     - dihedrals
     - impropers
-
-    Guesses the following attributes:
-    - elements
 
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
     """
@@ -299,9 +295,6 @@ class PSFParser(TopologyReader):
             charges[i] = vals[6]
             masses[i] = vals[7]
 
-        # Guess elements
-        elements = Elements(guessers.guess_types(atomtypes), guessed=True)
-
         # Atom
         atomids = Atomids(atomids)
         atomnames = Atomnames(atomnames)
@@ -324,7 +317,7 @@ class PSFParser(TopologyReader):
 
         top = Topology(len(atomids), len(new_resids), len(segids),
                        attrs=[atomids, atomnames, atomtypes,
-                              elements, charges, masses,
+                              charges, masses,
                               residueids, residuenums, residuenames,
                               segids],
                        atom_resindex=residx,

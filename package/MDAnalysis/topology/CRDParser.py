@@ -48,7 +48,7 @@ from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Elements,
+    Atomtypes,
     Masses,
     Resids,
     Resnames,
@@ -71,8 +71,8 @@ class CRDParser(TopologyReader):
      - Segids
 
     Guesses the following attributes:
-     - elements
-     - masses
+     - Atomtypes
+     - Masses
     """
     format = 'CRD'
 
@@ -135,8 +135,8 @@ class CRDParser(TopologyReader):
         segids = np.array(segids, dtype=object)
 
         # Guess some attributes
-        elements = guessers.guess_types(atomnames)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(atomnames)
+        masses = guessers.guess_masses(atomtypes)
 
         atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
             (resids, resnames), (resids, resnames, resnums, segids))
@@ -147,7 +147,7 @@ class CRDParser(TopologyReader):
                        attrs=[
                            Atomids(atomids),
                            Atomnames(atomnames),
-                           Elements(elements, guessed=True),
+                           Atomtypes(atomtypes, guessed=True),
                            Masses(masses, guessed=True),
                            Tempfactors(tempfactors),
                            Resids(res_resids),

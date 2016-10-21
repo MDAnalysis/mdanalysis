@@ -21,7 +21,6 @@ HOOMD XML topology parser
 The :class:`HoomdXMLParser` generates a topology from files for the HOOMD_ code.
 
 Read a list of atoms from a `HOOMD XML`_ file to build a basic topology.
-Elements are guessed based on atom types.
 Masses and charges are set to zero if not present in the XML file.
 Hoomd XML does not identify molecules or residues, so placeholder values
 are used for residue numbers.
@@ -54,7 +53,6 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Dihedrals,
-    Elements,
     Impropers,
     Masses,
     Radii,
@@ -75,8 +73,6 @@ class HoomdXMLParser(TopologyReader):
      - Impropers
      - Radii
      - Masses
-    Guesses the following:
-     - Elements
 
     """
     format = 'XML'
@@ -88,7 +84,7 @@ class HoomdXMLParser(TopologyReader):
         look for a name node anyway, and if it doesn't find one, it will use
         the atom types as names. If the Hoomd XML file doesn't contain a type
         node (it should), then all atom types will be \'none\'. Similar to the
-        names, the parser will try to read element, mass, and charge from the XML
+        names, the parser will try to read atom type, mass, and charge from the XML
         file, but it will use placeholder values if they are not present.
 
         Because Hoomd uses unitless mass, charge, etc., if they are not present
@@ -140,9 +136,6 @@ class HoomdXMLParser(TopologyReader):
             else:
                 if vals:
                     attrs[attrname] = attr(vals)
-
-        elements = guessers.guess_types(attrs['types'].values)
-        attrs['elements'] = Elements(elements, guessed=True)
 
         if not 'masses' in attrs:
             attrs['masses'] = Masses(np.zeros(natoms, dtype=np.float32))

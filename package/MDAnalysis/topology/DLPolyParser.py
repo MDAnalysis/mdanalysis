@@ -23,7 +23,7 @@ DLPoly files have the following Attributes:
  - Atomnames
  - Atomids
 Guesses the following attributes:
- - Elements
+ - Atomtypes
  - Masses
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
@@ -39,7 +39,7 @@ from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Elements,
+    Atomtypes,
     Masses,
     Resids,
     Resnums,
@@ -97,13 +97,13 @@ class ConfigParser(TopologyReader):
         else:
             ids = np.arange(n_atoms)
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Elements(elements, guessed=True),
+            Atomtypes(atomtypes, guessed=True),
             Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
@@ -164,13 +164,13 @@ class HistoryParser(TopologyReader):
         else:
             ids = np.arange(n_atoms)
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
             
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Elements(elements, guessed=True),
+            Atomtypes(atomtypes, guessed=True),
             Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),

@@ -47,7 +47,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Bonds,
     Charges,
-    Elements,
     Masses,
     Resids,
     Resnums,
@@ -71,7 +70,6 @@ class MOL2Parser(TopologyReader):
 
     Guesses the following:
      - masses
-     - elements
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
@@ -140,15 +138,13 @@ class MOL2Parser(TopologyReader):
 
         n_atoms = len(ids)
 
-        elements = guessers.guess_types(names)
-        masses = guessers.guess_masses(elements)
+        masses = guessers.guess_masses(types)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Elements(elements, guessed=True))
         attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)

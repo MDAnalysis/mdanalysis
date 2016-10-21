@@ -56,7 +56,6 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Dihedrals,
-    Elements,
     Impropers,
     Masses,
     Resids,
@@ -347,8 +346,6 @@ class DATAParser(TopologyReader):
 
         attrs = []
         attrs.append(Atomtypes(types))
-        elements = guessers.guess_types(types)
-        attrs.append(Elements(elements, guessed=True))
         if has_charge:
             attrs.append(Charges(charges))
         if massdict is not None:
@@ -358,7 +355,7 @@ class DATAParser(TopologyReader):
             attrs.append(Masses(masses))
         else:
             # Guess them
-            masses = guessers.guess_masses(elements)
+            masses = guessers.guess_masses(types)
             attrs.append(Masses(masses, guessed=True))
 
         residx, resids = squash_by(resids)[:2]
