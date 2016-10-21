@@ -31,22 +31,22 @@ import numpy as np
 
 from . import flags
 from ..lib.util import cached, convert_aa_code
+from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 
-_LENGTH_VALUEERROR = \
-("Setting {group} with wrong sized array. "
- "Length {group}: {lengroup}, length values: {lenvalues}")
+_LENGTH_VALUEERROR = ("Setting {group} with wrong sized array. "
+                      "Length {group}: {lengroup}, length values: {lenvalues}")
 
 
 class TopologyAttr(object):
     """Base class for Topology attributes.
 
-    .. note::   This class is intended to be subclassed, and mostly amounts to a
-                skeleton. The methods here should be present in all
+    .. note::   This class is intended to be subclassed, and mostly amounts to
+                a skeleton. The methods here should be present in all
                 :class:`TopologyAttr` child classes, but by default they raise
                 appropriate exceptions.
 
@@ -126,7 +126,7 @@ class TopologyAttr(object):
         raise NotImplementedError
 
 
-## core attributes
+# core attributes
 
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
@@ -237,7 +237,7 @@ class Segindices(TopologyAttr):
         raise AttributeError("Segment indices are fixed; they cannot be reset")
 
 
-## atom attributes
+# atom attributes
 
 class AtomAttr(TopologyAttr):
     """Base class for atom attributes.
@@ -272,7 +272,7 @@ class AtomAttr(TopologyAttr):
         return [self.values[aix] for aix in aixs]
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Atomids(AtomAttr):
     """ID for each atom.
     """
@@ -281,7 +281,7 @@ class Atomids(AtomAttr):
     per_object = 'atom'
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Atomnames(AtomAttr):
     """Name for each atom.
     """
@@ -345,10 +345,15 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
         """
-        sel = residue.universe.select_atoms(
-            'segid %s and resid %d and name C' % (residue.segment.segid, residue.resid - 1)) + \
-              residue['N'] + residue['CA'] + residue['C']
-        if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
+        # TODO: maybe this can be reformulated into one selection string without
+        # the additions later
+        sel_str = "segid {} and resid {} and name C".format(
+            residue.segment.segid, residue.resid - 1)
+        sel = residue.universe.select_atoms(sel_str) + \
+            residue['N'] + residue['CA'] + residue['C']
+
+        # select_atoms doesnt raise errors if nothing found, so check size
+        if len(sel) == 4:
             return sel
         else:
             return None
@@ -365,9 +370,12 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
         """
+        sel_str = "segid {} and resid {} and name N".format(
+            residue.segment.segid, residue.resid + 1)
+
         sel = residue['N'] + residue['CA'] + residue['C'] + \
-              residue.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (residue.segment.segid, residue.resid + 1))
+            residue.universe.select_atoms(sel_str)
+
         if len(sel) == 4:
             return sel
         else:
@@ -422,7 +430,7 @@ class Atomnames(AtomAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Atomtypes(AtomAttr):
     """Type for each atom"""
     attrname = 'types'
@@ -430,14 +438,14 @@ class Atomtypes(AtomAttr):
     per_object = 'atom'
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Radii(AtomAttr):
     """Radii for each atom"""
     attrname = 'radii'
@@ -569,10 +577,11 @@ class Masses(AtomAttr):
         pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         # Convert to local coordinates
+        com = atomgroup.center_of_mass(pbc=pbc)
         if pbc:
-            pos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+            pos = atomgroup.pack_into_box(inplace=False) - com
         else:
-            pos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+            pos = atomgroup.positions - com
 
         masses = atomgroup.masses
         # Create the inertia tensor
@@ -584,19 +593,19 @@ class Masses(AtomAttr):
         # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
         # Ixz = Izx = -1*sum(m_i*x_i*z_i)
         # Iyz = Izy = -1*sum(m_i*y_i*z_i)
-        tens = np.zeros((3,3), dtype=np.float64)
+        tens = np.zeros((3, 3), dtype=np.float64)
         # xx
-        tens[0][0] = (masses * (pos[:,1] * pos[:,1] + pos[:,2] * pos[:,2])).sum()
+        tens[0][0] = (masses * (pos[:, 1] ** 2 + pos[:, 2] ** 2)).sum()
         # xy & yx
-        tens[0][1] = tens[1][0] = - (masses * pos[:,0] * pos[:,1]).sum()
+        tens[0][1] = tens[1][0] = - (masses * pos[:, 0] * pos[:, 1]).sum()
         # xz & zx
-        tens[0][2] = tens[2][0] = - (masses * pos[:,0] * pos[:,2]).sum()
+        tens[0][2] = tens[2][0] = - (masses * pos[:, 0] * pos[:, 2]).sum()
         # yy
-        tens[1][1] = (masses * (pos[:,0] * pos[:,0] + pos[:,2] * pos[:,2])).sum()
+        tens[1][1] = (masses * (pos[:, 0] ** 2 + pos[:, 2] ** 2)).sum()
         # yz + zy
-        tens[1][2] = tens[2][1] = - (masses * pos[:,1] * pos[:,2]).sum()
+        tens[1][2] = tens[2][1] = - (masses * pos[:, 1] * pos[:, 2]).sum()
         # zz
-        tens[2][2] = (masses * (pos[:,0] * pos[:,0] + pos[:,1] * pos[:,1])).sum()
+        tens[2][2] = (masses * (pos[:, 0] ** 2 + pos[:, 1] ** 2)).sum()
 
         return tens
 
@@ -622,12 +631,14 @@ class Masses(AtomAttr):
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
+        com = atomgroup.center_of_mass(pbc=pbc)
         if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
         else:
-            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+            recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.sum(masses * np.sum(np.power(recenteredpos, 2), axis=1)) / atomgroup.total_mass()
+        rog_sq = np.sum(masses * np.sum(recenteredpos**2,
+                                        axis=1)) / atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
 
@@ -657,19 +668,20 @@ class Masses(AtomAttr):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        atomgroup = self.atoms
+        atomgroup = group.atoms
         pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
+        com = atomgroup.center_of_mass(pbc=pbc)
         if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
         else:
-            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+            recenteredpos = atomgroup.positions - com
         tensor = np.zeros((3, 3))
 
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                              recenteredpos[x, :])
+                                           recenteredpos[x, :])
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
@@ -736,7 +748,8 @@ class Masses(AtomAttr):
         e1,e2,e3 = AtomGroup.principal_axes()
 
         The eigenvectors are sorted by eigenvalue, i.e. the first one
-        corresponds to the highest eigenvalue and is thus the first principal axes.
+        corresponds to the highest eigenvalue and is thus the first principal
+        axes.
 
         Parameters
         ----------
@@ -755,6 +768,7 @@ class Masses(AtomAttr):
             ``v[2]`` as third eigenvector.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+
         """
         atomgroup = group.atoms
         if pbc is None:
@@ -788,18 +802,18 @@ class Masses(AtomAttr):
           u.atoms.align_principal_axis(0, [0,0,1])
           u.atoms.write("aligned.pdb")
         """
-        p = self.principal_axes()[axis]
+        p = group.principal_axes()[axis]
         angle = np.degrees(mdamath.angle(p, vector))
         ax = transformations.rotaxis(p, vector)
-        #print "principal[%d] = %r" % (axis, p)
-        #print "axis = %r, angle = %f deg" % (ax, angle)
-        return self.rotateby(angle, ax)
+        # print "principal[%d] = %r" % (axis, p)
+        # print "axis = %r, angle = %f deg" % (ax, angle)
+        return group.rotateby(angle, ax)
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
@@ -837,7 +851,7 @@ class Charges(AtomAttr):
         ('total_charge', total_charge))
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Bfactors(AtomAttr):
     """Crystallographic B-factors in A**2 for each atom"""
     attrname = 'bfactors'
@@ -845,14 +859,14 @@ class Bfactors(AtomAttr):
     per_object = 'atom'
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
     per_object = 'atom'
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class AltLocs(AtomAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
@@ -860,13 +874,13 @@ class AltLocs(AtomAttr):
     per_object = 'atom'
 
 
-## residue attributes
+# residue attributes
 
 class ResidueAttr(TopologyAttr):
     """Base class for Topology attributes.
 
-    .. note::   This class is intended to be subclassed, and mostly amounts to a
-                skeleton. The methods here should be present in all
+    .. note::   This class is intended to be subclassed, and mostly amounts to
+                a skeleton. The methods here should be present in all
                 :class:`TopologyAttr` child classes, but by default they raise
                 appropriate exceptions.
 
@@ -896,7 +910,7 @@ class ResidueAttr(TopologyAttr):
         return [self.values[rix] for rix in rixs]
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
@@ -904,7 +918,7 @@ class Resids(ResidueAttr):
     target_classes = [Atom, Residue]
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
@@ -928,10 +942,11 @@ class Resnames(ResidueAttr):
 
         For more than one residue it returns a
         :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
-        residues are found, a :exc:`SelectionError` is raised.
+        :class:`MDAnalysis.core.group.Residue` is returned for a single match.
+        If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
         """
         # There can be more than one residue with the same name
         residues = group.residues.unique[
@@ -1048,7 +1063,8 @@ class Resnames(ResidueAttr):
     transplants[ResidueGroup].append(
         ('sequence', sequence))
 
-#TODO: update docs to property doc
+
+# TODO: update docs to property doc
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
@@ -1061,7 +1077,7 @@ class ICodes(ResidueAttr):
     singular = 'icode'
 
 
-## segment attributes
+# segment attributes
 
 class SegmentAttr(TopologyAttr):
     """Base class for segment attributes.
@@ -1087,7 +1103,7 @@ class SegmentAttr(TopologyAttr):
         self.values[sg._ix] = values
 
 
-#TODO: update docs to property doc
+# TODO: update docs to property doc
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
@@ -1109,13 +1125,14 @@ class Segids(SegmentAttr):
 
         For more than one residue it returns a
         :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
-        :class:`MDAnalysis.core.group.Segment` is returned for a single match. If no
-        residues are found, a :exc:`SelectionError` is raised.
+        :class:`MDAnalysis.core.group.Segment` is returned for a single match.
+        If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
         """
         # There can be more than one segment with the same name
-        segments  = group.segments.unique[
+        segments = group.segments.unique[
                 group.segments.unique.segids == segid]
         if len(segments) == 0:
             raise selection.SelectionError(
@@ -1171,7 +1188,7 @@ class _Connection(AtomAttr):
 
     def get_atoms(self, ag):
         try:
-            unique_bonds =  set(itertools.chain(
+            unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag._ix]))
         except TypeError:
             # maybe we got passed an Atom
@@ -1198,7 +1215,7 @@ class _Connection(AtomAttr):
 
         existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
-            if not v in existing:
+            if v not in existing:
                 self.values.append(v)
                 self.types.append(t)
                 self._guessed.append(g)
