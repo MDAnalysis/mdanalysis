@@ -145,15 +145,6 @@ class TopologyObject(object):
     def __len__(self):
         return len(self._ix)
 
-    def _cmp_key(self):
-        """Unique key for the object to be used to generate the object hash"""
-        # This key must be equal for two object considered as equal by __eq__
-        return self.__class__, tuple(sorted(self.indices))
-
-    def __hash__(self):
-        """Makes the object hashable"""
-        return hash(self._cmp_key())
-
 
 class Bond(TopologyObject):
 
@@ -256,10 +247,11 @@ class Dihedral(TopologyObject):
 
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
-       Now a subclass of :class:`TopologyObject`; now uses :attr:`__slots__` and
-       stores atoms in :attr:`atoms` attribute.
+       Now a subclass of :class:`TopologyObject`; now uses :attr:`__slots__`
+       and stores atoms in :attr:`atoms` attribute.
     .. versionchanged:: 0.11.0
        Renamed to Dihedral (was Torsion)
+
     """
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
     btype = 'dihedral'
@@ -293,8 +285,8 @@ class Dihedral(TopologyObject):
     value = dihedral
 
 
-class ImproperDihedral(Dihedral):  # subclass Dihedral to inherit dihedral method
-
+# subclass Dihedral to inherit dihedral method
+class ImproperDihedral(Dihedral):
     """
     Improper Dihedral (improper dihedral angle) between four
     :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -347,11 +339,11 @@ class TopologyDict(object):
     attribute.
 
     The :class:`TopologyDict` collects all the selected topology type from the
-    atoms and categorises them according to the types of the atoms within.
-    A :class:`TopologyGroup` containing all of a given bond type can
-    be made by querying with the appropriate key.  The keys to the
-    :class:`TopologyDict` are a tuple of the atom types that the bond represents
-    and can be viewed using the :meth:`keys` method.
+    atoms and categorises them according to the types of the atoms within. A
+    :class:`TopologyGroup` containing all of a given bond type can be made by
+    querying with the appropriate key. The keys to the :class:`TopologyDict`
+    are a tuple of the atom types that the bond represents and can be viewed
+    using the :meth:`keys` method.
 
     For example, from a system containing pure ethanol ::
 
@@ -384,6 +376,7 @@ class TopologyDict(object):
        Changed initialisation to use a list of :class:`TopologyObject`
        instances instead of list of atoms; now used from within
        :class:`TopologyGroup` instead of accessed from :class:`AtomGroup`.
+
     """
 
     def __init__(self, topologygroup):
@@ -522,7 +515,9 @@ class TopologyGroup(object):
             # guess what I am
             # difference between dihedral and improper
             # not really important
-            self.btype = {2:'bond', 3:'angle', 4:'dihedral'}[len(bondidx[0])]
+            self.btype = {2: 'bond',
+                          3: 'angle',
+                          4: 'dihedral'}[len(bondidx[0])]
         elif btype in self._allowed_types:
             self.btype = btype
         else:
@@ -542,7 +537,11 @@ class TopologyGroup(object):
         if order is None:
             order = np.repeat(None, nbonds).reshape(nbonds, 1)
 
-        split_index = {'bond':2, 'angle':3, 'dihedral':4, 'improper':4}[self.btype]
+        # TODO: why has this been defined?
+        split_index = {'bond': 2,
+                       'angle': 3,
+                       'dihedral': 4,
+                       'improper': 4}[self.btype]
 
         if nbonds > 0:
             uniq, uniq_idx = util.unique_rows(bondidx, return_index=True)
@@ -684,7 +683,7 @@ class TopologyGroup(object):
                                      type=np.array([other._bondtype]),
                                      guessed=np.array([other.is_guessed]),
                                      order=np.array([other.order]),
-                )
+                                     )
             else:
                 return TopologyGroup(other.indices,
                                      other.universe,
@@ -692,7 +691,7 @@ class TopologyGroup(object):
                                      type=other._bondtypes,
                                      guessed=other._guessed,
                                      order=other._order,
-                )
+                                     )
         else:
             if not other.btype == self.btype:
                 raise TypeError("Cannot add different types of "
@@ -730,16 +729,15 @@ class TopologyGroup(object):
         """
         # Grab a single Item, similar to Atom/AtomGroup relationship
         if isinstance(item, int):
-            outclass = {'bond':Bond,
-                        'angle':Angle,
-                        'dihedral':Dihedral,
-                        'improper':ImproperDihedral}[self.btype]
+            outclass = {'bond': Bond,
+                        'angle': Angle,
+                        'dihedral': Dihedral,
+                        'improper': ImproperDihedral}[self.btype]
             return outclass(self._bix[item],
                             self._u,
                             type=self._bondtypes[item],
                             guessed=self._guessed[item],
-                            order=self._order[item]
-            )
+                            order=self._order[item])
         else:
             # Slice my index array with the item
             return self.__class__(self._bix[item],
@@ -747,8 +745,7 @@ class TopologyGroup(object):
                                   btype=self.btype,
                                   type=self._bondtypes[item],
                                   guessed=self._guessed[item],
-                                  order=self._order[item],
-            )
+                                  order=self._order[item],)
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""
@@ -850,19 +847,23 @@ class TopologyGroup(object):
         """Calculates the angle in radians formed between a bond
         between atoms 1 and 2 and a bond between atoms 2 & 3
 
-        :Keywords:
-           *result*
-              allows a predefined results array to be used, note that this
-              will be overwritten
-           *pbc*
-              apply periodic boundary conditions when calculating angles
-              [``False``] this is important when connecting vectors between atoms
-              might require minimum image convention
+        Parameters
+        ----------
+        result : array_like
+            allows a predefined results array to be used, note that this
+            will be overwritten
+        pbc : bool
+            apply periodic boundary conditions when calculating angles
+            [``False``] this is important when connecting vectors between
+            atoms might require minimum image convention
 
-        Uses cython implementation
+        Returns
+        -------
+        angles : ndarray
 
         .. versionchanged :: 0.9.0
            Added *pbc* option (default ``False``)
+
         """
         if not self.btype == 'angle':
             raise TypeError("TopologyGroup is not of type 'angle'")
@@ -900,16 +901,19 @@ class TopologyGroup(object):
         Defined as the angle between a plane formed by atoms 1, 2 and
         3 and a plane formed by atoms 2, 3 and 4.
 
-        :Keywords:
-           *result*
-              allows a predefined results array to be used, note that this
-              will be overwritten
-           *pbc*
-              apply periodic boundary conditions when calculating angles
-              [``False``] this is important when connecting vectors between
-              atoms might require minimum image convention
+        Parameters
+        ----------
+        result : array_like
+            allows a predefined results array to be used, note that this
+            will be overwritten
+        pbc : bool
+            apply periodic boundary conditions when calculating angles
+            [``False``] this is important when connecting vectors between
+            atoms might require minimum image convention
 
-        Uses cython implementation.
+        Returns
+        -------
+        angles : ndarray
 
         .. versionchanged:: 0.9.0
            Added *pbc* option (default ``False``)

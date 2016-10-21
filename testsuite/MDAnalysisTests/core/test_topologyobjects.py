@@ -22,9 +22,10 @@ from numpy.testing import (
     assert_raises,
 )
 
-import MDAnalysis
+import MDAnalysis as mda
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
+    # TODO: the following items are not used
     Bond, Angle, Dihedral, ImproperDihedral,
 )
 
@@ -45,14 +46,14 @@ class TestTopologyObjects(object):
 
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
-        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u = mda.Universe(PSF, DCD)
         self.a1 = self.u.atoms[1:3]
         self.a2 = self.u.atoms[3:5]
 
         self.TO1 = TopologyObject(self.a1.indices, self.u)
         self.TO2 = TopologyObject(self.a2.indices, self.u)
-        # this atom only has one bond, so the order bonds are done (random because of sets)
-        # won't come back to bite us
+        # this atom only has one bond, so the order bonds are done (random
+        # because of sets) won't come back to bite us
         self.b = self.u.atoms[12].bonds[0]
 
     def tearDown(self):
@@ -90,6 +91,25 @@ class TestTopologyObjects(object):
 
     def test_len(self):
         assert_equal(len(self.a1), 2)
+
+    def test_hash(self):
+        assert_(hash(self.TO1) != hash(self.TO2))
+
+        # Different universe should yield different hash
+        u = mda.Universe(PSF, DCD)
+        ag = u.atoms[1:3]
+        TO3 = TopologyObject(ag.indices, u)
+        assert_(hash(self.TO1) != hash(TO3))
+
+        # Different order should yield different hash
+        u = mda.Universe(PSF, DCD)
+        ag = u.atoms[[2, 1]]
+        TO3 = TopologyObject(ag.indices, u)
+        assert_(hash(self.TO1) != hash(TO3))
+
+        # should work with TO from the same atomgroup
+        TO3 = TopologyObject(self.a1.indices, self.u)
+        assert_equal(hash(self.TO1), hash(TO3))
 
     def test_indices(self):
         assert_equal(self.b.indices, tuple([b.index for b in self.b.atoms]))
@@ -138,7 +158,7 @@ class TestTopologyGroup(object):
 
     def setUp(self):
         topology = PSF
-        self.universe = MDAnalysis.Universe(topology)
+        self.universe = mda.Universe(topology)
         # force the loading of topology
         self.res1 = self.universe.residues[0]
         self.res2 = self.universe.residues[1]

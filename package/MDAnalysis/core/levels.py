@@ -34,14 +34,14 @@ Segment <-        Segmentlevel v .parent ->  SegmentGroup
 import functools
 
 
-_LEVEL_VALUES = {'atom':1, 'residue':2, 'segment':3}
+_LEVEL_VALUES = {'atom': 1, 'residue': 2, 'segment': 3}
 
 
 @functools.total_ordering
 class Level(object):
     """Describes the level of hierarchy within MDA objects
 
-    Can do comparisons with either 
+    Can do comparisons with either
 
     .singular gives the Class for Components of this Level
     .plural gives the Class for Groups of this Level
@@ -64,7 +64,7 @@ class Level(object):
 
     def __ne__(self, other):
         return not self == other
-    
+
     def __lt__(self, other):
         if isinstance(other, basestring):
             value = _LEVEL_VALUES[other]

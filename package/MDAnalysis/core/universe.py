@@ -147,7 +147,8 @@ class Universe(object):
             topology_format = kwargs.pop('topology_format', None)
 
             if len(args) == 1:
-                # special hacks to treat a coordinate file as a coordinate AND topology file
+                # special hacks to treat a coordinate file as a coordinate AND
+                # topology file
                 if kwargs.get('format', None) is None:
                     kwargs['format'] = topology_format
                 elif topology_format is None:
@@ -159,11 +160,12 @@ class Universe(object):
                     if issubclass(fmt, ProtoReader):
                         coordinatefile = self.filename
                 except TypeError:
-                    # or if file is known as a topology & coordinate file, use that
+                    # or if file is known as a topology & coordinate file, use
+                    # that
                     if fmt is None:
                         fmt = util.guess_format(self.filename)
                     if (fmt in MDAnalysis.coordinates._READERS
-                        and fmt in MDAnalysis.topology._PARSERS):
+                            and fmt in MDAnalysis.topology._PARSERS):
                         coordinatefile = self.filename
 
             # build the topology (or at least a list of atoms)
@@ -394,7 +396,7 @@ class Universe(object):
         return self.atoms.impropers
 
     def __repr__(self):
-        #return "<Universe with {n_atoms} atoms{bonds}>".format(
+        # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
         #    bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
 
@@ -445,7 +447,7 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if not self._trajectory is None:
+        if self._trajectory is not None:
             return self._trajectory
         else:
             raise AttributeError("No trajectory loaded into Universe")
@@ -471,8 +473,7 @@ class Universe(object):
                   'residue': self._topology.n_residues,
                   'segment': self._topology.n_segments}
         logger.debug("_process_attr: Adding {0} to topology".format(attr))
-        if (attr.per_object is not None and
-            len(attr) != n_dict[attr.per_object]):
+        if (attr.per_object is not None and len(attr) != n_dict[attr.per_object]):
             raise ValueError('Length of {attr} does not'
                              ' match number of {obj}s.\n'
                              'Expect: {n:d} Have: {m:d}'.format(
@@ -490,7 +491,7 @@ class Universe(object):
                 pass
 
         for cls in (Atom, Residue, Segment, GroupBase,
-                     AtomGroup, ResidueGroup, SegmentGroup):
+                    AtomGroup, ResidueGroup, SegmentGroup):
             try:
                 for funcname, meth in attr.transplants[cls]:
                     setattr(self._class_bases[cls], funcname, meth)
@@ -675,14 +676,12 @@ def as_Universe(*args, **kwargs):
         return args[0]
     return Universe(*args, **kwargs)
 
-asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
-
 
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
 
-    The resulting universe will only inherit the common topology attributes that
-    all merged universes share.
+    The resulting universe will only inherit the common topology attributes
+    that all merged universes share.
 
     :class:`AtomGroup` instances can come from different Universes, or come
     directly from a :meth:`~Universe.select_atoms` call.
@@ -691,7 +690,8 @@ def Merge(*args):
     for example, re-order the atoms in the Universe.
 
     If multiple :class:`AtomGroup` instances from the same Universe are given,
-    the merge will first simply "add" together the :class:`AtomGroup` instances.
+    the merge will first simply "add" together the :class:`AtomGroup`
+    instances.
 
     Parameters
     ----------
@@ -788,7 +788,7 @@ def Merge(*args):
         types = []
         for ag in args:
             # create a mapping scheme for this atomgroup
-            mapping = {a.index:i for i, a in enumerate(ag, start=offset)}
+            mapping = {a.index: i for i, a in enumerate(ag, start=offset)}
             offset += len(ag)
 
             tg = getattr(ag, t)
@@ -827,8 +827,8 @@ def Merge(*args):
         seg_offset += len(ag.segments)
 
         # Map them so they refer to our new indices
-        residx.extend(map(lambda x:res_mapping[x], ag.resindices))
-        segidx.extend(map(lambda x:seg_mapping[x], ag.segindices))
+        residx.extend([res_mapping[x] for x in ag.resindices])
+        segidx.extend([seg_mapping[x] for x in ag.segindices])
 
     residx = np.array(residx, dtype=np.int32)
     segidx = np.array(segidx, dtype=np.int32)
