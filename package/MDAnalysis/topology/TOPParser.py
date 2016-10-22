@@ -248,7 +248,7 @@ class TOPParser(TopologyReader):
     def parse_masses(self, atoms_per, numlines):
         vals = self.parsesection_mapper(
             atoms_per, numlines, lambda x: float(x))
-        attr = Masses(np.array(vals, dtype=np.float32))
+        attr = Masses(vals)
         return attr
 
     def parse_elements(self, atoms_per, numlines):

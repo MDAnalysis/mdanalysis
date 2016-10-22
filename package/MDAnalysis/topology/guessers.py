@@ -37,9 +37,9 @@ def guess_masses(atom_types):
 
     Returns
     -------
-    atom_masses : np.ndarray dtype float32
+    atom_masses : np.ndarray dtype float64
     """
-    masses = np.array(map(get_atom_mass, atom_types), dtype=np.float32)
+    masses = np.array(map(get_atom_mass, atom_types), dtype=np.float64)
     if np.any(masses == 0.0):
         # figure out where the misses were and report
         misses = np.unique(np.asarray(atom_types)[np.where(masses == 0.0)])

@@ -349,7 +349,7 @@ class DATAParser(TopologyReader):
         if has_charge:
             attrs.append(Charges(charges))
         if massdict is not None:
-            masses = np.zeros(n_atoms, dtype=np.float32)
+            masses = np.zeros(n_atoms, dtype=np.float64)
             for i, at in enumerate(types):
                 masses[i] = massdict[at]
             attrs.append(Masses(masses))

@@ -261,6 +261,8 @@ inconsistent results")
                            msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
 
     def test_hes_align(self):
+        # This test is massively sensitive!
+        # Get 5260 when masses were float32?
         results, details = encore.hes([self.ens1, self.ens2], align=True)
         result_value = results[0,1]
         expected_value = 2047.05

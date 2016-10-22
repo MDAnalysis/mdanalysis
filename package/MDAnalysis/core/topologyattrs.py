@@ -489,6 +489,10 @@ class Masses(AtomAttr):
 
     singledoc = """Mass of the component."""
 
+    def __init__(self, values, guessed=False):
+        self.values = np.asarray(values, dtype=np.float64)
+        self._guessed = guessed
+    
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
