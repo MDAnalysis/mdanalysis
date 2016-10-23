@@ -45,7 +45,7 @@ class DCDReadFrameTest(TestCase):
         # frame seek within range is tested
         new_frame = 91
         self.dcdfile.seek(new_frame)
-        assert_equal(self.dcdfile.current_frame, new_frame)
+        assert_equal(self.dcdfile.tell(), new_frame)
 
     def test_seek_negative(self):
         # frame seek with negative number
