@@ -15,11 +15,17 @@
 from numpy.testing import (
     assert_,
     assert_array_equal,
+    assert_equal,
+    assert_raises,
     assert_warns,
 )
 import numpy as np
 
 from MDAnalysis.topology import guessers
+from MDAnalysis.core.topologyattrs import Angles
+
+from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests.core.test_fragments import make_starshape
 
 class TestGuessMasses(object):
     @staticmethod
@@ -84,3 +90,16 @@ def test_guess_charge():
     # this always returns 0.0
     assert_(guessers.guess_atom_charge('this') == 0.0)
 
+def test_guess_bonds_Error():
+    u = make_Universe(trajectory=True)
+    assert_raises(ValueError, guessers.guess_bonds, u.atoms[:4], u.atoms.positions[:5])
+    
+def test_guess_impropers():
+    u = make_starshape()
+
+    ag = u.atoms[:5]
+
+    u.add_TopologyAttr(Angles(guessers.guess_angles(ag.bonds)))
+
+    vals = guessers.guess_improper_dihedrals(ag.angles)
+    assert_equal(len(vals), 12)
