@@ -28,6 +28,25 @@ from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 
 
+# Also used in topology/test_guessers
+def make_starshape():
+        u = make_Universe()
+        bonds = []
+        for seg in range(5):
+            segbase = seg * 25
+            for res in range(5):
+                # offset for atoms in this res
+                base = segbase + 5 * res
+                bonds.append((0 + base, 1 + base))
+                bonds.append((1 + base, 2 + base))
+                bonds.append((1 + base, 3 + base))
+                bonds.append((1 + base, 4 + base))
+                if not res == 4:  # last res doesn't link onwards
+                    bonds.append((4 + base, 5 + base))
+        u.add_TopologyAttr(Bonds(bonds))
+        return u
+
+
 class TestFragments(object):
     """Use 125 atom test Universe
 
@@ -62,21 +81,7 @@ class TestFragments(object):
     """
     @staticmethod
     def make_case1():
-        u = make_Universe()
-        bonds = []
-        for seg in range(5):
-            segbase = seg * 25
-            for res in range(5):
-                # offset for atoms in this res
-                base = segbase + 5 * res
-                bonds.append((0 + base, 1 + base))
-                bonds.append((1 + base, 2 + base))
-                bonds.append((1 + base, 3 + base))
-                bonds.append((1 + base, 4 + base))
-                if not res == 4:  # last res doesn't link onwards
-                    bonds.append((4 + base, 5 + base))
-        u.add_TopologyAttr(Bonds(bonds))
-        return u
+        return make_starshape()
 
     @staticmethod
     def make_case2():
