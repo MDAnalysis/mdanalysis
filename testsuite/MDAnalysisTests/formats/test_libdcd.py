@@ -51,3 +51,51 @@ class DCDReadFrameTest(TestCase):
         # frame seek with negative number
         with self.assertRaises(IOError):
             self.dcdfile.seek(-78)
+
+    def test_iteration(self):
+        self.dcdfile.__next__()
+        self.dcdfile.__next__()
+        self.dcdfile.__next__()
+        expected_frame = 3
+        assert_equal(self.dcdfile.tell(), expected_frame)
+
+    def test_zero_based_frames(self):
+        expected_frame = 0
+        assert_equal(self.dcdfile.tell(), expected_frame)
+
+    def test_length_traj(self):
+        expected = 98
+        assert_equal(len(self.dcdfile), expected)
+
+    def test_context_manager(self):
+        frame = 22
+        with self.dcdfile as f:
+            f.seek(frame)
+            assert_equal(f.tell(), frame)
+
+    @raises(ValueError)
+    def test_open_wrong_mode(self):
+        DCDFile('foo', 'e')
+
+    @raises(IOError)
+    def test_raise_not_existing(self):
+        DCDFile('foo')
+
+    def test_n_atoms(self):
+        assert_equal(self.dcdfile.n_atoms, 3341)
+
+    @raises(RuntimeError)
+    @run_in_tempdir()
+    def test_read_write_mode_file(self):
+        with DCDFile('foo', 'w') as f:
+            f.read()
+
+    @raises(RuntimeError)
+    def test_read_closed(self):
+        self.dcdfile.close()
+        self.dcdfile.read()
+
+    def test_iteration_2(self):
+        with self.dcdfile as f:
+            for frame in f:
+                pass
