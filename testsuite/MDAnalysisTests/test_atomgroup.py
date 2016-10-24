@@ -680,12 +680,10 @@ class TestAtomGroup(TestCase):
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
-    # INVALID: no `_atoms` property for SegmentGroup or AtomGroup; use `.atoms` instead
-    @skip
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE._atoms,
-                     u.select_atoms('segid 4AKE')._atoms,
+        assert_equal(len(u.segments.s4AKE.atoms),
+                     len(u.select_atoms('segid 4AKE').atoms),
                      "Direct selection of segment 4AKE from segments failed.")
 
     # VALID
@@ -746,7 +744,6 @@ class TestAtomGroup(TestCase):
         ag2 = ag[sel]
         assert_equal(len(ag2), 0)
 
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
     @skip
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()

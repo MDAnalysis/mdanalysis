@@ -1135,6 +1135,10 @@ class Segids(SegmentAttr):
         .. versionadded:: 0.9.2
 
         """
+        # Undo adding 's' if segid started with digit
+        if segid.startswith('s') and len(segid) >= 2 and segid[1].isdigit():
+            segid = segid[1:]
+
         # There can be more than one segment with the same name
         segments = group.segments.unique[
                 group.segments.unique.segids == segid]
