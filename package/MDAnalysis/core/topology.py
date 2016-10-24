@@ -101,6 +101,14 @@ def make_downshift_arrays(upshift, nparents):
 class TransTable(object):
     """Membership tables with methods to translate indices across levels.
 
+    There are three levels; Atom, Residue and Segment.  Each Atom **must**
+    belong in a Residue, each Residue **must** belong to a Segment.
+
+    When translating upwards, eg finding which Segment a Residue belongs in,
+    a single numpy array is returned.  When translating downwards, two options
+    are available; a concatenated result (suffix `_1`) or a list for each parent
+    object (suffix `_2d`).
+
     Parameters
     ----------
     n_atoms, n_residues, n_segments : int
@@ -136,6 +144,8 @@ class TransTable(object):
         Similar to `residues2atoms_1d`
     segments2residues_2d(six)
         Similar to `residues2atoms_2d`
+    atoms2segments(aix)
+        Segment indices for each atom in *aix*
     segments2atoms_1d(six)
         Similar to `residues2atoms_1d`
     segments2atoms_2d(six)
@@ -317,14 +327,9 @@ class TransTable(object):
             sorted indices of atoms present in segments, collectively
 
         """
-
         rixs = self.segments2residues_2d(six)
-
-        try:
-            return np.concatenate([self.residues2atoms_1d(rix)
-                                   for rix in rixs])
-        except TypeError:
-            return self.residues2atoms_1d(rixs)
+        return np.concatenate([self.residues2atoms_1d(rix)
+                               for rix in rixs])
 
     def segments2atoms_2d(self, six):
         """Get atom indices represented by each segment index.
@@ -344,11 +349,7 @@ class TransTable(object):
         """
         # residues in EACH
         rixs = self.segments2residues_2d(six)
-
-        if isinstance(rixs, np.ndarray):
-            return self.residues2atoms_1d(rixs)
-        else:
-            return (self.residues2atoms_1d(rix) for rix in rixs)
+        return [self.residues2atoms_1d(rix) for rix in rixs]
 
     # Move between different groups.
     def move_atom(self, aix, rix):
@@ -405,8 +406,6 @@ class Topology(object):
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
-        if attrs is None:
-            attrs = []
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)

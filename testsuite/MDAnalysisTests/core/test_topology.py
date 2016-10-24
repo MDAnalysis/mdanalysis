@@ -22,26 +22,10 @@ from MDAnalysis.core.topology import (
     TransTable,
     make_downshift_arrays,
 )
+from MDAnalysis.core import topologyattrs as ta
 from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 import MDAnalysis
-
-
-class TestTopology(object):
-    """Tests for Topology object.
-
-    """
-    # Reference data
-    Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
-    Sidx = np.array([0, 1, 1, 0])
-
-    def setUp(self):
-        self.top = Topology(10, 4, 2, attrs=[],
-                            atom_resindex=self.Ridx,
-                            residue_segindex=self.Sidx)
-
-    def tearDown(self):
-        del self.top
 
 
 class TestTransTable(object):
@@ -144,7 +128,6 @@ class TestTransTable(object):
             for a1, a2 in zip(answer, aix):
                 assert_array_equal(a1, a2)
 
-    # Moving within transtable without resizes
     def test_move_atom_simple(self):
         tt = self.tt
         assert_equal(tt.atoms2residues(1), 0)
@@ -635,6 +618,14 @@ class TestAddingResidues(object):
         else:
             raise AssertionError
 
+    def test_add_Residue_with_attrs(self):
+        u = make_Universe(('resnames', 'resids'))
+
+        r_new = u.add_Residue(segment=u.segments[0], resid=4321, resname='New')
+
+        assert_(r_new.resid == 4321)
+        assert_(r_new.resname == 'New')
+
     def test_missing_attr_NDE_Segment(self):
         u = make_Universe(('segids',))
 
@@ -649,3 +640,70 @@ class TestAddingResidues(object):
             assert_('segid' in e[0])
         else:
             raise AssertionError
+
+    def test_add_Segment_with_attr(self):
+        u = make_Universe(('segids',))
+
+        new_seg = u.add_Segment(segid='New')
+
+        assert_(new_seg.segid == 'New')
+
+
+class TestTopologyGuessed(object):
+    def setUp(self):
+        names = self.names = ta.Atomnames(np.array(['A', 'B', 'C'], dtype=object))
+        types = self.types = ta.Atomtypes(np.array(['X', 'Y', 'Z'], dtype=object),
+                                          guessed=True)
+        resids = self.resids = ta.Resids(np.array([1]))
+        resnames = self.resnames = ta.Resnames(np.array(['ABC'], dtype=object),
+                                               guessed=True)
+        self.top = Topology(n_atoms=3, n_res=1,
+                            attrs=[names, types, resids, resnames])
+
+    def tearDown(self):
+        del self.names
+        del self.types
+        del self.resids
+        del self.resnames
+        del self.top
+
+    def test_guessed(self):
+        guessed = self.top.guessed_attributes
+
+        assert_(self.types in guessed)
+        assert_(self.resnames in guessed)
+        assert_(not self.names in guessed)
+        assert_(not self.resids in guessed)
+
+    def test_read(self):
+        read = self.top.read_attributes
+
+        assert_(self.names in read)
+        assert_(self.resids in read)
+        assert_(not self.types in read)
+        assert_(not self.resnames in read)
+
+
+class TestTopologyCreation(object):
+    @staticmethod
+    def test_make_topology_no_attrs():
+        # should still make attrs list when attrs=None
+        top = Topology()
+
+        assert_(hasattr(top, 'attrs'))
+        assert_(isinstance(top.attrs, list))
+
+    @staticmethod
+    def test_resindex_VE():
+        # wrong sized atom to residue array
+        AR = np.arange(10)
+        assert_raises(ValueError,
+                      Topology, n_atoms=5, atom_resindex=AR)
+
+    @staticmethod
+    def test_segindex_VE():
+        # wrong sized residue to segment array
+        AR = np.arange(5)
+        RS = np.arange(10)
+        assert_raises(ValueError,
+                      Topology, n_atoms=5, n_res=5, atom_resindex=AR, residue_segindex=RS)
