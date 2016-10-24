@@ -79,6 +79,7 @@ Changes
   * Analysis.rms.RMSD now confirms to standard analysis API (Issue #893)
   * Fragments in Universe.fragment are now sorted by the index of their first
     atom. (Issue 1007)
+  * XTCFile and TRRFile only raise IOError now on error.
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
