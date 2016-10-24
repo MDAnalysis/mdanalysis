@@ -73,7 +73,7 @@ class DCDReadFrameTest(TestCase):
             f.seek(frame)
             assert_equal(f.tell(), frame)
 
-    @raises(ValueError)
+    @raises(IOError)
     def test_open_wrong_mode(self):
         DCDFile('foo', 'e')
 
@@ -84,7 +84,7 @@ class DCDReadFrameTest(TestCase):
     def test_n_atoms(self):
         assert_equal(self.dcdfile.n_atoms, 3341)
 
-    @raises(RuntimeError)
+    @raises(IOError)
     @run_in_tempdir()
     def test_read_write_mode_file(self):
         with DCDFile('foo', 'w') as f:
