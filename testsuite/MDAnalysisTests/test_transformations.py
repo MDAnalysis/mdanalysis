@@ -15,10 +15,12 @@
 #
 
 from six.moves import range
+from itertools import permutations
 
 import numpy as np
 import unittest
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
+                           assert_array_equal)
 
 from MDAnalysis.lib import transformations as t
 """
@@ -201,6 +203,7 @@ class _ProjectionMatrix(object):
         persp = np.array([0.8, 0.8, 0.8])
 
         P0 = self.f(point, normal)
+        # TODO: why isn't this used anymore?
         P1 = self.f(point, normal, direction=direct)
         P2 = self.f(point, normal, perspective=persp)
         P3 = self.f(point, normal, perspective=persp, pseudo=True)
@@ -859,12 +862,34 @@ class TestArcBall(object):
 
 
 def test_transformations_old_module():
-    """test that MDAnalysis.core.transformations is still importable (deprecated for 1.0)"""
+    """test that MDAnalysis.core.transformations is still importable
+    (deprecated for 1.0)
+
+    """
     try:
         import MDAnalysis.core.transformations
     except (ImportError, NameError):
-        raise AssertionError(
-            "MDAnalysis.core.transformations not importable. Only remove for 1.0"
-        )
+        raise AssertionError("MDAnalysis.core.transformations not importable. "
+                             "Only remove for 1.0")
 
     # NOTE: removed this test with release 1.0 when we remove the stub
+
+
+def test_rotaxis_equal_vectors():
+    a = np.arange(3)
+    x = t.rotaxis(a, a)
+    assert_array_equal(x, [1, 0, 0])
+
+
+def test_rotaxis_different_vectors():
+    # use random coordinate system
+    e = np.eye(3)
+    r = np.array([[0.69884766, 0.59804425, -0.39237102],
+                  [0.18784672, 0.37585347, 0.90744023],
+                  [0.69016342, -0.7078681, 0.15032367]])
+    re = np.dot(r, e)
+
+    for i, j, l in permutations(range(3)):
+        x = t.rotaxis(re[i], re[j])
+        # use abs since direction doesn't matter
+        assert_almost_equal(np.abs(np.dot(x, re[l])), 1)
