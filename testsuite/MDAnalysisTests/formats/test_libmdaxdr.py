@@ -42,7 +42,7 @@ class XDRFormatBaseTest(object):
     def test_raise_not_existing(self):
         self.xdrfile('foo')
 
-    @raises(ValueError)
+    @raises(IOError)
     def test_open_wrong_mode(self):
         self.xdrfile('foo', 'e')
 
@@ -51,13 +51,13 @@ class XDRFormatBaseTest(object):
         with self.xdrfile(self.multi_frame) as f:
             f.seek(100)
 
-    @raises(RuntimeError)
+    @raises(IOError)
     @run_in_tempdir()
     def test_read_write_mode_file(self):
         with self.xdrfile('foo', 'w') as f:
             f.read()
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_read_closed(self):
         f = self.xdrfile(self.multi_frame)
         f.close()
@@ -203,7 +203,7 @@ def test_different_box_xtc():
         assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_x_xtc():
     with XTCFile(XTC_multi_frame) as f_in, XTCFile('foo.xtc', 'w') as f_out:
@@ -216,7 +216,7 @@ def test_write_different_x_xtc():
                     frame.time, frame.prec)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_prec():
     mf_xtc = XTCFile(XTC_multi_frame)
@@ -309,7 +309,7 @@ def test_write_trr():
             assert_almost_equal(frame.lmbda, .01 * i)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_natoms():
     with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
@@ -348,7 +348,7 @@ def test_write_different_box_trr():
         assert_array_almost_equal(frame_1.box + 1, frame_2.box)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_x_trr():
     with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
@@ -362,7 +362,7 @@ def test_write_different_x_trr():
                     frame.time, frame.lmbda, natoms)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_v():
     with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
@@ -376,7 +376,7 @@ def test_write_different_v():
                     frame.time, frame.lmbda, natoms)
 
 
-@raises(ValueError)
+@raises(IOError)
 @run_in_tempdir()
 def test_write_different_f():
     with TRRFile(TRR_multi_frame) as f_in, TRRFile('foo.trr', 'w') as f_out:
