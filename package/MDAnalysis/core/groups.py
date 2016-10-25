@@ -1728,6 +1728,15 @@ class Residue(ComponentBase):
                 "Can only set Residue segment to Segment, not {}".format(type(new)))
         self.universe._topology.tt.move_residue(self.ix, new.segindex)
 
+    def __getattr__(self, attr):
+        if hasattr(self, 'resnames'):
+            try:
+                return self._get_named_residue(attr)
+            except selection.SelectionError:
+                pass
+        raise AttributeError("{cls} has no attribute {attr}"
+                             "".format(cls=self.__class__.__name__, attr=attr))
+
 
 class Segment(ComponentBase):
     """Segment base class.
@@ -1755,6 +1764,12 @@ class Segment(ComponentBase):
         if attr.startswith('r') and attr[1:].isdigit():
             resnum = int(attr[1:])
             return self.residues[resnum - 1]  # convert to 0 based
+        # Resname accesss
+        if hasattr(self, 'resnames'):
+            try:
+                return self._get_named_residue(attr)
+            except selection.SelectionError:
+                pass
         raise AttributeError("{cls} has no attribute {attr}"
                              "".format(cls=self.__class__.__name__, attr=attr))
 

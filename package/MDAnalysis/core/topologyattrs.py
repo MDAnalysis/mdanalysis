@@ -936,9 +936,9 @@ class Resnames(ResidueAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     residuegroup.__class__.__name__, resname))
 
-    transplants[ResidueGroup].append(('__getattr__', getattr__))
-
-    transplants[Segment].append(('__getattr__', getattr__))
+    # These transplats are hardcoded for now to allow for multiple getattr things
+    #transplants[ResidueGroup].append(('__getattr__', getattr__))
+    #transplants[Segment].append(('__getattr__', getattr__))
 
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
