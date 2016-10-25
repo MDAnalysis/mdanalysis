@@ -22,14 +22,14 @@ from numpy.testing import (
     assert_array_equal,
     assert_array_almost_equal,
 )
-from nose.tools import assert_raises
+from nose.tools import assert_raises, raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
 from MDAnalysis.core.topology import Topology
-from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.exceptions import NoDataError, SelectionError
 
 
 class DummyGroup(object):
@@ -65,7 +65,6 @@ class TopologyAttrMixin(object):
                             attrs=[self.attrclass(self.values.copy())],
                             atom_resindex=self.Ridx,
                             residue_segindex=self.Sidx)
-
         self.attr = getattr(self.top, self.attrclass.attrname)
 
     def tearDown(self):
@@ -121,6 +120,26 @@ class TestAtomids(TestAtomAttr):
     attrclass = tpattrs.Atomids
 
 
+class TestIndicesClasses():
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    @raises(AttributeError)
+    def test_cant_set_atom_indices(self):
+        self.u.atoms.indices = 1
+
+    @raises(AttributeError)
+    def test_cant_set_residue_indices(self):
+        self.u.atoms.residues.resindices = 1
+
+    @raises(AttributeError)
+    def test_cant_set_segment_indices(self):
+        self.u.atoms.segments.segindices = 1
+
+
 class TestAtomnames(TestAtomAttr):
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
                       dtype=np.object)
@@ -136,6 +155,10 @@ class AggregationMixin(TestAtomAttr):
     def test_get_segments(self):
         assert_array_equal(self.attr.get_segments(DummyGroup([1])),
                            np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
+
+    def test_get_segment(self):
+        assert_array_equal(self.attr.get_segments(DummyGroup(1)),
+                           np.sum(self.values[[4, 5, 8, 2, 3, 9]]))
 
 
 class TestMasses(AggregationMixin):
@@ -204,8 +227,17 @@ class TestResids(TestResidueAttr):
 
 
 class TestResnames(TestResidueAttr):
-    values = np.array(['ARG', 'LYS', 'VAL', 'POPG'], dtype=np.object)
+    values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
     attrclass = tpattrs.Resnames
+
+    def test_get_named_residue(self):
+        res = self.attr._get_named_residue('LYS')
+        assert_equal(res.name, 'LYS')
+
+        assert_raises(SelectionError, self.attr._get_named_residue, 'Foo')
+
+        res = self.attr._get_named_residue('VAL')
+        assert_equal(len(res), 2)
 
 
 class TestSegmentAttr(TopologyAttrMixin):

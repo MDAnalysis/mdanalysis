@@ -147,10 +147,6 @@ class Atomindices(TopologyAttr):
     def __init__(self):
         self._guessed = False
 
-    def __len__(self):
-        """Length of the TopologyAttr at its intrinsic level."""
-        return self.top.n_atoms
-
     def set_atoms(self, ag, values):
         raise AttributeError("Atom indices are fixed; they cannot be reset")
 
@@ -182,10 +178,6 @@ class Resindices(TopologyAttr):
 
     def __init__(self):
         self._guessed = False
-
-    def __len__(self):
-        """Length of the TopologyAttr at its intrinsic level."""
-        return self.top.n_residues
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2residues(ag._ix)
@@ -219,10 +211,6 @@ class Segindices(TopologyAttr):
 
     def __init__(self):
         self._guessed = False
-
-    def __len__(self):
-        """Length of the TopologyAttr at its intrinsic level."""
-        return self.top.n_segments
 
     def get_atoms(self, ag):
         return self.top.tt.atoms2segments(ag._ix)
@@ -492,7 +480,7 @@ class Masses(AtomAttr):
     def __init__(self, values, guessed=False):
         self.values = np.asarray(values, dtype=np.float64)
         self._guessed = guessed
-    
+
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
@@ -515,9 +503,7 @@ class Masses(AtomAttr):
             masses = self.values[segatoms].sum()
         else:
             # for a segmentgroup
-            masses = np.empty(len(sg))
-            for i, row in enumerate(segatoms):
-                masses[i] = self.values[row].sum()
+            masses = np.array([self.values[row].sum() for row in segatoms])
 
         return masses
 
@@ -826,22 +812,26 @@ class Charges(AtomAttr):
     transplants = defaultdict(list)
 
     def get_residues(self, rg):
-        charges = np.empty(len(rg))
-
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
-        for i, row in enumerate(resatoms):
-            charges[i] = self.values[row].sum()
+        if isinstance(rg._ix, int):
+            charges = self.values[resatoms].sum()
+        else:
+            charges = np.empty(len(rg))
+            for i, row in enumerate(resatoms):
+                charges[i] = self.values[row].sum()
 
         return charges
 
     def get_segments(self, sg):
-        charges = np.empty(len(sg))
-
         segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
-        for i, row in enumerate(segatoms):
-            charges[i] = self.values[row].sum()
+        if isinstance(sg._ix, int):
+            # for a single segment
+            charges = self.values[segatoms].sum()
+        else:
+            # for a segmentgroup
+            charges = np.array([self.values[row].sum() for row in segatoms])
 
         return charges
 
