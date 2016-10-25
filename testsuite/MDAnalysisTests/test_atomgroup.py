@@ -77,18 +77,6 @@ class TestAtom(TestCase):
 
     #INVALID
     @skip
-    def test_setting_attribute_resname(self):
-        self.atom.resname  = 'RR'
-        assert_equal(self.atom.resname, 'RR')
-
-    #INVALID
-    @skip
-    def test_setting_attribute_resid(self):
-        self.atom.resid = 42
-        assert_equal(self.atom.resid, 42)
-
-    #INVALID
-    @skip
     def test_setting_attribute_mass(self):
         assert_equal(self.atom.mass, 13)
 
@@ -140,16 +128,6 @@ class TestAtom(TestCase):
             return self.atom.velocity
 
         assert_raises(NoDataError, lookup_velo)
-
-    # INVALID: cannot build atoms like this; they must be part of a Universe
-    @skip
-    def test_no_uni(self):
-        at = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
-
-        def lookup_uni(a):
-            return a.universe
-
-        assert_raises(NoDataError, lookup_uni, at)
 
     def test_bonded_atoms(self):
         at = self.universe.atoms[0]
