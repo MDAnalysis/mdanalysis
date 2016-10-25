@@ -968,9 +968,6 @@ class Resnames(ResidueAttr):
     transplants[ResidueGroup].append(
         ('_get_named_residue', _get_named_residue))
 
-    transplants[Segment].append(
-        ('_get_named_residue', _get_named_residue))
-
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
 
