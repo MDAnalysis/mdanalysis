@@ -424,7 +424,7 @@ class Atomnames(AtomAttr):
         """
         try:
             return residue['N'] + residue['CA'] + residue['CB'] + residue['CG']
-        except (SelectionError, NoDataError):
+        except AttributeError:
             return None
 
     transplants[Residue].append(('chi1_selection', chi1_selection))

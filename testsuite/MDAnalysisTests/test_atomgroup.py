@@ -744,91 +744,6 @@ class TestAtomGroup(TestCase):
         ag2 = ag[sel]
         assert_equal(len(ag2), 0)
 
-    @skip
-    def test_phi_selection(self):
-        phisel = self.universe.s4AKE.r10.phi_selection()
-        assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
-        assert_equal(phisel.residues.resids, [9, 10])
-        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_psi_selection(self):
-        psisel = self.universe.s4AKE.r10.psi_selection()
-        assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
-        assert_equal(psisel.residues.resids, [10, 11])
-        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_omega_selection(self):
-        osel = self.universe.s4AKE.r8.omega_selection()
-        assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
-        assert_equal(osel.residues.resids, [8, 9])
-        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_chi1_selection(self):
-        sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
-        assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
-        assert_equal(sel.residues.resids, [13])
-        assert_equal(sel.residues.resnames, ['LYS'])
-
-    # Test failed selections of phi/psi/omega/chi1
-    # VALID
-    def test_phi_sel_fail(self):
-        sel = self.universe.residues[0].phi_selection()
-        assert_equal(sel, None)
-
-    # VALID
-    def test_psi_sel_fail(self):
-        sel = self.universe.residues[-1].psi_selection()
-        assert_equal(sel, None)
-
-    # VALID
-    def test_omega_sel_fail(self):
-        sel = self.universe.residues[-1].omega_selection()
-        assert_equal(sel, None)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_ch1_sel_fail(self):
-        sel = self.universe.s4AKE.r8.chi1_selection()
-        assert_equal(sel, None)  # ALA
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_phi(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        phisel = u.s4AKE.r10.phi_selection()
-        assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_psi(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        psisel = u.s4AKE.r10.psi_selection()
-        assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_omega(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        osel = u.s4AKE.r8.omega_selection()
-        assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_chi1(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        sel = u.s4AKE.r13.chi1_selection()  # LYS
-        assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
-
     # VALID
     def test_dihedral_ValueError(self):
         """test that AtomGroup.dihedral() raises ValueError if not exactly
@@ -2740,3 +2655,78 @@ class TestCrossUniverse(object):
 
         assert_(len(u.atoms[[]] + u.atoms[:3]) == 3)
         assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
+
+
+class TestDihedralSelections(object):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.dih_prec = 2
+
+    def tearDown(self):
+        del self.universe
+        del self.dih_prec
+    
+    def test_phi_selection(self):
+        phisel = self.universe.s4AKE.r10.phi_selection()
+        assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
+        assert_equal(phisel.residues.resids, [9, 10])
+        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
+
+    def test_psi_selection(self):
+        psisel = self.universe.s4AKE.r10.psi_selection()
+        assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
+        assert_equal(psisel.residues.resids, [10, 11])
+        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
+
+    def test_omega_selection(self):
+        osel = self.universe.s4AKE.r8.omega_selection()
+        assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
+        assert_equal(osel.residues.resids, [8, 9])
+        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
+
+    def test_chi1_selection(self):
+        sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
+        assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
+        assert_equal(sel.residues.resids, [13])
+        assert_equal(sel.residues.resnames, ['LYS'])
+
+    def test_phi_sel_fail(self):
+        sel = self.universe.residues[0].phi_selection()
+        assert_equal(sel, None)
+
+    def test_psi_sel_fail(self):
+        sel = self.universe.residues[-1].psi_selection()
+        assert_equal(sel, None)
+
+    def test_omega_sel_fail(self):
+        sel = self.universe.residues[-1].omega_selection()
+        assert_equal(sel, None)
+
+    def test_ch1_sel_fail(self):
+        sel = self.universe.s4AKE.r8.chi1_selection()
+        assert_equal(sel, None)  # ALA
+
+    def test_dihedral_phi(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        phisel = u.s4AKE.r10.phi_selection()
+        assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
+
+    def test_dihedral_psi(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        psisel = u.s4AKE.r10.psi_selection()
+        assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
+
+    def test_dihedral_omega(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        osel = u.s4AKE.r8.omega_selection()
+        assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
+
+    def test_dihedral_chi1(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        sel = u.s4AKE.r13.chi1_selection()  # LYS
+        assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
+
