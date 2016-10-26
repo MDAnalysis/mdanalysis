@@ -2,12 +2,13 @@ import itertools
 import numpy as np
 from numpy.testing import (
     assert_,
+    assert_array_equal,
     assert_equal,
     assert_raises,
 )
 
 from MDAnalysisTests.core.groupbase import make_Universe
-
+from MDAnalysis.core import groups
 import MDAnalysis as mda
 
 
@@ -30,7 +31,7 @@ class TestGroupSlicing(object):
             lvl: np.arange(self.length[lvl])
             for lvl in lvls
         }
-        groups = {
+        group_dict = {
             'atom': u.atoms,
             'residue': u.residues,
             'segment': u.segments
@@ -53,7 +54,7 @@ class TestGroupSlicing(object):
                     slice(5, 1, -1),
                     slice(10, 0, -2),
             ):
-                yield self._check_slice, groups[lvl], nparrays[lvl], sl
+                yield self._check_slice, group_dict[lvl], nparrays[lvl], sl
 
             # Check slicing using lists and arrays of integers
             for func in [list, lambda x: np.array(x, dtype=np.int64)]:
@@ -67,14 +68,14 @@ class TestGroupSlicing(object):
                     yield self._check_slice, group, nparrays[lvl], func(idx)
 
         singulars = {
-            'atom': mda.core.groups.Atom,
-            'residue': mda.core.groups.Residue,
-            'segment': mda.core.groups.Segment
+            'atom': groups.Atom,
+            'residue': groups.Residue,
+            'segment': groups.Segment
         }
         for lvl in lvls:
             # Check integer getitem access
             for idx in [0, 1, -1, -2]:
-                yield (self._check_integer_getitem, groups[lvl],
+                yield (self._check_integer_getitem, group_dict[lvl],
                        nparrays[lvl], idx, singulars[lvl])
 
     def _check_len(self, group):
@@ -135,7 +136,7 @@ class TestGroupAddition(object):
         u = make_Universe()
 
         levels = ['atom', 'residue', 'segment']
-        groups = {
+        group_dict = {
             'atom': u.atoms[:5],
             'residue': u.residues[:5],
             'segment': u.segments[:5],
@@ -147,19 +148,19 @@ class TestGroupAddition(object):
         }
 
         groupclasses = {
-            'atom': mda.core.groups.AtomGroup,
-            'residue': mda.core.groups.ResidueGroup,
-            'segment': mda.core.groups.SegmentGroup,
+            'atom': groups.AtomGroup,
+            'residue': groups.ResidueGroup,
+            'segment': groups.SegmentGroup,
         }
         # TODO: actually use this
         singleclasses = {
-            'atom': mda.core.groups.Atom,
-            'residue': mda.core.groups.Residue,
-            'segment': mda.core.groups.Segment
+            'atom': groups.Atom,
+            'residue': groups.Residue,
+            'segment': groups.Segment
         }
 
         for level in levels:
-            group = groups[level]
+            group = group_dict[level]
             single = singles[level]
             # check that all combinations of group and singular work
             for x, y in itertools.product([group, single], repeat=2):
@@ -171,12 +172,13 @@ class TestGroupAddition(object):
             yield self._check_contains, group
             yield self._check_contains_false, group
             for olevel in levels:
-                if not level == olevel:
-                    yield self._check_contains_wronglevel, group, groups[olevel]
+                if level == olevel:
+                    continue
+                yield self._check_contains_wronglevel, group, group_dict[olevel]
 
         # Check that you can't add anything together cross-level
         for alevel, blevel in itertools.permutations(levels, 2):
-            for typeA, typeB in itertools.product([singles, groups], repeat=2):
+            for typeA, typeB in itertools.product([singles, group_dict], repeat=2):
                 yield self._check_crosslevel, typeA[alevel], typeB[blevel]
             ### A AG R RG
             # A R
@@ -255,73 +257,73 @@ class TestGroupLevelTransition(object):
     def test_atomgroup_to_atomgroup(self):
         atm = self.u.atoms.atoms
         assert_(len(atm) == 125)
-        assert_(isinstance(atm, mda.core.groups.AtomGroup))
+        assert_(isinstance(atm, groups.AtomGroup))
 
     def test_atomgroup_to_residuegroup(self):
         res = self.u.atoms.residues
         assert_(len(res) == 25)
-        assert_(isinstance(res, mda.core.groups.ResidueGroup))
+        assert_(isinstance(res, groups.ResidueGroup))
 
     def test_atomgroup_to_segmentgroup(self):
         seg = self.u.atoms.segments
         assert_(len(seg) == 5)
-        assert_(isinstance(seg, mda.core.groups.SegmentGroup))
+        assert_(isinstance(seg, groups.SegmentGroup))
 
     def test_residuegroup_to_atomgroup(self):
         atm = self.u.residues.atoms
         assert_(len(atm) == 125)
-        assert_(isinstance(atm, mda.core.groups.AtomGroup))
+        assert_(isinstance(atm, groups.AtomGroup))
 
     def test_residuegroup_to_residuegroup(self):
         res = self.u.residues.residues
         assert_(len(res) == 25)
-        assert_(isinstance(res, mda.core.groups.ResidueGroup))
+        assert_(isinstance(res, groups.ResidueGroup))
 
     def test_residuegroup_to_segmentgroup(self):
         seg = self.u.residues.segments
         assert_(len(seg) == 5)
-        assert_(isinstance(seg, mda.core.groups.SegmentGroup))
+        assert_(isinstance(seg, groups.SegmentGroup))
 
     def test_segmentgroup_to_atomgroup(self):
         atm = self.u.segments.atoms
         assert_(len(atm) == 125)
-        assert_(isinstance(atm, mda.core.groups.AtomGroup))
+        assert_(isinstance(atm, groups.AtomGroup))
 
     def test_segmentgroup_to_residuegroup(self):
         res = self.u.segments.residues
         assert_(len(res) == 25)
-        assert_(isinstance(res, mda.core.groups.ResidueGroup))
+        assert_(isinstance(res, groups.ResidueGroup))
 
     def test_segmentgroup_to_segmentgroup(self):
         seg = self.u.segments.segments
         assert_(len(seg) == 5)
-        assert_(isinstance(seg, mda.core.groups.SegmentGroup))
+        assert_(isinstance(seg, groups.SegmentGroup))
 
     def test_atom_to_residue(self):
         res = self.u.atoms[0].residue
-        assert_(isinstance(res, mda.core.groups.Residue))
+        assert_(isinstance(res, groups.Residue))
 
     def test_atom_to_segment(self):
         seg = self.u.atoms[0].segment
-        assert_(isinstance(seg, mda.core.groups.Segment))
+        assert_(isinstance(seg, groups.Segment))
 
     def test_residue_to_atomgroup(self):
         ag = self.u.residues[0].atoms
-        assert_(isinstance(ag, mda.core.groups.AtomGroup))
+        assert_(isinstance(ag, groups.AtomGroup))
         assert_(len(ag) == 5)
 
     def test_residue_to_segment(self):
         seg = self.u.residues[0].segment
-        assert_(isinstance(seg, mda.core.groups.Segment))
+        assert_(isinstance(seg, groups.Segment))
 
     def test_segment_to_atomgroup(self):
         ag = self.u.segments[0].atoms
-        assert_(isinstance(ag, mda.core.groups.AtomGroup))
+        assert_(isinstance(ag, groups.AtomGroup))
         assert_(len(ag) == 25)
 
     def test_segment_to_residuegroup(self):
         rg = self.u.segments[0].residues
-        assert_(isinstance(rg, mda.core.groups.ResidueGroup))
+        assert_(isinstance(rg, groups.ResidueGroup))
         assert_(len(rg) == 5)
 
     def test_atomgroup_to_residuegroup_unique(self):
@@ -359,21 +361,21 @@ class TestGroupLevelTransition(object):
 
         assert_(len(ag) == 20)
         assert_(len(ag.unique) == 10)
-        assert_(isinstance(ag.unique, mda.core.groups.AtomGroup))
+        assert_(isinstance(ag.unique, groups.AtomGroup))
 
     def test_residuegroup_unique(self):
         rg = self.u.residues[:5] + self.u.residues[:5]
 
         assert_(len(rg) == 10)
         assert_(len(rg.unique) == 5)
-        assert_(isinstance(rg.unique, mda.core.groups.ResidueGroup))
+        assert_(isinstance(rg.unique, groups.ResidueGroup))
 
     def test_segmentgroup_unique(self):
         sg = self.u.segments[0] + self.u.segments[1] + self.u.segments[0]
 
         assert_(len(sg) == 3)
         assert_(len(sg.unique) == 2)
-        assert_(isinstance(sg.unique, mda.core.groups.SegmentGroup))
+        assert_(isinstance(sg.unique, groups.SegmentGroup))
 
 
 class TestComponentComparisons(object):
@@ -430,3 +432,21 @@ class TestComponentComparisons(object):
             yield self._check_neq, a, b, c
             yield self._check_eq, a, b, c
             yield self._check_sorting, a, b, c
+
+class TestMetaclassMagic(object):
+    # tests for the weird voodoo we do with metaclasses
+    @staticmethod
+    def test_new_class():
+        u = make_Universe(trajectory=True)
+
+        # should be able to subclass AtomGroup as normal
+        class NewGroup(groups.AtomGroup):
+            pass
+
+        ng = NewGroup(np.array([0, 1, 2]), u)
+
+        assert_(isinstance(ng, NewGroup))
+
+        ag = u.atoms[[0, 1, 2]]
+
+        assert_array_equal(ng.positions, ag.positions)

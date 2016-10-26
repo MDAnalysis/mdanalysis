@@ -176,7 +176,7 @@ class _MutableBase(object):
                                 "universe. Currently possible parent "
                                 "classes are: {}".format(
                                     cls.__name__, str(sorted(u._class_bases.keys()))))
-            newcls = u._classes[cls] = parent_cls._mix(cls.__name__, cls)
+            newcls = u._classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
 
 
