@@ -77,18 +77,6 @@ class TestAtom(TestCase):
 
     #INVALID
     @skip
-    def test_setting_attribute_resname(self):
-        self.atom.resname  = 'RR'
-        assert_equal(self.atom.resname, 'RR')
-
-    #INVALID
-    @skip
-    def test_setting_attribute_resid(self):
-        self.atom.resid = 42
-        assert_equal(self.atom.resid, 42)
-
-    #INVALID
-    @skip
     def test_setting_attribute_mass(self):
         assert_equal(self.atom.mass, 13)
 
@@ -140,16 +128,6 @@ class TestAtom(TestCase):
             return self.atom.velocity
 
         assert_raises(NoDataError, lookup_velo)
-
-    # INVALID: cannot build atoms like this; they must be part of a Universe
-    @skip
-    def test_no_uni(self):
-        at = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
-
-        def lookup_uni(a):
-            return a.universe
-
-        assert_raises(NoDataError, lookup_uni, at)
 
     def test_bonded_atoms(self):
         at = self.universe.atoms[0]
@@ -680,12 +658,10 @@ class TestAtomGroup(TestCase):
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
-    # INVALID: no `_atoms` property for SegmentGroup or AtomGroup; use `.atoms` instead
-    @skip
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE._atoms,
-                     u.select_atoms('segid 4AKE')._atoms,
+        assert_equal(len(u.segments.s4AKE.atoms),
+                     len(u.select_atoms('segid 4AKE').atoms),
                      "Direct selection of segment 4AKE from segments failed.")
 
     # VALID
@@ -745,92 +721,6 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[10:30]
         ag2 = ag[sel]
         assert_equal(len(ag2), 0)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_phi_selection(self):
-        phisel = self.universe.s4AKE.r10.phi_selection()
-        assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
-        assert_equal(phisel.residues.resids, [9, 10])
-        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_psi_selection(self):
-        psisel = self.universe.s4AKE.r10.psi_selection()
-        assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
-        assert_equal(psisel.residues.resids, [10, 11])
-        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_omega_selection(self):
-        osel = self.universe.s4AKE.r8.omega_selection()
-        assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
-        assert_equal(osel.residues.resids, [8, 9])
-        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_chi1_selection(self):
-        sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
-        assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
-        assert_equal(sel.residues.resids, [13])
-        assert_equal(sel.residues.resnames, ['LYS'])
-
-    # Test failed selections of phi/psi/omega/chi1
-    # VALID
-    def test_phi_sel_fail(self):
-        sel = self.universe.residues[0].phi_selection()
-        assert_equal(sel, None)
-
-    # VALID
-    def test_psi_sel_fail(self):
-        sel = self.universe.residues[-1].psi_selection()
-        assert_equal(sel, None)
-
-    # VALID
-    def test_omega_sel_fail(self):
-        sel = self.universe.residues[-1].omega_selection()
-        assert_equal(sel, None)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_ch1_sel_fail(self):
-        sel = self.universe.s4AKE.r8.chi1_selection()
-        assert_equal(sel, None)  # ALA
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_phi(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        phisel = u.s4AKE.r10.phi_selection()
-        assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_psi(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        psisel = u.s4AKE.r10.psi_selection()
-        assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_omega(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        osel = u.s4AKE.r8.omega_selection()
-        assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
-
-    # INVALID: we don't support getting residues by resid as attributes of segments anymore
-    @skip
-    def test_dihedral_chi1(self):
-        u = self.universe
-        u.trajectory.rewind()  # just to make sure...
-        sel = u.s4AKE.r13.chi1_selection()  # LYS
-        assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
     # VALID
     def test_dihedral_ValueError(self):
@@ -2124,7 +2014,7 @@ class TestUniverse(TestCase):
         assert_equal(u.kwargs, u2.kwargs)
 
 
-class TestPBCFlag(TestCase):
+class TestPBCFlag(object):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
@@ -2178,8 +2068,6 @@ class TestPBCFlag(TestCase):
         # Test default setting of flag
         assert_equal(MDAnalysis.core.flags['use_pbc'], False)
 
-    #INVALID some of the functions don't work correct
-    @skip
     def test_default(self):
         # Test regular behaviour
         assert_almost_equal(self.ag.center_of_geometry(), self.ref_noPBC['COG'], self.prec)
@@ -2193,8 +2081,6 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principal_axes(), self.ref_noPBC['PAxes'], self.prec)
 
-    #INVALID some of the functions don't work correct
-    @skip
     def test_pbcflag(self):
         # Test using ag method flag
         assert_almost_equal(self.ag.center_of_geometry(pbc=True), self.ref_PBC['COG'], self.prec)
@@ -2208,8 +2094,6 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.bsphere(pbc=True)[1], self.ref_PBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principal_axes(pbc=True), self.ref_PBC['PAxes'], self.prec)
 
-    #INVALID some of the functions don't work correct
-    @skip
     def test_usepbc_flag(self):
         # Test using the core.flags flag
         MDAnalysis.core.flags['use_pbc'] = True
@@ -2225,8 +2109,6 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.principal_axes(), self.ref_PBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
 
-    #INVALID some of the functions don't work correct
-    @skip
     def test_override_flag(self):
         # Test using the core.flags flag, then overriding
         MDAnalysis.core.flags['use_pbc'] = True
@@ -2743,3 +2625,78 @@ class TestCrossUniverse(object):
 
         assert_(len(u.atoms[[]] + u.atoms[:3]) == 3)
         assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
+
+
+class TestDihedralSelections(object):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.dih_prec = 2
+
+    def tearDown(self):
+        del self.universe
+        del self.dih_prec
+    
+    def test_phi_selection(self):
+        phisel = self.universe.s4AKE.r10.phi_selection()
+        assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
+        assert_equal(phisel.residues.resids, [9, 10])
+        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
+
+    def test_psi_selection(self):
+        psisel = self.universe.s4AKE.r10.psi_selection()
+        assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
+        assert_equal(psisel.residues.resids, [10, 11])
+        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
+
+    def test_omega_selection(self):
+        osel = self.universe.s4AKE.r8.omega_selection()
+        assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
+        assert_equal(osel.residues.resids, [8, 9])
+        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
+
+    def test_chi1_selection(self):
+        sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
+        assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
+        assert_equal(sel.residues.resids, [13])
+        assert_equal(sel.residues.resnames, ['LYS'])
+
+    def test_phi_sel_fail(self):
+        sel = self.universe.residues[0].phi_selection()
+        assert_equal(sel, None)
+
+    def test_psi_sel_fail(self):
+        sel = self.universe.residues[-1].psi_selection()
+        assert_equal(sel, None)
+
+    def test_omega_sel_fail(self):
+        sel = self.universe.residues[-1].omega_selection()
+        assert_equal(sel, None)
+
+    def test_ch1_sel_fail(self):
+        sel = self.universe.s4AKE.r8.chi1_selection()
+        assert_equal(sel, None)  # ALA
+
+    def test_dihedral_phi(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        phisel = u.s4AKE.r10.phi_selection()
+        assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
+
+    def test_dihedral_psi(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        psisel = u.s4AKE.r10.psi_selection()
+        assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
+
+    def test_dihedral_omega(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        osel = u.s4AKE.r8.omega_selection()
+        assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
+
+    def test_dihedral_chi1(self):
+        u = self.universe
+        u.trajectory.rewind()  # just to make sure...
+        sel = u.s4AKE.r13.chi1_selection()  # LYS
+        assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
+

@@ -61,6 +61,8 @@ Fixes
   * Progress meters are now displayed as expected on jupyter notebooks
     (Issue #927)
   * Reset trajectory to 0 after sliced iteration (Issue #1031)
+  * Fixed rotaxis returning NaN if a=b (Issue #1045)
+  * Fixed align_principal_axis onto a principal axes (Issue #1045)
 
 Changes
   * Started unifying the API of analysis classes (named internally

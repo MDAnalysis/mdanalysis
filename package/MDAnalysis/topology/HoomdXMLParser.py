@@ -109,7 +109,7 @@ class HoomdXMLParser(TopologyReader):
 
         for attrname, attr, mapper, dtype in (
                 ('diameter', Radii, lambda x: float(x) / 2., np.float32),
-                ('mass', Masses, float, np.float32),
+                ('mass', Masses, float, np.float64),
                 ('charge', Charges, float, np.float32),
         ):
             try:
@@ -138,7 +138,7 @@ class HoomdXMLParser(TopologyReader):
                     attrs[attrname] = attr(vals)
 
         if not 'masses' in attrs:
-            attrs['masses'] = Masses(np.zeros(natoms, dtype=np.float32))
+            attrs['masses'] = Masses(np.zeros(natoms))
         if not 'charges' in attrs:
             attrs['charges'] = Charges(np.zeros(natoms, dtype=np.float32))
 

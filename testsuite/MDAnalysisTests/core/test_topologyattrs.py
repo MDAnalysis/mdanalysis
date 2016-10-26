@@ -15,15 +15,18 @@
 """Tests for MDAnalysis.core.topologyattrs objects.
 
 """
+import numpy as np
+
 from numpy.testing import (
     assert_,
     assert_array_equal,
     assert_array_almost_equal,
 )
-import numpy as np
 from nose.tools import assert_raises
-
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests.datafiles import PSF, DCD
+
+import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.exceptions import NoDataError
@@ -233,3 +236,33 @@ class TestSegmentAttr(TopologyAttrMixin):
                                np.array([23, -0.0002]))
         assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 1])),
                            np.array([-0.0002, 23, -0.0002]))
+
+
+class TestAttr(object):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        self.ag = self.universe.atoms  # prototypical AtomGroup
+
+    def tearDown(self):
+        del self.universe
+        del self.ag
+
+    def test_principal_axes(self):
+        assert_array_almost_equal(
+            self.ag.principal_axes(),
+            np.array([[-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+                      [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
+                      [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
+
+    def test_align_principal_axes_with_self(self):
+        pa = self.ag.principal_axes()
+        self.ag.align_principal_axis(0, pa[0])
+        assert_array_almost_equal(self.ag.principal_axes(), pa)
+
+    def test_align_principal_axes_with_x(self):
+        self.ag.align_principal_axis(0, [1, 0, 0])
+        # This is a very loose check that the difference is not more then 0.5.
+        # This is OK here because the rounding error in the calculation really
+        # is that big.
+        assert_(np.allclose(np.abs(self.ag.principal_axes()), np.eye(3),
+                            rtol=0, atol=0.5))

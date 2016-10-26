@@ -1750,6 +1750,20 @@ class Segment(ComponentBase):
         return residuesclass(self._u._topology.resindices[self][0],
                              self._u)
 
+    def __getattr__(self, attr):
+        # Segment.r1 access
+        if attr.startswith('r') and attr[1:].isdigit():
+            resnum = int(attr[1:])
+            return self.residues[resnum - 1]  # convert to 0 based
+        # Resname accesss
+        if hasattr(self.residues, 'resnames'):
+            try:
+                return self.residues._get_named_residue(attr)
+            except selection.SelectionError:
+                pass
+        raise AttributeError("{cls} has no attribute {attr}"
+                             "".format(cls=self.__class__.__name__, attr=attr))
+
 # Define relationships between these classes
 # with Level objects
 ATOMLEVEL = levels.Level('atom', Atom, AtomGroup)

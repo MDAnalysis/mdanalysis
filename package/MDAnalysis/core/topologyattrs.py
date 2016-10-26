@@ -424,7 +424,7 @@ class Atomnames(AtomAttr):
         """
         try:
             return residue['N'] + residue['CA'] + residue['CB'] + residue['CG']
-        except (SelectionError, NoDataError):
+        except AttributeError:
             return None
 
     transplants[Residue].append(('chi1_selection', chi1_selection))
@@ -489,6 +489,10 @@ class Masses(AtomAttr):
 
     singledoc = """Mass of the component."""
 
+    def __init__(self, values, guessed=False):
+        self.values = np.asarray(values, dtype=np.float64)
+        self._guessed = guessed
+    
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
@@ -932,9 +936,9 @@ class Resnames(ResidueAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     residuegroup.__class__.__name__, resname))
 
-    transplants[ResidueGroup].append(('__getattr__', getattr__))
-
-    transplants[Segment].append(('__getattr__', getattr__))
+    # These transplats are hardcoded for now to allow for multiple getattr things
+    #transplants[ResidueGroup].append(('__getattr__', getattr__))
+    #transplants[Segment].append(('__getattr__', getattr__))
 
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
@@ -962,9 +966,6 @@ class Resnames(ResidueAttr):
             return residues
 
     transplants[ResidueGroup].append(
-        ('_get_named_residue', _get_named_residue))
-
-    transplants[Segment].append(
         ('_get_named_residue', _get_named_residue))
 
     def sequence(self, **kwargs):
@@ -1131,6 +1132,10 @@ class Segids(SegmentAttr):
         .. versionadded:: 0.9.2
 
         """
+        # Undo adding 's' if segid started with digit
+        if segid.startswith('s') and len(segid) >= 2 and segid[1].isdigit():
+            segid = segid[1:]
+
         # There can be more than one segment with the same name
         segments = group.segments.unique[
                 group.segments.unique.segids == segid]

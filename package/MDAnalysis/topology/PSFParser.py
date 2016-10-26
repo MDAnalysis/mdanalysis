@@ -263,7 +263,7 @@ class PSFParser(TopologyReader):
         atomnames = np.zeros(numlines, dtype=object)
         atomtypes = np.zeros(numlines, dtype=object)
         charges = np.zeros(numlines, dtype=np.float32)
-        masses = np.zeros(numlines, dtype=np.float32)
+        masses = np.zeros(numlines, dtype=np.float64)
 
         for i in xrange(numlines):
             try:
