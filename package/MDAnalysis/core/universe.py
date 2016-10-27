@@ -315,7 +315,7 @@ class Universe(object):
             try:
                 reader = get_reader_for(filename,
                                         format=reader_format)
-            except TypeError as err:
+            except ValueError as err:
                 raise TypeError(
                     "Cannot find an appropriate coordinate reader for file '{0}'.\n"
                     "           {1}".format(filename, err))
