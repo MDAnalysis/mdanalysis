@@ -13,12 +13,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from six.moves import zip, cPickle
+from six.moves import zip
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
                                         TRZ, TRZ_psf, PSF_notop,
-                                        PSF_BAD, unordered_res,
                                         XYZ_mini, two_water_gro,
                                         two_water_gro_nonames,
                                         COORDINATES_XYZ, COORDINATES_TRR)
@@ -1915,104 +1914,6 @@ def test_instantselection_termini():
     universe = MDAnalysis.Universe(PSF, DCD)
     assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
     del universe
-
-
-class TestUniverse(TestCase):
-    # VALID
-    def test_load(self):
-        # Universe(top, trj)
-        u = MDAnalysis.Universe(PSF, PDB_small)
-        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_bad_topology(self):
-        # tests that Universe builds produce the right error message
-        def bad_load():
-            return MDAnalysis.Universe(PSF_BAD, DCD)
-
-        assert_raises(ValueError, bad_load)
-
-    # VALID
-    @attr('issue')
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_new(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        u.load_new(PDB_small)
-        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_new_TypeError(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-
-        def bad_load(uni):
-            return uni.load_new('filename.notarealextension')
-
-        assert_raises(ValueError, bad_load, u)
-
-    # VALID
-    def test_load_structure(self):
-        # Universe(struct)
-        ref = MDAnalysis.Universe(PSF, PDB_small)
-        u = MDAnalysis.Universe(PDB_small)
-        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-        assert_almost_equal(u.atoms.positions, ref.atoms.positions)
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_multiple_list(self):
-        # Universe(top, [trj, trj, ...])
-        ref = MDAnalysis.Universe(PSF, DCD)
-        u = MDAnalysis.Universe(PSF, [DCD, DCD])
-        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-        assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_load_multiple_args(self):
-        # Universe(top, trj, trj, ...)
-        ref = MDAnalysis.Universe(PSF, DCD)
-        u = MDAnalysis.Universe(PSF, DCD, DCD)
-        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-        assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_pickle_raises_NotImplementedError(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_set_dimensions(self):
-        u = MDAnalysis.Universe(PSF, DCD)
-        box = np.array([10, 11, 12, 90, 90, 90])
-        u.dimensions = np.array([10, 11, 12, 90, 90, 90])
-        assert_allclose(u.dimensions, box)
-
-    # VALID
-    @staticmethod
-    def test_universe_kwargs():
-        u = MDAnalysis.Universe(PSF, PDB_small, fake_kwarg=True)
-        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-
-        assert_(u.kwargs['fake_kwarg'] is True)
-
-        # initialize new universe from pieces of existing one
-        u2 = MDAnalysis.Universe(u.filename, u.trajectory.filename,
-                                 **u.kwargs)
-
-        assert_(u2.kwargs['fake_kwarg'] is True)
-        assert_equal(u.kwargs, u2.kwargs)
-
 
 class TestPBCFlag(object):
     @dec.skipif(parser_not_found('TRZ'),
