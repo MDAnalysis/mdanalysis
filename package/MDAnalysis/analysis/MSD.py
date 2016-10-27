@@ -63,8 +63,8 @@ Note that this script is capable of calculating the MSD of any atom selection,
 regardless of complexity, so the MSD of something like
  'type OT around 4 type HT' can be calculated.
 
-By default, the MSD object will write output in binary to a pickle file named
-'msd' which will contain MSD calculated for tau less than 250 frames or the
+By default, the MSD object will write output in binary to a csv file named
+'msd.csv' which will contain MSD calculated for tau less than 250 frames or the
 length of the trajectory, which ever is smaller. Data in this file is in the
 form: [msd,n_samples], where msd is a vector of length=2 in this example,
 containing vectors of MSD values with indexes corresponding to tau,
@@ -75,13 +75,13 @@ To change these defaults, you can use the optional parameters 'out_name' and
 'len_msd':
 
     >>> my_MSD = MSD(my_universe, ['type OT','type HT'],0,9,5,
-                     out_name='my_new_name.p',len_msd=5)
+                     out_name='my_new_name.csv',len_msd=5)
 
-Setting write_output=False will cause my_MSD.run() to return the data it would
-otherwise write to the output file. Finally, setting max_data=False will allow
-the calculation to use data past the specified last frame in the msd
-calculation. This can be useful for splitting large jobs over multiple batch
-scripts, as it ensures that no data is lost in the process.
+Setting write_output=False will suppress output to the csv file. Finally, 
+setting max_data=False will allow the calculation to use data past the 
+specified last frame in the msd calculation. This can be useful for splitting
+large jobs over multiple batch scripts, as it ensures that no data is lost in
+the process.
 
 """
 
@@ -92,6 +92,7 @@ from six import range
 import sys
 import getopt
 import warnings
+import logging
 from collections import deque
 
 import numpy as np
@@ -128,22 +129,14 @@ class MSD(object):
 
     Methods
     -------
-    _select(self)
-        Generates list of atom groups that satisfy select_list strings
-    _init_pos_deque(self):
-        Initializes lists necessary for MSD calculations at the first restart.
-    _update_deques(self, this_restart):
-        Updates lists necessary for MSD calculations
-    _process_pos_data(self):
-        Runs MSD calculation
     run(self):
         Calls _process_pos_data and saves final output
 
     """
 
     def __init__(self, universe, select_list, start_frame, stop_frame,
-                 dt_restart, out_name='msd', len_msd=250, write_output=True,
-                 max_data=False):
+                 dt_restart, out_name='msd.csv', len_msd=250, write_output=True,
+                 max_data=False,verbose=False):
         """
         Parameters
         ----------
@@ -168,24 +161,45 @@ class MSD(object):
             If true, include tau values after stop_frame in calculation (this
             is useful for avoiding data loss when breaking large calculations
             across multiple batch jobs)
+        verbose : bool
+            If true, outputs logger.info, else outputs logger.error
         """
 
         self.universe = universe
         self.select_list = select_list
-        if isinstance(select_list, str):
-            self.select_list = select_list.split(',')
-        print(self.select_list)
-        self.start_frame = int(start_frame)
-        self.stop_frame = int(stop_frame)
-        self.dt_restart = int(dt_restart)
+
+        self.start_frame, self.stop_frame, self.dt_restart = \
+            self.universe.trajectory.check_slice_indices(
+                          start_frame,stop_frame,dt_restart)
+
         self.out_name = out_name
+
+        # initializing logger object
+        logging.basicConfig(level=logging.INFO if verbose
+                            else logging.WARNING)
+        self.logger = logging.getLogger(__name__)
+
+        self.logger.info(self.select_list)
+        
         # handling short simulation cases
         n_frames = int(stop_frame) - int(start_frame) + 1
         if int(len_msd) > int(n_frames):
             len_msd = int(n_frames)
+            self.logger.warning(
+                "Correcting len_msd to the number for frames in the trajectory. ")
         self.len_msd = int(len_msd)
         self.write_output = write_output
         self.max_data = max_data
+        
+        # generating header for csv file
+        self.header = ""
+        for i in range(2*len(self.header)):
+            if i < len(self.select_list):
+                self.header[i] = 'msd ' + self.select_list[i] + ', '
+            else:
+                self.header[i] = 'n_samples ' + \
+                    self.select_list[i%len(self.select_list)] + ', '
+        self.header = self.header[:-2]
 
         # initializing object attributes
         self.pos, self.atomids_per_sel_at_t, self.map_atomids_to_pos_at_t, = \
@@ -194,15 +208,6 @@ class MSD(object):
         n_sel = len(self.pos)
         self.msd = np.zeros((n_sel, self.len_msd), dtype='float64')
         self.n_samples = np.zeros((n_sel, self.len_msd), dtype='int')
-
-        # check that trajectory length is correct
-        try:
-            assert len(self.universe.trajectory) >= \
-                    (self.stop_frame-self.start_frame+1)
-        except RuntimeError:
-            print("Sample interval exceeds trajectory length. This may result"
-                  "from choice of start_frame/stop_frame or insufficient RAM"
-                  "when loading the trajectory.")
 
     def _select(self):
         """Generates list of atom groups that satisfy select_list strings
@@ -213,11 +218,10 @@ class MSD(object):
             list of atom groups
         """
         selections = []
-        for i, sel in enumerate(self.select_list):
+        for sel in self.select_list:
             selections.append(self.universe.select_atoms(sel))
-            if selections[i].n_atoms == 0:
-                selections.pop(i)
-                selections.append(None)
+            if selections[-1].n_atoms == 0:
+                selections[-1] = None
         
         return selections
 
@@ -256,9 +260,11 @@ class MSD(object):
         pos = [[np.array([]) for j in range(self.len_msd)]
                for i in range(n_sel)]
 
-        print("Populating deque...")
-        for frame, ts in self.universe.trajectory[
+        self.logger.info("Populating deque...")
+        for ts in self.universe.trajectory[
                          self.start_frame:self.start_frame + self.len_msd]:
+            frame = ts.frame
+
             selections = self._select()
 
             for i, sel in enumerate(selections):
@@ -274,7 +280,7 @@ class MSD(object):
                         map_atomids_to_pos_at_t[i][frame-self.start_frame][temp_list[j]] = j
                     
             if frame % (self.len_msd/10) == 0:
-                print("Frame: "+str(frame))
+                self.logger.info("Frame: "+str(frame))
         # converting lists to deques
         for i in range(n_sel):
             map_atomids_to_pos_at_t[i] = deque(map_atomids_to_pos_at_t[i],
@@ -282,7 +288,7 @@ class MSD(object):
             atomids_per_sel_at_t[i] = deque(atomids_per_sel_at_t[i],
                                             maxlen=self.len_msd)
             pos[i] = deque(pos[i], maxlen=self.len_msd)
-        print("Complete!")
+        self.logger.info("Complete!")
 
         return pos, atomids_per_sel_at_t, map_atomids_to_pos_at_t
 
@@ -303,7 +309,7 @@ class MSD(object):
         if top_frame+self.dt_restart > calc_cutoff:
             # feed in zeros
             for i in range(len(self.select_list)):
-                pos[i].append(np.array([]))
+                self.pos[i].append(np.array([]))
                 self.atomids_per_sel_at_t[i].append(set())
                 self.map_atomids_to_pos_at_t[i].append(dict())
             return
@@ -314,7 +320,7 @@ class MSD(object):
 
             for i in range(len(selections)):
                 if selections[i] is not None:  # if there is data
-                    pos[i].append(selections[i].positions)
+                    self.pos[i].append(selections[i].positions)
 
                     temp_list = selections[i].atoms.ids
                     # store set of atom ids which satisfy selection
@@ -325,7 +331,7 @@ class MSD(object):
                         temp_dict[temp_list[j]] = j
                     self.map_atomids_to_pos_at_t[i].append(temp_dict)
                 else:
-                    pos[i].append(np.array([]))
+                    self.pos[i].append(np.array([]))
                     self.atomids_per_sel_at_t[i].append(set())
                     self.map_atomids_to_pos_at_t[i].append(dict())
 
@@ -334,7 +340,7 @@ class MSD(object):
     def _process_pos_data(self):
         """Runs MSD calculation"""
 
-        n_sel = len(pos)
+        n_sel = len(self.pos)
         
         calc_cutoff = self.stop_frame
         if self.max_data:
@@ -370,15 +376,16 @@ class MSD(object):
                     
                     self.msd[i][ts-j] = (self.msd[i][ts-j] +
                                          squared_distance_vector(
-                                             pos[i][0][shared0],
-                                             pos[i][ts-j][shared]).sum(axis=0))
+                                             self.pos[i][0][shared0],
+                                             self.pos[i][ts-j][shared]).sum(axis=0))
                     self.n_samples[i][ts-j] += len(shared)
             
             if j % 100 == 0:
-                print("Frame: "+str(j))
+                self.logger.info("Frame: "+str(j))
                 if self.write_output:
-                    pickle.dump([self.msd/self.n_samples, self.n_samples],
-                                open(self.out_name, 'wb'))
+                    data = np.concatenate((self.msd/self.n_samples, self.n_samples),
+                                          axis=0)
+                    np.savetxt(self.out_name, data, delimiter=",", header=self.header)
 
             # Update deques
             self._update_deques(j)
@@ -389,10 +396,9 @@ class MSD(object):
         """Calls _process_pos_data and saves final output"""
 
         self._process_pos_data()
-
+        
         if self.write_output:
-            pickle.dump([self.msd/self.n_samples, self.n_samples],
-                        open(self.out_name, 'wb'))
-        # for testing purposes
-        else:
-            return [self.msd/self.n_samples, self.n_samples]
+            data = np.concatenate((self.msd/self.n_samples, self.n_samples), axis=0)
+            np.savetxt(self.out_name, data, delimiter=",", header=self.header)
+
+        return self
