@@ -5066,7 +5066,7 @@ class Universe(object):
 
         if not isinstance(self.trajectory, MemoryReader):
             
-            percentage = ProgressMeter(self.trajectory.n_frames, 
+            pm = ProgressMeter(self.trajectory.n_frames, 
                 interval=frame_interval, quiet=self.quiet)
 
             # Try to extract coordinates using Timeseries object
@@ -5082,7 +5082,7 @@ class Universe(object):
                 ts_list = []
                 for ts in self.trajectory[::frame_interval]:
                     ts_list.append(np.copy(ts.positions[:]))
-                    percentage.echo(ts.frame)
+                    pm.echo(ts.frame)
                 
                 coordinates = np.array(ts_list)
                 coordinates = coordinates.swapaxes(0, 1)
