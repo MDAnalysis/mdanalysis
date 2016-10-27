@@ -5079,9 +5079,12 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                coordinates = \
-                    np.array([np.copy(ts.positions[:]) for ts in
-                            self.trajectory[::frame_interval]])
+                ts_list=[]
+                for ts in self.trajectory[::frame_interval]:
+                    ts_list.append(np.copy(ts.positions[:]))
+                    percentage.echo(ts.frame)
+                
+                coordinates = np.array(ts_list)
                 coordinates = coordinates.swapaxes(0, 1)
 
             # Overwrite trajectory in universe with an MemoryReader
