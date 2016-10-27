@@ -5079,7 +5079,7 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                ts_list=[]
+                ts_list = []
                 for ts in self.trajectory[::frame_interval]:
                     ts_list.append(np.copy(ts.positions[:]))
                     percentage.echo(ts.frame)
