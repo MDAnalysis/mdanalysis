@@ -112,57 +112,6 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
             contact_matrix_no_pbc(coord, sparse_contacts, cutoff)
         return sparse_contacts
 
-def binary_contact_matrix(ref_coord, sel_coord, cutoff1, cutoff2, box):
-    '''Calculates 2 matrices of contacts corresponding state dynamics
-       definitions.
-
-    Parameters
-    ---------
-    ref_coord : array
-       Array of coordinates of shape ``(N, 3)`` and dtype float32.
-    sel_coord : array
-       Array of coordinates of shape ``(N, 3)`` and dtype float32.
-    cutoff1 : float
-       Particles within `cutoff` are considered to form a contact.
-    cutoff2 : float
-       Particles within `cutoff' are considered to form a contact.
-    box : array-like
-       Simulation cell dimensions in the form of
-       :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
-       periodic boundary conditions should be taken into account for
-       the calculation of contacts.
-
-    Returns
-    -------
-    2 sparse matrices (in non_zero form)
-       The contact matrices are returned in the tuple (sparse_contacts1,sparse_contacts2)
-       corresponding to cuoff1 and cutoff2, respectively.
-
-    Note
-    ----
-    :module:`scipy.sparse` is require for using *sparse* matrices; if it cannot
-    be imported then an `ImportError` is raised.
-
-    .. versionchanged:: 0.11.0
-       Keyword *suppress_progmet* and *progress_meter_freq* were removed.
-
-    '''
-    if sparse is None:
-	# hack: if we are running with minimal dependencies then scipy was
-	#       not imported and we have to bail here (see scipy import at top)
-	    raise ImportError("For sparse matrix functionality you need to "
-			  "import scipy.")
-    # Initialize square List of Lists matrix of dimensions equal to number
-    # of coordinates passed
-    sparse_contacts1 = sparse.lil_matrix((len(ref_coord), len(sel_coord)), dtype='bool')
-    sparse_contacts2 = sparse.lil_matrix((len(ref_coord), len(sel_coord)), dtype='bool')
-    
-    if box is not None:
-	    binary_contact_matrix_pbc(ref_coord, sel_coord, sparse_contacts1,
-		                          sparse_contacts2, box, cutoff1, cutoff2)
-    
-    return sparse_contacts1.nonzero(), sparse_contacts2.nonzero()
-
 def dist(A, B, offset=0):
     """Return distance between atoms in two atom groups.
 
