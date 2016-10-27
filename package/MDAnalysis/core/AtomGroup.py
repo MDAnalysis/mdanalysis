@@ -433,6 +433,7 @@ from ..lib import mdamath
 from ..lib import transformations
 from ..lib.util import cached
 from . import topologyobjects as top
+from MDAnalysis.lib.log import ProgressMeter
 
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
@@ -5046,7 +5047,7 @@ class Universe(object):
         else:
             return False
 
-    def transfer_to_memory(self, frame_interval=1):
+    def transfer_to_memory(self, frame_interval=1, quiet=False):
         """Replace the current trajectory reader object with one of type
         :class:`MDAnalysis.coordinates.memory.MemoryReader` to support in-place
         editing of coordinates.
@@ -5054,6 +5055,9 @@ class Universe(object):
         :Arguments:
              *frame_interval*
                  Read in every nth frame.
+             *quiet*
+                 Will print the progress of loading trajectory to memory, if
+                 set to True. Default value is quiet. 
 
         .. versionadded:: 0.15.0
         """
@@ -5061,6 +5065,9 @@ class Universe(object):
         from ..coordinates.memory import MemoryReader
 
         if not isinstance(self.trajectory, MemoryReader):
+            
+            pm = ProgressMeter(self.trajectory.n_frames, 
+                interval=frame_interval, quiet=self.quiet)
 
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain
@@ -5072,9 +5079,12 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                coordinates = \
-                    np.array([np.copy(ts.positions[:]) for ts in
-                            self.trajectory[::frame_interval]])
+                ts_list = []
+                for ts in self.trajectory[::frame_interval]:
+                    ts_list.append(np.copy(ts.positions[:]))
+                    pm.echo(ts.frame)
+                
+                coordinates = np.array(ts_list)
                 coordinates = coordinates.swapaxes(0, 1)
 
             # Overwrite trajectory in universe with an MemoryReader
