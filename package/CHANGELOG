@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma
+         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic
 
   * 0.16.0
 
@@ -41,6 +41,8 @@ Enhancements
   * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
   * Established the MDAnalysis.analysis.legacy module for unmaintained
     analysis code (Issue #743)
+  * Added ProgressMeter to 'transfer_to_memory' function, to show progress
+    of loading trajectory to memory (Issue #1028 and PR #1055).
 
 Fixes
   * MDAnalysis.analysis.distances.between() is no longer broken

@@ -6,6 +6,7 @@ import copy
 import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
+from ..lib.log import ProgressMeter
 from ..exceptions import NoDataError
 from . import groups
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -338,7 +339,7 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, frame_interval=1):
+    def transfer_to_memory(self, frame_interval=1, quiet=True):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -349,6 +350,9 @@ class Universe(object):
         ----------
         frame_interval : int, optional
             Read in every nth frame. [1]
+        quiet : bool, optional
+            Will print the progress of loading trajectory to memory, if
+            set to True. Default value is quiet.
 
         .. versionadded:: 0.16.0
         """
@@ -364,11 +368,17 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                coordinates = np.array([np.copy(ts.positions[:]) for ts in
-                                        self.trajectory[::frame_interval]])
-                coordinates = coordinates.swapaxes(0, 1)
+                pm = ProgressMeter(self.trajectory.n_frames,
+                                   interval=frame_interval, quiet=quiet)
 
-          # Overwrite trajectory in universe with an MemoryReader
+                coordinates = []
+                for ts in self.trajectory[::frame_interval]:
+                    coordinates.append(np.copy(ts.positions))
+                    pm.echo(ts.frame)
+
+                coordinates = np.array(coordinates).swapaxes(0, 1)
+
+            # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
             self.trajectory = MemoryReader(
