@@ -40,6 +40,7 @@ before_install:
   - export PATH=$(pwd)/miniconda/bin:$PATH
   - conda config --add channels MDAnalysis
   - conda update --yes conda
+  - conda install --yes pylint
 install:
   - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy scipy nose=1.3.7 sphinx=1.3 griddataformats six scikit-learn; fi
   - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy nose=1.3.7 sphinx=1.3 griddataformats six; fi
@@ -68,6 +69,8 @@ install:
 
 # command to run tests
 script:
+  - pylint --rcfile=package/.pylintrc package/MDAnalysis
+  - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
   - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
