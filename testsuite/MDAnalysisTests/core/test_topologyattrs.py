@@ -19,15 +19,19 @@ import numpy as np
 
 from numpy.testing import (
     assert_,
+    assert_equal,
     assert_array_equal,
     assert_array_almost_equal,
+    assert_raises,
 )
 from nose.tools import assert_raises, raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.core.groupbase import make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
+from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.exceptions import NoDataError, SelectionError
 
@@ -230,14 +234,49 @@ class TestResnames(TestResidueAttr):
     values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
     attrclass = tpattrs.Resnames
 
-    def test_get_named_residue(self):
-        res = self.attr._get_named_residue('LYS')
-        assert_equal(res.name, 'LYS')
+    def test_residuegroup_getattr_single(self):
+        u = make_Universe(('resnames',))
 
-        assert_raises(SelectionError, self.attr._get_named_residue, 'Foo')
+        res = u.residues.RsB
 
-        res = self.attr._get_named_residue('VAL')
-        assert_equal(len(res), 2)
+        assert_(isinstance(res, groups.Residue))
+        assert_(res == u.residues[1])
+
+    def test_residuegroup_getattr_multiple(self):
+        u = make_Universe(('resnames',))
+        u.residues[:10].resnames = 'ABC'
+
+        rg = u.residues.ABC
+
+        assert_(isinstance(rg, groups.ResidueGroup))
+        assert_(len(rg) == 10)
+
+    def test_residuegroup_getattr_AE(self):
+        u = make_Universe(('resnames',))
+
+        assert_raises(AttributeError, getattr, u.residues, 'foo')
+        
+    def test_segment_getattr_singular(self):
+        u = make_Universe(('resnames',))
+
+        res = u.segments[0].RsB
+
+        assert_(isinstance(res, groups.Residue))
+        assert_(res == u.residues[1])
+
+    def test_segment_getattr_multiple(self):
+        u = make_Universe(('resnames',))
+        u.residues[:3].resnames = 'bar'
+
+        rg = u.segments[0].bar
+
+        assert_(isinstance(rg, groups.ResidueGroup))
+        assert_(len(rg) == 3)
+
+    def test_segment_getattr_AE(self):
+        u = make_Universe(('resnames',))
+
+        assert_raises(AttributeError, getattr, u.segments[0], 'foo')
 
 
 class TestSegmentAttr(TopologyAttrMixin):
