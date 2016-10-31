@@ -1,13 +1,18 @@
 import MDAnalysis as mda
 import os
 
-from numpy.testing import (assert_almost_equal, assert_equal)
-from unittest import TestCase
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_equal,
+    assert_warns,
+)
 
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall)
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PQR)
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestPQRReader(_SingleFrameReader):
@@ -42,7 +47,7 @@ class TestPQRReader(_SingleFrameReader):
             "Charges for N atoms in Pro residues do not match.")
 
 
-class TestPQRWriter(TestCase, RefAdKSmall):
+class TestPQRWriter(RefAdKSmall):
     def setUp(self):
         self.universe = mda.Universe(PQR)
         self.prec = 3
@@ -108,3 +113,68 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         assert_almost_equal(
             u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
             "Total charge (in CHARMM) does not match expected value.")
+
+class TestPQRWriterMissingAttrs(object):
+    # pqr requires names, resids, resnames, segids, radii, charges
+    def setUp(self):
+        self.reqd_attributes = ['names', 'resids', 'resnames', 'radii', 'charges']
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/pqr-writer-test.pqr'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tmpdir
+        del self.outfile
+        del self.reqd_attributes
+
+    @staticmethod
+    def assert_writing_warns(u, outfile):
+        # write the test universe, and check warning is raised
+        assert_warns(UserWarning, u.atoms.write, outfile)
+
+    def test_no_names_writing(self):
+        attrs = self.reqd_attributes
+        attrs.remove('names')
+        u = make_Universe(attrs, trajectory=True)
+
+        self.assert_writing_warns(u, self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+
+        assert_(all(u2.atoms.names == 'X'))
+
+    def test_no_resnames_writing(self):
+        attrs = self.reqd_attributes
+        attrs.remove('resnames')
+        u = make_Universe(attrs, trajectory=True)
+
+        self.assert_writing_warns(u, self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+
+        assert_(all(u2.residues.resnames == 'UNK'))
+
+    def test_no_radii_writing(self):
+        attrs = self.reqd_attributes
+        attrs.remove('radii')
+        u = make_Universe(attrs, trajectory=True)
+
+        self.assert_writing_warns(u, self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+
+        assert_(all(u2.atoms.radii == 1.0))
+
+    def test_no_charges_writing(self):
+        attrs = self.reqd_attributes
+        attrs.remove('charges')
+        u = make_Universe(attrs, trajectory=True)
+
+        self.assert_writing_warns(u, self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+
+        assert_(all(u2.atoms.charges == 0.0))

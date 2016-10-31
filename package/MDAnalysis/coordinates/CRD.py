@@ -205,7 +205,6 @@ class CRDWriter(base.Writer):
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
-                "Alternatively these can be supplied as keyword arguments."
                 "".format(miss=', '.join(missing_topology)))
 
         with util.openany(self.filename, 'w') as crd:
