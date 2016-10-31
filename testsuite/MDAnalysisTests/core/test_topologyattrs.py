@@ -19,12 +19,11 @@ import numpy as np
 
 from numpy.testing import (
     assert_,
-    assert_equal,
     assert_array_equal,
     assert_array_almost_equal,
     assert_raises,
 )
-from nose.tools import assert_raises, raises
+from nose.tools import raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests.core.groupbase import make_Universe
@@ -33,7 +32,7 @@ import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
-from MDAnalysis.exceptions import NoDataError, SelectionError
+from MDAnalysis.exceptions import NoDataError
 
 
 class DummyGroup(object):
@@ -124,7 +123,7 @@ class TestAtomids(TestAtomAttr):
     attrclass = tpattrs.Atomids
 
 
-class TestIndicesClasses():
+class TestIndicesClasses(object):
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -255,7 +254,7 @@ class TestResnames(TestResidueAttr):
         u = make_Universe(('resnames',))
 
         assert_raises(AttributeError, getattr, u.residues, 'foo')
-        
+
     def test_segment_getattr_singular(self):
         u = make_Universe(('resnames',))
 
