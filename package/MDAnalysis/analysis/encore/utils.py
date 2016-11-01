@@ -30,14 +30,6 @@ class TriangularMatrix(object):
     facilities to conveniently load/write a matrix from/to file. It can be
     accessed using the [] and () operators, similarly to a normal numpy array.
 
-    Attributes:
-    -----------
-
-    `size` : int
-            Size of the matrix (number of rows or number of columns)
-
-    `metadata` : dict
-            Metadata for the matrix (date of creation, name of author ...)
     """
 
     def __init__(self, size, metadata=None, loadfile=None):
@@ -46,19 +38,20 @@ class TriangularMatrix(object):
         Attributes
         ----------
 
-            `size` : int or multiprocessing.SyncrhonizeArray
-        Size of the matrix (number of rows or columns). If an array is
-        provided instead, the size of the triangular matrix will be
-        calculated and the array copied as the matrix elements. Otherwise,
-        the matrix is just initialized to zero.
+        `size` : int or multiprocessing.SyncrhonizeArray
+            Size of the matrix (number of rows or columns). If an
+            array is provided instead, the size of the triangular matrix
+            will be calculated and the array copied as the matrix
+            elements. Otherwise, the matrix is just initialized to zero.
 
-            `metadata` : dict or None
-        Metadata dictionary. Used to generate the metadata attribute.
+        `metadata` : dict or None
+            Metadata dictionary. Used to generate the metadata attribute.
 
-            `loadfile` : str or None
-        Load the matrix from this file. All the attributes and data will
-        be determined by the matrix file itself (i.e. metadata will be
-        ignored); size has to be provided though.
+        `loadfile` : str or None
+            Load the matrix from this file. All the attributes and data will
+            be determined by the matrix file itself (i.e. metadata will be
+            ignored); size has to be provided though.
+
         """
         self.metadata = metadata
         self.size = size
@@ -204,7 +197,7 @@ class ParallelCalculation(object):
     `args` : list of tuples
             Each tuple contains the arguments that will be passed to
             function(). This means that a call to function() is performed for
-            each tuple. function is called as function(*args, **kwargs). Runs
+            each tuple. function is called as function(\*args, \*\*kwargs). Runs
             are distributed on the requested numbers of cores.
 
     `kwargs` : list of dicts

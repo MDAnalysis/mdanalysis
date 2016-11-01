@@ -36,25 +36,41 @@ to write the entire state to file.
 Examples
 --------
 
-Constructing a Reader from a numpy array
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can create a new Universe directly from a numpy array ::
 
-A simple example where a new universe is created from the
-array extracted from a DCD timeseries
-
+    import numpy as np
     from MDAnalysis import Universe
-    from MDAnalysisTests.datafiles import DCD, PDB_small
+    from MDAnalysisTests.datafiles import DCD, PSF
     from MDAnalysis.coordinates.memory import MemoryReader
 
-    universe = Universe(PDB_small, DCD)
-    coordinates = universe.trajectory.timeseries(universe.atoms)
+    # Create a Universe using a DCD reader
+    universe = Universe(PSF, DCD)
 
-    universe2 = Universe(PDB_small, coordinates,
-                         format=MemoryReader)
+    # Create a numpy array with random coordinates (100 frames) for the same topology
+    coordinates = np.random.uniform(size=(universe.atoms.n_atoms, 100, 3)).cumsum(0)
 
-This two step process can also be done in one go:
+    # Create a new Universe directly from these coordinates
+    universe2 = Universe(PSF, coordinates, format=MemoryReader)
 
-    universe = Universe(PDB_small, DCD, in_memory=True)
+The MemoryReader will work just as any other reader. In particular, you can iterate over it as usual, or use the `.timeseries()` method to retrieve a reference to the raw array: ::
+
+    coordinates_fac = universe2.trajectory.timeseries(format='fac')
+
+Certain operations can be speeded up by moving a trajectory to memory, and we have therefore
+added functionality to directly transfer any existing trajectory to a MemoryReader using `Universe.transfer_to_memory`: ::
+
+    universe = Universe(PSF, DCD)
+    universe.transfer_to_memory()     # Switches to a MemoryReader representation
+
+You can also do this directly upon construction of a Universe, by using the `in_memory` flag: ::
+
+    universe = Universe(PSF, DCD, in_memory=True)
+
+Classes
+~~~~~~~
+
+.. autoclass:: MemoryReader
+   :members:
 
 """
 import logging
@@ -98,7 +114,7 @@ class MemoryReader(base.ProtoReader):
 
         Parameters
         ---------
-        coordinate_array : :class:`~numpy.ndarray object
+        coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
         format : str, optional
             the order/shape of the return data array, corresponding
@@ -127,7 +143,7 @@ class MemoryReader(base.ProtoReader):
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
             provided_n_atoms != self.n_atoms):
-                raise ValueError("The provided value for n_atoms does not match"
+                raise ValueError("The provided value for n_atoms does not match "
                                  "the shape of the coordinate array")
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
@@ -144,7 +160,7 @@ class MemoryReader(base.ProtoReader):
 
         Parameters
         ---------
-        coordinate_array : :class:`~numpy.ndarray object
+        coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
         format
             The order/shape of the return data array, corresponding

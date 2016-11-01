@@ -99,8 +99,8 @@ However, we may want to reuse the RMSD matrix in other calculations e.g.
 running CES with different parameters or running DRES. In this
 case we first compute the RMSD matrix alone:
 
-    >>> rmsd_matrix = encore.get_distance_matrix(\
-                                    encore.utils.merge_universes([ens1, ens2]),\
+    >>> rmsd_matrix = encore.get_distance_matrix(
+                                    encore.utils.merge_universes([ens1, ens2]),
                                     save_matrix="rmsd.npz")
 
 In the above example the RMSD matrix was also saved in rmsd.npz on disk, and
@@ -122,8 +122,8 @@ we can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3 using the
 saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
-    >>> DRES,details = encore.dres([ens1, ens2],\
-                        distance_matrix = rmsd_matrix)
+    >>> DRES,details = encore.dres([ens1, ens2],
+                                   distance_matrix = rmsd_matrix)
     >>> print DRES
     [[ 0.        ,   0.67453198]
      [  0.67453198,  0.        ]]
@@ -141,11 +141,8 @@ values.
 It should be noted that both in :func:`ces` and :func:`dres` the similarity is
 evaluated using the Jensen-Shannon divergence resulting in an upper bound of
 ln(2), which indicates no similarity between the ensembles and a lower bound
-of 0.0 signifying two identical ensembles. Therefore using CES and DRES
-ensembles can be compared in a more relative sense than  HES, i.e. they
-can be used to understand whether ensemble A is closer to ensemble B than
-ensemble C, but absolute values are less meaningful as they also depend on the
-chosen parameters.
+of 0.0 signifying two identical ensembles. In contrast, the :func:`hes` function uses
+a symmetrized version of the Kullback-Leibler divergence, which is unbounded.
 
 
 Functions for ensemble comparisons
@@ -207,7 +204,7 @@ xlogy = np.vectorize(
 def discrete_kullback_leibler_divergence(pA, pB):
     """Kullback-Leibler divergence between discrete probability distribution.
     Notice that since this measure is not symmetric ::
-     :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`
+    :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`
 
     Parameters
     ----------
@@ -258,10 +255,7 @@ def harmonic_ensemble_similarity(sigma1,
                                  x2):
     """
     Calculate the harmonic ensemble similarity measure
-    as defined in
-
-        Similarity Measures for Protein Ensembles. Lindorff-Larsen, K.;
-        Ferkinghoff-Borg, J. PLoS ONE 2009, 4, e4203.
+    as defined in [Tiberti2015]_.
 
     Parameters
     ----------
@@ -359,13 +353,14 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
 
 def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
                                               ens1_id_min=1, ens2_id_min=1):
-    """ Calculate clustering ensemble similarity between joined ensembles.
+    """
+    Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
     merged and the dJS is calculated between the probability distributions of
     the two clusters groups. In particular, the two ensemble groups are defined
-     by their ensembles id: one of the two joined ensembles will comprise all
-     the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will
-      comprise all the ensembles with id [ens2_id_min, ens2_id].
+    by their ensembles id: one of the two joined ensembles will comprise all
+    the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will
+    comprise all the ensembles with id [ens2_id_min, ens2_id].
 
     Parameters
     ----------
@@ -526,7 +521,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         calculate the expected values according to 'Q' as detailed before.
 
     ln_P1_exp_P1 : float or None
-        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P; if None,
+        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,
         calculate it instead
 
     ln_P2_exp_P2 : float or None
@@ -536,7 +531,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     ln_P1P2_exp_P1 : float or None
         Use this value for
         :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
-         if None, calculate it instead
+        if None, calculate it instead
 
     ln_P1P2_exp_P2 : float or None
         Use this value for
@@ -749,7 +744,7 @@ def hes(ensembles,
 
     Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
     the symmetrized version of Kullback-Leibler divergence as described
-    in [Lindorff-Larsen2009]_.
+    in [Tiberti2015]_.
 
     Parameters
     ----------
@@ -818,12 +813,11 @@ def hes(ensembles,
     shrinkage estimation method (or by a maximum-likelihood method,
     optionally).
 
-    In the Harmonic Ensemble Similarity measurement no upper bound exists and
-    the measurement can therefore be used for absolute comparison between
-    multiple ensembles.
+    Note that the symmetrized version of the Kullback-Leibler divergence has no
+    upper bound (unlike the Jensen-Shannon divergence used by for instance CES and DRES).
 
     When using this similarity measure, consider whether you want to align
-    the ensembles first (see example below)
+    the ensembles first (see example below).
 
     Example
     -------
@@ -994,8 +988,7 @@ def ces(ensembles,
 
     Calculates the Clustering Ensemble Similarity (CES) between ensembles
     using the Jensen-Shannon divergence as described in
-    [Lindorff-Larsen2009]_.
-
+    [Tiberti2015]_.
 
     Parameters
     ----------
@@ -1083,8 +1076,7 @@ def ces(ensembles,
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
-    Here the simplest case of just two :class:`Ensemble`s used for comparison
-    are illustrated: ::
+    Here the simplest case of just two instances of :class:`Universe` is illustrated: ::
 
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
@@ -1094,22 +1086,13 @@ def ces(ensembles,
          [ 0.68070702  0.        ]]
 
     To use a different clustering method, set the parameter clustering_method
-    (OBS the sklearn module must be installed). Likewise,  different parameters
+    (Note that the sklearn module must be installed). Likewise,  different parameters
     for the same clustering method can be explored by adding different
     instances of the same clustering class: ::
-        >>> CES, details = encore.ces([ens1,ens2],\
-                            clustering_method = [encore.DBSCAN(eps=0.45),\
-                                                 encore.DBSCAN(eps=0.50)])
 
-        >>> print "eps=0.45: \n", CES[0], "\n eps=0.5 : \n", CES[1]
-        eps=0.45:
-        [[ 0.          0.20447236]
-         [ 0.20447236  0.        ]]
-        eps=0.5 :
-        [[ 0.          0.25331629]
-         [ 0.25331629  0.        ]]
-
-
+        >>> CES, details = encore.ces([ens1,ens2],
+                                      clustering_method = [encore.DBSCAN(eps=0.45),
+                                                           encore.DBSCAN(eps=0.50)])
 
     """
 
@@ -1266,7 +1249,7 @@ def dres(ensembles,
 
     Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
     ensembles using the Jensen-Shannon divergence as described in
-    [Lindorff-Larsen2009]_.
+    [[Tiberti2015]_.
 
 
     Parameters
@@ -1361,9 +1344,8 @@ def dres(ensembles,
     The topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
-    Here the simplest case of comparing just two :class:`Ensemble`s are
+    Here the simplest case of comparing just two instances of :class:`Universe` is
     illustrated: ::
-
 
         >>> ens1 = Universe(PSF,DCD)
         >>> ens2 = Universe(PSF,DCD2)
@@ -1381,12 +1363,13 @@ def dres(ensembles,
     parameter dimensionality_reduction_method. Likewise, different parameters
     for the same clustering method can be explored by adding different
     instances of the same method  class: ::
-        >>> DRES, details = encore.dres([ens1,ens2],\
-                dimensionality_reduction_method =\
-                    encore.PrincipleComponentAnalysis(dimension=2))
+
+        >>> DRES, details = encore.dres([ens1,ens2],
+                                        dimensionality_reduction_method = encore.PrincipleComponentAnalysis(dimension=2))
         >>> print DRES
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]
+
     """
 
     for ensemble in ensembles:

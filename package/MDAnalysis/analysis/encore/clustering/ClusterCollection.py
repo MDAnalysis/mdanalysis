@@ -16,7 +16,7 @@
 
 """
 Cluster representation --- :mod:`MDAnalysis.analysis.encore.clustering.ClusterCollection`
-=====================================================================
+=========================================================================================
 
 The module contains the Cluster and ClusterCollection classes which are
 designed to store results from clustering algorithms.
