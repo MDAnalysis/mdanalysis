@@ -159,9 +159,24 @@ class MOL2Reader(base.Reader):
 
 
 class MOL2Writer(base.Writer):
-    """MOL2Writer Limitations ----------- MOL2Writer can only be used to write out previously loaded MOL2 files.  If you're trying to convert, for example, a PDB file to MOL you should use other tools, like rdkit (http://www.rdkit.org/docs/GettingStartedInPython.html).  Here is an example how to use rdkit to convert a PDB to MOL:: from rdkit import Chem mol = Chem.MolFromPDBFile("molecule.pdb", removeHs=False) Chem.MolToMolFile(mol, "molecule.mol" ) MOL2 writer is currently not available for rdkit master. It requires 
-    SYBYL atomtype generation.
-    See page 7 for list of SYBYL atomtypes (http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf).
+    """
+
+    MOL2Writer Limitations
+    ----------------------
+    MOL2Writer can only be used to write out previously loaded MOL2 files.
+    If you're trying to convert, for example, a PDB file to MOL you should
+    use other tools, like rdkit (http://www.rdkit.org/docs/GettingStartedInPython.html).
+
+    Here is an example how to use rdkit to convert a PDB to MOL::
+    
+      from rdkit import Chem
+      mol = Chem.MolFromPDBFile("molecule.pdb", removeHs=False)
+      Chem.MolToMolFile(mol, "molecule.mol" )
+
+    MOL2 writer is currently not available for rdkit master. It requires SYBYL
+    atomtype generation.
+    See page 7 for list of SYBYL atomtypes
+    (http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf).
 
     * MOL2 Format Specification:  (http://www.tripos.com/data/support/mol2.pdf)
     * Example file (http://www.tripos.com/mol2/mol2_format3.html)::
@@ -249,6 +264,12 @@ class MOL2Writer(base.Writer):
         traj = obj.universe.trajectory
         ts = traj.ts
 
+        try:
+            molecule = ts.data['molecule']
+        except KeyError:
+            raise NotImplementedError(
+                "MOL2Writer cannot currently write non MOL2 data")
+
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
 
@@ -288,7 +309,6 @@ class MOL2Writer(base.Writer):
         except KeyError:
             substructure = ""
 
-        molecule = ts.data['molecule']
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
         molecule[1] = "{0}\n".format(" ".join(check_sums))
