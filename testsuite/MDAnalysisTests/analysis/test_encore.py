@@ -41,6 +41,11 @@ class TestEncore(TestCase):
             self.ens1_template.trajectory.timeseries(),
             format=mda.coordinates.memory.MemoryReader)
 
+        self.ens1_subset = mda.Universe(
+            self.ens1_subset_template.filename,
+            self.ens1_subset_template.trajectory.timeseries(),
+            format=mda.coordinates.memory.MemoryReader)
+
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
             self.ens2_template.trajectory.timeseries(),
@@ -67,6 +72,10 @@ class TestEncore(TestCase):
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
             np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            format=mda.coordinates.memory.MemoryReader)
+        cls.ens1_subset_template = mda.Universe(
+            cls.ens1_template.filename,
+            np.copy(cls.ens1_template.trajectory.timeseries()[:, :-1, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
@@ -261,10 +270,10 @@ inconsistent results")
                            msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
 
     def test_hes_align(self):
-        results, details = encore.hes([self.ens1, self.ens2], align=True)
+        results, details = encore.hes([self.ens1, self.ens1_subset], align=True)
         result_value = results[0,1]
-        expected_value = 2047.05
-        assert_almost_equal(result_value, expected_value, decimal=-3,
+        expected_value = 22.3
+        assert_almost_equal(result_value, expected_value, decimal=-1,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_to_self(self):
