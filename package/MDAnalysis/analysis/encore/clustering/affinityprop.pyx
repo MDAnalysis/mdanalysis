@@ -48,7 +48,7 @@ cdef class AffinityPropagation(object):
         """
         Run the clustering algorithm.
 
-	Parameters
+        Parameters
         ----------
 	
         s : encore.utils.TriangularMatrix object
@@ -70,7 +70,7 @@ cdef class AffinityPropagation(object):
 		    Whether to apply noise to the input s matrix, such there are no equal values. 1 is for yes, 0 is for no.
 		
 
-	Returns
+        Returns
         -------
 
         elements : list of int or None
