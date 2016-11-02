@@ -179,7 +179,7 @@ def covariance_matrix(ensemble,
     Parameters
     ----------
 
-    ensemble : Ensemble object
+    ensemble : Universe object
         The structural ensemble
 
     selection : str

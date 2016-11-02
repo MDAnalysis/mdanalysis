@@ -72,14 +72,14 @@ def reduce_dimensionality(ensembles,
         will be run for each method. Note that different parameters for the
         same method can be explored by adding different instances of
         the same dimensionality reduction class. Options are Stochastic
-        Proximity Embedding or Principle Component Analysis.
+        Proximity Embedding or Principal Component Analysis.
 
     selection : str, optional
         Atom selection string in the MDAnalysis format (default is "name CA")
 
     distance_matrix : encore.utils.TriangularMatrix, optional
         Distance matrix for stochastic proximity embedding. If this parameter
-        is not supplied the matrix will be calculated on the fly (default) .
+        is not supplied an RMSD distance matrix will be calculated on the fly (default).
         If several distance matrices are supplied, an analysis will be done
         for each of them. The number of provided distance matrices should
         match the number of provided ensembles.
@@ -128,20 +128,20 @@ def reduce_dimensionality(ensembles,
                 encore.reduce_dimensionality([ens1,ens2], 
                      method=encore.StochasticProximityEmbeddingNative(dimension=3))
 
-    Here is an illustration using Principle Component Analysis, instead
+    Here is an illustration using Principal Component Analysis, instead
     of the default dimensionality reduction method ::
 
         >>> coordinates, details = 
                 encore.reduce_dimensionality( 
                      [ens1,ens2], 
-                     method=encore.PrincipleComponentAnalysis(dimension=2))
+                     method=encore.PrincipalComponentAnalysis(dimension=2))
 
     You can also combine multiple methods in one call ::
 
         >>> coordinates, details = 
                 encore.reduce_dimensionality( 
                      [ens1,ens2], 
-                     method=[encore.PrincipleComponentAnalysis(dimension=2), 
+                     method=[encore.PrincipalComponentAnalysis(dimension=2), 
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """

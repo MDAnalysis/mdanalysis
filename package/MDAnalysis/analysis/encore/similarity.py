@@ -120,7 +120,7 @@ Dimensional Reduction Ensemble Similarity (:func:`dres`) method.
 DRES is based on the estimation of the probability density in
 a dimensionally-reduced conformational space of the ensembles, obtained from
 the original space using either the Stochastic Proximity Embedding algorithm or
-the Principle Component Analysis.
+the Principal Component Analysis.
 As the algorithms require the distance matrix calculated on the original space,
 we can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3 using the
@@ -135,7 +135,7 @@ saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
 In addition to the quantitative similarity estimate, the dimensional reduction
 can easily be visualized, see the ``Example`` section in
-:mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`
+:mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`.
 Due to the stochastic nature of SPE, two identical ensembles will not
 necessarily result in an exactly 0 estimate of the similarity, but will be very
 close. For the same reason, calculating the similarity with the :func:`dres`
@@ -547,9 +547,6 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     djs : float
         Jensen-Shannon divergence calculated according to the dimensionality
         reduction method
-
-    Args:
-        ln_P1P2_exp_P2:
 
     """
 
@@ -1100,7 +1097,6 @@ def ces(ensembles,
         >>> print "eps=0.45: ", CES[0]
         eps=0.45:  [[ 0.          0.20447236]
         [ 0.20447236  0.        ]]
-
         >>> print "eps=0.5: ", CES[1]
         eps=0.5:  [[ 0.          0.25331629]
         [ 0.25331629  0.        ]]"
@@ -1277,7 +1273,7 @@ def dres(ensembles,
         classes from the dimensionality_reduction module. Different parameters
         for the same method can be explored by adding different instances of
         the same dimensionality reduction class. Provided methods are the
-        Stochastic Proximity Embedding (default) and the Principel Component
+        Stochastic Proximity Embedding (default) and the Principal Component
         Analysis.
 
     distance_matrix : encore.utils.TriangularMatrix
@@ -1376,7 +1372,7 @@ def dres(ensembles,
     instances of the same method  class: ::
 
         >>> DRES, details = encore.dres([ens1,ens2],
-                                        dimensionality_reduction_method = encore.PrincipleComponentAnalysis(dimension=2))
+                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
         >>> print DRES
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]

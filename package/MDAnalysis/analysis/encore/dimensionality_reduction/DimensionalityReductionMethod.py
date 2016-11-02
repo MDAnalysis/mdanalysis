@@ -152,7 +152,7 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
 
 if sklearn:
 
-    class PrincipleComponentAnalysis(DimensionalityReductionMethod):
+    class PrincipalComponentAnalysis(DimensionalityReductionMethod):
         """
         Interface to the PCA dimensionality reduction method implemented in
         sklearn.
