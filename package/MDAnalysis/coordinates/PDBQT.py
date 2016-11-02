@@ -33,6 +33,7 @@ available in this case).
 
 import os
 import errno
+import itertools
 import numpy as np
 import warnings
 
@@ -171,11 +172,14 @@ class PDBQTReader(base.SingleFrameReader):
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBQTWriter for *filename*.
 
-        :Arguments:
-          *filename*
-              filename of the output PDBQT file
+        Parameters
+        ----------
+        filename : str
+            filename of the output PDBQT file
 
-        :Returns: :class:`PDBQTWriter`
+        Returns
+        -------
+        :class:`PDBQTWriter`
 
         """
         return PDBQTWriter(filename, **kwargs)
@@ -187,28 +191,17 @@ class PDBQTWriter(base.Writer):
     .. _PDB: http://www.wwpdb.org/documentation/format32/v3.2.html
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
     """
-    #          1         2         3         4         5         6         7         8
-    # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-    # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
-    # ATOM  %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
-    #                 %1s  %1s                                                      %2d
-    #            =        =      ===                                    ==========
-    # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
-    # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
-    # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
 
-    # Strict PDB format:
-    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(
-    # x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
-    # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {
-        #'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
-        # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-        'ATOM': "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%("
-                "z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(partialCharge)-1.4f %(atomtype)-2s\n",
-        'REMARK': "REMARK     %s\n",
-        'TITLE': "TITLE    %s\n",
-        'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
+        'ATOM': ("ATOM  {serial:5d} {name:<4.4s} {resName:<4.4s}"
+                 "{chainID:1.1s}{resSeq:4d}{iCode:1.1s}"
+                 "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+                 "{tempFactor:6.2f}    {charge:< 1.3f} {element:<2.2s}\n"),
+        'REMARK': "REMARK     {0}\n",
+        'TITLE': "TITLE     {0}\n",
+        'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
+                   "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
+                   "{spacegroup:<11s}{zvalue:4d}\n"),
     }
     format = 'PDBQT'
     units = {'time': None, 'length': 'Angstrom'}
@@ -224,13 +217,14 @@ class PDBQTWriter(base.Writer):
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
-        write(selection,frame=FRAME)
+        write(selection, frame=FRAME)
 
-        :Arguments:
-          *selection*
-            a :class:`~MDAnalysis.core.groups.AtomGroup`
-          *frame*
-            optionally move to frame *FRAME*
+        Parameters
+        ----------
+        selection : AtomGroup
+            The selection to be written
+        frame : int, optional
+            optionally move to *frame* before writing
 
         .. Note::
 
@@ -250,12 +244,45 @@ class PDBQTWriter(base.Writer):
             except AttributeError:
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
-        self.TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
-        self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
 
-        # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
+        # Check attributes
+        attrs = {}
+        missing_topology = []
+        for attr, dflt in (
+                ('altLocs', ' '),
+                ('charges', 0.0),
+                ('icodes', ' '),
+                ('names', 'X'),
+                ('occupancies', 1.0),
+                ('resids', 1),
+                ('resnames', 'UNK'),
+                ('tempfactors', 0.0),
+                ('types', '  '),
+        ):
+            try:
+                attrs[attr] = getattr(atoms, attr)
+            except AttributeError:
+                attrs[attr] = itertools.cycle((dflt,))
+                missing_topology.append(attr)
+        # Order of preference: chainids -> segids -> blank string
+        try:
+            attrs['chainids'] = atoms.chainids
+        except AttributeError:
+            try:
+                attrs['chainids'] = atoms.segids
+            except AttributeError:
+                attrs['chainids'] = itertools.cycle((' ',))
+                missing_topology.append('chainids')
+        if missing_topology:
+            warnings.warn(
+                "Supplied AtomGroup was missing the following attributes: "
+                "{miss}. These will be written with default values. "
+                "".format(miss=', '.join(missing_topology)))
+
+        # check if any coordinates are illegal (coordinates are already
+        # in Angstroem per package default)
         if not self.has_valid_coordinates(self.pdb_coor_limits, coor):
             self.close()
             try:
@@ -264,69 +291,49 @@ class PDBQTWriter(base.Writer):
                 if err.errno == errno.ENOENT:
                     pass
             raise ValueError(
-                "PDB files must have coordinate values between {0:.3f} and {1:.3f} Angstroem: No file was written.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+                "PDB files must have coordinate values between {0:.3f}"
+                " and {1:.3f} Angstroem: No file was written."
+                "".format(self.pdb_coor_limits["min"],
+                          self.pdb_coor_limits["max"]))
 
-        for i, atom in enumerate(atoms):
-            self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
-                      chainID=atom.segid.strip(), partialCharge=atom.charge,
-                      x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], atomtype=atom.type)
-            # get bfactor, too, and add to output?
-            # 'element' is auto-guessed from atom.name in ATOM()
+        # Write title record
+        # http://www.wwpdb.org/documentation/format32/sect2.html
+        line = "FRAME " + str(frame) + " FROM " + str(u.trajectory.filename)
+        self.pdb.write(self.fmt['TITLE'].format(line))
+
+        # Write CRYST1 record
+        # http://www.wwpdb.org/documentation/format32/sect8.html
+        box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
+        self.pdb.write(self.fmt['CRYST1'].format(box=box[:3], ang=box[3:],
+                                                 spacegroup='P 1', zvalue=1))
+
+        # Write atom records
+        # http://www.wwpdb.org/documentation/format32/sect9.html
+        for serial, (pos, name, resname, chainid, resid, icode,
+                     occupancy, tempfactor, charge, element) in enumerate(
+                zip(coor, attrs['names'], attrs['resnames'], attrs['chainids'],
+                    attrs['resids'], attrs['icodes'], attrs['occupancies'],
+                    attrs['tempfactors'], attrs['charges'], attrs['types']),
+                         start=1):
+            serial = int(str(serial)[-5:])  # check for overflow here?
+            name = name[:4]
+            if len(name) < 4:
+                name = " " + name  # customary to start in column 14
+            chainid = chainid.strip()[-1:]  # take the last character
+            resid = int(str(resid)[-4:])  # check for overflow here?
+
+            self.pdb.write(self.fmt['ATOM'].format(
+                serial=serial,
+                name=name,
+                resName=resname,
+                chainID=chainid,
+                resSeq=resid,
+                iCode=icode,
+                pos=pos,
+                occupancy=occupancy,
+                tempFactor=tempfactor,
+                charge=charge,
+                element=element,
+            ))
+
         self.close()
-
-    def TITLE(self, *title):
-        """Write TITLE record.
-        http://www.wwpdb.org/documentation/format32/sect2.html
-        """
-        line = " ".join(title)  # should do continuation automatically
-        self.pdb.write(self.fmt['TITLE'] % line)
-
-    def REMARK(self, *remark):
-        """Write generic REMARK record (without number).
-        http://www.wwpdb.org/documentation/format32/remarks1.html
-        http://www.wwpdb.org/documentation/format32/remarks2.html
-        """
-        line = " ".join(remark)
-        self.pdb.write(self.fmt['REMARK'] % line)
-
-    def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
-        """Write CRYST1 record.
-        http://www.wwpdb.org/documentation/format32/sect8.html
-        """
-        self.pdb.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
-
-    def ATOM(self, serial=None, name=None, altLoc=None, resName=None, chainID=None,
-             resSeq=None, iCode=None, x=None, y=None, z=None, occupancy=1.0, tempFactor=0.0,
-             segID=None, partialCharge=None, atomtype=None):
-        """Write ATOM record.
-        http://www.wwpdb.org/documentation/format32/sect9.html
-        Only some keyword args are optional (altLoc, iCode, chainID), for some defaults are set.
-
-        All inputs are cut to the maximum allowed length. For integer
-        numbers the highest-value digits are chopped (so that the
-        serial and reSeq wrap); for strings the trailing characters
-        are chopped.
-
-        Note: Floats are not checked and can potentially screw up the format.
-        """
-        for arg in (
-                'serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z',
-                'occupancy', 'tempFactor', 'partialCharge', 'atomtype'):
-            if locals()[arg] is None:
-                raise ValueError('parameter ' + arg + ' must be defined for PDBQT.')
-        serial = int(str(serial)[-5:])  # check for overflow here?
-        name = name[:4]
-        if len(name) < 4:
-            name = " " + name  # customary to start in column 14
-        altLoc = altLoc or " "
-        altLoc = altLoc[:1]
-        resName = resName[:4]
-        chainID = chainID or ""  # or should we provide a chainID such as 'A'?
-        chainID = chainID.strip()[-1:]  # take the last character
-        resSeq = int(str(resSeq)[-4:])  # check for overflow here?
-        iCode = iCode or ""
-        iCode = iCode[:1]
-        atomtype = str(atomtype)[:2]  # make sure that is a string for user input
-        partialCharge = float(partialCharge)  # Already pre-formatted when passed to this method
-        self.pdb.write(self.fmt['ATOM'] % vars())
-

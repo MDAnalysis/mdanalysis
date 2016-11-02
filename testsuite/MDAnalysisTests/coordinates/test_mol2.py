@@ -29,6 +29,7 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysis import Universe
 import MDAnalysis as mda
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestMol2(TestCase):
@@ -154,3 +155,11 @@ class TestMOL2NoSubstructure(object):
         u2 = mda.Universe(outfile)
 
         assert_(len(u.atoms) == len(u2.atoms))
+
+
+def test_mol2_write_NIE():
+    mytempdir = tempdir.TempDir()
+    outfile = os.path.join(mytempdir.name, 'test.mol2')
+    u = make_Universe(trajectory=True)
+
+    assert_raises(NotImplementedError, u.atoms.write, outfile)
