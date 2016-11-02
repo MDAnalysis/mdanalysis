@@ -16,7 +16,7 @@
 
 """
 Distance Matrix calculation --- :mod:`MDAnalysis.analysis.ensemble.confdistmatrix`
-=====================================================================
+==================================================================================
 
 
 The module contains a base class to easily compute, using parallelization and
@@ -309,8 +309,8 @@ def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
     '''Method that updates and prints the progress bar, upon polling
     progress status from workers.
 
-    Attributes
-    -----------
+    Parameters
+    ----------
 
     pbar : encore.utils.AnimatedProgressBar object
         Progress bar object
@@ -320,10 +320,10 @@ def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
         at every cycle. In this way the _pbar_updater process can
         asynchronously fetch progress reports.
 
-        max_val : int
+    max_val : int
         Total number of matrix elements to be calculated
 
-        update_interval : float
+    update_interval : float
         Number of seconds between progress bar updates
 
     '''

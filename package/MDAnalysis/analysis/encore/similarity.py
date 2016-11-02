@@ -40,10 +40,14 @@ trajectories from time-dependent simulations.
 ENCORE includes three different methods for calculations of similarity measures
 between ensembles implemented in individual functions:
 
-
 + **Harmonic Ensemble Similarity** : :func:`hes`
 + **Clustering Ensemble Similarity** : :func:`ces`
 + **Dimensional Reduction Ensemble Similarity** : :func:`dres`
+
+as well as two methods to evaluate the convergence of trajectories:
+
++ **Clustering based convergence evaluation** : :func:`ces_convergence`
++ **Dimensionality-reduction based convergence evaluation** : :func:`dres_convergence`
 
 When using this module in published work please cite [Tiberti2015]_.
 
@@ -823,7 +827,7 @@ def hes(ensembles,
     -------
 
     To calculate the Harmonic Ensemble similarity, two ensembles are created
-    as Universe object from a topology file and two trajectories. The
+    as Universe objects from a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
@@ -1093,6 +1097,13 @@ def ces(ensembles,
         >>> CES, details = encore.ces([ens1,ens2],
                                       clustering_method = [encore.DBSCAN(eps=0.45),
                                                            encore.DBSCAN(eps=0.50)])
+        >>> print "eps=0.45: ", CES[0]
+        eps=0.45:  [[ 0.          0.20447236]
+        [ 0.20447236  0.        ]]
+
+        >>> print "eps=0.5: ", CES[1]
+        eps=0.5:  [[ 0.          0.25331629]
+        [ 0.25331629  0.        ]]"
 
     """
 
@@ -1311,9 +1322,9 @@ def dres(ensembles,
 
         then the matrix elements [0,2] and [2,0] will both contain the
         similarity value between ensembles ens1 and ens3.
-        Elaborating on the previous example, if `n` ensembles are given and `m`
-        methods are provided the output will be a list of `m` arrays
-        ordered by the input sequence of methods, each with a `n`x`n`
+        Elaborating on the previous example, if *n* ensembles are given and *m*
+        methods are provided the output will be a list of *m* arrays
+        ordered by the input sequence of methods, each with a *n*x*n*
         symmetrical similarity matrix.
 
         details provide an array of the reduced_coordinates.

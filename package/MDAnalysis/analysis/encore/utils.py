@@ -35,7 +35,7 @@ class TriangularMatrix(object):
     def __init__(self, size, metadata=None, loadfile=None):
         """Class constructor.
 
-        Attributes
+        Parameters
         ----------
 
         `size` : int or multiprocessing.SyncrhonizeArray

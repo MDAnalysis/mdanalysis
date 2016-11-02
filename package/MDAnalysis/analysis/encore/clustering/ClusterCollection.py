@@ -164,8 +164,8 @@ class ClusterCollection(object):
             element 5 has its own cluster.
 
 
-            Arguments
-            ---------
+            Parameters
+            ----------
 
             elements : iterable of ints or None
                 clustering results. See the previous description for details

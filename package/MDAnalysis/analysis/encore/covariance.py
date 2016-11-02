@@ -191,7 +191,6 @@ def covariance_matrix(ensemble,
         of frames and M the number of atoms). See ml_covariance_estimator and
         shrinkage_covariance_estimator for reference.
 
-
     mass_weighted : bool
         Whether to do a mass-weighted analysis (default is True)
 
