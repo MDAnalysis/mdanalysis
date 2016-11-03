@@ -44,8 +44,7 @@ def cluster(ensembles,
             allow_collapsed_result=True,
             ncores=1,
             **kwargs):
-    """
-    Cluster frames from one or more ensembles, using one or more
+    """Cluster frames from one or more ensembles, using one or more
     clustering methods. The function optionally takes pre-calculated distances
     matrices as an argument. Note that not all clustering procedure can work
     directly on distance matrices, so the distance matrices might be ignored
@@ -102,9 +101,12 @@ def cluster(ensembles,
     Two ensembles are created as Universe object using a topology file and
     two trajectories. The topology- and trajectory files used are obtained
     from the MDAnalysis test suite for two different simulations of the protein
-    AdK. To run the examples see the module `Examples`_ for how to import the
-    files.
-    Here, we reduce cluster two ensembles ::
+    AdK. 
+    Here, we cluster two ensembles ::
+
+        >>> from MDAnalysis import Universe
+        >>> import MDAnalysis.analysis.encore as encore
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> cluster_collection = encore.cluster([ens1,ens2])
@@ -113,26 +115,36 @@ def cluster(ensembles,
     You can change the parameters of the clustering method by explicitly
     specifying the method ::
 
-        >>> cluster_collection = \
-                encore.cluster( \
-                     [ens1,ens2], \
+        >>> cluster_collection = 
+                encore.cluster( 
+                     [ens1,ens2], 
                      method=encore.AffinityPropagationNative(preference=-2.))
 
     Here is an illustration using DBSCAN algorithm, instead
     of the default clustering method ::
 
-        >>> cluster_collection = \
-                encore.cluster( \
-                     [ens1,ens2], \
+        >>> cluster_collection = 
+                encore.cluster( 
+                     [ens1,ens2], 
                      method=encore.DBSCAN())
 
     You can also combine multiple methods in one call ::
 
-        >>> cluster_collection = \
-                encore.cluster( \
-                     [ens1,ens2], \
-                     method=[encore.AffinityPropagationNative(preference=-1.), \
+        >>> cluster_collection = 
+                encore.cluster( 
+                     [ens1,ens2], 
+                     method=[encore.AffinityPropagationNative(preference=-1.), 
                              encore.AffinityPropagationNative(preference=-2.)])
+
+    In addition to standard cluster membership information, the
+    `cluster_collection` output keep track of the origin of each
+    conformation, so you check how the different trajectories are
+    represented in each cluster. Here, for brevity, we print just the
+    members of the two first clusters ::
+
+        >>> print [cluster.metadata["ensemble_membership"] 
+                     for cluster in cluster_collection][:2]
+        [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 
     """
 

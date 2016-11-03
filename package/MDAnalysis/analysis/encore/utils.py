@@ -30,35 +30,28 @@ class TriangularMatrix(object):
     facilities to conveniently load/write a matrix from/to file. It can be
     accessed using the [] and () operators, similarly to a normal numpy array.
 
-    Attributes:
-    -----------
-
-    `size` : int
-            Size of the matrix (number of rows or number of columns)
-
-    `metadata` : dict
-            Metadata for the matrix (date of creation, name of author ...)
     """
 
     def __init__(self, size, metadata=None, loadfile=None):
         """Class constructor.
 
-        Attributes
+        Parameters
         ----------
 
-            `size` : int or multiprocessing.SyncrhonizeArray
-        Size of the matrix (number of rows or columns). If an array is
-        provided instead, the size of the triangular matrix will be
-        calculated and the array copied as the matrix elements. Otherwise,
-        the matrix is just initialized to zero.
+        size : int or multiprocessing.SyncrhonizeArray
+            Size of the matrix (number of rows or columns). If an
+            array is provided instead, the size of the triangular matrix
+            will be calculated and the array copied as the matrix
+            elements. Otherwise, the matrix is just initialized to zero.
 
-            `metadata` : dict or None
-        Metadata dictionary. Used to generate the metadata attribute.
+        metadata : dict or None
+            Metadata dictionary. Used to generate the metadata attribute.
 
-            `loadfile` : str or None
-        Load the matrix from this file. All the attributes and data will
-        be determined by the matrix file itself (i.e. metadata will be
-        ignored); size has to be provided though.
+        loadfile : str or None
+            Load the matrix from this file. All the attributes and data will
+            be determined by the matrix file itself (i.e. metadata will be
+            ignored); size has to be provided though.
+
         """
         self.metadata = metadata
         self.size = size
@@ -102,7 +95,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `fname` : str
+        fname : str
             Name of the file to be saved.
         """
         np.savez(fname, elements=self._elements, metadata=self.metadata)
@@ -113,7 +106,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `fname` : str
+        fname : str
             Name of the file to be loaded.
         """
         loaded = np.load(fname)
@@ -133,7 +126,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `scalar` : float
+        scalar : float
             Scalar to be added.
         """
         newMatrix = self.__class__(self.size)
@@ -146,7 +139,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `scalar` : float
+        scalar : float
             Scalar to be added.
         """
         self._elements += scalar
@@ -159,7 +152,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `scalar` : float
+        scalar : float
             Scalar to multiply with.
         """
         newMatrix = self.__class__(self.size)
@@ -172,7 +165,7 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        `scalar` : float
+        scalar : float
             Scalar to multiply with.
         """
         self._elements *= scalar
@@ -195,23 +188,23 @@ class ParallelCalculation(object):
     Attributes
     ----------
 
-    `ncores` : int
+    ncores : int
             Number of cores to be used for parallel calculation
 
-    `function` : callable object
+    function : callable object
             Function to be run in parallel.
 
-    `args` : list of tuples
+    args : list of tuples
             Each tuple contains the arguments that will be passed to
             function(). This means that a call to function() is performed for
-            each tuple. function is called as function(*args, **kwargs). Runs
+            each tuple. function is called as function(\*args, \*\*kwargs). Runs
             are distributed on the requested numbers of cores.
 
-    `kwargs` : list of dicts
+    kwargs : list of dicts
             Each tuple contains the named arguments that will be passed to
             function, similarly as described for the args attribute.
 
-    `nruns` : int
+    nruns : int
             Number of runs to be performed. Must be equal to len(args) and
             len(kwargs).
     """
@@ -222,17 +215,17 @@ class ParallelCalculation(object):
         Parameters
         ----------
 
-        `ncores` : int
+        ncores : int
             Number of cores to be used for parallel calculation
 
-        `function` : object that supports __call__, as functions
+        function : object that supports __call__, as functions
             function to be run in parallel.
 
-        `args` : list of tuples
+        args : list of tuples
             Arguments for function; see the ParallelCalculation class
             description.
 
-        `kwargs` : list of dicts or None
+        kwargs : list of dicts or None
             kwargs for function; see the ParallelCalculation
             class description.
         """
@@ -265,11 +258,11 @@ class ParallelCalculation(object):
         Parameters
         ----------
 
-        `q` : multiprocessing.Manager.Queue object
+        q : multiprocessing.Manager.Queue object
                 work queue, from which the worker fetches arguments and
                 messages
 
-        `results` : multiprocessing.Manager.Queue object
+        results : multiprocessing.Manager.Queue object
                 results queue, where results are put after each calculation is
                 finished
 
@@ -288,7 +281,7 @@ class ParallelCalculation(object):
         Returns
         -------
 
-        `results` : tuple of ordered tuples (int, object)
+        results : tuple of ordered tuples (int, object)
                 int is the number of the calculation corresponding to a
                 certain argument in the args list, and object is the result of
                 corresponding calculation. For instance, in (3, output), output
@@ -409,10 +402,10 @@ def trm_indeces(a, b):
     Parameters
     ----------
 
-    `a` : (int i, int j) tuple
+    a : (int i, int j) tuple
         starting matrix element.
 
-    `b` : (int i, int j) tuple
+    b : (int i, int j) tuple
         final matrix element.
     """
     i, j = a
@@ -436,7 +429,7 @@ def trm_indices_nodiag(n):
     Parameters
     ----------
 
-    `n` : int
+    n : int
         Matrix size
 """
 
@@ -452,7 +445,7 @@ def trm_indices_diag(n):
     Parameters
     ----------
 
-    `n` : int
+    n : int
         Matrix size
 """
 
@@ -467,7 +460,7 @@ def merge_universes(universes):
 
     Parameters
     ----------
-    `universes` : list of Universe objects
+    universes : list of Universe objects
 
 
     Returns

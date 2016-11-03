@@ -28,6 +28,12 @@ between ensembles implemented in individual functions:
 + **Clustering Ensemble Similarity** : :func:`~MDAnalysis.analysis.encore.similarity.ces`
 + **Dimensional Reduction Ensemble Similarity** : :func:`~MDAnalysis.analysis.encore.similarity.dres`
 
+as well as two methods to evaluate the convergence of trajectories:
+
++ **Clustering based convergence evaluation** : :func:`~MDAnalysis.analysis.encore.similarity.ces_convergence`
++ **Dimensionality-reduction based convergence evaluation** : :func:`~MDAnalysis.analysis.encore.similarity.dres_convergence`
+
+
 When using this module in published work please cite [Tiberti2015]_.
 
 
