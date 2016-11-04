@@ -37,7 +37,6 @@ Building blocks for Analysis
 
    analysis/base
 
-
 Distances and contacts
 ======================
 
@@ -49,7 +48,8 @@ Distances and contacts
    analysis/distances
    analysis/rms
    analysis/psa
-
+   analysis/encore
+   
 Hydrogen bonding
 ================
 
@@ -57,7 +57,7 @@ Hydrogen bonding
    :maxdepth: 1
 
    analysis/hbond_analysis
-   analysis/hbond_autocorrel
+   analysis/hbond_autocorrel   
 
 Membranes and membrane proteins
 ===============================
@@ -114,7 +114,6 @@ Dimensionality Reduction
 
    analysis/diffusionmap
    analysis/pca
-
 
 Legacy analysis modules
 =======================

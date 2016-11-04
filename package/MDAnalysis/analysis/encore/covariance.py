@@ -179,7 +179,7 @@ def covariance_matrix(ensemble,
     Parameters
     ----------
 
-    ensemble : Ensemble object
+    ensemble : Universe object
         The structural ensemble
 
     selection : str
@@ -190,7 +190,6 @@ def covariance_matrix(ensemble,
         a "coordinates" numpy array (of shape (N,M,3), where N is the number
         of frames and M the number of atoms). See ml_covariance_estimator and
         shrinkage_covariance_estimator for reference.
-
 
     mass_weighted : bool
         Whether to do a mass-weighted analysis (default is True)

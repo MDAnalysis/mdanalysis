@@ -17,7 +17,7 @@
 
 """
 dimensionality reduction frontend --- :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`
-=====================================================================
+======================================================================================================================
 
 The module defines a function serving as front-end for various dimensionality
 reduction algorithms, wrapping them to allow them to be used interchangably.
@@ -72,14 +72,14 @@ def reduce_dimensionality(ensembles,
         will be run for each method. Note that different parameters for the
         same method can be explored by adding different instances of
         the same dimensionality reduction class. Options are Stochastic
-        Proximity Embedding or Principle Component Analysis.
+        Proximity Embedding or Principal Component Analysis.
 
     selection : str, optional
         Atom selection string in the MDAnalysis format (default is "name CA")
 
     distance_matrix : encore.utils.TriangularMatrix, optional
         Distance matrix for stochastic proximity embedding. If this parameter
-        is not supplied the matrix will be calculated on the fly (default) .
+        is not supplied an RMSD distance matrix will be calculated on the fly (default).
         If several distance matrices are supplied, an analysis will be done
         for each of them. The number of provided distance matrices should
         match the number of provided ensembles.
@@ -104,39 +104,44 @@ def reduce_dimensionality(ensembles,
     Two ensembles are created as Universe object using a topology file and
     two trajectories. The topology- and trajectory files used are obtained
     from the MDAnalysis test suite for two different simulations of the protein
-    AdK. To run the examples see the module `Examples`_ for how to import the
-    files.
+    AdK. 
     Here, we reduce two ensembles to two dimensions, and plot the result using
     matplotlib: ::
+
+        >>> from MDAnalysis import Universe
+        >>> import MDAnalysis.analysis.encore as encore
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> coordinates, details = encore.reduce_dimensionality([ens1,ens2])
-        >>> plt.scatter(coordinates[0], coordinates[1], \
-                        color=[["red", "blue"][m-1] for m \
+        >>> plt.scatter(coordinates[0], coordinates[1], 
+                        color=[["red", "blue"][m-1] for m 
                         in details["ensemble_membership"]])
+
     Note how we extracted information about which conformation belonged to
     which ensemble from the details variable.
 
     You can change the parameters of the dimensionality reduction method
     by explicitly specifying the method ::
-        >>> coordinates, details = \
-                encore.reduce_dimensionality([ens1,ens2], \
+
+        >>> coordinates, details = 
+                encore.reduce_dimensionality([ens1,ens2], 
                      method=encore.StochasticProximityEmbeddingNative(dimension=3))
 
-    Here is an illustration using Principle Component Analysis, instead
+    Here is an illustration using Principal Component Analysis, instead
     of the default dimensionality reduction method ::
 
-        >>> coordinates, details = \
-                encore.reduce_dimensionality( \
-                     [ens1,ens2], \
-                     method=encore.PrincipleComponentAnalysis(dimension=2))
+        >>> coordinates, details = 
+                encore.reduce_dimensionality( 
+                     [ens1,ens2], 
+                     method=encore.PrincipalComponentAnalysis(dimension=2))
 
     You can also combine multiple methods in one call ::
 
-        >>> coordinates, details = \
-                encore.reduce_dimensionality( \
-                     [ens1,ens2], \
-                     method=[encore.PrincipleComponentAnalysis(dimension=2), \
+        >>> coordinates, details = 
+                encore.reduce_dimensionality( 
+                     [ens1,ens2], 
+                     method=[encore.PrincipalComponentAnalysis(dimension=2), 
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """

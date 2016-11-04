@@ -16,13 +16,13 @@
 
 """
 Distance Matrix calculation --- :mod:`MDAnalysis.analysis.ensemble.confdistmatrix`
-=====================================================================
+==================================================================================
 
 
-The module contains a base class to easily compute, using parallelization and
-shared memory, matrices of conformational distance between the structures
-stored in an Ensemble. A class to compute an RMSD matrix in such a way is also
-available.
+The module contains a base class to easily compute, using
+parallelization and shared memory, matrices of conformational
+distance between the structures stored as frames in a Universe. A
+class to compute an RMSD matrix in such a way is also available.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015--2016
@@ -63,8 +63,8 @@ def conformational_distance_matrix(ensemble,
     Parameters
     ----------
 
-    ensemble : encore.Ensemble.Ensemble object
-        Ensemble object for which the conformational distance matrix will
+    ensemble : Universe object
+        Universe object for which the conformational distance matrix will
         be computed.
 
     conf_dist_function : function object
@@ -309,8 +309,8 @@ def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
     '''Method that updates and prints the progress bar, upon polling
     progress status from workers.
 
-    Attributes
-    -----------
+    Parameters
+    ----------
 
     pbar : encore.utils.AnimatedProgressBar object
         Progress bar object
@@ -320,10 +320,10 @@ def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
         at every cycle. In this way the _pbar_updater process can
         asynchronously fetch progress reports.
 
-        max_val : int
+    max_val : int
         Total number of matrix elements to be calculated
 
-        update_interval : float
+    update_interval : float
         Number of seconds between progress bar updates
 
     '''

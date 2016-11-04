@@ -57,13 +57,7 @@ Citation
 ========
 
 When using MDAnalysis in published work, please cite
-
-*   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
-    and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
-    Dynamics Simulations. *J. Comput. Chem.* **32** (2011), 2319–2327.
-    doi:`10.1002/jcc.21787`_
-
-.. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+[Michaud-Agrawal2011]_ and [Gowers2016]_.
 
 MDAnalysis also contains specific algorithms and whole analysis
 modules whose algorithms have also been published in the scientific

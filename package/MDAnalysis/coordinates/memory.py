@@ -13,9 +13,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+"""=========================================================================
 Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
-==========================================================================
+=========================================================================
 
 :Author: Wouter Boomsma
 :Year: 2016
@@ -25,36 +25,148 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 
 .. versionadded:: 0.16.0
 
-The module contains a trajectory reader that operates on an array
-in memory, rather than reading from file. This makes it possible to
-use operate on raw coordinate using existing MDAnalysis tools. In
-addition, it allows the user to make changes to the coordinates in
-a trajectory (e.g. through AtomGroup.set_positions) without having
+The module contains a trajectory reader that operates on an array in
+memory, rather than reading from file. This makes it possible to use
+operate on raw coordinate using existing MDAnalysis tools. In
+addition, it allows the user to make changes to the coordinates in a
+trajectory (e.g. through
+:attr:`MDAnalysis.core.AtomGroup.AtomGroup.positions`) without having
 to write the entire state to file.
 
 
-Examples
---------
+How to use the :class:`MemoryReader`
+====================================
+
+The :class:`MemoryReader` can be used to either directly generate a
+trajectory as a numpy array or by transferring an existing trajectory
+to memory.
+
+In-memory representation of arbitrary trajectories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If sufficient memory is available to hold a whole trajectory in memory
+then analysis can be sped up substantially by transferring the
+trajectory to memory.
+
+The most straightforward use of the :class:`MemoryReader` is to simply
+use the ``in_memory=True`` flag for the
+:class:`~MDAnalysis.core.AtomGroup.Universe` class, which
+automatically transfers a trajectory to memory::
+
+ import MDAnalysis as mda
+ from MDAnalysisTests.datafiles import TPR, XTC
+
+ universe = mda.Universe(TPR, XTC, in_memory=True)
+
+Of course, sufficient memory has to be available to hold the whole
+trajectory.
+
+
+Switching a trajectory to an in-memory representation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The decision to transfer the trajectory to memory can be made at any
+time with the
+:meth:`~MDAnalysis.core.AtomGroup.Universe.transfer_to_memory` method
+of a :class:`~MDAnalysis.core.AtomGroup.Universe`::
+
+    universe = mda.Universe(TPR, XTC)
+    universe.transfer_to_memory()
+
+This operation may take a while (with `quiet=False` a progress bar is
+displayed) but then subsequent operations on the trajectory directly
+operate on the in-memory array and will be very fast.
+
 
 Constructing a Reader from a numpy array
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A simple example where a new universe is created from the
-array extracted from a DCD timeseries
+The :class:`MemoryReader` provides great flexibility because it
+becomes possible to create a :class:`~MDAnalysis.Universe` directly
+from a numpy array.
 
-    from MDAnalysis import Universe
-    from MDAnalysisTests.datafiles import DCD, PDB_small
+A simple example consists of a new universe created from the array
+extracted from a DCD
+:meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries`::
+
+    import MDAnalysis as mda
+    from MDAnalysisTests.datafiles import DCD, PSF
     from MDAnalysis.coordinates.memory import MemoryReader
 
-    universe = Universe(PDB_small, DCD)
+    universe = mda.Universe(PSF, DCD)
+
     coordinates = universe.trajectory.timeseries(universe.atoms)
+    universe2 = mda.Universe(PSF, coordinates, format=MemoryReader)
 
-    universe2 = Universe(PDB_small, coordinates,
-                         format=MemoryReader)
 
-This two step process can also be done in one go:
+.. rubric:: Creating an in-memory trajectory with
+            :func:`~MDAnalysis.analysis.base.AnalysisFromFunction`
 
-    universe = Universe(PDB_small, DCD, in_memory=True)
+The :meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries` is
+currently only implemented for the
+:class:`~MDAnalysis.coordinates.DCD.DCDReader`. However, the
+:func:`MDAnalysis.analysis.base.AnalysisFromFunction` can provide the
+same functionality for any supported trajectory format::
+
+  import MDAnalysis as mda
+  from MDAnalysis.tests.datafiles import PDB, XTC
+
+  from MDAnalysis.coordinates.memory import MemoryReader
+  from MDAnalysis.analysis.base import AnalysisFromFunction
+
+  u = mda.Universe(PDB, XTC)
+
+  coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
+                                     u.atoms).run().results.swapaxes(0, 1)
+  u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
+
+.. Note:: By default the :class:`MemoryReader` reads an array in *afc*
+   (atom, frame, coordinates) order and therefore the first two axes
+   of ``results`` (in *fac* order) have to be swapped with
+   ``results.swapaxes(0, 1)``. This might be changed in the
+   future.
+
+
+Creating an in-memory trajectory of a sub-system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creating a trajectory for just a selection of an existing trajectory
+requires the transfer of the appropriate coordinates as well as
+creation of a topology of the sub-system. For the latter one can use
+the :func:`~MDAnalysis.core.AtomGroup.Merge` function, for the former
+the :meth:`~MDAnalysis.core.AtomGroup.Universe.load_new` method of a
+:class:`~MDAnalysis.Universe` together with the
+:class:`MemoryReader`. In the following, an in-memory trajectory of
+only the protein is created::
+
+  import MDAnalysis as mda
+  from MDAnalysis.tests.datafiles import PDB, XTC
+
+  from MDAnalysis.coordinates.memory import MemoryReader
+  from MDAnalysis.analysis.base import AnalysisFromFunction
+
+  u = mda.Universe(PDB, XTC)
+  protein = u.select_atoms("protein")
+
+  coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
+                                     protein).run().results.swapaxes(0, 1)
+  u2 = mda.Merge(protein)            # create the protein-only Universe
+  u2.load_new(coordinates, format=MemoryReader)
+
+The new :class:`~MDAnalysis.Universe` can be used to, for instance,
+write out a new trajectory or perform fast analysis on the sub-system.
+
+
+Classes
+=======
+
+.. autoclass:: Timestep
+   :members:
+   :inherited-members:
+
+.. autoclass:: MemoryReader
+   :members:
+   :inherited-members:
 
 """
 import logging
@@ -66,8 +178,12 @@ from . import base
 
 class Timestep(base.Timestep):
     """
-    Overrides the positions property in base.Timestep to
-    use avoid duplication of the array.
+    Timestep for the :class:`MemoryReader`
+
+    Overrides the positions property in
+    :class:`MDAnalysis.coordinates.base.Timestep` to use avoid
+    duplication of the array.
+
     """
 
     @property
@@ -83,10 +199,11 @@ class Timestep(base.Timestep):
 
 class MemoryReader(base.ProtoReader):
     """
+    MemoryReader works with trajectories represented as numpy arrays.
+
     A trajectory reader interface to a numpy array of the coordinates.
     For compatibility with the timeseries interface, support is provided for
     specifying the order of columns through the format option.
-
     """
 
     format = 'MEMORY'
@@ -97,8 +214,8 @@ class MemoryReader(base.ProtoReader):
         """
 
         Parameters
-        ---------
-        coordinate_array : :class:`~numpy.ndarray object
+        ----------
+        coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
         format : str, optional
             the order/shape of the return data array, corresponding
@@ -115,7 +232,7 @@ class MemoryReader(base.ProtoReader):
             is set, then `dt` will be ignored.
         """
 
-        super(MemoryReader, self).__init__()        
+        super(MemoryReader, self).__init__()
 
         self.stored_format = format
         self.set_array(np.asarray(coordinate_array), format)
@@ -127,7 +244,7 @@ class MemoryReader(base.ProtoReader):
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
             provided_n_atoms != self.n_atoms):
-                raise ValueError("The provided value for n_atoms does not match"
+                raise ValueError("The provided value for n_atoms does not match "
                                  "the shape of the coordinate array")
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
@@ -143,8 +260,8 @@ class MemoryReader(base.ProtoReader):
         Set underlying array in desired column format.
 
         Parameters
-        ---------
-        coordinate_array : :class:`~numpy.ndarray object
+        ----------
+        coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
         format
             The order/shape of the return data array, corresponding

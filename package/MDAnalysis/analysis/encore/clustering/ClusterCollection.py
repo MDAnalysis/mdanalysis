@@ -16,7 +16,7 @@
 
 """
 Cluster representation --- :mod:`MDAnalysis.analysis.encore.clustering.ClusterCollection`
-=====================================================================
+=========================================================================================
 
 The module contains the Cluster and ClusterCollection classes which are
 designed to store results from clustering algorithms.
@@ -164,8 +164,8 @@ class ClusterCollection(object):
             element 5 has its own cluster.
 
 
-            Arguments
-            ---------
+            Parameters
+            ----------
 
             elements : iterable of ints or None
                 clustering results. See the previous description for details

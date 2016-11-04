@@ -38,9 +38,9 @@ cdef class AffinityPropagation(object):
     """ 
     Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:
 	
-	Clustering by Passing Messages Between Data Points.
-	Brendan J. Frey and Delbert Dueck, University of Toronto
-	Science 315, 972–976, February 2007 
+    Clustering by Passing Messages Between Data Points.
+    Brendan J. Frey and Delbert Dueck, University of Toronto
+    Science 315, 972–976, February 2007 
 
     """
 
@@ -48,13 +48,13 @@ cdef class AffinityPropagation(object):
         """
         Run the clustering algorithm.
 
-	    Parameters:
-        ---------
+        Parameters
+        ----------
 	
         s : encore.utils.TriangularMatrix object
 		    Triangular matrix containing the similarity values for each pair of clustering elements. Notice that the current implementation does not allow for asymmetric values (i.e. similarity(a,b) is assumed to be equal to similarity(b,a))
 
-	    preference : numpy.array of floats or float
+	preference : numpy.array of floats or float
 		    Preference values, which the determine the number of clusters. If a single value is given, all the preference values are set to that. Otherwise, the list is used to set the preference values (one value per element, so the list must be of the same size as the number of elements)
 
         lam : float
@@ -70,11 +70,12 @@ cdef class AffinityPropagation(object):
 		    Whether to apply noise to the input s matrix, such there are no equal values. 1 is for yes, 0 is for no.
 		
 
-	    Returns:
-        ---------
+        Returns
+        -------
+
         elements : list of int or None
 		    List of cluster-assigned elements, which can be used by encore.utils.ClustersCollection to generate Cluster objects. See these classes for more details.
-
+        
 	"""
         cdef int cn = s.size
         cdef float cpreference = preference
