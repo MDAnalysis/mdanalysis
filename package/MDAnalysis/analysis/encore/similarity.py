@@ -1256,7 +1256,7 @@ def dres(ensembles,
 
     Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
     ensembles using the Jensen-Shannon divergence as described in
-    [[Tiberti2015]_.
+    [Tiberti2015]_.
 
 
     Parameters
