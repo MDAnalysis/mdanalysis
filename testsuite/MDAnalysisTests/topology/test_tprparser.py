@@ -13,242 +13,123 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from numpy.testing import assert_
+import functools
+
 from MDAnalysis.tests.datafiles import (
     TPR,
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
-    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR2016,
-    TPR510_bonded, TPR2016_bonded,
+    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
+    TPR2016, TPR2016_bonded,
 )
-
-from numpy.testing import TestCase, dec, assert_
-from test_topology import _TestTopology
+from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
 
-import functools
+
+class TPRAttrs(ParserBase):
+    parser = MDAnalysis.topology.TPRParser.TPRParser
+    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    guessed_attrs = ['elements']
 
 
-@dec.slow
-class RefTPR(object):
+class TestTPR(TPRAttrs):
     """
     this test the data/adk_oplsaa.tpr which is of tpx version 58
     """
-    topology = TPR
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_n_atoms = 47681
-    ref_numresidues = 11302
-    ref_proteinatoms = 3341
-
-
-class TestTPR(_TestTopology, RefTPR):
-    """Testing TPR version 58"""
+    filename = TPR
+    expected_n_atoms = 47681
+    expected_n_residues = 11302
+    expected_n_segments = 3
 
 
 # The follow test the same system grompped by different version of gromacs
 # FORMAT: TPRABC, where numbers ABC indicates the version of gromacs that
 # generates the corresponding tpr file
 
-class TPRBase(object):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_n_atoms = 2263
-    ref_numresidues = 230
-    ref_proteinatoms = 1962
+class TPRBase(TPRAttrs):
+    expected_n_atoms = 2263
+    expected_n_residues = 230
+    expected_n_segments = 2
 
 
-@dec.slow
-class TPR400(TPRBase):
-    topology = TPR400
+# All these classes should be generated in a loop. Yet, nose test generation
+# seems to work only with functions, and not with classes.
+class TestTPR400(TPRBase):
+    filename = TPR400
 
+class TestTPR402(TPRBase):
+    filename = TPR402
 
-class TestTPR400(_TestTopology, TPR400):
-    """Testing TPR version 58"""
+class TestTPR403(TPRBase):
+    filename = TPR403
 
+class TestTPR404(TPRBase):
+    filename = TPR404
 
-@dec.slow
-class TPR402(TPRBase):
-    topology = TPR402
+class TestTPR405(TPRBase):
+    filename = TPR405
 
+class TestTPR406(TPRBase):
+    filename = TPR406
 
-class TestTPR402(_TestTopology, TPR402):
-    """Testing TPR version 58"""
+class TestTPR407(TPRBase):
+    filename = TPR407
 
+class TestTPR450(TPRBase):
+    filename = TPR450
 
-@dec.slow
-class TPR403(TPRBase):
-    topology = TPR403
+class TestTPR451(TPRBase):
+    filename = TPR451
 
+class TestTPR452(TPRBase):
+    filename = TPR452
 
-class TestTPR403(_TestTopology, TPR403):
-    """Testing TPR version 58"""
+class TestTPR453(TPRBase):
+    filename = TPR453
 
+class TestTPR454(TPRBase):
+    filename = TPR454
 
-@dec.slow
-class TPR404(TPRBase):
-    topology = TPR404
+class TestTPR455(TPRBase):
+    filename = TPR455
 
+class TPRDouble(TPRAttrs):
+    expected_n_atoms = 21692
+    expected_n_residues = 4352
+    expected_n_segments = 7
 
-class TestTPR404(_TestTopology, TPR404):
-    """Testing TPR version 58"""
+class TestTPR455Double(TPRDouble):
+    filename = TPR455Double
 
 
-@dec.slow
-class TPR405(TPRBase):
-    topology = TPR405
+class TPR46xBase(TPRAttrs):
+    expected_n_atoms = 44052
+    expected_n_residues = 10712
+    expected_n_segments = 8
 
 
-class TestTPR405(_TestTopology, TPR405):
-    """Testing TPR version 58"""
+class TestTPR460(TPR46xBase):
+    filename = TPR460
 
+class TestTPR461(TPR46xBase):
+    filename = TPR461
 
-@dec.slow
-class TPR406(TPRBase):
-    topology = TPR406
 
+class TestTPR502(TPRBase):
+    filename = TPR502
 
-class TestTPR406(_TestTopology, TPR406):
-    """Testing TPR version 58"""
+class TestTPR504(TPRBase):
+    filename = TPR504
 
+class TestTPR505(TPRBase):
+    filename = TPR505
 
-@dec.slow
-class TPR407(TPRBase):
-    topology = TPR407
-
-
-class TestTPR407(_TestTopology, TPR407):
-    """Testing TPR version 58"""
-
-
-@dec.slow
-class TPR450(TPRBase):
-    topology = TPR450
-
-
-class TestTPR450(_TestTopology, TPR450):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR451(TPRBase):
-    topology = TPR451
-
-
-class TestTPR451(_TestTopology, TPR451):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR452(TPRBase):
-    topology = TPR452
-
-
-class TestTPR452(_TestTopology, TPR452):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR453(TPRBase):
-    topology = TPR453
-
-
-class TestTPR453(_TestTopology, TPR453):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR454(TPRBase):
-    topology = TPR454
-
-
-class TestTPR454(_TestTopology, TPR454):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR455(TPRBase):
-    topology = TPR455
-
-
-class TestTPR455(_TestTopology, TPR455):
-    """Testing TPR version 73"""
-
-
-@dec.slow
-class TPR455Double(object):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_n_atoms = 21692
-    ref_numresidues = 4352
-    ref_proteinatoms = 0  # no protein, but DOPC, DPPC, CHOL, SOL
-    topology = TPR455Double
-
-
-class TestTPR455Double(_TestTopology, TPR455Double):
-    """Testing TPR version 73, double precision"""
-
-
-class TPR46xBase(object):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_n_atoms = 44052
-    ref_numresidues = 10712
-    ref_proteinatoms = 1885
-
-
-@dec.slow
-class TPR460(TPR46xBase):
-    topology = TPR460
-
-
-class TestTPR460(_TestTopology, TPR460):
-    """Testing TPR version 83"""
-
-
-@dec.slow
-class TPR461(TPR46xBase):
-    topology = TPR461
-
-
-class TestTPR461(_TestTopology, TPR461):
-    """Testing TPR version 83"""
-
-@dec.slow
-class TPR502(TPRBase):
-    topology = TPR502
-
-
-class TestTPR502(_TestTopology, TPR502):
-    """Testing TPR version 100"""
-
-
-@dec.slow
-class TPR504(TPRBase):
-    topology = TPR504
-
-
-class TestTPR504(_TestTopology, TPR504):
-    """Testing TPR version 100"""
-
-@dec.slow
-class TPR505(TPRBase):
-    topology = TPR505
-
-
-class TestTPR505(_TestTopology, TPR505):
-    """Testing TPR version 100"""
-
-@dec.slow
-class TPR510(TPRBase):
-    topology = TPR510
-
-
-class TestTPR510(_TestTopology, TPR510):
-    """Testing TPR version 103"""
-
+class TestTPR510(TPRBase):
+    filename = TPR510
 
 class TPR2016(TPRBase):
-    topology = TPR2016
-
-
-class TestTPR2016(_TestTopology, TPR2016):
-    """Testing TPR version 110"""
+    filename = TPR2016
 
 
 def _test_is_in_topology(name, elements, topology_path, topology_section):
@@ -256,14 +137,17 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
     Test if an interaction appears as expected in the topology
     """
     universe = MDAnalysis.Universe(topology_path)
+    parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
+    top = parser.parse()
     for element in elements:
-        assert_(element in universe._topology[topology_section],\
-                'Interaction type "{0}" not found'.format(name))
+        assert_(element in getattr(top, topology_section).values,
+                'Interaction type "{}" not found'.format(name))
 
 
 def test_all_bonds():
     """Test that all bond types are parsed as expected"""
     topologies = (TPR510_bonded, TPR2016_bonded)
+
     bonds = {'BONDS':[(0, 1)], 'G96BONDS':[(1, 2)], 'MORSE':[(2, 3)],
              'CUBICBONDS':[(3, 4)], 'CONNBONDS':[(4, 5)], 'HARMONIC':[(5, 6)],
              'FENEBONDS':[(6, 7)], 'RESTRAINTPOT':[(7, 8)],

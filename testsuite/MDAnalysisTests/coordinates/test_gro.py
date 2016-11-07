@@ -16,6 +16,7 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -63,8 +64,8 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.dt, 1.0)
 
     def test_coordinates(self):
-        A10CA = self.universe.SYSTEM.CA[10]
-        assert_almost_equal(A10CA.pos,
+        A10CA = self.universe.atoms.CA[10]
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -73,8 +74,8 @@ class TestGROReader(TestCase, RefAdK):
         # NOTe that the prec is only 1 decimal: subtracting two low precision
         #      coordinates low prec: 9.3455122920041109; high prec (from pdb):
         #      9.3513174
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
@@ -119,9 +120,9 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
     def test_coordinates(self):
         # note: these are the native coordinates in nm; for the test to succeed
         # we loaded with convert_units=False
-        A10CA = self.universe.SYSTEM.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         # coordinates in nm
-        assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA'] / 10.0,
+        assert_almost_equal(A10CA.position, RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
                             "(in nm) for A10:CA")
 
@@ -132,8 +133,8 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         #  Arrays are not almost equal distance between M1:N and G214:C
         #    ACTUAL: 0.93455122920041123
         #    DESIRED: 0.93513173999999988
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         # coordinates in nm
         assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
@@ -190,6 +191,12 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
+        self.u_no_resnames = make_Universe(['names', 'resids'],
+                                            trajectory=True)
+        self.u_no_resids = make_Universe(['names', 'resnames'],
+                                          trajectory=True)
+        self.u_no_names = make_Universe(['resids', 'resnames'],
+                                          trajectory=True)
 
     def tearDown(self):
         try:
@@ -202,6 +209,9 @@ class TestGROWriter(TestCase, tempdir.TempDir):
             pass
         del self.universe
         del self.tmpdir
+        del self.u_no_resnames
+        del self.u_no_resids
+        del self.u_no_names
 
     @dec.slow
     def test_writer(self):
@@ -211,6 +221,27 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             self.universe.atoms.positions, self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
+
+    @dec.slow
+    def test_writer_no_resnames(self):
+        self.u_no_resnames.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+        assert_equal(u.atoms.resnames, expected)
+
+    @dec.slow
+    def test_writer_no_resids(self):
+        self.u_no_resids.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones((1,))
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_atom_names(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
 
     @dec.slow
     def test_timestep_not_modified_by_writer(self):
@@ -229,7 +260,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
-        u.atoms[2000].position = -999.9995 * 10  # nm -> A
+        u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -242,7 +273,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
-        u.atoms[1000].position = 9999.9999 * 10
+        u.atoms[1000].position = [0, 9999.9999 * 10, 1]
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -253,7 +284,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
-        u.atoms[1000].position = 9999.9999
+        u.atoms[1000].position = [22.2, 9999.9999, 37.89]
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
@@ -296,8 +327,8 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
         GRO files (Issue 886)."""
         outfile = os.path.join(self.tmpdir.name, 'outfile2.gro')
         target_resname = self.large_universe.residues[-1].resname
-        resid_value = 999999999999999999999
-        self.large_universe.residues[-1].atoms.resids = resid_value
+        resid_value = 9999999
+        self.large_universe.residues[-1].resid = resid_value
         self.large_universe.atoms.write(outfile)
         with open(outfile, 'rt') as mda_output:
             output_lines = mda_output.readlines()

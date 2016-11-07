@@ -54,7 +54,7 @@ Timeseries of observables
 """
 import warnings
 
-from . import AtomGroup
+from . import groups
 
 
 class TimeseriesCollection(object):
@@ -183,11 +183,11 @@ class Timeseries(object):
     '''
 
     def __init__(self, code, atoms, dsize):
-        if isinstance(atoms, AtomGroup.AtomGroup):
+        if isinstance(atoms, groups.AtomGroup):
             self.atoms = atoms.atoms
         elif isinstance(atoms, list):
             self.atoms = atoms
-        elif isinstance(atoms, AtomGroup.Atom):
+        elif isinstance(atoms, groups.Atom):
             self.atoms = [atoms]
         else:
             raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
@@ -243,9 +243,9 @@ class Atom(Timeseries):
           dimensions)
 
         *atoms*
-          can be a single :class:`~MDAnalysis.core.AtomGroup.Atom` object,
-          a list of :class:`~MDAnalysis.core.AtomGroup.Atom` objects, or an
-          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+          can be a single :class:`~MDAnalysis.core.groups.Atom` object,
+          a list of :class:`~MDAnalysis.core.groups.Atom` objects, or an
+          :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, code, atoms):
@@ -255,11 +255,11 @@ class Atom(Timeseries):
             size = 3
         else:
             size = 1
-        if isinstance(atoms, AtomGroup.AtomGroup):
+        if isinstance(atoms, groups.AtomGroup):
             n_atoms = len(atoms.atoms)
         elif isinstance(atoms, list):
             n_atoms = len(atoms)
-        elif isinstance(atoms, AtomGroup.Atom):
+        elif isinstance(atoms, groups.Atom):
             n_atoms = 1
         else:
             raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
@@ -274,8 +274,8 @@ class Bond(Timeseries):
 
            t = Bond(atoms)
 
-        *atoms* must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* must contain 2 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -289,8 +289,8 @@ class Angle(Timeseries):
 
            t = Angle(atoms)
 
-        atoms must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 3 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -304,8 +304,8 @@ class Dihedral(Timeseries):
 
            t = Dihedral(atoms)
 
-        atoms must contain 4 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 4 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -320,8 +320,8 @@ class Distance(Timeseries):
            t = Distance(code, atoms)
 
         code is one of 'd' (distance vector), or 'r' (scalar distance)
-        atoms must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 2 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, code, atoms):
@@ -341,8 +341,8 @@ class CenterOfGeometry(Timeseries):
 
            t = CenterOfGeometry(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
-        objects, or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
+        objects, or a :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -357,8 +357,8 @@ class CenterOfMass(Timeseries):
 
            t = CenterOfMass(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
-        objects or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
+        objects or a :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -373,9 +373,9 @@ class WaterDipole(Timeseries):
 
            d = WaterDipole(atoms)
 
-        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom`
+        *atoms* must contain 3 :class:`~MDAnalysis.core.groups.Atom`
         objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`; the first one *must* be
+        :class:`~MDAnalysis.core.groups.AtomGroup`; the first one *must* be
         the oxygen, the other two are the hydrogens.
 
         The vector ``d``, multiplied by the partial charge on the oxygen atom

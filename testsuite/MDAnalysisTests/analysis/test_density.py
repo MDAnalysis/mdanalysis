@@ -86,7 +86,7 @@ class Test_density_from_Universe(TestCase):
     trajectory = XTC
     delta = 2.0
     selections = {'static': "name OW",
-                  'dynamic': "name OW and around 4 (protein and resnum 1-10)",
+                  'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   }
     references = {'static':
                       {'meandensity': 0.016764271713091212, },

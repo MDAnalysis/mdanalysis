@@ -58,7 +58,7 @@ class _SelectionWriter(TestCase):
 
     def _write_selection(self, **kwargs):
         g = self._selection()
-        g.write_selection(self.namedfile, **kwargs)
+        g.write(self.namedfile, **kwargs)
         return g
 
     def test_write_bad_mode(self):

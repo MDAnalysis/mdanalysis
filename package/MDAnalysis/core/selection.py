@@ -16,7 +16,7 @@
 
 
 """
-Atom selection Hierarchy --- :mod:`MDAnalysis.core.Selection`
+Atom selection Hierarchy --- :mod:`MDAnalysis.core.selection`
 =============================================================
 
 These objects are constructed and applied to the group
@@ -43,7 +43,6 @@ from Bio.KDTree import KDTree
 
 from MDAnalysis.core import flags
 from ..lib import distances
-from ..lib.mdamath import triclinic_vectors
 from ..exceptions import SelectionError, NoDataError
 
 
@@ -372,7 +371,7 @@ class CylindricalSelection(Selection):
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
-        if self.periodic and not np.any(group.dimensions[:3]==0):
+        if self.periodic and not np.any(group.dimensions[:3] == 0):
             box = group.dimensions[:3]
             cyl_z_hheight = self.zmax - self.zmin
 
@@ -399,7 +398,7 @@ class CylindricalSelection(Selection):
                 # Orthogonal version
                 vecs -= box[:3] * np.rint(vecs / box[:3])
             else:
-                #Triclinic version
+                # Triclinic version
                 tribox = group.universe.trajectory.ts.triclinic_dimensions
                 vecs -= tribox[2] * np.rint(vecs[:, 2] / tribox[2][2])[:, None]
                 vecs -= tribox[1] * np.rint(vecs[:, 1] / tribox[1][1])[:, None]
@@ -516,9 +515,9 @@ class BondedSelection(Selection):
 
         idx = []
         # left side
-        idx.append(bix[:,0][np.in1d(bix[:,1], grpidx)])
+        idx.append(bix[:, 0][np.in1d(bix[:, 1], grpidx)])
         # right side
-        idx.append(bix[:,1][np.in1d(bix[:,0], grpidx)])
+        idx.append(bix[:, 1][np.in1d(bix[:, 0], grpidx)])
 
         idx = np.union1d(*idx)
 
@@ -591,6 +590,12 @@ class AtomTypeSelection(StringSelection):
     """Select atoms based on 'types' attribute"""
     token = 'type'
     field = 'types'
+
+
+class AtomICodeSelection(StringSelection):
+    """Select atoms based on icode attribute"""
+    token = 'icode'
+    field = 'icodes'
 
 
 class ResidueNameSelection(StringSelection):
@@ -718,6 +723,7 @@ class ProteinSelection(Selection):
         'GLH',
         'ACE', 'NME',
     ])
+
     def __init__(self, parser, tokens):
         pass
 
@@ -854,7 +860,7 @@ class PropertySelection(Selection):
 
     def apply(self, group):
         try:
-            col = {'x':0, 'y':1, 'z':2}[self.prop]
+            col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
         except KeyError:
             if self.prop == 'mass':
                 values = group.masses
@@ -883,8 +889,8 @@ class SameSelection(Selection):
         'x': None,
         'y': None,
         'z': None,
-        'residue':'resids',
-        'segment':'segids',
+        'residue': 'resids',
+        'segment': 'segids',
         'name': 'names',
         'type': 'types',
         'resname': 'resnames',
@@ -899,7 +905,7 @@ class SameSelection(Selection):
 
     def __init__(self, parser, tokens):
         prop = tokens.popleft()
-        if not prop in self.prop_trans:
+        if prop not in self.prop_trans:
             raise ValueError("Unknown same property : {0}"
                              "Choose one of : {1}"
                              "".format(prop, self.prop_trans.keys()))
@@ -923,7 +929,7 @@ class SameSelection(Selection):
             return unique(group[mask])
         # [xyz] must come before self.prop_trans lookups too!
         try:
-            pos_idx = {'x':0, 'y':1, 'z':2}[self.prop]
+            pos_idx = {'x': 0, 'y': 1, 'z': 2}[self.prop]
         except KeyError:
             # The self.prop string was already checked,
             # so don't need error checking here.
@@ -1004,7 +1010,7 @@ class SelectionParser(object):
         tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')
         self.tokens = collections.deque(tokens.split() + [None])
         parsetree = self.parse_expression(0)
-        if not self.tokens[0] == None:
+        if self.tokens[0] is not None:
             raise SelectionError(
                 "Unexpected token at end of selection string: '{0}'"
                 "".format(self.tokens[0]))
@@ -1012,7 +1018,7 @@ class SelectionParser(object):
 
     def parse_expression(self, p):
         exp1 = self._parse_subexp()
-        while (self.tokens[0] in _OPERATIONS and 
+        while (self.tokens[0] in _OPERATIONS and
                _OPERATIONS[self.tokens[0]].precedence >= p):
             op = _OPERATIONS[self.tokens.popleft()]
             q = 1 + op.precedence

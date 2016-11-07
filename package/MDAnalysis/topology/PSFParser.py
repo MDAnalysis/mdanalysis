@@ -17,9 +17,10 @@
 PSF topology parser
 ===================
 
-Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. Currently uses
-the list of atoms (including atom types, which can be either integers
-or strings, masses and partial charges) and the bond connectivity.
+Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. The topology will
+contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
+charges and masses. Bonds, angles, dihedrals and impropers are also read from
+the file.
 
 It reads both standard and extended ("EXT") PSF formats and can also parse NAMD
 space-separated "PSF" file variants.
@@ -35,15 +36,32 @@ Classes
 
 """
 from __future__ import absolute_import
-from six.moves import range
 
+from six.moves import range
 import logging
 import functools
 from math import ceil
+import numpy as np
 
-from ..core.AtomGroup import Atom
 from ..lib.util import openany
-from .base import TopologyReader
+from . import guessers
+from .base import TopologyReader, squash_by
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Charges,
+    Resids,
+    Resnums,
+    Resnames,
+    Segids,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers
+)
+from ..core.topology import Topology
 
 logger = logging.getLogger("MDAnalysis.topology.PSF")
 
@@ -51,19 +69,35 @@ logger = logging.getLogger("MDAnalysis.topology.PSF")
 class PSFParser(TopologyReader):
     """Read topology information from a CHARMM/NAMD/XPLOR PSF_ file.
 
+    Creates a Topology with the following Attributes:
+    - ids
+    - names
+    - types
+    - masses
+    - charges
+    - resids
+    - resnames
+    - segids
+    - bonds
+    - angles
+    - dihedrals
+    - impropers
+
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
     """
     format = 'PSF'
 
     def parse(self):
-        """Parse PSF file *filename*.
+        """Parse PSF file into Topology
 
-        :Returns: MDAnalysis internal *structure* dict as defined here.
+        Returns
+        -------
+        MDAnalysis *Topology* object
         """
         # Open and check psf validity
-        with openany(self.filename, 'rt') as psffile:
-            header = next(psffile)
-            if header[:3] != "PSF":
+        with openany(self.filename, 'r') as psffile:
+            header = psffile.next()
+            if not header.startswith("PSF"):
                 err = ("{0} is not valid PSF file (header = {1})"
                        "".format(self.filename, header))
                 logger.error(err)
@@ -89,34 +123,38 @@ class PSFParser(TopologyReader):
             logger.debug("PSF file {0}: format {1}"
                          "".format(psffile.name, self._format))
 
-            structure = {}
-
+            # Atoms first and mandatory
+            top = self._parse_sec(
+                psffile, ('NATOM', 1, 1, self._parseatoms))
+            # Then possibly other sections
             sections = (
-                ("atoms", ("NATOM", 1, 1, self._parseatoms)),
-                ("bonds", ("NBOND", 2, 4, self._parsesection)),
-                ("angles", ("NTHETA", 3, 3, self._parsesection)),
-                ("dihedrals", ("NPHI", 4, 2, self._parsesection)),
-                ("impropers", ("NIMPHI", 4, 2, self._parsesection)),
-                ("donors", ("NDON", 2, 4, self._parsesection)),
-                ("acceptors", ("NACC", 2, 4, self._parsesection))
+                #("atoms", ("NATOM", 1, 1, self._parseatoms)),
+                (Bonds, ("NBOND", 2, 4, self._parsesection)),
+                (Angles, ("NTHETA", 3, 3, self._parsesection)),
+                (Dihedrals, ("NPHI", 4, 2, self._parsesection)),
+                (Impropers, ("NIMPHI", 4, 2, self._parsesection)),
+                #("donors", ("NDON", 2, 4, self._parsesection)),
+                #("acceptors", ("NACC", 2, 4, self._parsesection))
             )
 
             try:
                 for attr, info in sections:
-                    next(psffile)
-                    structure[attr] = self._parse_sec(psffile, info)
+                    psffile.next()
+                    top.add_TopologyAttr(
+                        attr(self._parse_sec(psffile, info)))
             except StopIteration:
                 # Reached the end of the file before we expected
-                if "atoms" not in structure:
-                    err = ("The PSF file didn't contain the required"
-                           " section of NATOM")
-                    logger.error(err)
-                    raise ValueError(err)
+                pass
 
-        # Who cares about the rest
-        return structure
+        return top
 
     def _parse_sec(self, psffile, section_info):
+        """Parse a single section of the PSF
+
+        Returns
+        -------
+        A list of Attributes from this section
+        """
         desc, atoms_per, per_line, parsefunc = section_info
         header = next(psffile)
         while header.strip() == "":
@@ -127,7 +165,8 @@ class PSFParser(TopologyReader):
         sect_type = header[1].strip('!:')
         # Make sure the section type matches the desc
         if not sect_type == desc:
-            err = "Expected section {0} but found {1}".format(desc, sect_type)
+            err = ("Expected section {0} but found {1}"
+                   "".format(desc, sect_type))
             logger.error(err)
             raise ValueError(err)
         # Now figure out how many lines to read
@@ -216,26 +255,78 @@ class PSFParser(TopologyReader):
         #  (I8,1X,A4, 1X,A4,  1X,A4,  1X,A4,  1X,I4,  1X,2G14.6,     I8,   2G14.6)
         #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
 
-        atoms = [None, ]*numlines
-        for i in range(numlines):
-            line = lines()
-            try:
-                iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
-            except ValueError:
-                # last ditch attempt: this *might* be a NAMD/VMD space-separated "PSF" file from
-                # VMD version < 1.9.1
-                atom_parser = atom_parsers['NAMD']
-                iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
-                logger.warn("Guessing that this is actually a NAMD-type PSF file..."
-                            " continuing with fingers crossed!")
-                logger.debug("First NAMD-type line: {0}: {1}".format(i, line.rstrip()))
+        # Allocate arrays
+        atomids = np.zeros(numlines, dtype=np.int32)
+        segids = np.zeros(numlines, dtype=object)
+        resids = np.zeros(numlines, dtype=np.int32)
+        resnames = np.zeros(numlines, dtype=object)
+        atomnames = np.zeros(numlines, dtype=object)
+        atomtypes = np.zeros(numlines, dtype=object)
+        charges = np.zeros(numlines, dtype=np.float32)
+        masses = np.zeros(numlines, dtype=np.float64)
 
-            atoms[i] = Atom(iatom, atomname, atomtype, resname, resid,
-                            segid, mass, charge, universe=self._u)
-        return atoms
+        for i in xrange(numlines):
+            try:
+                line = lines()
+            except StopIteration:
+                err = ("{0} is not valid PSF file"
+                       "".format(self.filename))
+                logger.error(err)
+                raise ValueError(err)
+            try:
+                vals = set_type(atom_parser(line))
+            except ValueError:
+                # last ditch attempt: this *might* be a NAMD/VMD
+                # space-separated "PSF" file from VMD version < 1.9.1
+                atom_parser = atom_parsers['NAMD']
+                vals = set_type(atom_parser(line))
+                logger.warn("Guessing that this is actually a"
+                            " NAMD-type PSF file..."
+                            " continuing with fingers crossed!")
+                logger.debug("First NAMD-type line: {0}: {1}"
+                             "".format(i, line.rstrip()))
+
+            atomids[i] = vals[0]
+            segids[i] = vals[1]
+            resids[i] = vals[2]
+            resnames[i] = vals[3]
+            atomnames[i] = vals[4]
+            atomtypes[i] = vals[5]
+            charges[i] = vals[6]
+            masses[i] = vals[7]
+
+        # Atom
+        atomids = Atomids(atomids)
+        atomnames = Atomnames(atomnames)
+        atomtypes = Atomtypes(atomtypes)
+        charges = Charges(charges)
+        masses = Masses(masses)
+
+        # Residue
+        # resids, resnames
+        residx, new_resids, (new_resnames, perres_segids) = squash_by(
+            resids, resnames, segids)
+        # transform from atom:Rid to atom:Rix
+        residueids = Resids(new_resids)
+        residuenums = Resnums(new_resids.copy())
+        residuenames = Resnames(new_resnames)
+
+        # Segment
+        segidx, perseg_segids = squash_by(perres_segids)[:2]
+        segids = Segids(perseg_segids)
+
+        top = Topology(len(atomids), len(new_resids), len(segids),
+                       attrs=[atomids, atomnames, atomtypes,
+                              charges, masses,
+                              residueids, residuenums, residuenames,
+                              segids],
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
+
+        return top
 
     def _parsesection(self, lines, atoms_per, numlines):
-        section = []  # [None,]*numlines
+        section = []
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms

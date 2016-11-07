@@ -21,6 +21,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests.core.groupbase import make_Universe
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -143,6 +144,13 @@ class TestPDBWriter(TestCase):
         ext = ".pdb"
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/primitive-pdb-writer' + ext
+        self.u_no_resnames = make_Universe(['names', 'resids'],
+                                            trajectory=True)
+        self.u_no_resids = make_Universe(['names', 'resnames'],
+                                            trajectory=True)
+        self.u_no_names = make_Universe(['resids', 'resnames'],
+                                            trajectory=True)
+
 
     def tearDown(self):
         try:
@@ -150,6 +158,7 @@ class TestPDBWriter(TestCase):
         except OSError:
             pass
         del self.universe, self.universe2
+        del self.u_no_resnames, self.u_no_resids, self.u_no_names
         del self.tmpdir
 
     def test_writer(self):
@@ -160,6 +169,62 @@ class TestPDBWriter(TestCase):
                             self.universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PDBWriter "
                             "does not reproduce original coordinates")
+
+    @dec.slow
+    def test_writer_no_resnames(self):
+        self.u_no_resnames.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+        assert_equal(u.atoms.resnames, expected)
+
+    @dec.slow
+    def test_writer_no_resids(self):
+        self.u_no_resids.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones((1,))
+        assert_equal(u.residues.resids, expected)
+
+    @dec.slow
+    def test_writer_no_atom_names(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.names, expected)
+
+    @dec.slow
+    def test_writer_no_altlocs(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.altLocs, expected)
+
+    @dec.slow
+    def test_writer_no_icodes(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array([''] * self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.icodes, expected)
+
+    @dec.slow
+    def test_writer_no_segids(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.array(['SYSTEM'] * self.u_no_names.atoms.n_atoms)
+        assert_equal([atom.segid for atom in u.atoms], expected)
+
+    @dec.slow
+    def test_writer_no_occupancies(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.ones(self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.occupancies, expected)
+
+    @dec.slow
+    def test_writer_no_tempfactors(self):
+        self.u_no_names.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        expected = np.zeros(self.u_no_names.atoms.n_atoms)
+        assert_equal(u.atoms.tempfactors, expected)
 
     @attr('issue')
     def test_write_single_frame_Writer(self):
@@ -198,7 +263,7 @@ class TestPDBWriter(TestCase):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
-        u.atoms[2000].position = -999.9995
+        u.atoms[2000].position = [0, -999.9995, 22.8]
         assert_raises(ValueError, u.atoms.write, self.outfile)
 
     @attr('issue')
@@ -209,7 +274,7 @@ class TestPDBWriter(TestCase):
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
         # OB: 9999.99951 is not caught by '<=' ?!?
-        u.atoms[1000].position = 9999.9996
+        u.atoms[1000].position = [90.889, 9999.9996, 12.2]
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
@@ -240,9 +305,7 @@ class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe,
                                        guess_bonds=True)
-        self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, guess_bonds=True)
-        self.conect.build_topology()
 
     def tearDown(self):
         del self.multiverse
@@ -391,7 +454,7 @@ class TestMultiPDBReader(TestCase):
                                                 if not b.is_guessed])
         assert_equal(conect, desired, err_msg="The bond list does not match "
                      "the test reference; len(actual) is %d, len(desired) "
-                     "is %d" % (len(u._topology['bonds']), len(desired)))
+                     "is %d" % (len(u._topology.bonds.values), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
@@ -531,16 +594,16 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_coordinates(self):
-        A10CA = self.universe.SYSTEM.CA[10]
-        assert_almost_equal(A10CA.pos,
+        A10CA = self.universe.atoms.CA[10]
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
 
     @dec.slow
     def test_distances(self):
-        NTERM = self.universe.SYSTEM.N[0]
-        CTERM = self.universe.SYSTEM.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
@@ -575,7 +638,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_first_residue(self):
         # First residue is a MET, shouldn't be smushed together
         # with a water
-        assert_(len(self.universe.residues[0]) == 19)
+        assert_(len(self.universe.residues[0].atoms) == 19)
 
 
 class TestIncompletePDB(object):
@@ -625,21 +688,6 @@ class TestIncompletePDB(object):
         for ts in self.u.trajectory:
             pass
 
-    def test_occupancy(self):
-        occupancies = self.u.atoms.occupancies
-        assert_array_almost_equal(occupancies, np.ones(len(occupancies)))
-
-    def test_set_occupancy(self):
-        for atom in self.u.atoms:
-            atom.occupancy = 0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
-
-    def test_set_occupancies(self):
-        self.u.atoms.occupancies = 0.0
-        assert_almost_equal(self.u.atoms.occupancies,
-                            np.zeros(self.u.atoms.n_atoms))
-
 
 class TestPDBXLSerial(object):
     """For Issue #446"""
@@ -656,10 +704,10 @@ class TestPDBXLSerial(object):
 
     def test_serials(self):
         # These should be none
-        assert_(self.u.atoms[0].serial == 99998)
-        assert_(self.u.atoms[1].serial == 99999)
-        assert_(self.u.atoms[2].serial is None)
-        assert_(self.u.atoms[3].serial is None)
+        assert_(self.u.atoms[0].id == 99998)
+        assert_(self.u.atoms[1].id == 99999)
+        assert_(self.u.atoms[2].id == 100000)
+        assert_(self.u.atoms[3].id == 100001)
 
 
 # Does not implement Reader.remarks, Reader.header, Reader.title,
@@ -743,7 +791,7 @@ def test_deduce_PDB_atom_name():
     def _test_PDB_atom_name(atom, ref_atom_name):
         dummy_file = StringIO()
         name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
-                ._deduce_PDB_atom_name(atom))
+                ._deduce_PDB_atom_name(atom.name, atom.resname))
         assert_equal(name, ref_atom_name)
     test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
                   (Pair('GLU', 'OE1'), ' OE1'),

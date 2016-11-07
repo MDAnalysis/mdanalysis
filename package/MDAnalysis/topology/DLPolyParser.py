@@ -19,21 +19,36 @@
 
 Read DL Poly_ format topology files
 
+DLPoly files have the following Attributes:
+ - Atomnames
+ - Atomids
+Guesses the following attributes:
+ - Atomtypes
+ - Masses
+
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from six.moves import zip
 import numpy as np
 
-from . import base
-from . import core
+from . import guessers
+from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+)
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
 
 
-class ConfigParser(base.TopologyReader):
+class ConfigParser(TopologyReader):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
@@ -43,7 +58,8 @@ class ConfigParser(base.TopologyReader):
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = map(int,
+                                        inf.readline().split()[:3])
             if not imcon == 0:
                 inf.readline()
                 inf.readline()
@@ -71,34 +87,35 @@ class ConfigParser(base.TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
-        for i, (name, num) in enumerate(zip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        structure = {'atoms': atoms}
-
-        return structure
+        return top
 
 
-class HistoryParser(base.TopologyReader):
+class HistoryParser(TopologyReader):
     """DL_Poly History file parser
 
     .. versionadded:: 0.10.1
@@ -137,28 +154,29 @@ class HistoryParser(base.TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
+            
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        for i, (name, num) in enumerate(zip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
-
-        structure = {'atoms': atoms}
-
-        return structure
+        return top

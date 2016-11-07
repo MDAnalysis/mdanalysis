@@ -27,11 +27,6 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
-.. Note::
-
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
-
 .. SeeAlso::
 
    * :mod:`MDAnalysis.topology.ExtendedPDBParser`
@@ -51,15 +46,9 @@ Classes
 
 from __future__ import absolute_import, print_function
 
-import numpy as np
 import warnings
 
 from . import PDBParser
-from ..core.AtomGroup import Atom
-from .core import get_atom_mass, guess_atom_element
-from ..lib.util import openany
-from .base import TopologyReader
-
 
 
 class PrimitivePDBParser(PDBParser.PDBParser):
@@ -68,33 +57,3 @@ class PrimitivePDBParser(PDBParser.PDBParser):
                     ' it is deprecated in favor of the shorter name',
                     category=DeprecationWarning)
         super(PDBParser.PDBParser, self).__init__(*args, **kwargs)
-
-def _parse_conect(conect):
-
-    """parse a CONECT record from pdbs
-
-    Parameters
-    ----------
-    conect : str
-        white space striped CONECT record
-
-    Returns
-    -------
-    atom_id : int
-        atom index of bond
-    bonds : set
-        atom ids of bonded atoms
-
-    Raises
-    ------
-    RuntimeError
-        Raised if ``conect`` is not a valid CONECT record
-    """
-    atom_id = np.int(conect[6:11])
-    n_bond_atoms = len(conect[11:]) // 5
-    if len(conect[11:]) % n_bond_atoms != 0:
-        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
-                           "record: {}".format(conect))
-    bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
-                  range(n_bond_atoms))
-    return atom_id, bond_atoms

@@ -25,23 +25,23 @@ topology file format in the *topology_format* keyword argument to
    :maxdepth: 1
 
    topology/init
-   topology/PSFParser
-   topology/TOPParser
    topology/CRDParser
-   topology/GROParser
-   topology/PDBParser
-   topology/PrimitivePDBParser
-   topology/ExtendedPDBParser
-   topology/PDBQTParser
-   topology/PQRParser
    topology/DLPolyParser
    topology/DMSParser
-   topology/TPRParser
-   topology/MOL2Parser
-   topology/XYZParser
-   topology/LAMMPSParser
    topology/GMSParser
+   topology/GROParser
    topology/HoomdXMLParser
+   topology/LAMMPSParser
+   topology/MOL2Parser
+   topology/PDBParser
+   topology/ExtendedPDBParser
+   topology/PrimitivePDBParser
+   topology/PDBQTParser
+   topology/PQRParser
+   topology/PSFParser
+   topology/TOPParser
+   topology/TPRParser
+   topology/XYZParser
 
 .. rubric:: Topology core modules
 
@@ -54,5 +54,6 @@ the topology readers.
 
    topology/base
    topology/core
+   topology/guessers
    topology/tables
    topology/tpr_util

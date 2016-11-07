@@ -28,7 +28,6 @@ from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               assert_timestep_almost_equal)
 from MDAnalysisTests import tempdir
 
-import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
 
 # I want to catch all warnings in the tests. If this is not set at the start it
@@ -853,11 +852,11 @@ class TestXTCReader_offsets(_GromacsReader_offsets):
     filename = XTC
     ref_offsets = np.array([0, 165188, 330364, 495520, 660708, 825872, 991044,
                             1156212, 1321384, 1486544])
-    _reader = MDAnalysis.coordinates.XTC.XTCReader
+    _reader = mda.coordinates.XTC.XTCReader
 
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
     ref_offsets = np.array([0, 1144464, 2288928, 3433392, 4577856, 5722320,
                             6866784, 8011248, 9155712, 10300176])
-    _reader = MDAnalysis.coordinates.TRR.TRRReader
+    _reader = mda.coordinates.TRR.TRRReader

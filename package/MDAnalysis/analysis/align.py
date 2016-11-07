@@ -717,7 +717,7 @@ def rms_fit_trj(
     logger.info("RMS-fitting on {0:d} atoms.".format(len(ref_atoms)))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weights = ref_atoms.masses
+        weights = np.asarray(ref_atoms.masses, dtype=np.float64)
     else:
         weights = None
 

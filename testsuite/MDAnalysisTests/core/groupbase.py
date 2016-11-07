@@ -1,0 +1,184 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+"""Mock Universe and Topology for testing purposes
+
+
+
+"""
+from __future__ import division
+
+from six.moves import range
+
+import numpy as np
+import string
+import itertools
+
+import MDAnalysis as mda
+from MDAnalysis.core.topology import Topology
+from MDAnalysis.coordinates.base import SingleFrameReader
+from MDAnalysis.core import groups
+import MDAnalysis.core.topologyattrs as ta
+
+# Dimensions of the standard mock Universe
+# 5 atoms per residues, 5 residues per segment
+_N_ATOMS = 125
+_N_RESIDUES = 25
+_N_SEGMENTS = 5
+_ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
+_RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
+
+def make_Universe(extras=None, size=None, trajectory=False):
+    """Make a dummy reference Universe"""
+    u = mda.Universe(make_topology(extras, size=size))
+    if trajectory:
+        u.trajectory = FakeReader(len(u.atoms))
+    return u
+
+
+def make_topology(extras=None, size=None):
+    """Reference topology system
+
+    extras - attributes to add to the Universe
+    size - tuple of natoms, nres, nseg, by default:
+      125 atoms, 25 residue, 5 segments
+    """
+    if extras is None:
+        extras = []
+    if size is None:
+        size = _N_ATOMS, _N_RESIDUES, _N_SEGMENTS
+    attrs = [_menu[extra](size) for extra in extras]
+
+    return Topology(size[0], size[1], size[2],
+                    attrs=attrs,
+                    atom_resindex=np.repeat(
+                        np.arange(size[1]), size[0] // size[1]),
+                    residue_segindex=np.repeat(
+                        np.arange(size[2]), size[1] // size[2]))
+
+def make_altLocs(size):
+    """AltLocs cycling through A B C D E"""
+    na, nr, ns = size
+    alts = itertools.cycle(('A', 'B', 'C', 'D', 'E'))
+    return ta.AltLocs(np.array(['{}'.format(next(alts)) for _ in range(na)],
+                               dtype=object))
+
+def make_bfactors(size):
+    na, nr, ns = size
+    return ta.Bfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
+
+def make_tempfactors(size):
+    na, nr, ns = size
+    return ta.Tempfactors(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
+
+def make_charges(size):
+    """Atom charges (-1.5, -0.5, 0.0, 0.5, 1.5) repeated"""
+    na, nr, ns = size
+    charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
+    return ta.Charges(np.array([next(charges)
+                                for _ in range(na)]))
+
+def make_resnames(size):
+    """Creates residues named RsA RsB ... """
+    na, nr, ns = size
+    return ta.Resnames(np.array(['Rs{}'.format(string.uppercase[i])
+                                 for i in range(nr)], dtype=object))
+
+def make_segids(size):
+    """Segids SegA -> SegY"""
+    na, nr, ns = size
+    return ta.Segids(np.array(['Seg{}'.format(string.uppercase[i])
+                               for i in range(ns)], dtype=object))
+
+def make_types(size):
+    """Atoms are given types TypeA -> TypeE on a loop"""
+    na, nr, ns = size
+    types = itertools.cycle(string.uppercase[:5])
+    return ta.Atomtypes(np.array(
+        ['Type{}'.format(next(types))
+         for _ in range(na)], dtype=object))
+
+def make_names(size):
+    """Atom names AAA -> ZZZ (all unique)"""
+    na, nr, ns = size
+    # produces, AAA, AAB, AAC, ABA etc
+    names = itertools.product(*[string.uppercase] * 3)
+    return ta.Atomnames(np.array(
+        ['{}'.format(''.join(next(names)))
+         for _ in range(na)], dtype=object))
+
+def make_occupancies(size):
+    na, nr, ns = size
+    return ta.Occupancies(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
+
+def make_radii(size):
+    na, nr, ns = size
+    return ta.Radii(np.tile(np.array([1.0, 2, 3, 4, 5]), nr))
+
+def make_serials(size):
+    """Serials go from 10 to size+10"""
+    na, nr, ns = size
+    return ta.Atomids(np.arange(na) + 10)
+
+def make_masses(size):
+    """Atom masses (5.1, 4.2, 3.3, 1.5, 0.5) repeated"""
+    na, nr, ns = size
+    masses = itertools.cycle([5.1, 4.2, 3.3, 1.5, 0.5])
+    return ta.Masses(np.array([next(masses)
+                               for _ in range(na)]))
+
+def make_resnums(size):
+    """Resnums 1 and upwards"""
+    na, nr, ns = size
+    return ta.Resnums(np.arange(nr, dtype=np.int64) + 1)
+
+def make_resids(size):
+    """Resids 1 and upwards"""
+    na, nr, ns = size
+    return ta.Resids(np.arange(nr, dtype=np.int64) + 1)
+
+# Available extra TopologyAttrs to a dummy Universe
+_menu = {
+    # Atoms
+    'altLocs': make_altLocs,
+    'bfactors': make_bfactors,
+    'charges': make_charges,
+    'names': make_names,
+    'occupancies': make_occupancies,
+    'radii': make_radii,
+    'serials': make_serials,
+    'tempfactors': make_tempfactors,
+    'types': make_types,
+    'masses': make_masses,
+    # Residues
+    'resnames': make_resnames,
+    'resnums': make_resnums,
+    'resids': make_resids,
+    # Segments
+    'segids': make_segids,
+}
+
+class FakeReader(SingleFrameReader):
+    def __init__(self, n_atoms=None):
+        self.n_atoms = n_atoms if not n_atoms is None else _N_ATOMS
+        self.filename = 'FakeReader'
+        self.n_frames = 1
+        self._read_first_frame()
+
+    def _read_first_frame(self):
+        self.ts = self._Timestep(self.n_atoms)
+        self.ts.positions = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3)
+        self.ts.frame = 0
+

@@ -23,8 +23,13 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 """
 
-import numpy as np
+from six.moves import zip
 
+import itertools
+import numpy as np
+import warnings
+
+from ..exceptions import NoDataError
 from ..lib import util
 from . import base
 
@@ -103,6 +108,13 @@ class CRDWriter(base.Writer):
     It automatically writes the CHARMM EXT extended format if there
     are more than 99,999 atoms.
 
+    Requires the following attributes:
+    - resids
+    - resnames
+    - names
+    - chainIDs
+    - tempfactors
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
@@ -112,15 +124,17 @@ class CRDWriter(base.Writer):
     fmt = {
         #crdtype = 'extended'
         #fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'
-        'ATOM_EXT': "%(serial)10d%(TotRes)10d  %(resName)-8s  %(name)-8s%(x)20.10f%(y)20.10f%(z)20.10f  %(chainID)-8s "
-                    " %(resSeq)-8d%(tempFactor)20.10f\n",
-        'NUMATOMS_EXT': "%10d  EXT\n",
+        "ATOM_EXT": ("{serial:10d}{totRes:10d}  {resname:<8.8s}  {name:<8.8s}"
+                     "{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}  "
+                     "{chainID:<8.8s}  {resSeq:<8d}{tempfactor:20.10f}\n"),
+        "NUMATOMS_EXT": "{0:10d} EXT\n",
         #crdtype = 'standard'
         #fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'
-        'ATOM': "%(serial)5d%(TotRes)5d %(resName)-4s %(name)-4s%(x)10.5f%(y)10.5f%(z)10.5f %(chainID)-4s %("
-                "resSeq)-4d%(tempFactor)10.5f\n",
-        'TITLE': "*%s\n",
-        'NUMATOMS': "%5d\n",
+        "ATOM": ("{serial:5d}{totRes:5d} {resname:<4.4s} {name:<4.4s}"
+                 "{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f} "
+                 "{chainID:<4.4s} {resSeq:<4d}{tempfactor:10.5f}\n"),
+        "TITLE": "* FRAME {frame} FROM {where}\n",
+        "NUMATOMS": "{0:5d}\n",
     }
 
     def __init__(self, filename, **kwargs):
@@ -146,68 +160,81 @@ class CRDWriter(base.Writer):
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
-        with util.openany(self.filename, 'w') as self.crd:
-            self._TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
-            self._TITLE("")
-            self._NUMATOMS(len(atoms))
-            current_resid = 0
-            for i, atom in enumerate(atoms):
-                if atoms[i].resid != atoms[i - 1].resid:
-                    # note that this compares first and LAST atom on first iteration... but it works
+
+        n_atoms = len(atoms)
+        # Detect which format string we're using to output (EXT or not)
+        # *len refers to how to truncate various things,
+        # depending on output format!
+        if n_atoms > 99999:
+            at_fmt = self.fmt['ATOM_EXT']
+            serial_len = 10
+            resid_len = 8
+            totres_len = 10
+        else:
+            at_fmt = self.fmt['ATOM']
+            serial_len = 5
+            resid_len = 4
+            totres_len = 5
+
+        # Check for attributes, use defaults for missing ones
+        attrs = {}
+        missing_topology = []
+        for attr, default in (
+                ('resnames', itertools.cycle(('UNK',))),
+                # Resids *must* be an array because we index it later
+                ('resids', np.ones(n_atoms, dtype=np.int)),
+                ('names', itertools.cycle(('X',))),
+                ('tempfactors', itertools.cycle((0.0,))),
+        ):
+            try:
+                attrs[attr] = getattr(atoms, attr)
+            except (NoDataError, AttributeError):
+                attrs[attr] = default
+                missing_topology.append(attr)
+        # ChainIDs - Try ChainIDs first, fall back to Segids
+        try:
+            attrs['chainIDs'] = atoms.chainIDs
+        except (NoDataError, AttributeError):
+            # try looking for segids instead
+            try:
+                attrs['chainIDs'] = atoms.segids
+            except (NoDataError, AttributeError):
+                attrs['chainIDs'] = itertools.cycle(('',))
+                missing_topology.append(attr)
+        if missing_topology:
+            warnings.warn(
+                "Supplied AtomGroup was missing the following attributes: "
+                "{miss}. These will be written with default values. "
+                "".format(miss=', '.join(missing_topology)))
+
+        with util.openany(self.filename, 'w') as crd:
+            # Write Title
+            crd.write(self.fmt['TITLE'].format(
+                frame=frame, where=u.trajectory.filename))
+            crd.write("*\n")
+
+            # Write NUMATOMS
+            if n_atoms > 99999:
+                crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
+            else:
+                crd.write(self.fmt['NUMATOMS'].format(n_atoms))
+
+            # Write all atoms
+
+            current_resid = 1
+            resids = attrs['resids']
+            for i, pos, resname, name, chainID, resid, tempfactor in zip(
+                    range(n_atoms), coor, attrs['resnames'], attrs['names'],
+                    attrs['chainIDs'], attrs['resids'], attrs['tempfactors']):
+                if not i == 0 and resids[i] != resids[i-1]:
                     current_resid += 1
-                self._ATOM(serial=i + 1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                           x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], chainID=atom.segid,
-                           tempFactor=atom.bfactor, TotRes=current_resid, n_atoms=len(atoms))
 
-    def _TITLE(self, *title):
-        """Write TITLE record.
-        """
-        line = " ".join(title)  # should do continuation automatically
-        line = line.strip()
-        if len(line) > 0:
-            line = " " + line
-        self.crd.write(self.fmt['TITLE'] % line)
+                # Truncate numbers
+                serial = int(str(i + 1)[-serial_len:])
+                resid = int(str(resid)[-resid_len:])
+                current_resid = int(str(current_resid)[-totres_len:])
 
-    def _NUMATOMS(self, n_atoms):
-        """Write generic total number of atoms in system)
-        """
-        if n_atoms > 99999:
-            self.crd.write(self.fmt['NUMATOMS_EXT'] % n_atoms)
-        else:
-            self.crd.write(self.fmt['NUMATOMS'] % n_atoms)
-
-    def _ATOM(self, serial=None, resSeq=None, resName=None, name=None, x=None, y=None, z=None, chainID=None,
-              tempFactor=0.0, TotRes=None, n_atoms=None):
-        """Write ATOM record.
-
-        All inputs are cut to the maximum allowed length. For integer
-        numbers the highest-value digits are chopped (so that the
-        serial and reSeq wrap); for strings the trailing characters
-        are chopped.
-
-        .. Warning:: Floats are not checked and can potentially screw up the format.
-        """
-        if tempFactor is None:
-            tempFactor = 0.0  # atom.bfactor is None by default
-        for arg in ('serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z', 'tempFactor'):
-            if locals()[arg] is None:
-                raise ValueError('parameter ' + arg + ' must be defined.')
-
-        chainID = chainID or ""  # or should we provide a chainID such as 'A'?
-        if n_atoms > 99999:
-            serial = int(str(serial)[-10:])  # check for overflow here?
-            name = name[:8]
-            resName = resName[:8]
-            chainID = chainID[:8]
-            resSeq = int(str(resSeq)[-8:])  # check for overflow here?
-            TotRes = int(str(TotRes)[-10:])
-            self.crd.write(self.fmt['ATOM_EXT'] % vars())
-        else:
-            serial = int(str(serial)[-5:])  # check for overflow here?
-            name = name[:4]
-            resName = resName[:4]
-            chainID = chainID[:4]
-            resSeq = int(str(resSeq)[-4:])  # check for overflow here?
-            TotRes = int(str(TotRes)[-5:])
-            self.crd.write(self.fmt['ATOM'] % vars())
-
+                crd.write(at_fmt.format(
+                    serial=serial, totRes=current_resid, resname=resname,
+                    name=name, pos=pos, chainID=chainID,
+                    resSeq=resid, tempfactor=tempfactor))

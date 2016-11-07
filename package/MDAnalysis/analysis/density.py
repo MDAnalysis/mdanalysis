@@ -117,7 +117,8 @@ except ImportError:
     )
 
 import MDAnalysis
-import MDAnalysis.core.AtomGroup
+from MDAnalysis.core import groups
+#import MDAnalysis.core.AtomGroup
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
@@ -594,8 +595,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     protein = universe.select_atoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
-        set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
         if not_within is True:  # default
+            set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
             def notwithin_coordinates(cutoff=cutoff):
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)

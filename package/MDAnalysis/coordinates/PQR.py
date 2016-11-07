@@ -67,6 +67,15 @@ Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces
 rather than specific column widths and alignments. This deviation can be
 particularly significant when large coordinate values are used.
 
+Output should look like this (although the only real requirement is
+*whitespace* separation between *all* entries). The chainID is optional
+and can be omitted::
+
+ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
+ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
+ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
+
+
 .. Warning:: Fields *must be white-space separated* or data are read
              incorrectly. PDB formatted files are *not* guaranteed to be
              white-space separated so extra care should be taken when quickly
@@ -82,8 +91,11 @@ option are guaranteed to conform to the above format::
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 """
+from six.moves import zip
 
+import itertools
 import numpy as np
+import warnings
 
 from ..core import flags
 from ..lib import util
@@ -92,13 +104,6 @@ from . import base
 
 class PQRReader(base.SingleFrameReader):
     """Read a PQR_ file into MDAnalysis.
-
-    The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the
-    PQR file in order to populate the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. Radii are
-    accessible through the :meth:`get_radii` method of the reader, the
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.radii` method and the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
 
     .. _PQR:
         http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
@@ -111,41 +116,22 @@ class PQRReader(base.SingleFrameReader):
 
     def _read_first_frame(self):
         coords = []
-        atoms = []
         unitcell = np.zeros(6, dtype=np.float32)
-        segID = ''  # use empty string (not in PQR), PQRParsers sets it to SYSTEM
         with util.openany(self.filename, 'r') as pqrfile:
             for line in pqrfile:
-                if line[:6] in ('ATOM  ', 'HETATM'):
+                if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
-                    try:
-                        recordName, serial, name, resName, chainID, resSeq, x, y, z, charge, radius = fields
-                    except ValueError:
-                        # files without the chainID
-                        recordName, serial, name, resName, resSeq, x, y, z, charge, radius = fields
-                        chainID = ''
-                    coords.append((float(x), float(y), float(z)))
-                    atoms.append(
-                        (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
+                    coords.append(map(float, fields[-5:-2]))
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
-                                                  **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords, dtype=np.float32),
+            **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-
-        # hack for PQRParser:
-        self._atoms = np.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,charge,radius,segID")
-
-    def get_radii(self):
-        """Return an array of atom radii in atom order."""
-        return self._atoms.radius
-
-    def get_charges(self):
-        """Return an array of charges in atom order."""
-        return self._atoms.charge
+            # in-place !
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a PQRWriter for *filename*.
@@ -163,9 +149,9 @@ class PQRWriter(base.Writer):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
     Charges ("Q") are taken from the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute while
+    :attr:`MDAnalysis.core.groups.Atom.charge` attribute while
     radii are obtaine from the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
+    :attr:`MDAnalysis.core.groups.Atom.radius` attribute.
 
     * If the segid is 'SYSTEM' then it will be set to the empty
       string. Otherwise the first letter will be used as the chain ID.
@@ -179,22 +165,20 @@ class PQRWriter(base.Writer):
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
 
-    fmt = {
-        'ATOM_nochain':
-        "ATOM {0:6d} {1:<4}  {2:<3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
-        # serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius
-        'ATOM_chain':
-        "ATOM {0:6d} {1:<4}  {2:<3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
-        # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
-    }
+    # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
+    fmt_ATOM = ("ATOM {serial:6d} {name:<4}  {resname:<3} {chainid:1.1}"
+                " {resid:4d}   {pos[0]:-8.3f} {pos[1]:-8.3f}"
+                " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n")
+    fmt_remark = "REMARK   {0} {1}\n"
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Set up a PQRWriter with full whitespace separation.
 
-        :Arguments:
-          *filename*
+        Parameters
+        ----------
+        filename : str
              output filename
-          *remarks*
+        remarks : str, optionak
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
@@ -209,13 +193,12 @@ class PQRWriter(base.Writer):
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
-        :Arguments:
-            *selection*
-                MDAnalysis AtomGroup (selection or Universe.atoms)
-                or also Universe
-         :Keywords:
-             *frame*
-                optionally move to frame number *frame*
+        Parameters
+        ----------
+        selection
+            MDAnalysis AtomGroup or Universe
+        frame : int, optional
+            optionally move to frame number *frame*
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
@@ -235,38 +218,75 @@ class PQRWriter(base.Writer):
         if self.convert_units:
             self.convert_pos_to_native(coordinates)  # inplace because coordinates is already a copy
 
+        # Check atom attributes
+        # required:
+        # - name
+        # - resname
+        # - chainid
+        # - resid
+        # - position
+        # - charge
+        # - radius
+        attrs = {}
+        missing_topology = []
+        for attr, dflt in (
+                ('names', itertools.cycle(('X',))),
+                ('resnames', itertools.cycle(('UNK',))),
+                ('resids', itertools.cycle((1,))),
+                ('charges', itertools.cycle((0.0,))),
+                ('radii', itertools.cycle((1.0,))),
+        ):
+            try:
+                attrs[attr] = getattr(atoms, attr)
+            except AttributeError:
+                attrs[attr] = dflt
+                missing_topology.append(attr)
+
+        # chainids require special handling
+        # try chainids, then segids
+        # if neither, use ' '
+        # if 'SYSTEM', use ' '
+        try:
+            attrs['chainids'] = atoms.chainids
+        except AttributeError:
+            try:
+                attrs['chainids'] = atoms.segids
+            except AttributeError:
+                pass
+        if not 'chainids' in attrs or all(attrs['chainids'] == 'SYSTEM'):
+            attrs['chainids'] = itertools.cycle((' ',))
+
+        if 'charges' in missing_topology:
+            total_charge = 0.0
+        else:
+            total_charge = atoms.total_charge()
+
+        if missing_topology:
+            warnings.warn(
+                "Supplied AtomGroup was missing the following attributes: "
+                "{miss}. These will be written with default values. "
+                "".format(miss=', '.join(missing_topology)))
+
         with util.openany(self.filename, 'w') as pqrfile:
-            # Header
-            self._write_REMARK(pqrfile, self.remarks)
-            self._write_REMARK(pqrfile, "Input: frame {0} of {1}".format(frame, u.trajectory.filename), 5)
-            self._write_REMARK(pqrfile, "total charge: {0:+8.4f} e".format(atoms.total_charge()), 6)
+            # Header / Remarks
+            # The *remarknumber* is typically 1 but :program:`pdb2pgr`
+            # also uses 6 for the total charge and 5 for warnings.
+            for rem in util.asiterable(self.remarks):
+                pqrfile.write(self.fmt_remark.format(rem, 1))
+            pqrfile.write(self.fmt_remark.format(
+                "Input: frame {0} of {1}".format(frame, u.trajectory.filename),
+                5))
+            pqrfile.write(self.fmt_remark.format(
+                "total charge: {0:+8.4f} e".format(total_charge), 6))
+
             # Atom descriptions and coords
-            for atom_index, atom in enumerate(atoms):
-                XYZ = coordinates[atom_index]
-                self._write_ATOM(pqrfile, atom_index + 1, atom.name, atom.resname, atom.segid, atom.resid, XYZ,
-                                 atom.charge, atom.radius)
+            for atom_index, (pos, name, resname, chainid, resid, charge, radius) in enumerate(zip(
+                        coordinates, attrs['names'], attrs['resnames'], attrs['chainids'],
+                        attrs['resids'], attrs['charges'], attrs['radii']), start=1):
+                # pad so that only 4-letter atoms are left-aligned
+                name = " " + name if len(name) < 4 else name
 
-    def _write_REMARK(self, fh, remarks, remarknumber=1):
-        """Write REMARK record.
-
-        The *remarknumber* is typically 1 but :program:`pdb2pgr`
-        also uses 6 for the total charge and 5 for warnings.
-        """
-        for line in util.asiterable(remarks):  # either one line or multiple lines
-            fh.write("REMARK   {0} {1}\n".format(remarknumber, line))
-
-    def _write_ATOM(self, fh, serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius):
-        """Write ATOM record.
-
-        Output should look like this (although the only real
-        requirement is *whitespace* separation between *all*
-        entries). The chainID is optional and can be omitted::
-
-              ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
-              ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
-              ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
-        """
-        ATOM = self.fmt['ATOM_nochain'] if (chainID == "SYSTEM" or not chainID) else self.fmt['ATOM_chain']
-        atomName = (" " + atomName) if len(
-            atomName) < 4 else atomName  # pad so that only 4-letter atoms are left-aligned
-        fh.write(ATOM.format(serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius))
+                pqrfile.write(self.fmt_ATOM.format(
+                    serial=atom_index, name=name, resname=resname,
+                    chainid=chainid, resid=resid, pos=pos, charge=charge,
+                    radius=radius))

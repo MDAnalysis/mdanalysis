@@ -1,14 +1,22 @@
-from six.moves import range
+from six.moves import range, zip
 
 import MDAnalysis as mda
 import numpy as np
+import os
+from numpy.testing import (
+    assert_array_almost_equal,
+    raises,
+    assert_array_equal,
+    assert_,
+)
 
-from numpy.testing import assert_array_almost_equal, raises
+from MDAnalysis.coordinates.XYZ import XYZWriter
 
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest)
-
+from MDAnalysisTests.core.groupbase import make_Universe, FakeReader
+from MDAnalysisTests import tempdir
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -42,31 +50,31 @@ class TestXYZWriter(BaseWriterTest):
             reference = XYZReference()
         super(TestXYZWriter, self).__init__(reference)
 
+    def test_write_selection(self):
+        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
+        sel_str = 'name CA'
+        sel = uni.select_atoms(sel_str)
+        outfile = self.tmp_file('write-selection-test')
+
+        with self.ref.writer(outfile, sel.n_atoms) as W:
+            for ts in uni.trajectory:
+                W.write(sel.atoms)
+
+        copy = self.ref.reader(outfile)
+        for orig_ts, copy_ts in zip(uni.trajectory, copy):
+            assert_array_almost_equal(
+                copy_ts._pos, sel.atoms.positions, self.ref.prec,
+                err_msg="coordinate mismatch between original and written "
+                "trajectory at frame {} (orig) vs {} (copy)".format(
+                    orig_ts.frame, copy_ts.frame))
+
+
     @raises(ValueError)
     def test_write_different_models_in_trajectory(self):
         outfile = self.tmp_file('write-models-in-trajectory')
         # n_atoms should match for each TimeStep if it was specified
         with self.ref.writer(outfile, n_atoms=4) as w:
             w.write(self.reader.ts)
-
-    def test_write_model_container(self):
-        outfile = self.tmp_file('write-models')
-        uni = mda.Universe(self.ref.topology)
-        with self.ref.writer(outfile) as w:
-            for i in range(2, 4):
-                sel = uni.select_atoms(
-                    ' or '.join(['resid {0}'.format(j) for j
-                                 in range(1, i)]))
-                w.write(sel)
-        # how now how to check that the produced file is correct?
-        reader = self.ref.reader(outfile)
-        for i, ts in enumerate(reader):
-            sel = uni.select_atoms(' or '.join(['resid {0}'.format(j)
-                                                for j in range(1, i + 2)]))
-            assert_array_almost_equal(
-                ts._pos, sel.atoms.positions, self.ref.prec,
-                err_msg="coordinate mismatch between original and written "
-                "container at frame {} ".format(ts.frame))
 
     def test_no_conversion(self):
         outfile = self.tmp_file('write-no-conversion')
@@ -91,3 +99,52 @@ class Test_XYZBZReader(TestXYZReader):
 class Test_XYZBZWriter(TestXYZWriter):
     def __init__(self):
         super(Test_XYZBZWriter, self).__init__(XYZ_BZ_Reference())
+
+
+class TestXYZWriterNames(object):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/outfile.xyz'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.outfile
+        del self.tmpdir
+
+    def test_no_names(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        w = XYZWriter(self.outfile)
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == 'X'))
+
+    def test_single_name(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        w = XYZWriter(self.outfile, atoms='ABC')
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == 'ABC'))
+
+    def test_list_names(self):
+        u = make_Universe()
+        u.trajectory = FakeReader()
+
+        names = ['A', 'B', 'C', 'D', 'E'] * 25
+
+        w = XYZWriter(self.outfile, atoms=names)
+        w.write(u.trajectory.ts)
+        w.close()
+
+        u2 = mda.Universe(self.outfile)
+        assert_(all(u2.atoms.names == names))

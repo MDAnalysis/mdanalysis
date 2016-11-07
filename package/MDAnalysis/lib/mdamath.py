@@ -33,6 +33,7 @@ Helper functions for common mathematical operations
 .. versionadded:: 0.11.0
 """
 import numpy as np
+from itertools import izip
 
 from ..exceptions import NoDataError
 
@@ -328,7 +329,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     .. versionadded:: 0.11.0
     """
-    if not atomgroup.bonds:
+    try:
+        b = atomgroup.bonds
+    except (AttributeError, NoDataError):
         raise NoDataError("The atomgroup is required to have bonds")
 
     if reference_atom is None:
@@ -403,3 +406,39 @@ def make_whole(atomgroup, reference_atom=None):
                 ref_points.add(other)
 
             processed.add(atom)
+
+
+def one_to_many_pointers(Ni, Nj, i2j):
+    """Based on a many to one mapping of i to j, create the reverse mapping
+
+    Arguments
+    ---------
+    Ni, Nj - number of i and j components
+    i2j - the array relating i to parent js
+
+    Returns
+    -------
+    ordered - an ordered list of i indices [size (i,)]
+    ptrs - the start and end index for each j [size (Nj, 2)]
+
+    Example
+    -------
+    # Residx - the resid of each Atom
+    ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+
+    # Returns an array of the atom indices that are in resid 7
+    atoms = ordered[ptrs[7,0]:ptrs[7,1]]
+    
+    """
+    ordered = i2j.argsort()
+    sorted_idx = i2j[ordered]
+    borders = np.concatenate([[0],
+                              np.where(np.diff(sorted_idx))[0] + 1,
+                              [Ni]])
+
+    ptrs = np.zeros((Nj, 2), dtype=np.int32)
+    for x, y in izip(borders[:-1], borders[1:]):
+        i = sorted_idx[x]
+        ptrs[i] = x, y
+
+    return ordered, ptrs

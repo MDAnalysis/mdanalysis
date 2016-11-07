@@ -748,6 +748,9 @@ class NamedStream(io.IOBase):
     def __eq__(self, x):
         return self.name == x
 
+    def __ne__(self, x):
+        return not self == x
+    
     def __lt__(self, x):
         return self.name < x
 
@@ -1212,6 +1215,43 @@ def cached(key):
         return wrapper
 
     return cached_lookup
+
+
+def unique_rows(arr, return_index=False):
+    """Return the unique rows from an array
+
+    Arguments
+    ---------
+    arr : np.array of shape (n1, m)
+    return_index : bool, optional
+      If True, returns indices of arr that formed answer (see np.unique)
+
+    Returns
+    -------
+    unique_rows (n2, m)
+
+    Examples
+    --------
+    Remove dupicate rows from an array:
+    >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
+    >>> b = unique_rows(a)
+    >>> b
+    array([[0, 1], [1, 2], [2, 3]])
+    """
+    # From here, but adapted to handle any size rows
+    # https://mail.scipy.org/pipermail/scipy-user/2011-December/031200.html
+    m = arr.shape[1]
+
+    if return_index:
+        u, r_idx = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype)
+                                                      for i in xrange(m)])),
+                             return_index=True)
+        return u.view(arr.dtype).reshape(-1, m), r_idx
+    else:
+        u = np.unique(arr.view(
+            dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
+        ))
+        return u.view(arr.dtype).reshape(-1, m) 
 
 
 def blocks_of(a, n, m):

@@ -31,9 +31,9 @@ class TestPSAnalysis(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     @dec.skipif(module_not_found('matplotlib'),
-                'Test skipped because matplotlib is not available.')
+                "Test skipped because matplotlib is not available.")
     @dec.skipif(module_not_found('scipy'),
-                'Test skipped because scipy is not available.')
+                "Test skipped because scipy is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
@@ -248,3 +248,5 @@ class DiscreteFrechetDistance(TestCase):
         actual = PSA.discrete_frechet(self.path_1,
                                       self.path_2)
         assert_almost_equal(actual, expected)
+
+

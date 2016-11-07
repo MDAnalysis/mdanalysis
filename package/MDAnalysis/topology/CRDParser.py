@@ -17,9 +17,17 @@
 CRD topology parser
 ===================
 
-Read a list of atoms from a CHARMM CARD coordinate file (CRD) to build a basic topology.
+Read a list of atoms from a CHARMM CARD coordinate file (CRD_)
+to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
+resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
+(SEGID) and tempfactor (Weighting).  Atom element and mass are guessed based on
+the name of the atom.
 
-Atom types, charges and masses are guessed.
+Residues are detected through a change is either resid or resname
+while segments are detected according to changes in segid.
+
+.. _CRD: https://www.charmmtutorial.org/index.php/CHARMM:The_Basics
+
 
 Classes
 -------
@@ -31,37 +39,71 @@ Classes
 """
 from __future__ import absolute_import
 
-from ..core.AtomGroup import Atom
+import numpy as np
+
 from ..lib.util import openany, FORTRANReader
-from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
-from .base import TopologyReader
+from .base import TopologyReader, change_squash
+from . import guessers
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnames,
+    Resnums,
+    Segids,
+    Tempfactors,
+)
 
 
 class CRDParser(TopologyReader):
-    """Parse a CHARMM CARD coordinate file for topology information."""
+    """Parse a CHARMM CARD coordinate file for topology information.
+
+    Reads the following Attributes:
+     - Atomids
+     - Atomnames
+     - Tempfactors
+     - Resids
+     - Resnames
+     - Resnums
+     - Segids
+
+    Guesses the following attributes:
+     - Atomtypes
+     - Masses
+    """
     format = 'CRD'
 
     def parse(self):
-        """Parse CRD file *filename* and return the dict `structure`.
+        """Create the Topology object
 
-        Only reads the list of atoms.
+        Returns
+        -------
+        MDAnalysis Topology object
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     `MDAnalysis.topology`
+        Todo
+        ----
+        Could use the resnum and temp factor better
         """
         extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
         stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
-        atoms = []
-        atom_serial = 0
+        atomids = []
+        atomnames = []
+        tempfactors = []
+        resids = []
+        resnames = []
+        resnums = []
+        segids = []
+
         with openany(self.filename) as crd:
             for linenum, line in enumerate(crd):
                 # reading header
                 if line.split()[0] == '*':
                     continue
-                elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) is True:
+                elif line.split()[-1] == 'EXT' and int(line.split()[0]):
                     r = extformat
                     continue
                 elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
@@ -69,19 +111,51 @@ class CRDParser(TopologyReader):
                     continue
                 # anything else should be an atom
                 try:
-                    serial, TotRes, resName, name, x, y, z, chainID, resSeq, tempFactor = r.read(line)
+                    (serial, resnum, resName, name,
+                     x, y, z, segid, resid, tempFactor) = r.read(line)
                 except:
                     raise ValueError("Check CRD format at line {0}: {1}"
-                                     "".format(linenum, line.rstrip()))
+                                     "".format(linenum + 1, line.rstrip()))
 
-                atomtype = guess_atom_type(name)
-                mass = guess_atom_mass(name)
-                charge = guess_atom_charge(name)
-                atoms.append(Atom(atom_serial, name, atomtype, resName,
-                                  TotRes, chainID, mass, charge, universe=self._u))
-                atom_serial += 1
+                atomids.append(serial)
+                atomnames.append(name)
+                tempfactors.append(tempFactor)
+                resids.append(resid)
+                resnames.append(resName)
+                resnums.append(resnum)
+                segids.append(segid)
 
-        structure = {}
-        structure['atoms'] = atoms
+        # Convert to np arrays
+        atomids = np.array(atomids, dtype=np.int32)
+        atomnames = np.array(atomnames, dtype=object)
+        tempfactors = np.array(tempfactors, dtype=np.float32)
+        resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+        resnums = np.array(resnums, dtype=np.int32)
+        segids = np.array(segids, dtype=object)
 
-        return structure
+        # Guess some attributes
+        atomtypes = guessers.guess_types(atomnames)
+        masses = guessers.guess_masses(atomtypes)
+
+        atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
+            (resids, resnames), (resids, resnames, resnums, segids))
+        res_segidx, (seg_segids,) = change_squash(
+            (res_segids,), (res_segids,))
+
+        top = Topology(len(atomids), len(res_resids), len(seg_segids),
+                       attrs=[
+                           Atomids(atomids),
+                           Atomnames(atomnames),
+                           Atomtypes(atomtypes, guessed=True),
+                           Masses(masses, guessed=True),
+                           Tempfactors(tempfactors),
+                           Resids(res_resids),
+                           Resnames(res_resnames),
+                           Resnums(res_resnums),
+                           Segids(seg_segids),
+                       ],
+                       atom_resindex=atom_residx,
+                       residue_segindex=res_segidx)
+
+        return top

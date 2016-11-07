@@ -346,7 +346,6 @@ import warnings
 import logging
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
-from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter
@@ -712,7 +711,7 @@ class HydrogenBondAnalysis(object):
         .. versionadded:: 0.7.6
         """
         try:
-            return atom.residue.select_atoms(
+            return atom.residue.atoms.select_atoms(
                 "(name H* 1H* 2H* 3H* or type H) and around {0:f} name {1!s}"
                 "".format(self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
@@ -916,7 +915,7 @@ class HydrogenBondAnalysis(object):
                 for i, donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
@@ -938,7 +937,7 @@ class HydrogenBondAnalysis(object):
                 for i, donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             if remove_duplicates and (
                                     (h.index + 1, a.index + 1) in already_found

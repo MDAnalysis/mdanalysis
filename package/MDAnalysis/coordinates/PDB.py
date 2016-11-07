@@ -31,7 +31,7 @@ recognized; the only difference is thath the single-frame PDB is represented as
 a trajectory with only one frame.
 
 In order to write a selection to a PDB file one typically uses the
-:meth:`MDAnalysis.core.AtomGroup.AtomGroup.write` method of the selection::
+:meth:`MDAnalysis.core.groups.AtomGroup.write` method of the selection::
 
   calphas = universe.select_atoms("name CA")
   calphas.write("calpha_only.pdb")
@@ -97,14 +97,14 @@ Similarly, writing only a protein::
   pdb.close()
 
 A single frame can be written with the
-:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of any
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+:meth:`~MDAnalysis.core.groups.AtomGroup.write` method of any
+:class:`~MDAnalysis.core.groups.AtomGroup`::
 
    protein = u.select_atoms("protein")
    protein.write("protein.pdb")
 
 Alternatively, get the single frame writer and supply the
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+:class:`~MDAnalysis.core.groups.AtomGroup`::
 
   pdb = MDAnalysis.Writer("protein.pdb")
   protein = u.select_atoms("protein")
@@ -150,7 +150,7 @@ from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.AtomGroup import Universe
+from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
@@ -194,19 +194,19 @@ class PDBReader(base.Reader):
     1 -  6         Record name   "ATOM  "
     7 - 11         Integer       serial       Atom  serial number.
     13 - 16        Atom          name         Atom name.
-    17             Character     altLoc       Alternate location indicator. IGNORED
+    17             Character     altLoc       Alternate location indicator.
     18 - 21        Residue name  resName      Residue name.
     22             Character     chainID      Chain identifier.
     23 - 26        Integer       resSeq       Residue sequence number.
-    27             AChar         iCode        Code for insertion of residues. IGNORED
+    27             AChar         iCode        Code for insertion of residues.
     31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
     39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
     67 - 76        String        segID        (unofficial CHARMM extension ?)
-    77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
-    79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
+    77 - 78        LString(2)    element      Element symbol, right-justified.
+    79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
 
 
@@ -242,7 +242,7 @@ class PDBReader(base.Reader):
 
             with PDBParser.PDBParser(self.filename) as p:
                 top = p.parse()
-            self.n_atoms = len(top['atoms'])
+            self.n_atoms = top.n_atoms
 
         self.model_offset = kwargs.pop("model_offset", 0)
 
@@ -703,8 +703,8 @@ class PDBWriter(base.Writer):
         Attributes initialized/updated:
 
         * :attr:`PDBWriter.obj` (the entity that provides topology information *and*
-          coordinates, either a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or a whole
-          :class:`~MDAnalysis.core.AtomGroup.Universe`)
+          coordinates, either a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
+          :class:`~MDAnalysis.core.universe.Universe`)
         * :attr:`PDBWriter.trajectory` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Reader`)
         * :attr:`PDBWriter.timestep` (the underlying trajectory
@@ -745,17 +745,17 @@ class PDBWriter(base.Writer):
         """Write object *obj* at current trajectory frame to file.
 
         *obj* can be a selection (i.e. a
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or a whole
-        :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        :class:`~MDAnalysis.core.groups.AtomGroup`) or a whole
+        :class:`~MDAnalysis.core.universe.Universe`.
 
-        The last letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is
+        The last letter of the :attr:`~MDAnalysis.core.groups.Atom.segid` is
         used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
         details).
 
         :Arguments:
           *obj*
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
-            :class:`~MDAnalysis.core.AtomGroup.Universe`
+            :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe`
         """
 
         self._update_frame(obj)
@@ -770,8 +770,8 @@ class PDBWriter(base.Writer):
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
 
-        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-        or a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`
+        or a :class:`~MDAnalysis.core.universe.Universe`.
 
         The method writes the frames from the one specified as *start* until
         the end, using a step of *skip* (*start* and *skip* are set in the
@@ -790,7 +790,6 @@ class PDBWriter(base.Writer):
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
-
         """
 
         self._update_frame(obj)
@@ -829,7 +828,7 @@ class PDBWriter(base.Writer):
 
            Before using this method with another :class:`base.Timestep` in the *ts*
            argument, :meth:`PDBWriter._update_frame` *must* be called
-           with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as
+           with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
         '''
         if ts is None:
@@ -841,7 +840,7 @@ class PDBWriter(base.Writer):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
-    def _deduce_PDB_atom_name(self, atom):
+    def _deduce_PDB_atom_name(self, atomname, resname):
         """Deduce how the atom name should be aligned.
 
         Atom name format can be deduced from the atom type, yet atom type is
@@ -851,19 +850,21 @@ class PDBWriter(base.Writer):
         <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
         details.
         """
-        if len(atom.name) >= 4:
-            return atom.name[:4]
-        elif len(atom.name) == 1:
-            return ' {}  '.format(atom.name)
-        elif ((atom.resname == atom.name
-               or atom.name[:2] in self.ions
-               or atom.name == 'UNK'
-               or (atom.resname in self.special_hg and atom.name[:2] == 'HG')
-               or (atom.resname in self.special_cl and atom.name[:2] == 'CL')
-               or Pair(atom.resname, atom.name) in self.include_pairs)
-              and Pair(atom.resname, atom.name) not in self.exclude_pairs):
-            return '{:<4}'.format(atom.name)
-        return ' {:<3}'.format(atom.name)
+        if atomname == '':
+            return ''
+        if len(atomname) >= 4:
+            return atomname[:4]
+        elif len(atomname) == 1:
+            return ' {}  '.format(atomname)
+        elif ((resname == atomname
+               or atomname[:2] in self.ions
+               or atomname == 'UNK'
+               or (resname in self.special_hg and atomname[:2] == 'HG')
+               or (resname in self.special_cl and atomname[:2] == 'CL')
+               or Pair(resname, atomname) in self.include_pairs)
+              and Pair(resname, atomname) not in self.exclude_pairs):
+            return '{:<4}'.format(atomname)
+        return ' {:<3}'.format(atomname)
 
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
@@ -897,27 +898,45 @@ class PDBWriter(base.Writer):
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
-        for i, atom in enumerate(atoms):
-            segid = atom.segid if atom.segid is not "SYSTEM" else " "
+        # Make zero assumptions on what information the AtomGroup has!
+        # theoretically we could get passed only indices!
+        def get_attr(attrname, default):
+            """Try and pull info off atoms, else fake it
 
+            attrname - the field to pull of AtomGroup (plural!)
+            default - default value in case attrname not found
+            """
+            try:
+                return getattr(atoms, attrname)
+            except AttributeError:
+                if self.frames_written == 0:
+                    warnings.warn("Found no information for attr: '{}'"
+                                  " Using default value of '{}'"
+                                  "".format(attrname, default))
+                return np.array([default] * len(atoms))
+        altlocs = get_attr('altLocs', ' ')
+        resnames = get_attr('resnames', 'UNK')
+        icodes = get_attr('icodes', ' ')
+        segids = get_attr('segids', ' ')
+        resids = get_attr('resids', 1)
+        occupancies = get_attr('occupancies', 1.0)
+        tempfactors = get_attr('tempfactors', 0.0)
+        atomnames = get_attr('names', 'X')
+
+        for i, atom in enumerate(atoms):
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            vals['name'] = self._deduce_PDB_atom_name(atom)
-            vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
-            vals['resName'] = atom.resname[:4]
-            vals['chainID'] = segid[:1]
-            vals['resSeq'] = int(str(atom.resid)[-4:])
-            vals['iCode'] = " "
+            vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
+            vals['altLoc'] = altlocs[i][:1]
+            vals['resName'] = resnames[i][:4]
+            vals['chainID'] = segids[i][:1]
+            vals['resSeq'] = int(str(resids[i])[-4:])
+            vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
-            try:
-                occ = atom.occupancy
-            except NoDataError:
-                occ = 1.0
-            vals['occupancy'] = occ if occ is not None else 1.0
-            temp = atom.bfactor
-            vals['tempFactor'] = temp if temp is not None else 0.0
-            vals['segID'] = segid[:4]
-            vals['element'] = guess_atom_element(atom.name.strip())[:2]
+            vals['occupancy'] = occupancies[i]
+            vals['tempFactor'] = tempfactors[i]
+            vals['segID'] = segids[i][:4]
+            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))

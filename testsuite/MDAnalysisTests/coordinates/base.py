@@ -71,7 +71,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
-        assert_almost_equal(A10CA.pos,
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             3,
                             err_msg="wrong coordinates for A10:CA")
@@ -107,7 +107,7 @@ class BaseReference(object):
         self.container_format = False
         self.changing_dimensions = False
 
-        ## for testing auxiliary addition
+        # for testing auxiliary addition
         self.aux_lowf = AUX_XVG_LOWF   # test auxiliary with lower frequency
         self.aux_lowf_dt = 2    # has steps at 0ps, 2ps, 4ps
         # representative data for each trajectory frame, assuming 'closest' option
@@ -129,9 +129,9 @@ class BaseReference(object):
                                [2 ** 8], # frame 4 = 4ps = step 8
                               ]
         self.aux_highf_n_steps = 10
-        self.aux_highf_all_data = [[2 ** i] for i in range(self.aux_highf_n_steps)] 
+        self.aux_highf_all_data = [[2 ** i] for i in range(self.aux_highf_n_steps)]
 
-        self.aux_offset_by = 0.25 
+        self.aux_offset_by = 0.25
 
 
         self.first_frame = Timestep(self.n_atoms)
@@ -184,10 +184,10 @@ class BaseReaderTest(object):
     def __init__(self, reference):
         self.ref = reference
         self.reader = self.ref.reader(self.ref.trajectory)
-        self.reader.add_auxiliary('lowf', self.ref.aux_lowf, 
-                                  dt=self.ref.aux_lowf_dt, 
+        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
+                                  dt=self.ref.aux_lowf_dt,
                                   initial_time=0, time_selector=None)
-        self.reader.add_auxiliary('highf', self.ref.aux_highf, 
+        self.reader.add_auxiliary('highf', self.ref.aux_highf,
                                   dt=self.ref.aux_highf_dt,
                                   initial_time=0, time_selector=None)
 
@@ -300,10 +300,10 @@ class BaseReaderTest(object):
         self.reader.remove_auxiliary('nonexistant')
 
     def test_iter_as_aux_highf(self):
-        # auxiliary has a higher frequency, so iter_as_aux should behave the 
+        # auxiliary has a higher frequency, so iter_as_aux should behave the
         # same as regular iteration over the trjectory
         for i, ts in enumerate(self.reader.iter_as_aux('highf')):
-            assert_timestep_almost_equal(ts, self.ref.iter_ts(i), 
+            assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
                                          decimal=self.ref.prec)
 
     def test_iter_as_aux_lowf(self):
@@ -326,13 +326,13 @@ class BaseReaderTest(object):
                      self.ref.aux_lowf_dt)
 
     def test_iter_as_aux_cutoff(self):
-        # load an auxiliary with the same dt but offset from trajectory, and a 
+        # load an auxiliary with the same dt but offset from trajectory, and a
         # cutoff of 0
-        self.reader.add_auxiliary('offset', self.ref.aux_lowf, 
+        self.reader.add_auxiliary('offset', self.ref.aux_lowf,
                                   dt=self.ref.dt, time_selector=None,
                                   initial_time=self.ref.aux_offset_by,
                                   cutoff=0)
-        # no auxiliary steps will fall within the cutoff for any frame, so 
+        # no auxiliary steps will fall within the cutoff for any frame, so
         # iterating using iter_as_aux should give us nothing
         num_frames = len([i for i in self.reader.iter_as_aux('offset')])
         assert_equal(num_frames, 0, "iter_as_aux should iterate over 0 frames,"
@@ -341,13 +341,14 @@ class BaseReaderTest(object):
     def test_rename_aux(self):
         self.reader.rename_aux('lowf', 'lowf_renamed')
         # data should now be in aux namespace under new name
-        assert_equal(self.reader.ts.aux.lowf_renamed, self.ref.aux_lowf_data[0])
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[0])
         # old name should be removed
         assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')
         # new name should be retained
         next(self.reader)
-        assert_equal(self.reader.ts.aux.lowf_renamed, self.ref.aux_lowf_data[1])       
-
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[1])
 
     def test_reload_auxiliaries_from_description(self):
         # get auxiliary desscriptions form existing reader
@@ -363,8 +364,14 @@ class BaseReaderTest(object):
         # each auxiliary should be the same
         for auxname in reader.aux_list:
             assert_equal(reader._auxs[auxname], self.reader._auxs[auxname],
-                         'AuxReaders do not match') 
+                         'AuxReaders do not match')
 
+    def test_stop_iter(self):
+        # reset to 0
+        self.reader.rewind()
+        for ts in self.reader[:-1]:
+            pass
+        assert_equal(self.reader.frame, 0)
 
 
 class BaseWriterTest(object):
@@ -1065,9 +1072,8 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
                                   err_msg='Timestep forces', verbose=verbose)
 
-    # Check we've got auxiliaries before comparing values (auxiliaries aren't written 
+    # Check we've got auxiliaries before comparing values (auxiliaries aren't written
     # so we won't have aux values to compare when testing writer)
-    if len(A.aux) > 0 and len(B.aux) > 0: 
+    if len(A.aux) > 0 and len(B.aux) > 0:
         assert_equal(A.aux, B.aux, err_msg='Auxiliary values do not match: '
                                   'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
-

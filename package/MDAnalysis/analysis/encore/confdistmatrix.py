@@ -42,7 +42,7 @@ from datetime import datetime
 from time import sleep
 import logging
 
-from ...core.AtomGroup import Universe
+from ...core.universe import Universe
 
 from ..align import rotation_matrix
 
@@ -145,16 +145,16 @@ def conformational_distance_matrix(ensemble,
 
     # Prepare masses as necessary
     if mass_weighted:
-        masses = ensemble.select_atoms(selection).masses
+        masses = ensemble.select_atoms(selection).masses.astype(np.float64)
         if pairwise_align:
-            subset_masses = ensemble.select_atoms(subset_selection).masses
+            subset_masses = ensemble.select_atoms(subset_selection).masses.astype(np.float64)
         else:
             subset_masses = None
     else:
         masses = np.ones((ensemble.trajectory.timeseries(
-            ensemble.select_atoms(selection))[0].shape[0]))
+            ensemble.select_atoms(selection))[0].shape[0])).astype(np.float64)
         if pairwise_align:
-            subset_masses = np.ones((fit_coords[0].shape[0]))
+            subset_masses = np.ones((fit_coords[0].shape[0])).astype(np.float64)
         else:
             subset_masses = None
 

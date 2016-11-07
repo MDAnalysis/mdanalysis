@@ -33,16 +33,33 @@ Classes
 """
 from __future__ import absolute_import
 
+import numpy as np
 from six.moves import range
 
-from ..core.AtomGroup import Atom
+from . import guessers
 from ..lib.util import openany
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomids,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+)
 
 
 class XYZParser(TopologyReader):
     """Parse a list of atoms from an XYZ file.
+
+    Creates the following attributes:
+     - Atomnames
+
+    Guesses the following attributes:
+     - Atomtypes
+     - Masses
 
     .. versionadded:: 0.9.1
     """
@@ -51,30 +68,35 @@ class XYZParser(TopologyReader):
     def parse(self):
         """Read the file and return the structure.
 
-        :Returns: MDAnalysis internal *structure* dict.
+        Returns
+        -------
+        MDAnalysis Topology object
         """
         with openany(self.filename, 'r') as inf:
             natoms = int(inf.readline().strip())
             inf.readline()
 
-            segid = "SYSTEM"
-            resid = 1
-            resname = "SYSTEM"
+            names = np.zeros(natoms, dtype=object)
 
-            atoms = []
             # Can't infinitely read as XYZ files can be multiframe
             for i in range(natoms):
                 name = inf.readline().split()[0]
+                names[i] = name
 
-                elem = guess_atom_element(name)
-                mass = get_atom_mass(elem)
-                charge = guess_atom_charge(name)
+        # Guessing time
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
-                at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge, universe=self._u)
+        attrs = [Atomnames(names),
+                 Atomids(np.arange(natoms) + 1),
+                 Atomtypes(atomtypes, guessed=True),
+                 Masses(masses, guessed=True),
+                 Resids(np.array([1])),
+                 Resnums(np.array([1])),
+                 Segids(np.array(['SYSTEM'], dtype=object)),
+                 ]
 
-                atoms.append(at)
+        top = Topology(natoms, 1, 1,
+                       attrs=attrs)
 
-        struc = {"atoms": atoms}
-
-        return struc
+        return top

@@ -201,7 +201,7 @@ class TestRMSD(object):
     @raises(SelectionError)
     def test_group_selections_unequal_len(self):
         reference = MDAnalysis.Universe(PSF, DCD)
-        reference.atoms[0].resname='NOTMET'
+        reference.atoms[0].residue.resname='NOTMET'
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe,
                                             reference=reference,
                                             groupselections=

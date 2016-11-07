@@ -54,8 +54,8 @@ module. The derived classes must follow the Trajectory API in
       .. Note::
 
          Normally one does not directly access :attr:`_pos` but uses
-         the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
-         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` but
+         the :meth:`~MDAnalysis.core.groups.AtomGroup.coordinates`
+         method of an :class:`~MDAnalysis.core.groups.AtomGroup` but
          sometimes it can be faster to directly use the raw
          coordinates. Any changes to this array are immediately
          reflected in atom positions. If the frame is written to a new
@@ -73,8 +73,8 @@ module. The derived classes must follow the Trajectory API in
 
          Normally velocities are accessed through the
          :attr:`velocities` or the
-         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities`
-         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+         :meth:`~MDAnalysis.core.groups.AtomGroup.velocities`
+         method of an :class:`~MDAnalysis.core.groups.AtomGroup`
 
          :attr:`~Timestep._velocities` only exists if the :attr:`has_velocities`
          flag is True
@@ -221,7 +221,7 @@ class Timestep(object):
         self.has_forces = kwargs.get('forces', False)
 
         self._unitcell = self._init_unitcell()
-        
+
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
 
@@ -344,6 +344,9 @@ class Timestep(object):
 
         return True
 
+    def __ne__(self, other):
+        return not self == other
+
     def __getitem__(self, atoms):
         """Get a selection of coordinates
 
@@ -355,7 +358,7 @@ class Timestep(object):
 
            return an array of coordinates, where start, stop and skip
            correspond to atom indices,
-           :attr:`MDAnalysis.core.AtomGroup.Atom.index` (0-based)
+           :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
         """
         if isinstance(atoms, int):
             return self._pos[atoms]
@@ -1226,7 +1229,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """Move to *frame*, updating ts with trajectory and auxiliary data."""
         ts = self._read_frame(frame)
         for aux in self.aux_list:
-            ts = self._auxs[aux].update_ts(ts) 
+            ts = self._auxs[aux].update_ts(ts)
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1243,6 +1246,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         try:
             for i in range(start, stop, step):
                 yield self._read_frame_with_aux(i)
+            self.rewind()
         except TypeError:  # if _read_frame not implemented
             raise TypeError("{0} does not support slicing."
                             "".format(self.__class__.__name__))
@@ -1306,32 +1310,32 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     nframes=self.n_frames,
                     natoms=self.n_atoms
                 ))
-                
+
     def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory additional
-        to that read in by the trajectory reader. *auxdata* can be an 
-        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data 
-        itself as e.g. a filename; in the latter case an appropriate 
-        :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the 
-        data/file format. An appropriate *format* may also be directly provided 
+        to that read in by the trajectory reader. *auxdata* can be an
+        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data
+        itself as e.g. a filename; in the latter case an appropriate
+        :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the
+        data/file format. An appropriate *format* may also be directly provided
         as a key word argument.
 
         On adding, the AuxReader is initially matched to the current timestep
         of the trajectory, and will be updated when the trajectory timestep
-        changes (through a call to :meth:`next()` or jumping timesteps with 
+        changes (through a call to :meth:`next()` or jumping timesteps with
         ``trajectory[i]``).
 
         The representative value(s) of the auxiliary data for each timestep (as
-        calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are 
-        stored in the current timestep in the ``ts.aux`` namespace under *auxname*; 
+        calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are
+        stored in the current timestep in the ``ts.aux`` namespace under *auxname*;
         e.g. to add additional pull force data stored in pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
 
-        The representative value for the current timestep may then be accessed 
+        The representative value for the current timestep may then be accessed
         as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
 
         See Also
@@ -1340,7 +1344,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
         Note
         ----
-        Auxiliary data is assumed to be time-ordered, with no duplicates. See 
+        Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
         if auxname in self.aux_list:
@@ -1353,7 +1357,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
         self._auxs[auxname] = aux
         self.ts = aux.update_ts(self.ts)
-    
+
     def remove_auxiliary(self, auxname):
         """Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`
         for the auxiliary *auxname*.
@@ -1363,10 +1367,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         :meth:`add_auxiliary`
         """
         aux = self._check_for_aux(auxname)
-        aux.close()            
+        aux.close()
         del aux
         delattr(self.ts.aux, auxname)
-            
+
     @property
     def aux_list(self):
         """ Lists the names of added auxiliary data. """
@@ -1387,13 +1391,13 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
         This allows progression through the trajectory without encountering
         ``NaN`` representative values (unless these are specifically part of the
-        auxiliary data). 
+        auxiliary data).
 
-        If the auxiliary cutoff is not set, where auxiliary steps are less frequent 
-        (``auxiliary.dt > trajectory.dt``), this allows progression at the 
-        auxiliary pace (rounded to nearest timestep); while if the auxiliary 
-        steps are more frequent, this will work the same as calling 
-        :meth:`next()`. 
+        If the auxiliary cutoff is not set, where auxiliary steps are less frequent
+        (``auxiliary.dt > trajectory.dt``), this allows progression at the
+        auxiliary pace (rounded to nearest timestep); while if the auxiliary
+        steps are more frequent, this will work the same as calling
+        :meth:`next()`.
 
         See the :ref:`Auxiliary API`.
 
@@ -1401,7 +1405,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         --------
         :meth:`iter_as_aux`
         """
-        
+
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
@@ -1412,15 +1416,15 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         if next_frame is None:
             # no more frames with corresponding auxiliary values; stop iteration
             raise StopIteration
-        # some readers set self._frame to -1, rather than self.frame, on 
+        # some readers set self._frame to -1, rather than self.frame, on
         # _reopen; catch here or doesn't read first frame
         while self.frame != next_frame or getattr(self, '_frame', 0) == -1:
             # iterate trajectory until frame is reached
-            ts = self.next()       
+            ts = self.next()
         return ts
 
     def iter_as_aux(self, auxname):
-        """Iterate through timesteps for which there is at least one assigned 
+        """Iterate through timesteps for which there is at least one assigned
         step from the auxiliary *auxname* within the cutoff specified in *auxname*.
 
         See Also
@@ -1434,9 +1438,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         while True:
             yield self.next_as_aux(auxname)
 
-    def iter_auxiliary(self, auxname, start=None, stop=None, step=None, 
+    def iter_auxiliary(self, auxname, start=None, stop=None, step=None,
                        selected=None):
-        """ Iterate through the auxiliary *auxname* independently of the trajectory. 
+        """ Iterate through the auxiliary *auxname* independently of the trajectory.
 
         Will iterate over the specified steps of the auxiliary (defaults to all
         steps). Allows to access all values in an auxiliary, including those out
@@ -1457,7 +1461,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         Yields
         ------
         :class:`~MDAnalysis.auxiliary.base.AuxStep` object
-             
+
         See Also
         --------
         :meth:`iter_as_aux`
@@ -1472,7 +1476,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         aux.read_ts(self.ts)
 
     def get_aux_attribute(self, auxname, attrname):
-        """Get the value of *attrname* from the auxiliary *auxname* 
+        """Get the value of *attrname* from the auxiliary *auxname*
 
         Parameters
         ----------
@@ -1480,7 +1484,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             Name of the auxiliary to get value for
         attrname : str
             Name of gettable attribute in the auxiliary reader
- 
+
         See Also
         --------
         :meth:`set_aux_attribute`
@@ -1489,7 +1493,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         return getattr(aux, attrname)
 
     def set_aux_attribute(self, auxname, attrname, new):
-        """ Set the value of *attrname* in the auxiliary *auxname*. 
+        """ Set the value of *attrname* in the auxiliary *auxname*.
 
         Parameters
         ----------
@@ -1514,7 +1518,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     def rename_aux(self, auxname, new):
         """ Change the name of the auxiliary *auxname* to *new*.
 
-        Provided there is not already an auxiliary named *new*, the auxiliary 
+        Provided there is not already an auxiliary named *new*, the auxiliary
         name will be changed in ts.aux namespace, the trajectory's
         list of added auxiliaries, and in the auxiliary reader itself.
 
@@ -1538,18 +1542,18 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         self._auxs[new] = self._auxs.pop(auxname)
         setattr(self.ts.aux, new, self.ts.aux[auxname])
         delattr(self.ts.aux, auxname)
-    
+
 
     def get_aux_descriptions(self, auxnames=None):
         """Get descriptions to allow reloading the specified auxiliaries.
 
-        If no auxnames are provided, defaults to the full list of added 
+        If no auxnames are provided, defaults to the full list of added
         auxiliaries.
 
         Passing the resultant description to ``add_auxiliary()`` will allow
-        recreation of the auxiliary. e.g., to duplicate all auxiliaries into a 
+        recreation of the auxiliary. e.g., to duplicate all auxiliaries into a
         second trajectory::
-            
+
            descriptions = trajectory_1.get_aux_descriptions()
            for aux in descriptions:
                trajectory_2.add_auxiliary(**aux)
@@ -1561,7 +1565,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             List of dictionaries of the args/kwargs describing each auxiliary.
 
         See Also
-        --------  
+        --------
         :meth:`MDAnalysis.auxiliary.base.AuxReader.get_description`
         """
         if not auxnames:
@@ -1966,7 +1970,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
     def write(self, obj):
         """Write current timestep, using the supplied *obj*.
 
-        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
+        The argument should be a :class:`~MDAnalysis.core.groups.AtomGroup` or
         a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
 
         .. Note::

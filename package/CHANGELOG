@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma
+         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic
 
   * 0.16.0
 
@@ -41,6 +41,8 @@ Enhancements
   * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
   * Established the MDAnalysis.analysis.legacy module for unmaintained
     analysis code (Issue #743)
+  * Added ProgressMeter to 'transfer_to_memory' function, to show progress
+    of loading trajectory to memory (Issue #1028 and PR #1055).
 
 Fixes
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
@@ -61,6 +63,9 @@ Fixes
   * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
   * Progress meters are now displayed as expected on jupyter notebooks
     (Issue #927)
+  * Reset trajectory to 0 after sliced iteration (Issue #1031)
+  * Fixed rotaxis returning NaN if a=b (Issue #1045)
+  * Fixed align_principal_axis onto a principal axes (Issue #1045)
 
 Changes
   * Started unifying the API of analysis classes (named internally
@@ -79,6 +84,9 @@ Changes
   * Analysis.rms.RMSD now confirms to standard analysis API (Issue #893)
   * Fragments in Universe.fragment are now sorted by the index of their first
     atom. (Issue 1007)
+  * atoms.tranform/translate/rotate/rotateby return original atomgroup (Issue #1010)
+  * atoms.translate/rotateby don't accept AtomGroup tuples as parameters anymore (Issue #1025)
+  * atoms.rotate by default now uses the centroid as center of rotation like rotateby (Issue #1022)
   * XTCFile and TRRFile only raise IOError now on error.
 
 Deprecations (Issue #599)

@@ -40,15 +40,38 @@ Classes
 from __future__ import absolute_import
 
 import re
+import numpy as np
 
-from ..core.AtomGroup import Atom
+from . import guessers
 from ..lib.util import openany
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+    AtomAttr,
+)
+
+class AtomicCharges(AtomAttr):
+    attrname = 'atomiccharges'
+    singular = 'atomiccharge'
+    per_object = 'atom'
 
 
 class GMSParser(TopologyReader):
     """GAMESS_ topology parser.
+
+    Creates the following Attributes:
+     - names
+     - atomic charges
+    Guesses:
+     - types
+     - masses
 
     .. versionadded:: 0.9.1
     """
@@ -56,9 +79,10 @@ class GMSParser(TopologyReader):
 
     def parse(self):
         """Read list of atoms from a GAMESS file."""
+        names = []
+        at_charges = []
 
         with openany(self.filename, 'rt') as inf:
-            natoms = 0
             while True:
                 line = inf.readline()
                 if not line:
@@ -67,11 +91,7 @@ class GMSParser(TopologyReader):
                         line):
                     break
             line = inf.readline() # skip
-            atoms = []
-            i = 0
-            segid = "SYSTEM"
-            resid = 1
-            resname = "SYSTEM"
+
             while True:
                 line = inf.readline()
                 _m = re.match(\
@@ -80,15 +100,26 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 if _m is None:
                     break
                 name = _m.group(1)
-                elem = int(float(_m.group(2)))
-                charge = guess_atom_charge(name)
-                mass = get_atom_mass(elem)
+                at_charge = int(float(_m.group(2)))
+
+                names.append(name)
+                at_charges.append(at_charge)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
-                at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge, universe=self._u)
-                atoms.append(at)
-                i += 1
 
-        struc = {"atoms": atoms}
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
+        n_atoms = len(names)
+        attrs = [
+            Atomids(np.arange(n_atoms) + 1),
+            Atomnames(np.array(names, dtype=object)),
+            AtomicCharges(np.array(at_charges, dtype=np.int32)),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        return struc
+        return top

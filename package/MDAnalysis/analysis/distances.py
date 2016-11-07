@@ -155,7 +155,7 @@ def dist(A, B, offset=0):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    r = A.coordinates() - B.coordinates()
+    r = A.positions - B.positions
     d = np.sqrt(np.sum(r * r, axis=1))
     return np.array([residues_A, residues_B, d])
 
@@ -190,9 +190,7 @@ def between(group, A, B, distance):
 
     .. versionadded: 0.7.5
     """
-    from MDAnalysis.core.AtomGroup import AtomGroup
-
     ns_group = AtomNeighborSearch(group)
     resA = set(ns_group.search(A, distance))
     resB = set(ns_group.search(B, distance))
-    return AtomGroup(resB.intersection(resA))
+    return sum(sorted(resB.intersection(resA)))

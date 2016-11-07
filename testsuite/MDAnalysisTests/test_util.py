@@ -18,13 +18,13 @@ import six
 
 import numpy as np
 from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_)
+                           assert_array_almost_equal, assert_, assert_array_equal)
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
-from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
+from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError
 
 
@@ -237,26 +237,27 @@ class TestMakeWhole(object):
     """
     def setUp(self):
         self.u = mda.Universe(Make_Whole)
+        self.ag = self.u.residues[0].atoms
 
     def tearDown(self):
         del self.u
 
     def test_no_bonds(self):
         # NoData caused by no bonds
-        assert_raises(NoDataError, mdamath.make_whole, self.u.residues[0])
+        assert_raises(NoDataError, mdamath.make_whole, self.ag)
 
     def test_not_orthogonal(self):
         # Not an orthogonal unit cell
         self._load_bonds()
 
         self.u.dimensions = [10., 10., 10., 80., 80., 80]
-        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
+        assert_raises(ValueError, mdamath.make_whole, self.ag)
 
     def test_zero_box_size(self):
         self._load_bonds()
 
         self.u.dimensions = [0., 0., 0., 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
+        assert_raises(ValueError, mdamath.make_whole, self.ag)
 
     def test_too_small_box_size(self):
         self._load_bonds()
@@ -264,18 +265,17 @@ class TestMakeWhole(object):
         # Set the z dimensions to 0.5, which is small compared to the
         # bonds (1-2)
         self.u.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
+        assert_raises(ValueError, mdamath.make_whole, self.ag)
 
     def _load_bonds(self):
         # Load some bonds into Universe, not required for all tests
         bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
-        tg = TopologyGroup.from_indices(bondlist, self.u.atoms, bondclass=Bond)
-        self.u.bonds = tg
+        self.u.add_TopologyAttr(Bonds(bondlist))
 
     def test_wrong_reference_atom(self):
         # Reference atom not in atomgroup
         self._load_bonds()
-        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0],
+        assert_raises(ValueError, mdamath.make_whole, self.ag,
                       reference_atom=self.u.atoms[-1])
 
     def test_impossible_solve(self):
@@ -285,13 +285,15 @@ class TestMakeWhole(object):
 
     def test_walk_1(self):
         self._load_bonds()
-
-        assert_equal(mdamath._is_contiguous(self.u.residues[0], self.u.residues[0][0]), True)
+        # self.ag is contiguous
+        assert_(mdamath._is_contiguous(
+            self.ag, self.u.residues[0].atoms[0]))
 
     def test_walk_2(self):
         self._load_bonds()
-
-        assert_equal(mdamath._is_contiguous(self.u.atoms, self.u.residues[0][0]), False)
+        # u.atoms isnt all contiguous
+        assert_(not mdamath._is_contiguous(
+            self.u.atoms, self.u.residues[0].atoms[0]))
 
     def test_solve_1(self):
         # regular usage of function
@@ -299,7 +301,7 @@ class TestMakeWhole(object):
 
         refpos = self.u.atoms[:4].positions.copy()
 
-        mdamath.make_whole(self.u.residues[0])
+        mdamath.make_whole(self.ag)
 
         assert_array_almost_equal(self.u.atoms[:4].positions, refpos)
         assert_array_almost_equal(self.u.atoms[4].position,
@@ -317,7 +319,8 @@ class TestMakeWhole(object):
 
         refpos = self.u.atoms[4:8].positions.copy()
 
-        mdamath.make_whole(self.u.residues[0], reference_atom=self.u.residues[0][4])
+        mdamath.make_whole(self.ag,
+                           reference_atom=self.u.residues[0].atoms[4])
 
         assert_array_almost_equal(self.u.atoms[4:8].positions, refpos)
         assert_array_almost_equal(self.u.atoms[0].position,
@@ -362,8 +365,7 @@ class TestMakeWhole(object):
         # but all bonds were short, the algorithm didn't
         # complain
         self._load_bonds()
-        res = self.u.residues[0]
-        mdamath.make_whole(res)
+        mdamath.make_whole(self.ag)
         assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
 
 
@@ -682,6 +684,20 @@ class TestGuessFormat(object):
         s = StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestUniqueRows(object):
+    def test_unique_rows_2(self):
+        a = np.array([[0, 1], [1, 2], [2, 1], [0, 1], [0, 1], [2, 1]])
+
+        assert_array_equal(util.unique_rows(a),
+                           np.array([[0, 1], [1, 2], [2, 1]]))
+
+    def test_unique_rows_3(self):
+        a = np.array([[0, 1, 2], [0, 1, 2], [2, 3, 4], [0, 1, 2]])
+
+        assert_array_equal(util.unique_rows(a),
+                           np.array([[0, 1, 2], [2, 3, 4]]))
 
 
 class TestGetWritterFor(object):

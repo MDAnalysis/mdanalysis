@@ -42,7 +42,7 @@ class TestPersistenceLength(object):
         assert_raises(ValueError, polymer.PersistenceLength, ags)
 
     def _make_p(self):
-        ags = [r.select_atoms('type C or type N')
+        ags = [r.atoms.select_atoms('name C* N*')
                for r in self.u.residues]
 
         p = polymer.PersistenceLength(ags)

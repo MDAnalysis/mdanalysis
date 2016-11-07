@@ -57,7 +57,8 @@ box_triclinic
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
 
-from six.moves import range
+from six.moves import range, zip
+import itertools
 import warnings
 import numpy as np
 
@@ -195,10 +196,14 @@ class GROReader(base.SingleFrameReader):
 class GROWriter(base.Writer):
     """GRO Writer that conforms to the Trajectory API.
 
+    Will attempt to write the following information from the topology:
+     - atom name (defaults to 'X')
+     - resnames (defaults to 'UNK')
+     - resids (defaults to '1')
+
     .. Note::
 
-       The precision is hard coded to three decimal places and
-       velocities are not written (yet).
+       The precision is hard coded to three decimal places
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -276,6 +281,30 @@ class GROWriter(base.Writer):
         else:
             has_velocities = True
 
+        # Check for topology information
+        missing_topology = []
+        try:
+            names = atoms.names
+        except (AttributeError, NoDataError):
+            names = itertools.cycle(('X',))
+            missing_topology.append('names')
+        try:
+            resnames = atoms.resnames
+        except (AttributeError, NoDataError):
+            resnames = itertools.cycle(('UNK',))
+            missing_topology.append('resnames')
+        try:
+            resids = atoms.resids
+        except (AttributeError, NoDataError):
+            resids = itertools.cycle((1,))
+            missing_topology.append('resids')
+        if missing_topology:
+            warnings.warn(
+                "Supplied AtomGroup was missing the following attributes: "
+                "{miss}. These will be written with default values. "
+                "Alternatively these can be supplied as keyword arguments."
+                "".format(miss=', '.join(missing_topology)))
+
         if self.convert_units:
             # Convert back to nm from Angstroms,
             # inplace because coordinates is already a copy
@@ -294,25 +323,29 @@ class GROWriter(base.Writer):
             # Header
             output_gro.write('Written by MDAnalysis\n')
             output_gro.write(self.fmt['n_atoms'].format(len(atoms)))
+
             # Atom descriptions and coords
-            for atom_index, atom in enumerate(atoms):
+            # Dont use enumerate here,
+            # all attributes could be infinite cycles!
+            for atom_index, resid, resname, name in zip(
+                    range(len(atoms)), resids, resnames, names):
                 truncated_atom_index = int(str(atom_index + 1)[-5:])
-                truncated_resid = int(str(atom.resid)[:5])
+                truncated_resid = int(str(resid)[:5])
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
                         resid=truncated_resid,
-                        resname=atom.resname,
+                        resname=resname,
                         index=truncated_atom_index,
-                        name=atom.name,
+                        name=name,
                         pos=coordinates[atom_index],
                         vel=velocities[atom_index],
                     ))
                 else:
                     output_gro.write(self.fmt['xyz'].format(
                         resid=truncated_resid,
-                        resname=atom.resname,
+                        resname=resname,
                         index=truncated_atom_index,
-                        name=atom.name,
+                        name=name,
                         pos=coordinates[atom_index]
                     ))
 

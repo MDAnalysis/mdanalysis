@@ -135,9 +135,11 @@ __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
+from . import guessers
 from ..lib.util import anyopen
 from .tpr import utils as tpr_utils
 from .base import TopologyReader
+from ..core.topologyattrs import Resnums
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
@@ -184,20 +186,15 @@ class TPRParser(TopologyReader):
             tpr_utils.fileVersion_err(V)
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, V, self._u)
-            structure = {
-                'atoms': tpr_top.atoms,
-                'bonds': tpr_top.bonds,
-                'angles': tpr_top.angles,
-                'dihedrals': tpr_top.dihe,
-                'impropers': tpr_top.impr
-            }
+            tpr_top = tpr_utils.do_mtop(data, V)
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
             raise IOError(msg)
 
-        return structure
+        tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
+        
+        return tpr_top
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
     # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.

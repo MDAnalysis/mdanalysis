@@ -168,7 +168,7 @@ from six.moves import range
 import logging
 import warnings
 
-from MDAnalysis.core.AtomGroup import Universe
+from MDAnalysis.core.universe import Universe
 import numpy as np
 
 from .rms import rmsd

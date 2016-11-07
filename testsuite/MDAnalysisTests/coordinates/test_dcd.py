@@ -453,8 +453,8 @@ class TestDCDCorrel(TestCase):
         C = self.collection
         C_step = self.collection_slicing
         all = self.universe.atoms
-        ca = self.universe.s4AKE.CA
-        ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
+        ca = self.universe.s4AKE.atoms.CA
+        ca_termini = ca[[0, -1]]
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = self.universe.select_atoms('resid 151').select_atoms(
             'name HN', 'name N', 'name CA', 'name CB')

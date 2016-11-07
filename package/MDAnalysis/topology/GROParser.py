@@ -20,7 +20,7 @@ GRO topology parser
 Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to
 build a basic topology.
 
-Atom types, masses and charges are guessed.
+Atom types and masses are guessed.
 
 .. SeeAlso:: :mod:`MDAnalysis.coordinates.GRO`
 
@@ -34,51 +34,93 @@ Classes
 """
 from __future__ import absolute_import
 
+import numpy as np
 from six.moves import range
 
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
-from .base import TopologyReader
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+    Atomids,
+    Masses,
+    Resids,
+    Resnames,
+    Resnums,
+    Segids,
+)
+from ..core.topology import Topology
+from .base import TopologyReader, squash_by
+from . import guessers
 
 
 class GROParser(TopologyReader):
+    """Reads a Gromacs GRO file
+
+    Reads the following attributes:
+      - resids
+      - resnames
+      - atomids
+      - atomnames
+
+    Guesses the following attributes
+      - atomtypes
+      - masses
+    """
     format = 'GRO'
 
     def parse(self):
-        """Parse GRO file *filename* and return the dict `structure`.
+        """Return the *Topology* object for this file"""
+        # Gro has the following columns
+        # resid, resname, name, index, (x,y,z)
+        with openany(self.filename, 'rt') as inf:
+            inf.readline()
+            n_atoms = int(inf.readline())
 
-        Only reads the list of atoms.
+            # Allocate shizznizz
+            resids = np.zeros(n_atoms, dtype=np.int32)
+            resnames = np.zeros(n_atoms, dtype=object)
+            names = np.zeros(n_atoms, dtype=object)
+            indices = np.zeros(n_atoms, dtype=np.int32)
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.base`.
-        """
-        segid = "SYSTEM"
-        atoms = []
-        with openany(self.filename, "rt") as grofile:
-            grofile.readline()
-            natoms = int(grofile.readline())
-            for atom_iter in range(natoms):
-                line = grofile.readline()
+            for i in range(n_atoms):
+                line = inf.readline()
                 try:
-                    resid, resname, name = int(line[0:5]), line[5:10].strip(), line[10:15].strip()
-                    # guess based on atom name
-                    elem = guess_atom_element(name)
-                    atype = elem
-                    mass = get_atom_mass(elem)
-                    charge = guess_atom_charge(name)
-                    # segid = "SYSTEM"
-                    # ignore coords and velocities, they can be read by coordinates.GRO
-                except (ValueError, IndexError):
-                    raise IOError("Couldn't read the following line of the .gro file:\n"
-                                  "{0}".format(line))
-                else:
-                    # Just use the atom_iter (counting from 0) rather than
-                    # the number in the .gro file (which wraps at 99999)
-                    atoms.append(Atom(atom_iter, name, atype, resname, resid,
-                                      segid, mass, charge, universe=self._u))
-        structure = {'atoms': atoms}
+                    resids[i] = int(line[:5])
+                    resnames[i] = line[5:10].strip()
+                    names[i] = line[10:15].strip()
+                    indices[i] = int(line[15:20])
+                except (ValueError, TypeError):
+                    raise IOError(
+                        "Couldn't read the following line of the .gro file:\n"
+                        "{0}".format(line))
+        # Check all lines had names
+        if not np.all(names):
+            missing = np.where(names == '')
+            raise IOError("Missing atom name on line: {0}"
+                          "".format(missing[0][0] + 3))  # 2 header, 1 based
 
-        return structure
+        # Guess types and masses
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
+
+        residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
+
+        # new_resids is len(residues)
+        # so resindex 0 has resid new_resids[0]
+        attrs = [
+            Atomnames(names),
+            Atomids(indices),
+            Atomtypes(atomtypes, guessed=True),
+            Resids(new_resids),
+            Resnums(new_resids.copy()),
+            Resnames(new_resnames),
+            Masses(masses, guessed=True),
+            Segids(np.array(['SYSTEM'], dtype=object))
+        ]
+
+        top = Topology(n_atoms=n_atoms, n_res=len(new_resids), n_seg=1,
+                       attrs=attrs,
+                       atom_resindex=residx,
+                       residue_segindex=None)
+
+        return top

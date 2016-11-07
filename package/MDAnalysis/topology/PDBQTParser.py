@@ -44,48 +44,122 @@ Classes
 """
 from __future__ import absolute_import
 
-from ..core.AtomGroup import Atom
-from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
-from .base import TopologyReader
+import numpy as np
+
+from . import guessers
+from ..lib import util
+from .base import TopologyReader, change_squash
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    AltLocs,
+    Atomtypes,
+    Charges,
+    Masses,
+    Occupancies,
+    Resids,
+    Resnums,
+    Resnames,
+    Segids,
+    Tempfactors,
+)
 
 
 class PDBQTParser(TopologyReader):
-    """Read topology from a PDBQT file."""
+    """Read topology from a PDBQT file.
+
+    Creates the following Attributes:
+     - atom ids (serial)
+     - atom types
+     - atom names
+     - altLocs
+     - resnames
+     - chainIDs (becomes segid)
+     - resids
+     - icodes
+     - occupancies
+     - tempfactors
+     - charges
+
+    Guesses the following:
+     - elements
+     - masses
+    """
     format = 'PDBQT'
 
     def parse(self):
         """Parse atom information from PDBQT file *filename*.
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.PSFParser.PSFParser` and the file
-                     is read with
-                     :class:`MDAnalysis.coordinates.PDBQT.PDBQTReader`.
+        Returns
+        -------
+        MDAnalysis Topology object
         """
-        atoms = self._parseatoms()
+        serials = []
+        names = []
+        altlocs = []
+        resnames = []
+        chainids = []
+        resids = []
+        icodes = []
+        occupancies = []
+        tempfactors = []
+        charges = []
+        atomtypes = []
 
-        structure = {'atoms': atoms}
+        with util.openany(self.filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line.startswith(('ATOM', 'HETATM')):
+                    continue
+                serials.append(int(line[6:11]))
+                names.append(line[12:16].strip())
+                altlocs.append(line[16:17].strip())
+                resnames.append(line[17:21].strip())
+                chainids.append(line[21:22].strip())
+                resids.append(int(line[22:26]))
+                icodes.append(line[26:27].strip())
+                occupancies.append(float(line[54:60]))
+                tempfactors.append(float(line[60:66]))
+                charges.append(float(line[66:76]))
+                atomtypes.append(line[77:80].strip())
 
-        return structure
+        n_atoms = len(serials)
 
-    def _parseatoms(self):
-        from ..coordinates.PDBQT import PDBQTReader
-        pdb = PDBQTReader(self.filename)
+        masses = guessers.guess_masses(atomtypes)
 
-        atoms = []
-        # translate list of atoms to MDAnalysis Atom.
-        for iatom, atom in enumerate(pdb._atoms):
-            atomname = atom.name
-            atomtype = atom.type        # always set in PDBQT
-            resname = atom.resName
-            resid = int(atom.resSeq)
-            chain = atom.chainID.strip()
-            segid = chain or "SYSTEM"   # no empty segids (or Universe throws IndexError)
-            mass = guess_atom_mass(atomname)
-            charge = float(atom.partialCharge)  # always set in PDBQT
-            bfactor = atom.tempFactor
-            # occupancy = atom.occupancy
-            atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
-                              mass, charge, bfactor=bfactor, universe=self._u))
-        return atoms
+        attrs = []
+        for attrlist, Attr, dtype in (
+                (serials, Atomids, np.int32),
+                (names, Atomnames, object),
+                (altlocs, AltLocs, object),
+                (occupancies, Occupancies, np.float32),
+                (tempfactors, Tempfactors, np.float32),
+                (charges, Charges, np.float32),
+                (atomtypes, Atomtypes, object),
+        ):
+            attrs.append(Attr(np.array(attrlist, dtype=dtype)))
+        attrs.append(Masses(masses, guessed=True))
+
+        resids = np.array(resids, dtype=np.int32)
+        icodes = np.array(icodes, dtype=object)
+        resnames = np.array(resnames, dtype=object)
+        chainids = np.array(chainids, dtype=object)
+
+        residx, (resids, icodes, resnames, chainids) = change_squash(
+            (resids, icodes), (resids, icodes, resnames, chainids))
+        n_residues = len(resids)
+        attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
+        attrs.append(Resnames(resnames))
+
+        segidx, (segids,) = change_squash((chainids,), (chainids,))
+        n_segments = len(segids)
+        attrs.append(Segids(segids))
+
+        top = Topology(n_atoms, n_residues, n_segments,
+                       attrs=attrs,
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
+
+        return top

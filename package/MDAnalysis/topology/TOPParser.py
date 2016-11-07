@@ -17,12 +17,32 @@
 AMBER PRMTOP topology parser
 ============================
 
-Reads a  AMBER top file to build the system. It uses atom types,
-partial charges and masses from the PRMTOP file.
+Reads an AMBER top file to build the system.
 
-The format is defined in `PARM parameter/topology file specification`_.
-The reader tries to detect if it is a newer (AMBER 12?) file format
-by looking for the flag "ATOMIC_NUMBER".
+Amber keywords are turned into the following attributes:
+
++-----------------+----------------------+
+| AMBER flag      | MDAnalysis attribute |
++-----------------+----------------------+
+| ATOM_NAME       | names                |
++-----------------+----------------------+
+| CHARGE          | charges              |
++-----------------+----------------------+
+| ATOMIC_NUMBER   | elements             |
++-----------------+----------------------+
+| MASS            | masses               |
++-----------------+----------------------+
+| ATOM_TYPE_INDEX | type_indices         |
++-----------------+----------------------+
+| AMBER_ATOM_TYPE | types                |
++-----------------+----------------------+
+| RESIDUE_LABEL   | resnames             |
++-----------------+----------------------+
+| RESIDUE_POINTER | residues             |
++-----------------+----------------------+
+
+TODO:
+  Add reading of bonds etc
 
 .. Note::
 
@@ -41,24 +61,54 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
-from six.moves import range
+from __future__ import absolute_import, division
 
+import numpy as np
+from six.moves import range, zip
 import functools
 from math import ceil
 
-from ..core.AtomGroup import Atom
-from ..units import convert
+from . import guessers
+from .tables import NUMBER_TO_ELEMENT
 from ..lib.util import openany, FORTRANReader
-from ..core import flags
 from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+    Atomids,
+    Charges,
+    Elements,
+    Masses,
+    Resnames,
+    Resids,
+    Resnums,
+    Segids,
+    AtomAttr,
+)
+
+
+class TypeIndices(AtomAttr):
+    """Numerical type of each Atom"""
+    attrname = 'type_indices'
+    singular = 'type_index'
+    level = 'atom'
 
 
 class TOPParser(TopologyReader):
     """Reads topology information from an AMBER top file.
 
-    It uses atom types, partial charges and masses from the PRMTOP
-    file.
+    Reads the following Attributes if in topology:
+    - Atomnames
+    - Charges
+    - Masses
+    - Elements
+    - Atomtypes
+    - Resnames
+    - Type_indices
+
+    Guesses the following attributes:
+     - Elements (if not included in topology)
 
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
@@ -69,208 +119,181 @@ class TOPParser(TopologyReader):
 
    .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
-
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
     def parse(self):
         """Parse Amber PRMTOP topology file *filename*.
 
-        :Returns: MDAnalysis internal *structure* dict.
+        Returns
+        -------
+        A MDAnalysis Topology object
         """
-        formatversion = 10
-        with openany(self.filename, 'rt') as topfile:
-            for line in topfile:
-                if line.startswith("%FLAG ATOMIC_NUMBER"):
-                    formatversion = 12
-                    break
-        if formatversion == 12:
-            sections = [
-                ("ATOM_NAME", 1, 20, self._parseatoms, "_name", 0),
-                ("CHARGE", 1, 5, self._parsesection, "_charge", 0),
-                ("ATOMIC_NUMBER", 1, 10, self._parsesectionint, "_skip", 0),
-                ("MASS", 1, 5, self._parsesection, "_mass", 0),
-                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint, "_atom_type", 0),
-                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip, "_skip", 8),
-                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip, "_skip", 8),
-                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname", 11),
-                ("RESIDUE_POINTER", 2, 10, self._parsesectionint, "_respoint", 11),
-            ]
-                #("BOND_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("BOND_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
-                #("ANGLE_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("ANGLE_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_PERIODICITY", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_PHASE", 1, 5, self._parseskip,"_skip",8),
-                #("SOLTY", 1, 5, self._parseskip,"_skip",8),
-                #("LENNARD_JONES_ACOEF", 1, 5, self._parseskip,"_skip",8),
-                #("LENNARD_JONES_BCOEF", 1, 5, self._parseskip,"_skip",8),
-                #("BONDS_INC_HYDROGEN", 2, 4, self._parsebond, "_bonds",2),
-                #("ANGLES_INC_HYDROGEN", 3, 3, self._parsesection, "_angles"),
-                #("DIHEDRALS_INC_HYDROGEN", 4, 2, self._parsesection, "_dihe"),
-                #("NIMPHI", 4, 2, self._parsesection, "_impr"),
-                #("NDON", 2, 4, self._parsesection,"_donors"),
-                #("NACC", 2, 4, self._parsesection,"_acceptors"),
-        elif formatversion == 10:
-            sections = [
-                ("ATOM_NAME", 1, 20, self._parseatoms, "_name", 0),
-                ("CHARGE", 1, 5, self._parsesection, "_charge", 0),
-                ("MASS", 1, 5, self._parsesection, "_mass", 0),
-                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint, "_atom_type", 0),
-                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip, "_skip", 8),
-                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip, "_skip", 8),
-                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname", 11),
-                ("RESIDUE_POINTER", 2, 10, self._parsesectionint, "_respoint", 11),
-            ]
-                #("BOND_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("BOND_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
-                #("ANGLE_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("ANGLE_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_PERIODICITY", 1, 5, self._parseskip,"_skip",8),
-                #("DIHEDRAL_PHASE", 1, 5, self._parseskip,"_skip",8),
-                #("SOLTY", 1, 5, self._parseskip,"_skip",8),
-                #("LENNARD_JONES_ACOEF", 1, 5, self._parseskip,"_skip",8),
-                #("LENNARD_JONES_BCOEF", 1, 5, self._parseskip,"_skip",8),
-                #("BONDS_INC_HYDROGEN", 2, 4, self._parsebond, "_bonds",2),
-                #("ANGLES_INC_HYDROGEN", 3, 3, self._parsesection, "_angles"),
-                #("DIHEDRALS_INC_HYDROGEN", 4, 2, self._parsesection, "_dihe")]
-                #("NIMPHI", 4, 2, self._parsesection, "_impr"),
-                #("NDON", 2, 4, self._parsesection,"_donors"),
-                #("NACC", 2, 4, self._parsesection,"_acceptors")]
+        # Sections that we grab as we parse the file
+        sections = {
+            "ATOM_NAME": (1, 20, self.parse_names, "name", 0),
+            "CHARGE": (1, 5, self.parse_charges, "charge", 0),
+            "ATOMIC_NUMBER": (1, 10, self.parse_elements, "elements", 0),
+            "MASS": (1, 5, self.parse_masses, "mass", 0),
+            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
+            "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
+            "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
+            "RESIDUE_POINTER": (2, 10, self.parse_residx, "respoint", 11),
+        }
+
+        attrs = {}  # empty dict for attrs that we'll fill
 
         # Open and check top validity
         # Reading header info POINTERS
-        with openany(self.filename, 'rt') as topfile:
-            next_line = functools.partial(next, topfile)
-            header = next_line()
-            if header[:3] != "%VE":
-                raise ValueError("{0} is not a valid TOP file. %VE Missing in header".format(topfile))
-            title = next_line().split()
+        with openany(self.filename) as self.topfile:
+            header = self.topfile.next()
+            if not header.startswith("%VE"):
+                raise ValueError(
+                    "{0} is not a valid TOP file. %VE Missing in header"
+                    "".format(self.filename))
+            title = self.topfile.next().split()
             if not (title[1] == "TITLE"):
-                raise ValueError("{0} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
-            while header[:14] != '%FLAG POINTERS':
-                header = next_line()
-            header = next_line()
+                raise ValueError(
+                    "{0} is not a valid TOP file. 'TITLE' missing in header"
+                    "".format(self.filename))
+            while not header.startswith('%FLAG POINTERS'):
+                header = self.topfile.next()
+            self.topfile.next()
 
-            topremarks = [next_line().strip() for i in range(4)]
+            topremarks = [self.topfile.next().strip() for i in xrange(4)]
             sys_info = [int(k) for i in topremarks for k in i.split()]
 
-            structure = {}
-            final_structure = {}
+            header = self.topfile.next()
+            # grab the next section title
+            next_section = header.split("%FLAG")[1].strip()
 
-            try:
-                for info in sections:
-                    self._parse_sec(sys_info, info, next_line,
-                                    structure, final_structure)
-            except StopIteration:
-                raise ValueError("The TOP file didn't contain the minimum"
-                                 " required section of ATOM_NAME")
-            # Completing info respoint to include all atoms in last resid
-            structure["_respoint"].append(sys_info[0])
-            structure["_respoint"][-1] = structure["_respoint"][-1] + 1
+            while next_section is not None:
+                try:
+                    (atoms_per, per_line,
+                     func, name, sect_num) = sections[next_section]
+                except KeyError:
+                    next_getter = self.skipper
+                else:
+                    num = sys_info[sect_num]
+                    numlines = (num // per_line) + 1
 
-        atoms = [None, ]*sys_info[0]
+                    attrs[name] = func(atoms_per, numlines)
 
-        j = 0
-        segid = "SYSTEM"
-        for i in range(sys_info[0]):
-            charge = convert(structure["_charge"][i],
-                             'Amber',
-                             flags['charge_unit'])
-            if structure["_respoint"][j] <= i+1 < structure["_respoint"][j+1]:
-                resid = j + 1
-                resname = structure["_resname"][j]
-            else:
-                j += 1
-                resid = j + 1
-                resname = structure["_resname"][j]
-            mass = structure["_mass"][i]
-            atomtype = structure["_atom_type"][i]
-            atomname = structure["_name"][i]
-            #segid = 'SYSTEM'  # does not exist in Amber
+                    next_getter = self.topfile.next
 
-            atoms[i] = Atom(i, atomname, atomtype, resname, resid,
-                            segid, mass, charge, universe=self._u)
-        final_structure["atoms"] = atoms
-        final_structure["_numatoms"] = sys_info[0]
-        return final_structure
+                try:
+                    line = next_getter()
+                except StopIteration:
+                    next_section = None
+                else:
+                    next_section = line.split("%FLAG")[1].strip()
 
-    def _parse_sec(self, sys_info, section_info, next_line, structure, final_structure):
-        desc, atoms_per, per_line, parsefunc, data_struc, sect_num = section_info
-        # Get the number
-        num = sys_info[sect_num]
-        if data_struc in ["_resname", "_bond"]:
-            pass
-        else:
-            header = next_line()
+        # strip out a few values to play with them
+        n_atoms = len(attrs['name'])
 
-        # Now figure out how many lines to read
-        numlines = int(ceil(float(num)/per_line))
-        #print data_struc, numlines
-        if parsefunc == self._parsebond:
-            parsefunc(next_line, atoms_per, data_struc, final_structure, numlines)
-        else:
-            parsefunc(next_line, atoms_per, data_struc, structure, numlines)
+        resptrs = attrs.pop('respoint')
+        resptrs.append(n_atoms)
+        residx = np.zeros(n_atoms, dtype=np.int32)
+        for i, (x, y) in enumerate(zip(resptrs[:-1], resptrs[1:])):
+            residx[x:y] = i
 
-    def _parseskip(self, lines, atoms_per, attr, structure, numlines):
-        while (lines()[:5] != "%FLAG"):
-            pass
+        n_res = len(attrs['resname'])
 
-    def _parsebond(self, lines, atoms_per, attr, structure, numlines):
-        section = []  # [None,]*numlines
-        for i in range(numlines):
-            l = lines()
+        # Guess elements if not in topology
+        if not 'elements' in attrs:
+            attrs['elements'] = Elements(
+                guessers.guess_types(attrs['types'].values),
+                guessed=True)
+
+        # atom ids are mandatory
+        attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
+        attrs['resids'] = Resids(np.arange(n_res) + 1)
+        attrs['resnums'] = Resnums(np.arange(n_res) + 1)
+        attrs['segids'] = Segids(np.array(['SYSTEM'], dtype=object))
+
+        top = Topology(n_atoms, n_res, 1,
+                       attrs=attrs.values(),
+                       atom_resindex=residx,
+                       residue_segindex=None)
+
+        return top
+
+    def skipper(self):
+        """Skip until we find the next %FLAG entry and return that"""
+        line = self.topfile.next()
+        while not line.startswith("%FLAG"):
+            line = self.topfile.next()
+        return line
+
+    def parse_names(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: x)
+        attr = Atomnames(np.array(vals, dtype=object))
+        return attr
+
+    def parse_resnames(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: x)
+        attr = Resnames(np.array(vals, dtype=object))
+        return attr
+
+    def parse_charges(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: float(x))
+        charges = np.array(vals, dtype=np.float32)
+        charges /= 18.2223  # to electron charge units
+        attr = Charges(charges)
+        return attr
+
+    def parse_masses(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: float(x))
+        attr = Masses(vals)
+        return attr
+
+    def parse_elements(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
+        attr = Elements(np.array(vals, dtype=object))
+        return attr
+
+    def parse_types(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: x)
+        attr = Atomtypes(np.array(vals, dtype=object))
+        return attr
+
+    def parse_type_indices(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: int(x))
+        attr = TypeIndices(np.array(vals, dtype=np.int32))
+        return attr
+
+    def parse_residx(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: int(x) - 1)
+        return vals
+
+    def parsebond(self, atoms_per, numlines):
+        y = self.topfile.next().strip("%FORMAT(")
+        section = []
+        for i in xrange(numlines):
+            l = self.topfile.next()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            f = map(int, l.split())
-            fields = [a-1 for a in f]
+            fields = map(lambda x: int(x) - 1, l.split())
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
-        structure[attr] = section
+        return section
 
-    def _parsesectionint(self, lines, atoms_per, attr, structure, numlines):
-        section = []  # [None,]*numlines
-        y = lines().strip("%FORMAT(")
+    def parsesection_mapper(self, atoms_per, numlines, mapper):
+        section = []
+        y = self.topfile.next().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in range(numlines):
-            l = lines()
-            # Subtract 1 from each number to ensure zero-indexing for the atoms
-            try:
-                for j in range(len(x.entries)):
-                    section.append(int(l[x.entries[j].start:x.entries[j].stop].strip()))
-            except:
-                continue
-        structure[attr] = section
-
-    def _parsesection(self, lines, atoms_per, attr, structure, numlines):
-        section = []  # [None,]*numlines
-        y = lines().strip("%FORMAT(")
-        y.strip(")")
-        x = FORTRANReader(y)
-        for i in range(numlines):
-            l = lines()
-            # Subtract 1 from each number to ensure zero-indexing for the atoms
-            try:
-                for j in range(0, len(x.entries)):
-                    section.append(float(l[x.entries[j].start:x.entries[j].stop].strip()))
-            except:
-                continue
-        structure[attr] = section
-
-    def _parseatoms(self, lines, atoms_per, attr, structure, numlines):
-        section = []  # [None,]*numlines
-        y = lines().strip("%FORMAT(")
-        y.strip(")")
-        x = FORTRANReader(y)
-        for i in range(numlines):
-            l = lines()
-            # Subtract 1 from each number to ensure zero-indexing for the atoms
-            for j in range(0, len(x.entries)):
-                if l[x.entries[j].start:x.entries[j].stop] != '':
-                    #print l[x.entries[j].start:x.entries[j].stop]
-                    section.append(l[x.entries[j].start:x.entries[j].stop].strip())
-                else:
-                    continue
-        structure[attr] = section
+        for i in xrange(numlines):
+            l = self.topfile.next()
+            for j in xrange(len(x.entries)):
+                val = l[x.entries[j].start:x.entries[j].stop].strip()
+                if val:
+                    section.append(mapper(val))
+        return section
