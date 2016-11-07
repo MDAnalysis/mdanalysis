@@ -629,8 +629,93 @@ class RangeSelection(Selection):
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
 
+        # each value in uppers and lowers is a tuple of (resid, icode)
         uppers = []
         lowers = []
+
+        for val in values:
+            if not (':' in val or '-' in val):
+                if val[-1].isalpha():
+                    lower = int(val[:-1]), val[-1]
+                else:
+                    lower = int(val), None
+                upper = None, None
+            else:
+                # check if in appropriate format 'lower:upper' or 'lower-upper'
+                # each val is one or more digits, maybe a letter
+                selrange = re.match("(\d+)(\w?)[:-](\d+)(\w?)", val)
+                if selrange is None:  # re.match returns None on failure
+                    raise ValueError("Failed to parse value: {0}".format(val))
+                res = selrange.groups()
+                # resid and icode
+                lower = int(res[0]), res[1]
+                upper = int(res[2]), res[3]
+
+            lowers.append(lower)
+            uppers.append(upper)
+
+        self.lowers = lowers
+        self.uppers = uppers
+
+    def _get_vals(self, group):
+        return getattr(group, self.field)
+
+    def apply(self, group):
+        # Final mask that gets applied to group
+        mask = np.zeros(len(group), dtype=np.bool)
+
+        uppers, lowers = self.uppers, self.lowers
+
+        # Grab arrays here to reduce number of calls to main topology
+        vals = self._get_vals(group)
+        try:  # optional attribute
+            icodes = group.icodes
+        except (AttributeError, NoDataError):
+            # if no icodes and icodes are part of selection, cause a fuss
+            if any(v[1] for v in uppers) or any(v[1] for v in lowers):
+                raise ValueError("Selection specified icodes, while the "
+                                 "topology doesn't have any.")
+            # setting this to None makes all comparisons True
+            # no comparisons should be done though because of above check
+            icodes = None
+
+        for (u_resid, u_icode), (l_resid, l_icode) in zip(uppers, lowers):
+            if u_resid is not None:
+                thismask = vals >= l_resid
+                if l_icode:
+                    thismask &= icodes >= l_icode
+                thismask &= vals <= u_resid
+                if u_icode:
+                    thismask &= icodes <= u_icode
+            else:
+                thismask = vals == l_resid
+                if l_icode:
+                    thismask &= icodes == l_icode
+            mask |= thismask
+
+        return unique(group[mask])
+
+
+class ResidueIDSelection(RangeSelection):
+    token = 'resid'
+    field = 'resids'
+
+
+class ResnumSelection(RangeSelection):
+    token = 'resnum'
+    field = 'resnums'
+
+
+class ByNumSelection(Selection):
+    token = 'bynum'
+
+    def __init__(self, parser, tokens):
+        values = grab_not_keywords(tokens)
+        if not values:
+            raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
+
+        uppers = []  # upper limit on any range
+        lowers = []  # lower limit on any range
 
         for val in values:
             try:
@@ -650,12 +735,9 @@ class RangeSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
-    def _get_vals(self, group):
-        return getattr(group, self.field)
-
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
-        vals = self._get_vals(group)
+        vals = group.indices + 1  # queries are in 1 based indices
 
         for upper, lower in zip(self.uppers, self.lowers):
             if upper is not None:
@@ -666,25 +748,6 @@ class RangeSelection(Selection):
 
             mask |= thismask
         return unique(group[mask])
-
-
-class ResidueIDSelection(RangeSelection):
-    token = 'resid'
-    field = 'resids'
-
-
-class ResnumSelection(RangeSelection):
-    token = 'resnum'
-    field = 'resnums'
-
-
-class ByNumSelection(RangeSelection):
-    token = 'bynum'
-
-    def _get_vals(self, group):
-        # In this case we'll use 1 indexing since that's what the
-        # user will be familiar with
-        return group.indices + 1
 
 
 class ProteinSelection(Selection):

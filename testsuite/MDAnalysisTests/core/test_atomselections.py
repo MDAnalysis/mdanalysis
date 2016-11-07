@@ -45,6 +45,7 @@ from MDAnalysis.tests.datafiles import (
     GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_full,
+    PDB_icodes,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
@@ -846,3 +847,45 @@ class TestImplicitOr(object):
                 yield (self._check_sels,
                        ref.format(typ=seltype),
                        sel.format(typ=seltype))
+
+class TestICodeSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(PDB_icodes)
+
+    def tearDown(self):
+        del self.u
+
+    def test_select_icode(self):
+        ag = self.u.select_atoms('resid 163A')
+
+        assert_(len(ag) == 7)
+        assert_array_equal(ag.ids, np.arange(7) + 1230)
+
+    def test_select_icode_range(self):
+        u = self.u
+        ag = u.select_atoms('resid 163B-163D')
+
+        # do it manually without selection language...
+        ref = u.residues[u.residues.resids == 163]
+        ref = ref[(ref.icodes >= 'B') & (ref.icodes <= 'D')]
+        ref = ref.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+        assert_(len(ag) == 19)
+        assert_array_equal(ag.ids, np.arange(19) + 1237)
+
+    def test_select_icode_range(self):
+        u = self.u
+
+        ag = u.select_atoms('resid 163B-165')
+
+        resids = u.residues.resids
+
+        ref = u.residues[resids == 163]
+        ref = ref[ref.icodes >= 'B']
+        ref += u.residues[resids == 164]
+        ref += u.residues[resids == 165]
+        ref = ref.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
