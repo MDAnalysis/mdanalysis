@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.lib.utils import deprecate
 import logging
 import copy
 
@@ -123,7 +122,7 @@ class Universe(object):
 
         # hold on to copy of kwargs; used by external libraries that
         # reinitialize universes
-        self.kwargs = copy.deepcopy(kwargs)
+        self._kwargs = copy.deepcopy(kwargs)
 
         # managed attribute holding Reader
         self._trajectory = None
@@ -453,6 +452,11 @@ class Universe(object):
            :meth:`Universe.atoms.coordinates`.
         """
         return self.trajectory.ts
+
+    @property
+    def kwargs(self):
+        """keyword arguments used to initialize this universe"""
+        return copy.deepcopy(self._kwargs)
 
     @property
     def trajectory(self):
