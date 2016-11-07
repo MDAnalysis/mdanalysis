@@ -84,21 +84,6 @@ Classes, methods, and functions
 .. autofunction:: discrete_frechet
 .. autofunction:: dist_mat_to_vec
 
-.. autoclass:: PDBToBinaryTraj
-   :members:
-
-   .. attribute:: universe
-
-      :class:`MDAnalysis.Universe` object with a trajectory
-
-   .. attribute:: frames
-
-      :attr:`MDAnalysis.Universe.trajectory`
-
-   .. attribute:: newname
-
-      string, filename for converted trajectory, including file extension
-
 .. autoclass:: Path
    :members:
 
@@ -598,24 +583,6 @@ def dist_mat_to_vec(N, i, j):
         err_str = "Error in processing matrix indices; i and j must be integers"\
                 + " less than integer N = {0:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
-
-
-class PDBToBinaryTraj(object):
-
-    def __init__(self, universe, output_type='.dcd', infix=''):
-        self.universe = universe
-        self.universe.atoms.write('new_top.pdb') # write first frame as topology
-
-        self.frames = self.universe.trajectory
-        base, ext = os.path.splitext(self.frames.filename)
-        path, name = os.path.split(base)
-        self.newname = name + infix + output_type
-
-    def convert(self):
-        w = MDAnalysis.Writer(self.newname, self.frames.numatoms)
-        for ts in self.frames:
-            w.write(ts)
-        w.close_trajectory()
 
 
 class Path(object):

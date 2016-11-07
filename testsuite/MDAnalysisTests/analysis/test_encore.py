@@ -771,7 +771,7 @@ class TestEncoreDimensionalityReduction(TestCase):
                 "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_PCA_direct(self):
         dimension = 2
-        method = encore.PrincipleComponentAnalysis(dimension=dimension)
+        method = encore.PrincipalComponentAnalysis(dimension=dimension)
         coordinates = self.ens1.trajectory.timeseries(format='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
@@ -788,7 +788,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         coordinates, details = \
             encore.reduce_dimensionality(
                 [self.ens1, self.ens2],
-                method=encore.PrincipleComponentAnalysis(dimension=dimension))
+                method=encore.PrincipalComponentAnalysis(dimension=dimension))
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
@@ -811,6 +811,6 @@ class TestEncoreDimensionalityReduction(TestCase):
             encore.reduce_dimensionality(
                 [self.ens1, self.ens2],
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
-                        encore.PrincipleComponentAnalysis(dims[1])])
+                        encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 

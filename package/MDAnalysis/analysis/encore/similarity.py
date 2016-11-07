@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
+=================================================================================
 Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity`
 =================================================================================
 
@@ -39,15 +40,19 @@ trajectories from time-dependent simulations.
 ENCORE includes three different methods for calculations of similarity measures
 between ensembles implemented in individual functions:
 
++ **Harmonic Ensemble Similarity** : :func:`hes`
++ **Clustering Ensemble Similarity** : :func:`ces`
++ **Dimensional Reduction Ensemble Similarity** : :func:`dres`
 
-    + **Harmonic Ensemble Similarity** : :func:`hes`
-    + **Clustering Ensemble Similarity** : :func:`ces`
-    + **Dimensional Reduction Ensemble Similarity** : :func:`dres`
+as well as two methods to evaluate the convergence of trajectories:
+
++ **Clustering based convergence evaluation** : :func:`ces_convergence`
++ **Dimensionality-reduction based convergence evaluation** : :func:`dres_convergence`
 
 When using this module in published work please cite [Tiberti2015]_.
 
 References
-----------
+==========
 
     .. [Lindorff-Larsen2009] Similarity Measures for Protein Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.
 
@@ -55,7 +60,7 @@ References
 
 .. _Examples:
 Examples
---------
+========
 
 The examples show how to use ENCORE to calculate a similarity measurement
 of two simple ensembles. The ensembles are obtained from the MDAnalysis
@@ -76,7 +81,7 @@ two ensemble objects are first created and then used for calculation: ::
     (array([[        0.        ,  38279683.95892926],
             [ 38279683.95892926,         0.        ]]), None)
 
-Here None is returned in the array as the default details parameter is False. 
+Here None is returned in the array as the default details parameter is False.
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
 
@@ -98,11 +103,11 @@ However, we may want to reuse the RMSD matrix in other calculations e.g.
 running CES with different parameters or running DRES. In this
 case we first compute the RMSD matrix alone:
 
-    >>> rmsd_matrix = encore.get_distance_matrix(\
-                                    encore.utils.merge_universes([ens1, ens2]),\
+    >>> rmsd_matrix = encore.get_distance_matrix(
+                                    encore.utils.merge_universes([ens1, ens2]),
                                     save_matrix="rmsd.npz")
-                                    
-In the above example the RMSD matrix was also saved in rmsd.npz on disk, and 
+
+In the above example the RMSD matrix was also saved in rmsd.npz on disk, and
 so can be loaded and re-used at later times, instead of being recomputed:
 
     >>> rmsd_matrix = encore.get_distance_matrix(
@@ -110,19 +115,19 @@ so can be loaded and re-used at later times, instead of being recomputed:
                                     load_matrix="rmsd.npz")
 
 
-For instance, the rmsd_matrix object can be re-used as input for the 
+For instance, the rmsd_matrix object can be re-used as input for the
 Dimensional Reduction Ensemble Similarity (:func:`dres`) method.
-DRES is based on the estimation of the probability density in 
-a dimensionally-reduced conformational space of the ensembles, obtained from 
+DRES is based on the estimation of the probability density in
+a dimensionally-reduced conformational space of the ensembles, obtained from
 the original space using either the Stochastic Proximity Embedding algorithm or
-the Principle Component Analysis.
+the Principal Component Analysis.
 As the algorithms require the distance matrix calculated on the original space,
 we can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3 using the
 saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
-    >>> DRES,details = encore.dres([ens1, ens2],\
-                        distance_matrix = rmsd_matrix)
+    >>> DRES,details = encore.dres([ens1, ens2],
+                                   distance_matrix = rmsd_matrix)
     >>> print DRES
     [[ 0.        ,   0.67453198]
      [  0.67453198,  0.        ]]
@@ -130,25 +135,22 @@ saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
 In addition to the quantitative similarity estimate, the dimensional reduction
 can easily be visualized, see the ``Example`` section in
-:mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`
+:mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`.
 Due to the stochastic nature of SPE, two identical ensembles will not
 necessarily result in an exactly 0 estimate of the similarity, but will be very
-close. For the same reason, calculating the similarity with the :func:`dres` 
+close. For the same reason, calculating the similarity with the :func:`dres`
 twice will not result in necessarily identical values but rather two very close
 values.
 
-It should be noted that both in :func:`ces` and :func:`dres` the similarity is 
-evaluated using the Jensen-Shannon divergence resulting in an upper bound of 
-ln(2), which indicates no similarity between the ensembles and a lower bound 
-of 0.0 signifying two identical ensembles. Therefore using CES and DRES 
-ensembles can be compared in a more relative sense than  HES, i.e. they
-can be used to understand whether ensemble A is closer to ensemble B than
-ensemble C, but absolute values are less meaningful as they also depend on the
-chosen parameters.
+It should be noted that both in :func:`ces` and :func:`dres` the similarity is
+evaluated using the Jensen-Shannon divergence resulting in an upper bound of
+ln(2), which indicates no similarity between the ensembles and a lower bound
+of 0.0 signifying two identical ensembles. In contrast, the :func:`hes` function uses
+a symmetrized version of the Kullback-Leibler divergence, which is unbounded.
 
 
-Functions
----------
+Functions for ensemble comparisons
+==================================
 
 .. autofunction:: hes
 
@@ -156,6 +158,11 @@ Functions
 
 .. autofunction:: dres
 
+
+Function reference
+==================
+
+.. All functions are included via automodule :members:.
 
 
 """
@@ -201,7 +208,7 @@ xlogy = np.vectorize(
 def discrete_kullback_leibler_divergence(pA, pB):
     """Kullback-Leibler divergence between discrete probability distribution.
     Notice that since this measure is not symmetric ::
-     :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`
+    :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`
 
     Parameters
     ----------
@@ -252,10 +259,7 @@ def harmonic_ensemble_similarity(sigma1,
                                  x2):
     """
     Calculate the harmonic ensemble similarity measure
-    as defined in 
-
-        Similarity Measures for Protein Ensembles. Lindorff-Larsen, K.;
-        Ferkinghoff-Borg, J. PLoS ONE 2009, 4, e4203.
+    as defined in [Tiberti2015]_.
 
     Parameters
     ----------
@@ -353,13 +357,14 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
 
 def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
                                               ens1_id_min=1, ens2_id_min=1):
-    """ Calculate clustering ensemble similarity between joined ensembles.
+    """
+    Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
     merged and the dJS is calculated between the probability distributions of
     the two clusters groups. In particular, the two ensemble groups are defined
-     by their ensembles id: one of the two joined ensembles will comprise all
-     the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will
-      comprise all the ensembles with id [ens2_id_min, ens2_id].
+    by their ensembles id: one of the two joined ensembles will comprise all
+    the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will
+    comprise all the ensembles with id [ens2_id_min, ens2_id].
 
     Parameters
     ----------
@@ -408,7 +413,7 @@ def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
 
 def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
                  nsamples):
-    """ 
+    """
     Generate Kernel Density Estimates (KDE) from embedded spaces and
     elaborate the coordinates for later use.
 
@@ -520,7 +525,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         calculate the expected values according to 'Q' as detailed before.
 
     ln_P1_exp_P1 : float or None
-        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P; if None,
+        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,
         calculate it instead
 
     ln_P2_exp_P2 : float or None
@@ -530,7 +535,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     ln_P1P2_exp_P1 : float or None
         Use this value for
         :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
-         if None, calculate it instead
+        if None, calculate it instead
 
     ln_P1P2_exp_P2 : float or None
         Use this value for
@@ -542,9 +547,6 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
     djs : float
         Jensen-Shannon divergence calculated according to the dimensionality
         reduction method
-
-    Args:
-        ln_P1P2_exp_P2:
 
     """
 
@@ -645,7 +647,7 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 def write_output(matrix, base_fname=None, header="", suffix="",
                  extension="dat"):
     """
-    Write output matrix with a nice format, to stdout and optionally a file.  
+    Write output matrix with a nice format, to stdout and optionally a file.
 
     Parameters
     ----------
@@ -699,7 +701,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Returns
     -------
 
-    tmp_ensembles : 
+    tmp_ensembles :
         The original ensemble is divided into different ensembles, each being
         a window_size-long slice of the original ensemble. The last
         ensemble will be bigger if the length of the input ensemble
@@ -743,7 +745,7 @@ def hes(ensembles,
 
     Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
     the symmetrized version of Kullback-Leibler divergence as described
-    in [Lindorff-Larsen2009]_.
+    in [Tiberti2015]_.
 
     Parameters
     ----------
@@ -809,21 +811,20 @@ def hes(ensembles,
 
     For each ensemble, the  mean conformation is estimated as the average over
     the ensemble, and the covariance matrix is calculated by default using a
-    shrinkage estimation method (or by a maximum-likelihood method, 
+    shrinkage estimation method (or by a maximum-likelihood method,
     optionally).
 
-    In the Harmonic Ensemble Similarity measurement no upper bound exists and
-    the measurement can therefore be used for absolute comparison between
-    multiple ensembles.
+    Note that the symmetrized version of the Kullback-Leibler divergence has no
+    upper bound (unlike the Jensen-Shannon divergence used by for instance CES and DRES).
 
     When using this similarity measure, consider whether you want to align
-    the ensembles first (see example below)
+    the ensembles first (see example below).
 
     Example
     -------
 
     To calculate the Harmonic Ensemble similarity, two ensembles are created
-    as Universe object from a topology file and two trajectories. The
+    as Universe objects from a topology file and two trajectories. The
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
@@ -843,7 +844,7 @@ def hes(ensembles,
         >>> print encore.hes([ens1, ens2], align=True)[0]
         [[    0.          6880.34140106]
         [ 6880.34140106     0.        ]]
- 
+
     Alternatively, for greater flexibility in how the alignment should be done
     you can call the rms_fit_trj function manually:
 
@@ -988,8 +989,7 @@ def ces(ensembles,
 
     Calculates the Clustering Ensemble Similarity (CES) between ensembles
     using the Jensen-Shannon divergence as described in
-    [Lindorff-Larsen2009]_.
-
+    [Tiberti2015]_.
 
     Parameters
     ----------
@@ -1064,10 +1064,10 @@ def ces(ensembles,
     no similarity between the two ensembles, the lower bound, 0.0,
     signifies identical ensembles.
 
-    To calculate the CES, the affinity propagation method (or others, if 
+    To calculate the CES, the affinity propagation method (or others, if
     specified) is used to partition the whole space of conformations. The
     population of each ensemble in each cluster is then taken as a probability
-    density function. Different probability density functions from each 
+    density function. Different probability density functions from each
     ensemble are finally compared using the Jensen-Shannon divergence measure.
 
     Examples
@@ -1077,8 +1077,7 @@ def ces(ensembles,
     topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
-    Here the simplest case of just two :class:`Ensemble`s used for comparison
-    are illustrated: ::
+    Here the simplest case of just two instances of :class:`Universe` is illustrated: ::
 
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
@@ -1088,22 +1087,19 @@ def ces(ensembles,
          [ 0.68070702  0.        ]]
 
     To use a different clustering method, set the parameter clustering_method
-    (OBS the sklearn module must be installed). Likewise,  different parameters
+    (Note that the sklearn module must be installed). Likewise,  different parameters
     for the same clustering method can be explored by adding different
     instances of the same clustering class: ::
-        >>> CES, details = encore.ces([ens1,ens2],\
-                            clustering_method = [encore.DBSCAN(eps=0.45),\
-                                                 encore.DBSCAN(eps=0.50)])
 
-        >>> print "eps=0.45: \n", CES[0], "\n eps=0.5 : \n", CES[1]
-        eps=0.45:
-        [[ 0.          0.20447236]
-         [ 0.20447236  0.        ]]
-        eps=0.5 :
-        [[ 0.          0.25331629]
-         [ 0.25331629  0.        ]]
-
-
+        >>> CES, details = encore.ces([ens1,ens2],
+                                      clustering_method = [encore.DBSCAN(eps=0.45),
+                                                           encore.DBSCAN(eps=0.50)])
+        >>> print "eps=0.45: ", CES[0]
+        eps=0.45:  [[ 0.          0.20447236]
+        [ 0.20447236  0.        ]]
+        >>> print "eps=0.5: ", CES[1]
+        eps=0.5:  [[ 0.          0.25331629]
+        [ 0.25331629  0.        ]]"
 
     """
 
@@ -1260,7 +1256,7 @@ def dres(ensembles,
 
     Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
     ensembles using the Jensen-Shannon divergence as described in
-    [Lindorff-Larsen2009]_.
+    [Tiberti2015]_.
 
 
     Parameters
@@ -1277,7 +1273,7 @@ def dres(ensembles,
         classes from the dimensionality_reduction module. Different parameters
         for the same method can be explored by adding different instances of
         the same dimensionality reduction class. Provided methods are the
-        Stochastic Proximity Embedding (default) and the Principel Component
+        Stochastic Proximity Embedding (default) and the Principal Component
         Analysis.
 
     distance_matrix : encore.utils.TriangularMatrix
@@ -1286,7 +1282,7 @@ def dres(ensembles,
 
     nsamples : int, optional
         Number of samples to be drawn from the ensembles (default is 1000).
-        This is used to resample the density estimates and calculate the 
+        This is used to resample the density estimates and calculate the
         Jensen-Shannon divergence between ensembles.
 
     estimate_error : bool, optional
@@ -1315,16 +1311,16 @@ def dres(ensembles,
         dres contains the similarity values, arranged in numpy.array.
         If one number of dimensions is provided as an integer,
         the output will be a 2-dimensional square symmetrical numpy.array.
-        The order of the matrix elements depends on the order of the 
+        The order of the matrix elements depends on the order of the
         input ensemble: for instance, if
 
             ensemble = [ens1, ens2, ens3]
 
         then the matrix elements [0,2] and [2,0] will both contain the
         similarity value between ensembles ens1 and ens3.
-        Elaborating on the previous example, if `n` ensembles are given and `m`
-        methods are provided the output will be a list of `m` arrays
-        ordered by the input sequence of methods, each with a `n`x`n`
+        Elaborating on the previous example, if *n* ensembles are given and *m*
+        methods are provided the output will be a list of *m* arrays
+        ordered by the input sequence of methods, each with a *n*x*n*
         symmetrical similarity matrix.
 
         details provide an array of the reduced_coordinates.
@@ -1333,18 +1329,18 @@ def dres(ensembles,
     -----
 
     To calculate the similarity, the method first projects the ensembles into
-    lower dimensions by using the Stochastic Proximity Embedding (or others) 
-    algorithm. A gaussian kernel-based density estimation method is then used 
-    to estimate the probability density for each ensemble which is then used 
+    lower dimensions by using the Stochastic Proximity Embedding (or others)
+    algorithm. A gaussian kernel-based density estimation method is then used
+    to estimate the probability density for each ensemble which is then used
     to compute the Jensen-Shannon divergence between each pair of ensembles.
 
     In the Jensen-Shannon divergence the upper bound of ln(2) signifies
     no similarity between the two ensembles, the lower bound, 0.0,
     signifies identical ensembles. However, due to the stochastic nature of
-    the dimensional reduction in :func:`dres`, two identical ensembles will 
-    not necessarily result in an exact 0.0 estimate of the similarity but 
+    the dimensional reduction in :func:`dres`, two identical ensembles will
+    not necessarily result in an exact 0.0 estimate of the similarity but
     will be very close. For the same reason, calculating the similarity with
-    the :func:`dres` twice will not result in two identical numbers; small 
+    the :func:`dres` twice will not result in two identical numbers; small
     differences have to be expected.
 
     Examples
@@ -1355,9 +1351,8 @@ def dres(ensembles,
     The topology- and trajectory files used are obtained from the MDAnalysis
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files.
-    Here the simplest case of comparing just two :class:`Ensemble`s are
+    Here the simplest case of comparing just two instances of :class:`Universe` is
     illustrated: ::
-
 
         >>> ens1 = Universe(PSF,DCD)
         >>> ens2 = Universe(PSF,DCD2)
@@ -1375,12 +1370,13 @@ def dres(ensembles,
     parameter dimensionality_reduction_method. Likewise, different parameters
     for the same clustering method can be explored by adding different
     instances of the same method  class: ::
-        >>> DRES, details = encore.dres([ens1,ens2],\
-                dimensionality_reduction_method =\
-                    encore.PrincipleComponentAnalysis(dimension=2))
+
+        >>> DRES, details = encore.dres([ens1,ens2],
+                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
         >>> print DRES
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]
+
     """
 
     for ensemble in ensembles:
@@ -1522,12 +1518,12 @@ def ces_convergence(original_ensemble,
                         damping=0.9,
                         add_noise=True),
                     ncores=1):
-    """ 
+    """
     Use the CES to evaluate the convergence of the ensemble/trajectory.
-    CES will be calculated between the whole trajectory contained in an 
-    ensemble and windows of such trajectory of increasing sizes, so that 
-    the similarity values should gradually drop to zero. The rate at which 
-    the value reach zero will be indicative of how much the trajectory 
+    CES will be calculated between the whole trajectory contained in an
+    ensemble and windows of such trajectory of increasing sizes, so that
+    the similarity values should gradually drop to zero. The rate at which
+    the value reach zero will be indicative of how much the trajectory
     keeps on resampling the same regions of the conformational space, and
     therefore of convergence.
 
@@ -1629,11 +1625,11 @@ def dres_convergence(original_ensemble,
                      ncores=1):
     """
     Use the DRES to evaluate the convergence of the ensemble/trajectory.
-    DRES will be calculated between the whole trajectory contained in an 
-    ensemble and windows of such trajectory of increasing sizes, so that 
+    DRES will be calculated between the whole trajectory contained in an
+    ensemble and windows of such trajectory of increasing sizes, so that
     the similarity values should gradually drop to zero. The rate at which
-    the value reach zero will be indicative of how much the trajectory 
-    keeps on resampling the same ares of the conformational space, and 
+    the value reach zero will be indicative of how much the trajectory
+    keeps on resampling the same ares of the conformational space, and
     therefore of convergence.
 
     Parameters
@@ -1657,7 +1653,7 @@ def dres_convergence(original_ensemble,
     nsamples : int, optional
         Number of samples to be drawn from the ensembles (default is 1000).
         This is akin to the nsamples parameter of dres().
-        
+
     ncores  : int, optional
         Maximum number of cores to be used (default is 1).
 
@@ -1698,7 +1694,7 @@ def dres_convergence(original_ensemble,
     much the trajectory keeps on resampling the same ares of the conformational
     space, and therefore of convergence.
     """
-    
+
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, selection=selection)
 

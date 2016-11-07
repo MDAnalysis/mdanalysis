@@ -109,10 +109,7 @@ cdef class _XDRFile:
 
     Raises
     ------
-    ValueError
-        Wrong mode given
     IOError
-        Couldn't read the file
 
     Note
     ----
@@ -143,7 +140,6 @@ cdef class _XDRFile:
         Raises
         ------
         IOError
-            If the TRR file can't be closed for some reason
         """
         res = 1
         if self.is_open:
@@ -170,10 +166,7 @@ cdef class _XDRFile:
 
         Raises
         ------
-        ValueError
-            Wrong mode given
         IOError
-            Couldn't read the file
         """
         if self.is_open:
             self.close()
@@ -187,7 +180,7 @@ cdef class _XDRFile:
         elif mode == 'w':
             opening_mode = b'w'
         else:
-            raise ValueError('mode must be one of "r" or "w", you '
+            raise IOError('mode must be one of "r" or "w", you '
                              'supplied {}'.format(mode))
         self.mode = mode
 
@@ -231,7 +224,7 @@ cdef class _XDRFile:
 
     def __len__(self):
         if not self.is_open:
-            raise RuntimeError('No file currently opened')
+            raise IOError('No file currently opened')
         return self.offsets.size
 
     def seek(self, frame):
@@ -249,8 +242,6 @@ cdef class _XDRFile:
         Raises
         ------
         IOError
-            If you seek for more frames than are available or if the
-            seek fails (the low-level system error is reported).
         """
         cdef int64_t offset
         if frame == 0:
@@ -295,11 +286,7 @@ cdef class _XDRFile:
 
         Raises
         ------
-        ValueError
-            If *whence* is not one of the expected strings.
-
         IOError
-            If the seek fails (the low-level system error is reported).
         """
         cdef int whn
         cdef int64_t offst
@@ -307,8 +294,8 @@ cdef class _XDRFile:
         try:
             whn = _whence_vals[whence]
         except KeyError:
-            raise ValueError("Parameter 'whence' must be "
-                             "one of {}".format(tuple(_whence_vals.keys())))
+            raise IOError("Parameter 'whence' must be "
+                          "one of {}".format(tuple(_whence_vals.keys())))
         offst = offset
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offst, whn)
@@ -383,8 +370,8 @@ cdef class TRRFile(_XDRFile):
         cdef int64_t* offsets = NULL
         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
-            raise RuntimeError("TRR couldn't calculate offsets. "
-                               "XDR error = {}".format(error_message[ok]))
+            raise IOError("TRR couldn't calculate offsets. "
+                          "XDR error = {}".format(error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
@@ -409,15 +396,14 @@ cdef class TRRFile(_XDRFile):
 
         Raises
         ------
-        RuntimeError
-            Something must have happened reading the file
+        IOError
         """
         if self.reached_eof:
-            raise RuntimeError('Reached last frame in TRR, seek to 0')
+            raise IOError('Reached last frame in TRR, seek to 0')
         if not self.is_open:
-            raise RuntimeError('No file opened')
+            raise IOError('No file opened')
         if self.mode != 'r':
-            raise RuntimeError('File opened in mode: {}. Reading only allow '
+            raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
         return_code = 1
@@ -484,14 +470,11 @@ cdef class TRRFile(_XDRFile):
 
         Raises
         ------
-        RuntimeError
-            Couldn't write the file
-        ValueError
-            The arguments do not match with previous saved frames.
+        IOError
         """
         if self.mode != 'w' :
-            raise RuntimeError('File opened in mode: {}. Writing only allow '
-                               'in mode "w"'.format('self.mode'))
+            raise IOError('File opened in mode: {}. Writing only allow '
+                          'in mode "w"'.format('self.mode'))
 
         cdef float* xyz_ptr = NULL
         cdef float* velocity_ptr = NULL
@@ -523,27 +506,27 @@ cdef class TRRFile(_XDRFile):
             self.n_atoms = natoms
         else:
             if self.n_atoms != natoms:
-                raise ValueError('Previous frames contained {} atoms. You '
-                                 'are trying to write {} atoms.'.format(
-                                     self.n_atoms, natoms))
+                raise IOError('Previous frames contained {} atoms. You '
+                              'are trying to write {} atoms.'.format(
+                                  self.n_atoms, natoms))
             if xyz is not None and self.n_atoms != xyz.shape[0]:
-                raise ValueError('Previous frames xyz contained {} atoms. You '
-                                 'are trying to write {} atoms.'.format(
-                                     self.n_atoms, xyz.shape[0]))
+                raise IOError('Previous frames xyz contained {} atoms. You '
+                              'are trying to write {} atoms.'.format(
+                                  self.n_atoms, xyz.shape[0]))
             if velocity is not None and self.n_atoms != velocity.shape[0]:
-                raise ValueError('Previous frames velocity contained {} atoms. You '
-                                 'are trying to write {} atoms.'.format(
-                                     self.n_atoms, velocity.shape[0]))
+                raise IOError('Previous frames velocity contained {} atoms. You '
+                              'are trying to write {} atoms.'.format(
+                                  self.n_atoms, velocity.shape[0]))
             if forces is not None and self.n_atoms != forces.shape[0]:
-                raise ValueError('Previous frames forces contained {} atoms. You '
-                                 'are trying to write {} atoms.'.format(
-                                     self.n_atoms, forces.shape[0]))
+                raise IOError('Previous frames forces contained {} atoms. You '
+                              'are trying to write {} atoms.'.format(
+                                  self.n_atoms, forces.shape[0]))
 
         return_code = write_trr(self.xfp, self.n_atoms, step, time,
-                                       _lambda, <matrix> box_ptr,
-                                       <rvec*> xyz_ptr,
-                                       <rvec*> velocity_ptr,
-                                       <rvec*> forces_ptr)
+                                _lambda, <matrix> box_ptr,
+                                <rvec*> xyz_ptr,
+                                <rvec*> velocity_ptr,
+                                <rvec*> forces_ptr)
         if return_code != EOK:
             raise IOError('TRR write error = {}'.format(
                 error_message[return_code]))
@@ -592,8 +575,8 @@ cdef class XTCFile(_XDRFile):
         cdef int64_t* offsets = NULL
         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
-            raise RuntimeError("XTC couldn't calculate offsets. "
-                               "XDR error = {}".format(error_message[ok]))
+            raise IOError("XTC couldn't calculate offsets. "
+                          "XDR error = {}".format(error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
@@ -618,15 +601,14 @@ cdef class XTCFile(_XDRFile):
 
         Raises
         ------
-        RuntimeError
-            Something must have happened reading the file
+        IOError
         """
         if self.reached_eof:
-            raise RuntimeError('Reached last frame in XTC, seek to 0')
+            raise IOError('Reached last frame in XTC, seek to 0')
         if not self.is_open:
-            raise RuntimeError('No file opened')
+            raise IOError('No file opened')
         if self.mode != 'r':
-            raise RuntimeError('File opened in mode: {}. Reading only allow '
+            raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
         return_code = 1
@@ -676,15 +658,12 @@ cdef class XTCFile(_XDRFile):
 
         Raises
         ------
-        RuntimeError
-            Couldn't write the file
-        ValueError
-            The arguments to not match with previous saved frames.
+        IOError
 
         """
         if self.mode != 'w':
-            raise RuntimeError('File opened in mode: {}. Writing only allow '
-                               'in mode "w"'.format('self.mode'))
+            raise IOError('File opened in mode: {}. Writing only allow '
+                          'in mode "w"'.format('self.mode'))
 
         cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
@@ -695,13 +674,13 @@ cdef class XTCFile(_XDRFile):
             self.precision = precision
         else:
             if self.n_atoms != xyz.shape[0]:
-                raise ValueError('Previous frames contained {} atoms. You '
-                                 'are trying to write {} atoms.'.format(
-                                     self.n_atoms, xyz.shape[1]))
+                raise IOError('Previous frames contained {} atoms. You '
+                              'are trying to write {} atoms.'.format(
+                                  self.n_atoms, xyz.shape[1]))
             if self.precision != precision:
-                raise ValueError('Previous frames used precision of {}. You '
-                                 'are trying to use {}'.format(
-                                     self.precision, precision))
+                raise IOError('Previous frames used precision of {}. You '
+                              'are trying to use {}'.format(
+                                  self.precision, precision))
 
         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
                                        <matrix>&box_view[0, 0],

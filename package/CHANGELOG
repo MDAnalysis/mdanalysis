@@ -45,6 +45,7 @@ Enhancements
     of loading trajectory to memory (Issue #1028 and PR #1055).
 
 Fixes
+  * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
   * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
   * reading/writing lambda value in trr files (Issue #859)
@@ -86,7 +87,7 @@ Changes
   * atoms.tranform/translate/rotate/rotateby return original atomgroup (Issue #1010)
   * atoms.translate/rotateby don't accept AtomGroup tuples as parameters anymore (Issue #1025)
   * atoms.rotate by default now uses the centroid as center of rotation like rotateby (Issue #1022)
-
+  * XTCFile and TRRFile only raise IOError now on error.
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)

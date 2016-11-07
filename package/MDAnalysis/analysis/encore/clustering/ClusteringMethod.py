@@ -16,7 +16,7 @@
 
 """
 clustering frontend --- :mod:`MDAnalysis.analysis.encore.clustering.ClusteringMethod`
-=====================================================================
+=====================================================================================
 
 The module defines classes for interfacing to various clustering algorithms.
 One has been implemented natively, and will always be available, while

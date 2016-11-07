@@ -16,7 +16,7 @@
 
 """
 bootstrap procedures --- :mod:`MDAnalysis.analysis.ensemble.bootstrap`
-=====================================================================
+======================================================================
 
 
 The module contains functions for bootstrapping either ensembles (Universe

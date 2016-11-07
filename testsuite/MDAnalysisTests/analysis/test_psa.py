@@ -15,8 +15,8 @@
 #
 from __future__ import print_function
 
-import MDAnalysis
-import MDAnalysis.analysis.psa
+import MDAnalysis as mda
+import MDAnalysis.analysis.psa as PSA
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
@@ -37,13 +37,14 @@ class TestPSAnalysis(TestCase):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
-        self.universe1 = MDAnalysis.Universe(PSF, DCD)
-        self.universe2 = MDAnalysis.Universe(PSF, DCD2)
-        self.universe_rev = MDAnalysis.Universe(PSF, DCD)
+        self.universe1 = mda.Universe(PSF, DCD)
+        self.universe2 = mda.Universe(PSF, DCD2)
+        self.universe_rev = mda.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
-                                               path_select='name CA',           \
-                                                      targetdir=self.tmpdir.name)
+        self.psa = PSA.PSAnalysis(self.universes,
+                                  path_select='name CA',
+                                  targetdir=self.tmpdir.name)
+
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -74,8 +75,8 @@ class TestPSAnalysis(TestCase):
 
     def test_reversal_hausdorff(self):
         err_msg = "Hausdorff distances changed after path reversal"
-        assert_array_almost_equal(self.hausd_matrix[1,2],                       \
-                                  self.hausd_matrix[0,1],                       \
+        assert_array_almost_equal(self.hausd_matrix[1,2],
+                                  self.hausd_matrix[0,1],
                                   decimal=3, err_msg=err_msg)
 
     def test_reversal_frechet(self):
@@ -96,7 +97,7 @@ class TestPSAExceptions(TestCase):
         get_path_metric_func().'''
 
         try:
-           MDAnalysis.analysis.psa.get_path_metric_func('123456')
+           PSA.get_path_metric_func('123456')
         except KeyError:
             self.fail('KeyError should be caught')
 
@@ -106,7 +107,7 @@ class TestPSAExceptions(TestCase):
         is fed to get_coord_axes().'''
 
         with self.assertRaises(ValueError):
-            MDAnalysis.analysis.psa.get_coord_axes(np.zeros((5,5,5,5)))
+            PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
 class _BaseHausdorffDistance(TestCase):
     '''Base Class setup and unit tests
@@ -165,7 +166,7 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
 
     def setUp(self):
         super(TestHausdorffSymmetric, self).setUp()
-        self.h = MDAnalysis.analysis.psa.hausdorff
+        self.h = PSA.hausdorff
         # radii differ by ~ 2.3 for outlier
         self.expected = 2.3
 
@@ -176,7 +177,7 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         super(TestWeightedAvgHausdorffSymmetric, self).setUp()
         import scipy
         import scipy.spatial
-        self.h = MDAnalysis.analysis.psa.hausdorff_wavg
+        self.h = PSA.hausdorff_wavg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)
         self.expected = (np.mean(np.amin(self.distance_matrix, axis=0)) +
@@ -199,7 +200,7 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         super(TestAvgHausdorffSymmetric, self).setUp()
         import scipy
         import scipy.spatial
-        self.h = MDAnalysis.analysis.psa.hausdorff_avg
+        self.h = PSA.hausdorff_avg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)
         self.expected = np.mean(np.append(np.amin(self.distance_matrix, axis=0),
@@ -244,8 +245,8 @@ class DiscreteFrechetDistance(TestCase):
         # radii
 
         expected = 4.5
-        actual = MDAnalysis.analysis.psa.discrete_frechet(self.path_1,
-                                                          self.path_2)
+        actual = PSA.discrete_frechet(self.path_1,
+                                      self.path_2)
         assert_almost_equal(actual, expected)
 
 

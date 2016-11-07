@@ -80,10 +80,6 @@ Classes and Functions
    :members:
    :inherited-members:
 
-.. deprecated:: 0.15.0
-    The "permissive" flag is not used anymore (and effectively
-    defaults to True); it will be completely removed in 0.16.0.
-
 """
 from __future__ import print_function
 from six.moves import range
@@ -96,16 +92,21 @@ import errno
 import warnings
 
 try:
-    from gridData import Grid  # http://github.com/orbeckst/GridDataFormats
+    from gridData import Grid
 except ImportError:
     raise ImportError(
-        """ERROR --- The GridDataFormats package can not be found!
+        """ImportError: The GridDataFormats package can not be found!
 
         The 'gridData' module from GridDataFormats could not be
-        imported. Please install it first.  You can try installing with
-        setuptools directly from the internet:
+        imported. Please install it first.  You can try installing
+        directly from the internet:
 
-          easy_install GridDataFormats
+          pip install GridDataFormats
+
+        or
+
+          conda config --add channels conda-forge
+          conda install griddataformats
 
         Alternatively, download the package from
 
