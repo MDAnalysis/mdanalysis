@@ -6,13 +6,15 @@ from MDAnalysis import NoDataError
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
                            assert_, assert_array_almost_equal)
-from unittest import TestCase
 
 from MDAnalysisTests import tempdir
-from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
-                                                   RefLAMMPSDataMini,
-                                                   RefLAMMPSDataDCD)
-from MDAnalysis.tests.datafiles import LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
+from MDAnalysisTests.coordinates.reference import (
+    RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
+)
+from MDAnalysisTests.datafiles import (
+    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
+)
+from MDAnalysisTests.core.groupbase import make_Universe
 
 
 def test_datareader_ValueError():
@@ -20,7 +22,7 @@ def test_datareader_ValueError():
     assert_raises(ValueError, DATAReader, 'filename')
 
 
-class _TestLammpsData_Coords(TestCase):
+class _TestLammpsData_Coords(object):
     """Tests using a .data file for loading single frame.
 
     All topology loading from MDAnalysisTests.data is done in test_topology
@@ -66,7 +68,7 @@ class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
     pass
 
-class _TestLAMMPSDATAWriter(TestCase):
+class _TestLAMMPSDATAWriter(object):
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
 
@@ -120,6 +122,7 @@ class _TestLAMMPSDATAWriter(TestCase):
                 except (AttributeError, NoDataError):
                     pass
 
+
 class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
     filename = LAMMPSdata
 
@@ -167,7 +170,7 @@ class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
 
 # need more tests of the LAMMPS DCDReader
 
-class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
+class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -229,7 +232,7 @@ class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
         assert_raises(ValueError, wrong_load)
 
 
-class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
+class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -291,7 +294,7 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
                             self.u.trajectory[0].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
 
-class TestLAMMPSDCDWriterClass(TestCase):
+class TestLAMMPSDCDWriterClass(object):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -348,3 +351,46 @@ class TestLammpsDataTriclinic(object):
         assert_(self.u.dimensions[3] == 90.)
         assert_(self.u.dimensions[4] == 90.)
         assert_(self.u.dimensions[5] == 120.)
+
+class TestDataWriterErrors(object):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name, 'out.data')
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tmpdir
+        del self.outfile
+
+    def test_write_no_masses(self):
+        u = make_Universe(('types',), trajectory=True)
+
+        try:
+            u.atoms.write(self.outfile)
+        except NoDataError as e:
+            assert_('masses' in e.args[0])
+        else:
+            raise AssertionError
+
+    def test_write_no_types(self):
+        u = make_Universe(('masses',), trajectory=True)
+
+        try:
+            u.atoms.write(self.outfile)
+        except NoDataError as e:
+            assert_('types' in e.args[0])
+        else:
+            raise AssertionError
+
+    def test_write_non_numerical_types(self):
+        u = make_Universe(('types', 'masses'), trajectory=True)
+
+        try:
+            u.atoms.write(self.outfile)
+        except ValueError as e:
+            assert_('must be convertible to integers' in e.args[0])
+        else:
+            raise AssertionError
