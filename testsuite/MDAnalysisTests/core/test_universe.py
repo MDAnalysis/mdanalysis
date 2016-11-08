@@ -85,7 +85,7 @@ class TestUniverseCreation(object):
     @staticmethod
     def test_load_new_VE():
         u = mda.Universe()
-        
+
         assert_raises(TypeError,
                       u.load_new, 'thisfile', format='soup')
 
@@ -98,7 +98,7 @@ class TestUniverseCreation(object):
 
         # initialize new universe from pieces of existing one
         u2 = mda.Universe(u.filename, u.trajectory.filename,
-                                 **u.kwargs)
+                          **u.kwargs)
 
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
@@ -171,4 +171,3 @@ class TestUniverse(object):
         box = np.array([10, 11, 12, 90, 90, 90])
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
-
