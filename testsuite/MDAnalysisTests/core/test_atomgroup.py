@@ -17,6 +17,7 @@
 from glob import glob
 from os import path
 import numpy as np
+import warnings
 
 from numpy.testing import (
     assert_,
@@ -38,6 +39,17 @@ from MDAnalysis.core.topologyobjects import (
 
 from MDAnalysisTests.datafiles import (PSF, DCD)
 from MDAnalysisTests import tempdir
+
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
+
+
+def test_usage_warning():
+    with warnings.catch_warnings(record=True) as warn:
+        warnings.simplefilter('always')
+        mda.core.AtomGroup.Universe(PSF, DCD)
+    assert_equal(len(warn), 1)
 
 
 class TestAtomGroupToTopology(object):
