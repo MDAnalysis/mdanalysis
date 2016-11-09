@@ -90,6 +90,7 @@ Changes
   * atoms.translate/rotateby don't accept AtomGroup tuples as parameters anymore (Issue #1025)
   * atoms.rotate by default now uses the centroid as center of rotation like rotateby (Issue #1022)
   * XTCFile and TRRFile only raise IOError now on error.
+  * Deprecate usage of MDAnalaysis.core.AtomGroup
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
