@@ -995,6 +995,11 @@ class AtomGroup(GroupBase):
                 range consists of two numbers separated by a colon (inclusive)
                 such as ``resid 1:5``. A residue number ("resid") is taken
                 directly from the topology.
+                If icodes are present in the topology, then these will be
+                taken into account.  Ie 'resid 163B' will only select resid
+                163 with icode B while 'resid 163' will select only residue 163.
+                Range selections will also respect icodes, so 'resid 162-163B'
+                will select all residues in 162 and those in 163 up to icode B.
             resnum *resnum-number-range*
                 resnum is the canonical residue number; typically it is set to
                 the residue id in the original PDB structure.
@@ -1098,7 +1103,8 @@ class AtomGroup(GroupBase):
            Added *group* and *fullgroup* selections.
         .. versionchanged:: 0.13.0
            Added *bonded* selection
-
+        .. versionchanged:: 0.16.0
+           Resid selection now takes icodes into account where present.
         """
         atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
         if othersel:
