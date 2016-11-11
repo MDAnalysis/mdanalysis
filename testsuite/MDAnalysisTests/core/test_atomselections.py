@@ -955,3 +955,14 @@ class TestICodeSelection(object):
         ref = start.atoms + end.atoms
 
         assert_array_equal(ag.ids, ref.ids)
+
+    def test_missing_icodes_VE(self):
+        # trying a selection with icodes in a Universe without raises VA
+        u = make_Universe(('resids',))
+
+        assert_raises(ValueError, u.select_atoms, 'resid 10A')
+
+    def test_missing_icodes_range_VE(self):
+        u = make_Universe(('resids',))
+
+        assert_raises(ValueError, u.select_atoms, 'resid 10A-12')
