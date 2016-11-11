@@ -38,18 +38,77 @@ from MDAnalysis.core.topologyobjects import (
 )
 
 from MDAnalysisTests.datafiles import (PSF, DCD)
+from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysisTests import tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
 warnings.simplefilter('always')
 
+class TestDeprecationWarnings(object):
+    @staticmethod
+    def test_AtomGroupUniverse_usage_warning():
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            mda.core.AtomGroup.Universe(PSF, DCD)
+        assert_equal(len(warn), 1)
 
-def test_usage_warning():
-    with warnings.catch_warnings(record=True) as warn:
-        warnings.simplefilter('always')
-        mda.core.AtomGroup.Universe(PSF, DCD)
-    assert_equal(len(warn), 1)
+    @staticmethod
+    def test_old_AtomGroup_init_warns():
+        u = make_Universe(('names',))
+        at_list = list(u.atoms[:10])
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            ag = mda.core.groups.AtomGroup(at_list)
+        assert_equal(len(warn), 1)
+
+    @staticmethod
+    def test_old_AtomGroup_init_works():
+        u = make_Universe(('names',))
+        at_list = list(u.atoms[:10])
+        ag = mda.core.groups.AtomGroup(at_list)
+
+        assert_(isinstance(ag, mda.core.groups.AtomGroup))
+        assert_(len(ag) == 10)
+        assert_equal(ag.names, u.atoms[:10].names)
+
+    @staticmethod
+    def test_old_ResidueGroup_init_warns():
+        u = make_Universe(('resnames',))
+        res_list = list(u.residues[:10])
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            rg = mda.core.groups.ResidueGroup(res_list)
+        assert_equal(len(warn), 1)
+
+    @staticmethod
+    def test_old_ResidueGroup_init_works():
+        u = make_Universe(('resnames',))
+        res_list = list(u.residues[:10])
+        rg = mda.core.groups.ResidueGroup(res_list)
+
+        assert_(isinstance(rg, mda.core.groups.ResidueGroup))
+        assert_(len(rg) == 10)
+        assert_equal(rg.resnames, u.residues[:10].resnames)
+
+    @staticmethod
+    def test_old_SegmentGroup_init_warns():
+        u = make_Universe(('segids',))
+        seg_list = list(u.segments[:3])
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            sg = mda.core.groups.SegmentGroup(seg_list)
+        assert_equal(len(warn), 1)
+
+    @staticmethod
+    def test_old_SegmentGroup_init_works():
+        u = make_Universe(('segids',))
+        seg_list = list(u.segments[:3])
+        sg = mda.core.groups.SegmentGroup(seg_list)
+
+        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
+        assert_(len(sg) == 3)
+        assert_equal(sg.segids, u.segments[:3].segids)
 
 
 class TestAtomGroupToTopology(object):
