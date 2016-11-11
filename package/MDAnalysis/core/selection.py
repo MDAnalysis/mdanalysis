@@ -616,7 +616,7 @@ class AltlocSelection(StringSelection):
     field = 'altLocs'
 
 
-class RangeSelection(Selection):
+class ResidSelection(Selection):
     """Select atoms based on numerical fields
 
     Allows the use of ':' and '-' to specify a range of values
@@ -624,6 +624,8 @@ class RangeSelection(Selection):
 
       resid 1:10
     """
+    token = 'resid'
+
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
         if not values:
@@ -634,11 +636,10 @@ class RangeSelection(Selection):
         lowers = []
 
         for val in values:
-            if not (':' in val or '-' in val):
-                if val[-1].isalpha():
-                    lower = int(val[:-1]), val[-1]
-                else:
-                    lower = int(val), None
+            m1 = re.match("(\d+)(\w?)$", val)
+            if not m1 is None:
+                res = m1.groups()
+                lower = int(res[0]), res[1]
                 upper = None, None
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
@@ -657,58 +658,87 @@ class RangeSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
-    def _get_vals(self, group):
-        return getattr(group, self.field)
-
     def apply(self, group):
-        # Final mask that gets applied to group
-        mask = np.zeros(len(group), dtype=np.bool)
-
-        uppers, lowers = self.uppers, self.lowers
-
         # Grab arrays here to reduce number of calls to main topology
-        vals = self._get_vals(group)
+        vals = group.resids
         try:  # optional attribute
             icodes = group.icodes
         except (AttributeError, NoDataError):
+            icodes = None
             # if no icodes and icodes are part of selection, cause a fuss
-            if any(v[1] for v in uppers) or any(v[1] for v in lowers):
+            if (any(v[1] for v in self.uppers) or
+                any(v[1] for v in self.lowers)):
                 raise ValueError("Selection specified icodes, while the "
                                  "topology doesn't have any.")
-            # setting this to None makes all comparisons True
-            # no comparisons should be done though because of above check
-            icodes = None
 
-        for (u_resid, u_icode), (l_resid, l_icode) in zip(uppers, lowers):
-            if u_resid is not None:
-                thismask = vals >= l_resid
-                if l_icode:
-                    thismask &= icodes >= l_icode
-                thismask &= vals <= u_resid
-                if u_icode:
-                    thismask &= icodes <= u_icode
-            else:
-                thismask = vals == l_resid
-                if l_icode:
-                    thismask &= icodes == l_icode
-            mask |= thismask
+        if not icodes is None:
+            mask = self._sel_with_icodes(vals, icodes)
+        else:
+            mask = self._sel_without_icodes(vals)
 
         return unique(group[mask])
 
+    def _sel_without_icodes(self, vals):
+        # Final mask that gets applied to group
+        mask = np.zeros(len(vals), dtype=np.bool)
 
-class ResidueIDSelection(RangeSelection):
-    token = 'resid'
-    field = 'resids'
+        for (u_resid, _), (l_resid, _) in zip(self.uppers, self.lowers):
+            if u_resid is not None:  # range selection
+                thismask = vals >= l_resid
+                thismask &= vals <= u_resid
+            else:  # single residue selection
+                thismask = vals == l_resid
+
+            mask |= thismask
+
+        return mask
+
+    def _sel_with_icodes(self, vals, icodes):
+        # Final mask that gets applied to group
+        mask = np.zeros(len(vals), dtype=np.bool)
+
+        for (u_resid, u_icode), (l_resid, l_icode) in zip(self.uppers, self.lowers):
+            if u_resid is not None:  # Selecting a range
+                # Special case, if l_resid == u_resid, ie 163A-163C, this simplifies to:
+                # all 163, and A <= icode <= C
+                if l_resid == u_resid:
+                    thismask = vals == l_resid
+                    thismask &= icodes >= l_icode
+                    thismask &= icodes <= u_icode
+                # For 163A to 166B we want:
+                # [START]  all 163 and icode >= 'A'
+                # [MIDDLE] all of 164 and 165, any icode
+                # [END]    166 and icode <= 'B'
+                else:
+                    # start of range
+                    startmask = vals == l_resid
+                    startmask &= icodes >= l_icode
+                    thismask = startmask
+
+                    # middle of range
+                    mid = np.arange(l_resid + 1, u_resid)
+                    if len(mid):  # if there are any resids in the middle
+                        mid_beg, mid_end = mid[0], mid[-1]
+                        midmask = vals >= mid_beg
+                        midmask &= vals <= mid_end
+
+                        thismask |= midmask
+
+                    # end of range
+                    endmask = vals == u_resid
+                    endmask &= icodes <= u_icode
+
+                    thismask |= endmask
+            else:  # Selecting a single residue
+                thismask = vals == l_resid
+                thismask &= icodes == l_icode
+
+            mask |= thismask
+
+        return mask
 
 
-class ResnumSelection(RangeSelection):
-    token = 'resnum'
-    field = 'resnums'
-
-
-class ByNumSelection(Selection):
-    token = 'bynum'
-
+class RangeSelection(Selection):
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
         if not values:
@@ -735,6 +765,28 @@ class ByNumSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
+
+class ResnumSelection(RangeSelection):
+    token = 'resnum'
+
+    def apply(self, group):
+        mask = np.zeros(len(group), dtype=np.bool)
+        vals = group.resnums
+
+        for upper, lower in zip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals >= lower
+                thismask &= vals <= upper
+            else:
+                thismask = vals == lower
+
+            mask |= thismask
+        return unique(group[mask])
+
+
+class ByNumSelection(RangeSelection):
+    token = 'bynum'
+
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
         vals = group.indices + 1  # queries are in 1 based indices
@@ -748,6 +800,7 @@ class ByNumSelection(Selection):
 
             mask |= thismask
         return unique(group[mask])
+
 
 
 class ProteinSelection(Selection):

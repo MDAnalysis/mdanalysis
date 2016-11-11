@@ -861,7 +861,14 @@ class TestICodeSelection(object):
         assert_(len(ag) == 7)
         assert_array_equal(ag.ids, np.arange(7) + 1230)
 
-    def test_select_icode_range(self):
+    def test_select_resid_implicit_icode(self):
+        ag = self.u.select_atoms('resid 163')
+
+        assert_(len(ag) == 6)
+        assert_array_equal(ag.ids, np.arange(6) + 1224)
+
+    def test_select_icode_range_1(self):
+        # testing range within a single resid integer value
         u = self.u
         ag = u.select_atoms('resid 163B-163D')
 
@@ -875,17 +882,76 @@ class TestICodeSelection(object):
         assert_(len(ag) == 19)
         assert_array_equal(ag.ids, np.arange(19) + 1237)
 
-    def test_select_icode_range(self):
+    def test_select_icode_range_2(self):
         u = self.u
 
         ag = u.select_atoms('resid 163B-165')
 
         resids = u.residues.resids
 
-        ref = u.residues[resids == 163]
-        ref = ref[ref.icodes >= 'B']
-        ref += u.residues[resids == 164]
-        ref += u.residues[resids == 165]
-        ref = ref.atoms
+        start = u.residues[resids == 163]
+        start = start[start.icodes >= 'B']
+
+        mid = u.residues[resids == 164]
+
+        end = u.residues[resids == 165]
+        end = end[end.icodes == '']
+        
+        ref = start.atoms + mid.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_3(self):
+        # same as #2 but with no "middle" icodes
+        u = self.u
+
+        ag = u.select_atoms('resid 163B-164')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 163]
+        start = start[start.icodes >= 'B']
+
+        end = u.residues[resids == 164]
+        end = end[end.icodes == '']
+        
+        ref = start.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_4(self):
+        u = self.u
+
+        ag = u.select_atoms('resid 160-163G')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 160]
+        start = start[start.icodes >= '']
+
+        mid = u.residues[(resids == 161) | (resids == 162)]
+
+        end = u.residues[resids == 163]
+        end = end[end.icodes <= 'G']
+        
+        ref = start.atoms + mid.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_5(self):
+        # same as #4 but with no "middle" icodes in range
+        u = self.u
+
+        ag = u.select_atoms('resid 162-163G')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 162]
+        start = start[start.icodes >= '']
+
+        end = u.residues[resids == 163]
+        end = end[end.icodes <= 'G']
+        
+        ref = start.atoms + end.atoms
 
         assert_array_equal(ag.ids, ref.ids)
