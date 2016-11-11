@@ -45,6 +45,7 @@ from MDAnalysis.tests.datafiles import (
     GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_full,
+    PDB_icodes,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
@@ -846,3 +847,122 @@ class TestImplicitOr(object):
                 yield (self._check_sels,
                        ref.format(typ=seltype),
                        sel.format(typ=seltype))
+
+class TestICodeSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(PDB_icodes)
+
+    def tearDown(self):
+        del self.u
+
+    def test_select_icode(self):
+        ag = self.u.select_atoms('resid 163A')
+
+        assert_(len(ag) == 7)
+        assert_array_equal(ag.ids, np.arange(7) + 1230)
+
+    def test_select_resid_implicit_icode(self):
+        ag = self.u.select_atoms('resid 163')
+
+        assert_(len(ag) == 6)
+        assert_array_equal(ag.ids, np.arange(6) + 1224)
+
+    def test_select_icode_range_1(self):
+        # testing range within a single resid integer value
+        u = self.u
+        ag = u.select_atoms('resid 163B-163D')
+
+        # do it manually without selection language...
+        ref = u.residues[u.residues.resids == 163]
+        ref = ref[(ref.icodes >= 'B') & (ref.icodes <= 'D')]
+        ref = ref.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+        assert_(len(ag) == 19)
+        assert_array_equal(ag.ids, np.arange(19) + 1237)
+
+    def test_select_icode_range_2(self):
+        u = self.u
+
+        ag = u.select_atoms('resid 163B-165')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 163]
+        start = start[start.icodes >= 'B']
+
+        mid = u.residues[resids == 164]
+
+        end = u.residues[resids == 165]
+        end = end[end.icodes == '']
+        
+        ref = start.atoms + mid.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_3(self):
+        # same as #2 but with no "middle" icodes
+        u = self.u
+
+        ag = u.select_atoms('resid 163B-164')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 163]
+        start = start[start.icodes >= 'B']
+
+        end = u.residues[resids == 164]
+        end = end[end.icodes == '']
+        
+        ref = start.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_4(self):
+        u = self.u
+
+        ag = u.select_atoms('resid 160-163G')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 160]
+        start = start[start.icodes >= '']
+
+        mid = u.residues[(resids == 161) | (resids == 162)]
+
+        end = u.residues[resids == 163]
+        end = end[end.icodes <= 'G']
+        
+        ref = start.atoms + mid.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_select_icode_range_5(self):
+        # same as #4 but with no "middle" icodes in range
+        u = self.u
+
+        ag = u.select_atoms('resid 162-163G')
+
+        resids = u.residues.resids
+
+        start = u.residues[resids == 162]
+        start = start[start.icodes >= '']
+
+        end = u.residues[resids == 163]
+        end = end[end.icodes <= 'G']
+        
+        ref = start.atoms + end.atoms
+
+        assert_array_equal(ag.ids, ref.ids)
+
+    def test_missing_icodes_VE(self):
+        # trying a selection with icodes in a Universe without raises VA
+        u = make_Universe(('resids',))
+
+        assert_raises(ValueError, u.select_atoms, 'resid 10A')
+
+    def test_missing_icodes_range_VE(self):
+        u = make_Universe(('resids',))
+
+        assert_raises(ValueError, u.select_atoms, 'resid 10A-12')
