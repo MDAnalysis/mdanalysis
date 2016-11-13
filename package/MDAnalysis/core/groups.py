@@ -23,6 +23,7 @@ import numpy as np
 import functools
 import itertools
 import os
+import warnings
 
 import MDAnalysis
 from ..lib import util
@@ -161,7 +162,12 @@ class _MutableBase(object):
     """
     # This signature must be kept in sync with the __init__ signature of
     #  GroupBase and ComponentBase.
-    def __new__(cls, ix, u):
+    def __new__(cls, *args):
+        try:
+            ix, u = args
+        except ValueError:
+            # deprecated AtomGroup init method..
+            u = args[0][0].universe
         try:
             return object.__new__(u._classes[cls])
         except KeyError:
@@ -194,7 +200,19 @@ class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
     """
-    def __init__(self, ix, u):
+    def __init__(self, *args):
+        if len(args) == 1:
+            warnings.warn("Using deprecated init method for Group. "
+                          "In the future use `Group(indices, universe)`. "
+                          "This init method will be removed in version 1.0.",
+                          DeprecationWarning)
+            # list of atoms/res/segs, old init method
+            ix = [at.ix for at in args[0]]
+            u = args[0][0].universe
+        else:
+            # current/new init method
+            ix, u = args
+
         # indices for the objects I hold
         self._ix = np.asarray(ix, dtype=np.int64)
         self._u = u
