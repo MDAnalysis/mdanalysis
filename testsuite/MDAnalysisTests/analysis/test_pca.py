@@ -17,7 +17,6 @@ from __future__ import print_function
 import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
-from MDAnalysis.analysis.align import _fit_to
 
 from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal, raises)
@@ -30,7 +29,7 @@ class TestPCA(object):
     """ Test the PCA class """
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB, XTC)
-        self.pca = pca.PCA(self.u.atoms, select='backbone and name CA',
+        self.pca = pca.PCA(self.u, select='backbone and name CA',
                            align=False)
         self.pca.run()
         self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
@@ -83,7 +82,7 @@ class TestPCA(object):
     @staticmethod
     def test_cosine_content():
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
-        pca_random = pca.PCA(rand.atoms).run()
+        pca_random = pca.PCA(rand).run()
         dot = pca_random.transform(rand.atoms)
         content = pca.cosine_content(dot, 0)
         assert_almost_equal(content, .99, 1)

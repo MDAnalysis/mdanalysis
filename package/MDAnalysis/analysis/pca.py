@@ -76,8 +76,8 @@ Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-``cumulated_variance``. The value at the ith index of `cumulated_variance` is the
-sum of the variances from 0 to i.
+``cumulated_variance``. The value at the ith index of `cumulated_variance`
+is the sum of the variances from 0 to i.
 
     >>> n_pcs = np.where(PSF_pca.cumulated_var > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
@@ -93,7 +93,6 @@ Functions
 
 """
 from six.moves import range
-import logging
 import warnings
 
 import numpy as np
@@ -112,8 +111,8 @@ class PCA(AnalysisBase):
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
     variance will be available for analysis. As an example:
-        >>> pca = PCA(atomgroup, select='backbone').run()
-        >>> pca_space =  pca.transform(atomgroup.select_atoms('backbone'), 3)
+        >>> pca = PCA(universe, select='backbone').run()
+        >>> pca_space =  pca.transform(universe.select_atoms('backbone'), 3)
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
@@ -145,15 +144,20 @@ class PCA(AnalysisBase):
         Take an atomgroup or universe with the same number of atoms as was
         used for the calculation in :meth:`PCA.run` and project it onto the
         principal components.
+
+
+    Notes
+    -----
+    Computation can be speed up by supplying a precalculated mean structure
     """
 
-    def __init__(self, atomgroup, select='all', align=False, mean=None,
+    def __init__(self, universe, select='all', align=False, mean=None,
                  n_components=None, **kwargs):
         """
         Parameters
         ----------
-        atomgroup: MDAnalysis atomgroup
-            AtomGroup to be used for PCA.
+        universe: Universe
+            Universe
         select: string, optional
             A valid selection statement for choosing a subset of atoms from
             the atomgroup.
@@ -176,16 +180,14 @@ class PCA(AnalysisBase):
             Step between frames of trajectory to use for generation
             of covariance matrix, Default: None
         """
-        super(PCA, self).__init__(atomgroup.universe.trajectory,
+        super(PCA, self).__init__(universe.trajectory,
                                   **kwargs)
         if self.n_frames == 1:
             raise ValueError('No covariance information can be gathered from a'
                              'single trajectory frame.\n')
 
-        self._u = atomgroup.universe
+        self._u = universe
 
-        if self._quiet:
-            logging.disable(logging.WARN)
         # for transform function
         self.align = align
         # access 0th index
@@ -198,10 +200,6 @@ class PCA(AnalysisBase):
         self._calculated = False
 
         if mean is None:
-            warnings.warn('In order to demean to generate the covariance '
-                          'matrix the frames have to be iterated over twice. '
-                          'To avoid this slowdown, provide an atomgroup for '
-                          'demeaning.')
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
@@ -346,8 +344,8 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E
-                   65, 031910 (2002).
+    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
+                   Phys. Rev. E 65, 031910 (2002).
     """
     t = np.arange(len(pca_space))
     T = len(pca_space)
