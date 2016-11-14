@@ -111,8 +111,8 @@ class PCA(AnalysisBase):
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
     variance will be available for analysis. As an example:
-        >>> pca = PCA(atomgroup, select='backbone').run()
-        >>> pca_space =  pca.transform(atomgroup.select_atoms('backbone'), 3)
+        >>> pca = PCA(universe, select='backbone').run()
+        >>> pca_space =  pca.transform(universe.select_atoms('backbone'), 3)
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
@@ -144,6 +144,11 @@ class PCA(AnalysisBase):
         Take an atomgroup or universe with the same number of atoms as was
         used for the calculation in :meth:`PCA.run` and project it onto the
         principal components.
+
+
+    Notes
+    -----
+    Computation can be speed up by supplying a precalculated mean structure
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -195,10 +200,6 @@ class PCA(AnalysisBase):
         self._calculated = False
 
         if mean is None:
-            warnings.warn('In order to demean to generate the covariance '
-                          'matrix the frames have to be iterated over twice. '
-                          'To avoid this slowdown, provide an atomgroup for '
-                          'demeaning.')
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
