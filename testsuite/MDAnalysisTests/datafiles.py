@@ -124,6 +124,7 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
+    "MMTF", "MMTF_gz",
 ]
 
 from pkg_resources import resource_filename
@@ -347,6 +348,9 @@ NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
 
 RANDOM_WALK = resource_filename(__name__, 'data/xyz_random_walk.xtc')
 RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
+
+MMTF = resource_filename(__name__, 'data/173D.mmtf')
+MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename

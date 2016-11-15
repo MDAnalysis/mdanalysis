@@ -27,6 +27,7 @@ provide the format in the keyword argument *format* to
    coordinates/GRO
    coordinates/INPCRD
    coordinates/LAMMPS
+   coordinates/MMTF
    coordinates/MOL2
    coordinates/PDB
    coordinates/PDBQT

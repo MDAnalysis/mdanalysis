@@ -128,6 +128,14 @@ the attributes they provide.
                                bonds, angles,    angles, and dihedrals.
                                dihedrals         :mod:`MDAnalysis.topology.HoomdXMLParser`
 
+   Macromolecular    mmtf      altLocs,          `Macromolecular Transmission Format (MMTF)`_.
+   transmission                bfactors, bonds,  An efficient compact format for biomolecular 
+   format                      charges, masses,  structures.
+                               names,
+                               occupancies,
+                               types, icodes,
+                               resnames, resids,
+                               segids, models
    ================= ========= ================= ===================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -144,6 +152,7 @@ the attributes they provide.
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 
 .. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
+.. _Macromolecular Transmission Format (MMTF): https://mmtf.rcsb.org/
 
 Developer Notes
 ---------------
@@ -284,4 +293,5 @@ from . import XYZParser
 from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
+from . import MMTFParser
  
