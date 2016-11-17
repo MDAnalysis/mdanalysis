@@ -143,8 +143,8 @@ function and then feed the resulting dictionary to :class:`AlignTraj`::
 (See the documentation of the functions for this advanced usage.)
 
 
-Functions
----------
+Functions and Classes
+---------------------
 
 .. autofunction:: alignto
 .. autoclass:: AlignTraj
@@ -157,7 +157,7 @@ Functions
 
 .. versionchanged:: 0.16.0
    Function :func:`~MDAnalysis.analysis.align.rms_fit_trj` deprecated
-   in favor of AlignTraj class.
+   in favor of :class:`AlignTraj` class.
 
 Helper functions
 ----------------
@@ -452,7 +452,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
 
 class AlignTraj(AnalysisBase):
-    """rms_align trajectory to a reference structure using a selection.
+    """RMS-align trajectory to a reference structure using a selection.
 
     Both reference *ref* and trajectory *mobile* must be
     :class:`MDAnalysis.Universe` instances. If they contain a
@@ -476,7 +476,7 @@ class AlignTraj(AnalysisBase):
 
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', mass_weighted=False, tol_mass=0.1,
-                 strict=False, force=True, **kwargs):
+                 strict=False, force=True, in_memory=False, **kwargs):
         """Initialization
 
         Parameters
@@ -511,12 +511,24 @@ class AlignTraj(AnalysisBase):
             Last frame of trajectory to analyse, Default: -1
         step : int, optional
             Step between frames to analyse, Default: 1
+        in_memory : boolean, optional
+            *Permanently* switch `mobile` to an in-memory trajectory
+            so that alignment can be done in-place, which can improve
+            performance substantially in some cases. In this case, no file
+            is written out (`filename` and `prefix` are ignored) and only
+            the coordinates of `mobile` are changed in memory.
 
         Notes
         -----
-        If set to quiet, it is recommended to wrap the statement in a try ...
-        finally to guarantee restoring of the log level in the case of an
-        exception
+        If set to `quiet`, it is recommended to wrap the statement in a ``try
+        ...  finally`` to guarantee restoring of the log level in the case of
+        an exception.
+
+        The `in_memory` option changes the `mobile` universe to an in-memory
+        representation (see :mod:`MDAnalysis.coordinates.memory`) for the
+        remainder of the Python session. If ``mobile.trajectory```is already a
+        :class:`MemoryReader` then it is *always* treated as if `in_memory` had
+        been set to ``True``.
 
         """
         super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
@@ -527,16 +539,22 @@ class AlignTraj(AnalysisBase):
         self.ref_atoms = reference.select_atoms(*select['reference'])
         self.mobile_atoms = mobile.select_atoms(*select['mobile'])
 
-        if filename is None:
-            path, fn = os.path.split(self._trajectory.filename)
-            filename = os.path.join(path, prefix + fn)
-            logger.info('filename of rms_align with no filename given'
-                        ': {0}'.format(filename))
+        if in_memory or isinstance(mobile.trajectory, MemoryReader):
+            mobile.transfer_to_memory()
+            filename = None
+            logger.info("Moved mobile trajectory to in-memory representation")
+        else:
+            if filename is None:
+                path, fn = os.path.split(self._trajectory.filename)
+                filename = os.path.join(path, prefix + fn)
+                logger.info('filename of rms_align with no filename given'
+                            ': {0}'.format(filename))
 
-        if os.path.exists(filename) and not force:
-            raise IOError(
-                'Filename already exists in path and force is not set'
-                ' to True')
+            if os.path.exists(filename) and not force:
+                raise IOError(
+                    'Filename already exists in path and force is not set'
+                    ' to True')
+
         self.filename = filename
 
         natoms = self.mobile_atoms.n_atoms
@@ -544,6 +562,9 @@ class AlignTraj(AnalysisBase):
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
             strict=strict)
 
+        # with self.filename == None (in_memory), the NullWriter is chosen
+        # (which just ignores input) and so only the in_memory trajectory is
+        # retained
         self._writer = mda.Writer(self.filename, natoms)
 
         if mass_weighted:
@@ -749,8 +770,7 @@ def rms_fit_trj(
         x_com = traj_atoms.center_of_mass()
         traj_coordinates[:] = traj_atoms.positions - x_com
 
-        # Need to transpose coordinates such that the coordinate array is
-        # 3xN instead of Nx3. Also qcp requires that the dtype be float64
+        # qcp requires that the dtype be float64
         # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])

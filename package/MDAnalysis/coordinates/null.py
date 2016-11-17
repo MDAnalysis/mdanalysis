@@ -21,10 +21,13 @@ The :class:`NullWriter` provides a Writer instance that behaves like
 any other writer but effectively ignores its input and does not write
 any output files. This is similar to writing to ``/dev/null``.
 
+This class exists to allow developers writing generic code and tests.
+
 """
 from __future__ import absolute_import
 
 from . import base
+
 
 class NullWriter(base.Writer):
     """A trajectory Writer that does not do anything.
