@@ -30,6 +30,7 @@ Helper functions:
 .. autofunction:: get_writer_for
 
 """
+from __future__ import absolute_import
 
 import six
 
@@ -38,6 +39,7 @@ from . import (
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
 )
+
 from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
@@ -128,9 +130,11 @@ def get_writer_for(filename=None, format=None, multiframe=None):
 
     Parameters
     ----------
-    filename : str
+    filename : str or ``None``
         If no *format* is supplied, then the filename for the trajectory is
         examined for its extension and the Writer is chosen accordingly.
+        If ``None`` is provided, the
+        :class:`~MDAnalysis.coordinates.null.NullWriter` is selected.
     format : str
         Explicitly set a format.
     multiframe : bool
@@ -159,7 +163,13 @@ def get_writer_for(filename=None, format=None, multiframe=None):
        provided with the *format* parameter takes precedence over the extension
        of *filename*. A ``ValueError`` is raised if the format cannot be
        deduced from *filename*.
+
     """
+    if filename is None:
+        # need to import here to avoid circular reference
+        from .null import NullWriter
+        return NullWriter
+
     if format is None and filename:
         try:
             root, ext = util.get_ext(filename)

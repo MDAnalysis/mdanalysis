@@ -38,6 +38,7 @@ provide the format in the keyword argument *format* to
    coordinates/XYZ
    coordinates/TRZ
    coordinates/memory
+   coordinates/null
 
 .. rubric:: Coordinate core modules
 
