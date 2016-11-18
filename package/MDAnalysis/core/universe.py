@@ -504,14 +504,20 @@ class Universe(object):
             except (KeyError, AttributeError):
                 pass
 
-        for cls in (Atom, Residue, Segment, GroupBase,
-                    AtomGroup, ResidueGroup, SegmentGroup):
-            try:
-                for funcname, meth in attr.transplants[cls]:
+        try:
+            transplants = attr.transplants
+        except AttributeError:
+            # not every Attribute will have a transplant dict
+            pass
+        else:
+            # Group transplants
+            for cls in (Atom, Residue, Segment, GroupBase,
+                        AtomGroup, ResidueGroup, SegmentGroup):
+                for funcname, meth in transplants[cls]:
                     setattr(self._class_bases[cls], funcname, meth)
-            except AttributeError:
-                # not every Attribute will have a transplant dict
-                pass
+            # Universe transplants
+            for funcname, meth in transplants['Universe']:
+                setattr(self.__class__, funcname, meth)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe

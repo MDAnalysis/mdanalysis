@@ -224,6 +224,9 @@ also recognized when they are compressed with :program:`gzip` or
    | DL_Poly [#a]_ | history   |  r    | DL_Poly ascii history file                           |
    |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
    +---------------+-----------+-------+------------------------------------------------------+
+   | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |
+   |               |           |       | :mod:`MDAnalysis.coordinates.MMTF`                   |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -710,6 +713,7 @@ from . import TRZ
 from . import XTC
 from . import XYZ
 from . import memory
+from . import MMTF
 
 try:
     from . import DCD

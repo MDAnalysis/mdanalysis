@@ -45,6 +45,7 @@ Enhancements
     of loading trajectory to memory (Issue #1028 and PR #1055).
   * Selecting atoms by resid now respects icodes if they were present. Ie
     select_atoms('resid 163A') works! (Issue #839 PR #1066)
+  * Added ability to read MMTF format files (#907 PR #1069)
 
 Fixes
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)

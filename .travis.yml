@@ -51,6 +51,7 @@ install:
         conda install -c biobuilds --yes clustalw=2.1; \
     fi
   - if [[ $SETUP == 'minimal' ]]; then conda install --yes cython biopython networkx; fi
+  - pip install mmtf-python
 # ensure that cython files are rebuilt
   - find . -name '*.pyx' -exec touch '{}' \;
   - pip install -v package/

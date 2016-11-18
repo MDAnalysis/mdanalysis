@@ -484,7 +484,7 @@ if __name__ == '__main__':
           ext_modules=exts,
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
-          requires=['numpy (>=1.5.0)', 'biopython',
+          requires=['numpy (>=1.5.0)', 'biopython', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
