@@ -107,8 +107,8 @@ the most important ones of which is
 
 :attr:`Universe.atoms` is a
 :class:`~MDAnalysis.core.groups.AtomGroup` and can be thought of as
-list consisting of :class:`~MDAnalysis.core.AtomGroup.Atom`
-objects. The :class:`~MDAnalysis.core.AtomGroup.Atom` is the
+list consisting of :class:`~MDAnalysis.core.groups.Atom`
+objects. The :class:`~MDAnalysis.core.groups.Atom` is the
 elementary and fundamental object in MDAnalysis.
 
 The :attr:`MDAnalysis.Universe.trajectory` attribute gives access to the coordinates

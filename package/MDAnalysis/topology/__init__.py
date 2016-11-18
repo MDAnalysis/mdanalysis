@@ -165,7 +165,7 @@ trajectory. This includes
 
 * identity of atoms (name, type, number, partial charge, ...) and to
   which residue and segment they belong; atoms are identified in
-  MDAnalysis by their :attr:`~MDAnalysis.core.AtomGroup.Atom.index`,
+  MDAnalysis by their :attr:`~MDAnalysis.core.groups.Atom.index`,
   an integer number starting at 0 and incremented in the order of
   atoms found in the topology.
 
@@ -211,13 +211,13 @@ atoms
 ~~~~~~
 
 The **atoms** are represented as a :class:`list` of
-:class:`~MDAnalysis.core.AtomGroup.Atom` instances. The parser needs
-to initialize the :class:`~MDAnalysis.core.AtomGroup.Atom` objects
+:class:`~MDAnalysis.core.groups.Atom` instances. The parser needs
+to initialize the :class:`~MDAnalysis.core.groups.Atom` objects
 with the data read from the topology file.
 
 The order of atoms in the list must correspond to the sequence of
 atoms in the topology file. The atom's
-:attr:`~MDAnalysis.core.AtomGroup.Atom.index` corresponds to its
+:attr:`~MDAnalysis.core.groups.Atom.index` corresponds to its
 index in this list.
 
 

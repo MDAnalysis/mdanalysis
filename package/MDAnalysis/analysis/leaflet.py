@@ -78,7 +78,7 @@ class LeafletFinder(object):
 
        leaflet0.residues
 
-    provides a :class:`~MDAnalysis.core.AtomGroup.ResidueGroup`
+    provides a :class:`~MDAnalysis.core.groups.ResidueGroup`
     instance. Similarly, all atoms in the first leaflet are then ::
 
        leaflet0.residues.atoms

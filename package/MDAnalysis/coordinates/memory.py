@@ -133,7 +133,7 @@ Creating an in-memory trajectory of a sub-system
 Creating a trajectory for just a selection of an existing trajectory
 requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
-the :func:`~MDAnalysis.core.AtomGroup.Merge` function, for the former
+the :func:`~MDAnalysis.core.universe.Merge` function, for the former
 the :meth:`~MDAnalysis.core.universe.Universe.load_new` method of a
 :class:`~MDAnalysis.Universe` together with the
 :class:`MemoryReader`. In the following, an in-memory trajectory of
