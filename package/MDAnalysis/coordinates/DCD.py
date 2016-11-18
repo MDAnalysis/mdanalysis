@@ -506,7 +506,7 @@ class DCDReader(base.Reader):
 
         :Arguments:
             *asel*
-               :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+               :class:`~MDAnalysis.core.groups.AtomGroup` object
                Defaults to None, in which case the full set of coordinate data
                is returned.
             *start*, *stop*, *step*

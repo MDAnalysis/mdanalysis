@@ -133,16 +133,16 @@ class Universe(object):
         atom type which are used in guessing bonds.
     is_anchor
         When unpickling instances of
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` existing Universes are
+        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
         searched for one where to anchor those atoms. Set to ``False`` to
         prevent this Universe from being considered. [``True``]
     anchor_name
         Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled from the
+        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
         Universe to only unpickle if a compatible Universe with matching
         *anchor_name* is found. *is_anchor* will be ignored in this case but
         will still be honored when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled with
+        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled with
         *anchor_name*==``None``. [``None``]
     in_memory
         After reading in the trajectory, transfer it to an in-memory

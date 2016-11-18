@@ -654,7 +654,7 @@ class X3DNAtraj(BaseX3DNA):
 
           *universe*
                The input trajectory as part of a
-               :class:`~MDAnalysis.core.AtomGroup.Universe`. trajectory is
+               :class:`~MDAnalysis.core.universe.Universe`. trajectory is
                converted to a sequence of PDB files and X3DNA is run on each
                individual file. (Use the *start*, *stop*, and *step* keywords
                to slice the trajectory.)

@@ -45,7 +45,7 @@ general streams as inputs, such as a :func:`cStringIO.StringIO`
 instances (essentially, a memory buffer) by wrapping these instances
 into a :class:`NamedStream`. This :class:`NamedStream` can then be
 used in place of an ordinary file name (typically, with a
-class:`~MDAnalysis.core.AtomGroup.Universe` but it is also possible to
+class:`~MDAnalysis.core.universe.Universe` but it is also possible to
 *write* to such a stream using :func:`MDAnalysis.Writer`).
 
 .. rubric: Examples
@@ -67,7 +67,7 @@ It is important to provide a proper pseudo file name with the correct extension
 (".pdb") to :class:`NamedStream` because the file type recognition uses the
 extension of the file name to determine the file format or alternatively
 provide the ``format="pdb"`` keyword argument to the
-:class:`~MDAnalysis.core.AtomGroup.Universe`.
+:class:`~MDAnalysis.core.universe.Universe`.
 
 The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that

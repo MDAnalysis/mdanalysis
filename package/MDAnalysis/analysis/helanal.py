@@ -166,7 +166,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
     :Arguments:
        *universe*
-          :class:`~MDAnalysis.core.AtomGroup.Universe`
+          :class:`~MDAnalysis.core.universe.Universe`
 
     :Keywords:
        *selection*

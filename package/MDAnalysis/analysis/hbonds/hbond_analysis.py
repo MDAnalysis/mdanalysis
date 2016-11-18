@@ -24,7 +24,7 @@ Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
 :Copyright: GNU Public License v3
 
 
-Given a :class:`~MDAnalysis.core.AtomGroup.Universe` (simulation
+Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
 trajectory with 1 or more frames) measure all hydrogen bonds for each
 frame between selections 1 and 2.
 
@@ -677,7 +677,7 @@ class HydrogenBondAnalysis(object):
         :class:`HydrogenBondAnalysis`.
 
         :Returns: list of hydrogens (can be a
-                  :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or empty list
+                  :class:`~MDAnalysis.core.groups.AtomGroup`) or empty list
                   ``[]`` if none were found.
 
         .. SeeAlso::

@@ -107,7 +107,7 @@ and analyze all timesteps *ts* of the trajectory::
    9.72062
   ....
 
-.. SeeAlso:: :class:`MDAnalysis.core.AtomGroup.Universe` for details
+.. SeeAlso:: :class:`MDAnalysis.core.universe.Universe` for details
 
 
 Examples

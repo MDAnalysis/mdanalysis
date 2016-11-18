@@ -98,13 +98,13 @@ Classes, methods, and functions
    .. attribute:: ref_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame
+      :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
       from :attr:`Path.u_reference`
 
    .. attribute:: path_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms
+      :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select atoms
       to compose :attr:`Path.path`
 
    .. attribute:: ref_frame
@@ -161,13 +161,13 @@ Classes, methods, and functions
    .. attribute:: ref_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame
+      :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
       from :attr:`PSAnalysis.u_reference`
 
    .. attribute:: path_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms
+      :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select atoms
       to compose :attr:`Path.path`
 
    .. attribute:: ref_frame
@@ -267,7 +267,7 @@ def get_msd_matrix(P, Q, axis=None):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). The pairwise MSD
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). The pairwise MSD
     matrix has dimensions :math:`N_p` by :math:`N_q`.
 
     :Arguments:
@@ -327,7 +327,7 @@ def hausdorff(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
     :Arguments:
@@ -366,7 +366,7 @@ def hausdorff_wavg(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form. The nearest
     neighbor distances for *P* (to *Q*) and those of *Q* (to *P*) are averaged
     individually to get the average nearest neighbor distance for *P* and
@@ -410,7 +410,7 @@ def hausdorff_avg(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form. The nearest
     neighbor distances for *P* (to *Q*) and those of *Q* (to *P*) are all
     averaged together to get a mean nearest neighbor distance. This measure
@@ -453,7 +453,7 @@ def hausdorff_neighbors(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
     :Arguments:
@@ -484,7 +484,7 @@ def discrete_frechet(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
+    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or :|2Dp| (|2Dq|) in flattened form.
 
     :Arguments:
@@ -613,7 +613,7 @@ class Path(object):
              The selection to operate on for rms fitting; can be one of:
 
              1. any valid selection string for
-                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
+                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
                 produces identical selections in *mobile* and *reference*; or
              2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
                 :func:`MDAnalysis.analysis.align.fasta2select` function returns
@@ -709,7 +709,7 @@ class Path(object):
 
         :Returns:
           :class:`numpy.ndarray` representing a time series of atomic positions
-          of an :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection from
+          of an :class:`MDAnalysis.core.groups.AtomGroup` selection from
           :attr:`Path.u_fitted.trajectory`
         """
         select = select if select is not None else self.path_select
@@ -1060,7 +1060,7 @@ class PSAnalysis(object):
              The selection to operate on; can be one of:
 
              1. any valid selection string for
-                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
+                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
                 produces identical selections in *mobile* and *reference*; or
              2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
                 :func:`MDAnalysis.analysis.align.fasta2select` function returns

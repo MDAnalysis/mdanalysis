@@ -142,7 +142,7 @@ class SelectionWriter(object):
 
         :Arguments:
            *selection*
-               a :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+               a :class:`MDAnalysis.core.groups.AtomGroup`
            *number*
                selection will be named "mdanalysis<number>"
                (``None`` auto increments between writes; useful

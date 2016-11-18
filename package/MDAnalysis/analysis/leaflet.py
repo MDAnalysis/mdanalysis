@@ -31,12 +31,12 @@ Algorithm:
 One can use this information to identify
 
 * the upper and lower leaflet of a *planar membrane* by comparing the
-  the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
+  the :meth:`~MDAnalysis.core.groups.AtomGroup.center_of_geometry` of
   the leaflet groups, or
 
 * the outer and inner leaflet of a *vesicle* by comparing histograms
   of distances from the centre of geometry (or possibly simply the
-  :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radius_of_gyration`).
+  :meth:`~MDAnalysis.core.groups.AtomGroup.radius_of_gyration`).
 
 See example scripts in the MDAnalysisCookbook_ on how to use
 :class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
@@ -91,7 +91,7 @@ class LeafletFinder(object):
              *universe*
                  :class:`MDAnalysis.Universe` or a PDB file name.
              *selection*
-                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a
+                 :class:`MDAnalysis.core.groups.AtomGroup` or a
                  :meth:`MDAnalysis.Universe.select_atoms` selection string
                  for atoms that define the lipid head groups, e.g.
                  universe.atoms.PO4 or "name PO4" or "name P*"
@@ -178,7 +178,7 @@ class LeafletFinder(object):
         return dict(((idx, len(component)) for idx, component in enumerate(self.components)))
 
     def groups(self, component_index=None):
-        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
+        """Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.
 
         If no argument is supplied, then a list of all leaflet groups is returned.
 
@@ -190,7 +190,7 @@ class LeafletFinder(object):
             return self.group(component_index)
 
     def group(self, component_index):
-        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*."""
+        """Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*."""
         # maybe cache this?
         indices = [i for i in self.components[component_index]]
         return self.selection[indices]

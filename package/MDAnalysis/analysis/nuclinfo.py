@@ -35,7 +35,7 @@ particular
 
 For applications of this kind of analysis see [Denning2011]_ and [Denning2012]_.
 
-All functions take a :class:`~MDAnalysis.core.AtomGroup.Universe` as an
+All functions take a :class:`~MDAnalysis.core.universe.Universe` as an
 argument together with further parameters that specify the base or bases in
 question. Angles are in degrees. The functions use standard CHARMM names for
 nucleic acids and atom names.
@@ -114,7 +114,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     :Arguments:
       *universe*
-          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *seg1*
           segment id for first base
       *i*
@@ -147,7 +147,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     :Arguments:
       *universe*
-          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *seg1*
           segment id for first base
       *i*
@@ -180,7 +180,7 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     :Arguments:
       *universe*
-          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the
+          :class:`~MDAnalysis.core.universe.Universe` containing the
           trajectory *i*
       *seg1*
           segment id for first base
@@ -219,7 +219,7 @@ def phase_cp(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
 
        *segid*
          segment identity of resid
@@ -287,7 +287,7 @@ def phase_as(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segment identity of resid
       *i*
@@ -353,7 +353,7 @@ def tors(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -431,7 +431,7 @@ def tors_alpha(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -456,7 +456,7 @@ def tors_beta(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -481,7 +481,7 @@ def tors_gamma(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -506,7 +506,7 @@ def tors_delta(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -531,7 +531,7 @@ def tors_eps(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -556,7 +556,7 @@ def tors_zeta(universe, seg, i):
 
     :Arguments:
       *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
       *segid*
          segid of resid
       *i*
@@ -581,7 +581,7 @@ def tors_chi(universe, seg, i):
 
      :Arguments:
        *universe*
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the
+           :class:`~MDAnalysis.core.universe.Universe` containing the
            trajectory
        *segid*
            segid of resid
@@ -613,7 +613,7 @@ def hydroxyl(universe, seg, i):
 
      :Arguments:
        *universe*
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the
+           :class:`~MDAnalysis.core.universe.Universe` containing the
            trajectory
        *segid*
            segid of resid
@@ -647,7 +647,7 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
 
      :Arguments:
        *universe*
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the
+           :class:`~MDAnalysis.core.universe.Universe` containing the
            trajectory
        *segid1*
            segid of resid base pairing with bp2

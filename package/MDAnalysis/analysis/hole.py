@@ -68,7 +68,7 @@ Trajectory
 
 One can also run :program:`hole` on frames in a trajectory with
 :class:`HOLEtraj`. In this case, provide a
-:class:`~MDAnalysis.core.AtomGroup.Universe`::
+:class:`~MDAnalysis.core.universe.Universe`::
 
    import MDAnalysis as mda
    from MDAnalysis.analysis.hole import HOLEtraj
@@ -1188,9 +1188,9 @@ class HOLEtraj(BaseHOLE):
 
         Parameters
         ----------
-        universe : :class:`~MDAnalysis.core.AtomGroup.Universe`
+        universe : :class:`~MDAnalysis.core.universe.Universe`
              The input trajectory is taken from a
-             :class:`~MDAnalysis.core.AtomGroup.Universe`. The trajectory is
+             :class:`~MDAnalysis.core.universe.Universe`. The trajectory is
              converted to a sequence of PDB files and :class:`HOLE` is run on
              each individual file.
         orderparameters : array_like or string, optional
@@ -1202,7 +1202,7 @@ class HOLEtraj(BaseHOLE):
              so that the whole trajectory is analyzed
         selection : string, optional
              selection string for
-             :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` to select
+             :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select
              the group of atoms that is to be analysed by HOLE. The default is
              "protein" to include all protein residues.
         cpoint : bool or array_like, optional
@@ -1210,7 +1210,7 @@ class HOLEtraj(BaseHOLE):
              default is ``None`` to select HOLE's internal search procedure.
 
              If set to ``True`` then *cpoint* is guessed as the
-             :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
+             :meth:`~MDAnalysis.core.groups.AtomGroup.center_of_geometry` of
              the `selection` from the first frame of the trajectory.
 
              If `cpoint` is not set or set to ``None`` then HOLE guesses it

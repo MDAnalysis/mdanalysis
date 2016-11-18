@@ -19,7 +19,7 @@
 VMD selections
 ==============
 
-Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a VMD_ `tcl` file
+Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a VMD_ `tcl` file
 that defines `atomselect macros`_. To be used in VMD like this::
 
   source macros.vmd

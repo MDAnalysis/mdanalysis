@@ -203,7 +203,7 @@ class DistanceMatrix(AnalysisBase):
         """
         Parameters
         ----------
-        u : universe `~MDAnalysis.core.AtomGroup.Universe`
+        u : universe `~MDAnalysis.core.universe.Universe`
             The MD Trajectory for dimension reduction, remember that
             computational cost of eigenvalue decomposition
             scales at O(N^3) where N is the number of frames.
@@ -211,7 +211,7 @@ class DistanceMatrix(AnalysisBase):
             start and stop.
         select: str, optional
             Any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+            :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
             This selection of atoms is used to calculate the RMSD between
             different frames. Water should be excluded.
         metric : function, optional

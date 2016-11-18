@@ -5,7 +5,7 @@
  Selection Commands
 ====================
 
-Once you have the :meth:`~MDAnalysis.core.AtomGroup.Universe` object, you can
+Once you have the :meth:`~MDAnalysis.core.universe.Universe` object, you can
 select atoms (using a syntax very similar to `CHARMM's atom selection
 syntax`_)::
 
@@ -14,9 +14,9 @@ syntax`_)::
 .. _`CHARMM's atom selection syntax`: 
    http://www.charmm.org/documentation/c37b1/select.html
 
-The :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` of a
-:class:`~MDAnalysis.core.AtomGroup.Universe` returns a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`, so you can use all the methods
+The :meth:`~MDAnalysis.core.universe.Universe.select_atoms` of a
+:class:`~MDAnalysis.core.universe.Universe` returns a
+:class:`~MDAnalysis.core.groups.AtomGroup`, so you can use all the methods
 defined for AtomGroups on them. Selections always return an :class:`AtomGroup` with
 atoms sorted according to their index in the topology (this is to ensure that
 there aren't any duplicates, which can happen with complicated selections).
@@ -280,7 +280,7 @@ Ordered selections
 ==================
 
 :meth:`~MDAnalysis.Universe.select_atoms` sorts the atoms in the
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` by atom index before returning them (this is to
+:class:`~MDAnalysis.core.groups.AtomGroup` by atom index before returning them (this is to
 eliminate possible duplicates in the selection). If the ordering of atoms is
 crucial (for instance when describing angles or dihedrals) or if duplicate
 atoms are required then one has to concatenate multiple AtomGroups, which does

@@ -140,9 +140,9 @@ the attributes they provide.
 
 .. [#a] This format can also be used to provide *coordinates* so that
    it is possible to create a full
-   :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply providing a
+   :mod:`~MDAnalysis.core.universe.Universe` by simply providing a
    file of this format as the sole argument to
-   :mod:`~MDAnalysis.core.AtomGroup.Universe`: ``u =
+   :mod:`~MDAnalysis.core.universe.Universe`: ``u =
    Universe(filename)``
 
 .. [#b] The Gromacs TPR format contains coordinate information but

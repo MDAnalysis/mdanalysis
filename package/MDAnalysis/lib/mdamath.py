@@ -266,7 +266,7 @@ def make_whole(atomgroup, reference_atom=None):
 
     :Arguments:
       *atomgroup*
-        The :class:`MDAnalysis.core.AtomGroup.AtomGroup` to work with.
+        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
         must belong in the same molecule or fragment.
 

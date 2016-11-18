@@ -19,7 +19,7 @@
 PyMOL selections
 =================
 
-Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a
+Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a
 script `pml`_ file that defines PyMOL_ atomselect macros. To be used
 in PyMOL like this::
 

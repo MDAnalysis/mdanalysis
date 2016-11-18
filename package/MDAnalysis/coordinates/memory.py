@@ -30,7 +30,7 @@ memory, rather than reading from file. This makes it possible to use
 operate on raw coordinate using existing MDAnalysis tools. In
 addition, it allows the user to make changes to the coordinates in a
 trajectory (e.g. through
-:attr:`MDAnalysis.core.AtomGroup.AtomGroup.positions`) without having
+:attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having
 to write the entire state to file.
 
 
@@ -50,7 +50,7 @@ trajectory to memory.
 
 The most straightforward use of the :class:`MemoryReader` is to simply
 use the ``in_memory=True`` flag for the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class, which
+:class:`~MDAnalysis.core.universe.Universe` class, which
 automatically transfers a trajectory to memory::
 
  import MDAnalysis as mda
@@ -67,8 +67,8 @@ Switching a trajectory to an in-memory representation
 
 The decision to transfer the trajectory to memory can be made at any
 time with the
-:meth:`~MDAnalysis.core.AtomGroup.Universe.transfer_to_memory` method
-of a :class:`~MDAnalysis.core.AtomGroup.Universe`::
+:meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory` method
+of a :class:`~MDAnalysis.core.universe.Universe`::
 
     universe = mda.Universe(TPR, XTC)
     universe.transfer_to_memory()
@@ -134,7 +134,7 @@ Creating a trajectory for just a selection of an existing trajectory
 requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
 the :func:`~MDAnalysis.core.AtomGroup.Merge` function, for the former
-the :meth:`~MDAnalysis.core.AtomGroup.Universe.load_new` method of a
+the :meth:`~MDAnalysis.core.universe.Universe.load_new` method of a
 :class:`~MDAnalysis.Universe` together with the
 :class:`MemoryReader`. In the following, an in-memory trajectory of
 only the protein is created::
@@ -291,7 +291,7 @@ class MemoryReader(base.ProtoReader):
 
         Parameters
         ---------
-        asel : :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+        asel : :class:`~MDAnalysis.core.groups.AtomGroup` object
             Atom selection. Defaults to None, in which case the full set of
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
