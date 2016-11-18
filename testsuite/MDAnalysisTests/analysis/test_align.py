@@ -180,6 +180,12 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, -1, 6.929083032629219,
                           weights=self.universe.atoms.masses)
 
+    def test_AlignTraj_partial_fit(self):
+        # fitting on a partial selection should still write the whole topology
+        align.AlignTraj(self.universe, self.reference, select='resid 1-20',
+                        filename=self.outfile, mass_weighted=True).run()
+        MDAnalysis.Universe(PSF, self.outfile)
+
     def test_AlignTraj_in_memory(self):
         self.reference.trajectory[-1]
         x = align.AlignTraj(self.universe, self.reference,
@@ -190,7 +196,6 @@ class TestAlign(TestCase):
         # check in memory trajectory
         self._assert_rmsd(self.universe, 0, 6.929083044751061)
         self._assert_rmsd(self.universe, -1, 0.0)
-
 
     def _assert_rmsd(self, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
@@ -272,5 +277,3 @@ def test_sequence_alignment():
             "mobile sequence mismatch")
     assert_almost_equal(score, 54.6)
     assert_array_equal([begin, end], [0, reference.n_residues])
-
-
