@@ -11,18 +11,52 @@ the selection definitions and parsing in
 :mod:`MDAnalysis.core.selection`.
 
 
-.. rubric:: Contents 
+Important objects for users
+===========================
+
+All users of MDAnalysis need to understand the two most important
+classes in this section, namely the
+:class:`~MDAnalysis.core.universe.Universe` and the
+:class:`~MDAnalysis.core.groups.AtomGroup`.
+
+.. toctree::
+   :maxdepth: 1
+
+   core/universe
+   core/groups
+   core/Timeseries
+
+
+Topology system
+===============
+
+The topology system is primarily of interest to developers.
+
+.. toctree::
+   :maxdepth: 1
+
+   core/topology
+   core/levels
+   core/topologyobjects
+   core/topologyattrs
+
+Selection system
+================
+
+The selection system is primarily of interest to developers.
+
+.. toctree::
+   :maxdepth: 1
+
+   core/selection
+
+Flag system
+============
+
+The flag system contains the global behavior of MDAnalysis. It is
+normally not necessary to change anything here.
 
 .. toctree::
    :maxdepth: 1
 
    core/init
-   core/universe
-   core/groups
-   core/levels
-   core/topology
-   core/selection
-   core/topologyobjects
-   core/topologyattrs   
-   core/Timeseries
-
