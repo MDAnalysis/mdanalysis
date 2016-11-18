@@ -531,14 +531,9 @@ class AlignTraj(AnalysisBase):
         been set to ``True``.
 
         """
-        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
-        if self._quiet:
-            logging.disable(logging.WARN)
-
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
         self.mobile_atoms = mobile.select_atoms(*select['mobile'])
-
         if in_memory or isinstance(mobile.trajectory, MemoryReader):
             mobile.transfer_to_memory()
             filename = None
@@ -555,9 +550,18 @@ class AlignTraj(AnalysisBase):
                     'Filename already exists in path and force is not set'
                     ' to True')
 
+        # do this after setting the memory reader to have a reference to the
+        # right reader.
+        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
+        if self._quiet:
+            logging.disable(logging.WARN)
+
+        # store reference to mobile atoms
+        self.mobile = mobile.atoms
+
         self.filename = filename
 
-        natoms = self.mobile_atoms.n_atoms
+        natoms = self.mobile.n_atoms
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
             strict=strict)
@@ -588,7 +592,7 @@ class AlignTraj(AnalysisBase):
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
                                                  self._ref_coordinates,
-                                                 self.mobile_atoms,
+                                                 self.mobile,
                                                  mobile_com,
                                                  self._ref_com, self._weights)
         # write whole aligned input trajectory system
@@ -1170,7 +1174,6 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
-
         else:
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
