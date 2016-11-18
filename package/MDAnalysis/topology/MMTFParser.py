@@ -99,7 +99,16 @@ class Models(SegmentAttr):
     transplants = defaultdict(list)
 
     def models(self):
-        """Models in this Universe"""
+        """Models in this Universe.
+
+        The MMTF format can define various models for a given structure. The
+        topology (eg residue identity) can change between different models,
+        resulting in a different number of atoms in each model.
+
+        Returns
+        -------
+        A list of AtomGroups, each representing a single model.
+        """
         model_ids = np.unique(self.segments.models)
 
         return [self.select_atoms('model {}'.format(i))
