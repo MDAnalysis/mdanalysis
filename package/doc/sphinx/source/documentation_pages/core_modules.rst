@@ -6,8 +6,9 @@ Core modules
 
 The :mod:`MDAnalysis.core` modules contain functionality essential for
 MDAnalysis, such as the central data structures in
-:mod:`MDAnalysis.core.AtomGroup` or the selection definitions and
-parsing in :mod:`MDAnalysis.core.Selection`.
+:mod:`MDAnalysis.core.universe` and :mod:`MDAnalysis.core.groups` or
+the selection definitions and parsing in
+:mod:`MDAnalysis.core.selection`.
 
 
 .. rubric:: Contents 
@@ -16,8 +17,12 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    :maxdepth: 1
 
    core/init
-   core/AtomGroup
-   core/Selection
+   core/universe
+   core/groups
+   core/levels
+   core/topology
+   core/selection
    core/topologyobjects
+   core/topologyattrs   
    core/Timeseries
 

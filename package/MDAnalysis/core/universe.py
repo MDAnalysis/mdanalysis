@@ -1,3 +1,52 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
+"""\
+=========================================================
+Core object: Universe --- :mod:`MDAnalysis.core.universe`
+=========================================================
+
+The :class:`~MDAnalysis.core.universe.Universe` class ties a topology
+and a trajectory together. Almost all code in MDAnalysis starts with a
+``Universe``.
+
+Normally, a ``Universe`` is created from files::
+
+  import MDAnalysis as mda
+  u = mda.Universe("topology.psf", "trajectory.dcd")
+
+In order to construct new simulation system it is also convenient to
+construct a ``Universe`` from existing
+:class:`~MDAnalysis.core.group.AtomGroup` instances with the
+:func:`Merge` function.
+
+
+Classes
+=======
+
+.. autoclass:: Universe
+   :members:
+
+Functions
+=========
+
+.. autofunction:: Merge
+
+"""
+
 import numpy as np
 import logging
 import copy
@@ -262,17 +311,21 @@ class Universe(object):
             advanced use)
 
 
-        # TODO: check what happens if filename is None
         Returns
         -------
         filename : str
         trajectory_format : str
 
-        # TODO: look up raises doc formating
+
+        TODO: check what happens if filename is None
+
+
         Raises
         ------
         TypeError if trajectory format can not be
                   determined or no appropriate trajectory reader found
+
+        TODO: look up raises doc formating
 
         .. versionchanged:: 0.8
            If a list or sequence that is provided for *filename* only contains
@@ -352,6 +405,7 @@ class Universe(object):
         quiet : bool, optional
             Will print the progress of loading trajectory to memory, if
             set to True. Default value is quiet.
+
 
         .. versionadded:: 0.16.0
         """

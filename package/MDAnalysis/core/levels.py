@@ -14,23 +14,32 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
+"""\
 Hierarchy levels --- :mod:`MDAnalysis.core.levels`
 ==================================================
 
-Levels are used to define the relationships between different containers in
-MDAnalysis
+:class:`Level` instances are used to define the relationships between
+different containers (see :mod:`MDAnalysis.core.groups`) in
+MDAnalysis.
 
-Levels can be navigated between using the .child and .parent attributes
-Classes for containers at a given level are accessed using the .singular
-and .plural attributes
+Levels can be navigated between using the :attr:`.child` and
+:attr:`.parent` attributes of the containers. Classes for containers
+at a given level are accessed using the :attr:`.singular` and
+:attr:`.plural` attributes::
 
-                  Level:
-        .singular =====================  .plural
-Atom    <-        Atomlevel    ^ .child  ->  AtomGroup
-Residue <-        Residuelevel !         ->  ResidueGroup
-Segment <-        Segmentlevel v .parent ->  SegmentGroup
+                     Level:
+           .singular =====================  .plural
+   Atom    <-        Atomlevel    ^ .child  ->  AtomGroup
+   Residue <-        Residuelevel !         ->  ResidueGroup
+   Segment <-        Segmentlevel v .parent ->  SegmentGroup
+
+.. SeeAlso::
+   :mod:`MDAnalysis.core.groups`
+
+.. autoclass:: Level
+
 """
+
 import functools
 
 
@@ -43,11 +52,14 @@ class Level(object):
 
     Can do comparisons with either
 
-    .singular gives the Class for Components of this Level
-    .plural gives the Class for Groups of this Level
+    - :attr:`.singular` gives the Class for Components of this Level
+    - :attr:`.plural` gives the Class for Groups of this Level
 
-    .parent gives the Level object above this
-    .child gives the Level object below this
+    or
+
+    - :attr:`.parent` gives the :class:`Level` object above this
+    - :attr:`.child` gives the :class:`Level` object below this
+
     """
     def __init__(self, name, singular, plural):
         self.name = name

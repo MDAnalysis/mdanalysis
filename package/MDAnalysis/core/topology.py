@@ -13,9 +13,39 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Topology object --- :mod:`MDAnalysis.core.topology'
-===================================================================
+"""\
+Core Topology object --- :mod:`MDAnalysis.core.topology`
+========================================================
+
+.. versionadded:: 0.16.0
+
+:class:`Topology` is the core object that holds all topology information.
+
+TODO: Add in-depth discussion.
+
+Notes
+-----
+For developers: In MDAnalysis 0.16.0 this new topology system was
+introduced and discussed as issue `#363`_; this issue contains key
+information and discussions on the new system. The issue number *363*
+is also being used as a short-hand in discussions to refer to the new
+topology system.
+
+
+.. _`#363`: https://github.com/MDAnalysis/mdanalysis/issues/363
+
+Classes
+-------
+
+.. autoclass:: Topology
+   :members:
+.. autoclass:: TransTable
+   :members:
+
+Helper functions
+----------------
+
+.. autofunction:: make_downshift_arrays
 
 """
 
@@ -69,8 +99,10 @@ def make_downshift_arrays(upshift, nparents):
     Notes
     -----
     The final entry in the return array will be ``None`` to ensure that the
-    dtype of the array is object.  This means negative indexing should
-    not be used ever with these arrays.
+    dtype of the array is :class:`object`.
+
+    .. warning:: This means negative indexing should **never**
+                 be used with these arrays.
     """
     order = np.argsort(upshift)
 

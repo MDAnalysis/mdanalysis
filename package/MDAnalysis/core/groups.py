@@ -13,8 +13,48 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Containers for objects in MDA
+"""\
+==========================================================
+Core objects: Containers --- :mod:`MDAnalysis.core.groups`
+==========================================================
 
+The :class:`~MDAnalysis.core.universe.Universe` instance contains all
+the particles in the system (which MDAnalysis calls
+:class:`Atom`). Groups of atoms are handled as :class:`AtomGroup`
+instances. The :class:`AtomGroup` is probably the most important
+object in MDAnalysis because virtually everything can be accessed
+through it. `AtomGroup` instances can be easily created (e.g., from a
+:meth:`AtomGroup.select_atoms` selection or just by slicing).
+
+For convenience, chemically meaningful groups of atoms such as a
+:class:`Residue` or a :class:`Segment` (typically a whole molecule or
+all of the solvent) also exist as containers, as well as groups of
+these units ((:class:`ResidueGroup`, :class:`SegmentGroup`).
+
+
+Classes
+=======
+
+Collections
+-----------
+
+.. autoclass:: AtomGroup
+   :members:
+.. autoclass:: ResidueGroup
+   :members:
+.. autoclass:: SegmentGroup
+   :members:
+
+
+Chemical units
+--------------
+
+.. autoclass:: Atom
+   :members:
+.. autoclass:: Residue
+   :members:
+.. autoclass:: Segment
+   :members:
 
 """
 from six.moves import zip
@@ -370,6 +410,7 @@ class GroupBase(_MutableBase):
             2x3 array giving corners of bounding box as
             [[xmin, ymin, zmin], [xmax, ymax, zmax]].
 
+
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
@@ -404,6 +445,7 @@ class GroupBase(_MutableBase):
             Radius of bounding sphere.
         center : array
             Coordinates of sphere center as ``[xcen,ycen,zcen]``.
+
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -490,9 +532,10 @@ class GroupBase(_MutableBase):
     def rotate(self, R, point=None):
         """Apply a rotation matrix `R` to the selection's coordinates.
 
-        No translation is done before the rotation is applied, so coordinates
-        are rotated about the origin. This differs from the behavior of
-        ``rotateby``.
+        By default (`point=None`) the rotation is performed around the
+        centroid of the group (:meth:`center_of_geometry`. In order to
+        perform a rotation around, say, the origin, use ``point=[0, 0,
+        0]``.
 
         Parameters
         ----------
@@ -606,6 +649,7 @@ class GroupBase(_MutableBase):
 
         Works with either orthogonal or triclinic box types.
 
+
         .. versionadded:: 0.8
 
         """
@@ -668,6 +712,7 @@ class GroupBase(_MutableBase):
 
         .. note::
            wrap with all default keywords is identical to :meth:`pack_into_box`
+
 
         .. versionadded:: 0.9.2
         """
@@ -1115,6 +1160,7 @@ class AtomGroup(GroupBase):
                 therefore have atoms that were initially absent from the
                 instance :meth:`~select_atoms` was called from.
 
+
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
         .. versionchanged:: 0.8.1
@@ -1137,6 +1183,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         level : {'atom', 'residue', 'segment'}
+
 
         .. versionadded:: 0.9.0
         """
@@ -1165,12 +1212,14 @@ class AtomGroup(GroupBase):
         vdwradii : dict, optional
           Dict relating atom type: vdw radii
 
+
         See Also
         --------
-        :func:`MDAnalysis.topology.core.guess_bonds` for details on the
-        algorithm used to guess bonds.
+        :func:`MDAnalysis.topology.guessers.guess_bonds`
+
 
         .. versionadded:: 0.10.0
+
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -1209,6 +1258,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 2
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 2:
@@ -1227,6 +1277,7 @@ class AtomGroup(GroupBase):
         Raises
         ------
           `ValueError` if the AtomGroup is not length 3
+
 
         .. versionadded:: 0.11.0
         """
@@ -1247,6 +1298,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 4
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 4:
@@ -1266,6 +1318,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 4
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 4:
@@ -1275,31 +1328,41 @@ class AtomGroup(GroupBase):
 
     def write(self, filename=None, file_format="PDB",
               filenamefmt="{trjname}_{frame}", **kwargs):
-        """Write AtomGroup to a file.
+        """Write `AtomGroup` to a file.
 
-        AtomGroup.write(filename[,format])
+        The output can either be a coordinate file or a selection, depending on
+        the `format`. Only single-frame coordinate files are supported. If you
+        need to write out a trajectory, see :mod:`MDAnalysis.coordinates`.
 
-        :Keywords:
-          *filename*
-               ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
-          *format*
-                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
-                Jmol (spt); case-insensitive and can also be supplied as the
-                filename extension [PDB]
-          *filenamefmt*
-                format string for default filename; use substitution tokens
-                'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
-          *bonds*
-                how to handle bond information, especially relevant for PDBs;
-                default is ``"conect"``.
-                * ``"conect"``: write only the CONECT records defined in the original
-                  file
-                * ``"all"``: write out all bonds, both the original defined and those
-                  guessed by MDAnalysis
-                * ``None``: do not write out bonds
+        Parameters
+        ----------
+        filename : str, optional
+           ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
+
+        format : str, optional
+            PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
+            Jmol (spt); case-insensitive and can also be supplied as the
+            filename extension [PDB]
+
+        filenamefmt : str, optional
+            format string for default filename; use substitution tokens
+            'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
+
+        bonds : str, optional
+           how to handle bond information, especially relevant for PDBs;
+           default is ``"conect"``.
+
+           * ``"conect"``: write only the CONECT records defined in the original
+             file
+           * ``"all"``: write out all bonds, both the original defined and those
+             guessed by MDAnalysis
+           * ``None``: do not write out bonds
+
+
         .. versionchanged:: 0.9.0
            Merged with write_selection.  This method can now write both
            selections out.
+
         """
         import MDAnalysis.coordinates
         import MDAnalysis.selections
