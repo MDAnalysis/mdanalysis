@@ -305,27 +305,25 @@ class Universe(object):
             :class:`MDAnalysis.coordinates.base.Reader` to define a custom
             reader to be used on the trajectory file.
         in_memory : bool (optional)
-            Directly load trajectory into memory
-        kwargs : dict
+            Directly load trajectory into memory with the
+            :class:`~MDAnalysis.coordinates.memory.MemoryReader`
+
+            .. versionadded:: 0.16.0
+
+        **kwargs : dict
             Other kwargs are passed to the trajectory reader (only for
             advanced use)
-
 
         Returns
         -------
         filename : str
         trajectory_format : str
 
-
-        TODO: check what happens if filename is None
-
-
         Raises
         ------
         TypeError if trajectory format can not be
                   determined or no appropriate trajectory reader found
 
-        TODO: look up raises doc formating
 
         .. versionchanged:: 0.8
            If a list or sequence that is provided for *filename* only contains
@@ -337,6 +335,13 @@ class Universe(object):
            :class:`~MDAnalysis.coordinates.base.ChainReader`.
 
         """
+        # the following was in the doc string:
+        # TODO
+        # ----
+        # - check what happens if filename is ``None``
+        # - look up raises doc formating
+        #
+        #
         # TODO: is this really sensible? Why not require a filename arg?
         if filename is None:
             return
@@ -742,7 +747,7 @@ def as_Universe(*args, **kwargs):
          as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
          as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
-    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    :Returns: an instance of :class:`~MDAnalysis.core.groups.Universe`
     """
     if len(args) == 0:
         raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
@@ -752,32 +757,42 @@ def as_Universe(*args, **kwargs):
 
 
 def Merge(*args):
-    """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
-
-    The resulting universe will only inherit the common topology attributes
-    that all merged universes share.
-
-    :class:`AtomGroup` instances can come from different Universes, or come
-    directly from a :meth:`~Universe.select_atoms` call.
-
-    It can also be used with a single :class:`AtomGroup` if the user wants to,
-    for example, re-order the atoms in the Universe.
-
-    If multiple :class:`AtomGroup` instances from the same Universe are given,
-    the merge will first simply "add" together the :class:`AtomGroup`
-    instances.
+    """Create a new new :class:`Universe` from one or more
+    :class:`~MDAnalysis.core.groups.AtomGroup` instances.
 
     Parameters
     ----------
-    args : One or more :class:`AtomGroup` instances.
+    *args : :class:`~MDAnalysis.core.groups.AtomGroup`
+        One or more AtomGroups.
 
     Returns
     -------
-    universe : An instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    universe : :class:`Universe`
 
     :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
              empty and :exc:`TypeError` if arguments are not
              :class:`AtomGroup` instances.
+
+    Notes
+    -----
+    The resulting :class:`Universe` will only inherit the common topology
+    attributes that all merged universes share.
+
+    :class:`AtomGroup` instances can come from different Universes, or can come
+    directly from a :meth:`~Universe.select_atoms` call.
+
+    :class:`Merge` can also be used with a single :class:`AtomGroup` if the
+    user wants to, for example, re-order the atoms in the :class:`Universe`.
+
+    If multiple :class:`AtomGroup` instances from the same :class:`Universe`
+    are given, the merge will first simply "add" together the
+    :class:`AtomGroup` instances.
+
+    Merging does not create a full trajectory but only a single structure even
+    if the input consists of one or more trajectories.  However, one can use
+    the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
+    trajectory for the new Universe as described under
+    :ref:`creating-in-memory-trajectory-label`.
 
     Example
     -------
@@ -795,10 +810,6 @@ def Merge(*args):
 
     The complete system is then written out to a new PDB file.
 
-    Note
-    ----
-        Merging does not create a full trajectory but only a single
-        structure even if the input consists of one or more trajectories.
 
     .. versionchanged 0.9.0::
        Raises exceptions instead of assertion errors.

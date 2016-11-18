@@ -12,7 +12,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+"""\
 Topology readers --- :mod:`MDAnalysis.topology`
 ===============================================
 
@@ -62,9 +62,9 @@ the attributes they provide.
 
    XPDB [#a]_        pdb       As PDB except     Extended PDB format (can use 5-digit residue
                                icodes            numbers). To use, specify the format "XPBD"
-                                                  explicitly:
-                                                  ``Universe(..., topology_format="XPDB")``.
-                                                  Module :mod:`MDAnalysis.coordinates.PDB`
+                                                 explicitly:
+                                                 ``Universe(..., topology_format="XPDB")``.
+                                                 Module :mod:`MDAnalysis.coordinates.PDB`
 
    PQR [#a]_         pqr       names, charges,   PDB-like but whitespace-separated files with charge
                                types,            and radius information;
@@ -92,7 +92,7 @@ the attributes they provide.
                                masses, charges,  the atom and bond records);
                                chainids, resids, :mod:`MDAnalysis.topology.DMSParser`
                                resnames, segids,
-                               radii,   
+                               radii,
 
    TPR [#b]_         tpr       names, types,     Gromacs portable run input reader (limited
                                resids, resnames, experimental support for some of the more recent
@@ -129,7 +129,7 @@ the attributes they provide.
                                dihedrals         :mod:`MDAnalysis.topology.HoomdXMLParser`
 
    Macromolecular    mmtf      altLocs,          `Macromolecular Transmission Format (MMTF)`_.
-   transmission                bfactors, bonds,  An efficient compact format for biomolecular 
+   transmission                bfactors, bonds,  An efficient compact format for biomolecular
    format                      charges, masses,  structures.
                                names,
                                occupancies,
@@ -139,11 +139,11 @@ the attributes they provide.
    ================= ========= ================= ===================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
-   it is possible to create a full
-   :mod:`~MDAnalysis.core.universe.Universe` by simply providing a
-   file of this format as the sole argument to
-   :mod:`~MDAnalysis.core.universe.Universe`: ``u =
-   Universe(filename)``
+        it is possible to create a full
+        :mod:`~MDAnalysis.core.universe.Universe` by simply providing
+        a file of this format as the sole argument to
+        :mod:`~MDAnalysis.core.universe.Universe`: ``u =
+        Universe(filename)``
 
 .. [#b] The Gromacs TPR format contains coordinate information but
         parsing coordinates from a TPR file is currently not implemented
@@ -154,10 +154,15 @@ the attributes they provide.
 .. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
 .. _Macromolecular Transmission Format (MMTF): https://mmtf.rcsb.org/
 
+.. _topology-parsers-developer-notes:
+
 Developer Notes
 ---------------
 
 .. versionadded:: 0.8
+.. versionchanged:: 0.16.0
+   The new array-based topology system completely replaced the old
+   system that was based on a list of Atom instances.
 
 Topology information consists of data that do not change over time,
 i.e. information that is the same for all time steps of a
@@ -176,50 +181,26 @@ trajectory. This includes
 * dihedral angles (quadruplets of atoms) — proper and improper
   dihedrals should be treated separately
 
-At the moment, only the identity of atoms is mandatory and at its most
-basic, the topology is simply a list of atoms to be associated with a
-list of coordinates.
+Topology readers are generally called "parsers" in MDAnalysis (for
+historical reasons and in order to distinguish them from coordinate
+"readers"). All parsers are derived from
+:class:`MDAnalysis.topology.base.TopologyReader` and have a
+:meth:`~MDAnalysis.topology.base.TopologyReader.parse` method that
+returns a :class:`MDAnalysis.core.topology.Topology` instance.
 
-The current implementation contains submodules for different topology
-file types. Each submodule *must* contain a function :func:`parse`:
-
-.. function: parse(filename)
-
-   Read a topology from *filename* and return the structure dict.
-
-The function returns the basic MDAnalysis representation of the
-topology. At the moment, this is simply a dictionary with keys
-*atoms*, *bonds*, *angles*, *dihedrals*, *impropers*. The dictionary is
-stored as :attr:`MDAnalysis.AtomGroup.Universe._topology`.
-
-.. warning::
-
-   The internal dictionary representation is subject to change. User
-   code should *not* access this dictionary directly. The information
-   provided here is solely for developers who need to work with the
-   existing parsers.
-
-.. SeeAlso:: `Topology Data Structures Wiki page`_
-
-.. _`Topology Data Structures Wiki page`:
-   https://github.com/MDAnalysis/mdanalysis/wiki/TopologyDataStructures
-
-The format of the individual keys is the following (see
-:mod:`PSFParser` for a reference implementation):
 
 atoms
 ~~~~~~
 
-The **atoms** are represented as a :class:`list` of
-:class:`~MDAnalysis.core.groups.Atom` instances. The parser needs
-to initialize the :class:`~MDAnalysis.core.groups.Atom` objects
-with the data read from the topology file.
+The **atoms** appear to the user as an array of
+:class:`~MDAnalysis.core.groups.Atom` instances. However, under the
+hood this is essentially only an array of atom indices that are used
+to index the various components of the topology database
+:class:`~MDAnalysis.core.topology.Topology`. The parser needs to
+initialize the :class:`~MDAnalysis.core.topology.Topology` with the
+data read from the topology file.
 
-The order of atoms in the list must correspond to the sequence of
-atoms in the topology file. The atom's
-:attr:`~MDAnalysis.core.groups.Atom.index` corresponds to its
-index in this list.
-
+.. SeeAlso:: :ref:`topology-system-label`
 
 bonds
 ~~~~~~
@@ -294,4 +275,3 @@ from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
 from . import MMTFParser
- 

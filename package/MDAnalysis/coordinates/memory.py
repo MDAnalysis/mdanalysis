@@ -13,7 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""=========================================================================
+"""\
+=========================================================================
 Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 =========================================================================
 
@@ -82,7 +83,7 @@ Constructing a Reader from a numpy array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`MemoryReader` provides great flexibility because it
-becomes possible to create a :class:`~MDAnalysis.Universe` directly
+becomes possible to create a :class:`~MDAnalysis.core.universe.Universe` directly
 from a numpy array.
 
 A simple example consists of a new universe created from the array
@@ -126,6 +127,7 @@ same functionality for any supported trajectory format::
    ``results.swapaxes(0, 1)``. This might be changed in the
    future.
 
+.. _creating-in-memory-trajectory-label:
 
 Creating an in-memory trajectory of a sub-system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,7 +137,7 @@ requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
 the :func:`~MDAnalysis.core.universe.Merge` function, for the former
 the :meth:`~MDAnalysis.core.universe.Universe.load_new` method of a
-:class:`~MDAnalysis.Universe` together with the
+:class:`~MDAnalysis.core.universe.Universe` together with the
 :class:`MemoryReader`. In the following, an in-memory trajectory of
 only the protein is created::
 
@@ -153,8 +155,18 @@ only the protein is created::
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
-The new :class:`~MDAnalysis.Universe` can be used to, for instance,
-write out a new trajectory or perform fast analysis on the sub-system.
+The protein coordinates are extracted into ``coordinates`` and then
+the in-memory trajectory is loaded from these coordinates. In
+principle, this could have all be done in one line::
+
+  u2 = mda.Merge(protein).load_new(
+           AnalysisFromFunction(lambda ag: ag.positions.copy(),
+                                protein).run().results.swapaxes(0, 1),
+           format=MemoryReader)
+
+The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
+to, for instance, write out a new trajectory or perform fast analysis
+on the sub-system.
 
 
 Classes

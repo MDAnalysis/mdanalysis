@@ -19,7 +19,7 @@
 Selection exporters
 ===================
 
-Functions to write a :class:`MDAnalysis.AtomGroup.AtomGroup` selection
+Functions to write a :class:`MDAnalysis.core.groups.AtomGroup` selection
 to a file so that it can be used in another programme.
 
 :mod:`MDAnalysis.selections.vmd`

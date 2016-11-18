@@ -467,12 +467,12 @@ class TopologyGroup(object):
       tg2 = tg.select_bonds([key])
 
     Where *key* describes the desired bond as a tuple of the involved
-    :class:`~MDAnalysis.AtomGroup.Atom` types, as defined by the .type Atom
+    :class:`~MDAnalysis.core.groups.Atom` types, as defined by the .type Atom
     attribute). A list of available keys can be displayed using the
     :meth:`types` method.
 
     Alternatively, all the bonds which are in a given
-    :class:`~MDAnalysis.AtomGroup.AtomGroup` can be extracted using
+    :class:`~MDAnalysis.core.groups.AtomGroup` can be extracted using
     :meth:`atomgroup_intersection`::
 
       tg2 = tg.atomgroup_intersection(ag)

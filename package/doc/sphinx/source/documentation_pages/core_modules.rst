@@ -27,6 +27,8 @@ classes in this section, namely the
    core/Timeseries
 
 
+.. _topology-system-label:
+
 Topology system
 ===============
 
@@ -39,6 +41,9 @@ The topology system is primarily of interest to developers.
    core/levels
    core/topologyobjects
    core/topologyattrs
+
+.. SeeAlso:: :ref:`Developer notes for Topology
+             Parsers <topology-parsers-developer-notes>`
 
 Selection system
 ================

@@ -1971,7 +1971,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         """Write current timestep, using the supplied *obj*.
 
         The argument should be a :class:`~MDAnalysis.core.groups.AtomGroup` or
-        a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
+        a :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep` instance.
 
         .. Note::
 

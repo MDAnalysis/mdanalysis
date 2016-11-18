@@ -288,18 +288,18 @@ class RMSD(AnalysisBase):
                  mass_weighted=False, tol_mass=0.1, ref_frame=0, **kwargs):
         """Setting up the RMSD analysis.
 
-        The RMSD will be computed between *select* and *reference* for
-        all frames in the trajectory in *universe*.
+        The RMSD will be computed between `select` and `reference` for
+        all frames in the trajectory belonging to `atomgroup`.
 
         Parameters
         ----------
-        atomgroup : :class:`MDAnalysis.AtomGroup` or
-                    :class:`MDAnalysis.Universe`
-            MDAnlysis AtomGroup or Universe with an associated Trajectory
+        atomgroup : :class:`~MDAnalysis.core.groups.AtomGroup` or
+                    :class:`~MDAnalysis.core.universe.Universe`
+            MDAnalysis `AtomGroup` or `Universe` with an associated trajectory
             to be RMSD fit.
-        reference : :class:`MDAnalysis.AtomGroup` or
-                    :class:`MDAnalysis.Universe`, optional
-            Reference coordinates, if ``None`` current frame of *atomgroup* is
+        reference : :class:`~MDAnalysis.core.groups.AtomGroup` or
+                    :class:`~MDAnalysis.core.universe.Universe`, optional
+            Reference coordinates, if ``None`` current frame of `atomgroup` is
             used
         select : str / dict / tuple (optional)
             The selection to operate on; can be one of:
@@ -319,13 +319,14 @@ class RMSD(AnalysisBase):
             AtomGroup with defined atom order as described under
             :ref:`ordered-selections-label`).
         groupselections : list (optional)
-            A list of selections as described for *select*. Each selection
+            A list of selections as described for `select` Each selection
             describes additional RMSDs to be computed *after the structures
-            have be superpositioned* according to *select*. The output contains
+            have be superpositioned* according to `select`. The output contains
             one additional column for each selection. [``None``]
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
+
         filename : str (optional)
             write RSMD into file file :meth:`RMSD.save`
         mass_weighted : bool (optional)
@@ -342,9 +343,9 @@ class RMSD(AnalysisBase):
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
-           *groupselections* added
+           `groupselections` added
         .. versionchanged: 0.15.1
-            Refactor to fit with AnalysisBase API
+           Refactor to fit with AnalysisBase API
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
