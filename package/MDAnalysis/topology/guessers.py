@@ -46,7 +46,7 @@ def guess_masses(atom_types):
         warnings.warn("Failed to guess the mass for the following atom types: {}"
                       "".format(', '.join(misses)))
     return masses
-                      
+
 
 def guess_types(atom_names):
     """Guess the atom type of many atoms based on atom name
@@ -105,13 +105,13 @@ def guess_atom_element(atomname):
 
 
 def guess_bonds(atoms, coords, **kwargs):
-    """Guess if bonds exist between two atoms based on their distance.
+    r"""Guess if bonds exist between two atoms based on their distance.
 
     Bond between two atoms is created, if the two atoms are within
 
     .. math::
 
-          d < f * (R_1 + R_2)
+          d < f \cdot (R_1 + R_2)
 
     of each other, where :math:`R_1` and :math:`R_2` are the VdW radii
     of the atoms and :math:`f` is an ad-hoc *fudge_factor*. This is
@@ -119,37 +119,46 @@ def guess_bonds(atoms, coords, **kwargs):
 
     Parameters
     ----------
-      *fudge_factor*
+    atoms : AtomGroup
+         atoms for which bonds should be guessed
+    coords : array
+         coordinates of the atoms (i.e., `AtomGroup.positions)`)
+    fudge_factor : float, optional
         The factor by which atoms must overlap eachother to be considered a
         bond.  Larger values will increase the number of bonds found. [0.72]
 
-      *vdwradii*
+    vdwradii : dict, optional
         To supply custom vdwradii for atoms in the algorithm. Must be a dict
         of format {type:radii}. The default table of van der Waals radii is
         hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
         defined vdwradii passed as an argument will supercede the table
         values. [``None``]
 
-      *lower_bound*
+    lower_bound : float, optional
         The minimum bond length. All bonds found shorter than this length will
         be ignored. This is useful for parsing PDB with altloc records where
         atoms with altloc A and B maybe very close together and there should be
         no chemical bond between them. [0.1]
 
-      *box*
+    box : dimensions, optional
         Bonds are found using a distance search, if unit cell information is
         given, periodic boundary conditions will be considered in the distance
         search. [``None``]
 
-    :Returns:
-       List of tuples suitable for use in Universe topology building.
+    Returns
+    -------
+    list
+        List of tuples suitable for use in Universe topology building.
 
-    .. warning::
-       No check is done after the bonds are guessed to see if Lewis
-       structure is correct. This is wrong and will burn somebody.
+    Warnings
+    --------
+    No check is done after the bonds are guessed to see if Lewis
+    structure is correct. This is wrong and will burn somebody.
 
-    :Raises:
-       ValueError if inputs are malformed or *vdwradii* data is missing.
+    Raises
+    ------
+    :exc:`ValueError` if inputs are malformed or `vdwradii` data is missing.
+
 
     .. _`same algorithm that VMD uses`:
        http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html

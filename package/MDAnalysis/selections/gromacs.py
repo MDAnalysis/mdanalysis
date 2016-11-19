@@ -19,7 +19,7 @@
 Gromacs selections
 ==================
 
-Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a `ndx`_ file
+Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a `ndx`_ file
 that defines a Gromacs_ index group. To be used in Gromacs like this::
 
   <GROMACS_COMMAND> -n macro.ndx

@@ -13,8 +13,53 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Containers for objects in MDA
+"""\
+==========================================================
+Core objects: Containers --- :mod:`MDAnalysis.core.groups`
+==========================================================
 
+The :class:`~MDAnalysis.core.universe.Universe` instance contains all
+the particles in the system (which MDAnalysis calls
+:class:`Atom`). Groups of atoms are handled as :class:`AtomGroup`
+instances. The :class:`AtomGroup` is probably the most important
+object in MDAnalysis because virtually everything can be accessed
+through it. `AtomGroup` instances can be easily created (e.g., from a
+:meth:`AtomGroup.select_atoms` selection or just by slicing).
+
+For convenience, chemically meaningful groups of atoms such as a
+:class:`Residue` or a :class:`Segment` (typically a whole molecule or
+all of the solvent) also exist as containers, as well as groups of
+these units ((:class:`ResidueGroup`, :class:`SegmentGroup`).
+
+
+Classes
+=======
+
+Collections
+-----------
+
+.. autoclass:: AtomGroup
+   :members:
+   :inherited-members:
+.. autoclass:: ResidueGroup
+   :members:
+   :inherited-members:
+.. autoclass:: SegmentGroup
+   :members:
+   :inherited-members:
+
+Chemical units
+--------------
+
+.. autoclass:: Atom
+   :members:
+   :inherited-members:
+.. autoclass:: Residue
+   :members:
+   :inherited-members:
+.. autoclass:: Segment
+   :members:
+   :inherited-members:
 
 """
 from six.moves import zip
@@ -309,9 +354,12 @@ class GroupBase(_MutableBase):
     def ix(self):
         """Unique indices of the components in the Group.
 
-        If this Group is an AtomGroup, these are the indices of the atoms.
-        If it is a ResidueGroup, these are the indices of the residues.
-        If it is a SegmentGroup, these are the indices of the segments.
+        - If this Group is an :class:`AtomGroup`, these are the
+          indices of the :class:`Atom` instances.
+        - If it is a :class:`ResidueGroup`, these are the indices of
+          the :class:`Residue` instances.
+        - If it is a :class:`SegmentGroup`, these are the indices of
+          the :class:`Segment` instances.
 
         """
         return self._ix
@@ -323,18 +371,19 @@ class GroupBase(_MutableBase):
     def center_of_geometry(self, **kwargs):
         """Center of geometry (also known as centroid) of the selection.
 
-        Keywords
-        --------
-          *pbc*
+        Parameters
+        ----------
+        pbc : boolean, optional
             ``True``: Move all atoms within the primary unit cell
-                      before calculation [``False``]
+            before calculation [``False``]
 
         Notes
         -----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
+        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
+        ``True`` then the `pbc` keyword is used by default.
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
+
+        .. versionchanged:: 0.8 Added `pbc` keyword
         """
         atomgroup = self.atoms
 
@@ -369,6 +418,7 @@ class GroupBase(_MutableBase):
          corners : array
             2x3 array giving corners of bounding box as
             [[xmin, ymin, zmin], [xmax, ymax, zmax]].
+
 
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -405,6 +455,7 @@ class GroupBase(_MutableBase):
         center : array
             Coordinates of sphere center as ``[xcen,ycen,zcen]``.
 
+
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
@@ -423,7 +474,7 @@ class GroupBase(_MutableBase):
         return R, centroid
 
     def transform(self, M):
-        """Apply homogenous transformation matrix `M` to the coordinates.
+        r"""Apply homogenous transformation matrix `M` to the coordinates.
 
         Parameters
         ----------
@@ -454,7 +505,7 @@ class GroupBase(_MutableBase):
         return self.rotate(R, [0, 0, 0]).translate(t)
 
     def translate(self, t):
-        """Apply translation vector `t` to the selection's coordinates.
+        r"""Apply translation vector `t` to the selection's coordinates.
 
         Atom coordinates are translated in-place.
 
@@ -473,8 +524,9 @@ class GroupBase(_MutableBase):
 
         Notes
         -----
-        The method applies a translation to the AtomGroup from current
-        coordinates :math:`\mathbf{x}` to new coordinates :math:`\mathbf{x}'`:
+        The method applies a translation to the :class:`AtomGroup`
+        from current coordinates :math:`\mathbf{x}` to new coordinates
+        :math:`\mathbf{x}'`:
 
         .. math::
 
@@ -488,37 +540,38 @@ class GroupBase(_MutableBase):
         return self
 
     def rotate(self, R, point=None):
-        """Apply a rotation matrix `R` to the selection's coordinates.
-
-        No translation is done before the rotation is applied, so coordinates
-        are rotated about the origin. This differs from the behavior of
-        ``rotateby``.
+        r"""Apply a rotation matrix `R` to the selection's coordinates.
 
         Parameters
         ----------
         R : array_like
             3x3 rotation matrix to use for applying rotation.
-        point : array_like (optional)
+        point : array_like, optional
             Center of rotation. If ``None`` then the center of geometry of this
             group is used.
 
         Returns
         -------
-        self
-
-        See Also
-        --------
-        rotateby : rotate around given axis and angle
-        MDAnalysis.lib.transformations : module of all coordinate transforms
+        self : AtomGroup
 
         Notes
         -----
+        By default (``point=None``) the rotation is performed around
+        the centroid of the group (:meth:`center_of_geometry`). In
+        order to perform a rotation around, say, the origin, use
+        ``point=[0, 0, 0]``.
+
         :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
         :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
 
         .. math::
 
             \mathbf{x}' = \mathsf{R}\mathbf{x}
+
+        See Also
+        --------
+        rotateby : rotate around given axis and angle
+        MDAnalysis.lib.transformations : module of all coordinate transforms
 
         """
         R = np.asarray(R)
@@ -534,7 +587,7 @@ class GroupBase(_MutableBase):
         return self
 
     def rotateby(self, angle, axis, point=None):
-        """Apply a rotation to the selection's coordinates.
+        r"""Apply a rotation to the selection's coordinates.
 
         Parameters
         ----------
@@ -542,13 +595,13 @@ class GroupBase(_MutableBase):
             Rotation angle in degrees.
         axis : array_like
             Rotation axis vector.
-        point : array_like (optional)
+        point : array_like, optional
             Center of rotation. If ``None`` then the center of geometry of this
             group is used.
 
         Returns
         -------
-        self
+        self : AtomGroup
 
         Notes
         -----
@@ -559,8 +612,12 @@ class GroupBase(_MutableBase):
 
           \mathbf{x}' = \mathsf{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}
 
-        where :math:`\mathsf{R}` is the rotation by *angle* around the
-        *axis* going through *point* :math:`\mathbf{p}`.
+        where :math:`\mathsf{R}` is the rotation by `angle` around the
+        `axis` going through `point` :math:`\mathbf{p}`.
+
+        See Also
+        --------
+        MDAnalysis.lib.transformations.rotation_matrix : calculate :math:`\mathsf{R}`
 
         """
         alpha = np.radians(angle)
@@ -570,7 +627,7 @@ class GroupBase(_MutableBase):
         return self.transform(M)
 
     def pack_into_box(self, box=None, inplace=True):
-        """Shift all atoms in this group to be within the primary unit cell.
+        r"""Shift all atoms in this group to be within the primary unit cell.
 
         Parameters
         ----------
@@ -600,11 +657,12 @@ class GroupBase(_MutableBase):
 
         The default is to take unit cell information from the underlying
         :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional
-        argument *box* can be used to provide alternative unit cell information
+        argument `box` can be used to provide alternative unit cell information
         (in the MDAnalysis standard format ``[Lx, Ly, Lz, alpha, beta,
         gamma]``).
 
         Works with either orthogonal or triclinic box types.
+
 
         .. versionadded:: 0.8
 
@@ -668,6 +726,7 @@ class GroupBase(_MutableBase):
 
         .. note::
            wrap with all default keywords is identical to :meth:`pack_into_box`
+
 
         .. versionadded:: 0.9.2
         """
@@ -788,24 +847,20 @@ class AtomGroup(GroupBase):
 
     @property
     def atoms(self):
-        """Get another AtomGroup identical to this one.
-
-        """
+        """Get another AtomGroup identical to this one."""
         return self._u.atoms[self.ix]
 
     @property
     def n_atoms(self):
-        """Number of atoms in AtomGroup. Equivalent to ``len(self)``.
+        """Number of atoms in AtomGroup.
 
-        """
+        Equivalent to ``len(self)``."""
         return len(self)
 
     @property
     def residues(self):
-        """Get sorted ResidueGroup of the (unique) residues represented in the
-        AtomGroup.
-
-        """
+        """Get sorted :class:`ResidueGroup` of the (unique) residues
+        represented in the AtomGroup."""
         return self._u.residues[np.unique(self.resindices)]
 
     @residues.setter
@@ -846,10 +901,8 @@ class AtomGroup(GroupBase):
 
     @property
     def segments(self):
-        """Get sorted SegmentGroup of the (unique) segments represented in the
-        AtomGroup.
-
-        """
+        """Get sorted :class:`SegmentGroup` of the (unique) segments
+        represented in the AtomGroup."""
         return self._u.segments[np.unique(self.segindices)]
 
     @segments.setter
@@ -868,9 +921,7 @@ class AtomGroup(GroupBase):
 
     @property
     def unique(self):
-        """Return an AtomGroup containing sorted and unique atoms only.
-
-        """
+        """Return an AtomGroup containing sorted and unique atoms only."""
         return self._u.atoms[np.unique(self.ix)]
 
     @property
@@ -882,9 +933,12 @@ class AtomGroup(GroupBase):
         the *same* coordinate to all atoms (e.g. ``ag.positions =
         array([0,0,0])`` will move all particles to the origin).
 
-        .. note:: changing the position is not reflected in any files; reading
-                  any frame from the trajectory will replace the change with
-                  that from the file
+        .. note:: Changing the position is not reflected in any files;
+                  reading any frame from the trajectory will replace
+                  the change with that from the file *except* if the
+                  trajectory is held in memory, e.g., when the
+                  :class:`~MDAnalysis.core.universe.Universe.transfer_to_memory`
+                  method was used.
 
         """
         return self._u.trajectory.ts.positions[self._ix]
@@ -967,18 +1021,21 @@ class AtomGroup(GroupBase):
         return trj_ts.copy_slice(self.indices)
 
     def select_atoms(self, sel, *othersel, **selgroups):
-        """Select atoms using a CHARMM selection string.
+        """Select atoms using a selection string.
 
-        Returns an :class:`AtomGroup` with atoms sorted according to their
-        index in the psf (this is to ensure that there aren't any duplicates,
-        which can happen with complicated selections).
+        Returns an :class:`AtomGroup` with atoms sorted according to
+        their index in the topology (this is to ensure that there
+        are not any duplicates, which can happen with complicated
+        selections).
 
         Existing :class:`AtomGroup` objects can be passed as named arguments,
         which will then be available to the selection parser.
 
         Subselections can be grouped with parentheses.
 
-        Example::
+        Examples
+        --------
+
            >>> sel = universe.select_atoms("segid DMPC and not ( name H* or name O* )")
            >>> sel
            <AtomGroup with 3420 atoms>
@@ -986,18 +1043,28 @@ class AtomGroup(GroupBase):
            >>> universe.select_atoms("around 10 group notHO", notHO=sel)
            <AtomGroup with 1250 atoms>
 
-        .. Note::
+        Notes
+        -----
 
-           If exact ordering of atoms is required (for instance, for
-           :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
-           calculations) then one supplies selections *separately* in the
-           required order. Also, when multiple :class:`AtomGroup` instances are
-           concatenated with the ``+`` operator then the order of :class:`Atom`
-           instances is preserved and duplicates are not removed.
+        If exact ordering of atoms is required (for instance, for
+        :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
+        calculations) then one supplies selections *separately* in the
+        required order. Also, when multiple :class:`AtomGroup`
+        instances are concatenated with the ``+`` operator then the
+        order of :class:`Atom` instances is preserved and duplicates
+        are not removed.
 
-        .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
 
-        The selection parser understands the following CASE SENSITIVE *keywords*:
+        See Also
+        --------
+        :ref:`selection-commands-label` for further details and examples.
+
+
+        .. rubric:: Selection syntax
+
+
+        The selection parser understands the following CASE SENSITIVE
+        *keywords*:
 
         **Simple selections**
 
@@ -1115,6 +1182,7 @@ class AtomGroup(GroupBase):
                 therefore have atoms that were initially absent from the
                 instance :meth:`~select_atoms` was called from.
 
+
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
         .. versionchanged:: 0.8.1
@@ -1123,6 +1191,7 @@ class AtomGroup(GroupBase):
            Added *bonded* selection
         .. versionchanged:: 0.16.0
            Resid selection now takes icodes into account where present.
+
         """
         atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
         if othersel:
@@ -1137,6 +1206,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         level : {'atom', 'residue', 'segment'}
+
 
         .. versionadded:: 0.9.0
         """
@@ -1165,12 +1235,14 @@ class AtomGroup(GroupBase):
         vdwradii : dict, optional
           Dict relating atom type: vdw radii
 
+
         See Also
         --------
-        :func:`MDAnalysis.topology.core.guess_bonds` for details on the
-        algorithm used to guess bonds.
+        :func:`MDAnalysis.topology.guessers.guess_bonds`
+
 
         .. versionadded:: 0.10.0
+
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -1209,6 +1281,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 2
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 2:
@@ -1227,6 +1300,7 @@ class AtomGroup(GroupBase):
         Raises
         ------
           `ValueError` if the AtomGroup is not length 3
+
 
         .. versionadded:: 0.11.0
         """
@@ -1247,6 +1321,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 4
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 4:
@@ -1266,6 +1341,7 @@ class AtomGroup(GroupBase):
         ------
           `ValueError` if the AtomGroup is not length 4
 
+
         .. versionadded:: 0.11.0
         """
         if len(self) != 4:
@@ -1275,31 +1351,41 @@ class AtomGroup(GroupBase):
 
     def write(self, filename=None, file_format="PDB",
               filenamefmt="{trjname}_{frame}", **kwargs):
-        """Write AtomGroup to a file.
+        """Write `AtomGroup` to a file.
 
-        AtomGroup.write(filename[,format])
+        The output can either be a coordinate file or a selection, depending on
+        the `format`. Only single-frame coordinate files are supported. If you
+        need to write out a trajectory, see :mod:`MDAnalysis.coordinates`.
 
-        :Keywords:
-          *filename*
-               ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
-          *format*
-                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
-                Jmol (spt); case-insensitive and can also be supplied as the
-                filename extension [PDB]
-          *filenamefmt*
-                format string for default filename; use substitution tokens
-                'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
-          *bonds*
-                how to handle bond information, especially relevant for PDBs;
-                default is ``"conect"``.
-                * ``"conect"``: write only the CONECT records defined in the original
-                  file
-                * ``"all"``: write out all bonds, both the original defined and those
-                  guessed by MDAnalysis
-                * ``None``: do not write out bonds
+        Parameters
+        ----------
+        filename : str, optional
+           ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
+
+        format : str, optional
+            PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
+            Jmol (spt); case-insensitive and can also be supplied as the
+            filename extension [PDB]
+
+        filenamefmt : str, optional
+            format string for default filename; use substitution tokens
+            'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
+
+        bonds : str, optional
+           how to handle bond information, especially relevant for PDBs;
+           default is ``"conect"``.
+
+           * ``"conect"``: write only the CONECT records defined in the original
+             file
+           * ``"all"``: write out all bonds, both the original defined and those
+             guessed by MDAnalysis
+           * ``None``: do not write out bonds
+
+
         .. versionchanged:: 0.9.0
            Merged with write_selection.  This method can now write both
            selections out.
+
         """
         import MDAnalysis.coordinates
         import MDAnalysis.selections
@@ -1346,26 +1432,28 @@ class AtomGroup(GroupBase):
 class ResidueGroup(GroupBase):
     """ResidueGroup base class.
 
-    This class is used by a Universe for generating its Topology-specific
-    ResidueGroup class. All the TopologyAttr components are obtained from
-    GroupBase, so this class only includes ad-hoc methods specific to
-    ResidueGroups.
+    This class is used by a :class:`Universe` for generating its
+    Topology-specific :class:`ResidueGroup` class. All the
+    :class:`TopologyAttr` components are obtained from
+    :class:`GroupBase`, so this class only includes ad-hoc methods
+    specific to ResidueGroups.
 
     """
     @property
     def atoms(self):
-        """Get an AtomGroup of atoms represented in this ResidueGroup.
+        """Get an :class:`AtomGroup` of atoms represented in this
+        :class:`ResidueGroup`.
 
-        The atoms are ordered locally by residue in the ResidueGroup.
-        No duplicates are removed.
+        The atoms are ordered locally by residue in the
+        :class:`ResidueGroup`.  No duplicates are removed.
 
         """
         return self._u.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
-        """Number of atoms represented in ResidueGroup, including duplicate
-        residues.
+        """Number of atoms represented in :class:`ResidueGroup`, including
+        duplicate residues.
 
         Equivalent to ``len(self.atoms)``.
 
@@ -1374,7 +1462,7 @@ class ResidueGroup(GroupBase):
 
     @property
     def residues(self):
-        """Get another ResidueGroup identical to this one.
+        """Get another :class:`ResidueGroup` identical to this one.
 
         """
         return self._u.residues[self.ix]

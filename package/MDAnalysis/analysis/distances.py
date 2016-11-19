@@ -23,7 +23,7 @@ This module provides functions to rapidly compute distances between
 atoms or groups of atoms.
 
 :func:`dist` and :func:`between` can take atom groups that do not even
-have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
+have to be from the same :class:`~MDAnalysis.core.universe.Universe`.
 
 .. SeeAlso:: :mod:`MDAnalysis.lib.distances`
 """
@@ -127,7 +127,7 @@ def dist(A, B, offset=0):
     Arguments
     ---------
     A, B : AtomGroup
-       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
+       :class:`~MDAnalysis.core.groups.AtomGroup` with the
        same number of atoms
     offset : integer or tuple, optional, default 0
        An integer `offset` is added to *resids_A* and *resids_B* (see
@@ -174,7 +174,7 @@ def between(group, A, B, distance):
     group : AtomGroup
         Find members of `group` that are between `A` and `B`
     A, B : AtomGroups
-        `A` and `B` are :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        `A` and `B` are :class:`~MDAnalysis.core.groups.AtomGroup`
         instances.  Works best if `group` is bigger than either `A` or
         `B`.
     distance : float
@@ -184,7 +184,7 @@ def between(group, A, B, distance):
     Returns
     -------
     AtomGroup
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup` of atoms that
+        :class:`~MDAnalysis.core.groups.AtomGroup` of atoms that
         fulfill the criterion
 
 

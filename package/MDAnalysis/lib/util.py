@@ -45,7 +45,7 @@ general streams as inputs, such as a :func:`cStringIO.StringIO`
 instances (essentially, a memory buffer) by wrapping these instances
 into a :class:`NamedStream`. This :class:`NamedStream` can then be
 used in place of an ordinary file name (typically, with a
-class:`~MDAnalysis.core.AtomGroup.Universe` but it is also possible to
+class:`~MDAnalysis.core.universe.Universe` but it is also possible to
 *write* to such a stream using :func:`MDAnalysis.Writer`).
 
 .. rubric: Examples
@@ -67,7 +67,7 @@ It is important to provide a proper pseudo file name with the correct extension
 (".pdb") to :class:`NamedStream` because the file type recognition uses the
 extension of the file name to determine the file format or alternatively
 provide the ``format="pdb"`` keyword argument to the
-:class:`~MDAnalysis.core.AtomGroup.Universe`.
+:class:`~MDAnalysis.core.universe.Universe`.
 
 The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
@@ -750,7 +750,7 @@ class NamedStream(io.IOBase):
 
     def __ne__(self, x):
         return not self == x
-    
+
     def __lt__(self, x):
         return self.name < x
 
@@ -1082,7 +1082,7 @@ canonical_inverse_aa_codes = {
 #: The table is used for :func:`convert_aa_code`.
 amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
-#: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
+#: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
     'HISA': 'H', 'HISB': 'H', 'HSE': 'H', 'HSD': 'H', 'HID': 'H', 'HIE': 'H', 'HIS1': 'H',
     'HIS2': 'H',
@@ -1251,7 +1251,7 @@ def unique_rows(arr, return_index=False):
         u = np.unique(arr.view(
             dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
         ))
-        return u.view(arr.dtype).reshape(-1, m) 
+        return u.view(arr.dtype).reshape(-1, m)
 
 
 def blocks_of(a, n, m):
@@ -1320,7 +1320,7 @@ def blocks_of(a, n, m):
 class Namespace(object):
     """Class to allow storing attributes in new namespace. """
     def __getattr__(self, key):
-        # a.this causes a __getattr__ call for key = 'this' 
+        # a.this causes a __getattr__ call for key = 'this'
         return self.__dict__[key]
     def __setattr__(self, key, value):
         # a.this = 10 causes a __setattr__ call for key='this' value=10
@@ -1342,4 +1342,4 @@ class Namespace(object):
         return self.__dict__[key]
     def __iter__(self):
         for i in self.__dict__:
-            yield i            
+            yield i

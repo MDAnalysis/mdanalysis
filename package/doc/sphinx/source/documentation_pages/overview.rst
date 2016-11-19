@@ -8,15 +8,15 @@ treats atoms, groups of atoms, trajectories, etc as different
 objects. Each object has a number of operations defined on itself
 (also known as "methods") and also contains values describing the
 object ("attributes"). For example, a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` object has a
-:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass` method that
+:class:`~MDAnalysis.core.groups.AtomGroup` object has a
+:meth:`~MDAnalysis.core.groups.AtomGroup.center_of_mass` method that
 returns the center of mass of the group of atoms. It also contains an
-attribute called :attr:`~MDAnalysis.core.AtomGroup.AtomGroup.residues`
+attribute called :attr:`~MDAnalysis.core.groups.AtomGroup.residues`
 that lists all the residues that belong to the group. Using methods
-such as :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+such as :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
 (which uses `CHARMM-style`_ atom :ref:`selection-commands-label`) one
 can create new objects (in this case, another
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`).
+:class:`~MDAnalysis.core.groups.AtomGroup`).
 
 A typical usage pattern is to iterate through a trajectory and analyze
 coordinates for every frame. In the following example the end-to-end distance
@@ -70,7 +70,7 @@ online help), do analysis and immediately plot results. The examples in this man
 are typically run from an interactive :program:`ipython` session.
 
 Invariably, a MDAnalysis session starts with loading data into the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class (which can be accessed
+:class:`~MDAnalysis.core.universe.Universe` class (which can be accessed
 as :class:`MDAnalysis.Universe`)::
 
  from MDAnalysis import *
@@ -98,17 +98,17 @@ trajectory is loaded with ::
 (The ``>>>`` signs are the Python input prompt and are not to be typed; they
 just make clear in the examples what is input and what is output.)
 
-The :class:`~MDAnalysis.core.AtomGroup.Universe` contains a number of important attributes,
+The :class:`~MDAnalysis.core.universe.Universe` contains a number of important attributes,
 the most important ones of which is
-:attr:`~MDAnalysis.core.AtomGroup.Universe.atoms`::
+:attr:`~MDAnalysis.core.universe.Universe.atoms`::
 
   >>> print u.atoms
   <AtomGroup with 3341 atoms>
 
 :attr:`Universe.atoms` is a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` and can be thought of as
-list consisting of :class:`~MDAnalysis.core.AtomGroup.Atom`
-objects. The :class:`~MDAnalysis.core.AtomGroup.Atom` is the
+:class:`~MDAnalysis.core.groups.AtomGroup` and can be thought of as
+list consisting of :class:`~MDAnalysis.core.groups.Atom`
+objects. The :class:`~MDAnalysis.core.groups.Atom` is the
 elementary and fundamental object in MDAnalysis.
 
 The :attr:`MDAnalysis.Universe.trajectory` attribute gives access to the coordinates
@@ -118,7 +118,7 @@ over time::
   < DCDReader '/..../MDAnalysis/tests/data/adk_dims.dcd' with 98 frames of 3341 atoms (0 fixed) >
 
 Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` according to a selection criterion
+:class:`~MDAnalysis.core.groups.AtomGroup` according to a selection criterion
 
   >>> calphas = u.select_atoms("name CA")
   >>> print calphas

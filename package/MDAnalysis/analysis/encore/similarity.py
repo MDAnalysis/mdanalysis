@@ -315,13 +315,13 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Collection from cluster calculated by a clustering algorithm
         (e.g. Affinity propagation)
 
-    ens1 : :class:`~MDAnalysis.core.AtomGroup.Universe`
+    ens1 : :class:`~MDAnalysis.core.universe.Universe`
         First ensemble to be used in comparison
 
     ens1_id : int
         First ensemble id as detailed in the ClustersCollection metadata
 
-    ens2 : :class:`~MDAnalysis.core.AtomGroup.Universe`
+    ens2 : :class:`~MDAnalysis.core.universe.Universe`
         Second ensemble to be used in comparison
 
     ens2_id : int
@@ -689,7 +689,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Parameters
     ----------
 
-    ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
+    ensemble : :class:`~MDAnalysis.core.universe.Universe` object
         Input ensemble
 
     window_size : int
@@ -1531,7 +1531,7 @@ def ces_convergence(original_ensemble,
     Parameters
     ----------
 
-    original_ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
+    original_ensemble : :class:`~MDAnalysis.core.universe.Universe` object
         ensemble containing the trajectory whose convergence has to estimated
 
     window_size : int
@@ -1635,7 +1635,7 @@ def dres_convergence(original_ensemble,
     Parameters
     ----------
 
-    original_ensemble : :class:`~MDAnalysis.core.AtomGroup.Universe` object
+    original_ensemble : :class:`~MDAnalysis.core.universe.Universe` object
         ensemble containing the trajectory whose convergence has to estimated
 
     window_size : int

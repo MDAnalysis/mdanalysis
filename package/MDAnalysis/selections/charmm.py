@@ -19,7 +19,7 @@
 CHARMM selections
 =================
 
-Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a `str` file
+Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a `str` file
 that defines a `CHARMM selection`_. To be used in CHARMM_ like this::
 
   stream macro.str

@@ -34,7 +34,7 @@ handle such residue numbers.
 
    * :mod:`MDAnalysis.topology.PDBParser`
    * :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
-   * :class:`MDAnalysis.core.AtomGroup.Universe`
+   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------

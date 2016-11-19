@@ -148,7 +148,7 @@ class TopologyObject(object):
 
 class Bond(TopologyObject):
 
-    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    """A bond between two :class:`~MDAnalysis.core.groups.Atom` instances.
 
     Two :class:`Bond` instances can be compared with the ``==`` and
     ``!=`` operators. A bond is equal to another if the same atom
@@ -173,7 +173,7 @@ class Bond(TopologyObject):
 
         Returns
         -------
-        the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this
+        the other :class:`~MDAnalysis.core.groups.Atom` in this
         bond
         """
         if atom == self.atoms[0]:
@@ -202,7 +202,7 @@ class Bond(TopologyObject):
 
 class Angle(TopologyObject):
 
-    """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    """An angle between three :class:`~MDAnalysis.core.groups.Atom` instances.
     Atom 2 is the apex of the angle
 
     .. versionadded:: 0.8
@@ -240,7 +240,7 @@ class Angle(TopologyObject):
 class Dihedral(TopologyObject):
 
     """Dihedral (dihedral angle) between four
-    :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    :class:`~MDAnalysis.core.groups.Atom` instances.
 
     The dihedral is defined as the angle between the planes formed by
     Atoms (1, 2, 3) and (2, 3, 4).
@@ -289,7 +289,7 @@ class Dihedral(TopologyObject):
 class ImproperDihedral(Dihedral):
     """
     Improper Dihedral (improper dihedral angle) between four
-    :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    :class:`~MDAnalysis.core.groups.Atom` instances.
 
     MDAnalysis treats the improper dihedral angle as the angle between
     the planes formed by Atoms (1, 2, 3) and (2, 3, 4).
@@ -467,12 +467,12 @@ class TopologyGroup(object):
       tg2 = tg.select_bonds([key])
 
     Where *key* describes the desired bond as a tuple of the involved
-    :class:`~MDAnalysis.AtomGroup.Atom` types, as defined by the .type Atom
+    :class:`~MDAnalysis.core.groups.Atom` types, as defined by the .type Atom
     attribute). A list of available keys can be displayed using the
     :meth:`types` method.
 
     Alternatively, all the bonds which are in a given
-    :class:`~MDAnalysis.AtomGroup.AtomGroup` can be extracted using
+    :class:`~MDAnalysis.core.groups.AtomGroup` can be extracted using
     :meth:`atomgroup_intersection`::
 
       tg2 = tg.atomgroup_intersection(ag)

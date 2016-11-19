@@ -18,7 +18,7 @@
 Jmol selections
 =================
 
-Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a `str` file
+Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a `str` file
 that defines a `Jmol selection`_. To be used in Jmol_ like this::
 
   script macro.spt

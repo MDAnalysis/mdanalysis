@@ -13,7 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""=========================================================================
+"""\
+=========================================================================
 Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 =========================================================================
 
@@ -30,7 +31,7 @@ memory, rather than reading from file. This makes it possible to use
 operate on raw coordinate using existing MDAnalysis tools. In
 addition, it allows the user to make changes to the coordinates in a
 trajectory (e.g. through
-:attr:`MDAnalysis.core.AtomGroup.AtomGroup.positions`) without having
+:attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having
 to write the entire state to file.
 
 
@@ -50,7 +51,7 @@ trajectory to memory.
 
 The most straightforward use of the :class:`MemoryReader` is to simply
 use the ``in_memory=True`` flag for the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class, which
+:class:`~MDAnalysis.core.universe.Universe` class, which
 automatically transfers a trajectory to memory::
 
  import MDAnalysis as mda
@@ -67,8 +68,8 @@ Switching a trajectory to an in-memory representation
 
 The decision to transfer the trajectory to memory can be made at any
 time with the
-:meth:`~MDAnalysis.core.AtomGroup.Universe.transfer_to_memory` method
-of a :class:`~MDAnalysis.core.AtomGroup.Universe`::
+:meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory` method
+of a :class:`~MDAnalysis.core.universe.Universe`::
 
     universe = mda.Universe(TPR, XTC)
     universe.transfer_to_memory()
@@ -82,7 +83,7 @@ Constructing a Reader from a numpy array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`MemoryReader` provides great flexibility because it
-becomes possible to create a :class:`~MDAnalysis.Universe` directly
+becomes possible to create a :class:`~MDAnalysis.core.universe.Universe` directly
 from a numpy array.
 
 A simple example consists of a new universe created from the array
@@ -126,6 +127,7 @@ same functionality for any supported trajectory format::
    ``results.swapaxes(0, 1)``. This might be changed in the
    future.
 
+.. _creating-in-memory-trajectory-label:
 
 Creating an in-memory trajectory of a sub-system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,9 +135,9 @@ Creating an in-memory trajectory of a sub-system
 Creating a trajectory for just a selection of an existing trajectory
 requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
-the :func:`~MDAnalysis.core.AtomGroup.Merge` function, for the former
-the :meth:`~MDAnalysis.core.AtomGroup.Universe.load_new` method of a
-:class:`~MDAnalysis.Universe` together with the
+the :func:`~MDAnalysis.core.universe.Merge` function, for the former
+the :meth:`~MDAnalysis.core.universe.Universe.load_new` method of a
+:class:`~MDAnalysis.core.universe.Universe` together with the
 :class:`MemoryReader`. In the following, an in-memory trajectory of
 only the protein is created::
 
@@ -153,8 +155,18 @@ only the protein is created::
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
-The new :class:`~MDAnalysis.Universe` can be used to, for instance,
-write out a new trajectory or perform fast analysis on the sub-system.
+The protein coordinates are extracted into ``coordinates`` and then
+the in-memory trajectory is loaded from these coordinates. In
+principle, this could have all be done in one line::
+
+  u2 = mda.Merge(protein).load_new(
+           AnalysisFromFunction(lambda ag: ag.positions.copy(),
+                                protein).run().results.swapaxes(0, 1),
+           format=MemoryReader)
+
+The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
+to, for instance, write out a new trajectory or perform fast analysis
+on the sub-system.
 
 
 Classes
@@ -291,7 +303,7 @@ class MemoryReader(base.ProtoReader):
 
         Parameters
         ---------
-        asel : :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+        asel : :class:`~MDAnalysis.core.groups.AtomGroup` object
             Atom selection. Defaults to None, in which case the full set of
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the

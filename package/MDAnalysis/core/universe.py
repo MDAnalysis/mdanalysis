@@ -1,3 +1,52 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
+"""\
+=========================================================
+Core object: Universe --- :mod:`MDAnalysis.core.universe`
+=========================================================
+
+The :class:`~MDAnalysis.core.universe.Universe` class ties a topology
+and a trajectory together. Almost all code in MDAnalysis starts with a
+``Universe``.
+
+Normally, a ``Universe`` is created from files::
+
+  import MDAnalysis as mda
+  u = mda.Universe("topology.psf", "trajectory.dcd")
+
+In order to construct new simulation system it is also convenient to
+construct a ``Universe`` from existing
+:class:`~MDAnalysis.core.group.AtomGroup` instances with the
+:func:`Merge` function.
+
+
+Classes
+=======
+
+.. autoclass:: Universe
+   :members:
+
+Functions
+=========
+
+.. autofunction:: Merge
+
+"""
+
 import numpy as np
 import logging
 import copy
@@ -84,16 +133,16 @@ class Universe(object):
         atom type which are used in guessing bonds.
     is_anchor
         When unpickling instances of
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` existing Universes are
+        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
         searched for one where to anchor those atoms. Set to ``False`` to
         prevent this Universe from being considered. [``True``]
     anchor_name
         Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled from the
+        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
         Universe to only unpickle if a compatible Universe with matching
         *anchor_name* is found. *is_anchor* will be ignored in this case but
         will still be honored when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled with
+        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled with
         *anchor_name*==``None``. [``None``]
     in_memory
         After reading in the trajectory, transfer it to an in-memory
@@ -256,23 +305,25 @@ class Universe(object):
             :class:`MDAnalysis.coordinates.base.Reader` to define a custom
             reader to be used on the trajectory file.
         in_memory : bool (optional)
-            Directly load trajectory into memory
-        kwargs : dict
+            Directly load trajectory into memory with the
+            :class:`~MDAnalysis.coordinates.memory.MemoryReader`
+
+            .. versionadded:: 0.16.0
+
+        **kwargs : dict
             Other kwargs are passed to the trajectory reader (only for
             advanced use)
 
-
-        # TODO: check what happens if filename is None
         Returns
         -------
         filename : str
         trajectory_format : str
 
-        # TODO: look up raises doc formating
         Raises
         ------
         TypeError if trajectory format can not be
                   determined or no appropriate trajectory reader found
+
 
         .. versionchanged:: 0.8
            If a list or sequence that is provided for *filename* only contains
@@ -284,6 +335,13 @@ class Universe(object):
            :class:`~MDAnalysis.coordinates.base.ChainReader`.
 
         """
+        # the following was in the doc string:
+        # TODO
+        # ----
+        # - check what happens if filename is ``None``
+        # - look up raises doc formating
+        #
+        #
         # TODO: is this really sensible? Why not require a filename arg?
         if filename is None:
             return
@@ -352,6 +410,7 @@ class Universe(object):
         quiet : bool, optional
             Will print the progress of loading trajectory to memory, if
             set to True. Default value is quiet.
+
 
         .. versionadded:: 0.16.0
         """
@@ -688,7 +747,7 @@ def as_Universe(*args, **kwargs):
          as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
          as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
-    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    :Returns: an instance of :class:`~MDAnalysis.core.groups.Universe`
     """
     if len(args) == 0:
         raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
@@ -698,32 +757,42 @@ def as_Universe(*args, **kwargs):
 
 
 def Merge(*args):
-    """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
-
-    The resulting universe will only inherit the common topology attributes
-    that all merged universes share.
-
-    :class:`AtomGroup` instances can come from different Universes, or come
-    directly from a :meth:`~Universe.select_atoms` call.
-
-    It can also be used with a single :class:`AtomGroup` if the user wants to,
-    for example, re-order the atoms in the Universe.
-
-    If multiple :class:`AtomGroup` instances from the same Universe are given,
-    the merge will first simply "add" together the :class:`AtomGroup`
-    instances.
+    """Create a new new :class:`Universe` from one or more
+    :class:`~MDAnalysis.core.groups.AtomGroup` instances.
 
     Parameters
     ----------
-    args : One or more :class:`AtomGroup` instances.
+    *args : :class:`~MDAnalysis.core.groups.AtomGroup`
+        One or more AtomGroups.
 
     Returns
     -------
-    universe : An instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    universe : :class:`Universe`
 
     :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
              empty and :exc:`TypeError` if arguments are not
              :class:`AtomGroup` instances.
+
+    Notes
+    -----
+    The resulting :class:`Universe` will only inherit the common topology
+    attributes that all merged universes share.
+
+    :class:`AtomGroup` instances can come from different Universes, or can come
+    directly from a :meth:`~Universe.select_atoms` call.
+
+    :class:`Merge` can also be used with a single :class:`AtomGroup` if the
+    user wants to, for example, re-order the atoms in the :class:`Universe`.
+
+    If multiple :class:`AtomGroup` instances from the same :class:`Universe`
+    are given, the merge will first simply "add" together the
+    :class:`AtomGroup` instances.
+
+    Merging does not create a full trajectory but only a single structure even
+    if the input consists of one or more trajectories.  However, one can use
+    the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
+    trajectory for the new Universe as described under
+    :ref:`creating-in-memory-trajectory-label`.
 
     Example
     -------
@@ -741,10 +810,6 @@ def Merge(*args):
 
     The complete system is then written out to a new PDB file.
 
-    Note
-    ----
-        Merging does not create a full trajectory but only a single
-        structure even if the input consists of one or more trajectories.
 
     .. versionchanged 0.9.0::
        Raises exceptions instead of assertion errors.

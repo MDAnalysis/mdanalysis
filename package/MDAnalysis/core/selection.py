@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -14,20 +14,22 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-
-"""
-Atom selection Hierarchy --- :mod:`MDAnalysis.core.selection`
+"""Atom selection Hierarchy --- :mod:`MDAnalysis.core.selection`
 =============================================================
 
-These objects are constructed and applied to the group
+This module contains objects that represent selections. They are
+constructed and then applied to the group.
 
-In general, Parser.parse() creates a Selection object
-from a selection string.
+In general, :meth:`Parser.parse` creates a :class:`Selection` object
+from a selection string. This :class:`Selection` object is then passed
+an :class:`~MDAnalysis.core.groups.AtomGroup` through its
+:meth:`~MDAnalysis.core.groups.AtomGroup.apply` method to apply the
+``Selection`` to the ``AtomGroup``.
 
-This Selection object is then passed an AtomGroup through its
-apply method to apply the Selection to the AtomGroup.
+This is all invisible to the user through the
+:meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of an
+:class:`~MDAnalysis.core.groups.AtomGroup`.
 
-This is all invisible to the user through ag.select_atoms
 """
 import six
 from six.moves import zip

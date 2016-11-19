@@ -352,7 +352,7 @@ def get_distance_matrix(ensemble,
     """
     Retrieves or calculates the conformational distance (RMSD)
     matrix. The distance matrix is calculated between all the frames of all
-    the :class:`~MDAnalysis.core.AtomGroup.Universe` objects given as input.
+    the :class:`~MDAnalysis.core.universe.Universe` objects given as input.
     The order of the matrix elements depends on the order of the coordinates
     of the ensembles and on the order of the input ensembles themselves,
     therefore the order of the input list is significant.

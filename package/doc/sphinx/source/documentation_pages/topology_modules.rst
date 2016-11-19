@@ -17,7 +17,7 @@ hence most users probably do not need to concern themselves with
 classes and functions described here. However, if MDAnalysis does not
 properly recognize a file format then a user can explicitly set the
 topology file format in the *topology_format* keyword argument to
-:class:`~MDAnalysis.core.AtomGroup.Universe`.
+:class:`~MDAnalysis.core.universe.Universe`.
 
 .. rubric:: Topology formats
 

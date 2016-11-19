@@ -601,7 +601,7 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
                 solvation_shell = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
-                group = MDAnalysis.core.AtomGroup.AtomGroup(set_solvent - set(solvation_shell))  # bulk
+                group = MDAnalysis.core.groups.AtomGroup(set_solvent - set(solvation_shell))  # bulk
                 return group.positions
         else:
             def notwithin_coordinates(cutoff=cutoff):

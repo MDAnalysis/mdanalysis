@@ -842,7 +842,7 @@ class ContactAnalysis1(object):
     is, is which percentage of the contacts between A and B persist during the
     simulation.
 
-    First prepare :class:`~MDAnalysis.core.AtomGroup.AtomGroup` selections for
+    First prepare :class:`~MDAnalysis.core.groups.AtomGroup` selections for
     the reference atoms; this example uses some arbitrary selections::
 
       ref = Universe('crystal.pdb')
@@ -915,7 +915,7 @@ class ContactAnalysis1(object):
             B*"]
           *refgroup*
             reference group, either a single
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` (if there is only a
+            :class:`~MDAnalysis.core.groups.AtomGroup` (if there is only a
             single *selection*) or a list of two such groups. The reference
             contacts are directly computed from *refgroup* and hence the atoms
             in the reference group(s) must be equivalent to the ones produced
