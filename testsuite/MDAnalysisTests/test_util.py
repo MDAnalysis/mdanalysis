@@ -575,6 +575,7 @@ class TestGuessFormat(object):
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
         ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
         ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
+        ('MMTF', mda.topology.MMTFParser.MMTFParser, mda.coordinates.MMTF.MMTFReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
         ('NC', None, mda.coordinates.TRJ.NCDFReader),
         ('NCDF', None, mda.coordinates.TRJ.NCDFReader),
@@ -700,60 +701,53 @@ class TestUniqueRows(object):
                            np.array([[0, 1, 2], [2, 3, 4]]))
 
 
-class TestGetWritterFor(object):
-    def test_no_arguments(self):
-        """Does ``get_writer_for`` fails as expected when provided no
-        arguments
-        """
+class TestGetWriterFor(object):
+    def test_no_filename_argument(self):
         assert_raises(TypeError, mda.coordinates.core.get_writer_for)
+        # Does ``get_writer_for`` fails as expected when provided no
+        # filename arguments
 
     def test_precedence(self):
-        """Make sure ``get_writer_for`` uses *format* if provided"""
-        writter = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
-        assert_equal(writter, mda.coordinates.GRO.GROWriter)
+        writer = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
+        assert_equal(writer, mda.coordinates.GRO.GROWriter)
+        # Make sure ``get_writer_for`` uses *format* if provided
 
     def test_missing_extension(self):
-        """Make sure ``get_writer_for`` behave as expected if *filename*
-        has no extension
-        """
         assert_raises(TypeError, mda.coordinates.core.get_writer_for,
                       filename='test', format=None)
+        # Make sure ``get_writer_for`` behave as expected if *filename*
+        # has no extension
 
     def test_wrong_format(self):
-        """Make sure ``get_writer_for`` fails if the format is unknown"""
         assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      format='UNK')
+                      filename="fail_me", format='UNK')
+        # Make sure ``get_writer_for`` fails if the format is unknown
 
     def test_compressed_extension(self):
-        """Make sure ``get_writer_for`` works with compressed file file names
-        """
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
             writter = mda.coordinates.core.get_writer_for(filename=fn)
             assert_equal(writter, mda.coordinates.GRO.GROWriter)
+        # Make sure ``get_writer_for`` works with compressed file file names
 
     def test_compressed_extension_fail(self):
-        """Make sure ``get_writer_for`` fails if an unknown format is compressed
-        """
         for ext in ('.gz', '.bz2'):
             fn = 'test.unk' + ext
             assert_raises(TypeError, mda.coordinates.core.get_writer_for,
                           filename=fn)
+        # Make sure ``get_writer_for`` fails if an unknown format is compressed
 
-    def test_non_sring_filename(self):
-        """Does ``get_writer_for`` fails with non string filename, no format
-        """
+    def test_non_string_filename(self):
         assert_raises(ValueError, mda.coordinates.core.get_writer_for,
                       filename=StringIO(), format=None)
+        # Does ``get_writer_for`` fails with non string filename, no format
 
     def test_multiframe_failure(self):
-        """Does ``get_writer_for`` fails with invalid format and multiframe
-        not None
-        """
         assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename=None, format='UNK', multiframe=True)
+                      filename="fail_me", format='UNK', multiframe=True)
         assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename=None, format='UNK', multiframe=False)
+                      filename="fail_me", format='UNK', multiframe=False)
+        # does ``get_writer_for`` fail with invalid format and multiframe not None
 
     def test_multiframe_nonsense(self):
         assert_raises(ValueError, mda.coordinates.core.get_writer_for,
