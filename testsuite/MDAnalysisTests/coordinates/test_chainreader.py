@@ -148,20 +148,23 @@ class TestChainReaderCommonDt(TestCase):
 class TestChainReaderFormats(TestCase):
     """Test of ChainReader with explicit formats (Issue 76)."""
 
+    @staticmethod
     @attr('issue')
-    def test_set_all_format_tuples(self):
+    def test_set_all_format_tuples():
         universe = mda.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
                                       (TRR, 'trr')])
         assert_equal(universe.trajectory.n_frames, 21)
 
+    @staticmethod
     @attr('issue')
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parset not available. Are you using python 3?')
-    def test_set_one_format_tuple(self):
+    def test_set_one_format_tuple():
         universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert_equal(universe.trajectory.n_frames, 99)
 
+    @staticmethod
     @attr('issue')
-    def test_set_all_formats(self):
+    def test_set_all_formats():
         universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
         assert_equal(universe.trajectory.n_frames, 2)

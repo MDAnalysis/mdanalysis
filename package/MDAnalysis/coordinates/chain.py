@@ -294,15 +294,15 @@ class ChainReader(base.ProtoReader):
         values = np.array(self._get(attr))
         value = values[0]
         if not np.all(values == value):
-            bad_traj = np.array([self.get_flname(fn) for fn in self.filenames])[values != value]
-            raise ValueError("The following trajectories do not have the correct %s "
-                             " (%d):\n%r" % (attr, value, bad_traj))
+            bad_traj = np.array([self._get_filename(fn) for fn in self.filenames])[values != value]
+            raise ValueError("The following trajectories do not have the correct {0} "
+                             " ({1}):\n{2}".format(attr, value, bad_traj))
         return value
 
     def __activate_reader(self, i):
         """Make reader `i` the active reader."""
         # private method, not to be used by user to avoid a total mess
-        if i < 0 or i >= len(self.readers):
+        if not (0 <= i < len(self.readers)):
             raise IndexError("Reader index must be 0 <= i < {0:d}".format(len(self.readers)))
         self.__active_reader_index = i
 
@@ -377,7 +377,8 @@ class ChainReader(base.ProtoReader):
         for ts in self.__chained_trajectories_iter:
             yield ts
 
-    def get_flname(self, filename):
+    @staticmethod
+    def _get_filename(filename):
         """retrieve the actual filename of the list element"""
         return filename[0] if isinstance(filename, tuple) else filename
 
@@ -385,7 +386,7 @@ class ChainReader(base.ProtoReader):
         return ("<{clsname} {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
                     clsname=self.__class__.__name__,
-                    fname=[os.path.basename(self.get_flname(fn))
+                    fname=[os.path.basename(self._get_filename(fn))
                            for fn in self.filenames],
                     nframes=self.n_frames,
                     natoms=self.n_atoms))

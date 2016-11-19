@@ -26,7 +26,8 @@ from MDAnalysisTests.datafiles import (INPCRD, XYZ_five)
 class TestINPCRDReader(object):
     """Test reading Amber restart coordinate files"""
 
-    def _check_ts(self, ts):
+    @staticmethod
+    def _check_ts(ts):
         # Check a ts has the right values in
         ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
                             [7.3133773, 5.8359736, -8.8294175],
