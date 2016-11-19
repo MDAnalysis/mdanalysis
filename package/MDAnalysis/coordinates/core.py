@@ -30,6 +30,7 @@ Helper functions:
 .. autofunction:: get_writer_for
 
 """
+from __future__ import absolute_import
 
 import six
 
@@ -38,6 +39,7 @@ from . import (
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
 )
+
 from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
@@ -119,21 +121,23 @@ def reader(filename, **kwargs):
         return Reader(filename, **kwargs)
 
 
-def get_writer_for(filename=None, format=None, multiframe=None):
-    """Return an appropriate trajectory or frame writer class for *filename*.
+def get_writer_for(filename, format=None, multiframe=None):
+    """Return an appropriate trajectory or frame writer class for `filename`.
 
     The format is determined by the *format* argument or the extension of
-    *filename*. If *format* is provided, it takes precedence over The
-    extension of *filename*.
+    `filename`. If `format` is provided, it takes precedence over The
+    extension of `filename`.
 
     Parameters
     ----------
-    filename : str
+    filename : str or ``None``
         If no *format* is supplied, then the filename for the trajectory is
         examined for its extension and the Writer is chosen accordingly.
-    format : str
+        If ``None`` is provided, the
+        :class:`~MDAnalysis.coordinates.null.NullWriter` is selected.
+    format : str, optional
         Explicitly set a format.
-    multiframe : bool
+    multiframe : bool, optional
         ``True``: write multiple frames to the trajectory; ``False``: only
         write a single coordinate frame; ``None``: first try trajectory (multi
         frame writers), then the single frame ones. Default is ``None``.
@@ -145,21 +149,31 @@ def get_writer_for(filename=None, format=None, multiframe=None):
     Raises
     ------
     ValueError:
-        The format could not be deduced from *filename* or an unexpected value
-        was provided for the *multiframe* argument.
+        The format could not be deduced from `filename` or an unexpected value
+        was provided for the `multiframe` argument.
     TypeError:
-        No writer got found for the required format.
+        No writer was found for the required format or the required `filename`
+        argument was omitted.
+
 
     .. versionchanged:: 0.7.6
-       Added *multiframe* keyword; the default ``None`` reflects the previous
+       Added `multiframe` keyword; the default ``None`` reflects the previous
        behaviour.
 
     .. versionchanged:: 0.14.0
-       Removed the default value for the *format* argument. Now, the value
-       provided with the *format* parameter takes precedence over the extension
-       of *filename*. A ``ValueError`` is raised if the format cannot be
-       deduced from *filename*.
+       Removed the default value for the `format` argument. Now, the value
+       provided with the `format` parameter takes precedence over the extension
+       of `filename`. A :exc:`ValueError` is raised if the format cannot be
+       deduced from `filename`.
+
+    .. versionchanged:: 0.16.0
+       The `filename`
     """
+    if filename is None:
+        # need to import here to avoid circular reference
+        from .null import NullWriter
+        return NullWriter
+
     if format is None and filename:
         try:
             root, ext = util.get_ext(filename)

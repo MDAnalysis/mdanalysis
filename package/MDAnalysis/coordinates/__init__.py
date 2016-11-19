@@ -65,9 +65,9 @@ the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
 :class:`~MDAnalysis.core.universe.Universe`).
 
-If additional simulation data is available, it may be added to and read 
-alongside a trajectory using 
-:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary`. See the 
+If additional simulation data is available, it may be added to and read
+alongside a trajectory using
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary`. See the
 :ref:`Auxiliary API`.
 
 
@@ -714,6 +714,8 @@ from . import XTC
 from . import XYZ
 from . import memory
 from . import MMTF
+from . import null
+
 
 try:
     from . import DCD

@@ -22,7 +22,8 @@ from MDAnalysis import SelectionError
 
 from numpy.testing import (TestCase, dec,
                            assert_almost_equal, assert_raises, assert_equal,
-                           assert_array_equal, assert_)
+                           assert_array_equal, assert_array_almost_equal,
+                           assert_)
 import numpy as np
 from nose.plugins.attrib import attr
 
@@ -146,34 +147,57 @@ class TestAlign(TestCase):
 
     def test_AlignTraj(self):
         self.reference.trajectory[-1]
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'AlignTraj_test.dcd')
-        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile)
-        x.run()
+        x = align.AlignTraj(self.universe, self.reference,
+                            filename=self.outfile).run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
 
-        self.rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
-        x.save(self.rmsd_outfile)
-        assert_almost_equal(x.rmsd[0],6.929083044751061, decimal = 3)
-        assert_almost_equal(x.rmsd[-1],5.279731379771749336e-07, decimal = 3)
+        rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
+        x.save(rmsd_outfile)
+
+        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
         self._assert_rmsd(fitted, 0, 6.929083044751061)
         self._assert_rmsd(fitted, -1, 0.0)
-        del self.outfile
-        #test weighted
-        self.outfile = os.path.join(self.tempdir.name, 'AlignTraj_weighted_test.dcd')
-        x = align.AlignTraj(self.universe,self.reference,filename=self.outfile,
-                            mass_weighted=True)
-        x.run()
 
-        #test filename=none
-        #test os.path_exists and not force
-        #test .save()
+        # superficially check saved file rmsd_outfile
+        rmsd = np.loadtxt(rmsd_outfile)
+        assert_array_almost_equal(rmsd, x.rmsd,
+                                  err_msg="saved RMSD not correct")
 
-    def _assert_rmsd(self, fitted, frame, desired):
+    def test_AlignTraj_weighted(self):
+        x = align.AlignTraj(self.universe, self.reference,
+                            filename=self.outfile, mass_weighted=True).run()
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
+        assert_almost_equal(x.rmsd[-1], 6.9033990467077579, decimal=3)
+
+        self._assert_rmsd(fitted, 0, 0.0,
+                          weights=self.universe.atoms.masses)
+        self._assert_rmsd(fitted, -1, 6.929083032629219,
+                          weights=self.universe.atoms.masses)
+
+    def test_AlignTraj_partial_fit(self):
+        # fitting on a partial selection should still write the whole topology
+        align.AlignTraj(self.universe, self.reference, select='resid 1-20',
+                        filename=self.outfile, mass_weighted=True).run()
+        MDAnalysis.Universe(PSF, self.outfile)
+
+    def test_AlignTraj_in_memory(self):
+        self.reference.trajectory[-1]
+        x = align.AlignTraj(self.universe, self.reference,
+                            filename=self.outfile, in_memory=True).run()
+        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
+
+        # check in memory trajectory
+        self._assert_rmsd(self.universe, 0, 6.929083044751061)
+        self._assert_rmsd(self.universe, -1, 0.0)
+
+    def _assert_rmsd(self, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(self.reference.atoms.positions,
                         fitted.atoms.positions, superposition=True)
@@ -253,5 +277,3 @@ def test_sequence_alignment():
             "mobile sequence mismatch")
     assert_almost_equal(score, 54.6)
     assert_array_equal([begin, end], [0, reference.n_residues])
-
-
