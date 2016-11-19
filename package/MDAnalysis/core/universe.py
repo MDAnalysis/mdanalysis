@@ -288,20 +288,25 @@ class Universe(object):
         return self
 
     def load_new(self, filename, format=None, in_memory=False, **kwargs):
-        """Load coordinates from *filename*, using the suffix to detect file
-        format.
+        """Load coordinates from `filename`.
+
+        The file format of `filename` is autodetected from the file name suffix
+        or can be explicitly set with the `format` keyword. A sequence of files
+        can be read as a single virtual trajectory by providing a list of
+        filenames.
+
 
         Parameters
         ----------
-        filename : str
+        filename : str or list
             the coordinate file (single frame or trajectory) *or* a list of
             filenames, which are read one after another.
-        format : str (optional)
+        format : str or list or object (optional)
             provide the file format of the coordinate or trajectory file;
             ``None`` guesses it from the file extension. Note that this
             keyword has no effect if a list of file names is supplied because
             the "chained" reader has to guess the file format for each
-            individual list member [``None``] Can also pass a subclass of
+            individual list member [``None``]. Can also pass a subclass of
             :class:`MDAnalysis.coordinates.base.Reader` to define a custom
             reader to be used on the trajectory file.
         in_memory : bool (optional)
@@ -316,7 +321,7 @@ class Universe(object):
 
         Returns
         -------
-        filename : str
+        filename : str or list
         trajectory_format : str
 
         Raises
@@ -326,13 +331,13 @@ class Universe(object):
 
 
         .. versionchanged:: 0.8
-           If a list or sequence that is provided for *filename* only contains
+           If a list or sequence that is provided for `filename` only contains
            a single entry then it is treated as single coordinate file. This
            has the consequence that it is not read by the
-           :class:`~MDAnalysis.coordinates.base.ChainReader` but directly by
+           :class:`~MDAnalysis.coordinates.chain.ChainReader` but directly by
            its specialized file format reader, which typically has more
            features than the
-           :class:`~MDAnalysis.coordinates.base.ChainReader`.
+           :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
         """
         # the following was in the doc string:
@@ -365,7 +370,7 @@ class Universe(object):
             pass
 
         if reader is None:
-            # Check if we need to use Chain reader
+            # Check if we need to use ChainReader
             if util.iterable(filename):
                 # Save the format and pass this to ChainReader
                 reader_format = 'CHAIN'
@@ -428,12 +433,10 @@ class Universe(object):
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
                                    interval=frame_interval, quiet=quiet)
-
-                coordinates = []
+                coordinates = []  # TODO: use pre-allocated array
                 for ts in self.trajectory[::frame_interval]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
-
                 coordinates = np.array(coordinates).swapaxes(0, 1)
 
             # Overwrite trajectory in universe with an MemoryReader
@@ -445,22 +448,32 @@ class Universe(object):
                 dt=self.trajectory.ts.dt)
 
     def select_atoms(self, sel, *othersel, **selgroups):
+        """Select atoms.
+
+        SeeAlso
+        -------
+        :meth:`MDAnalysis.core.groups.AtomGroup.select_atoms`
+        """
         return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
     @property
     def bonds(self):
+        """Bonds between atoms"""
         return self.atoms.bonds
 
     @property
     def angles(self):
+        """Angles between atoms"""
         return self.atoms.angles
 
     @property
     def dihedrals(self):
+        """Dihedral angles between atoms"""
         return self.atoms.dihedrals
 
     @property
     def impropers(self):
+        """Improper dihedral angles between atoms"""
         return self.atoms.impropers
 
     def __repr__(self):
@@ -505,10 +518,10 @@ class Universe(object):
 
         .. Note::
 
-           In order to access the coordinates it is probably better to use the
-           :meth:`AtomGroup.coordinates` method; for instance, all coordinates
-           of the Universe as a numpy array:
-           :meth:`Universe.atoms.coordinates`.
+           In order to access the coordinates it is better to use the
+           :meth:`AtomGroup.positions` method; for instance, all coordinates of
+           the Universe as a numpy array: :meth:`Universe.atoms.positions`.
+
         """
         return self.trajectory.ts
 
@@ -531,6 +544,7 @@ class Universe(object):
         self._trajectory = value
 
     def add_TopologyAttr(self, topologyattr):
+        """Add a new topology attribute."""
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
