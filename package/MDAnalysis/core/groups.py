@@ -162,9 +162,11 @@ class _TopologyAttrContainer(object):
     def _mix(cls, other):
         """Creates a subclass with ourselves and another class as parents.
 
-        Classes mixed at this point always override :meth:`__new__`, causing
-        further instantiations to shortcut to :meth:`object.__new__` (skipping
-        the cache-fetch process for :class:`_MutableBase` subclasses).
+        Classes mixed at this point override :meth:`__new__`, causing further
+        instantiations to shortcut to :meth:`object.__new__` (skipping the
+        cache-fetch process for :class:`_MutableBase` subclasses). An
+        exception is if the *other* class itself already has a __new__ method,
+        in which case it won't be overridden.
 
         Parameters
         ----------
@@ -177,7 +179,10 @@ class _TopologyAttrContainer(object):
             A class of parents :class:`_ImmutableBase`, *other* and this class.
             Its name is the same as *other*'s.
         """
-        return type(other.__name__, (_ImmutableBase, other, cls), {})
+        if '__new__' in other.__dict__:
+            return type(other.__name__, (other, cls), {})
+        else:
+            return type(other.__name__, (_ImmutableBase, other, cls), {})
 
     @classmethod
     def _add_prop(cls, attr):
@@ -214,9 +219,9 @@ class _MutableBase(object):
     """
     # This signature must be kept in sync with the __init__ signature of
     #  GroupBase and ComponentBase.
-    def __new__(cls, *args):
+    def __new__(cls, *args, **kwargs):
         try:
-            ix, u = args
+            ix, u = args[:2]
         except ValueError:
             # deprecated AtomGroup init method..
             u = args[0][0].universe
@@ -811,7 +816,7 @@ class GroupBase(_MutableBase):
         dests = distances.apply_PBC(centers, box=box)
         shifts = dests - centers
 
-        for o, s in itertools.izip(objects, shifts):
+        for o, s in zip(objects, shifts):
             # Save some needless shifts
             if not all(s == 0.0):
                 o.atoms.translate(s)
@@ -914,19 +919,19 @@ class AtomGroup(GroupBase):
     def residues(self, new):
         # Can set with Res, ResGroup or list/tuple of Res
         if isinstance(new, Residue):
-            rix = itertools.cycle((new.resindex,))
+            r_ix = itertools.cycle((new.resindex,))
         elif isinstance(new, ResidueGroup):
-            rix = new.resindices
+            r_ix = new.resindices
         else:
             try:
-                rix = [r.resindex for r in new]
+                r_ix = [r.resindex for r in new]
             except AttributeError:
                 raise TypeError("Can only set AtomGroup residues to Residue "
                                 "or ResidueGroup not {}".format(
                                     ', '.join(type(r) for r in new
                                               if not isinstance(r, Residue))
                                 ))
-        if not isinstance(rix, itertools.cycle) and len(rix) != len(self):
+        if not isinstance(r_ix, itertools.cycle) and len(r_ix) != len(self):
             raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
                              "".format(len(new), len(self)))
         # Optimisation TODO:
@@ -934,7 +939,7 @@ class AtomGroup(GroupBase):
         # Ideally all changes would happen and *afterwards* tables are built
         # Alternatively, if the changes didn't rebuild table, this list
         # comprehension isn't terrible.
-        for at, r in zip(self, rix):
+        for at, r in zip(self, r_ix):
             self.universe._topology.tt.move_atom(at.ix, r)
 
     @property
@@ -1067,6 +1072,8 @@ class AtomGroup(GroupBase):
 
         return trj_ts.copy_slice(self.indices)
 
+    # As with universe.select_atoms, needing to fish out specific kwargs
+    # (namely, 'updating') doesn't allow a very clean signature.
     def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a selection string.
 
@@ -1079,6 +1086,9 @@ class AtomGroup(GroupBase):
         which will then be available to the selection parser.
 
         Subselections can be grouped with parentheses.
+
+        Selections can be set to update automatically on frame change, by
+        setting the *updating* named argument to `True`.
 
         Examples
         --------
@@ -1229,17 +1239,63 @@ class AtomGroup(GroupBase):
                 therefore have atoms that were initially absent from the
                 instance :meth:`~select_atoms` was called from.
 
+            global *selection*
+                by default, when issuing
+                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from an
+                :class:`~MDAnalysis.core.groups.AtomGroup`, selections and
+                subselections are returned intersected with the atoms of that
+                instance. Prefixing a selection term with ``global`` causes its
+                selection to be returned in its entirety.  As an example, the
+                ``global`` keyword allows for
+                ``lipids.select_atoms("around 10 global protein")`` --- where
+                ``lipids`` is a group that does not contain any proteins. Were
+                ``global`` absent, the result would be an empty selection since
+                the ``protein`` subselection would itself be empty. When issuing
+                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
+                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
+
+        **Dynamic selections**
+            If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is
+            invoked with named argument *updating* set to `True`, an
+            :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` instance will be
+            returned, instead of a regular
+            :class:`~MDAnalysis.core.groups.AtomGroup`. It behaves just like
+            the latter, with the difference that the selection expressions are
+            re-evaluated every time the trajectory frame changes (this happens
+            lazily, only when the
+            :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` is accessed so
+            that there is no redundant updating going on).
+            Making an updating selection from an already updating group will
+            cause later updates to also reflect the updating of the base group.
+            A non-updating selection or a slicing operation made on an
+            :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` will return a
+            static :class:`~MDAnalysis.core.groups.AtomGroup`, which will no
+            longer update across frames.
+
 
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
         .. versionchanged:: 0.8.1
            Added *group* and *fullgroup* selections.
+        .. deprecated:: 0.11
+           The use of ``fullgroup`` has been deprecated in favor of the equivalent
+           ``global group``.
         .. versionchanged:: 0.13.0
            Added *bonded* selection
         .. versionchanged:: 0.16.0
            Resid selection now takes icodes into account where present.
+        .. versionadded:: 0.16.0
+           Updating selections now possible by setting the *updating* argument.
 
         """
+        updating = selgroups.pop('updating',False)
+        # The self-updating atomgroup only stores the parse objects
+        # and the base atomgroup
+        if updating:
+            return UpdatingAtomGroup(self._ix, self._u, base_group=self,
+                                selections=tuple((selection.Parser.parse(s,
+                                selgroups) for s in (sel,)+othersel)))
+
         atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
         if othersel:
             # Generate a selection for each selection string
@@ -1533,19 +1589,19 @@ class ResidueGroup(GroupBase):
     def segments(self, new):
         # Can set with Seg, SegGroup or list/tuple of Seg
         if isinstance(new, Segment):
-            six = itertools.cycle((new.segindex,))
+            s_ix = itertools.cycle((new.segindex,))
         elif isinstance(new, SegmentGroup):
-            six = new.segindices
+            s_ix = new.segindices
         else:
             try:
-                six = [s.segindex for s in new]
+                s_ix = [s.segindex for s in new]
             except AttributeError:
                 raise TypeError("Can only set ResidueGroup residues to Segment "
                                 "or ResidueGroup not {}".format(
                                     ', '.join(type(r) for r in new
                                               if not isinstance(r, Segment))
                                 ))
-        if not isinstance(six, itertools.cycle) and len(six) != len(self):
+        if not isinstance(s_ix, itertools.cycle) and len(s_ix) != len(self):
             raise ValueError("Incorrect size: {} for ResidueGroup of size: {}"
                              "".format(len(new), len(self)))
         # Optimisation TODO:
@@ -1553,7 +1609,7 @@ class ResidueGroup(GroupBase):
         # Ideally all changes would happen and *afterwards* tables are built
         # Alternatively, if the changes didn't rebuild table, this list
         # comprehension isn't terrible.
-        for r, s in zip(self, six):
+        for r, s in zip(self, s_ix):
             self.universe._topology.tt.move_residue(r.ix, s)
 
     @property
@@ -1923,6 +1979,65 @@ class Segment(ComponentBase):
         raise AttributeError("{cls} has no attribute {attr}"
                              "".format(cls=self.__class__.__name__, attr=attr))
 
+class UpdatingAtomGroup(AtomGroup):
+    """:class:`AtomGroup` subclass that dynamically updates its selected atoms.
+
+    Accessing any attribute/method of an :class:`UpdatingAtomGroup: instance
+    triggers a check for the last frame the group was updated. If the last
+    frame matches the current trajectory frame, the attribute is returned
+    normally; otherwise the group is updated (the stored selections are
+    re-applied), and only then is the attribute returned.
+
+    Parameters
+    ----------
+    base_group : an :class:`AtomGroup` instance on which *selections* are to be
+        applied.
+    selections : a tuple of :class:`Selection` instances, ready to be applied
+        to *base_group*.
+
+    """
+
+    def __new__(cls, *args, **kwargs):
+        # If we're reinstantiated in a non-updating way, we must
+        # become a regular AtomGroup
+        if len(args) + len(kwargs) > 2:
+            return super(UpdatingAtomGroup, cls).__new__(cls,
+                                                         *args, **kwargs)
+        else:
+            return AtomGroup(*args, **kwargs)
+
+    # ix and u aren't used, but must be part of the signature for class
+    # registration purposes.
+    def __init__(self, ix, u, base_group, selections):
+        self._base_group = base_group
+        self._updating_selections = selections
+        self.update_selection()
+
+    def update_selection(self):
+        bg = self._base_group
+        sels = self._updating_selections
+        ix = sum([sel.apply(bg) for sel in sels])._ix
+        super(UpdatingAtomGroup, self).__init__(ix, bg._u)
+        self._lastupdate = bg._u.trajectory.ts.frame
+
+    def __getattribute__(self,name):
+        if not name in ("_base_group","_updating_selections","_lastupdate"):
+            try:
+                u = object.__getattribute__(self, "_u")
+                lastupdate = object.__getattribute__(self, "_lastupdate")
+            # At first __init__ we don't have _u or _lastupdate yet.
+            except AttributeError:
+                object.__getattribute__(self, "update_selection")()
+            else:
+                if u.trajectory.ts.frame != lastupdate:
+                    object.__getattribute__(self, "update_selection")()
+        return object.__getattribute__(self, name)
+
+    def __repr__(self):
+        name = self.level.name
+        return ("<UpdatingAtomGroup with {} {}s>"
+                "".format(len(self), name))
+
 # Define relationships between these classes
 # with Level objects
 ATOMLEVEL = levels.Level('atom', Atom, AtomGroup)
@@ -1942,7 +2057,6 @@ Residue.level = RESIDUELEVEL
 ResidueGroup.level = RESIDUELEVEL
 Segment.level = SEGMENTLEVEL
 SegmentGroup.level = SEGMENTLEVEL
-
 
 def requires(*attrs):
     """Decorator to check if all AtomGroup arguments have certain attributes

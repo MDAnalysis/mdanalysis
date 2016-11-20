@@ -972,3 +972,53 @@ class TestICodeSelection(object):
         u = make_Universe(('resids',))
 
         assert_raises(ValueError, u.select_atoms, 'resid 10A-12')
+
+class TestUpdatingSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(TPR, XTC)
+        self.ag = self.u.select_atoms(
+            "prop x < 5 and prop y < 5 and prop z < 5")
+        self.ag_updating = self.u.select_atoms(
+            "prop x < 5 and prop y < 5 and prop z < 5", updating=True)
+        self.ag_updating_compounded = self.u.select_atoms("around 2 group sele",
+                                    sele=self.ag, updating=True)
+        self.ag_updating_chained = self.u.select_atoms("around 2 group sele",
+                                    sele=self.ag_updating, updating=True)
+        self.ag_updating_chained2 = self.ag_updating.select_atoms("all",
+                                                                updating=True)
+
+        def test_update(self):
+            assert_array_equal(self.ag_updating.indices, self.ag.indices)
+            target_idxs = np.array([6289, 6290, 6291, 6292])
+            self.u.trajectory.next()
+            assert_array_equal(self.ag_updating.indices, target_idxs)
+
+        def test_compounded_update(self):
+            target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
+                                     40360, 41414])
+            target_idxs1 = np.array([ 3650,  8146, 23469, 23472, 31426,
+                                     31689, 31692, 34326, 41414])
+            assert_array_equal(self.ag_updating_compounded.indices,
+                               target_idxs0)
+            self.u.trajectory.next()
+            assert_array_equal(self.ag_updating_compounded.indices,
+                               target_idxs1)
+
+        def test_chained_update(self):
+            target_idxs = np.array([ 4471,  7406, 11973, 11975, 34662, 44042])
+            assert_array_equal(self.ag_updating_chained.indices,
+                               self.ag_updating_compounded.indices)
+            self.u.trajectory.next()
+            assert_array_equal(self.ag_updating_chained.indices, target_idxs)
+
+        def test_chained_update2(self):
+            assert_array_equal(self.ag_updating_chained2.indices,
+                               self.ag_updating.indices)
+            self.u.trajectory.next()
+            assert_array_equal(self.ag_updating_chained2.indices,
+                               self.ag_updating.indices)
+
+        def test_kwarg_check(self):
+            assert_raises(TypeError, self.u.select_atoms, "group updating",
+                          {"updating":True})
+
