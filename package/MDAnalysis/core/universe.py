@@ -54,7 +54,7 @@ import copy
 import MDAnalysis
 from .. import _READERS, _PARSERS
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, get_reader_for, get_parser_for
 from ..lib.log import ProgressMeter
 from ..exceptions import NoDataError
 from . import groups
@@ -166,7 +166,6 @@ class Universe(object):
     """
 
     def __init__(self, *args, **kwargs):
-        from ..topology.core import get_parser_for
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
 
@@ -204,18 +203,20 @@ class Universe(object):
                 elif topology_format is None:
                     topology_format = kwargs.get('format', None)
 
-                # if passed a Reader, use that
-                fmt = kwargs.get('format', None)
                 try:
-                    if issubclass(fmt, ProtoReader):
+                    # if passed a Reader, use that
+                    if issubclass(kwargs.get('format', None), ProtoReader):
                         coordinatefile = self.filename
                 except TypeError:
-                    # or if file is known as a topology & coordinate file, use
-                    # that
-                    if fmt is None:
-                        fmt = util.guess_format(self.filename)
-                    if (fmt in _READERS and fmt in _PARSERS):
-                        coordinatefile = self.filename
+                    try:
+                        # see if we could get a Reader for this filename
+                        _ = get_reader_for(self.filename)
+                    except ValueError:
+                        pass
+                    else:
+                        # as a list for now to replicate result of
+                        # the [1:] slice above
+                        coordinatefile = [self.filename]
 
             # build the topology (or at least a list of atoms)
             try:  # Try and check if the topology format is a TopologyReader
@@ -351,7 +352,6 @@ class Universe(object):
         if filename is None:
             return
 
-        from ..coordinates.core import get_reader_for
         from ..coordinates.base import ProtoReader
 
         if len(util.asiterable(filename)) == 1:
@@ -370,14 +370,8 @@ class Universe(object):
             pass
 
         if reader is None:
-            # Check if we need to use ChainReader
-            if util.iterable(filename):
-                # Save the format and pass this to ChainReader
-                reader_format = 'CHAIN'
-                kwargs['format'] = reader_format
             try:
-                reader = get_reader_for(filename,
-                                        format=reader_format)
+                reader = get_reader_for(filename, format=reader_format)
             except ValueError as err:
                 raise TypeError(
                     "Cannot find an appropriate coordinate reader for file '{0}'.\n"

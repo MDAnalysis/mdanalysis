@@ -141,7 +141,10 @@ class MMTFParser(base.TopologyReader):
     format = 'MMTF'
 
     def parse(self):
-        mtop = _parse_mmtf(self.filename)
+        if isinstance(self.filename, mmtf.MMTFDecoder):
+            mtop = self.filename
+        else:
+            mtop = _parse_mmtf(self.filename)
 
         def iter_atoms(field):
             # iterate through atoms in groups

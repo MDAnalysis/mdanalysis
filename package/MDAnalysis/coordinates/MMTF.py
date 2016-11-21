@@ -54,7 +54,10 @@ class MMTFReader(base.SingleFrameReader):
 
     def _read_first_frame(self):
         # TOOD: Check units?
-        top = _parse_mmtf(self.filename)
+        if isinstance(self.filename, mmtf.MMTFDecoder):
+            top = self.filename
+        else:
+            top = _parse_mmtf(self.filename)
         self.n_atoms = top.num_atoms
 
         self.ts = ts = self._Timestep(self.n_atoms,
