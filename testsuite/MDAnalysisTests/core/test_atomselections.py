@@ -987,38 +987,40 @@ class TestUpdatingSelection(object):
         self.ag_updating_chained2 = self.ag_updating.select_atoms("all",
                                                                 updating=True)
 
-        def test_update(self):
-            assert_array_equal(self.ag_updating.indices, self.ag.indices)
-            target_idxs = np.array([6289, 6290, 6291, 6292])
-            self.u.trajectory.next()
-            assert_array_equal(self.ag_updating.indices, target_idxs)
+    def test_update(self):
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+        target_idxs = np.array([ 4469,  4470,  4472,  6289,  6290,  6291,
+                                6292, 31313, 31314, 31315, 31316, 34661,
+                                34663, 34664])
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating.indices, target_idxs)
 
-        def test_compounded_update(self):
-            target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
-                                     40360, 41414])
-            target_idxs1 = np.array([ 3650,  8146, 23469, 23472, 31426,
-                                     31689, 31692, 34326, 41414])
-            assert_array_equal(self.ag_updating_compounded.indices,
-                               target_idxs0)
-            self.u.trajectory.next()
-            assert_array_equal(self.ag_updating_compounded.indices,
-                               target_idxs1)
+    def test_compounded_update(self):
+        target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
+                                 40360, 41414])
+        target_idxs1 = np.array([ 3650,  8146, 23469, 23472, 31426,
+                                 31689, 31692, 34326, 41414])
+        assert_array_equal(self.ag_updating_compounded.indices,
+                           target_idxs0)
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating_compounded.indices,
+                           target_idxs1)
 
-        def test_chained_update(self):
-            target_idxs = np.array([ 4471,  7406, 11973, 11975, 34662, 44042])
-            assert_array_equal(self.ag_updating_chained.indices,
-                               self.ag_updating_compounded.indices)
-            self.u.trajectory.next()
-            assert_array_equal(self.ag_updating_chained.indices, target_idxs)
+    def test_chained_update(self):
+        target_idxs = np.array([ 4471,  7406, 11973, 11975, 34662, 44042])
+        assert_array_equal(self.ag_updating_chained.indices,
+                           self.ag_updating_compounded.indices)
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating_chained.indices, target_idxs)
 
-        def test_chained_update2(self):
-            assert_array_equal(self.ag_updating_chained2.indices,
-                               self.ag_updating.indices)
-            self.u.trajectory.next()
-            assert_array_equal(self.ag_updating_chained2.indices,
-                               self.ag_updating.indices)
+    def test_chained_update2(self):
+        assert_array_equal(self.ag_updating_chained2.indices,
+                           self.ag_updating.indices)
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating_chained2.indices,
+                           self.ag_updating.indices)
 
-        def test_kwarg_check(self):
-            assert_raises(TypeError, self.u.select_atoms, "group updating",
-                          {"updating":True})
+    def test_kwarg_check(self):
+        assert_raises(TypeError, self.u.select_atoms, "group updating",
+                      {"updating":True})
 
