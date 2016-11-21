@@ -65,7 +65,6 @@ def capping(ref, ace, nma, output):
               nma.select_atoms("resname NME NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
-    u.atoms.write('cap.pdb')
     return u
 
 
@@ -87,7 +86,9 @@ class TestCapping(TestCase):
         nma = MDAnalysis.Universe(capping_nma)
 
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal(len(u.select_atoms("not name H*")), len(ref.select_atoms("not name H*")))
+
+        assert_equal(len(u.select_atoms("not name H*")),
+                     len(ref.select_atoms("not name H*")))
 
         u = MDAnalysis.Universe(self.outfile)
 
@@ -178,7 +179,7 @@ class TestMerge(TestCase):
 
     def test_merge_same_universe(self):
         u1, _, _ = self.universes
-        
+
         u0 = MDAnalysis.Merge(u1.atoms, u1.atoms, u1.atoms)
         assert_equal(len(u0.atoms), 3*len(u1.atoms))
         assert_equal(len(u0.residues), 3*len(u1.residues))

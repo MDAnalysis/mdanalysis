@@ -566,7 +566,7 @@ class TestGuessFormat(object):
     # list of known formats, followed by the desired Parser and Reader
     # None indicates that there isn't a Parser/Reader for this format
     formats = [
-        ('CHAIN', None, mda.coordinates.base.ChainReader),
+        ('CHAIN', None, mda.coordinates.chain.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),

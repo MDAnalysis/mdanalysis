@@ -15,33 +15,37 @@
 #
 
 
-"""
+"""\
 Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
-============================================================================
+=================================================================
 
 The coordinates submodule contains code to read, write and store coordinate
-information,
-either single frames (e.g. the GRO module) or trajectories (such as the DCD
-reader).
+information, either single frames (e.g., the :mod:`~MDAnalysis.coordinates.GRO`
+format) or trajectories (such as the :mod:`~MDAnalyis.coordinates.DCD` format);
+see the :ref:`Supported coordinate formats` for all formats.
+
+MDAnalysis calls the classes that read a coordinate trajectory and make the
+data available *"Readers"*. Similarly, classes that write out coordinates are
+called *"Writers"*. Readers and Writers provide a common interface to the
+underlying coordinate data. This abstraction of coordinate access through an
+object-oriented interface is one of the key capabilities of MDAnalysis.
 
 
 Readers
 -------
 
-All Readers are supposed to expose a :class:`ProtoReader` object
-that presents a common `Trajectory API`_ to other code.
+All Readers are based on a :class:`ProtoReader` class that defines a common
+;ref:`Trajectory API` and allows other code to interface with all trajectory
+formats in the same way, independent of the details of the trajectory format
+itself.
 
-The :class:`~MDAnalysis.core.universe.Universe` contains the API
-entry point attribute
+The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
+attribute :attr:`Universe.trajectory` that points to the actual
+:class:`~MDAnalysis.coordinates.base.Reader` object; all Readers are accessible
+through this entry point in the same manner ("`duck typing`_").
 
-  :attr:`Universe.trajectory`
-
-that points to the actual :class:`~MDAnalysis.coordinates.base.Reader`
-object; all Readers are supposed to be accessible through this entry
-point in the same manner ("`duck typing`_").
-
-There are three types of base Reader which act as starting points
-for each specific format. These are:
+There are three types of base Reader which act as starting points for each
+specific format. These are:
 
 :class:`~MDAnalysis.coordinates.base.Reader`
    A standard multi frame Reader which allows iteration over a single
@@ -53,7 +57,7 @@ for each specific format. These are:
    frame of information.  This is used with formats such as GRO
    and CRD
 
-:class:`~MDAnalysis.coordinates.baseChainReader`
+:class:`~MDAnalysis.coordinates.chain.ChainReader`
    An advanced Reader designed to read a sequence of files, to
    provide iteration over all the frames in each file seamlessly.
    This Reader can also provide this functionality over a
@@ -67,34 +71,30 @@ extension but this choice can be overriden with the ``format`` argument to
 
 If additional simulation data is available, it may be added to and read
 alongside a trajectory using
-:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary`. See the
-:ref:`Auxiliary API`.
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary` as described in
+the :ref:`Auxiliary API`.
 
+.. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 Writers
 -------
 
 In order to **write coordinates**, a factory function is provided
-(:func:`MDAnalysis.coordinates.core.writer`) which is made available
-as :func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for
-the desired file format (as indicated by the filename
-suffix). Furthermore, a trajectory
+(:func:`MDAnalysis.coordinates.core.writer`, which is also made available as
+:func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for the desired
+file format (as indicated by the filename suffix). Furthermore, a trajectory
 :class:`~MDAnalysis.coordinates.base.Reader` can also have a method
-:meth:`~MDAnalysis.coordinates.base.Reader.Writer` that returns an
-appropriate :class:`~MDAnalysis.coordinates.base.Writer` for the file
-format of the trajectory.
+:meth:`~MDAnalysis.coordinates.base.Reader.Writer` that returns an appropriate
+:class:`~MDAnalysis.coordinates.base.Writer` for the file format of the
+trajectory.
 
-In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is
-also a :func:`MDAnalysis.coordinates.core.reader` function available
-to return a trajectory :class:`~MDAnalysis.coordinates.base.Reader`
-instance although this is often not needed because the
-:class:`~MDAnalysis.core.universe.Universe` class can choose an
-appropriate reader automatically.
+In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is also a
+:func:`MDAnalysis.coordinates.core.reader` function available to return a
+trajectory :class:`~MDAnalysis.coordinates.base.Reader` instance although this
+is often not needed because the :class:`~MDAnalysis.core.universe.Universe`
+class can choose an appropriate reader automatically.
 
-.. _duck typing: http://c2.com/cgi/wiki?DuckTyping
-
-
-A typical approach is to generate a new trajectory from an old one, e.g. to
+A typical approach is to generate a new trajectory from an old one, e.g., to
 only keep the protein::
 
   u = MDAnalysis.Universe(PDB, XTC)
@@ -108,23 +108,26 @@ the last frame has been written.
 
 
 Timesteps
----------------
+---------
 
-Both Readers and Writers use Timesteps as their working object.  A Timestep
-represents all data for a given frame in a trajectory.  The data inside a
-Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.groups.AtomGroup`
-but it is also possible to manipulate Timesteps directly.
+Both Readers and Writers use Timesteps as their working object.  A
+:class:`~MDAnalysis.coordinates.base.Timestep` represents all data for a given
+frame in a trajectory.  The data inside a
+:class:`~MDAnalysis.coordinates.base.Timestep` is often accessed indirectly
+through a :class:`~MDAnalysis.core.groups.AtomGroup` but it is also possible to
+manipulate Timesteps directly.
 
-The current Timestep can be accessed through the trajectory read attached
-to the active :class:`~MDAnalysis.core.universe.Universe`
+The current :class:`~MDAnalysis.coordinates.base.Timestep` can be accessed
+through the :attr:`~MDAnalysis.coordinates.base.ProtoReader.ts` attribute of
+the trajectory attached to the active
+:class:`~MDAnalysis.core.universe.Universe`::
 
    ts = u.trajectory.ts
    ts.positions  # returns a numpy array of positions
 
-Most individual formats have slightly different data available
-in each Timestep due to differences in individual simulation
-packages, but all share in common a broad set of basic data,
-detailed in `Timestep API`_
+Most individual formats have slightly different data available in each Timestep
+due to differences in individual simulation packages, but all share in common a
+broad set of basic data, detailed in `Timestep API`_
 
 
 Supported coordinate formats
@@ -272,6 +275,7 @@ History
 - 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
 - 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)
 - 2016-04-03 Removed references to Strict Readers for PDBS [jdetle]
+
 .. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 
@@ -282,13 +286,13 @@ In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must subclass either
 :class:`MDAnalysis.coordinates.base.ProtoReader` or
-:class:`MDAnalysis.coordinates.base.Writer` and set the `format` attribute
-with a string defining the expected suffix.
-To assign multiple suffixes to an I/O class, a list of suffixes
-can be given.
+:class:`MDAnalysis.coordinates.base.Writer` and set the
+:attr:`~MDAnalysis.coordinates.base.ProtoReader.format` attribute with a string
+defining the expected suffix.  To assign multiple suffixes to an I/O class, a
+list of suffixes can be given.
 
 To define that a Writer can write multiple trajectory frames, set the
-`multiframe` attribute to True.  The default is False.
+`multiframe` attribute to ``True``.  The default is ``False``.
 
 
 .. _Timestep API:
@@ -697,6 +701,7 @@ import six
 
 from . import base
 from .core import reader, writer
+from . import chain
 from . import CRD
 from . import DLPoly
 from . import DMS

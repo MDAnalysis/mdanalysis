@@ -14,54 +14,23 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import MDAnalysis as mda
 import numpy as np
 import os
 from six.moves import zip
 
 from nose.plugins.attrib import attr
-from numpy.testing import (assert_allclose, assert_equal, assert_array_equal,
+from numpy.testing import (assert_equal, assert_array_equal,
                            assert_almost_equal, dec)
 from unittest import TestCase
 
-from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
+import MDAnalysis as mda
+from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
 from MDAnalysisTests import parser_not_found, tempdir
 
 
-class TestINPCRDReader(TestCase):
-    """Test reading Amber restart coordinate files"""
-
-    def _check_ts(self, ts):
-        # Check a ts has the right values in
-        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
-                            [7.3133773, 5.8359736, -8.8294175],
-                            [8.3254058, 6.2227613, -8.7098593],
-                            [7.0833200, 5.5038197, -9.8417650],
-                            [7.1129439, 4.6170351, -7.9729560]])
-        for ref, val in zip(ref_pos, ts._pos):
-            assert_allclose(ref, val)
-
-    def test_reader(self):
-        from MDAnalysis.coordinates.INPCRD import INPReader
-
-        r = INPReader(INPCRD)
-
-        assert_equal(r.n_atoms, 5)
-        self._check_ts(r.ts)
-
-    def test_universe_inpcrd(self):
-        u = mda.Universe(XYZ_five, INPCRD)
-
-        self._check_ts(u.trajectory.ts)
-
-    def test_universe_restrt(self):
-        u = mda.Universe(XYZ_five, INPCRD, format='RESTRT')
-        self._check_ts(u.trajectory.ts)
-
 
 class TestChainReader(TestCase):
-
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parset not available. Are you using python 3?')
     def setUp(self):
@@ -71,7 +40,7 @@ class TestChainReader(TestCase):
         self.prec = 3
         # dummy output DCD file
         self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/chain-reader.dcd'
+        self.outfile = os.path.join(self.tmpdir.name, 'chain-reader.dcd')
 
     def tearDown(self):
         try:
@@ -99,7 +68,8 @@ class TestChainReader(TestCase):
             pass  # just forward to last frame
         assert_equal(
             self.trajectory.n_frames - 1, ts.frame,
-            "iteration yielded wrong number of frames ({0:d}), should be {1:d}".format(ts.frame, self.trajectory.n_frames))
+            "iteration yielded wrong number of frames ({0:d}), "
+            "should be {1:d}".format(ts.frame, self.trajectory.n_frames))
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
@@ -140,10 +110,9 @@ class TestChainReader(TestCase):
     def test_write_dcd(self):
         """test that ChainReader written dcd (containing crds) is correct
         (Issue 81)"""
-        W = mda.Writer(self.outfile, self.universe.atoms.n_atoms)
-        for ts in self.universe.trajectory:
-            W.write(self.universe)
-        W.close()
+        with mda.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
+            for ts in self.universe.trajectory:
+                W.write(self.universe)
         self.universe.trajectory.rewind()
         u = mda.Universe(PSF, self.outfile)
         for (ts_orig, ts_new) in zip(self.universe.trajectory,
@@ -156,7 +125,6 @@ class TestChainReader(TestCase):
 
 
 class TestChainReaderCommonDt(TestCase):
-
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parset not available. Are you using python 3?')
     def setUp(self):
@@ -180,20 +148,23 @@ class TestChainReaderCommonDt(TestCase):
 class TestChainReaderFormats(TestCase):
     """Test of ChainReader with explicit formats (Issue 76)."""
 
+    @staticmethod
     @attr('issue')
-    def test_set_all_format_tuples(self):
+    def test_set_all_format_tuples():
         universe = mda.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
                                       (TRR, 'trr')])
         assert_equal(universe.trajectory.n_frames, 21)
 
+    @staticmethod
     @attr('issue')
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parset not available. Are you using python 3?')
-    def test_set_one_format_tuple(self):
+    def test_set_one_format_tuple():
         universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert_equal(universe.trajectory.n_frames, 99)
 
+    @staticmethod
     @attr('issue')
-    def test_set_all_formats(self):
+    def test_set_all_formats():
         universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
         assert_equal(universe.trajectory.n_frames, 2)

@@ -90,15 +90,17 @@ Changes
   * Fragments in Universe.fragment are now sorted by the index of their first
     atom. (Issue 1007)
   * atoms.tranform/translate/rotate/rotateby return original atomgroup
-    (Issue #1010)  
+    (Issue #1010)
   * atoms.translate/rotateby don't accept AtomGroup tuples as
-    parameters anymore (Issue #1025)  
+    parameters anymore (Issue #1025)
   * atoms.rotate by default now uses the centroid as center of
-    rotation like rotateby (Issue #1022) 
+    rotation like rotateby (Issue #1022)
   * XTCFile and TRRFile only raise IOError now on error.
   * Deprecate usage of MDAnalaysis.core.AtomGroup
   * get_writer_for() returns NullWriter when filename=None instead of
-    raising TypeError
+    raising TypeError and filename is now a required arg instead of kwarg
+  * moved coordinates.base.ChainReader to coordinates.chain.ChainReader
+  * renamed private method ChainReader.get_flname() to ChainReader._get_filename()
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
