@@ -52,6 +52,7 @@ import logging
 import copy
 
 import MDAnalysis
+from .. import _READERS, _PARSERS
 from ..lib import util
 from ..lib.util import cached
 from ..lib.log import ProgressMeter
@@ -213,8 +214,7 @@ class Universe(object):
                     # that
                     if fmt is None:
                         fmt = util.guess_format(self.filename)
-                    if (fmt in MDAnalysis.coordinates._READERS
-                            and fmt in MDAnalysis.topology._PARSERS):
+                    if (fmt in _READERS and fmt in _PARSERS):
                         coordinatefile = self.filename
 
             # build the topology (or at least a list of atoms)

@@ -148,6 +148,13 @@ except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
 
+# Registry of Readers, Parsers and Writers known to MDAnalysis
+# Metaclass magic fills these as classes are declared.
+_READERS = {}
+_SINGLEFRAME_WRITERS = {}
+_MULTIFRAME_WRITERS = {}
+_PARSERS = {}
+
 # custom exceptions and warnings
 from .exceptions import (
     SelectionError, FinishTimeException, NoDataError, ApplicationError,
