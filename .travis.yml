@@ -42,8 +42,8 @@ before_install:
   - conda update --yes conda
   - conda install --yes pylint
 install:
-  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy scipy nose=1.3.7 sphinx=1.3 griddataformats six scikit-learn; fi
-  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy nose=1.3.7 sphinx=1.3 griddataformats six; fi
+  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy scipy nose=1.3.7 mock sphinx=1.3 griddataformats six scikit-learn; fi
+  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy nose=1.3.7 mock sphinx=1.3 griddataformats six; fi
   - source activate pyenv
   - |
     if [[ $SETUP == 'full' ]]; then \

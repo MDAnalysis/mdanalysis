@@ -210,7 +210,7 @@ class Universe(object):
                 except TypeError:
                     try:
                         # see if we could get a Reader for this filename
-                        _ = get_reader_for(self.filename)
+                        _ = get_reader_for(self.filename, format=kwargs.get('format', None))
                     except ValueError:
                         pass
                     else:
