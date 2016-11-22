@@ -27,7 +27,7 @@ Classes
 
 .. autoclass:: MMTFReader
    :members:
-
+.. autofunction:: fetch_mmtf
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
@@ -35,6 +35,7 @@ Classes
 import mmtf
 
 from . import base
+from ..core.universe import Universe
 
 
 def _parse_mmtf(fn):
@@ -68,3 +69,27 @@ class MMTFReader(base.SingleFrameReader):
         ts.dimensions = top.unit_cell
 
         return ts
+
+
+def fetch_mmtf(pdb_id):
+    """Create a Universe from the RCSB Protein Data Bank using mmtf format
+
+    Parameters
+    ----------
+    pdb_id : string
+        PDB code of the desired data, eg '4UCP'
+
+
+    Returns
+    -------
+    MDAnalysis Universe of the corresponding PDB system
+
+
+    See Also
+    --------
+    mmtf.fetch : Function for fetching raw mmtf data
+
+
+    .. versionadded:: 0.16.0
+    """
+    return Universe(mmtf.fetch(pdb_id))

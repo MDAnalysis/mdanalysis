@@ -253,8 +253,6 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
            'HoomdXMLParser']
 
-from .. import _PARSERS
-
 from . import core
 from . import PSFParser
 from . import TOPParser

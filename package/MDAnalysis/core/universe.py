@@ -53,12 +53,13 @@ import copy
 
 import MDAnalysis
 from ..lib import util
-from ..lib.util import cached, get_reader_for, get_parser_for
+from ..lib.util import cached
 from ..lib.log import ProgressMeter
 from ..exceptions import NoDataError
 from . import groups
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
+from ._get_readers import get_reader_for, get_parser_for
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -179,9 +180,14 @@ class Universe(object):
             self.atoms = None
             return
 
-        coordinatefile = args[1:]
-        if not coordinatefile:
-            coordinatefile = None
+        topology_format = kwargs.pop('topology_format', None)
+        if len(args) == 1:
+            # special hacks to treat a coordinate file as a coordinate AND
+            # topology file
+            if kwargs.get('format', None) is None:
+                kwargs['format'] = topology_format
+            elif topology_format is None:
+                topology_format = kwargs.get('format', None)
 
         # if we're given a Topology object, we don't need to parse anything
         if isinstance(args[0], Topology):
@@ -189,25 +195,6 @@ class Universe(object):
             self.filename = None
         else:
             self.filename = args[0]
-            topology_format = kwargs.pop('topology_format', None)
-
-            if len(args) == 1:
-                # special hacks to treat a coordinate file as a coordinate AND
-                # topology file
-                if kwargs.get('format', None) is None:
-                    kwargs['format'] = topology_format
-                elif topology_format is None:
-                    topology_format = kwargs.get('format', None)
-
-                try:
-                    # see if we could get a Reader for this filename
-                    _ = get_reader_for(self.filename, format=kwargs.get('format', None))
-                except ValueError:
-                    pass
-                else:
-                    # as a list for now to replicate result of
-                    # the [1:] slice above
-                    coordinatefile = [self.filename]
 
             parser = get_parser_for(self.filename, format=topology_format)
             try:
@@ -226,6 +213,19 @@ class Universe(object):
         self._generate_from_topology()
 
         # Load coordinates
+        # if passed Topology object as top
+        if self.filename is None:
+            coordinatefile = None
+        elif len(args) == 1:
+            # Can the topology file also act as coordinate file?
+            try:
+                _ = get_reader_for(self.filename, format=kwargs.get('format', None))
+            except ValueError:
+                coordinatefile = None
+            else:
+                coordinatefile = [self.filename]
+        else:
+            coordinatefile = args[1:]
         self.load_new(coordinatefile, **kwargs)
 
         # Check for guess_bonds

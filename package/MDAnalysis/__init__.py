@@ -182,7 +182,7 @@ from .core.universe import Universe, as_Universe, Merge
 from .coordinates.core import writer as Writer
 
 # After Universe import
-from ._fetch_mmtf import fetch_mmtf
+from .coordinates.MMTF import fetch_mmtf
 
 collection = Timeseries.TimeseriesCollection()
 import weakref

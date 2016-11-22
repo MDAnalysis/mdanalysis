@@ -693,8 +693,6 @@ __all__ = ['reader', 'writer']
 
 import six
 
-from .. import _READERS, _SINGLEFRAME_WRITERS, _MULTIFRAME_WRITERS
-
 from . import base
 from .core import reader, writer
 from . import chain
