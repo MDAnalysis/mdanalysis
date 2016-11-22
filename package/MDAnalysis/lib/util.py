@@ -158,6 +158,7 @@ import os
 import os.path
 import errno
 from contextlib import contextmanager
+import inspect
 import bz2
 import gzip
 import re
@@ -222,21 +223,37 @@ def get_reader_for(filename, format=None):
     filename
         filename of the input trajectory or coordinate file
         Also can handle a few special cases, see notes below.
+    format
+        Define the desired format.  Can be a string to request
+        a given Reader.
+        If a class is passed, it will be assumed that this is
+        a Reader and will be returned.
 
     Returns
     -------
     A Reader object
 
+
+    Raises
+    ------
+    ValueError
+        If no appropriate Reader is found
+
+
     Notes
     -----
     There are a number of special cases that can be handled:
-      If *filename* is a numpy array, MemoryReader is returned.
-      If *filename* is an MMTF object, MMTFReader is returned.
-      If *filename* is an iterable of filenames, ChainReader is returned.
+      If `filename` is a numpy array, MemoryReader is returned.
+      If `filename` is an MMTF object, MMTFReader is returned.
+      If `filename` is an iterable of filenames, ChainReader is returned.
 
     Automatic detection is disabled when an explicit *format* is
     provided.
     """
+    # check if format is actually a Reader
+    if inspect.isclass(format):
+        return format
+
     # Checks for specialised formats
     # memoryreader slurps numpy arrays
     if isinstance(filename, np.ndarray):
@@ -313,12 +330,11 @@ def get_writer_for(filename, format=None, multiframe=None):
        deduced from `filename`.
 
     .. versionchanged:: 0.16.0
-       The `filename`
+       The `filename` argument has been made mandatory.
     """
     if filename is None:
         # need to import here to avoid circular reference
-        from ..coordinates.null import NullWriter
-        return NullWriter
+        format = 'NULL'
 
     if format is None and filename:
         try:
@@ -370,6 +386,9 @@ def get_parser_for(filename, format=None):
     ValueError
         If no appropriate parser could be found.
     """
+    if inspect.isclass(format):
+        return format
+
     if isinstance(filename, mmtf.MMTFDecoder):
         format = 'mmtf'
     if format is None:

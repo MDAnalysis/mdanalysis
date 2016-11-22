@@ -52,7 +52,6 @@ import logging
 import copy
 
 import MDAnalysis
-from .. import _READERS, _PARSERS
 from ..lib import util
 from ..lib.util import cached, get_reader_for, get_parser_for
 from ..lib.log import ProgressMeter
@@ -218,13 +217,7 @@ class Universe(object):
                         # the [1:] slice above
                         coordinatefile = [self.filename]
 
-            # build the topology (or at least a list of atoms)
-            try:  # Try and check if the topology format is a TopologyReader
-                if issubclass(topology_format, TopologyReader):
-                    parser = topology_format
-            except TypeError:  # But strings/None raise TypeError in issubclass
-                parser = get_parser_for(self.filename,
-                                        format=topology_format)
+            parser = get_parser_for(self.filename, format=topology_format)
             try:
                 with parser(self.filename) as p:
                     self._topology = p.parse()
@@ -352,30 +345,18 @@ class Universe(object):
         if filename is None:
             return
 
-        from ..coordinates.base import ProtoReader
-
         if len(util.asiterable(filename)) == 1:
             # make sure a single filename is not handed to the ChainReader
             filename = util.asiterable(filename)[0]
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
 
-        reader_format = format
-        reader = None
-
-        # Check if we were passed a Reader to use
         try:
-            if reader_format is not None and issubclass(reader_format, ProtoReader):
-                reader = reader_format
-        except TypeError:
-            pass
+            reader = get_reader_for(filename, format=format)
+        except ValueError as err:
+            raise TypeError(
+                "Cannot find an appropriate coordinate reader for file '{0}'.\n"
+                "           {1}".format(filename, err))
 
-        if reader is None:
-            try:
-                reader = get_reader_for(filename, format=reader_format)
-            except ValueError as err:
-                raise TypeError(
-                    "Cannot find an appropriate coordinate reader for file '{0}'.\n"
-                    "           {1}".format(filename, err))
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
 
