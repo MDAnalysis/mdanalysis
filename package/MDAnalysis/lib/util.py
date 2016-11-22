@@ -257,14 +257,14 @@ def get_reader_for(filename, format=None):
     # Checks for specialised formats
     # memoryreader slurps numpy arrays
     if isinstance(filename, np.ndarray):
-        format = 'memory'
+        format = 'MEMORY'
     # mmtf slurps mmtf object
     elif isinstance(filename, mmtf.MMTFDecoder):
-        format = 'mmtf'
+        format = 'MMTF'
     # chainreader for iterables
     # order is important here, np.array is iterable but gets stolen above
     elif iterable(filename):
-        format = 'chain'
+        format = 'CHAIN'
 
     # else let the guessing begin!
     if format is None:
