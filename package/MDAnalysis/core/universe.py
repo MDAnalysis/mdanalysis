@@ -165,9 +165,6 @@ class Universe(object):
     """
 
     def __init__(self, *args, **kwargs):
-        from ..topology.base import TopologyReader
-        from ..coordinates.base import ProtoReader
-
         # hold on to copy of kwargs; used by external libraries that
         # reinitialize universes
         self._kwargs = copy.deepcopy(kwargs)
@@ -203,19 +200,14 @@ class Universe(object):
                     topology_format = kwargs.get('format', None)
 
                 try:
-                    # if passed a Reader, use that
-                    if issubclass(kwargs.get('format', None), ProtoReader):
-                        coordinatefile = self.filename
-                except TypeError:
-                    try:
-                        # see if we could get a Reader for this filename
-                        _ = get_reader_for(self.filename, format=kwargs.get('format', None))
-                    except ValueError:
-                        pass
-                    else:
-                        # as a list for now to replicate result of
-                        # the [1:] slice above
-                        coordinatefile = [self.filename]
+                    # see if we could get a Reader for this filename
+                    _ = get_reader_for(self.filename, format=kwargs.get('format', None))
+                except ValueError:
+                    pass
+                else:
+                    # as a list for now to replicate result of
+                    # the [1:] slice above
+                    coordinatefile = [self.filename]
 
             parser = get_parser_for(self.filename, format=topology_format)
             try:
