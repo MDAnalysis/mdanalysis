@@ -133,7 +133,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _legacy_format
 from MDAnalysis.lib.util import asiterable
 
 
@@ -506,6 +506,9 @@ class RMSD(AnalysisBase):
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates_64, self._mobile_coordinates64,
                 self._n_atoms, None, self._weights)
+
+        self._pm.format_handler = _legacy_format
+        self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
     def save(self, filename=None):
         """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
