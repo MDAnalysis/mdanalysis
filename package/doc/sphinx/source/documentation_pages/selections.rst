@@ -244,7 +244,7 @@ By default :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` returns an
 :class:`~MDAnalysis.core.groups.AtomGroup`, in which the list of atoms is
 constant across trajectory frame changes. If
 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is invoked with named
-argument *updating* set to `True`, an
+argument ``updating`` set to ``True``, an
 :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` instance will be returned
 instead. It behaves just like an :class:`~MDAnalysis.core.groups.AtomGroup`
 object, with the difference that the selection expressions are re-evaluated
@@ -260,10 +260,11 @@ there is no redundant updating going on)::
  >>> ag_updating
  <UpdatingAtomGroup with 14 atoms>
 
-Using the *group* selection keyword for :ref:`pre-selections-label`, one can
+Using the ``group`` selection keyword for
+:ref:`preexisting-selections <pre-selections-label>`, one can
 make updating selections depend on
-:class:`AtomGroups<~MDAnalysis.core.groups.AtomGroup>` or even other
-:class:`UpdatingAtomGroups<~MDAnalysis.core.groups.UpdatingAtomGroup>`.
+:class:`~MDAnalysis.core.groups.AtomGroup`, or even other
+:class:`~MDAnalysis.core.groups.UpdatingAtomGroup`, instances.
 Likewise, making an updating selection from an already updating group will
 cause later updates to also reflect the updating of the base group::
 

@@ -54,6 +54,8 @@ Collections
 .. autoclass:: SegmentGroup
    :members:
    :inherited-members:
+.. autoclass:: UpdatingAtomGroup
+   :members:
 
 Chemical units
 --------------
@@ -180,6 +182,9 @@ class _TopologyAttrContainer(object):
             Its name is the same as *other*'s.
         """
         if '__new__' in other.__dict__:
+            # Classes that have their own __new__ method (such as
+            # UpdatingAtomGroup) don't get merged with _ImmutableBase so that
+            # they retain full control of their initialization.
             return type(other.__name__, (other, cls), {})
         else:
             return type(other.__name__, (_ImmutableBase, other, cls), {})
@@ -216,15 +221,32 @@ class _MutableBase(object):
 
     The classes themselves are used as the cache dictionary keys for simplcity
     in cache retrieval.
+
     """
-    # This signature must be kept in sync with the __init__ signature of
-    #  GroupBase and ComponentBase.
     def __new__(cls, *args, **kwargs):
+        # This pre-initialization wrapper must be pretty generic to
+        # allow for different initialization schemes of the possible classes.
+        # All we really need here is to fish a universe out of the arg list.
+        # The AtomGroup cases get priority and are fished out first.
         try:
-            ix, u = args[:2]
-        except ValueError:
-            # deprecated AtomGroup init method..
-            u = args[0][0].universe
+            u = args[-1].universe
+        except (IndexError, AttributeError):
+            try:
+                # deprecated AtomGroup init method..
+                u = args[0][0].universe
+            except (IndexError, AttributeError):
+                # Let's be generic and get the first argument that's either a
+                # Universe, a Group, or a Component, and go from there.
+                # This is where the UpdatingAtomGroup args get matched.
+                for arg in args+tuple(kwargs.values()):
+                    if isinstance(arg, (MDAnalysis.Universe, GroupBase,
+                                        ComponentBase)):
+                        u = arg.universe
+                        break
+                else:
+                    raise TypeError("No universe, or universe-containing "
+                                   "object passed to the initialization of "
+                                    "{}".format(cls.__name__))
         try:
             return object.__new__(u._classes[cls])
         except KeyError:
@@ -1285,14 +1307,14 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.16.0
            Resid selection now takes icodes into account where present.
         .. versionadded:: 0.16.0
-           Updating selections now possible by setting the *updating* argument.
+           Updating selections now possible by setting the ``updating`` argument.
 
         """
         updating = selgroups.pop('updating',False)
         # The self-updating atomgroup only stores the parse objects
         # and the base atomgroup
         if updating:
-            return UpdatingAtomGroup(self._ix, self._u, base_group=self,
+            return UpdatingAtomGroup(base_group=self,
                                 selections=tuple((selection.Parser.parse(s,
                                 selgroups) for s in (sel,)+othersel)))
 
@@ -1982,35 +2004,43 @@ class Segment(ComponentBase):
 class UpdatingAtomGroup(AtomGroup):
     """:class:`AtomGroup` subclass that dynamically updates its selected atoms.
 
-    Accessing any attribute/method of an :class:`UpdatingAtomGroup: instance
+    Accessing any attribute/method of an :class:`UpdatingAtomGroup` instance
     triggers a check for the last frame the group was updated. If the last
     frame matches the current trajectory frame, the attribute is returned
     normally; otherwise the group is updated (the stored selections are
     re-applied), and only then is the attribute returned.
 
-    Parameters
-    ----------
-    base_group : an :class:`AtomGroup` instance on which *selections* are to be
-        applied.
-    selections : a tuple of :class:`Selection` instances, ready to be applied
-        to *base_group*.
+    .. versionadded:: 0.16.0
 
     """
 
     def __new__(cls, *args, **kwargs):
-        # If we're reinstantiated in a non-updating way, we must
-        # become a regular AtomGroup
-        if len(args) + len(kwargs) > 2:
-            return super(UpdatingAtomGroup, cls).__new__(cls,
-                                                         *args, **kwargs)
-        else:
-            return AtomGroup(*args, **kwargs)
+        # If we're reinstantiated in a non-updating way, we must become a
+        # regular AtomGroup. We check to see if we have an AtomGroup passed as
+        # either the 'base_group' kwarg, or the first arg, in which case we
+        # become an UpdatingAtomGroup.
+        bg = kwargs.get('base_group', args[0] if args else None)
+        if isinstance(bg, AtomGroup):
+            return super(UpdatingAtomGroup, cls).__new__(cls, *args, **kwargs)
+        return AtomGroup(*args, **kwargs)
 
-    # ix and u aren't used, but must be part of the signature for class
-    # registration purposes.
-    def __init__(self, ix, u, base_group, selections):
+    def __init__(self, base_group, selections):
+        """
+
+        Parameters
+        ----------
+        base_group : :class:`AtomGroup`
+            group on which *selections* are to be applied.
+        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection` instances
+            selections ready to be applied to *base_group*.
+
+        """
+        # Because we're implementing __getattribute__, which needs _u for
+        # its check, no self.attribute access can be made before this line
+        self._u = base_group._u
         self._base_group = base_group
         self._updating_selections = selections
+        self._lastupdate = None
         self.update_selection()
 
     def update_selection(self):
@@ -2022,15 +2052,9 @@ class UpdatingAtomGroup(AtomGroup):
 
     def __getattribute__(self,name):
         if not name in ("_base_group","_updating_selections","_lastupdate"):
-            try:
-                u = object.__getattribute__(self, "_u")
-                lastupdate = object.__getattribute__(self, "_lastupdate")
-            # At first __init__ we don't have _u or _lastupdate yet.
-            except AttributeError:
+            if (object.__getattribute__(self, "_u").trajectory.frame !=
+            object.__getattribute__(self, "_lastupdate")):
                 object.__getattribute__(self, "update_selection")()
-            else:
-                if u.trajectory.ts.frame != lastupdate:
-                    object.__getattribute__(self, "update_selection")()
         return object.__getattribute__(self, name)
 
     def __repr__(self):

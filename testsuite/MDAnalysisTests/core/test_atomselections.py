@@ -1020,6 +1020,15 @@ class TestUpdatingSelection(object):
         assert_array_equal(self.ag_updating_chained2.indices,
                            self.ag_updating.indices)
 
+    def test_become_static(self):
+        ag_static1 = self.ag_updating[:] 
+        ag_static2 = self.ag_updating.select_atoms("all") 
+        assert_array_equal(ag_static1.indices, self.ag.indices)
+        assert_array_equal(ag_static2.indices, self.ag.indices)
+        self.u.trajectory.next()
+        assert_array_equal(ag_static1.indices, self.ag.indices)
+        assert_array_equal(ag_static2.indices, self.ag.indices)
+
     def test_kwarg_check(self):
         assert_raises(TypeError, self.u.select_atoms, "group updating",
                       {"updating":True})
