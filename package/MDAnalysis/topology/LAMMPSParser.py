@@ -45,7 +45,7 @@ import string
 import functools
 
 from . import guessers
-from ..lib.util import openany, anyopen, conv_float
+from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReader, squash_by
 from ..core.topology import Topology
@@ -151,7 +151,7 @@ class DATAParser(TopologyReader):
     format = 'DATA'
 
     def iterdata(self):
-        with anyopen(self.filename, 'r') as f:
+        with openany(self.filename, 'r') as f:
             for line in f:
                 line = line.partition('#')[0].strip()
                 if line:

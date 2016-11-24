@@ -102,16 +102,14 @@ class GMSReader(base.Reader):
             return self._runtyp
 
     def _determine_runtyp(self):
-        self._reopen()
-        counter = 0
-        for line in self.outfile:
-            m = re.match(r'^.*RUNTYP=([A-Z]+)\s+.*', line)
-            if (m is not None):
-                self.close()
-                return m.group(1).lower()
+        with util.openany(self.filename, 'rt') as out:
+            for line in out:
+                m = re.match(r'^.*RUNTYP=([A-Z]+)\s+.*', line)
+                if m is not None:
+                    res = m.group(1).lower()
+                    break
 
-        self.close()
-        raise EOFError
+        return res
 
     @property
     def n_atoms(self):
@@ -126,45 +124,47 @@ class GMSReader(base.Reader):
             return self._n_atoms
 
     def _read_out_natoms(self):
-        self._reopen()
-        # this assumes that this is only called once at startup and that the
-        # filestream is already open
-        for line in self.outfile:
-            m = re.match(r'\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*',line)
-            if m is None:
-                continue
-            self.close()
-            return int(m.group(1))
+        with util.openany(self.filename, 'rt') as out:
+            for line in out:
+                m = re.match(r'\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*',line)
+                if m is not None:
+                    res = int(m.group(1))
+                    break
 
-        self.close()
-        raise EOFError
+        return res
 
     @property
     def n_frames(self):
         if self._n_frames is not None:   # return cached value
             return self._n_frames
         try:
-            self._n_frames = self._read_out_n_frames(self.filename)
+            self._n_frames = self._read_out_n_frames()
         except IOError:
             return 0
         else:
             return self._n_frames
 
-    def _read_out_n_frames(self, filename):
-        self._reopen()
-        counter = 0
+    def _read_out_n_frames(self):
         if self.runtyp == 'optimize':
-            for line in self.outfile:
-                if re.match(r'^.NSERCH=.*', line):
-                    counter += 1
+            trigger = re.compile(r'^.NSERCH=.*')
         elif self.runtyp == 'surface':
-            for line in self.outfile:
-                if re.match(r'^.COORD 1=.*', line):
-                    counter += 1
+            trigger = re.compile(r'^.COORD 1=.*')
 
-        self.close()
-        return int(counter)
+        self._offsets = offsets = []
+        with util.openany(self.filename, 'rt') as out:
+            line = True
+            while not line == '':  # while not EOF
+                line = out.readline()
+                if re.match(trigger, line):
+                    offsets.append(out.tell() - len(line))
 
+        return len(offsets)
+
+    def _read_frame(self, frame):
+        self.outfile.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in _read_next
+        return self._read_next_timestep()
+    
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
         if ts is None:

@@ -211,6 +211,7 @@ For details see the report for `Issue 87`_.
               'numpy>=1.5',
               'nose>=1.3.7',
               'psutil>=4.0.2',
+              'mock>=2.0.0',
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

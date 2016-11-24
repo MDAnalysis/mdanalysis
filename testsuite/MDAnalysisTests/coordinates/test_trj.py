@@ -3,14 +3,13 @@ import numpy as np
 
 from numpy.testing import (assert_equal, assert_,
                            assert_almost_equal, assert_raises)
-from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
-class _TRJReaderTest(TestCase):
+class _TRJReaderTest(object):
     # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
         del self.universe
@@ -71,17 +70,27 @@ class _TRJReaderTest(TestCase):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
+    def test_random_access(self):
+        u = self.universe
+
+        pos1 = u.atoms[0].position
+        u.trajectory.next()
+        u.trajectory.next()
+        pos3 = u.atoms[0].position
+
+        u.trajectory[0]
+
+        assert_equal(u.atoms[0].position, pos1)
+
+        u.trajectory[2]
+
+        assert_equal(u.atoms[0].position, pos3)
+
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
 
 
 class TestBzippedTRJReader(TestTRJReader):
@@ -95,11 +104,6 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
 
 
 class TestTRJTimestep(BaseTimestepTest):
