@@ -349,6 +349,7 @@ class RMSD(AnalysisBase):
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
+        self._pm.format_handler = _legacy_format
         self.universe = atomgroup.universe
         self.reference = reference if reference is not None else self.universe
 
@@ -507,7 +508,6 @@ class RMSD(AnalysisBase):
                 self._ref_coordinates_64, self._mobile_coordinates64,
                 self._n_atoms, None, self._weights)
 
-        self._pm.format_handler = _legacy_format
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
     def save(self, filename=None):
