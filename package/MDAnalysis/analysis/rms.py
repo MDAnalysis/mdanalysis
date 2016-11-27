@@ -133,7 +133,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter, _legacy_format
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable
 
 
@@ -349,7 +349,6 @@ class RMSD(AnalysisBase):
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
-        self._pm.format_handler = _legacy_format
         self.universe = atomgroup.universe
         self.reference = reference if reference is not None else self.universe
 
@@ -462,8 +461,8 @@ class RMSD(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,
                               3 + len(self._groupselections_atoms)))
 
-        self._pm.format = ("RMSD %(rmsd)5.2f A at frame "
-                           "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+        self._pm.format = ("RMSD {rmsd:5.2f} A at frame "
+                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]\r")
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
