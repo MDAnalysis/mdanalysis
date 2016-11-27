@@ -290,6 +290,16 @@ class TestAtomGroup(TestCase):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
         assert_equal(len(self.ag), self.ag.n_atoms, "len and n_atoms disagree")
 
+    def test_center(self):
+        weights = np.zeros(self.ag.n_atoms)
+        weights[0] = 1
+        assert_array_almost_equal(self.ag.center(weights),
+                                  self.ag.positions[0])
+
+        weights[:4] = 1. / 4.
+        assert_array_almost_equal(self.ag.center(weights),
+                                  self.ag.positions[:4].mean(axis=0))
+
     # VALID
     def test_center_of_geometry(self):
         assert_array_almost_equal(self.ag.center_of_geometry(),
@@ -2542,7 +2552,7 @@ class TestDihedralSelections(object):
     def tearDown(self):
         del self.universe
         del self.dih_prec
-    
+
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()
         assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
@@ -2606,4 +2616,3 @@ class TestDihedralSelections(object):
         u.trajectory.rewind()  # just to make sure...
         sel = u.s4AKE.r13.chi1_selection()  # LYS
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
-

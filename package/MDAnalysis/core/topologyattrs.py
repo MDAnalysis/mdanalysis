@@ -514,7 +514,7 @@ class Masses(AtomAttr):
 
         return masses
 
-    def center_of_mass(group, **kwargs):
+    def center_of_mass(group, pbc=None):
         """Center of mass of the Group.
 
         Parameters
@@ -523,24 +523,20 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
+        Returns
+        -------
+        center : ndarray
+            center of group given masses as weights
+
+        Notes
+        -----
             The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
             ``True`` allows the *pbc* flag to be used by default.
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         """
-        atomgroup = group.atoms
-
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
-        masses = atomgroup.masses
-
-        if pbc:
-            positions = atomgroup.pack_into_box(inplace=False)
-        else:
-            positions = atomgroup.positions
-
-        return np.sum(positions * masses[:, np.newaxis],
-                      axis=0) / masses.sum()
+        return group.atoms.center(weights=group.atoms.masses,
+                                  pbc=pbc)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))

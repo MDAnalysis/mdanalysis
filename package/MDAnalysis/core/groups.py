@@ -375,7 +375,39 @@ class GroupBase(_MutableBase):
     def dimensions(self):
         return self._u.trajectory.ts.dimensions
 
-    def center_of_geometry(self, **kwargs):
+    def center(self, weights, pbc=None):
+        """Calculate center of group given some weights
+
+        Parameters
+        ----------
+        weights : array_like
+            weights to be used
+        pbc : boolean, optional
+            ``True``: Move all atoms within the primary unit cell
+            before calculation [``False``]
+
+        Returns
+        -------
+        center : ndarray
+            weighted center of group
+
+        Notes
+        -----
+        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
+        ``True`` then the `pbc` keyword is used by default.
+
+        """
+        atoms = self.atoms
+        if pbc is None:
+            pbc = flags['use_pbc']
+        if pbc:
+            xyz = atoms.pack_into_box(inplace=False)
+        else:
+            xyz = atoms.positions
+
+        return np.average(xyz, weights=weights, axis=0)
+
+    def center_of_geometry(self, pbc=None):
         """Center of geometry (also known as centroid) of the selection.
 
         Parameters
@@ -383,6 +415,11 @@ class GroupBase(_MutableBase):
         pbc : boolean, optional
             ``True``: Move all atoms within the primary unit cell
             before calculation [``False``]
+
+        Returns
+        -------
+        center : ndarray
+            geometric center of group
 
         Notes
         -----
@@ -392,13 +429,7 @@ class GroupBase(_MutableBase):
 
         .. versionchanged:: 0.8 Added `pbc` keyword
         """
-        atomgroup = self.atoms
-
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
-        if pbc:
-            return np.sum(atomgroup.pack_into_box(inplace=False), axis=0) / len(atomgroup)
-        else:
-            return np.sum(atomgroup.positions, axis=0) / len(atomgroup)
+        return self.center(None, pbc=pbc)
 
     centroid = center_of_geometry
 
