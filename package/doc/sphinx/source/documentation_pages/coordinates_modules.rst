@@ -54,4 +54,4 @@ functionality should first read the :ref:`Trajectory API`.
    coordinates/core
    coordinates/chain
    coordinates/pdbextensions
-
+   coordinates/XDR
