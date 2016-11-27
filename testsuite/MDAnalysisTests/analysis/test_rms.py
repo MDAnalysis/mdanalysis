@@ -21,13 +21,14 @@ import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import (TestCase, dec,
+from numpy.testing import (TestCase, dec, assert_equal,
                            assert_almost_equal, raises, assert_,
                            assert_array_almost_equal)
 
 import numpy as np
 
 import os
+import sys
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
@@ -148,6 +149,15 @@ class TestRMSD(object):
     def tearDown(self):
         del self.universe
         del self.tempdir
+
+    def test_progress_meter(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, quiet=False)
+        sys.stderr = sys.stdout
+        RMSD.run()
+        actual = sys.stderr.getvalue().strip().split('\r')[-1]
+        expected = 'RMSD  6.93 A at frame    98/98  [100.0%]'
+        sys.stderr = sys.__stderr__
+        assert_equal(actual, expected)
 
     def test_rmsd(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
