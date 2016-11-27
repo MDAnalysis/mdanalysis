@@ -51,6 +51,8 @@ Enhancements
   * Added coordinates.null.NullWriter, which behaves like a Writer but
     ignores all input; useful for suppressing output.
   * Added random access support to GMSReader and TRJReader (#1081)
+  * Added atomgroup.center(weights, pbc) method to calculate the center
+    of a group given weights
 
 Fixes
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
