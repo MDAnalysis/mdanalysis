@@ -225,11 +225,17 @@ class TRJReader(base.Reader):
         self.box_line_parser = util.FORTRANReader("3F8.3")
 
         # Now check for box
-        self.periodic = False
         self._detect_amber_box()
 
         # open file, read first frame
         self._read_next_timestep()
+
+    def _read_frame(self, frame):
+        if self.trjfile is None:
+            self.open_trajectory()
+        self.trjfile.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in _read_next
+        return self._read_next_timestep()
 
     def _read_next_timestep(self):
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
@@ -326,17 +332,21 @@ class TRJReader(base.Reader):
             return self._n_frames
 
     def _read_trj_n_frames(self, filename):
-        self._reopen()
+        lpf = self.lines_per_frame
+        if self.periodic:
+            lpf += 1
 
+        self._offsets = offsets = []
         counter = 0
-        try:
-            while True:
-                next(self)
+        with util.openany(self.filename, 'r') as f:
+            line = f.readline()  # ignore first line
+            while line:
+                if counter % lpf == 0:
+                    offsets.append(f.tell())
+                line = f.readline()
                 counter += 1
-        except StopIteration:
-            self.rewind()
-
-        return counter
+        offsets.pop()  # last offset is EOF
+        return len(offsets)
 
     @property
     def n_atoms(self):
