@@ -37,7 +37,7 @@ class NullWriter(base.Writer):
     suppress output.
 
     """
-    format = []
+    format = 'NULL'
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):

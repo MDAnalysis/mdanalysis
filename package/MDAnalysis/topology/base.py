@@ -35,7 +35,7 @@ import itertools
 import numpy as np
 import warnings
 
-from . import _PARSERS
+from .. import _PARSERS
 from ..coordinates.base import IObase
 from ..lib import util
 
@@ -49,6 +49,7 @@ class _Topologymeta(type):
             pass
         else:
             for f in fmt:
+                f = f.upper()
                 _PARSERS[f] = cls
 
 

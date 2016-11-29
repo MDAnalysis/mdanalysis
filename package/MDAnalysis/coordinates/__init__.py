@@ -691,12 +691,6 @@ Methods
 
 __all__ = ['reader', 'writer']
 
-# Registry of all Readers & Writers
-# Get filled on class definition by metaclass magic
-_READERS = {}
-_SINGLEFRAME_WRITERS = {}
-_MULTIFRAME_WRITERS = {}
-
 import six
 
 from . import base
