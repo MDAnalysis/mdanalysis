@@ -1,19 +1,24 @@
-    # cluster.py --- Common function for calling clustering algorithms
-# Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """
 clustering frontend --- :mod:`MDAnalysis.analysis.encore.clustering.cluster`
 ============================================================================
@@ -101,7 +106,7 @@ def cluster(ensembles,
     Two ensembles are created as Universe object using a topology file and
     two trajectories. The topology- and trajectory files used are obtained
     from the MDAnalysis test suite for two different simulations of the protein
-    AdK. 
+    AdK.
     Here, we cluster two ensembles ::
 
         >>> from MDAnalysis import Universe
@@ -115,25 +120,25 @@ def cluster(ensembles,
     You can change the parameters of the clustering method by explicitly
     specifying the method ::
 
-        >>> cluster_collection = 
-                encore.cluster( 
-                     [ens1,ens2], 
+        >>> cluster_collection =
+                encore.cluster(
+                     [ens1,ens2],
                      method=encore.AffinityPropagationNative(preference=-2.))
 
     Here is an illustration using DBSCAN algorithm, instead
     of the default clustering method ::
 
-        >>> cluster_collection = 
-                encore.cluster( 
-                     [ens1,ens2], 
+        >>> cluster_collection =
+                encore.cluster(
+                     [ens1,ens2],
                      method=encore.DBSCAN())
 
     You can also combine multiple methods in one call ::
 
-        >>> cluster_collection = 
-                encore.cluster( 
-                     [ens1,ens2], 
-                     method=[encore.AffinityPropagationNative(preference=-1.), 
+        >>> cluster_collection =
+                encore.cluster(
+                     [ens1,ens2],
+                     method=[encore.AffinityPropagationNative(preference=-1.),
                              encore.AffinityPropagationNative(preference=-2.)])
 
     In addition to standard cluster membership information, the
@@ -142,7 +147,7 @@ def cluster(ensembles,
     represented in each cluster. Here, for brevity, we print just the
     members of the two first clusters ::
 
-        >>> print [cluster.metadata["ensemble_membership"] 
+        >>> print [cluster.metadata["ensemble_membership"]
                      for cluster in cluster_collection][:2]
         [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 

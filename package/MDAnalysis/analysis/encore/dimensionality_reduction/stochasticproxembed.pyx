@@ -1,20 +1,24 @@
-# cython: embedsignature=True
-# stochasticproxembed.pyx --- Cython wrapper for the stochastic proximity embedding C library
-# Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """
 Cython wrapper for the C implementation of the Stochastic Proximity Embedding
 dimensionality reduction algorithm.
@@ -53,7 +57,7 @@ cdef class StochasticProximityEmbedding:
 
 	    Parameters:
 	    ----------
-	    
+
 	    s : encore.utils.TriangularMatrix object
             Triangular matrix containing the distance values for each pair of
             elements in the original space.
@@ -76,7 +80,7 @@ cdef class StochasticProximityEmbedding:
 
 	    nstep : int
 		    number of coordinate update steps for each cycle
-	
+
 
 
 	    Returns
@@ -85,7 +89,7 @@ cdef class StochasticProximityEmbedding:
 	    space : (float, numpy.array)
 	    	float is the final stress obtained; the array are the coordinates of
 	    	the elements in the embedded space
- 
+
 	    stressfreq : int
 	    	calculate and report stress value every stressfreq cycle
 
@@ -94,17 +98,17 @@ cdef class StochasticProximityEmbedding:
 
         cdef int nelem = s.size
         cdef double finalstress = 0.0
-        
+
         logging.info("Starting Stochastic Proximity Embedding")
 
         cdef numpy.ndarray[numpy.float64_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float64)
         cdef numpy.ndarray[numpy.float64_t,   ndim=1] d_coords   = numpy.zeros((nelem*dim),dtype=numpy.float64)
-        
+
         finalstress = cstochasticproxembed.CStochasticProximityEmbedding( <double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
-        
+
         logging.info("Stochastic Proximity Embedding finished. Residual stress: %.3f" % finalstress)
 
         return (finalstress, d_coords.reshape((-1,dim)).T)
-	
+
     def __call__(self, *args):
         return self.run(*args)
