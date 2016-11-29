@@ -164,6 +164,7 @@ import re
 import io
 import warnings
 from functools import wraps
+import mmtf
 import numpy as np
 import functools
 from numpy.testing import assert_equal
@@ -872,7 +873,7 @@ def iterable(obj):
         return True  # any iterator will do
     try:
         len(obj)  # anything else that might work
-    except TypeError:
+    except (TypeError, AttributeError):
         return False
     return True
 

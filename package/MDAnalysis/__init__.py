@@ -134,7 +134,8 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
+__all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection',
+           'fetch_mmtf']
 
 import logging
 import warnings
@@ -147,6 +148,13 @@ try:
 except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
+
+# Registry of Readers, Parsers and Writers known to MDAnalysis
+# Metaclass magic fills these as classes are declared.
+_READERS = {}
+_SINGLEFRAME_WRITERS = {}
+_MULTIFRAME_WRITERS = {}
+_PARSERS = {}
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -172,6 +180,9 @@ from . import units
 from .core import Timeseries
 from .core.universe import Universe, as_Universe, Merge
 from .coordinates.core import writer as Writer
+
+# After Universe import
+from .coordinates.MMTF import fetch_mmtf
 
 collection = Timeseries.TimeseriesCollection()
 import weakref

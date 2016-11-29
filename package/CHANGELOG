@@ -46,6 +46,8 @@ Enhancements
   * Selecting atoms by resid now respects icodes if they were present. Ie
     select_atoms('resid 163A') works! (Issue #839 PR #1066)
   * Added ability to read MMTF format files (#907 PR #1069)
+  * Added MDAnalysis.fetch_mmtf function to download from PDB and create
+    Universe (#810 PR #1082)
   * Added coordinates.null.NullWriter, which behaves like a Writer but
     ignores all input; useful for suppressing output.
   * Added random access support to GMSReader and TRJReader (#1081)

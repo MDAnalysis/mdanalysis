@@ -127,7 +127,7 @@ import numpy as np
 import copy
 import weakref
 
-from . import (
+from .. import (
     _READERS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
@@ -1039,6 +1039,7 @@ class _Readermeta(type):
             pass
         else:
             for f in fmt:
+                f = f.upper()
                 _READERS[f] = cls
 
 
@@ -1633,10 +1634,12 @@ class _Writermeta(type):
             pass
         else:
             for f in fmt:
+                f = f.upper()
                 _SINGLEFRAME_WRITERS[f] = cls
             try:
                 if classdict['multiframe']:
                     for f in fmt:
+                        f = f.upper()
                         _MULTIFRAME_WRITERS[f] = cls
             except KeyError:
                 pass

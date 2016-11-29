@@ -3,6 +3,8 @@ from numpy.testing import (
     assert_,
     assert_array_equal,
 )
+import mmtf
+import mock
 
 import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup
@@ -72,6 +74,12 @@ class TestMMTFUniverse(object):
         assert_(all(self.u.atoms.models == 0))
 
 
+class TestMMTFUniverseFromDecoder(TestMMTFUniverse):
+    def setUp(self):
+        top = mmtf.parse(MMTF)
+        self.u = mda.Universe(top)
+
+
 class TestMMTFgzUniverse(object):
     def setUp(self):
         self.u = mda.Universe(MMTF_gz)
@@ -98,3 +106,16 @@ class TestMMTFgzUniverse(object):
         assert_(len(m1) == 570)
         assert_(len(m2) == 570)
 
+class TestMMTFgzUniverseFromDecoder(TestMMTFgzUniverse):
+    def setUp(self):
+        top = mmtf.parse_gzip(MMTF_gz)
+        self.u = mda.Universe(top)
+
+
+class TestMMTFFetch(TestMMTFUniverse):
+    @mock.patch('mmtf.fetch')
+    def setUp(self, mock_fetch):
+        top = mmtf.parse(MMTF)
+        mock_fetch.return_value = top
+        self.u = mda.fetch_mmtf('173D')  # string is irrelevant
+        

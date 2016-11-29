@@ -252,9 +252,6 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
            'HoomdXMLParser']
-# Registry of all Parsers in MDAnalysis
-# Gets filled on class definition by metaclass magic
-_PARSERS = {}
 
 from . import core
 from . import PSFParser
