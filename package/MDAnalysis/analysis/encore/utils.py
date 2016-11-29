@@ -26,6 +26,7 @@ import sys
 import MDAnalysis as mda
 from ...coordinates.memory import MemoryReader
 
+
 class TriangularMatrix(object):
     """Triangular matrix class. This class is designed to provide a
     memory-efficient representation of a triangular matrix that still behaves

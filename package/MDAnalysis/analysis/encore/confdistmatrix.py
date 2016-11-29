@@ -30,9 +30,6 @@ distance between the structures stored as frames in a Universe. A
 class to compute an RMSD matrix in such a way is also available.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0
 

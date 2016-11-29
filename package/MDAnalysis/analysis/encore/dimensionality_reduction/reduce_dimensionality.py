@@ -27,9 +27,6 @@ The module defines a function serving as front-end for various dimensionality
 reduction algorithms, wrapping them to allow them to be used interchangably.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0
 

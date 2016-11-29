@@ -23,9 +23,6 @@
 Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 """
 from ..utils import TriangularMatrix

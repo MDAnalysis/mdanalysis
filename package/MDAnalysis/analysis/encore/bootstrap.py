@@ -28,9 +28,6 @@ The module contains functions for bootstrapping either ensembles (Universe
 objects) or distance matrices, by resampling with replacement.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0
 

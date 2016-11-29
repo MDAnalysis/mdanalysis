@@ -24,9 +24,8 @@ Cython wrapper for the C implementation of the Stochastic Proximity Embedding
 dimensionality reduction algorithm.
 
 :Author: Matteo Tiberti, Wouter Boomsma
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github                       """
+"""
+
 
 import logging
 import numpy

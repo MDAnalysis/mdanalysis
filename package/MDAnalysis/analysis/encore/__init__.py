@@ -21,13 +21,6 @@
 #
 from __future__ import absolute_import
 
-__all__ = [
-    'covariance',
-    'similarity',
-    'confdistmatrix',
-    'clustering'
-]
-
 from .similarity import hes, ces, dres, \
     ces_convergence, dres_convergence
 
@@ -39,3 +32,5 @@ from .dimensionality_reduction.reduce_dimensionality import (
     reduce_dimensionality)
 from .confdistmatrix import get_distance_matrix
 from .utils import merge_universes
+
+__all__ = ['covariance', 'similarity', 'confdistmatrix', 'clustering']
