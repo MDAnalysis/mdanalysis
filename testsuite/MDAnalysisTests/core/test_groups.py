@@ -10,7 +10,6 @@ import operator
 
 from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysis.core import groups
-import MDAnalysis as mda
 
 
 class TestGroupSlicing(object):

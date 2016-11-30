@@ -2542,7 +2542,7 @@ class TestDihedralSelections(object):
     def tearDown(self):
         del self.universe
         del self.dih_prec
-    
+
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()
         assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
@@ -2606,4 +2606,3 @@ class TestDihedralSelections(object):
         u.trajectory.rewind()  # just to make sure...
         sel = u.s4AKE.r13.chi1_selection()  # LYS
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
-
