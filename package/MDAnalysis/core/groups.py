@@ -78,6 +78,7 @@ import functools
 import itertools
 import os
 import warnings
+import sys
 
 import MDAnalysis
 from ..lib import util
@@ -165,10 +166,14 @@ class _TopologyAttrContainer(object):
         """Creates a subclass with ourselves and another class as parents.
 
         Classes mixed at this point override :meth:`__new__`, causing further
-        instantiations to shortcut to :meth:`object.__new__` (skipping the
-        cache-fetch process for :class:`_MutableBase` subclasses). An
-        exception is if the *other* class itself already has a __new__ method,
-        in which case it won't be overridden.
+        instantiations to shortcut to :meth:`~object.__new__` (skipping the
+        cache-fetch process for :class:`_MutableBase` subclasses).
+
+        The new class will have an attribute `_derived_class` added, pointing
+        to itself. This pointer instructs which class to use when
+        slicing/adding instances of the new class. At initialization time the
+        new class may choose to point `_derived_class` to another class (as is
+        done in the initialization of :class:`UpdatingAtomGroup`).
 
         Parameters
         ----------
@@ -181,13 +186,9 @@ class _TopologyAttrContainer(object):
             A class of parents :class:`_ImmutableBase`, *other* and this class.
             Its name is the same as *other*'s.
         """
-        if '__new__' in other.__dict__:
-            # Classes that have their own __new__ method (such as
-            # UpdatingAtomGroup) don't get merged with _ImmutableBase so that
-            # they retain full control of their initialization.
-            return type(other.__name__, (other, cls), {})
-        else:
-            return type(other.__name__, (_ImmutableBase, other, cls), {})
+        newcls = type(other.__name__, (_ImmutableBase, other, cls), {})
+        newcls._derived_class = newcls
+        return newcls
 
     @classmethod
     def _add_prop(cls, attr):
@@ -259,8 +260,8 @@ class _MutableBase(object):
                 raise TypeError("Attempted to instantiate class '{}' but "
                                 "none of its parents are known to the "
                                 "universe. Currently possible parent "
-                                "classes are: {}".format(
-                                    cls.__name__, str(sorted(u._class_bases.keys()))))
+                                "classes are: {}".format(cls.__name__,
+                                    str(sorted(u._class_bases.keys()))))
             newcls = u._classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
 
@@ -271,7 +272,7 @@ class _ImmutableBase(object):
     """
     # When mixed via _TopologyAttrContainer._mix this class has MRO priority.
     #  Setting __new__ like this will avoid having to go through the
-    #  cache lookup if the class is reused (as in ag.__class__(...)).
+    #  cache lookup if the class is reused (as in ag._derived_class(...)).
     __new__ = object.__new__
 
 
@@ -315,7 +316,10 @@ class GroupBase(_MutableBase):
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 item = np.array(item)
-            return self.__class__(self._ix[item], self._u)
+            # We specify _derived_class instead of self.__class__ to allow
+            # subclasses, such as UpdatingAtomGroup, to control the class
+            # resulting from slicing.
+            return self._derived_class(self._ix[item], self._u)
 
     def __repr__(self):
         name = self.level.name
@@ -349,7 +353,7 @@ class GroupBase(_MutableBase):
         else:
             o_ix = other._ix
 
-        return self.__class__(np.concatenate([self._ix, o_ix]), self._u)
+        return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
 
     def __radd__(self, other):
         """Using built-in sum requires supporting 0 + self. If other is
@@ -367,7 +371,7 @@ class GroupBase(_MutableBase):
 
         """
         if other == 0:
-            return self.__class__(self._ix, self._u)
+            return self._derived_class(self._ix, self._u)
         else:
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
@@ -909,7 +913,7 @@ class AtomGroup(GroupBase):
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
-            raise NoDataError("AtomGroup has no fragments this requires Bonds")
+            raise NoDataError("AtomGroup has no fragments; this requires Bonds")
         elif hasattr(self.universe._topology, 'names'):
             # Ugly hack to make multiple __getattr__s work
             try:
@@ -1110,7 +1114,7 @@ class AtomGroup(GroupBase):
         Subselections can be grouped with parentheses.
 
         Selections can be set to update automatically on frame change, by
-        setting the *updating* named argument to `True`.
+        setting the `updating` named argument to `True`.
 
         Examples
         --------
@@ -1246,20 +1250,17 @@ class AtomGroup(GroupBase):
 
         **Preexisting selections**
 
-            group *group-name*
+            group `group-name`
                 selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named *group-name*. Only the atoms
-                common to *group-name* and the instance :meth:`~select_atoms`
-                was called from will be considered. *group-name* will be
-                 included in the parsing just by comparison of atom indices.
-                This means that it is up to the user to make sure they were
-                defined in an appropriate :class:`Universe`.
-
-            fullgroup *group-name*
-                just like the ``group`` keyword with the difference that all the
-                atoms of *group-name* are included. The resulting selection may
-                therefore have atoms that were initially absent from the
-                instance :meth:`~select_atoms` was called from.
+                function as an argument named `group-name`. Only the atoms
+                common to `group-name` and the instance
+                :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
+                was called from will be considered, unless ``group`` is
+                preceded by the ``global`` keyword. `group-name` will be
+                included in the parsing just by comparison of atom indices.
+                This means that it is up to the user to make sure the
+                `group-name` group was defined in an appropriate
+                :class:`Universe`.
 
             global *selection*
                 by default, when issuing
@@ -1278,7 +1279,7 @@ class AtomGroup(GroupBase):
 
         **Dynamic selections**
             If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is
-            invoked with named argument *updating* set to `True`, an
+            invoked with named argument `updating` set to `True`, an
             :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` instance will be
             returned, instead of a regular
             :class:`~MDAnalysis.core.groups.AtomGroup`. It behaves just like
@@ -1287,12 +1288,17 @@ class AtomGroup(GroupBase):
             lazily, only when the
             :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` is accessed so
             that there is no redundant updating going on).
-            Making an updating selection from an already updating group will
+            Issuing an updating selection from an already updating group will
             cause later updates to also reflect the updating of the base group.
             A non-updating selection or a slicing operation made on an
             :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` will return a
             static :class:`~MDAnalysis.core.groups.AtomGroup`, which will no
             longer update across frames.
+            Non-updating :class:`~MDAnalysis.core.groups.AtomGroup` instances
+            can be made updating by setting their
+            :attr:`~MDAnalysis.core.groups.AtomGroup.updating` attribute to
+            ``True``, but only if said instances were obtained from a selection
+            command.
 
 
         .. versionchanged:: 0.7.4
@@ -1310,19 +1316,17 @@ class AtomGroup(GroupBase):
            Updating selections now possible by setting the ``updating`` argument.
 
         """
-        updating = selgroups.pop('updating',False)
-        # The self-updating atomgroup only stores the parse objects
-        # and the base atomgroup
-        if updating:
-            return UpdatingAtomGroup(base_group=self,
-                                selections=tuple((selection.Parser.parse(s,
-                                selgroups) for s in (sel,)+othersel)))
+        selections = tuple((selection.Parser.parse(s, selgroups)
+                            for s in (sel,)+othersel))
 
-        atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
-        if othersel:
-            # Generate a selection for each selection string
-            for sel in othersel:
-                atomgrp += selection.Parser.parse(sel, selgroups).apply(self)
+        atomgrp = sum([sel.apply(self) for sel in selections])
+        atomgrp._base_group = self
+        atomgrp._selections = selections
+        try:
+            atomgrp._lastupdate = self._u.trajectory.frame
+        except AttributeError: # self._u has no trajectory 
+            atomgrp._lastupdate = -1
+        atomgrp.updating = selgroups.pop('updating', False)
         return atomgrp
 
     def split(self, level):
@@ -1552,6 +1556,38 @@ class AtomGroup(GroupBase):
             writer.write(self.atoms)
             if coords:  # only these writers have a close method
                 writer.close()
+
+    @property
+    def updating(self):
+        try:
+            return self._updating
+        except AttributeError:
+            self._updating = False
+            return self._updating
+
+    @updating.setter
+    def updating(self, value):
+        if value:
+            if not (hasattr(self, '_base_group') and
+                    hasattr(self, '_selections') and
+                    hasattr(self, '_lastupdate')):
+                raise TypeError("Attempted to make {} instance dynamically "
+                                "updating, but it does not seem to have "
+                                "originated from a 'select_atoms' selection "
+                                "(it lacks '_base_group', '_selections', and "
+                                "'_lastupdate' attributes)."
+                                .format(self.__class__))
+            try:
+                self.__class__ = self._u._classes[UpdatingAtomGroup]
+            except KeyError:
+                # No UpdatingAtomGroup has been instantiated yet for this
+                # universe. We create a cheap one just for that purpose. 
+                tmpgrp = UpdatingAtomGroup(self, tuple())
+                self.__class__ = self._u._classes[UpdatingAtomGroup]
+            self._post_init()
+            # self._updating is set to True in _post_init(). No need to do it here.
+        else:
+            self._updating = False
 
 
 class ResidueGroup(GroupBase):
@@ -2013,16 +2049,21 @@ class UpdatingAtomGroup(AtomGroup):
     .. versionadded:: 0.16.0
 
     """
+    # WARNING: This class has __getattribute__ and __getattr__ methods (the
+    # latter inherited from AtomGroup). Because of this bugs introduced in the
+    # class that cause an AttributeError may be very hard to diagnose and
+    # debug: the most obvious symptom is an infinite loop going through both
+    # __getattribute__ and __getattr__, and a solution might be to add said
+    # attribute to _shortcut_attrs.
 
-    def __new__(cls, *args, **kwargs):
-        # If we're reinstantiated in a non-updating way, we must become a
-        # regular AtomGroup. We check to see if we have an AtomGroup passed as
-        # either the 'base_group' kwarg, or the first arg, in which case we
-        # become an UpdatingAtomGroup.
-        bg = kwargs.get('base_group', args[0] if args else None)
-        if isinstance(bg, AtomGroup):
-            return super(UpdatingAtomGroup, cls).__new__(cls, *args, **kwargs)
-        return AtomGroup(*args, **kwargs)
+    # Accessing these attrs doesn't trigger an update. The class and instance
+    # methods of UpdatingAtomGroup that are used during __init__ and _post_init
+    # must all be here, otherwise we get __getattribute__ infinite loops. 
+    _shortcut_attrs = ("_base_group", "__class__", "ensure_updated",
+                       "_lastupdate", "_post_init", "_shortcut_attrs",
+                       "_selections", "_u", "_updating", "level",
+                       "is_uptodate", "universe", "updating",
+                       "update_selection")
 
     def __init__(self, base_group, selections):
         """
@@ -2038,24 +2079,93 @@ class UpdatingAtomGroup(AtomGroup):
         # Because we're implementing __getattribute__, which needs _u for
         # its check, no self.attribute access can be made before this line
         self._u = base_group._u
+        self._selections = selections
         self._base_group = base_group
-        self._updating_selections = selections
         self._lastupdate = None
-        self.update_selection()
+        self._post_init()
+
+    # Splitting the __init__ process into _post_init allows less code
+    # duplication for when an AtomGroup becomes an UpdatingAtomGroup.
+    def _post_init(self):
+        self._updating = True
+        self._derived_class = self._base_group._derived_class
+        if self._selections:
+            # Allows the creation of a cheap placeholder UpdatingAtomGroup
+            # by passing an empty selection tuple.
+            self.ensure_updated()
 
     def update_selection(self):
-        bg = self._base_group
-        sels = self._updating_selections
-        ix = sum([sel.apply(bg) for sel in sels])._ix
-        super(UpdatingAtomGroup, self).__init__(ix, bg._u)
-        self._lastupdate = bg._u.trajectory.ts.frame
+        """
+        Forces the reevaluation and application of the group's selection(s).
 
-    def __getattribute__(self,name):
-        if not name in ("_base_group","_updating_selections","_lastupdate"):
-            if (object.__getattribute__(self, "_u").trajectory.frame !=
-            object.__getattribute__(self, "_lastupdate")):
-                object.__getattribute__(self, "update_selection")()
+        This method is triggered automatically when accessing attributes, if
+        the last update occurred under a different trajectory frame.
+
+        """
+        bg = self._base_group
+        sels = self._selections
+        if sels:
+            ix = sum([sel.apply(bg) for sel in sels])._ix
+        else:
+            ix = np.array([], dtype=np.int)
+        super(UpdatingAtomGroup, self).__init__(ix, bg._u)
+
+    @property
+    def is_uptodate(self):
+        """
+        Checks whether the selection needs updating
+
+        Returns
+        -------
+        bool
+            `True` if the group's selection is up-to-date, `False` otherwise.
+
+        """
+        try:
+            return (object.__getattribute__(self, "_u").trajectory.frame ==
+                object.__getattribute__(self, "_lastupdate"))
+        except AttributeError: # self._u has no trajectory
+            return self._lastupdate == -1
+
+    @is_uptodate.setter
+    def is_uptodate(self, value):
+        value = bool(value)
+        if value:
+            try:
+                self._lastupdate = object.__getattribute__(self,
+                                                    "_u").trajectory.frame
+            except AttributeError: # self._u has no trajectory
+                self._lastupdate = -1
+        else:
+            # This always marks the selection as outdated
+            self._lastupdate = None
+
+    def ensure_updated(self):
+        """
+        Checks whether the selection needs updating and updates it, if needed.
+
+        Returns
+        -------
+        bool
+            `True` if the group was already up-to-date, `False` otherwise.
+
+        """
+        status = self.is_uptodate
+        if not status:
+            object.__getattribute__(self, "update_selection")()
+            self.is_uptodate = True
+        return status
+
+    def __getattribute__(self, name):
+        if not (name in object.__getattribute__(self, "_shortcut_attrs")):
+            self.ensure_updated()
         return object.__getattribute__(self, name)
+
+    @AtomGroup.updating.setter
+    def updating(self, value):
+        if not value:
+            self.__class__ = self._u._classes[AtomGroup]
+        self._updating = bool(value)
 
     def __repr__(self):
         name = self.level.name

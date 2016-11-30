@@ -32,6 +32,7 @@ These are usually read by the TopologyParser.
 """
 
 from six.moves import zip
+import sys
 from collections import defaultdict
 import itertools
 import numpy as np

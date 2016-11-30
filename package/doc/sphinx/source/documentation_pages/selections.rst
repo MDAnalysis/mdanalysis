@@ -204,23 +204,14 @@ bynum *index-range*
 Preexisting selections and modifiers
 ------------------------------------
 
-group *group-name*
+group `group-name`
     selects the atoms in the :class:`AtomGroup` passed to the function as an
-    argument named *group-name*. Only the atoms common to *group-name* and the
-    instance :meth:`~select_atoms` was called from will be considered.
-    *group-name* will be included in the parsing just by comparison of atom
-    indices.  This means that it is up to the user to make sure they were
-    defined in an appropriate :class:`Universe`.
-
-fullgroup *group-name*
-    just like the ``group`` keyword with the difference that all the atoms of
-    *group-name* are included. The resulting selection may therefore have atoms
-    that were initially absent from the instance :meth:`~select_atoms` was
-    called from.
-
-    .. deprecated:: 0.11
-       The use of ``fullgroup`` has been deprecated in favor of the equivalent
-       ``global group``.
+    argument named `group-name`. Only the atoms common to `group-name` and the
+    instance :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` was called
+    from will be considered, unless ``group`` is preceded by the ``global``
+    keyword. `group-name` will be included in the parsing just by comparison of
+    atom indices. This means that it is up to the user to make sure the
+    `group-name` group was defined in an appropriate :class:`Universe`.
 
 global *selection*
     by default, when issuing
@@ -236,6 +227,9 @@ global *selection*
     :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
     :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
 
+.. deprecated:: 0.11
+   The use of ``fullgroup`` has been deprecated in favor of the equivalent
+   ``global group``.
 
 Dynamic selections
 ==================
@@ -260,6 +254,16 @@ there is no redundant updating going on)::
  >>> ag_updating
  <UpdatingAtomGroup with 14 atoms>
 
+If not done at selection-time, a regular
+:class:`~MDAnalysis.core.groups.AtomGroup` can be made dynamic by setting its
+:attr:`~MDAnalysis.core.groups.AtomGroup.updating` attribute to ``True``. This,
+however, only makes sense for :class:`~MDAnalysis.core.groups.AtomGroup`
+instances originating from selection commands. An
+:class:`~MDAnalysis.core.groups.AtomGroup` obtained from a slicing or addition
+operation cannot be made dynamically updating. Conversely, setting the
+:attr:`~MDAnalysis.core.groups.UpdatingAtomGroup.updating` attribute to
+``False`` will revert the group to static behavior.
+
 Using the ``group`` selection keyword for
 :ref:`preexisting-selections <pre-selections-label>`, one can
 make updating selections depend on
@@ -275,7 +279,7 @@ cause later updates to also reflect the updating of the base group::
  >>> chained_ag_updating
  <UpdatingAtomGroup with 7 atoms>
 
-Finally, a non-updating selection or a slicing operation made on an
+Finally, a non-updating selection or a slicing/addition operation made on an
 :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` will return a static
 :class:`~MDAnalysis.core.groups.AtomGroup`, which will no longer update
 across frames::

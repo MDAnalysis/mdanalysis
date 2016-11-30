@@ -20,7 +20,7 @@ The rules for this file:
   * 0.16.0
 
 Enhancements
-  * Added dynamic selections (addreses Issues #175 and #1074).
+  * Added dynamic selections (addresses Issues #175 and #1074).
   * Added 'MemoryReader' class to allow manipulation of trajectory data
     in-memory, which can provide substantial speed-ups to certain
     calculations.

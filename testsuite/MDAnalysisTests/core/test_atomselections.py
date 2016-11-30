@@ -993,7 +993,12 @@ class TestUpdatingSelection(object):
                                 6292, 31313, 31314, 31315, 31316, 34661,
                                 34663, 34664])
         self.u.trajectory.next()
+        assert_equal(self.ag_updating._lastupdate, 0)
+        assert_(not self.ag_updating.is_uptodate)
         assert_array_equal(self.ag_updating.indices, target_idxs)
+        assert_(self.ag_updating.is_uptodate)
+        self.ag_updating.is_uptodate = False
+        assert_(self.ag_updating._lastupdate is None)
 
     def test_compounded_update(self):
         target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
@@ -1020,7 +1025,7 @@ class TestUpdatingSelection(object):
         assert_array_equal(self.ag_updating_chained2.indices,
                            self.ag_updating.indices)
 
-    def test_become_static(self):
+    def test_slice_is_static(self):
         ag_static1 = self.ag_updating[:] 
         ag_static2 = self.ag_updating.select_atoms("all") 
         assert_array_equal(ag_static1.indices, self.ag.indices)
@@ -1032,4 +1037,36 @@ class TestUpdatingSelection(object):
     def test_kwarg_check(self):
         assert_raises(TypeError, self.u.select_atoms, "group updating",
                       {"updating":True})
+
+    def test_become_static(self):
+        self.ag_updating.updating = False
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+
+    def test_make_updating(self):
+        self.ag.updating = True
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+        self.u.trajectory.next()
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+
+    def test_conversion_error(self):
+        # Slicing makes an AG without _selections, _base_group, nor _lastupdate
+        no_selection_ag = self.ag[:]
+        def set_updating():
+            no_selection_ag.updating = True
+        assert_raises(TypeError, set_updating)
+
+class TestUpdatingSelectionNotraj(object):
+    def setUp(self):
+        self.u = mda.Universe(TPR)
+        self.ag = self.u.select_atoms("name S*")
+        self.ag_updating = self.u.select_atoms("name S*", updating=True)
+
+    def test_update(self):
+        assert_(self.ag_updating.is_uptodate)
+        assert_array_equal(self.ag_updating.indices, self.ag.indices)
+        assert_equal(self.ag_updating._lastupdate, -1)
+        self.ag_updating.is_uptodate = False
+        assert_(self.ag_updating._lastupdate is None)
 
