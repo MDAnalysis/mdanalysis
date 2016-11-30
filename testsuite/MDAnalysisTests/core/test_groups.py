@@ -6,6 +6,7 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
+import operator
 
 from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysis.core import groups
@@ -168,6 +169,7 @@ class TestGroupAddition(object):
 
             for x, y, z in itertools.product([group, single], repeat=3):
                 yield self._check_sum, x, y, z, groupclasses[level]
+                yield self._check_bad_sum, x, y, z
 
             yield self._check_contains, group
             yield self._check_contains_false, group
@@ -216,6 +218,11 @@ class TestGroupAddition(object):
         for x, y in zip(summed,
                         itertools.chain(self.itr(a), self.itr(b), self.itr(c))):
             assert_(x == y)
+
+    @staticmethod
+    def _check_bad_sum(a, b, c):
+        # sum with bad first argument
+        assert_raises(TypeError, sum, [10, a, b, c])
 
     def _check_crosslevel(self, a, b):
         def add(x, y):
@@ -421,6 +428,18 @@ class TestComponentComparisons(object):
     def _check_sorting(a, b, c):
         assert_(sorted([b, a, c]) == [a, b, c])
 
+    @staticmethod
+    def _check_crosslevel_cmp(a, b):
+        assert_raises(TypeError, operator.lt, a, b)
+        assert_raises(TypeError, operator.le, a, b)
+        assert_raises(TypeError, operator.gt, a, b)
+        assert_raises(TypeError, operator.ge, a, b)
+
+    @staticmethod
+    def _check_crosslevel_eq(a, b):
+        assert_raises(TypeError, operator.eq, a, b)
+        assert_raises(TypeError, operator.ne, a, b)
+
     def test_comparions(self):
         u = make_Universe()
         for level in [u.atoms, u.residues, u.segments]:
@@ -432,6 +451,10 @@ class TestComponentComparisons(object):
             yield self._check_neq, a, b, c
             yield self._check_eq, a, b, c
             yield self._check_sorting, a, b, c
+        # Comparing Atoms To Residues etc
+        for a, b in itertools.permutations((u.atoms[0], u.residues[0], u.segments[0]), 2):
+            yield self._check_crosslevel_cmp, a, b
+            yield self._check_crosslevel_eq, a, b
 
 class TestMetaclassMagic(object):
     # tests for the weird voodoo we do with metaclasses
