@@ -1,27 +1,28 @@
-#cython embedsignature=True
-# affinityprop.pyx --- Cython wrapper for the affinity propagation C library
-# Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """
 Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 """
 from ..utils import TriangularMatrix
@@ -35,12 +36,12 @@ cimport cython
 @cython.wraparound(False)
 
 cdef class AffinityPropagation(object):
-    """ 
+    """
     Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:
-	
+
     Clustering by Passing Messages Between Data Points.
     Brendan J. Frey and Delbert Dueck, University of Toronto
-    Science 315, 972–976, February 2007 
+    Science 315, 972–976, February 2007
 
     """
 
@@ -50,7 +51,7 @@ cdef class AffinityPropagation(object):
 
         Parameters
         ----------
-	
+
         s : encore.utils.TriangularMatrix object
 		    Triangular matrix containing the similarity values for each pair of clustering elements. Notice that the current implementation does not allow for asymmetric values (i.e. similarity(a,b) is assumed to be equal to similarity(b,a))
 
@@ -68,14 +69,14 @@ cdef class AffinityPropagation(object):
 
         noise : int
 		    Whether to apply noise to the input s matrix, such there are no equal values. 1 is for yes, 0 is for no.
-		
+
 
         Returns
         -------
 
         elements : list of int or None
 		    List of cluster-assigned elements, which can be used by encore.utils.ClustersCollection to generate Cluster objects. See these classes for more details.
-        
+
 	"""
         cdef int cn = s.size
         cdef float cpreference = preference
@@ -92,13 +93,13 @@ cdef class AffinityPropagation(object):
                 s[i,i] = <float>preference
         else:
             raise TypeError ("Preference should be of type float")
-        
+
         logging.info("Preference %3.2f: starting Affinity Propagation" % (preference))
 
         # Prepare input and ouput arrays
         cdef numpy.ndarray[numpy.float32_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float32)
         cdef numpy.ndarray[long,   ndim=1] clusters   = numpy.zeros((s.size),dtype=long)
-        
+
         # run C module Affinity Propagation
         iterations = caffinityprop.CAffinityPropagation( <float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
 
@@ -138,4 +139,3 @@ cdef class AffinityPropagation(object):
         logging.info("Preference %3.2f: converged in %d iterations" % (preference, iterations))
 
         return clusters
-

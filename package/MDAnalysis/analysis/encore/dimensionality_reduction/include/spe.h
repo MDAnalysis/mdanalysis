@@ -1,21 +1,24 @@
-/*
-spe.h --- header file for spe.c
-Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
+/* -*- tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+  vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  MDAnalysis --- http://www.mdanalysis.org
+  Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+  (see the file AUTHORS for the full list of names)
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  Released under the GNU Public Licence, v2 or any higher version
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  Please cite your use of MDAnalysis in published work:
+
+  R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+  D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+  MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+  simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+  Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+
+  N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+  MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+  J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 */
-
 int trmIndex(int, int);
 
 double ed(double*, int, int, int);
@@ -41,7 +44,3 @@ double CStochasticProximityEmbedding(
         int,
         int,
         int);
-
-
-
-

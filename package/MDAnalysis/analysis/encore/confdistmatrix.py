@@ -1,19 +1,24 @@
-# confdistmatrix.py --- Conformational distance matrix calculator
-# Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """
 Distance Matrix calculation --- :mod:`MDAnalysis.analysis.ensemble.confdistmatrix`
 ==================================================================================
@@ -25,9 +30,6 @@ distance between the structures stored as frames in a Universe. A
 class to compute an RMSD matrix in such a way is also available.
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-:Year: 2015--2016
-:Copyright: GNU Public License v3
-:Mantainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0
 
@@ -72,7 +74,7 @@ def conformational_distance_matrix(ensemble,
         values. See set_rmsd_matrix_elements for an example.
 
     pairwise_align : bool
-        Whether to perform pairwise alignment between conformations. 
+        Whether to perform pairwise alignment between conformations.
         Default is True (do the superimposition)
 
     mass_weighted : bool
@@ -84,7 +86,7 @@ def conformational_distance_matrix(ensemble,
         Default is True.
 
     ncores : int
-        Number of cores to be used for parallel calculation 
+        Number of cores to be used for parallel calculation
         Default is 1.
 
     Returns
@@ -201,7 +203,7 @@ def conformational_distance_matrix(ensemble,
 
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
-    
+
     workers = [Process(target=conf_dist_function, args=(
         tasks_per_worker[i],
         rmsd_coordinates,
@@ -218,7 +220,7 @@ def conformational_distance_matrix(ensemble,
         w.start()
     for w in workers:
         w.join()
-    
+
     # When the workers have finished, return a TriangularMatrix object
     return TriangularMatrix(distmat, metadata=metadata)
 
@@ -242,7 +244,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
 
         If fit_coords and fit_masses are specified, the structures
         will be superimposed before calculating RMSD, and fit_coords and fit_masses
-        will be used to place both structures at their center of mass and 
+        will be used to place both structures at their center of mass and
         compute the rotation matrix. In this case, both fit_coords and fit_masses
         must be specified.
 
@@ -275,7 +277,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
             summasses = np.sum(masses)
             rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(np.float64),
                                                     coords[j].astype(np.float64),
-                                                    coords[j].shape[0], 
+                                                    coords[j].shape[0],
                                                     masses,
                                                     summasses)
 
@@ -298,7 +300,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
                 rotated_i.astype(np.float64), translated_j.astype(np.float64),
                 coords[j].shape[0], masses, summasses)
 
-    else: 
+    else:
         raise TypeError("Both fit_coords and fit_masses must be specified \
                         if one of them is given")
 
