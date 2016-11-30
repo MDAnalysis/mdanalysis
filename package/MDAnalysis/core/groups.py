@@ -391,6 +391,15 @@ class GroupBase(_MutableBase):
         center : ndarray
             weighted center of group
 
+        Examples
+        --------
+
+        To find the charge weighted center of a given Atomgroup::
+
+            >>> sel = u.select_atoms('prop mass > 4.0')
+            >>> sel.center(sel.charges)
+
+
         Notes
         -----
         If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
