@@ -7,7 +7,7 @@ that are used in the test suite of the MDAnalysis package
 http://www.mdanalysis.org. They should be installed together
 with MDAnalysis.
 
-However, the test files change less frequently, take up about 60 GB
+However, the test files change less frequently, take up about 70 MB
 of space, and are not needed for daily use of MDAnalysis so they are
 distributed separately from the main package.
 
