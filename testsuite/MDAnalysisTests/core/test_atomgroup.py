@@ -300,3 +300,34 @@ class TestAtomGroupTransformations(object):
         assert_array_almost_equal(ag.positions[0], [np.cos(angle) + 1,
                                                     np.sin(angle) + 1,
                                                     1])
+
+class TestCenter(object):
+    def setUp(self):
+        self.u = make_Universe(trajectory=True)
+        self.ag = self.u.atoms[10:30]
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+
+    def test_center_1(self):
+        weights = np.zeros(self.ag.n_atoms)
+        weights[0] = 1
+        assert_array_almost_equal(self.ag.center(weights),
+                                  self.ag.positions[0])
+
+    def test_center_2(self):
+        weights = np.zeros(self.ag.n_atoms)
+        weights[:4] = 1. / 4.
+        assert_array_almost_equal(self.ag.center(weights),
+                                  self.ag.positions[:4].mean(axis=0))
+
+    def test_center_wrong_length(self):
+        weights = np.ones(self.ag.n_atoms + 4)
+
+        assert_raises(ValueError, self.ag.center, weights)
+
+    def test_center_wrong_shape(self):
+        weights = np.ones((self.ag.n_atoms, 2))
+
+        assert_raises(TypeError, self.ag.center, weights)
