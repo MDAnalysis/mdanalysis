@@ -2,56 +2,44 @@
 Installing MDAnalysis
 =====================
 
-Installing using binary packages (for Ubuntu/Debian users)
-==========================================================
+Quick installation instructions
+===============================
 
-Binary packages of MDAnalysis are available for Ubuntu and Debian users.
-They can be downloaded from the following PPA:
+http://www.mdanalysis.org/pages/installation_quick_start/
 
-      https://launchpad.net/~seb-buch/+archive/mdanalysis
 
-It is possible to add this PPA to your software sources. To do so,
-run the following command ::
+From the Python package index (pip)
+-----------------------------------
 
-  sudo add-apt-repository ppa:seb-buch/mdanalysis
+To install the latest stable release with pip
+http://www.pip-installer.org/en/latest/index.html do::
 
-After updating your package index files, you should be able to install
-the following packages:
+   pip install --upgrade MDAnalysis
 
-    * python-mdanalysis (main package - required to used MDAnalysis)
-    * python-mdanalysis-doc (documentation - optional)
-    * python-mdanalysis.tests (test suite - optional)
-    * python-mdanalysis.tests-data (data used by tests - optional
-      but required to run tests)
-    * python-griddataformats (additional package - optional)
+To run the test cases and examples, also install the unit tests (about 20 MiB in size)::
 
-Note 1: Dependencies such python-numpy or python-biopython will also be installed (if needed).
+   pip install --upgrade MDAnalysisTests
+   python -c 'import MDAnalysisTests; MDAnalysisTests.run()'
 
-Note 2: Not-required (but yet recommended) packages such as netCDF4,
-        matplotlib or python-scipy will not be installed automatically!
+(The tests can take a long time to run.)
 
-Requirements for installing from source
-=======================================
 
-In order to build MDAnalysis from source, you will need
+With conda
+----------
 
-    * python (>=2.6)
-    * a C and a C++ compiler (e.g. GNU gcc),
-    * the python header files (typically in a package python-dev),
-    * numpy to compile the DCD and XTC reader and other extensions,
+To install the lastest stable release with conda
+http://conda.pydata.org/docs/ do::
 
-See *Additional non-standard packages* below for what else you need at
-run time.
+  conda config --add channels MDAnalysis
+  conda install mdanalysis
 
-Stable releases are distributed as tar files from
-https://pypi.python.org/pypi/MDAnalysis/.  The current source code can
-als be obtained from the SVN (subversion) source code repository
-https://github.com/MDAnalysis/mdanalysis.
+To upgrade to the latest stable release.
 
-The primary dependency is NumPy http://numpy.scipy.org, which needs to
-be installed before MDAnalysis can be installed itself. (matplotlib
-http://matplotlib.org/ is a useful addition to plot results generated
-with MDAnalysis and is recommended.)
+   conda update mdanalysis
+
+The conda packages currently only support serial calculations. If you
+plan to use the parallel OpenMP algorithms you need to install
+MDAnalysis with pip and have a working OpenMP installation.
 
 
 Help
@@ -79,226 +67,9 @@ mention your operating system (e.g. Ubuntu 14.04) and Python version
 problem.
 
 
-Getting the source 
-==================
+Installing from source
+======================
 
-Download a tar ball from https://pypi.python.org/pypi/MDAnalysis/; these
-instructions apply to versions 0.6.0-rc2 or higher.
+Source code is available at https://github.com/MDAnalysis/mdanalysis
 
-Alternatively, check out the MDAnalysis directory from the git
-repository at https://github.com/MDAnalysis/mdanalysis. In most cases
-simply do ::
-
-  git clone https://github.com/MDAnalysis/mdanalysis
-  cd mdanalysis
-
-
-
-Installation from source
-========================
-
-You will need a C compiler to compile the DCD and XTC reader and other
-extensions.
-
-In principle, installation should be as simple as ::
-
-   python setup.py build
-   python setup.py install
-
-This installs MDAnalysis in the system wide python directory; this may
-require administrative privileges.
-
-It is also possible to use --prefix, --home, or --user options for
-setup.py to install in a different (probably your private) python
-directory hierarchy. ``python setup.py install --help`` should show
-you your options.
-
-If you have problem at this stage then have a look at the operating
-system specific notes at the end of this file or look in the issue
-tracker --- maybe the problem is recognized and a work around can be
-found in the comments
-
-
-
-Selecting an installation directory
------------------------------------
-
-In order to install in a non-default directory one can use various
-options to setup (see --help) such as ::
-
- python setup.py install --prefix LOCAL_DIRECTORY
-
-or any of the other options of distutil's setup.py to install in
-alternative directories, for instance
-
- python setup.py install --user
-
-
-
-Easy Install
-------------
-
-We are also exploring the use of easy_install. This is experimental
-but you might be able to do ::
-
-  easy_install [options] ./mdanalysis
- 
-A developer installation (that immediately reflects changes to the
-sources) with ::
-
-  cd ./mdanalysis
-  python setup develop [options]
-
-
-If you want to use optional functionality (such as running some of the
-analysis code in the MDAnalysis.analysis module or running the test
-suite) then you can have easy_install fetch and install additionaly
-required packages if you have not been able to install them through
-your package manager (always preferred!). For instance,
-
-  cd mdanalysis
-  easy_install [options] . mdanalysis[AMBER,analysis]
-
-should also install packages required for analysis and the AMBER
-netcdf reader/writer (but see below for hints on the packages required
-to make AMBER work).
-
-
-
-Additional non-standard python packages
-=======================================
-
-See the operating system specific notes above for hints how to get the
-necessary packages through the native package management
-system. Please add your own (eg for RPM based systems which the
-developers are not using heavily).
-
-python-dev includes Python.h, which is required for compiling. numpy
-is used at the compilation stage to find maths libraries. scipy and
-biopython are only needed when one wants to use all MDAnalysis
-functions but are not required for compiling.
-
-Required python packages
-------------------------
-
-In order to use the library in your own python code you will need at least
-
-    * numpy of version 1.0.3 or greater (http://numpy.scipy.org/)
-    * scipy (http://www.scipy.org/)
-    * BioPython's Bio.PDB (http://biopython.org)
-    * networkx (http://networkx.lanl.gov/) --- for analysis of lipid 
-      leaflets via MDAnalysis.analysis.leaflet
-    * GridDataFormats (http://pypi.python.org/pypi/GridDataFormats)
-
-If you want to operate on AMBER binary trajectories (NetCDF) then you
-will need to have working NetCDF support based on the netcdf4-python
-package:
-
-    * netcdf4-python (https://github.com/Unidata/netcdf4-python)
-
-      If you get a 'ValueError: did not find HDF5 headers' during
-      installation then you should install the hdf5 development
-      package through your package manager (see below for some hints
-      on how to do this for Linux and Mac OS X).
-
-      See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf
-      for notes on how to compile HDF5 and netcdf.
-
-Optional python packages (used in MDAnalysis.analysis):
-
-    * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
-
-
-Running test cases
-==================
-
-If you want to check that your installation works correctly you can
-run the test suite. It requires that you have a recent version of
-NumPy, the Python package 'nose', and the MDAnalysisTests (the test
-code and a collection of structures and trajectories that are used as
-test input).
-
-Download and install MDAnalysisTestData from 
-
-  https://pypi.python.org/pypi/MDAnalysisTests
-
-(or get the development version from https://github.com/MDAnalysis/mdanalysis)
-
-Pick a file named `MDAnalysisTests-X.Y.Z.tar.gz` where the release
-number X.Y.Z should match the release number of MDAnalysis
-itself. E.g. For MDAnalysis-0.7.6 you would get MDAnalysisTests-0.7.6.
-
-For more details on the test cases see https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
-
-
-.. Note:: In order to install the other packages you can use
-          easy_install with the special `test` specifier::
-
-            easy_install MDAnalysis[tests]
-
-
-OS specific notes
-=================
-
-Linux
------
-
-* The GNU gcc compiler is the default and should be used
-  automatically; in particular you will not have to do anything with
-  setup.cfg. This should work if you have no file named setup.cfg in
-  your MDAnalysis directory. (If you want to use setup.cfg and use GNU
-  gcc simply comment out the compiler=intel line in the template:
-
-   # compiler=intel
-
-  (However, compiling with Intel compilers has not been tested for a
-  while. Send questions and feedback to the mailing list
-  http://groups.google.com/group/mdnalysis-discussion )
-
-* To compile with the Intel compilers, set in setup.cfg ::
-
-    [build]
-    compiler=intel
-
-  (Although, in some instances the KDTree does not compile with
-  Intel. In this case please file a bug and use gcc in the mean time.)
-
-
-* Install prerequisite packages on Ubuntu or Debian with
-
-    sudo aptitude install python-dev python-cython python-numpy g++
-
-  Install packages needed for full functionality
-
-    sudo aptitude install python-scipy python-matplotlib  python-biopython \
-                          python-netcdf4  libhdf5-dev 
-
-  (The netcdf and libhdf5-dev packages are only required if you want
-  to be able to process AMBER netcdf (binary) trajectories. If you
-  don't have netcdf4 available from your package manager (eg Ubuntu
-  10.04) then follow the instructions for installing netcdf4 given at  
-  and http://code.google.com/p/mdanalysis/wiki/netcdf.
-
-
-Mac OS X
---------
-OS specific notes
-
-
-* Tested with Mac OS X 10.4.11+fink and 10.6.2+MacPorts. 
-
-* MacPorts hints::
-
-     port install  py26-numpy  py26-cython
-     port install  py26-scipy  py26-matplotlib py26-biopython hdf5 netcdf+dap+netcdf4
-
-  (The netcdf and libhdf5-dev packages are only required if you want
-  to be able to process AMBER netcdf (binary) trajectories.)
-
-* fink also worked in the past but the developers have not had any
-  recent experience with fink and MDAnalysis
-
-* NOTE: Use the Apple-provided gcc, not the fink provided
-  one. Apparently, only Apple's gcc has the -arch flag that appears to
-  be required for python setup.py install. (Thanks to Justin Lemkul
-  for pointing it out).
+See http://wiki.mdanalysis.org/Install for further instructions.
