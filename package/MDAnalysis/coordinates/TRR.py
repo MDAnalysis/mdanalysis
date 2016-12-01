@@ -28,6 +28,7 @@ Read and write GROMACS TRR trajectories.
 See Also
 --------
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
+MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
 """
 
 from .XDR import XDRBaseReader, XDRBaseWriter
