@@ -19,11 +19,30 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-Low-level Gromacs XDR trajectory reading — :mod:`MDAnalysis.lib.formats.libmdaxdr`
-------------------------------------------------------------
+"""Low-level Gromacs XDR trajectory reading — :mod:`MDAnalysis.lib.formats.libmdaxdr`
+---------------------------------------------------------------------------------
 
-Some more explanations...
+libmdaxdr contains the classes :mod:`XTCFile` and :mod:`TRRFile`. Both can be
+used to read and write frames from to XTC and TRR files. These classes are used
+internally by MDAnalysis in :mod:`MDAnalysis.coordinates.XTC` and
+:mod:`MDAnalysis.coordinates.TRR`. They behave similar to normal file objects.
+For example to calculate mean coordinates.
+
+.. code::python
+  with XTCFile("trajectory.xtc") as xtc:
+      n_atoms = xtc.n_atoms
+      mean = np.zeros((n_atoms, 3))
+      # iterate over trajectory
+      for frame in xtc:
+          mean += frame.x
+
+The :class:`XTCFile` class can be usefull as a compressed storage format.
+
+Besides iteration XTCFile and TRRFile one can also seek to arbitrary frames
+using the :meth:`~XTCFile.seek` method. This is provided by lazy generating a
+offset list for stored frames. The offset list is generated the first time `len`
+or `seek` is called.
+
 """
 
 cimport numpy as np
@@ -231,6 +250,7 @@ cdef class _XDRFile:
         return self
 
     def __next__(self):
+        """Return next frame"""
         if self.reached_eof:
             raise StopIteration
         return self.read()
