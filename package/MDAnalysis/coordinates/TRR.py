@@ -28,7 +28,7 @@ Read and write GROMACS TRR trajectories.
 See Also
 --------
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
-MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
+MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 
 from .XDR import XDRBaseReader, XDRBaseWriter
@@ -45,18 +45,6 @@ class TRRWriter(XDRBaseWriter):
     If the data dictionary of a TimeStep contains the key 'lambda' the
     corresponding value will be used as the lambda value for written TRR file.
     If None is found the lambda is set to 0.
-
-    Parameters
-    ----------
-    filename : str
-        filename of the trajectory
-    n_atoms : int
-        number of atoms to write
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    precision : float (optional)
-        set precision of saved trjactory to this number of decimal places.
-
     """
 
     format = 'TRR'
@@ -129,6 +117,11 @@ class TRRReader(XDRBaseReader):
     refresh_offsets : bool (optional)
         Recalculate offsets for random access from file. If ``False`` try to
         retrieve offsets from hidden offsets file.
+
+    Notes
+    -----
+    See :class:`MDAnalysis.coordinates.XDR.XDRBaseWriter' for notes about
+    offsets
     """
     format = 'TRR'
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',

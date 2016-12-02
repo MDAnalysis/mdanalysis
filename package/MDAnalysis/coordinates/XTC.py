@@ -28,7 +28,7 @@ Read and write GROMACS XTC trajectories.
 See Also
 --------
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
-MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
+MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 
 from .XDR import XDRBaseReader, XDRBaseWriter
@@ -37,23 +37,11 @@ from ..lib.mdamath import triclinic_vectors, triclinic_box
 
 
 class XTCWriter(XDRBaseWriter):
-    """
-    XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    """XTC is a compressed trajectory format from Gromacs. The trajectory is saved
     with reduced precision (3 decimal places by default) compared to other
     lossless formarts like TRR and DCD. The main advantage of XTC files is that
     they require significantly less disk space and the loss of precision is
     usually not a problem.
-
-    Parameters
-    ----------
-    filename : str
-        filename of the trajectory
-    n_atoms : int
-        number of atoms to write
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    precision : float (optional)
-        set precision of saved trjactory to this number of decimal places.
     """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}
@@ -61,6 +49,17 @@ class XTCWriter(XDRBaseWriter):
 
     def __init__(self, filename, n_atoms, convert_units=True,
                  precision=3, **kwargs):
+        """Parameters
+        ----------
+        filename : str
+            filename of the trajectory
+        n_atoms : int
+            number of atoms to write
+        convert_units : bool (optional)
+            convert into MDAnalysis units
+        precision : float (optional)
+            set precision of saved trjactory to this number of decimal places.
+        """
         super(XTCWriter, self).__init__(filename, n_atoms, convert_units,
                                         **kwargs)
         self.precision = precision
@@ -113,6 +112,10 @@ class XTCReader(XDRBaseReader):
         Recalculate offsets for random access from file. If ``False`` try to
         retrieve offsets from hidden offsets file.
 
+    Notes
+    -----
+    See :class:`MDAnalysis.coordinates.XDR.XDRBaseWriter' for notes about
+    offsets
     """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}
