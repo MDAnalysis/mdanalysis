@@ -188,12 +188,12 @@ inconsistent results")
     def test_ensemble_superimposition():
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
-                          select="name CA",
-                          in_memory=True).run()
+                        select="name CA",
+                        in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
-                          select="name *",
-                          in_memory=True).run()
+                        select="name *",
+                        in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
@@ -209,12 +209,12 @@ inconsistent results")
     def test_ensemble_superimposition_to_reference_non_weighted():
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
-                          select="name CA", mass_weighted=False,
-                          in_memory=True).run()
+                        select="name CA", mass_weighted=False,
+                        in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
-                          select="name *", mass_weighted=False,
-                          in_memory=True).run()
+                        select="name *", mass_weighted=False,
+                        in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()

@@ -862,9 +862,9 @@ def hes(ensembles,
     if align:
         for ensemble in ensembles:
             mda.analysis.align.AlignTraj(ensemble, ensembles[0],
-                                           select=selection,
-                                           mass_weighted=True,
-                                           in_memory=True).run()
+                                         select=selection,
+                                         mass_weighted=True,
+                                         in_memory=True).run()
     else:
         for ensemble in ensembles:
             ensemble.transfer_to_memory()
