@@ -848,11 +848,11 @@ def hes(ensembles,
         [ 6880.34140106     0.        ]]
 
     Alternatively, for greater flexibility in how the alignment should be done
-    you can call the rms_fit_trj function manually:
+    you can call use an AlignTraj object manually:
 
         >>> from MDAnalysis.analysis import align
-        >>> align.rms_fit_trj(ens1, ens1, select="name CA", in_memory=True)
-        >>> align.rms_fit_trj(ens2, ens1, select="name CA", in_memory=True)
+        >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run()
+        >>> align.AlignTraj(ens2, ens1, select="name CA", in_memory=True).run()
         >>> print encore.hes([ens1, ens2])[0]
         [[    0.          7032.19607004]
          [ 7032.19607004     0.        ]]
@@ -863,10 +863,10 @@ def hes(ensembles,
     # on the universe.
     if align:
         for ensemble in ensembles:
-            mda.analysis.align.rms_fit_trj(ensemble, ensembles[0],
-                                           select=selection,
-                                           mass_weighted=True,
-                                           in_memory=True)
+            mda.analysis.align.AlignTraj(ensemble, ensembles[0],
+                                         select=selection,
+                                         mass_weighted=True,
+                                         in_memory=True).run()
     else:
         for ensemble in ensembles:
             ensemble.transfer_to_memory()
