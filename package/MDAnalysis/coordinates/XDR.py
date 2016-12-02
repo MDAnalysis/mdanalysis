@@ -103,6 +103,20 @@ class XDRBaseReader(base.Reader):
     """
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
+        """
+        Parameters
+        ----------
+        filename : str
+            trajectory filename
+        convert_units : bool (optional)
+            convert units to MDAnalysis units
+        sub : array (optional)
+            only load atoms specified in sub
+        refresh_offsets : bool (optional)
+            force refresh of offsets
+        **kwargs : dict
+            General reader arguments.
+        """
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,
                                             **kwargs)
@@ -228,6 +242,18 @@ class XDRBaseWriter(base.Writer):
     """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+        """
+        Parameters
+        ----------
+        filename : str
+            filename of trajectory
+        n_atoms : int
+            number of atoms to be written
+        convert_units : bool (optional)
+            convert from MDAnalysis units to format specific units
+        **kwargs : dict
+            General writer arguments
+        """
         self.filename = filename
         self._convert_units = convert_units
         self.n_atoms = n_atoms
