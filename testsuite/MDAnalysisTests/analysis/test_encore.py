@@ -165,29 +165,13 @@ inconsistent results")
                                 err_msg = "calculated RMSD values differ from the reference implementation")            
 
     def test_rmsd_matrix_without_superimposition(self):
-
-        reference_rmsd = [ 0.        ,
-                           0.91544908,
-                           1.41318953,
-                           1.8726356 ,
-                           2.35668635,
-                           2.78433418,
-                           3.20966768,
-                           3.59671712,
-                           3.95373368,
-                           4.36574793,
-                           4.76120567,
-                           5.16000462,
-                           5.48962498,
-                           5.87683058,
-                           6.35305309,
-                           6.49553633,
-                           6.6803894 ,
-                           6.7652216 ,
-                           6.83341503,
-                           6.8028388 ]
-
         selection_string = "name CA"
+        selection = self.ens1.select_atoms(selection_string)
+        reference_rmsd = []
+        coordinates = self.ens1.trajectory.timeseries(selection, format='fac')
+        for coord in coordinates:
+            reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
+
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
                             self.ens1,
                             encore.confdistmatrix.set_rmsd_matrix_elements,
@@ -197,19 +181,19 @@ inconsistent results")
                             ncores = 1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
-        assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd,
+        assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
     @staticmethod
     def test_ensemble_superimposition():
         aligned_ensemble1 = mda.Universe(PSF, DCD)
-        align.rms_fit_trj(aligned_ensemble1, aligned_ensemble1,
+        align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                           select="name CA",
-                          in_memory=True)
+                          in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
-        align.rms_fit_trj(aligned_ensemble2, aligned_ensemble2,
+        align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                           select="name *",
-                          in_memory=True)
+                          in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
@@ -223,30 +207,20 @@ inconsistent results")
 
     @staticmethod
     def test_ensemble_superimposition_to_reference_non_weighted():
-        ensemble0 = mda.Universe(PSF, DCD)
-        filename = align.rms_fit_trj(ensemble0, ensemble0,
-                                     select="name CA", mass_weighted=False)
-        aligned_ensemble0 = mda.Universe(PSF, filename)
         aligned_ensemble1 = mda.Universe(PSF, DCD)
-        align.rms_fit_trj(aligned_ensemble1, aligned_ensemble1,
+        align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                           select="name CA", mass_weighted=False,
-                          in_memory=True)
+                          in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
-        align.rms_fit_trj(aligned_ensemble2, aligned_ensemble2,
+        align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                           select="name *", mass_weighted=False,
-                          in_memory=True)
-
-        rmsfs0 = rms.RMSF(aligned_ensemble0.select_atoms('name *'))
-        rmsfs0.run()
+                          in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
         rmsfs1.run()
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
-
-        import logging
-        logging.info("{0} {1} {2}".format(sum(rmsfs1.rmsf), sum(rmsfs2.rmsf), sum(rmsfs0.rmsf)))
 
         assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
