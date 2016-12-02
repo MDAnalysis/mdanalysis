@@ -146,6 +146,7 @@ from six.moves import range, zip
 
 import os
 import errno
+import itertools
 import textwrap
 import warnings
 import logging
@@ -574,9 +575,6 @@ class PDBWriter(base.Writer):
                        "".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
-        if not self.obj or not hasattr(self.obj, 'universe'):
-            self._write_pdb_title(self)
-            return
         if self.first_frame_done == True:
             return
 
@@ -638,67 +636,37 @@ class PDBWriter(base.Writer):
                                            self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
-        """Writes out all the bond records; works only for Universe objects.
-
-        .. Warning::
-
-           All bonds are written out, using the old atom numbers - this is
-           incorrect. Once a selection is made, the atom numbers have to be
-           updated (currently they are unmodified) and bonds have to be
-           selected for, only if all the atoms for a bond are still present.
-
-           Therefore, this method raises a :exc:`NotImplementedError` if CONECT
-           records for anything smaller than the :class:`Universe` are written.
-
-        .. versionchanged:: 0.7.6
-           Only write CONECT records if :attr:`PDBWriter.bonds` ``== True``.
-           Raises :exc:`NotImplementedError` if it would produce wrong output.
-
-        """
-        if not self.bonds:
+        """Writes out all the bond records"""
+        if self.bonds is None:
             return
 
-        if not self.obj or not hasattr(self.obj, 'universe') or not hasattr(self.obj.universe, 'bonds'):
+        if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        if self.obj.atoms.n_atoms != self.obj.universe.atoms.n_atoms:
-            pass
-            #logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
-            #raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole
-            # Universe.")
+        bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
 
-        bonds = set()
-
-        [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
-
-        atoms = {a.index for a in self.obj.atoms}
-
-        mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
+        mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
 
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
-            bonds = [(bond[0].index, bond[1].index) for bond in bonds if not bond.is_guessed]
+            bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
         elif self.bonds == "all":
-            bonds = [(bond[0].index, bond[1].index) for bond in bonds]
+            bonds = ((bond[0].index, bond[1].index) for bond in bondset)
         else:
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
-        con = {}
 
+        con = collections.defaultdict(list)
         for a1, a2 in bonds:
-            if not (a1 in atoms and a2 in atoms):
+            if not (a1 in mapping and a2 in mapping):
                 continue
-            if not a1 in con:
-                con[a1] = []
-            if not a2 in con:
-                con[a2] = []
             con[a2].append(a1)
             con[a1].append(a2)
 
-        atoms = sorted([a.index for a in self.obj.atoms])
+        atoms = np.sort(self.obj.atoms.indices)
 
-        conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
-
-        conect = [[mapping[e] for e in row] for row in conect]
+        conect = ([a] + sorted(con[a])
+                  for a in atoms if a in con)
+        conect = (map(lambda x: mapping[x], row) for row in conect)
 
         for c in conect:
             self.CONECT(c)
@@ -720,32 +688,17 @@ class PDBWriter(base.Writer):
         called at least once to enable extracting topology information from the
         current frame.
         """
-
         if isinstance(obj, base.Timestep):
             raise TypeError("PDBWriter cannot write Timestep objects "
                             "directly, since they lack topology information ("
                             "atom names and types) required in PDB files")
+        if len(obj.atoms) == 0:
+            raise IndexError("Cannot write empty AtomGroup")
+
         # remember obj for some of other methods --- NOTE: this is an evil/lazy
         # hack...
         self.obj = obj
-        ts, traj = None, None
-        if hasattr(obj, 'universe') and not isinstance(obj, Universe):
-            # For AtomGroup and children (Residue, ResidueGroup, Segment)
-            ts = obj.universe.trajectory.ts
-            traj = obj.universe.trajectory
-        else:
-            # For Universe only
-            ts = obj.trajectory.ts
-            traj = obj.trajectory
-
-        if not (ts and traj):
-            raise AssertionError("PDBWriter couldn't extract "
-                                 "trajectory and timestep information "
-                                 "from an object; inheritance problem.")
-
-        self.trajectory = traj  # update trajectory (used by other methods)
-        self.ts = ts  # update timestep (used by other methods)
-        return traj, ts
+        self.ts = obj.universe.trajectory.ts
 
     def write(self, obj):
         """Write object *obj* at current trajectory frame to file.
@@ -802,7 +755,7 @@ class PDBWriter(base.Writer):
         self._write_pdb_header()
 
         start, step = self.start, self.step
-        traj = self.trajectory
+        traj = obj.universe.trajectory
 
         # Start from trajectory[0]/frame 0, if there are more than 1 frame.
         # If there is only 1 frame, the traj.frames is not like a python list:
@@ -838,11 +791,11 @@ class PDBWriter(base.Writer):
            its argument so that topology information can be gathered.
         '''
         if ts is None:
-            if not hasattr(self, "ts"):
+            try:
+                ts = self.ts
+            except AttributeError:
                 raise NoDataError("PBDWriter: no coordinate data to write to "
                                   "trajectory file")
-            else:
-                ts = self.ts
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
@@ -897,7 +850,7 @@ class PDBWriter(base.Writer):
 
         """
         atoms = self.obj.atoms
-        pos = atoms.ts.positions
+        pos = atoms.positions
         if self.convert_units:
             pos = self.convert_pos_to_native(pos, inplace=False)
 
