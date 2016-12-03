@@ -64,8 +64,9 @@ def offsets_filename(filename, ending='npz'):
 
 
 def read_numpy_offsets(filename):
-    """read offsets into dictionary. This assume offsets have been saved using
-    numpy
+    """read offsets into dictionary.
+
+    This assume offsets have been saved using numpy
 
     Parameters
     ----------
@@ -90,31 +91,38 @@ class XDRBaseReader(base.Reader):
 
     Notes
     -----
-    XDR based readers store persistent offsets on disk. The offsets are used
-    to enable access to random frames efficiently. These offests will be
-    generated automatically the first time the trajectory is opened. Generally
-    offests are stored in hidden `*_offsets.npz` files. Afterwards opening the
-    same file again is fast. It sometimes can happen that the stored offsets
-    get out off sync with the trajectory they refer to. For this the offsets
-    also store the number of atoms, size of the file and last modification
-    time. If any of them change the offsets are recalculated.
+    XDR based readers store persistent offsets on disk. The offsets are used to
+    enable access to random frames efficiently. These offsets will be generated
+    automatically the  first time the  trajectory is opened.  Generally offsets
+    are stored  in hidden  `*_offsets.npz` files.  Afterwards opening  the same
+    file again is fast. It sometimes can happen that the stored offsets get out
+    off sync with the trajectory they refer to. For this the offsets also store
+    the number of atoms, size of the file and last modification time. If any of
+    them change  the offsets are recalculated.  Writing of the offset  file can
+    fail when the  directory where the trajectory file resides  is not writable
+    or if the  disk is full. In this  case a warning message will  be shown but
+    the offsets will nevertheless be used during the lifetime of the trajectory
+    Reader. However, the  next time the trajectory is opened,  the offsets will
+    have to be rebuilt again.
 
     """
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
-        """
-        Parameters
+        """Parameters
         ----------
         filename : str
             trajectory filename
         convert_units : bool (optional)
             convert units to MDAnalysis units
         sub : array (optional)
-            only load atoms specified in sub
+            `sub` is an array of indices to pick out the corresponding
+            coordinates and load only them; this requires that the topology
+            itself is that of the sub system.
         refresh_offsets : bool (optional)
             force refresh of offsets
         **kwargs : dict
             General reader arguments.
+
         """
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,

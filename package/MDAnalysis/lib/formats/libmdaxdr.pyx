@@ -39,7 +39,7 @@ For example to calculate mean coordinates.
 The :class:`XTCFile` class can be usefull as a compressed storage format.
 
 Besides iteration XTCFile and TRRFile one can also seek to arbitrary frames
-using the :meth:`~XTCFile.seek` method. This is provided by lazy generating a
+using the :meth:`~XTCFile.seek` method. This is provided by lazily generating a
 offset list for stored frames. The offset list is generated the first time `len`
 or `seek` is called.
 
