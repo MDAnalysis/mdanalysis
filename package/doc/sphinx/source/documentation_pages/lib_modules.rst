@@ -50,3 +50,18 @@ List of modules
    ./lib/transformations
    ./lib/qcprot
    ./lib/util
+
+Low level file formats
+----------------------
+
+The modules in :mod:`MDAnalysis.lib.formats` contain code to access various file
+formats in a way that is *independent from other MDAnalysis functionality*
+(i.e., they do not use any classes from :mod:`MDAnalysis.core` or
+:mod:`MDAnalysis.topology`). This low-level code is used in the
+:mod:`MDAnalysis.coordinates` module but can also be re-used by other
+Python-based projects.
+
+.. toctree::
+   :maxdepth: 1
+
+   ./lib/formats/libmdaxdr
