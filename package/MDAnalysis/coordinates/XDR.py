@@ -19,7 +19,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""XDR based trajectory files --- :mod:`MDAnalysis.coordinates.XDR`
+"""
+XDR based trajectory files --- :mod:`MDAnalysis.coordinates.XDR`
 ===============================================================
 
 This module contains helper function and classes to read the XTC and TRR file
