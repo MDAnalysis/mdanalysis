@@ -100,22 +100,11 @@ class XTCReader(XDRBaseReader):
     require significantly less disk space and the loss of precision is usually
     not a problem.
 
-    Parameters
-    ----------
-    filename : str
-        filename of the trajectory
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    sub : atomgroup (optional)
-        Yeah what is that exactly
-    refresh_offsets : bool (optional)
-        Recalculate offsets for random access from file. If ``False`` try to
-        retrieve offsets from hidden offsets file.
-
     Notes
     -----
-    See :class:`MDAnalysis.coordinates.XDR.XDRBaseWriter' for notes about
-    offsets
+    See :ref:`Notes on offsets <offsets-label>` for more information about
+    offsets.
+
     """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}

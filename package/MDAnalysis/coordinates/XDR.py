@@ -89,6 +89,8 @@ class XDRBaseReader(base.Reader):
     XTC and TRR classes only implement `write_next_timestep` and
     `_frame_to_ts`.
 
+    .. _offsets-label:
+
     Notes
     -----
     XDR based readers store persistent offsets on disk. The offsets are used to
@@ -114,7 +116,7 @@ class XDRBaseReader(base.Reader):
             trajectory filename
         convert_units : bool (optional)
             convert units to MDAnalysis units
-        sub : array (optional)
+        sub : array_like (optional)
             `sub` is an array of indices to pick out the corresponding
             coordinates and load only them; this requires that the topology
             itself is that of the sub system.
