@@ -244,7 +244,7 @@ class PDBParser(TopologyReader):
         segids = np.array(segids, dtype=object)
 
         residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (resids, icodes), (resids, resnames, icodes, resnums, segids))
+            (resids, icodes, segids), (resids, resnames, icodes, resnums, segids))
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
