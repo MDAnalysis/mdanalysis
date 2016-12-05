@@ -21,6 +21,7 @@
 #
 from numpy.testing import (
     assert_,
+    assert_array_equal,
     assert_equal,
     assert_raises,
     assert_warns,
@@ -34,7 +35,7 @@ from MDAnalysisTests.datafiles import (
     PDB_conect,
     PDB_conect2TER,
     PDB_singleconect,
-
+    PDB_chainidnewres,
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 
@@ -126,3 +127,18 @@ def test_single_conect():
     struc = parse()
     assert_(hasattr(struc, 'bonds'))
     assert_(len(struc.bonds.values) == 2)
+
+
+def test_new_chainid_new_res():
+    # parser must start new residue when chainid starts
+
+    u = mda.Universe(PDB_chainidnewres)
+
+    assert_(len(u.residues) == 4)
+    assert_array_equal(u.residues.resids, [1, 2, 3, 3])
+    assert_(len(u.segments) == 4)
+    assert_array_equal(u.segments.segids, ['A', 'B', 'C', 'D'])
+    assert_(len(u.segments[0].atoms) == 5)
+    assert_(len(u.segments[1].atoms) == 5)
+    assert_(len(u.segments[2].atoms) == 5)
+    assert_(len(u.segments[3].atoms) == 7)
