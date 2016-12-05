@@ -190,7 +190,7 @@ class MMTFParser(base.TopologyReader):
         # optional
 
         # Segment things
-        segids = Segids(np.asarray(mtop.chain_name_list, dtype=object))
+        segids = Segids(np.asarray(mtop.chain_id_list, dtype=object))
         #chainids = ChainIDs(np.asarray(mtop.chain_id_list, dtype=object))
 
         attrs.append(segids)
