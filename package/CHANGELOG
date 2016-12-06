@@ -76,6 +76,8 @@ Fixes
   * Reset trajectory to 0 after sliced iteration (Issue #1031)
   * Fixed rotaxis returning NaN if a=b (Issue #1045)
   * Fixed align_principal_axis onto a principal axes (Issue #1045)
+  * Fixed NCDFWriter wrote velocities instead of forces if
+    convert_units=False was set: now correctly writes forces (PR #1113)
 
 Changes
   * Started unifying the API of analysis classes (named internally
