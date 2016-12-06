@@ -888,6 +888,24 @@ class GroupBase(_MutableBase):
             if not all(s == 0.0):
                 o.atoms.translate(s)
 
+    def groupby(self, topattr):
+        """Obtain groupings of the components of this Group according the values
+        of a given topology attribute.
+
+        Parameters
+        ----------
+        topattr: str
+           Topology attribute to group components by.
+
+        Returns
+        -------
+        dict
+            Unique values of the topology attribute as keys, Groups as values.
+
+        """
+        return {i: self[self.__getattribute__(topattr) == i] for i in 
+                set(self.__getattribute__(topattr))}
+
 
 class AtomGroup(GroupBase):
     """A group of atoms.
