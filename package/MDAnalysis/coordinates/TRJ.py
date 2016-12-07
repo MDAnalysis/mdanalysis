@@ -814,12 +814,12 @@ class NCDFWriter(base.Writer):
         be written to trajectory file
         '''
         if ts is None:
-            if not hasattr(self, "ts") or self.ts is None:
-                raise IOError(
-                    "NCDFWriter: no coordinate data to write to trajectory file")
-            else:
-                ts = self.ts  # self.ts would have to be assigned manually!
-        elif ts.n_atoms != self.n_atoms:
+            ts = self.ts
+        if ts is None:
+            raise IOError(
+                "NCDFWriter: no coordinate data to write to trajectory file")
+
+        if ts.n_atoms != self.n_atoms:
             raise IOError(
                 "NCDFWriter: Timestep does not have the correct number of atoms")
 
@@ -843,7 +843,9 @@ class NCDFWriter(base.Writer):
         .. _`netcdf4storage.py`:
            https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
-        assert self.trjfile is not None, "trjfile must be open in order to write to it"
+        pos = ts._pos
+        time = ts.time
+        unitcell = ts.dimensions
 
         if self.convert_units:
             # make a copy of the scaled positions so that the in-memory
@@ -852,18 +854,9 @@ class NCDFWriter(base.Writer):
             # implementation could lead to memory problems and/or slow-down for
             # very big systems because we temporarily create a new array pos
             # for each frame written
-            pos = self.convert_pos_to_native(ts._pos, inplace=False)
-            try:
-                time = self.convert_time_to_native(ts.time, inplace=False)
-            except AttributeError:
-                time = ts.frame * self.convert_time_to_native(self.dt,
-                                                              inplace=False)
+            pos = self.convert_pos_to_native(pos, inplace=False)
+            time = self.convert_time_to_native(time, inplace=False)
             unitcell = self.convert_dimensions_to_unitcell(ts)
-        else:
-            pos = ts._pos
-            time = ts.time
-
-            unitcell = ts.dimensions
 
         # write step
         self.trjfile.variables['coordinates'][self.curr_frame, :, :] = pos
@@ -873,21 +866,21 @@ class NCDFWriter(base.Writer):
                 self.curr_frame, :] = unitcell[:3]
             self.trjfile.variables['cell_angles'][
                 self.curr_frame, :] = unitcell[3:]
+
         if self.has_velocities:
+            velocities = ts._velocities
             if self.convert_units:
-                velocities = self.convert_velocities_to_native(ts._velocities,
-                                                               inplace=False)
-            else:
-                velocities = ts._velocities
-            self.trjfile.variables['velocities'][
-                self.curr_frame, :, :] = velocities
+                velocities = self.convert_velocities_to_native(
+                    velocities, inplace=False)
+            self.trjfile.variables['velocities'][self.curr_frame, :, :] = velocities
+
         if self.has_forces:
+            forces = ts._forces
             if self.convert_units:
-                forces = self.convert_forces_to_native(ts._forces,
-                                                       inplace=False)
-            else:
-                forces = ts._velocities
+                forces = self.convert_forces_to_native(
+                    forces, inplace=False)
             self.trjfile.variables['forces'][self.curr_frame, :, :] = forces
+
         self.trjfile.sync()
         self.curr_frame += 1
 

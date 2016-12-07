@@ -92,6 +92,16 @@ class TestTRJReader(_TRJReaderTest, RefACHE):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
 
+    def test_read_frame_reopens(self):
+        # should automatically reopen
+        u = self.universe
+
+        u.trajectory.close()
+
+        u.trajectory[2]
+
+        assert_(u.trajectory.ts.frame == 2)
+
 
 class TestBzippedTRJReader(TestTRJReader):
     def setUp(self):
@@ -113,3 +123,7 @@ class TestTRJTimestep(BaseTimestepTest):
     set_box = True
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
     uni_args = (PRM, TRJ)
+
+def test_trj_no_natoms():
+    assert_raises(ValueError, mda.coordinates.TRJ.TRJReader, 'somefile.txt')
+
