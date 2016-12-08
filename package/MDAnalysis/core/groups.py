@@ -1456,8 +1456,10 @@ class AtomGroup(GroupBase):
         try:
             writer = MDAnalysis.coordinates.writer(filename, **kwargs)
             coords = True
-        except TypeError:
+        except TypeError as e:
             # might be selections format
+            if 'got an unexpected keyword argument' in str(e):
+                raise
             coords = False
 
         try:
