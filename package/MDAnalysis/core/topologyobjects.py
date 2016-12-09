@@ -772,6 +772,42 @@ class TopologyGroup(object):
     def __nonzero__(self):
         return not len(self) == 0
 
+    @property
+    def atom1(self):
+        """The first atom in each TopologyObject in this Group"""
+        return self._ags[0]
+
+    @property
+    def atom2(self):
+        """The second atom in each TopologyObject in this Group"""
+        return self._ags[1]
+
+    @property
+    def atom3(self):
+        """The third atom in each TopologyObject in this Group"""
+        try:
+            return self._ags[2]
+        except IndexError:
+            nvert = {'bond': 2,
+                     'angle': 3,
+                     'dihedral': 4,
+                     'improper': 4}[self.btype]
+            raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
+                             "".format(self.btype, nvert))
+
+    @property
+    def atom4(self):
+        """The fourth atom in each TopologyObject in this Group"""
+        try:
+            return self._ags[3]
+        except IndexError:
+            nvert = {'bond': 2,
+                     'angle': 3,
+                     'dihedral': 4,
+                     'improper': 4}[self.btype]
+            raise IndexError("TopologyGroup of {}s only has {} vertical AtomGroups"
+                             "".format(self.btype, nvert))
+
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations
     def values(self, **kwargs):
