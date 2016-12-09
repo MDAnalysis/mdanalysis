@@ -73,6 +73,9 @@ class TestMMTFUniverse(object):
     def test_models(self):
         assert_(all(self.u.atoms.models == 0))
 
+    def test_icodes(self):
+        assert_(all(self.u.atoms.icodes == ''))
+
 
 class TestMMTFUniverseFromDecoder(TestMMTFUniverse):
     def setUp(self):

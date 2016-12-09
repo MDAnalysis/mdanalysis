@@ -185,7 +185,9 @@ class MMTFParser(base.TopologyReader):
         resnums = Resnums(resids.values.copy())
         resnames = Resnames(np.array([mtop.group_list[i]['groupName']
                                       for i in mtop.group_type_list], dtype=object))
-        icodes = ICodes(np.array(mtop.ins_code_list, dtype=object))
+        # mmtf empty icode is '\x00' rather than ''
+        icodes = ICodes(np.array([val.replace('\x00', '')
+                                 for val in mtop.ins_code_list], dtype=object))
         attrs.extend([resids, resnums, resnames, icodes])
         # optional
 
