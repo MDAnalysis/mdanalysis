@@ -421,6 +421,22 @@ class TestTopologyGroup(object):
 
         assert_(tg1 == tg3)
 
+    def test_add_TO_to_empty_TG(self):
+        tg1 = self.universe.bonds[:0]  # empty
+        to = self.universe.bonds[5]
+
+        tg3 = tg1 + to
+
+        assert_(np.array_equal(tg3.indices,  to.indices[None, :]))
+
+    def test_add_TG_to_empty_TG(self):
+        tg1 = self.universe.bonds[:0]  # empty
+        tg2 = self.universe.bonds[5:7]
+
+        tg3 = tg1 + tg2
+
+        assert_equal(tg2, tg3)
+
     def test_add_singleitem(self):
         tg = self.universe.atoms.bonds[:10]
         to = self.universe.atoms.bonds[55]
