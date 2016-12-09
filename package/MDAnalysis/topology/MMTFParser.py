@@ -167,7 +167,8 @@ class MMTFParser(base.TopologyReader):
 
         # Atom things
         # required
-        altlocs = AltLocs(np.array(mtop.alt_loc_list, dtype=object))
+        altlocs = AltLocs(np.array([val.replace('\x00', '').strip()
+                                    for val in mtop.alt_loc_list], dtype=object))
         atomids = Atomids(np.asarray(mtop.atom_id_list, dtype=np.int64))
         bfactors = Bfactors(np.asarray(mtop.b_factor_list, dtype=np.float64))
         charges = Charges(np.array(list(iter_atoms('formalChargeList')), dtype=np.float64))
@@ -186,7 +187,7 @@ class MMTFParser(base.TopologyReader):
         resnames = Resnames(np.array([mtop.group_list[i]['groupName']
                                       for i in mtop.group_type_list], dtype=object))
         # mmtf empty icode is '\x00' rather than ''
-        icodes = ICodes(np.array([val.replace('\x00', '')
+        icodes = ICodes(np.array([val.replace('\x00', '').strip()
                                  for val in mtop.ins_code_list], dtype=object))
         attrs.extend([resids, resnums, resnames, icodes])
         # optional
