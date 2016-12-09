@@ -133,8 +133,8 @@ class TopologyObject(object):
         """Check whether two bonds have identical contents"""
         if not self.universe == other.universe:
             return False
-        return ((self.indices == other.indices).all()
-                or (self.indices[::-1] == other.indices).all())
+        return (np.array_equal(self.indices, other.indices) or
+                np.array_equal(self.indices[::-1], other.indices))
 
     def __ne__(self, other):
         return not self == other
@@ -200,7 +200,7 @@ class Bond(TopologyObject):
             box = self.universe.dimensions
             return distances.self_distance_array(
                 np.array([self[0].position, self[1].position]),
-                box=box)
+                box=box)[0]
         else:
             return norm(self[0].position - self[1].position)
 
@@ -764,7 +764,7 @@ class TopologyGroup(object):
 
     def __eq__(self, other):
         """Test if contents of TopologyGroups are equal"""
-        return (self.indices == other.indices).all()
+        return np.array_equal(self.indices, other.indices)
 
     def __ne__(self, other):
         return not self == other

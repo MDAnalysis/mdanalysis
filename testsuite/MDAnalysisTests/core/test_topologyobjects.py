@@ -38,7 +38,7 @@ from MDAnalysis.core.topologyobjects import (
 )
 
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
 
 
 class TestTopologyObjects(object):
@@ -200,6 +200,9 @@ class TestTopologyGroup(object):
     def test_td_keyerror(self):
         assert_raises(KeyError, self.b_td.__getitem__, ('something', 'stupid'))
 
+    def test_td_universe(self):
+        assert_(self.b_td.universe is self.universe)
+
     def test_bonds_types(self):
         """Tests TopologyDict for bonds"""
         assert_equal(len(self.universe.atoms.bonds.types()), 57)
@@ -275,6 +278,52 @@ class TestTopologyGroup(object):
         """Test making a TopologyGroup out of nonsense"""
         inputlist = ['a', 'b', 'c']
         assert_raises(TypeError, TopologyGroup, inputlist)
+
+    def test_tg_creation_bad_btype(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        assert_raises(ValueError, TopologyGroup, vals, self.universe, btype='apple')
+
+    def test_bond_tg_creation_notype(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'bond')
+        assert_array_equal(tg[0].indices, (0, 10))
+        assert_array_equal(tg[1].indices, (5, 15))
+
+    def test_angle_tg_creation_notype(self):
+        vals = np.array([[0, 5, 10], [5, 10, 15]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'angle')
+        assert_array_equal(tg[0].indices, (0, 5, 10))
+        assert_array_equal(tg[1].indices, (5, 10, 15))
+
+    def test_dihedral_tg_creation_notype(self):
+        vals = np.array([[0, 2, 4, 6], [5, 7, 9, 11]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'dihedral')
+        assert_array_equal(tg[0].indices, (0, 2, 4, 6))
+        assert_array_equal(tg[1].indices, (5, 7, 9, 11))
+
+    def test_create_guessed_tg(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe, guessed=True)
+
+        assert_array_equal(tg._guessed, np.array([[True], [True]]))
+
+    def test_create_guessed_tg_2(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe, guessed=False)
+
+        assert_array_equal(tg._guessed, np.array([[False], [False]]))
 
     def test_TG_equality(self):
         """Make two identical TGs,
@@ -363,6 +412,14 @@ class TestTopologyGroup(object):
 
         big_tg += combined_tg  # try and add some already included bonds
         assert_equal(len(big_tg), 494)  # check len doesn't change
+
+    def test_add_empty_to_TG(self):
+        tg1 = self.universe.bonds[10:15]
+        tg2 = self.universe.bonds[:0]  # empty
+
+        tg3 = tg1 + tg2
+
+        assert_(tg1 == tg3)
 
     def test_add_singleitem(self):
         tg = self.universe.atoms.bonds[:10]
@@ -599,3 +656,18 @@ class TestTopologyGroup_Cython(object):
                                    box=self.u.dimensions))
 
 
+def test_bond_length_pbc():
+    u = mda.Universe(TRZ_psf, TRZ)
+
+    ref = u.bonds[0].length()
+
+    # move an atom a box width in all dimensions
+    u.atoms[0].position += u.dimensions[:3]
+
+    assert_almost_equal(ref, u.bonds[0].length(pbc=True), decimal=6)
+
+def test_cross_universe_eq():
+    u1 = mda.Universe(PSF)
+    u2 = mda.Universe(PSF)
+
+    assert_(not (u1.bonds[0] == u2.bonds[0]))
