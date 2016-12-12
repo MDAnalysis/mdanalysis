@@ -45,6 +45,15 @@ from MDAnalysis import NoDataError
 def assert_not_view(arr):
     assert_(arr.flags['OWNDATA'] == True)
 
+def assert_correct_errormessage(func, var):
+    errmsg = "Timestep does not contain {}".format(var)
+    try:
+        func[0](*func[1:])
+    except NoDataError as e:
+        assert_(errmsg in e.args[0])
+    else:
+        raise AssertionError
+
 
 class TestAtomGroupTrajAccess(object):
     """
@@ -55,7 +64,9 @@ class TestAtomGroupTrajAccess(object):
       - check dtype of array
       - check not a view of original (should always be copy!)
       - check the actual values returned
-    if not present in trajectory, check we get a proper NoDataError
+    if not present in trajectory:
+      - check we get a NoDataError
+      - check the error message of NDE
 
     For AtomGroup and Atom setting:
 
@@ -87,6 +98,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_equal(ag_vel, u.trajectory.ts.velocities[10:20])
         else:
             assert_raises(NoDataError, getattr, ag, 'velocities')
+            assert_correct_errormessage((getattr, ag, 'velocities'), 'velocities')
 
     @staticmethod
     def _check_atomgroup_forces_access(u, force):
@@ -101,6 +113,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_equal(ag_for, u.trajectory.ts.forces[10:20])
         else:
             assert_raises(NoDataError, getattr, ag, 'forces')
+            assert_correct_errormessage((getattr, ag, 'forces'), 'forces')
 
     @staticmethod
     def _check_atom_position_access(u, pos):
@@ -126,6 +139,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_equal(at_vel, u.trajectory.ts.velocities[55])
         else:
             assert_raises(NoDataError, getattr, at, 'velocity')
+            assert_correct_errormessage((getattr, at, 'velocity'), 'velocities')
 
     @staticmethod
     def _check_atom_force_access(u, force):
@@ -140,6 +154,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_equal(at_for, u.trajectory.ts.forces[55])
         else:
             assert_raises(NoDataError, getattr, at, 'force')
+            assert_correct_errormessage((getattr, at, 'force'), 'forces')
 
     @staticmethod
     def _check_atomgroup_positions_setting(u, pos):
@@ -169,6 +184,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(u.trajectory.ts.velocities[[101, 107, 109]], new, decimal=5)
         else:
             assert_raises(NoDataError, setattr, ag, 'velocities', new)
+            assert_correct_errormessage((setattr, ag, 'velocities', new), 'velocities')
 
     @staticmethod
     def _check_atomgroup_forces_setting(u, force):
@@ -185,6 +201,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(u.trajectory.ts.forces[[101, 107, 109]], new, decimal=5)
         else:
             assert_raises(NoDataError, setattr, ag, 'forces', new)
+            assert_correct_errormessage((setattr, ag, 'forces', new), 'forces')
 
     @staticmethod
     def _check_atom_position_setting(u, pos):
@@ -210,6 +227,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(u.trajectory.ts.velocities[94], new, decimal=5)
         else:
             assert_raises(NoDataError, setattr, at, 'velocity', new)
+            assert_correct_errormessage((setattr, at, 'velocity', new), 'velocities')
 
     @staticmethod
     def _check_atom_force_setting(u, force):
@@ -224,6 +242,7 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(u.trajectory.ts.forces[94], new, decimal=5)
         else:
             assert_raises(NoDataError, setattr, at, 'force', new)
+            assert_correct_errormessage((setattr, at, 'force', new), 'forces')
 
     def test_all(self):
         # all combinations of which trajectory attributes we have
