@@ -42,6 +42,9 @@ class TestGroupSlicing(object):
             for func in [list, np.array]:
                 yield self._check_boolean_slicing, group, func
             yield self._check_indexerror, group
+            yield self._check_n_atoms, group
+            yield self._check_n_residues, group
+            yield self._check_n_segments, group
 
         for lvl in lvls:
             # Check slicing using slice objects
@@ -77,6 +80,18 @@ class TestGroupSlicing(object):
             for idx in [0, 1, -1, -2]:
                 yield (self._check_integer_getitem, group_dict[lvl],
                        nparrays[lvl], idx, singulars[lvl])
+
+    @staticmethod
+    def _check_n_atoms(group):
+        assert_(len(group.atoms) == group.n_atoms)
+
+    @staticmethod
+    def _check_n_residues(group):
+        assert_(len(group.residues) == group.n_residues)
+
+    @staticmethod
+    def _check_n_segments(group):
+        assert_(len(group.segments) == group.n_segments)
 
     def _check_len(self, group):
         assert_(len(group) == self.length[group.level])
