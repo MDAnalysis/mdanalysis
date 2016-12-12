@@ -922,42 +922,6 @@ class TestAtomGroup(TestCase):
         assert_raises(ValueError, self.ag.set_masses, [0.1, 0.2])
 
     # VALID
-    def test_split_atoms(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("atom")
-        assert_equal(len(sg), len(ag))
-        for g, ref_atom in zip(sg, ag):
-            atom = g[0]
-            assert_equal(len(g), 1)
-            assert_equal(atom.name, ref_atom.name)
-            assert_equal(atom.resid, ref_atom.resid)
-
-    # VALID
-    def test_split_residues(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("residue")
-        assert_equal(len(sg), len(ag.residues.resids))
-        for g, ref_resname in zip(sg, ag.residues.resnames):
-            if ref_resname == "GLY":
-                assert_equal(len(g), 1)
-            else:
-                assert_equal(len(g), 2)
-            for atom in g:
-                assert_equal(atom.resname, ref_resname)
-
-    # VALID
-    def test_split_segments(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("segment")
-        assert_equal(len(sg), len(ag.segments.segids))
-        for g, ref_segname in zip(sg, ag.segments.segids):
-            for atom in g:
-                assert_equal(atom.segid, ref_segname)
-
-    # VALID
     # instant selectors
     @attr("issue")
     def test_nonexistent_instantselector_raises_AttributeError(self):
