@@ -1038,25 +1038,6 @@ class TestUpdatingSelection(object):
         assert_raises(TypeError, self.u.select_atoms, "group updating",
                       {"updating":True})
 
-    def test_become_static(self):
-        self.ag_updating.updating = False
-        assert_array_equal(self.ag_updating.indices, self.ag.indices)
-        self.u.trajectory.next()
-        assert_array_equal(self.ag_updating.indices, self.ag.indices)
-
-    def test_make_updating(self):
-        self.ag.updating = True
-        assert_array_equal(self.ag_updating.indices, self.ag.indices)
-        self.u.trajectory.next()
-        assert_array_equal(self.ag_updating.indices, self.ag.indices)
-
-    def test_conversion_error(self):
-        # Slicing makes an AG without _selections, _base_group, nor _lastupdate
-        no_selection_ag = self.ag[:]
-        def set_updating():
-            no_selection_ag.updating = True
-        assert_raises(TypeError, set_updating)
-
 class TestUpdatingSelectionNotraj(object):
     def setUp(self):
         self.u = mda.Universe(TPR)

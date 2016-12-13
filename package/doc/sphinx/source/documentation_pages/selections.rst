@@ -254,16 +254,6 @@ there is no redundant updating going on)::
  >>> ag_updating
  <UpdatingAtomGroup with 14 atoms>
 
-If not done at selection-time, a regular
-:class:`~MDAnalysis.core.groups.AtomGroup` can be made dynamic by setting its
-:attr:`~MDAnalysis.core.groups.AtomGroup.updating` attribute to ``True``. This,
-however, only makes sense for :class:`~MDAnalysis.core.groups.AtomGroup`
-instances originating from selection commands. An
-:class:`~MDAnalysis.core.groups.AtomGroup` obtained from a slicing or addition
-operation cannot be made dynamically updating. Conversely, setting the
-:attr:`~MDAnalysis.core.groups.UpdatingAtomGroup.updating` attribute to
-``False`` will revert the group to static behavior.
-
 Using the ``group`` selection keyword for
 :ref:`preexisting-selections <pre-selections-label>`, one can
 make updating selections depend on
