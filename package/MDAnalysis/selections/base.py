@@ -38,11 +38,13 @@ methods.
 """
 from __future__ import absolute_import
 
+import six
 from six.moves import range
 
 import os.path
 
 from ..lib import util
+from . import _SELECTION_WRITERS
 
 def join(seq, string="", func=None):
     """Create a list from sequence.
@@ -56,7 +58,23 @@ def join(seq, string="", func=None):
     return [func(x) + string for x in seq[:-1]] + [func(seq[-1])]
 
 
-class SelectionWriter(object):
+class _Selectionmeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = util.asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                if f is None:
+                    continue
+                f = f.upper()
+                _SELECTION_WRITERS[f] = cls
+
+
+class SelectionWriter(six.with_metaclass(_Selectionmeta)):
     """Export a selection in MDAnalysis to a format usable in an external package.
 
     The :class:`SelectionWriter` writes a selection string to a file
@@ -216,3 +234,11 @@ class SelectionWriter(object):
     def _write_tail(self, out, **kwargs):
         """Last output to open file object *out*."""
         pass
+
+    # Context manager support to match Coordinate writers
+    # all file handles use a with block in their write method, so these do nothing special
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
