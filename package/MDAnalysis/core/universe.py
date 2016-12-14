@@ -249,8 +249,7 @@ class Universe(object):
                 myhash = kwargs['anchor_name']
             except KeyError:
                 myhash = hash(self)
-            finally:
-                _anchor_universes[myhash] = self
+            _anchor_universes[myhash] = self
 
     def _generate_from_topology(self):
         # generate Universe version of each class
@@ -464,7 +463,10 @@ class Universe(object):
         return self.atoms.impropers
 
     def __hash__(self):
-        return hash((len(self.atoms), self.filename, self.trajectory.filename))
+        try:
+            return hash((len(self.atoms), self.filename, self.trajectory.filename))
+        except AttributeError:  # without trajectory
+            return hash((len(self.atoms), self.filename))
 
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(

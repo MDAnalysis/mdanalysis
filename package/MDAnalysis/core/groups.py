@@ -90,7 +90,12 @@ from . import topologyobjects
 
 
 def _unpickle(uhash, ix):
-    u = _anchor_universes[uhash]
+    try:
+        u = _anchor_universes[uhash]
+    except KeyError:
+        # doesn't provide as nice an error message as before as only hash of universe is stored
+        # maybe if we pickled the filename too we could do better...
+        raise RuntimeError("Couldn't find a suitable Universe to unpickle AtomGroup onto.")
 
     return u.atoms[ix]
 
