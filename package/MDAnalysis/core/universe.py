@@ -58,6 +58,7 @@ import logging
 import copy
 
 import MDAnalysis
+from .. import _anchor_universes
 from ..lib import util
 from ..lib.util import cached
 from ..lib.log import ProgressMeter
@@ -237,6 +238,19 @@ class Universe(object):
         # Check for guess_bonds
         if kwargs.pop('guess_bonds', False):
             self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
+
+        # Store record of this Universe in _anchor_universes so objects can be
+        # unpickled against myself
+        # `_anchor_universes` only holds weak references
+        try:
+            # use anchor_name if given, else just hash myself
+            anchor_name = kwargs['anchor_name']
+        except KeyError:
+            myhash = hash(self)
+        else:
+            myhash = hash(anchor_name)
+        finally:
+            _anchor_universes[myhash] = self
 
     def _generate_from_topology(self):
         # generate Universe version of each class
@@ -448,6 +462,9 @@ class Universe(object):
     def impropers(self):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
+
+    def __hash__(self):
+        return hash((len(self.atoms), self.filename, self.trajectory.filename))
 
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(

@@ -78,6 +78,7 @@ import os
 import warnings
 
 import MDAnalysis
+from .. import _anchor_universes
 from ..lib import util
 from ..lib import distances
 from ..lib import transformations
@@ -154,9 +155,9 @@ class _TopologyAttrContainer(object):
             A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
         if singular is not None:
-            return type(cls.__name__, (cls,), {'_singular': bool(singular)})
+            return type(cls.__name__ + '_X', (cls,), {'_singular': bool(singular)})
         else:
-            return type(cls.__name__, (cls,), {})
+            return type(cls.__name__ + '_X', (cls,), {})
 
     @classmethod
     def _mix(cls, other):
@@ -177,7 +178,7 @@ class _TopologyAttrContainer(object):
             A class of parents :class:`_ImmutableBase`, *other* and this class.
             Its name is the same as *other*'s.
         """
-        return type(other.__name__, (_ImmutableBase, other, cls), {})
+        return type(other.__name__ + '_X', (_ImmutableBase, other, cls), {})
 
     @classmethod
     def _add_prop(cls, attr):
@@ -891,6 +892,21 @@ class AtomGroup(GroupBase):
                 pass
         raise AttributeError("{cls} has no attribute {attr}".format(
             cls=self.__class__.__name__, attr=attr))
+
+    def __getstate__(self):
+        return (self.ix, hash(self.universe))
+
+    def __setstate__(self, state):
+        ix, u_hash = state
+
+        self._ix = ix
+        try:
+            u = _anchor_universes[u_hash]
+        except KeyError:
+            raise KeyError("Universe not found in anchor list")
+        else:
+            self._u = u
+        self._cache = dict()
 
     @property
     def atoms(self):
