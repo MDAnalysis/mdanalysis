@@ -239,18 +239,18 @@ class Universe(object):
         if kwargs.pop('guess_bonds', False):
             self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
 
-        # Store record of this Universe in _anchor_universes so objects can be
-        # unpickled against myself
-        # `_anchor_universes` only holds weak references
-        try:
-            # use anchor_name if given, else just hash myself
-            anchor_name = kwargs['anchor_name']
-        except KeyError:
-            myhash = hash(self)
-        else:
-            myhash = hash(anchor_name)
-        finally:
-            _anchor_universes[myhash] = self
+        # Universes are anchors by default
+        if kwargs.get('is_anchor', True):
+            # Store record of this Universe in _anchor_universes so objects can be
+            # unpickled against myself
+            # `_anchor_universes` only holds weak references
+            try:
+                # use anchor_name if given, else just hash myself
+                myhash = kwargs['anchor_name']
+            except KeyError:
+                myhash = hash(self)
+            finally:
+                _anchor_universes[myhash] = self
 
     def _generate_from_topology(self):
         # generate Universe version of each class
