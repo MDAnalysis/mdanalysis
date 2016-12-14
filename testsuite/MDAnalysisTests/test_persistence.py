@@ -36,10 +36,8 @@ import gc
 import shutil
 import warnings
 
-"""These tests need to be reworked for the new 363 topoloy system
 
-"""
-class SkipAtomGroupPickle(object):
+class TestAtomGroupPickle(object):
     def setUp(self):
         """Set up hopefully unique universes."""
         # _n marks named universes/atomgroups/pickled strings
@@ -137,7 +135,7 @@ class SkipAtomGroupPickle(object):
                 "Unpickled AtomGroup on wrong Universe.")
 
 
-class SkipEmptyAtomGroupPickle(object):
+class TestEmptyAtomGroupPickle(object):
     # This comes in a class just to get memleak testing
     def test_pickle_unpickle_empty(self):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
