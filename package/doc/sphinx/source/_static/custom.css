@@ -1,0 +1,6 @@
+/* override CSS found in alabaster.css */
+
+div.admonition p.admonition-title {
+    font-size: 1em;
+    font-style: italic;
+}

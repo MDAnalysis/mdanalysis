@@ -67,12 +67,17 @@ literature. Please make sure to also reference any
 Thank you!
 
 
-Contents
-========
+.. Hide the contents from the front page because they are already in
+.. the side bar in the Alabaster sphinx style; requires Alabaster
+.. config sidebar_includehidden=True (default)
+
+.. Contents
+.. ========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
    :numbered:		
+   :hidden:
    
    ./documentation_pages/overview
    ./documentation_pages/topology
