@@ -1996,6 +1996,21 @@ class Segment(ComponentBase):
         raise AttributeError("{cls} has no attribute {attr}"
                              "".format(cls=self.__class__.__name__, attr=attr))
 
+# Accessing these attrs doesn't trigger an update. The class and instance
+# methods of UpdatingAtomGroup that are used during __init__ must all be
+# here, otherwise we get __getattribute__ infinite loops. 
+_UAG_SHORTCUT_ATTRS = {
+    # Class information of the UAG
+    "__class__", "_derived_class",
+    # Metadata of the UAG
+    "_base_group", "_selections", "_lastupdate",
+    "level", "_u", "universe",
+    # Methods of the UAG
+    "ensure_updated",
+    "is_uptodate",
+    "update_selection",
+}
+
 class UpdatingAtomGroup(AtomGroup):
     """:class:`AtomGroup` subclass that dynamically updates its selected atoms.
 
@@ -2015,14 +2030,6 @@ class UpdatingAtomGroup(AtomGroup):
     # __getattribute__ and __getattr__, and a solution might be to add said
     # attribute to _shortcut_attrs.
 
-    # Accessing these attrs doesn't trigger an update. The class and instance
-    # methods of UpdatingAtomGroup that are used during __init__ must all be
-    # here, otherwise we get __getattribute__ infinite loops. 
-    _shortcut_attrs = ("_base_group", "__class__", "_derived_class",
-                       "ensure_updated", "_lastupdate", "_shortcut_attrs",
-                       "_selections", "_u", "level", "is_uptodate", "universe",
-                       "updating", "update_selection")
-
     def __init__(self, base_group, selections):
         """
 
@@ -2036,11 +2043,11 @@ class UpdatingAtomGroup(AtomGroup):
         """
         # Because we're implementing __getattribute__, which needs _u for
         # its check, no self.attribute access can be made before this line
-        self._u = base_group._u
+        self._u = base_group.universe
         self._selections = selections
         self._base_group = base_group
         self._lastupdate = None
-        self._derived_class = self._base_group._derived_class
+        self._derived_class = base_group._derived_class
         if self._selections:
             # Allows the creation of a cheap placeholder UpdatingAtomGroup
             # by passing an empty selection tuple.
@@ -2057,10 +2064,11 @@ class UpdatingAtomGroup(AtomGroup):
         bg = self._base_group
         sels = self._selections
         if sels:
-            ix = sum([sel.apply(bg) for sel in sels])._ix
+            ix = sum([sel.apply(bg) for sel in sels]).ix
         else:
             ix = np.array([], dtype=np.int)
-        super(UpdatingAtomGroup, self).__init__(ix, bg._u)
+        # Run back through AtomGroup init with this information to remake ourselves
+        super(UpdatingAtomGroup, self).__init__(ix, self._u)
         self.is_uptodate = True
 
     @property
@@ -2075,18 +2083,15 @@ class UpdatingAtomGroup(AtomGroup):
 
         """
         try:
-            return (object.__getattribute__(self, "_u").trajectory.frame ==
-                object.__getattribute__(self, "_lastupdate"))
+            return self._u.trajectory.frame == self._lastupdate
         except AttributeError: # self._u has no trajectory
             return self._lastupdate == -1
 
     @is_uptodate.setter
     def is_uptodate(self, value):
-        value = bool(value)
         if value:
             try:
-                self._lastupdate = object.__getattribute__(self,
-                                                    "_u").trajectory.frame
+                self._lastupdate = self._u.trajectory.frame
             except AttributeError: # self._u has no trajectory
                 self._lastupdate = -1
         else:
@@ -2105,18 +2110,20 @@ class UpdatingAtomGroup(AtomGroup):
         """
         status = self.is_uptodate
         if not status:
-            object.__getattribute__(self, "update_selection")()
+            self.update_selection()
         return status
 
     def __getattribute__(self, name):
-        if not (name in object.__getattribute__(self, "_shortcut_attrs")):
+        # ALL attribute access goes through here
+        # If the requested attribute isn't in the shortcut list, update ourselves
+        if not name in _UAG_SHORTCUT_ATTRS:
             self.ensure_updated()
+        # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
 
     def __repr__(self):
-        name = self.level.name
-        return ("<UpdatingAtomGroup with {} {}s>"
-                "".format(len(self), name))
+        return ("<UpdatingAtomGroup with {} Atoms>"
+                "".format(len(self)))
 
 # Define relationships between these classes
 # with Level objects
