@@ -783,7 +783,8 @@ class TestSelectionErrors(object):
         for selstr in [
                 'name and H',  # string selection
                 'name )',
-                'resid abcd',  # range selection
+                'resid abcd',  # resid arg parsing selection
+                'resnum 7a7',  # rangeselection arg parsing
                 'resid 1-',
                 'prop chicken == tasty',
                 'prop chicken <= 7.4',
