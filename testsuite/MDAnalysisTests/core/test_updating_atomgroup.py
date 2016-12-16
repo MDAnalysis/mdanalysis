@@ -27,9 +27,13 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
+import mock
+
 
 from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests.core.groupbase import make_Universe
 
+import MDAnalysis
 import MDAnalysis as mda
 
 class TestUpdatingSelection(object):
@@ -110,3 +114,118 @@ class TestUpdatingSelectionNotraj(object):
         self.ag_updating.is_uptodate = False
         assert_(self.ag_updating._lastupdate is None)
 
+
+class UAGReader(mda.coordinates.base.Reader):
+    """
+    Positions in this reader are defined as:
+    (atom number + frame number, 0, 0)
+
+    Eg::
+    Frame 1:
+    (0, 0, 0),
+    (1, 0, 0),
+    etc
+
+    Frame 2:
+    (1, 0, 0),
+    (2, 0, 0),
+    etc
+
+    Whilst quite possible not the best data for molecular simulation,
+    it does make for easy to write tests.
+    """
+    def __init__(self, n_atoms):
+        super(UAGReader, self).__init__('UAGReader')
+        self._auxs = {}
+
+        self.n_frames = 10
+        self.n_atoms = n_atoms
+        self.ts = self._Timestep(self.n_atoms)
+        self._read_next_timestep()
+
+    def _reopen(self):
+        self.ts.frame = -1
+
+    def _read_next_timestep(self):
+        ts = self.ts
+        ts.frame += 1
+        if ts.frame >= self.n_frames:
+            raise EOFError
+
+        pos = np.zeros((self.n_atoms, 3))
+        pos[:, 0] = np.arange(self.n_atoms) + ts.frame
+        ts.positions = pos
+
+        return ts
+
+    def _read_frame(self, frame):
+        self.ts.frame = frame - 1  # gets +1'd next
+        return self._read_next_frame
+
+
+class TestUAGCallCount(object):
+    # make sure updates are only called when required!
+    # 
+    # these tests check that potentially expensive selection operations are only
+    # done when necessary
+    def setUp(self):
+        self.u = u = make_Universe(('names',))
+        u.trajectory = UAGReader(125)
+
+    def tearDown(self):
+        del self.u
+
+    @mock.patch.object(MDAnalysis.core.groups.UpdatingAtomGroup, 'update_selection',
+                       autospec=True, # required to make it get self when called
+                       )
+    def test_updated_when_creating(self, mock_update_selection):
+        uag = self.u.select_atoms('name XYZ', updating=True)
+
+        assert_(mock_update_selection.call_count == 1)
+
+    def test_updated_when_next(self):
+        uag = self.u.select_atoms('name XYZ', updating=True)
+
+        # Use mock.patch.object to start inspecting the uag update selection method
+        # wraps= keyword makes it still function as normal, just we're spying on it now
+        with mock.patch.object(uag, 'update_selection',
+                               wraps=uag.update_selection) as mock_update:
+            self.u.trajectory.next()
+            assert_(mock_update.call_count == 0)
+
+            # Access many attributes..
+            pos = uag.positions
+            names = uag.names
+            # But check we only got updated once
+            assert_(mock_update.call_count == 1)
+
+
+class TestDynamicUAG(object):
+    def setUp(self):
+        self.u = u = make_Universe(('names',))
+        u.trajectory = UAGReader(125)
+
+    def tearDown(self):
+        del self.u
+
+    def test_nested_uags(self):
+        bg = self.u.atoms[[3, 4]]
+
+        uag1 = self.u.select_atoms('around 1.5 group bg', bg=bg, updating=True)
+
+        uag2 = self.u.select_atoms('around 1.5 group uag', uag=uag1, updating=True)
+
+        for ts in self.u.trajectory:
+            assert_equal(len(bg), 2)
+            assert_equal(len(uag1), 2)  # around doesn't include bg, so 2
+            assert_equal(len(uag2), 4)  # doesn't include uag1
+
+    def test_driveby(self):
+        uag = self.u.select_atoms('prop x < 5.5', updating=True)
+
+        n_init = 6
+        for i, ts in enumerate(self.u.trajectory):
+            # should initially be 6 atoms with x < 5.5
+            n_expected = max(n_init - i, 0)  # floors at 0
+
+            assert_equal(len(uag), n_expected)
