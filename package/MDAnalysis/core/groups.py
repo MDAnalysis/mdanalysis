@@ -78,7 +78,6 @@ import functools
 import itertools
 import os
 import warnings
-import sys
 
 import MDAnalysis
 from ..lib import util
@@ -97,9 +96,10 @@ def make_classes():
     Returns
     -------
     Two dictionaries. One with a set of :class:`_TopologyAttrContainer` classes
-    to serve as bases for universe-specific MDA container classes. Another,
-    with the final merged versions of those classes. The classes themselves are
-    used as hashing keys.
+    to serve as bases for universe-specific MDA container classes. Another with
+    the final merged versions of those classes. The classes themselves are used
+    as hashing keys.
+
     """
     bases = {}
     classes = {}
@@ -214,7 +214,7 @@ class _TopologyAttrContainer(object):
 
 class _MutableBase(object):
     """
-    Base class that merges appropriate :class:`TopologyAttrContainer` classes.
+    Base class that merges appropriate :class:`_TopologyAttrContainer` classes.
 
     Implements :meth:`__new__`. In it the instantiating class is fetched from
     :attr:`Universe._classes`. If there is a cache miss, a merged class is made
@@ -323,8 +323,9 @@ class GroupBase(_MutableBase):
 
     def __repr__(self):
         name = self.level.name
-        return ("<{}Group with {} {}s>"
-                "".format(name.capitalize(), len(self), name))
+        return ("<{}Group with {} {}{}>"
+                "".format(name.capitalize(), len(self), name,
+                "s"[len(self)==1:])) # Shorthand for a conditional plural 's'.
 
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
@@ -1312,12 +1313,15 @@ class AtomGroup(GroupBase):
 
         """
         updating = selgroups.pop('updating', False)
+        sel_strs = (sel,) + othersel
         selections = tuple((selection.Parser.parse(s, selgroups)
-                            for s in (sel,)+othersel))
+                            for s in sel_strs))
         if updating:
-            atomgrp = UpdatingAtomGroup(self, selections)
+            atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
         else:
-            atomgrp = sum([sel.apply(self) for sel in selections])
+            # Apply the first selection and sum to it
+            atomgrp = sum([sel.apply(self) for sel in selections[1:]],
+                          selections[0].apply(self))
         return atomgrp
 
     def split(self, level):
@@ -2019,11 +2023,11 @@ class UpdatingAtomGroup(AtomGroup):
     # methods of UpdatingAtomGroup that are used during __init__ must all be
     # here, otherwise we get __getattribute__ infinite loops. 
     _shortcut_attrs = ("_base_group", "__class__", "_derived_class",
-                       "ensure_updated", "_lastupdate", "_shortcut_attrs",
-                       "_selections", "_u", "level", "is_uptodate", "universe",
-                       "updating", "update_selection")
+                       "_lastupdate", "_shortcut_attrs", "_selections", "_u",
+                       "ensure_updated", "level", "is_uptodate",
+                       "selection_strings", "universe", "update_selection")
 
-    def __init__(self, base_group, selections):
+    def __init__(self, base_group, selections, strings):
         """
 
         Parameters
@@ -2038,6 +2042,7 @@ class UpdatingAtomGroup(AtomGroup):
         # its check, no self.attribute access can be made before this line
         self._u = base_group._u
         self._selections = selections
+        self.selection_strings = strings
         self._base_group = base_group
         self._lastupdate = None
         self._derived_class = self._base_group._derived_class
@@ -2057,7 +2062,9 @@ class UpdatingAtomGroup(AtomGroup):
         bg = self._base_group
         sels = self._selections
         if sels:
-            ix = sum([sel.apply(bg) for sel in sels])._ix
+            # As with select_atoms, we select the first sel and then sum to it.
+            ix = sum([sel.apply(bg) for sel in sels[1:]],
+                     sels[0].apply(bg))._ix
         else:
             ix = np.array([], dtype=np.int)
         super(UpdatingAtomGroup, self).__init__(ix, bg._u)
@@ -2114,9 +2121,19 @@ class UpdatingAtomGroup(AtomGroup):
         return object.__getattribute__(self, name)
 
     def __repr__(self):
-        name = self.level.name
-        return ("<UpdatingAtomGroup with {} {}s>"
-                "".format(len(self), name))
+        basestr = super(UpdatingAtomGroup, self).__repr__()
+        if not self.selection_strings:
+            return basestr
+        sels = "'{}'".format("' + '".join(self.selection_strings))
+        # Cheap comparison. Might fail for corner cases but this is
+        # mostly cosmetic.
+        if self._base_group is self._u.atoms:
+            basegrp = "the entire Universe."
+        else:
+            basegrp = "another AtomGroup."
+        # With a shorthand to conditionally append the 's' in 'selections'.
+        return "{}, with selection{} {} on {}>".format(basestr[:-1],
+                    "s"[len(self.selection_strings)==1:], sels, basegrp)
 
 # Define relationships between these classes
 # with Level objects
