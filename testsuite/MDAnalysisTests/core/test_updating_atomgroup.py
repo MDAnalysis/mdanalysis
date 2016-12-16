@@ -229,3 +229,24 @@ class TestDynamicUAG(object):
             n_expected = max(n_init - i, 0)  # floors at 0
 
             assert_equal(len(uag), n_expected)
+
+
+def test_representations():
+    u = make_Universe()
+    ag_updating = u.select_atoms("bynum 0", updating=True)
+    rep = repr(ag_updating)
+    assert "0 atoms," in rep 
+    assert "selection " in rep 
+    assert "bynum 0" in rep
+    assert "entire Universe" in rep
+
+    ag_updating = u.select_atoms("bynum 1", updating=True)
+    rep = repr(ag_updating)
+    assert "1 atom," in rep 
+
+    ag_updating = u.atoms[:-1].select_atoms("bynum 1", "bynum 2",
+                                            updating=True)
+    rep = repr(ag_updating)
+    assert "2 atoms," in rep 
+    assert "selections 'bynum 1' + 'bynum 2'" in rep 
+    assert "another AtomGroup" in rep

@@ -332,37 +332,14 @@ class TestCenter(object):
 
         assert_raises(TypeError, self.ag.center, weights)
 
-class TestRepresentations(object):
-    def setUp(self):
-        self.u = mda.Universe(CONECT)
-
-    def check_level_number(self, level):
+def test_representations():
+    u = make_Universe()
+    for level in (mda.core.groups.ATOMLEVEL, mda.core.groups.RESIDUELEVEL,
+                  mda.core.groups.SEGMENTLEVEL):
         singular = level.name
         plural = level.name + 's'
-        group = getattr(self.u, plural)
+        group = getattr(u, plural)
         assert str(group)[:-1].endswith(plural)
         assert str(group[:0])[:-1].endswith(plural)
         assert str(group[:1])[:-1].endswith(singular)
 
-    def test_number(self):
-        for level in (mda.core.groups.ATOMLEVEL, mda.core.groups.RESIDUELEVEL,
-                      mda.core.groups.SEGMENTLEVEL):
-            self.check_level_number(level)
-
-    def test_updating(self):
-        ag_updating = self.u.select_atoms("bynum 0", updating=True)
-        rep = repr(ag_updating)
-        assert "0 atoms," in rep 
-        assert "selection " in rep 
-        assert "bynum 0" in rep
-        assert "entire Universe" in rep
-        ag_updating = self.u.select_atoms("bynum 1", updating=True)
-        rep = repr(ag_updating)
-        assert "1 atom," in rep 
-        ag_updating = self.u.atoms[:-1].select_atoms("bynum 1", "bynum 2",
-                                                   updating=True)
-        rep = repr(ag_updating)
-        assert "2 atoms," in rep 
-        assert "selections" in rep 
-        assert "'bynum 1' + 'bynum 2'" in rep 
-        assert "another AtomGroup" in rep
