@@ -352,11 +352,8 @@ class MemoryReader(base.ProtoReader):
         # Return a view if either:
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
-        # The 2nd case may need a deep comparison because the "all" selection
-        # creates a new AtomGroup object that isn't the same as universe.atoms.
         array = array[basic_slice]
-        if (asel is None or asel is asel.universe.atoms or
-                np.array_equal(asel.indices, asel.universe.atoms.indices)):
+        if asel is None or asel is asel.universe.atoms:
             return array
         else:
             # If selection is specified, return a copy
