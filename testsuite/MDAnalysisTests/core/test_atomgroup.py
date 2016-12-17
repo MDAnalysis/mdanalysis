@@ -43,7 +43,7 @@ from MDAnalysis.core.topologyobjects import (
     ImproperDihedral,
 )
 
-from MDAnalysisTests.datafiles import (PSF, DCD, CONECT)
+from MDAnalysisTests.datafiles import (PSF, DCD)
 from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysisTests import tempdir
 

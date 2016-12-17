@@ -353,7 +353,7 @@ class MemoryReader(base.ProtoReader):
         #   1) asel is None
         #   2) asel corresponds to the selection of all atoms.
         array = array[basic_slice]
-        if asel is None or asel is asel.universe.atoms:
+        if (asel is None or asel is asel.universe.atoms):
             return array
         else:
             # If selection is specified, return a copy

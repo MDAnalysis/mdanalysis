@@ -30,7 +30,7 @@ from numpy.testing import (
 import mock
 
 
-from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests.datafiles import PSF, GRO, XTC
 from MDAnalysisTests.core.groupbase import make_Universe
 
 import MDAnalysis
@@ -38,7 +38,7 @@ import MDAnalysis as mda
 
 class TestUpdatingSelection(object):
     def setUp(self):
-        self.u = mda.Universe(TPR, XTC)
+        self.u = mda.Universe(GRO, XTC)
         self.ag = self.u.select_atoms(
             "prop x < 5 and prop y < 5 and prop z < 5")
         self.ag_updating = self.u.select_atoms(
@@ -103,9 +103,9 @@ class TestUpdatingSelection(object):
 
 class TestUpdatingSelectionNotraj(object):
     def setUp(self):
-        self.u = mda.Universe(TPR)
-        self.ag = self.u.select_atoms("name S*")
-        self.ag_updating = self.u.select_atoms("name S*", updating=True)
+        self.u = mda.Universe(PSF)
+        self.ag = self.u.select_atoms("name N*")
+        self.ag_updating = self.u.select_atoms("name N*", updating=True)
 
     def test_update(self):
         assert_(self.ag_updating.is_uptodate)
