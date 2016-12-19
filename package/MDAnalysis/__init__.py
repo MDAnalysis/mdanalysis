@@ -164,7 +164,7 @@ _PARSERS = {}
 
 # Storing anchor universes for unpickling groups
 import weakref
-_anchor_universes = weakref.WeakValueDictionary()
+_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
 del weakref
 
 # custom exceptions and warnings

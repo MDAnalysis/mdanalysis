@@ -78,7 +78,7 @@ import os
 import warnings
 
 import MDAnalysis
-from .. import _anchor_universes
+from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib import distances
 from ..lib import transformations
@@ -91,11 +91,14 @@ from . import topologyobjects
 
 def _unpickle(uhash, ix):
     try:
-        u = _anchor_universes[uhash]
+        u = _ANCHOR_UNIVERSES[uhash]
     except KeyError:
         # doesn't provide as nice an error message as before as only hash of universe is stored
         # maybe if we pickled the filename too we could do better...
-        raise RuntimeError("Couldn't find a suitable Universe to unpickle AtomGroup onto.")
+        raise RuntimeError(
+            "Couldn't find a suitable Universe to unpickle AtomGroup onto "
+            "with Universe hash '{}'.  Available hashes: {}"
+            "".format(uhash, ', '.join(_ANCHOR_UNIVERSES.keys())))
 
     return u.atoms[ix]
 
@@ -904,7 +907,7 @@ class AtomGroup(GroupBase):
             cls=self.__class__.__name__, attr=attr))
 
     def __reduce__(self):
-        return (_unpickle, (hash(self.universe), self.ix))
+        return (_unpickle, (self.universe.anchor_name, self.ix))
 
     @property
     def atoms(self):

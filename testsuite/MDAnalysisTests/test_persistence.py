@@ -21,8 +21,7 @@
 #
 from six.moves import cPickle
 
-import MDAnalysis
-from MDAnalysis.tests.datafiles import PDB_small, GRO, XTC, TRR
+import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.coordinates import XDR
 
@@ -36,15 +35,16 @@ import gc
 import shutil
 import warnings
 
+from MDAnalysisTests.datafiles import PDB_small, GRO, XTC, TRR
+from MDAnalysisTests.core.groupbase import make_Universe
 
 class TestAtomGroupPickle(object):
     def setUp(self):
         """Set up hopefully unique universes."""
         # _n marks named universes/atomgroups/pickled strings
-        self.universe = MDAnalysis.Universe(PDB_small, PDB_small, PDB_small)
-        self.universe_n = MDAnalysis.Universe(PDB_small, PDB_small, PDB_small,
-                                              is_anchor=False,
-                                              anchor_name="test1")
+        self.universe = mda.Universe(PDB_small, PDB_small, PDB_small)
+        self.universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
+                                       anchor_name="test1")
         self.ag = self.universe.atoms[:20]  # prototypical AtomGroup
         self.ag_n = self.universe_n.atoms[:10]
         self.pickle_str = cPickle.dumps(self.ag,
@@ -74,16 +74,20 @@ class TestAtomGroupPickle(object):
         assert_(newag.universe is self.universe_n,
                 "Unpickled AtomGroup on wrong Universe.")
 
-    def test_unpickle_missing(self):
-        # we kill the universes and ag's
-        self.tearDown()
+    @staticmethod
+    def test_unpickle_missing():
+        u = mda.Universe(PDB_small, anchor_name='missingtest')
+        ag = u.atoms[:10]
+        ag_pick = cPickle.dumps(ag)
+
+        # Kill AtomGroup and Universe
+        del ag
+        del u
         # and make sure they're very dead
         gc.collect()
+
         # we shouldn't be able to unpickle
-        assert_raises(RuntimeError, cPickle.loads, self.pickle_str)
-        assert_raises(RuntimeError, cPickle.loads, self.pickle_str_n)
-        # must reset these, otherwise tearDown fails
-        self.setUp()
+        assert_raises(RuntimeError, cPickle.loads, ag_pick)
 
     def test_unpickle_noanchor(self):
         # Shouldn't unpickle if the universe is removed from the anchors
@@ -139,7 +143,8 @@ class TestEmptyAtomGroupPickle(object):
     # This comes in a class just to get memleak testing
     def test_pickle_unpickle_empty(self):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
-        ag = AtomGroup([])
+        u = make_Universe()
+        ag = u.atoms[[]]
         pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
         newag = cPickle.loads(pickle_str)
         assert_equal(len(newag), 0)
