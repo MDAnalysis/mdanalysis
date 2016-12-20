@@ -55,6 +55,7 @@ Enhancements
     of a group given weights
 
 Fixes
+  * Improvement of analysis/waterdynamics module (Issue #935)
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
   * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
