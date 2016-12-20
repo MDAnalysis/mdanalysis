@@ -103,7 +103,7 @@ extracted from a DCD
     universe = mda.Universe(PSF, DCD)
 
     coordinates = universe.trajectory.timeseries(universe.atoms)
-    universe2 = mda.Universe(PSF, coordinates, format=MemoryReader)
+    universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
 
 
 .. rubric:: Creating an in-memory trajectory with
@@ -124,14 +124,8 @@ same functionality for any supported trajectory format::
   u = mda.Universe(PDB, XTC)
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     u.atoms).run().results.swapaxes(0, 1)
+                                     u.atoms).run().results
   u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
-
-.. Note:: By default the :class:`MemoryReader` reads an array in *afc*
-   (atom, frame, coordinates) order and therefore the first two axes
-   of ``results`` (in *fac* order) have to be swapped with
-   ``results.swapaxes(0, 1)``. This might be changed in the
-   future.
 
 .. _creating-in-memory-trajectory-label:
 
@@ -157,7 +151,7 @@ only the protein is created::
   protein = u.select_atoms("protein")
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     protein).run().results.swapaxes(0, 1)
+                                     protein).run().results
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
@@ -167,7 +161,7 @@ principle, this could have all be done in one line::
 
   u2 = mda.Merge(protein).load_new(
            AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                protein).run().results.swapaxes(0, 1),
+                                protein).run().results,
            format=MemoryReader)
 
 The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
@@ -227,7 +221,7 @@ class MemoryReader(base.ProtoReader):
     format = 'MEMORY'
     _Timestep = Timestep
 
-    def __init__(self, coordinate_array, format='afc',
+    def __init__(self, coordinate_array, order='fac',
                  dimensions = None, dt=1, **kwargs):
         """
 
@@ -235,7 +229,7 @@ class MemoryReader(base.ProtoReader):
         ----------
         coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
-        format : str, optional
+        order : str, optional
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
@@ -252,12 +246,12 @@ class MemoryReader(base.ProtoReader):
 
         super(MemoryReader, self).__init__()
 
-        self.stored_format = format
-        self.set_array(np.asarray(coordinate_array), format)
+        self.stored_order = order
+        self.set_array(np.asarray(coordinate_array), order)
         self.n_frames = \
-            self.coordinate_array.shape[self.stored_format.find('f')]
+            self.coordinate_array.shape[self.stored_order.find('f')]
         self.n_atoms = \
-            self.coordinate_array.shape[self.stored_format.find('a')]
+            self.coordinate_array.shape[self.stored_order.find('a')]
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
@@ -273,23 +267,24 @@ class MemoryReader(base.ProtoReader):
         self.ts.time = -1
         self._read_next_timestep()
 
-    def set_array(self, coordinate_array, format='afc'):
+    def set_array(self, coordinate_array, order='fac'):
         """
-        Set underlying array in desired column format.
+        Set underlying array in desired column order.
 
         Parameters
         ----------
         coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
-        format
+        order
             The order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
         """
-        self.coordinate_array = coordinate_array
-        self.stored_format = format
+        # Only make copy if not already in float32 format
+        self.coordinate_array = coordinate_array.astype('float32', copy=False)
+        self.stored_format = order
 
     def get_array(self):
         """
@@ -304,8 +299,8 @@ class MemoryReader(base.ProtoReader):
 
     def timeseries(self, asel=None, start=0, stop=-1, step=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
-        column format. If no selection is given, it will return a view of
-        the underlying array, while a copy is returned otherwise.
+        column order/format. If no selection is given, it will return a view of
+        the underlying array, while a copy is returned otherwise. 
 
         Parameters
         ---------
@@ -321,27 +316,31 @@ class MemoryReader(base.ProtoReader):
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
-            coordinates)
+            coordinates). 
         """
 
+        # The "format" name is used for compliance with DCD.timeseries
+        # Renaming it to order here for internal consistency in this class
+        order = format
+        
         array = self.get_array()
-        if format == self.stored_format:
+        if order == self.stored_order:
             pass
-        elif format[0] == self.stored_format[0]:
+        elif order[0] == self.stored_order[0]:
             array = np.swapaxes(array, 1, 2)
-        elif format[1] == self.stored_format[1]:
+        elif order[1] == self.stored_order[1]:
             array = np.swapaxes(array, 0, 2)
-        elif format[2] == self.stored_format[2]:
+        elif order[2] == self.stored_order[2]:
             array = np.swapaxes(array, 0, 1)
-        elif format[0] == self.stored_format[1]:
+        elif order[0] == self.stored_order[1]:
             array = np.swapaxes(array, 1, 0)
             array = np.swapaxes(array, 1, 2)
-        elif format[0] == self.stored_format[2]:
+        elif order[0] == self.stored_order[2]:
             array = np.swapaxes(array, 2, 0)
             array = np.swapaxes(array, 1, 2)
 
-        a_index = format.find('a')
-        f_index = format.find('f')
+        a_index = order.find('a')
+        f_index = order.find('f')
         stop_index = stop+1
         if stop_index == 0:
             stop_index = None
@@ -367,7 +366,7 @@ class MemoryReader(base.ProtoReader):
         if ts is None:
             ts = self.ts
         ts.frame += 1
-        f_index = self.stored_format.find('f')
+        f_index = self.stored_order.find('f')
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))

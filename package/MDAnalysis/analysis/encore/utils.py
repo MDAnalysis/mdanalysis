@@ -478,6 +478,6 @@ def merge_universes(universes):
 
     return mda.Universe(
         universes[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries() for e in universes]),
-        axis=1),
+        np.concatenate(tuple([e.trajectory.timeseries(format='fac') for e in universes]),
+                       axis=0),
         format=MemoryReader)

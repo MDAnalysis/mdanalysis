@@ -44,12 +44,12 @@ class TestEncore(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDown(self):
@@ -72,11 +72,11 @@ class TestEncore(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
@@ -389,12 +389,12 @@ class TestEncoreClustering(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDownClass(self):
@@ -417,11 +417,11 @@ class TestEncoreClustering(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
@@ -662,12 +662,12 @@ class TestEncoreDimensionalityReduction(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDownClass(self):
@@ -690,11 +690,11 @@ class TestEncoreDimensionalityReduction(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
