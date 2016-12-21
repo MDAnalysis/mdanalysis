@@ -78,6 +78,7 @@ Fixes
   * Fixed align_principal_axis onto a principal axes (Issue #1045)
   * Fixed NCDFWriter wrote velocities instead of forces if
     convert_units=False was set: now correctly writes forces (PR #1113)
+  * Fixed warn about missing cython package in dev builds
 
 Changes
   * Started unifying the API of analysis classes (named internally
