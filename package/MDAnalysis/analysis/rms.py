@@ -195,15 +195,6 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     if a.shape != b.shape:
         raise ValueError('a and b must have same shape')
 
-    if weights is not None:
-        if len(weights) != len(a):
-            raise ValueError('weights must have same length as a/b')
-        # weights are constructed as relative to the mean
-        relative_weights = np.asarray(weights) / np.mean(weights)
-        relative_weights = relative_weights.astype(np.float64)
-    else:
-        relative_weights = None
-
     # superposition only works if structures are centered
     if center or superposition:
         # make copies (do not change the user data!)
@@ -211,15 +202,18 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         a = a - np.average(a, axis=0, weights=weights)
         b = b - np.average(b, axis=0, weights=weights)
 
+    if weights is not None:
+        if len(weights) != len(a):
+            raise ValueError('weights must have same length as a/b')
+        # weights are constructed as relative to the mean
+        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+
     if superposition:
-        if relative_weights is not None:
-            relative_weights = relative_weights.astype(np.float64)
-        return qcp.CalcRMSDRotationalMatrix(a, b, N, None,
-                                            relative_weights)
+        return qcp.CalcRMSDRotationalMatrix(a, b, N, None, weights)
     else:
         if weights is not None:
-            return np.sqrt(np.sum(relative_weights[:, np.newaxis]
-                * (( a - b ) ** 2)) / N)
+            return np.sqrt(np.sum(weights[:, np.newaxis]
+                                  * ((a - b) ** 2)) / N)
         else:
             return np.sqrt(np.sum((a - b) ** 2) / N)
 
