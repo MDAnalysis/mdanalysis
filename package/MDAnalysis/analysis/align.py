@@ -489,8 +489,9 @@ class AlignTraj(AnalysisBase):
     """
 
     def __init__(self, mobile, reference, select='all', filename=None,
-                 prefix='rmsfit_', mass_weighted=False, tol_mass=0.1,
-                 strict=False, force=True, in_memory=False, **kwargs):
+                 prefix='rmsfit_', mass_weighted=None, weights=None,
+                 tol_mass=0.1, strict=False, force=True, in_memory=False,
+                 **kwargs):
         """Initialization
 
         Parameters
@@ -507,9 +508,12 @@ class AlignTraj(AnalysisBase):
         prefix : string, optional
             Provide a string to prepend to filename for results to be written
             to
-        mass_weighted : boolean, optional
+        mass_weighted : boolean, optional (deprecated)
             Boolean, if true will rmsd will be mass-weighted corresponding to
             the atoms selected in the reference trajectory
+        weights : str/array_like (optional)
+            Can either be 'mass' to use reference masses as weights or an
+            arbitrary array
         tol_mass : float, optional
             Tolerance given to `get_matching_atoms` to find appropriate atoms
         strict : boolean, optional
@@ -585,24 +589,27 @@ class AlignTraj(AnalysisBase):
         # retained
         self._writer = mda.Writer(self.filename, natoms)
 
-        if mass_weighted:
-            # if performing a mass-weighted alignment/rmsd calculation
-            self._weights = self.ref_atoms.masses
-        else:
-            self._weights = None
+        if mass_weighted is not None:
+            # TODO: print depcreatoin message til 0.17.0
+            if mass_weighted:
+                weights = 'mass'
+
+        if weights == 'mass':
+            weights = self.ref_atoms.masses
+        self._weights = weights
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
     def _prepare(self):
         # reference centre of mass system
-        self._ref_com = self.ref_atoms.center_of_mass()
+        self._ref_com = self.ref_atoms.center(self._weights)
         self._ref_coordinates = self.ref_atoms.positions - self._ref_com
         # allocate the array for selection atom coords
         self.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
         index = self._ts.frame
-        mobile_com = self.mobile_atoms.center_of_mass()
+        mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
                                                  self._ref_coordinates,
