@@ -104,9 +104,9 @@ class TestAlign(TestCase):
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.select_atoms('backbone')
-        first_frame = bb.positions
+        first_frame = bb.positions.copy()
         self.universe.trajectory[-1]
-        last_frame = bb.positions
+        last_frame = bb.positions.copy()
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
@@ -120,12 +120,13 @@ class TestAlign(TestCase):
         assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
-        #test mass_weighted
+        # test mass_weighted
         last_atoms_weight = self.universe.atoms.masses
         A = self.universe.trajectory[0]
         B = self.reference.trajectory[-1]
-        rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
-        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight, center=True, superposition=True)
+        rmsd = align.alignto(self.universe, self.reference, weights='mass')
+        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
+                                   center=True, superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
 
