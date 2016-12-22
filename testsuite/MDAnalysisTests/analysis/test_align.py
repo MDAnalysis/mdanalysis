@@ -120,7 +120,7 @@ class TestAlign(TestCase):
         assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
-        # test mass_weighted
+        # test masses as weights
         last_atoms_weight = self.universe.atoms.masses
         A = self.universe.trajectory[0]
         B = self.reference.trajectory[-1]
@@ -171,8 +171,8 @@ class TestAlign(TestCase):
         rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
         x.save(rmsd_outfile)
 
-        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
-        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
+        assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -187,10 +187,10 @@ class TestAlign(TestCase):
 
     def test_AlignTraj_weighted(self):
         x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, mass_weighted=True).run()
+                            filename=self.outfile, weights='mass').run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
         assert_almost_equal(x.rmsd[0], 0,  decimal=3)
-        assert_almost_equal(x.rmsd[-1], 6.9033990467077579, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
         self._assert_rmsd(fitted, 0, 0.0,
                           weights=self.universe.atoms.masses)
@@ -200,15 +200,15 @@ class TestAlign(TestCase):
     def test_AlignTraj_partial_fit(self):
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(self.universe, self.reference, select='resid 1-20',
-                        filename=self.outfile, mass_weighted=True).run()
+                        filename=self.outfile, weights='mass').run()
         MDAnalysis.Universe(PSF, self.outfile)
 
     def test_AlignTraj_in_memory(self):
         self.reference.trajectory[-1]
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile, in_memory=True).run()
-        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
-        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
+        assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
         # check in memory trajectory
         self._assert_rmsd(self.universe, 0, 6.929083044751061)
