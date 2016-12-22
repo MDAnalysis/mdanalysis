@@ -151,7 +151,7 @@ class TestRMSD(object):
         self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
         self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
         self.correct_values_group = [[0, 0, 0, 0, 0],
-                                     [49, 48.9999, 4.7857, 4.7002,
+                                     [49, 49, 4.7857, 4.7004,
                                       4.68981]]
 
     def tearDown(self):
