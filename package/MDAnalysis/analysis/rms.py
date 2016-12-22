@@ -537,33 +537,8 @@ class RMSD(AnalysisBase):
         return filename
 
 
-class RMSF(object):
-    """Class to perform RMSF analysis on a set of atoms across a trajectory.
-
-    Run the analysis with :meth:`RMSF.run`, which stores the results
-    in the array :attr:`RMSF.rmsf`.
-
-    This class performs no coordinate transforms; RMSFs are obtained from atom
-    coordinates as-is.
-
-    .. versionadded:: 0.11.0
-    """
-
-    def __init__(self, atomgroup):
-        """Calculate RMSF of given atoms across a trajectory.
-
-        Parameters
-        ----------
-        atomgroup : mda.AtomGroup
-                AtomGroup to obtain RMSF for
-
-        """
-        self.atomgroup = atomgroup
-        self._rmsf = None
-
-    def run(self, start=None, stop=None, step=None, progout=10,
-            verbose=None, quiet=None):
-        """Calculate RMSF of given atoms across a trajectory.
+class RMSF(AnalysisBase):
+    """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
         avoiding overflows and underflows [Welford1962]_.
@@ -590,44 +565,27 @@ class RMSF(object):
         .. [Welford1962] B. P. Welford (1962). "Note on a Method for
            Calculating Corrected Sums of Squares and Products." Technometrics
            4(3):419-420.
+    """
+    def __init__(self, atomgroup, weights=None, **kwargs):
+        super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        self.atomgroup = atomgroup
+        if weights == 'mass':
+            weights = self.atomgroup.masses
+        self.weights = weights
 
-        .. deprecated:: 0.16
-           The keyword argument *quiet* is deprecated in favor of *verbose*.
-        """
-        traj = self.atomgroup.universe.trajectory
-        start, stop, step = traj.check_slice_indices(start, stop, step)
-        sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
-        means = np.array(sumsquares)
+    def _prepare(self):
+        self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
+        self.mean = self.sumsquares.copy()
 
-        verbose = _set_verbose(verbose, quiet, default=True)
-        if not verbose:
-            progout = None
+    def _single_frame(self):
+        k = self._frame_index
+        self.sumsquares += (k / (k+1.0)) * (self.atomgroup.positions - self.mean) ** 2
+        self.mean = (k * self.mean + self.atomgroup.positions) / (k + 1)
 
-        # set up progress output
-        if progout:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
-                                       interval=progout)
-        else:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
-                                       verbose=False)
+    def _conclude(self):
+        k = self._frame_index
+        self.rmsf = np.sqrt(self.sumsquares.sum(axis=1) / (k + 1))
 
-        for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):
-            sumsquares += (k/(k + 1.0)) * (self.atomgroup.positions - means)**2
-            means = (k * means + self.atomgroup.positions)/(k + 1)
-
-            percentage.echo(ts.frame)
-
-        rmsf = np.sqrt(sumsquares.sum(axis=1)/(k + 1))
-
-        if not (rmsf >= 0).all():
+        if not (self.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
-
-        self._rmsf = rmsf
-
-    @property
-    def rmsf(self):
-        """RMSF data; only available after using :meth:`RMSF.run`
-
-        """
-        return self._rmsf
