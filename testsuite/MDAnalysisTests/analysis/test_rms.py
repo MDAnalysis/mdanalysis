@@ -185,7 +185,7 @@ class TestRMSD(object):
 
     def test_mass_weighted_and_save(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
-                                            step=49, mass_weighted=True).run()
+                                            step=49, weights='mass').run()
         RMSD.save(self.outfile)
         saved = np.loadtxt(self.outfile)
         assert_array_almost_equal(RMSD.rmsd, saved, 4,
