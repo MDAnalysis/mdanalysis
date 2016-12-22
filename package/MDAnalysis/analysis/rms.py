@@ -285,7 +285,8 @@ class RMSD(AnalysisBase):
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
-                 mass_weighted=False, tol_mass=0.1, ref_frame=0, **kwargs):
+                 mass_weighted=None,
+                 weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
         """Setting up the RMSD analysis.
 
         The RMSD will be computed between `select` and `reference` for
@@ -329,8 +330,10 @@ class RMSD(AnalysisBase):
 
         filename : str (optional)
             write RSMD into file file :meth:`RMSD.save`
-        mass_weighted : bool (optional)
+        mass_weighted : bool deprecated
              do a mass-weighted RMSD fit
+        weights : str/array_like (optional)
+             choose weights. If 'str' uses masses as weights
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass`
@@ -355,7 +358,11 @@ class RMSD(AnalysisBase):
         select = process_selection(select)
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
-        self.mass_weighted = mass_weighted
+        if mass_weighted is not None:
+            # TODO: add depcreation
+            if mass_weighted:
+                weights = 'mass'
+        self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.filename = filename
@@ -423,8 +430,10 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        self._weights = ((self.ref_atoms.masses / self.ref_atoms.masses.mean()).astype(np.float64)
-                         if self.mass_weighted else None)
+        if self.weights == 'mass':
+            self.weights = self.ref_atoms.masses
+        if self.weights is not None:
+            self.weights = (self.weights / self.weights.mean()).astype(np.float64)
 
         current_frame = self.reference.trajectory.ts.frame
 
@@ -433,7 +442,7 @@ class RMSD(AnalysisBase):
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
             self.reference.trajectory[self.ref_frame]
-            self._ref_com = self.ref_atoms.center_of_mass()
+            self._ref_com = self.ref_atoms.center(self.weights)
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
@@ -466,21 +475,22 @@ class RMSD(AnalysisBase):
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center_of_mass().astype(np.float64)
+        mobile_com = self.mobile_atoms.center(self.weights).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
         self.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         if self._groupselections_atoms:
-            # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate array with float64
-            # datatype (float32 leads to errors up to 1e-3 in RMSD).
-            # Note that R is defined in such a way that it acts **to the left** so that we can easily
-            # use broadcasting and save one expensive numpy transposition.
+            # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate
+            # array with float64 datatype (float32 leads to errors up to 1e-3 in
+            # RMSD). Note that R is defined in such a way that it acts **to the
+            # left** so that we can easily use broadcasting and save one
+            # expensive numpy transposition.
 
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates_64, self._mobile_coordinates64,
-                self._n_atoms, self._rot, self._weights)
+                self._n_atoms, self._rot, self.weights)
 
             self._R[:, :] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
@@ -490,7 +500,7 @@ class RMSD(AnalysisBase):
 
             # R acts to the left & is broadcasted N times.
             self._ts.positions[:,:] = (self._mobile_coordinates64[:] *
-                                                 self._R)
+                                       self._R)
             self._ts.positions[:] += self._ref_com
 
             # 2) calculate secondary RMSDs
@@ -499,13 +509,13 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
                     refpos, atoms['mobile'].positions.astype(np.float64),
-                    atoms['mobile'].n_atoms, None, self._weights)
+                    atoms['mobile'].n_atoms, None, self.weights)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates_64, self._mobile_coordinates64,
-                self._n_atoms, None, self._weights)
+                self._n_atoms, None, self.weights)
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
