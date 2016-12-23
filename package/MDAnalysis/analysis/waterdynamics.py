@@ -84,12 +84,31 @@ hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
   selection2 = "resid 38"
   HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)
   HBL_analysis.run()
-  i=0
+  time = 0
   #now we print the data ready to graph. The first two columns are the HBLc vs t graph and
   #the second two columns are the HBLi vs t graph
   for HBLc, HBLi in HBL_analysis.timeseries:
-        print(i +" "+ HBLc +" "+ i +" "+ HBLi)
-        i+=1
+        print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
+        time += 1
+  
+  #we can also plot our data
+  plt.figure(1,figsize=(18, 6))
+
+  #HBL continuos
+  plt.subplot(121)
+  plt.xlabel('time')
+  plt.ylabel('HBLc')
+  plt.title('HBL Continuos')
+  plt.plot(range(0,time),[column[0] for column in HBL_analysis.timeseries])
+
+  #HBL intermitent
+  plt.subplot(122)
+  plt.xlabel('time')
+  plt.ylabel('HBLi')
+  plt.title('HBL Intermitent')
+  plt.plot(range(0,time),[column[1] for column in HBL_analysis.timeseries])
+
+  plt.show()
 
 where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is the value for the intermittent
 hydrogen bond lifetime, t0 = 0, tf = 2000 and dtmax = 30. In this way we create 30 windows timestep
@@ -108,11 +127,38 @@ Analyzing water orientational relaxation (WOR) :class:`WaterOrientationalRelaxat
   selection = "byres name OH2 and sphzone 6.0 protein and resid 42"
   WOR_analysis = WOR(universe, selection, 0, 1000, 20)
   WOR_analysis.run()
-  i=0
+  time = 0
   #now we print the data ready to graph. The first two columns are WOR_OH vs t graph,
   #the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph
   for WOR_OH, WOR_HH, WOR_dip in WOR_analysis.timeseries:
-        print(i +" "+ WOR_OH +" "+ i +" "+ WOR_HH +" "+ i +" "+ WOR_dip)
+        print("{time} {WOR_OH} {time} {WOR_HH} {time} {WOR_dip}".format(time=time, WOR_OH=WOR_OH, WOR_HH=WOR_HH,WOR_dip=WOR_dip))
+        time += 1
+
+  #now, if we want, we can plot our data
+  plt.figure(1,figsize=(18, 6))
+
+  #WOR OH
+  plt.subplot(131)
+  plt.xlabel('time')
+  plt.ylabel('WOR')
+  plt.title('WOR OH')
+  plt.plot(range(0,time),[column[0] for column in WOR_analysis.timeseries])
+
+  #WOR HH
+  plt.subplot(132)
+  plt.xlabel('time')
+  plt.ylabel('WOR')
+  plt.title('WOR HH')
+  plt.plot(range(0,time),[column[1] for column in WOR_analysis.timeseries])
+
+  #WOR dip
+  plt.subplot(133)
+  plt.xlabel('time')
+  plt.ylabel('WOR')
+  plt.title('WOR dip')
+  plt.plot(range(0,time),[column[2] for column in WOR_analysis.timeseries])
+
+  plt.show()  
 
 where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows timesteps (20 values in the x axis),
 the first window is created with 1000 timestep average (1000/1), the second window is created with 500
@@ -138,14 +184,41 @@ with something (residue, protein, etc)::
   #now we print data ready to graph. The first two columns are P(cos(theta)) vs cos(theta) for OH vector ,
   #the seconds two columns are P(cos(theta)) vs cos(theta) for HH vector and thirds two columns
   #are P(cos(theta)) vs cos(theta) for dipole vector
-  for i in range(bins):
-        print(AD_analysis.graph[0][i] +" "+ AD_analysis.graph[1][i] +" "+ AD_analysis.graph[2][i])
+  for bin in range(bins):
+        print("{AD_analysisOH} {AD_analysisHH} {AD_analysisDip}".format(AD_analysis.graph0=AD_analysis.graph[0][bin], AD_analysis.graph1=AD_analysis.graph[1][bin],AD_analysis.graph2=AD_analysis.graph[2][bin]))
+
+  #and if we want to graph our results
+  plt.figure(1,figsize=(18, 6))
+
+  #AD OH
+  plt.subplot(131)
+  plt.xlabel('cos theta')
+  plt.ylabel('P(cos theta)')
+  plt.title('PDF cos theta for OH')
+  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[0][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[0][:-1]])
+
+  #AD HH
+  plt.subplot(132)
+  plt.xlabel('cos theta')
+  plt.ylabel('P(cos theta)')
+  plt.title('PDF cos theta for HH')
+  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[1][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[1][:-1]])
+
+  #AD dip
+  plt.subplot(133)
+  plt.xlabel('cos theta')
+  plt.ylabel('P(cos theta)')
+  plt.title('PDF cos theta for dipole')
+  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[2][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[2][:-1]])
+
+  plt.show()
+
 
 where P(cos(theta)) is the angular distribution or angular probabilities.
 
 MeanSquareDisplacement
 ~~~~~~~~~~~~~~~~~~~~~~
-Analyzing mean square displacement (MSD):class:`MeanSquareDisplacement` for water molecules. In this case we are analyzing the average distance
+Analyzing mean square displacement (MSD) :class:`MeanSquareDisplacement` for water molecules. In this case we are analyzing the average distance
 that water molecules travels inside protein in XYZ direction (cylindric zone of radius 11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong
 rise mean a fast movement of water molecules, a weak rise mean slow movement of particles::
 
@@ -158,11 +231,17 @@ rise mean a fast movement of water molecules, a weak rise mean slow movement of 
   MSD_analysis.run()
   #now we print data ready to graph. The graph
   #represents MSD vs t
-  i=0
+  time = 0
   for msd in MSD_analysis.timeseries:
-        print(i +" "+ msd)
-        i += 1
-
+        print("{time} {msd}".format(time=time, msd=msd))
+        time += 1
+  
+  #Plot
+  plt.xlabel('time')
+  plt.ylabel('MSD')
+  plt.title('MSD')
+  plt.plot(range(0,time),MSD_analysis.timeseries)
+  plt.show()
 
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
@@ -180,10 +259,18 @@ other hand, a fast decay means a short permanence time::
   SP_analysis.run()
   #now we print data ready to graph. The graph
   #represents SP vs t
-  i=0
+  time = 0
   for sp in SP_analysis.timeseries:
-        print(i +" "+ sp)
-        i += 1
+        print("{time} {sp}".format(time=time, sp=sp))
+        time += 1
+
+  #Plot
+  plt.xlabel('time')
+  plt.ylabel('SP')
+  plt.title('Survival Probability')
+  plt.plot(range(0,time),MSD_analysis.timeseries)
+  plt.show()
+  
 
 .. Output
 
@@ -935,7 +1022,6 @@ class  MeanSquareDisplacement(object):
 
         for j in range(totalFrames/dt-1):
             a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
-            print("a=",a)
             sumDeltaO += a
             valOList.append(a)
             sumsdt +=  dt
