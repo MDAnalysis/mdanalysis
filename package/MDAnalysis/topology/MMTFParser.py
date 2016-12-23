@@ -90,7 +90,7 @@ from ..core.topologyattrs import (
     Segids,
     SegmentAttr,  # for model
 )
-from ..core.selection import RangeSelection, unique
+from ..core.selection import RangeSelection
 
 
 def _parse_mmtf(fn):
@@ -141,7 +141,7 @@ class ModelSelection(RangeSelection):
                 thismask = vals == lower
 
             mask |= thismask
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class MMTFParser(base.TopologyReader):
