@@ -1067,7 +1067,7 @@ class AtomGroup(GroupBase):
 
         return trj_ts.copy_slice(self.indices)
 
-    def select_atoms(self, sel, *othersel, **selgroups):
+    def select_atoms(self, sel, cached=False, *othersel, **selgroups):
         """Select atoms using a selection string.
 
         Returns an :class:`AtomGroup` with atoms sorted according to
@@ -1240,12 +1240,19 @@ class AtomGroup(GroupBase):
            Resid selection now takes icodes into account where present.
 
         """
-        atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
+        if sel in self._cache:
+            return self._cache[sel].apply(self)
+
+        parse_tree = selection.Parser.parse(sel, selgroups)
         if othersel:
             # Generate a selection for each selection string
             for sel in othersel:
-                atomgrp += selection.Parser.parse(sel, selgroups).apply(self)
-        return atomgrp
+                parse_tree += selection.Parser.parse(sel, selgroups)
+
+        # Cache the parse tree
+        if cached:
+            self._cache[sel] = parse_tree
+        return parse_tree.apply(self)
 
     def split(self, level):
         """Split AtomGroup into a list of atomgroups by `level`.
