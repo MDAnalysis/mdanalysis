@@ -825,45 +825,6 @@ class TestAtomGroup(TestCase):
             ag.positions = badarr
         assert_raises(ValueError, set_badarr)
 
-    # INVALID: no `get_positions` method for AtomGroup; use `positions` property instead
-    @skip
-    def test_set_positions(self):
-        ag = self.universe.select_atoms("bynum 12:42")
-        pos = ag.get_positions() + 3.14
-        ag.set_positions(pos)
-        assert_almost_equal(ag.positions, pos,
-                            err_msg="failed to update atoms 12:42 position "
-                            "to new position")
-
-    # INVALID: no `get_velocities` method for AtomGroup; use `velocities` property instead
-    @skip
-    def test_no_velocities_raises_NoDataError(self):
-        def get_vel(ag=self.universe.select_atoms("bynum 12:42")):
-            ag.get_velocities()
-        # trj has no velocities
-        assert_raises(NoDataError, get_vel)
-
-    # INVALID: no `set_velocities` method for AtomGroup; use `velocities` property instead
-    @skip
-    def test_set_velocities_NoData(self):
-        def set_vel():
-            return self.universe.atoms[:2].set_velocities([0.2])
-        assert_raises(NoDataError, set_vel)
-
-    # INVALID: no `get_forces` method for AtomGroup; use `forces` property instead
-    @skip
-    def test_get_forces_NoData(self):
-        def get_for():
-            return self.universe.atoms[:2].get_forces()
-        assert_raises(NoDataError, get_for)
-
-    # INVALID: no `set_forces` method for AtomGroup; use `forces` property instead
-    @skip
-    def test_set_forces_NoData(self):
-        def set_for():
-            return self.universe.atoms[:2].set_forces([0.2])
-        assert_raises(NoDataError, set_for)
-
     # INVALID: no `set_resids` method for AtomGroup; use
     # `AtomGroup.residues.resids` property instead
     @skip
@@ -959,42 +920,6 @@ class TestAtomGroup(TestCase):
     def test_wronglen_set(self):
         """Give the setter function a list of wrong length"""
         assert_raises(ValueError, self.ag.set_masses, [0.1, 0.2])
-
-    # VALID
-    def test_split_atoms(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("atom")
-        assert_equal(len(sg), len(ag))
-        for g, ref_atom in zip(sg, ag):
-            atom = g[0]
-            assert_equal(len(g), 1)
-            assert_equal(atom.name, ref_atom.name)
-            assert_equal(atom.resid, ref_atom.resid)
-
-    # VALID
-    def test_split_residues(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("residue")
-        assert_equal(len(sg), len(ag.residues.resids))
-        for g, ref_resname in zip(sg, ag.residues.resnames):
-            if ref_resname == "GLY":
-                assert_equal(len(g), 1)
-            else:
-                assert_equal(len(g), 2)
-            for atom in g:
-                assert_equal(atom.resname, ref_resname)
-
-    # VALID
-    def test_split_segments(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
-                                        "(name CA or name CB)")
-        sg = ag.split("segment")
-        assert_equal(len(sg), len(ag.segments.segids))
-        for g, ref_segname in zip(sg, ag.segments.segids):
-            for atom in g:
-                assert_equal(atom.segid, ref_segname)
 
     # VALID
     # instant selectors
@@ -1670,94 +1595,19 @@ class TestSegmentGroup(TestCase):
                      sorted(self.universe.segments.atoms.indices))
 
 
-class TestAtomGroupVelocities(TestCase):
-    """Tests of velocity-related functions in AtomGroup"""
-
-    # VALID
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(GRO, TRR)
-        self.ag = self.universe.select_atoms("bynum 12:42")
-
-    # INVALID: no `get_velocities` method; use `velocities` property directly
-    @skip
-    @dec.slow
-    def test_get_velocities(self):
-        v = self.ag.get_velocities()
-        assert_(np.any(np.abs(v) > 1e-6), "velocities should be non-zero")
-
-    # VALID
-    @dec.slow
-    def test_velocities(self):
-        ag = self.universe.atoms[42:45]
-        ref_v = np.array([
-            [-3.61757946, -4.9867239, 2.46281552],
-            [2.57792854, 3.25411797, -0.75065529],
-            [13.91627216, 30.17778587, -12.16669178]])
-        v = ag.velocities
-        assert_almost_equal(v, ref_v, err_msg="velocities were not read correctly")
-
-    # INVALID: no `get_velocities` method; use `velocities` property directly
-    @skip
-    @dec.slow
-    def test_set_velocities(self):
-        ag = self.ag
-        v = ag.get_velocities() - 2.7271
-        ag.set_velocities(v)
-        assert_almost_equal(ag.get_velocities(), v,
-                            err_msg="messages were not set to new value")
-
-
-class TestAtomGroupForces(TestCase):
-    """Tests of velocity-related functions in AtomGroup"""
-
-    # VALID
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(COORDINATES_XYZ, COORDINATES_TRR)
-        self.ag = self.universe.select_atoms("bynum 12:42")
-
-    # INVALID: no `get_forces` method; use `forces` property directly
-    @skip
-    @dec.slow
-    def test_get_forces(self):
-        v = self.ag.get_forces()
-        assert_(np.any(np.abs(v) > 1e-6), "forces should be non-zero")
-
-    # VALID
-    @dec.slow
-    def test_forces(self):
-        ag = self.universe.atoms[1:4]
-        ref_v = np.arange(9).reshape(3, 3) * .01 + .03
-        v = ag.forces
-        assert_almost_equal(v, ref_v, err_msg="forces were not read correctly")
-
-    # INVALID: no `get_forces` method; use `forces` property directly
-    @skip
-    @dec.slow
-    def test_set_forces(self):
-        ag = self.ag
-        v = ag.get_forces() - 2.7271
-        ag.set_forces(v)
-        assert_almost_equal(ag.get_forces(), v,
-                            err_msg="messages were not set to new value")
-
-
 class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
-    # VALID
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.prec = 6
 
-    # VALID
     def tearDown(self):
         del self.universe
         del self.prec
 
-
-    # VALID: but should be testing non-hidden attributes
     def test_partial_timestep(self):
         ag = self.universe.select_atoms('name Ca')
         idx = ag.indices
@@ -1765,9 +1615,9 @@ class TestAtomGroupTimestep(TestCase):
         assert_equal(len(ag.ts._pos), len(ag))
 
         for ts in self.universe.trajectory[0:20:5]:
-            assert_array_almost_equal(ts._pos[idx], ag.ts._pos, self.prec,
+            assert_array_almost_equal(ts.positions[idx], ag.ts.positions, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
-            assert_array_almost_equal(ts._velocities[idx], ag.ts._velocities, self.prec,
+            assert_array_almost_equal(ts.velocities[idx], ag.ts.velocities, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
 
 
