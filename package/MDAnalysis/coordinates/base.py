@@ -1107,8 +1107,15 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
 
     @property
     def totaltime(self):
-        """Total length of the trajectory n_frames * dt."""
-        return self.n_frames * self.dt
+        """Total length of the trajectory
+
+        The time is calculated as ``(n_frames - 1) * dt``, i.e., we assume that
+        the first frame no time as elapsed. Thus, a trajectory with two frames will
+        be considered to have a length of a single time step `dt` and a
+        "trajectory" with a single frame will be reported as length 0.
+
+        """
+        return (self.n_frames - 1) * self.dt
 
     @property
     def frame(self):
