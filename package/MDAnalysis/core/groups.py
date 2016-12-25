@@ -1052,7 +1052,7 @@ class AtomGroup(GroupBase):
         ts = self._u.trajectory.ts
         try:
             ts.velocities[self._ix, :] = values
-        except AttributeError:
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @property
@@ -1076,7 +1076,7 @@ class AtomGroup(GroupBase):
         ts = self._u.trajectory.ts
         try:
             ts.forces[self._ix, :] = values
-        except AttributeError:
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @property

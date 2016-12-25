@@ -53,7 +53,6 @@ from MDAnalysis.tests.datafiles import (
     PDB_full,
     PDB_icodes,
 )
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
 
@@ -115,21 +114,18 @@ class TestSelectionsCHARMM(object):
 
     # resnum selections are boring here because we haven't really a mechanism yet
     # to assign the canonical PDB resnums
-    @knownfailure('No default resnums')
     def test_resnum_single(self):
-        assert 1 == 2
-        #sel = self.universe.select_atoms('resnum 100')
-        #assert_equal(sel.n_atoms, 7)
-        #assert_equal(sel.residues.resids, [100])
-        #assert_equal(sel.residues.resnames, ['GLY'])
+        sel = self.universe.select_atoms('resnum 100')
+        assert_equal(sel.n_atoms, 7)
+        assert_equal(sel.residues.resids, [100])
+        assert_equal(sel.residues.resnames, ['GLY'])
 
-    @knownfailure('No default resnums')
     def test_resnum_range(self):
-        assert 1 == 2
-        #sel = self.universe.select_atoms('resnum 100:105')
-        #assert_equal(sel.n_atoms, 89)
-        #assert_equal(sel.residues.resids, range(100, 106))
-        #assert_equal(sel.residues.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+        sel = self.universe.select_atoms('resnum 100:105')
+        assert_equal(sel.n_atoms, 89)
+        assert_equal(sel.residues.resids, range(100, 106))
+        assert_equal(sel.residues.resnames,
+                     ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):
         sel = self.universe.select_atoms('resname LEU')
@@ -226,8 +222,6 @@ class TestSelectionsCHARMM(object):
         assert_equal(subsel[0].index, 1)
         assert_equal(subsel[-1].index, 4)
 
-    # TODO:
-    # and also for selection keywords such as 'nucleic'
     def test_byres(self):
         sel = self.universe.select_atoms('byres bynum 0:5')
 
@@ -247,28 +241,36 @@ class TestSelectionsCHARMM(object):
                            ("Found wrong residues with same resname as "
                             "resids 10 or 11"))
 
-    @knownfailure("Can't set segids")
     def test_same_segment(self):
         """Test the 'same ... as' construct (Issue 217)"""
-        assert 1 == 2
-        #self.universe.residues[:100].set_segids("A")  # make up some segments
-        #self.universe.residues[100:150].set_segids("B")
-        #self.universe.residues[150:].set_segids("C")
 
-        #target_resids = np.arange(100)+1
-        #sel = self.universe.select_atoms("same segment as resid 10")
-        #assert_equal(len(sel), 1520, "Found a wrong number of atoms in the same segment of resid 10")
-        #assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 10")
+        SNew_A = self.universe.add_Segment(segid='A')
+        SNew_B = self.universe.add_Segment(segid='B')
+        SNew_C = self.universe.add_Segment(segid='C')
 
-        #target_resids = np.arange(100,150)+1
-        #sel = self.universe.select_atoms("same segment as resid 110")
-        #assert_equal(len(sel), 797, "Found a wrong number of atoms in the same segment of resid 110")
-        #assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 110")
+        self.universe.residues[:100].segments = SNew_A
+        self.universe.residues[100:150].segments = SNew_B
+        self.universe.residues[150:].segments = SNew_C
 
-        #target_resids = np.arange(150,self.universe.atoms.n_residues)+1
-        #sel = self.universe.select_atoms("same segment as resid 160")
-        #assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
-        #assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 160")
+        target_resids = np.arange(100) + 1
+        sel = self.universe.select_atoms("same segment as resid 10")
+        assert_equal(len(sel), 1520, "Found a wrong number of atoms in the same segment of resid 10")
+        assert_array_equal(sel.residues.resids,
+                           target_resids, "Found wrong residues in the same segment of resid 10")
+
+        target_resids = np.arange(100, 150) + 1
+        sel = self.universe.select_atoms("same segment as resid 110")
+        assert_equal(len(sel), 797,
+                     "Found a wrong number of atoms in the same segment of resid 110")
+        assert_array_equal(sel.residues.resids, target_resids,
+                           "Found wrong residues in the same segment of resid 110")
+
+        target_resids = np.arange(150, self.universe.atoms.n_residues) + 1
+        sel = self.universe.select_atoms("same segment as resid 160")
+        assert_equal(len(sel), 1024,
+                     "Found a wrong number of atoms in the same segment of resid 160")
+        assert_array_equal(sel.residues.resids, target_resids,
+                           "Found wrong residues in the same segment of resid 160")
 
     def test_empty_same(self):
         ag = self.universe.select_atoms('resname MET')
@@ -753,13 +755,16 @@ class TestBondedSelection(object):
 
         assert_(len(ag) == 3)
 
-    @knownfailure()
-    def test_nobonds_warns(self):
-        assert 1 == 2
-        #self.u.bonds = TopologyGroup([], self.u)
+    @staticmethod
+    def test_nobonds_warns():
+        u = make_Universe(('names',))
 
-        #assert_warns(UserWarning,
-        #self.u.select_atoms, 'type 2 and bonded name N')
+        # empty bond topology attr
+        batt = mda.core.topologyattrs.Bonds([])
+        u.add_TopologyAttr(batt)
+
+        assert_warns(UserWarning,
+                     u.select_atoms, 'bonded name AAA')
 
 
 class TestSelectionErrors(object):
@@ -778,7 +783,8 @@ class TestSelectionErrors(object):
         for selstr in [
                 'name and H',  # string selection
                 'name )',
-                'resid abcd',  # range selection
+                'resid abcd',  # resid arg parsing selection
+                'resnum 7a7',  # rangeselection arg parsing
                 'resid 1-',
                 'prop chicken == tasty',
                 'prop chicken <= 7.4',

@@ -46,11 +46,11 @@ _N_SEGMENTS = 5
 _ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
 _RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
 
-def make_Universe(extras=None, size=None, trajectory=False):
+def make_Universe(extras=None, size=None, trajectory=False, velocities=False, forces=False):
     """Make a dummy reference Universe"""
     u = mda.Universe(make_topology(extras, size=size))
     if trajectory:
-        u.trajectory = FakeReader(len(u.atoms))
+        u.trajectory = FakeReader(len(u.atoms), velocities, forces)
     return u
 
 
@@ -177,14 +177,19 @@ _menu = {
 }
 
 class FakeReader(SingleFrameReader):
-    def __init__(self, n_atoms=None):
+    def __init__(self, n_atoms=None, velocities=False, forces=False):
         self.n_atoms = n_atoms if not n_atoms is None else _N_ATOMS
         self.filename = 'FakeReader'
         self.n_frames = 1
-        self._read_first_frame()
+        self._read_first_frame(velocities, forces)
 
-    def _read_first_frame(self):
-        self.ts = self._Timestep(self.n_atoms)
-        self.ts.positions = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3)
-        self.ts.frame = 0
+    def _read_first_frame(self, velocities=False, forces=False):
+        ts = self.ts = self._Timestep(self.n_atoms, positions=True,
+                                      velocities=velocities, forces=forces)
+        ts.positions = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3)
+        if velocities:
+            ts.velocities = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3) + 100
+        if forces:
+            ts.forces = np.arange(3 * self.n_atoms).reshape(self.n_atoms, 3) + 10000
+        ts.frame = 0
 

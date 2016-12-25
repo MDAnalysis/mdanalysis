@@ -105,12 +105,6 @@ class TestMMTFgzUniverse(object):
             assert_(isinstance(m, AtomGroup))
             assert_(len(m) == 570)
 
-    def test_model_selection(self):
-        m1 = self.u.select_atoms('model 0')
-        m2 = self.u.select_atoms('model 1')
-
-        assert_(len(m1) == 570)
-        assert_(len(m2) == 570)
 
 class TestMMTFgzUniverseFromDecoder(TestMMTFgzUniverse):
     def setUp(self):
@@ -125,3 +119,43 @@ class TestMMTFFetch(TestMMTFUniverse):
         mock_fetch.return_value = top
         self.u = mda.fetch_mmtf('173D')  # string is irrelevant
         
+
+class TestSelectModels(object):
+    # tests for 'model' keyword in select_atoms
+    def setUp(self):
+        self.u = mda.Universe(MMTF_gz)
+
+    def tearDown(self):
+        del self.u
+
+    def test_model_selection(self):
+        m1 = self.u.select_atoms('model 0')
+        m2 = self.u.select_atoms('model 1')
+
+        assert_(len(m1) == 570)
+        assert_(len(m2) == 570)
+
+    def test_model_multiple(self):
+        m2plus = self.u.select_atoms('model 1-10')
+
+        assert_(len(m2plus) == 570)
+
+    def test_model_multiple_2(self):
+        m2plus = self.u.select_atoms('model 1:10')
+
+        assert_(len(m2plus) == 570)
+
+    def test_model_multiple_3(self):
+        m1and2 = self.u.select_atoms('model 0-1')
+
+        assert_(len(m1and2) == 1140)
+
+    def test_model_multiple_4(self):
+        m1and2 = self.u.select_atoms('model 0:1')
+
+        assert_(len(m1and2) == 1140)
+
+    def test_model_multiple_5(self):
+        m1and2 = self.u.select_atoms('model 0 1')
+
+        assert_(len(m1and2) == 1140)

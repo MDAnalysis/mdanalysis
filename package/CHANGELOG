@@ -57,6 +57,7 @@ Enhancements
     of a group given weights
 
 Fixes
+  * Improvement of analysis/waterdynamics module (Issue #935)
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
   * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
@@ -80,6 +81,7 @@ Fixes
   * Fixed align_principal_axis onto a principal axes (Issue #1045)
   * Fixed NCDFWriter wrote velocities instead of forces if
     convert_units=False was set: now correctly writes forces (PR #1113)
+  * Fixed warn about missing cython package in dev builds
 
 Changes
   * Started unifying the API of analysis classes (named internally
