@@ -53,10 +53,14 @@ class TestAtomGroupPickle(object):
                                           protocol=cPickle.HIGHEST_PROTOCOL)
 
     def tearDown(self):
-        del self.universe
-        del self.universe_n
-        del self.ag
-        del self.ag_n
+        # Some tests might delete attributes.
+        try:
+            del self.universe
+            del self.universe_n
+            del self.ag
+            del self.ag_n
+        except AttributeError:
+            pass
 
     def test_unpickle(self):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
@@ -74,20 +78,14 @@ class TestAtomGroupPickle(object):
         assert_(newag.universe is self.universe_n,
                 "Unpickled AtomGroup on wrong Universe.")
 
-    @staticmethod
-    def test_unpickle_missing():
-        u = mda.Universe(PDB_small, anchor_name='missingtest')
-        ag = u.atoms[:10]
-        ag_pick = cPickle.dumps(ag)
-
+    def test_unpickle_missing(self):
         # Kill AtomGroup and Universe
-        del ag
-        del u
+        del self.ag_n
+        del self.universe_n
         # and make sure they're very dead
         gc.collect()
-
         # we shouldn't be able to unpickle
-        assert_raises(RuntimeError, cPickle.loads, ag_pick)
+        assert_raises(RuntimeError, cPickle.loads, self.pickle_str_n)
 
     def test_unpickle_noanchor(self):
         # Shouldn't unpickle if the universe is removed from the anchors
@@ -114,8 +112,8 @@ class TestAtomGroupPickle(object):
     def test_unpickle_reanchor_other(self):
         # universe is removed from the anchors
         self.universe.remove_anchor()
-        # and universe_n goes into the anchor list
-        self.universe_n.make_anchor()
+        # and universe_n goes into the generic anchor list
+        self.universe_n.anchor_name = None
         newag = cPickle.loads(self.pickle_str)
         assert_array_equal(self.ag.indices, newag.indices)
         assert_(newag.universe is self.universe_n,
@@ -138,13 +136,9 @@ class TestAtomGroupPickle(object):
         assert_(newag.universe is self.universe,
                 "Unpickled AtomGroup on wrong Universe.")
 
-
-class TestEmptyAtomGroupPickle(object):
-    # This comes in a class just to get memleak testing
     def test_pickle_unpickle_empty(self):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
-        u = make_Universe()
-        ag = u.atoms[[]]
+        ag = self.universe.atoms[[]]
         pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
         newag = cPickle.loads(pickle_str)
         assert_equal(len(newag), 0)

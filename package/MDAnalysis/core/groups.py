@@ -98,8 +98,8 @@ def _unpickle(uhash, ix):
         raise RuntimeError(
             "Couldn't find a suitable Universe to unpickle AtomGroup onto "
             "with Universe hash '{}'.  Available hashes: {}"
-            "".format(uhash, ', '.join(_ANCHOR_UNIVERSES.keys())))
-
+            "".format(uhash, ', '.join([str(k)
+                                        for k in _ANCHOR_UNIVERSES.keys()])))
     return u.atoms[ix]
 
 def make_classes():

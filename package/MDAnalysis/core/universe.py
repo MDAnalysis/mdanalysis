@@ -148,10 +148,8 @@ class Universe(object):
         Setting to other than ``None`` will cause
         :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
         Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. *is_anchor* will be ignored in this case but
-        will still be honored when unpickling
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled with
-        *anchor_name*==``None``. [``None``]
+        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
+        still be honored when unpickling.
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
@@ -238,14 +236,12 @@ class Universe(object):
         if kwargs.pop('guess_bonds', False):
             self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
 
+        # None causes generic hash to get used.
+        # We store the name ieven if is_anchor is False in case the user later
+        #  wants to make the universe an anchor.
+        self._anchor_name = kwargs.get('anchor_name', None)
         # Universes are anchors by default
-        if kwargs.get('is_anchor', True):
-            # None causes generic hash to get used
-            anchor_name = kwargs.get('anchor_name', None)
-            # Bootstrap..
-            self._anchor_name = None
-            # Property handles anchors
-            self.anchor_name = anchor_name
+        self.is_anchor = kwargs.get('is_anchor', True)
 
     def _generate_from_topology(self):
         # generate Universe version of each class
@@ -471,14 +467,21 @@ class Universe(object):
     def _gen_anchor_hash(self):
         # hash used for anchoring.
         # Try and use anchor_name, else make hash based on size and filename
-        if not self._anchor_name is None:
+        if self._anchor_name is not None:
             return self._anchor_name
         else:
+            # Some universes have no trajectory. Empty ones might even be
+            #  missing all three attributes.
+            ats = len(self.atoms) if self.atoms is not None else 0
+            fnm = getattr(self, 'filename', '')
+            # The universe might not have a trajectory or the trajectory
+            #  filename might not exist (the MemoryReader case)
             try:
-                u_hash = hash((len(self.atoms), self.filename, self.trajectory.filename))
-            except AttributeError:  # without trajectory
-                u_hash = hash((len(self.atoms), self.filename))
-            return str(u_hash)
+                trj = self.trajectory.filename
+            except AttributeError:
+                trj = ''
+            return hash((ats, fnm, trj))
+
     @property
     def is_anchor(self):
         """Is this Universe an anchoring for unpickling AtomGroups"""
