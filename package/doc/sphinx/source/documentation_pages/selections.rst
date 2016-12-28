@@ -199,26 +199,19 @@ bynum *index-range*
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 1 up to the total number of atoms.
 
+.. _pre-selections-label:
+
 Preexisting selections and modifiers
 ------------------------------------
 
-group *group-name*
+group `group-name`
     selects the atoms in the :class:`AtomGroup` passed to the function as an
-    argument named *group-name*. Only the atoms common to *group-name* and the
-    instance :meth:`~select_atoms` was called from will be considered.
-    *group-name* will be included in the parsing just by comparison of atom
-    indices.  This means that it is up to the user to make sure they were
-    defined in an appropriate :class:`Universe`.
-
-fullgroup *group-name*
-    just like the ``group`` keyword with the difference that all the atoms of
-    *group-name* are included. The resulting selection may therefore have atoms
-    that were initially absent from the instance :meth:`~select_atoms` was
-    called from.
-
-    .. deprecated:: 0.11
-       The use of ``fullgroup`` has been deprecated in favor of the equivalent
-       ``global group``.
+    argument named `group-name`. Only the atoms common to `group-name` and the
+    instance :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` was called
+    from will be considered, unless ``group`` is preceded by the ``global``
+    keyword. `group-name` will be included in the parsing just by comparison of
+    atom indices. This means that it is up to the user to make sure the
+    `group-name` group was defined in an appropriate :class:`Universe`.
 
 global *selection*
     by default, when issuing
@@ -234,6 +227,59 @@ global *selection*
     :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
     :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
 
+.. deprecated:: 0.11
+   The use of ``fullgroup`` has been deprecated in favor of the equivalent
+   ``global group``.
+
+Dynamic selections
+==================
+
+By default :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` returns an
+:class:`~MDAnalysis.core.groups.AtomGroup`, in which the list of atoms is
+constant across trajectory frame changes. If
+:meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is invoked with named
+argument ``updating`` set to ``True``, an
+:class:`~MDAnalysis.core.groups.UpdatingAtomGroup` instance will be returned
+instead. It behaves just like an :class:`~MDAnalysis.core.groups.AtomGroup`
+object, with the difference that the selection expressions are re-evaluated
+every time the trajectory frame changes (this happens lazily, only when the
+:class:`~MDAnalysis.core.groups.UpdatingAtomGroup` object is accessed so that
+there is no redundant updating going on)::
+
+ # A dynamic selection of corner atoms:
+ >>> ag_updating = universe.select_atoms("prop x < 5 and prop y < 5 and prop z < 5", updating=True)
+ >>> ag_updating
+ <UpdatingAtomGroup with 9 atoms>
+ >>> universe.trajectory.next()
+ >>> ag_updating
+ <UpdatingAtomGroup with 14 atoms>
+
+Using the ``group`` selection keyword for
+:ref:`preexisting-selections <pre-selections-label>`, one can
+make updating selections depend on
+:class:`~MDAnalysis.core.groups.AtomGroup`, or even other
+:class:`~MDAnalysis.core.groups.UpdatingAtomGroup`, instances.
+Likewise, making an updating selection from an already updating group will
+cause later updates to also reflect the updating of the base group::
+
+ >>> chained_ag_updating = ag_updating.select_atoms("resid 1:1000", updating=True)
+ >>> chained_ag_updating
+ <UpdatingAtomGroup with 3 atoms>
+ >>> universe.trajectory.next()
+ >>> chained_ag_updating
+ <UpdatingAtomGroup with 7 atoms>
+
+Finally, a non-updating selection or a slicing/addition operation made on an
+:class:`~MDAnalysis.core.groups.UpdatingAtomGroup` will return a static
+:class:`~MDAnalysis.core.groups.AtomGroup`, which will no longer update
+across frames::
+
+ >>> static_ag = ag_updating.select_atoms("resid 1:1000")
+ >>> static_ag
+ <UpdatingAtomGroup with 3 atoms>
+ >>> universe.trajectory.next()
+ >>> static_ag
+ <UpdatingAtomGroup with 3 atoms>
 
 
 Instant selectors
@@ -345,4 +391,4 @@ work as one might expect::
  >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]
- 
+

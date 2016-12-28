@@ -420,14 +420,18 @@ class Universe(object):
                 dimensions=self.trajectory.ts.dimensions,
                 dt=self.trajectory.ts.dt)
 
-    def select_atoms(self, sel, *othersel, **selgroups):
+    # python 2 doesn't allow an efficient splitting of kwargs in function
+    # argument signatures.
+    # In python3-only we'd be able to explicitely define this function with
+    # something like (sel, *othersels, updating=False, **selgroups)
+    def select_atoms(self, *args, **kwargs):
         """Select atoms.
 
         SeeAlso
         -------
         :meth:`MDAnalysis.core.groups.AtomGroup.select_atoms`
         """
-        return self.atoms.select_atoms(sel, *othersel, **selgroups)
+        return self.atoms.select_atoms(*args, **kwargs)
 
     @property
     def bonds(self):

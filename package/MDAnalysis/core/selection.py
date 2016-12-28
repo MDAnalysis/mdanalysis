@@ -107,6 +107,9 @@ def grab_not_keywords(tokens):
 
 _SELECTIONDICT = {}
 _OPERATIONS = {}
+# These are named args to select_atoms that have a special meaning and must
+# not be allowed as names for the 'group' keyword.
+_RESERVED_KWARGS=('updating',)
 
 
 # And and Or are exception and aren't strictly a Selection
@@ -528,6 +531,10 @@ class SelgroupSelection(Selection):
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
+        if grpname in _RESERVED_KWARGS:
+            raise TypeError("The '{}' keyword is reserved and cannot be "
+                            "used as a selection group name."
+                            .format(grpname))
         try:
             self.grp = parser.selgroups[grpname]
         except KeyError:
