@@ -27,6 +27,7 @@ from MDAnalysisTests.datafiles import GRO
 
 from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
+import warnings
 
 
 class TestContactMatrix(TestCase):
@@ -186,3 +187,22 @@ class TestBetween(TestCase):
                                                               self.ag2,
                                                               self.distance).indices)
         assert_equal(actual, self.expected)
+
+class TestImportWarnings(TestCase):
+
+    def test_no_exception_scipy_module_level(self):
+        # a module level ImportError should never be raised, even if
+        # scipy is absent ; only silent success or a warning
+        # see unit testing for warnings:
+        # http://stackoverflow.com/a/3892301
+
+        if module_not_found('scipy'):
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                import MDAnalysis.analysis.distances
+                assert issubclass(w[-1].category, ImportWarning)
+        else: # no warning if scipy is present
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                import MDAnalysis.analysis.distances
+                assert w == []
