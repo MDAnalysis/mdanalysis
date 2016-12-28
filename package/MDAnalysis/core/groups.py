@@ -2010,7 +2010,7 @@ _UAG_SHORTCUT_ATTRS = {
     "_base_group", "_selections", "_lastupdate",
     "level", "_u", "universe",
     # Methods of the UAG
-    "ensure_updated",
+    "_ensure_updated",
     "is_uptodate",
     "update_selection",
 }
@@ -2056,7 +2056,7 @@ class UpdatingAtomGroup(AtomGroup):
         if self._selections:
             # Allows the creation of a cheap placeholder UpdatingAtomGroup
             # by passing an empty selection tuple.
-            self.ensure_updated()
+            self._ensure_updated()
 
     def update_selection(self):
         """
@@ -2081,7 +2081,11 @@ class UpdatingAtomGroup(AtomGroup):
     @property
     def is_uptodate(self):
         """
-        Checks whether the selection needs updating
+        Checks whether the selection needs updating based on frame number only.
+
+        Modifications to the coordinate data that render selections stale are
+        not caught, and in those cases :attr:`is_uptodate` may return an
+        erroneous value.
 
         Returns
         -------
@@ -2105,7 +2109,7 @@ class UpdatingAtomGroup(AtomGroup):
             # This always marks the selection as outdated
             self._lastupdate = None
 
-    def ensure_updated(self):
+    def _ensure_updated(self):
         """
         Checks whether the selection needs updating and updates it, if needed.
 
@@ -2124,7 +2128,7 @@ class UpdatingAtomGroup(AtomGroup):
         # ALL attribute access goes through here
         # If the requested attribute isn't in the shortcut list, update ourselves
         if not name in _UAG_SHORTCUT_ATTRS:
-            self.ensure_updated()
+            self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
 
