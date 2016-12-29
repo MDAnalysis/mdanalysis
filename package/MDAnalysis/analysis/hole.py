@@ -111,7 +111,7 @@ order parameter :math:`\rho`. ::
    u = mda.Universe(MULTIPDB_HOLE) # trajectory
 
    # calculate RMSD
-   R = RMSD(u, reference=ref, select="protein", mass_weighted=True)
+   R = RMSD(u, reference=ref, select="protein", weights='mass')
    R.run()
 
    # HOLE analysis with order parameters
