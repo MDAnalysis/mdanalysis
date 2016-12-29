@@ -359,7 +359,9 @@ class RMSD(AnalysisBase):
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
         if mass_weighted is not None:
-            # TODO: add depcreation
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
             if mass_weighted:
                 weights = 'mass'
         self.weights = weights
