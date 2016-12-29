@@ -150,6 +150,8 @@ try:
 except ImportError:
     pass
 
+from .util import block_import
+
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
     try:
@@ -218,7 +220,6 @@ def parser_not_found(parser_name):
         return True
     else:
         return False
-
 
 @contextmanager
 def in_dir(dirname):
