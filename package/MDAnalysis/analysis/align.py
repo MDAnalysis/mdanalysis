@@ -429,7 +429,9 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
                                                  strict=strict)
 
     if mass_weighted is not None:
-        # TODO: print deprecation warnings for 0.17.0
+        warnings.warn("mass weighted is deprecated argument. Please use "
+                      " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                      category=DeprecationWarning)
         if mass_weighted:
             weights = 'mass'
 
@@ -590,7 +592,9 @@ class AlignTraj(AnalysisBase):
         self._writer = mda.Writer(self.filename, natoms)
 
         if mass_weighted is not None:
-            # TODO: print depcreatoin message til 0.17.0
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
             if mass_weighted:
                 weights = 'mass'
 
