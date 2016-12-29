@@ -115,7 +115,7 @@ class TestDCDReader(object):
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
         assert_almost_equal(self.universe.trajectory.totaltime,
-                            98.0,
+                            97.0,
                             3,
                             err_msg="wrong total length of AdK trajectory")
 
@@ -219,7 +219,7 @@ class TestDCDWriter(TestCase):
 
         uw = mda.Universe(PSF, self.outfile)
         assert_almost_equal(uw.trajectory.totaltime,
-                            uw.trajectory.n_frames * DT, 5)
+                            (uw.trajectory.n_frames - 1) * DT, 5)
         times = np.array([uw.trajectory.time for ts in uw.trajectory])
         frames = np.array([ts.frame for ts in uw.trajectory])
         assert_array_almost_equal(times, frames * DT, 5)
