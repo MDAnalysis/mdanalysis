@@ -24,10 +24,12 @@ from __future__ import print_function
 import MDAnalysis
 from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import GRO
+from MDAnalysisTests.util import block_import
 
 from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 import warnings
+from mock import Mock, patch
 
 
 class TestContactMatrix(TestCase):
@@ -189,19 +191,24 @@ class TestBetween(TestCase):
         assert_equal(actual, self.expected)
 
 class TestImportWarnings(TestCase):
+    # see unit testing for warnings:
+    # http://stackoverflow.com/a/3892301
 
-    def test_no_exception_scipy_module_level(self):
-        # a module level ImportError should never be raised, even if
-        # scipy is absent ; only silent success or a warning
-        # see unit testing for warnings:
-        # http://stackoverflow.com/a/3892301
+    @block_import('scipy')
+    def test_warning_raised_no_scipy_module_level(self):
+        # an appropriate warning rather than an exception should be
+        # raised if scipy is absent when importing
+        # MDAnalysis.analysis.distances
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            import MDAnalysis.analysis.distances
+            assert issubclass(w[-1].category, ImportWarning)
 
-        if module_not_found('scipy'):
-            with warnings.catch_warnings(record=True) as w:
-                warnings.simplefilter("always")
-                import MDAnalysis.analysis.distances
-                assert issubclass(w[-1].category, ImportWarning)
-        else: # no warning if scipy is present
+    def test_silent_success_scipy_present_module_level(self):
+        # if scipy is present no module level ImportWarning should be
+        # raised when importing MDAnalysis.analysis.distances
+        mock = Mock() # mock presence of scipy
+        with patch.dict('sys.modules', {'scipy':mock}):
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
                 import MDAnalysis.analysis.distances
