@@ -20,8 +20,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function
-
 from six.moves import range
+
+import warnings
+import os
+import sys
 
 import MDAnalysis
 import MDAnalysis as mda
@@ -33,12 +36,13 @@ from numpy.testing import (TestCase, dec, assert_equal,
 
 import numpy as np
 
-import os
-import sys
-
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 from MDAnalysisTests import tempdir, parser_not_found
+
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
 
 
 class Testrmsd(object):
@@ -187,6 +191,18 @@ class TestRMSD(object):
     def test_mass_weighted_and_save(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
                                             step=49, weights='mass').run()
+        RMSD.save(self.outfile)
+        saved = np.loadtxt(self.outfile)
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
+                                  err_msg="error: rmsd profile should match " +
+                                          "test values")
+
+    def test_mass_weighted_and_save_deprecated(self):
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                                step=49, mass_weighted=True).run()
+        assert_equal(len(warn), 1)
         RMSD.save(self.outfile)
         saved = np.loadtxt(self.outfile)
         assert_array_almost_equal(RMSD.rmsd, saved, 4,
