@@ -173,41 +173,34 @@ def shrinkage_covariance_estimator( coordinates,
 def covariance_matrix(ensemble,
                       selection="name CA",
                       estimator=shrinkage_covariance_estimator,
-                      mass_weighted=True,
+                      weights='mass',
                       reference=None):
     """
     Calculates (optionally mass weighted) covariance matrix
 
     Parameters
     ----------
-
     ensemble : Universe object
         The structural ensemble
-
-    selection : str
+    selection : str (optional)
         Atom selection string in the MDAnalysis format.
-
-    estimator : function
+    estimator : function (optional)
         Function that estimates the covariance matrix. It requires at least
         a "coordinates" numpy array (of shape (N,M,3), where N is the number
         of frames and M the number of atoms). See ml_covariance_estimator and
         shrinkage_covariance_estimator for reference.
-
-    mass_weighted : bool
-        Whether to do a mass-weighted analysis (default is True)
-
-    reference : MDAnalysis.Universe object
+    weights : str/array_like (optional)
+        specify weights. If ``'mass'`` then chose masses of ensemble atoms, if ``None`` chose uniform weights
+    reference : MDAnalysis.Universe object (optional)
         Use the distances to a specific reference structure rather than the
         distance to the mean.
 
     Returns
     -------
-
     cov_mat : numpy.array
         Covariance matrix
 
     """
-
     # Extract coordinates from ensemble
     coordinates = ensemble.trajectory.timeseries(
         ensemble.select_atoms(selection),
@@ -219,7 +212,6 @@ def covariance_matrix(ensemble,
     # Extract coordinates from reference structure, if specified
     reference_coordinates = None
     if reference:
-
         # Select the same atoms in reference structure
         reference_atom_selection = reference.select_atoms(
             ensemble.get_atom_selection_string())
@@ -230,17 +222,27 @@ def covariance_matrix(ensemble,
 
     sigma = estimator(coordinates, reference_coordinates)
 
-
-    # Optionally correct with mass-weighting
-    if mass_weighted:
+    # Optionally correct with weights
+    if weights is not None:
         # Calculate mass-weighted covariance matrix
-
-        if selection:
-            masses = np.repeat(ensemble.select_atoms(selection).masses, 3)
+        if weights == 'mass':
+            if selection:
+                weights = ensemble.select_atoms(selection).masses
+            else:
+                weights = ensemble.atoms.masses
         else:
-            masses = np.repeat(ensemble.atoms.masses, 3)
+            if selection:
+                req_len = ensemble.select_atoms(selection).n_atoms
+            else:
+                req_len = ensemble.atoms.n_atoms
+            if req_len != len(weights):
+                raise ValueError("number of weights is unequal to number of "
+                                 "atoms in ensemble")
 
-        mass_matrix = np.sqrt(np.identity(len(masses))*masses)
-        sigma = np.dot(mass_matrix, np.dot(sigma, mass_matrix))
+        # broadcast to a (len(weights), 3) array
+        weights = np.repeat(weights, 3)
+
+        weight_matrix = np.sqrt(np.identity(len(weights))*weights)
+        sigma = np.dot(weight_matrix, np.dot(sigma, weight_matrix))
 
     return sigma

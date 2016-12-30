@@ -328,9 +328,9 @@ class RMSD(AnalysisBase):
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
 
-        filename : str (optional)
+        filename : str, optional
             write RSMD into file file :meth:`RMSD.save`
-        mass_weighted : bool deprecated
+        mass_weighted : bool (deprecated)
              do a mass-weighted RMSD fit
         weights : str/array_like (optional)
              choose weights. If 'str' uses masses as weights
