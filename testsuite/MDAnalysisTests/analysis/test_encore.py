@@ -214,11 +214,11 @@ inconsistent results")
     def test_ensemble_superimposition_to_reference_non_weighted():
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
-                        select="name CA", mass_weighted=False,
+                        select="name CA",
                         in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
-                        select="name *", mass_weighted=False,
+                        select="name *",
                         in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
@@ -239,7 +239,7 @@ inconsistent results")
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_hes(self):
-        results, details = encore.hes([self.ens1, self.ens2], mass_weighted=True)
+        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
         result_value = results[0,1]
         min_bound = 1E5
         self.assertGreater(result_value, min_bound,
