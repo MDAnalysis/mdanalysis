@@ -150,7 +150,7 @@ try:
 except ImportError:
     pass
 
-from .util import block_import
+from MDAnalysisTests.util import block_import
 
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""

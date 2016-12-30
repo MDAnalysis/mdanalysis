@@ -15,7 +15,8 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
-from MDAnalysisTests import tempdir, block_import
+from MDAnalysisTests import tempdir
+from MDAnalysisTests.util import block_import
 from MDAnalysisTests.core.groupbase import make_Universe
 
 
