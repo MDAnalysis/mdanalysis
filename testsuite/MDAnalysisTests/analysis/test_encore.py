@@ -98,24 +98,24 @@ class TestEncore(TestCase):
         assert_equal(triangular_matrix[0,1], expected_value,
                      err_msg="Data error in TriangularMatrix: read/write are not consistent")
 
-        assert_equal(triangular_matrix[0,1], triangular_matrix[1,0], 
+        assert_equal(triangular_matrix[0,1], triangular_matrix[1,0],
                         err_msg="Data error in TriangularMatrix: matrix non symmetrical")
         triangular_matrix.savez(filename)
 
         triangular_matrix_2 = encore.utils.TriangularMatrix(size = size, loadfile = filename)
-        assert_equal(triangular_matrix_2[0,1], expected_value, 
+        assert_equal(triangular_matrix_2[0,1], expected_value,
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
 
         triangular_matrix_3 = encore.utils.TriangularMatrix(size = size)
         triangular_matrix_3.loadz(filename)
-        assert_equal(triangular_matrix_3[0,1], expected_value, 
+        assert_equal(triangular_matrix_3[0,1], expected_value,
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
 
         incremented_triangular_matrix = triangular_matrix + scalar
         assert_equal(incremented_triangular_matrix[0,1], expected_value + scalar,
                         err_msg="Error in TriangularMatrix: addition of scalar gave\
 inconsistent results")
-        
+
         triangular_matrix += scalar
         assert_equal(triangular_matrix[0,1], expected_value + scalar,
                         err_msg="Error in TriangularMatrix: addition of scalar gave\
@@ -140,29 +140,29 @@ inconsistent results")
 
         arguments = [tuple([i]) for i in np.arange(0,100)]
 
-        parallel_calculation = encore.utils.ParallelCalculation(function = function,
-                                                                ncores = 4,
-                                                                args = arguments)
+        parallel_calculation = encore.utils.ParallelCalculation(function=function,
+                                                                n_jobs=4,
+                                                                args=arguments)
         results = parallel_calculation.run()
 
         for i,r in enumerate(results):
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-    def test_rmsd_matrix_with_superimposition(self):        
+    def test_rmsd_matrix_with_superimposition(self):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(self.ens1,
                                     encore.confdistmatrix.set_rmsd_matrix_elements,
                                     selection = "name CA",
                                     pairwise_align = True,
                                     mass_weighted = True,
-                                    ncores = 1)
+                                    n_jobs = 1)
 
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")            
+                                err_msg = "calculated RMSD values differ from the reference implementation")
 
     def test_rmsd_matrix_without_superimposition(self):
         selection_string = "name CA"
@@ -178,7 +178,7 @@ inconsistent results")
                             selection = selection_string,
                             pairwise_align = False,
                             mass_weighted = True,
-                            ncores = 1)
+                            n_jobs = 1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
@@ -264,7 +264,7 @@ inconsistent results")
         expected_value = 0.51
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
-        
+
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_to_self(self):
@@ -295,7 +295,7 @@ inconsistent results")
         expected_value = 0.68
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
-        
+
     def test_ces_convergence(self):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
         results = encore.ces_convergence(self.ens1, 5)
@@ -793,4 +793,3 @@ class TestEncoreDimensionalityReduction(TestCase):
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
-

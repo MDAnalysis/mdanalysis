@@ -55,7 +55,7 @@ from .utils import TriangularMatrix, trm_indeces
 
 def conformational_distance_matrix(ensemble,
                                    conf_dist_function, selection="",
-                                   superimposition_selection="", ncores=1, pairwise_align=True,
+                                   superimposition_selection="", n_jobs=1, pairwise_align=True,
                                    mass_weighted=True, metadata=True, verbose=False):
     """
     Run the conformational distance matrix calculation.
@@ -84,9 +84,9 @@ def conformational_distance_matrix(ensemble,
         Whether to build a metadata dataset for the calculated matrix.
         Default is True.
 
-    ncores : int
+    n_jobs : int
         Number of cores to be used for parallel calculation
-        Default is 1.
+        Default is 1. -1 uses all available cores
 
     Returns
     -------
@@ -95,13 +95,6 @@ def conformational_distance_matrix(ensemble,
         Conformational distance matrix in triangular representation.
 
     """
-
-    # Decide how many cores have to be used. Since the main process is
-    # stopped while the workers do their job, ncores workers will be
-    # spawned.
-
-    if ncores < 1:
-        ncores = 1
 
     # framesn: number of frames
     framesn = len(ensemble.trajectory.timeseries(
@@ -167,7 +160,7 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indeces((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=ncores, verbose=verbose)(delayed(conf_dist_function)(
+    Parallel(n_jobs=n_jobs, verbose=verbose)(delayed(conf_dist_function)(
         element,
         rmsd_coordinates,
         distmat,
@@ -260,7 +253,7 @@ def get_distance_matrix(ensemble,
                         superimpose=True,
                         superimposition_subset="name CA",
                         mass_weighted=True,
-                        ncores=1,
+                        n_jobs=1,
                         verbose=False,
                         *conf_dist_args,
                         **conf_dist_kwargs):
@@ -300,7 +293,7 @@ def get_distance_matrix(ensemble,
     mass_weighted : bool, optional
         calculate a mass-weighted RMSD (default is True). If set to False
         the superimposition will also not be mass-weighted.
-    ncores : int, optional
+    n_jobs : int, optional
         Maximum number of cores to be used (default is 1)
     verbose : bool, optional
         print progress
@@ -357,7 +350,7 @@ def get_distance_matrix(ensemble,
                                                         selection=selection,
                                                         pairwise_align=superimpose,
                                                         mass_weighted=mass_weighted,
-                                                        ncores=ncores,
+                                                        n_jobs=n_jobs,
                                                         verbose=verbose)
 
         logging.info("    Done!")
