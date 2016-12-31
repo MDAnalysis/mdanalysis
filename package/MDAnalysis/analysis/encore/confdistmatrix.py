@@ -49,8 +49,7 @@ from ...core.universe import Universe
 from ..align import rotation_matrix
 
 from .cutils import PureRMSD
-from .utils import TriangularMatrix, trm_indeces, \
-    AnimatedProgressBar
+from .utils import TriangularMatrix, trm_indeces
 
 
 
@@ -254,40 +253,6 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
                         if one of them is given")
 
 
-def pbar_updater(pbar, pbar_counters, max_val, update_interval=0.2):
-    '''Method that updates and prints the progress bar, upon polling
-    progress status from workers.
-
-    Parameters
-    ----------
-
-    pbar : encore.utils.AnimatedProgressBar object
-        Progress bar object
-
-    pbar_counters : list of multiprocessing.RawValue
-        List of counters. Each worker is given a counter, which is updated
-        at every cycle. In this way the _pbar_updater process can
-        asynchronously fetch progress reports.
-
-    max_val : int
-        Total number of matrix elements to be calculated
-
-    update_interval : float
-        Number of seconds between progress bar updates
-
-    '''
-
-    val = 0
-    while val < max_val:
-        val = 0
-        for c in pbar_counters:
-            val += c.value
-        pbar.update(val)
-        pbar.show_progress()
-        sleep(update_interval)
-
-
-
 def get_distance_matrix(ensemble,
                         selection="name CA",
                         load_matrix=None,
@@ -296,6 +261,7 @@ def get_distance_matrix(ensemble,
                         superimposition_subset="name CA",
                         mass_weighted=True,
                         ncores=1,
+                        verbose=False,
                         *conf_dist_args,
                         **conf_dist_kwargs):
     """
@@ -316,34 +282,28 @@ def get_distance_matrix(ensemble,
 
     Parameters
     ----------
-
     ensemble : Universe
-
     selection : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
-
     load_matrix : str, optional
         Load similarity/dissimilarity matrix from numpy binary file instead
         of calculating it (default is None). A filename is required.
-
     save_matrix : bool, optional
         Save calculated matrix as numpy binary file (default is None). A
         filename is required.
-
     superimpose : bool, optional
         Whether to superimpose structures before calculating distance
         (default is True).
-
     superimposition_subset : str, optional
         Group for superimposition using MDAnalysis selection syntax
         (default is CA atoms: "name CA")
-
     mass_weighted : bool, optional
         calculate a mass-weighted RMSD (default is True). If set to False
         the superimposition will also not be mass-weighted.
-
     ncores : int, optional
         Maximum number of cores to be used (default is 1)
+    verbose : bool, optional
+        print progress
 
     Returns
     -------
@@ -393,13 +353,12 @@ def get_distance_matrix(ensemble,
         # Use superimposition subset, if necessary. If the pairwise alignment
         # is not required, it will not be performed anyway.
         confdistmatrix = conformational_distance_matrix(ensemble,
-                                                conf_dist_function=set_rmsd_matrix_elements,
-                                                selection=selection,
-                                                pairwise_align=superimpose,
-                                                mass_weighted=mass_weighted,
-                                                ncores=ncores,
-                                                *conf_dist_args,
-                                                kwargs=conf_dist_kwargs)
+                                                        conf_dist_function=set_rmsd_matrix_elements,
+                                                        selection=selection,
+                                                        pairwise_align=superimpose,
+                                                        mass_weighted=mass_weighted,
+                                                        ncores=ncores,
+                                                        verbose=verbose)
 
         logging.info("    Done!")
 

@@ -380,26 +380,6 @@ class ProgressBar(object):
             self.progress = 100
 
 
-class AnimatedProgressBar(ProgressBar):
-    """Extends ProgressBar to allow you to use it straighforward on a script.
-    Accepts an extra keyword argument named `stdout`
-    (by default use sys.stdout).
-    The progress status may be send to any file-object.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(AnimatedProgressBar, self).__init__(*args, **kwargs)
-        self.stdout = kwargs.get('stdout', sys.stdout)
-
-    def show_progress(self):
-        if hasattr(self.stdout, 'isatty') and self.stdout.isatty():
-            self.stdout.write('\r')
-        else:
-            self.stdout.write('\n')
-        self.stdout.write(str(self))
-        self.stdout.flush()
-
-
 def trm_indeces(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
