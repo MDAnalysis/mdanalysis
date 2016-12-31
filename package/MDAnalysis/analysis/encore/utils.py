@@ -44,34 +44,36 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        size : int or multiprocessing.SyncrhonizeArray
+        size : int / array_like
             Size of the matrix (number of rows or columns). If an
             array is provided instead, the size of the triangular matrix
             will be calculated and the array copied as the matrix
             elements. Otherwise, the matrix is just initialized to zero.
-
         metadata : dict or None
             Metadata dictionary. Used to generate the metadata attribute.
-
         loadfile : str or None
             Load the matrix from this file. All the attributes and data will
             be determined by the matrix file itself (i.e. metadata will be
             ignored); size has to be provided though.
 
         """
-        self.metadata = metadata
+        if isinstance(metadata, dict):
+            self.metadata = np.array(metadata.items(), dtype=object)
+        else:
+            self.metadata = metadata
+
         self.size = size
         if loadfile:
             self.loadz(loadfile)
-            return
-        if type(size) == int:
+        elif isinstance(size, int):
             self.size = size
             self._elements = np.zeros((size + 1) * size / 2, dtype=np.float64)
-            return
-        if type(size) == SynchronizedArray:
+        elif isinstance(size, SynchronizedArray):
             self._elements = np.array(size.get_obj(), dtype=np.float64)
             self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
-            return
+        elif isinstance(size, np.ndarray):
+            self._elements = size
+            self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
         else:
             raise TypeError
 
