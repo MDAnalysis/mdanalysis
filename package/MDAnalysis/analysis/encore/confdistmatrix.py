@@ -36,8 +36,6 @@ class to compute an RMSD matrix in such a way is also available.
 """
 
 import numpy as np
-from multiprocessing import Process, Array, RawValue
-from ctypes import c_float
 from getpass import getuser
 from socket import gethostname
 from datetime import datetime
@@ -164,7 +162,7 @@ def conformational_distance_matrix(ensemble,
 
     # Allocate for output matrix
     matsize = framesn * (framesn + 1) / 2
-    distmat = Array(c_float, matsize)
+    distmat = np.empty(matsize, np.float64)
 
 
     # Initialize workers. Simple worker doesn't perform fitting,
@@ -228,8 +226,8 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
 
     if fit_coords is None and fit_masses is None:
         summasses = np.sum(masses)
-        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(np.float64),
-                                                coords[j].astype(np.float64),
+        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i],
+                                                coords[j],
                                                 coords[j].shape[0],
                                                 masses,
                                                 summasses)
