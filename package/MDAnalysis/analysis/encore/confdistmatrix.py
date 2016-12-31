@@ -63,34 +63,27 @@ def conformational_distance_matrix(ensemble,
 
     Parameters
     ----------
-
     ensemble : Universe object
         Universe object for which the conformational distance matrix will
         be computed.
-
     conf_dist_function : function object
         Function that fills the matrix with conformational distance
         values. See set_rmsd_matrix_elements for an example.
-
     pairwise_align : bool
         Whether to perform pairwise alignment between conformations.
         Default is True (do the superimposition)
-
     mass_weighted : bool
         Whether to perform mass-weighted superimposition and metric
         calculation. Default is True.
-
     metadata : bool
         Whether to build a metadata dataset for the calculated matrix.
         Default is True.
-
     n_jobs : int
         Number of cores to be used for parallel calculation
         Default is 1. -1 uses all available cores
 
     Returns
     -------
-
     conf_dist_matrix : encore.utils.TriangularMatrix object
         Conformational distance matrix in triangular representation.
 
@@ -294,7 +287,7 @@ def get_distance_matrix(ensemble,
         calculate a mass-weighted RMSD (default is True). If set to False
         the superimposition will also not be mass-weighted.
     n_jobs : int, optional
-        Maximum number of cores to be used (default is 1)
+        Maximum number of cores to be used (default is 1). If -1 use all cores.
     verbose : bool, optional
         print progress
 

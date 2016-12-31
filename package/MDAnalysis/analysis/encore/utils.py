@@ -193,44 +193,36 @@ class ParallelCalculation(object):
 
     Attributes
     ----------
-
     n_jobs : int
-            Number of cores to be used for parallel calculation
-
+        Number of cores to be used for parallel calculation. If -1 use all
+        available cores.
     function : callable object
-            Function to be run in parallel.
-
+        Function to be run in parallel.
     args : list of tuples
-            Each tuple contains the arguments that will be passed to
-            function(). This means that a call to function() is performed for
-            each tuple. function is called as function(\*args, \*\*kwargs). Runs
-            are distributed on the requested numbers of cores.
-
+        Each tuple contains the arguments that will be passed to
+        function(). This means that a call to function() is performed for
+        each tuple. function is called as function(\*args, \*\*kwargs). Runs
+        are distributed on the requested numbers of cores.
     kwargs : list of dicts
-            Each tuple contains the named arguments that will be passed to
-            function, similarly as described for the args attribute.
-
+        Each tuple contains the named arguments that will be passed to
+        function, similarly as described for the args attribute.
     nruns : int
-            Number of runs to be performed. Must be equal to len(args) and
-            len(kwargs).
+        Number of runs to be performed. Must be equal to len(args) and
+        len(kwargs).
     """
 
     def __init__(self, n_jobs, function, args=None, kwargs=None):
-        """ Class constructor.
-
+        """
         Parameters
         ----------
-
         n_jobs : int
-            Number of cores to be used for parallel calculation
-
+            Number of cores to be used for parallel calculation. If -1 use all
+            available cores.
         function : object that supports __call__, as functions
             function to be run in parallel.
-
         args : list of tuples
             Arguments for function; see the ParallelCalculation class
             description.
-
         kwargs : list of dicts or None
             kwargs for function; see the ParallelCalculation
             class description.
