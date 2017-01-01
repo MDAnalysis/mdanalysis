@@ -1,5 +1,3 @@
-import __builtin__
-
 import MDAnalysis as mda
 import mock
 import numpy as np
@@ -18,7 +16,9 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import tempdir
+from MDAnalysisTests.util import block_import
 from MDAnalysisTests.core.groupbase import make_Universe
+
 
 
 class _NCDFReaderTest(_TRJReaderTest):
@@ -383,21 +383,12 @@ class TestNCDFWriterVelsForces(TestCase):
 
 class TestNetCDFImport(object):
     # test ImportErrors in netCDF format Reader & Writer
-    # mock shadows the builtin import method
-    # `block_netcdf` sniffs imports and blocks netCDF import calls
+    # `block_import` sniffs imports and blocks netCDF import calls
 
-    @mock.patch('__builtin__.__import__', wraps=__builtin__.__import__)
-    def test_import_netcdfreader(self, mock_imp):
+    @block_import('netCDF4')
+    def test_import_netcdfreader(self):
         # do it here because netcdf isn't required
         from MDAnalysis.coordinates.TRJ import NCDFReader
-
-        def block_netcdf(*args, **kwargs):
-            if 'netCDF4' in args:
-                raise ImportError
-            else:
-                # returning DEFAULT allows the real import to continue
-                return mock.DEFAULT
-        mock_imp.side_effect = block_netcdf
 
         # Check the error meessage that we're giving out
         try:
@@ -414,18 +405,10 @@ class TestNetCDFImport(object):
             except OSError:
                 pass
 
-    @mock.patch('__builtin__.__import__', wraps=__builtin__.__import__)
-    def test_import_netcdfwriter(self, mock_imp):
+    @block_import('netCDF4')
+    def test_import_netcdfwriter(self):
         # do it here because netcdf isn't required
         from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        def block_netcdf(*args, **kwargs):
-            if 'netCDF4' in args:
-                raise ImportError
-            else:
-                # returning DEFAULT allows the real import to continue
-                return mock.DEFAULT
-        mock_imp.side_effect = block_netcdf
 
         with NCDFWriter('myfile.ncdf', 100) as wr:
             try:

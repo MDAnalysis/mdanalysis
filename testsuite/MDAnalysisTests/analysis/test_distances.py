@@ -24,9 +24,13 @@ from __future__ import print_function
 import MDAnalysis
 from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import GRO
+from MDAnalysisTests.util import block_import
 
 from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
+import warnings
+from mock import Mock, patch
+import sys
 
 
 class TestContactMatrix(TestCase):
@@ -186,3 +190,41 @@ class TestBetween(TestCase):
                                                               self.ag2,
                                                               self.distance).indices)
         assert_equal(actual, self.expected)
+
+class TestImportWarnings(TestCase):
+    # see unit testing for warnings:
+    # http://stackoverflow.com/a/3892301
+
+    def setUp(self):
+        sys.modules.pop('MDAnalysis.analysis.distances', None)
+
+    @block_import('scipy')
+    def test_warning_raised_no_scipy_module_level(self):
+        # an appropriate warning rather than an exception should be
+        # raised if scipy is absent when importing
+        # MDAnalysis.analysis.distances
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            import MDAnalysis.analysis.distances
+            assert issubclass(w[-1].category, ImportWarning)
+
+    def test_silent_success_scipy_present_module_level(self):
+        # if scipy is present no module level ImportWarning should be
+        # raised when importing MDAnalysis.analysis.distances
+        mock = Mock() # mock presence of scipy
+        with patch.dict('sys.modules', {'scipy':mock}):
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                import MDAnalysis.analysis.distances
+                assert w == []
+
+    @block_import('scipy')
+    def test_import_error_contact_matrix_no_scipy(self):
+        # contact_matrix should raise an ImportError if returntype is
+        # "sparse" and scipy is not available
+        with self.assertRaises(ImportError):
+            np.random.seed(321)
+            points = np.random.random_sample((10, 3))
+            import MDAnalysis.analysis.distances
+            MDAnalysis.analysis.distances.contact_matrix(points,
+                                                         returntype="sparse")
