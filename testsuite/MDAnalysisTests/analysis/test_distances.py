@@ -217,3 +217,14 @@ class TestImportWarnings(TestCase):
                 warnings.simplefilter("always")
                 import MDAnalysis.analysis.distances
                 assert w == []
+
+    @block_import('scipy')
+    def test_import_error_contact_matrix_no_scipy(self):
+        # contact_matrix should raise an ImportError if returntype is
+        # "sparse" and scipy is not available
+        with self.assertRaises(ImportError):
+            np.random.seed(321)
+            points = np.random.random_sample((10, 3))
+            import MDAnalysis.analysis.distances
+            MDAnalysis.analysis.distances.contact_matrix(points,
+                                                         returntype="sparse")
