@@ -30,6 +30,7 @@ from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 import warnings
 from mock import Mock, patch
+import sys
 
 
 class TestContactMatrix(TestCase):
@@ -193,6 +194,9 @@ class TestBetween(TestCase):
 class TestImportWarnings(TestCase):
     # see unit testing for warnings:
     # http://stackoverflow.com/a/3892301
+
+    def setUp(self):
+        sys.modules.pop('MDAnalysis.analysis.distances', None)
 
     @block_import('scipy')
     def test_warning_raised_no_scipy_module_level(self):
