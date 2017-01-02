@@ -42,8 +42,6 @@ from datetime import datetime
 from time import sleep
 import logging
 
-from sklearn.externals.joblib import Parallel, delayed
-
 from ...core.universe import Universe
 
 from ..align import rotation_matrix
@@ -51,6 +49,12 @@ from ..align import rotation_matrix
 from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indeces
 
+try:
+    from sklearn.externals.joblib import Parallel, delayed
+except ImportError:
+    sklearn = None
+    import warnings
+    warnings.warn( "Couldn't import sklearn. Can't use conformational_distance_matrix", category=ImportWarning)
 
 
 def conformational_distance_matrix(ensemble,

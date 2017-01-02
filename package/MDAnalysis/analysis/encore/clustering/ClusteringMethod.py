@@ -44,12 +44,12 @@ from . import affinityprop
 try:
     import sklearn.cluster
 except ImportError:
-   sklearn = None
-   msg = "sklearn.cluster could not be imported: some functionality will " \
-         "not be available in encore.fit_clusters()"
-   warnings.warn(msg, category=ImportWarning)
-   logging.warn(msg)
-   del msg
+    sklearn = None
+    msg = "sklearn.cluster could not be imported: some functionality will " \
+          "not be available in encore.fit_clusters()"
+    warnings.warn(msg, category=ImportWarning)
+    logging.warn(msg)
+    del msg
 
 
 def encode_centroid_info(clusters, cluster_centers_indices):
