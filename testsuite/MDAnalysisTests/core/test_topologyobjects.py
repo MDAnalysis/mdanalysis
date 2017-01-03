@@ -30,6 +30,7 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
+from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
     # TODO: the following items are not used
@@ -37,7 +38,7 @@ from MDAnalysis.core.topologyobjects import (
 )
 
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
 
 
 class TestTopologyObjects(object):
@@ -199,6 +200,9 @@ class TestTopologyGroup(object):
     def test_td_keyerror(self):
         assert_raises(KeyError, self.b_td.__getitem__, ('something', 'stupid'))
 
+    def test_td_universe(self):
+        assert_(self.b_td.universe is self.universe)
+
     def test_bonds_types(self):
         """Tests TopologyDict for bonds"""
         assert_equal(len(self.universe.atoms.bonds.types()), 57)
@@ -274,6 +278,52 @@ class TestTopologyGroup(object):
         """Test making a TopologyGroup out of nonsense"""
         inputlist = ['a', 'b', 'c']
         assert_raises(TypeError, TopologyGroup, inputlist)
+
+    def test_tg_creation_bad_btype(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        assert_raises(ValueError, TopologyGroup, vals, self.universe, btype='apple')
+
+    def test_bond_tg_creation_notype(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'bond')
+        assert_array_equal(tg[0].indices, (0, 10))
+        assert_array_equal(tg[1].indices, (5, 15))
+
+    def test_angle_tg_creation_notype(self):
+        vals = np.array([[0, 5, 10], [5, 10, 15]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'angle')
+        assert_array_equal(tg[0].indices, (0, 5, 10))
+        assert_array_equal(tg[1].indices, (5, 10, 15))
+
+    def test_dihedral_tg_creation_notype(self):
+        vals = np.array([[0, 2, 4, 6], [5, 7, 9, 11]])
+
+        tg = TopologyGroup(vals, self.universe)
+
+        assert_(tg.btype == 'dihedral')
+        assert_array_equal(tg[0].indices, (0, 2, 4, 6))
+        assert_array_equal(tg[1].indices, (5, 7, 9, 11))
+
+    def test_create_guessed_tg(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe, guessed=True)
+
+        assert_array_equal(tg._guessed, np.array([[True], [True]]))
+
+    def test_create_guessed_tg_2(self):
+        vals = np.array([[0, 10], [5, 15]])
+
+        tg = TopologyGroup(vals, self.universe, guessed=False)
+
+        assert_array_equal(tg._guessed, np.array([[False], [False]]))
 
     def test_TG_equality(self):
         """Make two identical TGs,
@@ -363,6 +413,30 @@ class TestTopologyGroup(object):
         big_tg += combined_tg  # try and add some already included bonds
         assert_equal(len(big_tg), 494)  # check len doesn't change
 
+    def test_add_empty_to_TG(self):
+        tg1 = self.universe.bonds[10:15]
+        tg2 = self.universe.bonds[:0]  # empty
+
+        tg3 = tg1 + tg2
+
+        assert_(tg1 == tg3)
+
+    def test_add_TO_to_empty_TG(self):
+        tg1 = self.universe.bonds[:0]  # empty
+        to = self.universe.bonds[5]
+
+        tg3 = tg1 + to
+
+        assert_(np.array_equal(tg3.indices,  to.indices[None, :]))
+
+    def test_add_TG_to_empty_TG(self):
+        tg1 = self.universe.bonds[:0]  # empty
+        tg2 = self.universe.bonds[5:7]
+
+        tg3 = tg1 + tg2
+
+        assert_equal(tg2, tg3)
+
     def test_add_singleitem(self):
         tg = self.universe.atoms.bonds[:10]
         to = self.universe.atoms.bonds[55]
@@ -430,3 +504,186 @@ class TestTopologyGroup(object):
         tg = self.universe.atoms.bonds[10:13]
         tg2 = tg[sel]
         assert_equal(len(tg2), 0)
+
+    # atomX access
+    def test_atom1(self):
+        tg = self.universe.bonds[:5]
+
+        a1 = tg.atom1
+        assert_(len(tg) == len(a1))
+        for (atom, bond) in zip(a1, tg):
+            assert_(atom == bond[0])
+
+    def test_atom2(self):
+        tg = self.universe.bonds[:5]
+
+        a2 = tg.atom2
+        assert_(len(tg) == len(a2))
+        for (atom, bond) in zip(a2, tg):
+            assert_(atom == bond[1])
+
+    def test_atom3_IE(self):
+        tg = self.universe.bonds[:5]
+
+        assert_raises(IndexError, getattr, tg, 'atom3')
+
+    def test_atom3(self):
+        tg = self.universe.angles[:5]
+
+        a3 = tg.atom3
+        assert_(len(tg) == len(a3))
+        for (atom, bond) in zip(a3, tg):
+            assert_(atom == bond[2])
+
+    def test_atom4_IE(self):
+        tg = self.universe.bonds[:5]
+
+        assert_raises(IndexError, getattr, tg, 'atom4')
+
+    def test_atom4(self):
+        tg = self.universe.dihedrals[:5]
+
+        a4 = tg.atom4
+        assert_(len(tg) == len(a4))
+        for (atom, bond) in zip(a4, tg):
+            assert_(atom == bond[3])
+
+
+class TestTopologyGroup_Cython(object):
+    """
+    Check that the shortcut to all cython functions:
+     - work (return proper values)
+     - catch errors
+    """
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+        # topologygroups for testing
+        # bond, angle, dihedral, improper
+        ag = self.u.atoms[:5]
+        self.bgroup = ag.bonds
+        self.agroup = ag.angles
+        self.tgroup = ag.dihedrals
+        self.igroup = ag.impropers
+
+    def tearDown(self):
+        del self.u
+        del self.bgroup
+        del self.agroup
+        del self.tgroup
+        del self.igroup
+
+    # bonds
+    def test_wrong_type_bonds(self):
+        for tg in [self.agroup, self.tgroup, self.igroup]:
+            assert_raises(TypeError, tg.bonds)
+
+    def test_right_type_bonds(self):
+        assert_equal(self.bgroup.bonds(),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions))
+        assert_equal(self.bgroup.bonds(pbc=True),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions,
+                                box=self.u.dimensions))
+        assert_equal(self.bgroup.values(),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions))
+        assert_equal(self.bgroup.values(pbc=True),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions,
+                                box=self.u.dimensions))
+
+    # angles
+    def test_wrong_type_angles(self):
+        for tg in [self.bgroup, self.tgroup, self.igroup]:
+            assert_raises(TypeError, tg.angles)
+
+    def test_right_type_angles(self):
+        assert_equal(self.agroup.angles(),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions))
+        assert_equal(self.agroup.angles(pbc=True),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions,
+                                 box=self.u.dimensions))
+        assert_equal(self.agroup.values(),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions))
+        assert_equal(self.agroup.values(pbc=True),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions,
+                                 box=self.u.dimensions))
+
+    # dihedrals & impropers
+    def test_wrong_type_dihedrals(self):
+        for tg in [self.bgroup, self.agroup]:
+            assert_raises(TypeError, tg.dihedrals)
+
+    def test_right_type_dihedrals(self):
+        assert_equal(self.tgroup.dihedrals(),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions))
+        assert_equal(self.tgroup.dihedrals(pbc=True),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions,
+                                   box=self.u.dimensions))
+        assert_equal(self.tgroup.values(),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions))
+        assert_equal(self.tgroup.values(pbc=True),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions,
+                                   box=self.u.dimensions))
+
+    def test_right_type_impropers(self):
+        assert_equal(self.igroup.dihedrals(),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions))
+        assert_equal(self.igroup.dihedrals(pbc=True),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions,
+                                   box=self.u.dimensions))
+        assert_equal(self.igroup.values(),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions))
+        assert_equal(self.igroup.values(pbc=True),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions,
+                                   box=self.u.dimensions))
+
+
+def test_bond_length_pbc():
+    u = mda.Universe(TRZ_psf, TRZ)
+
+    ref = u.bonds[0].length()
+
+    # move an atom a box width in all dimensions
+    u.atoms[0].position += u.dimensions[:3]
+
+    assert_almost_equal(ref, u.bonds[0].length(pbc=True), decimal=6)
+
+def test_cross_universe_eq():
+    u1 = mda.Universe(PSF)
+    u2 = mda.Universe(PSF)
+
+    assert_(not (u1.bonds[0] == u2.bonds[0]))

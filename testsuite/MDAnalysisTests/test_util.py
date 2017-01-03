@@ -706,6 +706,14 @@ class TestUniqueRows(object):
         assert_array_equal(util.unique_rows(a),
                            np.array([[0, 1, 2], [2, 3, 4]]))
 
+    def test_unique_rows_with_view(self):
+        # unique_rows doesn't work when flags['OWNDATA'] is False,
+        # happens when second dimension is created through broadcast
+        a = np.array([1, 2])
+
+        assert_array_equal(util.unique_rows(a[None, :]),
+                           np.array([[1, 2]]))
+
 
 class TestGetWriterFor(object):
     def test_no_filename_argument(self):

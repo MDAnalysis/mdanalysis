@@ -1247,6 +1247,13 @@ def unique_rows(arr, return_index=False):
     """
     # From here, but adapted to handle any size rows
     # https://mail.scipy.org/pipermail/scipy-user/2011-December/031200.html
+
+    # This seems to fail if arr.flags['OWNDATA'] is False
+    # this can occur when second dimension was created through broadcasting
+    # eg: idx = np.array([1, 2])[None, :]
+    if not arr.flags['OWNDATA']:
+        arr = arr.copy()
+    
     m = arr.shape[1]
 
     if return_index:
