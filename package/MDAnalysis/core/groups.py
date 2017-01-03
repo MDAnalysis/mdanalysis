@@ -74,7 +74,7 @@ Levels
 ------
 
 Each of the above classes has a level attribute.  This can be used to
-veirify that two objects are of the same level, or to access a particular
+verify that two objects are of the same level, or to access a particular
 class::
 
    u = mda.Universe()
