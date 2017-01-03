@@ -70,6 +70,24 @@ Chemical units
    :members:
    :inherited-members:
 
+Levels
+------
+
+Each of the above classes has a level attribute.  This can be used to
+veirify that two objects are of the same level, or to access a particular
+class::
+
+   u = mda.Universe()
+
+   ag = u.atoms[:10]
+   at = u.atoms[11]
+
+   ag.level == at.level  # Returns True
+
+   ag.level.singular  # Returns Atom class
+   at.level.plural  # Returns AtomGroup class
+
+
 """
 from six.moves import zip
 
