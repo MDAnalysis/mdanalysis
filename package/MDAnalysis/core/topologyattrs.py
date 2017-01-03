@@ -87,19 +87,19 @@ class TopologyAttr(object):
 
     def __getitem__(self, group):
         """Accepts an AtomGroup, ResidueGroup or SegmentGroup"""
-        if group.level == 'atom':
+        if isinstance(group, (Atom, AtomGroup)):
             return self.get_atoms(group)
-        elif group.level == 'residue':
+        elif isinstance(group, (Residue, ResidueGroup)):
             return self.get_residues(group)
-        elif group.level == 'segment':
+        elif isinstance(group, (Segment, SegmentGroup)):
             return self.get_segments(group)
 
     def __setitem__(self, group, values):
-        if group.level == 'atom':
+        if isinstance(group, (Atom, AtomGroup)):
             return self.set_atoms(group, values)
-        elif group.level == 'residue':
+        elif isinstance(group, (Residue, ResidueGroup)):
             return self.set_residues(group, values)
-        elif group.level == 'segment':
+        elif isinstance(group, (Segment, SegmentGroup)):
             return self.set_segments(group, values)
 
     @property

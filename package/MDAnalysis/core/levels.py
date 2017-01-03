@@ -46,13 +46,9 @@ at a given level are accessed using the :attr:`.singular` and
 
 """
 
-import functools
-
-
 _LEVEL_VALUES = {'atom': 1, 'residue': 2, 'segment': 3}
 
 
-@functools.total_ordering
 class Level(object):
     """Describes the level of hierarchy within MDA objects
 
@@ -74,21 +70,10 @@ class Level(object):
         self.plural = plural
 
     def __eq__(self, other):
-        if isinstance(other, basestring):
-            value = _LEVEL_VALUES[other]
-        else:
-            value = other.value
-        return self.value == value
+        return self.value == other.value
 
     def __ne__(self, other):
         return not self == other
-
-    def __lt__(self, other):
-        if isinstance(other, basestring):
-            value = _LEVEL_VALUES[other]
-        else:
-            value = other.value
-        return self.value < value
 
     def __hash__(self):
         return hash(self.name)
