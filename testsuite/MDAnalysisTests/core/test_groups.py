@@ -19,34 +19,41 @@ class TestGroupSlicing(object):
     ----
     TopologyGroup is technically called group, add this in too!
     """
-    # test Universe is 5:1 mapping 3 times
-    length = {'atom': 125, 'residue': 25, 'segment': 5}
-
     def test_groups(self):
         u = make_Universe()
 
-        lvls = self.length.keys()
+        levels = ['atom', 'residue', 'segment']
 
+        # test Universe is 5:1 mapping 3 times
+        length = {'atom': 125,
+                  'residue': 25,
+                  'segment': 5}
+        
         nparrays = {
-            lvl: np.arange(self.length[lvl])
-            for lvl in lvls
+            level: np.arange(length[level])
+            for level in levels
         }
         group_dict = {
             'atom': u.atoms,
             'residue': u.residues,
             'segment': u.segments
         }
+        singulars = {
+            'atom': groups.Atom,
+            'residue': groups.Residue,
+            'segment': groups.Segment
+        }
 
-        for group in [u.atoms, u.residues, u.segments]:
-            yield self._check_len, group
+        for level in levels:
+            group = group_dict[level]
+            yield self._check_len, group, length[level]
             for func in [list, np.array]:
                 yield self._check_boolean_slicing, group, func
-            yield self._check_indexerror, group
+            yield self._check_indexerror, group, length[level]
             yield self._check_n_atoms, group
             yield self._check_n_residues, group
             yield self._check_n_segments, group
 
-        for lvl in lvls:
             # Check slicing using slice objects
             for sl in (
                     slice(0, 10),
@@ -57,7 +64,7 @@ class TestGroupSlicing(object):
                     slice(5, 1, -1),
                     slice(10, 0, -2),
             ):
-                yield self._check_slice, group_dict[lvl], nparrays[lvl], sl
+                yield self._check_slice, group_dict[level], nparrays[level], sl
 
             # Check slicing using lists and arrays of integers
             for func in [list, lambda x: np.array(x, dtype=np.int64)]:
@@ -68,18 +75,12 @@ class TestGroupSlicing(object):
                         [-1, -2, -3],
                         [],
                 ):
-                    yield self._check_slice, group, nparrays[lvl], func(idx)
+                    yield self._check_slice, group, nparrays[level], func(idx)
 
-        singulars = {
-            'atom': groups.Atom,
-            'residue': groups.Residue,
-            'segment': groups.Segment
-        }
-        for lvl in lvls:
             # Check integer getitem access
             for idx in [0, 1, -1, -2]:
-                yield (self._check_integer_getitem, group_dict[lvl],
-                       nparrays[lvl], idx, singulars[lvl])
+                yield (self._check_integer_getitem, group_dict[level],
+                       nparrays[level], idx, singulars[level])
 
     @staticmethod
     def _check_n_atoms(group):
@@ -93,8 +94,8 @@ class TestGroupSlicing(object):
     def _check_n_segments(group):
         assert_(len(group.segments) == group.n_segments)
 
-    def _check_len(self, group):
-        assert_(len(group) == self.length[group.level])
+    def _check_len(self, group, ref):
+        assert_(len(group) == ref)
 
     def _check_boolean_slicing(self, group, func):
         # func is the container type that will be used to slice
@@ -108,8 +109,8 @@ class TestGroupSlicing(object):
             else:
                 assert_(val not in result)
 
-    def _check_indexerror(self, group):
-        assert_raises(IndexError, group.__getitem__, self.length[group.level])
+    def _check_indexerror(self, group, idx):
+        assert_raises(IndexError, group.__getitem__, idx)
 
     def _check_slice(self, group, other, sl):
         """Check that slicing a np array is identical"""

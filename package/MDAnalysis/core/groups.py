@@ -70,9 +70,28 @@ Chemical units
    :members:
    :inherited-members:
 
+Levels
+------
+
+Each of the above classes has a level attribute.  This can be used to
+verify that two objects are of the same level, or to access a particular
+class::
+
+   u = mda.Universe()
+
+   ag = u.atoms[:10]
+   at = u.atoms[11]
+
+   ag.level == at.level  # Returns True
+
+   ag.level.singular  # Returns Atom class
+   at.level.plural  # Returns AtomGroup class
+
+
 """
 from six.moves import zip
 
+from collections import namedtuple
 import numpy as np
 import functools
 import itertools
@@ -85,7 +104,6 @@ from ..lib import distances
 from ..lib import transformations
 from . import selection
 from . import flags
-from . import levels
 from ..exceptions import NoDataError
 from . import topologyobjects
 
@@ -1841,9 +1859,7 @@ class Atom(ComponentBase):
 
     @property
     def residue(self):
-        residueclass = self.level.parent.singular
-        return residueclass(self._u._topology.resindices[self],
-                            self._u)
+        return self._u.residues[self._u._topology.resindices[self]]
 
     @residue.setter
     def residue(self, new):
@@ -1854,9 +1870,7 @@ class Atom(ComponentBase):
 
     @property
     def segment(self):
-        segmentclass = self.level.parent.parent.singular
-        return segmentclass(self._u._topology.segindices[self],
-                            self._u)
+        return self._u.segments[self._u._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -1947,15 +1961,11 @@ class Residue(ComponentBase):
     """
     @property
     def atoms(self):
-        atomsclass = self.level.child.plural
-        return atomsclass(self._u._topology.indices[self][0],
-                          self._u)
+        return self._u.atoms[self._u._topology.indices[self][0]]
 
     @property
     def segment(self):
-        segmentclass = self.level.parent.singular
-        return segmentclass(self._u._topology.segindices[self],
-                            self._u)
+        return self._u.segments[self._u._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -1976,15 +1986,11 @@ class Segment(ComponentBase):
     """
     @property
     def atoms(self):
-        atomsclass = self.level.child.child.plural
-        return atomsclass(self._u._topology.indices[self][0],
-                          self._u)
+        return self._u.atoms[self._u._topology.indices[self][0]]
 
     @property
     def residues(self):
-        residuesclass = self.level.child.plural
-        return residuesclass(self._u._topology.resindices[self][0],
-                             self._u)
+        return self._u.residues[self._u._topology.resindices[self][0]]
 
     def __getattr__(self, attr):
         # Segment.r1 access
@@ -2149,16 +2155,10 @@ class UpdatingAtomGroup(AtomGroup):
 
 # Define relationships between these classes
 # with Level objects
-ATOMLEVEL = levels.Level('atom', Atom, AtomGroup)
-RESIDUELEVEL = levels.Level('residue', Residue, ResidueGroup)
-SEGMENTLEVEL = levels.Level('segment', Segment, SegmentGroup)
-
-ATOMLEVEL.parent = RESIDUELEVEL
-ATOMLEVEL.child = None
-RESIDUELEVEL.parent = SEGMENTLEVEL
-RESIDUELEVEL.child = ATOMLEVEL
-SEGMENTLEVEL.parent = None
-SEGMENTLEVEL.child = RESIDUELEVEL
+_Level = namedtuple('Level', ['name', 'singular', 'plural'])
+ATOMLEVEL = _Level('atom', Atom, AtomGroup)
+RESIDUELEVEL = _Level('residue', Residue, ResidueGroup)
+SEGMENTLEVEL = _Level('segment', Segment, SegmentGroup)
 
 Atom.level = ATOMLEVEL
 AtomGroup.level = ATOMLEVEL
