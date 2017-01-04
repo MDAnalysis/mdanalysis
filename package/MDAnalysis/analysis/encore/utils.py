@@ -324,60 +324,6 @@ class ParallelCalculation(object):
         return tuple(sorted(results_list, key=lambda x: x[0]))
 
 
-class ProgressBar(object):
-    """Handle and draw a progress barr.
-    From https://github.com/ikame/progressbar
-    """
-
-    def __init__(self, start=0, end=10, width=12, fill='=', blank='.',
-                 format='[%(fill)s>%(blank)s] %(progress)s%%',
-                 incremental=True):
-        super(ProgressBar, self).__init__()
-
-        self.start = start
-        self.end = end
-        self.width = width
-        self.fill = fill
-        self.blank = blank
-        self.format = format
-        self.incremental = incremental
-        self.step = 100 / float(width)  # fix
-        self.reset()
-
-    def __add__(self, increment):
-        increment = self._get_progress(increment)
-        if 100 > self.progress + increment:
-            self.progress += increment
-        else:
-            self.progress = 100
-        return self
-
-    def __str__(self):
-        progressed = int(self.progress / self.step)  # fix
-        fill = progressed * self.fill
-        blank = (self.width - progressed) * self.blank
-        return self.format % {'fill': fill, 'blank': blank,
-                              'progress': int(self.progress)}
-
-    __repr__ = __str__
-
-    def _get_progress(self, increment):
-        return float(increment * 100) / self.end
-
-    def reset(self):
-        """Resets the current progress to the start point"""
-        self.progress = self._get_progress(self.start)
-        return self
-
-    def update(self, progress):
-        """Update the progress value instead of incrementing it"""
-        this_progress = self._get_progress(progress)
-        if this_progress < 100:
-            self.progress = this_progress
-        else:
-            self.progress = 100
-
-
 def trm_indeces(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
