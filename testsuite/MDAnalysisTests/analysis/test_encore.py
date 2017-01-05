@@ -849,7 +849,6 @@ class TestEncoreDimensionalityReduction(TestCase):
 class TestEncoreImportWarnings(object):
     def setUp(self):
         # clear cache of encore module
-        sys.modules.pop('scipy', None)
         for mod in list(sys.modules):  # list as we're changing as we iterate
             if '.encore' in mod:
                 sys.modules.pop(mod, None)
