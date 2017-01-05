@@ -24,13 +24,17 @@ from __future__ import print_function
 import MDAnalysis as mda
 import MDAnalysis.analysis.encore as encore
 
+import importlib
 import tempfile
 import numpy as np
+import sys
+import warnings
 
-from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
+from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
+                           assert_warns)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF
-from MDAnalysisTests import parser_not_found, module_not_found
+from MDAnalysisTests import parser_not_found, module_not_found, block_import
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
@@ -840,3 +844,35 @@ class TestEncoreDimensionalityReduction(TestCase):
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
+
+
+class TestEncoreImportWarnings(object):
+    def setUp(self):
+        # clear cache of encore module
+        sys.modules.pop('scipy', None)
+        for mod in list(sys.modules):  # list as we're changing as we iterate
+            if '.encore' in mod:
+                sys.modules.pop(mod, None)
+
+    @block_import('sklearn')
+    def _check_sklearn_import_warns(self, package):
+        warnings.simplefilter('always')
+        assert_warns(ImportWarning, importlib.import_module, package)
+
+    @block_import('scipy')
+    def _check_scipy_import_warns(self, package):
+        warnings.simplefilter('always')
+        assert_warns(ImportWarning, importlib.import_module, package)
+
+    def test_import_warnings(self):
+        for pkg in (
+                'MDAnalysis.analysis.encore.confdistmatrix',
+                'MDAnalysis.analysis.encore.utils',
+                'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
+                'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
+        ):
+            yield self._check_sklearn_import_warns, pkg
+        for pkg in (
+                'MDAnalysis.analysis.encore.similarity',
+        ):
+            yield self._check_scipy_import_warns, pkg
