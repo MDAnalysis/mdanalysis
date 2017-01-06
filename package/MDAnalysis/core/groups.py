@@ -1462,7 +1462,9 @@ class AtomGroup(GroupBase):
             format = format or file_format
             format = format.strip().upper()
 
-            writer = get_writer_for(filename, format=format)
+            multiframe = kwargs.pop('multiframe', None)
+
+            writer = get_writer_for(filename, format=format, multiframe=multiframe)
             #MDAnalysis.coordinates.writer(filename, **kwargs)
             coords = True
         except (ValueError, TypeError):
@@ -1479,7 +1481,7 @@ class AtomGroup(GroupBase):
         if not (coords or selection):
             raise ValueError("No writer found for format: {}".format(filename))
         else:
-            with writer(filename, **kwargs) as w:
+            with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
                 w.write(self.atoms)
 
 
