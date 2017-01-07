@@ -82,6 +82,7 @@ from __future__ import print_function, division
 import sys
 import logging
 import re
+import warnings
 
 from .. import version
 
@@ -171,7 +172,7 @@ class NullHandler(logging.Handler):
 
 def echo(s='', replace=False, newline=True):
     """Simple string output that immediately prints to the console.
-    
+
     Parameters
     ==========
 
@@ -260,7 +261,8 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 quiet=False, dynamic=True, format_handling='auto'):
+                 verbose=None, quiet=None, dynamic=True,
+                 format_handling='auto'):
         r"""
         Parameters
         ==========
@@ -287,9 +289,9 @@ class ProgressMeter(object):
         offset: int
             number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
             then one should set *offset* = 1; for 1-based steps, choose 0. [1]
-        quiet: bool
-            If ``True``, disable all output, ``False`` print all messages as
-            specified, [``False``]
+        verbose: bool
+            If ``False``, disable all output, ``True`` print all messages as
+            specified, [``True``]
         dynamic: bool
             If ``True``, each line will be printed on top of the previous one.
             This is done by prepedind the format with ``\r``. [``True``]
@@ -306,13 +308,33 @@ class ProgressMeter(object):
 
         .. versionchanged:: 0.16
            Keyword argument *dynamic* replaces ``\r`` in the format.
+
+        .. deprecated:: 0.16
+           Keyword argument *quiet* is deprecated in favor of *verbose*.
         """
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
         self.dynamic = dynamic
         self.numouts = -1
-        self.quiet = quiet
+
+        # *verbose* is effectively True by default. *quiet* is deprecated.
+        # If *quiet* is set, then a deprecation warning is raised. If both
+        # *quiet* and *verbose* are set, and they are contradicting each other,
+        # a ValueError is raised.
+        # *verbose* and *quiet* are set to None by default to distinguish the
+        # defaults from user-provided values.
+        if quiet is not None:
+            warnings.warn("Keyword *quiet* is deprecated (from version 0.16); "
+                          "use *verbose* instead.", DeprecationWarning)
+            if verbose is not None and verbose == quiet:
+                raise ValueError("Keywords *verbose* and *quiet* are cotradicting each other.")
+            self.verbose = not quiet
+        elif verbose is None:
+            self.verbose = True  # Effective default
+        else:
+            self.verbose = verbose
+
         if format is None:
             format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
             self.format_handler = _new_format
@@ -354,12 +376,12 @@ class ProgressMeter(object):
         *kwargs* are additional attributes that can be references in
         the format string.
 
-        .. Note:: If *quiet* = ``True`` has been set in the
-                  constructor or if :attr:`ProgressMeter.quiet` has
-                  been set to ``True`` the no messages will be
+        .. Note:: If *verbose* = ``False`` has been set in the
+                  constructor or if :attr:`ProgressMeter.verbose` has
+                  been set to ``False``, then no messages will be
                   printed.
         """
-        if self.quiet:
+        if not self.verbose:
             return
         self.update(step, **kwargs)
         format = self.format
