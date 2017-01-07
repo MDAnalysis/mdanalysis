@@ -184,6 +184,12 @@ class TestAtomGroupWriting(object):
         with tempdir.in_tempdir():
             self.u.atoms.write("test.vmd")
 
+    def test_bogus_kwarg_pdb(self):
+        # test for resolution of Issue 877
+        with tempdir.in_tempdir():
+            with assert_raises(TypeError):
+                self.u.atoms.write('dummy.pdb', bogus="what?")
+
 
 class TestAtomGroupTransformations(object):
     def setUp(self):

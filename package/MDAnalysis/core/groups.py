@@ -102,10 +102,12 @@ import MDAnalysis
 from ..lib import util
 from ..lib import distances
 from ..lib import transformations
+from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
+from ._get_readers import get_writer_for
 
 
 def make_classes():
@@ -1504,7 +1506,7 @@ class AtomGroup(GroupBase):
         filename : str, optional
            ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
 
-        format : str, optional
+        file_format : str, optional
             PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
             Jmol (spt); case-insensitive and can also be supplied as the
             filename extension [PDB]
@@ -1529,9 +1531,6 @@ class AtomGroup(GroupBase):
            selections out.
 
         """
-        import MDAnalysis.coordinates
-        import MDAnalysis.selections
-
         # check that AtomGroup actually has any atoms (Issue #434)
         if len(self.atoms) == 0:
             raise IndexError("Cannot write an AtomGroup with 0 atoms")
@@ -1548,17 +1547,28 @@ class AtomGroup(GroupBase):
 
         # From the following blocks, one must pass.
         # Both can't pass as the extensions don't overlap.
+        # Try and select a Class using get_ methods (becomes `writer`)
+        # Once (and if!) class is selected, use it in with block
         try:
-            writer = MDAnalysis.coordinates.writer(filename, **kwargs)
+            # format keyword works differently in get_writer and get_selection_writer
+            # here it overrides everything, in get_sel it is just a default
+            # apply sparingly here!
+            format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+            format = format or file_format
+            format = format.strip().upper()
+
+            multiframe = kwargs.pop('multiframe', None)
+
+            writer = get_writer_for(filename, format=format, multiframe=multiframe)
+            #MDAnalysis.coordinates.writer(filename, **kwargs)
             coords = True
-        except TypeError:
-            # might be selections format
+        except (ValueError, TypeError):
             coords = False
 
         try:
-            SelectionWriter = MDAnalysis.selections.get_writer(filename,
-                                                               file_format)
-            writer = SelectionWriter(filename, **kwargs)
+            # here `file_format` is only used as default,
+            # anything pulled off `filename` will be used preferentially
+            writer = get_selection_writer_for(filename, file_format)
             selection = True
         except (TypeError, NotImplementedError):
             selection = False
@@ -1566,9 +1576,8 @@ class AtomGroup(GroupBase):
         if not (coords or selection):
             raise ValueError("No writer found for format: {}".format(filename))
         else:
-            writer.write(self.atoms)
-            if coords:  # only these writers have a close method
-                writer.close()
+            with writer(filename, n_atoms=self.n_atoms, **kwargs) as w:
+                w.write(self.atoms)
 
 
 class ResidueGroup(GroupBase):

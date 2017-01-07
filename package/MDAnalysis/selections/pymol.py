@@ -44,7 +44,7 @@ from __future__ import absolute_import
 from . import base
 
 class SelectionWriter(base.SelectionWriter):
-    format = "PyMol"
+    format = ["PyMol", "pml"]
     ext = "pml"
     continuation = '\\'  # quoted backslash!
     commentfmt = "# %s"

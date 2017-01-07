@@ -43,7 +43,7 @@ from __future__ import absolute_import
 from . import base
 
 class SelectionWriter(base.SelectionWriter):
-    format = "CHARMM"
+    format = ["CHARMM", "str"]
     ext = "str"
     continuation = '-'
     commentfmt = "! %s"
