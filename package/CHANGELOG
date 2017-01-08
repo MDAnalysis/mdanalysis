@@ -117,6 +117,8 @@ Changes
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
   * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
+  * The keyword argument *quiet* is deprecated in favor of *verbose*
+    throughout the library (Issue #903)
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
