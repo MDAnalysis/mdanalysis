@@ -126,7 +126,7 @@ class TestAlign(TestCase):
         # align to *last frame* in target... just for the heck of it
         self.reference.trajectory[-1]
         align.rms_fit_trj(self.universe, self.reference, select="all",
-                          filename=self.outfile, quiet=True)
+                          filename=self.outfile, verbose=False)
         fitted = MDAnalysis.Universe(PSF, self.outfile)
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -147,7 +147,7 @@ class TestAlign(TestCase):
                     os.path.basename(self.universe.trajectory.filename)))
             #test filename=none and different selection
             align.rms_fit_trj(self.universe, self.reference, select="name CA",
-                              filename=None, quiet=True)
+                              filename=None, verbose=False)
             assert_(os.path.exists(filename),
                     "rms_fit_trj did not write to {}".format(filename))
 

@@ -157,7 +157,7 @@ class TestRMSD(object):
         del self.tempdir
 
     def test_progress_meter(self):
-        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, quiet=False)
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, verbose=True)
         sys.stderr = sys.stdout
         RMSD.run()
         actual = sys.stderr.getvalue().strip().split('\r')[-1]
@@ -239,7 +239,7 @@ class TestRMSF(TestCase):
 
     def test_rmsf(self):
         rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(quiet=True)
+        rmsfs.run(verbose=False)
         test_rmsfs = np.load(rmsfArray)
 
         assert_almost_equal(rmsfs.rmsf, test_rmsfs, 5,
@@ -248,7 +248,7 @@ class TestRMSF(TestCase):
 
     def test_rmsf_single_frame(self):
         rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(start=5, stop=6, quiet=True)
+        rmsfs.run(start=5, stop=6, verbose=False)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
@@ -261,7 +261,7 @@ class TestRMSF(TestCase):
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
         rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(quiet=True)
+        rmsfs.run(verbose=False)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
