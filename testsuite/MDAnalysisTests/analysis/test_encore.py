@@ -850,7 +850,7 @@ class TestEncoreImportWarnings(object):
     def setUp(self):
         # clear cache of encore module
         for mod in list(sys.modules):  # list as we're changing as we iterate
-            if '.encore' in mod:
+            if '.encore' in mod or 'sklearn' in mod or 'scipy' in mod:
                 sys.modules.pop(mod, None)
 
     @block_import('sklearn')
