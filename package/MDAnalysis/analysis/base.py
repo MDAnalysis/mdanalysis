@@ -36,7 +36,7 @@ import six
 
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class AnalysisBase(object):
     """
 
     def __init__(self, trajectory, start=None,
-                 stop=None, step=None, quiet=True):
+                 stop=None, step=None, verbose=None, quiet=None):
         """
         Parameters
         ----------
@@ -102,10 +102,11 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
-        quiet : bool, optional
-            Turn off verbosity
+        verbose : bool, optional
+            Turn on verbosity
         """
-        self._quiet = quiet
+        self._verbose = _set_verbose(verbose, quiet, default=False)
+        self._quiet = not self._verbose
         self._setup_frames(trajectory, start, stop, step)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
@@ -134,12 +135,19 @@ class AnalysisBase(object):
         if interval == 0:
             interval = 1
 
-        # ensure _quiet is set when __init__ wasn't called, this is to not
+        # ensure _verbose is set when __init__ wasn't called, this is to not
         # break pre 0.16.0 API usage of AnalysisBase
-        if not hasattr(self, '_quiet'):
-            self._quiet = True
+        if not hasattr(self, '_verbose'):
+            if hasattr(self, '_quiet'):
+                # Here, we are in the odd case where a children class defined
+                # self._quiet without going through AnalysisBase.__init__.
+                # Shall we issue a DeprecationWarning?
+                self._verbose = not self._quiet
+            else:
+                self._verbose = True
+                self._quiet = not self._verbose
         self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                 interval=interval, quiet=self._quiet)
+                                 interval=interval, verbose=self._verbose)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
