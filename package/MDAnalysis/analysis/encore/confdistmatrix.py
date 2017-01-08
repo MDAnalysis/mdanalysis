@@ -47,7 +47,7 @@ from ...core.universe import Universe
 from ..align import rotation_matrix
 
 from .cutils import PureRMSD
-from .utils import TriangularMatrix, trm_indeces
+from .utils import TriangularMatrix, trm_indices
 
 try:
     from sklearn.externals.joblib import Parallel, delayed
@@ -156,7 +156,7 @@ def conformational_distance_matrix(ensemble,
 
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
-    indices = trm_indeces((0, 0), (framesn - 1, framesn - 1))
+    indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
     Parallel(n_jobs=n_jobs, verbose=verbose)(delayed(conf_dist_function)(
         element,
         rmsd_coordinates,
@@ -183,7 +183,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
     tasks : iterator of int of length 2
         Given a triangular matrix, this function will calculate RMSD
         values from element tasks[0] to tasks[1]. Since the matrix
-        is triangular, the trm_indeces matrix automatically
+        is triangular, the trm_indices matrix automatically
         calculates the corrisponding i,j matrix indices.
         The matrix is written as an array in a row-major
         order (see the TriangularMatrix class for details).

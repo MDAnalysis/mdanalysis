@@ -324,11 +324,11 @@ class ParallelCalculation(object):
         return tuple(sorted(results_list, key=lambda x: x[0]))
 
 
-def trm_indeces(a, b):
+def trm_indices(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
     The matrix size is automatically determined from the number of elements.
-    For instance: trm_indeces((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
+    For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
     (2,1).
 
     Parameters
