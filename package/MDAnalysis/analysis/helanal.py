@@ -124,7 +124,7 @@ import numpy as np
 
 import MDAnalysis
 from MDAnalysis import FinishTimeException
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib import mdamath
 
 import logging
@@ -157,12 +157,18 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
-def helanal_trajectory(universe, selection="name CA", start=None, end=None, begin=None, finish=None,
-                       matrix_filename="bending_matrix.dat", origin_pdbfile="origin.pdb",
-                       summary_filename="summary.txt", screw_filename="screw.xvg",
-                       tilt_filename="local_tilt.xvg", fitted_tilt_filename="fit_tilt.xvg",
-                       bend_filename="local_bend.xvg", twist_filename="unit_twist.xvg",
-                       prefix="helanal_", ref_axis=None, quiet=False):
+def helanal_trajectory(universe, selection="name CA",
+                       start=None, end=None, begin=None, finish=None,
+                       matrix_filename="bending_matrix.dat",
+                       origin_pdbfile="origin.pdb",
+                       summary_filename="summary.txt",
+                       screw_filename="screw.xvg",
+                       tilt_filename="local_tilt.xvg",
+                       fitted_tilt_filename="fit_tilt.xvg",
+                       bend_filename="local_bend.xvg",
+                       twist_filename="unit_twist.xvg",
+                       prefix="helanal_", ref_axis=None,
+                       verbose=None, quiet=None):
     """Perform HELANAL_ helix analysis on all frames in *universe*.
 
     .. Note::
@@ -211,8 +217,8 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
        *ref_axis*
           Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
           is chosen [``None``]
-       *quiet*
-          Suppress most diagnostic output.
+       *verbose*
+          Toggle diagnostic outputs. [``True``]
 
     :Raises:
        FinishTimeException
@@ -223,7 +229,12 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
        New *quiet* keyword to silence frame progress output and most of the
        output that used to be printed to stdout is now logged to the logger
        *MDAnalysis.analysis.helanal* (at logelevel *INFO*).
+
+    .. deprecated:: 0.16
+       The *quiet* keyword argument is deprecated in favor of the New
+       *verbose* one.
     """
+    verbose = _set_verbose(verbose, quiet, default=True)
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
@@ -284,7 +295,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressMeter(trajectory.n_frames, quiet=quiet,
+    pm = ProgressMeter(trajectory.n_frames, verbose=verbose,
                        format="Frame %(step)10d: %(time)20.1f ps\r")
     for ts in trajectory:
         pm.echo(ts.frame, time=ts.time)

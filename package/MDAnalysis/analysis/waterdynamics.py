@@ -379,6 +379,7 @@ import numpy as np
 import multiprocessing
 
 import MDAnalysis.analysis.hbonds
+from MDAnalysis.lib.log import _set_verbose
 
 
 class HydrogenBondLifetimes(object):
@@ -545,10 +546,12 @@ class HydrogenBondLifetimes(object):
             a.append(fix)
         return a
 
-    def _HBA(self, ts, conn, universe, selAtom1, selAtom2, quiet=True):
+    def _HBA(self, ts, conn, universe, selAtom1, selAtom2,
+             verbose=None, quiet=None):
         """
         Main function for calculate C_i and C_c in parallel.
         """
+        verbose = _set_verbose(verbose, quiet, default=False)
         finalGetResidue1 = selAtom1
         finalGetResidue2 = selAtom2
         frame = ts.frame
@@ -557,7 +560,7 @@ class HydrogenBondLifetimes(object):
                                                             start=frame-1, stop=frame)
         while True:
             try:
-                h.run(quiet=quiet)
+                h.run(verbose=verbose)
                 break
             except:
                 print("error")
