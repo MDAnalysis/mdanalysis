@@ -42,9 +42,12 @@ def block_import(package):
 
     eg:
 
-    @blocker('numpy')
+    @block_import('numpy')
     def try_and_do_something():
         import numpy as np  # this will fail!
+
+    Will also block imports of subpackages ie block_import('numpy') should
+    block 'import numpy.matrix'
 
     Shadows the builtin import method, sniffs import requests
     and blocks the designated package.
@@ -55,7 +58,7 @@ def block_import(package):
             with mock.patch('{}.__import__'.format(builtins_name),
                             wraps=importer) as mbi:
                 def blocker(*args, **kwargs):
-                    if package in args:
+                    if package in args[0]:
                         raise ImportError("Blocked by block_import")
                     else:
                         # returning DEFAULT allows the real function to continue
