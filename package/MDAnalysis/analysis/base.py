@@ -141,7 +141,9 @@ class AnalysisBase(object):
             if hasattr(self, '_quiet'):
                 # Here, we are in the odd case where a children class defined
                 # self._quiet without going through AnalysisBase.__init__.
-                # Shall we issue a DeprecationWarning?
+                warnings.warn("The *_quiet* attribute of analyses is "
+                              "deprecated (from 0.16)use *_verbose* instead.",
+                              DeprecationWarning)
                 self._verbose = not self._quiet
             else:
                 self._verbose = True
