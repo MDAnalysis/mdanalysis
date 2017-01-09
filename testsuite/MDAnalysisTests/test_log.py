@@ -26,13 +26,16 @@ from six.moves import StringIO
 import sys
 import os
 import logging
+import warnings
 
-from numpy.testing import TestCase, assert_
+from numpy.testing import (TestCase, assert_, assert_equal,
+                           assert_raises, assert_warns)
 
 from six.moves import range
 
 import MDAnalysis
 import MDAnalysis.lib.log
+from MDAnalysis.lib.log import _set_verbose
 
 from MDAnalysisTests import tempdir
 
@@ -153,3 +156,27 @@ class TestProgressMeter(TestCase):
         self._assert_in(output, (format + '\n').format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
         self._assert_in(output, (format + '\n').format(**{'step': n, 'numsteps': n, 'percentage': 100.}))
 
+
+def test__set_verbose():
+    # Everything agrees verbose should be True
+    assert_equal(_set_verbose(True, False, True), True)
+    # Everything agrees verbose should be False
+    assert_equal(_set_verbose(False, True, False), False)
+    # Make sure the default does not overwrite the user choice
+    assert_equal(_set_verbose(True, False, False), True)
+    assert_equal(_set_verbose(False, True, True), False)
+    # Quiet is not provided
+    assert_equal(_set_verbose(True, None, False), True)
+    assert_equal(_set_verbose(False, None, False), False)
+    # Verbose is not provided
+    assert_equal(_set_verbose(None, True, False), False)
+    assert_equal(_set_verbose(None, False, False), True)
+    # Nothing is provided
+    assert_equal(_set_verbose(None, None, True), True)
+    assert_equal(_set_verbose(None, None, False), False)
+    # quiet and verbose contradict each other
+    assert_raises(ValueError, _set_verbose, True, True)
+    assert_raises(ValueError, _set_verbose, False, False)
+    # A deprecation warning is issued when quiet is set
+    assert_warns(DeprecationWarning, _set_verbose, None, True)
+    assert_warns(DeprecationWarning, _set_verbose, False, True)

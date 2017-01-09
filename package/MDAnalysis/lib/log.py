@@ -235,7 +235,7 @@ def _set_verbose(verbose, quiet, default=True):
     expected to be used as follow:
 
     .. code-block:: python
-       
+
        def method(verbose=None, quiet=None):
            # *verbose* and *quiet* are set to None to distinguish explicitly
            # set values.
@@ -254,7 +254,7 @@ def _set_verbose(verbose, quiet, default=True):
         warnings.warn("Keyword *quiet* is deprecated (from version 0.16); "
                       "use *verbose* instead.", DeprecationWarning)
         if verbose is not None and verbose == quiet:
-            raise ValueError("Keywords *verbose* and *quiet* are cotradicting each other.")
+            raise ValueError("Keywords *verbose* and *quiet* are contradicting each other.")
         return not quiet
     elif verbose is None:
         return default
