@@ -631,8 +631,8 @@ def rms_fit_trj(
         strict=False,
         force=True,
         verbose=None,
-        quiet=None,
         in_memory=False,
+        quiet=None,
         **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 

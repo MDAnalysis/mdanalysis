@@ -399,7 +399,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
-                          verbose=None, quiet=None, interval=1,
+                          verbose=None, interval=1, quiet=None,
                           **kwargs):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 

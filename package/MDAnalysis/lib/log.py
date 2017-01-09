@@ -307,8 +307,8 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 verbose=None, quiet=None, dynamic=True,
-                 format_handling='auto'):
+                 verbose=None, dynamic=True,
+                 format_handling='auto', quiet=None):
         r"""
         Parameters
         ==========
