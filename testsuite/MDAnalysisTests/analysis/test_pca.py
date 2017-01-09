@@ -24,11 +24,12 @@ import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
 
-from numpy.testing import (assert_almost_equal, assert_equal,
+from numpy.testing import (assert_almost_equal, assert_equal, dec,
                            assert_array_almost_equal, raises)
 
 from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
+from MDAnalysisTests import module_not_found
 
 
 class TestPCA(object):
@@ -86,6 +87,8 @@ class TestPCA(object):
         pca_test.transform(u2)
 
     @staticmethod
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_cosine_content():
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand).run()
