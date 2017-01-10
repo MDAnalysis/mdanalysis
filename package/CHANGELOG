@@ -83,6 +83,7 @@ Fixes
     convert_units=False was set: now correctly writes forces (PR #1113)
   * Fixed warn about missing cython package in dev builds
   * Fix align.rotation_matrix checks array shape equality (Issue #1152)
+  * Fixed strange error when writing a PDB with 0 atoms (Issue #1083 PR #1103)
 
 Changes
   * Started unifying the API of analysis classes (named internally
