@@ -354,7 +354,7 @@ import logging
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 
@@ -428,7 +428,7 @@ class HydrogenBondAnalysis(object):
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
-                 verbose=False, detect_hydrogens='distance'):
+                 debug=None, detect_hydrogens='distance', verbose=None):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -513,7 +513,7 @@ class HydrogenBondAnalysis(object):
           *step*
             read every *step* between *start* and *stop*, ``None`` selects 1.
             Note that not all trajectory reader from 1 [``None``]
-          *verbose*
+          *debug*
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
@@ -561,6 +561,11 @@ class HydrogenBondAnalysis(object):
 
         .. versionchanged:: 0.11.0
            Initial checks for selections that potentially raise :exc:`SelectionError`.
+
+        .. deprecated:: 0.16
+           The *verbose* keyword argument is replaced by *debug*. Note that the
+           *verbose* keyword argument is now comsistently used to toggle
+           progress meters throuthout the library.
 
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
         """
@@ -612,10 +617,19 @@ class HydrogenBondAnalysis(object):
 
         self.table = None  # placeholder for output table
 
-        self.verbose = True  # always enable debug output for initial selection update
+        self.debug = True  # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
-        self.verbose = verbose  # per-frame debugging output?
+        # per-frame debugging output?
+        # This line must be changed at the end of the deprecation period for
+        # the *quiet* keyword argument. Then it must become:
+        # self.debug = debug
+        # In the signature, *verbose* must be removed and the default value
+        # for *debug* must be set to False.
+        # See the docstring for lib.log._set_verbose, the pull request #1150,
+        # and the issue #903.
+        self.debug = _set_verbose(debug, verbose, default=False,
+                                  was='verbose', now='debug')
 
         self._log_parameters()
 
@@ -815,7 +829,7 @@ class HydrogenBondAnalysis(object):
             self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
 
     def logger_debug(self, *args):
-        if self.verbose:
+        if self.debug:
             logger.debug(*args)
 
     def run(self, **kwargs):
@@ -825,10 +839,10 @@ class HydrogenBondAnalysis(object):
         :attr:`HydrogenBondAnalysis.timeseries` (see there for output
         format).
 
-        The method accepts a number of keywords, amongst them *quiet* (default
-        ``False``), which silences the porgress output (see
-        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *verbose* (which can
-        be used to change the value provided with the class constructor).
+        The method accepts a number of keywords, amongst them *verbose*
+        (default ``True``), which toggles the porgress output (see
+        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *debug* which can
+        be used to change the debug value provided to the class constructor.
 
         .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing
                      the data into a different format.
@@ -844,10 +858,15 @@ class HydrogenBondAnalysis(object):
            no donors or acceptors were found in a particular frame.
 
         .. deprecated:: 0.15.0
-            The donor and acceptor indices being 1-based is deprecated in favor of
-            a zero-based index. This can be accessed by "donor_index" or
-            "acceptor_index" removal of the 1-based indices is targeted
-            for version 0.16.0
+           The donor and acceptor indices being 1-based is deprecated in favor
+           of a zero-based index. This can be accessed by "donor_index" or
+           "acceptor_index" removal of the 1-based indices is targeted
+           for version 0.16.0
+
+        .. deprecated:: 0.16
+           The *quiet* keyword argument is deprecated in favor of the *verbose*
+           one. Previous use of *verbose* now corresponds to the new keyword
+           argument *debug*.
 
         """
         logger.info("HBond analysis: starting")
@@ -858,12 +877,12 @@ class HydrogenBondAnalysis(object):
         if not remove_duplicates:
             logger.warn("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
 
-        verbose = kwargs.pop('verbose', None)
-        if verbose is not None and verbose != self.verbose:
-            self.verbose = verbose
-            logger.debug("Toggling verbose to %r", self.verbose)
-        if not self.verbose:
-            logger.debug("HBond analysis: For full step-by-step debugging output use verbose=True")
+        debug = kwargs.pop('debug', None)
+        if debug is not None and debug != self.debug:
+            self.debug = debug
+            logger.debug("Toggling debug to %r", self.debug)
+        if not self.debug:
+            logger.debug("HBond analysis: For full step-by-step debugging output use debug=True")
 
         self.timeseries = []
         self.timesteps = []
@@ -875,9 +894,12 @@ class HydrogenBondAnalysis(object):
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
             raise
+        verbose = _set_verbose(verbose=kwargs.get('verbose', None),
+                               quiet=kwargs.get('quiet', None),
+                               default=True)
         pm = ProgressMeter(len(frames),
                            format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
-                           quiet=kwargs.get('quiet', False))
+                           verbose=verbose)
 
         try:
             self.u.trajectory.time

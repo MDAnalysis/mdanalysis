@@ -216,7 +216,8 @@ def _guess_string_format(template):
         return _legacy_format
 
 
-def _set_verbose(verbose, quiet, default=True):
+def _set_verbose(verbose, quiet, default=True,
+                 was='quiet', now='verbose'):
     """Return the expected value of verbosity
 
     This function aims at handling the deprecation of the *quiet* keyword in
@@ -249,12 +250,18 @@ def _set_verbose(verbose, quiet, default=True):
            # The *quiet* keyword disapeard and the default value for *verbose*
            # is set to the actual default value.
            self.verbose = verbose
+
+    In `MDAnalysis.analysis.hbonds.hbonds_analysis`, the deprecation scheme is
+    more complex: *quiet* becomes *verbose*, and *verbose* becomes *debug*.
+    Hence, this function allows to use diffrent argument names to display in
+    error messages and deprecation warnings.
     """
     if quiet is not None:
-        warnings.warn("Keyword *quiet* is deprecated (from version 0.16); "
-                      "use *verbose* instead.", DeprecationWarning)
+        warnings.warn("Keyword *{}* is deprecated (from version 0.16); "
+                      "use *{}* instead.".format(was, now), DeprecationWarning)
         if verbose is not None and verbose == quiet:
-            raise ValueError("Keywords *verbose* and *quiet* are contradicting each other.")
+            raise ValueError("Keywords *{}* and *{}* are contradicting each other."
+                             .format(now, was))
         return not quiet
     elif verbose is None:
         return default
