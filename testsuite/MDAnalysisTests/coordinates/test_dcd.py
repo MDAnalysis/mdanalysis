@@ -50,6 +50,7 @@ class TestDCDReader(object):
         self.ts = self.universe.coord
 
     def tearDown(self):
+        self.dcd.close()
         del self.universe
         del self.dcd
         del self.ts
@@ -148,18 +149,21 @@ class TestDCDReader(object):
         for start, stop, step in x:
             yield self._failed_slices_test, start, stop, step
 
-    def _slice_generation_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+    @staticmethod
+    def _slice_generation_test(start, stop, step):
+        u = mda.Universe(PSF, DCD)
+        ts = u.trajectory.timeseries(u.atoms)
+        ts_skip = u.trajectory.timeseries(u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+        u.trajectory.close()
 
     @knownfailure()
     def _failed_slices_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+        u = mda.Universe(PSF, DCD)
+        ts = u.trajectory.timeseries(u.atoms)
+        ts_skip = u.trajectory.timeseries(u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+        u.trajectory.close()
 
 
 def test_DCDReader_set_dt(dt=100., frame=3):
@@ -180,6 +184,7 @@ class TestDCDWriter(TestCase):
         self.Writer = mda.coordinates.DCD.DCDWriter
 
     def tearDown(self):
+        self.universe.trajectory.close()
         try:
             os.unlink(self.outfile)
         except OSError:
@@ -284,6 +289,7 @@ class TestDCDWriter_Issue59(TestCase):
         wXTC.close()
 
     def tearDown(self):
+        self.u.trajectory.close()
         try:
             os.unlink(self.xtc)
         except OSError:
@@ -315,6 +321,9 @@ class TestDCDWriter_Issue59(TestCase):
             dcd.atoms.positions,
             3,
             err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
+
+        xtc.trajectory.close()
+        dcd.trajectory.close()
 
     def test_OtherWriter(self):
         dcd = self.u
@@ -476,6 +485,7 @@ class TestDCDCorrel(TestCase):
         C_step.compute(self.dcd, step=10)
 
     def tearDown(self):
+        self.dcd.close()
         del self.collection
         del self.collection_slicing
         del self.universe

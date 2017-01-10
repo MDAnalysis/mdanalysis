@@ -883,6 +883,8 @@ class BaseTimestepTest(object):
         yield self._check_copy_slice_indices, self.name, ts
         yield self._check_copy_slice_slice, self.name, ts
 
+        u.trajectory.close()
+
     def test_copy_slice(self):
         for p, v, f in itertools.product([True, False], repeat=3):
             if not any([p, v, f]):
