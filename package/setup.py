@@ -360,12 +360,9 @@ def extensions(config):
                             include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
-    pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
+    pre_exts = [dcd, distances, distances_omp, qcprot,
                   transformation, libmdaxdr, util, encore_utils,
                   ap_clustering, spe_dimred]
-
-    pre_exts = [dcd, distances, distances_omp, qcprot,
-                  transformation, libmdaxdr, util]
     cython_generated = []
     if use_cython:
         extensions = cythonize(pre_exts)
