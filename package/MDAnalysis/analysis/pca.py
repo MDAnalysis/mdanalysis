@@ -102,7 +102,6 @@ from six.moves import range
 import warnings
 
 import numpy as np
-from scipy.integrate import simps
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -353,6 +352,7 @@ def cosine_content(pca_space, i):
     .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
                    Phys. Rev. E 65, 031910 (2002).
     """
+    from scipy.integrate import simps
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
