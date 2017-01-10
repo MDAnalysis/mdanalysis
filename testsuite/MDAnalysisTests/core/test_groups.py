@@ -488,3 +488,37 @@ class TestMetaclassMagic(object):
         ag = u.atoms[[0, 1, 2]]
 
         assert_array_equal(ng.positions, ag.positions)
+
+
+class TestGroupBy(object):
+    # tests for the method 'groupby'
+    def setUp(self):
+        self.u = make_Universe(('types', 'charges', 'resids'))
+
+    def tearDown(self):
+        del self.u
+
+    def test_groupby_float(self):
+        gb = self.u.atoms.groupby('charges')
+
+        for ref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
+            assert_(ref in gb)
+            g = gb[ref]
+            assert_(all(g.charges == ref))
+            assert_(len(g) == 25)
+        
+    def test_groupby_string(self):
+        gb = self.u.atoms.groupby('types')
+
+        assert_(len(gb) == 5)
+        for ref in ['TypeA', 'TypeB', 'TypeC', 'TypeD', 'TypeE']:
+            assert_(ref in gb)
+            g = gb[ref]
+            assert_(all(g.types == ref))
+            assert_(len(g) == 25)
+
+    def test_groupby_int(self):
+        gb = self.u.atoms.groupby('resids')
+
+        for g in gb.values():
+            assert_(len(g) == 5)
