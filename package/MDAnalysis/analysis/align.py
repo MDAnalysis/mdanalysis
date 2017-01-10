@@ -254,6 +254,10 @@ def rotation_matrix(a, b, weights=None):
 
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
+
+    if a.shape != b.shape:
+        raise ValueError("'a' and 'b' must have same shape")
+
     N = b.shape[0]
 
     if weights is not None:

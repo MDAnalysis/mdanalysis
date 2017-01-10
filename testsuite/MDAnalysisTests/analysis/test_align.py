@@ -75,6 +75,16 @@ class TestRotationMatrix(object):
         assert_equal(rot, np.eye(3))
         assert_equal(rmsd, None)
 
+    @staticmethod
+    def test_exception():
+        a = [[0.1, 0.2, 0.3],
+             [1.1, 1.1, 1.1],
+             [2, 2, 2]]
+        b = [[0.1, 0.1, 0.1],
+             [1.1, 1.1, 1.1]]
+        assert_raises(ValueError, align.rotation_matrix, a, b)
+
+
 
 class TestAlign(TestCase):
     @dec.skipif(parser_not_found('DCD'),
