@@ -889,8 +889,7 @@ class GroupBase(_MutableBase):
                 o.atoms.translate(s)
 
     def groupby(self, topattr):
-        """Obtain groupings of the components of this Group according the values
-        of a given topology attribute.
+        """Group together items in this group according to values of *topattr*
 
         Parameters
         ----------
@@ -902,9 +901,19 @@ class GroupBase(_MutableBase):
         dict
             Unique values of the topology attribute as keys, Groups as values.
 
+        Example
+        -------
+        To group atoms with the same mass together::
+
+          >>> ag.groupby('masses')
+          {12.010999999999999: <AtomGroup with 462 atoms>,
+          14.007: <AtomGroup with 116 atoms>,
+          15.999000000000001: <AtomGroup with 134 atoms>}
+
+        .. versionadded:: 0.16.0
         """
-        return {i: self[self.__getattribute__(topattr) == i] for i in 
-                set(self.__getattribute__(topattr))}
+        ta = getattr(self, topattr)
+        return {i: self[ta == i] for i in set(ta)}
 
 
 class AtomGroup(GroupBase):
