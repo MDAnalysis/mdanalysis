@@ -78,6 +78,9 @@ cdef extern from 'include/readdcd.h':
                      float *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
+    int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
+                   int istart, int nsavc, double delta, int with_unitcell, 
+                   int charmm);
 
 DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
@@ -110,6 +113,9 @@ cdef class DCDFile:
         self.fname = fname.encode('utf-8')
         self.n_atoms = 0
         self.is_open = False
+        if path.isfile(self.fname) and mode == 'w':
+            raise RuntimeError('''Aborting -- attempted to overwrite an
+                                existing file path.''')
         self.open(self.fname, mode)
 
     def __dealloc__(self):
@@ -161,7 +167,8 @@ cdef class DCDFile:
                           "ErrorCode: {}".format(self.fname, ok))
         self.is_open = True
         self.current_frame = 0
-        self.remarks = self._read_header()
+        if self.mode == 'r':
+            self.remarks = self._read_header()
         self.reached_eof = False
 
     def close(self):
@@ -296,3 +303,21 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("DCD seek failed with system errno={}".format(ok))
         self.current_frame = frame
+
+    def _write_header(self):
+
+        if not self.is_open:
+            raise RuntimeError("No file open")
+
+        if not self.mode=='w':
+            raise IOError("Incorrect file mode for writing.")
+
+        cdef char c_remarks
+        cdef int len_remarks = 0
+        cdef int with_unitcell = 1
+
+        ok = write_dcdheader(self.fp, &c_remarks, self.n_atoms, self.istart, 
+                             self.nsavc, self.delta, with_unitcell, 
+                             self.charmm)
+        if ok != 0:
+            raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))

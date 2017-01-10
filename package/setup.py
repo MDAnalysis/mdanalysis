@@ -355,9 +355,6 @@ def extensions(config):
     pre_exts = [dcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
                 ap_clustering, spe_dimred]
-
-    pre_exts = [dcd, distances, distances_omp, qcprot,
-                  transformation, libmdaxdr, util]
     cython_generated = []
     if use_cython:
         extensions = cythonize(pre_exts)
