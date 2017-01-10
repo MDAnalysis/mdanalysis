@@ -21,6 +21,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
 
     def tearDown(self):
+        self.universe.trajectory.close()
         del self.universe
 
     def test_load_file(self):
@@ -169,6 +170,8 @@ class BaseReference(object):
         self.dt = 1
         self.totaltime = 4
 
+    def tearDown(self):
+        self.reader.close()
 
     def iter_ts(self, i):
         ts = self.first_frame.copy()
@@ -190,6 +193,9 @@ class BaseReaderTest(object):
         self.reader.add_auxiliary('highf', self.ref.aux_highf,
                                   dt=self.ref.aux_highf_dt,
                                   initial_time=0, time_selector=None)
+
+    def tearDown(self):
+        self.reader.close()
 
     def test_n_atoms(self):
         assert_equal(self.reader.n_atoms, self.ref.n_atoms)
@@ -380,6 +386,9 @@ class BaseWriterTest(object):
         self.tmpdir = tempdir.TempDir()
         self.reader = self.ref.reader(self.ref.trajectory)
 
+    def tearDown(self):
+        self.reader.close()
+
     def tmp_file(self, name):
         return self.tmpdir.name + name + '.' + self.ref.ext
 
@@ -413,6 +422,7 @@ class BaseWriterTest(object):
             for ts in uni.trajectory:
                 w.write(uni.atoms)
         self._check_copy(outfile)
+        uni.trajectory.close()
 
     def test_write_trajectory_universe(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)
@@ -421,6 +431,7 @@ class BaseWriterTest(object):
             for ts in uni.trajectory:
                 w.write(uni)
         self._check_copy(outfile)
+        uni.trajectory.close()
 
     def test_write_selection(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)
@@ -439,6 +450,7 @@ class BaseWriterTest(object):
                 err_msg="coordinate mismatch between original and written "
                 "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
+        uni.trajectory.close()
 
     def _check_copy(self, fname):
         copy = self.ref.reader(fname)
