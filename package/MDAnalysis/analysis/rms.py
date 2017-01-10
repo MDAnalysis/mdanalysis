@@ -139,7 +139,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.util import asiterable
 
 
@@ -557,7 +557,8 @@ class RMSF(object):
         self.atomgroup = atomgroup
         self._rmsf = None
 
-    def run(self, start=None, stop=None, step=None, progout=10, quiet=False):
+    def run(self, start=None, stop=None, step=None, progout=10,
+            verbose=None, quiet=None):
         """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
@@ -576,22 +577,26 @@ class RMSF(object):
         progout : int (optional)
             number of frames to iterate through between updates to progress
             output; ``None`` for no updates [10]
-        quiet : bool (optional)
-            if ``True``, suppress all output (implies *progout* = ``None``)
-            [``False``]
+        verbose : bool (optional)
+            if ``False``, suppress all output (implies *progout* = ``None``)
+            [``True``]
 
         References
         ----------
         .. [Welford1962] B. P. Welford (1962). "Note on a Method for
            Calculating Corrected Sums of Squares and Products." Technometrics
            4(3):419-420.
+
+        .. deprecated:: 0.16
+           The keyword argument *quiet* is deprecated in favor of *verbose*.
         """
         traj = self.atomgroup.universe.trajectory
         start, stop, step = traj.check_slice_indices(start, stop, step)
         sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         means = np.array(sumsquares)
 
-        if quiet:
+        verbose = _set_verbose(verbose, quiet, default=True)
+        if not verbose:
             progout = None
 
         # set up progress output
@@ -600,7 +605,7 @@ class RMSF(object):
                                        interval=progout)
         else:
             percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
-                                       quiet=True)
+                                       verbose=False)
 
         for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):
             sumsquares += (k/(k + 1.0)) * (self.atomgroup.positions - means)**2

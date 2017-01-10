@@ -80,7 +80,7 @@ of a :class:`~MDAnalysis.core.universe.Universe`::
     universe = mda.Universe(TPR, XTC)
     universe.transfer_to_memory()
 
-This operation may take a while (with `quiet=False` a progress bar is
+This operation may take a while (with `verbose=True` a progress bar is
 displayed) but then subsequent operations on the trajectory directly
 operate on the in-memory array and will be very fast.
 

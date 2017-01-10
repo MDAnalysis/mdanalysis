@@ -60,7 +60,7 @@ import copy
 import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
-from ..lib.log import ProgressMeter
+from ..lib.log import ProgressMeter, _set_verbose
 from ..exceptions import NoDataError
 from . import groups
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -374,7 +374,7 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, frame_interval=1, quiet=True):
+    def transfer_to_memory(self, frame_interval=1, verbose=None, quiet=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -385,14 +385,16 @@ class Universe(object):
         ----------
         frame_interval : int, optional
             Read in every nth frame. [1]
-        quiet : bool, optional
+        verbose : bool, optional
             Will print the progress of loading trajectory to memory, if
-            set to True. Default value is quiet.
+            set to True. Default value is False.
 
 
         .. versionadded:: 0.16.0
         """
         from ..coordinates.memory import MemoryReader
+
+        verbose = _set_verbose(verbose, quiet, default=False)
 
         if not isinstance(self.trajectory, MemoryReader):
             # Try to extract coordinates using Timeseries object
@@ -405,7 +407,7 @@ class Universe(object):
             # fall back to a slower approach
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
-                                   interval=frame_interval, quiet=quiet)
+                                   interval=frame_interval, verbose=verbose)
                 coordinates = []  # TODO: use pre-allocated array
                 for ts in self.trajectory[::frame_interval]:
                     coordinates.append(np.copy(ts.positions))

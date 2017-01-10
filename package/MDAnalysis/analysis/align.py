@@ -191,7 +191,7 @@ from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 # remove after rms_fit_trj deprecation over
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 
 from .base import AnalysisBase
 
@@ -513,8 +513,8 @@ class AlignTraj(AnalysisBase):
             exact methods
         force : boolean, optional
             Force overwrite of filename for rmsd-fitting
-        quiet : boolean, optional
-            Set logger to show minimal information
+        verbose : boolean, optional
+            Set logger to show more information
         start : int, optional
             First frame of trajectory to analyse, Default: 0
         stop : int, optional
@@ -530,9 +530,9 @@ class AlignTraj(AnalysisBase):
 
         Notes
         -----
-        If set to `quiet`, it is recommended to wrap the statement in a ``try
-        ...  finally`` to guarantee restoring of the log level in the case of
-        an exception.
+        If set to `verbose=False`, it is recommended to wrap the statement in a
+        ``try ...  finally`` to guarantee restoring of the log level in the
+        case of an exception.
 
         The `in_memory` option changes the `mobile` universe to an in-memory
         representation (see :mod:`MDAnalysis.coordinates.memory`) for the
@@ -563,7 +563,7 @@ class AlignTraj(AnalysisBase):
         # do this after setting the memory reader to have a reference to the
         # right reader.
         super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
-        if self._quiet:
+        if not self._verbose:
             logging.disable(logging.WARN)
 
         # store reference to mobile atoms
@@ -610,7 +610,7 @@ class AlignTraj(AnalysisBase):
 
     def _conclude(self):
         self._writer.close()
-        if self._quiet:
+        if not self._verbose:
             logging.disable(logging.NOTSET)
 
     def save(self, rmsdfile):
@@ -634,8 +634,9 @@ def rms_fit_trj(
         tol_mass=0.1,
         strict=False,
         force=True,
-        quiet=False,
+        verbose=None,
         in_memory=False,
+        quiet=None,
         **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
@@ -684,9 +685,9 @@ def rms_fit_trj(
       *force*
          - ``True``: Overwrite an existing output trajectory (default)
          - ``False``: simply return if the file already exists
-      *quiet*
-         - ``True``: suppress progress and logging for levels INFO and below.
-         - ``False``: show all status messages and do not change the the logging
+      *verbose*
+         - ``False``: suppress progress and logging for levels INFO and below.
+         - ``True``: show all status messages and do not change the the logging
            level (default)
       *in_memory*
          Default: ``False``
@@ -714,9 +715,13 @@ def rms_fit_trj(
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
 
+    .. deprecated:: 0.16::
+       The keyword argument *quiet* is deprecated in vafor of *verbose*.
+
     """
     frames = traj.trajectory
-    if quiet:
+    verbose = _set_verbose(verbose, quiet, default=True)
+    if not verbose:
         # should be part of a try ... finally to guarantee restoring the log
         # level
         logging.disable(logging.WARN)
@@ -775,7 +780,7 @@ def rms_fit_trj(
     percentage = ProgressMeter(
         n_frames,
         interval=10,
-        quiet=quiet,
+        verbose=verbose,
         format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]      r")
 
     for k, ts in enumerate(frames):
@@ -810,7 +815,7 @@ def rms_fit_trj(
         np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
-    if quiet:
+    if not verbose:
         # should be part of a try ... finally to guarantee restoring the log
         # level
         logging.disable(logging.NOTSET)

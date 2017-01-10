@@ -26,13 +26,16 @@ from six.moves import StringIO
 import sys
 import os
 import logging
+import warnings
 
-from numpy.testing import TestCase, assert_
+from numpy.testing import (TestCase, assert_, assert_equal,
+                           assert_raises, assert_warns)
 
 from six.moves import range
 
 import MDAnalysis
 import MDAnalysis.lib.log
+from MDAnalysis.lib.log import _set_verbose
 
 from MDAnalysisTests import tempdir
 
@@ -153,3 +156,27 @@ class TestProgressMeter(TestCase):
         self._assert_in(output, (format + '\n').format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
         self._assert_in(output, (format + '\n').format(**{'step': n, 'numsteps': n, 'percentage': 100.}))
 
+
+def test__set_verbose():
+    # Everything agrees verbose should be True
+    assert_equal(_set_verbose(verbose=True, quiet=False, default=True), True)
+    # Everything agrees verbose should be False
+    assert_equal(_set_verbose(verbose=False, quiet=True, default=False), False)
+    # Make sure the default does not overwrite the user choice
+    assert_equal(_set_verbose(verbose=True, quiet=False, default=False), True)
+    assert_equal(_set_verbose(verbose=False, quiet=True, default=True), False)
+    # Quiet is not provided
+    assert_equal(_set_verbose(verbose=True, quiet=None, default=False), True)
+    assert_equal(_set_verbose(verbose=False, quiet=None, default=False), False)
+    # Verbose is not provided
+    assert_equal(_set_verbose(verbose=None, quiet=True, default=False), False)
+    assert_equal(_set_verbose(verbose=None, quiet=False, default=False), True)
+    # Nothing is provided
+    assert_equal(_set_verbose(verbose=None, quiet=None, default=True), True)
+    assert_equal(_set_verbose(verbose=None, quiet=None, default=False), False)
+    # quiet and verbose contradict each other
+    assert_raises(ValueError, _set_verbose, verbose=True, quiet=True)
+    assert_raises(ValueError, _set_verbose, verbose=False, quiet=False)
+    # A deprecation warning is issued when quiet is set
+    assert_warns(DeprecationWarning, _set_verbose, verbose=None, quiet=True)
+    assert_warns(DeprecationWarning, _set_verbose, verbose=False, quiet=True)
