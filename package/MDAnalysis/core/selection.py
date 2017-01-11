@@ -994,24 +994,13 @@ class PropertySelection(Selection):
         if oper is None:
             oper = tokens.popleft()
         # check if oper has the value appended
-        for possible in ('<=', '>=', '==', '!='):
-            try:
+        for possible in ('<=', '>=', '==', '!=', '<', '>'):
+            if possible in oper:
                 x, y = oper.split(possible)
                 if y:
                     oper = possible
                     value = y
-            except ValueError:
-                pass
-        else:  # if none of the previous triggers
-            if not ('<=' in oper or '>=' in oper):  # to stop splitting around these
-                for possible in ('<', '>'):
-                    try:
-                        x, y = oper.split(possible)
-                        if y:
-                            oper = possible
-                            value = y
-                    except ValueError:
-                        pass
+                break
 
         if value is None:
             value = tokens.popleft()
