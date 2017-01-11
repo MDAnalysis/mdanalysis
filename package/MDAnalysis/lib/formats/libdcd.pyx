@@ -78,6 +78,9 @@ cdef extern from 'include/readdcd.h':
                      float *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
+    int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
+                   int istart, int nsavc, double delta, int with_unitcell, 
+                   int charmm);
 
 DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
@@ -296,3 +299,17 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("DCD seek failed with system errno={}".format(ok))
         self.current_frame = frame
+
+    def _write_header(self):
+        if not self.is_open:
+            raise RuntimeError("No file open")
+
+        cdef char c_remarks
+        cdef int len_remarks = 0
+        cdef int with_unitcell = 1
+
+        ok = write_dcdheader(self.fp, &c_remarks, self.n_atoms, self.istart, 
+                             self.nsavc, self.delta, with_unitcell, 
+                             self.charmm)
+        if ok != 0:
+            raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))

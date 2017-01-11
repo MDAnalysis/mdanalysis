@@ -99,3 +99,12 @@ class DCDReadFrameTest(TestCase):
         with self.dcdfile as f:
             for frame in f:
                 pass
+
+class DCDWriteHeaderTest(TestCase):
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD)
+
+    @run_in_tempdir()
+    def test_write_header(self):
+        self.dcdfile._write_header()
