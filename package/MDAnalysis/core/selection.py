@@ -961,6 +961,19 @@ class PropertySelection(Selection):
         ('==', np.equal),
         ('!=', np.not_equal),
     ])
+    # order here is important, need to check <= before < so the
+    # larger (in terms of string length) symbol is considered first
+    _op_symbols = ('<=', '>=', '==', '!=', '<', '>')
+
+    # symbols to replace with when flipping
+    # eg 6 > x -> x <= 6, 5 == x -> x == 5
+    opposite_ops = {
+        '==': '==', '!=': '!=',
+        '<': '>=', '>=': '<',
+        '>': '<=', '<=': '>',
+    }
+
+    props = {'mass', 'charge', 'x', 'y', 'z'}
 
     def __init__(self, parser, tokens):
         """
@@ -981,10 +994,11 @@ class PropertySelection(Selection):
             self.absolute = False
 
         # check if prop has any extra information atm
-        for possible in ('<=', '>=', '==', '!=', '<', '>'):
+        for possible in self._op_symbols:
             try:
                 x, y = prop.split(possible)
             except ValueError:
+                # won't unpack into 2 args unless *possible* is present
                 pass
             else:
                 prop = x
@@ -994,16 +1008,22 @@ class PropertySelection(Selection):
         if oper is None:
             oper = tokens.popleft()
         # check if oper has the value appended
-        for possible in ('<=', '>=', '==', '!=', '<', '>'):
+        for possible in self._op_symbols:
             if possible in oper:
                 x, y = oper.split(possible)
-                if y:
+                if y:  # '<='.split('<=') == ['', ''], therefore y won't exist
                     oper = possible
                     value = y
                 break
 
         if value is None:
             value = tokens.popleft()
+
+        # check if we flip prop and value
+        # eg 5 > x -> x <= 5
+        if value in self.props:
+            prop, value = value, prop
+            oper = self.opposite_ops[oper]
 
         self.prop = prop
         try:

@@ -690,6 +690,19 @@ class TestTriclinicSelections(object):
 class TestPropSelection(object):
     plurals = {'mass': 'masses',
                'charge': 'charges'}
+    op_funcs = {
+        '<': np.less,
+        '<=': np.less_equal,
+        '>': np.greater,
+        '>=': np.greater_equal,
+        '==': np.equal,
+        '!=': np.not_equal
+    }
+    opposites = {
+        '==': '==', '!=': '!=',
+        '>': '<=', '<=': '>',
+        '<': '>=', '>=': '<',
+    }
 
     @staticmethod
     def gen_sel_strings(prop, oper):
@@ -731,7 +744,6 @@ class TestPropSelection(object):
                          set(ag[getattr(ag, self.plurals[prop]) >= 1.5].indices))
 
     def _check_eq(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 1.5)
         for selstr in self.gen_sel_strings(prop, '=='):
             sel = ag.select_atoms(selstr)
             assert_equal(set(sel.indices),
@@ -743,8 +755,22 @@ class TestPropSelection(object):
             assert_equal(set(sel.indices),
                          set(ag[getattr(ag, self.plurals[prop]) != 1.5].indices))
 
+    def _check_flip(self, prop, ag, op):
+        func = self.op_funcs[op]
+
+        # reference group, doing things forwards
+        ref = ag[func(getattr(ag, self.plurals[prop]), 1.5)]
+
+        selstr = 'prop 1.5 {op} {prop}'.format(
+            op=self.opposites[op], prop=prop)
+        sel = ag.select_atoms(selstr)
+
+        assert_equal(set(ref.indices), set(sel.indices))
+
     def test_props(self):
         u = make_Universe(('masses', 'charges'))
+        u.atoms[::2].masses = 1.5
+        u.atoms[::2].charges = 1.5
 
         for prop in ['mass', 'charge']:
             for ag in [u.atoms, u.atoms[:100]]:
@@ -754,6 +780,9 @@ class TestPropSelection(object):
                 yield self._check_ge, prop, ag
                 yield self._check_eq, prop, ag
                 yield self._check_ne, prop, ag
+                # check flipping operators
+                for op in ('<', '>', '<=', '>=', '==', '!='):
+                    yield self._check_flip, prop, ag, op
 
 
 class TestBondedSelection(object):
