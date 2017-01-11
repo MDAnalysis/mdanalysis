@@ -143,25 +143,26 @@ class TestAtomGroupPickle(object):
         newag = cPickle.loads(pickle_str)
         assert_equal(len(newag), 0)
 
-def test_pickling_uag():
-    u = mda.Universe(PDB_small)
 
-    uag = u.select_atoms('name C', updating=True)
+class TestPicklingUpdatingAtomGroups(object):
+    def setUp(self):
+        self.u = mda.Universe(PDB_small)
 
-    pickle_str = cPickle.dumps(uag, protocol=cPickle.HIGHEST_PROTOCOL)
+    def tearDown(self):
+        del self.u
 
-    new_uag = cPickle.loads(pickle_str)
+    def test_pickling_uag(self):
+        ag = self.u.atoms[:100]
+        uag = ag.select_atoms('name C', updating=True)
+        pickle_str = cPickle.dumps(uag, protocol=cPickle.HIGHEST_PROTOCOL)
+        new_uag = cPickle.loads(pickle_str)
 
-    assert_array_equal(uag.indices, new_uag.indices)
+        assert_array_equal(uag.indices, new_uag.indices)
 
-def test_pickling_uag_of_uag():
-    u = mda.Universe(PDB_small)
+    def test_pickling_uag_of_uag(self):
+        uag1 = self.u.select_atoms('name C or name H', updating=True)
+        uag2 = uag1.select_atoms('name C', updating=True)
+        pickle_str = cPickle.dumps(uag2, protocol=cPickle.HIGHEST_PROTOCOL)
+        new_uag2 = cPickle.loads(pickle_str)
 
-    uag1 = u.select_atoms('name C or name H', updating=True)
-    uag2 = uag1.select_atoms('name C', updating=True)
-
-    pickle_str = cPickle.dumps(uag2, protocol=cPickle.HIGHEST_PROTOCOL)
-
-    new_uag2 = cPickle.loads(pickle_str)
-
-    assert_array_equal(uag2.indices, new_uag2.indices)
+        assert_array_equal(uag2.indices, new_uag2.indices)
