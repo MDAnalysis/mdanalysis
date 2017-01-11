@@ -124,6 +124,12 @@ def _unpickle(uhash, ix):
                                         for k in _ANCHOR_UNIVERSES.keys()])))
     return u.atoms[ix]
 
+def _unpickle_uag(basepickle, selections, selstrs):
+    bfunc, bargs = basepickle[0], basepickle[1:][0]
+    basegroup = bfunc(*bargs)
+    return UpdatingAtomGroup(basegroup, selections, selstrs)
+
+
 def make_classes():
     """Make a fresh copy of all Classes
 
@@ -2163,6 +2169,14 @@ class UpdatingAtomGroup(AtomGroup):
             self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
+
+    def __reduce__(self):
+        # strategy for unpickling is:
+        # - unpickle base group
+        # - recreate UAG as created through select_atoms (basegroup and selstrs)
+        # even if base_group is a UAG this will work through recursion
+        return (_unpickle_uag,
+                (self._base_group.__reduce__(), self._selections, self.selection_strings))
 
     def __repr__(self):
         basestr = super(UpdatingAtomGroup, self).__repr__()
