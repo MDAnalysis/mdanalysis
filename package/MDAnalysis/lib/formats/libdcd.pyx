@@ -113,6 +113,9 @@ cdef class DCDFile:
         self.fname = fname.encode('utf-8')
         self.n_atoms = 0
         self.is_open = False
+        if path.isfile(self.fname) and mode == 'w':
+            raise RuntimeError('''Aborting -- attempted to overwrite an
+                                existing file path.''')
         self.open(self.fname, mode)
 
     def __dealloc__(self):
@@ -164,7 +167,8 @@ cdef class DCDFile:
                           "ErrorCode: {}".format(self.fname, ok))
         self.is_open = True
         self.current_frame = 0
-        self.remarks = self._read_header()
+        if self.mode == 'r':
+            self.remarks = self._read_header()
         self.reached_eof = False
 
     def close(self):
@@ -301,8 +305,12 @@ cdef class DCDFile:
         self.current_frame = frame
 
     def _write_header(self):
+
         if not self.is_open:
             raise RuntimeError("No file open")
+
+        if not self.mode=='w':
+            raise IOError("Incorrect file mode for writing.")
 
         cdef char c_remarks
         cdef int len_remarks = 0
