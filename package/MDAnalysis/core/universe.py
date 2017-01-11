@@ -480,7 +480,7 @@ class Universe(object):
                 trj = self.trajectory.filename
             except AttributeError:
                 trj = ''
-            return hash((ats, fnm, trj))
+            return ats, fnm, trj
 
     @property
     def is_anchor(self):
