@@ -161,6 +161,7 @@ _READERS = {}
 _SINGLEFRAME_WRITERS = {}
 _MULTIFRAME_WRITERS = {}
 _PARSERS = {}
+_SELECTION_WRITERS = {}
 
 # Storing anchor universes for unpickling groups
 import weakref

@@ -167,7 +167,7 @@ class BaseReference(object):
         self.volume = mda.lib.mdamath.box_volume(self.dimensions)
         self.time = 0
         self.dt = 1
-        self.totaltime = 5
+        self.totaltime = 4
 
 
     def iter_ts(self, i):

@@ -194,7 +194,7 @@ class _GromacsReader(TestCase):
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
         assert_almost_equal(self.universe.trajectory.totaltime,
-                            1000.0,
+                            900.0,
                             3,
                             err_msg="wrong total length of trajectory")
 

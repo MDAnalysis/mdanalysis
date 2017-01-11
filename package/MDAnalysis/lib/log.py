@@ -82,6 +82,7 @@ from __future__ import print_function, division
 import sys
 import logging
 import re
+import warnings
 
 from .. import version
 
@@ -171,7 +172,7 @@ class NullHandler(logging.Handler):
 
 def echo(s='', replace=False, newline=True):
     """Simple string output that immediately prints to the console.
-    
+
     Parameters
     ==========
 
@@ -213,6 +214,59 @@ def _guess_string_format(template):
         return _new_format
     else:
         return _legacy_format
+
+
+def _set_verbose(verbose, quiet, default=True,
+                 was='quiet', now='verbose'):
+    """Return the expected value of verbosity
+
+    This function aims at handling the deprecation of the *quiet* keyword in
+    versin 0.16.
+
+    This function issues a deprecation warning if *quiet* was set (is not
+    None), and raises a ValueError if *verbose* and *quiet* are set to
+    contradicting values.
+
+    If *verbose* is set, then the function returns the set value of *verbose*.
+    If it is not set, but *quiet* is set, then the function returns
+    `not quiet`. Finally, if none of *verbose* nor *quiet* is set, then
+    *default* is returned.
+
+    During the deprecation phase of the *quiet* keyword, this function is
+    expected to be used as follow:
+
+    .. code-block:: python
+
+       def method(verbose=None, quiet=None):
+           # *verbose* and *quiet* are set to None to distinguish explicitly
+           # set values.
+           self.verbose = _set_verbose(verbose, quiet, default=True)
+
+    At the end of the deprecation period, the code above should be replaced by:
+
+    .. code-block:: python
+
+       def method(verbose=True):
+           # The *quiet* keyword disapeard and the default value for *verbose*
+           # is set to the actual default value.
+           self.verbose = verbose
+
+    In `MDAnalysis.analysis.hbonds.hbonds_analysis`, the deprecation scheme is
+    more complex: *quiet* becomes *verbose*, and *verbose* becomes *debug*.
+    Hence, this function allows to use diffrent argument names to display in
+    error messages and deprecation warnings.
+    """
+    if quiet is not None:
+        warnings.warn("Keyword *{}* is deprecated (from version 0.16); "
+                      "use *{}* instead.".format(was, now), DeprecationWarning)
+        if verbose is not None and verbose == quiet:
+            raise ValueError("Keywords *{}* and *{}* are contradicting each other."
+                             .format(now, was))
+        return not quiet
+    elif verbose is None:
+        return default
+    else:
+        return verbose
 
 
 class ProgressMeter(object):
@@ -260,7 +314,8 @@ class ProgressMeter(object):
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
-                 quiet=False, dynamic=True, format_handling='auto'):
+                 verbose=None, dynamic=True,
+                 format_handling='auto', quiet=None):
         r"""
         Parameters
         ==========
@@ -287,9 +342,9 @@ class ProgressMeter(object):
         offset: int
             number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
             then one should set *offset* = 1; for 1-based steps, choose 0. [1]
-        quiet: bool
-            If ``True``, disable all output, ``False`` print all messages as
-            specified, [``False``]
+        verbose: bool
+            If ``False``, disable all output, ``True`` print all messages as
+            specified, [``True``]
         dynamic: bool
             If ``True``, each line will be printed on top of the previous one.
             This is done by prepedind the format with ``\r``. [``True``]
@@ -306,13 +361,19 @@ class ProgressMeter(object):
 
         .. versionchanged:: 0.16
            Keyword argument *dynamic* replaces ``\r`` in the format.
+
+        .. deprecated:: 0.16
+           Keyword argument *quiet* is deprecated in favor of *verbose*.
         """
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
         self.dynamic = dynamic
         self.numouts = -1
-        self.quiet = quiet
+
+        # The *quiet* keyword argument is deprecated.
+        self.verbose = _set_verbose(verbose, quiet, default=True)
+
         if format is None:
             format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
             self.format_handler = _new_format
@@ -354,12 +415,12 @@ class ProgressMeter(object):
         *kwargs* are additional attributes that can be references in
         the format string.
 
-        .. Note:: If *quiet* = ``True`` has been set in the
-                  constructor or if :attr:`ProgressMeter.quiet` has
-                  been set to ``True`` the no messages will be
+        .. Note:: If *verbose* = ``False`` has been set in the
+                  constructor or if :attr:`ProgressMeter.verbose` has
+                  been set to ``False``, then no messages will be
                   printed.
         """
-        if self.quiet:
+        if not self.verbose:
             return
         self.update(step, **kwargs)
         format = self.format

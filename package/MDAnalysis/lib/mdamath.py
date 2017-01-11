@@ -39,7 +39,7 @@ Helper functions for common mathematical operations
 .. versionadded:: 0.11.0
 """
 import numpy as np
-from itertools import izip
+from six.moves import zip
 
 from ..exceptions import NoDataError
 
@@ -443,7 +443,7 @@ def one_to_many_pointers(Ni, Nj, i2j):
                               [Ni]])
 
     ptrs = np.zeros((Nj, 2), dtype=np.int32)
-    for x, y in izip(borders[:-1], borders[1:]):
+    for x, y in zip(borders[:-1], borders[1:]):
         i = sorted_idx[x]
         ptrs[i] = x, y
 

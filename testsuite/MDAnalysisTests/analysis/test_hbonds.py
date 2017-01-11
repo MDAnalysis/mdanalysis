@@ -62,7 +62,7 @@ class TestHydrogenBondAnalysis(object):
         kw = self.kwargs.copy()
         kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-        h.run(quiet=True)
+        h.run(verbose=False)
         return h
 
     def test_helix_backbone(self):
@@ -156,7 +156,7 @@ class TestHydrogenBondAnalysisChecking(object):
             # ignore SelectionWarning
             warnings.simplefilter("ignore")
             h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-            h.run(quiet=True)
+            h.run(verbose=False)
         return h
 
     def test_check_static_selections(self):

@@ -95,7 +95,7 @@ class ReportOpenFiles(Plugin):
         open_files = _gather_open_files()
         handle_couter = collections.Counter(open_files)
         print('\n', file=stream)
-        print('By the end of the tests, there are {} open handle for {} files:'
+        print('By the end of the tests, there are {} open handles for {} files:'
               .format(len(open_files), len(handle_couter)), file=stream)
         for path, count in handle_couter.items():
             print('* ({}) {}'.format(count, path), file=stream)

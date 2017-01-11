@@ -14,11 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
-         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic, dotsdl
+         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
+         dotsdl, manuel.nuno.melo
 
   * 0.16.0
 
 Enhancements
+  * Added dynamic selections (addresses Issues #175 and #1074).
   * Added 'MemoryReader' class to allow manipulation of trajectory data
     in-memory, which can provide substantial speed-ups to certain
     calculations.
@@ -55,6 +57,7 @@ Enhancements
     of a group given weights
 
 Fixes
+  * Improvement of analysis/waterdynamics module (Issue #935)
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
   * MDAnalysis.analysis.distances.between() is no longer broken
   * GROWriter resids now truncated properly (Issue #886)
@@ -78,6 +81,9 @@ Fixes
   * Fixed align_principal_axis onto a principal axes (Issue #1045)
   * Fixed NCDFWriter wrote velocities instead of forces if
     convert_units=False was set: now correctly writes forces (PR #1113)
+  * Fixed warn about missing cython package in dev builds
+  * Fix align.rotation_matrix checks array shape equality (Issue #1152)
+  * Fixed strange error when writing a PDB with 0 atoms (Issue #1083 PR #1103)
 
 Changes
   * Started unifying the API of analysis classes (named internally
@@ -108,10 +114,13 @@ Changes
     raising TypeError and filename is now a required arg instead of kwarg
   * moved coordinates.base.ChainReader to coordinates.chain.ChainReader
   * renamed private method ChainReader.get_flname() to ChainReader._get_filename()
+  * totaltime now considers the first frame to be at time 0 (Issue #1137)
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
   * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
+  * The keyword argument *quiet* is deprecated in favor of *verbose*
+    throughout the library (Issue #903)
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle

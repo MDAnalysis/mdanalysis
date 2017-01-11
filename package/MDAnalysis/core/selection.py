@@ -54,15 +54,6 @@ from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
 
 
-def unique(ag):
-    """Return the unique elements of ag"""
-    try:
-        return ag.universe.atoms[np.unique(ag.indices)]
-    except NoDataError:
-        # zero length AG has no Universe
-        return ag
-
-
 def is_keyword(val):
     """Is val a selection keyword?
 
@@ -116,6 +107,9 @@ def grab_not_keywords(tokens):
 
 _SELECTIONDICT = {}
 _OPERATIONS = {}
+# These are named args to select_atoms that have a special meaning and must
+# not be allowed as names for the 'group' keyword.
+_RESERVED_KWARGS=('updating',)
 
 
 # And and Or are exception and aren't strictly a Selection
@@ -147,7 +141,7 @@ class AndOperation(LogicOperation):
         # Mask which lsel indices appear in rsel
         mask = np.in1d(rsel.indices, lsel.indices)
         # and mask rsel according to that
-        return unique(rsel[mask])
+        return rsel[mask].unique
 
 
 class OrOperation(LogicOperation):
@@ -191,7 +185,7 @@ class AllSelection(Selection):
         # are unique by construction.
         if group is group.universe.atoms:
             return group
-        return unique(group[:])
+        return group[:].unique
 
 
 class UnarySelection(Selection):
@@ -206,7 +200,7 @@ class NotSelection(UnarySelection):
 
     def apply(self, group):
         notsel = self.sel.apply(group)
-        return unique(group[~np.in1d(group.indices, notsel.indices)])
+        return group[~np.in1d(group.indices, notsel.indices)].unique
 
 
 class GlobalSelection(UnarySelection):
@@ -214,7 +208,7 @@ class GlobalSelection(UnarySelection):
     precedence = 5
 
     def apply(self, group):
-        return unique(self.sel.apply(group.universe.atoms))
+        return self.sel.apply(group.universe.atoms).unique
 
 
 class ByResSelection(UnarySelection):
@@ -226,7 +220,7 @@ class ByResSelection(UnarySelection):
         unique_res = np.unique(res.resids)
         mask = np.in1d(group.resids, unique_res)
 
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class DistanceSelection(Selection):
@@ -279,7 +273,7 @@ class AroundSelection(DistanceSelection):
         # These are the indices from SYS that were seen when
         # probing with SEL
         unique_idx = np.unique(np.concatenate(found_indices))
-        return unique(sys[unique_idx.astype(np.int32)])
+        return sys[unique_idx.astype(np.int32)].unique
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
@@ -291,7 +285,7 @@ class AroundSelection(DistanceSelection):
 
         mask = (dist <= self.cutoff).any(axis=1)
 
-        return unique(sys[mask])
+        return sys[mask].unique
 
 
 class SphericalLayerSelection(DistanceSelection):
@@ -318,7 +312,7 @@ class SphericalLayerSelection(DistanceSelection):
         kdtree.search(ref, self.inRadius)
         found_IntIndices = kdtree.get_indices()
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
-        return unique(group[found_indices])
+        return group[found_indices].unique
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
@@ -331,7 +325,7 @@ class SphericalLayerSelection(DistanceSelection):
         mask = d < self.exRadius
         mask &= d > self.inRadius
 
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class SphericalZoneSelection(DistanceSelection):
@@ -355,7 +349,7 @@ class SphericalZoneSelection(DistanceSelection):
         kdtree.search(ref, self.cutoff)
         found_indices = kdtree.get_indices()
 
-        return unique(group[found_indices])
+        return group[found_indices].unique
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
@@ -366,7 +360,7 @@ class SphericalZoneSelection(DistanceSelection):
                                      group.positions,
                                      box=box)[0]
         idx = d < self.cutoff
-        return unique(group[idx])
+        return group[idx].unique
 
 
 class CylindricalSelection(Selection):
@@ -427,7 +421,7 @@ class CylindricalSelection(Selection):
             # Only for cylayer, cyzone doesn't have inRadius
             pass
 
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class CylindricalZoneSelection(CylindricalSelection):
@@ -472,7 +466,7 @@ class PointSelection(DistanceSelection):
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
 
-        return unique(group[found_indices])
+        return group[found_indices].unique
 
     def _apply_distmat(self, group):
         ref_coor = self.ref[np.newaxis, ...]
@@ -482,7 +476,7 @@ class PointSelection(DistanceSelection):
 
         dist = distances.distance_array(group.positions, ref_coor, box)
         mask = (dist <= self.cutoff).any(axis=1)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class AtomSelection(Selection):
@@ -499,7 +493,7 @@ class AtomSelection(Selection):
             sub = sub[sub.resids == self.resid]
         if sub:
             sub = sub[sub.segids == self.segid]
-        return unique(sub)
+        return sub.unique
 
 
 class BondedSelection(Selection):
@@ -537,6 +531,10 @@ class SelgroupSelection(Selection):
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
+        if grpname in _RESERVED_KWARGS:
+            raise TypeError("The '{}' keyword is reserved and cannot be "
+                            "used as a selection group name."
+                            .format(grpname))
         try:
             self.grp = parser.selgroups[grpname]
         except KeyError:
@@ -560,7 +558,7 @@ class FullSelgroupSelection(Selection):
     @deprecate(old_name='fullgroup', new_name='global group',
                message=' This will be removed in v0.15.0')
     def apply(self, group):
-        return unique(self.grp)
+        return self.grp.unique
 
 
 class StringSelection(Selection):
@@ -585,7 +583,7 @@ class StringSelection(Selection):
                 values = getattr(group, self.field).astype(np.str_)
                 mask |= np.char.startswith(values, val[:wc_pos])
 
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class AtomNameSelection(StringSelection):
@@ -684,7 +682,7 @@ class ResidSelection(Selection):
         else:
             mask = self._sel_without_icodes(vals)
 
-        return unique(group[mask])
+        return group[mask].unique
 
     def _sel_without_icodes(self, vals):
         # Final mask that gets applied to group
@@ -789,7 +787,7 @@ class ResnumSelection(RangeSelection):
                 thismask = vals == lower
 
             mask |= thismask
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class ByNumSelection(RangeSelection):
@@ -807,7 +805,7 @@ class ByNumSelection(RangeSelection):
                 thismask = vals == lower
 
             mask |= thismask
-        return unique(group[mask])
+        return group[mask].unique
 
 
 
@@ -853,7 +851,7 @@ class ProteinSelection(Selection):
 
     def apply(self, group):
         mask = np.in1d(group.resnames, self.prot_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class NucleicSelection(Selection):
@@ -885,7 +883,7 @@ class NucleicSelection(Selection):
 
     def apply(self, group):
         mask = np.in1d(group.resnames, self.nucl_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class BackboneSelection(ProteinSelection):
@@ -900,7 +898,7 @@ class BackboneSelection(ProteinSelection):
     def apply(self, group):
         mask = np.in1d(group.names, self.bb_atoms)
         mask &= np.in1d(group.resnames, self.prot_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class NucleicBackboneSelection(NucleicSelection):
@@ -915,7 +913,7 @@ class NucleicBackboneSelection(NucleicSelection):
     def apply(self, group):
         mask = np.in1d(group.names, self.bb_atoms)
         mask &= np.in1d(group.resnames, self.nucl_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class BaseSelection(NucleicSelection):
@@ -935,7 +933,7 @@ class BaseSelection(NucleicSelection):
     def apply(self, group):
         mask = np.in1d(group.names, self.base_atoms)
         mask &= np.in1d(group.resnames, self.nucl_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class NucleicSugarSelection(NucleicSelection):
@@ -947,7 +945,7 @@ class NucleicSugarSelection(NucleicSelection):
     def apply(self, group):
         mask = np.in1d(group.names, self.sug_atoms)
         mask &= np.in1d(group.resnames, self.nucl_res)
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class PropertySelection(Selection):
@@ -1001,7 +999,7 @@ class PropertySelection(Selection):
             values = np.abs(values)
         mask = self.operator(values, self.value)
 
-        return unique(group[mask])
+        return group[mask].unique
 
 
 class SameSelection(Selection):
@@ -1050,7 +1048,7 @@ class SameSelection(Selection):
             allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
 
             mask = np.in1d(group.indices, allfrags.indices)
-            return unique(group[mask])
+            return group[mask].unique
         # [xyz] must come before self.prop_trans lookups too!
         try:
             pos_idx = {'x': 0, 'y': 1, 'z': 2}[self.prop]
@@ -1062,7 +1060,7 @@ class SameSelection(Selection):
             vals = getattr(res, attrname)
             mask = np.in1d(getattr(group, attrname), vals)
 
-            return unique(group[mask])
+            return group[mask].unique
         else:
             vals = res.positions[:, pos_idx]
             pos = group.positions[:, pos_idx]
@@ -1070,7 +1068,7 @@ class SameSelection(Selection):
             # isclose only does one value at a time
             mask = np.vstack([np.isclose(pos, v)
                               for v in vals]).any(axis=0)
-            return unique(group[mask])
+            return group[mask].unique
 
 
 class SelectionParser(object):

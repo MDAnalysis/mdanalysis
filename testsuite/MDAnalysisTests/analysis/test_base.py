@@ -90,8 +90,9 @@ class TestAnalysisBase(object):
         assert_equal(an.n_frames, 5)
         assert_equal(an.frames, list(range(98))[::20])
 
-    def test_quiet(self):
-        a = FrameAnalysis(self.u.trajectory, quiet=False)
+    def test_verbose(self):
+        a = FrameAnalysis(self.u.trajectory, verbose=True)
+        assert_(a._verbose)
         assert_(not a._quiet)
 
     @raises(NotImplementedError)
@@ -118,11 +119,12 @@ def test_filter_baseanalysis_kwargs():
     assert_equal(1, len(kwargs))
     assert_equal(kwargs['foo'], None)
 
-    assert_equal(4, len(base_kwargs))
+    assert_equal(5, len(base_kwargs))
     assert_equal(base_kwargs['start'], None)
     assert_equal(base_kwargs['step'], 3)
     assert_equal(base_kwargs['stop'], None)
-    assert_equal(base_kwargs['quiet'], True)
+    assert_equal(base_kwargs['quiet'], None)
+    assert_equal(base_kwargs['verbose'], None)
 
 
 def simple_function(mobile):

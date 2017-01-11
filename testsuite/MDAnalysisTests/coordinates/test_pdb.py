@@ -871,3 +871,16 @@ def test_standalone_pdb():
     r = mda.coordinates.PDB.PDBReader(PDB_cm)
 
     assert_(r.n_atoms == 4)
+
+def test_write_pdb_zero_atoms():
+    # issue 1083
+    u = make_Universe(trajectory=True)
+
+    with tempdir.TempDir() as tmpdir:
+        outfile = tmpdir + '/out.pdb'
+
+        ag = u.atoms[:0]  # empty ag
+
+        with mda.Writer(outfile, ag.n_atoms) as w:
+            assert_raises(IndexError, w.write, ag)
+        

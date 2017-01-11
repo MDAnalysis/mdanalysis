@@ -435,18 +435,17 @@ class TestLevelMoves(object):
 
         assert_raises(ValueError, setattr, rg, 'segments', sg)
 
-
     def test_move_residue_TE(self):
         assert_raises(TypeError,
-                      self.u.residues[0], 'segment', 1)
+                      setattr, self.u.residues[0], 'segment', 1)
 
     def test_move_residuegroup_TE(self):
         assert_raises(TypeError,
-                      self.u.residues[:3], 'segments', 4)
+                      setattr, self.u.residues[:3], 'segments', 4)
 
     def test_move_residuegroup_list_TE(self):
         assert_raises(TypeError,
-                      self.u.residues[:3], 'segments', [1, 2, 3])
+                      setattr, self.u.residues[:3], 'segments', [1, 2, 3])
 
 
 class TestDownshiftArrays(object):

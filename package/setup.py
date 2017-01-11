@@ -77,7 +77,7 @@ except ImportError:
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "0.16.0-dev0"
 
-is_release = not 'dev' in RELEASE
+is_release = 'dev' not in RELEASE
 
 if cython_found:
     # cython has to be >=0.16 to support cython.parallel
@@ -97,6 +97,12 @@ if cython_found:
         cython_found = False
     del Cython
     del LooseVersion
+else:
+    if not is_release:
+        print("*** package: Cython not found ***")
+        print("MDAnalysis requires cython for development builds")
+        sys.exit(1)
+
 
 class Config(object):
     """Config wrapper class to get build options
@@ -135,6 +141,7 @@ class Config(object):
         except configparser.NoOptionError:
             return default
 
+
 class MDAExtension(Extension, object):
     """Derived class to cleanly handle setup-time (numpy) dependencies.
     """
@@ -162,6 +169,7 @@ class MDAExtension(Extension, object):
     @include_dirs.setter
     def include_dirs(self, val):
         self._mda_include_dir_args = val
+
 
 def get_numpy_include():
     # Obtain the numpy include directory. This logic works across numpy
@@ -536,4 +544,3 @@ if __name__ == '__main__':
             except OSError as err:
                 print("Warning: failed to delete cythonized file {0}: {1}. "
                     "Moving on.".format(cythonized, err.strerror))
-

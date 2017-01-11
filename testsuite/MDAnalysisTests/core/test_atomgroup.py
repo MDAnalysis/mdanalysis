@@ -184,6 +184,12 @@ class TestAtomGroupWriting(object):
         with tempdir.in_tempdir():
             self.u.atoms.write("test.vmd")
 
+    def test_bogus_kwarg_pdb(self):
+        # test for resolution of Issue 877
+        with tempdir.in_tempdir():
+            with assert_raises(TypeError):
+                self.u.atoms.write('dummy.pdb', bogus="what?")
+
 
 class TestAtomGroupTransformations(object):
     def setUp(self):
@@ -331,3 +337,59 @@ class TestCenter(object):
         weights = np.ones((self.ag.n_atoms, 2))
 
         assert_raises(TypeError, self.ag.center, weights)
+
+def test_representations():
+    u = make_Universe()
+    for level in (mda.core.groups.ATOMLEVEL, mda.core.groups.RESIDUELEVEL,
+                  mda.core.groups.SEGMENTLEVEL):
+        singular = level.name
+        plural = level.name + 's'
+        group = getattr(u, plural)
+        assert str(group)[:-1].endswith(plural)
+        assert str(group[:0])[:-1].endswith(plural)
+        assert str(group[:1])[:-1].endswith(singular)
+
+class TestSplit(object):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.universe
+    
+    def test_split_atoms(self):
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
+        sg = ag.split("atom")
+        assert_equal(len(sg), len(ag))
+        for g, ref_atom in zip(sg, ag):
+            atom = g[0]
+            assert_equal(len(g), 1)
+            assert_equal(atom.name, ref_atom.name)
+            assert_equal(atom.resid, ref_atom.resid)
+
+    def test_split_residues(self):
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
+        sg = ag.split("residue")
+        assert_equal(len(sg), len(ag.residues.resids))
+        for g, ref_resname in zip(sg, ag.residues.resnames):
+            if ref_resname == "GLY":
+                assert_equal(len(g), 1)
+            else:
+                assert_equal(len(g), 2)
+            for atom in g:
+                assert_equal(atom.resname, ref_resname)
+
+    def test_split_segments(self):
+        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+                                        "(name CA or name CB)")
+        sg = ag.split("segment")
+        assert_equal(len(sg), len(ag.segments.segids))
+        for g, ref_segname in zip(sg, ag.segments.segids):
+            for atom in g:
+                assert_equal(atom.segid, ref_segname)    
+
+    def test_split_VE(self):
+        ag = self.universe.atoms[:40]
+
+        assert_raises(ValueError, ag.split, 'something')

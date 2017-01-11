@@ -75,6 +75,16 @@ class TestRotationMatrix(object):
         assert_equal(rot, np.eye(3))
         assert_equal(rmsd, None)
 
+    @staticmethod
+    def test_exception():
+        a = [[0.1, 0.2, 0.3],
+             [1.1, 1.1, 1.1],
+             [2, 2, 2]]
+        b = [[0.1, 0.1, 0.1],
+             [1.1, 1.1, 1.1]]
+        assert_raises(ValueError, align.rotation_matrix, a, b)
+
+
 
 class TestAlign(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -126,7 +136,7 @@ class TestAlign(TestCase):
         # align to *last frame* in target... just for the heck of it
         self.reference.trajectory[-1]
         align.rms_fit_trj(self.universe, self.reference, select="all",
-                          filename=self.outfile, quiet=True)
+                          filename=self.outfile, verbose=False)
         fitted = MDAnalysis.Universe(PSF, self.outfile)
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -147,7 +157,7 @@ class TestAlign(TestCase):
                     os.path.basename(self.universe.trajectory.filename)))
             #test filename=none and different selection
             align.rms_fit_trj(self.universe, self.reference, select="name CA",
-                              filename=None, quiet=True)
+                              filename=None, verbose=False)
             assert_(os.path.exists(filename),
                     "rms_fit_trj did not write to {}".format(filename))
 

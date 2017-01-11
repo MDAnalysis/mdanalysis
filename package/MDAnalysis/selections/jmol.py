@@ -43,7 +43,7 @@ from __future__ import absolute_import
 from . import base
 
 class SelectionWriter(base.SelectionWriter):
-    format = "Jmol"
+    format = ["Jmol", "spt"]
     ext = "spt"
     default_numterms = None
     commentfmt = '#'

@@ -38,7 +38,6 @@ The topology system is primarily of interest to developers.
    :maxdepth: 1
 
    core/topology
-   core/levels
    core/topologyobjects
    core/topologyattrs
 

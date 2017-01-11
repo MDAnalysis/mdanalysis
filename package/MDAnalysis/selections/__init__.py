@@ -47,22 +47,14 @@ from __future__ import absolute_import
 
 import os.path
 
+from .. import _SELECTION_WRITERS
+
 from . import vmd
 from . import pymol
 from . import gromacs
 from . import charmm
 from . import jmol
 
-# Signature:
-#   W = SelectionWriter(filename, **kwargs)
-#   W.write(AtomGroup)
-_selection_writers = {
-    'vmd': vmd.SelectionWriter,
-    'charmm': charmm.SelectionWriter, 'str': charmm.SelectionWriter,
-    'pymol': pymol.SelectionWriter, 'pml': pymol.SelectionWriter,
-    'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter,
-    'jmol': jmol.SelectionWriter, 'spt': jmol.SelectionWriter
-}
 
 def get_writer(filename, defaultformat):
     """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
@@ -70,8 +62,10 @@ def get_writer(filename, defaultformat):
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
     format = format or defaultformat  # use default if no fmt from fn
-    format = format.strip().lower()  # canonical for lookup
+    format = format.strip().upper()  # canonical for lookup
     try:
-        return _selection_writers[format]
+        return _SELECTION_WRITERS[format]
     except KeyError:
-        raise NotImplementedError("Writing as {0!r} is not implemented; only {1!r} will work.".format(format, _selection_writers.keys()))
+        raise NotImplementedError(
+            "Writing as {0!r} is not implemented;"
+            " only {1!r} will work.".format(format, _SELECTION_WRITERS.keys()))

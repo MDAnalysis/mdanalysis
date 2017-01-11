@@ -24,8 +24,10 @@ from __future__ import print_function
 from six.moves import zip
 import numpy as np
 import os
+import sys
 
-from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
+from numpy.testing import (TestCase, assert_equal, assert_almost_equal, dec,
+                           assert_raises)
 
 import MDAnalysis as mda
 # imported inside a skipif-protected method so that it can
@@ -34,6 +36,8 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import TPR, XTC
 from MDAnalysisTests import module_not_found, tempdir
+from mock import Mock, patch
+from MDAnalysisTests.util import block_import
 
 
 class TestDensity(TestCase):
@@ -147,3 +151,29 @@ class Test_density_from_Universe(TestCase):
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
             update_selections=True)
+
+class TestGridImport(TestCase):
+
+    def setUp(self):
+        sys.modules.pop('MDAnalysis.analysis.density', None)
+
+    @block_import('gridData')
+    def test_absence_griddata(self):
+        # if gridData package is missing an ImportError should be raised
+        # at the module level of MDAnalysis.analysis.density
+        with assert_raises(ImportError):
+            import MDAnalysis.analysis.density
+
+    def test_presence_griddata(self):
+        # no ImportError exception is raised when gridData is properly
+        # imported by MDAnalysis.analysis.density
+
+        # mock gridData in case there are testing scenarios where
+        # it is not available
+        mock = Mock()
+        with patch.dict('sys.modules', {'gridData':mock}):
+            try:
+                import MDAnalysis.analysis.density
+            except ImportError:
+                self.fail('''MDAnalysis.analysis.density should not raise
+                             an ImportError if gridData is available.''')

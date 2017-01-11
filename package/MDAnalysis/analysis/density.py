@@ -399,7 +399,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
-                          quiet=False, interval=1,
+                          verbose=None, interval=1, quiet=None,
                           **kwargs):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
@@ -444,10 +444,10 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             Should the selection of atoms be updated for every step? [``False``]
             - ``True``: atom selection is updated for each frame, can be slow
             - ``False``: atoms are only selected at the beginning
-      quiet
-            Print status update to the screen for every *interval* frame? [``False``]
-            - ``True``: no status updates when a new frame is processed
-            - ``False``: status update every frame (including number of atoms
+      verbose
+            Print status update to the screen for every *interval* frame? [``True``]
+            - ``False``: no status updates when a new frame is processed
+            - ``True``: status update every frame (including number of atoms
               processed, which is interesting with ``update_selection=True``)
       interval
            Show status update every *interval* frame [1]
@@ -460,6 +460,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     .. versionchanged:: 0.13.0
        *update_selection* and *quite* keywords added
+
+    .. deprecated:: 0.16
+       The keyword argument *quiet* is deprecated in favor of *verbose*.
 
     """
     try:
@@ -510,7 +513,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     grid *= 0.0
     h = grid.copy()
 
-    pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
+    pm = ProgressMeter(u.trajectory.n_frames, interval=interval,
+                       verbose=verbose, quiet=quiet,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
