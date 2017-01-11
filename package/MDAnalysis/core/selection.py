@@ -963,14 +963,58 @@ class PropertySelection(Selection):
     ])
 
     def __init__(self, parser, tokens):
+        """
+        Possible splitting around operator:
+
+        prop x < 5
+        prop x< 5
+        prop x <5
+        prop x<5
+        """
         prop = tokens.popleft()
+        oper = None
+        value = None
         if prop == "abs":
             self.absolute = True
             prop = tokens.popleft()
         else:
             self.absolute = False
-        oper = tokens.popleft()
-        self.value = float(tokens.popleft())
+
+        # check if prop has any extra information atm
+        for possible in ('<=', '>=', '==', '!=', '<', '>'):
+            try:
+                x, y = prop.split(possible)
+            except ValueError:
+                pass
+            else:
+                prop = x
+                oper = possible + y  # add back after splitting
+                break
+
+        if oper is None:
+            oper = tokens.popleft()
+        # check if oper has the value appended
+        for possible in ('<=', '>=', '==', '!='):
+            try:
+                x, y = oper.split(possible)
+                if y:
+                    oper = possible
+                    value = y
+            except ValueError:
+                pass
+        else:  # if none of the previous triggers
+            if not ('<=' in oper or '>=' in oper):  # to stop splitting around these
+                for possible in ('<', '>'):
+                    try:
+                        x, y = oper.split(possible)
+                        if y:
+                            oper = possible
+                            value = y
+                    except ValueError:
+                        pass
+
+        if value is None:
+            value = tokens.popleft()
 
         self.prop = prop
         try:
@@ -979,6 +1023,7 @@ class PropertySelection(Selection):
             raise ValueError(
                 "Invalid operator : '{0}' Use one of : '{1}'"
                 "".format(oper, self.ops.keys()))
+        self.value = float(value)
 
     def apply(self, group):
         try:
