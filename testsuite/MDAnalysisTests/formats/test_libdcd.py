@@ -10,7 +10,9 @@ from MDAnalysisTests.datafiles import DCD
 
 from unittest import TestCase
 from MDAnalysisTests.tempdir import run_in_tempdir
+from MDAnalysisTests import tempdir
 import numpy as np
+import os
 
 class DCDReadFrameTest(TestCase):
 
@@ -84,7 +86,7 @@ class DCDReadFrameTest(TestCase):
     def test_n_atoms(self):
         assert_equal(self.dcdfile.n_atoms, 3341)
 
-    @raises(IOError)
+    @raises(RuntimeError)
     @run_in_tempdir()
     def test_read_write_mode_file(self):
         with DCDFile('foo', 'w') as f:
@@ -103,8 +105,36 @@ class DCDReadFrameTest(TestCase):
 class DCDWriteHeaderTest(TestCase):
 
     def setUp(self):
-        self.dcdfile = DCDFile(DCD)
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(DCD, 'r')
 
-    @run_in_tempdir()
-    def test_write_header(self):
+    def tearDown(self):
+        try: 
+            os.unlink(self.testfile)
+        except OSError:
+            pass
+        del self.tmpdir
+    
+    def test_write_header_crude(self):
+        # test that _write_header() can produce a very crude
+        # header for a new / empty file
         self.dcdfile._write_header()
+        self.dcdfile.close()
+
+        # we're not actually asserting anything, yet
+        # run with: nosetests test_libdcd.py --nocapture
+        # to see printed output from nose
+        with open(self.testfile, "rb") as f:
+            for element in f:
+                print(element)
+
+    def test_write_header_mode_sensitivy(self):
+        # an exception should be raised on any attempt to use
+        # _write_header with a DCDFile object in 'r' mode
+        with self.assertRaises(IOError):
+            self.dcdfile_r._write_header()
+
+
+
