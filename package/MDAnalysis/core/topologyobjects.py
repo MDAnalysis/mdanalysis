@@ -560,7 +560,7 @@ class TopologyGroup(object):
 
             # Create vertical AtomGroups
             self._ags = [universe.atoms[self._bix[:, i]]
-                         for i in xrange(self._bix.shape[1])]
+                         for i in range(self._bix.shape[1])]
         else:
             # Empty TopologyGroup
             self._bix = np.array([])

@@ -43,8 +43,8 @@ Classes
 
 """
 from __future__ import absolute_import
-
 from six.moves import range
+
 import logging
 import functools
 from math import ceil
@@ -103,7 +103,7 @@ class PSFParser(TopologyReader):
         """
         # Open and check psf validity
         with openany(self.filename, 'r') as psffile:
-            header = psffile.next()
+            header = next(psffile)
             if not header.startswith("PSF"):
                 err = ("{0} is not valid PSF file (header = {1})"
                        "".format(self.filename, header))
@@ -146,7 +146,7 @@ class PSFParser(TopologyReader):
 
             try:
                 for attr, info in sections:
-                    psffile.next()
+                    next(psffile)
                     top.add_TopologyAttr(
                         attr(self._parse_sec(psffile, info)))
             except StopIteration:
@@ -272,7 +272,7 @@ class PSFParser(TopologyReader):
         charges = np.zeros(numlines, dtype=np.float32)
         masses = np.zeros(numlines, dtype=np.float64)
 
-        for i in xrange(numlines):
+        for i in range(numlines):
             try:
                 line = lines()
             except StopIteration:

@@ -1258,12 +1258,12 @@ def unique_rows(arr, return_index=False):
 
     if return_index:
         u, r_idx = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype)
-                                                      for i in xrange(m)])),
+                                                      for i in range(m)])),
                              return_index=True)
         return u.view(arr.dtype).reshape(-1, m), r_idx
     else:
         u = np.unique(arr.view(
-            dtype=np.dtype([(str(i), arr.dtype) for i in xrange(m)])
+            dtype=np.dtype([(str(i), arr.dtype) for i in range(m)])
         ))
         return u.view(arr.dtype).reshape(-1, m)
 

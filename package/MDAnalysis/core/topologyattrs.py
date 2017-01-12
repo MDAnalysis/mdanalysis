@@ -31,7 +31,7 @@ TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
 
-from six.moves import zip
+from six.moves import zip, range
 from collections import defaultdict
 import itertools
 import numpy as np
@@ -672,7 +672,7 @@ class Masses(AtomAttr):
             recenteredpos = atomgroup.positions - com
         tensor = np.zeros((3, 3))
 
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                            recenteredpos[x, :])
         tensor /= atomgroup.total_mass()
@@ -721,7 +721,7 @@ class Masses(AtomAttr):
                              atomgroup.center_of_mass(pbc=False))
 
         tensor = np.zeros((3, 3))
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x],
                                            recenteredpos[x])
 

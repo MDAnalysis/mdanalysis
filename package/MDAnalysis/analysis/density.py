@@ -492,7 +492,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     if tuple(angles) != (90., 90., 90.):
         msg = "Non-orthorhombic unit-cell --- make sure that it has been remapped properly!"
         warnings.warn(msg)
-        logger.warn(msg)
+        logger.warning(msg)
 
     # Make the box bigger to avoid as much as possible 'outlier'. This
     # is important if the sites are defined at a high density: in this

@@ -1440,6 +1440,8 @@ class TestSegment(TestCase):
         self.sB = self.universe.segments[1]
 
     # VALID but temporary
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
 
@@ -2385,6 +2387,8 @@ class TestCrossUniverse(object):
 
 
 class TestDihedralSelections(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.dih_prec = 2

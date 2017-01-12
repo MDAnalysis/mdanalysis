@@ -131,6 +131,8 @@ def simple_function(mobile):
     return mobile.center_of_geometry()
 
 
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_AnalysisFromFunction():
     u = mda.Universe(PSF, DCD)
     step = 2
@@ -150,6 +152,8 @@ def test_AnalysisFromFunction():
         assert_array_equal(results, ana.results)
 
 
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_analysis_class():
     ana_class = base.analysis_class(simple_function)
     assert_(issubclass(ana_class, base.AnalysisBase))
