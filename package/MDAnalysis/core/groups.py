@@ -99,6 +99,7 @@ import os
 import warnings
 
 import MDAnalysis
+from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib import distances
 from ..lib import transformations
@@ -108,6 +109,25 @@ from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
 from ._get_readers import get_writer_for
+
+
+def _unpickle(uhash, ix):
+    try:
+        u = _ANCHOR_UNIVERSES[uhash]
+    except KeyError:
+        # doesn't provide as nice an error message as before as only hash of universe is stored
+        # maybe if we pickled the filename too we could do better...
+        raise RuntimeError(
+            "Couldn't find a suitable Universe to unpickle AtomGroup onto "
+            "with Universe hash '{}'.  Available hashes: {}"
+            "".format(uhash, ', '.join([str(k)
+                                        for k in _ANCHOR_UNIVERSES.keys()])))
+    return u.atoms[ix]
+
+def _unpickle_uag(basepickle, selections, selstrs):
+    bfunc, bargs = basepickle[0], basepickle[1:][0]
+    basegroup = bfunc(*bargs)
+    return UpdatingAtomGroup(basegroup, selections, selstrs)
 
 
 def make_classes():
@@ -943,6 +963,9 @@ class AtomGroup(GroupBase):
                 pass
         raise AttributeError("{cls} has no attribute {attr}".format(
             cls=self.__class__.__name__, attr=attr))
+
+    def __reduce__(self):
+        return (_unpickle, (self.universe.anchor_name, self.ix))
 
     @property
     def atoms(self):
@@ -2146,6 +2169,14 @@ class UpdatingAtomGroup(AtomGroup):
             self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
+
+    def __reduce__(self):
+        # strategy for unpickling is:
+        # - unpickle base group
+        # - recreate UAG as created through select_atoms (basegroup and selstrs)
+        # even if base_group is a UAG this will work through recursion
+        return (_unpickle_uag,
+                (self._base_group.__reduce__(), self._selections, self.selection_strings))
 
     def __repr__(self):
         basestr = super(UpdatingAtomGroup, self).__repr__()

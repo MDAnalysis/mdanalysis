@@ -163,6 +163,11 @@ _MULTIFRAME_WRITERS = {}
 _PARSERS = {}
 _SELECTION_WRITERS = {}
 
+# Storing anchor universes for unpickling groups
+import weakref
+_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
+del weakref
+
 # custom exceptions and warnings
 from .exceptions import (
     SelectionError, FinishTimeException, NoDataError, ApplicationError,
@@ -192,10 +197,6 @@ from .coordinates.core import writer as Writer
 from .coordinates.MMTF import fetch_mmtf
 
 collection = Timeseries.TimeseriesCollection()
-import weakref
-_anchor_universes = weakref.WeakSet()
-_named_anchor_universes = weakref.WeakSet()
-del weakref
 
 from .migration.ten2eleven import ten2eleven
 
@@ -207,3 +208,5 @@ MDAnalysis on python 3 is highly experimental!
 It is mostly non functional and dramatically untested.
 Use at your own risks!!!
 ''')
+
+

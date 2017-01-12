@@ -56,8 +56,10 @@ Functions
 import numpy as np
 import logging
 import copy
+import uuid
 
 import MDAnalysis
+from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import cached
 from ..lib.log import ProgressMeter, _set_verbose
@@ -131,26 +133,24 @@ class Universe(object):
         [``None``] Can also pass a subclass of
         :class:`MDAnalysis.coordinates.base.Reader` to define a custom reader
         to be used on the trajectory file.
-    guess_bonds
+    guess_bonds : bool, optional
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds .angles and .dihedrals
         attributes of the Universe.
-    vdwradii
+    vdwradii : dict, optional
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor
+    is_anchor : bool, optional
         When unpickling instances of
         :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
         searched for one where to anchor those atoms. Set to ``False`` to
         prevent this Universe from being considered. [``True``]
-    anchor_name
+    anchor_name : str, optional
         Setting to other than ``None`` will cause
         :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
         Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. *is_anchor* will be ignored in this case but
-        will still be honored when unpickling
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled with
-        *anchor_name*==``None``. [``None``]
+        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
+        still be honored when unpickling.
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
@@ -184,59 +184,65 @@ class Universe(object):
             # create an empty universe
             self._topology = None
             self.atoms = None
-            return
-
-        topology_format = kwargs.pop('topology_format', None)
-        if len(args) == 1:
-            # special hacks to treat a coordinate file as a coordinate AND
-            # topology file
-            if kwargs.get('format', None) is None:
-                kwargs['format'] = topology_format
-            elif topology_format is None:
-                topology_format = kwargs.get('format', None)
-
-        # if we're given a Topology object, we don't need to parse anything
-        if isinstance(args[0], Topology):
-            self._topology = args[0]
-            self.filename = None
         else:
-            self.filename = args[0]
+            topology_format = kwargs.pop('topology_format', None)
+            if len(args) == 1:
+                # special hacks to treat a coordinate file as a coordinate AND
+                # topology file
+                if kwargs.get('format', None) is None:
+                    kwargs['format'] = topology_format
+                elif topology_format is None:
+                    topology_format = kwargs.get('format', None)
 
-            parser = get_parser_for(self.filename, format=topology_format)
-            try:
-                with parser(self.filename) as p:
-                    self._topology = p.parse()
-            except IOError as err:
-                raise IOError("Failed to load from the topology file {0}"
-                              " with parser {1}.\n"
-                              "Error: {2}".format(self.filename, parser, err))
-            except ValueError as err:
-                raise ValueError("Failed to construct topology from file {0}"
-                                 " with parser {1} \n"
-                                 "Error: {2}".format(self.filename, parser, err))
-
-        # generate and populate Universe version of each class
-        self._generate_from_topology()
-
-        # Load coordinates
-        # if passed Topology object as top
-        if self.filename is None:
-            coordinatefile = None
-        elif len(args) == 1:
-            # Can the topology file also act as coordinate file?
-            try:
-                _ = get_reader_for(self.filename, format=kwargs.get('format', None))
-            except ValueError:
-                coordinatefile = None
+            # if we're given a Topology object, we don't need to parse anything
+            if isinstance(args[0], Topology):
+                self._topology = args[0]
+                self.filename = None
             else:
-                coordinatefile = [self.filename]
-        else:
-            coordinatefile = args[1:]
-        self.load_new(coordinatefile, **kwargs)
+                self.filename = args[0]
+
+                parser = get_parser_for(self.filename, format=topology_format)
+                try:
+                    with parser(self.filename) as p:
+                        self._topology = p.parse()
+                except IOError as err:
+                    raise IOError("Failed to load from the topology file {0}"
+                                  " with parser {1}.\n"
+                                  "Error: {2}".format(self.filename, parser, err))
+                except ValueError as err:
+                    raise ValueError("Failed to construct topology from file {0}"
+                                     " with parser {1} \n"
+                                     "Error: {2}".format(self.filename, parser, err))
+
+            # generate and populate Universe version of each class
+            self._generate_from_topology()
+
+            # Load coordinates
+            # if passed Topology object as top
+            if self.filename is None:
+                coordinatefile = None
+            elif len(args) == 1:
+                # Can the topology file also act as coordinate file?
+                try:
+                    _ = get_reader_for(self.filename, format=kwargs.get('format', None))
+                except ValueError:
+                    coordinatefile = None
+                else:
+                    coordinatefile = [self.filename]
+            else:
+                coordinatefile = args[1:]
+            self.load_new(coordinatefile, **kwargs)
 
         # Check for guess_bonds
         if kwargs.pop('guess_bonds', False):
             self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
+
+        # None causes generic hash to get used.
+        # We store the name ieven if is_anchor is False in case the user later
+        #  wants to make the universe an anchor.
+        self._anchor_name = kwargs.get('anchor_name', None)
+        # Universes are anchors by default
+        self.is_anchor = kwargs.get('is_anchor', True)
 
     def _generate_from_topology(self):
         # generate Universe version of each class
@@ -454,6 +460,48 @@ class Universe(object):
     def impropers(self):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
+
+    @property
+    def anchor_name(self):
+        return self._gen_anchor_hash()
+    
+    @anchor_name.setter
+    def anchor_name(self, name):
+        self.remove_anchor()  # clear any old anchor
+        self._anchor_name = str(name) if not name is None else name
+        self.make_anchor()  # add anchor again
+
+    def _gen_anchor_hash(self):
+        # hash used for anchoring.
+        # Try and use anchor_name, else use (and store) uuid
+        if self._anchor_name is not None:
+            return self._anchor_name
+        else:
+            try:
+                return self._anchor_uuid
+            except AttributeError:
+                # store this so we can later recall it if needed
+                self._anchor_uuid = uuid.uuid4()
+                return self._anchor_uuid
+
+    @property
+    def is_anchor(self):
+        """Is this Universe an anchoring for unpickling AtomGroups"""
+        return self._gen_anchor_hash() in _ANCHOR_UNIVERSES
+
+    @is_anchor.setter
+    def is_anchor(self, new):
+        if new:
+            self.make_anchor()
+        else:
+            self.remove_anchor()
+
+    def remove_anchor(self):
+        """Remove this Universe from the possible anchor list for unpickling"""
+        _ANCHOR_UNIVERSES.pop(self._gen_anchor_hash(), None)
+
+    def make_anchor(self):
+        _ANCHOR_UNIVERSES[self._gen_anchor_hash()] = self
 
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
