@@ -22,6 +22,7 @@
 
 from six.moves import range
 
+import itertools
 import numpy as np
 from numpy.testing import(
     dec,
@@ -689,47 +690,87 @@ class TestTriclinicSelections(object):
 class TestPropSelection(object):
     plurals = {'mass': 'masses',
                'charge': 'charges'}
+    op_funcs = {
+        '<': np.less,
+        '<=': np.less_equal,
+        '>': np.greater,
+        '>=': np.greater_equal,
+        '==': np.equal,
+        '!=': np.not_equal
+    }
+    opposites = {
+        '==': '==', '!=': '!=',
+        '>': '<=', '<=': '>',
+        '<': '>=', '>=': '<',
+    }
+
+    @staticmethod
+    def gen_sel_strings(prop, oper):
+        """Generate all possible combinations of spaces in selection strings
+
+        ie:
+          'prop x < 1.5'
+          'prop x< 1.5'
+          'prop x <1.5'
+          'prop x<1.5'
+
+        """
+        for x, y in itertools.product([' ', ''], [' ', '']):
+            yield 'prop {prop}{spc1}{oper}{spc2}1.5'.format(
+                prop=prop, spc1=x, oper=oper, spc2=y)
 
     def _check_lt(self, prop, ag):
-        sel = ag.select_atoms('prop {0} < 1.5'.format(prop))
-
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) < 1.5].indices))
+        for selstr in self.gen_sel_strings(prop, '<'):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) < 1.5].indices))
 
     def _check_le(self, prop, ag):
-        sel = ag.select_atoms('prop {0} <= 1.5'.format(prop))
-
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) <= 1.5].indices))
+        for selstr in self.gen_sel_strings(prop, '<='):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) <= 1.5].indices))
 
     def _check_gt(self, prop, ag):
-        sel = ag.select_atoms('prop {0} > 1.5'.format(prop))
-
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) > 1.5].indices))
+        for selstr in self.gen_sel_strings(prop, '>'):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) > 1.5].indices))
 
     def _check_ge(self, prop, ag):
-        sel = ag.select_atoms('prop {0} >= 1.5'.format(prop))
-
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) >= 1.5].indices))
+        for selstr in self.gen_sel_strings(prop, '>='):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) >= 1.5].indices))
 
     def _check_eq(self, prop, ag):
-        setattr(ag[::2], self.plurals[prop], 1.5)
-
-        sel = ag.select_atoms('prop {0} == 1.5'.format(prop))
-
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) == 1.5].indices))
+        for selstr in self.gen_sel_strings(prop, '=='):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) == 1.5].indices))
 
     def _check_ne(self, prop, ag):
-        sel = ag.select_atoms('prop {0} != 1.5'.format(prop))
+        for selstr in self.gen_sel_strings(prop, '!='):
+            sel = ag.select_atoms(selstr)
+            assert_equal(set(sel.indices),
+                         set(ag[getattr(ag, self.plurals[prop]) != 1.5].indices))
 
-        assert_equal(set(sel.indices),
-                     set(ag[getattr(ag, self.plurals[prop]) != 1.5].indices))
+    def _check_flip(self, prop, ag, op):
+        func = self.op_funcs[op]
+
+        # reference group, doing things forwards
+        ref = ag[func(getattr(ag, self.plurals[prop]), 1.5)]
+
+        selstr = 'prop 1.5 {op} {prop}'.format(
+            op=self.opposites[op], prop=prop)
+        sel = ag.select_atoms(selstr)
+
+        assert_equal(set(ref.indices), set(sel.indices))
 
     def test_props(self):
         u = make_Universe(('masses', 'charges'))
+        u.atoms[::2].masses = 1.5
+        u.atoms[::2].charges = 1.5
 
         for prop in ['mass', 'charge']:
             for ag in [u.atoms, u.atoms[:100]]:
@@ -739,6 +780,9 @@ class TestPropSelection(object):
                 yield self._check_ge, prop, ag
                 yield self._check_eq, prop, ag
                 yield self._check_ne, prop, ag
+                # check flipping operators
+                for op in ('<', '>', '<=', '>=', '==', '!='):
+                    yield self._check_flip, prop, ag, op
 
 
 class TestBondedSelection(object):

@@ -961,16 +961,69 @@ class PropertySelection(Selection):
         ('==', np.equal),
         ('!=', np.not_equal),
     ])
+    # order here is important, need to check <= before < so the
+    # larger (in terms of string length) symbol is considered first
+    _op_symbols = ('<=', '>=', '==', '!=', '<', '>')
+
+    # symbols to replace with when flipping
+    # eg 6 > x -> x <= 6, 5 == x -> x == 5
+    opposite_ops = {
+        '==': '==', '!=': '!=',
+        '<': '>=', '>=': '<',
+        '>': '<=', '<=': '>',
+    }
+
+    props = {'mass', 'charge', 'x', 'y', 'z'}
 
     def __init__(self, parser, tokens):
+        """
+        Possible splitting around operator:
+
+        prop x < 5
+        prop x< 5
+        prop x <5
+        prop x<5
+        """
         prop = tokens.popleft()
+        oper = None
+        value = None
         if prop == "abs":
             self.absolute = True
             prop = tokens.popleft()
         else:
             self.absolute = False
-        oper = tokens.popleft()
-        self.value = float(tokens.popleft())
+
+        # check if prop has any extra information atm
+        for possible in self._op_symbols:
+            try:
+                x, y = prop.split(possible)
+            except ValueError:
+                # won't unpack into 2 args unless *possible* is present
+                pass
+            else:
+                prop = x
+                oper = possible + y  # add back after splitting
+                break
+
+        if oper is None:
+            oper = tokens.popleft()
+        # check if oper has the value appended
+        for possible in self._op_symbols:
+            if possible in oper:
+                x, y = oper.split(possible)
+                if y:  # '<='.split('<=') == ['', ''], therefore y won't exist
+                    oper = possible
+                    value = y
+                break
+
+        if value is None:
+            value = tokens.popleft()
+
+        # check if we flip prop and value
+        # eg 5 > x -> x <= 5
+        if value in self.props:
+            prop, value = value, prop
+            oper = self.opposite_ops[oper]
 
         self.prop = prop
         try:
@@ -979,6 +1032,7 @@ class PropertySelection(Selection):
             raise ValueError(
                 "Invalid operator : '{0}' Use one of : '{1}'"
                 "".format(oper, self.ops.keys()))
+        self.value = float(value)
 
     def apply(self, group):
         try:
