@@ -109,16 +109,6 @@ class TestAtomGroupPickle(object):
         assert_(newag.universe is self.universe,
                 "Unpickled AtomGroup on wrong Universe.")
 
-    def test_unpickle_reanchor_other(self):
-        # universe is removed from the anchors
-        self.universe.remove_anchor()
-        # and universe_n goes into the generic anchor list
-        self.universe_n.anchor_name = None
-        newag = cPickle.loads(self.pickle_str)
-        assert_array_equal(self.ag.indices, newag.indices)
-        assert_(newag.universe is self.universe_n,
-                "Unpickled AtomGroup on wrong Universe.")
-
     def test_unpickle_wrongname(self):
         # we change the universe's anchor_name
         self.universe_n.anchor_name = "test2"

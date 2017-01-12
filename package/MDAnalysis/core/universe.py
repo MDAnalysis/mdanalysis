@@ -56,6 +56,7 @@ Functions
 import numpy as np
 import logging
 import copy
+import uuid
 
 import MDAnalysis
 from .. import _ANCHOR_UNIVERSES
@@ -472,21 +473,16 @@ class Universe(object):
 
     def _gen_anchor_hash(self):
         # hash used for anchoring.
-        # Try and use anchor_name, else make hash based on size and filename
+        # Try and use anchor_name, else use (and store) uuid
         if self._anchor_name is not None:
             return self._anchor_name
         else:
-            # Some universes have no trajectory. Empty ones might even be
-            #  missing all three attributes.
-            ats = len(self.atoms) if self.atoms is not None else 0
-            fnm = getattr(self, 'filename', '')
-            # The universe might not have a trajectory or the trajectory
-            #  filename might not exist (the MemoryReader case)
             try:
-                trj = self.trajectory.filename
+                return self._anchor_uuid
             except AttributeError:
-                trj = ''
-            return ats, fnm, trj
+                # store this so we can later recall it if needed
+                self._anchor_uuid = uuid.uuid4()
+                return self._anchor_uuid
 
     @property
     def is_anchor(self):

@@ -55,6 +55,9 @@ Enhancements
   * Added random access support to GMSReader and TRJReader (#1081)
   * Added atomgroup.center(weights, pbc) method to calculate the center
     of a group given weights
+  * Universe anchors (for unpickling) now use a uuid (rather than filename)
+    to distinguish themselves by default. Can still use anchor_name kwarg to
+    control the anchor name manually. (PR #1125)
 
 Fixes
   * Improvement of analysis/waterdynamics module (Issue #935)
