@@ -24,7 +24,15 @@ Useful functions for running tests
 
 """
 
-import __builtin__
+try:
+    import __builtin__
+    builtins_name = '__builtin__'
+    importer = __builtin__.__import__
+except ImportError:
+    import builtins
+    builtins_name = 'builtins'
+    importer = builtins.__import__
+
 from functools import wraps
 import mock
 
@@ -44,8 +52,8 @@ def block_import(package):
     def blocker_wrapper(func):
         @wraps(func)
         def func_wrapper(*args, **kwargs):
-            with mock.patch('__builtin__.__import__',
-                            wraps=__builtin__.__import__) as mbi:
+            with mock.patch('{}.__import__'.format(builtins_name),
+                            wraps=importer) as mbi:
                 def blocker(*args, **kwargs):
                     if package in args:
                         raise ImportError("Blocked by block_import")

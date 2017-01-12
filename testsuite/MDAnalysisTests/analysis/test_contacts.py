@@ -112,6 +112,8 @@ def test_contact_matrix():
     assert_array_equal(out, [True, True, True, False, False])
 
 
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_new_selection():
     u = mda.Universe(PSF, DCD)
     selections = ('all', )
@@ -293,6 +295,8 @@ class TestContacts(object):
             assert_array_almost_equal(ca.timeseries, saved)
 
 
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_q1q2():
     u = mda.Universe(PSF, DCD)
     q1q2 = contacts.q1q2(u, 'name CA', radius=8)

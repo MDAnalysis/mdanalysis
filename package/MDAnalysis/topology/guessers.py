@@ -27,6 +27,8 @@ In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
 """
+from six.moves import map
+
 import numpy as np
 import warnings
 
@@ -46,7 +48,7 @@ def guess_masses(atom_types):
     -------
     atom_masses : np.ndarray dtype float64
     """
-    masses = np.array(map(get_atom_mass, atom_types), dtype=np.float64)
+    masses = np.array(list(map(get_atom_mass, atom_types)), dtype=np.float64)
     if np.any(masses == 0.0):
         # figure out where the misses were and report
         misses = np.unique(np.asarray(atom_types)[np.where(masses == 0.0)])
@@ -67,7 +69,7 @@ def guess_types(atom_names):
     -------
     atom_types : np.ndarray dtype object
     """
-    return np.array(map(guess_atom_element, atom_names),
+    return np.array(list(map(guess_atom_element, atom_names)),
                     dtype=object)
 
 

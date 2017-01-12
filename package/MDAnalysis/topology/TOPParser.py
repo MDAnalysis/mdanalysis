@@ -167,7 +167,7 @@ class TOPParser(TopologyReader):
                 header = self.topfile.next()
             self.topfile.next()
 
-            topremarks = [self.topfile.next().strip() for i in xrange(4)]
+            topremarks = [self.topfile.next().strip() for i in range(4)]
             sys_info = [int(k) for i in topremarks for k in i.split()]
 
             header = self.topfile.next()
@@ -284,7 +284,7 @@ class TOPParser(TopologyReader):
     def parsebond(self, atoms_per, numlines):
         y = self.topfile.next().strip("%FORMAT(")
         section = []
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = self.topfile.next()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             fields = map(lambda x: int(x) - 1, l.split())
@@ -297,9 +297,9 @@ class TOPParser(TopologyReader):
         y = self.topfile.next().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = self.topfile.next()
-            for j in xrange(len(x.entries)):
+            for j in range(len(x.entries)):
                 val = l[x.entries[j].start:x.entries[j].stop].strip()
                 if val:
                     section.append(mapper(val))

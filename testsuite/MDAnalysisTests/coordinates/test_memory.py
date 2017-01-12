@@ -5,10 +5,13 @@ from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               BaseReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, dec
+from MDAnalysisTests import parser_not_found
 
 
 class MemoryReference(BaseReference):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def __init__(self):
         super(MemoryReference, self).__init__()
         

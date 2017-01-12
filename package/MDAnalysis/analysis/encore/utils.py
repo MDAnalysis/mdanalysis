@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import range
 from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
 import numpy as np
@@ -438,8 +439,8 @@ def trm_indices_nodiag(n):
         Matrix size
 """
 
-    for i in xrange(1, n):
-        for j in xrange(i):
+    for i in range(1, n):
+        for j in range(i):
             yield (i, j)
 
 
@@ -454,8 +455,8 @@ def trm_indices_diag(n):
         Matrix size
 """
 
-    for i in xrange(0, n):
-        for j in xrange(i+1):
+    for i in range(0, n):
+        for j in range(i + 1):
             yield (i, j)
 
 

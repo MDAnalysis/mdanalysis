@@ -42,6 +42,8 @@ from MDAnalysisTests import tempdir, parser_not_found
 
 
 class Testrmsd(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def __init__(self):
         shape = (5, 3)
         # vectors with length one

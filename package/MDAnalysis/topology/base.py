@@ -37,6 +37,8 @@ Classes
 """
 import six
 from six.moves import zip
+# While reduce is a built-in in python 2, it is not in python 3
+from functools import reduce
 
 import itertools
 import numpy as np
