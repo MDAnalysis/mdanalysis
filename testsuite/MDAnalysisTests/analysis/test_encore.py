@@ -44,8 +44,6 @@ class TestEncore(TestCase):
 
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def setUp(self):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
@@ -155,15 +153,14 @@ inconsistent results")
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_rmsd_matrix_with_superimposition(self):
-        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(self.ens1,
-                                    encore.confdistmatrix.set_rmsd_matrix_elements,
-                                    selection = "name CA",
-                                    pairwise_align = True,
-                                    mass_weighted = True,
-                                    n_jobs = 1)
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            mass_weighted=True,
+            n_jobs=1)
 
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
@@ -172,8 +169,6 @@ inconsistent results")
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_rmsd_matrix_without_superimposition(self):
         selection_string = "name CA"
         selection = self.ens1.select_atoms(selection_string)
@@ -183,12 +178,12 @@ inconsistent results")
             reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
 
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
-                            self.ens1,
-                            encore.confdistmatrix.set_rmsd_matrix_elements,
-                            selection = selection_string,
-                            pairwise_align = False,
-                            mass_weighted = True,
-                            n_jobs = 1)
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection=selection_string,
+            pairwise_align=False,
+            mass_weighted=True,
+            n_jobs=1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
@@ -259,8 +254,6 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=-3,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_ces_to_self(self):
         results, details = \
             encore.ces([self.ens1, self.ens1],
@@ -270,8 +263,6 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_ces(self):
         results, details = encore.ces([self.ens1, self.ens2])
         result_value = results[0,1]
@@ -281,8 +272,6 @@ inconsistent results")
 
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dres_to_self(self):
         results, details = encore.dres([self.ens1, self.ens1])
         result_value = results[0,1]
@@ -292,8 +281,6 @@ inconsistent results")
 
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dres(self):
         results, details = encore.dres([self.ens1, self.ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
@@ -303,8 +290,6 @@ inconsistent results")
 
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dres_without_superimposition(self):
         distance_matrix = encore.get_distance_matrix(
             encore.merge_universes([self.ens1, self.ens2]),
@@ -316,8 +301,6 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_ces_convergence(self):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
         results = encore.ces_convergence(self.ens1, 5)
@@ -328,8 +311,6 @@ inconsistent results")
 
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dres_convergence(self):
         expected_values = [ 0.3, 0.]
         results = encore.dres_convergence(self.ens1, 10)
@@ -350,8 +331,6 @@ inconsistent results")
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_ces_error_estimation(self):
         expected_average = 0.03
         expected_stdev = 0.31
@@ -393,8 +372,6 @@ inconsistent results")
     @dec.slow
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dres_error_estimation(self):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
@@ -459,8 +436,6 @@ class TestEncoreClustering(TestCase):
         del cls.ens2_template
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_clustering_one_ensemble(self):
         cluster_collection = encore.cluster(self.ens1)
         expected_value = 7
@@ -468,8 +443,6 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_clustering_two_ensembles(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2])
         expected_value = 14
@@ -477,8 +450,6 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_clustering_three_ensembles_two_identical(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2, self.ens1])
         expected_value = 40
@@ -486,8 +457,6 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_clustering_two_methods(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -497,8 +466,6 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_clustering_AffinityPropagationNative_direct(self):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(self.ens1)
@@ -742,8 +709,6 @@ class TestEncoreDimensionalityReduction(TestCase):
         del cls.ens2_template
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_one_ensemble(self):
         dimension = 2
         coordinates, details = encore.reduce_dimensionality(self.ens1)
@@ -752,8 +717,6 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_two_ensembles(self):
         dimension = 2
         coordinates, details = \
@@ -762,8 +725,6 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_three_ensembles_two_identical(self):
         coordinates, details = \
             encore.reduce_dimensionality([self.ens1, self.ens2, self.ens1])
@@ -773,8 +734,6 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_specified_dimension(self):
         dimension = 3
         coordinates, details = encore.reduce_dimensionality(
@@ -784,8 +743,6 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_SPENative_direct(self):
         dimension = 2
         method = encore.StochasticProximityEmbeddingNative(dimension=dimension)
@@ -822,8 +779,6 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_two_methods(self):
         dims = [2,3]
         coordinates, details = \
@@ -865,8 +820,6 @@ class TestEncoreImportWarnings(object):
 
     def test_import_warnings(self):
         for pkg in (
-                'MDAnalysis.analysis.encore.confdistmatrix',
-                'MDAnalysis.analysis.encore.utils',
                 'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
                 'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
         ):

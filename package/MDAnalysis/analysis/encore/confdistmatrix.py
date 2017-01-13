@@ -50,11 +50,10 @@ from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indices
 
 try:
-    from sklearn.externals.joblib import Parallel, delayed
+    from joblib import Parallel, delayed
 except ImportError:
-    sklearn = None
     import warnings
-    warnings.warn( "Couldn't import sklearn. Can't use conformational_distance_matrix", category=ImportWarning)
+    warnings.warn( "Couldn't import joblib. Can't use conformational_distance_matrix", category=ImportWarning)
 
 
 def conformational_distance_matrix(ensemble,

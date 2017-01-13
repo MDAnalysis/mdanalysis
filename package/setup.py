@@ -498,7 +498,7 @@ if __name__ == '__main__':
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
           requires=['numpy (>=1.5.0)', 'biopython', 'mmtf (>=1.0.0)',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'],
+                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
@@ -511,6 +511,7 @@ if __name__ == '__main__':
               'GridDataFormats>=0.3.2',
               'six>=1.4.0',
               'mmtf-python>=1.0.0',
+              'joblib',
           ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
