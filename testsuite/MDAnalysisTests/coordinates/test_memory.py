@@ -61,6 +61,12 @@ class TestMemoryReader(BaseReaderTest):
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)
 
+    def test_default_memory_layout(self):
+        universe1 = mda.Universe(PSF, DCD, in_memory=True)
+        universe2 = mda.Universe(PSF, DCD, in_memory=True, order='fac')
+        assert_equal(universe1.trajectory.get_array().shape,
+                     universe2.trajectory.get_array().shape)
+        
     def test_iteration(self):
         frames = 0
         for i, frame in enumerate(self.reader):
