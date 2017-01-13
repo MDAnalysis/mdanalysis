@@ -5,7 +5,6 @@ branches:
   only:
     - master
     - develop
-    - issue-363
 
 os:
   - linux
@@ -43,29 +42,30 @@ before_install:
   - conda update --yes conda
   - conda install --yes pylint
 install:
-  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python scipy nose=1.3.7 mock sphinx=1.3 six scikit-learn; fi
-  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python nose=1.3.7 mock sphinx=1.3 six; fi
+  # Minimal installation!
+  -  conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python nose=1.3.7 mock sphinx=1.3 six biopython networkx cython
   - source activate pyenv
+  # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
+  - pip install griddataformats
+  # Add missing packages for the full build
   - |
     if [[ $SETUP == 'full' ]]; then \
-        conda install --yes cython biopython matplotlib networkx netcdf4; \
+        conda install --yes matplotlib netcdf4 scikit-learn scipy seaborn coveralls; \
         conda install -c biobuilds --yes clustalw=2.1; \
     fi
-  - if [[ $SETUP == 'minimal' ]]; then conda install --yes cython biopython networkx; fi
-  - pip install griddataformats
-# ensure that cython files are rebuilt
-  - find . -name '*.pyx' -exec touch '{}' \;
-  - pip install -v package/
-  - pip install testsuite/
-  - pip install coveralls
-  - chmod +x testsuite/MDAnalysisTests/mda_nosetests
-# additional external tools (Issue #898) -- HOLE
+  # additional external tools (Issue #898) -- HOLE
   - |
      if [[ $SETUP == 'full' ]]; then \
          bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
          HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
          export PATH=${PATH}:${HOLE_BINDIR}; \
      fi
+  # ensure that cython files are rebuilt
+  - find . -name '*.pyx' -exec touch '{}' \;
+  # Install MDAnalysis
+  - pip install -v package/
+  - pip install testsuite/
+  - chmod +x testsuite/MDAnalysisTests/mda_nosetests
   # we should still be here but make doubly sure:
   - cd ${TRAVIS_BUILD_DIR}
 
