@@ -86,13 +86,13 @@ class DCDReadFrameTest(TestCase):
     def test_n_atoms(self):
         assert_equal(self.dcdfile.n_atoms, 3341)
 
-    @raises(RuntimeError)
+    @raises(IOError)
     @run_in_tempdir()
     def test_read_write_mode_file(self):
         with DCDFile('foo', 'w') as f:
             f.read()
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_read_closed(self):
         self.dcdfile.close()
         self.dcdfile.read()
