@@ -114,7 +114,7 @@ cdef class DCDFile:
         self.n_atoms = 0
         self.is_open = False
         if path.isfile(self.fname) and mode == 'w':
-            raise RuntimeError('''Aborting -- attempted to overwrite an
+            raise IOError('''Aborting -- attempted to overwrite an
                                 existing file path.''')
         self.open(self.fname, mode)
 
@@ -143,7 +143,7 @@ cdef class DCDFile:
 
     def __len__(self):
         if not self.is_open:
-            raise RuntimeError('No file currently opened')
+            raise IOError('No file currently opened')
         return self.n_frames
 
     def tell(self):
@@ -187,7 +187,7 @@ cdef class DCDFile:
 
     def _read_header(self):
         if not self.is_open:
-            raise RuntimeError("No file open")
+            raise IOError("No file open")
 
         cdef char* c_remarks
         cdef int len_remarks = 0
@@ -237,11 +237,11 @@ cdef class DCDFile:
 
     def read(self):
         if self.reached_eof:
-            raise RuntimeError('Reached last frame in TRR, seek to 0')
+            raise IOError('Reached last frame in TRR, seek to 0')
         if not self.is_open:
-            raise RuntimeError("No file open")
+            raise IOError("No file open")
         if self.mode != 'r':
-            raise RuntimeError('File opened in mode: {}. Reading only allow '
+            raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
         cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
@@ -307,7 +307,7 @@ cdef class DCDFile:
     def _write_header(self):
 
         if not self.is_open:
-            raise RuntimeError("No file open")
+            raise IOError("No file open")
 
         if not self.mode=='w':
             raise IOError("Incorrect file mode for writing.")
