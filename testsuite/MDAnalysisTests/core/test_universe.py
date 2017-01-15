@@ -184,9 +184,11 @@ def test_chainid_quick_select():
     # this pdb file has 2 segments with chainID A
     u = mda.Universe(PDB_chainidrepeat)
 
-    for sg in (u.A, u.B, u.C, u.D):
+    for sg in (u.A, u.B):
         assert_(isinstance(sg, mda.core.groups.SegmentGroup))
-    assert_(len(u.A) == 2)
-    assert_(len(u.B) == 2)
-    assert_(len(u.C) == 1)
-    assert_(len(u.D) == 1)
+    for seg in (u.C, u.D):
+        assert_(isinstance(seg, mda.core.groups.Segment))
+    assert_(len(u.A.atoms) == 10)
+    assert_(len(u.B.atoms) == 10)
+    assert_(len(u.C.atoms) == 5)
+    assert_(len(u.D.atoms) == 7)
