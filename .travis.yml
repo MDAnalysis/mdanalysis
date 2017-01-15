@@ -43,7 +43,7 @@ before_install:
   - conda install --yes pylint
 install:
   # Minimal installation!
-  -  conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python nose=1.3.7 mock sphinx=1.3 six biopython networkx cython
+  -  conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python nose=1.3.7 mock sphinx=1.3 six biopython networkx cython joblib
   - source activate pyenv
   # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
   - pip install griddataformats
