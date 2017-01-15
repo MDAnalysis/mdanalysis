@@ -37,6 +37,7 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     PSF_BAD,
     PDB_small,
+    PDB_chainidrepeat
 )
 from MDAnalysisTests import parser_not_found
 
@@ -177,3 +178,15 @@ class TestUniverse(object):
         box = np.array([10, 11, 12, 90, 90, 90])
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
+
+def test_chainid_quick_select():
+    # check that chainIDs get grouped together when making the quick selectors
+    # this pdb file has 2 segments with chainID A
+    u = mda.Universe(PDB_chainidrepeat)
+
+    for sg in (u.A, u.B, u.C, u.D):
+        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
+    assert_(len(u.A) == 2)
+    assert_(len(u.B) == 2)
+    assert_(len(u.C) == 1)
+    assert_(len(u.D) == 1)

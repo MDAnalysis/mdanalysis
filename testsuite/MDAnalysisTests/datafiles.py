@@ -61,6 +61,7 @@ __all__ = [
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
     "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB_chainidnewres",  # Issue 1110
+    "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
@@ -181,6 +182,7 @@ PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
 PDB_mc_gz = resource_filename(__name__, 'data/model_then_cryst.pdb.gz')
 PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_chainidnewres = resource_filename(__name__, 'data/chainIDnewres.pdb.gz')
+PDB_chainidrepeat = resource_filename(__name__, 'data/chainIDrepeat.pdb.gz')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')

@@ -268,13 +268,20 @@ class Universe(object):
                 np.arange(self._topology.n_segments), self)
 
         # Update Universe namespace with segids
-        for seg in self.segments:
-            if hasattr(seg, 'segid') and seg.segid:
-                if seg.segid[0].isdigit():
-                    name = 's' + seg.segid
+        # Many segments can have same segid, so group together first
+        try:
+            # returns dict of segid:segment
+            segids = self.segments.groupby('segids')
+        except AttributeError:
+            # no segids, don't do this step
+            pass
+        else:
+            for segid, segment in segids.items():
+                if segid[0].isdigit():
+                    name = 's' + segid
                 else:
-                    name = seg.segid
-                self.__dict__[name] = seg
+                    name = segid
+                self.__dict__[name] = segment
 
     @property
     def universe(self):
