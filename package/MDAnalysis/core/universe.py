@@ -408,7 +408,7 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, format='afc', step=frame_interval)
+                    self.atoms, format='fac', step=frame_interval)
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
@@ -418,7 +418,7 @@ class Universe(object):
                 for ts in self.trajectory[::frame_interval]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
-                coordinates = np.array(coordinates).swapaxes(0, 1)
+                coordinates = np.array(coordinates)
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates

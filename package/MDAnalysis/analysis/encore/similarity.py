@@ -727,8 +727,8 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     for s,sl in enumerate(slices_n[:-1]):
         tmp_ensembles.append(mda.Universe(
             ensemble.filename,
-            ensemble.trajectory.timeseries()
-            [:, slices_n[s]:slices_n[s + 1], :],
+            ensemble.trajectory.timeseries(format='fac')
+            [slices_n[s]:slices_n[s + 1], :, :],
             format=MemoryReader))
 
     return tmp_ensembles
