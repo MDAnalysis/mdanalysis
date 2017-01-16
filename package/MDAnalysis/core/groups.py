@@ -382,6 +382,10 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
         if self._u is not other._u:
@@ -1844,6 +1848,10 @@ class ComponentBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
         if self.level != other.level:
             raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
                             ' to {0}'.format(self.level.singular.__name__,
