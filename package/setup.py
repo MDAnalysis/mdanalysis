@@ -298,16 +298,21 @@ def extensions(config):
 
     include_dirs = [get_numpy_include]
 
-    dcd = MDAExtension('lib.formats.libdcd',
-                       ['MDAnalysis/lib/formats/libdcd' + source_suffix],
-                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
+    dcd = MDAExtension('coordinates._dcdmodule',
+                       ['MDAnalysis/coordinates/src/dcd.c' + source_suffix],
+                       include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                        define_macros=define_macros,
                        extra_compile_args=extra_compile_args)
-    # dcd_time = MDAExtension('coordinates.dcdtimeseries',
-    #                      ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
-    #                      include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-    #                      define_macros=define_macros,
-    #                      extra_compile_args=extra_compile_args)
+    libdcd = MDAExtension('lib.formats.libdcd',
+                          ['MDAnalysis/lib/formats/libdcd' + source_suffix],
+                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
+                          define_macros=define_macros,
+                          extra_compile_args=extra_compile_args)
+    dcd_time = MDAExtension('coordinates.dcdtimeseries',
+                         ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
+                         include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                         define_macros=define_macros,
+                         extra_compile_args=extra_compile_args)
     distances = MDAExtension('lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
@@ -360,9 +365,9 @@ def extensions(config):
                             include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
-    pre_exts = [dcd, distances, distances_omp, qcprot,
-                  transformation, libmdaxdr, util, encore_utils,
-                  ap_clustering, spe_dimred]
+    pre_exts = [dcd, libdcd, dcd_time, distances, distances_omp, qcprot,
+                transformation, libmdaxdr, util, encore_utils,
+                ap_clustering, spe_dimred]
     cython_generated = []
     if use_cython:
         extensions = cythonize(pre_exts)
