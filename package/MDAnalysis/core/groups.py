@@ -90,6 +90,7 @@ class::
 
 """
 from six.moves import zip
+from six import string_types
 
 from collections import namedtuple
 import numpy as np
@@ -979,6 +980,15 @@ class AtomGroup(GroupBase):
     .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
+    def __getitem__(self, item):
+        # u.atoms['HT1'] access, otherwise default
+        if isinstance(item, string_types):
+            try:
+                return self._get_named_atom(item)
+            except (AttributeError, selection.SelectionError):
+                pass
+        return super(AtomGroup, self).__getitem__(item)
+
     def __getattr__(self, attr):
         # is this a known attribute failure?
         if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
