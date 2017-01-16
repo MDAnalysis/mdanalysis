@@ -299,7 +299,7 @@ def extensions(config):
     include_dirs = [get_numpy_include]
 
     dcd = MDAExtension('coordinates._dcdmodule',
-                       ['MDAnalysis/coordinates/src/dcd.c' + source_suffix],
+                       ['MDAnalysis/coordinates/src/dcd.c'],
                        include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                        define_macros=define_macros,
                        extra_compile_args=extra_compile_args)
