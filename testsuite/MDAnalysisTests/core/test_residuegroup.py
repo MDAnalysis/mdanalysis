@@ -25,6 +25,7 @@ from numpy.testing import (
     dec,
     assert_,
     assert_equal,
+    assert_raises,
 )
 from unittest import skip
 
@@ -35,6 +36,7 @@ from MDAnalysisTests import parser_not_found
 
 
 class TestResidueGroup(object):
+    # Legacy tests from before 363
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -99,13 +101,11 @@ class TestResidueGroup(object):
                      err_msg="failed to set_resid of residues belonging to "
                      "residues 10:18 to new resids")
 
-    # INVALID: set resids with `ResidueGroup.resids` property; no `set_resids` method
-    @skip
     def test_set_resids_updates_self(self):
         rg = self.universe.select_atoms("resid 10:18").residues
         resids = np.array(rg.resids) + 1000
-        rg.set_resids(resids)
-        assert_equal(rg.resids, np.unique(resids),
+        rg.resids = resids
+        assert_equal(rg.resids, resids,
                      err_msg="old selection was not changed in place "
                      "after set_resid")
 
@@ -118,24 +118,20 @@ class TestResidueGroup(object):
         for r in rg:
             assert_equal(r.resnum, new)
 
-    # INVALID: no resnums in this topology, so no resnums property
-    @skip
     def test_set_resnum_many(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24]
-        rg.set_resnums(new)
+        rg.resnums = new
 
         assert_equal(all(rg.resnums == new), True)
         for r, v in zip(rg, new):
             assert_equal(r.resnum, v)
 
-    # INVALID: no resnums in this topology, so no resnums property
-    @skip
     def test_set_resnum_ValueError(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24, 25]
 
-        assert_raises(ValueError, rg.set_resnums, new)
+        assert_raises(ValueError, setattr, rg, 'resnums', new)
 
     # INVALID: no `set_resnames` method; use `resnames` property directly
     @skip

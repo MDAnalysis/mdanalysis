@@ -32,6 +32,7 @@ from MDAnalysisTests.datafiles import PSF, DCD
 
 
 class TestResidue(object):
+    # Legacy tests from before 363
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):

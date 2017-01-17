@@ -40,6 +40,7 @@ from MDAnalysisTests import parser_not_found
 
 
 class TestAtom(object):
+    # Legacy tests from before 363
     """Tests of Atom."""
 
     @dec.skipif(parser_not_found('DCD'),
@@ -123,6 +124,7 @@ class TestAtom(object):
     @raises(AttributeError)
     def test_undefined_occupancy(self):
         self.universe.atoms[0].occupancy
+
 
 class TestAtomNoForceNoVel(object):
     def setUp(self):
