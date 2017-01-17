@@ -31,7 +31,7 @@ import mock
 
 
 from MDAnalysisTests.datafiles import PSF, GRO, XTC
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 
 import MDAnalysis
 import MDAnalysis as mda

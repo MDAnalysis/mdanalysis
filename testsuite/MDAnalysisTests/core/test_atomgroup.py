@@ -52,8 +52,7 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
 )
-from MDAnalysisTests.core.groupbase import make_Universe
-from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
@@ -1153,3 +1152,27 @@ class TestAtomGroup(object):
                      sorted(self.universe.atoms.indices))
 
 
+class TestAtomGroupTimestep(object):
+    """Tests the AtomGroup.ts attribute (partial timestep)"""
+
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.prec = 6
+
+    def tearDown(self):
+        del self.universe
+        del self.prec
+
+    def test_partial_timestep(self):
+        ag = self.universe.select_atoms('name Ca')
+        idx = ag.indices
+
+        assert_equal(len(ag.ts._pos), len(ag))
+
+        for ts in self.universe.trajectory[0:20:5]:
+            assert_array_almost_equal(ts.positions[idx], ag.ts.positions, self.prec,
+                                      err_msg="Partial timestep coordinates wrong")
+            assert_array_almost_equal(ts.velocities[idx], ag.ts.velocities, self.prec,
+                                      err_msg="Partial timestep coordinates wrong")

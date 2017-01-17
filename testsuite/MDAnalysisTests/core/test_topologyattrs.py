@@ -33,7 +33,7 @@ from numpy.testing import (
 from nose.tools import raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs

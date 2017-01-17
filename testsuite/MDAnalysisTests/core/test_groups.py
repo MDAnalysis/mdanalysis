@@ -8,7 +8,7 @@ from numpy.testing import (
 )
 import operator
 
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysis.core import groups
 
 

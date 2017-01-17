@@ -32,7 +32,7 @@ from numpy.testing import (
 )
 from nose.plugins.attrib import attr
 
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
     PSF, DCD,
     PSF_BAD,

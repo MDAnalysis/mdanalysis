@@ -148,6 +148,7 @@ from MDAnalysisTests.util import (
     parser_not_found,
     in_dir,
 )
+from MDAnalysisTests.core.util import make_Universe
 
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
