@@ -91,6 +91,8 @@ Fixes
   * Fixed selections using operators backwards ('prop 10 > mass') and sensitivity
     about whitespace around these (PR #1156 Issue #1011 #1009)
   * Fixed PSA analysis is now using AlignTraj
+  * The namespace used for auxiliary data now raises an AttributeError instead
+    of a KeyError when accessing data by attributes (Issue #1166)
 
 Changes
   * Started unifying the API of analysis classes (named internally
