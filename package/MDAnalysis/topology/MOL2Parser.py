@@ -167,15 +167,15 @@ class MOL2Parser(TopologyReader):
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         bonds = []
-        bondorder = {}
+        bondorder = []
         for b in bond_lines:
             # bond_type can be: 1, 2, am, ar
             bid, a0, a1, bond_type = b.split()
             a0, a1 = int(a0) - 1, int(a1) - 1
             bond = tuple(sorted([a0, a1]))
-            bondorder[bond] = bond_type
+            bondorder.append(bond_type)
             bonds.append(bond)
-        attrs.append(Bonds(bonds))
+        attrs.append(Bonds(bonds, order=bondorder))
 
         top = Topology(n_atoms, n_residues, 1,
                        attrs=attrs,
