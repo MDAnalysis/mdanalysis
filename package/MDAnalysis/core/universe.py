@@ -202,17 +202,18 @@ class Universe(object):
             else:
                 self.filename = args[0]
 
-                if not os.path.exists(self.filename):
-                    raise IOError("The file {0} does not exist or cannot be accessed.".format(self.filename))
-
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
                         self._topology = p.parse()
                 except IOError as err:
-                    raise IOError("Failed to load from the topology file {0}"
-                                  " with parser {1}.\n"
-                                  "Error: {2}".format(self.filename, parser, err))
+                    if err.filename is not None:
+                        raise IOError("Failed to load from the topology file {0}"
+                                      " with parser {1}.\n"
+                                      "Error: {2}".format(self.filename, parser, err))
+                    else:
+                        # Runs if the error is propagated from parser(no permission/ file not found)
+                        raise IOError(err)
                 except ValueError as err:
                     raise ValueError("Failed to construct topology from file {0}"
                                      " with parser {1} \n"

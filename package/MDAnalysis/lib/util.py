@@ -374,7 +374,11 @@ def _get_stream(filename, openfunction=open, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
-    except IOError:
+    except IOError as err:
+        if err.errno == 13:
+            raise IOError("You do not have permissions to read the file {0}".format(err.filename))
+        elif err.errno == 2:
+            raise IOError("{0}: {1}".format(err.strerror, err.filename))
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?
