@@ -57,6 +57,7 @@ import numpy as np
 import logging
 import copy
 import uuid
+import os
 
 import MDAnalysis
 from .. import _ANCHOR_UNIVERSES
@@ -200,6 +201,9 @@ class Universe(object):
                 self.filename = None
             else:
                 self.filename = args[0]
+
+                if not os.path.exists(self.filename):
+                    raise IOError("The file {0} does not exist or cannot be accessed.".format(self.filename))
 
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
@@ -464,7 +468,7 @@ class Universe(object):
     @property
     def anchor_name(self):
         return self._gen_anchor_hash()
-    
+
     @anchor_name.setter
     def anchor_name(self, name):
         self.remove_anchor()  # clear any old anchor
