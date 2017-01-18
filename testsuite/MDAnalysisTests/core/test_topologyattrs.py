@@ -98,10 +98,22 @@ class TestAtomAttr(TopologyAttrMixin):
         assert_array_equal(result,
                            self.values[[2, 1]])
 
-    def test_set_atoms(self):
-        self.attr.set_atoms(DummyGroup([3, 7]), np.array([23, 504]))
-        assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])),
-                           np.array([23, 504]))
+    def test_set_atoms_singular(self):
+        # set len 2 Group to len 1 value
+        dg = DummyGroup([3, 7])
+        self.attr.set_atoms(dg, 567)
+        assert_array_equal(self.attr.get_atoms(dg), np.array([567, 567]))
+
+    def test_set_atoms_plural(self):
+        # set len 2 Group to len 2 values
+        dg = DummyGroup([3, 7])
+        self.attr.set_atoms(dg, np.array([23, 504]))
+        assert_array_equal(self.attr.get_atoms(dg), np.array([23, 504]))
+
+    def test_set_atoms_VE(self):
+        # set len 2 Group to wrong length values
+        dg = DummyGroup([3, 7])
+        assert_raises(ValueError, self.attr.set_atoms, dg, np.array([6, 7, 8, 9]))
 
     def test_get_residues(self):
         """Unless overriden by child class, this should yield values for all
@@ -195,11 +207,23 @@ class TestResidueAttr(TopologyAttrMixin):
         assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])),
                            self.values[[1, 2, 1, 3]])
 
-    def test_set_residues(self):
+    def test_set_residues_singular(self):
+        dg = DummyGroup([3, 0, 1])
+        self.attr.set_residues(dg, 2)
+
+        assert_array_almost_equal(self.attr.get_residues(dg),
+                                  np.array([2, 2, 2]))
+
+    def test_set_residues_plural(self):
         self.attr.set_residues(DummyGroup([3, 0, 1]),
-                               np.array([23, 504, 0.0002]))
+                               np.array([23, 504, 2]))
         assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
-                                  np.array([23, 504, 0.0002]))
+                                  np.array([23, 504, 2]))
+
+    def test_set_residues_VE(self):
+        dg = DummyGroup([3, 0, 1])
+
+        assert_raises(ValueError, self.attr.set_residues, dg, np.array([4.5, 5.2]))
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
@@ -308,11 +332,19 @@ class TestSegmentAttr(TopologyAttrMixin):
         assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 0])),
                            self.values[[1, 0, 0]])
 
-    def test_set_segments(self):
-        self.attr.set_segments(DummyGroup([0, 1]),
-                               np.array([23, -0.0002]))
-        assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 1])),
-                           np.array([-0.0002, 23, -0.0002]))
+    def test_set_segments_singular(self):
+        dg = DummyGroup([0, 1])
+        self.attr.set_segments(dg, 0.45)
+        assert_array_equal(self.attr.get_segments(dg), np.array([0.45, 0.45]))
+
+    def test_set_segments_plural(self):
+        dg = DummyGroup([0, 1])
+        self.attr.set_segments(dg, np.array([23, -0.0002]))
+        assert_array_equal(self.attr.get_segments(dg), np.array([23, -0.0002]))
+
+    def test_set_segments_VE(self):
+        dg = DummyGroup([0, 1])
+        assert_raises(ValueError, self.attr.set_segments, dg, np.array([4, 5, 6, 7]))
 
 
 class TestAttr(object):

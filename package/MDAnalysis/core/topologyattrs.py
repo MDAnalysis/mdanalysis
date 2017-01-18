@@ -33,20 +33,70 @@ These are usually read by the TopologyParser.
 
 from six.moves import zip, range
 from collections import defaultdict
+import functools
 import itertools
 import numpy as np
 
 from . import flags
-from ..lib.util import cached, convert_aa_code
+from ..lib.util import cached, convert_aa_code, iterable
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
-from .groups import (GroupBase, Atom, Residue, Segment,
+from .groups import (ComponentBase, GroupBase,
+                     Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 
-_LENGTH_VALUEERROR = ("Setting {group} with wrong sized array. "
-                      "Length {group}: {lengroup}, length values: {lenvalues}")
+
+def _check_length(func):
+    """Wrapper which checks the length of inputs to set_X
+
+    set_X(self, group, values)
+
+    if group in (Atom, Residue, Segment):
+        values must be single values, ie int, float or string
+    else:
+        values must be single value OR same length as group
+
+    """
+    _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
+                           "Must use single value, length of suppled values: {lenvalues}.")
+    # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
+    # values: 2."
+
+    _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
+                          "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+    # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
+    # supplied values: 50."
+
+    def _attr_len(values):
+        # quasi len measurement
+        # strings, floats, ints are len 0, ie not iterable
+        # other iterables are just len'd
+        if iterable(values):
+            return len(values)
+        else:
+            return 0  # special case
+
+    @functools.wraps(func)
+    def wrapper(attr, group, values):
+        val_len = _attr_len(values)
+
+        if isinstance(group, ComponentBase):
+            if not val_len == 0:
+                raise ValueError(_SINGLE_VALUE_ERROR.format(
+                    cls=group.__class__.__name__, attrname=attr.singular,
+                    lenvalues=val_len))
+        else:
+            if not (val_len == 0 or val_len == len(group)):
+                raise ValueError(_GROUP_VALUE_ERROR.format(
+                    group=group.__class__.__name__, attrname=attr.attrname,
+                    lengroup=len(group), lenvalues=val_len))
+        # if everything went OK, continue with the function
+        return func(attr, group, values)
+
+    return wrapper
+
 
 
 class TopologyAttr(object):
@@ -109,7 +159,6 @@ class TopologyAttr(object):
 
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
-        # aix = ag.indices
         raise NoDataError
 
     def set_atoms(self, ag, values):
@@ -245,6 +294,7 @@ class AtomAttr(TopologyAttr):
     def get_atoms(self, ag):
         return self.values[ag._ix]
 
+    @_check_length
     def set_atoms(self, ag, values):
         self.values[ag._ix] = values
 
@@ -894,6 +944,7 @@ class ResidueAttr(TopologyAttr):
     def get_residues(self, rg):
         return self.values[rg._ix]
 
+    @_check_length
     def set_residues(self, rg, values):
         self.values[rg._ix] = values
 
@@ -1093,6 +1144,7 @@ class SegmentAttr(TopologyAttr):
     def get_segments(self, sg):
         return self.values[sg._ix]
 
+    @_check_length
     def set_segments(self, sg, values):
         self.values[sg._ix] = values
 
@@ -1183,6 +1235,9 @@ class _Connection(AtomAttr):
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
+
+    def set_atoms(self, ag):
+        return NotImplementedError("Cannot set bond information")
 
     def get_atoms(self, ag):
         try:
