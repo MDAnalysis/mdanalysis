@@ -154,6 +154,7 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
+import sys
 
 __docformat__ = "restructuredtext en"
 
@@ -375,10 +376,11 @@ def _get_stream(filename, openfunction=open, mode='r'):
     try:
         stream = openfunction(filename, mode=mode)
     except IOError as err:
+        t, v, tb = sys.exc_info()
         if err.errno == 13:
-            raise IOError("You do not have permissions to read the file {0}".format(err.filename))
+            six.raise_from( v, tb)
         elif err.errno == 2:
-            raise IOError("{0}: {1}".format(err.strerror, err.filename))
+            six.raise_from(v, tb)
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?

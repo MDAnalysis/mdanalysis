@@ -58,8 +58,11 @@ import logging
 import copy
 import uuid
 import os
+import six
 
 import MDAnalysis
+import sys
+
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import cached
@@ -207,13 +210,15 @@ class Universe(object):
                     with parser(self.filename) as p:
                         self._topology = p.parse()
                 except IOError as err:
-                    if err.filename is not None:
+                    if err.errno == 13 or err.errno == 2:
+                        # Runs if the error is propagated from parser(no permission/ file not found)
+                        t, v, tb = sys.exc_info()
+                        six.raise_from(v, tb)
+
+                    else:
                         raise IOError("Failed to load from the topology file {0}"
                                       " with parser {1}.\n"
                                       "Error: {2}".format(self.filename, parser, err))
-                    else:
-                        # Runs if the error is propagated from parser(no permission/ file not found)
-                        raise IOError(err)
                 except ValueError as err:
                     raise ValueError("Failed to construct topology from file {0}"
                                      " with parser {1} \n"
