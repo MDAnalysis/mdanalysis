@@ -2,7 +2,7 @@
 .. _selection-commands-label:
 
 ====================
- Selection Commands
+ Selection commands
 ====================
 
 Once you have the :meth:`~MDAnalysis.core.universe.Universe` object, you can
