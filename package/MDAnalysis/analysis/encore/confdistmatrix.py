@@ -35,6 +35,7 @@ class to compute an RMSD matrix in such a way is also available.
 
 """
 
+from joblib import Parallel, delayed
 import numpy as np
 from getpass import getuser
 from socket import gethostname
@@ -48,12 +49,6 @@ from ..align import rotation_matrix
 
 from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indices
-
-try:
-    from joblib import Parallel, delayed
-except ImportError:
-    import warnings
-    warnings.warn( "Couldn't import joblib. Can't use conformational_distance_matrix", category=ImportWarning)
 
 
 def conformational_distance_matrix(ensemble,
