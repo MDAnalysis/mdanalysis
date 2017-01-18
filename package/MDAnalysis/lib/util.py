@@ -1331,27 +1331,22 @@ def blocks_of(a, n, m):
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
 
-class Namespace(object):
+class Namespace(dict):
     """Class to allow storing attributes in new namespace. """
     def __getattr__(self, key):
         # a.this causes a __getattr__ call for key = 'this'
         try:
-            return self.__dict__[key]
+            return dict.__getitem__(self, key)
         except KeyError:
             raise AttributeError('"{}" is not known in the namespace.'
                                  .format(key))
 
     def __setattr__(self, key, value):
-        # a.this = 10 causes a __setattr__ call for key='this' value=10
-        try:
-            self.__dict__[key] = value
-        except KeyError:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key))
+        dict.__setitem__(self, key, value)
 
     def __delattr__(self, key):
         try:
-            del self.__dict__[key]
+            dict.__delitem__(self, key)
         except KeyError:
             raise AttributeError('"{}" is not known in the namespace.'
                                  .format(key))
@@ -1359,20 +1354,7 @@ class Namespace(object):
     def __eq__(self, other):
         try:
             # this'll allow us to compare if we're storing arrays
-            assert_equal(self.__dict__, other.__dict__)
+            assert_equal(self, other)
         except AssertionError:
             return False
         return True
-
-    def __str__(self):
-        return str(self.__dict__)
-
-    def __len__(self):
-        return len(self.__dict__)
-
-    def __getitem__(self, key):
-        return self.__dict__[key]
-
-    def __iter__(self):
-        for i in self.__dict__:
-            yield i

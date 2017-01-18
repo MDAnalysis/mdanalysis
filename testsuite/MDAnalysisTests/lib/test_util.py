@@ -819,3 +819,80 @@ class TestBlocksOf(object):
         arr = np.arange(16).reshape(4, 4)
 
         assert_raises(ValueError, util.blocks_of, arr, 2, 1)
+
+
+class TestNamespace(object):
+    def setUp(self):
+        self.ns = util.Namespace()
+
+    def tearDown(self):
+        del self.ns
+
+    def test_getitem(self):
+        self.ns.this = 42
+
+        assert_(self.ns['this'] == 42)
+
+    def test_getitem_KE(self):
+        assert_raises(KeyError, dict.__getitem__, self.ns, 'this')
+
+    def test_setitem(self):
+        self.ns['this'] = 42
+
+        assert_(self.ns['this'] == 42)
+
+    def test_delitem(self):
+        self.ns['this'] = 42
+        assert_('this' in self.ns)
+        del self.ns['this']
+        assert_(not ('this' in self.ns))
+
+    def test_delitem_AE(self):
+        def deller():
+            del self.ns.this
+        assert_raises(AttributeError, deller)
+
+    def test_setattr(self):
+        self.ns.this = 42
+
+        assert_(self.ns.this == 42)
+
+    def test_getattr(self):
+        self.ns['this'] = 42
+
+        assert_(self.ns.this == 42)
+
+    def test_getattr_AE(self):
+        assert_raises(AttributeError, getattr, self.ns, 'this')
+
+    def test_delattr(self):
+        self.ns['this'] = 42
+
+        assert_('this' in self.ns)
+        del self.ns.this
+        assert_(not ('this' in self.ns))
+
+    def test_eq(self):
+        self.ns['this'] = 42
+
+        ns2 = util.Namespace()
+        ns2['this'] = 42
+
+        assert_(self.ns == ns2)
+
+    def test_len(self):
+        assert_(len(self.ns) == 0)
+        self.ns['this'] = 1
+        self.ns['that'] = 2
+        assert_(len(self.ns) == 2)
+
+    def test_iter(self):
+        self.ns['this'] = 12
+        self.ns['that'] = 24
+        self.ns['other'] = 48
+
+        seen = []
+        for val in self.ns:
+            seen.append(val)
+        for val in ['this', 'that', 'other']:
+            assert_(val in seen)
