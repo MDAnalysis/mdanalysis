@@ -89,6 +89,16 @@ class TestUniverseCreation(object):
             raise AssertionError
 
     @staticmethod
+    def test_Universe_filename_IE_msg():
+        # check for non existent file
+        try:
+            mda.Universe('thisfile.xml')
+        except IOError as e:
+            assert_equal('No such file or directory', e.strerror)
+        else:
+            raise AssertionError
+
+    @staticmethod
     def test_load_new_VE():
         u = mda.Universe()
 
