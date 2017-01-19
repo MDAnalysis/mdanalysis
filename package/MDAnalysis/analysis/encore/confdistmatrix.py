@@ -209,8 +209,8 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
 
     if fit_coords is None and fit_masses is None:
         summasses = np.sum(masses)
-        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i],
-                                                coords[j],
+        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(np.float64),
+                                                coords[j].astype(np.float64),
                                                 coords[j].shape[0],
                                                 masses,
                                                 summasses)
