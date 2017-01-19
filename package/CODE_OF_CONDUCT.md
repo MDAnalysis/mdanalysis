@@ -23,7 +23,7 @@ person's ability to participate within them.
 
 If you believe someone is violating the code of conduct, we ask that you report
 it by
-emailing [*User-mailling-list*](mailto:mdnalysis-discussions@googlegroups.com)
+emailing [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com)
 or in anonymous by filling out [*this form*](TODO).
 
 By embracing the following principles, guidelines and actions to follow or
@@ -58,15 +58,15 @@ at [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 5. **Be careful in the words that you choose**. Be kind to others. Do not insult
    or put down other community members. Harassment and other exclusionary
    behavior are not acceptable. This includes, but is not limited to:
-   * Threats or violent language directed against another person
-   * Discriminatory jokes and language
-   * Posting sexually explicit or violent material
-   * Posting (or threatening to post) other people's personally identifying
+   * threats or violent language directed against another person
+   * discriminatory jokes and language
+   * posting sexually explicit or violent material
+   * posting (or threatening to post) other people's personally identifying
      information ("doxing")
-   * Personal insults, especially those using racist or sexist terms
-   * Unwelcome sexual attention
-   * Advocating for, or encouraging, any of the above behavior
-   * Repeated harassment of others. In general, if someone asks you to stop,
+   * personal insults, especially those using racist or sexist terms
+   * unwelcome sexual attention
+   * advocating for, or encouraging, any of the above behavior
+   * repeated harassment of others. In general, if someone asks you to stop,
      then stop
 
 6. **Moderate your expectations**. Many in our community volunteer their time.
@@ -96,15 +96,12 @@ please report this in a timely manner. Code of conduct violations reduce
 the value of the community for everyone and we take them seriously.
 
 You can file a report by emailing
-[*special-list?*](TODO) or by filing out
-[this form](TODO). For more details or
-information on reporting in-person at an event, please see our Reporting
-Guidelines.
+the [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com) or by
+filing out [this form](TODO).
 
 The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
-
 
 Original text courtesy of
 the
