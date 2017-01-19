@@ -298,40 +298,40 @@ def extensions(config):
 
     include_dirs = [get_numpy_include]
 
-    dcd = MDAExtension('coordinates._dcdmodule',
+    dcd = MDAExtension('MDAnalysis.coordinates._dcdmodule',
                        ['MDAnalysis/coordinates/src/dcd.c'],
                        include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                        define_macros=define_macros,
                        extra_compile_args=extra_compile_args)
-    dcd_time = MDAExtension('coordinates.dcdtimeseries',
+    dcd_time = MDAExtension('MDAnalysis.coordinates.dcdtimeseries',
                          ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
-    distances = MDAExtension('lib.c_distances',
+    distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              libraries=['m'],
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
-    distances_omp = MDAExtension('lib.c_distances_openmp',
+    distances_omp = MDAExtension('MDAnalysis.lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                                  libraries=['m'] + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args,
                                  extra_link_args=parallel_args)
-    qcprot = MDAExtension('lib.qcprot',
+    qcprot = MDAExtension('MDAnalysis.lib.qcprot',
                           ['MDAnalysis/lib/qcprot' + source_suffix],
                           include_dirs=include_dirs,
                           extra_compile_args=["-O3", "-ffast-math"])
-    transformation = MDAExtension('lib._transformations',
+    transformation = MDAExtension('MDAnalysis.lib._transformations',
                                   ['MDAnalysis/lib/src/transformations/transformations.c'],
                                   libraries=['m'],
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
-    libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
+    libmdaxdr = MDAExtension('MDAnalysis.lib.formats.libmdaxdr',
                           sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
                                    'MDAnalysis/lib/formats/src/xdrfile.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
@@ -342,20 +342,20 @@ def extensions(config):
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
                                                        'MDAnalysis/lib/formats'],
                           define_macros=largefile_macros)
-    util = MDAExtension('lib.formats.cython_util',
+    util = MDAExtension('MDAnalysis.lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
 
-    encore_utils = MDAExtension('analysis.encore.cutils',
+    encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                             sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
                             include_dirs = include_dirs,
                             extra_compile_args = ["-O3", "-ffast-math"])
-    ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
+    ap_clustering = MDAExtension('MDAnalysis.analysis.encore.clustering.affinityprop',
                             sources = ['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                             include_dirs = include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
-    spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
+    spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                             sources = ['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                             include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                             libraries=["m"],
