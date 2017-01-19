@@ -215,7 +215,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, masses, fit_coords=None,
                                                 masses,
                                                 summasses)
 
-    elif fit_coords is not None and fit_coords is not None:
+    elif fit_coords is not None and fit_masses is not None:
         summasses = np.sum(masses)
         subset_weights = np.asarray(fit_masses) / np.mean(fit_masses)
         com_i = np.average(fit_coords[i], axis=0,
