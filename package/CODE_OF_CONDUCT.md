@@ -14,17 +14,25 @@ code an exhaustive list of things that you can’t do, take it in the
 spirit it is intended - a guide to make it easier to enrich all of us
 and the communities in which we participate.
 
+Importantly: as a member of our community, you are also a steward of these
+values. Not all problems need to be resolved via formal processes, and often a
+quick, friendly but clear word on an online forum or in person can help resolve
+a misunderstanding and de-escalate things.
+
+However, sometimes these informal processes may be inadequate: they fail to
+work, there is urgency or risk to someone, nobody is intervening publicly and
+you don't feel comfortable speaking in public, etc. For these or other reasons,
+structured follow-up may be necessary and here we provide the means for that: we
+welcome reports by
+emailing [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com) or
+in anonymous by filling out [*this form*](TODO).
+
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
 includes the mailing lists, our GitHub organizations, our chat rooms,
 in-person events, and any other forums created by the project team. In
 addition, violations of this code outside these spaces may affect a
 person's ability to participate within them.
-
-If you believe someone is violating the code of conduct, we ask that you report
-it by
-emailing [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com)
-or in anonymous by filling out [*this form*](TODO).
 
 By embracing the following principles, guidelines and actions to follow or
 avoid, you will help us make MDAnalysis a welcoming and productive community. If
@@ -85,9 +93,7 @@ at [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 
 8. **A simple apology can go a long way**. It can often de-escalate a situation,
    and telling someone that you are sorry is act of empathy that doesn’t
-   automatically imply an admission of guilt (Canada has turned
-   [*this notion into law*](http://www.theloop.ca/canadians-love-to-say-sorry-so-much-we-had-to-make-this-law/)).
-
+   automatically imply an admission of guilt.
 
 ## Reporting
 
@@ -107,9 +113,10 @@ Original text courtesy of
 the
 [*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html) ,
 [*Django*](https://www.djangoproject.com/conduct) Projects
-and [*Jupyter*](replace once they have it official), modified by MDAnalysis. We
-are grateful to those projects for contributing these materials under open
-licensing terms for us to easily reuse.
+and
+[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md),
+modified by MDAnalysis. We are grateful to those projects for contributing these
+materials under open licensing terms for us to easily reuse.
 
 All content on this page is licensed under a [*Creative Commons
 Attribution*](http://creativecommons.org/licenses/by/3.0/) license. 
