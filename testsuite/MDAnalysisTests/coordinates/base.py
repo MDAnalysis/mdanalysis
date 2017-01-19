@@ -293,7 +293,7 @@ class BaseReaderTest(object):
     def test_remove_auxiliary(self):
         self.reader.remove_auxiliary('lowf')
         assert_raises(AttributeError, getattr, self.reader._auxs, 'lowf')
-        assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')
+        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
 
     @raises(ValueError)
     def test_remove_nonexistant_auxiliary_raises_ValueError(self):
@@ -344,7 +344,7 @@ class BaseReaderTest(object):
         assert_equal(self.reader.ts.aux.lowf_renamed,
                      self.ref.aux_lowf_data[0])
         # old name should be removed
-        assert_raises(KeyError, getattr, self.reader.ts.aux, 'lowf')
+        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
         # new name should be retained
         next(self.reader)
         assert_equal(self.reader.ts.aux.lowf_renamed,
