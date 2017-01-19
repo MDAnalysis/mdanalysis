@@ -72,11 +72,9 @@ class ReportOpenFiles(Plugin):
             return err
 
         ec, ev, tb = err
-        ev = exc_to_unicode(ev)
         handle_couter = collections.Counter(open_files)
         new_ev = u'\n'.join(
-            ev.split('\n')
-            + [ln(u'>>> There {} open file handlers for {} files: <<<'
+            [ev, ln(u'>>> There {} open file handlers for {} files: <<<'
                   .format(len(open_files), len(handle_couter)))]
             + [ln(u'* ({}) {}'.format(count, path))
                for path, count in handle_couter.items()]
