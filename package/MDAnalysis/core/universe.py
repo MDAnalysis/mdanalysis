@@ -52,7 +52,7 @@ Functions
 .. autofunction:: Merge
 
 """
-
+import errno
 import numpy as np
 import logging
 import copy
@@ -204,16 +204,14 @@ class Universe(object):
                 self.filename = None
             else:
                 self.filename = args[0]
-
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
                         self._topology = p.parse()
-                except IOError as err:
-                    if err.errno == 13 or err.errno == 2:
+                except (IOError, OSError) as err:
+                    if err.errno is not None and errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
                         # Runs if the error is propagated from parser(no permission/ file not found)
-                        t, v, tb = sys.exc_info()
-                        six.raise_from(v, tb)
+                        six.reraise(*sys.exc_info())
 
                     else:
                         raise IOError("Failed to load from the topology file {0}"

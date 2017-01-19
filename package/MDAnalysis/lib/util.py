@@ -375,12 +375,9 @@ def _get_stream(filename, openfunction=open, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
-    except IOError as err:
-        t, v, tb = sys.exc_info()
-        if err.errno == 13:
-            six.raise_from( v, tb)
-        elif err.errno == 2:
-            six.raise_from(v, tb)
+    except (IOError, OSError) as err:
+        if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+            six.reraise(*sys.exc_info())
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?
