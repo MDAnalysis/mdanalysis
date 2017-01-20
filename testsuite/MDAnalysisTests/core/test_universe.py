@@ -21,6 +21,9 @@
 #
 from six.moves import cPickle
 
+import os
+from MDAnalysisTests.tempdir import TempDir
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -97,6 +100,23 @@ class TestUniverseCreation(object):
             assert_equal('No such file or directory', e.strerror)
         else:
             raise AssertionError
+
+
+
+    @staticmethod
+    def test_Universe_invalidfile_IE_msg():
+        # check for invalid file (something with the wrong content)
+        temp_dir = TempDir()
+        with open(os.path.join(temp_dir.name, 'invalid.file.tpr'), 'w') as temp_file:
+            temp_file.write('plop')
+        try:
+            mda.Universe(os.path.join(temp_dir.name, 'invalid.file.tpr'))
+        except IOError as e:
+            assert_('file or cannot be recognized' in e.args[0])
+        else:
+            raise AssertionError
+        finally:
+            temp_dir.dissolve()
 
     @staticmethod
     def test_load_new_VE():
