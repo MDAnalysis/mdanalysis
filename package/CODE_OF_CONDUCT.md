@@ -97,13 +97,16 @@ at [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 
 ## Reporting
 
-If someone makes you or any other contributor feel unsafe or unwelcome,
-please report this in a timely manner. Code of conduct violations reduce
-the value of the community for everyone and we take them seriously.
+If someone makes you or any other contributor feel unsafe or unwelcome, please
+report this in a timely manner. Code of conduct violations reduce the value of
+the community for everyone and we take them seriously. All complaints will be
+reviewed and investigated and will result in a response that is deemed necessary
+and appropriate to the circumstances.
 
 You can file a report by emailing
 the [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com) or by
-filing out [this form](TODO).
+filing out [this form](TODO). The project team is obligated to maintain
+confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
@@ -111,10 +114,11 @@ report, we will take appropriate action.
 
 Original text courtesy of
 the
-[*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html) ,
-[*Django*](https://www.djangoproject.com/conduct) Projects
+[*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html),
+[*Django*](https://www.djangoproject.com/conduct),
+[*Contributor Covenant*](http://contributor-covenant.org/),
 and
-[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md),
+[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects, 
 modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 
