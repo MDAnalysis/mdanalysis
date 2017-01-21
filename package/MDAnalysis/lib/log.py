@@ -297,35 +297,37 @@ class _ProgressBar(object):
 
 class _TimeDelta(datetime.timedelta):
     _fmt_map = {
-        'h': 'remain_hours',
-        'm': 'remain_minutes',
-        's': 'remain_seconds',
-        'D': 'in_days',
-        'H': 'in_hours',
-        'M': 'in_minutes',
-        'S': 'in_seconds',
+        u'h': 'remain_hours',
+        u'm': 'remain_minutes',
+        u's': 'remain_seconds',
+        u'u': 'microseconds',
+        u'µ': 'microseconds',
+        u'D': 'in_days',
+        u'H': 'in_hours',
+        u'M': 'in_minutes',
+        u'S': 'in_seconds',
     }
 
-    def _sub_format(self, format_spec, i):
-        if format_spec[i + 1] == '%':
-            return i + 2, '%'
-        key = format_spec[i + 1]
-        i += 2
-        return i, str(getattr(self, self._fmt_map[key]))
+    def __init__(self, *args, **kwargs):
+        super(_TimeDelta, self).__init__()
+
+        fmt_keys = ''.join(self._fmt_map.keys())
+        self._re_fmt = re.compile(u'\%(([0-9]*)([{}])|\%)'.format(fmt_keys))
 
     def __format__(self, format_spec):
         if not format_spec:
             return self.__str__()
 
-        formatted = ''
-        i = 0
-        while i < len(format_spec):
-            if format_spec[i] != '%':
-                formatted += format_spec[i]
-                i += 1
+        formatted = format_spec
+        format_tokens = self._re_fmt.findall(format_spec)
+        for full, args, spec in format_tokens:
+            if full == '%':
+                replacement = '%'
             else:
-                i, chunck = self._sub_format(format_spec, i)
-                formatted += chunck
+                value = getattr(self, self._fmt_map[spec])
+                replacement = '{value:{args}d}'.format(value=value, args=args)
+            formatted = formatted.replace('%' + full, replacement, 1)
+
         return formatted
 
     @property
