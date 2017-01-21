@@ -21,6 +21,9 @@
 #
 from six.moves import cPickle
 
+import os
+from MDAnalysisTests.tempdir import TempDir
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -87,6 +90,48 @@ class TestUniverseCreation(object):
             assert_('Useful information' in e.args[0])
         else:
             raise AssertionError
+
+    @staticmethod
+    def test_Universe_filename_IE_msg():
+        # check for non existent file
+        try:
+            mda.Universe('thisfile.xml')
+        except IOError as e:
+            assert_equal('No such file or directory', e.strerror)
+        else:
+            raise AssertionError
+
+    @staticmethod
+    def test_Universe_invalidfile_IE_msg():
+        # check for invalid file (something with the wrong content)
+        temp_dir = TempDir()
+        with open(os.path.join(temp_dir.name, 'invalid.file.tpr'), 'w') as temp_file:
+            temp_file.write('plop')
+        try:
+            mda.Universe(os.path.join(temp_dir.name, 'invalid.file.tpr'))
+        except IOError as e:
+            assert_('file or cannot be recognized' in e.args[0])
+        else:
+            raise AssertionError
+        finally:
+            temp_dir.dissolve()
+
+    @staticmethod
+    def test_Universe_invalidpermissionfile_IE_msg():
+        # check for file with invalid permissions (eg. no read access)
+        temp_dir = TempDir()
+        temp_file = os.path.join(temp_dir.name, 'permission.denied.tpr')
+        with open(temp_file, 'w'):
+            pass
+        os.chmod(temp_file, 0o200)
+        try:
+            mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
+        except IOError as e:
+            assert_('Permission denied' in e.strerror)
+        else:
+            raise AssertionError
+        finally:
+            temp_dir.dissolve()
 
     @staticmethod
     def test_load_new_VE():
