@@ -412,8 +412,10 @@ class ProgressMeter(object):
 
         numsteps: int
             total number of steps
-        interval: int
-            only calculate progress every *interval* steps [10]
+        interval: int or 'progressive'
+            only display progress every *interval* steps; if set to
+            'progressive' the display interval increases with the number
+            of steps.
         format: str
             a format string with Python variable interpolation. Allowed
             values:
@@ -466,15 +468,21 @@ class ProgressMeter(object):
            Keyword argument *quiet* is deprecated in favor of *verbose*.
 
         .. versionchanged:: 0.16
-           Keyword argument *dynamic* replaces ``\r`` in the format.
            Keyword argument *dynamic* replaces ``\r`` in the format. The
            {}-based formating syntax is recommended for the *format* argument,
            and some time tracking (*elapsed*, *time_per_iteration*, and
            *estimate_time_to_completion* template variable and attributes) are
            added.
+
+           The *interval* argument keyword can now be set to "progressive" to
+           display the progress at increasing intervals in a way similar to
+           gromacs.
         """
         self.numsteps = numsteps
-        self.interval = int(interval)
+        if interval == 'progressive':
+            self.interval = interval
+        else:
+            self.interval = interval
         self.offset = int(offset)
         self.dynamic = dynamic
         self.numouts = -1
@@ -562,9 +570,23 @@ class ProgressMeter(object):
         newline = not self.dynamic
         if self.step == self.numsteps:
             newline = True
+        elif self.interval == 'progressive':
+            if not _keep_progressive(step):
+                return
         elif self.numouts % self.interval == 0:
             pass
         else:
             return
         echo(self.format_handler(format, vars(self)),
              replace=self.dynamic, newline=newline)
+
+
+def _keep_progressive(step):
+    # Shamelessly copy the logig used in Gromacs:
+    # see printcount in src/gromacs/fileio/trxio.cpp
+    # from the gromacs source code.
+    if ((step < 2 * 10 or step % 10 == 0)
+            and (step < 2 * 100 or step % 100 == 0)
+            and (step < 2 * 1000 or step % 1000 == 0)):
+        return True
+    return False
