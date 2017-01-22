@@ -295,7 +295,7 @@ class _ProgressBar(object):
         return full_symbol * n_full + empty_symbol * n_empty
 
 
-class _TimeDelta(datetime.timedelta):
+class TimeDelta(datetime.timedelta):
     _fmt_map = {
         u'h': 'remain_hours',
         u'm': 'remain_minutes',
@@ -309,7 +309,7 @@ class _TimeDelta(datetime.timedelta):
     }
 
     def __init__(self, *args, **kwargs):
-        super(_TimeDelta, self).__init__()
+        super(TimeDelta, self).__init__()
 
         fmt_keys = ''.join(self._fmt_map.keys())
         self._re_fmt = re.compile(u'\%(([0-9]*)([{}])|\%)'.format(fmt_keys))
@@ -381,12 +381,70 @@ class ProgressMeter(object):
 
         Step {step:5d}/{numsteps} [{percentage:5.1f}%]
 
-    By default, each line of the progress meter is displayed on top of the
-    previous one. To prevent this behaviour, set the *dynamic* keyword to
-    ``False``.
+    The following following keys are made available by the progress meter to be
+    included in the *format* string:
 
-    It is possible to embed (almost) arbitrary additional data in the
-    format string, for example a current RMSD value::
+    step:
+        the current step
+    numsteps:
+        the total number of steps
+    percentage:
+        the percentage of passed steps
+    start_time:
+        the first time recorded by the progress meter
+    last_time:
+        the time of the last status update
+    elapsed:
+        the duration from the first time recorded to the last status update
+    etc:
+        the estimated time to completion based on the duration of the previous
+        steps
+    time_per_iteration:
+        the average time spend on each step
+    progress:
+        a progress bar
+
+    All these formatting element can be parametrized based on their type, using
+    the format spec mechanism [1]_. *step* and *numsteps* are integers,
+    *percentage* is a float. *start_time*, *last_time*, and *etc* are
+    `datetime.datetime` object; their format can be parametrized using the
+    strftime syntax described in the python documentation [2]_. *elapsed* and
+    *time_per_iteration* are instances of :class:`TimeDelta`, they can be
+    formated in a similar fashion as `datetime.datetime` but with the following
+    replacement symbols:
+
+    Directive Meaning
+    ========= ===========================================================
+    %D        Duration expressed in number of full days
+    %H        Duration expressed in number of full hours
+    %M        Duration expressed in number of full minutes
+    %S        Duration expressed in number of full seconds
+    %h        Number of hours remaining once the full days are subtracted
+    %m        Number of minutes once the full hours are subtracted
+    %s        Number of seconds once the full minutes are subtracted
+    %u or %µ  Number of microseconds once the full seconds are subtracted
+
+    The padding of each directive can be set between the % and the directive
+    letter, if prefixed with a 0, zeros are used to fill the space. For
+    instance, the parameter string ``%D-%2h:%02m:%s`` applied to an instance of
+    :class:`TimeDelta` representing 3 days, 2 hours and 1 minute would return
+    the formatted string ``3- 2:01:0``. The number of days and seconds are not
+    associated with a padding, they are displayed as it; the number of hours is
+    associated with a two characters padding that is filled with spaces by
+    default; the number of minutes is associated with a 2 characters padding
+    filled with zeros.
+
+    The length, and the characters used to draw the progress bar can also be
+    parametrized using the format spec mechanism. The format spec for the
+    progress bar must provide the character to be used for the filled part of
+    the bar, followed by the character to be used for the empty part of the
+    bar, followed by the length of the bar. The length of the bar can be
+    omitted and will default to 10 characters. However, the characters to be
+    used to draw the progress bar must be provided if the format spec is given.
+
+    In addition to the data provided by the progress meter, it is possible to
+    embed (almost) arbitrary additional data in the format string, for example
+    a current RMSD value::
 
         format_line = "RMSD {rmsd:5.2f} at {step:5d}/{numsteps} [{percentage:5.1f}%]"
         pm = ProgressMeter(u.trajectory.n_frames,
@@ -400,6 +458,10 @@ class ProgressMeter(object):
        RMSD   1.02 at  100/10000 [  1.0%]
        RMSD   1.89 at  200/10000 [  2.0%]
        ...
+
+    By default, each line of the progress meter is displayed on top of the
+    previous one. To prevent this behaviour, set the *dynamic* keyword to
+    ``False``.
 
     """
 
@@ -428,11 +490,8 @@ class ProgressMeter(object):
             * *estimate_time_to_completion* or *etc*: estimate time to
               completion
 
-            Time tracking and estimate time to completion are not available
-            with {}-based format syntax. *estimate_time_to_completion* is a
-            :class:`datetime.datetime` instance, *elapsed* and
-            *time_per_iteration* are :class:`datetime.timedelta` instances;
-            they can be formated as such.
+            Time tracking and estimate time to completion are only available
+            with {}-based format syntax.
 
             The last call to :meth:`ProgressMeter.echo` will automatically
             issue a newline ``\n``.
@@ -449,17 +508,18 @@ class ProgressMeter(object):
             specified, [``True``]
         dynamic: bool
             If ``True``, each line will be printed on top of the previous one.
-            This is done by prepedind the format with ``\r``. [``True``]
+            This is done by prepending the format with ``\r``. [``True``]
         format_handling: str
             how to handle the format string. Allowed values are:
 
-            * *new*: the format string uses {}-based formating
-            * *legacy*: the format string uses %-basedd formating
+            * *new*: the format string uses {}-based formatting
+            * *legacy*: the format string uses %-based formatting
             * *auto*: default, try to guess how the format string should be
               handled
 
-            When using the *legacy*, %-based, formated syntax, the time
-            tracking and estimate time to completion are not available.
+            When using the *legacy*, %-based, formatted syntax, the time
+            tracking, the estimate time to completion and the progress bar are
+            not available.
 
         .. versionchanged:: 0.8
            Keyword argument *quiet* was added.
@@ -508,15 +568,15 @@ class ProgressMeter(object):
         assert interval > 0, "interval step must be >0"
 
         # Time tracking stuff
-        self._start_time = None
-        self._last_time = None
+        self.start_time = None
+        self.last_time = None
         self.elapsed = None
         self.time_per_iteration = None
         self.estimate_time_to_completion = None
         self.etc = None
 
     def start(self):
-        self._start_time = datetime.datetime.now()
+        self.start_time = datetime.datetime.now()
 
     def update(self, step, **kwargs):
         """Update the state of the ProgressMeter.
@@ -532,15 +592,15 @@ class ProgressMeter(object):
         self.numouts += 1
 
         # Update time tracking and estimate time to completion
-        self._last_time = datetime.datetime.now()
-        if self._start_time is None:
-            self._start_time = self._last_time
-        self.elapsed = _TimeDelta(
-            seconds=(self._last_time - self._start_time).total_seconds())
-        self.time_per_iteration = _TimeDelta(
+        self.last_time = datetime.datetime.now()
+        if self.start_time is None:
+            self.start_time = self.last_time
+        self.elapsed = TimeDelta(
+            seconds=(self.last_time - self.start_time).total_seconds())
+        self.time_per_iteration = TimeDelta(
             seconds=self.elapsed.total_seconds() / self.step)
         remaining = self.numsteps - self.step
-        self.estimate_time_to_completion = (self._last_time
+        self.estimate_time_to_completion = (self.last_time
                                             + remaining
                                             * self.time_per_iteration)
         self.etc = self.estimate_time_to_completion
