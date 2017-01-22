@@ -52,13 +52,17 @@ Functions
 .. autofunction:: Merge
 
 """
+import six
 
+import errno
 import numpy as np
 import logging
 import copy
 import uuid
 
 import MDAnalysis
+import sys
+
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
 from ..lib.util import cached
@@ -200,15 +204,22 @@ class Universe(object):
                 self.filename = None
             else:
                 self.filename = args[0]
-
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
                         self._topology = p.parse()
-                except IOError as err:
-                    raise IOError("Failed to load from the topology file {0}"
-                                  " with parser {1}.\n"
-                                  "Error: {2}".format(self.filename, parser, err))
+                except (IOError, OSError) as err:
+                    # There are 2 kinds of errors that might be raised here - one because the file isn't present
+                    # or the permissions are bad, second when the parser fails
+                    if err.errno is not None and errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+                        # Runs if the error is propagated due to no permission/ file not found
+                        six.reraise(*sys.exc_info())
+
+                    else:
+                        # Runs when the parser fails
+                        raise IOError("Failed to load from the topology file {0}"
+                                      " with parser {1}.\n"
+                                      "Error: {2}".format(self.filename, parser, err))
                 except ValueError as err:
                     raise ValueError("Failed to construct topology from file {0}"
                                      " with parser {1} \n"
@@ -408,7 +419,7 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, format='afc', step=frame_interval)
+                    self.atoms, format='fac', step=frame_interval)
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
@@ -418,7 +429,7 @@ class Universe(object):
                 for ts in self.trajectory[::frame_interval]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
-                coordinates = np.array(coordinates).swapaxes(0, 1)
+                coordinates = np.array(coordinates)
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
@@ -464,7 +475,7 @@ class Universe(object):
     @property
     def anchor_name(self):
         return self._gen_anchor_hash()
-    
+
     @anchor_name.setter
     def anchor_name(self, name):
         self.remove_anchor()  # clear any old anchor

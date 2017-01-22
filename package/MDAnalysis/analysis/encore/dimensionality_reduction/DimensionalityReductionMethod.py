@@ -43,12 +43,11 @@ from . import stochasticproxembed
 try:
     import sklearn.decomposition
 except ImportError:
-   sklearn = None
-   msg = "sklearn.decomposition could not be imported: some functionality will"\
-         "not be available in encore.dimensionality_reduction()"
-   warnings.warn(msg, category=ImportWarning)
-   logging.warn(msg)
-   del msg
+    sklearn = None
+    import warnings
+    warnings.warn("sklearn.decomposition could not be imported: some "
+                  "functionality will not be available in "
+                  "encore.dimensionality_reduction()", category=ImportWarning)
 
 
 class DimensionalityReductionMethod (object):

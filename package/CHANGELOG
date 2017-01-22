@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
-         dotsdl, manuel.nuno.melo
+         dotsdl, manuel.nuno.melo, utkbansal
 
   * 0.16.0
 
@@ -61,6 +61,7 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
 
 Fixes
+  * Give correct error when file doesn't exist/ has bad permissions (Issue #981)
   * Improvement of analysis/waterdynamics module (Issue #935)
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
   * MDAnalysis.analysis.distances.between() is no longer broken
@@ -90,6 +91,7 @@ Fixes
   * Fixed strange error when writing a PDB with 0 atoms (Issue #1083 PR #1103)
   * Fixed selections using operators backwards ('prop 10 > mass') and sensitivity
     about whitespace around these (PR #1156 Issue #1011 #1009)
+  * Fixed PSA analysis is now using AlignTraj
 
 Changes
   * Started unifying the API of analysis classes (named internally

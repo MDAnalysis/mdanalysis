@@ -1,6 +1,7 @@
 import numpy as np
 
 import MDAnalysis as mda
+from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               BaseReaderTest)
@@ -63,6 +64,12 @@ class TestMemoryReader(BaseReaderTest):
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)
 
+    def test_default_memory_layout(self):
+        universe1 = mda.Universe(PSF, DCD, in_memory=True)
+        universe2 = mda.Universe(PSF, DCD, in_memory=True, order='fac')
+        assert_equal(universe1.trajectory.get_array().shape,
+                     universe2.trajectory.get_array().shape)
+        
     def test_iteration(self):
         frames = 0
         for i, frame in enumerate(self.reader):
@@ -148,3 +155,8 @@ class TestMemoryReader(BaseReaderTest):
     def test_get_writer_2(self):
         pass
 
+    def test_float32(self):
+        # Check that we get float32 positions even when initializing with float64
+        coordinates = np.random.uniform(size=(100, self.ref.universe.atoms.n_atoms, 3)).cumsum(0)
+        universe = mda.Universe(self.ref.universe.filename, coordinates, format=MemoryReader)
+        assert_equal(universe.trajectory.get_array().dtype, np.dtype('float32'))

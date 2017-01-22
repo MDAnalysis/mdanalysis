@@ -657,7 +657,7 @@ class Path(object):
                          rmsdfile=None, targetdir=os.path.curdir,
                          mass_weighted=False, tol_mass=0.1):
         """Align each trajectory frame to the reference structure with
-        :func:`MDAnalysis.analysis.align.rms_fit_trj`.
+        :func:`MDAnalysis.analysis.align.AlignTraj`.
 
         :Arguments:
           *filename*
@@ -682,10 +682,15 @@ class Path(object):
         filename = filename or oldname
         self.newtrj_name = os.path.join(targetdir, filename + postfix + ext)
         self.u_reference.trajectory[self.ref_frame] # select frame from ref traj
-        MDAnalysis.analysis.align.rms_fit_trj(self.u_original, self.u_reference,\
-                select=self.ref_select, filename=self.newtrj_name,              \
-                rmsdfile=rmsdfile, prefix=prefix, mass_weighted=mass_weighted,  \
-                tol_mass=tol_mass)
+        aligntrj = MDAnalysis.analysis.align.AlignTraj(self.u_original,
+                                                       self.u_reference,
+                                                       select=self.ref_select,
+                                                       filename=self.newtrj_name,
+                                                       prefix=prefix,
+                                                       mass_weighted=mass_weighted,
+                                                       tol_mass=tol_mass).run()
+        if rmsdfile is not None:
+            aligntrj.save(rmsdfile)
         return MDAnalysis.Universe(self.top_name, self.newtrj_name)
 
 
