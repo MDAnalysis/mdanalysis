@@ -24,7 +24,7 @@ work, there is urgency or risk to someone, nobody is intervening publicly and
 you don't feel comfortable speaking in public, etc. For these or other reasons,
 structured follow-up may be necessary and here we provide the means for that: we
 welcome reports by
-emailing [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com) or
+emailing [*Conduct-email*](mailto:mdnalysis-conduct@googlegroups.com) or
 in anonymous by filling out [*this form*](TODO).
 
 This code applies equally to founders, developers, mentors and new
@@ -104,7 +104,7 @@ reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
 You can file a report by emailing
-the [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com) or by
+the [*Conduct-mail*](mailto:mdnalysis-conduct@googlegroups.com) or by
 filing out [this form](TODO). The project team is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
@@ -118,7 +118,7 @@ the
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
 and
-[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects, 
+[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects,
 modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 
