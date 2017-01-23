@@ -26,7 +26,7 @@ import MDAnalysis.analysis.psa as PSA
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
-                           assert_almost_equal)
+                           assert_almost_equal, assert_equal)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
@@ -94,15 +94,14 @@ class TestPSAnalysis(TestCase):
         assert_(type(self.plot_data[1]) is dict, err_msg)
 
     def test_dist_mat_to_vec_i_less_j(self):
-        """Test that distance is correct if i < j"""
+        """Test the index of corresponding distance vector is correct if i < j"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_(PSA.dist_mat_to_vec(5, 3, 4) is 9, err_msg)
+        assert_equal(PSA.dist_mat_to_vec(5, 3, 4), 9, err_msg)
 
     def test_dist_mat_to_vec_i_greater_j(self):
-        """Test that distance is correct if i < j"""
+        """Test the index of corresponding distance vector is correct if i > j"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_(PSA.dist_mat_to_vec(5, 4, 3) is 9, err_msg)
-
+        assert_equal(PSA.dist_mat_to_vec(5, 4, 3), 9, err_msg)
 
 class TestPSAExceptions(TestCase):
     '''Tests for exceptions that should be raised
@@ -126,10 +125,12 @@ class TestPSAExceptions(TestCase):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
     def test_dist_mat_to_vec_func_out_of_bounds(self):
-        """Test that ValueError is raised when i or j is
+        """Test that ValueError is raised when i or j or both are
         out of bounds of N"""
 
         with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 6, 4)
+            PSA.dist_mat_to_vec(5, 4, 6)
             PSA.dist_mat_to_vec(5, 6, 6)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
@@ -138,7 +139,7 @@ class TestPSAExceptions(TestCase):
 
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, '6', '7')
-
+            PSA.dist_mat_to_vec(5, float(6), 7)
 
 class _BaseHausdorffDistance(TestCase):
     '''Base Class setup and unit tests
