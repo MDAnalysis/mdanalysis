@@ -138,7 +138,13 @@ class TestPSAExceptions(TestCase):
 
         # Check if both i and j are out of bounds of N
         with self.assertRaises(ValueError):
-            PSA.dist_mat_to_vec(5, 6, 6)
+            PSA.dist_mat_to_vec(5, 6, 7)
+
+    def test_dist_mat_to_vec_func_i_equals_j(self):
+        """Test that ValueError is raised when i == j"""
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 4, 4)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
         """Test that ValueError is raised when i or j are
