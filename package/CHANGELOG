@@ -61,6 +61,7 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
 
 Fixes
+  * Give correct error when the topology file format is not recognized (Issue #982)
   * Give correct error when file doesn't exist/ has bad permissions (Issue #981)
   * Improvement of analysis/waterdynamics module (Issue #935)
   * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)

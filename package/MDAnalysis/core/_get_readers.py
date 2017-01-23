@@ -214,14 +214,13 @@ def get_parser_for(filename, format=None):
         return _PARSERS[format]
     except KeyError:
         raise ValueError(
-            "Cannot autodetect topology type for file '{0}' "
-            "(file extension could not be parsed).\n"
-            "           You can use 'Universe(topology, ..., topology_format=FORMAT)' "
-            "to explicitly specify the format and\n"
-            "           override automatic detection. Known FORMATs are:\n"
-            "           {1}\n"
-            "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
-            "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(filename, _PARSERS.keys()))
+            "'{0}' isn't a valid topology format\n"
+            "   You can use 'Universe(topology, ..., topology_format=FORMAT)' "
+            "   to explicitly specify the format and\n"
+            "   override automatic detection. Known FORMATs are:\n"
+            "   {1}\n"
+            "   See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+            "   For missing formats, raise an issue at "
+            "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
 
 
