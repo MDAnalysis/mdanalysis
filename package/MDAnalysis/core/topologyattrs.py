@@ -97,6 +97,54 @@ def _check_length(func):
 
     return wrapper
 
+def _wronglevel_error(attr, group):
+    """Generate an error for setting attr at wrong level
+
+    attr : TopologyAttr that was accessed
+    group : Offending Component/Group
+
+    Eg:
+    setting mass of residue, gets called with attr=Masses, group=residue
+
+    raises a NotImplementedError with:
+    'Cannot set masses from Residue.  Use 'Residue.atoms.masses'
+
+    Mainly used to ensure consistent and helpful error messages
+    """
+    err_msg = "Cannot set {attr} from {cls}. "
+
+    if isinstance(group, (Atom, AtomGroup)):
+        group_level = 1
+    elif isinstance(group, (Residue, ResidueGroup)):
+        group_level = 2
+    elif isinstance(group, (Segment, SegmentGroup)):
+        group_level = 3
+
+    # What level to go to before trying to set this attr
+    if isinstance(attr, AtomAttr):
+        corr_classes = ('atoms', 'atom')
+        attr_level = 1
+    elif isinstance(attr, ResidueAttr):
+        corr_classes = ('residues', 'residue')
+        attr_level = 2
+    elif isinstance(attr, SegmentAttr):
+        corr_classes = ('segments', 'segment')
+        attr_level = 3
+
+    if isinstance(group, ComponentBase) and (attr_level > group_level):
+        # ie going downards use plurals, going upwards use singulars
+        # Residue.atom!s!.mass!es! but Atom.segment!!.segid!!
+        correct = corr_classes[1]
+        attrname = attr.singular
+    else:
+        correct = corr_classes[0]
+        attrname = attr.attrname
+
+    err_msg += "Use '{cls}.{correct}.{attr} = '"
+
+    return NotImplementedError(err_msg.format(
+        attr=attrname, cls=group.__class__.__name__, correct=correct,
+    ))
 
 
 class TopologyAttr(object):
@@ -307,6 +355,9 @@ class AtomAttr(TopologyAttr):
         aixs = self.top.tt.residues2atoms_2d(rg._ix)
         return [self.values[aix] for aix in aixs]
 
+    def set_residues(self, rg, values):
+        raise _wronglevel_error(self, rg)
+
     def get_segments(self, sg):
         """By default, the values for each atom present in the set of residues
         are returned in a single array. This behavior can be overriden in child
@@ -315,6 +366,9 @@ class AtomAttr(TopologyAttr):
         """
         aixs = self.top.tt.segments2atoms_2d(sg._ix)
         return [self.values[aix] for aix in aixs]
+
+    def set_segments(self, sg, values):
+        raise _wronglevel_error(self, sg)
 
 
 # TODO: update docs to property doc
@@ -941,6 +995,9 @@ class ResidueAttr(TopologyAttr):
         rix = self.top.tt.atoms2residues(ag._ix)
         return self.values[rix]
 
+    def set_atoms(self, ag, values):
+        raise _wronglevel_error(self, ag)
+
     def get_residues(self, rg):
         return self.values[rg._ix]
 
@@ -956,6 +1013,9 @@ class ResidueAttr(TopologyAttr):
         """
         rixs = self.top.tt.segments2residues_2d(sg._ix)
         return [self.values[rix] for rix in rixs]
+
+    def set_segments(self, sg, values):
+        raise _wronglevel_error(self, sg)
 
 
 # TODO: update docs to property doc
@@ -1137,9 +1197,15 @@ class SegmentAttr(TopologyAttr):
         six = self.top.tt.atoms2segments(ag._ix)
         return self.values[six]
 
+    def set_atoms(self, ag, values):
+        raise _wronglevel_error(self, ag)
+
     def get_residues(self, rg):
         six = self.top.tt.residues2segments(rg._ix)
         return self.values[six]
+
+    def set_residues(self, rg, values):
+        raise _wronglevel_error(self, rg)
 
     def get_segments(self, sg):
         return self.values[sg._ix]

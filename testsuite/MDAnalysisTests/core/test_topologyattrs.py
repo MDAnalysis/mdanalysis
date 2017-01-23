@@ -375,3 +375,46 @@ class TestAttr(object):
         # is that big.
         assert_(np.allclose(np.abs(self.ag.principal_axes()), np.eye(3),
                             rtol=0, atol=0.5))
+
+
+class TestCrossLevelAttributeSetting(object):
+    """
+
+    Can only get attributes belonging to higher level objects
+
+    Atom.resid works!
+    Residue.name doesn't work, Atom is below Residue
+
+    Setting any attribute we can get should only work if they are the same level.
+    
+    Atom.resid = 4  should fail because resid belongs to Residue not Atom
+    """
+    @staticmethod
+    def _check_crosslevel_fail(item, attr):
+        assert_raises(NotImplementedError, setattr, item, attr, 1.0)
+
+    def test_set_crosslevel(self):
+        u = make_Universe(('names', 'resids', 'segids'))
+
+        # group and component in each level
+        atomlevel = (u.atoms[0], u.atoms[:10])
+        residuelevel = (u.residues[0], u.residues[:5])
+        segmentlevel = (u.segments[0], u.segments[:2])
+        levels = {0:atomlevel, 1:residuelevel, 2:segmentlevel}
+
+        atomattr = 'names'
+        residueattr = 'resids'
+        segmentattr = 'segids'
+        attrs = {0:atomattr, 1:residueattr, 2:segmentattr}
+
+        for level_idx, level in levels.items():
+            for attr_idx, attr in attrs.items():
+                if attr_idx <= level_idx:
+                    # if equal, things should work
+                    # if less than, attribute can't be accessed
+                    continue
+                singular, plural = level
+
+                yield self._check_crosslevel_fail, singular, attr[:-1]
+                yield self._check_crosslevel_fail, plural, attr
+            
