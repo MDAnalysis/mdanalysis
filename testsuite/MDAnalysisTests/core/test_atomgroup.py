@@ -22,6 +22,7 @@
 
 from glob import glob
 import itertools
+import os
 from os import path
 import numpy as np
 import warnings
@@ -196,6 +197,117 @@ class TestAtomGroupWriting(object):
         with tempdir.in_tempdir():
             with assert_raises(TypeError):
                 self.u.atoms.write('dummy.pdb', bogus="what?")
+
+class _WriteAtoms(object):
+    """Set up the standard AdK system in implicit solvent."""
+    ext = None  # override to test various output writers
+    precision = 3
+
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        suffix = '.' + self.ext
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
+
+    def tearDown(self):
+        del self.universe
+        del self.tempdir
+
+    def universe_from_tmp(self):
+        return mda.Universe(self.outfile, convert_units=True)
+
+    def test_write_atoms(self):
+        self.universe.atoms.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        assert_array_almost_equal(
+            self.universe.atoms.positions, u2.atoms.positions,
+            self.precision,
+            err_msg=("atom coordinate mismatch between original and {0!s} file"
+                     "".format(self.ext)))
+
+    def test_write_empty_atomgroup(self):
+        sel = self.universe.select_atoms('name doesntexist')
+        assert_raises(IndexError, sel.write, self.outfile)
+
+    def test_write_selection(self):
+        CA = self.universe.select_atoms('name CA')
+        CA.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        # check EVERYTHING, otherwise we might get false positives!
+        CA2 = u2.atoms
+        assert_equal(len(u2.atoms), len(CA.atoms),
+                     "written CA selection does not match original selection")
+        assert_almost_equal(
+            CA2.positions, CA.positions, self.precision,
+            err_msg="CA coordinates do not agree with original")
+
+    def test_write_Residue(self):
+        G = self.universe.s4AKE.ARG[-2].atoms  # 2nd but last Arg
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        # check EVERYTHING, otherwise we might get false positives!
+        G2 = u2.atoms
+        assert_equal(
+            len(u2.atoms), len(G.atoms),
+            "written R206 Residue does not match original ResidueGroup")
+        assert_almost_equal(
+            G2.positions, G.positions, self.precision,
+            err_msg="Residue R206 coordinates do not agree with original")
+
+    def test_write_ResidueGroup(self):
+        G = self.universe.s4AKE.LEU.atoms
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        G2 = u2.atoms
+        assert_equal(
+            len(u2.atoms), len(G.atoms),
+            "written LEU ResidueGroup does not match original ResidueGroup")
+        assert_almost_equal(
+            G2.positions, G.positions, self.precision,
+            err_msg="ResidueGroup LEU coordinates do not agree with original")
+
+    def test_write_Segment(self):
+        G = self.universe.s4AKE.atoms
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        G2 = u2.atoms
+        assert_equal(len(u2.atoms), len(G.atoms),
+                     "written s4AKE segment does not match original segment")
+        assert_almost_equal(
+            G2.positions, G.positions, self.precision,
+            err_msg="segment s4AKE coordinates do not agree with original")
+
+    def test_write_Universe(self):
+        U = self.universe
+        W = mda.Writer(self.outfile)
+        W.write(U)
+        W.close()
+        u2 = self.universe_from_tmp()
+        assert_equal(
+            len(u2.atoms), len(U.atoms),
+            "written 4AKE universe does not match original universe in size")
+        assert_almost_equal(
+            u2.atoms.positions, U.atoms.positions, self.precision,
+            err_msg=("written universe 4AKE coordinates do not"
+                     " agree with original"))
+
+
+class TestWritePDB(_WriteAtoms):
+    ext = "pdb"
+    precision = 3
+
+
+class TestWriteGRO(_WriteAtoms):
+    ext = "gro"
+    precision = 2
+
+    def test_flag_convert_length(self):
+        assert_equal(mda.core.flags['convert_lengths'], True,
+                     "The flag convert_lengths SHOULD be True by default! "
+                     "(If it is not then this might indicate a race condition"
+                     " in the testing suite.)")
 
 
 class TestAtomGroupTransformations(object):

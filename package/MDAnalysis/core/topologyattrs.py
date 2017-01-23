@@ -32,6 +32,10 @@ These are usually read by the TopologyParser.
 """
 
 from six.moves import zip, range
+
+import Bio.Seq
+import Bio.SeqRecord
+import Bio.Alphabet
 from collections import defaultdict
 import functools
 import itertools
@@ -1115,37 +1119,36 @@ class Resnames(ResidueAttr):
 
            Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
 
-        :Keywords:
-            *format*
+        Parameters
+        ----------
+        format : string, optional
+           - ``"string"``: return sequence as a string of 1-letter codes
+           - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
+           - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
+             instance
 
-                - ``"string"``: return sequence as a string of 1-letter codes
-                - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
-                - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
-                  instance
+            Default is ``"SeqRecord"``
+        id : optional
+           Sequence ID for SeqRecord (should be different for different
+           sequences)
+        name : optional
+           Name of the protein.
+        description : optional
+           Short description of the sequence.
+        kwargs : optional
+           Any other keyword arguments that are understood by
+           class:`Bio.SeqRecord.SeqRecord`.
 
-                Default is ``"SeqRecord"``
+        Raises
+        ------
+        :exc:`ValueError` if a residue name cannot be converted to a
+        1-letter IUPAC protein amino acid code; make sure to only
+        select protein residues.
 
-             *id*
-                Sequence ID for SeqRecord (should be different for different
-                sequences)
-             *name*
-                Name of the protein.
-             *description*
-                Short description of the sequence.
-             *kwargs*
-                Any other keyword arguments that are understood by
-                :class:`Bio.SeqRecord.SeqRecord`.
-
-        :Raises: :exc:`ValueError` if a residue name cannot be converted to a
-                 1-letter IUPAC protein amino acid code; make sure to only
-                 select protein residues. Raises :exc:`TypeError` if an unknown
-                 *format* is selected.
+        :exc:`TypeError` if an unknown *format* is selected.
 
         .. versionadded:: 0.9.0
         """
-        import Bio.Seq
-        import Bio.SeqRecord
-        import Bio.Alphabet
         formats = ('string', 'Seq', 'SeqRecord')
 
         format = kwargs.pop("format", "SeqRecord")

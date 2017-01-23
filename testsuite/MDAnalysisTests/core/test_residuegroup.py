@@ -35,6 +35,64 @@ from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found
 
 
+class TestSequence(object):
+    # all tests are done with the AdK system (PSF and DCD) sequence:
+    # http://www.uniprot.org/uniprot/P69441.fasta
+    # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1
+    ref_adk_sequence = (
+        "MRIILLGAPGAGKGTQAQFIMEKYGIPQISTGDMLRAAVKSGSELGKQAKDIMDAGKLVT"
+        "DELVIALVKERIAQEDCRNGFLLDGFPRTIPQADAMKEAGINVDYVLEFDVPDELIVDRI"
+        "VGRRVHAPSGRVYHVKFNPPKVEGKDDVTGEELTTRKDDQEETVRKRLVEYHQMTAPLIG"
+        "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
+    )
+
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_string(self):
+        p = self.u.select_atoms("protein")
+        assert_equal(p.residues.sequence(format="string"),
+                     self.ref_adk_sequence)
+
+    def test_SeqRecord(self):
+        p = self.u.select_atoms("protein")
+        s = p.residues.sequence(format="SeqRecord",
+                                id="P69441", name="KAD_ECOLI Adenylate kinase",
+                                description="EcAdK from pdb 4AKE")
+        assert_equal(s.id, "P69441")
+        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+
+    def test_SeqRecord_default(self):
+        p = self.u.select_atoms("protein")
+        s = p.residues.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
+                                description="EcAdK from pdb 4AKE")
+        assert_equal(s.id, "P69441")
+        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+
+    def test_Seq(self):
+        p = self.u.select_atoms("protein")
+        s = p.residues.sequence(format="Seq")
+        assert_equal(s.tostring(), self.ref_adk_sequence)
+
+    def test_nonIUPACresname_VE(self):
+        """test_sequence_nonIUPACresname: non recognized amino acids raise
+        ValueError"""
+        # fake non-IUPAC residue name for this test
+        residues = self.u.select_atoms("resname MET").residues
+        residues.resnames = "MSE"
+
+        def wrong_res():
+            self.u.residues.sequence()
+
+        assert_raises(ValueError, wrong_res)
+
+    def test_format_TE(self):
+        assert_raises(TypeError, self.u.residues.sequence, format='chicken')
+
+
 class TestResidueGroup(object):
     # Legacy tests from before 363
     @dec.skipif(parser_not_found('DCD'),

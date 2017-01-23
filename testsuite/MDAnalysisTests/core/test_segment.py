@@ -25,10 +25,12 @@ from numpy.testing import (
     assert_,
     assert_equal,
 )
+from nose.plugins.attrib import attr
 
 import MDAnalysis as mda
 
 from MDAnalysisTests import parser_not_found, make_Universe
+from MDAnalysis.tests.datafiles import PSF, DCD
 
 
 class TestSegment(object):
@@ -58,3 +60,24 @@ class TestSegment(object):
     def test_atom_order(self):
         assert_equal(self.universe.segments[0].atoms.indices,
                      sorted(self.universe.segments[0].atoms.indices))
+
+@attr("issue")
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
+def test_generated_residueselection():
+    """Test that a generated residue group always returns a ResidueGroup (Issue 47)
+    unless there is a single residue (Issue 363 change)"""
+    universe = mda.Universe(PSF, DCD)
+    # only a single Cys in AdK
+    cys = universe.s4AKE.CYS
+    assert_(isinstance(cys, mda.core.groups.Residue),
+            "Single Cys77 is NOT returned as a single Residue (Issue 47)")
+
+    # multiple Met
+    met = universe.s4AKE.MET
+    assert_(isinstance(met, mda.core.groups.ResidueGroup),
+            "Met selection does not return a ResidueGroup")
+
+    del universe
+
+
