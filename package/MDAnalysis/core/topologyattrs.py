@@ -60,7 +60,7 @@ def _check_length(func):
 
     """
     _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
-                           "Must use single value, length of suppled values: {lenvalues}.")
+                           "Must use single value, length of supplied values: {lenvalues}.")
     # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
     # values: 2."
 
