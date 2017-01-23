@@ -115,8 +115,6 @@ def _wronglevel_error(attr, group):
 
     Mainly used to ensure consistent and helpful error messages
     """
-    err_msg = "Cannot set {attr} from {cls}. "
-
     if isinstance(group, (Atom, AtomGroup)):
         group_level = 1
     elif isinstance(group, (Residue, ResidueGroup)):
@@ -144,7 +142,8 @@ def _wronglevel_error(attr, group):
         correct = corr_classes[0]
         attrname = attr.attrname
 
-    err_msg += "Use '{cls}.{correct}.{attr} = '"
+    err_msg = "Cannot set {attr} from {cls}. Use '{cls}.{correct}.{attr} = '"
+    # eg "Cannot set masses from Residue.  'Use Residue.atoms.masses = '"
 
     return NotImplementedError(err_msg.format(
         attr=attrname, cls=group.__class__.__name__, correct=correct,
