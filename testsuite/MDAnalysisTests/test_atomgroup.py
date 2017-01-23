@@ -30,6 +30,7 @@ from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import Atom, AtomGroup
 from MDAnalysis import NoDataError
+import MDAnalysis.coordinates
 
 import numpy as np
 from numpy.testing import (dec, assert_equal,
@@ -46,132 +47,11 @@ import itertools
 from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 
 
-class TestUniverseSetTopology(object):
-    """Tests setting of bonds/angles/dihedrals/impropers from Universe."""
-
-    # VALID
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = MDAnalysis.Universe(PSF, DCD)
-
-    # VALID
-    def tearDown(self):
-        del self.u
-
-    # INVALID: universe doesn't have bonds; AtomGroups do, though
-    @skip
-    def test_set_bonds(self):
-        assert_equal(len(self.u.bonds), 3365)
-        assert_equal(len(self.u.atoms[0].bonds), 4)
-
-        self.u.bonds = []
-
-        assert_equal(len(self.u.bonds), 0)
-        assert_equal(len(self.u.atoms[0].bonds), 0)
-
-    # INVALID: universe doesn't have angles; AtomGroups do, though
-    @skip
-    def test_set_angles(self):
-        assert_equal(len(self.u.angles), 6123)
-        assert_equal(len(self.u.atoms[0].angles), 9)
-
-        self.u.angles = []
-
-        assert_equal(len(self.u.angles), 0)
-        assert_equal(len(self.u.atoms[0].angles), 0)
-
-    # INVALID: universe doesn't have dihedrals; AtomGroups do, though
-    @skip
-    def test_set_dihedrals(self):
-        assert_equal(len(self.u.dihedrals), 8921)
-        assert_equal(len(self.u.atoms[0].dihedrals), 14)
-
-        self.u.dihedrals = []
-
-        assert_equal(len(self.u.dihedrals), 0)
-        assert_equal(len(self.u.atoms[0].dihedrals), 0)
-
-    # INVALID: universe doesn't have impropers; AtomGroups do, though
-    @skip
-    def test_set_impropers(self):
-        assert_equal(len(self.u.impropers), 541)
-        assert_equal(len(self.u.atoms[4].impropers), 1)
-
-        self.u.impropers = []
-
-        assert_equal(len(self.u.impropers), 0)
-        assert_equal(len(self.u.atoms[4].impropers), 0)
-
-    # Test deleting topology information
-    # In general, access it to make sure it's built
-    # Assert it's in cache
-    # Delete
-    # Assert it's not in cache
-
-    # INVALID: universe has no direct bonds access
-    @skip
-    def test_bonds_delete(self):
-        self.u.bonds
-        self.u.atoms[0].bonds
-
-        assert_equal('bonds' in self.u._cache, True)
-        assert_equal('bondDict' in self.u._cache, True)
-
-        del self.u.bonds
-
-        assert_equal('bonds' in self.u._cache, False)
-        assert_equal('bondDict' in self.u._cache, False)
-
-    # INVALID: universe has no direct angles access
-    @skip
-    def test_angles_delete(self):
-        self.u.angles
-        self.u.atoms[0].angles
-
-        assert_equal('angles' in self.u._cache, True)
-        assert_equal('angleDict' in self.u._cache, True)
-
-        del self.u.angles
-
-        assert_equal('angles' in self.u._cache, False)
-        assert_equal('angleDict' in self.u._cache, False)
-
-    # INVALID: universe has no direct dihedrals access
-    @skip
-    def test_dihedrals_delete(self):
-        self.u.dihedrals
-        self.u.atoms[0].dihedrals
-
-        assert_equal('dihedrals' in self.u._cache, True)
-        assert_equal('dihedralDict' in self.u._cache, True)
-
-        del self.u.dihedrals
-
-        assert_equal('dihedrals' in self.u._cache, False)
-        assert_equal('dihedralDict' in self.u._cache, False)
-
-    # INVALID: universe has no direct impropers access
-    @skip
-    def test_impropers_delete(self):
-        self.u.impropers
-        self.u.atoms[0].impropers
-
-        assert_equal('impropers' in self.u._cache, True)
-        assert_equal('improperDict' in self.u._cache, True)
-
-        del self.u.impropers
-
-        assert_equal('impropers' in self.u._cache, False)
-        assert_equal('improperDict' in self.u._cache, False)
-
-
 class _WriteAtoms(object):
     """Set up the standard AdK system in implicit solvent."""
     ext = None  # override to test various output writers
     precision = 3
 
-    # VALID
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -180,28 +60,23 @@ class _WriteAtoms(object):
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
 
-    # VALID
     def tearDown(self):
         del self.universe
         del self.tempdir
 
-    # VALID
     def universe_from_tmp(self):
         return MDAnalysis.Universe(self.outfile, convert_units=True)
 
-    # VALID
     def test_write_atoms(self):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
         assert_array_almost_equal(self.universe.atoms.positions, u2.atoms.positions, self.precision,
                                   err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
-    # VALID
     def test_write_empty_atomgroup(self):
         sel = self.universe.select_atoms('name doesntexist')
         assert_raises(IndexError, sel.write, self.outfile)
 
-    # VALID
     def test_write_selection(self):
         CA = self.universe.select_atoms('name CA')
         CA.write(self.outfile)
@@ -244,7 +119,6 @@ class _WriteAtoms(object):
         assert_almost_equal(G2.positions, G.positions, self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
-    # VALID
     def test_write_Universe(self):
         U = self.universe
         W = MDAnalysis.Writer(self.outfile)
@@ -259,9 +133,6 @@ class _WriteAtoms(object):
 class TestWritePDB(_WriteAtoms):
     ext = "pdb"
     precision = 3
-
-
-import MDAnalysis.coordinates
 
 
 class TestWriteGRO(_WriteAtoms):
