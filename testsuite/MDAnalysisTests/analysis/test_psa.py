@@ -117,9 +117,9 @@ class TestPSAExceptions(TestCase):
             self.fail('KeyError should be caught')
 
     def test_get_coord_axes_bad_dims(self):
-        '''Test that ValueError is raised when
+        """Test that ValueError is raised when
         numpy array with incorrect dimensions
-        is fed to get_coord_axes().'''
+        is fed to get_coord_axes()."""
 
         with self.assertRaises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
@@ -128,9 +128,16 @@ class TestPSAExceptions(TestCase):
         """Test that ValueError is raised when i or j or both are
         out of bounds of N"""
 
+        # Check if i is out of bounds of N
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 6, 4)
+
+        # Check if j is out of bounds of N
+        with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 4, 6)
+
+        # Check if both i and j are out of bounds of N
+        with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 6, 6)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
@@ -139,6 +146,8 @@ class TestPSAExceptions(TestCase):
 
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, '6', '7')
+
+        with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, float(6), 7)
 
 class _BaseHausdorffDistance(TestCase):
