@@ -76,6 +76,19 @@ class TestUniverseCreation(object):
         assert_raises(AttributeError, getattr, u, 'trajectory')
 
     @staticmethod
+    def test_Universe_topology_unrecognizedformat_VE():
+        assert_raises(ValueError, mda.Universe, 'some.weird.not.pdb.but.converted.xtc')
+
+    @staticmethod
+    def test_Universe_topology_unrecognizedformat_VE_msg():
+        try:
+            mda.Universe('some.weird.not.pdb.but.converted.xtc')
+        except ValueError as e:
+            assert_('isn\'t a valid topology format' in e.args[0])
+        else:
+            raise AssertionError
+
+    @staticmethod
     def test_Universe_topology_IE():
         assert_raises(IOError,
                       mda.Universe, 'thisfile', topology_format=IOErrorParser)
