@@ -299,6 +299,9 @@ class Universe(object):
             pass
         else:
             for segid, segment in segids.items():
+                if not segid:  # ignore blank segids
+                    continue
+
                 # cannot start attribute with number
                 if segid[0].isdigit():
                     # prefix 's' if starts with number
