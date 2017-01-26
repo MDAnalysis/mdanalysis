@@ -55,7 +55,15 @@ from .groups import (ComponentBase, GroupBase,
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
 
-    set_X(self, group, values)
+    Eg:
+
+    @_check_length
+    def set_X(self, group, values):
+
+    Will check the length of *values* compared to *group* before proceeding with
+    anything in the *set_X* method.
+
+    Pseudo code for the check:
 
     if group in (Atom, Residue, Segment):
         values must be single values, ie int, float or string
@@ -100,6 +108,7 @@ def _check_length(func):
         return func(attr, group, values)
 
     return wrapper
+
 
 def _wronglevel_error(attr, group):
     """Generate an error for setting attr at wrong level
