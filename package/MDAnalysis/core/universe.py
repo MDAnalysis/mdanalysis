@@ -64,14 +64,14 @@ import MDAnalysis
 import sys
 
 from .. import _ANCHOR_UNIVERSES
-from ..lib import util
-from ..lib.util import cached
-from ..lib.log import ProgressMeter, _set_verbose
 from ..exceptions import NoDataError
+from ..lib import util
+from ..lib.log import ProgressMeter, _set_verbose
+from ..lib.util import cached
 from . import groups
+from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
-from ._get_readers import get_reader_for, get_parser_for
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -391,7 +391,7 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, frame_interval=1, verbose=None, quiet=None):
+    def transfer_to_memory(self, frame_interval=1, verbose=None, quiet=None, start=None, stop=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -419,14 +419,14 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, format='fac', step=frame_interval)
+                    self.atoms, start=start, stop=stop, step=frame_interval, format='fac')
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
                                    interval=frame_interval, verbose=verbose)
                 coordinates = []  # TODO: use pre-allocated array
-                for ts in self.trajectory[::frame_interval]:
+                for ts in self.trajectory[start:stop:frame_interval]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
                 coordinates = np.array(coordinates)
