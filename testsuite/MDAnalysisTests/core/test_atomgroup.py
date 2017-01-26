@@ -281,9 +281,8 @@ class _WriteAtoms(object):
 
     def test_write_Universe(self):
         U = self.universe
-        W = mda.Writer(self.outfile)
-        W.write(U)
-        W.close()
+        with mda.Writer(self.outfile) as W:
+            W.write(U)
         u2 = self.universe_from_tmp()
         assert_equal(
             len(u2.atoms), len(U.atoms),
