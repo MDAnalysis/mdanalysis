@@ -158,7 +158,7 @@ class Universe(object):
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
-    in_memory_frame_interval
+    in_memory_step
         Only read every nth frame into in-memory representation.
 
     Attributes
@@ -387,7 +387,7 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(step=kwargs.get("in_memory_frame_interval", 1))
+            self.transfer_to_memory(step=kwargs.get("in_memory_step", 1))
 
         return filename, self.trajectory.format
 
@@ -400,6 +400,10 @@ class Universe(object):
 
         Parameters
         ----------
+        start: int, optional
+            start reading from the nth frame.
+        stop: int, optional
+            read upto the nth frame.
         step : int, optional
             Read in every nth frame. [1]
         verbose : bool, optional
