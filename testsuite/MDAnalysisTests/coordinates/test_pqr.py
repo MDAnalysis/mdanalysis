@@ -8,11 +8,10 @@ from numpy.testing import (
     assert_warns,
 )
 
-from MDAnalysisTests.coordinates.reference import (RefAdKSmall)
+from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.datafiles import (PQR)
-from MDAnalysisTests import tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests.datafiles import PQR
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class TestPQRReader(_SingleFrameReader):

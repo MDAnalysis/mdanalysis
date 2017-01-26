@@ -36,7 +36,7 @@ import shutil
 import warnings
 
 from MDAnalysisTests.datafiles import PDB_small, GRO, XTC, TRR
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 
 class TestAtomGroupPickle(object):
     def setUp(self):

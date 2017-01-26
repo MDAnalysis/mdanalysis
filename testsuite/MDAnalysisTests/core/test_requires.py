@@ -10,7 +10,7 @@ from numpy.testing import (
 from MDAnalysis.core.groups import requires
 from MDAnalysis import NoDataError
 
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class TestRequires(object):

@@ -90,6 +90,7 @@ class::
 
 """
 from six.moves import zip
+from six import string_types
 
 from collections import namedtuple
 import numpy as np
@@ -382,6 +383,10 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
         if self._u is not other._u:
@@ -975,6 +980,15 @@ class AtomGroup(GroupBase):
     .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
+    def __getitem__(self, item):
+        # u.atoms['HT1'] access, otherwise default
+        if isinstance(item, string_types):
+            try:
+                return self._get_named_atom(item)
+            except (AttributeError, selection.SelectionError):
+                pass
+        return super(AtomGroup, self).__getitem__(item)
+
     def __getattr__(self, attr):
         # is this a known attribute failure?
         if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
@@ -1844,6 +1858,10 @@ class ComponentBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
         if self.level != other.level:
             raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
                             ' to {0}'.format(self.level.singular.__name__,
