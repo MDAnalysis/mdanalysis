@@ -404,10 +404,10 @@ class TestCrossLevelAttributeSetting(object):
     Can only get attributes belonging to higher level objects
 
     Atom.resid works!
-    Residue.name doesn't work, Atom is below Residue
+    ResidueGroup.names = ['a', 'b', 'c'] doesn't work, Atom is below Residue
 
     Setting any attribute we can get should only work if they are the same level.
-    
+
     Atom.resid = 4  should fail because resid belongs to Residue not Atom
     """
     @staticmethod
@@ -417,7 +417,7 @@ class TestCrossLevelAttributeSetting(object):
     def test_set_crosslevel(self):
         u = make_Universe(('names', 'resids', 'segids'))
 
-        # group and component in each level
+        # component and group in each level
         atomlevel = (u.atoms[0], u.atoms[:10])
         residuelevel = (u.residues[0], u.residues[:5])
         segmentlevel = (u.segments[0], u.segments[:2])
@@ -428,14 +428,26 @@ class TestCrossLevelAttributeSetting(object):
         segmentattr = 'segids'
         attrs = {0:atomattr, 1:residueattr, 2:segmentattr}
 
+        # loop over Atom, Residue, Segment level
         for level_idx, level in levels.items():
+            # loop over an Attribute native to each level
             for attr_idx, attr in attrs.items():
-                if attr_idx <= level_idx:
-                    # if equal, things should work
-                    # if less than, attribute can't be accessed
+                if level_idx == attr_idx:
+                    # if we're on the same level, then this should work
+                    # ie Atom.mass = 12.0 is OK!
                     continue
-                singular, plural = level
+                component, group = level
+                # eg 'name', 'names' = 'names', 'names'[:-1]
+                singular_attr, plural_attr = attr[:-1], attr
 
-                yield self._check_crosslevel_fail, singular, attr[:-1]
-                yield self._check_crosslevel_fail, plural, attr
-            
+                # eg check ResidueGroup.names = 'newvalue' raises NIE
+                # or ResidueGroup.segids = 'newvalue' raises NIE
+                yield self._check_crosslevel_fail, group, plural_attr
+
+                if attr_idx < level_idx:
+                    # Segment.resid doesn't even exist as an attribute
+                    # so we don't have to check that setting fails
+                    # Atom.segid does exist as attribute,
+                    # but will fail to be set
+                    continue
+                yield self._check_crosslevel_fail, component, singular_attr
