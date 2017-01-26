@@ -95,7 +95,7 @@ at [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
    and telling someone that you are sorry is act of empathy that doesn’t
    automatically imply an admission of guilt.
 
-## Reporting
+# Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
 report this in a timely manner. Code of conduct violations reduce the value of
@@ -111,6 +111,8 @@ confidentiality with regard to the reporter of an incident.
 The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
+
+# Acknowledgment
 
 Original text courtesy of
 the
