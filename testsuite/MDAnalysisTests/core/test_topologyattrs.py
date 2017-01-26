@@ -91,6 +91,13 @@ class TestAtomAttr(TopologyAttrMixin):
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
     attrclass = tpattrs.AtomAttr
 
+    @staticmethod
+    def test_set_atom_VE():
+        u = make_Universe(('names',))
+        at = u.atoms[0]
+
+        assert_raises(ValueError, setattr, at, 'name', ['oopsy', 'daisies'])
+
     def test_get_atoms(self):
         result = self.attr.get_atoms(DummyGroup([2, 1]))
 
@@ -198,6 +205,13 @@ class TestResidueAttr(TopologyAttrMixin):
     """
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
+
+    @staticmethod
+    def test_set_residue_VE():
+        u = make_Universe(('resnames',))
+        res = u.residues[0]
+
+        assert_raises(ValueError, setattr, res, 'resname', ['wrong', 'length'])
 
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([7, 3, 9])),
@@ -315,6 +329,13 @@ class TestSegmentAttr(TopologyAttrMixin):
     """
     values = np.array([-0.19, 500])
     attrclass = tpattrs.SegmentAttr
+
+    @staticmethod
+    def test_set_segment_VE():
+        u = make_Universe(('segids',))
+        seg = u.segments[0]
+
+        assert_raises(ValueError, setattr, seg, 'segid', [1, 2, 3])
 
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([2, 4, 1])),
