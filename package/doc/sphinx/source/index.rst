@@ -118,21 +118,39 @@ literature. Please make sure to also reference any
 Thank you!
 
 
+.. TODO: reorganize and add :hidden: and :maxdepth: 4
 .. Hide the contents from the front page because they are already in
 .. the side bar in the Alabaster sphinx style; requires Alabaster
 .. config sidebar_includehidden=True (default)
 
-.. Contents
-.. ========
+
+MDAnalysis Basics
+=================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :numbered:		
-   :hidden:
-   
+
    ./documentation_pages/overview
    ./documentation_pages/topology
+   ./documentation_pages/working_with_atomgroups
    ./documentation_pages/selections
+   ./documentation_pages/working_with_residues
+   ./documentation_pages/working_with_trajectories
+   ./documentation_pages/coordinate_manipulation
+   ./documentation_pages/bonds_angles_torsions
+   ./documentation_pages/advanced_universe
+   ./documentation_pages/advanced_reader
+   ./documentation_pages/advanced_topology
+
+
+API Reference
+=============
+
+.. toctree::
+   :maxdepth: 1
+   :numbered:		
+   
    ./documentation_pages/analysis_modules
    ./documentation_pages/topology_modules
    ./documentation_pages/coordinates_modules
