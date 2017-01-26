@@ -21,7 +21,7 @@
 #
 
 import MDAnalysis as mda
-from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
+from MDAnalysisTests.datafiles import PDBQT_input, PDBQT_querypdb
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 from numpy.testing import (
@@ -32,8 +32,7 @@ from numpy.testing import (
 )
 
 import os
-from MDAnalysisTests import tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class TestPDBQT(object):

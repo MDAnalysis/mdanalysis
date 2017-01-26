@@ -24,13 +24,17 @@ from __future__ import print_function
 import MDAnalysis as mda
 import MDAnalysis.analysis.encore as encore
 
+import importlib
 import tempfile
 import numpy as np
+import sys
+import warnings
 
-from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
+from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
+                           assert_warns)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF
-from MDAnalysisTests import parser_not_found, module_not_found
+from MDAnalysisTests import parser_not_found, module_not_found, block_import
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
@@ -44,12 +48,12 @@ class TestEncore(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDown(self):
@@ -72,11 +76,11 @@ class TestEncore(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
@@ -98,24 +102,24 @@ class TestEncore(TestCase):
         assert_equal(triangular_matrix[0,1], expected_value,
                      err_msg="Data error in TriangularMatrix: read/write are not consistent")
 
-        assert_equal(triangular_matrix[0,1], triangular_matrix[1,0], 
+        assert_equal(triangular_matrix[0,1], triangular_matrix[1,0],
                         err_msg="Data error in TriangularMatrix: matrix non symmetrical")
         triangular_matrix.savez(filename)
 
         triangular_matrix_2 = encore.utils.TriangularMatrix(size = size, loadfile = filename)
-        assert_equal(triangular_matrix_2[0,1], expected_value, 
+        assert_equal(triangular_matrix_2[0,1], expected_value,
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
 
         triangular_matrix_3 = encore.utils.TriangularMatrix(size = size)
         triangular_matrix_3.loadz(filename)
-        assert_equal(triangular_matrix_3[0,1], expected_value, 
+        assert_equal(triangular_matrix_3[0,1], expected_value,
                         err_msg="Data error in TriangularMatrix: loaded matrix non symmetrical")
 
         incremented_triangular_matrix = triangular_matrix + scalar
         assert_equal(incremented_triangular_matrix[0,1], expected_value + scalar,
                         err_msg="Error in TriangularMatrix: addition of scalar gave\
 inconsistent results")
-        
+
         triangular_matrix += scalar
         assert_equal(triangular_matrix[0,1], expected_value + scalar,
                         err_msg="Error in TriangularMatrix: addition of scalar gave\
@@ -140,29 +144,30 @@ inconsistent results")
 
         arguments = [tuple([i]) for i in np.arange(0,100)]
 
-        parallel_calculation = encore.utils.ParallelCalculation(function = function,
-                                                                ncores = 4,
-                                                                args = arguments)
+        parallel_calculation = encore.utils.ParallelCalculation(function=function,
+                                                                n_jobs=4,
+                                                                args=arguments)
         results = parallel_calculation.run()
 
         for i,r in enumerate(results):
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-    def test_rmsd_matrix_with_superimposition(self):        
-        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(self.ens1,
-                                    encore.confdistmatrix.set_rmsd_matrix_elements,
-                                    selection = "name CA",
-                                    pairwise_align = True,
-                                    mass_weighted = True,
-                                    ncores = 1)
+    def test_rmsd_matrix_with_superimposition(self):
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            mass_weighted=True,
+            n_jobs=1)
 
         reference = rms.RMSD(self.ens1, select = "name CA")
         reference.run()
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")            
+                                err_msg = "calculated RMSD values differ from the reference implementation")
 
     def test_rmsd_matrix_without_superimposition(self):
         selection_string = "name CA"
@@ -173,12 +178,12 @@ inconsistent results")
             reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
 
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
-                            self.ens1,
-                            encore.confdistmatrix.set_rmsd_matrix_elements,
-                            selection = selection_string,
-                            pairwise_align = False,
-                            mass_weighted = True,
-                            ncores = 1)
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection=selection_string,
+            pairwise_align=False,
+            mass_weighted=True,
+            n_jobs=1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
@@ -264,7 +269,7 @@ inconsistent results")
         expected_value = 0.51
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
-        
+
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_to_self(self):
@@ -295,7 +300,7 @@ inconsistent results")
         expected_value = 0.68
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
-        
+
     def test_ces_convergence(self):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
         results = encore.ces_convergence(self.ens1, 5)
@@ -303,6 +308,7 @@ inconsistent results")
         for i,ev in enumerate(expected_values):
             assert_almost_equal(ev, results[i], decimal=2,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
+
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_dres_convergence(self):
@@ -389,12 +395,12 @@ class TestEncoreClustering(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDownClass(self):
@@ -417,11 +423,11 @@ class TestEncoreClustering(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
@@ -662,12 +668,12 @@ class TestEncoreDimensionalityReduction(TestCase):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
             self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(),
+            self.ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
         self.ens2 = mda.Universe(
             self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(),
+            self.ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
     def tearDownClass(self):
@@ -690,11 +696,11 @@ class TestEncoreDimensionalityReduction(TestCase):
         # Filter ensembles to only include every 5th frame
         cls.ens1_template = mda.Universe(
             cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
         cls.ens2_template = mda.Universe(
             cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries()[:, ::5, :]),
+            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
             format=mda.coordinates.memory.MemoryReader)
 
     @classmethod
@@ -794,3 +800,31 @@ class TestEncoreDimensionalityReduction(TestCase):
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
+
+class TestEncoreImportWarnings(object):
+    def setUp(self):
+        # clear cache of encore module
+        for mod in list(sys.modules):  # list as we're changing as we iterate
+            if 'encore' in mod:
+                sys.modules.pop(mod, None)
+
+    @block_import('sklearn')
+    def _check_sklearn_import_warns(self, package):
+        warnings.simplefilter('always')
+        assert_warns(ImportWarning, importlib.import_module, package)
+
+    @block_import('scipy')
+    def _check_scipy_import_warns(self, package):
+        warnings.simplefilter('always')
+        assert_warns(ImportWarning, importlib.import_module, package)
+
+    def test_import_warnings(self):
+        for pkg in (
+                'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
+                'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
+        ):
+            yield self._check_sklearn_import_warns, pkg
+        for pkg in (
+                'MDAnalysis.analysis.encore.similarity',
+        ):
+            yield self._check_scipy_import_warns, pkg

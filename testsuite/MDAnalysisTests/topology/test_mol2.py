@@ -21,6 +21,7 @@
 #
 from numpy.testing import (
     assert_,
+    assert_equal,
 )
 
 import MDAnalysis as mda
@@ -60,3 +61,13 @@ class TestMOL2Parser(MOL2Base):
 
 class TestMOL2Parser2(MOL2Base):
     filename = mol2_molecules
+
+
+def test_bond_orders():
+    ref_orders = ('am 1 1 2 1 2 1 1 am 1 1 am 2 2 '
+                  '1 1 1 1 1 1 1 1 1 1 1 1 1 1 '
+                  'ar ar ar 1 ar 1 ar 1 ar 1 1 1 '
+                  '2 1 1 1 1 2 1 1 2 1 1').split()
+    u = mda.Universe(mol2_molecule)
+    orders = [bond.order for bond in u.atoms.bonds]
+    assert_equal(orders, ref_orders)

@@ -44,7 +44,6 @@ from MDAnalysis.core.topologyobjects import TopologyGroup
 from MDAnalysis.core.selection import Parser
 from MDAnalysis import SelectionError
 
-from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
@@ -54,7 +53,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_full,
     PDB_icodes,
 )
-from MDAnalysisTests import parser_not_found
+from MDAnalysisTests import parser_not_found, make_Universe
 
 
 class TestSelectionsCHARMM(object):

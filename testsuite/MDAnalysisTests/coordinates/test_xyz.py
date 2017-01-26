@@ -15,8 +15,8 @@ from MDAnalysis.coordinates.XYZ import XYZWriter
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest)
-from MDAnalysisTests.core.groupbase import make_Universe, FakeReader
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, make_Universe
+
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -115,8 +115,7 @@ class TestXYZWriterNames(object):
         del self.tmpdir
 
     def test_no_names(self):
-        u = make_Universe()
-        u.trajectory = FakeReader()
+        u = make_Universe(trajectory=True)
 
         w = XYZWriter(self.outfile)
         w.write(u.trajectory.ts)
@@ -126,8 +125,7 @@ class TestXYZWriterNames(object):
         assert_(all(u2.atoms.names == 'X'))
 
     def test_single_name(self):
-        u = make_Universe()
-        u.trajectory = FakeReader()
+        u = make_Universe(trajectory=True)
 
         w = XYZWriter(self.outfile, atoms='ABC')
         w.write(u.trajectory.ts)
@@ -137,8 +135,7 @@ class TestXYZWriterNames(object):
         assert_(all(u2.atoms.names == 'ABC'))
 
     def test_list_names(self):
-        u = make_Universe()
-        u.trajectory = FakeReader()
+        u = make_Universe(trajectory=True)
 
         names = ['A', 'B', 'C', 'D', 'E'] * 25
 

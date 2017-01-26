@@ -32,21 +32,131 @@ These are usually read by the TopologyParser.
 """
 
 from six.moves import zip, range
+
+import Bio.Seq
+import Bio.SeqRecord
+import Bio.Alphabet
 from collections import defaultdict
+import functools
 import itertools
 import numpy as np
 
 from . import flags
-from ..lib.util import cached, convert_aa_code
+from ..lib.util import cached, convert_aa_code, iterable
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
-from .groups import (GroupBase, Atom, Residue, Segment,
+from .groups import (ComponentBase, GroupBase,
+                     Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 
-_LENGTH_VALUEERROR = ("Setting {group} with wrong sized array. "
-                      "Length {group}: {lengroup}, length values: {lenvalues}")
+
+def _check_length(func):
+    """Wrapper which checks the length of inputs to set_X
+
+    Eg:
+
+    @_check_length
+    def set_X(self, group, values):
+
+    Will check the length of *values* compared to *group* before proceeding with
+    anything in the *set_X* method.
+
+    Pseudo code for the check:
+
+    if group in (Atom, Residue, Segment):
+        values must be single values, ie int, float or string
+    else:
+        values must be single value OR same length as group
+
+    """
+    _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
+                           "Must use single value, length of supplied values: {lenvalues}.")
+    # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
+    # values: 2."
+
+    _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
+                          "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+    # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
+    # supplied values: 50."
+
+    def _attr_len(values):
+        # quasi len measurement
+        # strings, floats, ints are len 0, ie not iterable
+        # other iterables are just len'd
+        if iterable(values):
+            return len(values)
+        else:
+            return 0  # special case
+
+    @functools.wraps(func)
+    def wrapper(attr, group, values):
+        val_len = _attr_len(values)
+
+        if isinstance(group, ComponentBase):
+            if not val_len == 0:
+                raise ValueError(_SINGLE_VALUE_ERROR.format(
+                    cls=group.__class__.__name__, attrname=attr.singular,
+                    lenvalues=val_len))
+        else:
+            if not (val_len == 0 or val_len == len(group)):
+                raise ValueError(_GROUP_VALUE_ERROR.format(
+                    group=group.__class__.__name__, attrname=attr.attrname,
+                    lengroup=len(group), lenvalues=val_len))
+        # if everything went OK, continue with the function
+        return func(attr, group, values)
+
+    return wrapper
+
+
+def _wronglevel_error(attr, group):
+    """Generate an error for setting attr at wrong level
+
+    attr : TopologyAttr that was accessed
+    group : Offending Component/Group
+
+    Eg:
+    setting mass of residue, gets called with attr=Masses, group=residue
+
+    raises a NotImplementedError with:
+    'Cannot set masses from Residue.  Use 'Residue.atoms.masses'
+
+    Mainly used to ensure consistent and helpful error messages
+    """
+    if isinstance(group, (Atom, AtomGroup)):
+        group_level = 1
+    elif isinstance(group, (Residue, ResidueGroup)):
+        group_level = 2
+    elif isinstance(group, (Segment, SegmentGroup)):
+        group_level = 3
+
+    # What level to go to before trying to set this attr
+    if isinstance(attr, AtomAttr):
+        corr_classes = ('atoms', 'atom')
+        attr_level = 1
+    elif isinstance(attr, ResidueAttr):
+        corr_classes = ('residues', 'residue')
+        attr_level = 2
+    elif isinstance(attr, SegmentAttr):
+        corr_classes = ('segments', 'segment')
+        attr_level = 3
+
+    if isinstance(group, ComponentBase) and (attr_level > group_level):
+        # ie going downards use plurals, going upwards use singulars
+        # Residue.atom!s!.mass!es! but Atom.segment!!.segid!!
+        correct = corr_classes[1]
+        attrname = attr.singular
+    else:
+        correct = corr_classes[0]
+        attrname = attr.attrname
+
+    err_msg = "Cannot set {attr} from {cls}. Use '{cls}.{correct}.{attr} = '"
+    # eg "Cannot set masses from Residue.  'Use Residue.atoms.masses = '"
+
+    return NotImplementedError(err_msg.format(
+        attr=attrname, cls=group.__class__.__name__, correct=correct,
+    ))
 
 
 class TopologyAttr(object):
@@ -109,7 +219,6 @@ class TopologyAttr(object):
 
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
-        # aix = ag.indices
         raise NoDataError
 
     def set_atoms(self, ag, values):
@@ -245,6 +354,7 @@ class AtomAttr(TopologyAttr):
     def get_atoms(self, ag):
         return self.values[ag._ix]
 
+    @_check_length
     def set_atoms(self, ag, values):
         self.values[ag._ix] = values
 
@@ -257,6 +367,9 @@ class AtomAttr(TopologyAttr):
         aixs = self.top.tt.residues2atoms_2d(rg._ix)
         return [self.values[aix] for aix in aixs]
 
+    def set_residues(self, rg, values):
+        raise _wronglevel_error(self, rg)
+
     def get_segments(self, sg):
         """By default, the values for each atom present in the set of residues
         are returned in a single array. This behavior can be overriden in child
@@ -265,6 +378,9 @@ class AtomAttr(TopologyAttr):
         """
         aixs = self.top.tt.segments2atoms_2d(sg._ix)
         return [self.values[aix] for aix in aixs]
+
+    def set_segments(self, sg, values):
+        raise _wronglevel_error(self, sg)
 
 
 # TODO: update docs to property doc
@@ -891,9 +1007,13 @@ class ResidueAttr(TopologyAttr):
         rix = self.top.tt.atoms2residues(ag._ix)
         return self.values[rix]
 
+    def set_atoms(self, ag, values):
+        raise _wronglevel_error(self, ag)
+
     def get_residues(self, rg):
         return self.values[rg._ix]
 
+    @_check_length
     def set_residues(self, rg, values):
         self.values[rg._ix] = values
 
@@ -905,6 +1025,9 @@ class ResidueAttr(TopologyAttr):
         """
         rixs = self.top.tt.segments2residues_2d(sg._ix)
         return [self.values[rix] for rix in rixs]
+
+    def set_segments(self, sg, values):
+        raise _wronglevel_error(self, sg)
 
 
 # TODO: update docs to property doc
@@ -1004,37 +1127,36 @@ class Resnames(ResidueAttr):
 
            Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
 
-        :Keywords:
-            *format*
+        Parameters
+        ----------
+        format : string, optional
+           - ``"string"``: return sequence as a string of 1-letter codes
+           - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
+           - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
+             instance
 
-                - ``"string"``: return sequence as a string of 1-letter codes
-                - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
-                - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
-                  instance
+            Default is ``"SeqRecord"``
+        id : optional
+           Sequence ID for SeqRecord (should be different for different
+           sequences)
+        name : optional
+           Name of the protein.
+        description : optional
+           Short description of the sequence.
+        kwargs : optional
+           Any other keyword arguments that are understood by
+           class:`Bio.SeqRecord.SeqRecord`.
 
-                Default is ``"SeqRecord"``
+        Raises
+        ------
+        :exc:`ValueError` if a residue name cannot be converted to a
+        1-letter IUPAC protein amino acid code; make sure to only
+        select protein residues.
 
-             *id*
-                Sequence ID for SeqRecord (should be different for different
-                sequences)
-             *name*
-                Name of the protein.
-             *description*
-                Short description of the sequence.
-             *kwargs*
-                Any other keyword arguments that are understood by
-                :class:`Bio.SeqRecord.SeqRecord`.
-
-        :Raises: :exc:`ValueError` if a residue name cannot be converted to a
-                 1-letter IUPAC protein amino acid code; make sure to only
-                 select protein residues. Raises :exc:`TypeError` if an unknown
-                 *format* is selected.
+        :exc:`TypeError` if an unknown *format* is selected.
 
         .. versionadded:: 0.9.0
         """
-        import Bio.Seq
-        import Bio.SeqRecord
-        import Bio.Alphabet
         formats = ('string', 'Seq', 'SeqRecord')
 
         format = kwargs.pop("format", "SeqRecord")
@@ -1086,13 +1208,20 @@ class SegmentAttr(TopologyAttr):
         six = self.top.tt.atoms2segments(ag._ix)
         return self.values[six]
 
+    def set_atoms(self, ag, values):
+        raise _wronglevel_error(self, ag)
+
     def get_residues(self, rg):
         six = self.top.tt.residues2segments(rg._ix)
         return self.values[six]
 
+    def set_residues(self, rg, values):
+        raise _wronglevel_error(self, rg)
+
     def get_segments(self, sg):
         return self.values[sg._ix]
 
+    @_check_length
     def set_segments(self, sg, values):
         self.values[sg._ix] = values
 
@@ -1183,6 +1312,9 @@ class _Connection(AtomAttr):
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
+
+    def set_atoms(self, ag):
+        return NotImplementedError("Cannot set bond information")
 
     def get_atoms(self, ag):
         try:

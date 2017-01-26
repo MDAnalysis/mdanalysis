@@ -28,11 +28,11 @@ from numpy.testing import (
     assert_array_equal,
 )
 
-from MDAnalysisTests.core.groupbase import make_Universe
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 
+from MDAnalysisTests import make_Universe
 
 # Also used in topology/test_guessers
 def make_starshape():

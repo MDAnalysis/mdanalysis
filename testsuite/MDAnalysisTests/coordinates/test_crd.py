@@ -10,8 +10,8 @@ from numpy.testing import (
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import CRD
-from MDAnalysisTests import tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import tempdir, make_Universe
+
 
 class TestCRDWriter(object):
     def setUp(self):

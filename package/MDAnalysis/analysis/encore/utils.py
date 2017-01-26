@@ -22,8 +22,10 @@
 from six.moves import range
 from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
+from joblib import cpu_count
 import numpy as np
 import sys
+
 import MDAnalysis as mda
 from ...coordinates.memory import MemoryReader
 
@@ -44,34 +46,36 @@ class TriangularMatrix(object):
         Parameters
         ----------
 
-        size : int or multiprocessing.SyncrhonizeArray
+        size : int / array_like
             Size of the matrix (number of rows or columns). If an
             array is provided instead, the size of the triangular matrix
             will be calculated and the array copied as the matrix
             elements. Otherwise, the matrix is just initialized to zero.
-
         metadata : dict or None
             Metadata dictionary. Used to generate the metadata attribute.
-
         loadfile : str or None
             Load the matrix from this file. All the attributes and data will
             be determined by the matrix file itself (i.e. metadata will be
             ignored); size has to be provided though.
 
         """
-        self.metadata = metadata
+        if isinstance(metadata, dict):
+            self.metadata = np.array(metadata.items(), dtype=object)
+        else:
+            self.metadata = metadata
+
         self.size = size
         if loadfile:
             self.loadz(loadfile)
-            return
-        if type(size) == int:
+        elif isinstance(size, int):
             self.size = size
             self._elements = np.zeros((size + 1) * size / 2, dtype=np.float64)
-            return
-        if type(size) == SynchronizedArray:
+        elif isinstance(size, SynchronizedArray):
             self._elements = np.array(size.get_obj(), dtype=np.float64)
             self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
-            return
+        elif isinstance(size, np.ndarray):
+            self._elements = size
+            self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
         else:
             raise TypeError
 
@@ -177,9 +181,6 @@ class TriangularMatrix(object):
         self._elements *= scalar
         return self
 
-
-
-
     __rmul__ = __mul__
 
     def __str__(self):
@@ -193,51 +194,46 @@ class ParallelCalculation(object):
 
     Attributes
     ----------
-
-    ncores : int
-            Number of cores to be used for parallel calculation
-
+    n_jobs : int
+        Number of cores to be used for parallel calculation. If -1 use all
+        available cores.
     function : callable object
-            Function to be run in parallel.
-
+        Function to be run in parallel.
     args : list of tuples
-            Each tuple contains the arguments that will be passed to
-            function(). This means that a call to function() is performed for
-            each tuple. function is called as function(\*args, \*\*kwargs). Runs
-            are distributed on the requested numbers of cores.
-
+        Each tuple contains the arguments that will be passed to
+        function(). This means that a call to function() is performed for
+        each tuple. function is called as function(\*args, \*\*kwargs). Runs
+        are distributed on the requested numbers of cores.
     kwargs : list of dicts
-            Each tuple contains the named arguments that will be passed to
-            function, similarly as described for the args attribute.
-
+        Each tuple contains the named arguments that will be passed to
+        function, similarly as described for the args attribute.
     nruns : int
-            Number of runs to be performed. Must be equal to len(args) and
-            len(kwargs).
+        Number of runs to be performed. Must be equal to len(args) and
+        len(kwargs).
     """
 
-    def __init__(self, ncores, function, args=None, kwargs=None):
-        """ Class constructor.
-
+    def __init__(self, n_jobs, function, args=None, kwargs=None):
+        """
         Parameters
         ----------
-
-        ncores : int
-            Number of cores to be used for parallel calculation
-
+        n_jobs : int
+            Number of cores to be used for parallel calculation. If -1 use all
+            available cores.
         function : object that supports __call__, as functions
             function to be run in parallel.
-
         args : list of tuples
             Arguments for function; see the ParallelCalculation class
             description.
-
         kwargs : list of dicts or None
             kwargs for function; see the ParallelCalculation
             class description.
         """
 
         # args[i] should be a list of args, one for each run
-        self.ncores = ncores
+        self.n_jobs = n_jobs
+        if self.n_jobs == -1:
+            self.n_jobs = cpu_count()
+
         self.functions = function
         if not hasattr(self.functions, '__iter__'):
             self.functions = [self.functions]*len(args)
@@ -294,7 +290,7 @@ class ParallelCalculation(object):
                 is the return of function(\*args[3], \*\*kwargs[3]).
         """
         results_list = []
-        if self.ncores == 1:
+        if self.n_jobs == 1:
             for i in range(self.nruns):
                 results_list.append((i, self.functions[i](*self.args[i],
                                                           **self.kwargs[i])))
@@ -304,7 +300,7 @@ class ParallelCalculation(object):
             results = manager.Queue()
 
             workers = [Process(target=self.worker, args=(q, results)) for i in
-                       range(self.ncores)]
+                       range(self.n_jobs)]
 
             for i in range(self.nruns):
                 q.put(i)
@@ -324,85 +320,11 @@ class ParallelCalculation(object):
         return tuple(sorted(results_list, key=lambda x: x[0]))
 
 
-class ProgressBar(object):
-    """Handle and draw a progress barr.
-    From https://github.com/ikame/progressbar
-    """
-
-    def __init__(self, start=0, end=10, width=12, fill='=', blank='.',
-                 format='[%(fill)s>%(blank)s] %(progress)s%%',
-                 incremental=True):
-        super(ProgressBar, self).__init__()
-
-        self.start = start
-        self.end = end
-        self.width = width
-        self.fill = fill
-        self.blank = blank
-        self.format = format
-        self.incremental = incremental
-        self.step = 100 / float(width)  # fix
-        self.reset()
-
-    def __add__(self, increment):
-        increment = self._get_progress(increment)
-        if 100 > self.progress + increment:
-            self.progress += increment
-        else:
-            self.progress = 100
-        return self
-
-    def __str__(self):
-        progressed = int(self.progress / self.step)  # fix
-        fill = progressed * self.fill
-        blank = (self.width - progressed) * self.blank
-        return self.format % {'fill': fill, 'blank': blank,
-                              'progress': int(self.progress)}
-
-    __repr__ = __str__
-
-    def _get_progress(self, increment):
-        return float(increment * 100) / self.end
-
-    def reset(self):
-        """Resets the current progress to the start point"""
-        self.progress = self._get_progress(self.start)
-        return self
-
-    def update(self, progress):
-        """Update the progress value instead of incrementing it"""
-        this_progress = self._get_progress(progress)
-        if this_progress < 100:
-            self.progress = this_progress
-        else:
-            self.progress = 100
-
-
-class AnimatedProgressBar(ProgressBar):
-    """Extends ProgressBar to allow you to use it straighforward on a script.
-    Accepts an extra keyword argument named `stdout`
-    (by default use sys.stdout).
-    The progress status may be send to any file-object.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(AnimatedProgressBar, self).__init__(*args, **kwargs)
-        self.stdout = kwargs.get('stdout', sys.stdout)
-
-    def show_progress(self):
-        if hasattr(self.stdout, 'isatty') and self.stdout.isatty():
-            self.stdout.write('\r')
-        else:
-            self.stdout.write('\n')
-        self.stdout.write(str(self))
-        self.stdout.flush()
-
-
-def trm_indeces(a, b):
+def trm_indices(a, b):
     """
     Generate (i,j) indeces of a triangular matrix, between elements a and b.
     The matrix size is automatically determined from the number of elements.
-    For instance: trm_indeces((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
+    For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
     (2,1).
 
     Parameters
@@ -479,6 +401,6 @@ def merge_universes(universes):
 
     return mda.Universe(
         universes[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries() for e in universes]),
-        axis=1),
+        np.concatenate(tuple([e.trajectory.timeseries(format='fac') for e in universes]),
+                       axis=0),
         format=MemoryReader)
