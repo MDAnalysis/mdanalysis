@@ -387,11 +387,11 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(kwargs.get("in_memory_frame_interval", 1))
+            self.transfer_to_memory(step=kwargs.get("in_memory_frame_interval", 1))
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, frame_interval=1, verbose=None, quiet=None, start=None, stop=None):
+    def transfer_to_memory(self, start=None, stop=None, step=1, verbose=None, quiet=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -400,7 +400,7 @@ class Universe(object):
 
         Parameters
         ----------
-        frame_interval : int, optional
+        step : int, optional
             Read in every nth frame. [1]
         verbose : bool, optional
             Will print the progress of loading trajectory to memory, if
@@ -419,14 +419,14 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=frame_interval, format='fac')
+                    self.atoms, start=start, stop=stop, step=step, format='fac')
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
-                                   interval=frame_interval, verbose=verbose)
+                                   interval=step, verbose=verbose)
                 coordinates = []  # TODO: use pre-allocated array
-                for ts in self.trajectory[start:stop:frame_interval]:
+                for ts in self.trajectory[start:stop:step]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
                 coordinates = np.array(coordinates)
