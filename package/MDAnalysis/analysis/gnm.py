@@ -99,8 +99,6 @@ import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
-from ..lib.mdamath import norm
-
 
 def _dsq(a, b):
     return ((a - b)**2).sum()
@@ -275,27 +273,13 @@ class GNMAnalysis(object):
         self.timeseries = []
         self._timesteps = []
 
-        try:
-            self.u.trajectory.time
-
-            def _get_timestep():
-                return self.u.trajectory.time
-
-            logger.debug("GNM analysis is recording time step")
-        except NotImplementedError:
-            # chained reader or xyz(?) cannot do time yet
-            def _get_timestep():
-                return self.u.trajectory.frame
-
-            logger.warn("GNM analysis is recording frame number instead of time step")
-
         for ts in self.u.trajectory:
             if counter % skip != 0:
                 counter += 1
                 continue
             counter += 1
             frame = ts.frame
-            timestep = _get_timestep()
+            timestep = ts.time
             self._timesteps.append(timestep)
 
             matrix = self.generate_kirchoff()
