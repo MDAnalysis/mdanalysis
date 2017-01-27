@@ -391,7 +391,7 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, start=None, stop=None, step=1, verbose=None, quiet=None):
+    def transfer_to_memory(self, start=None, stop=None, step=None, verbose=None, quiet=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
