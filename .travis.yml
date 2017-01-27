@@ -53,6 +53,7 @@ install:
     fi
   - if [[ $SETUP == 'minimal' ]]; then conda install --yes cython biopython networkx; fi
   - pip install griddataformats
+  - pip install nose-timer
 # ensure that cython files are rebuilt
   - find . -name '*.pyx' -exec touch '{}' \;
   - pip install -v package/
@@ -73,7 +74,7 @@ install:
 script:
   - pylint --rcfile=package/.pylintrc package/MDAnalysis
   - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak
+  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 20
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
