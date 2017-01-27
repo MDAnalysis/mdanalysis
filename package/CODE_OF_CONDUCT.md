@@ -1,3 +1,12 @@
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+**Table of Contents**
+
+- [MDAnalysis Code of Conduct and Community Guidelines](#mdanalysis-code-of-conduct-and-community-guidelines)
+- [Reporting](#reporting)
+- [Enforcement](#enforcement)
+- [Acknowledgment](#acknowledgment)
+
+<!-- markdown-toc end -->
 # MDAnalysis Code of Conduct and Community Guidelines
 
 MDAnalysis is an engaged and respectful community made up of people from all
