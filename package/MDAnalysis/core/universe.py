@@ -64,14 +64,14 @@ import MDAnalysis
 import sys
 
 from .. import _ANCHOR_UNIVERSES
-from ..lib import util
-from ..lib.util import cached
-from ..lib.log import ProgressMeter, _set_verbose
 from ..exceptions import NoDataError
+from ..lib import util
+from ..lib.log import ProgressMeter, _set_verbose
+from ..lib.util import cached
 from . import groups
+from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
-from ._get_readers import get_reader_for, get_parser_for
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 
@@ -158,7 +158,7 @@ class Universe(object):
     in_memory
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
-    in_memory_frame_interval
+    in_memory_step
         Only read every nth frame into in-memory representation.
 
     Attributes
@@ -387,11 +387,11 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(kwargs.get("in_memory_frame_interval", 1))
+            self.transfer_to_memory(step=kwargs.get("in_memory_step", 1))
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, frame_interval=1, verbose=None, quiet=None):
+    def transfer_to_memory(self, start=None, stop=None, step=None, verbose=None, quiet=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -400,7 +400,11 @@ class Universe(object):
 
         Parameters
         ----------
-        frame_interval : int, optional
+        start: int, optional
+            start reading from the nth frame.
+        stop: int, optional
+            read upto and excluding the nth frame.
+        step : int, optional
             Read in every nth frame. [1]
         verbose : bool, optional
             Will print the progress of loading trajectory to memory, if
@@ -419,14 +423,14 @@ class Universe(object):
             # trajectory file formats
             try:
                 coordinates = self.trajectory.timeseries(
-                    self.atoms, format='fac', step=frame_interval)
+                    self.atoms, start=start, stop=stop, step=step, format='fac')
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
-                                   interval=frame_interval, verbose=verbose)
+                                   interval=step, verbose=verbose)
                 coordinates = []  # TODO: use pre-allocated array
-                for ts in self.trajectory[::frame_interval]:
+                for ts in self.trajectory[start:stop:step]:
                     coordinates.append(np.copy(ts.positions))
                     pm.echo(ts.frame)
                 coordinates = np.array(coordinates)
