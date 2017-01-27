@@ -199,8 +199,8 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     if center or superposition:
         # make copies (do not change the user data!)
         # weights=None is equivalent to all weights 1
-        a = a - np.average(a, axis=0, weights=weights)
-        b = b - np.average(b, axis=0, weights=weights)
+        a -= np.average(a, axis=0, weights=weights)
+        b -= np.average(b, axis=0, weights=weights)
 
     if weights is not None:
         if len(weights) != len(a):
@@ -328,9 +328,9 @@ class RMSD(AnalysisBase):
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
 
-        filename : str (optional)
+        filename : str, optional
             write RSMD into file file :meth:`RMSD.save`
-        mass_weighted : bool deprecated
+        mass_weighted : bool (deprecated)
              do a mass-weighted RMSD fit
         weights : str/array_like (optional)
              choose weights. If 'str' uses masses as weights

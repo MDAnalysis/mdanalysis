@@ -362,10 +362,10 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
        When using 2. or 3. with *sel1* and *sel2* then these selections can
        also each be a list of selection strings (to generate a AtomGroup with
        defined atom order as described under :ref:`ordered-selections-label`).
-    mass_weighted : boolean, optional, deprecated
+    mass_weighted : boolean, optional (deprecated)
        ``True`` uses the masses :meth:`reference.masses` as weights for the
        RMSD fit.
-    weights : str/array_like (optional)
+    weights : str/array_like, optional
        weights to be used for fit. Can be either 'mass' or an array_like
     tol_mass: float, optional
        Reject match if the atomic masses for matched atoms differ by more than
@@ -395,6 +395,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     old_rmsd
         RMSD before spatial alignment
     new_rmsd
+        RMSD after spatial alignment
 
     See Also
     --------
@@ -411,7 +412,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
        the old behavior was the equivalent of *strict* = ``True``.
 
     .. versionchanged:: 0.16.0
-       new general 'weights' kwarg replace mass_weights
+       new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')

@@ -173,7 +173,7 @@ def shrinkage_covariance_estimator( coordinates,
 def covariance_matrix(ensemble,
                       selection="name CA",
                       estimator=shrinkage_covariance_estimator,
-                      weights=None,
+                      weights='mass',
                       reference=None):
     """
     Calculates (optionally mass weighted) covariance matrix
@@ -190,7 +190,7 @@ def covariance_matrix(ensemble,
         of frames and M the number of atoms). See ml_covariance_estimator and
         shrinkage_covariance_estimator for reference.
     weights : str/array_like (optional)
-        specify optional weights. If ``mass`` then chose masses of ensemble atoms
+        specify weights. If ``'mass'`` then chose masses of ensemble atoms, if ``None`` chose uniform weights
     reference : MDAnalysis.Universe object (optional)
         Use the distances to a specific reference structure rather than the
         distance to the mean.
