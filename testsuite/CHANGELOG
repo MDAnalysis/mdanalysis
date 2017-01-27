@@ -14,7 +14,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
 ??/??/16 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
-         tyler.je.reddy
+         tyler.je.reddy, utkbansal
 
   * 0.16
     - added two unit tests for MDAnalysis.analysis.polymer

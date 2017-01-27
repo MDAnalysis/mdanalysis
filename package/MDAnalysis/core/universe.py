@@ -403,7 +403,7 @@ class Universe(object):
         start: int, optional
             start reading from the nth frame.
         stop: int, optional
-            read upto the nth frame.
+            read upto and excluding the nth frame.
         step : int, optional
             Read in every nth frame. [1]
         verbose : bool, optional
