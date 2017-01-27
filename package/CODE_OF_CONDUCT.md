@@ -112,6 +112,25 @@ The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
 
+# Enforcement
+
+When a report is send to us we will reply a soon as possible to confirm receipt,
+we strive to answer in less then 24 hours. We will review the incident and
+determine, to the best of our ability
+
+- what happened
+- whether this event constitutes a code of conduct violations
+- who, if anyone, was the bad actor
+- whether this is an ongoing situation
+
+This information will collected in writing. We strive to reach a resolution in a
+week after conformation. Once we agree on a resolution, but before it is
+enacted, we will contact the original reporter and any other affected parties
+and explain the proposed resolution. We will ask if this resolution is
+acceptable and note feedback for the record. However we are not required to act
+on this feedback.
+
+
 # Acknowledgment
 
 Original text courtesy of
