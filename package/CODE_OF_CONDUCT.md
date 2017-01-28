@@ -46,7 +46,7 @@ person's ability to participate within them.
 By embracing the following principles, guidelines and actions to follow or
 avoid, you will help us make MDAnalysis a welcoming and productive community. If
 that doesn't answer your questions, feel free to contact us
-at [*User-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
+at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 
 
 1. **Be friendly and patient**.
