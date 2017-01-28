@@ -33,8 +33,8 @@ work, there is urgency or risk to someone, nobody is intervening publicly and
 you don't feel comfortable speaking in public, etc. For these or other reasons,
 structured follow-up may be necessary and here we provide the means for that: we
 welcome reports by
-emailing [*Conduct-email*](mailto:mdnalysis-conduct@googlegroups.com) or
-in anonymous by filling out [*this form*](TODO).
+emailing [*Conduct-email*][conduct-mail] or
+in anonymous by filling out [*this form*][conduct-form].
 
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
@@ -113,8 +113,8 @@ reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
 You can file a report by emailing
-the [*Conduct-mail*](mailto:mdnalysis-conduct@googlegroups.com) or by
-filing out [this form](TODO). The project team is obligated to maintain
+the [*Conduct-mail*][conduct-mail] or by
+filing out [this form][conduct-form]. The project team is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
@@ -124,7 +124,7 @@ report, we will take appropriate action.
 # Enforcement
 
 When a report is send to us we will reply a soon as possible to confirm receipt,
-we strive to answer in less then 24 hours. We will review the incident and
+we strive to answer in less than 24 hours. We will review the incident and
 determine, to the best of our ability
 
 - what happened
@@ -136,7 +136,7 @@ This information will collected in writing. We strive to reach a resolution in a
 week after conformation. Once we agree on a resolution, but before it is
 enacted, we will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
-acceptable and note feedback for the record. However we are not required to act
+acceptable and note feedback for the record, however we are not required to act
 on this feedback.
 
 
@@ -154,3 +154,6 @@ materials under open licensing terms for us to easily reuse.
 
 All content on this page is licensed under a [*Creative Commons
 Attribution*](http://creativecommons.org/licenses/by/3.0/) license. 
+
+[conduct-mail]: mailto:mdnalysis-conduct@googlegroups.com
+[conduct-form]: https://goo.gl/forms/w2IwBKkY3oT0aVEB3
