@@ -132,8 +132,8 @@ determine, to the best of our ability
 - who, if anyone, was the bad actor
 - whether this is an ongoing situation
 
-This information will collected in writing. We strive to reach a resolution in a
-week after conformation. Once we agree on a resolution, but before it is
+This information will be collected in writing. We strive to reach a resolution
+in a week after conformation. Once we agree on a resolution, but before it is
 enacted, we will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
 acceptable and note feedback for the record, however we are not required to act
