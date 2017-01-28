@@ -34,8 +34,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
-from MDAnalysisTests import tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class TestMol2(TestCase):

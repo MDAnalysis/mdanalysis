@@ -1,3 +1,5 @@
+.. _overview-label:
+
 ==========================
  Overview over MDAnalysis
 ==========================
@@ -134,10 +136,7 @@ as described in :ref:`selection-commands-label`.
 Examples
 ========
 
-The easiest way to get started with MDAnalysis is to read this
-introduction and the chapter on :ref:`selection-commands-label` and then
-explore the package interactively in IPython_ or another interactive
-Python interpreter.
+The easiest way to get started with MDAnalysis is to read this introduction and the chapters on :ref:`topology-label` and :ref:`selection-commands-label`, then explore the package interactively in IPython_ or another interactive Python interpreter.
 
 Included trajectories
 ---------------------

@@ -31,8 +31,8 @@ from numpy.testing import (
 )
 from nose.plugins.attrib import attr
 
-from MDAnalysisTests.core.groupbase import make_Universe
-from MDAnalysis.tests.datafiles import (
+from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import (
     COORDINATES_XYZ, COORDINATES_TRR,
     GRO, TRR,
     GRO_velocity, PDB_xvf, TRR_xvf

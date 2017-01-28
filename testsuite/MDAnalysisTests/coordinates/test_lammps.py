@@ -7,14 +7,13 @@ from MDAnalysis import NoDataError
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
                            assert_, assert_array_almost_equal)
 
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, make_Universe
 from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
 )
 from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
 )
-from MDAnalysisTests.core.groupbase import make_Universe
 
 
 def test_datareader_ValueError():

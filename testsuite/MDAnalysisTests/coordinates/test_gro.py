@@ -15,8 +15,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-from MDAnalysisTests import tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class TestGROReader(TestCase, RefAdK):

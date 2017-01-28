@@ -33,7 +33,7 @@ from numpy.testing import (
 from nose.tools import raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
@@ -91,6 +91,13 @@ class TestAtomAttr(TopologyAttrMixin):
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
     attrclass = tpattrs.AtomAttr
 
+    @staticmethod
+    def test_set_atom_VE():
+        u = make_Universe(('names',))
+        at = u.atoms[0]
+
+        assert_raises(ValueError, setattr, at, 'name', ['oopsy', 'daisies'])
+
     def test_get_atoms(self):
         result = self.attr.get_atoms(DummyGroup([2, 1]))
 
@@ -98,10 +105,22 @@ class TestAtomAttr(TopologyAttrMixin):
         assert_array_equal(result,
                            self.values[[2, 1]])
 
-    def test_set_atoms(self):
-        self.attr.set_atoms(DummyGroup([3, 7]), np.array([23, 504]))
-        assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])),
-                           np.array([23, 504]))
+    def test_set_atoms_singular(self):
+        # set len 2 Group to len 1 value
+        dg = DummyGroup([3, 7])
+        self.attr.set_atoms(dg, 567)
+        assert_array_equal(self.attr.get_atoms(dg), np.array([567, 567]))
+
+    def test_set_atoms_plural(self):
+        # set len 2 Group to len 2 values
+        dg = DummyGroup([3, 7])
+        self.attr.set_atoms(dg, np.array([23, 504]))
+        assert_array_equal(self.attr.get_atoms(dg), np.array([23, 504]))
+
+    def test_set_atoms_VE(self):
+        # set len 2 Group to wrong length values
+        dg = DummyGroup([3, 7])
+        assert_raises(ValueError, self.attr.set_atoms, dg, np.array([6, 7, 8, 9]))
 
     def test_get_residues(self):
         """Unless overriden by child class, this should yield values for all
@@ -187,6 +206,13 @@ class TestResidueAttr(TopologyAttrMixin):
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
 
+    @staticmethod
+    def test_set_residue_VE():
+        u = make_Universe(('resnames',))
+        res = u.residues[0]
+
+        assert_raises(ValueError, setattr, res, 'resname', ['wrong', 'length'])
+
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([7, 3, 9])),
                            self.values[[3, 2, 2]])
@@ -195,11 +221,23 @@ class TestResidueAttr(TopologyAttrMixin):
         assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])),
                            self.values[[1, 2, 1, 3]])
 
-    def test_set_residues(self):
+    def test_set_residues_singular(self):
+        dg = DummyGroup([3, 0, 1])
+        self.attr.set_residues(dg, 2)
+
+        assert_array_almost_equal(self.attr.get_residues(dg),
+                                  np.array([2, 2, 2]))
+
+    def test_set_residues_plural(self):
         self.attr.set_residues(DummyGroup([3, 0, 1]),
-                               np.array([23, 504, 0.0002]))
+                               np.array([23, 504, 2]))
         assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
-                                  np.array([23, 504, 0.0002]))
+                                  np.array([23, 504, 2]))
+
+    def test_set_residues_VE(self):
+        dg = DummyGroup([3, 0, 1])
+
+        assert_raises(ValueError, self.attr.set_residues, dg, np.array([4.5, 5.2]))
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
@@ -292,6 +330,13 @@ class TestSegmentAttr(TopologyAttrMixin):
     values = np.array([-0.19, 500])
     attrclass = tpattrs.SegmentAttr
 
+    @staticmethod
+    def test_set_segment_VE():
+        u = make_Universe(('segids',))
+        seg = u.segments[0]
+
+        assert_raises(ValueError, setattr, seg, 'segid', [1, 2, 3])
+
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([2, 4, 1])),
                            self.values[[1, 1, 0]])
@@ -308,11 +353,19 @@ class TestSegmentAttr(TopologyAttrMixin):
         assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 0])),
                            self.values[[1, 0, 0]])
 
-    def test_set_segments(self):
-        self.attr.set_segments(DummyGroup([0, 1]),
-                               np.array([23, -0.0002]))
-        assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 1])),
-                           np.array([-0.0002, 23, -0.0002]))
+    def test_set_segments_singular(self):
+        dg = DummyGroup([0, 1])
+        self.attr.set_segments(dg, 0.45)
+        assert_array_equal(self.attr.get_segments(dg), np.array([0.45, 0.45]))
+
+    def test_set_segments_plural(self):
+        dg = DummyGroup([0, 1])
+        self.attr.set_segments(dg, np.array([23, -0.0002]))
+        assert_array_equal(self.attr.get_segments(dg), np.array([23, -0.0002]))
+
+    def test_set_segments_VE(self):
+        dg = DummyGroup([0, 1])
+        assert_raises(ValueError, self.attr.set_segments, dg, np.array([4, 5, 6, 7]))
 
 
 class TestAttr(object):
@@ -343,3 +396,58 @@ class TestAttr(object):
         # is that big.
         assert_(np.allclose(np.abs(self.ag.principal_axes()), np.eye(3),
                             rtol=0, atol=0.5))
+
+
+class TestCrossLevelAttributeSetting(object):
+    """
+
+    Can only get attributes belonging to higher level objects
+
+    Atom.resid works!
+    ResidueGroup.names = ['a', 'b', 'c'] doesn't work, Atom is below Residue
+
+    Setting any attribute we can get should only work if they are the same level.
+
+    Atom.resid = 4  should fail because resid belongs to Residue not Atom
+    """
+    @staticmethod
+    def _check_crosslevel_fail(item, attr):
+        assert_raises(NotImplementedError, setattr, item, attr, 1.0)
+
+    def test_set_crosslevel(self):
+        u = make_Universe(('names', 'resids', 'segids'))
+
+        # component and group in each level
+        atomlevel = (u.atoms[0], u.atoms[:10])
+        residuelevel = (u.residues[0], u.residues[:5])
+        segmentlevel = (u.segments[0], u.segments[:2])
+        levels = {0:atomlevel, 1:residuelevel, 2:segmentlevel}
+
+        atomattr = 'names'
+        residueattr = 'resids'
+        segmentattr = 'segids'
+        attrs = {0:atomattr, 1:residueattr, 2:segmentattr}
+
+        # loop over Atom, Residue, Segment level
+        for level_idx, level in levels.items():
+            # loop over an Attribute native to each level
+            for attr_idx, attr in attrs.items():
+                if level_idx == attr_idx:
+                    # if we're on the same level, then this should work
+                    # ie Atom.mass = 12.0 is OK!
+                    continue
+                component, group = level
+                # eg 'name', 'names' = 'names', 'names'[:-1]
+                singular_attr, plural_attr = attr[:-1], attr
+
+                # eg check ResidueGroup.names = 'newvalue' raises NIE
+                # or ResidueGroup.segids = 'newvalue' raises NIE
+                yield self._check_crosslevel_fail, group, plural_attr
+
+                if attr_idx < level_idx:
+                    # Segment.resid doesn't even exist as an attribute
+                    # so we don't have to check that setting fails
+                    # Atom.segid does exist as attribute,
+                    # but will fail to be set
+                    continue
+                yield self._check_crosslevel_fail, component, singular_attr

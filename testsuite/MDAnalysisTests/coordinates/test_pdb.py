@@ -20,8 +20,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
-from MDAnalysisTests import parser_not_found, tempdir
-from MDAnalysisTests.core.groupbase import make_Universe
+from MDAnalysisTests import parser_not_found, tempdir, make_Universe
+
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
