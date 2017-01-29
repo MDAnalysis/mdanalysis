@@ -47,6 +47,7 @@ install:
   - source activate pyenv
   # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
   - pip install griddataformats
+  - pip install nose-timer
   # Add missing packages for the full build
   - |
     if [[ $SETUP == 'full' ]]; then \
@@ -73,7 +74,7 @@ install:
 script:
   - pylint --rcfile=package/.pylintrc package/MDAnalysis
   - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak
+  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
