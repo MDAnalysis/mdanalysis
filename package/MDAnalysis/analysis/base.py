@@ -27,16 +27,15 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
-from six.moves import range, zip
-
 import inspect
 import logging
+
 import numpy as np
 import six
-
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from six.moves import range, zip
 
 logger = logging.getLogger(__name__)
 
@@ -223,7 +222,7 @@ class AnalysisFromFunction(AnalysisBase):
         """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.Reader)):
-            args = args + (trajectory, )
+            args = args + (trajectory,)
             trajectory = None
 
         if trajectory is None:
