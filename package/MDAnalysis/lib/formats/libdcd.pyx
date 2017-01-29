@@ -17,6 +17,7 @@
 from os import path
 import numpy as np
 from collections import namedtuple
+from MDAnalysis.lib.mdamath import triclinic_box
 
 cimport numpy as np
 
@@ -75,6 +76,11 @@ cdef extern from 'include/readdcd.h':
                        char **remarks, int *len_remarks)
     void close_dcd_read(int *freeind, float *fixedcoords)
     int read_dcdstep(fio_fd fd, int n_atoms, float *X, float *Y, float *Z,
+                     float *unitcell, int num_fixed,
+                     int first, int *indexes, float *fixedcoords,
+                     int reverse_endian, int charmm)
+    int read_dcdsubset(fio_fd fd, int n_atoms, int lowerb, int upperb,
+                     float *X, float *Y, float *Z,
                      float *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
@@ -254,7 +260,11 @@ cdef class DCDFile:
 
         first_frame = self.current_frame == 0
 
-        ok = read_dcdstep(self.fp, self.n_atoms, <DTYPE_t*> &x[0],
+        cdef int lowerb = 0
+        cdef int upperb = self.n_atoms - 1
+
+        ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
+                          <DTYPE_t*> &x[0],
                           <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
                           <DTYPE_t*> unitcell.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
@@ -268,6 +278,16 @@ cdef class DCDFile:
             raise StopIteration
 
         self.current_frame += 1
+
+        _ts_order = [0, 2, 5, 4, 3, 1]
+        uc = np.take(unitcell, _ts_order)
+        if np.any(uc < 0.) or np.any(uc[3:] > 180.):
+            # might be new CHARMM: box matrix vectors
+            H = unitcell
+            e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
+            uc = triclinic_box(e1, e2, e3)
+
+        unitcell = uc
 
         return DCDFrame(xyz, unitcell)
 
