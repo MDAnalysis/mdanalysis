@@ -138,3 +138,23 @@ class DCDWriteHeaderTest(TestCase):
 
 
 
+class DCDWriteTest(TestCase):
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(DCD, 'r')
+
+    def tearDown(self):
+        try: 
+            os.unlink(self.testfile)
+        except OSError:
+            pass
+        del self.tmpdir
+
+    def test_write_mode(self):
+        # ensure that writing of DCD files only occurs with properly
+        # opened files
+        with self.assertRaises(IOError):
+            self.dcdfile_r.write()

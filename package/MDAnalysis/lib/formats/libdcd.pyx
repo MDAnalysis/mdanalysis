@@ -341,3 +341,12 @@ cdef class DCDFile:
                              self.charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
+
+    def write(self):
+        if not self.is_open:
+            raise IOError("No file open")
+        if self.mode != 'w':
+            raise IOError('File opened in mode: {}. Writing only allowed '
+                               'in mode "w"'.format('self.mode'))
+
+	
