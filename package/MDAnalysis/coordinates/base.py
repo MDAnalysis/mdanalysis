@@ -1296,7 +1296,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             if start is None:
                 start = 0
             elif start < 0:
-                start += nframes
+                start = nframes + start
             if start < 0:
                 start = 0
 
@@ -1310,14 +1310,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif step < 0:
             if start is None:
                 start = nframes - 1
-            elif start < 0:
+            elif start < 0 :
                 start = nframes + start
 
             if start > nframes:
                 start = nframes - 1
 
             if stop is not None:
-                if stop < 0:
+                if stop < 0 :
                     stop = -(stop + 2)
             else:
                 stop = -1
