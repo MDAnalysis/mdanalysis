@@ -1311,17 +1311,21 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             if start is None:
                 start = nframes - 1
             elif start < 0:
-                start = nframes + start
+                start += nframes
+            if start < 0:
+                start = 0
 
             if start > nframes:
                 start = nframes - 1
 
             if stop is not None:
                 if stop < 0:
-                    stop = -(stop + 2)
+                    stop += nframes
+                    # stop = -(stop + 2)
             else:
                 stop = -1
 
+        # print (start, stop, step)
         return start, stop, step
 
     def __repr__(self):

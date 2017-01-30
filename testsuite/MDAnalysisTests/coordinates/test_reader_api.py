@@ -152,7 +152,7 @@ class TestMultiFrameReader(_Multi):
             (-10, None, 1),
             (100, None, -1),  # beyond real end
             (100, 5, -20),
-            # (-5, -50, -1)
+            (-2, -10, -2)
         ]:
             yield self._check_slice, start, stop, step
 
