@@ -1292,27 +1292,35 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         nframes = len(self)
         step = step or 1
 
-        if start is None:
-            start = 0 if step > 0 else nframes - 1
-        elif start < 0:
-            start += nframes
+        if step > 0:
+            if start is None:
+                start = 0
+            elif start < 0:
+                start = nframes + start
+            if start < 0:
+                start = 0
 
-        if stop is not None:
-            if stop < 0:
-                stop += nframes
-            elif stop > nframes:
+            if stop is None:
                 stop = nframes
-        else:
-            stop = nframes if step > 0 else -1
+            elif stop < 0:
+                stop += nframes
+            if stop > nframes:
+                stop = nframes
 
-        if step > 0 and stop < start:
-            raise IndexError("Stop frame is lower than start frame")
-        elif step > 0 and stop >= nframes:
-            stop = nframes
-        elif step < 0 and start < stop:
-            raise IndexError("Start frame is lower than stop frame")
-        elif step < 0 and start >= nframes:
-            start = nframes - 1
+        elif step < 0:
+            if start is None:
+                start = nframes - 1
+            elif start < 0 :
+                start = nframes + start
+
+            if start > nframes:
+                start = nframes - 1
+
+            if stop is not None:
+                if stop < 0 :
+                    stop = -(stop + 2)
+            else:
+                stop = -1
 
         return start, stop, step
 
