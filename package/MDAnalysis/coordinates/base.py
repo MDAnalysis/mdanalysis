@@ -1190,6 +1190,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ----
         *frame* is a 0-based frame index.
         """
+
         def apply_limits(frame):
             if frame < 0:
                 frame += len(self)
@@ -1213,6 +1214,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame_with_aux(apply_limits(f))
+
             return listiter(frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
@@ -1294,7 +1296,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             if start is None:
                 start = 0
             elif start < 0:
-                start += nframes
+                start = nframes + start
             if start < 0:
                 start = 0
 
@@ -1308,14 +1310,14 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif step < 0:
             if start is None:
                 start = nframes - 1
-            elif start < 0:
+            elif start < 0 :
                 start = nframes + start
 
             if start > nframes:
                 start = nframes - 1
 
             if stop is not None:
-                if stop < 0:
+                if stop < 0 :
                     stop = -(stop + 2)
             else:
                 stop = -1
@@ -1429,7 +1431,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
-        while aux.step_to_frame(aux.step+1, ts) < 0:
+        while aux.step_to_frame(aux.step + 1, ts) < 0:
             next(aux)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
@@ -1563,7 +1565,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         setattr(self.ts.aux, new, self.ts.aux[auxname])
         delattr(self.ts.aux, auxname)
 
-
     def get_aux_descriptions(self, auxnames=None):
         """Get descriptions to allow reloading the specified auxiliaries.
 
@@ -1594,7 +1595,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         return descriptions
 
 
-
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
@@ -1619,6 +1619,7 @@ class Reader(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
 
     """
+
     def __init__(self, filename, convert_units=None, **kwargs):
         super(Reader, self).__init__()
 
@@ -1672,6 +1673,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
+
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -1738,7 +1740,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
-    # def write_next_timestep(self, ts=None)
+        # def write_next_timestep(self, ts=None)
 
 
 class SingleFrameReader(ProtoReader):
