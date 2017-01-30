@@ -6,9 +6,10 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
-from MDAnalysisTests.datafiles import DCD
+from MDAnalysisTests.datafiles import PSF, DCD
 
 from unittest import TestCase
+import MDAnalysis
 from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
@@ -120,7 +121,9 @@ class DCDWriteHeaderTest(TestCase):
     def test_write_header_crude(self):
         # test that _write_header() can produce a very crude
         # header for a new / empty file
-        self.dcdfile._write_header()
+        self.dcdfile._write_header(remarks='Crazy!', n_atoms=22,
+                                   starting_step=12, ts_between_saves=10,
+                                   time_step=0.02)
         self.dcdfile.close()
 
         # we're not actually asserting anything, yet
@@ -134,7 +137,147 @@ class DCDWriteHeaderTest(TestCase):
         # an exception should be raised on any attempt to use
         # _write_header with a DCDFile object in 'r' mode
         with self.assertRaises(IOError):
-            self.dcdfile_r._write_header()
+            self.dcdfile_r._write_header(remarks='Crazy!', n_atoms=22,
+                                         starting_step=12, ts_between_saves=10,
+                                         time_step=0.02)
 
+
+
+class DCDWriteTest(TestCase):
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(DCD, 'r')
+
+        with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            for frame in f_in:
+                frame = frame._asdict()
+                f_out.write(xyz=frame['x'],
+                            box=frame['unitcell'].astype(np.float64),
+                            step=f_in.istart,
+                            natoms=frame['x'].shape[0],
+                            charmm=0,
+                            time_step=f_in.delta,
+                            ts_between_saves=f_in.nsavc,
+                            remarks=f_in.remarks)
+
+
+    def tearDown(self):
+        try: 
+            os.unlink(self.testfile)
+        except OSError:
+            pass
+        del self.tmpdir
+
+    def test_write_mode(self):
+        # ensure that writing of DCD files only occurs with properly
+        # opened files
+        with self.assertRaises(IOError):
+            self.dcdfile_r.write(xyz=np.zeros((3,3)),
+                                 box=np.zeros(6, dtype=np.float64),
+                                 step=0,
+                                 natoms=330,
+                                 charmm=0,
+                                 time_step=22.2,
+                                 ts_between_saves=3,
+                                 remarks='')
+
+    def test_written_dcd_coordinate_data_shape(self):
+        # written coord shape should match for all frames
+        expected = (3341, 3)
+        with DCDFile(self.testfile) as f:
+            for frame in f:
+                xyz = f.read()[0]
+                assert_equal(xyz.shape, expected)
+
+    def test_written_unit_cell(self):
+        # written unit cell dimensions should match for all frames
+        expected = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
+                            dtype=np.float32)
+        with DCDFile(self.testfile) as f:
+            for frame in f:
+                unitcell = f.read()[1]
+                assert_equal(unitcell, expected)
+
+    def test_written_num_frames(self):
+        expected = 98
+        with DCDFile(self.testfile) as f:
+            assert_equal(len(f), expected)
+
+    def test_written_seek(self):
+        # ensure that we can seek properly on written DCD file
+        new_frame = 91
+        with DCDFile(self.testfile) as f:
+            f.seek(new_frame)
+            assert_equal(f.tell(), new_frame)
+
+    def test_written_zero_based_frames(self):
+        # ensure that the first written DCD frame is 0
+        expected_frame = 0
+        with DCDFile(self.testfile) as f:
+            assert_equal(f.tell(), expected_frame)
+
+    def test_written_remarks(self):
+        # ensure that the REMARKS field *can be* preserved exactly
+        # in the written DCD file
+        expected = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
+        with DCDFile(self.testfile) as f:
+            print('len(expected):', len(expected))
+            print('len(f.remarks):', len(f.remarks))
+            assert_equal(f.remarks.decode(), expected)
+
+    def test_written_nsavc(self):
+        # ensure that nsavc, the timesteps between frames written
+        # to file, is preserved in the written DCD file
+        expected = self.dcdfile_r.nsavc
+        actual = DCDFile(self.testfile).nsavc
+        assert_equal(actual, expected)
+
+    def test_written_istart(self):
+        # ensure that istart, the starting timestep, is preserved
+        # in the written DCD file
+        expected = self.dcdfile_r.istart
+        actual = DCDFile(self.testfile).istart
+        assert_equal(actual, expected)
+
+    def test_written_delta(self):
+        # ensure that delta, the trajectory timestep, is preserved in
+        # the written DCD file
+        expected = self.dcdfile_r.delta
+        actual = DCDFile(self.testfile).delta
+        assert_equal(actual, expected)
+
+class DCDByteArithmeticTest(TestCase):
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD, 'r')
+        self.filesize = os.path.getsize(DCD)
+
+    def test_relative_frame_sizes(self):
+        # the first frame of a DCD file should always be >= in size
+        # to subsequent frames, as the first frame contains the same
+        # atoms + (optional) fixed atoms
+        first_frame_size = self.dcdfile.firstframesize
+        general_frame_size = self.dcdfile.framesize
+        self.assertGreaterEqual(first_frame_size, general_frame_size)
+
+    def test_file_size_breakdown(self):
+        # the size of a DCD file is equivalent to the sum of the header
+        # size, first frame size, and (N - 1 frames) * size per general
+        # frame
+        expected = self.filesize
+        actual = self.dcdfile.header_size + self.dcdfile.firstframesize + \
+                 ((self.dcdfile.n_frames - 1) * self.dcdfile.framesize)
+        assert_equal(actual, expected)
+
+    def test_nframessize_int(self):
+        # require that the (nframessize / framesize) value used by DCDFile 
+        # is an integer (because nframessize / framesize + 1 = total frames,
+        # which must also be an int)
+        nframessize = self.filesize - self.dcdfile.header_size - \
+                           self.dcdfile.firstframesize
+        self.assertTrue(float(nframessize) % float(self.dcdfile.framesize) == 0)
 
 

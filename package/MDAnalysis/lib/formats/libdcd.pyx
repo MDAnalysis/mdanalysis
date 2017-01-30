@@ -18,6 +18,7 @@ from os import path
 import numpy as np
 from collections import namedtuple
 from MDAnalysis.lib.mdamath import triclinic_box
+import six
 
 cimport numpy as np
 
@@ -36,8 +37,10 @@ cdef extern from 'sys/types.h':
 ctypedef int fio_fd;
 ctypedef off_t fio_size_t
 
-ctypedef np.float32_t DTYPE_t
-DTYPE = np.float32
+ctypedef np.float32_t FLOAT_T
+ctypedef np.float64_t DOUBLE_T
+FLOAT = np.float32
+DOUBLE = np.float64
 
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
@@ -76,17 +79,20 @@ cdef extern from 'include/readdcd.h':
                        char **remarks, int *len_remarks)
     void close_dcd_read(int *freeind, float *fixedcoords)
     int read_dcdstep(fio_fd fd, int n_atoms, float *X, float *Y, float *Z,
-                     float *unitcell, int num_fixed,
+                     double *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
     int read_dcdsubset(fio_fd fd, int n_atoms, int lowerb, int upperb,
                      float *X, float *Y, float *Z,
-                     float *unitcell, int num_fixed,
+                     double *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
     int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
                    int istart, int nsavc, double delta, int with_unitcell, 
                    int charmm);
+    int write_dcdstep(fio_fd fd, int curstep, int curframe, 
+			 int natoms, const float *x, const float *y, const float *z,
+			 const double *unitcell, int charmm);
 
 DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
@@ -111,9 +117,9 @@ cdef class DCDFile:
     cdef int current_frame
     cdef readonly remarks
     cdef int reached_eof
-    cdef int firstframesize
-    cdef int framesize
-    cdef int header_size
+    cdef readonly int firstframesize
+    cdef readonly int framesize
+    cdef readonly int header_size
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -223,7 +229,7 @@ cdef class DCDFile:
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        self.firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
+        self.firstframesize = (self.n_atoms + 2) * self.n_dims * sizeof(float) + extrablocksize
         self.framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
                           extrablocksize)
         filesize = path.getsize(self.fname)
@@ -250,13 +256,13 @@ cdef class DCDFile:
             raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
-        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
+        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=FLOAT,
                                        order='F')
-        cdef np.ndarray unitcell = np.empty(6, dtype=DTYPE)
+        cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
 
-        cdef DTYPE_t[::1] x = xyz[:, 0]
-        cdef DTYPE_t[::1] y = xyz[:, 1]
-        cdef DTYPE_t[::1] z = xyz[:, 2]
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
 
         first_frame = self.current_frame == 0
 
@@ -264,9 +270,9 @@ cdef class DCDFile:
         cdef int upperb = self.n_atoms - 1
 
         ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
-                          <DTYPE_t*> &x[0],
-                          <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
-                          <DTYPE_t*> unitcell.data, self.nfixed, first_frame,
+                          <FLOAT_T*> &x[0],
+                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
+                          <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
         if ok != 0 and ok != -4:
@@ -324,7 +330,8 @@ cdef class DCDFile:
             raise IOError("DCD seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
-    def _write_header(self):
+    def _write_header(self, remarks, int n_atoms, int starting_step, 
+                      int ts_between_saves, double time_step):
 
         if not self.is_open:
             raise IOError("No file open")
@@ -332,12 +339,62 @@ cdef class DCDFile:
         if not self.mode=='w':
             raise IOError("Incorrect file mode for writing.")
 
-        cdef char c_remarks
+        #cdef char c_remarks
         cdef int len_remarks = 0
         cdef int with_unitcell = 1
 
-        ok = write_dcdheader(self.fp, &c_remarks, self.n_atoms, self.istart, 
-                             self.nsavc, self.delta, with_unitcell, 
+        if isinstance(remarks, six.string_types):
+            remarks = bytearray(remarks, 'ascii')
+
+        ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
+                             ts_between_saves, time_step, with_unitcell, 
                              self.charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
+
+    def write(self, xyz, double [:] box, int step, int natoms,
+              int ts_between_saves, int charmm, double time_step, remarks):
+        """write one frame into DCD file.
+
+        Parameters
+        ----------
+        xyz : ndarray, shape=(n_atoms, 3)
+            cartesion coordinates
+        box : ndarray, shape=(3, 3)
+            Box vectors for this frame
+        step : int
+            current step number, 1 indexed
+        time : float
+            current time
+        natoms : int
+            number of atoms in frame
+
+        Raises
+        ------
+        IOError
+        """
+        if not self.is_open:
+            raise IOError("No file open")
+        if self.mode != 'w':
+            raise IOError('File opened in mode: {}. Writing only allowed '
+                               'in mode "w"'.format('self.mode'))
+
+        #cdef double [:,:] unitcell = box
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
+
+	# prerequisite is a file struct for which the dcd header data
+	# has already been written
+        self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
+                           ts_between_saves=ts_between_saves,
+                           time_step=time_step)
+
+	
+        if self.current_frame == 0:
+            self.n_atoms = xyz.shape[0]
+
+        ok = write_dcdstep(self.fp, step, self.current_frame,
+                         self.n_atoms, <FLOAT_T*> &x[0],
+                         <FLOAT_T*> &y[1], <FLOAT_T*> &z[2],
+                         <DOUBLE_T*> &box[0], charmm)
