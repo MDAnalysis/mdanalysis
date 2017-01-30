@@ -133,7 +133,7 @@ determine, to the best of our ability
 - whether this is an ongoing situation
 
 This information will be collected in writing. We strive to reach a resolution
-within a week after conformation. Once a resolution has been agreed upon, but before it is
+within a week of confirmation. Once a resolution has been agreed upon, but before it is
 enacted, we will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
 acceptable and note feedback for the record. We are, however, not required to act
