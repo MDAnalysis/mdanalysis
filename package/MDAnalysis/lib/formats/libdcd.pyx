@@ -243,7 +243,7 @@ cdef class DCDFile:
 
     def read(self):
         if self.reached_eof:
-            raise IOError('Reached last frame in TRR, seek to 0')
+            raise IOError('Reached last frame in DCD, seek to 0')
         if not self.is_open:
             raise IOError("No file open")
         if self.mode != 'r':
