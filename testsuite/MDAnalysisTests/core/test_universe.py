@@ -40,6 +40,7 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     PSF_BAD,
     PDB_small,
+    PDB_chainidrepeat,
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
@@ -239,6 +240,21 @@ class TestUniverse(object):
         box = np.array([10, 11, 12, 90, 90, 90])
         u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
+
+
+def test_chainid_quick_select():
+    # check that chainIDs get grouped together when making the quick selectors
+    # this pdb file has 2 segments with chainID A
+    u = mda.Universe(PDB_chainidrepeat)
+
+    for sg in (u.A, u.B):
+        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
+    for seg in (u.C, u.D):
+        assert_(isinstance(seg, mda.core.groups.Segment))
+    assert_(len(u.A.atoms) == 10)
+    assert_(len(u.B.atoms) == 10)
+    assert_(len(u.C.atoms) == 5)
+    assert_(len(u.D.atoms) == 7)
 
 
 class TestGuessBonds(object):
@@ -500,5 +516,3 @@ class TestCustomReaders(object):
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                          topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
-
-
