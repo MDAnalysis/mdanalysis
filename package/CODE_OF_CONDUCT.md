@@ -123,20 +123,20 @@ report, we will take appropriate action.
 
 # Enforcement
 
-When a report is send to us we will reply a soon as possible to confirm receipt,
+When a report is sent to us we will reply as soon as possible to confirm receipt;
 we strive to answer in less than 24 hours. We will review the incident and
 determine, to the best of our ability
 
 - what happened
-- whether this event constitutes a code of conduct violations
-- who, if anyone, was the bad actor
+- whether this event constitutes a code of conduct violation
+- who, if anyone, was at fault
 - whether this is an ongoing situation
 
 This information will be collected in writing. We strive to reach a resolution
-in a week after conformation. Once we agree on a resolution, but before it is
+within a week after conformation. Once a resolution has been agreed upon, but before it is
 enacted, we will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
-acceptable and note feedback for the record, however we are not required to act
+acceptable and note feedback for the record. We are, however, not required to act
 on this feedback.
 
 
