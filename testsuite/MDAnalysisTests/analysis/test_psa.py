@@ -140,11 +140,26 @@ class TestPSAExceptions(TestCase):
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 6, 7)
 
+        # Check if i is negative
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, -1, 2)
+
+        # Check if i is negative
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 1, -2)
+
+        # Check if N is less than 2
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(1, 0, 0)
+
     def test_dist_mat_to_vec_func_i_equals_j(self):
-        """Test that ValueError is raised when i == j"""
+        """Test that ValueError is raised when i == j or i,j == N"""
 
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 4, 4)
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(4, 6, 4)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
         """Test that ValueError is raised when i or j are

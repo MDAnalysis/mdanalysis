@@ -573,10 +573,14 @@ def dist_mat_to_vec(N, i, j):
     :Returns:
       int, index (of the matrix element) in the corresponding distance vector
     """
-    try:
-        validate_dist_mat_to_vec_inputs(N, i, j)
-    except Exception as E:
-        raise E
+
+    if not (isinstance(N, int) or isinstance(i, int) or isinstance(j, int)):
+        raise ValueError("N, i, j all must be of type int")
+
+    if i < 0 or j < 0 or N < 2:
+        error_str = "Matrix indices are invalid; i and j must be greater than 0 and N must be greater the 2"
+        raise ValueError(error_str)
+
     if i > N or j > N:
         err_str = "Matrix indices are out of range; i and j must be less than"  \
                 + " N = {0:d}".format(N)
@@ -593,30 +597,6 @@ def dist_mat_to_vec(N, i, j):
         err_str = "Error in processing matrix indices; i and j must be integers"\
                 + " less than integer N = {0:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
-
-
-def validate_dist_mat_to_vec_inputs(N, i, j):
-    """
-    Validate the inputs of the function dist_mat_to_vec else raise an exception
-    :param N: int
-    :param i: int
-    :param j: int
-    :return: null
-    """
-
-    # Validating if the inputs are integer
-    try:
-        NValue = int(N)
-        iValue = int(i)
-        jValue = int(j)
-    except ValueError:
-        raise ValueError
-
-    # Check if the inputs are not out of bounds
-    if N-1 > i > 0 and N >= 2 and i < j < N:
-        pass
-    else:
-        raise ValueError
 
 
 class Path(object):
