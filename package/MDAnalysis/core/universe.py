@@ -40,6 +40,28 @@ construct a ``Universe`` from existing
 :func:`Merge` function.
 
 
+Working with Universes
+======================
+
+
+Quick segid selection
+---------------------
+
+If the loaded topology provided segids, then these are made accessible
+as attributes of the Universe.  If the segid starts with a number such
+as '4AKE', the letter 's' will be prepended to the segid.
+For example::
+
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import PSF, DCD
+
+   u = mda.Universe(PSF, DCD)
+   u.s4AKE  # selects all segments with segid 4AKE
+
+If only a single segment has that segid then a Segment object will
+be returned, otherwise a SegmentGroup will be returned.
+
+
 Classes
 =======
 
@@ -279,13 +301,28 @@ class Universe(object):
                 np.arange(self._topology.n_segments), self)
 
         # Update Universe namespace with segids
-        for seg in self.segments:
-            if hasattr(seg, 'segid') and seg.segid:
-                if seg.segid[0].isdigit():
-                    name = 's' + seg.segid
+        # Many segments can have same segid, so group together first
+        try:
+            # returns dict of segid:segment
+            segids = self.segments.groupby('segids')
+        except AttributeError:
+            # no segids, don't do this step
+            pass
+        else:
+            for segid, segment in segids.items():
+                if not segid:  # ignore blank segids
+                    continue
+
+                # cannot start attribute with number
+                if segid[0].isdigit():
+                    # prefix 's' if starts with number
+                    name = 's' + segid
                 else:
-                    name = seg.segid
-                self.__dict__[name] = seg
+                    name = segid
+                # if len 1 SegmentGroup, convert to Segment
+                if len(segment) == 1:
+                    segment = segment[0]
+                self.__dict__[name] = segment
 
     @property
     def universe(self):

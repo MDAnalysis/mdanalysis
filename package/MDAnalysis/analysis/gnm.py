@@ -100,6 +100,9 @@ import logging
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
 
+def _dsq(a, b):
+    return ((a - b)**2).sum()
+
 def backup_file(filename):
     '''
     This function helps prevent overwriting default named files
@@ -229,26 +232,27 @@ class GNMAnalysis(object):
         matrix = np.zeros((natoms, natoms), "float")
         res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
         icounter = 0
+
+        cutoffsq = self.cutoff ** 2
+
         for icounter in range(natoms):
             #find neighbours from the grid
             neighbour_atoms = []
             for x in (-1, 0, 1):
                 #print icounter, natoms, len(positions), len(res_positions)
-                if (res_positions[icounter][0] + x) >= 0 and (res_positions[icounter][0] + x) < len(grid):
+                gx = res_positions[icounter][0] + x
+                if 0 <= gx < len(grid):
                     for y in (-1, 0, 1):
-                        if (res_positions[icounter][1] + y) >= 0 and (res_positions[icounter][1] + y) < len(grid[0]):
+                        gy = res_positions[icounter][1] + y
+                        if 0 <= gy < len(grid[0]):
                             for z in (-1, 0, 1):
-                                if (res_positions[icounter][2] + z) >= 0 and (res_positions[icounter][2] + z) < len(
-                                        grid[0][0]):
-                                    neighbour_atoms += grid[
-                                        res_positions[icounter][0] + x][res_positions[icounter][1]
-                                                                        + y][res_positions[icounter][2] + z]
+                                gz = res_positions[icounter][2] + z
+                                if 0 <= gz < len(grid[0][0]):
+                                    neighbour_atoms += grid[gx][gy][gz]
+
             #for jcounter in range(icounter+1,natoms):
             for jcounter in neighbour_atoms:
-                if jcounter > icounter and ((positions[
-                    icounter][0] - positions[jcounter][0]) ** 2 +
-                        (positions[icounter][1] - positions[jcounter][1]) ** 2 +
-                        (positions[icounter][2] - positions[jcounter][2]) ** 2) <= self.cutoff ** 2:
+                if jcounter > icounter and _dsq(positions[icounter], positions[jcounter]) < cutoffsq:
                     matrix[icounter][jcounter] = -1.0
                     matrix[jcounter][icounter] = -1.0
                     matrix[icounter][icounter] = matrix[icounter][icounter] + 1
@@ -269,27 +273,13 @@ class GNMAnalysis(object):
         self.timeseries = []
         self._timesteps = []
 
-        try:
-            self.u.trajectory.time
-
-            def _get_timestep():
-                return self.u.trajectory.time
-
-            logger.debug("GNM analysis is recording time step")
-        except NotImplementedError:
-            # chained reader or xyz(?) cannot do time yet
-            def _get_timestep():
-                return self.u.trajectory.frame
-
-            logger.warn("GNM analysis is recording frame number instead of time step")
-
         for ts in self.u.trajectory:
             if counter % skip != 0:
                 counter += 1
                 continue
             counter += 1
             frame = ts.frame
-            timestep = _get_timestep()
+            timestep = ts.time
             self._timesteps.append(timestep)
 
             matrix = self.generate_kirchoff()
@@ -330,22 +320,22 @@ class closeContactGNMAnalysis(GNMAnalysis):
         res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
         residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue.atoms]
         matrix = np.zeros((nresidues, nresidues), "float")
+        cutoffsq = self.cutoff ** 2
+
         for icounter in range(natoms):
             neighbour_atoms = []
             for x in (-1, 0, 1):
-                if (res_positions[icounter][0] + x) >= 0 and (res_positions[icounter][0] + x) < len(grid):
+                gx = res_positions[icounter][0] + x
+                if 0 <= gx < len(grid):
                     for y in (-1, 0, 1):
-                        if (res_positions[icounter][1] + y) >= 0 and (res_positions[icounter][1] + y) < len(grid[0]):
+                        gy = res_positions[icounter][1] + y
+                        if 0 <= gy < len(grid[0]):
                             for z in (-1, 0, 1):
-                                if (res_positions[icounter][2] + z) >= 0 and (res_positions[icounter][2] + z) < len(
-                                        grid[0][0]):
-                                    neighbour_atoms += grid[res_positions[icounter][0] + x][
-                                        res_positions[icounter][1] + y][res_positions[icounter][2] + z]
+                                gz = res_positions[icounter][2] + z
+                                if 0 <= gz < len(grid[0][0]):
+                                    neighbour_atoms += grid[gx][gy][gz]
             for jcounter in neighbour_atoms:
-                if jcounter > icounter and ((positions[icounter][
-                    0] - positions[jcounter][0]) ** 2 +
-                        (positions[icounter][1] - positions[jcounter][1]) ** 2 +
-                        (positions[icounter][2] - positions[jcounter][2]) ** 2) <= self.cutoff ** 2:
+                if jcounter > icounter and _dsq(positions[icounter], positions[jcounter]) <= cutoffsq:
                     iresidue, jresidue = residue_index_map[icounter], residue_index_map[jcounter]
                     if self.MassWeight:
                         contact = 1.0 / (len(self.ca.residues[iresidue].atoms) * len(self.ca.residues[jresidue].atoms)) ** 0.5
