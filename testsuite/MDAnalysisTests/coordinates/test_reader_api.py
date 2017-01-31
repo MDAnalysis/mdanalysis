@@ -151,41 +151,14 @@ class TestMultiFrameReader(_Multi):
             (100, 10, 1),
             (-10, None, 1),
             (100, None, -1),  # beyond real end
-            (100, 5, -20)
+            (100, 5, -20),
+            (5, 1, 1), # Stop less than start
+            (1, 5, -1), # Stop less than start
+            (-100, None, None),
+            (100, None, None), # Outside of range of trajectory
+            (-2, 10, -2)
         ]:
             yield self._check_slice, start, stop, step
-
-    def test_slice_IE_1a(self):
-        """Stop less than start"""
-
-        def sl():
-            return list(self.reader[5:1:1])
-
-        assert_equal(self.reference[5:1:1], sl)
-
-    def test_slice_IE_1b(self):
-        """Stop less than start"""
-
-        def sl():
-            return list(self.reader[1:5:-1])
-
-        assert_equal(self.reference[1:5:-1], sl)
-
-    def test_slice_IE_2(self):
-        """Outside of range of trajectory"""
-
-        def sl():
-            return list(self.reader[100:])
-
-        assert_equal(self.reference[100:], sl)
-
-    def test_slice_IE_3(self):
-
-        assert_equal(len(self.reference[-100:]), len(list(self.reader[-100:])))
-
-    def test_slice_IE_4(self):
-
-        assert_equal(len(self.reference[-2:-10:-2])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 , len(list(self.reader[-2:-10:-2])))
 
     def test_slice_VE_1(self):
         def sl():

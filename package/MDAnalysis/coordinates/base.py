@@ -1292,38 +1292,24 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         nframes = len(self)
         step = step or 1
 
-        if step > 0:
-            if start is None:
-                start = 0
-            elif start < 0:
-                start += nframes
-            if start < 0:
-                start = 0
+        if start is None:
+            start = 0 if step > 0 else nframes - 1
+        elif start < 0:
+            start += nframes
+        if start < 0:
+            start = 0
 
-            if stop is None:
-                stop = nframes
-            elif stop < 0:
-                stop += nframes
-            if stop > nframes:
-                stop = nframes
+        if step < 0 and start > nframes:
+            start = nframes - 1
 
-        elif step < 0:
-            if start is None:
-                start = nframes - 1
-            elif start < 0:
-                start += nframes
-            if start < 0:
-                start = 0
+        if stop is None:
+            stop = nframes if step > 0 else -1
+        elif stop < 0:
+            stop += nframes
 
-            if start > nframes:
-                start = nframes - 1
+        if step > 0 and stop > nframes:
+            stop = nframes
 
-            if stop is None:
-                stop = -1
-            elif stop < 0:
-                stop += nframes
-
-        # print (start, stop, step)
         return start, stop, step
 
     def __repr__(self):
