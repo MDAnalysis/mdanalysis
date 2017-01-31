@@ -591,7 +591,7 @@ def dist_mat_to_vec(N, i, j):
         warn_str = "Column index entered (j = {:d} is smaller than row index"   \
                  + " (i = {:d}). Using symmetric element in upper triangle of"  \
                  + " distance matrix instead: i --> j, j --> i"
-        print(warn_str)
+        warnings.warn(war_str.format(j, i))
         return (N*j) + i - (j+2)*(j+1)/2
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\
