@@ -151,8 +151,7 @@ class TestMultiFrameReader(_Multi):
             (100, 10, 1),
             (-10, None, 1),
             (100, None, -1),  # beyond real end
-            (100, 5, -20),
-            (-2, -10, -2)
+            (100, 5, -20)
         ]:
             yield self._check_slice, start, stop, step
 
@@ -181,15 +180,12 @@ class TestMultiFrameReader(_Multi):
         assert_equal(self.reference[100:], sl)
 
     def test_slice_IE_3(self):
-        def sl():
-            return list(self.reader[-100:])
 
-        ref = self.reference[-100:]
-        count = 0
-        for i in sl():
-            count += 1
+        assert_equal(len(self.reference[-100:]), len(list(self.reader[-100:])))
 
-        assert_equal(count, len(ref))
+    def test_slice_IE_4(self):
+
+        assert_equal(len(self.reference[-2:-10:-2])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 , len(list(self.reader[-2:-10:-2])))
 
     def test_slice_VE_1(self):
         def sl():
