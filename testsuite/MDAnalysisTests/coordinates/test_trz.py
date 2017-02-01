@@ -1,6 +1,6 @@
+from six.moves import zip
 import MDAnalysis as mda
 import os
-from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_raises)

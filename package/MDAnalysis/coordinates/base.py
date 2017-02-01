@@ -123,14 +123,13 @@ in :mod:`MDAnalysis.coordinates.__init__`.
 
 """
 from __future__ import absolute_import
+import six
+from six.moves import range
 
+import numpy as np
 import copy
 import warnings
 import weakref
-
-import numpy as np
-import six
-from six.moves import range
 
 from . import core
 from .. import NoDataError

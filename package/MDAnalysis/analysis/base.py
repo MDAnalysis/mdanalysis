@@ -27,15 +27,15 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
+import six
+from six.moves import range, zip
 import inspect
 import logging
 
 import numpy as np
-import six
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
-from six.moves import range, zip
 
 logger = logging.getLogger(__name__)
 

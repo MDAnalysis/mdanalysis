@@ -212,12 +212,12 @@ The following classes are deprecated and are scheduled for removal in release 0.
 
 """
 from __future__ import division
+from six.moves import zip
 
 import os
 import errno
 import warnings
 import bz2
-from six.moves import zip
 
 import numpy as np
 from numpy.lib.utils import deprecate

@@ -1,3 +1,5 @@
+from six import StringIO
+from six.moves import zip
 import os
 from unittest import TestCase
 
@@ -16,8 +18,6 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, dec,
                            assert_array_almost_equal,
                            assert_almost_equal, assert_raises, assert_)
-from six import StringIO
-from six.moves import zip
 
 
 class TestPDBReader(_SingleFrameReader):
