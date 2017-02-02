@@ -157,4 +157,5 @@ class DCDWriteTest(TestCase):
         # ensure that writing of DCD files only occurs with properly
         # opened files
         with self.assertRaises(IOError):
-            self.dcdfile_r.write()
+            self.dcdfile_r.write(0, 0, 0, 0, 2, 2.5,
+            0.3, 100)

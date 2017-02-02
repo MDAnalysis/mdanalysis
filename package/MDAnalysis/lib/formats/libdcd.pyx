@@ -371,4 +371,11 @@ cdef class DCDFile:
             raise IOError('File opened in mode: {}. Writing only allowed '
                                'in mode "w"'.format('self.mode'))
 
+	# prerequisite is a file struct for which the dcd header data
+	# has already been written
+        self._write_header()
 	
+        #ok = write_dcdstep(self.fp, int curstep, int curframe,
+                         #self.n_atoms, <DTYPE_t*> &x[0],
+                         #<DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
+                         #<DTYPE_t*> unitcell.data, self.charmm)
