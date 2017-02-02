@@ -6,9 +6,10 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
-from MDAnalysisTests.datafiles import DCD
+from MDAnalysisTests.datafiles import PSF, DCD
 
 from unittest import TestCase
+import MDAnalysis
 from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
@@ -145,6 +146,7 @@ class DCDWriteTest(TestCase):
         self.testfile = self.tmpdir.name + '/test.dcd'
         self.dcdfile = DCDFile(self.testfile, 'w')
         self.dcdfile_r = DCDFile(DCD, 'r')
+        self.traj = MDAnalysis.Universe(PSF, DCD).trajectory
 
     def tearDown(self):
         try: 
@@ -152,10 +154,22 @@ class DCDWriteTest(TestCase):
         except OSError:
             pass
         del self.tmpdir
+        del self.traj
 
     def test_write_mode(self):
         # ensure that writing of DCD files only occurs with properly
         # opened files
         with self.assertRaises(IOError):
-            self.dcdfile_r.write(0, 0, 0, 0, 2, 2.5,
-            0.3, 100)
+            self.dcdfile_r.write(np.zeros((3,3)), np.zeros(6, dtype=np.float32),
+                                 0, 0.0, 330, 0)
+
+    def test_write_dcd(self):
+        with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            for frame in f_in:
+                frame = frame._asdict()
+                f_out.write(xyz=frame['x'],
+                            box=frame['unitcell'],
+                            step=0,
+                            time=0.0,
+                            natoms=frame['x'].shape[0],
+                            charmm=0)
