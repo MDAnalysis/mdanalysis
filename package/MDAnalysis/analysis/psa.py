@@ -212,6 +212,7 @@ import six
 from six.moves import range, cPickle
 
 import numpy as np
+import warnings
 
 import MDAnalysis
 import MDAnalysis.analysis.align
@@ -581,7 +582,7 @@ def dist_mat_to_vec(N, i, j):
         error_str = "Matrix indices are invalid; i and j must be greater than 0 and N must be greater the 2"
         raise ValueError(error_str)
 
-    if i > N or j > N:
+    if (j > i and (i > N - 1 or j > N)) or (j < i and (i > N or j > N - 1)):
         err_str = "Matrix indices are out of range; i and j must be less than"  \
                 + " N = {0:d}".format(N)
         raise ValueError(err_str)
@@ -591,7 +592,7 @@ def dist_mat_to_vec(N, i, j):
         warn_str = "Column index entered (j = {:d} is smaller than row index"   \
                  + " (i = {:d}). Using symmetric element in upper triangle of"  \
                  + " distance matrix instead: i --> j, j --> i"
-        warnings.warn(war_str.format(j, i))
+        warnings.warn(warn_str.format(j, i))
         return (N*j) + i - (j+2)*(j+1)/2
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\

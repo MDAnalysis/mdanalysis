@@ -144,7 +144,7 @@ class TestPSAExceptions(TestCase):
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, -1, 2)
 
-        # Check if i is negative
+        # Check if j is negative
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, 1, -2)
 
