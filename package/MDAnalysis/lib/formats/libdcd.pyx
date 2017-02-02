@@ -342,7 +342,29 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-    def write(self):
+    def write(self, xyz, velocity, forces, box, int step, float time,
+              float _lambda, int natoms):
+        """write one frame into DCD file.
+
+        Parameters
+        ----------
+        xyz : ndarray, shape=(n_atoms, 3)
+            cartesion coordinates
+        box : ndarray, shape=(3, 3)
+            Box vectors for this frame
+        step : int
+            current step number, 1 indexed
+        time : float
+            current time
+        _lambda : float
+            current lambda value
+        natoms : int
+            number of atoms in frame
+
+        Raises
+        ------
+        IOError
+        """
         if not self.is_open:
             raise IOError("No file open")
         if self.mode != 'w':
