@@ -20,6 +20,7 @@ from collections import namedtuple
 from MDAnalysis.lib.mdamath import triclinic_box
 
 cimport numpy as np
+ctypedef np.float32_t DTYPE_T
 
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -37,6 +38,7 @@ ctypedef int fio_fd;
 ctypedef off_t fio_size_t
 
 ctypedef np.float32_t DTYPE_t
+ctypedef np.float64_t DTYPE_t2
 DTYPE = np.float32
 
 from libc.stdint cimport uintptr_t
@@ -87,6 +89,9 @@ cdef extern from 'include/readdcd.h':
     int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
                    int istart, int nsavc, double delta, int with_unitcell, 
                    int charmm);
+    int write_dcdstep(fio_fd fd, int curstep, int curframe, 
+			 int natoms, const float *x, const float *y, const float *z,
+			 const double *unitcell, int charmm);
 
 DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
@@ -342,8 +347,7 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-    def write(self, xyz, velocity, forces, box, int step, float time,
-              float _lambda, int natoms):
+    def write(self, xyz, float [:] box, int step, float time, int natoms, int charmm):
         """write one frame into DCD file.
 
         Parameters
@@ -356,8 +360,6 @@ cdef class DCDFile:
             current step number, 1 indexed
         time : float
             current time
-        _lambda : float
-            current lambda value
         natoms : int
             number of atoms in frame
 
@@ -371,11 +373,21 @@ cdef class DCDFile:
             raise IOError('File opened in mode: {}. Writing only allowed '
                                'in mode "w"'.format('self.mode'))
 
+        #cdef double [:,:] unitcell = box
+        cdef DTYPE_t[::1] x = xyz[:, 0]
+        cdef DTYPE_t[::1] y = xyz[:, 1]
+        cdef DTYPE_t[::1] z = xyz[:, 2]
+
 	# prerequisite is a file struct for which the dcd header data
 	# has already been written
         self._write_header()
+
 	
-        #ok = write_dcdstep(self.fp, int curstep, int curframe,
+        if self.current_frame == 0:
+            self.n_atoms = xyz.shape[0]
+            #self.box = box
+
+        #ok = write_dcdstep(self.fp, step, self.current_frame,
                          #self.n_atoms, <DTYPE_t*> &x[0],
-                         #<DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
-                         #<DTYPE_t*> unitcell.data, self.charmm)
+                         #<DTYPE_t*> &y[1], <DTYPE_t*> &z[2],
+                         #<DTYPE_t2*> &box, charmm)
