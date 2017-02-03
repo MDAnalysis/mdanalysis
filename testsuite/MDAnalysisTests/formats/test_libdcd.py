@@ -157,12 +157,11 @@ class DCDWriteTest(TestCase):
                 frame = frame._asdict()
                 f_out.write(xyz=frame['x'],
                             box=frame['unitcell'].astype(np.float64),
-                            step=0,
-                            time=0.0,
+                            step=f_in.istart,
                             natoms=frame['x'].shape[0],
                             charmm=0,
                             time_step=f_in.delta,
-                            ts_between_saves=5,
+                            ts_between_saves=f_in.nsavc,
                             remarks=f_in.remarks)
 
 
@@ -181,7 +180,6 @@ class DCDWriteTest(TestCase):
             self.dcdfile_r.write(xyz=np.zeros((3,3)),
                                  box=np.zeros(6, dtype=np.float64),
                                  step=0,
-                                 time=0.0,
                                  natoms=330,
                                  charmm=0,
                                  time_step=22.2,
