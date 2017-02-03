@@ -152,6 +152,19 @@ class DCDWriteTest(TestCase):
         self.dcdfile_r = DCDFile(DCD, 'r')
         self.traj = MDAnalysis.Universe(PSF, DCD).trajectory
 
+        with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            for frame in f_in:
+                frame = frame._asdict()
+                f_out.write(xyz=frame['x'],
+                            box=frame['unitcell'].astype(np.float64),
+                            step=0,
+                            time=0.0,
+                            natoms=frame['x'].shape[0],
+                            charmm=0,
+                            time_step=10.3,
+                            ts_between_saves=5)
+
+
     def tearDown(self):
         try: 
             os.unlink(self.testfile)
@@ -173,20 +186,24 @@ class DCDWriteTest(TestCase):
                                  time_step=22.2,
                                  ts_between_saves=3)
 
-    def test_write_dcd(self):
-        with self.dcdfile_r as f_in, self.dcdfile as f_out:
-            for frame in f_in:
-                frame = frame._asdict()
-                f_out.write(xyz=frame['x'],
-                            box=frame['unitcell'].astype(np.float64),
-                            step=0,
-                            time=0.0,
-                            natoms=frame['x'].shape[0],
-                            charmm=0,
-                            time_step=10.3,
-                            ts_between_saves=5)
+    def test_written_dcd_coordinate_data_shape(self):
+        # written coord shape should match for all frames
+        expected = (3341, 3)
+        with DCDFile(self.testfile) as f:
+            for frame in f:
+                xyz = f.read()[0]
+                assert_equal(xyz.shape, expected)
 
-        with open(self.testfile, "rb") as f:
-            for element in f:
-                print(element)
-            
+    def test_written_unit_cell(self):
+        # written unit cell dimensions should match for all frames
+        expected = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
+                            dtype=np.float32)
+        with DCDFile(self.testfile) as f:
+            for frame in f:
+                unitcell = f.read()[1]
+                assert_equal(unitcell, expected)
+
+    def test_written_num_frames(self):
+        expected = 98
+        with DCDFile(self.testfile) as f:
+            assert_equal(len(f), expected)
