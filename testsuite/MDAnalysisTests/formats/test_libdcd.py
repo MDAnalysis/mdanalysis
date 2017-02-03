@@ -160,7 +160,7 @@ class DCDWriteTest(TestCase):
         # ensure that writing of DCD files only occurs with properly
         # opened files
         with self.assertRaises(IOError):
-            self.dcdfile_r.write(np.zeros((3,3)), np.zeros(6, dtype=np.float32),
+            self.dcdfile_r.write(np.zeros((3,3)), np.zeros(6, dtype=np.float64),
                                  0, 0.0, 330, 0)
 
     def test_write_dcd(self):
@@ -168,7 +168,7 @@ class DCDWriteTest(TestCase):
             for frame in f_in:
                 frame = frame._asdict()
                 f_out.write(xyz=frame['x'],
-                            box=frame['unitcell'],
+                            box=frame['unitcell'].astype(np.float64),
                             step=0,
                             time=0.0,
                             natoms=frame['x'].shape[0],

@@ -346,7 +346,7 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-    def write(self, xyz, float [:] box, int step, float time, int natoms, int charmm):
+    def write(self, xyz, double [:] box, int step, float time, int natoms, int charmm):
         """write one frame into DCD file.
 
         Parameters
