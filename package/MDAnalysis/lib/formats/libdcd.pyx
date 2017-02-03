@@ -38,7 +38,8 @@ ctypedef off_t fio_size_t
 
 ctypedef np.float32_t FLOAT_T
 ctypedef np.float64_t DOUBLE_T
-DTYPE = np.float32
+FLOAT = np.float32
+DOUBLE = np.float64
 
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
@@ -77,12 +78,12 @@ cdef extern from 'include/readdcd.h':
                        char **remarks, int *len_remarks)
     void close_dcd_read(int *freeind, float *fixedcoords)
     int read_dcdstep(fio_fd fd, int n_atoms, float *X, float *Y, float *Z,
-                     float *unitcell, int num_fixed,
+                     double *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
     int read_dcdsubset(fio_fd fd, int n_atoms, int lowerb, int upperb,
                      float *X, float *Y, float *Z,
-                     float *unitcell, int num_fixed,
+                     double *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
     int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
@@ -254,9 +255,9 @@ cdef class DCDFile:
             raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
-        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=DTYPE,
+        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=FLOAT,
                                        order='F')
-        cdef np.ndarray unitcell = np.empty(6, dtype=DTYPE)
+        cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
 
         cdef FLOAT_T[::1] x = xyz[:, 0]
         cdef FLOAT_T[::1] y = xyz[:, 1]
@@ -270,7 +271,7 @@ cdef class DCDFile:
         ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
                           <FLOAT_T*> &x[0],
                           <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                          <FLOAT_T*> unitcell.data, self.nfixed, first_frame,
+                          <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
         if ok != 0 and ok != -4:

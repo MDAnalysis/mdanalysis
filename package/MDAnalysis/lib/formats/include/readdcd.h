@@ -70,7 +70,7 @@ static int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart, int *
  *               unitcell holds unit cell data if present.
  */
 static int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z, 
-                        float *unitcell, int nfixed, int first, int *freeind, 
+                        double *unitcell, int nfixed, int first, int *freeind,
                         float *fixedcoords, int reverse, int charmm);
 
 /*
@@ -89,7 +89,7 @@ static int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z,
  * 							 unitcell holds unit cell data if present.
  */
 static int read_dcdsubset(fio_fd fd, int natoms, int lowerb, int upperb, float *x, float *y, float *z,
-			  float *unitcell, int nfixed, int first, int *freeind, 
+			  double *unitcell, int nfixed, int first, int *freeind,
 			  float *fixedcoords, int reverse, int charmm);
 
 /* 
@@ -357,7 +357,7 @@ static int read_dcdheader(fio_fd fd, int *N, int *NSET, int *ISTART,
 }
 
 static int read_charmm_extrablock(fio_fd fd, int charmm, int reverseEndian,
-                                  float *unitcell) {
+                                  double *unitcell) {
   int i, input_integer;
 
   if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_EXTRA_BLOCK)) {
@@ -370,7 +370,7 @@ static int read_charmm_extrablock(fio_fd fd, int charmm, int reverseEndian,
       if (fio_fread(tmp, 48, 1, fd) != 1) return DCD_BADREAD;
       if (reverseEndian) 
         swap8_aligned(tmp, 6);
-      for (i=0; i<6; i++) unitcell[i] = (float)tmp[i];
+      for (i=0; i<6; i++) unitcell[i] = tmp[i];
     } else {
       /* unrecognized block, just skip it */
       if (fio_fseek(fd, input_integer, FIO_SEEK_CUR)) return DCD_BADREAD;
@@ -426,7 +426,7 @@ static int read_charmm_4dim(fio_fd fd, int charmm, int reverseEndian) {
 
 /* XXX This is completely broken for fixed coordinates */
 static int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y, float *Z,
-			  float *unitcell, int num_fixed, int first, int *indexes, float *fixedcoords,
+			  double *unitcell, int num_fixed, int first, int *indexes, float *fixedcoords,
 			  int reverseEndian, int charmm) {
   //int ret_val;   /* Return value from read */
   fio_size_t seekpos;
@@ -526,7 +526,7 @@ static int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, fl
 }
 
 static int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z, 
-                        float *unitcell, int num_fixed,
+                        double *unitcell, int num_fixed,
                         int first, int *indexes, float *fixedcoords, 
                         int reverseEndian, int charmm) {
   int ret_val;   /* Return value from read */
