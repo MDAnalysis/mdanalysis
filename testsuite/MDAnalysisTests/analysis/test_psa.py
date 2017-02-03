@@ -106,12 +106,12 @@ class TestPSAnalysis(TestCase):
     def test_dist_mat_to_vec_input_numpy_integer_32(self):
         """Test whether inputs are supported as numpy integers rather than normal Integers"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_equal(PSA.dist_mat_to_vec(np.int32(5), np.int32(3), np.int32(4)), err_msg)
+        assert_equal(PSA.dist_mat_to_vec(np.int32(5), np.int32(3), np.int32(4)), np.int32(9), err_msg)
 
     def test_dist_mat_to_vec_input_numpy_integer_16(self):
         """Test whether inputs are supported as numpy integers rather than normal Integers"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_equal(PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), err_msg)
+        assert_equal(PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), np.int16(9), err_msg)
 
 class TestPSAExceptions(TestCase):
     '''Tests for exceptions that should be raised
