@@ -212,7 +212,7 @@ import six
 from six.moves import range, cPickle
 
 import numpy as np
-import warnings
+import warnings,numbers
 
 import MDAnalysis
 import MDAnalysis.analysis.align
@@ -575,7 +575,7 @@ def dist_mat_to_vec(N, i, j):
       int, index (of the matrix element) in the corresponding distance vector
     """
 
-    if not (isinstance(N, int) or isinstance(i, int) or isinstance(j, int)):
+    if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral) or isinstance(j, numbers.Integral)):
         raise ValueError("N, i, j all must be of type int")
 
     if i < 0 or j < 0 or N < 2:
