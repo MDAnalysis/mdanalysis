@@ -207,3 +207,16 @@ class DCDWriteTest(TestCase):
         expected = 98
         with DCDFile(self.testfile) as f:
             assert_equal(len(f), expected)
+
+    def test_written_seek(self):
+        # ensure that we can seek properly on written DCD file
+        new_frame = 91
+        with DCDFile(self.testfile) as f:
+            f.seek(new_frame)
+            assert_equal(f.tell(), new_frame)
+
+    def test_written_zero_based_frames(self):
+        # ensure that the first written DCD frame is 0
+        expected_frame = 0
+        with DCDFile(self.testfile) as f:
+            assert_equal(f.tell(), expected_frame)
