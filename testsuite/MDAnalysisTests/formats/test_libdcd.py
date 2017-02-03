@@ -173,3 +173,8 @@ class DCDWriteTest(TestCase):
                             time=0.0,
                             natoms=frame['x'].shape[0],
                             charmm=0)
+
+        with open(self.testfile, "rb") as f:
+            for element in f:
+                print(element)
+            

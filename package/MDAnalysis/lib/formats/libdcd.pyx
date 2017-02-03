@@ -387,7 +387,7 @@ cdef class DCDFile:
             self.n_atoms = xyz.shape[0]
             #self.box = box
 
-        #ok = write_dcdstep(self.fp, step, self.current_frame,
-                         #self.n_atoms, <DTYPE_t*> &x[0],
-                         #<DTYPE_t*> &y[1], <DTYPE_t*> &z[2],
-                         #<DTYPE_t2*> &box, charmm)
+        ok = write_dcdstep(self.fp, step, self.current_frame,
+                         self.n_atoms, <DTYPE_t*> &x[0],
+                         <DTYPE_t*> &y[1], <DTYPE_t*> &z[2],
+                         <DTYPE_t2*> &box[0], charmm)
