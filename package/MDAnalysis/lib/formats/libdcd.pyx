@@ -20,7 +20,6 @@ from collections import namedtuple
 from MDAnalysis.lib.mdamath import triclinic_box
 
 cimport numpy as np
-ctypedef np.float32_t DTYPE_T
 
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -37,8 +36,8 @@ cdef extern from 'sys/types.h':
 ctypedef int fio_fd;
 ctypedef off_t fio_size_t
 
-ctypedef np.float32_t DTYPE_t
-ctypedef np.float64_t DTYPE_t2
+ctypedef np.float32_t FLOAT_T
+ctypedef np.float64_t DOUBLE_T
 DTYPE = np.float32
 
 from libc.stdint cimport uintptr_t
@@ -259,9 +258,9 @@ cdef class DCDFile:
                                        order='F')
         cdef np.ndarray unitcell = np.empty(6, dtype=DTYPE)
 
-        cdef DTYPE_t[::1] x = xyz[:, 0]
-        cdef DTYPE_t[::1] y = xyz[:, 1]
-        cdef DTYPE_t[::1] z = xyz[:, 2]
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
 
         first_frame = self.current_frame == 0
 
@@ -269,9 +268,9 @@ cdef class DCDFile:
         cdef int upperb = self.n_atoms - 1
 
         ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
-                          <DTYPE_t*> &x[0],
-                          <DTYPE_t*> &y[0], <DTYPE_t*> &z[0],
-                          <DTYPE_t*> unitcell.data, self.nfixed, first_frame,
+                          <FLOAT_T*> &x[0],
+                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
+                          <FLOAT_T*> unitcell.data, self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
         if ok != 0 and ok != -4:
@@ -374,9 +373,9 @@ cdef class DCDFile:
                                'in mode "w"'.format('self.mode'))
 
         #cdef double [:,:] unitcell = box
-        cdef DTYPE_t[::1] x = xyz[:, 0]
-        cdef DTYPE_t[::1] y = xyz[:, 1]
-        cdef DTYPE_t[::1] z = xyz[:, 2]
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
 
 	# prerequisite is a file struct for which the dcd header data
 	# has already been written
@@ -388,6 +387,6 @@ cdef class DCDFile:
             #self.box = box
 
         ok = write_dcdstep(self.fp, step, self.current_frame,
-                         self.n_atoms, <DTYPE_t*> &x[0],
-                         <DTYPE_t*> &y[1], <DTYPE_t*> &z[2],
-                         <DTYPE_t2*> &box[0], charmm)
+                         self.n_atoms, <FLOAT_T*> &x[0],
+                         <FLOAT_T*> &y[1], <FLOAT_T*> &z[2],
+                         <DOUBLE_T*> &box[0], charmm)
