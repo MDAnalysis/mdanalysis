@@ -150,9 +150,9 @@ class DCDWriteTest(TestCase):
         self.testfile = self.tmpdir.name + '/test.dcd'
         self.dcdfile = DCDFile(self.testfile, 'w')
         self.dcdfile_r = DCDFile(DCD, 'r')
-        self.traj = MDAnalysis.Universe(PSF, DCD).trajectory
 
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            print('remarks:', f_in.remarks.decode())
             for frame in f_in:
                 frame = frame._asdict()
                 f_out.write(xyz=frame['x'],
@@ -171,7 +171,6 @@ class DCDWriteTest(TestCase):
         except OSError:
             pass
         del self.tmpdir
-        del self.traj
 
     def test_write_mode(self):
         # ensure that writing of DCD files only occurs with properly
