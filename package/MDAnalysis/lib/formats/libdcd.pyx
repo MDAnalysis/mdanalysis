@@ -349,7 +349,7 @@ cdef class DCDFile:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
     def write(self, xyz, double [:] box, int step, float time, int natoms,
-              int ts_between_saves, int charmm, double time_step):
+              int ts_between_saves, int charmm, double time_step, str remarks):
         """write one frame into DCD file.
 
         Parameters
@@ -382,7 +382,7 @@ cdef class DCDFile:
 
 	# prerequisite is a file struct for which the dcd header data
 	# has already been written
-        self._write_header(remarks='', n_atoms=xyz.shape[0], starting_step=step,
+        self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
                            ts_between_saves=ts_between_saves,
                            time_step=time_step)
 

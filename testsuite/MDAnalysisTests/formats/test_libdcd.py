@@ -161,8 +161,9 @@ class DCDWriteTest(TestCase):
                             time=0.0,
                             natoms=frame['x'].shape[0],
                             charmm=0,
-                            time_step=10.3,
-                            ts_between_saves=5)
+                            time_step=f_in.delta,
+                            ts_between_saves=5,
+                            remarks=f_in.remarks)
 
 
     def tearDown(self):
@@ -184,7 +185,8 @@ class DCDWriteTest(TestCase):
                                  natoms=330,
                                  charmm=0,
                                  time_step=22.2,
-                                 ts_between_saves=3)
+                                 ts_between_saves=3,
+                                 remarks='')
 
     def test_written_dcd_coordinate_data_shape(self):
         # written coord shape should match for all frames
@@ -220,3 +222,10 @@ class DCDWriteTest(TestCase):
         expected_frame = 0
         with DCDFile(self.testfile) as f:
             assert_equal(f.tell(), expected_frame)
+
+    def test_written_remarks(self):
+        # ensure that the REMARKS field *can be* preserved exactly
+        # in the written DCD file
+        expected = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
+        with DCDFile(self.testfile) as f:
+            assert_equal(f.remarks, expected)
