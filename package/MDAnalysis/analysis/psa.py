@@ -576,7 +576,8 @@ def dist_mat_to_vec(N, i, j):
     """
 
     if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral) or isinstance(j, numbers.Integral)):
-        raise ValueError("N, i, j all must be of type int")
+        err_str = "N, i, j all must be of type int"
+        raise ValueError(err_str)
 
     if i < 0 or j < 0 or N < 2:
         error_str = "Matrix indices are invalid; i and j must be greater than 0 and N must be greater the 2"
