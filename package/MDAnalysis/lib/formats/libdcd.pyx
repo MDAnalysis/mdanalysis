@@ -328,7 +328,8 @@ cdef class DCDFile:
             raise IOError("DCD seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
-    def _write_header(self):
+    def _write_header(self, str remarks, int n_atoms, int starting_step, 
+                      int ts_between_saves, double time_step):
 
         if not self.is_open:
             raise IOError("No file open")
@@ -336,17 +337,18 @@ cdef class DCDFile:
         if not self.mode=='w':
             raise IOError("Incorrect file mode for writing.")
 
-        cdef char c_remarks
+        #cdef char c_remarks
         cdef int len_remarks = 0
         cdef int with_unitcell = 1
 
-        ok = write_dcdheader(self.fp, &c_remarks, self.n_atoms, self.istart, 
-                             self.nsavc, self.delta, with_unitcell, 
+        ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
+                             ts_between_saves, time_step, with_unitcell, 
                              self.charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-    def write(self, xyz, double [:] box, int step, float time, int natoms, int charmm):
+    def write(self, xyz, double [:] box, int step, float time, int natoms,
+              int ts_between_saves, int charmm, double time_step):
         """write one frame into DCD file.
 
         Parameters
@@ -379,7 +381,9 @@ cdef class DCDFile:
 
 	# prerequisite is a file struct for which the dcd header data
 	# has already been written
-        self._write_header()
+        self._write_header(remarks='', n_atoms=xyz.shape[0], starting_step=step,
+                           ts_between_saves=ts_between_saves,
+                           time_step=time_step)
 
 	
         if self.current_frame == 0:

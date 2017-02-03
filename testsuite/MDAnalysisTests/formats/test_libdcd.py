@@ -121,7 +121,9 @@ class DCDWriteHeaderTest(TestCase):
     def test_write_header_crude(self):
         # test that _write_header() can produce a very crude
         # header for a new / empty file
-        self.dcdfile._write_header()
+        self.dcdfile._write_header(remarks='Crazy!', n_atoms=22,
+                                   starting_step=12, ts_between_saves=10,
+                                   time_step=0.02)
         self.dcdfile.close()
 
         # we're not actually asserting anything, yet
@@ -135,7 +137,9 @@ class DCDWriteHeaderTest(TestCase):
         # an exception should be raised on any attempt to use
         # _write_header with a DCDFile object in 'r' mode
         with self.assertRaises(IOError):
-            self.dcdfile_r._write_header()
+            self.dcdfile_r._write_header(remarks='Crazy!', n_atoms=22,
+                                         starting_step=12, ts_between_saves=10,
+                                         time_step=0.02)
 
 
 
@@ -160,8 +164,14 @@ class DCDWriteTest(TestCase):
         # ensure that writing of DCD files only occurs with properly
         # opened files
         with self.assertRaises(IOError):
-            self.dcdfile_r.write(np.zeros((3,3)), np.zeros(6, dtype=np.float64),
-                                 0, 0.0, 330, 0)
+            self.dcdfile_r.write(xyz=np.zeros((3,3)),
+                                 box=np.zeros(6, dtype=np.float64),
+                                 step=0,
+                                 time=0.0,
+                                 natoms=330,
+                                 charmm=0,
+                                 time_step=22.2,
+                                 ts_between_saves=3)
 
     def test_write_dcd(self):
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
@@ -172,7 +182,9 @@ class DCDWriteTest(TestCase):
                             step=0,
                             time=0.0,
                             natoms=frame['x'].shape[0],
-                            charmm=0)
+                            charmm=0,
+                            time_step=10.3,
+                            ts_between_saves=5)
 
         with open(self.testfile, "rb") as f:
             for element in f:
