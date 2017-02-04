@@ -159,7 +159,7 @@ inconsistent results")
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
-            mass_weighted=True,
+            weights='mass',
             n_jobs=1)
 
         reference = rms.RMSD(self.ens1, select = "name CA")
@@ -182,7 +182,7 @@ inconsistent results")
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection=selection_string,
             pairwise_align=False,
-            mass_weighted=True,
+            weights='mass',
             n_jobs=1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
