@@ -1,7 +1,7 @@
-from MDAnalysis.coordinates.GRO import GROReader, GROWriter
-from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, MultiframeReaderTest
-from MDAnalysisTests.datafiles import COORDINATES_GRO
 import numpy as np
+from MDAnalysis.coordinates.GRO import GROReader, GROWriter
+from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest
+from MDAnalysisTests.datafiles import COORDINATES_GRO
 
 
 class GROReference(BaseReference):
@@ -13,6 +13,14 @@ class GROReference(BaseReference):
         self.writer = GROWriter
         self.ext = 'gro'
         self.n_frames = 1
+        self.prec = 4
+        self.first_frame.velocities = np.array(
+            [[0.0000, 0.100, 0.200],
+             [0.300, 0.400, 0.500],
+             [0.600, 0.700, 0.800],
+             [0.900, 1.000, 1.100],
+             [1.200, 1.300, 1.400]],
+            dtype=np.float32)
         # self.volume = 0
         # self.dimensions = np.zeros(6)
         # self.container_format = True
