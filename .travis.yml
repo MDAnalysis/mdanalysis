@@ -74,7 +74,7 @@ install:
 script:
   - pylint --rcfile=package/.pylintrc package/MDAnalysis
   - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50
+  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
