@@ -94,6 +94,8 @@ class TestGROReader(TestCase, RefAdK):
     def test_volume(self):
         # test_volume: reduce precision for Gromacs comparison to 0 decimals
         # (A**3 <--> nm**3!)
+        print(self.ts.volume,
+            self.ref_volume)
         assert_almost_equal(
             self.ts.volume,
             self.ref_volume,

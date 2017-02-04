@@ -4,7 +4,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
-                                              BaseReaderTest)
+                                              MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
 from numpy.testing import assert_equal, dec
 from MDAnalysisTests import parser_not_found
@@ -58,7 +58,7 @@ class MemoryReference(BaseReference):
         return ts
 
 
-class TestMemoryReader(BaseReaderTest):
+class TestMemoryReader(MultiframeReaderTest):
     def __init__(self):
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)

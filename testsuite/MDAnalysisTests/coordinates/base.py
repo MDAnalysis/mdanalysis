@@ -5,7 +5,7 @@ from nose.plugins.attrib import attr
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
-                           assert_)
+                           assert_, dec)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -207,33 +207,6 @@ class BaseReaderTest(object):
         self.reader.close()
         self.reader._reopen()
 
-    def test_reopen(self):
-        self.reader.close()
-        self.reader._reopen()
-        ts = self.reader.next()
-        assert_timestep_almost_equal(ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
-
-    def test_last_frame(self):
-        ts = self.reader[-1]
-        assert_timestep_almost_equal(ts, self.ref.last_frame,
-                                     decimal=self.ref.prec)
-
-    def test_next_gives_second_frame(self):
-        reader = self.ref.reader(self.ref.trajectory)
-        ts = reader.next()
-        assert_timestep_almost_equal(ts, self.ref.second_frame,
-                                     decimal=self.ref.prec)
-
-    @raises(IndexError)
-    def test_go_over_last_frame(self):
-        self.reader[self.ref.n_frames + 1]
-
-    def test_frame_jump(self):
-        ts = self.reader[self.ref.jump_to_frame.frame]
-        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
-                                     decimal=self.ref.prec)
-
     def test_get_writer_1(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
@@ -338,17 +311,7 @@ class BaseReaderTest(object):
         assert_equal(num_frames, 0, "iter_as_aux should iterate over 0 frames,"
                                     " not {}".format(num_frames))
 
-    def test_rename_aux(self):
-        self.reader.rename_aux('lowf', 'lowf_renamed')
-        # data should now be in aux namespace under new name
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[0])
-        # old name should be removed
-        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
-        # new name should be retained
-        next(self.reader)
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[1])
+
 
     def test_reload_auxiliaries_from_description(self):
         # get auxiliary desscriptions form existing reader
@@ -372,6 +335,50 @@ class BaseReaderTest(object):
         for ts in self.reader[:-1]:
             pass
         assert_equal(self.reader.frame, 0)
+
+
+class MultiframeReaderTest(BaseReaderTest):
+
+    def test_last_frame(self):
+        ts = self.reader[-1]
+        assert_timestep_almost_equal(ts, self.ref.last_frame,
+                                     decimal=self.ref.prec)
+
+    @raises(IndexError)
+    def test_go_over_last_frame(self):
+        self.reader[self.ref.n_frames + 1]
+
+    def test_frame_jump(self):
+        ts = self.reader[self.ref.jump_to_frame.frame]
+        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
+                                     decimal=self.ref.prec)
+
+
+    def test_next_gives_second_frame(self):
+        reader = self.ref.reader(self.ref.trajectory)
+        ts = reader.next()
+        assert_timestep_almost_equal(ts, self.ref.second_frame,
+                                     decimal=self.ref.prec)
+
+    def test_reopen(self):
+        self.reader.close()
+        self.reader._reopen()
+        ts = self.reader.next()
+        assert_timestep_almost_equal(ts, self.ref.first_frame,
+                                     decimal=self.ref.prec)
+
+    def test_rename_aux(self):
+        self.reader.rename_aux('lowf', 'lowf_renamed')
+        # data should now be in aux namespace under new name
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[0])
+        # old name should be removed
+        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
+        # new name should be retained
+        next(self.reader)
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[1])
+
 
 
 class BaseWriterTest(object):

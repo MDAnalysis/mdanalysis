@@ -23,7 +23,7 @@ from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
 
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
                                        COORDINATES_TRR)
-from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 from MDAnalysisTests import tempdir
@@ -619,7 +619,7 @@ class XTCReference(BaseReference):
         self.changing_dimensions = True
 
 
-class TestXTCReader_2(BaseReaderTest):
+class TestXTCReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = XTCReference()
@@ -679,7 +679,7 @@ class TRRReference(BaseReference):
         return ts
 
 
-class TestTRRReader_2(BaseReaderTest):
+class TestTRRReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = TRRReference()
