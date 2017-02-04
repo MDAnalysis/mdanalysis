@@ -121,6 +121,7 @@ __all__ = [
     "Plength",
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
+    "COORDINATES_GRO",
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
