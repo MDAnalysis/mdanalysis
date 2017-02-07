@@ -162,11 +162,12 @@ cdef class _XDRFile:
     This class can't be initialized use one of the subclasses XTCFile, TRRFile
     """
     cdef readonly int n_atoms
-    cdef int is_open
+    cdef readonly int is_open
     cdef int reached_eof
     cdef XDRFILE *xfp
     cdef readonly fname
     cdef int current_frame
+    cdef str _mode
     cdef str mode
     cdef np.ndarray box
     cdef np.ndarray _offsets
@@ -174,8 +175,10 @@ cdef class _XDRFile:
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
+        self._mode = mode
         self.is_open = False
-        self.open(self.fname, mode)
+        self.open()  # to read natoms
+        self.close()
 
     def __dealloc__(self):
         self.close()
@@ -250,6 +253,7 @@ cdef class _XDRFile:
 
     def __enter__(self):
         """Support context manager"""
+        self.open(self.fname, self._mode)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -359,7 +363,10 @@ cdef class _XDRFile:
         set_offsets
         """
         if not self._has_offsets:
+            # wrap this in try/except to ensure it gets closed?
+            self.open(self.fname, self._mode)
             self._offsets = self.calc_offsets()
+            self.close()
             self._has_offsets = True
         return self._offsets
 

@@ -255,7 +255,7 @@ class XYZWriter(base.Writer):
                             "".format(atom, x, y, z))
 
 
-class XYZReader(base.Reader):
+class XYZReader(base.NewReader):
     """Reads from an XYZ file
 
     :Data:
@@ -299,7 +299,7 @@ class XYZReader(base.Reader):
         # coordinates::core.py so the last file extension will tell us if it is
         # bzipped or not
         root, ext = os.path.splitext(self.filename)
-        self.xyzfile = util.anyopen(self.filename, "r")
+
         self.compression = ext[1:] if ext[1:] != "xyz" else None
         self._cache = dict()
 
@@ -308,7 +308,7 @@ class XYZReader(base.Reader):
         # etc.
         # (Also cannot just use seek() or reset() because that would break
         # with urllib2.urlopen() streams)
-        self._read_next_timestep()
+        self.next()
 
     @property
     @cached('n_atoms')
@@ -320,12 +320,13 @@ class XYZReader(base.Reader):
         return int(n)
 
     @property
-    @cached('n_frames')
     def n_frames(self):
-        try:
-            return self._read_xyz_n_frames()
-        except IOError:
-            return 0
+        return len(self._offsets)
+
+    @property
+    @cached('offsets')
+    def _offsets(self):
+        return self._read_xyz_n_frames()
 
     def _read_xyz_n_frames(self):
         # the number of lines in the XYZ file will be 2 greater than the
@@ -341,14 +342,12 @@ class XYZReader(base.Reader):
                     offsets.append(f.tell())
                 line = f.readline()
                 counter += 1
+        offsets.pop()  # last offset is end of file
 
-        # need to check this is an integer!
-        n_frames = int(counter / linesPerFrame)
-        self._offsets = offsets
-        return n_frames
+        return offsets
 
     def _read_frame(self, frame):
-        self.xyzfile.seek(self._offsets[frame])
+        self._file.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in next
         return self._read_next_timestep()
 
@@ -357,7 +356,7 @@ class XYZReader(base.Reader):
         if ts is None:
             ts = self.ts
 
-        f = self.xyzfile
+        f = self._file
 
         try:
             # we assume that there are only two header lines per frame
@@ -371,21 +370,9 @@ class XYZReader(base.Reader):
             raise EOFError(err)
 
     def _reopen(self):
-        self.close()
-        self.open_trajectory()
-
-    def open_trajectory(self):
-        if self.xyzfile is not None:
-            raise IOError(
-                errno.EALREADY, 'XYZ file already opened', self.filename)
-
-        self.xyzfile = util.anyopen(self.filename, "r")
-
-        # reset ts
-        ts = self.ts
-        ts.frame = -1
-
-        return self.xyzfile
+        """Reposition (the virtual fh) to just before first frame"""
+        self._last_fh_pos = 0
+        self.ts.frame = -1
 
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a XYZWriter for *filename* with the same parameters as this
@@ -412,10 +399,3 @@ class XYZReader(base.Reader):
         if n_atoms is None:
             n_atoms = self.n_atoms
         return XYZWriter(filename, n_atoms=n_atoms, **kwargs)
-
-    def close(self):
-        """Close xyz trajectory file if it was open."""
-        if self.xyzfile is None:
-            return
-        self.xyzfile.close()
-        self.xyzfile = None

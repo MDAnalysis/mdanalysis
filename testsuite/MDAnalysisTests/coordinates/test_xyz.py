@@ -9,10 +9,12 @@ from numpy.testing import (
     assert_array_equal,
     assert_,
 )
+import mock
 
+from MDAnalysis.lib.util import openany
 from MDAnalysis.coordinates.XYZ import XYZWriter
 
-from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
+from MDAnalysisTests.datafiles import XYZ, COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest)
 from MDAnalysisTests import tempdir, make_Universe
@@ -145,3 +147,26 @@ class TestXYZWriterNames(object):
 
         u2 = mda.Universe(self.outfile)
         assert_(all(u2.atoms.names == names))
+
+
+class TestXYZReaderFH(object):
+    # tests for the new filehandle behaviour (issue #239)
+    def setUp(self):
+        self.u = mda.Universe(XYZ)
+
+    def tearDown(self):
+        del self.u
+
+    #@mock.patch('MDAnalysis.lib.util.openany', wraps=openany)
+    def test_iteration(self):
+        # check filehandle is closed
+        assert_(self.u.trajectory._file.closed)
+
+        with mock.patch('MDAnalysis.lib.util.openany', wraps=openany) as mockopen:
+            for ts in self.u.trajectory:
+                print ts.frame
+
+            assert_(mockopen.call_count == 1)
+
+        # check filehandle is closed
+        assert_(self.u.trajectory._file.closed)
