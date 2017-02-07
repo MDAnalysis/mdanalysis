@@ -1772,7 +1772,7 @@ class SingleFrameReaderBase(ProtoReader):
     """
     _err = "{0} only contains a single frame"
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
         self.filename = filename
@@ -1781,6 +1781,7 @@ class SingleFrameReaderBase(ProtoReader):
         self.convert_units = convert_units
 
         self.n_frames = 1
+        self.n_atom = n_atoms
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):

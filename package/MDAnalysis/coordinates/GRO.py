@@ -186,7 +186,7 @@ class GROReader(base.SingleFrameReaderBase):
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)
 
-    def Writer(self, filename, **kwargs):
+    def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a CRDWriter for *filename*.
 
         :Arguments:
@@ -196,7 +196,9 @@ class GROReader(base.SingleFrameReaderBase):
         :Returns: :class:`GROWriter`
 
         """
-        return GROWriter(filename, **kwargs)
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return GROWriter(filename, n_atoms=n_atoms, **kwargs)
 
 
 class GROWriter(base.WriterBase):
@@ -237,14 +239,19 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         :Arguments:
-           *filename*
-              output filename
+            *filename*
+                output filename
+
+            *n_atoms*
+                int (optional)
+
         """
         self.filename = util.filename(filename, ext='gro')
+        self.n_atoms = n_atoms
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
