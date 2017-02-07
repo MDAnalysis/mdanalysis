@@ -21,9 +21,7 @@ class GROReference(BaseReference):
              [0.900, 1.000, 1.100],
              [1.200, 1.300, 1.400]],
             dtype=np.float32)
-        # self.volume = 0
-        # self.dimensions = np.zeros(6)
-        # self.container_format = True
+        self.totaltime = 0
 
 
 class TestGROReader(BaseReaderTest):
