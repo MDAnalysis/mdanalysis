@@ -18,6 +18,7 @@ from os import path
 import numpy as np
 from collections import namedtuple
 from MDAnalysis.lib.mdamath import triclinic_box
+import six
 
 cimport numpy as np
 
@@ -329,7 +330,7 @@ cdef class DCDFile:
             raise IOError("DCD seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
-    def _write_header(self, str remarks, int n_atoms, int starting_step, 
+    def _write_header(self, remarks, int n_atoms, int starting_step, 
                       int ts_between_saves, double time_step):
 
         if not self.is_open:
@@ -342,6 +343,9 @@ cdef class DCDFile:
         cdef int len_remarks = 0
         cdef int with_unitcell = 1
 
+        if isinstance(remarks, six.string_types):
+            remarks = bytearray(remarks, 'ascii')
+
         ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
                              ts_between_saves, time_step, with_unitcell, 
                              self.charmm)
@@ -349,7 +353,7 @@ cdef class DCDFile:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
     def write(self, xyz, double [:] box, int step, int natoms,
-              int ts_between_saves, int charmm, double time_step, str remarks):
+              int ts_between_saves, int charmm, double time_step, remarks):
         """write one frame into DCD file.
 
         Parameters
