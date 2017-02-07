@@ -1,6 +1,6 @@
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
-from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest
+from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, BaseWriterTest
 from MDAnalysisTests.datafiles import COORDINATES_GRO
 
 
@@ -8,7 +8,7 @@ class GROReference(BaseReference):
     def __init__(self):
         super(GROReference, self).__init__()
         self.trajectory = COORDINATES_GRO
-        # self.topology = COORDINATES_GRO
+        self.topology = COORDINATES_GRO
         self.reader = GROReader
         self.writer = GROWriter
         self.ext = 'gro'
@@ -22,6 +22,7 @@ class GROReference(BaseReference):
              [1.200, 1.300, 1.400]],
             dtype=np.float32)
         self.totaltime = 0
+        self.container_format = True
 
 
 class TestGROReader(BaseReaderTest):
@@ -29,3 +30,10 @@ class TestGROReader(BaseReaderTest):
         if reference is None:
             reference = GROReference()
         super(TestGROReader, self).__init__(reference)
+
+
+class TestGROWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReference()
+        super(TestGROWriter, self).__init__(reference)
