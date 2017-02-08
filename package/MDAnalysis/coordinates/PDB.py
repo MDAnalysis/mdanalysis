@@ -1064,3 +1064,4 @@ class MultiPDBWriter(PDBWriter):
     """
     format = 'PDB'
     multiframe = True  # For Writer registration
+    singleframe = False
