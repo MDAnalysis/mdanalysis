@@ -718,10 +718,9 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
 			   int charmm) {
   int out_integer;
   float out_float;
-  char title_string[200];
+  char title_string[281];
   time_t cur_time;
   struct tm *tmbuf;
-  char time_str[81];
 
   out_integer = 84;
   WRITE(fd, (char *) & out_integer, sizeof(int));
@@ -764,14 +763,9 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
   fio_write_int32(fd, 164);
   fio_write_int32(fd, 2);
 
-  strncpy(title_string, remarks, 80);
-  title_string[79] = '\0';
-  WRITE(fd, title_string, 80);
-
-  cur_time=time(NULL);
-  tmbuf=localtime(&cur_time);
-  strftime(time_str, 80, "REMARKS Created %d %B, %Y at %R", tmbuf);
-  WRITE(fd, time_str, 80);
+  strncpy(title_string, remarks, 281);
+  title_string[160] = '\0';
+  WRITE(fd, title_string, 160);
 
   fio_write_int32(fd, 164);
   fio_write_int32(fd, 4);
