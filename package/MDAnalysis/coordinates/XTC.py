@@ -44,6 +44,7 @@ class XTCWriter(XDRBaseWriter):
     usually not a problem.
     """
     format = 'XTC'
+    multiframe = True
     units = {'time': 'ps', 'length': 'nm'}
     _file = XTCFile
 

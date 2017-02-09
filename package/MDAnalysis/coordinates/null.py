@@ -44,6 +44,7 @@ class NullWriter(base.Writer):
 
     """
     format = 'NULL'
+    multiframe = True
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):

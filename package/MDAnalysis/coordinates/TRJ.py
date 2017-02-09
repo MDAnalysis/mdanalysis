@@ -615,6 +615,7 @@ class NCDFWriter(base.Writer):
     """
 
     format = 'NCDF'
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps',
              'length': 'Angstrom',

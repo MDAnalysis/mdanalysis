@@ -772,6 +772,66 @@ class TestGetWriterFor(object):
         assert_raises(ValueError, mda.coordinates.core.get_writer_for,
                       filename='this.gro', multiframe='sandwich')
 
+    @staticmethod
+    def _check_singleframe(fmt, cls):
+        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=False),
+                     cls)
+
+    @staticmethod
+    def _check_singleframe_fails(fmt):
+        assert_raises(TypeError,
+                      mda.coordinates.core.get_writer_for,
+                      'this', format=fmt, multiframe=False)
+
+    @staticmethod
+    def _check_multiframe(fmt, cls):
+        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=True),
+                     cls)
+
+    @staticmethod
+    def _check_multiframe_fails(fmt):
+        assert_raises(TypeError,
+                      mda.coordinates.core.get_writer_for,
+                      'this', format=fmt, multiframe=True)
+
+    formats = [
+        # format name, related class, singleframe, multiframe
+        ('CRD', mda.coordinates.CRD.CRDWriter, True, False),
+        ('ENT', mda.coordinates.PDB.PDBWriter, True, False),
+        ('GRO', mda.coordinates.GRO.GROWriter, True, False),
+        ('MOL2', mda.coordinates.MOL2.MOL2Writer, True, True),
+        ('NCDF', mda.coordinates.TRJ.NCDFWriter, True, True),
+        ('NULL', mda.coordinates.null.NullWriter, True, True),
+        # ('PDB', mda.coordinates.PDB.PDBWriter, True, True), special case, done separately
+        ('PDBQT', mda.coordinates.PDBQT.PDBQTWriter, True, False),
+        ('PQR', mda.coordinates.PQR.PQRWriter, True, False),
+        ('TRR', mda.coordinates.TRR.TRRWriter, True, True),
+        ('XTC', mda.coordinates.XTC.XTCWriter, True, True),
+        ('XYZ', mda.coordinates.XYZ.XYZWriter, True, True),
+    ]
+    if six.PY2:
+        formats += [
+        ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
+        ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
+        ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
+        ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
+    ]
+    def test_get_writer_for(self):
+        for fmt, cls, singleframe, multiframe in self.formats:
+            if singleframe:
+                yield self._check_singleframe, fmt, cls
+            else:
+                yield self._check_singleframe_fails, fmt
+            if multiframe:
+                yield self._check_multiframe, fmt, cls
+            else:
+                yield self._check_multiframe_fails, fmt
+
+    def test_get_writer_for_pdb(self):
+        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False),
+                     mda.coordinates.PDB.PDBWriter)
+        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True),
+                     mda.coordinates.PDB.MultiPDBWriter)
 
 class TestBlocksOf(object):
     def test_blocks_of_1(self):
