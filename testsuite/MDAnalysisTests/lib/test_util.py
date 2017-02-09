@@ -797,7 +797,7 @@ class TestGetWriterFor(object):
     formats = [
         # format name, related class, singleframe, multiframe
         ('CRD', mda.coordinates.CRD.CRDWriter, True, False),
-        ('ENT', mda.coordinates.PDB.PDBWriter, True, False),
+        #('ENT', mda.coordinates.PDB.PDBWriter, True, False),
         ('GRO', mda.coordinates.GRO.GROWriter, True, False),
         ('MOL2', mda.coordinates.MOL2.MOL2Writer, True, True),
         ('NCDF', mda.coordinates.TRJ.NCDFWriter, True, True),
@@ -831,6 +831,10 @@ class TestGetWriterFor(object):
         assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False),
                      mda.coordinates.PDB.PDBWriter)
         assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True),
+                     mda.coordinates.PDB.MultiPDBWriter)
+        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=False),
+                     mda.coordinates.PDB.PDBWriter)
+        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=True),
                      mda.coordinates.PDB.MultiPDBWriter)
 
 class TestBlocksOf(object):
