@@ -718,7 +718,7 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
 			   int charmm) {
   int out_integer;
   float out_float;
-  char title_string[281];
+  char title_string[241];
   time_t cur_time;
   struct tm *tmbuf;
 
@@ -761,11 +761,11 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
   }
   fio_write_int32(fd, 84);
   fio_write_int32(fd, 164);
-  fio_write_int32(fd, 2);
+  fio_write_int32(fd, 3); /* the number of 80 character title strings */
 
-  strncpy(title_string, remarks, 281);
-  title_string[160] = '\0';
-  WRITE(fd, title_string, 160);
+  strncpy(title_string, remarks, 241);
+  title_string[240] = '\0';
+  WRITE(fd, title_string, 240);
 
   fio_write_int32(fd, 164);
   fio_write_int32(fd, 4);
