@@ -465,7 +465,7 @@ class Universe(object):
             # fall back to a slower approach
             except AttributeError:
                 pm = ProgressMeter(self.trajectory.n_frames,
-                                   interval=step, verbose=verbose)
+                                   interval=1, verbose=verbose)
                 coordinates = []  # TODO: use pre-allocated array
                 for ts in self.trajectory[start:stop:step]:
                     coordinates.append(np.copy(ts.positions))
