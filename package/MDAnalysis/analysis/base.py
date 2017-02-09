@@ -125,10 +125,10 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         """
         self._trajectory = trajectory
-        start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
         self.step = step
+        start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.n_frames = len(range(start, stop, step))
         interval = int(self.n_frames // 100)
         if interval == 0:

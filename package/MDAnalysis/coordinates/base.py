@@ -1277,6 +1277,21 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         -------
         start, stop, step : int
           Integers representing the slice
+
+        Warning
+        -------
+        The returned values start, stop and step give the expected result when passed
+        in range() but gives unexpected behaviour when passed in a slice when stop=None
+        and step=-1
+
+        This is because when we slice the trajectory (u.trajectory[::-1]), the values
+        returned by check_slice_indices are passed to range. Instead, in AnalysisBase
+        the values returned by check_slice_indices are used to splice the trajectory.
+        This creates a discrepancy because these two lines are not equivalent:
+
+            range(10, -1, -1)  # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            range(10)[10:-1:-1]  # []
+
         """
         for var, varname in (
                 (start, 'start'),
