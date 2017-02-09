@@ -20,6 +20,7 @@ circular imports.
 
 """
 
+import copy
 import inspect
 import mmtf
 import numpy as np
@@ -161,32 +162,25 @@ def get_writer_for(filename, format=None, multiframe=None):
             format = util.check_compressed_format(root, ext)
 
     if multiframe is None:
-        try:
-            return _MULTIFRAME_WRITERS[format]
-        except KeyError:
-            try:
-                return _SINGLEFRAME_WRITERS[format]
-            except KeyError:
-                raise TypeError(
-                    "No trajectory or frame writer for format '{0}'"
-                    .format(format))
+        # Multiframe takes priority, else use singleframe
+        options = copy.copy(_SINGLEFRAME_WRITERS)  # do copy to avoid changing in place
+        options.update(_MULTIFRAME_WRITERS)  # update overwrites existing entries
+        errmsg = "No trajectory or frame writer for format '{0}'"
     elif multiframe is True:
-        try:
-            return _MULTIFRAME_WRITERS[format]
-        except KeyError:
-            raise TypeError(
-                "No trajectory writer for format {0}"
-                "".format(format))
+        options = _MULTIFRAME_WRITERS
+        errmsg = "No trajectory writer for format '{0}'" 
     elif multiframe is False:
-        try:
-            return _SINGLEFRAME_WRITERS[format]
-        except KeyError:
-            raise TypeError(
-                "No single frame writer for format {0}".format(format))
+        options = _SINGLEFRAME_WRITERS
+        errmsg = "No single frame writer for format '{0}'"
     else:
         raise ValueError("Unknown value '{0}' for multiframe,"
                          " only True, False, None allowed"
                          "".format(multiframe))
+
+    try:
+        return options[format]
+    except KeyError:
+        raise TypeError(errmsg.format(format))
 
 
 def get_parser_for(filename, format=None):
