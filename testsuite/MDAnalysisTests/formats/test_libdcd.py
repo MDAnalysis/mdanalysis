@@ -230,3 +230,24 @@ class DCDWriteTest(TestCase):
             print('len(expected):', len(expected))
             print('len(f.remarks):', len(f.remarks))
             assert_equal(f.remarks.decode(), expected[:160])
+
+    def test_written_nsavc(self):
+        # ensure that nsavc, the timesteps between frames written
+        # to file, is preserved in the written DCD file
+        expected = self.dcdfile_r.nsavc
+        actual = DCDFile(self.testfile).nsavc
+        assert_equal(actual, expected)
+
+    def test_written_istart(self):
+        # ensure that istart, the starting timestep, is preserved
+        # in the written DCD file
+        expected = self.dcdfile_r.istart
+        actual = DCDFile(self.testfile).istart
+        assert_equal(actual, expected)
+
+    def test_written_delta(self):
+        # ensure that delta, the trajectory timestep, is preserved in
+        # the written DCD file
+        expected = self.dcdfile_r.delta
+        actual = DCDFile(self.testfile).delta
+        assert_equal(actual, expected)
