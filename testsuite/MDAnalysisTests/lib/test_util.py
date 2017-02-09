@@ -692,6 +692,11 @@ class TestGuessFormat(object):
 
         assert_raises(ValueError, util.guess_format, s)
 
+    def test_from_ndarray(self):
+        fn = np.zeros((3, 3))
+        rd = mda.coordinates.core.get_reader_for(fn)
+        assert_equal(rd, mda.coordinates.memory.MemoryReader)
+
 
 class TestUniqueRows(object):
     def test_unique_rows_2(self):
