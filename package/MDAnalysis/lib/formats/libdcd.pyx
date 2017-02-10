@@ -218,7 +218,7 @@ cdef class DCDFile:
             py_remarks = ""
 
         self.n_dims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
-        self.n_frames = self._estimate_n_frames()
+        self._estimate_n_frames()
         self.b_read_header = True
 
         # make sure fixed atoms have been read
@@ -228,18 +228,13 @@ cdef class DCDFile:
         return py_remarks
 
     def _estimate_n_frames(self):
-        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        self.firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
-        self.framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
-                          extrablocksize)
-        filesize = path.getsize(self.fname)
-        # It's safe to use ftell, even though ftell returns a long, because the
-        # header size is < 4GB.
-        self.header_size = fio_ftell(self.fp)
-        # TODO: check that nframessize is larger then 0, the c-implementation
-        # used to do that.
-        nframessize = filesize - self.header_size - self.firstframesize
-        return nframessize / self.framesize + 1
+        while 1:
+            try:
+                self.read()
+            except StopIteration:
+                self.n_frames = self.current_frame
+                self.seek(0)
+                break
 
     @property
     def periodic(self):
@@ -315,6 +310,9 @@ cdef class DCDFile:
             If you seek for more frames than are available or if the
             seek fails (the low-level system error is reported).
         """
+        if frame < 0:
+            raise IOError('Attempted seek with frame < 0')
+
         if frame >= self.n_frames:
             raise IOError('Trying to seek over max number of frames')
         self.reached_eof = False
