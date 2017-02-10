@@ -464,12 +464,16 @@ class Universe(object):
             # if the Timeseries extraction fails,
             # fall back to a slower approach
             except AttributeError:
-                pm = ProgressMeter(self.trajectory.n_frames,
-                                   interval=1, verbose=verbose)
+                n_frames = len(range(
+                    *self.trajectory.check_slice_indices(start, stop, step)
+                ))
+                pm_format = '{step}/{numsteps} frames written (frame {frame})'
+                pm = ProgressMeter(n_frames, interval=1,
+                                   verbose=verbose, format=pm_format)
                 coordinates = []  # TODO: use pre-allocated array
-                for ts in self.trajectory[start:stop:step]:
+                for i, ts in enumerate(self.trajectory[start:stop:step]):
                     coordinates.append(np.copy(ts.positions))
-                    pm.echo(ts.frame)
+                    pm.echo(i, frame=ts.frame)
                 coordinates = np.array(coordinates)
 
             # Overwrite trajectory in universe with an MemoryReader
