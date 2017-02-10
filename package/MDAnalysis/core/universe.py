@@ -428,7 +428,8 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def transfer_to_memory(self, start=None, stop=None, step=None, verbose=None, quiet=None):
+    def transfer_to_memory(self, start=None, stop=None, step=None,
+                           verbose=None, quiet=None):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -467,7 +468,7 @@ class Universe(object):
                 n_frames = len(range(
                     *self.trajectory.check_slice_indices(start, stop, step)
                 ))
-                pm_format = '{step}/{numsteps} frames written (frame {frame})'
+                pm_format = '{step}/{numsteps} frames copied to memory (frame {frame})'
                 pm = ProgressMeter(n_frames, interval=1,
                                    verbose=verbose, format=pm_format)
                 coordinates = []  # TODO: use pre-allocated array
