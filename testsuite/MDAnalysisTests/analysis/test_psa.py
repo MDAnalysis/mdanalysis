@@ -26,7 +26,7 @@ import MDAnalysis.analysis.psa as PSA
 
 from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
-                           assert_almost_equal)
+                           assert_almost_equal, assert_equal)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
@@ -93,6 +93,25 @@ class TestPSAnalysis(TestCase):
         err_msg = "Dendrogram dictionary object was not produced"
         assert_(type(self.plot_data[1]) is dict, err_msg)
 
+    def test_dist_mat_to_vec_i_less_j(self):
+        """Test the index of corresponding distance vector is correct if i < j"""
+        err_msg = "dist_mat_to_vec function returning wrong values"
+        assert_equal(PSA.dist_mat_to_vec(5, 3, 4), 9, err_msg)
+
+    def test_dist_mat_to_vec_i_greater_j(self):
+        """Test the index of corresponding distance vector is correct if i > j"""
+        err_msg = "dist_mat_to_vec function returning wrong values"
+        assert_equal(PSA.dist_mat_to_vec(5, 4, 3), 9, err_msg)
+
+    def test_dist_mat_to_vec_input_numpy_integer_32(self):
+        """Test whether inputs are supported as numpy integers rather than normal Integers"""
+        err_msg = "dist_mat_to_vec function returning wrong values"
+        assert_equal(PSA.dist_mat_to_vec(np.int32(5), np.int32(3), np.int32(4)), np.int32(9), err_msg)
+
+    def test_dist_mat_to_vec_input_numpy_integer_16(self):
+        """Test whether inputs are supported as numpy integers rather than normal Integers"""
+        err_msg = "dist_mat_to_vec function returning wrong values"
+        assert_equal(PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), np.int16(9), err_msg)
 
 class TestPSAExceptions(TestCase):
     '''Tests for exceptions that should be raised
@@ -108,12 +127,60 @@ class TestPSAExceptions(TestCase):
             self.fail('KeyError should be caught')
 
     def test_get_coord_axes_bad_dims(self):
-        '''Test that ValueError is raised when
+        """Test that ValueError is raised when
         numpy array with incorrect dimensions
-        is fed to get_coord_axes().'''
+        is fed to get_coord_axes()."""
 
         with self.assertRaises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
+
+    def test_dist_mat_to_vec_func_out_of_bounds(self):
+        """Test that ValueError is raised when i or j or both are
+        out of bounds of N"""
+
+        # Check if i is out of bounds of N
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 6, 4)
+
+        # Check if j is out of bounds of N
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 4, 6)
+
+        # Check if both i and j are out of bounds of N
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 6, 7)
+
+        # Check if i is negative
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, -1, 2)
+
+        # Check if j is negative
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 1, -2)
+
+        # Check if N is less than 2
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(1, 0, 0)
+
+    def test_dist_mat_to_vec_func_i_equals_j(self):
+        """Test that ValueError is raised when i == j or i,j == N"""
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, 4, 4)
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(4, 6, 4)
+
+    def test_dist_mat_to_vec_func_bad_integers(self):
+        """Test that ValueError is raised when i or j are
+        not Integers"""
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, '6', '7')
+
+        with self.assertRaises(ValueError):
+            PSA.dist_mat_to_vec(5, float(6), 7)
+
 
 class _BaseHausdorffDistance(TestCase):
     '''Base Class setup and unit tests
