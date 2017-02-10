@@ -38,8 +38,8 @@ Helper functions for common mathematical operations
 
 .. versionadded:: 0.11.0
 """
-import numpy as np
 from six.moves import zip
+import numpy as np
 
 from ..exceptions import NoDataError
 

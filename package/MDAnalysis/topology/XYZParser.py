@@ -39,8 +39,8 @@ Classes
 """
 from __future__ import absolute_import
 
-import numpy as np
 from six.moves import range
+import numpy as np
 
 from . import guessers
 from ..lib.util import openany

@@ -47,8 +47,8 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 from __future__ import absolute_import
 
-import numpy as np
 from six.moves import range
+import numpy as np
 
 from . import obj
 from . import setting as S

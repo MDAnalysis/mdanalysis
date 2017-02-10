@@ -27,13 +27,12 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
+import six
 from six.moves import range, zip
-
 import inspect
 import logging
-import numpy as np
-import six
 
+import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
@@ -126,10 +125,10 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         """
         self._trajectory = trajectory
-        start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
         self.step = step
+        start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.n_frames = len(range(start, stop, step))
         interval = int(self.n_frames // 100)
         if interval == 0:
@@ -223,7 +222,7 @@ class AnalysisFromFunction(AnalysisBase):
         """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.Reader)):
-            args = args + (trajectory, )
+            args = args + (trajectory,)
             trajectory = None
 
         if trajectory is None:

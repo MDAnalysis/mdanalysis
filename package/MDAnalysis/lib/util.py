@@ -154,12 +154,12 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
+import six
+from six.moves import range, map
 import sys
 
 __docformat__ = "restructuredtext en"
 
-from six.moves import range, map
-import six
 
 import os
 import os.path

@@ -123,29 +123,27 @@ in :mod:`MDAnalysis.coordinates.__init__`.
 
 """
 from __future__ import absolute_import
-
-from six.moves import range
 import six
-
-import warnings
+from six.moves import range
 
 import numpy as np
 import copy
+import warnings
 import weakref
 
+from . import core
+from .. import NoDataError
 from .. import (
     _READERS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
 )
-from ..core import flags
 from .. import units
-from ..lib.util import asiterable, Namespace
-from . import core
-from .. import NoDataError
-
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
+from ..core import flags
+from ..lib.util import asiterable, Namespace
+
 
 class Timestep(object):
     """Timestep data for one frame
@@ -1191,6 +1189,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ----
         *frame* is a 0-based frame index.
         """
+
         def apply_limits(frame):
             if frame < 0:
                 frame += len(self)
@@ -1214,6 +1213,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame_with_aux(apply_limits(f))
+
             return listiter(frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
@@ -1277,6 +1277,21 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         -------
         start, stop, step : int
           Integers representing the slice
+
+        Warning
+        -------
+        The returned values start, stop and step give the expected result when passed
+        in range() but gives unexpected behaviour when passed in a slice when stop=None
+        and step=-1
+
+        This is because when we slice the trajectory (u.trajectory[::-1]), the values
+        returned by check_slice_indices are passed to range. Instead, in AnalysisBase
+        the values returned by check_slice_indices are used to splice the trajectory.
+        This creates a discrepancy because these two lines are not equivalent:
+
+            range(10, -1, -1)  # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            range(10)[10:-1:-1]  # []
+
         """
         for var, varname in (
                 (start, 'start'),
@@ -1295,33 +1310,30 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             start = 0 if step > 0 else nframes - 1
         elif start < 0:
             start += nframes
+        if start < 0:
+            start = 0
 
-        if stop is not None:
-            if stop < 0:
-                stop += nframes
-            elif stop > nframes:
-                stop = nframes
-        else:
+        if step < 0 and start > nframes:
+            start = nframes - 1
+
+        if stop is None:
             stop = nframes if step > 0 else -1
+        elif stop < 0:
+            stop += nframes
 
-        if step > 0 and stop < start:
-            raise IndexError("Stop frame is lower than start frame")
-        elif step < 0 and start < stop:
-            raise IndexError("Start frame is lower than stop frame")
-        if not (0 <= start < nframes) or stop > nframes:
-            raise IndexError(
-                "Frame start/stop outside of the range of the trajectory.")
+        if step > 0 and stop > nframes:
+            stop = nframes
 
         return start, stop, step
 
     def __repr__(self):
         return ("<{cls} {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
-                    cls=self.__class__.__name__,
-                    fname=self.filename,
-                    nframes=self.n_frames,
-                    natoms=self.n_atoms
-                ))
+            cls=self.__class__.__name__,
+            fname=self.filename,
+            nframes=self.n_frames,
+            natoms=self.n_atoms
+        ))
 
     def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
@@ -1421,7 +1433,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
-        while aux.step_to_frame(aux.step+1, ts) < 0:
+        while aux.step_to_frame(aux.step + 1, ts) < 0:
             next(aux)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
@@ -1555,7 +1567,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         setattr(self.ts.aux, new, self.ts.aux[auxname])
         delattr(self.ts.aux, auxname)
 
-
     def get_aux_descriptions(self, auxnames=None):
         """Get descriptions to allow reloading the specified auxiliaries.
 
@@ -1586,7 +1597,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         return descriptions
 
 
-
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
@@ -1611,6 +1621,7 @@ class Reader(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
 
     """
+
     def __init__(self, filename, convert_units=None, **kwargs):
         super(Reader, self).__init__()
 
@@ -1664,6 +1675,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
+
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -1730,7 +1742,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
-    # def write_next_timestep(self, ts=None)
+        # def write_next_timestep(self, ts=None)
 
 
 class SingleFrameReader(ProtoReader):

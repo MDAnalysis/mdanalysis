@@ -70,8 +70,8 @@ Classes
 """
 from __future__ import absolute_import, division
 
-import numpy as np
 from six.moves import range, zip
+import numpy as np
 import functools
 from math import ceil
 

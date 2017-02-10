@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/16 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
-         dotsdl, manuel.nuno.melo, utkbansal, vedantrathore
+         dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612
 
   * 0.16.0
 
@@ -61,6 +61,7 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
 
 Fixes
+  * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
   * Argument validation of dist_mat_to_vec is fixed (#597 PR #1183)
   * Give correct error when the topology file format is not recognized (Issue #982)
   * Give correct error when file doesn't exist/ has bad permissions (Issue #981)

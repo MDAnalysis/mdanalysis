@@ -20,14 +20,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from MDAnalysis.coordinates.base import Timestep, SingleFrameReader, Reader
-
-from numpy.testing import assert_equal, assert_raises
 import numpy as np
+from MDAnalysis.coordinates.base import Timestep, SingleFrameReader, Reader
+from numpy.testing import assert_equal, assert_raises
 
 """
 Isolate the API definitions of Readers independent of implementations
 """
+
 
 class AmazingMultiFrameReader(Reader):
     format = 'AmazingMulti'
@@ -43,14 +43,13 @@ class AmazingMultiFrameReader(Reader):
         self.ts.frame = -1
         self._read_next_timestep()
 
-
     def _read_next_timestep(self):
         self.ts.frame += 1
         if (self.ts.frame + 1) > self.n_frames:
             raise IOError
         else:
             return self.ts
-        
+
     def _read_frame(self, frame):
         self.ts.frame = frame
 
@@ -62,6 +61,7 @@ class AmazingMultiFrameReader(Reader):
 
 class AmazingReader(SingleFrameReader):
     format = 'Amazing'
+
     # have to hack this in to get the base class to "work"
     def _read_first_frame(self):
         self.n_atoms = 10
@@ -71,17 +71,18 @@ class AmazingReader(SingleFrameReader):
 
 class _TestReader(object):
     """Basic API readers"""
+
     def setUp(self):
         self.reader = self.readerclass('test.txt')
         self.ts = self.reader.ts
-    
+
     def test_required_attributes(self):
         """Test that Reader has the required attributes"""
         for attr in ['filename', 'n_atoms', 'n_frames', 'ts',
                      'units', 'format']:
             assert_equal(hasattr(self.reader, attr), True,
                          "Missing attr: {0}".format(attr))
-        
+
     def test_iter(self):
         l = [ts for ts in self.reader]
 
@@ -122,7 +123,7 @@ class _Multi(_TestReader):
     n_atoms = 10
     readerclass = AmazingMultiFrameReader
     reference = np.arange(10)
-   
+
 
 class TestMultiFrameReader(_Multi):
     def _check_slice(self, start, stop, step):
@@ -131,56 +132,44 @@ class TestMultiFrameReader(_Multi):
         ref = self.reference[start:stop:step]
 
         assert_equal(res, ref)
-    
+
     def test_slices(self):
         for start, stop, step in [
-                (None, None, None),  # blank slice
-                (None, 5, None),  # set end point
-                (2, None, None),  # set start point
-                (2, 5, None),  # start & end
-                (None, None, 2),  # set skip
-                (None, None, -1),  # backwards skip
-                (0, 10, 1),
-                (0, 10, 2),
-                (None, 20, None),  # end beyond real end
-                (None, 20, 2),  # with skip
-                (0, 5, 2),
-                (5, None, -1),
-                (None, 5, -1),
+            (None, None, None),  # blank slice
+            (None, 5, None),  # set end point
+            (2, None, None),  # set start point
+            (2, 5, None),  # start & end
+            (None, None, 2),  # set skip
+            (None, None, -1),  # backwards skip
+            (0, 10, 1),
+            (0, 10, 2),
+            (None, 20, None),  # end beyond real end
+            (None, 20, 2),  # with skip
+            (0, 5, 2),
+            (5, None, -1),
+            (None, 5, -1),
+            (100, 10, 1),
+            (-10, None, 1),
+            (100, None, -1),  # beyond real end
+            (100, 5, -20),
+            (5, 1, 1), # Stop less than start
+            (1, 5, -1), # Stop less than start
+            (-100, None, None),
+            (100, None, None), # Outside of range of trajectory
+            (-2, 10, -2)
         ]:
             yield self._check_slice, start, stop, step
-
-    def test_slice_IE_1a(self):
-        """Stop less than start"""
-        def sl():
-            return list(self.reader[5:1:1])
-        assert_raises(IndexError, sl)
-
-    def test_slice_IE_1b(self):
-        """Stop less than start"""
-        def sl():
-            return list(self.reader[1:5:-1])
-        assert_raises(IndexError, sl)
-
-    def test_slice_IE_2(self):
-        """Outside of range of trajectory"""
-        def sl():
-            return list(self.reader[100:])
-        assert_raises(IndexError, sl)
-
-    def test_slice_IE_3(self):
-        def sl():
-            return list(self.reader[-100:])
-        assert_raises(IndexError, sl)
 
     def test_slice_VE_1(self):
         def sl():
             return list(self.reader[::0])
+
         assert_raises(ValueError, sl)
 
     def test_slice_TE_1(self):
         def sl():
             return list(self.reader[1.2:2.5:0.1])
+
         assert_raises(TypeError, sl)
 
     def _check_getitem(self, sl):
@@ -200,16 +189,18 @@ class TestMultiFrameReader(_Multi):
                 [0, 1, 1, 1, 0, 0, 2, 3, 4],
                 np.array([0, 1, 1, 1, 0, 0, 2, 3, 4]),
         ):
-                yield self._check_getitem, sl
+            yield self._check_getitem, sl
 
     def test_list_TE(self):
         def sl():
             return list(self.reader[[0, 'a', 5, 6]])
+
         assert_raises(TypeError, sl)
 
     def test_array_TE(self):
         def sl():
             return list(self.reader[np.array([1.2, 3.4, 5.6])])
+
         assert_raises(TypeError, sl)
 
     def test_bool_slice(self):
@@ -277,4 +268,3 @@ class TestSingleFrameReader(_Single):
 
     def test_read_frame(self):
         assert_raises(IndexError, self.reader._read_frame, 1)
-
