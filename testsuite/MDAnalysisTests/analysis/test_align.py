@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
+import warnings
+import os.path
 
 import MDAnalysis
 import MDAnalysis.analysis.align as align
@@ -33,10 +35,12 @@ from numpy.testing import (TestCase, dec,
 import numpy as np
 from nose.plugins.attrib import attr
 
-import os.path
-
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA
 from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
+
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
 
 
 class TestRotationMatrix(object):
@@ -104,9 +108,9 @@ class TestAlign(TestCase):
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.select_atoms('backbone')
-        first_frame = bb.positions
+        first_frame = bb.positions.copy()
         self.universe.trajectory[-1]
-        last_frame = bb.positions
+        last_frame = bb.positions.copy()
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
@@ -120,14 +124,26 @@ class TestAlign(TestCase):
         assert_almost_equal(rmsd, 6.820321761927005, 5,
                             err_msg="RMSD calculation between 1st and last "
                             "AdK frame gave wrong answer")
-        #test mass_weighted
+        # test masses as weights
         last_atoms_weight = self.universe.atoms.masses
         A = self.universe.trajectory[0]
         B = self.reference.trajectory[-1]
-        rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
-        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight, center=True, superposition=True)
+        rmsd = align.alignto(self.universe, self.reference, weights='mass')
+        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
+                                   center=True, superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
+    def test_rmsd_deprecated(self):
+        last_atoms_weight = self.universe.atoms.masses
+        A = self.universe.trajectory[0]
+        B = self.reference.trajectory[-1]
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
+        assert_equal(len(warn), 1)
+        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
+                                   center=True, superposition=True)
+        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
     @dec.slow
     @attr('issue')
@@ -170,8 +186,8 @@ class TestAlign(TestCase):
         rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
         x.save(rmsd_outfile)
 
-        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
-        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
+        assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -186,10 +202,25 @@ class TestAlign(TestCase):
 
     def test_AlignTraj_weighted(self):
         x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, mass_weighted=True).run()
+                            filename=self.outfile, weights='mass').run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
         assert_almost_equal(x.rmsd[0], 0,  decimal=3)
-        assert_almost_equal(x.rmsd[-1], 6.9033990467077579, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
+
+        self._assert_rmsd(fitted, 0, 0.0,
+                          weights=self.universe.atoms.masses)
+        self._assert_rmsd(fitted, -1, 6.929083032629219,
+                          weights=self.universe.atoms.masses)
+
+    def test_AlignTraj_weigts_deprecated(self):
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            x = align.AlignTraj(self.universe, self.reference,
+                                filename=self.outfile, mass_weighted=True).run()
+        assert_equal(len(warn), 1)
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
+        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
         self._assert_rmsd(fitted, 0, 0.0,
                           weights=self.universe.atoms.masses)
@@ -199,15 +230,15 @@ class TestAlign(TestCase):
     def test_AlignTraj_partial_fit(self):
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(self.universe, self.reference, select='resid 1-20',
-                        filename=self.outfile, mass_weighted=True).run()
+                        filename=self.outfile, weights='mass').run()
         MDAnalysis.Universe(PSF, self.outfile)
 
     def test_AlignTraj_in_memory(self):
         self.reference.trajectory[-1]
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile, in_memory=True).run()
-        assert_almost_equal(x.rmsd[0], 6.929083044751061, decimal=3)
-        assert_almost_equal(x.rmsd[-1], 5.279731379771749336e-07, decimal=3)
+        assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
         # check in memory trajectory
         self._assert_rmsd(self.universe, 0, 6.929083044751061)

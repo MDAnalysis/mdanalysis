@@ -737,7 +737,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 def hes(ensembles,
         selection="name CA",
         cov_estimator="shrinkage",
-        mass_weighted=True,
+        weights='mass',
         align=False,
         details=False,
         estimate_error=False,
@@ -751,38 +751,28 @@ def hes(ensembles,
 
     Parameters
     ----------
-
     ensembles : list
         List of Universe objects for similarity measurements.
-
     selection : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
-
     cov_estimator : str, optional
         Covariance matrix estimator method, either shrinkage, `shrinkage`,
         or Maximum Likelyhood, `ml`. Default is shrinkage.
-
-    mass_weighted : bool, optional
-        Whether to perform mass-weighted covariance matrix estimation
-        (default is True).
-
+    weights : str/array_like, optional
+        specify optional weights. If ``mass`` then chose masses of ensemble atoms
     align : bool, optional
         Whether to align the ensembles before calculating their similarity.
         Note: this changes the ensembles in-place, and will thus leave your
         ensembles in an altered state.
         (default is False)
-
     details : bool, optional
         Save the mean and covariance matrix for each
         ensemble in a numpy array (default is False).
-
     estimate_error : bool, optional
         Whether to perform error estimation (default is False).
-
     bootstrapping_samples : int, optional
         Number of times the similarity matrix will be bootstrapped (default
         is 100), only if estimate_error is True.
-
     calc_diagonal : bool, optional
         Whether to calculate the diagonal of the similarity scores
         (i.e. the similarities of every ensemble against itself).
@@ -790,13 +780,11 @@ def hes(ensembles,
 
     Returns
     -------
-
     numpy.array (bidimensional)
         Harmonic similarity measurements between each pair of ensembles.
 
     Notes
     -----
-
     The method assumes that each ensemble is derived from a multivariate normal
     distribution. The mean and covariance matrix are, thus, estimatated from
     the distribution of each ensemble and used for comparision by the
@@ -865,7 +853,7 @@ def hes(ensembles,
         for ensemble in ensembles:
             mda.analysis.align.AlignTraj(ensemble, ensembles[0],
                                          select=selection,
-                                         mass_weighted=True,
+                                         weights=weights,
                                          in_memory=True).run()
     else:
         for ensemble in ensembles:
@@ -915,7 +903,7 @@ def hes(ensembles,
                         format=('fac')),
                     axis=0).flatten())
                 sigmas.append(covariance_matrix(ensembles_list[i][t],
-                                                mass_weighted=True,
+                                                weights=weights,
                                                 estimator=covariance_estimator,
                                                 selection=selection))
 
@@ -947,7 +935,7 @@ def hes(ensembles,
 
         # Covariance matrices in each system
         sigmas.append(covariance_matrix(e,
-                                        mass_weighted=mass_weighted,
+                                        weights=weights,
                                         estimator=covariance_estimator,
                                         selection=selection))
 
