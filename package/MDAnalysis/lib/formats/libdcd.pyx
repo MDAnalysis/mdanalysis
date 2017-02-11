@@ -229,7 +229,7 @@ cdef class DCDFile:
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        self.firstframesize = self.n_atoms + 2 * self.n_dims * sizeof(float) + extrablocksize
+        self.firstframesize = (self.n_atoms + 2) * self.n_dims * sizeof(float) + extrablocksize
         self.framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
                           extrablocksize)
         filesize = path.getsize(self.fname)
