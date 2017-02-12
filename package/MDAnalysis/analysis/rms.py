@@ -347,8 +347,10 @@ class RMSD(AnalysisBase):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
            `groupselections` added
-        .. versionchanged: 0.15.1
-           Refactor to fit with AnalysisBase API
+        .. versionchanged:: 0.16.0
+           Flexible weighting scheme with new ``weights`` keyword.
+        .. deprecated:: 0.16.0
+           Instead of ``mass_weighted=True`` use new ``weights='mass'`  Refactor to fit with AnalysisBase API
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
@@ -545,8 +547,26 @@ class RMSF(AnalysisBase):
         This method implements an algorithm for computing sums of squares while
         avoiding overflows and underflows [Welford1962]_.
 
+        References
+        ----------
+        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+           Calculating Corrected Sums of Squares and Products." Technometrics
+           4(3):419-420.
+
+       .. versionadded:: 0.11.0
+       .. versionchanged:: 0.16.0
+          Flexible weighting scheme with new ``weights`` keyword.
+       .. deprecated:: 0.16.0
+          Instead of ``mass_weighted=True`` use new ``weights='mass'`
+          Refactor to fit with AnalysisBase API
+          The keyword argument *quiet* is deprecated in favor of *verbose*.
+    """
+    def __init__(self, atomgroup, weights=None, **kwargs):
+        """
         Parameters
         ----------
+        atomgroup : mda.AtomGroup
+            Atoms for which RMSF is calculated
         start : int (optional)
             starting frame, default None becomes 0.
         stop : int (optional)
@@ -555,20 +575,11 @@ class RMSF(AnalysisBase):
             which means that the trajectory would be read until the end.
         step : int (optional)
             step between frames, default None becomes 1.
-        progout : int (optional)
-            number of frames to iterate through between updates to progress
-            output; ``None`` for no updates [10]
+        weights : str / array_like (optional)
+            used weights. If ``'mass'`` use masses of atomgroup, it ``None`` use uniform weights.
         verbose : bool (optional)
-            if ``False``, suppress all output (implies *progout* = ``None``)
-            [``True``]
-
-        References
-        ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
-    """
-    def __init__(self, atomgroup, weights=None, **kwargs):
+            if ``False``, suppress all output
+        """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         if weights == 'mass':

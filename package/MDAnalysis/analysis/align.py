@@ -413,6 +413,8 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
 
     .. versionchanged:: 0.16.0
        new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+    .. deprecated:: 0.16.0
+       Instead of ``mass_weighted=True`` use new ``weights='mass'`
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -551,6 +553,10 @@ class AlignTraj(AnalysisBase):
         :class:`MemoryReader` then it is *always* treated as if `in_memory` had
         been set to ``True``.
 
+        .. versionchanged:: 0.16.0
+           new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+        .. deprecated:: 0.16.0
+           Instead of ``mass_weighted=True`` use new ``weights='mass'`
         """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
