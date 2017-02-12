@@ -282,6 +282,13 @@ class TestRMSF(TestCase):
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
+    def test_rmsf_old_run(self):
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+        rmsfs.run(start=5, stop=6)
+
+        assert_almost_equal(rmsfs.rmsf, 0, 5,
+                            err_msg="error: rmsfs should all be zero")
+
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
         with mda.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
