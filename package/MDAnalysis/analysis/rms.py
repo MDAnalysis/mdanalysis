@@ -586,6 +586,22 @@ class RMSF(AnalysisBase):
             weights = self.atomgroup.masses
         self.weights = weights
 
+    def run(start=None, stop=None, step=None, progout=None,
+            verbose=None, quiet=None):
+        if np.any([el is not None for el in (start, stop, step, progout, quiet)]):
+            warnings.warn("run arguments are deprecated. Please pass them at "
+                          "class construction",
+                          category=DeprecationWarning)
+            if quiet is not None:
+                verbose = !quiet
+            else:
+                verbose = False
+            # regenerate class with correct args
+            self = RMSD(self.atomgroup, self.weights, start=start,
+                        stop=stop, step=step, verbose=verbose)
+        super(RMSF, self).run()
+
+
     def _prepare(self):
         self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
         self.mean = self.sumsquares.copy()
