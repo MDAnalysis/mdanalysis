@@ -225,7 +225,7 @@ def covariance_matrix(ensemble,
     # Optionally correct with weights
     if weights is not None:
         # Calculate mass-weighted covariance matrix
-        if weights == 'mass':
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             if selection:
                 weights = ensemble.select_atoms(selection).masses
             else:

@@ -434,7 +434,7 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        if self.weights == 'mass':
+        if not isinstance(self.weights, (list, tuple, np.ndarray)) and self.weights == 'mass':
             self.weights = self.ref_atoms.masses
         if self.weights is not None:
             self.weights = (self.weights / self.weights.mean()).astype(np.float64)
@@ -582,7 +582,7 @@ class RMSF(AnalysisBase):
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
-        if weights == 'mass':
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             weights = self.atomgroup.masses
         self.weights = weights
 

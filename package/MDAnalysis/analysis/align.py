@@ -438,7 +438,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
         if mass_weighted:
             weights = 'mass'
 
-    if weights == 'mass':
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
         weights = ref_atoms.masses
 
     mobile_com = mobile_atoms.center(weights)
@@ -605,7 +605,7 @@ class AlignTraj(AnalysisBase):
             if mass_weighted:
                 weights = 'mass'
 
-        if weights == 'mass':
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             weights = self.ref_atoms.masses
         self._weights = weights
 

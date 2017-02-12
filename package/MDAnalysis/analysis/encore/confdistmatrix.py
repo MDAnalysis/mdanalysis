@@ -144,8 +144,7 @@ def conformational_distance_matrix(ensemble,
     else:
         fitting_coordinates = None
 
-
-    if weights == 'mass':
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
         weights = ensemble.select_atoms(selection).masses.astype(np.float64)
         if pairwise_align:
             subset_weights = ensemble.select_atoms(subset_selection).masses.astype(np.float64)
@@ -170,11 +169,9 @@ def conformational_distance_matrix(ensemble,
         else:
             subset_weights = None
 
-
     # Allocate for output matrix
     matsize = framesn * (framesn + 1) / 2
     distmat = np.empty(matsize, np.float64)
-
 
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
@@ -356,7 +353,7 @@ def get_distance_matrix(ensemble,
             if mass_weighted:
                 weights = 'mass'
 
-        if weights == 'mass':
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             weight_type = 'Mass'
         elif weights is None:
             weight_type = 'None'

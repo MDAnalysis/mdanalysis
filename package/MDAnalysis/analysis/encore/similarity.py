@@ -848,7 +848,7 @@ def hes(ensembles,
          [ 7032.19607004     0.        ]]
     """
 
-    if weights == 'mass':
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
         weights = ['mass' for _ in range(len(ensembles))]
     elif weights is not None:
         if len(weights) != len(ensembles):
