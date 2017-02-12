@@ -169,6 +169,26 @@ inconsistent results")
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
 
+    def test_rmsd_matrix_with_superimposition_custom_weights(self):
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            weights='mass',
+            n_jobs=1)
+
+        conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            weights=(self.ens1.atoms.CA.masses, self.ens1.atoms.CA.masses),
+            n_jobs=1)
+
+        for i in range(conf_dist_matrix_custom.size):
+            assert_almost_equal(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
+
     def test_rmsd_matrix_without_superimposition(self):
         selection_string = "name CA"
         selection = self.ens1.select_atoms(selection_string)
@@ -233,17 +253,25 @@ inconsistent results")
 
     def test_hes_to_self(self):
         results, details = encore.hes([self.ens1, self.ens1])
-        result_value = results[0,1]
+        result_value = results[0, 1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_hes(self):
         results, details = encore.hes([self.ens1, self.ens2], weights='mass')
-        result_value = results[0,1]
+        result_value = results[0, 1]
         min_bound = 1E5
         self.assertGreater(result_value, min_bound,
                            msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
+
+    def test_hes_custom_weights(self):
+        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
+        results_custom, details_custom = encore.hes([self.ens1, self.ens2],
+                                                    weights=(self.ens1.atoms.CA.masses, self.ens2.atoms.CA.masses))
+        result_value = results[0, 1]
+        result_value_custom = results_custom[0, 1]
+        assert_almost_equal(result_value, result_value_custom)
 
     def test_hes_align(self):
         # This test is massively sensitive!

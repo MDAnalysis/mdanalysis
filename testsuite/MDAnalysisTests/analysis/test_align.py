@@ -108,9 +108,9 @@ class TestAlign(TestCase):
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.select_atoms('backbone')
-        first_frame = bb.positions.copy()
+        first_frame = bb.positions
         self.universe.trajectory[-1]
-        last_frame = bb.positions.copy()
+        last_frame = bb.positions
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
@@ -141,6 +141,15 @@ class TestAlign(TestCase):
             warnings.simplefilter('always')
             rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
         assert_equal(len(warn), 1)
+        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
+                                   center=True, superposition=True)
+        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
+
+    def test_rmsd_custom_mass_weights(self):
+        last_atoms_weight = self.universe.atoms.masses
+        A = self.universe.trajectory[0]
+        B = self.reference.trajectory[-1]
+        rmsd = align.alignto(self.universe, self.reference, weights=self.reference.atoms.masses)
         rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
                                    center=True, superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
@@ -212,7 +221,19 @@ class TestAlign(TestCase):
         self._assert_rmsd(fitted, -1, 6.929083032629219,
                           weights=self.universe.atoms.masses)
 
-    def test_AlignTraj_weigts_deprecated(self):
+    def test_AlignTraj_custom_weights(self):
+        x = align.AlignTraj(self.universe, self.reference,
+                            filename=self.outfile, weights=self.reference.atoms.masses).run()
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
+        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
+
+        self._assert_rmsd(fitted, 0, 0.0,
+                          weights=self.universe.atoms.masses)
+        self._assert_rmsd(fitted, -1, 6.929083032629219,
+                          weights=self.universe.atoms.masses)
+
+    def test_AlignTraj_weights_deprecated(self):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             x = align.AlignTraj(self.universe, self.reference,
