@@ -154,6 +154,14 @@ class TestAlign(TestCase):
                                    center=True, superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
+    def test_rmsd_custom_weights(self):
+        weights = np.zeros(self.universe.atoms.n_atoms)
+        ca = self.universe.atoms.CA
+        weights[ca.indices] = 1
+        rmsd = align.alignto(self.universe, self.reference, select='name CA')
+        rmsd_weights = align.alignto(self.universe, self.reference, weights=weights)
+        assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
+
     @dec.slow
     @attr('issue')
     def test_rms_fit_trj(self):
@@ -222,6 +230,18 @@ class TestAlign(TestCase):
                           weights=self.universe.atoms.masses)
 
     def test_AlignTraj_custom_weights(self):
+        weights = np.zeros(self.universe.atoms.n_atoms)
+        ca = self.universe.atoms.CA
+        weights[ca.indices] = 1
+
+        x = align.AlignTraj(self.universe, self.reference,
+                            filename=self.outfile, select='name CA').run()
+        x_weights = align.AlignTraj(self.universe, self.reference,
+                                    filename=self.outfile, weights=weights).run()
+
+        assert_array_almost_equal(x.rmsd, x_weights.rmsd)
+
+    def test_AlignTraj_custom_mass_weights(self):
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile, weights=self.reference.atoms.masses).run()
         fitted = MDAnalysis.Universe(PSF, self.outfile)
