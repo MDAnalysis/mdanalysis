@@ -55,7 +55,7 @@ from .utils import TriangularMatrix, trm_indices
 def conformational_distance_matrix(ensemble,
                                    conf_dist_function, selection="",
                                    superimposition_selection="", n_jobs=1, pairwise_align=True, weights='mass',
-                                   mass_weighted=None, metadata=True, verbose=False):
+                                   metadata=True, verbose=False):
     """
     Run the conformational distance matrix calculation.
     args and kwargs are passed to conf_dist_function.
@@ -75,9 +75,6 @@ def conformational_distance_matrix(ensemble,
     pairwise_align : bool, optional
         Whether to perform pairwise alignment between conformations.
         Default is True (do the superimposition)
-    mass_weighted : bool, optional (deprecated)
-        Whether to perform mass-weighted superimposition and metric
-        calculation. Default is True.
     weights : str/array_like, optional
        weights to be used for fit. Can be either 'mass' or an array_like
     metadata : bool, optional
@@ -99,13 +96,6 @@ def conformational_distance_matrix(ensemble,
     # framesn: number of frames
     framesn = len(ensemble.trajectory.timeseries(
         ensemble.select_atoms(selection), format='fac'))
-
-    if mass_weighted is not None:
-        warnings.warn("mass weighted is deprecated argument. Please use "
-                      " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                      category=DeprecationWarning)
-        if mass_weighted:
-            weights = 'mass'
 
     # Prepare metadata recarray
     if metadata:
@@ -262,7 +252,6 @@ def get_distance_matrix(ensemble,
                         superimpose=True,
                         superimposition_subset="name CA",
                         weights='mass',
-                        mass_weighted=None,
                         n_jobs=1,
                         verbose=False,
                         *conf_dist_args,
@@ -300,9 +289,6 @@ def get_distance_matrix(ensemble,
     superimposition_subset : str, optional
         Group for superimposition using MDAnalysis selection syntax
         (default is CA atoms: "name CA")
-    mass_weighted : bool, optional (deprecated)
-        calculate a mass-weighted RMSD (default is None). If set to False
-        the superimposition will also not be mass-weighted.
     weights : str/array_like, optional
         weights to be used for fit. Can be either 'mass' or an array_like
     n_jobs : int, optional
@@ -345,14 +331,6 @@ def get_distance_matrix(ensemble,
 
     # Calculate the matrix
     else:
-
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                        " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                        category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
-
         if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             weight_type = 'Mass'
         elif weights is None:
