@@ -59,6 +59,9 @@ Helper functions
 from six.moves import zip
 import numpy as np
 
+from . import groups
+from .groups import (GroupBase, Atom, Residue, Segment,
+                     AtomGroup, ResidueGroup, SegmentGroup)
 from .topologyattrs import Atomindices, Resindices, Segindices
 from ..exceptions import NoDataError
 
@@ -454,6 +457,12 @@ class Topology(object):
         # add core TopologyAttrs that give access to indices
         attrs.extend((Atomindices(), Resindices(), Segindices()))
 
+        # generate Universe version of each class
+        # AG, RG, SG, A, R, S
+        class_bases, classes = groups.make_classes()
+        self.classes = classes  # this is useful, so not 'private'
+        self._class_bases = class_bases  # this is less useful, so 'private'
+
         # attach the TopologyAttrs
         self.attrs = []
         for topologyattr in attrs:
@@ -482,6 +491,51 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+        self._process_attr(topologyattr)
+
+    def _process_attr(self, attr):
+        """Squeeze a topologyattr for its information
+
+        Grabs:
+         - Group properties (attribute access)
+         - Component properties
+         - Transplant methods
+        """
+        n_dict = {'atom': self.n_atoms,
+                  'residue': self.n_residues,
+                  'segment': self.n_segments}
+        logger.debug("_process_attr: Adding {0} to topology".format(attr))
+        if (attr.per_object is not None and len(attr) != n_dict[attr.per_object]):
+            raise ValueError('Length of {attr} does not'
+                             ' match number of {obj}s.\n'
+                             'Expect: {n:d} Have: {m:d}'.format(
+                                 attr=attr.attrname,
+                                 obj=attr.per_object,
+                                 n=n_dict[attr.per_object],
+                                 m=len(attr)))
+
+        self._class_bases[GroupBase]._add_prop(attr)
+
+        for cls in attr.target_classes:
+            try:
+                self._class_bases[cls]._add_prop(attr)
+            except (KeyError, AttributeError):
+                pass
+
+        try:
+            transplants = attr.transplants
+        except AttributeError:
+            # not every Attribute will have a transplant dict
+            pass
+        else:
+            # Group transplants
+            for cls in (Atom, Residue, Segment, GroupBase,
+                        AtomGroup, ResidueGroup, SegmentGroup):
+                for funcname, meth in transplants[cls]:
+                    setattr(self._class_bases[cls], funcname, meth)
+            # Universe transplants
+            #for funcname, meth in transplants['Universe']:
+            #    setattr(self.__class__, funcname, meth)
 
     @property
     def guessed_attributes(self):

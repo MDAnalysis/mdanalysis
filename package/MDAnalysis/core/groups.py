@@ -258,8 +258,8 @@ class _MutableBase(object):
     Base class that merges appropriate :class:`_TopologyAttrContainer` classes.
 
     Implements :meth:`__new__`. In it the instantiating class is fetched from
-    :attr:`Universe._classes`. If there is a cache miss, a merged class is made
-    with a base from :attr:`Universe._class_bases` and cached.
+    :attr:`Universe._topology.classes`. If there is a cache miss, a merged class is made
+    with a base from :attr:`Universe._topology._class_bases` and cached.
 
     The classes themselves are used as the cache dictionary keys for simplcity
     in cache retrieval.
@@ -290,20 +290,20 @@ class _MutableBase(object):
                                    "object passed to the initialization of "
                                     "{}".format(cls.__name__))
         try:
-            return object.__new__(u._classes[cls])
+            return object.__new__(u._topology.classes[cls])
         except KeyError:
             # Cache miss. Let's find which kind of class this is and merge.
             try:
-                parent_cls = next(u._class_bases[parent]
+                parent_cls = next(u._topology._class_bases[parent]
                                   for parent in cls.mro()
-                                  if parent in u._class_bases)
+                                  if parent in u._topology._class_bases)
             except StopIteration:
                 raise TypeError("Attempted to instantiate class '{}' but "
                                 "none of its parents are known to the "
                                 "universe. Currently possible parent "
                                 "classes are: {}".format(cls.__name__,
-                                    str(sorted(u._class_bases.keys()))))
-            newcls = u._classes[cls] = parent_cls._mix(cls)
+                                    str(sorted(u._topology._class_bases.keys()))))
+            newcls = u._topology.classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
 
 

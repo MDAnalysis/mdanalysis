@@ -278,14 +278,6 @@ class Universe(object):
         self.is_anchor = kwargs.get('is_anchor', True)
 
     def _generate_from_topology(self):
-        # generate Universe version of each class
-        # AG, RG, SG, A, R, S
-        self._class_bases, self._classes = groups.make_classes()
-
-        # Put Group level stuff from topology into class
-        for attr in self._topology.attrs:
-            self._process_attr(attr)
-
         # Generate atoms, residues and segments.
         # These are the first such groups generated for this universe, so
         #  there are no cached merged classes yet. Otherwise those could be
@@ -629,52 +621,8 @@ class Universe(object):
 
     def add_TopologyAttr(self, topologyattr):
         """Add a new topology attribute."""
+        # TODO: maybe remove this and *always* go via Topology
         self._topology.add_TopologyAttr(topologyattr)
-        self._process_attr(topologyattr)
-
-    def _process_attr(self, attr):
-        """Squeeze a topologyattr for its information
-
-        Grabs:
-         - Group properties (attribute access)
-         - Component properties
-         - Transplant methods
-        """
-        n_dict = {'atom': self._topology.n_atoms,
-                  'residue': self._topology.n_residues,
-                  'segment': self._topology.n_segments}
-        logger.debug("_process_attr: Adding {0} to topology".format(attr))
-        if (attr.per_object is not None and len(attr) != n_dict[attr.per_object]):
-            raise ValueError('Length of {attr} does not'
-                             ' match number of {obj}s.\n'
-                             'Expect: {n:d} Have: {m:d}'.format(
-                                 attr=attr.attrname,
-                                 obj=attr.per_object,
-                                 n=n_dict[attr.per_object],
-                                 m=len(attr)))
-
-        self._class_bases[GroupBase]._add_prop(attr)
-
-        for cls in attr.target_classes:
-            try:
-                self._class_bases[cls]._add_prop(attr)
-            except (KeyError, AttributeError):
-                pass
-
-        try:
-            transplants = attr.transplants
-        except AttributeError:
-            # not every Attribute will have a transplant dict
-            pass
-        else:
-            # Group transplants
-            for cls in (Atom, Residue, Segment, GroupBase,
-                        AtomGroup, ResidueGroup, SegmentGroup):
-                for funcname, meth in transplants[cls]:
-                    setattr(self._class_bases[cls], funcname, meth)
-            # Universe transplants
-            for funcname, meth in transplants['Universe']:
-                setattr(self.__class__, funcname, meth)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
