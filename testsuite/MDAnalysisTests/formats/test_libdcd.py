@@ -248,3 +248,36 @@ class DCDWriteTest(TestCase):
         expected = self.dcdfile_r.delta
         actual = DCDFile(self.testfile).delta
         assert_equal(actual, expected)
+
+class DCDByteArithmeticTest(TestCase):
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD, 'r')
+        self.filesize = os.path.getsize(DCD)
+
+    def test_relative_frame_sizes(self):
+        # the first frame of a DCD file should always be >= in size
+        # to subsequent frames, as the first frame contains the same
+        # atoms + (optional) fixed atoms
+        first_frame_size = self.dcdfile.firstframesize
+        general_frame_size = self.dcdfile.framesize
+        self.assertGreaterEqual(first_frame_size, general_frame_size)
+
+    def test_file_size_breakdown(self):
+        # the size of a DCD file is equivalent to the sum of the header
+        # size, first frame size, and (N - 1 frames) * size per general
+        # frame
+        expected = self.filesize
+        actual = self.dcdfile.header_size + self.dcdfile.firstframesize + \
+                 ((self.dcdfile.n_frames - 1) * self.dcdfile.framesize)
+        assert_equal(actual, expected)
+
+    def test_nframessize_int(self):
+        # require that the (nframessize / framesize) value used by DCDFile 
+        # is an integer (because nframessize / framesize + 1 = total frames,
+        # which must also be an int)
+        nframessize = self.filesize - self.dcdfile.header_size - \
+                           self.dcdfile.firstframesize
+        self.assertTrue(float(nframessize) % float(self.dcdfile.framesize) == 0)
+
+

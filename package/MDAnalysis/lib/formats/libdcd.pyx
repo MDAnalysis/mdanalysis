@@ -117,9 +117,9 @@ cdef class DCDFile:
     cdef int current_frame
     cdef readonly remarks
     cdef int reached_eof
-    cdef int firstframesize
-    cdef int framesize
-    cdef int header_size
+    cdef readonly int firstframesize
+    cdef readonly int framesize
+    cdef readonly int header_size
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
