@@ -69,9 +69,10 @@ def conformational_distance_matrix(ensemble,
         Function that fills the matrix with conformational distance
         values. See set_rmsd_matrix_elements for an example.
     selection : str, optional
-        use this selection
+        use this selection for the calculation of conformational distance
     superimposition_selection : str, optional
-        TODO
+        use atoms from this selection for fitting instead of those of
+        "selection"
     pairwise_align : bool, optional
         Whether to perform pairwise alignment between conformations.
         Default is True (do the superimposition)
