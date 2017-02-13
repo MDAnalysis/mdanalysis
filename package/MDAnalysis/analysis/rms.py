@@ -588,14 +588,11 @@ class RMSF(AnalysisBase):
 
     def run(self, start=None, stop=None, step=None, progout=None,
             verbose=None, quiet=None):
-        if np.any([el is not None for el in (start, stop, step, progout, quiet)]):
+        if any([el is not None for el in (start, stop, step, progout, quiet)]):
             warnings.warn("run arguments are deprecated. Please pass them at "
                           "class construction. These options will be removed in 0.17.0",
                           category=DeprecationWarning)
-            if quiet is not None:
-                verbose = not quiet
-            else:
-                verbose = False
+            verbose = _set_verbose(verbose, quiet, default=False)
             # regenerate class with correct args
             super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
                                        start=start, stop=stop, step=step,
