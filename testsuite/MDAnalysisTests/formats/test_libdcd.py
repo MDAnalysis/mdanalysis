@@ -6,7 +6,8 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import (PSF, DCD, DCD_NAMD_TRICLINIC,
+                                       PSF_NAMD_TRICLINIC)
 
 from unittest import TestCase
 import MDAnalysis
@@ -19,6 +20,11 @@ class DCDReadFrameTest(TestCase):
 
     def setUp(self):
         self.dcdfile = DCDFile(DCD)
+        self.natoms = 3341
+        self.traj_length = 98
+        self.new_frame = 91
+        self.context_frame = 22
+        self.num_iters = 3
 
     def tearDown(self):
         del self.dcdfile
@@ -28,7 +34,7 @@ class DCDReadFrameTest(TestCase):
         # MDAnalysis implementation of DCD file handling
         dcd_frame = self.dcdfile.read()
         xyz = dcd_frame[0]
-        assert_equal(xyz.shape, (3341, 3))
+        assert_equal(xyz.shape, (self.natoms, 3))
 
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
@@ -46,9 +52,8 @@ class DCDReadFrameTest(TestCase):
 
     def test_seek_normal(self):
         # frame seek within range is tested
-        new_frame = 91
-        self.dcdfile.seek(new_frame)
-        assert_equal(self.dcdfile.tell(), new_frame)
+        self.dcdfile.seek(self.new_frame)
+        assert_equal(self.dcdfile.tell(), self.new_frame)
 
     def test_seek_negative(self):
         # frame seek with negative number
@@ -56,25 +61,26 @@ class DCDReadFrameTest(TestCase):
             self.dcdfile.seek(-78)
 
     def test_iteration(self):
-        self.dcdfile.__next__()
-        self.dcdfile.__next__()
-        self.dcdfile.__next__()
-        expected_frame = 3
-        assert_equal(self.dcdfile.tell(), expected_frame)
+        expected = 0
+        while self.num_iters > 0:
+            self.dcdfile.__next__()
+            self.num_iters -= 1
+            expected += 1
+        
+        assert_equal(self.dcdfile.tell(), expected)
 
     def test_zero_based_frames(self):
         expected_frame = 0
         assert_equal(self.dcdfile.tell(), expected_frame)
 
     def test_length_traj(self):
-        expected = 98
+        expected = self.traj_length
         assert_equal(len(self.dcdfile), expected)
 
     def test_context_manager(self):
-        frame = 22
         with self.dcdfile as f:
-            f.seek(frame)
-            assert_equal(f.tell(), frame)
+            f.seek(self.context_frame)
+            assert_equal(f.tell(), self.context_frame)
 
     @raises(IOError)
     def test_open_wrong_mode(self):
@@ -85,7 +91,7 @@ class DCDReadFrameTest(TestCase):
         DCDFile('foo')
 
     def test_n_atoms(self):
-        assert_equal(self.dcdfile.n_atoms, 3341)
+        assert_equal(self.dcdfile.n_atoms, self.natoms)
 
     @raises(IOError)
     @run_in_tempdir()
@@ -150,6 +156,10 @@ class DCDWriteTest(TestCase):
         self.testfile = self.tmpdir.name + '/test.dcd'
         self.dcdfile = DCDFile(self.testfile, 'w')
         self.dcdfile_r = DCDFile(DCD, 'r')
+        self.natoms = 3341
+        self.expected_frames = 98
+        self.seek_frame = 91
+        self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
             for frame in f_in:
@@ -186,9 +196,13 @@ class DCDWriteTest(TestCase):
 
     def test_written_dcd_coordinate_data_shape(self):
         # written coord shape should match for all frames
-        expected = (3341, 3)
+        expected = (self.natoms, 3)
         with DCDFile(self.testfile) as f:
-            for frame in f:
+            if f.n_frames > 1:
+                for frame in f:
+                    xyz = f.read()[0]
+                    assert_equal(xyz.shape, expected)
+            else:
                 xyz = f.read()[0]
                 assert_equal(xyz.shape, expected)
 
@@ -197,21 +211,23 @@ class DCDWriteTest(TestCase):
         expected = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
                             dtype=np.float32)
         with DCDFile(self.testfile) as f:
-            for frame in f:
+            if f.n_frames > 1:
+                for frame in f:
+                    unitcell = f.read()[1]
+                    assert_equal(unitcell, expected)
+            else:
                 unitcell = f.read()[1]
                 assert_equal(unitcell, expected)
 
     def test_written_num_frames(self):
-        expected = 98
         with DCDFile(self.testfile) as f:
-            assert_equal(len(f), expected)
+            assert_equal(len(f), self.expected_frames)
 
     def test_written_seek(self):
         # ensure that we can seek properly on written DCD file
-        new_frame = 91
         with DCDFile(self.testfile) as f:
-            f.seek(new_frame)
-            assert_equal(f.tell(), new_frame)
+            f.seek(self.seek_frame)
+            assert_equal(f.tell(), self.seek_frame)
 
     def test_written_zero_based_frames(self):
         # ensure that the first written DCD frame is 0
@@ -222,11 +238,10 @@ class DCDWriteTest(TestCase):
     def test_written_remarks(self):
         # ensure that the REMARKS field *can be* preserved exactly
         # in the written DCD file
-        expected = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
         with DCDFile(self.testfile) as f:
-            print('len(expected):', len(expected))
-            print('len(f.remarks):', len(f.remarks))
-            assert_equal(f.remarks.decode(), expected)
+            print('remarks before decode:', f.remarks)
+            print('remarks after decode:', f.remarks)
+            assert_equal(f.remarks.decode(), self.expected_remarks)
 
     def test_written_nsavc(self):
         # ensure that nsavc, the timesteps between frames written
@@ -281,3 +296,59 @@ class DCDByteArithmeticTest(TestCase):
         self.assertTrue(float(nframessize) % float(self.dcdfile.framesize) == 0)
 
 
+class DCDByteArithmeticTestNAMD(DCDByteArithmeticTest, TestCase):
+    # repeat byte arithmetic tests for NAMD format DCD
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD_NAMD_TRICLINIC, 'r')
+        self.filesize = os.path.getsize(DCD_NAMD_TRICLINIC)
+    
+
+class DCDWriteTestNAMD(DCDWriteTest, TestCase):
+    # repeat writing tests for NAMD format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(DCD_NAMD_TRICLINIC, 'r')
+        self.natoms = 5545
+        self.expected_frames = 1
+        self.seek_frame = 0
+        self.expected_remarks = '''Created by DCD
+        plugin\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00REMARKS
+        Created 06 July, 2014 at
+        17:29\x00\x00\xd0Y5\x14\xff~\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00CORD\x03\x00\x00\x00,\x01\x00\x00\xe8\x03\x00\x00\xe8\x03\x00\x00\xe0\x93\x04\x00'''
+
+        with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            print('NAMD remarks:', f_in.remarks)
+            for frame in f_in:
+                frame = frame._asdict()
+                f_out.write(xyz=frame['x'],
+                            box=frame['unitcell'].astype(np.float64),
+                            step=f_in.istart,
+                            natoms=frame['x'].shape[0],
+                            charmm=0,
+                            time_step=f_in.delta,
+                            ts_between_saves=f_in.nsavc,
+                            remarks=f_in.remarks)
+
+class DCDWriteHeaderTestNAMD(DCDWriteHeaderTest, TestCase):
+    # repeat header writing tests for NAMD format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(DCD_NAMD_TRICLINIC, 'r')
+
+class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
+    # repeat frame reading tests for NAMD format DCD
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD_NAMD_TRICLINIC)
+        self.natoms = 5545
+        self.traj_length = 1
+        self.new_frame = 0
+        self.context_frame = 0
+        self.num_iters = 0
