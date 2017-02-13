@@ -344,7 +344,10 @@ cdef class DCDFile:
         cdef int with_unitcell = 1
 
         if isinstance(remarks, six.string_types):
-            remarks = bytearray(remarks, 'ascii')
+            try:
+                remarks = bytearray(remarks, 'ascii')
+            except UnicodeDecodeError:
+                remarks = bytearray(remarks)
 
         ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
                              ts_between_saves, time_step, with_unitcell, 
