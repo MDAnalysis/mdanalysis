@@ -32,6 +32,20 @@ class TestGROReader(BaseReaderTest):
         super(TestGROReader, self).__init__(reference)
 
 
+class GRONoConversionReference(GROReference):
+    def __init__(self):
+        super(GRONoConversionReference, self).__init__()
+
+
+
+class TestGROReaderNoConversion(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GRONoConversionReference()
+        super(TestGROReaderNoConversion, self).__init__(reference)
+        self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
+
+
 class TestGROWriter(BaseWriterTest):
     def __init__(self, reference=None):
         if reference is None:
