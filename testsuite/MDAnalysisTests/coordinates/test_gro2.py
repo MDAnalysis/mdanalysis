@@ -35,7 +35,10 @@ class TestGROReader(BaseReaderTest):
 class GRONoConversionReference(GROReference):
     def __init__(self):
         super(GRONoConversionReference, self).__init__()
-
+        self.first_frame.positions /= 10.0
+        self.first_frame.velocities /= 10.0
+        self.dimensions[:3] /= 10.0
+        self.volume /= 1000
 
 
 class TestGROReaderNoConversion(BaseReaderTest):
