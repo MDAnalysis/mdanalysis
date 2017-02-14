@@ -4,4 +4,6 @@
 
 chainreader
 
+memoryreader
+
 auxiliaries

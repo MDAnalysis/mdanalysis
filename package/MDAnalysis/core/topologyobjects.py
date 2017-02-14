@@ -609,21 +609,22 @@ class TopologyGroup(object):
         """
         return TopologyDict(self)
 
-    def atomgroup_intersection(self, ag, **kwargs):
-        """Retrieve all bonds from within this TopologyGroup that are within
-        the AtomGroup which is passed.
+    def atomgroup_intersection(self, ag, strict=False):
+        """Retrieve all bonds that are also within an AtomGroup
 
         Parameters
         ----------
         ag : AtomGroup
             The `:class:~MDAnalysis.core.groups.AtomGroup` to intersect
             with.
-        strict : bool
-            Only retrieve bonds which are completely contained within the
-            AtomGroup. [``False``]
+        strict : bool, optional
+           Only retrieve bonds which are completely contained within the
+           :class:`AtomGroup`.  I.e., for a bond both atoms within the bond
+           must be present
 
 
         .. versionadded:: 0.9.0
+
         """
         # Issue #780 - if self is empty, return self to avoid invalid mask
         if not self:
@@ -631,7 +632,7 @@ class TopologyGroup(object):
 
         # Strict requires all items in a row to be seen,
         # otherwise any item in a row
-        func = np.all if kwargs.get('strict', False) else np.any
+        func = np.all if strict else np.any
 
         atom_idx = ag.indices
         # Create a list of boolean arrays,
@@ -825,27 +826,31 @@ class TopologyGroup(object):
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations
-    def values(self, **kwargs):
+    def values(self, pbc=False, result=None):
         """Return the size of each object in this Group
 
-        :Keywords:
-           *pbc*
-              apply periodic boundary conditions when calculating distance
-              [``False``]
-           *result*
-              allows a predefined results array to be used,
-              note that this will be overwritten
+        Parameters
+        ----------
+        pbc : bool, optional
+           apply periodic boundary conditions when calculating distance
+        result : np.ndarray
+           allows a predefined results array to be used, note that this
+           will be overwritten
+
+        Returns
+        -------
+        Numpy array of results
 
         .. versionadded:: 0.11.0
         """
         if self.btype == 'bond':
-            return self.bonds(**kwargs)
+            return self.bonds(pbc, result)
         elif self.btype == 'angle':
-            return self.angles(**kwargs)
+            return self.angles(pbc, result)
         elif self.btype == 'dihedral':
-            return self.dihedrals(**kwargs)
+            return self.dihedrals(pbc, result)
         elif self.btype == 'improper':
-            return self.dihedrals(**kwargs)
+            return self.dihedrals(pbc, result)
 
     def _bondsSlow(self, pbc=False):  # pragma: no cover
         """Slow version of bond (numpy implementation)"""
@@ -866,19 +871,19 @@ class TopologyGroup(object):
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
 
-        :Keywords:
-           *pbc*
-              apply periodic boundary conditions when calculating distance
-              [False]
-           *result*
-              allows a predefined results array to be used,
-              note that this will be overwritten
+        Parameters
+        ----------
+        pbc
+           apply periodic boundary conditions when calculating distance
+        result
+           allows a predefined results array to be used,
+           note that this will be overwritten
 
         Uses cython implementation
         """
         if not self.btype == 'bond':
             raise TypeError("TopologyGroup is not of type 'bond'")
-        if not result:
+        if result is None:
             result = np.zeros(len(self), np.float64)
         if pbc:
             return distances.calc_bonds(self._ags[0].positions,
@@ -925,7 +930,7 @@ class TopologyGroup(object):
         """
         if not self.btype == 'angle':
             raise TypeError("TopologyGroup is not of type 'angle'")
-        if not result:
+        if result is None:
             result = np.zeros(len(self), np.float64)
         if pbc:
             return distances.calc_angles(self._ags[0].positions,
@@ -979,7 +984,7 @@ class TopologyGroup(object):
         if self.btype not in ['dihedral', 'improper']:
             raise TypeError("TopologyGroup is not of type 'dihedral' or "
                             "'improper'")
-        if not result:
+        if result is None:
             result = np.zeros(len(self), np.float64)
         if pbc:
             return distances.calc_dihedrals(self._ags[0].positions,
