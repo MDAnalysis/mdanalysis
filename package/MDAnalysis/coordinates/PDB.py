@@ -1064,3 +1064,27 @@ class MultiPDBWriter(PDBWriter):
     """
     format = 'PDB'
     multiframe = True  # For Writer registration
+
+
+class SinglePDBWriter(PDBWriter):
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+
+    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
+    is written.
+
+    By default, :class:`SinglePDBWriter` writes a single PDB frame, which
+    doesn't use the MODEL_ and ENDMDL_ records and thus, don't contain the line
+    "MODEL 1". "MODEL 1" is hated by a software (coot) which is frequently used
+    in x-ray crystallography.
+
+
+
+    .. SeeAlso::
+       This class is identical to :class:`PDBWriter`. This class overwrites the
+       MultiPDBWriter in the _SINGLEFRAME_WRITERS. It defaults to writing
+       single frame PDB files instead of multi-single frames.
+
+    .. versionadded:: 0.7.6
+
+    """
+    format = 'PDB'
