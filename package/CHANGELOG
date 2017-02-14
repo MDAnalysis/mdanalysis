@@ -59,6 +59,8 @@ Enhancements
     to distinguish themselves by default. Can still use anchor_name kwarg to
     control the anchor name manually. (PR #1125)
   * Added groupby method to Group objects. (PR #1112)
+  * Added `singleframe` attribute to Writer API to exclude from known Writers
+    for a single frame (Issue #1199 PR #1201)
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)

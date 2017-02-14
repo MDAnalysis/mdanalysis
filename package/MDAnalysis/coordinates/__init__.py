@@ -299,6 +299,9 @@ list of suffixes can be given.
 
 To define that a Writer can write multiple trajectory frames, set the
 `multiframe` attribute to ``True``.  The default is ``False``.
+To define that a Writer *does not* support single frame writing the
+`singleframe` attribute can be set to ``False``.  This is ``True``
+by default, ie we assume all Writers can also do a single frame.
 
 
 .. _Timestep API:

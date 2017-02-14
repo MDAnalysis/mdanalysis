@@ -760,7 +760,8 @@ class TestWriterAlignments(object):
         self.tmpdir = tempdir.TempDir()
         outfile = self.tmpdir.name + '/nucl.pdb'
         u.atoms.write(outfile)
-        self.writtenstuff = open(outfile, 'r').readlines()
+        with open(outfile, 'r') as inf:
+            self.writtenstuff = inf.readlines()
 
     def test_atomname_alignment(self):
         # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
@@ -768,13 +769,13 @@ class TestWriterAlignments(object):
                 "ATOM      2  CA ",
                 "ATOM      3 CA  ",
                 "ATOM      4 H5''",)
-        for written, reference in zip(self.writtenstuff[4:], refs):
+        for written, reference in zip(self.writtenstuff[3:], refs):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self):
         result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
-        assert_equal(self.writtenstuff[4], result_line)
+        assert_equal(self.writtenstuff[3], result_line)
 
 
 def test_deduce_PDB_atom_name():

@@ -1062,5 +1062,6 @@ class MultiPDBWriter(PDBWriter):
     .. versionadded:: 0.7.6
 
     """
-    format = 'PDB'
+    format = ['PDB', 'ENT']
     multiframe = True  # For Writer registration
+    singleframe = False

@@ -1649,24 +1649,29 @@ class Reader(ProtoReader):
 
 
 class _Writermeta(type):
-    # Auto register upon class creation
+    # Auto register this format upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
+            # grab the string which describes this format
+            # could be either 'PDB' or ['PDB', 'ENT'] for multiple formats
             fmt = asiterable(classdict['format'])
         except KeyError:
+            # not required however
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _SINGLEFRAME_WRITERS[f] = cls
-            try:
-                if classdict['multiframe']:
-                    for f in fmt:
-                        f = f.upper()
-                        _MULTIFRAME_WRITERS[f] = cls
-            except KeyError:
-                pass
+            # does the Writer support single and multiframe writing?
+            single = classdict.get('singleframe', True)
+            multi = classdict.get('multiframe', False)
+
+            if single:
+                for f in fmt:
+                    f = f.upper()
+                    _SINGLEFRAME_WRITERS[f] = cls
+            if multi:
+                for f in fmt:
+                    f = f.upper()
+                    _MULTIFRAME_WRITERS[f] = cls
 
 
 class Writer(six.with_metaclass(_Writermeta, IObase)):

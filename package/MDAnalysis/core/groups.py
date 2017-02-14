@@ -1569,26 +1569,21 @@ class AtomGroup(GroupBase):
         ----------
         filename : str, optional
            ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
-
         file_format : str, optional
             PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
             Jmol (spt); case-insensitive and can also be supplied as the
             filename extension [PDB]
-
         filenamefmt : str, optional
             format string for default filename; use substitution tokens
             'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
-
         bonds : str, optional
            how to handle bond information, especially relevant for PDBs;
            default is ``"conect"``.
-
            * ``"conect"``: write only the CONECT records defined in the original
              file
            * ``"all"``: write out all bonds, both the original defined and those
              guessed by MDAnalysis
            * ``None``: do not write out bonds
-
 
         .. versionchanged:: 0.9.0
            Merged with write_selection.  This method can now write both

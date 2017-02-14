@@ -48,6 +48,7 @@ class TRRWriter(XDRBaseWriter):
     """
 
     format = 'TRR'
+    multiframe = True
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
     _file = TRRFile
