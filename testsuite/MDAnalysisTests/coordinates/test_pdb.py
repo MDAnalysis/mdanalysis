@@ -654,7 +654,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_(len(self.universe.residues[0].atoms) == 19)
 
 
-class TestIncompletePDB(object):
+class TestIncompletePDB(TestCase):
     """Tests for Issue #396
 
     Reads an incomplete (but still intelligible) PDB file
@@ -702,7 +702,7 @@ class TestIncompletePDB(object):
             pass
 
 
-class TestPDBXLSerial(object):
+class TestPDBXLSerial(TestCase):
     """For Issue #446"""
 
     def setUp(self):
@@ -748,7 +748,7 @@ class TestPSF_PDBReader(TestPDBReader):
                 "failed to choose PDBReader")
 
 
-class TestPDBWriterOccupancies(object):
+class TestPDBWriterOccupancies(TestCase):
     """Tests for Issue #620"""
 
     def setUp(self):

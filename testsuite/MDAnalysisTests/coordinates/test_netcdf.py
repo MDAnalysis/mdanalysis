@@ -439,7 +439,7 @@ class TestNetCDFImport(object):
                 raise AssertionError
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrors(TestCase):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()

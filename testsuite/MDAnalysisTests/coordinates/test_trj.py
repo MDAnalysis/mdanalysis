@@ -29,9 +29,9 @@ from numpy.testing import (assert_equal, assert_,
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from numpy.testing import TestCase
 
-
-class _TRJReaderTest(object):
+class _TRJReaderTest(TestCase):
     # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
         del self.universe

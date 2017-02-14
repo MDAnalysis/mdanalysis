@@ -29,6 +29,7 @@ from MDAnalysis.coordinates.base import (
 )
 from numpy.testing import assert_equal, assert_raises
 
+from numpy.testing import TestCase
 """
 Isolate the API definitions of Readers independent of implementations
 """
@@ -74,7 +75,7 @@ class AmazingReader(SingleFrameReaderBase):
         self.ts.frame = 0
 
 
-class _TestReader(object):
+class _TestReader(TestCase):
     """Basic API readers"""
 
     def setUp(self):

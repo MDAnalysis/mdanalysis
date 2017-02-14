@@ -491,7 +491,7 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(copy_ts, ts)
 
 
-class BaseTimestepTest(object):
+class BaseTimestepTest(TestCase):
     """Test all the base functionality of a Timestep
 
     All Timesteps must pass these tests!

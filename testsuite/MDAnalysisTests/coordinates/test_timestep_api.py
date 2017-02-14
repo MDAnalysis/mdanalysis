@@ -39,7 +39,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-
+from numpy.testing import TestCase
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
@@ -67,7 +67,7 @@ class TestBaseTimestep(BaseTimestepTest):
 # TODO: Merge this into generic Reader tests
 # These tests are all included in BaseReaderTest
 # Once Readers use that TestClass, delete this one
-class BaseTimestepInterfaceTest(object):
+class BaseTimestepInterfaceTest(TestCase):
     """Test the Timesteps created by Readers
 
     This checks that Readers are creating correct Timestep objects,

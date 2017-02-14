@@ -30,9 +30,9 @@ from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
                                        DLP_CONFIG_order, DLP_HISTORY,
                                        DLP_HISTORY_minimal, DLP_HISTORY_order)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from unittest import TestCase
 
-
-class _DLPConfig(object):
+class _DLPConfig(TestCase):
     def setUp(self):
         self.r = mda.coordinates.DLPoly.ConfigReader
         rd = self.rd = self.r(self.f)

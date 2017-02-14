@@ -206,7 +206,7 @@ class TestTRZWriter(TestCase, RefTRZ):
                       self.Writer, self.outfile, self.ref_n_atoms, title=title)
 
 
-class TestTRZWriter2(object):
+class TestTRZWriter2(TestCase):
     def setUp(self):
         self.u = mda.Universe(two_water_gro)
 

@@ -46,6 +46,7 @@ from numpy.testing import (
     assert_raises
 )
 
+
 class TestGROReaderOld(RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO)
@@ -418,6 +419,7 @@ class TestGROLargeWriter(BaseWriterTest):
                          err_msg="Writing GRO file with > 99 999 "
                                  "resids does not truncate properly.")
 
+
 @tempdir.run_in_tempdir()
 def test_growriter_resid_truncation():
     u = make_Universe(extras=['resids'], trajectory=True)
@@ -430,6 +432,7 @@ def test_growriter_resid_truncation():
         line = grofile.readline()
     # larger digits should get truncated
     assert_(line.startswith('56789UNK'))
+
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

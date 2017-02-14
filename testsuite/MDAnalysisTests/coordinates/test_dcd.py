@@ -65,7 +65,7 @@ class TestDCDReaderClass(TestCase):
             err_msg="with_statement: DCDReader does not read all frames")
 
 
-class TestDCDReader(object):
+class TestDCDReader(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
