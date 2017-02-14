@@ -505,7 +505,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     smax = np.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
-    arange = zip(BINS['min'], BINS['max'])
+    arange = np.vstack((BINS['min'], BINS['max']))
+    arange = np.transpose(arange)
     bins = BINS['Nbins']
 
     # create empty grid with the right dimensions (and get the edges)
