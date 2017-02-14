@@ -122,6 +122,7 @@ __all__ = [
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
     "COORDINATES_GRO",
+    "COORDINATES_GRO_INCOMPLETE_VELOCITY",
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
@@ -149,6 +150,7 @@ GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
+COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')

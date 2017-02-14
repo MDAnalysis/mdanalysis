@@ -1,7 +1,7 @@
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, BaseWriterTest
-from MDAnalysisTests.datafiles import COORDINATES_GRO
+from MDAnalysisTests.datafiles import COORDINATES_GRO, COORDINATES_GRO_INCOMPLETE_VELOCITY
 
 
 class GROReference(BaseReference):
@@ -47,6 +47,27 @@ class TestGROReaderNoConversion(BaseReaderTest):
             reference = GRONoConversionReference()
         super(TestGROReaderNoConversion, self).__init__(reference)
         self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
+
+
+class GROReaderIncompleteVelocitiesReference(GROReference):
+    def __init__(self):
+        super(GROReaderIncompleteVelocitiesReference, self).__init__()
+        self.trajectory = COORDINATES_GRO_INCOMPLETE_VELOCITY
+        self.topology = COORDINATES_GRO_INCOMPLETE_VELOCITY
+        self.first_frame.velocities = np.array(
+            [[0.0000, 0.100, 0.200],
+             [0.000, 0.000, 0.000],
+             [0.600, 0.700, 0.800],
+             [0.900, 1.000, 1.100],
+             [1.200, 1.300, 1.400]],
+            dtype=np.float32)
+
+
+class TestGROReaderIncompleteVelocities(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReaderIncompleteVelocitiesReference()
+        super(TestGROReaderIncompleteVelocities, self).__init__(reference)
 
 
 class TestGROWriter(BaseWriterTest):
