@@ -126,6 +126,11 @@ Changes
   * moved coordinates.base.ChainReader to coordinates.chain.ChainReader
   * renamed private method ChainReader.get_flname() to ChainReader._get_filename()
   * totaltime now considers the first frame to be at time 0 (Issue #1137)
+  * analysis.rms.RMSF now conforms to standard analysis API (PR #1136)
+  * analysis.rms/align function keyword `mass_weighted` is replaced
+  by generic `weights='mass'`. This new keyword allows to pass it an
+  arbitrary weights array as well. (PR 1136)
+
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)

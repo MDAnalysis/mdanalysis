@@ -20,8 +20,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function
-
 from six.moves import range
+
+import warnings
+import os
+import sys
 
 import MDAnalysis
 import MDAnalysis as mda
@@ -33,12 +36,13 @@ from numpy.testing import (TestCase, dec, assert_equal,
 
 import numpy as np
 
-import os
-import sys
-
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 from MDAnalysisTests import tempdir, parser_not_found
+
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
 
 
 class Testrmsd(object):
@@ -142,6 +146,7 @@ class Testrmsd(object):
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
         assert_almost_equal(rmsd, rmsd_superposition)
 
+
 class TestRMSD(object):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -151,7 +156,7 @@ class TestRMSD(object):
         self.outfile = os.path.join(self.tempdir.name, 'rmsd.txt')
         self.correct_values = [[0, 0, 0], [49, 48.9999, 4.68953]]
         self.correct_values_group = [[0, 0, 0, 0, 0],
-                                     [49, 48.9999, 4.7857, 4.7002,
+                                     [49, 49, 4.7857, 4.7004,
                                       4.68981]]
 
     def tearDown(self):
@@ -185,7 +190,28 @@ class TestRMSD(object):
 
     def test_mass_weighted_and_save(self):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
-                                            step=49, mass_weighted=True).run()
+                                            step=49, weights='mass').run()
+        RMSD.save(self.outfile)
+        saved = np.loadtxt(self.outfile)
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
+                                  err_msg="error: rmsd profile should match " +
+                                          "test values")
+
+    def test_custom_weighted_and_save(self):
+        RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                            step=49, weights=self.universe.atoms.CA.masses).run()
+        RMSD.save(self.outfile)
+        saved = np.loadtxt(self.outfile)
+        assert_array_almost_equal(RMSD.rmsd, saved, 4,
+                                  err_msg="error: rmsd profile should match " +
+                                          "test values")
+
+    def test_mass_weighted_and_save_deprecated(self):
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            RMSD = MDAnalysis.analysis.rms.RMSD(self.universe, select='name CA',
+                                                step=49, mass_weighted=True).run()
+        assert_equal(len(warn), 1)
         RMSD.save(self.outfile)
         saved = np.loadtxt(self.outfile)
         assert_array_almost_equal(RMSD.rmsd, saved, 4,
@@ -229,9 +255,10 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(self.universe)
         RMSD.save('blah')
 
+
 class TestRMSF(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(GRO, XTC)
+        self.universe = mda.Universe(GRO, XTC)
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'rmsf.xtc')
 
@@ -240,30 +267,48 @@ class TestRMSF(TestCase):
         del self.tempdir
 
     def test_rmsf(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(verbose=False)
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+        rmsfs.run()
         test_rmsfs = np.load(rmsfArray)
 
         assert_almost_equal(rmsfs.rmsf, test_rmsfs, 5,
-                            err_msg="error: rmsf profile should match test " +
+                            err_msg="error: rmsf profile should match test "
                             "values")
 
     def test_rmsf_single_frame(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(start=5, stop=6, verbose=False)
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'), start=5, stop=6)
+        rmsfs.run()
+
+        assert_almost_equal(rmsfs.rmsf, 0, 5,
+                            err_msg="error: rmsfs should all be zero")
+
+    def test_rmsf_old_run(self):
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+        rmsfs.run(start=5, stop=6)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
-        with MDAnalysis.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
-            for i in range(self.universe.trajectory.n_frames):
+        with mda.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
+            for _ in range(self.universe.trajectory.n_frames):
                 W.write(self.universe)
 
-        self.universe = MDAnalysis.Universe(GRO, self.outfile)
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(verbose=False)
-
+        self.universe = mda.Universe(GRO, self.outfile)
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+        rmsfs.run()
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
+
+    def test_rmsf_weights(self):
+        CA = self.universe.atoms.CA
+        rmsfs_mass = rms.RMSF(CA, weights='mass')
+        rmsfs_mass.run()
+
+        rmsfs_custom = rms.RMSF(CA, weights=CA.masses)
+        rmsfs_custom.run()
+
+        assert_almost_equal(rmsfs_mass.rmsf, rmsfs_custom.rmsf, 5,
+                            err_msg="error: rmsf profile should match test "
+                            "values")

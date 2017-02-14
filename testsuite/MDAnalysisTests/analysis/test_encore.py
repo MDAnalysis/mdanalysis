@@ -159,7 +159,7 @@ inconsistent results")
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
-            mass_weighted=True,
+            weights='mass',
             n_jobs=1)
 
         reference = rms.RMSD(self.ens1, select = "name CA")
@@ -168,6 +168,26 @@ inconsistent results")
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
+
+    def test_rmsd_matrix_with_superimposition_custom_weights(self):
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            weights='mass',
+            n_jobs=1)
+
+        conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
+            self.ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            selection="name CA",
+            pairwise_align=True,
+            weights=(self.ens1.atoms.CA.masses, self.ens1.atoms.CA.masses),
+            n_jobs=1)
+
+        for i in range(conf_dist_matrix_custom.size):
+            assert_almost_equal(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
 
     def test_rmsd_matrix_without_superimposition(self):
         selection_string = "name CA"
@@ -182,7 +202,7 @@ inconsistent results")
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection=selection_string,
             pairwise_align=False,
-            mass_weighted=True,
+            weights='mass',
             n_jobs=1)
 
         print (repr(confdist_matrix.as_array()[0,:]))
@@ -214,11 +234,11 @@ inconsistent results")
     def test_ensemble_superimposition_to_reference_non_weighted():
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
-                        select="name CA", mass_weighted=False,
+                        select="name CA",
                         in_memory=True).run()
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
-                        select="name *", mass_weighted=False,
+                        select="name *",
                         in_memory=True).run()
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
@@ -233,17 +253,25 @@ inconsistent results")
 
     def test_hes_to_self(self):
         results, details = encore.hes([self.ens1, self.ens1])
-        result_value = results[0,1]
+        result_value = results[0, 1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_hes(self):
-        results, details = encore.hes([self.ens1, self.ens2], mass_weighted=True)
-        result_value = results[0,1]
+        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
+        result_value = results[0, 1]
         min_bound = 1E5
         self.assertGreater(result_value, min_bound,
                            msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
+
+    def test_hes_custom_weights(self):
+        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
+        results_custom, details_custom = encore.hes([self.ens1, self.ens2],
+                                                    weights=(self.ens1.atoms.CA.masses, self.ens2.atoms.CA.masses))
+        result_value = results[0, 1]
+        result_value_custom = results_custom[0, 1]
+        assert_almost_equal(result_value, result_value_custom)
 
     def test_hes_align(self):
         # This test is massively sensitive!

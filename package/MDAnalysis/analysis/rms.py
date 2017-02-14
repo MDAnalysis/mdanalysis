@@ -195,15 +195,6 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     if a.shape != b.shape:
         raise ValueError('a and b must have same shape')
 
-    if weights is not None:
-        if len(weights) != len(a):
-            raise ValueError('weights must have same length as a/b')
-        # weights are constructed as relative to the mean
-        relative_weights = np.asarray(weights) / np.mean(weights)
-        relative_weights = relative_weights.astype(np.float64)
-    else:
-        relative_weights = None
-
     # superposition only works if structures are centered
     if center or superposition:
         # make copies (do not change the user data!)
@@ -211,15 +202,18 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         a = a - np.average(a, axis=0, weights=weights)
         b = b - np.average(b, axis=0, weights=weights)
 
+    if weights is not None:
+        if len(weights) != len(a):
+            raise ValueError('weights must have same length as a/b')
+        # weights are constructed as relative to the mean
+        weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
+
     if superposition:
-        if relative_weights is not None:
-            relative_weights = relative_weights.astype(np.float64)
-        return qcp.CalcRMSDRotationalMatrix(a, b, N, None,
-                                            relative_weights)
+        return qcp.CalcRMSDRotationalMatrix(a, b, N, None, weights)
     else:
         if weights is not None:
-            return np.sqrt(np.sum(relative_weights[:, np.newaxis]
-                * (( a - b ) ** 2)) / N)
+            return np.sqrt(np.sum(weights[:, np.newaxis]
+                                  * ((a - b) ** 2)) / N)
         else:
             return np.sqrt(np.sum((a - b) ** 2) / N)
 
@@ -291,7 +285,8 @@ class RMSD(AnalysisBase):
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
-                 mass_weighted=False, tol_mass=0.1, ref_frame=0, **kwargs):
+                 mass_weighted=None,
+                 weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
         """Setting up the RMSD analysis.
 
         The RMSD will be computed between `select` and `reference` for
@@ -333,10 +328,12 @@ class RMSD(AnalysisBase):
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
 
-        filename : str (optional)
+        filename : str, optional
             write RSMD into file file :meth:`RMSD.save`
-        mass_weighted : bool (optional)
+        mass_weighted : bool (deprecated)
              do a mass-weighted RMSD fit
+        weights : str/array_like (optional)
+             choose weights. If 'str' uses masses as weights
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass`
@@ -350,8 +347,10 @@ class RMSD(AnalysisBase):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
            `groupselections` added
-        .. versionchanged: 0.15.1
-           Refactor to fit with AnalysisBase API
+        .. versionchanged:: 0.16.0
+           Flexible weighting scheme with new ``weights`` keyword.
+        .. deprecated:: 0.16.0
+           Instead of ``mass_weighted=True`` use new ``weights='mass'`  Refactor to fit with AnalysisBase API
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
@@ -361,7 +360,13 @@ class RMSD(AnalysisBase):
         select = process_selection(select)
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
-        self.mass_weighted = mass_weighted
+        if mass_weighted is not None:
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            if mass_weighted:
+                weights = 'mass'
+        self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.filename = filename
@@ -429,8 +434,10 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        self._weights = ((self.ref_atoms.masses / self.ref_atoms.masses.mean()).astype(np.float64)
-                         if self.mass_weighted else None)
+        if not isinstance(self.weights, (list, tuple, np.ndarray)) and self.weights == 'mass':
+            self.weights = self.ref_atoms.masses
+        if self.weights is not None:
+            self.weights = (self.weights / self.weights.mean()).astype(np.float64)
 
         current_frame = self.reference.trajectory.ts.frame
 
@@ -439,7 +446,7 @@ class RMSD(AnalysisBase):
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
             self.reference.trajectory[self.ref_frame]
-            self._ref_com = self.ref_atoms.center_of_mass()
+            self._ref_com = self.ref_atoms.center(self.weights)
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
@@ -472,21 +479,22 @@ class RMSD(AnalysisBase):
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center_of_mass().astype(np.float64)
+        mobile_com = self.mobile_atoms.center(self.weights).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
         self.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         if self._groupselections_atoms:
-            # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate array with float64
-            # datatype (float32 leads to errors up to 1e-3 in RMSD).
-            # Note that R is defined in such a way that it acts **to the left** so that we can easily
-            # use broadcasting and save one expensive numpy transposition.
+            # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate
+            # array with float64 datatype (float32 leads to errors up to 1e-3 in
+            # RMSD). Note that R is defined in such a way that it acts **to the
+            # left** so that we can easily use broadcasting and save one
+            # expensive numpy transposition.
 
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates_64, self._mobile_coordinates64,
-                self._n_atoms, self._rot, self._weights)
+                self._n_atoms, self._rot, self.weights)
 
             self._R[:, :] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
@@ -496,7 +504,7 @@ class RMSD(AnalysisBase):
 
             # R acts to the left & is broadcasted N times.
             self._ts.positions[:,:] = (self._mobile_coordinates64[:] *
-                                                 self._R)
+                                       self._R)
             self._ts.positions[:] += self._ref_com
 
             # 2) calculate secondary RMSDs
@@ -505,13 +513,13 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
                     refpos, atoms['mobile'].positions.astype(np.float64),
-                    atoms['mobile'].n_atoms, None, self._weights)
+                    atoms['mobile'].n_atoms, None, self.weights)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates_64, self._mobile_coordinates64,
-                self._n_atoms, None, self._weights)
+                self._n_atoms, None, self.weights)
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
@@ -533,39 +541,32 @@ class RMSD(AnalysisBase):
         return filename
 
 
-class RMSF(object):
-    """Class to perform RMSF analysis on a set of atoms across a trajectory.
-
-    Run the analysis with :meth:`RMSF.run`, which stores the results
-    in the array :attr:`RMSF.rmsf`.
-
-    This class performs no coordinate transforms; RMSFs are obtained from atom
-    coordinates as-is.
-
-    .. versionadded:: 0.11.0
-    """
-
-    def __init__(self, atomgroup):
-        """Calculate RMSF of given atoms across a trajectory.
-
-        Parameters
-        ----------
-        atomgroup : mda.AtomGroup
-                AtomGroup to obtain RMSF for
-
-        """
-        self.atomgroup = atomgroup
-        self._rmsf = None
-
-    def run(self, start=None, stop=None, step=None, progout=10,
-            verbose=None, quiet=None):
-        """Calculate RMSF of given atoms across a trajectory.
+class RMSF(AnalysisBase):
+    """Calculate RMSF of given atoms across a trajectory.
 
         This method implements an algorithm for computing sums of squares while
         avoiding overflows and underflows [Welford1962]_.
 
+        References
+        ----------
+        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+           Calculating Corrected Sums of Squares and Products." Technometrics
+           4(3):419-420.
+
+       .. versionadded:: 0.11.0
+       .. versionchanged:: 0.16.0
+          Flexible weighting scheme with new ``weights`` keyword.
+       .. deprecated:: 0.16.0
+          Instead of ``mass_weighted=True`` use new ``weights='mass'`
+          Refactor to fit with AnalysisBase API
+          The keyword argument *quiet* is deprecated in favor of *verbose*.
+    """
+    def __init__(self, atomgroup, weights=None, **kwargs):
+        """
         Parameters
         ----------
+        atomgroup : mda.AtomGroup
+            Atoms for which RMSF is calculated
         start : int (optional)
             starting frame, default None becomes 0.
         stop : int (optional)
@@ -574,56 +575,43 @@ class RMSF(object):
             which means that the trajectory would be read until the end.
         step : int (optional)
             step between frames, default None becomes 1.
-        progout : int (optional)
-            number of frames to iterate through between updates to progress
-            output; ``None`` for no updates [10]
+        weights : str / array_like (optional)
+            used weights. If ``'mass'`` use masses of atomgroup, it ``None`` use uniform weights.
         verbose : bool (optional)
-            if ``False``, suppress all output (implies *progout* = ``None``)
-            [``True``]
-
-        References
-        ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
-
-        .. deprecated:: 0.16
-           The keyword argument *quiet* is deprecated in favor of *verbose*.
+            if ``False``, suppress all output
         """
-        traj = self.atomgroup.universe.trajectory
-        start, stop, step = traj.check_slice_indices(start, stop, step)
-        sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
-        means = np.array(sumsquares)
+        super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        self.atomgroup = atomgroup
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
+            weights = self.atomgroup.masses
+        self.weights = weights
 
-        verbose = _set_verbose(verbose, quiet, default=True)
-        if not verbose:
-            progout = None
+    def run(self, start=None, stop=None, step=None, progout=None,
+            verbose=None, quiet=None):
+        if any([el is not None for el in (start, stop, step, progout, quiet)]):
+            warnings.warn("run arguments are deprecated. Please pass them at "
+                          "class construction. These options will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            verbose = _set_verbose(verbose, quiet, default=False)
+            # regenerate class with correct args
+            super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
+                                       start=start, stop=stop, step=step,
+                                       verbose=verbose)
+        super(RMSF, self).run()
 
-        # set up progress output
-        if progout:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
-                                       interval=progout)
-        else:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
-                                       verbose=False)
+    def _prepare(self):
+        self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
+        self.mean = self.sumsquares.copy()
 
-        for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):
-            sumsquares += (k/(k + 1.0)) * (self.atomgroup.positions - means)**2
-            means = (k * means + self.atomgroup.positions)/(k + 1)
+    def _single_frame(self):
+        k = self._frame_index
+        self.sumsquares += (k / (k+1.0)) * (self.atomgroup.positions - self.mean) ** 2
+        self.mean = (k * self.mean + self.atomgroup.positions) / (k + 1)
 
-            percentage.echo(ts.frame)
+    def _conclude(self):
+        k = self._frame_index
+        self.rmsf = np.sqrt(self.sumsquares.sum(axis=1) / (k + 1))
 
-        rmsf = np.sqrt(sumsquares.sum(axis=1)/(k + 1))
-
-        if not (rmsf >= 0).all():
+        if not (self.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
-
-        self._rmsf = rmsf
-
-    @property
-    def rmsf(self):
-        """RMSF data; only available after using :meth:`RMSF.run`
-
-        """
-        return self._rmsf

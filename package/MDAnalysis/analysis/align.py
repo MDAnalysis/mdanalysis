@@ -311,7 +311,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
     return mobile_atoms, min_rmsd
 
 
-def alignto(mobile, reference, select="all", mass_weighted=False,
+def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
             subselection=None, tol_mass=0.1, strict=False):
     """Spatially align *mobile* to *reference* by doing a RMSD fit on
         *select* atoms.
@@ -343,57 +343,59 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     Parameters
     ----------
-      mobile : Universe or AtomGroup
-         structure to be aligned, a
-         :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
-         :class:`~MDAnalysis.core.universe.Universe`
-      reference : Universe or AtomGroup
-         reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup`
-         or a whole :class:`~MDAnalysis.core.universe.Universe`
-      select: string or dict, optional
-         1. any valid selection string for
-            :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
-            produces identical selections in *mobile* and *reference*; or
-         2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
-            (the :func:`fasta2select` function returns such a
-            dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
-         3.  tuple ``(sel1, sel2)``
+    mobile : Universe or AtomGroup
+       structure to be aligned, a
+       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
+       :class:`~MDAnalysis.core.universe.Universe`
+    reference : Universe or AtomGroup
+       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup`
+       or a whole :class:`~MDAnalysis.core.universe.Universe`
+    select: string or dict, optional
+       1. any valid selection string for
+          :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
+          produces identical selections in *mobile* and *reference*; or
+       2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
+          (the :func:`fasta2select` function returns such a
+          dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+       3.  tuple ``(sel1, sel2)``
 
-         When using 2. or 3. with *sel1* and *sel2* then these selections can
-         also each be a list of selection strings (to generate a AtomGroup with
-         defined atom order as described under :ref:`ordered-selections-label`).
-      mass_weighted : boolean, optional
-         ``True`` uses the masses :meth:`reference.masses` as weights for the
-         RMSD fit.
-      tol_mass: float, optional
-         Reject match if the atomic masses for matched atoms differ by more than
-         *tol_mass*, default [0.1]
-      strict: boolean, optional
-         ``True``
-             Will raise :exc:`SelectionError` if a single atom does not
-             match between the two selections.
-         ``False`` [default]
-             Will try to prepare a matching selection by dropping
-             residues with non-matching atoms. See :func:`get_matching_atoms`
-             for details.
-      subselection : string, optional
-         Apply the transformation only to this selection.
+       When using 2. or 3. with *sel1* and *sel2* then these selections can
+       also each be a list of selection strings (to generate a AtomGroup with
+       defined atom order as described under :ref:`ordered-selections-label`).
+    mass_weighted : boolean, optional (deprecated)
+       ``True`` uses the masses :meth:`reference.masses` as weights for the
+       RMSD fit.
+    weights : str/array_like, optional
+       weights to be used for fit. Can be either 'mass' or an array_like
+    tol_mass: float, optional
+       Reject match if the atomic masses for matched atoms differ by more than
+       *tol_mass*, default [0.1]
+    strict: boolean, optional
+       ``True``
+           Will raise :exc:`SelectionError` if a single atom does not
+           match between the two selections.
+       ``False`` [default]
+           Will try to prepare a matching selection by dropping
+           residues with non-matching atoms. See :func:`get_matching_atoms`
+           for details.
+    subselection : string, optional
+       Apply the transformation only to this selection.
 
-         ``None`` [default]
-             Apply to `mobile.universe.atoms` (i.e. all atoms in the
-             context of the selection from *mobile* such as the rest of a
-             protein, ligands and the surrounding water)
-         *selection-string*
-             Apply to `mobile.select_atoms(selection-string)`
-         :class:`~MDAnalysis.core.groups.AtomGroup`
-             Apply to the arbitrary group of atoms
+       ``None`` [default]
+           Apply to `mobile.universe.atoms` (i.e. all atoms in the
+           context of the selection from *mobile* such as the rest of a
+           protein, ligands and the surrounding water)
+       *selection-string*
+           Apply to `mobile.select_atoms(selection-string)`
+       :class:`~MDAnalysis.core.groups.AtomGroup`
+           Apply to the arbitrary group of atoms
 
     Returns
     -------
     old_rmsd
         RMSD before spatial alignment
     new_rmsd
-        RMSD after spatial alignment.
+        RMSD after spatial alignment
 
     See Also
     --------
@@ -408,6 +410,11 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        Uses :func:`get_matching_atoms` to work with incomplete selections
        and new *strict* keyword. The new default is to be lenient whereas
        the old behavior was the equivalent of *strict* = ``True``.
+
+    .. versionchanged:: 0.16.0
+       new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+    .. deprecated:: 0.16.0
+       Instead of ``mass_weighted=True`` use new ``weights='mass'`
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -424,16 +431,18 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
                                                  tol_mass=tol_mass,
                                                  strict=strict)
 
-    if mass_weighted:
-        # division by the mean is done in rmsd, not done in qcp, but is done in
-        # _fit_to
+    if mass_weighted is not None:
+        warnings.warn("mass weighted is deprecated argument. Please use "
+                      " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                      category=DeprecationWarning)
+        if mass_weighted:
+            weights = 'mass'
+
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
         weights = ref_atoms.masses
-        ref_com = ref_atoms.center_of_mass()
-        mobile_com = mobile_atoms.center_of_mass()
-    else:
-        weights = None
-        ref_com = ref_atoms.center_of_geometry()
-        mobile_com = mobile_atoms.center_of_geometry()
+
+    mobile_com = mobile_atoms.center(weights)
+    ref_com = ref_atoms.center(weights)
 
     ref_coordinates = ref_atoms.positions - ref_com
     mobile_coordinates = mobile_atoms.positions - mobile_com
@@ -485,8 +494,9 @@ class AlignTraj(AnalysisBase):
     """
 
     def __init__(self, mobile, reference, select='all', filename=None,
-                 prefix='rmsfit_', mass_weighted=False, tol_mass=0.1,
-                 strict=False, force=True, in_memory=False, **kwargs):
+                 prefix='rmsfit_', mass_weighted=None, weights=None,
+                 tol_mass=0.1, strict=False, force=True, in_memory=False,
+                 **kwargs):
         """Initialization
 
         Parameters
@@ -503,9 +513,12 @@ class AlignTraj(AnalysisBase):
         prefix : string, optional
             Provide a string to prepend to filename for results to be written
             to
-        mass_weighted : boolean, optional
+        mass_weighted : boolean, optional (deprecated)
             Boolean, if true will rmsd will be mass-weighted corresponding to
             the atoms selected in the reference trajectory
+        weights : str/array_like (optional)
+            Can either be 'mass' to use reference masses as weights or an
+            arbitrary array
         tol_mass : float, optional
             Tolerance given to `get_matching_atoms` to find appropriate atoms
         strict : boolean, optional
@@ -540,6 +553,10 @@ class AlignTraj(AnalysisBase):
         :class:`MemoryReader` then it is *always* treated as if `in_memory` had
         been set to ``True``.
 
+        .. versionchanged:: 0.16.0
+           new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+        .. deprecated:: 0.16.0
+           Instead of ``mass_weighted=True`` use new ``weights='mass'`
         """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
@@ -581,24 +598,29 @@ class AlignTraj(AnalysisBase):
         # retained
         self._writer = mda.Writer(self.filename, natoms)
 
-        if mass_weighted:
-            # if performing a mass-weighted alignment/rmsd calculation
-            self._weights = self.ref_atoms.masses
-        else:
-            self._weights = None
+        if mass_weighted is not None:
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            if mass_weighted:
+                weights = 'mass'
+
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
+            weights = self.ref_atoms.masses
+        self._weights = weights
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
     def _prepare(self):
         # reference centre of mass system
-        self._ref_com = self.ref_atoms.center_of_mass()
+        self._ref_com = self.ref_atoms.center(self._weights)
         self._ref_coordinates = self.ref_atoms.positions - self._ref_com
         # allocate the array for selection atom coords
         self.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
         index = self._ts.frame
-        mobile_com = self.mobile_atoms.center_of_mass()
+        mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
                                                  self._ref_coordinates,
