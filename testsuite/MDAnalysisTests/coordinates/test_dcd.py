@@ -366,6 +366,9 @@ class TestDCDWriter_Issue59(TestCase):
 
 
 class _TestDCDReader_TriclinicUnitcell(TestCase):
+
+    __test__ = False
+
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory)
         self.tempdir = tempdir.TempDir()
@@ -408,12 +411,12 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
 
 class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell,
                                     RefCHARMMtriclinicDCD):
-    pass
+    __test__ = True
 
 
 class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
                                   RefNAMDtriclinicDCD):
-    pass
+    __test__ = True
 
 
 class TestNCDF2DCD(TestCase):

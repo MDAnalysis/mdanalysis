@@ -28,9 +28,10 @@ import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal)
 
 from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
+from unittest import TestCase
 
-
-class _GMSBase(object):
+class _GMSBase(TestCase):
+    __test__ = False
     def tearDown(self):
         del self.u
         del self.n_frames
@@ -90,6 +91,7 @@ class _GMSBase(object):
 
 
 class TestGMSReader(_GMSBase):
+    __test__ = True
     def setUp(self):
         self.u =  mda.Universe(GMS_ASYMOPT)
         self.n_frames = 21
@@ -97,6 +99,7 @@ class TestGMSReader(_GMSBase):
         self.step5d = -0.0484664
 
 class TestGMSReaderSO(_GMSBase):
+    __test__ = True
     def setUp(self):
         self.u = mda.Universe(GMS_SYMOPT)
         self.n_frames = 8
@@ -104,6 +107,7 @@ class TestGMSReaderSO(_GMSBase):
         self.step5d = 0.227637
 
 class TestGMSReaderASS(_GMSBase):
+    __test__ = True
     def setUp(self):
         self.u = mda.Universe(GMS_ASYMSURF)
         self.n_frames = 10

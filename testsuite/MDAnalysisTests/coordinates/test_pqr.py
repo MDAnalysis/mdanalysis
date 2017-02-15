@@ -37,6 +37,7 @@ from MDAnalysisTests import tempdir, make_Universe
 from numpy.testing import TestCase
 
 class TestPQRReader(_SingleFrameReader):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PQR)
         # 3 decimals in PDB spec
@@ -68,7 +69,7 @@ class TestPQRReader(_SingleFrameReader):
             "Charges for N atoms in Pro residues do not match.")
 
 
-class TestPQRWriter(RefAdKSmall):
+class TestPQRWriter(TestCase, RefAdKSmall):
     def setUp(self):
         self.universe = mda.Universe(PQR)
         self.prec = 3

@@ -50,6 +50,8 @@ class _TestLammpsData_Coords(TestCase):
     All topology loading from MDAnalysisTests.data is done in test_topology
     """
 
+    __test__ = False
+
     def setUp(self):
         self.u = mda.Universe(self.filename)
 
@@ -84,13 +86,14 @@ class _TestLammpsData_Coords(TestCase):
 
 
 class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
-    pass
+    __test__ = True
 
 
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
-    pass
+    __test__ = True
 
 class _TestLAMMPSDATAWriter(TestCase):
+    __test__ = False
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
 
@@ -146,18 +149,23 @@ class _TestLAMMPSDATAWriter(TestCase):
 
 
 class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata
 
 class TestLAMMPSDATAWriter_mini(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata_mini
 
 class TestLAMMPSDATAWriter_cnt(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPScnt
 
 class TestLAMMPSDATAWriter_hyd(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPShyd
 
 class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata
     N_kept = 5
 
@@ -192,7 +200,7 @@ class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
 
 # need more tests of the LAMMPS DCDReader
 
-class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
+class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -254,7 +262,7 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_raises(ValueError, wrong_load)
 
 
-class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
+class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):

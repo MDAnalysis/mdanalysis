@@ -58,6 +58,7 @@ warnings.simplefilter('always')
 
 
 class _XDRReader_Sub(TestCase):
+    __test__ = False
 
     def setUp(self):
         """
@@ -89,14 +90,17 @@ class _XDRReader_Sub(TestCase):
 
 
 class TestTRRReader_Sub(_XDRReader_Sub):
+    __test__ = True
     XDR_SUB_SOL = TRR_sub_sol
 
 
 class TestXTCReader_Sub(_XDRReader_Sub):
+    __test__ = True
     XDR_SUB_SOL = XTC_sub_sol
 
 
 class _GromacsReader(TestCase):
+    __test__ = False
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
@@ -266,6 +270,7 @@ class _GromacsReader(TestCase):
 
 
 class TestXTCReader(_GromacsReader):
+    __test__ = True
     filename = XTC
 
 
@@ -290,6 +295,7 @@ class TestXTCReaderClass(TestCase):
 
 
 class TestTRRReader(_GromacsReader):
+    __test__ = True
     filename = TRR
 
     @dec.slow
@@ -330,6 +336,7 @@ class TestTRRReader(_GromacsReader):
 
 
 class _XDRNoConversion(TestCase):
+    __test__ = False
     filename = None
 
     def setUp(self):
@@ -361,14 +368,17 @@ class _XDRNoConversion(TestCase):
 
 
 class TestXTCNoConversion(_XDRNoConversion):
+    __test__ = True
     filename = XTC
 
 
 class TestTRRNoConversion(_XDRNoConversion):
+    __test__ = True
     filename = TRR
 
 
 class _GromacsWriter(TestCase):
+    __test__ = False
     infilename = None  # XTC or TRR
     Writers = {
         '.trr': mda.coordinates.TRR.TRRWriter,
@@ -436,10 +446,12 @@ class _GromacsWriter(TestCase):
 
 
 class TestXTCWriter(_GromacsWriter):
+    __test__ = True
     infilename = XTC
 
 
 class TestTRRWriter(_GromacsWriter):
+    __test__ = True
     infilename = TRR
 
     def test_velocities(self):
@@ -507,6 +519,7 @@ class TestTRRWriter(_GromacsWriter):
 
 
 class _GromacsWriterIssue101(TestCase):
+    __test__ = False
     Writers = {
         '.trr': mda.coordinates.TRR.TRRWriter,
         '.xtc': mda.coordinates.XTC.XTCWriter,
@@ -556,15 +569,18 @@ class _GromacsWriterIssue101(TestCase):
 
 
 class TestXTCWriterSingleFrame(_GromacsWriterIssue101):
+    __test__ = True
     ext = ".xtc"
     prec = 2
 
 
 class TestTRRWriterSingleFrame(_GromacsWriterIssue101):
+    __test__ = True
     ext = ".trr"
 
 
 class _GromacsWriterIssue117(TestCase):
+    __test__ = False
     """Issue 117: Cannot write XTC or TRR from AMBER NCDF"""
     ext = None
     prec = 5
@@ -607,11 +623,13 @@ class _GromacsWriterIssue117(TestCase):
 
 
 class TestXTCWriterIssue117(_GromacsWriterIssue117):
+    __test__ = True
     ext = ".xtc"
     prec = 2
 
 
 class TestTRRWriterIssue117(_GromacsWriterIssue117):
+    __test__ = True
     ext = ".trr"
 
 
@@ -728,6 +746,8 @@ class TestTRRWriter_2(BaseWriterTest):
 
 
 class _GromacsReader_offsets(TestCase):
+    __test__ = False
+
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
@@ -871,6 +891,7 @@ class _GromacsReader_offsets(TestCase):
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
+    __test__ = True
     filename = XTC
     ref_offsets = np.array([0, 165188, 330364, 495520, 660708, 825872, 991044,
                             1156212, 1321384, 1486544])
@@ -878,6 +899,7 @@ class TestXTCReader_offsets(_GromacsReader_offsets):
 
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
+    __test__ = True
     filename = TRR
     ref_offsets = np.array([0, 1144464, 2288928, 3433392, 4577856, 5722320,
                             6866784, 8011248, 9155712, 10300176])

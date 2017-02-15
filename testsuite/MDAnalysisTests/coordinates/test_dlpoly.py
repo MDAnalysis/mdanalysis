@@ -33,6 +33,7 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from unittest import TestCase
 
 class _DLPConfig(TestCase):
+    __test__ = False
     def setUp(self):
         self.r = mda.coordinates.DLPoly.ConfigReader
         rd = self.rd = self.r(self.f)
@@ -63,6 +64,7 @@ class _DLPConfig(TestCase):
 
 
 class TestConfigReader(_DLPConfig):
+    __test__ = True
     f = DLP_CONFIG
 
     def test_read(self):
@@ -70,10 +72,12 @@ class TestConfigReader(_DLPConfig):
 
 
 class TestConfigOrder(_DLPConfig):
+    __test__ = True
     f = DLP_CONFIG_order
 
 
 class TestConfigMinimal(_DLPConfig):
+    __test__ = True
     f = DLP_CONFIG_minimal
 
     def test_read_unitcell(self):
@@ -86,7 +90,10 @@ class TestConfigMinimal(_DLPConfig):
         assert_raises(AttributeError, getattr, self.ts, "_forces")
 
 
-class _DLPConfig2(object):
+class _DLPConfig2(TestCase):
+
+    __test__ = False
+
     def setUp(self):
         self.u = mda.Universe(self.f, format='CONFIG')
 
@@ -115,10 +122,14 @@ class _DLPConfig2(object):
 
 
 class TestConfigReader2(_DLPConfig2):
+
+    __test__ = True
     f = DLP_CONFIG_order
 
 
 class TestConfigReaderMinimal2(_DLPConfig2):
+
+    __test__ = True
     f = DLP_CONFIG_minimal
 
     def test_vel(self):
@@ -128,7 +139,10 @@ class TestConfigReaderMinimal2(_DLPConfig2):
         pass
 
 
-class _DLHistory(object):
+class _DLHistory(TestCase):
+
+    __test__ = False
+
     def setUp(self):
         self.u = mda.Universe(self.f, format='HISTORY')
 
@@ -188,14 +202,17 @@ class _DLHistory(object):
 
 
 class TestDLPolyHistory(_DLHistory):
+    __test__ = True
     f = DLP_HISTORY
 
 
 class TestDLPolyHistoryOrder(_DLHistory):
+    __test__ = True
     f = DLP_HISTORY_order
 
 
 class TestDLPolyHistoryMinimal(_DLHistory):
+    __test__ = True
     f = DLP_HISTORY_minimal
 
     def test_velocity(self):

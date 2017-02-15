@@ -32,6 +32,7 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from numpy.testing import TestCase
 
 class _TRJReaderTest(TestCase):
+    __test__ = False
     # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
         del self.universe
@@ -110,6 +111,7 @@ class _TRJReaderTest(TestCase):
 
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
@@ -132,6 +134,7 @@ class TestBzippedTRJReader(TestTRJReader):
 
 
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
@@ -139,6 +142,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 
 
 class TestTRJTimestep(BaseTimestepTest):
+
     Timestep = mda.coordinates.TRJ.Timestep
     name = "TRJ"
     has_box = True

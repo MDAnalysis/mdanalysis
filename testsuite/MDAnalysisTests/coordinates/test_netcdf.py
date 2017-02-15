@@ -41,6 +41,8 @@ from MDAnalysisTests import module_not_found, tempdir, block_import, make_Univer
 
 
 class _NCDFReaderTest(_TRJReaderTest):
+    __test__ = False
+
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
@@ -82,10 +84,10 @@ class _NCDFReaderTest(_TRJReaderTest):
 
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
-    pass
+    __test__ = True
 
 class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
-    pass
+    __test__ = True
 
 
 class TestNCDFReader2(TestCase):

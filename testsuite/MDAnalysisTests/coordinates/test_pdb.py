@@ -43,6 +43,7 @@ from numpy.testing import (assert_equal, dec,
 
 
 class TestPDBReader(_SingleFrameReader):
+    __test__ = True
     def setUp(self):
         # can lead to race conditions when testing in parallel
         self.universe = mda.Universe(RefAdKSmall.filename)
@@ -70,6 +71,8 @@ class TestPDBReader(_SingleFrameReader):
 
 
 class _PDBMetadata(TestCase, Ref4e43):
+    __test__ = False
+
     def setUp(self):
         self.universe = mda.Universe(self.filename)
 
@@ -130,6 +133,7 @@ class _PDBMetadata(TestCase, Ref4e43):
 
 
 class TestExtendedPDBReader(_SingleFrameReader):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PDB_small,
                                      topology_format="XPDB",
@@ -729,6 +733,7 @@ class TestPDBXLSerial(TestCase):
 
 
 class TestPSF_CRDReader(_SingleFrameReader):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
         self.prec = 5  # precision in CRD (at least we are writing %9.5f)

@@ -41,6 +41,7 @@ from MDAnalysisTests import tempdir
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
+    __test__ = False
 
     def tearDown(self):
         del self.universe

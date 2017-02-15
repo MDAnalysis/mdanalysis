@@ -76,6 +76,7 @@ class AmazingReader(SingleFrameReaderBase):
 
 
 class _TestReader(TestCase):
+    __test__ = False
     """Basic API readers"""
 
     def setUp(self):
@@ -132,6 +133,7 @@ class _Multi(_TestReader):
 
 
 class TestMultiFrameReader(_Multi):
+    __test__ = True
     def _check_slice(self, start, stop, step):
         """Compare the slice applied to trajectory, to slice of list"""
         res = [ts.frame for ts in self.reader[start:stop:step]]
@@ -229,6 +231,7 @@ class _Single(_TestReader):
 
 
 class TestSingleFrameReader(_Single):
+    __test__ = True
     def test_next(self):
         assert_raises(StopIteration, self.reader.next)
 
