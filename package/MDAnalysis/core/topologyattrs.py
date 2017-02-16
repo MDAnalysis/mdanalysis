@@ -885,7 +885,7 @@ class Masses(AtomAttr):
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
-        indices = np.argsort(e_val)
+        indices = np.argsort(e_val[::-1])
         # Return transposed in more logical form. See Issue 33.
         return e_vec[:, indices].T
 

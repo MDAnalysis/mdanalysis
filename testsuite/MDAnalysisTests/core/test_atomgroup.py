@@ -796,8 +796,8 @@ class TestPBCFlag(object):
                                 dtype=np.float32),
             'BSph': (173.40482, np.array([4.23789883, 0.62429816, 2.43123484], dtype=np.float32)),
             'PAxes': np.array([
-                [0.46294889, -0.85135849, 0.24671249],
                 [0.40611024, 0.45112859, 0.7947059],
+                [0.46294889, -0.85135849, 0.24671249],
                 [-0.78787867, -0.26771575, 0.55459488]])
         }
         self.ref_PBC = {
@@ -814,8 +814,8 @@ class TestPBCFlag(object):
                 dtype=np.float32),
             'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32)),
             'PAxes': np.array([
-                [-0.50622389, -0.18364489, -0.84262206],
                 [-0.07520116, -0.96394227, 0.25526473],
+                [-0.50622389, -0.18364489, -0.84262206],
                 [-0.85911708, 0.19258726, 0.4741603]])
         }
         self.ag = self.universe.residues[0:3]
@@ -978,9 +978,9 @@ class TestAtomGroup(object):
     def test_principal_axes(self):
         assert_array_almost_equal(
             self.ag.principal_axes(),
-            np.array([[-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+            np.array([[1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                      [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
+                      [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],]))
 
     def test_total_charge(self):
         assert_almost_equal(self.ag.total_charge(), -4.0, decimal=4)
