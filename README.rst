@@ -30,6 +30,9 @@ lists of  supported `trajectory formats`_ and `topology formats`_.)
    for ts in u.trajectory:
        print(ag.center_of_mass())
 
+There are also a number of tutorials_ on the MDAnalysis homepage that explain
+how to conduct RMSD calculations, Alignment and more features of MDAnalysis.
+
 Source code
 ===========
 
@@ -59,6 +62,14 @@ virtual machines.
 (For more details on the directory layout see `Issue 87`_ on the
 MDAnalysis issue tracker.)
 
+Guide for Developers
+====================
+
+To setup a development environment and run the testsuite you can use this
+guide_. If you are a new developer who would like to start contributing to
+MDAnalysis as a start you can increase our code coverage, the guides explain how
+to find uncovered code.
+
 .. Footnotes
 
 .. [*] **build**: Unit testing is for the whole package; **coverage** is
@@ -73,6 +84,8 @@ MDAnalysis issue tracker.)
 .. _`#286`: https://github.com/MDAnalysis/mdanalysis/issues/286
 .. _`MDAnalysis.analysis`: http://docs.mdanalysis.org/documentation_pages/analysis_modules.html
 .. _`MDAnalysis.visualization`: http://docs.mdanalysis.org/documentation_pages/visualization_modules.html
+.. _`tutorials`: http://www.mdanalysis.org/pages/learning_MDAnalysis/
+.. _`guide`: https://github.com/MDAnalysis/mdanalysis/wiki/Guide-for-Developers
 
 .. |usergroup| image:: https://img.shields.io/badge/Google%20Group-Users-lightgrey.svg
    :alt: User Google Group
