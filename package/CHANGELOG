@@ -97,6 +97,7 @@ Fixes
   * Fixed selections using operators backwards ('prop 10 > mass') and sensitivity
     about whitespace around these (PR #1156 Issue #1011 #1009)
   * Fixed PSA analysis is now using AlignTraj
+  * Fixed Principal Axes to order from highest to lowest eigenval (Issue #1162)
 
 Changes
   * Started unifying the API of analysis classes (named internally
