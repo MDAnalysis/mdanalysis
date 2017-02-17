@@ -393,12 +393,12 @@ class TestAttr(object):
         assert_array_almost_equal(self.ag.principal_axes(), pa)
 
     def test_align_principal_axes_with_x(self):
-        self.ag.align_principal_axis(0, [-1, 0, 0])
+        self.ag.align_principal_axis(0, [1, 0, 0])
         # This is a very loose check that the difference is not more then 0.5.
         # This is OK here because the rounding error in the calculation really
         # is that big.
         assert_(np.allclose(np.abs(self.ag.principal_axes()), np.eye(3),
-                            rtol=0, atol=.5))
+                            rtol=0, atol=0.1))
 
 
 class TestCrossLevelAttributeSetting(object):
