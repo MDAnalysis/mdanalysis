@@ -230,7 +230,13 @@ class AuxStep(object):
         return np.full_like(self.data, np.nan)
 
 
-class AuxReader(six.with_metaclass(_AuxReaderMeta)):
+class Auxiliary(object):
+    # just so we can do some autodetection later
+    # probably a much better way to do this,
+    # maybe with ABCs and overriding isinstance
+    pass
+
+class AuxReader(six.with_metaclass(_AuxReaderMeta, Auxiliary)):
     """ Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional 

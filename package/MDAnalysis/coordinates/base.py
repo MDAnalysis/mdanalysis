@@ -126,6 +126,7 @@ from __future__ import absolute_import
 import six
 from six.moves import range
 
+from collections import OrderedDict
 import numpy as np
 import copy
 import warnings
@@ -139,7 +140,7 @@ from .. import (
     _MULTIFRAME_WRITERS,
 )
 from .. import units
-from ..auxiliary.base import AuxReader
+from ..auxiliary.base import Auxiliary
 from ..auxiliary.core import auxreader
 from ..core import flags
 from ..lib.util import asiterable, Namespace
@@ -1072,7 +1073,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     def __init__(self):
         # initialise list to store added auxiliary readers in
         # subclasses should now call super
-        self._auxs = {}
+        self._auxs = OrderedDict()
 
     def __len__(self):
         return self.n_frames
@@ -1085,8 +1086,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             self.rewind()
             raise StopIteration
         else:
-            for auxname in self.aux_list:
-                ts = self._auxs[auxname].update_ts(ts)
+            for aux in self._auxs.values():
+                ts = aux.update_ts(ts)
         return ts
 
     def __next__(self):
@@ -1240,8 +1241,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     def _read_frame_with_aux(self, frame):
         """Move to *frame*, updating ts with trajectory and auxiliary data."""
         ts = self._read_frame(frame)
-        for aux in self.aux_list:
-            ts = self._auxs[aux].update_ts(ts)
+        for aux in self._auxs.values():
+            ts = aux.update_ts(ts)
         return ts
 
     def _sliced_iter(self, start, stop, step):
@@ -1374,7 +1375,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
-        if isinstance(auxdata, AuxReader):
+        if isinstance(auxdata, Auxiliary):
             aux = auxdata
             aux.auxname = auxname
         else:
