@@ -8,7 +8,6 @@ branches:
 
 os:
   - linux
-  - osx
 
 env:
   global:
@@ -26,13 +25,11 @@ env:
       #- SETUP=full PYTHON_VERSION=3.3
 matrix:
   fast_finish: true
-  allow_failures:
+  # allow_failures:
       #- env: SETUP=minimal PYTHON_VERSION=3.3
       #- env: SETUP=full PYTHON_VERSION=3.3
-    - os: osx
 
 before_install:
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
   - chmod +x miniconda.sh
   - ./miniconda.sh -b -p $(pwd)/miniconda
