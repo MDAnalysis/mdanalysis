@@ -28,8 +28,8 @@ Enhances numpy's own plugin by falling back to :class:`SkipTest` exceptions when
 isn't loaded (typically, when using nose's command-line `nosetests` script, which
 does not allow for runtime loading of external plugins).
 
-Beware that the decorator must be used as a function call: `@knownfailure()`, with parentheses 
-and, optionally, arguments.
+The decorator can be used without parentheses in case of default arguments as well as 
+a function call: `@knownfailure()`, with parentheses in case of optional arguments.
 """
 
 from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded
