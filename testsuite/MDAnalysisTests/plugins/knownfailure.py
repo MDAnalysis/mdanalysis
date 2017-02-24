@@ -44,7 +44,7 @@ except ImportError:
 plugin_class = KnownFailurePlugin
 plugin_class.name = "knownfailure"
 
-def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
+def knownfailure(args=None, msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
     """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
     def knownfailure_decorator(f):
         def inner(*args, **kwargs):
@@ -61,6 +61,9 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
                 if not mightpass:
                     raise AssertionError('Failure expected')
         return nose.tools.make_decorator(f)(inner)
-    return knownfailure_decorator
+    if callable(args):
+        return knownfailure_decorator(args)
+    else:      
+        return knownfailure_decorator
 
 
