@@ -17,6 +17,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
          tyler.je.reddy, utkbansal, vedantrathore
 
   * 0.16
+    - Make knownfailure work even without parentheses.
     - added two unit tests for MDAnalysis.analysis.polymer
     - added test for LeafletFinder handling a selection string
     - Added unit test for MDAnalysis.analysis.distances.between()
