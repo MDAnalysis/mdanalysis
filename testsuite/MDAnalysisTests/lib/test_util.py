@@ -623,13 +623,13 @@ class TestGuessFormat(object):
     def _check_compressed(self, f, fn):
         """Check that format suffixed by compressed extension works"""
         a = util.format_from_filename_extension(fn)
-
-        assert_equal(a, f)
+        # expect answer to always be uppercase
+        assert_equal(a, f.upper())
 
     def _check_guess_format(self, f, fn):
         a = util.guess_format(fn)
-
-        assert_equal(a, f)
+        # expect answer to always be uppercase
+        assert_equal(a, f.upper())
 
     def _check_get_parser(self, fn, P):
         a = mda.topology.core.get_parser_for(fn)
@@ -651,18 +651,20 @@ class TestGuessFormat(object):
         # f - format extension
         # P - parser class or None
         # R - reader class or None
-        for f, P, R in self.formats:
-            fn = 'file.{0}'.format(f)
-            # check f doesn't trip up get_ext or guess_format
-            yield self._check_get_ext, f, fn
-            yield self._check_guess_format, f, fn
+        for form, P, R in self.formats:
+            # should work with either lower or upper case extension
+            for f in [form.upper(), form.lower()]:
+                fn = 'file.{0}'.format(f)
+                # check f doesn't trip up get_ext or guess_format
+                yield self._check_get_ext, f, fn
+                yield self._check_guess_format, f, fn
 
-            # check adding extension to f
-            # also checks f without extension
-            yield self._check_compressed, f, fn
-            for e in self.compressed_extensions:
-                yield self._check_compressed, f, fn + e
-                yield self._check_guess_format, f, fn + e
+                # check adding extension to f
+                # also checks f without extension
+                yield self._check_compressed, f, fn
+                for e in self.compressed_extensions:
+                    yield self._check_compressed, f, fn + e
+                    yield self._check_guess_format, f, fn + e
 
             # Check that expected parser is returned
             if P is not None:
@@ -818,14 +820,15 @@ class TestGetWriterFor(object):
     ]
     def test_get_writer_for(self):
         for fmt, cls, singleframe, multiframe in self.formats:
-            if singleframe:
-                yield self._check_singleframe, fmt, cls
-            else:
-                yield self._check_singleframe_fails, fmt
-            if multiframe:
-                yield self._check_multiframe, fmt, cls
-            else:
-                yield self._check_multiframe_fails, fmt
+            for f in [fmt.upper(), fmt.lower()]:
+                if singleframe:
+                    yield self._check_singleframe, f, cls
+                else:
+                    yield self._check_singleframe_fails, f
+                if multiframe:
+                    yield self._check_multiframe, f, cls
+                else:
+                    yield self._check_multiframe_fails, f
 
     def test_get_writer_for_pdb(self):
         assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False),
