@@ -236,7 +236,7 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
         shape ``(len(ref), len(conf))`` and ``dtype=numpy.float64``.
         Avoids creating the array which saves time when the function
         is called repeatedly. [``None``]
-    backend
+    backend : str, optional
         Select the type of acceleration; "serial" is always available. Other
         possibilities are "OpenMP" (OpenMP).
 
