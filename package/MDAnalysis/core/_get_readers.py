@@ -160,7 +160,7 @@ def get_writer_for(filename, format=None, multiframe=None):
                              .format(filename))
         else:
             format = util.check_compressed_format(root, ext)
-
+    format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe
         options = copy.copy(_SINGLEFRAME_WRITERS)  # do copy to avoid changing in place
