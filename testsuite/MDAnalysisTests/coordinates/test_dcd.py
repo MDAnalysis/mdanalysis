@@ -154,7 +154,7 @@ class TestDCDReader(object):
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
         assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
-    @knownfailure()
+    @knownfailure
     def _failed_slices_test(self, start, stop, step):
         self.u = mda.Universe(PSF, DCD)
         ts = self.u.trajectory.timeseries(self.u.atoms)

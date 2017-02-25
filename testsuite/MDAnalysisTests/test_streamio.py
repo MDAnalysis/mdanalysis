@@ -216,7 +216,7 @@ class TestNamedStream_filename_behavior(object):
     # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
     @dec.skipif(True)
     @dec.skipif("HOME" not in os.environ)
-    @knownfailure()
+    @knownfailure
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)
