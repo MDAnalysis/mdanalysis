@@ -8,7 +8,9 @@ from numpy.testing import (
 )
 import operator
 
+import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 
 
@@ -522,3 +524,36 @@ class TestGroupBy(object):
 
         for g in gb.values():
             assert_(len(g) == 5)
+
+
+
+class TestReprs(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_atom_repr(self):
+        at = self.u.atoms[0]
+        assert_(repr(at) == '<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>')
+
+    def test_residue_repr(self):
+        res = self.u.residues[0]
+        assert_(repr(res) == '<Residue MET, 1>')
+
+    def test_segment_repr(self):
+        seg = self.u.segments[0]
+        assert_(repr(seg) == '<Segment 4AKE>')
+
+    def test_atomgroup_repr(self):
+        ag = self.u.atoms[:10]
+        assert_(repr(ag) == '<AtomGroup with 10 atoms>')
+
+    def test_residuegroup_repr(self):
+        rg = self.u.residues[:10]
+        assert_(repr(rg).startswith('<ResidueGroup [<Residue MET, 1>, '))
+
+    def test_segmentgroup_repr(self):
+        sg = self.u.segments[:10]
+        assert_(repr(sg) == '<SegmentGroup [<Segment 4AKE>]>')
