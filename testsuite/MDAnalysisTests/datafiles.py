@@ -64,6 +64,7 @@ __all__ = [
     "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
+    "COORDINATES_GRO_BZ2",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "PDB_xlserial",
@@ -151,6 +152,7 @@ GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
 COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
+COORDINATES_GRO_BZ2 = resource_filename(__name__, 'data/coordinates/test.gro.bz2')
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
