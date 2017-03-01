@@ -32,6 +32,13 @@ class TestGROReader(BaseReaderTest):
         super(TestGROReader, self).__init__(reference)
 
 
+class TestGROWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReference()
+        super(TestGROWriter, self).__init__(reference)
+
+
 class GRONoConversionReference(GROReference):
     def __init__(self):
         super(GRONoConversionReference, self).__init__()
@@ -47,6 +54,14 @@ class TestGROReaderNoConversion(BaseReaderTest):
             reference = GRONoConversionReference()
         super(TestGROReaderNoConversion, self).__init__(reference)
         self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
+
+
+class TestGROWriterNoConversion(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GRONoConversionReference()
+        super(TestGROWriterNoConversion, self).__init__(reference)
+        self.writer = self.ref.writer(self.ref.trajectory, convert_units=False)
 
 
 class GROReaderIncompleteVelocitiesReference(GROReference):
@@ -70,6 +85,13 @@ class TestGROReaderIncompleteVelocities(BaseReaderTest):
         super(TestGROReaderIncompleteVelocities, self).__init__(reference)
 
 
+class TestGROWriterIncompleteVelocities(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReaderIncompleteVelocitiesReference()
+        super(TestGROWriterIncompleteVelocities, self).__init__(reference)
+
+
 class GROBZReference(GROReference):
     def __init__(self):
         super(GROBZReference, self).__init__()
@@ -84,8 +106,8 @@ class TestGROBZ2Reader(BaseReaderTest):
         super(TestGROBZ2Reader, self).__init__(reference)
 
 
-class TestGROWriter(BaseWriterTest):
+class TestGROBZ2Writer(BaseWriterTest):
     def __init__(self, reference=None):
         if reference is None:
-            reference = GROReference()
-        super(TestGROWriter, self).__init__(reference)
+            reference = GROBZReference()
+        super(TestGROBZ2Writer, self).__init__(reference)
