@@ -289,12 +289,12 @@ class GROWriter(base.WriterBase):
 
         except AttributeError:
             if isinstance(obj, base.Timestep):
-                ts = obj
+                ts = obj.copy()
             else:
                 raise TypeError("No Timestep found in obj argument")
         finally:
             if hasattr(obj, 'universe'):
-                ts_full = obj.universe.trajectory.ts
+                ts_full = obj.universe.trajectory.ts.copy()
                 if ts_full.n_atoms == atoms.n_atoms:
                     ts = ts_full
                 else:
