@@ -257,7 +257,7 @@ class GROWriter(base.WriterBase):
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
-    def write(self, obj, frame=None):
+    def write(self, obj):
         """Write selection at current trajectory frame to file.
 
         :Arguments:
@@ -275,19 +275,35 @@ class GROWriter(base.WriterBase):
            resName and atomName are truncated to a maximum of 5 characters
         """
         # write() method that complies with the Trajectory API
-        u = obj.universe
-        if frame is not None:
-            u.trajectory[frame]  # advance to frame
-        else:
-            frame = u.trajectory.ts.frame
 
-        # make sure to use atoms (Issue 46)
-        atoms = obj.atoms
-        # can write from selection == Universe (Issue 49)
-        coordinates = atoms.positions
+        # if frame is not None:
+        #     u.trajectory[frame]  # advance to frame
+        # else:
+        #     frame = u.trajectory.ts.frame
 
         try:
-            velocities = atoms.velocities
+
+            # make sure to use atoms (Issue 46)
+            atoms = obj.atoms
+            # can write from selection == Universe (Issue 49)
+
+        except AttributeError:
+            if isinstance(obj, base.Timestep):
+                ts = obj
+            else:
+                raise TypeError("No Timestep found in obj argument")
+        finally:
+            if hasattr(obj, 'universe'):
+                ts_full = obj.universe.trajectory.ts
+                if ts_full.n_atoms == atoms.n_atoms:
+                    ts = ts_full
+                else:
+                    ts = ts_full.copy_slice(atoms.indices)
+            elif hasattr(obj, 'trajectory'):
+                ts = obj.trajectory.ts
+
+        try:
+            velocities = ts.velocities
         except NoDataError:
             has_velocities = False
         else:
@@ -296,17 +312,17 @@ class GROWriter(base.WriterBase):
         # Check for topology information
         missing_topology = []
         try:
-            names = atoms.names
+            names = ts.names
         except (AttributeError, NoDataError):
             names = itertools.cycle(('X',))
             missing_topology.append('names')
         try:
-            resnames = atoms.resnames
+            resnames = ts.resnames
         except (AttributeError, NoDataError):
             resnames = itertools.cycle(('UNK',))
             missing_topology.append('resnames')
         try:
-            resids = atoms.resids
+            resids = ts.resids
         except (AttributeError, NoDataError):
             resids = itertools.cycle((1,))
             missing_topology.append('resids')
@@ -320,12 +336,12 @@ class GROWriter(base.WriterBase):
         if self.convert_units:
             # Convert back to nm from Angstroms,
             # inplace because coordinates is already a copy
-            self.convert_pos_to_native(coordinates)
+            self.convert_pos_to_native(ts.positions)
             if has_velocities:
                self.convert_velocities_to_native(velocities) 
         # check if any coordinates are illegal
         # (checks the coordinates in native nm!)
-        if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
+        if not self.has_valid_coordinates(self.gro_coor_limits, ts.positions):
             raise ValueError("GRO files must have coordinate values between "
                              "{0:.3f} and {1:.3f} nm: No file was written."
                              "".format(self.gro_coor_limits["min"],
@@ -334,13 +350,13 @@ class GROWriter(base.WriterBase):
         with util.openany(self.filename, 'wt') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
-            output_gro.write(self.fmt['n_atoms'].format(len(atoms)))
+            output_gro.write(self.fmt['n_atoms'].format(ts.n_atoms))
 
             # Atom descriptions and coords
             # Dont use enumerate here,
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
-                    range(len(atoms)), resids, resnames, names):
+                    range(ts.n_atoms), resids, resnames, names):
                 truncated_atom_index = int(str(atom_index + 1)[-5:])
                 truncated_resid = int(str(resid)[:5])
                 if has_velocities:
@@ -349,7 +365,7 @@ class GROWriter(base.WriterBase):
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,
-                        pos=coordinates[atom_index],
+                        pos=ts.positions[atom_index],
                         vel=velocities[atom_index],
                     ))
                 else:
@@ -358,13 +374,13 @@ class GROWriter(base.WriterBase):
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,
-                        pos=coordinates[atom_index]
+                        pos=ts.positions[atom_index]
                     ))
 
             # Footer: box dimensions
-            if np.all(u.trajectory.ts.dimensions[3:] == [90., 90., 90.]):
+            if np.all(ts.dimensions[3:] == [90., 90., 90.]):
                 box = self.convert_pos_to_native(
-                    u.coord.dimensions[:3], inplace=False)
+                    ts.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt['box_orthorhombic'].format(
                     box=box)
@@ -372,7 +388,7 @@ class GROWriter(base.WriterBase):
             else:
                 # full output
                 box = self.convert_pos_to_native(
-                    u.coord.triclinic_dimensions.flatten(), inplace=False)
+                    ts.triclinic_dimensions.flatten(), inplace=False)
                 output_gro.write(self.fmt['box_triclinic'].format(
                     box=box)
                 )
