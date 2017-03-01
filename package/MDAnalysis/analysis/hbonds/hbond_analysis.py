@@ -930,7 +930,8 @@ class HydrogenBondAnalysis(object):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(ts.frame)
+            echo = (ts.frame - (self.traj_slice.start or 0)) // (self.traj_slice.step or 1)
+            pm.echo(echo)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
