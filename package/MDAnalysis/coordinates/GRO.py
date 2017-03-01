@@ -239,7 +239,7 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=None,  **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         :Arguments:
@@ -251,19 +251,18 @@ class GROWriter(base.WriterBase):
 
         """
         self.filename = util.filename(filename, ext='gro')
-        self.n_atoms = n_atoms
+        self.n_atoms = kwargs.get('n_atoms', None)
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
-    def write(self, selection, frame=None):
+    def write(self, obj, frame=None):
         """Write selection at current trajectory frame to file.
 
         :Arguments:
-          selection
-              MDAnalysis AtomGroup (selection or Universe.atoms)
-              or also Universe
+          obj
+              This can be a Timestep, AtomGroup, or a Universe.
         :Keywords:
           frame
               optionally move to frame number *frame*
@@ -276,14 +275,14 @@ class GROWriter(base.WriterBase):
            resName and atomName are truncated to a maximum of 5 characters
         """
         # write() method that complies with the Trajectory API
-        u = selection.universe
+        u = obj.universe
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
             frame = u.trajectory.ts.frame
 
         # make sure to use atoms (Issue 46)
-        atoms = selection.atoms
+        atoms = obj.atoms
         # can write from selection == Universe (Issue 49)
         coordinates = atoms.positions
 
