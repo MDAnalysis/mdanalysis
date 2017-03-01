@@ -1649,6 +1649,9 @@ class ResidueGroup(GroupBase):
     specific to ResidueGroups.
 
     """
+    def __repr__(self):
+        return '<ResidueGroup {}>'.format(repr(list(self.residues)))
+
     @property
     def atoms(self):
         """Get an :class:`AtomGroup` of atoms represented in this
@@ -1745,6 +1748,9 @@ class SegmentGroup(GroupBase):
     SegmentGroups.
 
     """
+    def __repr__(self):
+        return '<SegmentGroup {}>'.format(repr(list(self.segments)))
+
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this SegmentGroup.
@@ -1817,10 +1823,6 @@ class ComponentBase(_MutableBase):
         # index of component
         self._ix = ix
         self._u = u
-
-    def __repr__(self):
-        return ("<{} {}>"
-                "".format(self.level.name.capitalize(), self._ix))
 
     def __lt__(self, other):
         if self.level != other.level:
@@ -1929,6 +1931,22 @@ class Atom(ComponentBase):
             raise AttributeError("{cls} has no attribute {attr}".format(
                 cls=self.__class__.__name__, attr=attr))
 
+    def __repr__(self):
+        me = '<Atom {}:'.format(self.ix + 1)
+        if hasattr(self, 'name'):
+            me += ' {}'.format(self.name)
+        if hasattr(self, 'type'):
+            me += ' of type {}'.format(self.type)
+        if hasattr(self, 'resname'):
+            me += ' of resname {},'.format(self.resname)
+        if hasattr(self, 'resid'):
+            me += ' resid {}'.format(self.resid)
+        if hasattr(self, 'segid'):
+            me += ' and segid {}'.format(self.segid)
+        if hasattr(self, 'altLoc'):
+            me += ' and altloc {}'.format(self.altloc)
+        return me + '>'
+
     @property
     def residue(self):
         return self._u.residues[self._u._topology.resindices[self]]
@@ -2031,6 +2049,15 @@ class Residue(ComponentBase):
     Residues.
 
     """
+    def __repr__(self):
+        me = '<Residue'
+        if hasattr(self, 'resname'):
+            me += ' {},'.format(self.resname)
+        if hasattr(self, 'resid'):
+            me += ' {}'.format(self.resid)
+
+        return me + '>'
+
     @property
     def atoms(self):
         return self._u.atoms[self._u._topology.indices[self][0]]
@@ -2056,6 +2083,12 @@ class Segment(ComponentBase):
     Segments.
 
     """
+    def __repr__(self):
+        me = '<Segment'
+        if hasattr(self, 'segid'):
+            me += ' {}'.format(self.segid)
+        return me + '>'
+
     @property
     def atoms(self):
         return self._u.atoms[self._u._topology.indices[self][0]]

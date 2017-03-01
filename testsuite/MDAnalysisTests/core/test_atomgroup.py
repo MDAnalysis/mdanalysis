@@ -456,16 +456,6 @@ class TestCenter(object):
 
         assert_raises(TypeError, self.ag.center, weights)
 
-def test_representations():
-    u = make_Universe()
-    for level in (mda.core.groups.ATOMLEVEL, mda.core.groups.RESIDUELEVEL,
-                  mda.core.groups.SEGMENTLEVEL):
-        singular = level.name
-        plural = level.name + 's'
-        group = getattr(u, plural)
-        assert str(group)[:-1].endswith(plural)
-        assert str(group[:0])[:-1].endswith(plural)
-        assert str(group[:1])[:-1].endswith(singular)
 
 class TestSplit(object):
     def setUp(self):
