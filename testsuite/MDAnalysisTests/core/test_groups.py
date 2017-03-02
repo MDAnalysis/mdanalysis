@@ -550,10 +550,34 @@ class TestReprs(object):
         ag = self.u.atoms[:10]
         assert_(repr(ag) == '<AtomGroup with 10 atoms>')
 
+    def test_atomgroup_str_short(self):
+        ag = self.u.atoms[:2]
+        assert_(str(ag) == '<AtomGroup [<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>, <Atom 2: HT1 of type 2 of resname MET, resid 1 and segid 4AKE>]>')
+
+    def test_atomgroup_str_long(self):
+        ag = self.u.atoms[:11]
+        assert_(str(ag).startswith('<AtomGroup [<Atom 1: N of type 56 of resname MET,'))
+        assert_('...' in str(ag))
+        assert_(str(ag).endswith(', resid 1 and segid 4AKE>]>'))
+
     def test_residuegroup_repr(self):
         rg = self.u.residues[:10]
-        assert_(repr(rg).startswith('<ResidueGroup [<Residue MET, 1>, '))
+        assert_(repr(rg) == '<ResidueGroup with 10 residues>')
+
+    def test_residuegroup_str_short(self):
+        rg = self.u.residues[:2]
+        assert_(str(rg) == '<ResidueGroup [<Residue MET, 1>, <Residue ARG, 2>]>')
+
+    def test_residuegroup_str_long(self):
+        rg = self.u.residues[:11]
+        assert_(str(rg).startswith('<ResidueGroup [<Residue MET, 1>,'))
+        assert_('...' in str(rg))
+        assert_(str(rg).endswith(', <Residue ALA, 11>]>'))
 
     def test_segmentgroup_repr(self):
         sg = self.u.segments[:10]
-        assert_(repr(sg) == '<SegmentGroup [<Segment 4AKE>]>')
+        assert_(repr(sg) == '<SegmentGroup with 1 segment>')
+
+    def test_segmentgroup_str(self):
+        sg = self.u.segments[:10]
+        assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
