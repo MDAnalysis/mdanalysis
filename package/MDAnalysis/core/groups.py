@@ -368,6 +368,15 @@ class GroupBase(_MutableBase):
                 "".format(name.capitalize(), len(self), name,
                 "s"[len(self)==1:])) # Shorthand for a conditional plural 's'.
 
+    def __str__(self):
+        name = self.level.name
+        if len(self) <= 10:
+            return '<{}Group {}>'.format(name.capitalize(), repr(list(self)))
+        else:
+            return '<{}Group {}, ..., {}>'.format(name.capitalize(),
+                                                  repr(list(self)[:3])[:-1],
+                                                  repr(list(self)[-3:])[1:])
+
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
         level.
