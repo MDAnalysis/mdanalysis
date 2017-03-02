@@ -1658,8 +1658,6 @@ class ResidueGroup(GroupBase):
     specific to ResidueGroups.
 
     """
-    def __repr__(self):
-        return '<ResidueGroup {}>'.format(repr(list(self.residues)))
 
     @property
     def atoms(self):
@@ -1757,8 +1755,6 @@ class SegmentGroup(GroupBase):
     SegmentGroups.
 
     """
-    def __repr__(self):
-        return '<SegmentGroup {}>'.format(repr(list(self.segments)))
 
     @property
     def atoms(self):
