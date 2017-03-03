@@ -54,6 +54,12 @@ class TestGROReaderNoConversion(BaseReaderTest):
             reference = GRONoConversionReference()
         super(TestGROReaderNoConversion, self).__init__(reference)
         self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
+        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
+                                  dt=self.ref.aux_lowf_dt,
+                                  initial_time=0, time_selector=None)
+        self.reader.add_auxiliary('highf', self.ref.aux_highf,
+                                  dt=self.ref.aux_highf_dt,
+                                  initial_time=0, time_selector=None)
 
 
 class TestGROWriterNoConversion(BaseWriterTest):
