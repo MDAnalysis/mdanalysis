@@ -251,17 +251,20 @@ class Universe(object):
             self._generate_from_topology()
 
             # Load coordinates
-            # if passed Topology object as top
-            if self.filename is None:
-                coordinatefile = None
-            elif len(args) == 1:
-                # Can the topology file also act as coordinate file?
-                try:
-                    _ = get_reader_for(self.filename, format=kwargs.get('format', None))
-                except ValueError:
+            if len(args) == 1:
+                if self.filename is None:
+                    # If we got the topology as a Topology object, then we
+                    # cannot read coordinates from it.
                     coordinatefile = None
                 else:
-                    coordinatefile = [self.filename]
+                    # Can the topology file also act as coordinate file?
+                    try:
+                        _ = get_reader_for(self.filename,
+                                           format=kwargs.get('format', None))
+                    except ValueError:
+                        coordinatefile = None
+                    else:
+                        coordinatefile = [self.filename]
             else:
                 coordinatefile = args[1:]
             self.load_new(coordinatefile, **kwargs)
