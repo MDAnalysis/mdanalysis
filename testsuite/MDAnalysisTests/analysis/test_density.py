@@ -40,13 +40,16 @@ from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
 
+
 class TestDensity(TestCase):
     nbins = 3, 4, 5
     counts = 100
     Lmax = 10.
 
+    
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
+    
     def setUp(self):
         import MDAnalysis.analysis.density
 
@@ -58,6 +61,10 @@ class TestDensity(TestCase):
                                                      parameters={'isDensity': False},
                                                      units={'length': 'A'})
         self.D.make_density()
+
+        
+
+
 
     def test_shape(self):
         assert_equal(self.D.grid.shape, self.nbins)
@@ -107,8 +114,11 @@ class Test_density_from_Universe(TestCase):
                   }
     precision = 5
 
+    
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
+    
+    
     def setUp(self):
         self.outfile = 'density.dx'
         self.universe = mda.Universe(self.topology, self.trajectory)
@@ -157,12 +167,14 @@ class TestGridImport(TestCase):
     def setUp(self):
         sys.modules.pop('MDAnalysis.analysis.density', None)
 
+    
     @block_import('gridData')
     def test_absence_griddata(self):
         # if gridData package is missing an ImportError should be raised
         # at the module level of MDAnalysis.analysis.density
         with assert_raises(ImportError):
             import MDAnalysis.analysis.density
+    
 
     def test_presence_griddata(self):
         # no ImportError exception is raised when gridData is properly
@@ -177,3 +189,22 @@ class TestGridImport(TestCase):
             except ImportError:
                 self.fail('''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
+
+
+#issue 1231 test for exception
+def test_check_set_unit():
+    import MDAnalysis.analysis.density
+    nbins = 3, 4, 5
+    counts = 100
+    Lmax = 10
+    bins = [np.linspace(0, Lmax, n+1) for n in nbins]
+    h, edges = np.histogramdd(
+    Lmax * np.sin(np.linspace(0, 1, counts * 3)).reshape(counts, 3),
+        bins=bins)
+    D = MDAnalysis.analysis.density.Density(h, edges,
+                                                    parameters={'isDensity': False},
+                                                    units={'weight': 'A'})
+    assert_raises(ValueError,D._check_set_unit,D.units)
+    D.units = []
+    assert_raises(ValueError,D._check_set_unit,D.units)
+    #D._check_set_unit(D.units)
