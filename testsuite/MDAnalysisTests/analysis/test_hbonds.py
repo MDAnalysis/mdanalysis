@@ -59,6 +59,16 @@ class TestHydrogenBondAnalysis(object):
             'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA'], dtype='U4'),
             }
 
+    #issue 1229        
+    def test_get_bonded_hydrogen_list(self, **kwargs):
+    	kw = self.kwargs.copy()
+    	kw.update(kwargs)
+    	h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
+    	self.universe.atoms[0].index = -2
+    	array = h._get_bonded_hydrogens_list(self.universe.atoms[0],**kw)
+    	assert_equal(len(array),0)
+
+
     def _run(self, **kwargs):
         kw = self.kwargs.copy()
         kw.update(kwargs)
