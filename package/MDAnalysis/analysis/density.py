@@ -465,15 +465,16 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     """
     u = universe
+
     if cutoff > 0 and soluteselection is not None:
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
         notwithin_coordinates = notwithin_coordinates_factory(
-            u, atomselection, soluteselection, cutoff,
-            use_kdtree=use_kdtree)
+            u, groupselection, soluteselection, cutoff,
+            use_kdtree=use_kdtree, updating_selection=update_selection)
         def current_coordinates():
             return notwithin_coordinates()
     else:
-        group = u.select_atoms(atomselection)
+        group = u.select_atoms(atomselection, updating=update_selection)
 
         def current_coordinates():
             return group.positions
@@ -519,11 +520,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     for ts in u.trajectory[start:stop:step]:
-        if update_selection:
-           group = u.select_atoms(atomselection)
-           coord=group.positions
-        else:
-           coord = current_coordinates()
+        coord = current_coordinates()
 
         pm.echo(ts.frame, n_atoms=len(coord))
         if len(coord) == 0:
@@ -531,7 +528,6 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-
 
     n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
@@ -571,7 +567,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
 
 def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
-                                  not_within=True, use_kdtree=True):
+                                  not_within=True, use_kdtree=True, updating_selection=False):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
 
     Example usage::
@@ -594,6 +590,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     use_kdtree : bool
         True: use fast kd-tree based selections
         False: use distance matrix approach
+    updating_selection : bool
+        If True, re-evaluate the selection string each frame.
 
     Notes
     -----
@@ -609,8 +607,9 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     # distance matrix    633        1          1           False
     # AROUND + kdtree    420        0.66       1.5         n/a ('name OH2 around 4 protein')
     # manual + kdtree    182        0.29       3.5         True
-    solvent = universe.select_atoms(sel1)
-    protein = universe.select_atoms(sel2)
+    solvent = universe.select_atoms(sel1, updating=updating_selection)
+    protein = universe.select_atoms(sel2, updating=updating_selection)
+
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
         if not_within is True:  # default
