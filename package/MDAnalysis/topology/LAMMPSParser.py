@@ -54,7 +54,7 @@ import functools
 from . import guessers
 from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, squash_by
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomtypes,
@@ -137,7 +137,7 @@ HEADERS = set([
 ])
 
 
-class DATAParser(TopologyReader):
+class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
 
     Note that LAMMPS_ DATA files can be used standalone.

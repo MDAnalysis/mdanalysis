@@ -35,7 +35,7 @@ from six.moves import range
 
 from . import base
 
-class INPReader(base.SingleFrameReader):
+class INPReader(base.SingleFrameReaderBase):
     format = ['INPCRD', 'RESTRT']
     units = {'length': 'Angstrom'}
 

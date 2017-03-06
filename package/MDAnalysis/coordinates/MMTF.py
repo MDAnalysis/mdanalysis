@@ -51,7 +51,7 @@ def _parse_mmtf(fn):
         return mmtf.parse(fn)
 
 
-class MMTFReader(base.SingleFrameReader):
+class MMTFReader(base.SingleFrameReaderBase):
     """Topology parser for the MMTF_ format.
 
     .. _Macromolecular Transmission Format (MMTF) format:

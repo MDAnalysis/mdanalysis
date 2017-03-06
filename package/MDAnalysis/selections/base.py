@@ -26,11 +26,11 @@ Base classes for the selection writers
 ======================================
 
 Specialized SelectionWriters are derived from
-:class:`SelectionWriter`. Override the :meth:`~SelectionWriter._write_head`,
-:meth:`~SelectionWriter._translate`, and :meth:`~SelectionWriter._write_tail`
+:class:`SelectionWriterBase`. Override the :meth:`~SelectionWriterBase._write_head`,
+:meth:`~SelectionWriterBase._translate`, and :meth:`~SelectionWriterBase._write_tail`
 methods.
 
-.. autoclass:: SelectionWriter
+.. autoclass:: SelectionWriterBase
    :members: __init__, write, _translate, _write_head, _write_tail, comment
 
 .. autofunction:: join
@@ -74,15 +74,15 @@ class _Selectionmeta(type):
                 _SELECTION_WRITERS[f] = cls
 
 
-class SelectionWriter(six.with_metaclass(_Selectionmeta)):
+class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     """Export a selection in MDAnalysis to a format usable in an external package.
 
-    The :class:`SelectionWriter` writes a selection string to a file
+    The :class:`SelectionWriterBase` writes a selection string to a file
     that can be used in another package such as `VMD`_, `PyMOL`_,
     `Gromacs`_ or `CHARMM`_. In this way, analysis and visualization
     can be done with the best or most convenient tools at hand.
 
-    :class:`SelectionWriter` is a base class and child classes are
+    :class:`SelectionWriterBase` is a base class and child classes are
     derived with the appropriate customizations for the package file
     format.
 
@@ -143,7 +143,7 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
     def comment(self, s):
         """Return string *s* interpolated into the comment format string.
 
-        If no :attr:`SelectionWriter.commentfmt` is defined (None) then the
+        If no :attr:`SelectionWriterBase.commentfmt` is defined (None) then the
         empty string is returned because presumably there is no way to enter
         comments into the file.
 

@@ -55,7 +55,7 @@ import numpy as np
 
 from . import guessers
 from ..lib import util
-from .base import TopologyReader, change_squash
+from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -73,7 +73,7 @@ from ..core.topologyattrs import (
 )
 
 
-class PDBQTParser(TopologyReader):
+class PDBQTParser(TopologyReaderBase):
     """Read topology from a PDBQT file.
 
     Creates the following Attributes:

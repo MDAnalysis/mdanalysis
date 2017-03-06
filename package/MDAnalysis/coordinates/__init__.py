@@ -47,18 +47,18 @@ itself.
 
 The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
 attribute :attr:`Universe.trajectory` that points to the actual
-:class:`~MDAnalysis.coordinates.base.Reader` object; all Readers are accessible
+:class:`~MDAnalysis.coordinates.base.ProtoReader` object; all Readers are accessible
 through this entry point in the same manner ("`duck typing`_").
 
 There are three types of base Reader which act as starting points for each
 specific format. These are:
 
-:class:`~MDAnalysis.coordinates.base.Reader`
+:class:`~MDAnalysis.coordinates.base.ReaderBase`
    A standard multi frame Reader which allows iteration over a single
    file to provide multiple frames of data.  This is used by formats
    such as TRR and DCD.
 
-:class:`~MDAnalysis.coordinates.base.SingleFrameReader`
+:class:`~MDAnalysis.coordinates.base.SingleFrameReaderBase`
    A simplified Reader which reads a file containing only a single
    frame of information.  This is used with formats such as GRO
    and CRD
@@ -89,14 +89,14 @@ In order to **write coordinates**, a factory function is provided
 (:func:`MDAnalysis.coordinates.core.writer`, which is also made available as
 :func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for the desired
 file format (as indicated by the filename suffix). Furthermore, a trajectory
-:class:`~MDAnalysis.coordinates.base.Reader` can also have a method
-:meth:`~MDAnalysis.coordinates.base.Reader.Writer` that returns an appropriate
-:class:`~MDAnalysis.coordinates.base.Writer` for the file format of the
+:class:`~MDAnalysis.coordinates.base.ProtoReader` can also have a method
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.Writer` that returns an appropriate
+:class:`~MDAnalysis.coordinates.base.WriterBase` for the file format of the
 trajectory.
 
 In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is also a
 :func:`MDAnalysis.coordinates.core.reader` function available to return a
-trajectory :class:`~MDAnalysis.coordinates.base.Reader` instance although this
+trajectory :class:`~MDAnalysis.coordinates.base.ProtoReader` instance although this
 is often not needed because the :class:`~MDAnalysis.core.universe.Universe`
 class can choose an appropriate reader automatically.
 
@@ -291,8 +291,9 @@ Registry
 In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must subclass either
-:class:`MDAnalysis.coordinates.base.ProtoReader` or
-:class:`MDAnalysis.coordinates.base.Writer` and set the
+:class:`MDAnalysis.coordinates.base.ReaderBase`,
+:class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`,
+or :class:`MDAnalysis.coordinates.base.WriterBase` and set the
 :attr:`~MDAnalysis.coordinates.base.ProtoReader.format` attribute with a string
 defining the expected suffix.  To assign multiple suffixes to an I/O class, a
 list of suffixes can be given.
@@ -428,7 +429,7 @@ but instead should use the attribute above.
 Trajectory Reader class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Reader`.
+Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.ReaderBase`.
 Typically, many methods and attributes are overriden.
 
 Methods
@@ -473,7 +474,7 @@ The following methods must be implemented in a Reader class.
 .. Note::
    a ``__del__()`` method should also be present to ensure that the
    trajectory is properly closed. However, certain types of Reader can ignore
-   this requirement. These include the :class:`SingleFrameReader` (file reading
+   this requirement. These include the :class:`SingleFrameReaderBase` (file reading
    is done within a context manager and needs no closing by hand) and the :class:`ChainReader`
    (it is a collection of Readers, each already with its own ``__del__`` method).
 
@@ -518,13 +519,13 @@ deal with missing methods gracefully.
      If the Reader is not able to provide random access to frames then it
      should raise :exc:`TypeError` on indexing. It is possible to partially
      implement ``__getitem__`` (as done on
-     :class:`MDAnalysis.coordinates.base.Reader.__getitem__` where slicing the
+     :class:`MDAnalysis.coordinates.base.ProtoReader.__getitem__` where slicing the
      full trajectory is equivalent to
-     :class:`MDAnalysis.coordinates.base.Reader.__iter__` (which is always
+     :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
 
  ``Writer(filename, **kwargs)``
-     returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
+     returns a :class:`~MDAnalysis.coordinates.base.WriterBase` which is set up with
      the same parameters as the trajectory that is being read (e.g. time step,
      length etc), which facilitates copying and simple on-the-fly manipulation.
 
@@ -599,9 +600,9 @@ Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory writers are derived from
-:class:`MDAnalysis.coordinates.base.Writer`. They are used to write
+:class:`MDAnalysis.coordinates.base.WriterBase`. They are used to write
 multiple frames to a trajectory file. Every time the
-:meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
+:meth:`~MDAnalysis.coordinates.base.WriterBase.write` method is called,
 another frame is appended to the trajectory.
 
 Typically, many methods and attributes are overriden.

@@ -78,7 +78,7 @@ from math import ceil
 from . import guessers
 from .tables import NUMBER_TO_ELEMENT
 from ..lib.util import openany, FORTRANReader
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -102,7 +102,7 @@ class TypeIndices(AtomAttr):
     level = 'atom'
 
 
-class TOPParser(TopologyReader):
+class TOPParser(TopologyReaderBase):
     """Reads topology information from an AMBER top file.
 
     Reads the following Attributes if in topology:

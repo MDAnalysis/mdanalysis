@@ -107,17 +107,17 @@ in :mod:`MDAnalysis.coordinates.__init__`.
    .. automethod:: copy
    .. automethod:: copy_slice
 
-.. autoclass:: IObase
+.. autoclass:: IOBase
    :members:
 
 .. autoclass:: ProtoReader
    :members:
 
-.. autoclass:: Reader
+.. autoclass:: ReaderBase
    :members:
    :inherited-members:
 
-.. autoclass:: Writer
+.. autoclass:: WriterBase
    :members:
    :inherited-members:
 
@@ -783,7 +783,7 @@ class Timestep(object):
         del self.data['time']
 
 
-class IObase(object):
+class IOBase(object):
     """Base class bundling common functionality for trajectory I/O.
 
     .. versionchanged:: 0.8
@@ -1047,10 +1047,10 @@ class _Readermeta(type):
                 _READERS[f] = cls
 
 
-class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
+class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     """Base class for Readers, without a :meth:`__del__` method.
 
-    Extends :class:`IObase` with most attributes and methods of a generic
+    Extends :class:`IOBase` with most attributes and methods of a generic
     Reader, with the exception of a :meth:`__del__` method. It should be used
     as base for Readers that do not need :meth:`__del__`, especially since
     having even an empty :meth:`__del__` might lead to memory leaks.
@@ -1059,7 +1059,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
     methods.
 
-    .. SeeAlso:: :class:`Reader`
+    .. SeeAlso:: :class:`ReaderBase`
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -1597,11 +1597,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         return descriptions
 
 
-class Reader(ProtoReader):
+class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
 
-    New Readers should subclass :class:`Reader` and properly implement a
+    New Readers should subclass :class:`ReaderBase` and properly implement a
     :meth:`close` method, to ensure proper release of resources (mainly file
     handles). Readers that are inherently safe in this regard should subclass
     :class:`ProtoReader` instead.
@@ -1614,16 +1614,16 @@ class Reader(ProtoReader):
 
     .. versionchanged:: 0.11.0
        Most of the base Reader class definitions were offloaded to
-       :class:`ProtoReader` so as to allow the subclassing of Readers without a
+       :class:`ProtoReader` so as to allow the subclassing of ReaderBases without a
        :meth:`__del__` method.  Created init method to create common
-       functionality, all Reader subclasses must now :func:`super` through this
+       functionality, all ReaderBase subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
 
     """
 
     def __init__(self, filename, convert_units=None, **kwargs):
-        super(Reader, self).__init__()
+        super(ReaderBase, self).__init__()
 
         self.filename = filename
 
@@ -1674,7 +1674,7 @@ class _Writermeta(type):
                     _MULTIFRAME_WRITERS[f] = cls
 
 
-class Writer(six.with_metaclass(_Writermeta, IObase)):
+class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
@@ -1750,7 +1750,7 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         # def write_next_timestep(self, ts=None)
 
 
-class SingleFrameReader(ProtoReader):
+class SingleFrameReaderBase(ProtoReader):
     """Base class for Readers that only have one frame.
 
     To use this base class, define the method :meth:`_read_first_frame` to
@@ -1765,7 +1765,7 @@ class SingleFrameReader(ProtoReader):
     _err = "{0} only contains a single frame"
 
     def __init__(self, filename, convert_units=None, **kwargs):
-        super(SingleFrameReader, self).__init__()
+        super(SingleFrameReaderBase, self).__init__()
 
         self.filename = filename
         if convert_units is None:
@@ -1812,5 +1812,5 @@ class SingleFrameReader(ProtoReader):
     def close(self):
         # all single frame readers should use context managers to access
         # self.filename. Explicitly setting it to the null action in case
-        # the IObase.close method is ever changed from that.
+        # the IOBase.close method is ever changed from that.
         pass

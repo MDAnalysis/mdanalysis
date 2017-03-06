@@ -118,7 +118,7 @@ class Timestep(base.Timestep):
         self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
-class TRZReader(base.Reader):
+class TRZReader(base.ReaderBase):
     """ Reads an IBIsCO or YASP trajectory file
 
     :Data:
@@ -426,7 +426,7 @@ class TRZReader(base.Reader):
             self.trzfile = None
 
 
-class TRZWriter(base.Writer):
+class TRZWriter(base.WriterBase):
     """Writes a TRZ format trajectory.
 
     :Methods:

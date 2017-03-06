@@ -52,7 +52,7 @@ import numpy as np
 
 from . import guessers
 from ..lib.util import openany
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomtypes,
@@ -70,7 +70,7 @@ from ..core.topologyattrs import (
 )
 
 
-class HoomdXMLParser(TopologyReader):
+class HoomdXMLParser(TopologyReaderBase):
     """Parses a Hoomd XML file to create a Topology
 
     Reads the following Attributes:

@@ -225,9 +225,9 @@ _MENU = {
 }
 
 def make_FakeReader(n_atoms=None, velocities=False, forces=False):
-    from MDAnalysis.coordinates.base import SingleFrameReader
+    from MDAnalysis.coordinates.base import SingleFrameReaderBase
 
-    class FakeReader(SingleFrameReader):
+    class FakeReader(SingleFrameReaderBase):
         def __init__(self, n_atoms=None, velocities=False, forces=False):
             self.n_atoms = n_atoms if not n_atoms is None else _N_ATOMS
             self.filename = 'FakeReader'

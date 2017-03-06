@@ -41,7 +41,7 @@ from . import base
 import MDAnalysis.lib.util as util
 
 
-class GMSReader(base.Reader):
+class GMSReader(base.ReaderBase):
     """Reads from an GAMESS output file
 
     :Data:

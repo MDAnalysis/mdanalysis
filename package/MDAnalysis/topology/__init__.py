@@ -191,8 +191,8 @@ trajectory. This includes
 Topology readers are generally called "parsers" in MDAnalysis (for
 historical reasons and in order to distinguish them from coordinate
 "readers"). All parsers are derived from
-:class:`MDAnalysis.topology.base.TopologyReader` and have a
-:meth:`~MDAnalysis.topology.base.TopologyReader.parse` method that
+:class:`MDAnalysis.topology.base.TopologyReaderBase` and have a
+:meth:`~MDAnalysis.topology.base.TopologyReaderBase.parse` method that
 returns a :class:`MDAnalysis.core.topology.Topology` instance.
 
 

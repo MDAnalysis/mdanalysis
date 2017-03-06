@@ -37,7 +37,7 @@ to a file so that it can be used in another programme.
 :mod:`MDAnalysis.selections.charmm`
     CHARMM_ selections
 
-The :class:`MDAnalysis.selections.base.SelectionWriter` base class and
+The :class:`MDAnalysis.selections.base.SelectionWriterBase` base class and
 helper functions are in :mod:`MDAnalysis.selections.base`, with the
 exception of `:func:get_writer`:
 
@@ -57,7 +57,7 @@ from . import jmol
 
 
 def get_writer(filename, defaultformat):
-    """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
+    """Return a SelectionWriter for *filename* or a *defaultformat*."""
 
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!

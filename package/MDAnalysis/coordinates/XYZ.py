@@ -93,7 +93,7 @@ from ..exceptions import NoDataError
 from ..version import __version__
 
 
-class XYZWriter(base.Writer):
+class XYZWriter(base.WriterBase):
     """Writes an XYZ file
 
     The XYZ file format is not formally defined. This writer follows
@@ -255,7 +255,7 @@ class XYZWriter(base.Writer):
                             "".format(atom, x, y, z))
 
 
-class XYZReader(base.Reader):
+class XYZReader(base.ReaderBase):
     """Reads from an XYZ file
 
     :Data:

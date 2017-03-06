@@ -172,7 +172,7 @@ class DCDReader(DCD.DCDReader):
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 
-class DATAReader(base.SingleFrameReader):
+class DATAReader(base.SingleFrameReaderBase):
     """Reads a single frame of coordinate information from a LAMMPS DATA file.
 
     .. versionadded:: 0.9.0
@@ -201,7 +201,7 @@ class DATAReader(base.SingleFrameReader):
             except AttributeError:
                 pass
 
-class DATAWriter(base.Writer):
+class DATAWriter(base.WriterBase):
     """Write out the current time step as a LAMMPS DATA file.
 
     This writer supports the sections Atoms, Masses, Velocities, Bonds,

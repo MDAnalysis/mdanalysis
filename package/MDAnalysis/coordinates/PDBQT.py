@@ -47,7 +47,7 @@ from ..lib import util
 from . import base
 
 
-class PDBQTReader(base.SingleFrameReader):
+class PDBQTReader(base.SingleFrameReaderBase):
     """PDBQTReader that reads a PDBQT-formatted file, no frills.
 
     Records read:
@@ -191,7 +191,7 @@ class PDBQTReader(base.SingleFrameReader):
         return PDBQTWriter(filename, **kwargs)
 
 
-class PDBQTWriter(base.Writer):
+class PDBQTWriter(base.WriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
     .. _PDB: http://www.wwpdb.org/documentation/format32/v3.2.html

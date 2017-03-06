@@ -40,7 +40,7 @@ from ..lib import util
 from . import base
 
 
-class CRDReader(base.SingleFrameReader):
+class CRDReader(base.SingleFrameReaderBase):
     """CRD reader that implements the standard and extended CRD coordinate formats
 
     .. versionchanged:: 0.11.0
@@ -108,7 +108,7 @@ class CRDReader(base.SingleFrameReader):
         return CRDWriter(filename, **kwargs)
 
 
-class CRDWriter(base.Writer):
+class CRDWriter(base.WriterBase):
     """CRD writer that implements the CHARMM CRD coordinate format.
 
     It automatically writes the CHARMM EXT extended format if there

@@ -149,7 +149,7 @@ class Universe(object):
     topology_format
         Provide the file format of the topology file; ``None`` guesses it from
         the file extension [``None``] Can also pass a subclass of
-        :class:`MDAnalysis.topology.base.TopologyReader` to define a custom
+        :class:`MDAnalysis.topology.base.TopologyReaderBase` to define a custom
         reader to be used on the topology file.
     format
         Provide the file format of the coordinate or trajectory file; ``None``
@@ -157,8 +157,8 @@ class Universe(object):
         effect if a list of file names is supplied because the "chained" reader
         has to guess the file format for each individual list member.
         [``None``] Can also pass a subclass of
-        :class:`MDAnalysis.coordinates.base.Reader` to define a custom reader
-        to be used on the trajectory file.
+        :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
+        reader to be used on the trajectory file.
     guess_bonds : bool, optional
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds .angles and .dihedrals
@@ -356,7 +356,7 @@ class Universe(object):
             keyword has no effect if a list of file names is supplied because
             the "chained" reader has to guess the file format for each
             individual list member [``None``]. Can also pass a subclass of
-            :class:`MDAnalysis.coordinates.base.Reader` to define a custom
+            :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
             reader to be used on the trajectory file.
         in_memory : bool (optional)
             Directly load trajectory into memory with the
@@ -1034,7 +1034,7 @@ def Merge(*args):
 
     # Take one frame of coordinates from combined atomgroups
     coords = np.vstack([a.positions for a in args])
-    trajectory = MDAnalysis.coordinates.base.Reader(None)
+    trajectory = MDAnalysis.coordinates.base.ReaderBase(None)
     ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)
     trajectory.n_frames = 1

@@ -135,6 +135,10 @@ Changes
   * analysis.rms/align function keyword `mass_weighted` is replaced
   by generic `weights='mass'`. This new keyword allows to pass it an
   arbitrary weights array as well. (PR 1136)
+  * Renamed various base classes for clarity.  Iobase -> IOBase,
+    Reader -> ReaderBase, SingleFrameReader -> SingleFrameReaderBase,
+    Writer -> WriterBase, TopologyReader -> TopologyReaderBase,
+    SelectionWriter -> SelectionWriterBase (Issue #921)
 
 
 Deprecations (Issue #599)

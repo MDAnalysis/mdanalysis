@@ -167,7 +167,7 @@ class Timestep(base.Timestep):
         np.put(self._unitcell, self._ts_order, box)
 
 
-class DCDWriter(base.Writer):
+class DCDWriter(base.WriterBase):
     """Writes to a DCD file
 
     Typical usage::
@@ -362,7 +362,7 @@ class DCDWriter(base.Writer):
             self.dcdfile = None
 
 
-class DCDReader(base.Reader):
+class DCDReader(base.ReaderBase):
     """Reads from a DCD file
 
     :Data:

@@ -1,12 +1,12 @@
 from numpy.testing import assert_, assert_raises
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Writer
+from MDAnalysis.coordinates.base import WriterBase
 
 
 
 class TestWriterCreation(object):
-    class MagicWriter(Writer):
+    class MagicWriter(WriterBase):
         # this writer does the 'magic' format
         format = 'MAGIC'
 
