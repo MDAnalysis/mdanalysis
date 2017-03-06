@@ -83,7 +83,7 @@ def read_numpy_offsets(filename):
     return {k: v for k, v in six.iteritems(np.load(filename))}
 
 
-class XDRBaseReader(base.Reader):
+class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
@@ -248,7 +248,7 @@ class XDRBaseReader(base.Reader):
         return self._writer(filename, n_atoms=n_atoms, **kwargs)
 
 
-class XDRBaseWriter(base.Writer):
+class XDRBaseWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):

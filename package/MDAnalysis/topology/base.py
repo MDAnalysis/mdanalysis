@@ -30,7 +30,7 @@ file and :exc:`ValueError` upon failing to make sense of the read data.
 Classes
 -------
 
-.. autoclass:: TopologyReader
+.. autoclass:: TopologyReaderBase
    :members:
    :inherited-members:
 
@@ -45,7 +45,7 @@ import numpy as np
 import warnings
 
 from .. import _PARSERS
-from ..coordinates.base import IObase
+from ..coordinates.base import IOBase
 from ..lib import util
 
 
@@ -62,7 +62,7 @@ class _Topologymeta(type):
                 _PARSERS[f] = cls
 
 
-class TopologyReader(six.with_metaclass(_Topologymeta, IObase)):
+class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     """Base class for topology readers
 
     Parameters

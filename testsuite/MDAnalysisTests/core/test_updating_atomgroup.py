@@ -115,7 +115,7 @@ class TestUpdatingSelectionNotraj(object):
         assert_(self.ag_updating._lastupdate is None)
 
 
-class UAGReader(mda.coordinates.base.Reader):
+class UAGReader(mda.coordinates.base.ReaderBase):
     """
     Positions in this reader are defined as:
     (atom number + frame number, 0, 0)

@@ -44,7 +44,7 @@ import numpy as np
 
 from . import guessers
 from ..lib.util import openany
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -57,7 +57,7 @@ from ..core.topologyattrs import (
 )
 
 
-class XYZParser(TopologyReader):
+class XYZParser(TopologyReaderBase):
     """Parse a list of atoms from an XYZ file.
 
     Creates the following attributes:

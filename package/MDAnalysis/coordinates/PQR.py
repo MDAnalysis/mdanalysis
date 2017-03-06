@@ -108,7 +108,7 @@ from ..lib import util
 from . import base
 
 
-class PQRReader(base.SingleFrameReader):
+class PQRReader(base.SingleFrameReaderBase):
     """Read a PQR_ file into MDAnalysis.
 
     .. _PQR:
@@ -151,7 +151,7 @@ class PQRReader(base.SingleFrameReader):
         return PQRWriter(filename, **kwargs)
 
 
-class PQRWriter(base.Writer):
+class PQRWriter(base.WriterBase):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
     Charges ("Q") are taken from the

@@ -221,7 +221,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         """
         if (trajectory is not None) and (not isinstance(
-                trajectory, coordinates.base.Reader)):
+                trajectory, coordinates.base.ProtoReader)):
             args = args + (trajectory,)
             trajectory = None
 

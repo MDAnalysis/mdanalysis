@@ -166,7 +166,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
 
-class PDBReader(base.Reader):
+class PDBReader(base.ReaderBase):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
 
     The following *PDB records* are parsed (see `PDB coordinate section`_ for
@@ -394,7 +394,7 @@ class PDBReader(base.Reader):
         self._pdbfile.close()
 
 
-class PDBWriter(base.Writer):
+class PDBWriter(base.WriterBase):
     """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,

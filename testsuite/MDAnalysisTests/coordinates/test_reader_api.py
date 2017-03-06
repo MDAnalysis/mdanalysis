@@ -21,7 +21,11 @@
 #
 
 import numpy as np
-from MDAnalysis.coordinates.base import Timestep, SingleFrameReader, Reader
+from MDAnalysis.coordinates.base import (
+    Timestep,
+    SingleFrameReaderBase,
+    ReaderBase
+)
 from numpy.testing import assert_equal, assert_raises
 
 """
@@ -29,7 +33,7 @@ Isolate the API definitions of Readers independent of implementations
 """
 
 
-class AmazingMultiFrameReader(Reader):
+class AmazingMultiFrameReader(ReaderBase):
     format = 'AmazingMulti'
 
     def __init__(self, filename, **kwargs):
@@ -59,7 +63,7 @@ class AmazingMultiFrameReader(Reader):
         self.ts.frame = -1
 
 
-class AmazingReader(SingleFrameReader):
+class AmazingReader(SingleFrameReaderBase):
     format = 'Amazing'
 
     # have to hack this in to get the base class to "work"

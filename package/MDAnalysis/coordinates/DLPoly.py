@@ -53,7 +53,7 @@ class Timestep(base.Timestep):
         self._unitcell[:] = core.triclinic_vectors(new)
 
 
-class ConfigReader(base.SingleFrameReader):
+class ConfigReader(base.SingleFrameReaderBase):
     """DLPoly Config file Reader
 
     .. versionadded:: 0.11.0
@@ -140,7 +140,7 @@ class ConfigReader(base.SingleFrameReader):
         ts.frame = 0
 
 
-class HistoryReader(base.Reader):
+class HistoryReader(base.ReaderBase):
     """Reads DLPoly format HISTORY files
 
     .. versionadded:: 0.11.0

@@ -56,11 +56,11 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, squash_by
 from . import guessers
 
 
-class GROParser(TopologyReader):
+class GROParser(TopologyReaderBase):
     """Reads a Gromacs GRO file
 
     Reads the following attributes:

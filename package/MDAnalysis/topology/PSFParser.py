@@ -52,7 +52,7 @@ import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, squash_by
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -73,7 +73,7 @@ from ..core.topology import Topology
 logger = logging.getLogger("MDAnalysis.topology.PSF")
 
 
-class PSFParser(TopologyReader):
+class PSFParser(TopologyReaderBase):
     """Read topology information from a CHARMM/NAMD/XPLOR PSF_ file.
 
     Creates a Topology with the following Attributes:

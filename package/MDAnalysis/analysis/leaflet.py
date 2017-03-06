@@ -64,8 +64,10 @@ import warnings
 
 import numpy as np
 import networkx as NX
-import MDAnalysis
+
+from .. import core
 from . import distances
+from .. import selections
 
 
 class LeafletFinder(object):
@@ -114,10 +116,10 @@ class LeafletFinder(object):
                  use fast :func:`~MDAnalysis.analysis.distances.distance_array`
                  implementation [``None``].
         """
-        universe = MDAnalysis.as_Universe(universe)
+        universe = core.universe.as_Universe(universe)
         self.universe = universe
         self.selectionstring = selectionstring
-        if isinstance(self.selectionstring, MDAnalysis.core.groups.AtomGroup):
+        if isinstance(self.selectionstring, core.groups.AtomGroup):
             self.selection = self.selectionstring
         else:
             self.selection = universe.select_atoms(self.selectionstring)
@@ -215,10 +217,8 @@ class LeafletFinder(object):
         See :class:`MDAnalysis.selections.base.SelectionWriter` for all
         options.
         """
-        import MDAnalysis.selections
-
-        SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format', None))
-        writer = SelectionWriter(
+        sw = selections.get_writer(filename, kwargs.pop('format', None))
+        writer = sw(
             filename, mode=kwargs.pop('mode', 'wa'),
             preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(**vars(self)),
             **kwargs)

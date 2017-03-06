@@ -61,10 +61,10 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, squash_by
 
 
-class PQRParser(TopologyReader):
+class PQRParser(TopologyReaderBase):
     """Parse atom information from PQR file *filename*.
 
     Creates a MDAnalysis Topology with the following attributes

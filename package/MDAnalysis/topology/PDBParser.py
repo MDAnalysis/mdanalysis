@@ -61,7 +61,7 @@ import warnings
 
 from .guessers import guess_masses, guess_types
 from ..lib import util
-from .base import TopologyReader, change_squash
+from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -87,7 +87,7 @@ def float_or_default(val, default):
         return default
 
 
-class PDBParser(TopologyReader):
+class PDBParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard PDB file.
 
     Creates the following Attributes:

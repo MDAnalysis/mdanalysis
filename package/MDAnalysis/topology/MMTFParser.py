@@ -144,7 +144,7 @@ class ModelSelection(RangeSelection):
         return group[mask].unique
 
 
-class MMTFParser(base.TopologyReader):
+class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
     def parse(self):

@@ -60,7 +60,7 @@ class Timestep(base.Timestep):
         self._unitcell = cell
 
 
-class DMSReader(base.SingleFrameReader):
+class DMSReader(base.SingleFrameReaderBase):
     """
     Reads both coordinates and velocities.
 

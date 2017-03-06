@@ -118,7 +118,7 @@ class Timestep(base.Timestep):
         np.put(self._unitcell, self._ts_order_z, z)
 
 
-class GROReader(base.SingleFrameReader):
+class GROReader(base.SingleFrameReaderBase):
     """Reader for the Gromacs GRO structure format.
     
     .. versionchanged:: 0.11.0
@@ -199,7 +199,7 @@ class GROReader(base.SingleFrameReader):
         return GROWriter(filename, **kwargs)
 
 
-class GROWriter(base.Writer):
+class GROWriter(base.WriterBase):
     """GRO Writer that conforms to the Trajectory API.
 
     Will attempt to write the following information from the topology:

@@ -49,7 +49,7 @@ from __future__ import absolute_import
 import numpy as np
 
 from ..lib.util import openany, FORTRANReader
-from .base import TopologyReader, change_squash
+from .base import TopologyReaderBase, change_squash
 from . import guessers
 from ..core.topology import Topology
 from ..core.topologyattrs import (
@@ -65,7 +65,7 @@ from ..core.topologyattrs import (
 )
 
 
-class CRDParser(TopologyReader):
+class CRDParser(TopologyReaderBase):
     """Parse a CHARMM CARD coordinate file for topology information.
 
     Reads the following Attributes:

@@ -49,10 +49,10 @@ from MDAnalysisTests import parser_not_found
 
 import MDAnalysis as mda
 import MDAnalysis.coordinates
-from MDAnalysis.topology.base import TopologyReader
+from MDAnalysis.topology.base import TopologyReaderBase
 
 
-class IOErrorParser(TopologyReader):
+class IOErrorParser(TopologyReaderBase):
     def parse(self):
         raise IOError("Useful information")
 

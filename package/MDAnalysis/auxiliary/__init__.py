@@ -26,12 +26,11 @@ Auxiliary Readers --- :mod:`MDAnalysis.auxiliary`
 
 The auxiliary submodule contains code for reading 'auxiliary' data from a 
 trajectory and allowing alignment with trajectory timesteps. Additional 
-methods in :class:`MDAnalysis.coordinates.base.Reader` allow auxiliary data to 
-be added and read alongside a trajectory.
+methods in :class:`MDAnalysis.coordinates.base.ProtoReader` allow auxiliary data
+to be added and read alongside a trajectory.
 
 Auxiliary data are timeseries accompanying a trajectory not stored in the 
-regular trajectory file to be read by the trajectory
-:class:`~MDAnalysis.coordinates.base.Reader`. They may be stored 
+regular trajectory file to be read by the trajectory Reader. They may be stored 
 internally (e.g. in an array) or read from a file. In general, auxiliary data is 
 assumed to be time ordered and contain no duplicates.
 
@@ -122,8 +121,7 @@ If there are no auxiliary steps assigned to a given timestep (or none within
 
 Adding an auxiliary to a trajectory
 ...................................
-Auxiliary data may be added to a trajectory 
-(:class:`~MDAnalysis.coordinates.base.Reader` object) through the 
+Auxiliary data may be added to a trajectory Reader through the 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary` method. Auxiliary data
 may be passed in as a AuxReader instance, or directly as e.g. a filename, in 
 which case :func:`~MDAnalysis.auxiliary.core.get_auxreader_for` is used to 
@@ -140,7 +138,7 @@ updated, and the representative auxiliary value(s) will be available as e.g.
 
 Iterating by an auxiliary
 .........................
-The trajectory :class:`~MDAnalysis.coordinates.base.Reader` methods 
+The trajectory :class:`~MDAnalysis.coordinates.base.ProtoReader` methods 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.next_as_aux` and
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.iter_as_aux` allow for movement
 through only trajectory timesteps to which one or more steps that fall within 
@@ -156,7 +154,7 @@ is less frequent::
 If the auxiliary data are more frequent and the cutoff (if set) is 
 sufficiently high, :meth:`~MDAnalysis.coordinates.base.ProtoReader.next_as_aux` 
 and :meth:`~MDAnalysis.coordinates.base.ProtoReader.iter_as_aux` behave the same 
-as the :class:`~MDAnalysis.coordinates.base.Reader` 
+as the :class:`~MDAnalysis.coordinates.base.ProtoReader` 
 meth:`~MDAnalysis.coordinates.base.ProtoReader.next` and 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.__iter__`.
 
