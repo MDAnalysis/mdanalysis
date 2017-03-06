@@ -177,3 +177,20 @@ class TestGridImport(TestCase):
             except ImportError:
                 self.fail('''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
+
+#issue 1231
+def test_check_set_unit_keyerror():
+    import MDAnalysis.analysis.density
+    D = MDAnalysis.analysis.density.Density(np.zeros((2,2)), np.zeros((2,2)),
+                                                    parameters={'isDensity': False},
+                                                    units={'weight': 'A'})
+    assert_raises(ValueError,D._check_set_unit,D.units)
+    #D._check_set_unit(D.units)
+
+def test_check_set_unit_attributeError():
+    import MDAnalysis.analysis.density
+    D = MDAnalysis.analysis.density.Density(np.zeros((2,2)), np.zeros((2,2)),
+                                                    parameters={'isDensity': False},
+                                                    units={'weight': 'A'})
+    D.units = []
+    assert_raises(ValueError,D._check_set_unit,D.units)

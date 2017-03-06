@@ -122,7 +122,6 @@ except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
 
-
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import
 #  code won't be run again under coverage's watch. See Issue 344.
