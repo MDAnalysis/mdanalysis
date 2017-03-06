@@ -347,6 +347,7 @@ import six
 from six.moves import range, zip, map, cPickle
 
 from collections import defaultdict
+import numbers
 import numpy as np
 import warnings
 import logging
@@ -596,9 +597,9 @@ class HydrogenBondAnalysis(object):
         self.angle = angle
         slice_index = []
         for index in [start, stop, step]:
-            try:
+            if isinstance(index, numbers.Integral):
                 slice_index.append(int(index))
-            except:
+            else:
                 slice_index.append(None)
         self.traj_slice = slice(*slice_index)
 
