@@ -594,16 +594,13 @@ class HydrogenBondAnalysis(object):
         self.distance = distance
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
-        try:
-            start = int(start)
-        except:
-            start = None
-
-        try:
-            stop = int(stop)
-        except:
-            stop = None
-        self.traj_slice = slice(start, stop, step)
+        slice_index = []
+        for index in [start, stop, step]:
+            try:
+                slice_index.append(int(index))
+            except:
+                slice_index.append(None)
+        self.traj_slice = slice(*slice_index)
 
         # set up the donors/acceptors lists
         if donors is None:
