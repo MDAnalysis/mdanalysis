@@ -129,9 +129,8 @@ from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
+from ..lib import distances
 from MDAnalysis.lib.log import ProgressMeter
-
-import MDAnalysis.analysis.distances
 
 import logging
 
@@ -459,22 +458,18 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     :Returns: :class:`Density`
 
     .. versionchanged:: 0.13.0
-       *update_selection* and *quite* keywords added
+       *update_selection* and *quiet* keywords added
 
     .. deprecated:: 0.16
        The keyword argument *quiet* is deprecated in favor of *verbose*.
 
     """
-    try:
-        universe.select_atoms('all')
-        universe.trajectory.ts
-    except AttributeError:
-        raise TypeError("The universe must be a proper MDAnalysis.Universe instance.")
     u = universe
     if cutoff > 0 and soluteselection is not None:
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
-        notwithin_coordinates = notwithin_coordinates_factory(u, atomselection, soluteselection, cutoff,
-                                                              use_kdtree=use_kdtree)
+        notwithin_coordinates = notwithin_coordinates_factory(
+            u, atomselection, soluteselection, cutoff,
+            use_kdtree=use_kdtree)
         def current_coordinates():
             return notwithin_coordinates()
     else:
@@ -484,7 +479,11 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             return group.positions
 
     coord = current_coordinates()
-    logger.info("Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total.".format(coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
+    logger.info(
+        "Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total."
+        "".format(coord.shape[0], len(u.select_atoms(atomselection)),
+                  atomselection, len(u.atoms))
+    )
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
@@ -571,7 +570,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     return g
 
 
-def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True, use_kdtree=True):
+def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
+                                  not_within=True, use_kdtree=True):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
 
     Example usage::
@@ -580,21 +580,28 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
       coord = notwithin_coordinates()        # changes with time step
       coord = notwithin_coordinates(cutoff2) # can use different cut off
 
-    :Keywords:
-      *not_within*
-         True: selection behaves as 'not within' (As described above)
-         False: selection is a <sel1> WITHIN <cutoff> OF <sel2>'
-      *use_kdtree*
-         True: use fast kd-tree based selections (requires new MDAnalysis >= 0.6)
-         False: use distance matrix approach
+    Parameters
+    ----------
+    universe : MDAnalysis.Universe
+        Universe object on which to operate
+    sel1, sel2 : str
+        Selection strings for the solvent and solute selections
+    cutoff : float
+        Distance cutoff
+    not_within : bool
+        True: selection behaves as 'not within' (As described above)
+        False: selection is a <sel1> WITHIN <cutoff> OF <sel2>'
+    use_kdtree : bool
+        True: use fast kd-tree based selections
+        False: use distance matrix approach
 
-    .. Note::
-
-       * Periodic boundary conditions are *not* taken into account: the naive
-         minimum image convention employed in the distance check is currently
-         not being applied to remap the coordinates themselves, and hence it
-         would lead to counts in the wrong region.
-       * The selections are static and do not change with time steps.
+    Notes
+    -----
+    * Periodic boundary conditions are *not* taken into account: the naive
+      minimum image convention employed in the distance check is currently
+      not being applied to remap the coordinates themselves, and hence it
+      would lead to counts in the wrong region.
+    * The selections are static and do not change with time steps.
 
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
@@ -607,19 +614,21 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
         if not_within is True:  # default
-            set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
             def notwithin_coordinates(cutoff=cutoff):
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
-                solvation_shell = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
-                group = MDAnalysis.core.groups.AtomGroup(set_solvent - set(solvation_shell))  # bulk
+                solvation_shell = ns_w.search(protein, cutoff)  # solvent within CUTOFF of protein
+                # Find indices in solvent NOT in solvation shell
+                uniq_idx = np.setdiff1d(solvent.ix, solvation_shell.ix)
+                # Then reselect these from Universe.atoms (as these indices are global)
+                group = universe.atoms[uniq_idx]
                 return group.positions
         else:
             def notwithin_coordinates(cutoff=cutoff):
                 # acts as '<solvent> WITHIN <cutoff> OF <protein>'
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
-                group = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
+                group = ns_w.search(protein, cutoff)  # solvent within CUTOFF of protein
                 return group.positions
     else:
         # slower distance matrix based (calculate all with all distances first)
@@ -636,7 +645,7 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
             s_coor = solvent.positions
             p_coor = protein.positions
             # Does water i satisfy d[i,j] > r for ALL j?
-            d = MDAnalysis.analysis.distances.distance_array(s_coor, p_coor, box=box, result=dist)
+            d = distances.distance_array(s_coor, p_coor, box=box, result=dist)
             return s_coor[aggregatefunc(compare(d, cutoff), axis=1)]
     return notwithin_coordinates
 

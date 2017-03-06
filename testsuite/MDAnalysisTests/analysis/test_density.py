@@ -34,7 +34,7 @@ import MDAnalysis as mda
 # be tested in the absence of scipy
 ## import MDAnalysis.analysis.density
 
-from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests.datafiles import TPR, XTC, GRO
 from MDAnalysisTests import module_not_found, tempdir
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
@@ -177,3 +177,29 @@ class TestGridImport(TestCase):
             except ImportError:
                 self.fail('''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
+
+
+class TestNotWithin(object):
+    # tests notwithin_coordinates_factory
+    # only checks that KDTree and distance_array give same results
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+
+    def tearDown(self):
+        del self.u
+
+    def test_within(self):
+        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
+
+        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=True)()
+        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=False)()
+
+        assert_equal(vers1, vers2)
+
+    def test_not_within(self):
+        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
+
+        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=True)()
+        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=False)()
+
+        assert_equal(vers1, vers2)
