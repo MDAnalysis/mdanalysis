@@ -172,6 +172,14 @@ class TestUniverseCreation(object):
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
 
+    @staticmethod
+    def test_universe_topology_class_with_coords():
+        u = mda.Universe(PSF, PDB_small)
+        u2 = mda.Universe(u._topology, PDB_small)
+        assert_(isinstance(u2.trajectory, type(u.trajectory)))
+        assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
+        assert_(u2._topology is u._topology)
+
 
 class TestUniverse(object):
     # older tests, still useful
