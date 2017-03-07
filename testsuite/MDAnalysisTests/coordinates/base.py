@@ -852,6 +852,11 @@ class BaseTimestepTest(object):
         ts2 = ts.copy_slice(sl)
         self._check_slice(ts, ts2, sl)
 
+    def _check_npint_slice(self, u, ts):
+        sl = slice(np.int_(0), None, None)
+        ts1 = u.trajectory[sl]
+        self._check_slice(ts1, ts, (0, None, None))
+
     def _check_slice(self, ts1, ts2, sl):
         if ts1.has_positions:
             assert_array_almost_equal(ts1.positions[sl], ts2.positions)
@@ -870,6 +875,7 @@ class BaseTimestepTest(object):
         yield self._check_independent, self.name, ts
         yield self._check_copy_slice_indices, self.name, ts
         yield self._check_copy_slice_slice, self.name, ts
+        yield self._check_npint_slice, u, ts
 
     def test_copy_slice(self):
         for p, v, f in itertools.product([True, False], repeat=3):
