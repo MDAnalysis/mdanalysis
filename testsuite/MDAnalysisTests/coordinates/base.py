@@ -852,11 +852,15 @@ class BaseTimestepTest(object):
         ts2 = ts.copy_slice(sl)
         self._check_slice(ts, ts2, sl)
 
-    def _check_npint_slice(self, u, ts):
-        sl = slice(np.int_(0), None, None)
-        ts1 = u.trajectory[sl]
-        self._check_slice(ts1, ts, (0, None, None))
-
+    def _check_npint_slice(self, name, ts):
+        for integers in [np.byte, np.short, np.intc, np.int_, np.longlong,
+                         np.intp, np.int8, np.int16, np.int32, np.int64, 
+                         np.ubyte, np.ushort, np.uintc, np.ulonglong,
+                         np.uintp, np.uint8, np.uint16, np.uint32, np.uint64]:
+            sl = slice(1, 2, 1)
+            ts2 = ts.copy_slice(slice(integers(1), integers(2), integers(1)))
+            self._check_slice(ts, ts2, sl)
+        
     def _check_slice(self, ts1, ts2, sl):
         if ts1.has_positions:
             assert_array_almost_equal(ts1.positions[sl], ts2.positions)
@@ -870,12 +874,12 @@ class BaseTimestepTest(object):
             return
         u = mda.Universe(*self.uni_args)
         ts = u.trajectory.ts
-
+        
         yield self._check_copy, self.name, ts
         yield self._check_independent, self.name, ts
         yield self._check_copy_slice_indices, self.name, ts
         yield self._check_copy_slice_slice, self.name, ts
-        yield self._check_npint_slice, u, ts
+        yield self._check_npint_slice, self.name, ts
 
     def test_copy_slice(self):
         for p, v, f in itertools.product([True, False], repeat=3):

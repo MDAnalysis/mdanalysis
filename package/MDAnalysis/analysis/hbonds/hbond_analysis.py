@@ -347,7 +347,6 @@ import six
 from six.moves import range, zip, map, cPickle
 
 from collections import defaultdict
-import numbers
 import numpy as np
 import warnings
 import logging

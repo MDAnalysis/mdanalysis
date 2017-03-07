@@ -1296,8 +1296,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """
 
         slice_dict = {'start': start, 'stop': stop, 'step': step}
-        for varname in slice_dict:
-            var = slice_dict[varname]
+        for varname, var in slice_dict.items():
             if isinstance(var, numbers.Integral):
                 slice_dict[varname] = int(var)
             elif (var is None):
