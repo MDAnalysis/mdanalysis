@@ -185,7 +185,6 @@ def test_check_set_unit_keyerror():
                                                     parameters={'isDensity': False},
                                                     units={'weight': 'A'})
     assert_raises(ValueError,D._check_set_unit,D.units)
-    #D._check_set_unit(D.units)
 
 def test_check_set_unit_attributeError():
     import MDAnalysis.analysis.density
