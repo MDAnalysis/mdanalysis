@@ -127,6 +127,7 @@ import six
 from six.moves import range
 
 import numpy as np
+import numbers
 import copy
 import warnings
 import weakref
@@ -1293,13 +1294,20 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             range(10)[10:-1:-1]  # []
 
         """
-        for var, varname in (
-                (start, 'start'),
-                (stop, 'stop'),
-                (step, 'step')
-        ):
-            if not (isinstance(var, int) or (var is None)):
+
+        slice_dict = {'start': start, 'stop': stop, 'step': step}
+        for varname, var in slice_dict.items():
+            if isinstance(var, numbers.Integral):
+                slice_dict[varname] = int(var)
+            elif (var is None):
+                pass
+            else:
                 raise TypeError("{0} is not an integer".format(varname))
+
+        start = slice_dict['start']
+        stop = slice_dict['stop']
+        step = slice_dict['step']
+
         if step == 0:
             raise ValueError("Step size is zero")
 
