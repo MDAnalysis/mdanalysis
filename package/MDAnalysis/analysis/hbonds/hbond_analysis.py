@@ -898,7 +898,7 @@ class HydrogenBondAnalysis(object):
                                quiet=kwargs.get('quiet', None),
                                default=True)
         pm = ProgressMeter(len(frames),
-                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
+                           format="HBonds frame %(current_step)5d: %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
                            verbose=verbose)
 
         try:
@@ -930,8 +930,8 @@ class HydrogenBondAnalysis(object):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            echo = (ts.frame - (self.traj_slice.start or 0)) // (self.traj_slice.step or 1)
-            pm.echo(echo)
+            progress = (ts.frame - (self.traj_slice.start or 0)) // (self.traj_slice.step or 1)
+            pm.echo(progress, current_step = ts.frame)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
