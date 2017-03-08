@@ -89,8 +89,8 @@ def reader(filename, **kwargs):
 def writer(filename, n_atoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     filename : str
         Output filename of the trajectory; the extension determines the
         format.
@@ -117,9 +117,11 @@ def writer(filename, n_atoms=None, **kwargs):
     -------
     A Writer object
 
-    .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
-                 trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
-                 and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
+    See Also
+    --------
+    MDAnalysis.coordinates.DCD.DCDWriter : DCD trajectories
+    MDAnalysis.coordinates.XTC.XTCWriter : Gromacs XTC trajectories
+    MDAnalysis.coordinates.TRR.TRRWriter : Gromacs TRR trajectories
 
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword. See also :func:`get_writer_for`.

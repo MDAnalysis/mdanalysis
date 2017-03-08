@@ -171,18 +171,21 @@ class NullHandler(logging.Handler):
 
 
 def echo(s='', replace=False, newline=True):
-    """Simple string output that immediately prints to the console.
+    r"""Simple string output that immediately prints to the console.
+
+    The string `s` is modified according to the keyword arguments and then
+    printed to :const:`sys.stderr`, which is immediately flushed.
 
     Parameters
-    ==========
-
-    s: str
+    ----------
+    s : str
         The string to output.
-    replace: bool
+    replace : bool
         If ``True``, the string will be printed on top of the current line. In
-        practice, ``\r`` is added at the beginning og the string.
-    newline: bool
-        If ``True``, a new line id added at the end of the string.
+        practice, ``\r`` is added at the beginning of the string.
+    newline : bool
+        If ``True``, a newline is added at the end of the string.
+
     """
     if replace:
         s = '\r' + s
@@ -272,7 +275,57 @@ def _set_verbose(verbose, quiet, default=True,
 class ProgressMeter(object):
     r"""Simple progress meter
 
-    Usage::
+    The :class:`ProgressMeter` class can be used to show running progress such
+    as frames processed or percentage done to give the user feedback on the
+    duration and progress of a task. It is structures as a class that is
+    customized on instantation (e.g., using a custom `format` string and the
+    expected total number of frames to be processed). Within a processing loop,
+    call :meth:`echo` with the current frame number to print the output to
+    stderr.
+
+    Parameters
+    ----------
+    numsteps: int
+        total number of steps
+    interval: int
+        only calculate and print progress every `interval` steps [10]
+    format: str
+        a format string with Python variable interpolation. Allowed
+        values:
+
+        * *step*: current step
+        * *numsteps*: total number of steps as supplied in *numsteps*
+        * *percentage*: percentage of total
+
+        The last call to :meth:`ProgressMeter.print` will automatically
+        issue a newline ``\n``.
+
+        If *format* is ``None`` then the default is used::
+
+            Step {step:5d}/{numsteps} [{percentage:5.1f}%]
+
+    offset: int
+        number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
+        then one should set *offset* = 1; for 1-based steps, choose 0. [1]
+    verbose: bool
+        If ``False``, disable all output, ``True`` print all messages as
+        specified, [``True``]
+    dynamic: bool
+        If ``True``, each line will be printed on top of the previous one.
+        This is done by prepedind the format with ``\r``. [``True``]
+    format_handling: str
+        how to handle the format string. Allowed values are:
+
+        * *new*: the format string uses {}-based formating
+        * *legacy*: the format string uses %-basedd formating
+        * *auto*: default, try to guess how the format string should be
+          handled
+
+
+    Examples
+    --------
+    The typical use case is to show progress as frames of a trajectory are
+    processed::
 
        u = Universe(PSF, DCD)
        pm = ProgressMeter(u.trajectory.n_frames, interval=100)
@@ -292,7 +345,7 @@ class ProgressMeter(object):
         Step {step:5d}/{numsteps} [{percentage:5.1f}%]
 
     By default, each line of the progress meter is displayed on top of the
-    previous one. To prevent this behaviour, set the *dynamic* keyword to
+    previous one. To prevent this behaviour, set the `dynamic` keyword to
     ``False``.
 
     It is possible to embed (almost) arbitrary additional data in the
@@ -311,60 +364,20 @@ class ProgressMeter(object):
        RMSD   1.89 at  200/10000 [  2.0%]
        ...
 
+    .. versionchanged:: 0.8
+       Keyword argument *quiet* was added.
+
+    .. versionchanged:: 0.16
+       Keyword argument *dynamic* replaces ``\r`` in the format.
+
+    .. deprecated:: 0.16
+       Keyword argument *quiet* is deprecated in favor of *verbose*.
+
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
                  verbose=None, dynamic=True,
                  format_handling='auto', quiet=None):
-        r"""
-        Parameters
-        ==========
-
-        numsteps: int
-            total number of steps
-        interval: int
-            only calculate progress every *interval* steps [10]
-        format: str
-            a format string with Python variable interpolation. Allowed
-            values:
-
-            * *step*: current step
-            * *numsteps*: total number of steps as supplied in *numsteps*
-            * *percentage*: percentage of total
-
-            The last call to :meth:`ProgressMeter.print` will automatically
-            issue a newline ``\n``.
-
-            If *format* is ``None`` then the default is used::
-
-                Step {step:5d}/{numsteps} [{percentage:5.1f}%]
-
-        offset: int
-            number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
-            then one should set *offset* = 1; for 1-based steps, choose 0. [1]
-        verbose: bool
-            If ``False``, disable all output, ``True`` print all messages as
-            specified, [``True``]
-        dynamic: bool
-            If ``True``, each line will be printed on top of the previous one.
-            This is done by prepedind the format with ``\r``. [``True``]
-        format_handling: str
-            how to handle the format string. Allowed values are:
-
-            * *new*: the format string uses {}-based formating
-            * *legacy*: the format string uses %-basedd formating
-            * *auto*: default, try to guess how the format string should be
-              handled
-
-        .. versionchanged:: 0.8
-           Keyword argument *quiet* was added.
-
-        .. versionchanged:: 0.16
-           Keyword argument *dynamic* replaces ``\r`` in the format.
-
-        .. deprecated:: 0.16
-           Keyword argument *quiet* is deprecated in favor of *verbose*.
-        """
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)

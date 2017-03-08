@@ -64,20 +64,17 @@ class ChainReader(base.ProtoReader):
 
     Notes
     -----
-
-    - Trajectory API attributes exist but most of them only reflect
-      the first trajectory in the list; :attr:`ChainReader.n_frames`,
-      :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are
-      properly set, though
-
-    - slicing not implemented
-
+    The trajectory API attributes exist but most of them only reflect the first
+    trajectory in the list; :attr:`ChainReader.n_frames`,
+    :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are properly
+    set, though
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     .. versionchanged:: 0.13.0
        :attr:`time` now reports the time summed over each trajectory's
        frames and individual :attr:`dt`.
+
     """
     format = 'CHAIN'
 
@@ -325,13 +322,13 @@ class ChainReader(base.ProtoReader):
         frame index and the :class:`Timestep` instance in
         :attr:`ChainReader.ts` is updated.
 
-        Note
-        ----
+        Notes
+        -----
         `frame` is 0-based, i.e. the first frame in the trajectory is
         accessed with ``frame = 0``.
 
-        SeeAlso
-        -------
+        See Also
+        --------
         :meth:`~ChainReader._get_local_frame`
 
         """
