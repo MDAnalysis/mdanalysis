@@ -24,7 +24,7 @@
 # Copyright (c) 2007-2011 Oliver Beckstein <orbeckst@gmail.com>
 # (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)
 
-r"""\
+r"""
 Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`
 =============================================================================
 
@@ -82,10 +82,11 @@ The following functions take trajectory or coordinate data and generate a
 Supporting classes and functions
 --------------------------------
 
-The main output of the density creation functions is a :class:`Density`
-instance, which is derived from a :class:`gridData.Grid`. A :class:`Density` is
-essentially, a 3D array with origin and lengths together with associated
-metadata (which can be used in downstream processing).
+The main output of the density creation functions is a
+:class:`Density` instance, which is derived from a
+:class:`gridData.core.Grid`. A :class:`Density` is essentially, a 3D
+array with origin and lengths together with associated metadata (which
+can be used in downstream processing).
 
 .. autoclass:: Density
    :members:
@@ -158,8 +159,60 @@ logger = logging.getLogger("MDAnalysis.analysis.density")
 
 
 class Density(Grid):
-    """Class representing a density on a regular cartesian grid.
+    r"""Class representing a density on a regular cartesian grid.
 
+    Parameters
+    ----------
+    grid : array_like
+        histogram or density, typically a :class:`numpy.ndarray`
+    edges : list
+        list of arrays, the lower and upper bin edges along the axes
+    parameters : dict
+        dictionary of class parameters; saved with
+        :meth:`Density.save`. The following keys are meaningful to
+        the class. Meaning of the values are listed:
+
+         *isDensity*
+
+            - ``False``: grid is a histogram with counts [default]
+            - ``True``: a density
+
+            Applying :meth:`Density.make_density`` sets it to ``True``.
+    units : dict
+        A dict with the keys
+
+        - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
+        - *density*: unit of the density if ``isDensity=True`` or ``None``
+          otherwise; the default is "Angstrom^{-3}" for densities
+          (meaning :math:`\text{Å}^{-3}`).
+
+        (Actually, the default unit is the value of
+        ``MDAnalysis.core.flags['length_unit']``; in most
+        cases this is "Angstrom".)
+    metadata : dict
+        a user defined dictionary of arbitrary values associated with the
+        density; the class does not touch :attr:`Density.metadata` but
+        stores it with :meth:`Density.save`
+
+    Attributes
+    ----------
+    grid : array
+        counts or density
+    edges : list of 1d-arrays
+        The boundaries of each cell in `grid` along all axes (equivalent
+        to what :func:`numpy.histogramdd` returns).
+    delta : array
+        Cell size in each dimension.
+    origin : array
+        Coordinates of the *center* of the cell at index `grid[0, 0, 0, ...,
+        0]`, which is considered to be the front lower left corner.
+    units : dict
+        The units for lengths and density; change units with the method
+        :meth:`~Density.convert_length` or :meth:`~Density.convert_density`.
+
+
+    Notes
+    -----
     The data (:attr:`Density.grid`) can be manipulated as a standard numpy
     array. Changes can be saved to a file using the :meth:`Density.save` method. The
     grid can be restored using the :meth:`Density.load` method or by supplying the
@@ -179,11 +232,18 @@ class Density(Grid):
 
     The user *should* set the *parameters* keyword (see docs for the
     constructor); in particular, if the data are already a density, one must
-    set *isDensity* == ``True`` because there is no reliable way to detect if
+    set ``isDensity=True`` because there is no reliable way to detect if
     data represent counts or a density. As a special convenience, if data are
-    read from a file and the user has not set *isDensity* then it is assumed
+    read from a file and the user has not set ``isDensity`` then it is assumed
     that the data are in fact a density.
 
+    See Also
+    --------
+    gridData.core.Grid : the base class of :class:`Density`.
+
+
+    Examples
+    --------
     Typical use:
 
     1. From a histogram (i.e. counts on a grid)::
@@ -212,7 +272,7 @@ class Density(Grid):
          D.convert_density('water')
 
        After the final step, ``D`` will contain a density on a grid measured in
-       Angstrom, with the density values itself measured relative to the
+       Ångstrom, with the density values itself measured relative to the
        density of water.
 
     :class:`Density` objects can be algebraically manipulated (added,
@@ -226,50 +286,9 @@ class Density(Grid):
        :meth:`Density.make_density` to obtain a density. This ensures
        that the length- and the density unit correspond to each other.
 
-    .. SeeAlso::
-
-       :class:`Grid` which is the base class of
-       :class:`Density`. (:class:`Grid` has been imported from
-       :class:`gridData.Grid` which is part of GridDataFormats_).
-
     """
 
     def __init__(self, *args, **kwargs):
-        """Create a :class:`Density` from data.
-
-        Parameters
-        ----------
-        grid : array_like
-            histogram or density, typically a :class:`numpy.ndarray`
-        edges : list
-            list of arrays, the lower and upper bin edges along the axes
-        parameters : dict
-            dictionary of class parameters; saved with
-            :meth:`Density.save`. The following keys are meaningful to
-            the class. Meaning of the values are listed:
-
-             *isDensity*
-
-                - ``False``: grid is a histogram with counts [default]
-                - ``True``: a density
-
-                Applying :meth:`Density.make_density`` sets it to ``True``.
-         units : dict
-            A dict with the keys
-
-            - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
-            - *density*: unit of the density if ``isDensity == True`` or ``None``
-              otherwise; the default is "Angstrom^{-3}" for densities (meaning A^-3).
-
-            (Actually, the default unit is the value of
-            :attr:`MDAnalysis.core.flags['length_unit']`; in most cases this is "Angstrom".)
-
-         metadata : dict
-            a user defined dictionary of arbitrary values associated with the
-            density; the class does not touch :attr:`Density.metadata` but
-            stores it with :meth:`Density.save`
-
-        """
         length_unit = MDAnalysis.core.flags['length_unit']
 
         parameters = kwargs.pop('parameters', {})
@@ -292,8 +311,21 @@ class Density(Grid):
         self.units = units
 
     def _check_set_unit(self, u):
-        """Check that all bindings ``{unit_type : value, ...}`` in the dict `u` are valid and set the object's units
-        attribute.
+        """Check and set units.
+
+        First check that all units and their values in the dict `u` are valid
+        and then set the object's units attribute.
+
+        Parameters
+        ----------
+        u : dict
+            ``{unit_type : value, ...}``
+
+        Raises
+        ------
+        ValueError
+            if unit types or unit values are not recognized or if required
+            unit types are not in :attr:`units`
         """
         # all this unit crap should be a class...
         try:
@@ -319,10 +351,12 @@ class Density(Grid):
     def make_density(self):
         """Convert the grid (a histogram, counts in a cell) to a density (counts/volume).
 
-        (1) This changes the grid irrevocably.
-        (2) For a probability density, manually divide by :meth:`grid.sum`.
+        This method changes the grid irrevocably.
 
-        If this is already a density, then a warning is issued and nothing is done.
+        For a probability density, manually divide by :meth:`grid.sum`.
+
+        If this is already a density, then a warning is issued and nothing is
+        done, so calling `make_density` multiple times does not do any harm.
         """
         # Make it a density by dividing by the volume of each grid cell
         # (from numpy.histogramdd, which is for general n-D grids)
@@ -340,14 +374,14 @@ class Density(Grid):
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
         self.parameters['isDensity'] = True
-        self.units['density'] = self.units['length'] + "^{-3}"  # see units.densityUnit_factor
+        # see units.densityUnit_factor for units
+        self.units['density'] = self.units['length'] + "^{-3}"
 
     def convert_length(self, unit='Angstrom'):
         """Convert Grid object to the new `unit`.
 
         Parameters
         ----------
-
         unit : str, optional
               unit that the grid should be converted to: one of
               "Angstrom", "nm"
@@ -369,7 +403,6 @@ class Density(Grid):
 
     def convert_density(self, unit='Angstrom'):
         """Convert the density to the physical units given by `unit`.
-
 
         Parameters
         ----------
@@ -393,7 +426,7 @@ class Density(Grid):
         Raises
         ------
         RuntimeError
-             If the density does not have a unit associate with it to begin
+             If the density does not have a unit associated with it to begin
              with (i.e., is not a density) then no conversion can take place.
         ValueError
              for unknown `unit`.
@@ -406,8 +439,6 @@ class Density(Grid):
         (2) Conversions always go back to unity so there can be rounding
             and floating point artifacts for multiple conversions.
 
-        There may be some undesirable cross-interactions with :meth:`convert_length`...
-
         """
         if not self.parameters['isDensity']:
             errmsg = 'The grid is not a density so converty_density() makes no sense.'
@@ -416,7 +447,8 @@ class Density(Grid):
         if unit == self.units['density']:
             return
         try:
-            self.grid *= units.get_conversion_factor('density', self.units['density'], unit)
+            self.grid *= units.get_conversion_factor('density',
+                                                     self.units['density'], unit)
         except KeyError:
             raise ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys()))
         self.units['density'] = unit
@@ -448,7 +480,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             ["name OH2"]
     delta : float, optional
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-    start, stop, step : int, optional
+    start : int, optional
+    stop : int, optional
+    step : int, optional
             Slice the trajectory as ``trajectory[start:stop:step]``; default
             is to read the whole trajectory.
     metadata : dict. optional
@@ -483,6 +517,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     Returns
     -------
     :class:`Density`
+            A :class:`Density` instance with the histogrammed data together
+            with associated metadata.
 
 
     Notes
@@ -637,18 +673,24 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     ----------
     universe : MDAnalysis.Universe
         Universe object on which to operate
-    sel1, sel2 : str
-        Selection strings for the solvent and solute selections
+    sel1 : str
+        Selection string for the *solvent* selection (should be
+        the group with the *larger number of atoms* to make the
+        KD-Tree search more efficient)
+    sel2 : str
+        Selection string for the *solute* selection
     cutoff : float
         Distance cutoff
     not_within : bool
-        True: selection behaves as 'not within' (As described above)
-        False: selection is a <sel1> WITHIN <cutoff> OF <sel2>'
+
+        - ``True``: selection behaves as "not within" (As described above)
+        - ``False``: selection is a "<sel1> WITHIN <cutoff> OF <sel2>"
     use_kdtree : bool
-        True: use fast kd-tree based selections
-        False: use distance matrix approach
+
+        - ``True``: use fast KD-Tree based selections
+        - ``False``: use distance matrix approach
     updating_selection : bool
-        If True, re-evaluate the selection string each frame.
+        If ``True``, re-evaluate the selection string each frame.
 
     Notes
     -----
@@ -668,7 +710,7 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     distance of the "solute". Because it is KD-tree based, it is cheap to query the KD-tree with
     a different cut-off::
 
-      notwithin_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5)
+      notwithin_coordinates = notwithin_coordinates_factory(universe, 'name OH2', 'protein and not name H*', 3.5)
       ...
       coord = notwithin_coordinates()        # get coordinates outside cutoff 3.5 A
       coord = notwithin_coordinates(cutoff2) # can use different cut off
@@ -682,7 +724,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
       coord = within_coordinates()        # get coordinates within cutoff 3.5 A
       coord = within_coordinates(cutoff2) # can use different cut off
 
-    (Readability is enhanced by properly naming the generated function ``within_coordinates().)
+    (Readability is enhanced by properly naming the generated function
+    ``within_coordinates()``.)
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
