@@ -302,9 +302,9 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,
+intersphinx_mapping = {'https://docs.python.org/': None,
+                       'https://docs.scipy.org/doc/numpy/': None,
+                       'https://docs.scipy.org/doc/scipy/reference/': None,
                        'http://matplotlib.org': None,
                        'https://networkx.readthedocs.io/en/stable/': None,
                        'https://gridDataFormats.readthedocs.io/en/stable/': None,
