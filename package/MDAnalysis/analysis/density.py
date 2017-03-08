@@ -570,12 +570,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
                                   not_within=True, use_kdtree=True, updating_selection=False):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
 
-    Example usage::
-      notwithin_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*',3.5)
-      ...
-      coord = notwithin_coordinates()        # changes with time step
-      coord = notwithin_coordinates(cutoff2) # can use different cut off
-
     Parameters
     ----------
     universe : MDAnalysis.Universe
@@ -599,8 +593,33 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
       minimum image convention employed in the distance check is currently
       not being applied to remap the coordinates themselves, and hence it
       would lead to counts in the wrong region.
-    * The selections are static and do not change with time steps.
+    * With ``updating_selection=True``, the selection is evaluated every turn;
+      do not use distance based selections (such as "AROUND") in your selection
+      string because it will likely completely negate any gains from using
+      this function factory in the first place.
 
+    Examples
+    --------
+    :func:`notwithin_coordinates_factory` creates an optimized function that, when called,
+    returns the coordinates of the "solvent" selection that are *not within* a given cut-off
+    distance of the "solute". Because it is KD-tree based, it is cheap to query the KD-tree with
+    a different cut-off::
+    
+      notwithin_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5)
+      ...
+      coord = notwithin_coordinates()        # get coordinates outside cutoff 3.5 A
+      coord = notwithin_coordinates(cutoff2) # can use different cut off
+
+    For programmatic convenience, the function can also function as a factory for a simple 
+    *within cutoff* query if the keyword ``not_within=False`` is set::
+  
+      within_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5, 
+                                                         not_within=False)
+      ...
+      coord = within_coordinates()        # get coordinates within cutoff 3.5 A
+      coord = within_coordinates(cutoff2) # can use different cut off
+    
+    (Readability is enhanced by properly naming the generated function ``within_coordinates().)
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
