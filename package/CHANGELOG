@@ -100,6 +100,8 @@ Fixes
     about whitespace around these (PR #1156 Issue #1011 #1009)
   * Fixed PSA analysis is now using AlignTraj
   * Fixed Principal Axes to order from highest to lowest eigenval (Issue #1162)
+  * Fixed analysis.density with soluteselection and notwithin_coordinates_factory
+    when using KDTree (Issue #1211)
 
 Changes
   * Started unifying the API of analysis classes (named internally
