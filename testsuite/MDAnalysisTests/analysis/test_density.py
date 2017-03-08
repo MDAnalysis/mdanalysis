@@ -89,6 +89,18 @@ class TestDensity(TestCase):
         origin = [m[0] for m in midpoints]
         assert_almost_equal(self.D.origin, origin)
 
+    def test_check_set_unit_keyerror(self):
+        units = {'weight': 'A'}
+        assert_raises(ValueError, self.D._check_set_unit, units)
+
+    def test_check_set_unit_attributeError(self):
+        units = []
+        assert_raises(ValueError, self.D._check_set_unit, units)
+
+    def test_check_set_unit_nolength(self):
+        del self.D.units['length']
+        units = {'density': 'A^{-3}'}
+        assert_raises(ValueError, self.D._check_set_unit, units)
 
 
 class Test_density_from_Universe(TestCase):
