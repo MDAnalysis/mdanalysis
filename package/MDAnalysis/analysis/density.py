@@ -24,7 +24,7 @@
 # Copyright (c) 2007-2011 Oliver Beckstein <orbeckst@gmail.com>
 # (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)
 
-"""
+r"""\
 Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`
 =============================================================================
 
@@ -38,28 +38,28 @@ volumetric data, in particular densities.
 Generating a density from a MD trajectory
 -----------------------------------------
 
-An input trajectory is required that
+An input trajectory must
 
-1. Has been centered on the protein of interest.
-2. Has all molecules made whole that have been broken across periodic
-   boundaries.
-3. Has the solvent molecules remapped so that they are closest to the
+1. have been centered on the protein of interest;
+2. have all molecules made whole that have been broken across periodic
+   boundaries;
+3. have the solvent molecules remapped so that they are closest to the
    solute (this is important when using funky unit cells such as
    a dodecahedron or a truncated octahedron).
 
 To generate the density of water molecules around a protein::
 
   from MDAnalysis.analysis.density import density_from_Universe
-  u = Universe(PSF,DCD)
-  D = density_from_Universe(u, delta=1.0, atomselection="name OH2")
-  D.convert_density('TIP3P')
+  u = Universe(TPR, XTC)
+  D = density_from_Universe(u, delta=1.0, atomselection="name OW")
+  D.convert_density('TIP4P')
   D.export("water.dx")
 
 The positions of all water oxygens are histogrammed on a grid with spacing
-*delta* = 1 A. Initially the density is measured in 1/A**3. With the
+*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With the
 :meth:`Density.convert_density` method, the units of measurement are
 changed. In the example we are now measuring the density relative to the
-literature value of the TIP3P water model at ambient conditions (see the values
+literature value of the TIP4P water model at ambient conditions (see the values
 in :data:`MDAnalysis.units.water` for details). Finally, the density is
 writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.
 
@@ -67,26 +67,47 @@ See :class:`Density` for details. In particular, the density is stored
 as a NumPy array in :attr:`Density.grid`, which can be processed in
 any manner.
 
-.. _OpenDX: http://www.opendx.org/
+
+Creating densities
+------------------
+
+The following functions take trajectory or coordinate data and generate a
+:class:`Density` object.
+
+.. autofunction:: density_from_Universe
+.. autofunction:: density_from_PDB
+.. autofunction:: Bfactor2RMSF
 
 
-Classes and Functions
----------------------
+Supporting classes and functions
+--------------------------------
+
+The main output of the density creation functions is a :class:`Density`
+instance, which is derived from a :class:`gridData.Grid`. A :class:`Density` is
+essentially, a 3D array with origin and lengths together with associated
+metadata (which can be used in downstream processing).
 
 .. autoclass:: Density
    :members:
    :inherited-members:
    :show-inheritance:
-.. autofunction:: density_from_Universe
-.. autofunction:: density_from_PDB
-.. autofunction:: Bfactor2RMSF
+
 .. autoclass:: BfactorDensityCreator
    :members:
-.. autoclass:: Grid
-   :members:
-   :inherited-members:
+
+.. autofunction:: notwithin_coordinates_factory
+
+
+.. Links
+.. -----
+
+.. _OpenDX: http://www.opendx.org/
+.. _VMD:   http://www.ks.uiuc.edu/Research/vmd/
+.. _PyMOL: http://www.pymol.org/
+.. _GridDataFormats: https://github.com/MDAnalysis/GridDataFormats
 
 """
+
 from __future__ import print_function
 from six.moves import range
 
@@ -124,7 +145,6 @@ except ImportError:
 
 import MDAnalysis
 from MDAnalysis.core import groups
-#import MDAnalysis.core.AtomGroup
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
@@ -212,20 +232,18 @@ class Density(Grid):
        :class:`Density`. (:class:`Grid` has been imported from
        :class:`gridData.Grid` which is part of GridDataFormats_).
 
-    .. _VMD:   http://www.ks.uiuc.edu/Research/vmd/
-    .. _PyMOL: http://www.pymol.org/
-    .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
     """
 
     def __init__(self, *args, **kwargs):
         """Create a :class:`Density` from data.
 
-        :Arguments:
-          *grid*
+        Parameters
+        ----------
+        grid : array_like
             histogram or density, typically a :class:`numpy.ndarray`
-          *edges*
+        edges : list
             list of arrays, the lower and upper bin edges along the axes
-          *parameters*
+        parameters : dict
             dictionary of class parameters; saved with
             :meth:`Density.save`. The following keys are meaningful to
             the class. Meaning of the values are listed:
@@ -236,7 +254,7 @@ class Density(Grid):
                 - ``True``: a density
 
                 Applying :meth:`Density.make_density`` sets it to ``True``.
-          *units*
+         units : dict
             A dict with the keys
 
             - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
@@ -246,7 +264,7 @@ class Density(Grid):
             (Actually, the default unit is the value of
             :attr:`MDAnalysis.core.flags['length_unit']`; in most cases this is "Angstrom".)
 
-          *metadata*
+         metadata : dict
             a user defined dictionary of arbitrary values associated with the
             density; the class does not touch :attr:`Density.metadata` but
             stores it with :meth:`Density.save`
@@ -301,10 +319,8 @@ class Density(Grid):
     def make_density(self):
         """Convert the grid (a histogram, counts in a cell) to a density (counts/volume).
 
-          make_density()
-
         (1) This changes the grid irrevocably.
-        (2) For a probability density, manually divide by grid.sum().
+        (2) For a probability density, manually divide by :meth:`grid.sum`.
 
         If this is already a density, then a warning is issued and nothing is done.
         """
@@ -327,19 +343,22 @@ class Density(Grid):
         self.units['density'] = self.units['length'] + "^{-3}"  # see units.densityUnit_factor
 
     def convert_length(self, unit='Angstrom'):
-        """Convert Grid object to the new *unit*.
+        """Convert Grid object to the new `unit`.
 
-          Grid.convert_length(<unit>)
+        Parameters
+        ----------
 
-        :Keywords:
-          *unit*
-              Angstrom, nm
+        unit : str, optional
+              unit that the grid should be converted to: one of
+              "Angstrom", "nm"
 
-        This changes the edges but will not change the density; it is
-        the user's responsibility to supply the appropriate unit if
-        the Grid object is constructed from a density. It is suggested
-        to start from a histogram and a length unit and use
-        :meth:`make_density`.
+        Notes
+        -----
+        This changes the edges but will not change the density; it is the
+        user's responsibility to supply the appropriate unit if the Grid object
+        is constructed from a density. It is suggested to start from a
+        histogram and a length unit and use :meth:`make_density`.
+
         """
         if unit == self.units['length']:
             return
@@ -349,31 +368,46 @@ class Density(Grid):
         self._update()  # needed to recalculate midpoints and origin
 
     def convert_density(self, unit='Angstrom'):
-        """Convert the density to the physical units given by *unit*.
+        """Convert the density to the physical units given by `unit`.
 
-          Grid.convert_to(unit)
 
-        *unit* can be one of the following:
+        Parameters
+        ----------
+        unit : str, optional
+             The target unit that the density should be converted to.
 
-        =============  ===============================================================
-        name           description of the unit
-        =============  ===============================================================
-        Angstrom^{-3}  particles/A**3
-        nm^{-3}        particles/nm**3
-        SPC            density of SPC water at standard conditions
-        TIP3P          ... see :data:`MDAnalysis.units.water`
-        TIP4P          ... see :data:`MDAnalysis.units.water`
-        water          density of real water at standard conditions (0.997 g/cm**3)
-        Molar          mol/l
-        =============  ===============================================================
+             `unit` can be one of the following:
 
-        Note:
+             =============  ===============================================================
+             name           description of the unit
+             =============  ===============================================================
+             Angstrom^{-3}  particles/A**3
+             nm^{-3}        particles/nm**3
+             SPC            density of SPC water at standard conditions
+             TIP3P          ... see :data:`MDAnalysis.units.water`
+             TIP4P          ... see :data:`MDAnalysis.units.water`
+             water          density of real water at standard conditions (0.997 g/cm**3)
+             Molar          mol/l
+             =============  ===============================================================
 
-          (1) This only works if the initial length unit is provided.
-          (2) Conversions always go back to unity so there can be rounding
-              and floating point artifacts for multiple conversions.
+        Raises
+        ------
+        RuntimeError
+             If the density does not have a unit associate with it to begin
+             with (i.e., is not a density) then no conversion can take place.
+        ValueError
+             for unknown `unit`.
+
+        Notes
+        -----
+
+        (1) This method only works if there is already a length unit associated with the
+            density; otherwise raises :exc:`RuntimeError`
+        (2) Conversions always go back to unity so there can be rounding
+            and floating point artifacts for multiple conversions.
 
         There may be some undesirable cross-interactions with :meth:`convert_length`...
+
         """
         if not self.parameters['isDensity']:
             errmsg = 'The grid is not a density so converty_density() makes no sense.'
@@ -399,63 +433,94 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
                           verbose=None, interval=1, quiet=None,
-                          **kwargs):
+                          parameters=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
-    The trajectory is read, frame by frame, and the atoms selected with *atomselection* are
-    histogrammed on a grid with spacing *delta*::
+    The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
+    histogrammed on a grid with spacing `delta`.
 
-      density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
-
-    .. Note:: By default, the *atomselection* is static, i.e., atoms are only
-              selected once at the beginning. If you want dynamically changing
-              selections (such as "name OW and around 4.0 (protein and not name
-              H*)") then set ``update_selection=True``. For the special case of
-              calculating a density of the "bulk" solvent away from a solute
-              use the optimized selections with keywords *cutoff* and
-              *soluteselection*.
-
-    :Arguments:
-      universe
+    Parameters
+    ----------
+    universe : MDAnalysis.Universe
             :class:`MDAnalysis.Universe` object with a trajectory
-
-    :Keywords:
-      atomselection
+    atomselection : str, optional
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
-      delta
+    delta : float, optional
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-      start, stop, step
-            Slice the trajectory as ``trajectory[start"stop:step]``; default
+    start, stop, step : int, optional
+            Slice the trajectory as ``trajectory[start:stop:step]``; default
             is to read the whole trajectory.
-      metadata
-            dictionary of additional data to be saved with the object
-      padding
+    metadata : dict. optional
+            `dict` of additional data to be saved with the object; the meta data
+            are passed through as they are.
+    padding : float, optional
             increase histogram dimensions by padding (on top of initial box size)
             in Angstroem [2.0]
-      soluteselection
+    soluteselection : str, optional
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
-      cutoff
-            With *cutoff*, select "<atomsel> NOT WITHIN <cutoff> OF <soluteselection>"
-            (Special routines that are faster than the standard ``AROUND`` selection)
-            [0]
-      update_selection
+    cutoff : float, optional
+            With `cutoff`, select "<atomsel> NOT WITHIN <cutoff> OF <soluteselection>"
+            (Special routines that are faster than the standard ``AROUND`` selection);
+            any value that evaluates to ``False`` (such as the default 0) disables this
+            special selection.
+    update_selection : bool, optional
             Should the selection of atoms be updated for every step? [``False``]
+
             - ``True``: atom selection is updated for each frame, can be slow
             - ``False``: atoms are only selected at the beginning
-      verbose
+    verbose : bool, optional
             Print status update to the screen for every *interval* frame? [``True``]
+
             - ``False``: no status updates when a new frame is processed
             - ``True``: status update every frame (including number of atoms
               processed, which is interesting with ``update_selection=True``)
-      interval
-           Show status update every *interval* frame [1]
-      parameters
-            dict with some special parameters for :class:`Density` (see doc)
-      kwargs
-            metadata, parameters are modified and passed on to :class:`Density`
+    interval : int, optional
+           Show status update every `interval` frame [1]
+    parameters : dict, optional
+            `dict` with some special parameters for :class:`Density` (see docs)
 
-    :Returns: :class:`Density`
+    Returns
+    -------
+    :class:`Density`
+
+
+    Notes
+    -----
+
+    By default, the `atomselection` is static, i.e., atoms are only selected
+    once at the beginning. If you want *dynamically changing selections* (such
+    as "name OW and around 4.0 (protein and not name H*)", i.e., the water
+    oxygen atoms that are within 4 Å of the protein heavy atoms) then set
+    ``update_selection=True``. For the special case of calculating a density of
+    the "bulk" solvent away from a solute use the optimized selections with
+    keywords *cutoff* and *soluteselection* (see Examples below).
+
+    Examples
+    --------
+    Basic use for creating a water density (just using the water oxygen atoms "OW")::
+
+      density = density_from_Universe(universe, delta=1.0, atomselection='name OW')
+
+    If you are only interested in water within a certain region, e.g., within a
+    vicinity around a binding site, you can use a selection that updates every
+    step by setting the `update_selection` keyword argument::
+
+      site_density = density_from_Universe(universe, delta=1.0,
+                                           atomselection='name OW and around 5 (resid 156 157 305)',
+                                           update_selection=True)
+
+    A special case for an updating selection is to create the "bulk density",
+    i.e., the water outside the immediate solvation shell of a protein: Select
+    all water oxygen atoms that are *farther away* than a given cut-off (say, 4
+    Å) from the solute (here, heavy atoms of the protein)::
+
+      bulk = density_from_Universe(universe, delta=1.0, atomselection='name OW',
+                                   solute="protein and not name H*",
+                                   cutoff=4)
+
+    (Using the special case for the bulk with `soluteselection` and `cutoff`
+    improves performance over the simple `update_selection` approach.)
 
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
@@ -532,8 +597,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
-    # pick from kwargs
-    metadata = kwargs.pop('metadata', {})
+    metadata = metadata if metadata is not None else {}
     metadata['psf'] = u.filename
     metadata['dcd'] = u.trajectory.filename
     metadata['atomselection'] = atomselection
@@ -553,10 +617,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         metadata['soluteselection'] = soluteselection
         metadata['cutoff'] = cutoff  # in Angstrom
 
-    parameters = kwargs.pop('parameters', {})
+    parameters = parameters if parameters is not None else {}
     parameters['isDensity'] = False  # must override
 
-    # all other kwargs are discarded
 
     g = Density(grid=grid, edges=edges, units={'length': MDAnalysis.core.flags['length_unit']},
                 parameters=parameters, metadata=metadata)
@@ -702,43 +765,45 @@ def density_from_PDB(pdb, **kwargs):
     prescribe a gaussian width for all atoms (in Angstrom), which is
     calculated as described for :func:`Bfactor2RMSF`.
 
-    .. Note::
 
-       The current implementation is *painfully* slow.
-
-    .. SeeAlso::
-
-       :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
-
-    :Arguments:
-       *pdb*
-          PDB file (should have the temperatureFactor set); ANISO
+    Parameters
+    ----------
+    pdb : str
+          PDB filename (should have the temperatureFactor set); ANISO
           records are currently *not* processed
-
-    :Keywords:
-       *atomselection*
+    atomselection : str
           selection string (MDAnalysis syntax) for the species to be analyzed
           ['resname HOH and name O']
-       *delta*
+    delta : float
           bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-       *metadata*
+    metadata : dict
           dictionary of additional data to be saved with the object [``None``]
-       *padding*
+    padding : float
           increase histogram dimensions by padding (on top of initial box size) [1.0]
-       *sigma*
+    sigma : float
           width (in Angstrom) of the gaussians that are used to build up the
           density; if ``None`` then uses B-factors from *pdb* [``None``]
 
-    :Returns: a :class:`Density` object with a density measured relative to the
-              water density at standard conditions
+    Returns
+    -------
+    :class:`Density`
+          object with a density measured relative to the water density at
+          standard conditions
+
+    Notes
+    -----
+    The current implementation is *painfully* slow.
+
+    See Also
+    --------
+    :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`
+
     """
     return BfactorDensityCreator(pdb, **kwargs).Density()
 
 
 class BfactorDensityCreator(object):
     """Create a density grid from a pdb file using MDAnalysis.
-
-      dens = BfactorDensityCreator(pdb,...).Density()
 
     The main purpose of this function is to convert crystal waters in
     an X-ray structure into a density so that one can compare the
@@ -763,30 +828,40 @@ class BfactorDensityCreator(object):
                  metadata=None, padding=1.0, sigma=None):
         """Construct the density from psf and pdb and the atomselection.
 
-          DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
-                                  metadata=<dict>, padding=2, sigma=None)
-
-          density = DC.Density()
-
-        :Arguments:
-
-          pdb
+        Parameters
+        ----------
+        pdb : str
             PDB file or :class:`MDAnalysis.Universe`;
-          atomselection
+        atomselection : str
             selection string (MDAnalysis syntax) for the species to be analyzed
-          delta
+        delta : float
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-          metadata
+        metadata : dict
             dictionary of additional data to be saved with the object
-          padding
+        padding : float
             increase histogram dimensions by padding (on top of initial box size)
-          sigma
+        sigma : float
             width (in Angstrom) of the gaussians that are used to build up the
-            density; if None then uses B-factors from pdb
+            density; if ``None`` (the default) then uses B-factors from pdb
 
+
+        Notes
+        -----
         For assigning X-ray waters to MD densities one might have to use a sigma
         of about 0.5 A to obtain a well-defined and resolved x-ray water density
         that can be easily matched to a broader density distribution.
+
+        Examples
+        --------
+        The following creates the density with the B-factors from the pdb file::
+
+          DC = BfactorDensityCreator(pdb, delta=1.0, atomselection="name HOH",
+                                     padding=2, sigma=None)
+          density = DC.Density()
+
+        See Also
+        --------
+        :func:`density_from_PDB` for a convenience function
 
         """
         u = MDAnalysis.as_Universe(pdb)
@@ -839,8 +914,7 @@ class BfactorDensityCreator(object):
         # Density automatically converts histogram to density for isDensity=False -- ??[OB]
 
     def Density(self, threshold=None):
-        """Returns a Density object.
-        """
+        """Returns a :class:`Density` object."""
         d = Density(grid=self.g, edges=self.edges, units=dict(length='Angstrom'),
                     parameters=dict(isDensity=False), metadata=self.metadata)
         d.make_density()
