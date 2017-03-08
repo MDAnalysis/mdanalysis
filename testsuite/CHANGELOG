@@ -36,6 +36,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - install external packages on Travis (SETUP == full: HOLE, clustalw)
       to test additional analysis code (Issue #898)
     - add tests for new auxiliary module
+    - trajectory slices can use any type of integer PR #1233
 
 05/15/16  orbeckst, jbarnoud, pedrishi, fiona-naughton, jdetle
   * 0.15.0
