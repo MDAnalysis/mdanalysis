@@ -469,7 +469,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     if cutoff > 0 and soluteselection is not None:
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
         notwithin_coordinates = notwithin_coordinates_factory(
-            u, groupselection, soluteselection, cutoff,
+            u, atomselection, soluteselection, cutoff,
             use_kdtree=use_kdtree, updating_selection=update_selection)
         def current_coordinates():
             return notwithin_coordinates()
@@ -604,21 +604,21 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     returns the coordinates of the "solvent" selection that are *not within* a given cut-off
     distance of the "solute". Because it is KD-tree based, it is cheap to query the KD-tree with
     a different cut-off::
-    
+
       notwithin_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5)
       ...
       coord = notwithin_coordinates()        # get coordinates outside cutoff 3.5 A
       coord = notwithin_coordinates(cutoff2) # can use different cut off
 
-    For programmatic convenience, the function can also function as a factory for a simple 
+    For programmatic convenience, the function can also function as a factory for a simple
     *within cutoff* query if the keyword ``not_within=False`` is set::
-  
-      within_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5, 
+
+      within_coordinates = notwithin_coordinates_factory(universe, 'name OH2','protein and not name H*', 3.5,
                                                          not_within=False)
       ...
       coord = within_coordinates()        # get coordinates within cutoff 3.5 A
       coord = within_coordinates(cutoff2) # can use different cut off
-    
+
     (Readability is enhanced by properly naming the generated function ``within_coordinates().)
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames

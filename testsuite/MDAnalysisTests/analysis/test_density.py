@@ -97,6 +97,7 @@ class Test_density_from_Universe(TestCase):
     delta = 2.0
     selections = {'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
+                  'solute': "protein and not name H*",
                   }
     references = {'static':
                       {'meandensity': 0.016764271713091212, },
@@ -104,7 +105,10 @@ class Test_density_from_Universe(TestCase):
                       {'meandensity': 0.016764270747693617, },
                   'dynamic':
                       {'meandensity': 0.00062423404854011104, },
+                  'notwithin':
+                      {'meandensity': 0.015535385132107926, },
                   }
+    cutoffs = {'notwithin': 4.0, }
     precision = 5
 
     @dec.skipif(module_not_found('scipy'),
@@ -151,6 +155,14 @@ class Test_density_from_Universe(TestCase):
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
             update_selections=True)
+
+    def test_density_from_Universe_notwithin(self):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['notwithin']['meandensity'],
+            soluteselection=self.selections['solute'],
+            cutoff=self.cutoffs['notwithin'])
+
 
 class TestGridImport(TestCase):
 
