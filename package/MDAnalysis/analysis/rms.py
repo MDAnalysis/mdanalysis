@@ -526,8 +526,8 @@ class RMSD(AnalysisBase):
     def save(self, filename=None):
         """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         filename : str (optional)
             if no filename is given the default provided to the constructor is
             used.
@@ -544,26 +544,25 @@ class RMSD(AnalysisBase):
 class RMSF(AnalysisBase):
     """Calculate RMSF of given atoms across a trajectory.
 
-        This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows [Welford1962]_.
+    This method implements an algorithm for computing sums of squares while
+    avoiding overflows and underflows [Welford1962]_.
 
-        References
-        ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
+    References
+    ----------
+    .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+       Calculating Corrected Sums of Squares and Products." Technometrics
+       4(3):419-420.
 
-       .. versionadded:: 0.11.0
-       .. versionchanged:: 0.16.0
-          Flexible weighting scheme with new ``weights`` keyword.
-       .. deprecated:: 0.16.0
-          Instead of ``mass_weighted=True`` use new ``weights='mass'`
-          Refactor to fit with AnalysisBase API
-          The keyword argument *quiet* is deprecated in favor of *verbose*.
+    .. versionadded:: 0.11.0
+    .. versionchanged:: 0.16.0
+       Flexible weighting scheme with new ``weights`` keyword.
+    .. deprecated:: 0.16.0
+       Instead of ``mass_weighted=True`` use new ``weights='mass'`;
+       refactored to fit with AnalysisBase API;
+       the keyword argument *quiet* is deprecated in favor of *verbose*.
     """
     def __init__(self, atomgroup, weights=None, **kwargs):
-        """
-        Parameters
+        """Parameters
         ----------
         atomgroup : mda.AtomGroup
             Atoms for which RMSF is calculated
@@ -576,9 +575,11 @@ class RMSF(AnalysisBase):
         step : int (optional)
             step between frames, default None becomes 1.
         weights : str / array_like (optional)
-            used weights. If ``'mass'`` use masses of atomgroup, it ``None`` use uniform weights.
+            used weights. If ``'mass'`` use masses of atomgroup, it ``None``
+            use uniform weights.
         verbose : bool (optional)
             if ``False``, suppress all output
+
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup

@@ -574,6 +574,7 @@ class TopologyGroup(object):
 
     @property
     def universe(self):
+        """The Universe that we belong to"""
         return self._u
 
     def select_bonds(self, selection):
@@ -614,9 +615,12 @@ class TopologyGroup(object):
         """Retrieve all bonds from within this TopologyGroup that are within
         the AtomGroup which is passed.
 
-        Keywords
-        --------
-          *strict*
+        Parameters
+        ----------
+        ag : AtomGroup
+            The `:class:~MDAnalysis.core.groups.AtomGroup` to intersect
+            with.
+        strict : bool
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
 
@@ -642,21 +646,33 @@ class TopologyGroup(object):
 
     @property
     def indices(self):
+        """all bond indices
+
+        See Also
+        --------
+        to_indices : function that just returns `indices`
+        """
         return self._bix
 
     def to_indices(self):
-        """Return a tuple of tuples which define the contents of this
-        TopologyGroup in terms of the atom numbers,
-        (0 based index within u.atoms)
+        """Return a data structure with atom indices describing the bonds.
 
         This format should be identical to the original contents of the
         entries in universe._topology.
         Note that because bonds are sorted as they are initialised, the order
         that atoms are defined in each entry might be reversed.
 
+        Returns
+        -------
+        indices : tuple
+            A tuple of tuples which define the contents of this
+            TopologyGroup in terms of the atom numbers.  (0 based
+            index within u.atoms)
+
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Renamed from "dump_contents" to "to_indices"
+
         """
         return self.indices
 

@@ -313,29 +313,31 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
 
 def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
             subselection=None, tol_mass=0.1, strict=False):
-    """Spatially align *mobile* to *reference* by doing a RMSD fit on
-        *select* atoms.
+    """Perform a spatial superposition by minimizing the RMSD.
+
+    Spatially align the group of atoms `mobile` to `reference` by
+    doing a RMSD fit on `select` atoms.
 
     The superposition is done in the following way:
 
     1. A rotation matrix is computed that minimizes the RMSD between
        the coordinates of `mobile.select_atoms(sel1)` and
-       `reference.select_atoms(sel2)`; before the rotation, *mobile* is
+       `reference.select_atoms(sel2)`; before the rotation, `mobile` is
        translated so that its center of geometry (or center of mass)
-       coincides with the one of *reference*. (See below for explanation of
+       coincides with the one of `reference`. (See below for explanation of
        how *sel1* and *sel2* are derived from *select*.)
 
     2. All atoms in :class:`~MDAnalysis.core.universe.Universe` that
-       contains *mobile* are shifted and rotated. (See below for how
+       contains `mobile` are shifted and rotated. (See below for how
        to change this behavior through the *subselection* keyword.)
 
-    The *mobile* and *reference* atom groups can be constructed so that they
-    already match atom by atom. In this case, *select* should be set to "all"
-    (or ``None``) so that no further selections are applied to *mobile* and
-    *reference*, therefore preserving the exact atom ordering (see
+    The `mobile` and `reference` atom groups can be constructed so that they
+    already match atom by atom. In this case, `select` should be set to "all"
+    (or ``None``) so that no further selections are applied to `mobile` and
+    `reference`, therefore preserving the exact atom ordering (see
     :ref:`ordered-selections-label`).
 
-    .. Warning:: The atom order for *mobile* and *reference* is *only*
+    .. Warning:: The atom order for `mobile` and `reference` is *only*
        preserved when *select* is either "all" or ``None``. In any other case,
        a new selection will be made that will sort the resulting AtomGroup by
        index and therefore destroy the correspondence between the two groups.
@@ -353,7 +355,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     select: string or dict, optional
        1. any valid selection string for
           :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
-          produces identical selections in *mobile* and *reference*; or
+          produces identical selections in `mobile` and `reference`; or
        2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
           (the :func:`fasta2select` function returns such a
           dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
@@ -383,7 +385,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
 
        ``None`` [default]
            Apply to `mobile.universe.atoms` (i.e. all atoms in the
-           context of the selection from *mobile* such as the rest of a
+           context of the selection from `mobile` such as the rest of a
            protein, ligands and the surrounding water)
        *selection-string*
            Apply to `mobile.select_atoms(selection-string)`
@@ -392,15 +394,17 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
 
     Returns
     -------
-    old_rmsd
+    old_rmsd : float
         RMSD before spatial alignment
-    new_rmsd
+    new_rmsd : float
         RMSD after spatial alignment
 
     See Also
     --------
     AlignTraj: More efficient method for RMSD-fitting trajectories.
 
+    .. _ClustalW: http://www.clustal.org/
+    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -415,6 +419,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
        new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
     .. deprecated:: 0.16.0
        Instead of ``mass_weighted=True`` use new ``weights='mass'`
+
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
@@ -473,7 +478,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
 class AlignTraj(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection.
 
-    Both reference *ref* and trajectory *mobile* must be
+    Both reference *ref* and trajectory `mobile` must be
     :class:`MDAnalysis.Universe` instances. If they contain a
     trajectory then it is used. The output file format is determined
     by the file extension of *filename*. One can also use the same
@@ -677,7 +682,7 @@ def rms_fit_trj(
       *select*
          1. any valid selection string for
             :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
-            produces identical selections in *mobile* and *reference*; or
+            produces identical selections in `mobile` and `reference`; or
          2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
             :func:`fasta2select` function returns such a
             dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
@@ -876,7 +881,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
 
     Returns
     -------
-    aln[0]
+    alignment : tuple
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
@@ -912,25 +917,26 @@ def fasta2select(fastafilename, is_aligned=False,
     these two strings are applied to the two different proteins they
     will generate AtomGroups of the aligned residues.
 
-    *fastafilename* contains the two un-aligned sequences in FASTA
+    `fastafilename` contains the two un-aligned sequences in FASTA
     format. The reference is assumed to be the first sequence, the
     target the second. ClustalW_ produces a pairwise
-    alignment (which is written to a file with suffix .aln).  The
+    alignment (which is written to a file with suffix ``.aln``).  The
     output contains atom selection strings that select the same atoms
     in the two structures.
 
-    Unless *ref_offset* and/or *target_offset* are specified, the resids
+    Unless `ref_offset` and/or `target_offset` are specified, the resids
     in the structure are assumed to correspond to the positions in the
     un-aligned sequence, namely the first residue has resid == 1.
 
-    In more complicated cases (e.g. when the resid numbering in the
-    structure/psf has gaps due to missing parts), simply provide the
-    sequence of resids as they appear in the psf in *ref_resids* or
-    *target_resids*, e.g. ::
+    In more complicated cases (e.g., when the resid numbering in the
+    input structure has gaps due to missing parts), simply provide the
+    sequence of resids as they appear in the topology in `ref_resids` or
+    `target_resids`, e.g. ::
 
        target_resids = [a.resid for a in trj.select_atoms('name CA')]
 
-    (This translation table *is* combined with any value for *xxx_offset*!)
+    (This translation table *is* combined with any value for
+    `ref_offset` or `target_offset`!)
 
     Parameters
     ----------
@@ -963,7 +969,7 @@ def fasta2select(fastafilename, is_aligned=False,
         with the suffix '.dnd' instead of '.aln'
     clustalw : str, optional
         path to the ClustalW (or ClustalW2) binary; only
-        needed for *is_aligned* = ``False``, default: "ClustalW2"
+        needed for `is_aligned` = ``False``, default: "ClustalW2"
 
     Returns
     -------
@@ -977,6 +983,9 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
+    .. _ClustalW: http://www.clustal.org/
+    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
     """
     import Bio.SeqIO
     import Bio.AlignIO
@@ -985,13 +994,12 @@ def fasta2select(fastafilename, is_aligned=False,
 
     protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
     if is_aligned:
-        logger.info("Using provided alignment %r", fastafilename)
+        logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:
             alignment = Bio.AlignIO.read(
                 fasta, "fasta", alphabet=protein_gapped)
     else:
         from Bio.Align.Applications import ClustalwCommandline
-        import os.path
 
         if alnfilename is None:
             filepath, ext = os.path.splitext(fastafilename)
@@ -1030,11 +1038,11 @@ def fasta2select(fastafilename, is_aligned=False,
         raise ValueError(
             "Only two sequences in the alignment can be processed.")
 
-    orig_resids = [ref_resids, target_resids]  # implict assertion that
-    # we only have two sequences in the alignment
+    # implict assertion that we only have two sequences in the alignment
+    orig_resids = [ref_resids, target_resids]
     offsets = [ref_offset, target_offset]
-    for iseq, a in enumerate(
-            alignment):  # need iseq index to change orig_resids
+    for iseq, a in enumerate(alignment):
+        # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
@@ -1044,12 +1052,8 @@ def fasta2select(fastafilename, is_aligned=False,
         else:
             orig_resids[iseq] = np.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
-    seq2resids = [
-        resids +
-        offset for resids,
-        offset in zip(
-            orig_resids,
-            offsets)]
+    seq2resids = [resids + offset for resids, offset in zip(
+        orig_resids, offsets)]
     del orig_resids
     del offsets
 
@@ -1131,7 +1135,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     """Return two atom groups with one-to-one matched atoms.
 
     The function takes two :class:`~MDAnalysis.core.groups.AtomGroup`
-    instances *ag1* and *ag2* and returns two atom groups *g1* and *g2* that
+    instances `ag1` and `ag2` and returns two atom groups `g1` and `g2` that
     consist of atoms so that the mass of atom ``g1[0]`` is the same as the mass
     of atom ``g2[0]``, ``g1[1]`` and ``g2[1]`` etc.
 
@@ -1140,7 +1144,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     1. The two groups must contain the same number of residues.
     2. Any residues in each group that have differing number of atoms are discarded.
     3. The masses of corresponding atoms are compared. and if any masses differ
-       by more than *tol_mass* the test is considered failed and a
+       by more than `tol_mass` the test is considered failed and a
        :exc:`SelectionError` is raised.
 
     The log file (see :func:`MDAnalysis.start_logging`) will contain detailed
@@ -1156,7 +1160,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         compared
     tol_mass : float, optional
          Reject if the atomic masses for matched atoms differ by more than
-         *tol_mass* [0.1]
+         `tol_mass` [0.1]
     strict : boolean, optional
         ``True``
             Will raise :exc:`SelectionError` if a single atom does not
@@ -1168,10 +1172,11 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
     Returns
     -------
-    ``(g1, g2)``
-        Tuple with :class:`~MDAnalysis.core.groups.AtomGroup` instances
-        that match, atom by atom. The groups are either the original groups if all matches
-        or slices of the original groups.
+    ``(g1, g2)`` : tuple
+        Tuple with :class:`~MDAnalysis.core.groups.AtomGroup`
+        instances that match, atom by atom. The groups are either the
+        original groups if all matches or slices of the original
+        groups.
 
     Raises
     ------
@@ -1188,8 +1193,9 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     .. versionadded:: 0.8
 
     .. versionchanged:: 0.10.0
-       Renamed from :func:`check_same_atoms` to :func:`get_matching_atoms` and now returns
-       matching atomgroups (possibly with residues removed)
+       Renamed from :func:`check_same_atoms` to
+       :func:`get_matching_atoms` and now returns matching atomgroups
+       (possibly with residues removed)
 
     """
 

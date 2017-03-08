@@ -495,8 +495,8 @@ class Universe(object):
     def select_atoms(self, *args, **kwargs):
         """Select atoms.
 
-        SeeAlso
-        -------
+        See Also
+        --------
         :meth:`MDAnalysis.core.groups.AtomGroup.select_atoms`
         """
         return self.atoms.select_atoms(*args, **kwargs)
