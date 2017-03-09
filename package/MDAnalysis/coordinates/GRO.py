@@ -335,15 +335,17 @@ class GROWriter(base.WriterBase):
                 "Alternatively these can be supplied as keyword arguments."
                 "".format(miss=', '.join(missing_topology)))
 
+        positions = selection.positions
+
         if self.convert_units:
             # Convert back to nm from Angstroms,
-            # inplace because coordinates is already a copy
-            self.convert_pos_to_native(selection.positions)
+            # Not inplace because AtomGroup is not a copy
+            positions = self.convert_pos_to_native(positions, inplace=False)
             if has_velocities:
                self.convert_velocities_to_native(velocities) 
         # check if any coordinates are illegal
         # (checks the coordinates in native nm!)
-        if not self.has_valid_coordinates(self.gro_coor_limits, selection.positions):
+        if not self.has_valid_coordinates(self.gro_coor_limits, positions):
             raise ValueError("GRO files must have coordinate values between "
                              "{0:.3f} and {1:.3f} nm: No file was written."
                              "".format(self.gro_coor_limits["min"],
@@ -367,7 +369,7 @@ class GROWriter(base.WriterBase):
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,
-                        pos=selection.positions[atom_index],
+                        pos=positions[atom_index],
                         vel=velocities[atom_index],
                     ))
                 else:
@@ -376,7 +378,7 @@ class GROWriter(base.WriterBase):
                         resname=resname,
                         index=truncated_atom_index,
                         name=name,
-                        pos=selection.positions[atom_index]
+                        pos=positions[atom_index]
                     ))
 
             try:  # for AtomGroup/Universe
