@@ -896,7 +896,7 @@ class HydrogenBondAnalysis(object):
                                quiet=kwargs.get('quiet', None),
                                default=True)
         pm = ProgressMeter(len(frames),
-                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
+                           format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
                            verbose=verbose)
 
         try:
@@ -917,7 +917,7 @@ class HydrogenBondAnalysis(object):
                     (self.traj_slice.start or 0),
                     (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
 
-        for ts in self.u.trajectory[self.traj_slice]:
+        for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
             # all bonds for this timestep
             frame_results = []
             # dict of tuples (atomid, atomid) for quick check if
@@ -928,7 +928,7 @@ class HydrogenBondAnalysis(object):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(ts.frame)
+            pm.echo(progress, current_step=frame)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
