@@ -329,14 +329,16 @@ class DCDWriteTestNAMD(DCDWriteTest, TestCase):
         self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
 
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
-                f_out.write(xyz=frame['x'],
-                            box=frame['unitcell'].astype(np.float64),
-                            step=f_in.istart,
-                            natoms=frame['x'].shape[0],
-                            charmm=0,
-                            time_step=f_in.delta,
-                            ts_between_saves=f_in.nsavc,
-                            remarks=f_in.remarks)
+                for frame in f_in:
+                    frame = frame._asdict()
+                    f_out.write(xyz=frame['x'],
+                                box=frame['unitcell'].astype(np.float64),
+                                step=f_in.istart,
+                                natoms=frame['x'].shape[0],
+                                charmm=0,
+                                time_step=f_in.delta,
+                                ts_between_saves=f_in.nsavc,
+                                remarks=f_in.remarks)
 
 class DCDWriteHeaderTestNAMD(DCDWriteHeaderTest, TestCase):
     # repeat header writing tests for NAMD format DCD
