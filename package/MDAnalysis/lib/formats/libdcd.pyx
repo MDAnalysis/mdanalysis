@@ -19,6 +19,8 @@ import numpy as np
 from collections import namedtuple
 from MDAnalysis.lib.mdamath import triclinic_box
 import six
+import string
+import sys
 
 cimport numpy as np
 
@@ -224,6 +226,15 @@ cdef class DCDFile:
         # make sure fixed atoms have been read
         self.read()
         self.seek(0)
+
+        if sys.version_info[0] < 3:
+            py_remarks = unicode(py_remarks, 'ascii', "ignore")
+            py_remarks = str(py_remarks.encode('ascii', 'ignore'))
+        else:
+            if isinstance(py_remarks, bytes):
+                py_remarks = py_remarks.decode('ascii', 'ignore')
+
+        py_remarks = "".join(s for s in py_remarks if s in string.printable)
 
         return py_remarks
 
