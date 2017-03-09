@@ -12,6 +12,9 @@ import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
+from MDAnalysis.core.topology import Topology
+from MDAnalysis.core.topologyattrs import Segids
+from MDAnalysis.topology.base import change_squash
 
 
 class TestGroupSlicing(object):
@@ -30,7 +33,7 @@ class TestGroupSlicing(object):
         length = {'atom': 125,
                   'residue': 25,
                   'segment': 5}
-        
+
         nparrays = {
             level: np.arange(length[level])
             for level in levels
@@ -508,7 +511,7 @@ class TestGroupBy(object):
             g = gb[ref]
             assert_(all(g.charges == ref))
             assert_(len(g) == 25)
-        
+
     def test_groupby_string(self):
         gb = self.u.atoms.groupby('types')
 
@@ -581,3 +584,289 @@ class TestReprs(object):
     def test_segmentgroup_str(self):
         sg = self.u.segments[:10]
         assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
+
+
+
+class TestGroupBaseOperators(object):
+    @staticmethod
+    def _test_len(a, b, c, d, e):
+        assert_equal(len(a), 4)
+        assert_equal(len(b), 5)
+        assert_equal(len(c), 2)
+        assert_equal(len(d), 0)
+        assert_equal(len(e), 3)
+
+    @staticmethod
+    def _test_len_duplicated_and_scrambled(a, b, c, d, e):
+        assert_equal(len(a), 7)
+        assert_equal(len(b), 8)
+        assert_equal(len(c), 6)
+        assert_equal(len(d), 0)
+        assert_equal(len(e), 5)
+
+    @staticmethod
+    def _test_equal(a, b, c, d, e):
+        assert_(a == a)
+        assert_(a != b)
+        assert_(not a == b)
+        assert_(not a[0:1] == a[0],
+                'Element should not equal single element group.')
+
+    @staticmethod
+    def _test_issubset(a, b, c, d, e):
+        assert_(c.issubset(a))
+        assert_(not c.issubset(e))
+        assert_(not a.issubset(c))
+        assert_(d.issubset(a))
+        assert_(not a.issubset(d))
+
+    @staticmethod
+    def _test_is_strict_subset(a, b, c, d, e):
+        assert_(c.is_strict_subset(a))
+        assert_(not c.is_strict_subset(e))
+        assert_(not a.is_strict_subset(a))
+
+    @staticmethod
+    def _test_issuperset(a, b, c, d, e):
+        assert_(a.issuperset(c))
+        assert_(not e.issuperset(c))
+        assert_(not c.issuperset(a))
+        assert_(a.issuperset(d))
+        assert_(not d.issuperset(a))
+
+    @staticmethod
+    def _test_is_strict_superset(a, b, c, d, e):
+        assert_(a.is_strict_superset(c))
+        assert_(not c.is_strict_superset(e))
+        assert_(not a.is_strict_superset(a))
+
+    @staticmethod
+    def _test_concatenate(a, b, c, d, e):
+        cat_ab = a.concatenate(b)
+        assert_(cat_ab[:len(a)] == a)
+        assert_(cat_ab[len(a):] == b)
+
+        cat_ba = b.concatenate(a)
+        assert_(cat_ba[:len(b)] == b)
+        assert_(cat_ba[len(b):] == a)
+
+        cat_aa = a.concatenate(a)
+        assert_(cat_aa[:len(a)] == a)
+        assert_(cat_aa[len(a):] == a)
+
+        cat_ad = a.concatenate(d)
+        assert_(cat_ad == a)
+
+        cat_da = d.concatenate(a)
+        assert_(cat_da == a)
+
+    @staticmethod
+    def _test_union(a, b, c, d, e):
+        union_ab = a.union(b)
+        assert_(union_ab.ix.tolist() == sorted(union_ab.ix))
+        assert_(list(sorted(set(union_ab.ix))) == list(sorted(union_ab.ix)))
+
+        assert_(a.union(b) == b.union(a))
+        assert_array_equal(a.union(a).ix, np.arange(1, 5))
+        assert_(a.union(d), np.arange(1, 5))
+
+    @staticmethod
+    def _test_intersection(a, b, c, d, e):
+        intersect_ab = a.intersection(b)
+        assert_array_equal(intersect_ab.ix, np.arange(3, 5))
+        assert_(a.intersection(b) == b.intersection(a))
+        assert_equal(len(a.intersection(d)), 0)
+
+    @staticmethod
+    def _test_substract(a, b, c, d, e):
+        substract_ab = a.substract(b)
+        assert_array_equal(substract_ab.ix, np.array([1, 2, 1, 2]))
+        substract_ba = b.substract(a)
+        assert_array_equal(substract_ba, np.array([7, 6, 5, 7]))
+        substract_ad = a.substract(d)
+        assert_equal(substract_ad, a)
+        substract_ae = a.substract(e)
+        assert_equal(substract_ae, a)
+
+    @staticmethod
+    def _test_difference(a, b, c, d, e):
+        difference_ab = a.difference(b)
+        assert_array_equal(difference_ab.ix, np.arange(1, 3))
+
+        difference_ba = b.difference(a)
+        assert_array_equal(difference_ba.ix, np.arange(5, 8))
+
+        assert_array_equal(a.difference(d).ix, np.arange(1, 5))
+        assert_array_equal(a.difference(e).ix, np.arange(1, 5))
+
+    @staticmethod
+    def _test_symmetric_difference(a, b, c, d, e):
+        symdiff_ab = a.symmetric_difference(b)
+        assert_array_equal(symdiff_ab.ix, np.array(list(range(1, 3)) +
+                                                   list(range(5, 8))))
+        assert_(a.symmetric_difference(b) == b.symmetric_difference(a))
+        assert_array_equal(a.symmetric_difference(e).ix, np.arange(1, 8))
+
+    @staticmethod
+    def _test_isdisjoint(a, b, c, d, e):
+        assert_(a.isdisjoint(e))
+        assert_(e.isdisjoint(a))
+        assert_(a.isdisjoint(d))
+        assert_(d.isdisjoint(a))
+        assert_(not a.isdisjoint(b))
+
+    @staticmethod
+    def make_groups(u, level):
+        #   0123456789
+        # a  ****
+        # b    *****
+        # c    **
+        # e      ***
+        # d empty
+        #
+        # None of the group start at 0, nor ends at the end. Each group
+        # has a different size. The end of a slice is not the last element.
+        # This increase the odds of catching errors.
+        a = getattr(u, level)[1:5]
+        b = getattr(u, level)[3:8]
+        c = getattr(u, level)[3:5]
+        d = getattr(u, level)[0:0]
+        e = getattr(u, level)[5:8]
+        return a, b, c, d, e
+
+    @staticmethod
+    def make_groups_duplicated_and_scrumbled(u, level):
+        # The content of the groups is the same as for make_groups, but the
+        # elements can appear several times and their order is scrambled.
+        a = getattr(u, level)[[1, 3, 2, 1, 2, 4, 4]]
+        b = getattr(u, level)[[7, 4, 4, 6, 5, 3, 7, 6]]
+        c = getattr(u, level)[[4, 4, 3, 4, 3, 3]]
+        d = getattr(u, level)[0:0]
+        e = getattr(u, level)[[6, 5, 7, 7, 6]]
+        return a, b, c, d, e
+
+    def test_groupbase_operators(self):
+        n_segments = 10
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+        for level in ('atoms', 'residues', 'segments'):
+            a, b, c, d, e = self.make_groups(u, level)
+            yield self._test_len, a, b, c, d, e
+            yield self._test_equal, a, b, c, d, e
+            yield self._test_concatenate, a, b, c, d, e
+            yield self._test_union, a, b, c, d, e
+            yield self._test_intersection, a, b, c, d, e
+            yield self._test_difference, a, b, c, d, e
+            yield self._test_symmetric_difference, a, b, c, d, e
+            yield self._test_issubset, a, b, c, d, e
+            yield self._test_is_strict_subset, a, b, c, d, e
+            yield self._test_issuperset, a, b, c, d, e
+            yield self._test_is_strict_superset, a, b, c, d, e
+            yield self._test_isdisjoint, a, b, c, d, e
+
+    def test_groupbase_operators_duplicated_and_scrambled(self):
+        n_segments = 10
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+        for level in ('atoms', 'residues', 'segments'):
+            a, b, c, d, e = self.make_groups_duplicated_and_scrumbled(u, level)
+            yield self._test_len_duplicated_and_scrambled, a, b, c, d, e
+            yield self._test_equal, a, b, c, d, e
+            yield self._test_concatenate, a, b, c, d, e
+            yield self._test_union, a, b, c, d, e
+            yield self._test_intersection, a, b, c, d, e
+            yield self._test_difference, a, b, c, d, e
+            yield self._test_symmetric_difference, a, b, c, d, e
+            yield self._test_issubset, a, b, c, d, e
+            yield self._test_is_strict_subset, a, b, c, d, e
+            yield self._test_issuperset, a, b, c, d, e
+            yield self._test_is_strict_superset, a, b, c, d, e
+            yield self._test_isdisjoint, a, b, c, d, e
+
+    def test_only_same_level(self):
+        def dummy(self, other):
+            return True
+
+        def failing_pairs(left, right):
+            assert_raises(TypeError, _only_same_level(dummy), left, right)
+
+        def succeeding_pairs(left, right):
+            assert_(_only_same_level(dummy)(left, right))
+
+        _only_same_level = mda.core.groups._only_same_level
+        u = make_Universe()
+
+        components = (u.atoms[0], u.residues[0], u.segments[0])
+        groups = (u.atoms, u.residues, u.segments)
+
+        # Do inter-levels pairs of groups fail as expected?
+        for left, right in itertools.permutations(groups, 2):
+            yield failing_pairs, left, right
+
+        # Do inter-levels pairs of components
+        for left, right in itertools.permutations(components, 2):
+            yield failing_pairs, left, right
+
+        # Do inter-levels pairs of components/groups fail as expected?
+        indexes = range(len(groups))
+        for idx_left, idx_right in itertools.permutations(indexes, 2):
+            left = groups[idx_left]
+            right = groups[idx_right]
+            yield failing_pairs, left, right
+            yield failing_pairs, right, left
+
+        # Do succeeding pair actually succeed
+        for level in ('atoms', 'residues', 'segments'):
+            # Groups
+            left = getattr(u, level)[0:2]
+            right = getattr(u, level)[1:3]
+            yield succeeding_pairs, left, right
+
+            # Components
+            left = getattr(u, level)[0]
+            right = getattr(u, level)[1]
+            yield succeeding_pairs, left, right
+
+            # Mixed
+            left = getattr(u, level)[0:2]
+            right = getattr(u, level)[1]
+            yield succeeding_pairs, left, right
+            yield succeeding_pairs, right, left
+
+        # Does the function fail with inputs that are not components or groups
+        yield failing_pairs, u.atoms, 'invalid'
+
+    def test_only_same_level_different_universes(self):
+        def dummy(self, other):
+            return True
+
+        u = make_Universe()
+        u2 = make_Universe()
+        _only_same_level = mda.core.groups._only_same_level
+        assert_raises(ValueError, _only_same_level(dummy), u.atoms, u2.atoms)
+
+    def test_shortcut_overriding(self):
+        def check_operator(op, method, level):
+            left = getattr(u, level)[1:3]
+            right = getattr(u, level)[2:4]
+            assert_equal(op(left, right), getattr(left, method)(right))
+
+        operators = (
+            (operator.add, 'concatenate'),
+            (operator.sub, 'substract'),
+            (operator.and_, 'intersection'),
+            (operator.or_, 'union'),
+            (operator.xor, 'symmetric_difference'),
+        )
+        levels = ('atoms', 'residues', 'segments')
+
+        n_segments = 5
+        n_residues = n_segments * 3
+        n_atoms = n_residues * 3
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+
+        for op, method in operators:
+            for level in levels:
+                yield check_operator, op, method, level

@@ -317,9 +317,91 @@ class _ImmutableBase(object):
     __new__ = object.__new__
 
 
+
+def _only_same_level(function):
+    @functools.wraps(function)
+    def wrapped(self, other):
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsuported operation between objects:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
+        if self.level != other.level:
+            raise TypeError("Can't add operate on different level objects")
+        if self._u is not other._u:
+            raise ValueError("Can't operate on objects from different Universes")
+        return function(self, other)
+    return wrapped
+
+
 class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
+	Instances of :class:`GroupBase` provide the following operations that
+    conserve element repetitions and order:
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``len(s)``                    |            | number of elements (atoms, |
+    |                               |            | residues or segment) in    |
+    |                               |            | the group                  |
+    +-------------------------------+------------+----------------------------+
+    | ``s == t``                    |            | test if ``s`` and ``t``    |
+    |                               |            | contain the same elements  |
+    |                               |            | in the same order          |
+    +-------------------------------+------------+----------------------------+
+    | ``x in s``                    |            | test if ``x`` is part of   |
+    |                               |            | ``s``                      |
+    +-------------------------------+------------+----------------------------+
+    | ``x not in s``                |            | test if ``x`` is non part  |
+    |                               |            | of ``s``                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
+    |                               |            | from ``s`` and from ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.substract(t)``            | ``s - t``  | new Group with elements    |
+    |                               |            | from ``s`` that are not    |
+    |                               |            | in ``t``                   |
+    +-------------------------------+------------+----------------------------+
+
+    The following operations treat the group as an ordered and deduplicated
+    set. The inputs are considered sorted and deduplicated, and the output is
+    sorted and deduplicated.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``s.isdisjoint(t)``           |            | ``True`` if ``s`` and      |
+    |                               |            | ``t`` do not share         |
+    |                               |            | elements                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issubset(t)``             |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_subset(t)``     |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issuperset(t)``           |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_superset(t)``   |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.union(t)``                | ``s | t``  | new Group with elements    |
+    |                               |            | from both ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
+    |                               |            | common to ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.difference(t)``           |            | new Group with elements of |
+    |                               |            | ``s`` that are not in ``t``|
+    +-------------------------------+------------+----------------------------+
+    | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
+    |                               |            | that are part of ``s`` or  |
+    |                               |            | ``t`` but not both         |
+    +-------------------------------+------------+----------------------------+
     """
     def __init__(self, *args):
         if len(args) == 1:
@@ -392,23 +474,7 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
-        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
-        if self.level != other.level:
-            raise TypeError("Can't add different level objects")
-        if self._u is not other._u:
-            raise ValueError("Can't add objects from different Universes")
-
-        # for the case where other is a Component, and so other._ix is an
-        # integer
-        if isinstance(other._ix, int):
-            o_ix = np.array([other._ix])
-        else:
-            o_ix = other._ix
-
-        return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
+        return self.concatenate(other)
 
     def __radd__(self, other):
         """Using built-in sum requires supporting 0 + self. If other is
@@ -432,12 +498,35 @@ class GroupBase(_MutableBase):
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
 
+    @_only_same_level
+    def __eq__(self, other):
+        """Test group equality.
+
+        Two groups are equal if they contain the same indices in
+        the same order. Groups that are not at the same level or that belong
+        to different universe cannot be compared.
+        """
+        o_ix = other.ix
+        return np.array_equal(self.ix, o_ix)
+
     def __contains__(self, other):
         if not other.level == self.level:
             # maybe raise TypeError instead?
             # eq method raises Error for wrong comparisons
             return False
         return other.ix in self._ix
+
+    def __sub__(self, other):
+        return self.substract(other)
+
+    def __or__(self, other):
+        return self.union(other)
+
+    def __and__(self, other):
+        return self.intersection(other)
+
+    def __xor__(self, other):
+        return self.symmetric_difference(other)
 
     @property
     def universe(self):
@@ -454,6 +543,14 @@ class GroupBase(_MutableBase):
         - If it is a :class:`SegmentGroup`, these are the indices of
           the :class:`Segment` instances.
 
+        """
+        return self._ix
+
+    @property
+    def ix_array(self):
+        """Unique indices of the components in the Group.
+
+        For a Group, ix_array is the same as ix.
         """
         return self._ix
 
@@ -929,6 +1026,241 @@ class GroupBase(_MutableBase):
         ta = getattr(self, topattr)
         return {i: self[ta == i] for i in set(ta)}
 
+    @_only_same_level
+    def concatenate(self, other):
+        """Concatenate the Group with another Group or Component of the same
+        level.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with elements of `self` and `other` concatenated
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
+
+    @_only_same_level
+    def union(self, other):
+        """Return the union of this Group and an other Group or Component of
+        the same level
+
+        On the contrary to concatenation, this method removes duplicate
+        elements.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the combined elements of `self` and `other`, without
+            duplicate elements
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.union1d(self._ix, o_ix), self._u)
+
+    @_only_same_level
+    def intersection(self, other):
+        """Return the intersect of this Group and an other Group or Component
+        of the same level
+
+        This method removes duplicate elements.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the common elements of `self` and `other`, without
+            duplicate elements
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.intersect1d(self._ix, o_ix), self._u)
+
+    @_only_same_level
+    def substract(self, other):
+        """Returns a group with the elements of this group that do not appear
+        in an other Group or Component
+
+        The order is kept so as duplicated elements. If an element of this
+        Group is duplicated and appear in the other Group or Component, then
+        all the occurences of this element are removed from the resulting
+        Group.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements of `self` that are not in  `other`,
+            conserves order and duplicates.
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class([ix for ix in self.ix if ix not in o_ix],
+                                   self._u)
+
+    @_only_same_level
+    def difference(self, other):
+        """Return the set difference of this Group and an other Group or
+        Component of the same level
+
+        This method removes duplicate elements.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements of `self` that are not in  `other`, without
+            duplicate elements
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.setdiff1d(self._ix, o_ix), self._u)
+
+    @_only_same_level
+    def symmetric_difference(self, other):
+        """Return the set symmetric difference of this Group and an other Group
+        or Component of the same level
+
+        This method removes duplicate elements.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements that are in `self` or in `other` but not in
+            both, without duplicate elements
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.setxor1d(self._ix, o_ix), self._u)
+
+    def isdisjoint(self, other):
+        """Return True if the Group has no elements in common with the other
+        Group
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if the two Groups do not have common elements
+
+        .. versionadded:: 0.16
+        """
+        return len(self.intersection(other)) == 0
+
+    @_only_same_level
+    def issubset(self, other):
+        """Return True if all elements of this Group are part of an other Group
+        of the same level
+
+        Note that an empty group is a subset of any group of the same level.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        o_ix = set(other.ix_array)
+        s_ix = set(self._ix)
+        return s_ix.issubset(o_ix)
+
+    def is_strict_subset(self, other):
+        """Returns True if this Group is a subset of an other Group of the same
+        level without being equal
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issubset(other) and not self == other
+
+    @_only_same_level
+    def issuperset(self, other):
+        """Return True if all elements of an other Group are part of this Group
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        o_ix = set(other.ix_array)
+        s_ix = set(self._ix)
+        return s_ix.issuperset(o_ix)
+
+    def is_strict_superset(self, other):
+        """Returns True if this Group is a superset of an other Group of the
+        same level without being equal
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict superset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issuperset(other) and not self == other
+
 
 class AtomGroup(GroupBase):
     """A group of atoms.
@@ -1369,7 +1701,7 @@ class AtomGroup(GroupBase):
                 ``global`` absent, the result would be an empty selection since
                 the ``protein`` subselection would itself be empty. When issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
-                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
+                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
         **Dynamic selections**
             If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is
@@ -1919,6 +2251,12 @@ class ComponentBase(_MutableBase):
         """
         return self._ix
 
+    @property
+    def ix_array(self):
+        """Unique index of this component as an array.
+        """
+        return np.array([self._ix])
+
 
 class Atom(ComponentBase):
     """Atom base class.
@@ -2118,7 +2456,7 @@ class Segment(ComponentBase):
 
 # Accessing these attrs doesn't trigger an update. The class and instance
 # methods of UpdatingAtomGroup that are used during __init__ must all be
-# here, otherwise we get __getattribute__ infinite loops. 
+# here, otherwise we get __getattribute__ infinite loops.
 _UAG_SHORTCUT_ATTRS = {
     # Class information of the UAG
     "__class__", "_derived_class",
@@ -2157,8 +2495,8 @@ class UpdatingAtomGroup(AtomGroup):
         ----------
         base_group : :class:`AtomGroup`
             group on which *selections* are to be applied.
-        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection` instances
-            selections ready to be applied to *base_group*.
+        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection`
+            instances selections ready to be applied to *base_group*.
 
         """
         # Because we're implementing __getattribute__, which needs _u for
