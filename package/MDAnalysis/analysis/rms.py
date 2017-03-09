@@ -51,8 +51,8 @@ When using this module in published work please cite [Theobald2005]_.
    :mod:`MDAnalysis.lib.qcprot`
         implements the fast RMSD algorithm.
 
-Examples
---------
+Example applications
+--------------------
 
 Calculating RMSD for multiple domains
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
