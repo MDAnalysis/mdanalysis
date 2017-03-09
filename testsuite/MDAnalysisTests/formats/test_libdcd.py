@@ -25,9 +25,22 @@ class DCDReadFrameTest(TestCase):
         self.new_frame = 91
         self.context_frame = 22
         self.num_iters = 3
+        self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
     def tearDown(self):
         del self.dcdfile
+
+    def test_header_remarks(self):
+        # confirm correct header remarks section reading
+        with self.dcdfile as f:
+            list_chars = []
+            for element in f.remarks:
+                list_chars.append(element)
+
+            list_chars = []
+            for element in self.expected_remarks:
+                list_chars.append(element)
+            self.assertEqual(len(f.remarks), len(self.expected_remarks))
 
     def test_read_coords(self):
         # confirm shape of coordinate data against result from previous
@@ -239,9 +252,7 @@ class DCDWriteTest(TestCase):
         # ensure that the REMARKS field *can be* preserved exactly
         # in the written DCD file
         with DCDFile(self.testfile) as f:
-            print('remarks before decode:', f.remarks)
-            print('remarks after decode:', f.remarks)
-            assert_equal(f.remarks.decode(), self.expected_remarks)
+            assert_equal(f.remarks, self.expected_remarks)
 
     def test_written_nsavc(self):
         # ensure that nsavc, the timesteps between frames written
@@ -315,15 +326,9 @@ class DCDWriteTestNAMD(DCDWriteTest, TestCase):
         self.natoms = 5545
         self.expected_frames = 1
         self.seek_frame = 0
-        self.expected_remarks = '''Created by DCD
-        plugin\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00REMARKS
-        Created 06 July, 2014 at
-        17:29\x00\x00\xd0Y5\x14\xff~\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00CORD\x03\x00\x00\x00,\x01\x00\x00\xe8\x03\x00\x00\xe8\x03\x00\x00\xe0\x93\x04\x00'''
+        self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
 
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
-            print('NAMD remarks:', f_in.remarks)
-            for frame in f_in:
-                frame = frame._asdict()
                 f_out.write(xyz=frame['x'],
                             box=frame['unitcell'].astype(np.float64),
                             step=f_in.istart,
@@ -352,3 +357,4 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
         self.new_frame = 0
         self.context_frame = 0
         self.num_iters = 0
+        self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
