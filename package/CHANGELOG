@@ -62,6 +62,8 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
   * Added `singleframe` attribute to Writer API to exclude from known Writers
     for a single frame (Issue #1199 PR #1201)
+  * Correct the display error of HydrogenBondAnalysis when start is not 0 or 
+    step is not one.
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
