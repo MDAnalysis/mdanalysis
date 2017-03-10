@@ -1055,6 +1055,33 @@ class GroupBase(_MutableBase):
         return self._derived_class(np.intersect1d(self._ix, o_ix), self._u)
 
     @_only_same_level
+    def substract(self, other):
+        """Returns a group with the elements of this group that do not appear
+        in an other Group or Component
+
+        The order is kept so as duplicated elements. If an element of this
+        Group is duplicated and appear in the other Group or Component, then
+        all the occurences of this element are removed from the resulting
+        Group.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements of `self` that are not in  `other`,
+            conserves order and duplicates.
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class([ix for ix in self.ix if ix not in o_ix],
+                                   self._u)
+
+    @_only_same_level
     def difference(self, other):
         """Return the set difference of this Group and an other Group or
         Component of the same level
@@ -1076,7 +1103,7 @@ class GroupBase(_MutableBase):
         """
         o_ix = other.ix_array
         return self._derived_class(np.setdiff1d(self._ix, o_ix), self._u)
-
+    
     @_only_same_level
     def symmetric_difference(self, other):
         """Return the set symmetric difference of this Group and an other Group
