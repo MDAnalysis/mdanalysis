@@ -589,20 +589,20 @@ class TestReprs(object):
 
 class TestGroupBaseOperators(object):
     @staticmethod
-    def _test_len(a, b, c, d):
-        assert_(len(a) == 4)
-        assert_(len(b) == 5)
-        assert_(len(c) == 2)
-        assert_(len(d) == 0)
+    def _test_len(a, b, c, d, e):
+        assert_equal(len(a), 4)
+        assert_equal(len(b), 5)
+        assert_equal(len(c), 2)
+        assert_equal(len(d), 0)
 
     @staticmethod
-    def _test_equal(a, b, c, d):
+    def _test_equal(a, b, c, d, e):
         assert_(a == a)
         assert_(a != b)
         assert_(not a == b)
 
     @staticmethod
-    def _test_issubset(a, b, c, d):
+    def _test_issubset(a, b, c, d, e):
         assert_(c.issubset(a))
         assert_(not c.issubset(b))
         assert_(not a.issubset(c))
@@ -610,7 +610,7 @@ class TestGroupBaseOperators(object):
         assert_(not a.issubset(d))
 
     @staticmethod
-    def _test_issuperset(a, b, c, d):
+    def _test_issuperset(a, b, c, d, e):
         assert_(a.issuperset(c))
         assert_(not b.issuperset(c))
         assert_(not c.issuperset(a))
@@ -618,7 +618,7 @@ class TestGroupBaseOperators(object):
         assert_(not d.issuperset(a))
 
     @staticmethod
-    def _test_concatenate(a, b, c, d):
+    def _test_concatenate(a, b, c, d, e):
         cat_ab = a.concatenate(b)
         assert_(cat_ab[:len(a)] == a)
         assert_(cat_ab[len(a):] == b)
@@ -638,7 +638,7 @@ class TestGroupBaseOperators(object):
         assert_(cat_da == a)
 
     @staticmethod
-    def _test_union(a, b, c, d):
+    def _test_union(a, b, c, d, e):
         union_ab = a.union(b)
         assert_(union_ab.ix.tolist() == sorted(union_ab.ix.tolist()))
         assert_(list(sorted(set(union_ab.ix))) == list(sorted(union_ab.ix)))
@@ -648,30 +648,31 @@ class TestGroupBaseOperators(object):
         assert_(a.union(d) == a)
 
     @staticmethod
-    def _test_intersection(a, b, c, d):
+    def _test_intersection(a, b, c, d, e):
         intersect_ab = a.intersection(b)
-        assert_(np.array_equal(intersect_ab.ix, np.arange(3, 5)))
-        assert_(np.array_equal(a.intersection(b), b.intersection(a)))
-        assert_(len(a.intersection(d)) == 0)
+        assert_array_equal(intersect_ab.ix, np.arange(3, 5))
+        assert_array_equal(a.intersection(b), b.intersection(a))
+        assert_equal(len(a.intersection(d)), 0)
 
     @staticmethod
-    def _test_difference(a, b, c, d):
+    def _test_difference(a, b, c, d, e):
         difference_ab = a.difference(b)
-        assert_(np.array_equal(difference_ab.ix, np.arange(1, 3)))
+        assert_array_equal(difference_ab.ix, np.arange(1, 3))
 
         difference_ba = b.difference(a)
-        assert_(np.array_equal(difference_ba.ix, np.arange(5, 8)))
+        assert_array_equal(difference_ba.ix, np.arange(5, 8))
 
         assert_(a.difference(d) == a)
+        assert_(a.difference(e) == a)
 
     @staticmethod
-    def _test_symmetric_difference(a, b, c, d):
+    def _test_symmetric_difference(a, b, c, d, e):
         symdiff_ab = a.symmetric_difference(b)
-        assert_(np.array_equal(symdiff_ab.ix,
-                                 np.array(list(range(1, 3))
-                                          + list(range(5, 8)))))
-        assert_(np.array_equal(a.symmetric_difference(b),
-                               b.symmetric_difference(a)))
+        assert_array_equal(symdiff_ab.ix, np.array(list(range(1, 3)) +
+                                                   list(range(5, 8))))
+        assert_array_equal(a.symmetric_difference(b),
+                           b.symmetric_difference(a))
+        assert_array_equal(a.symmetric_difference(e).ix, np.arange(1, 8))
 
     @staticmethod
     def make_groups(u, level):
@@ -679,12 +680,18 @@ class TestGroupBaseOperators(object):
         # a  ****
         # b    *****
         # c    **
+        # e      ***
         # d empty
+        #
+        # None of the group start at 0, nor ends at the end. Each group
+        # has a different size. The end of a slice is not the last element.
+        # This increase the odds of catching errors.
         a = getattr(u, level)[1:5]
         b = getattr(u, level)[3:8]
         c = getattr(u, level)[3:5]
         d = getattr(u, level)[0:0]
-        return a, b, c, d
+        e = getattr(u, level)[5:8]
+        return a, b, c, d, e
 
     def test_groupbase_operators(self):
         n_segments = 10
@@ -692,11 +699,11 @@ class TestGroupBaseOperators(object):
         n_atoms = n_residues * 5
         u = make_Universe(size=(n_atoms, n_residues, n_segments))
         for level in ('atoms', 'residues', 'segments'):
-            a, b, c, d = self.make_groups(u, level)
-            yield self._test_len, a, b, c, d
-            yield self._test_equal, a, b, c, d
-            yield self._test_concatenate, a, b, c, d
-            yield self._test_union, a, b, c, d
-            yield self._test_intersection, a, b, c, d
-            yield self._test_difference, a, b, c, d
-            yield self._test_symmetric_difference, a, b, c, d
+            a, b, c, d, e = self.make_groups(u, level)
+            yield self._test_len, a, b, c, d, e
+            yield self._test_equal, a, b, c, d, e
+            yield self._test_concatenate, a, b, c, d, e
+            yield self._test_union, a, b, c, d, e
+            yield self._test_intersection, a, b, c, d, e
+            yield self._test_difference, a, b, c, d, e
+            yield self._test_symmetric_difference, a, b, c, d, e
