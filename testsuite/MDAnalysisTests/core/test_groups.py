@@ -672,8 +672,7 @@ class TestGroupBaseOperators(object):
                                b.symmetric_difference(a)))
 
     @staticmethod
-    def resegment(u):
-
+    def resegment(u, res_per_seg):
         n_atoms = len(u.atoms)
         n_residues = len(u.residues)
         attrs = [
@@ -681,7 +680,8 @@ class TestGroupBaseOperators(object):
             for attr in u._topology.attrs
             if not isinstance(attr, Segids)
         ]
-        segids = np.arange(1131).repeat(10)[:len(u.residues)]
+        limit = int(np.ceil(len(u.residues) / res_per_seg))
+        segids = np.arange(1131).repeat(res_per_seg)[:len(u.residues)]
         segids = np.array(['s' + str(x) for x in segids], dtype=object)
         segidx, (segids,) = change_squash((segids,), (segids,))
         print(segidx)
@@ -703,7 +703,12 @@ class TestGroupBaseOperators(object):
 
     def test_groupbase_operators(self):
         u = mda.Universe(TPR, XTC)
-        u2 = mda.Universe(self.resegment(u), u.trajectory.filename)
+        # We need our test universe to have at least 140 atoms, residues, and
+        # segments. While it is no issue for atoms and residues, it is for
+        # segments as the universe only has 3. We create a new universe from
+        # the first one, here we set every 10 residues in a new segment.
+        topology = self.resegment(u, res_per_seg=10)
+        u2 = mda.Universe(topology, u.trajectory.filename)
         for level in ('atoms', 'residues', 'segments'):
             a, b, c, d = self.make_groups(u2, level)
             yield self._test_len, a, b, c, d
