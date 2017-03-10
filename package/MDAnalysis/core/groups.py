@@ -317,6 +317,21 @@ class _ImmutableBase(object):
     __new__ = object.__new__
 
 
+
+def _only_same_level(function):
+    def wrapped(self, other):
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("unsupported operand type(s) for +:"
+                            " '{}' and '{}'".format(type(self).__name__,
+                                                    type(other).__name__))
+        if self.level != other.level:
+            raise TypeError("Can't add different level objects")
+        if self._u is not other._u:
+            raise ValueError("Can't add objects from different Universes")
+        return function(self, other)
+    return wrapped
+
+
 class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
@@ -418,24 +433,6 @@ class GroupBase(_MutableBase):
                                                   repr(list(self)[:3])[:-1],
                                                   repr(list(self)[-3:])[1:])
 
-    def _get_other_index(self, other):
-        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
-        if self.level != other.level:
-            raise TypeError("Can't add different level objects")
-        if self._u is not other._u:
-            raise ValueError("Can't add objects from different Universes")
-
-        # for the case where other is a Component, and so other._ix is an
-        # integer
-        if isinstance(other._ix, int):
-            o_ix = np.array([other._ix])
-        else:
-            o_ix = other._ix
-        return o_ix
-
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
         level.
@@ -451,7 +448,6 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
-        o_ix = self._get_other_index(other)
         return self.concatenate(other)
 
     def __radd__(self, other):
@@ -476,6 +472,7 @@ class GroupBase(_MutableBase):
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
 
+    @_only_same_level
     def __eq__(self, other):
         """Test group equality.
 
@@ -483,7 +480,7 @@ class GroupBase(_MutableBase):
         the same order. Groups that are not at the same level or that belong
         to different universe cannot be compared.
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return np.array_equal(self._ix, o_ix)
 
     def __contains__(self, other):
@@ -508,6 +505,14 @@ class GroupBase(_MutableBase):
         - If it is a :class:`SegmentGroup`, these are the indices of
           the :class:`Segment` instances.
 
+        """
+        return self._ix
+
+    @property
+    def ix_array(self):
+        """Unique indices of the components in the Group.
+
+        For a Group, ix_array is the same as ix.
         """
         return self._ix
 
@@ -983,6 +988,7 @@ class GroupBase(_MutableBase):
         ta = getattr(self, topattr)
         return {i: self[ta == i] for i in set(ta)}
 
+    @_only_same_level
     def concatenate(self, other):
         """Concatenate the Group with another Group or Component of the same
         level.
@@ -997,9 +1003,10 @@ class GroupBase(_MutableBase):
         Group
             Group with elements of `self` and `other` concatenated
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
 
+    @_only_same_level
     def union(self, other):
         """Return the union of this Group and an other Group or Component of
         the same level
@@ -1020,9 +1027,10 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return self._derived_class(np.union1d(self._ix, o_ix), self._u)
 
+    @_only_same_level
     def intersection(self, other):
         """Return the intersect of this Group and an other Group or Component
         of the same level
@@ -1042,9 +1050,10 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return self._derived_class(np.intersect1d(self._ix, o_ix), self._u)
 
+    @_only_same_level
     def difference(self, other):
         """Return the set difference of this Group and an other Group or
         Component of the same level
@@ -1064,9 +1073,10 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return self._derived_class(np.setdiff1d(self._ix, o_ix), self._u)
 
+    @_only_same_level
     def symmetric_difference(self, other):
         """Return the set symmetric difference of this Group and an other Group
         or Component of the same level
@@ -1086,9 +1096,10 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = self._get_other_index(other)
+        o_ix = other.ix_array
         return self._derived_class(np.setxor1d(self._ix, o_ix), self._u)
 
+    @_only_same_level
     def issubset(self, other):
         """Return True if all elements of this Group are part of an other Group
         of the same level
@@ -1107,10 +1118,11 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = set(self._get_other_index(other))
+        o_ix = set(other.ix_array)
         s_ix = set(self._ix)
         return s_ix.issubset(o_ix)
 
+    @_only_same_level
     def issuperset(self, other):
         """Return True if all elements of an other Group are part of this Group
 
@@ -1126,7 +1138,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.16
         """
-        o_ix = set(self._get_other_index(other))
+        o_ix = set(other.ix_array)
         s_ix = set(self._ix)
         return s_ix.issuperset(o_ix)
 
@@ -2119,6 +2131,12 @@ class ComponentBase(_MutableBase):
 
         """
         return self._ix
+
+    @property
+    def ix_array(self):
+        """Unique index of this component as an array.
+        """
+        return np.array([self._ix])
 
 
 class Atom(ComponentBase):
