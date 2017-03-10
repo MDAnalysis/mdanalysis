@@ -10,8 +10,11 @@ import operator
 
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysis.core import groups
+from MDAnalysis.core.topology import Topology
+from MDAnalysis.core.topologyattrs import Segids
+from MDAnalysis.topology.base import change_squash
 
 
 class TestGroupSlicing(object):
@@ -30,7 +33,7 @@ class TestGroupSlicing(object):
         length = {'atom': 125,
                   'residue': 25,
                   'segment': 5}
-        
+
         nparrays = {
             level: np.arange(length[level])
             for level in levels
@@ -508,7 +511,7 @@ class TestGroupBy(object):
             g = gb[ref]
             assert_(all(g.charges == ref))
             assert_(len(g) == 25)
-        
+
     def test_groupby_string(self):
         gb = self.u.atoms.groupby('types')
 
@@ -581,3 +584,132 @@ class TestReprs(object):
     def test_segmentgroup_str(self):
         sg = self.u.segments[:10]
         assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
+
+
+
+class TestGroupBaseOperators(object):
+    @staticmethod
+    def _test_len(a, b, c, d):
+        assert_(len(a) == 90)
+        assert_(len(d) == 0)
+
+    @staticmethod
+    def _test_equal(a, b, c, d):
+        assert_(a == a)
+        assert_(a != b)
+        assert_(not a == b)
+
+    @staticmethod
+    def _test_issubset(a, b, c, d):
+        assert_(c.issubset(a))
+        assert_(not c.issubset(b))
+        assert_(not a.issubset(c))
+        assert_(d.issubset(a))
+        assert_(not a.issubset(d))
+
+    @staticmethod
+    def _test_issuperset(a, b, c, d):
+        assert_(a.issuperset(c))
+        assert_(not b.issuperset(c))
+        assert_(not c.issuperset(a))
+        assert_(a.issuperset(d))
+        assert_(not d.issuperset(a))
+
+    @staticmethod
+    def _test_concatenate(a, b, c, d):
+        cat_ab = a.concatenate(b)
+        assert_(cat_ab[:len(a)] == a)
+        assert_(cat_ab[len(a):] == b)
+
+        cat_ba = b.concatenate(a)
+        assert_(cat_ba[:len(b)] == b)
+        assert_(cat_ba[len(b):] == a)
+
+        cat_aa = a.concatenate(a)
+        assert_(cat_aa[:len(a)] == a)
+        assert_(cat_aa[len(a):] == a)
+
+        cat_ad = a.concatenate(d)
+        assert_(cat_ad == a)
+
+        cat_da = d.concatenate(a)
+        assert_(cat_da == a)
+
+    @staticmethod
+    def _test_union(a, b, c, d):
+        union_ab = a.union(b)
+        assert_(union_ab.ix.tolist() == sorted(union_ab.ix.tolist()))
+        assert_(list(sorted(set(union_ab.ix))) == list(sorted(union_ab.ix)))
+
+        assert_(a.union(b) == b.union(a))
+        assert_(a.union(a) == a)
+        assert_(a.union(d) == a)
+
+    @staticmethod
+    def _test_intersection(a, b, c, d):
+        intersect_ab = a.intersection(b)
+        assert_(np.array_equal(intersect_ab.ix, np.arange(30, 100)))
+        assert_(np.array_equal(a.intersection(b), b.intersection(a)))
+        assert_(len(a.intersection(d)) == 0)
+
+    @staticmethod
+    def _test_difference(a, b, c, d):
+        difference_ab = a.difference(b)
+        assert_(np.array_equal(difference_ab.ix, np.arange(10, 30)))
+
+        difference_ba = b.difference(a)
+        assert_(np.array_equal(difference_ba.ix, np.arange(100, 140)))
+
+        assert_(a.difference(d) == a)
+
+    @staticmethod
+    def _test_symmetric_difference(a, b, c, d):
+        symdiff_ab = a.symmetric_difference(b)
+        assert_(np.array_equal(symdiff_ab.ix,
+                                 np.array(list(range(10, 30))
+                                          + list(range(100, 140)))))
+        assert_(np.array_equal(a.symmetric_difference(b),
+                               b.symmetric_difference(a)))
+
+    @staticmethod
+    def resegment(u):
+
+        n_atoms = len(u.atoms)
+        n_residues = len(u.residues)
+        attrs = [
+            attr
+            for attr in u._topology.attrs
+            if not isinstance(attr, Segids)
+        ]
+        segids = np.arange(1131).repeat(10)[:len(u.residues)]
+        segids = np.array(['s' + str(x) for x in segids], dtype=object)
+        segidx, (segids,) = change_squash((segids,), (segids,))
+        print(segidx)
+        n_segments = len(segids)
+        attrs.append(Segids(segids))
+        top = Topology(n_atoms, n_residues, n_segments,
+                       attrs=attrs,
+                       atom_resindex=u.atoms.resids,
+                       residue_segindex=segidx)
+        return top
+
+    @staticmethod
+    def make_groups(u, level):
+        a = getattr(u, level)[10:100]
+        b = getattr(u, level)[30:140]
+        c = getattr(u, level)[20:50]
+        d = getattr(u, level)[0:0]
+        return a, b, c, d
+
+    def test_groupbase_operators(self):
+        u = mda.Universe(TPR, XTC)
+        u2 = mda.Universe(self.resegment(u), u.trajectory.filename)
+        for level in ('atoms', 'residues', 'segments'):
+            a, b, c, d = self.make_groups(u2, level)
+            yield self._test_len, a, b, c, d
+            yield self._test_equal, a, b, c, d
+            yield self._test_concatenate, a, b, c, d
+            yield self._test_union, a, b, c, d
+            yield self._test_intersection, a, b, c, d
+            yield self._test_difference, a, b, c, d
+            yield self._test_symmetric_difference, a, b, c, d
