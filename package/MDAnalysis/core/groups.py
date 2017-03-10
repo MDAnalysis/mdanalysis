@@ -319,6 +319,7 @@ class _ImmutableBase(object):
 
 
 def _only_same_level(function):
+    @functools.wraps(function)
     def wrapped(self, other):
         if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
             raise TypeError("unsupported operand type(s) for +:"
