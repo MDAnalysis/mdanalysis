@@ -10,7 +10,7 @@ import operator
 
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
+from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core.topologyattrs import Segids
@@ -672,28 +672,6 @@ class TestGroupBaseOperators(object):
                                b.symmetric_difference(a)))
 
     @staticmethod
-    def resegment(u, res_per_seg):
-        n_atoms = len(u.atoms)
-        n_residues = len(u.residues)
-        attrs = [
-            attr
-            for attr in u._topology.attrs
-            if not isinstance(attr, Segids)
-        ]
-        limit = int(np.ceil(len(u.residues) / res_per_seg))
-        segids = np.arange(1131).repeat(res_per_seg)[:len(u.residues)]
-        segids = np.array(['s' + str(x) for x in segids], dtype=object)
-        segidx, (segids,) = change_squash((segids,), (segids,))
-        print(segidx)
-        n_segments = len(segids)
-        attrs.append(Segids(segids))
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=u.atoms.resids,
-                       residue_segindex=segidx)
-        return top
-
-    @staticmethod
     def make_groups(u, level):
         a = getattr(u, level)[10:100]
         b = getattr(u, level)[30:140]
@@ -702,15 +680,12 @@ class TestGroupBaseOperators(object):
         return a, b, c, d
 
     def test_groupbase_operators(self):
-        u = mda.Universe(TPR, XTC)
-        # We need our test universe to have at least 140 atoms, residues, and
-        # segments. While it is no issue for atoms and residues, it is for
-        # segments as the universe only has 3. We create a new universe from
-        # the first one, here we set every 10 residues in a new segment.
-        topology = self.resegment(u, res_per_seg=10)
-        u2 = mda.Universe(topology, u.trajectory.filename)
+        n_segments = 140
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
         for level in ('atoms', 'residues', 'segments'):
-            a, b, c, d = self.make_groups(u2, level)
+            a, b, c, d = self.make_groups(u, level)
             yield self._test_len, a, b, c, d
             yield self._test_equal, a, b, c, d
             yield self._test_concatenate, a, b, c, d
