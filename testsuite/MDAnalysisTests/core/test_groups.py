@@ -590,7 +590,9 @@ class TestReprs(object):
 class TestGroupBaseOperators(object):
     @staticmethod
     def _test_len(a, b, c, d):
-        assert_(len(a) == 90)
+        assert_(len(a) == 4)
+        assert_(len(b) == 5)
+        assert_(len(c) == 2)
         assert_(len(d) == 0)
 
     @staticmethod
@@ -648,17 +650,17 @@ class TestGroupBaseOperators(object):
     @staticmethod
     def _test_intersection(a, b, c, d):
         intersect_ab = a.intersection(b)
-        assert_(np.array_equal(intersect_ab.ix, np.arange(30, 100)))
+        assert_(np.array_equal(intersect_ab.ix, np.arange(3, 5)))
         assert_(np.array_equal(a.intersection(b), b.intersection(a)))
         assert_(len(a.intersection(d)) == 0)
 
     @staticmethod
     def _test_difference(a, b, c, d):
         difference_ab = a.difference(b)
-        assert_(np.array_equal(difference_ab.ix, np.arange(10, 30)))
+        assert_(np.array_equal(difference_ab.ix, np.arange(1, 3)))
 
         difference_ba = b.difference(a)
-        assert_(np.array_equal(difference_ba.ix, np.arange(100, 140)))
+        assert_(np.array_equal(difference_ba.ix, np.arange(5, 8)))
 
         assert_(a.difference(d) == a)
 
@@ -666,21 +668,26 @@ class TestGroupBaseOperators(object):
     def _test_symmetric_difference(a, b, c, d):
         symdiff_ab = a.symmetric_difference(b)
         assert_(np.array_equal(symdiff_ab.ix,
-                                 np.array(list(range(10, 30))
-                                          + list(range(100, 140)))))
+                                 np.array(list(range(1, 3))
+                                          + list(range(5, 8)))))
         assert_(np.array_equal(a.symmetric_difference(b),
                                b.symmetric_difference(a)))
 
     @staticmethod
     def make_groups(u, level):
-        a = getattr(u, level)[10:100]
-        b = getattr(u, level)[30:140]
-        c = getattr(u, level)[20:50]
+        #   0123456789
+        # a  ****
+        # b    *****
+        # c    **
+        # d empty
+        a = getattr(u, level)[1:5]
+        b = getattr(u, level)[3:8]
+        c = getattr(u, level)[3:5]
         d = getattr(u, level)[0:0]
         return a, b, c, d
 
     def test_groupbase_operators(self):
-        n_segments = 140
+        n_segments = 10
         n_residues = n_segments * 5
         n_atoms = n_residues * 5
         u = make_Universe(size=(n_atoms, n_residues, n_segments))
