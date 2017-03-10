@@ -336,7 +336,8 @@ def _only_same_level(function):
 class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
-	Instances of :class:`GroupBase` provide the following operations:
+	Instances of :class:`GroupBase` provide the following operations that
+    conserve element repetitions and order:
 
     +-------------------------------+------------+----------------------------+
     | Operation                     | Equivalent | Result                     |
@@ -355,14 +356,38 @@ class GroupBase(_MutableBase):
     | ``x not in s``                |            | test if ``x`` is non part  |
     |                               |            | of ``s``                   |
     +-------------------------------+------------+----------------------------+
-    | ``s.issubset(t)``             |            | test if all elements of    |
-    |                               |            | ``s`` are part of ``t``    |
-    +-------------------------------+------------+----------------------------+
-    | ``s.issuperset(t)``           |            | test if all elements of    |
-    |                               |            | ``t`` are part of ``s``    |
-    +-------------------------------+------------+----------------------------+
     | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
     |                               |            | from ``s`` and from ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.substract(t)``            | ``s - t``  | new Group with elements    |
+    |                               |            | from ``s`` that are not    |
+    |                               |            | in ``t``                   |
+    +-------------------------------+------------+----------------------------+
+
+    The following operations treat the group as an ordered and deduplicated
+    set. The inputs are considered sorted and deduplicated, and the output is
+    sorted and deduplicated.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``s.isdisjoint(t)``           |            | ``True`` if ``s`` and      |
+    |                               |            | ``t`` do not share         |
+    |                               |            | elements                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issubset(t)``             | ``s <= t`` | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_subset(t)``     | ``s < t``  | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issuperset(t)``           | ``s >= t`` | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_superset(t)``   | ``s > t``  | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``,   |
+    |                               |            | and ``s != t``             |
     +-------------------------------+------------+----------------------------+
     | ``s.union(t)``                | ``s | t``  | new Group with elements    |
     |                               |            | from both ``s`` and ``t``  |
@@ -370,7 +395,7 @@ class GroupBase(_MutableBase):
     | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
     |                               |            | common to ``s`` and ``t``  |
     +-------------------------------+------------+----------------------------+
-    | ``s.difference(t)``           | ``s - t``  | new Group with elements of |
+    | ``s.difference(t)``           |            | new Group with elements of |
     |                               |            | ``s`` that are not in ``t``|
     +-------------------------------+------------+----------------------------+
     | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
@@ -1127,6 +1152,24 @@ class GroupBase(_MutableBase):
         o_ix = other.ix_array
         return self._derived_class(np.setxor1d(self._ix, o_ix), self._u)
 
+    def isdisjoint(self, other):
+        """Return True if the Group has no elements in common with the other
+        Group
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if the two Groups do not have common elements
+
+        .. versionadded:: 0.16
+        """
+        return len(self.intersection(other)) == 0
+
     @_only_same_level
     def issubset(self, other):
         """Return True if all elements of this Group are part of an other Group
@@ -1150,6 +1193,24 @@ class GroupBase(_MutableBase):
         s_ix = set(self._ix)
         return s_ix.issubset(o_ix)
 
+    def is_strict_subset(self, other):
+        """Returns True if this Group is a subset of an other Group of the same
+        level without being equal
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issubset(other) and not self == other
+
     @_only_same_level
     def issuperset(self, other):
         """Return True if all elements of an other Group are part of this Group
@@ -1169,6 +1230,24 @@ class GroupBase(_MutableBase):
         o_ix = set(other.ix_array)
         s_ix = set(self._ix)
         return s_ix.issuperset(o_ix)
+
+    def is_strict_superset(self, other):
+        """Returns True if this Group is a superset of an other Group of the
+        same level without being equal
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict superset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issuperset(other) and not self == other
 
 
 class AtomGroup(GroupBase):

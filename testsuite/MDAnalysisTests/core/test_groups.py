@@ -613,18 +613,30 @@ class TestGroupBaseOperators(object):
     @staticmethod
     def _test_issubset(a, b, c, d, e):
         assert_(c.issubset(a))
-        assert_(not c.issubset(b))
+        assert_(not c.issubset(e))
         assert_(not a.issubset(c))
         assert_(d.issubset(a))
         assert_(not a.issubset(d))
 
     @staticmethod
+    def _test_is_strict_subset(a, b, c, d, e):
+        assert_(c.is_strict_subset(a))
+        assert_(not c.is_strict_subset(e))
+        assert_(not a.is_strict_subset(a))
+
+    @staticmethod
     def _test_issuperset(a, b, c, d, e):
         assert_(a.issuperset(c))
-        assert_(not b.issuperset(c))
+        assert_(not e.issuperset(c))
         assert_(not c.issuperset(a))
         assert_(a.issuperset(d))
         assert_(not d.issuperset(a))
+
+    @staticmethod
+    def _test_is_strict_superset(a, b, c, d, e):
+        assert_(a.is_strict_superset(c))
+        assert_(not c.is_strict_superset(e))
+        assert_(not a.is_strict_superset(a))
 
     @staticmethod
     def _test_concatenate(a, b, c, d, e):
@@ -694,6 +706,14 @@ class TestGroupBaseOperators(object):
         assert_array_equal(a.symmetric_difference(e).ix, np.arange(1, 8))
 
     @staticmethod
+    def _test_isdisjoint(a, b, c, d, e):
+        assert_(a.isdisjoint(e))
+        assert_(e.isdisjoint(a))
+        assert_(a.isdisjoint(d))
+        assert_(d.isdisjoint(a))
+        assert_(not a.isdisjoint(b))
+
+    @staticmethod
     def make_groups(u, level):
         #   0123456789
         # a  ****
@@ -737,6 +757,11 @@ class TestGroupBaseOperators(object):
             yield self._test_intersection, a, b, c, d, e
             yield self._test_difference, a, b, c, d, e
             yield self._test_symmetric_difference, a, b, c, d, e
+            yield self._test_issubset, a, b, c, d, e
+            yield self._test_is_strict_subset, a, b, c, d, e
+            yield self._test_issuperset, a, b, c, d, e
+            yield self._test_is_strict_superset, a, b, c, d, e
+            yield self._test_isdisjoint, a, b, c, d, e
 
     def test_groupbase_operators_duplicated_and_scrambled(self):
         n_segments = 10
@@ -752,3 +777,8 @@ class TestGroupBaseOperators(object):
             yield self._test_intersection, a, b, c, d, e
             yield self._test_difference, a, b, c, d, e
             yield self._test_symmetric_difference, a, b, c, d, e
+            yield self._test_issubset, a, b, c, d, e
+            yield self._test_is_strict_subset, a, b, c, d, e
+            yield self._test_issuperset, a, b, c, d, e
+            yield self._test_is_strict_superset, a, b, c, d, e
+            yield self._test_isdisjoint, a, b, c, d, e
