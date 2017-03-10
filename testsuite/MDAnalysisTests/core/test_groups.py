@@ -594,6 +594,15 @@ class TestGroupBaseOperators(object):
         assert_equal(len(b), 5)
         assert_equal(len(c), 2)
         assert_equal(len(d), 0)
+        assert_equal(len(e), 3)
+
+    @staticmethod
+    def _test_len_duplicated_and_scrambled(a, b, c, d, e):
+        assert_equal(len(a), 7)
+        assert_equal(len(b), 8)
+        assert_equal(len(c), 6)
+        assert_equal(len(d), 0)
+        assert_equal(len(e), 5)
 
     @staticmethod
     def _test_equal(a, b, c, d, e):
@@ -640,18 +649,18 @@ class TestGroupBaseOperators(object):
     @staticmethod
     def _test_union(a, b, c, d, e):
         union_ab = a.union(b)
-        assert_(union_ab.ix.tolist() == sorted(union_ab.ix.tolist()))
+        assert_(union_ab.ix.tolist() == sorted(union_ab.ix))
         assert_(list(sorted(set(union_ab.ix))) == list(sorted(union_ab.ix)))
 
         assert_(a.union(b) == b.union(a))
-        assert_(a.union(a) == a)
-        assert_(a.union(d) == a)
+        assert_array_equal(a.union(a).ix, np.arange(1, 5))
+        assert_(a.union(d), np.arange(1, 5))
 
     @staticmethod
     def _test_intersection(a, b, c, d, e):
         intersect_ab = a.intersection(b)
         assert_array_equal(intersect_ab.ix, np.arange(3, 5))
-        assert_array_equal(a.intersection(b), b.intersection(a))
+        assert_(a.intersection(b) == b.intersection(a))
         assert_equal(len(a.intersection(d)), 0)
 
     @staticmethod
@@ -662,16 +671,15 @@ class TestGroupBaseOperators(object):
         difference_ba = b.difference(a)
         assert_array_equal(difference_ba.ix, np.arange(5, 8))
 
-        assert_(a.difference(d) == a)
-        assert_(a.difference(e) == a)
+        assert_array_equal(a.difference(d).ix, np.arange(1, 5))
+        assert_array_equal(a.difference(e).ix, np.arange(1, 5))
 
     @staticmethod
     def _test_symmetric_difference(a, b, c, d, e):
         symdiff_ab = a.symmetric_difference(b)
         assert_array_equal(symdiff_ab.ix, np.array(list(range(1, 3)) +
                                                    list(range(5, 8))))
-        assert_array_equal(a.symmetric_difference(b),
-                           b.symmetric_difference(a))
+        assert_(a.symmetric_difference(b) == b.symmetric_difference(a))
         assert_array_equal(a.symmetric_difference(e).ix, np.arange(1, 8))
 
     @staticmethod
@@ -693,6 +701,17 @@ class TestGroupBaseOperators(object):
         e = getattr(u, level)[5:8]
         return a, b, c, d, e
 
+    @staticmethod
+    def make_groups_duplicated_and_scrumbled(u, level):
+        # The content of the groups is the same as for make_groups, but the
+        # elements can appear several times and their order is scrambled.
+        a = getattr(u, level)[[1, 3, 2, 1, 2, 4, 4]]
+        b = getattr(u, level)[[7, 4, 4, 6, 5, 3, 7, 6]]
+        c = getattr(u, level)[[4, 4, 3, 4, 3, 3]]
+        d = getattr(u, level)[0:0]
+        e = getattr(u, level)[[6, 5, 7, 7, 6]]
+        return a, b, c, d, e
+
     def test_groupbase_operators(self):
         n_segments = 10
         n_residues = n_segments * 5
@@ -701,6 +720,21 @@ class TestGroupBaseOperators(object):
         for level in ('atoms', 'residues', 'segments'):
             a, b, c, d, e = self.make_groups(u, level)
             yield self._test_len, a, b, c, d, e
+            yield self._test_equal, a, b, c, d, e
+            yield self._test_concatenate, a, b, c, d, e
+            yield self._test_union, a, b, c, d, e
+            yield self._test_intersection, a, b, c, d, e
+            yield self._test_difference, a, b, c, d, e
+            yield self._test_symmetric_difference, a, b, c, d, e
+
+    def test_groupbase_operators_duplicated_and_scrambled(self):
+        n_segments = 10
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+        for level in ('atoms', 'residues', 'segments'):
+            a, b, c, d, e = self.make_groups_duplicated_and_scrumbled(u, level)
+            yield self._test_len_duplicated_and_scrambled, a, b, c, d, e
             yield self._test_equal, a, b, c, d, e
             yield self._test_concatenate, a, b, c, d, e
             yield self._test_union, a, b, c, d, e
