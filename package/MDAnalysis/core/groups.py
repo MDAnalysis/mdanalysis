@@ -516,6 +516,30 @@ class GroupBase(_MutableBase):
             return False
         return other.ix in self._ix
 
+    def __lt__(self, other):
+        return self.is_strict_subset(other)
+
+    def __le__(self, other):
+        return self.issubset(other)
+
+    def __gt__(self, other):
+        return self.is_strict_superset(other)
+
+    def __ge__(self, other):
+        return self.issuperset(other)
+
+    def __sub__(self, other):
+        return self.substract(other)
+
+    def __or__(self, other):
+        return self.union(other)
+
+    def __and__(self, other):
+        return self.intersection(other)
+
+    def __xor__(self, other):
+        return self.symmetric_difference(other)
+
     @property
     def universe(self):
         return self._u
