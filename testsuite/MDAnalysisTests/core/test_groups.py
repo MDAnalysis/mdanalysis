@@ -844,3 +844,27 @@ class TestGroupBaseOperators(object):
         u2 = make_Universe()
         _only_same_level = mda.core.groups._only_same_level
         assert_raises(ValueError, _only_same_level(dummy), u.atoms, u2.atoms)
+
+    def test_shortcut_overriding(self):
+        def check_operator(op, method, level):
+            left = getattr(u, level)[1:3]
+            right = getattr(u, level)[2:4]
+            assert_equal(op(left, right), getattr(left, method)(right))
+
+        operators = (
+            (operator.add, 'concatenate'),
+            (operator.sub, 'substract'),
+            (operator.and_, 'intersection'),
+            (operator.or_, 'union'),
+            (operator.xor, 'symmetric_difference'),
+        )
+        levels = ('atoms', 'residues', 'segments')
+
+        n_segments = 5
+        n_residues = n_segments * 3
+        n_atoms = n_residues * 3
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+
+        for op, method in operators:
+            for level in levels:
+                yield check_operator, op, method, level
