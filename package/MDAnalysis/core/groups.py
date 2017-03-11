@@ -375,17 +375,17 @@ class GroupBase(_MutableBase):
     |                               |            | ``t`` do not share         |
     |                               |            | elements                   |
     +-------------------------------+------------+----------------------------+
-    | ``s.issubset(t)``             | ``s <= t`` | test if all elements of    |
+    | ``s.issubset(t)``             |            | test if all elements of    |
     |                               |            | ``s`` are part of ``t``    |
     +-------------------------------+------------+----------------------------+
-    | ``s.is_strict_subset(t)``     | ``s < t``  | test if all elements of    |
+    | ``s.is_strict_subset(t)``     |            | test if all elements of    |
     |                               |            | ``s`` are part of ``t``,   |
     |                               |            | and ``s != t``             |
     +-------------------------------+------------+----------------------------+
-    | ``s.issuperset(t)``           | ``s >= t`` | test if all elements of    |
+    | ``s.issuperset(t)``           |            | test if all elements of    |
     |                               |            | ``t`` are part of ``s``    |
     +-------------------------------+------------+----------------------------+
-    | ``s.is_strict_superset(t)``   | ``s > t``  | test if all elements of    |
+    | ``s.is_strict_superset(t)``   |            | test if all elements of    |
     |                               |            | ``t`` are part of ``s``,   |
     |                               |            | and ``s != t``             |
     +-------------------------------+------------+----------------------------+
@@ -515,18 +515,6 @@ class GroupBase(_MutableBase):
             # eq method raises Error for wrong comparisons
             return False
         return other.ix in self._ix
-
-    def __lt__(self, other):
-        return self.is_strict_subset(other)
-
-    def __le__(self, other):
-        return self.issubset(other)
-
-    def __gt__(self, other):
-        return self.is_strict_superset(other)
-
-    def __ge__(self, other):
-        return self.issuperset(other)
 
     def __sub__(self, other):
         return self.substract(other)
@@ -1152,7 +1140,7 @@ class GroupBase(_MutableBase):
         """
         o_ix = other.ix_array
         return self._derived_class(np.setdiff1d(self._ix, o_ix), self._u)
-    
+
     @_only_same_level
     def symmetric_difference(self, other):
         """Return the set symmetric difference of this Group and an other Group
@@ -1713,7 +1701,7 @@ class AtomGroup(GroupBase):
                 ``global`` absent, the result would be an empty selection since
                 the ``protein`` subselection would itself be empty. When issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
-                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
+                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
         **Dynamic selections**
             If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is
@@ -2468,7 +2456,7 @@ class Segment(ComponentBase):
 
 # Accessing these attrs doesn't trigger an update. The class and instance
 # methods of UpdatingAtomGroup that are used during __init__ must all be
-# here, otherwise we get __getattribute__ infinite loops. 
+# here, otherwise we get __getattribute__ infinite loops.
 _UAG_SHORTCUT_ATTRS = {
     # Class information of the UAG
     "__class__", "_derived_class",
