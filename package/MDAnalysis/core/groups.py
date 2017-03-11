@@ -322,13 +322,13 @@ def _only_same_level(function):
     @functools.wraps(function)
     def wrapped(self, other):
         if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
+            raise TypeError("unsuported operation between objects:"
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
         if self.level != other.level:
-            raise TypeError("Can't add different level objects")
+            raise TypeError("Can't add operate on different level objects")
         if self._u is not other._u:
-            raise ValueError("Can't add objects from different Universes")
+            raise ValueError("Can't operate on objects from different Universes")
         return function(self, other)
     return wrapped
 

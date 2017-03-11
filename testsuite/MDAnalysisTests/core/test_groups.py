@@ -782,3 +782,65 @@ class TestGroupBaseOperators(object):
             yield self._test_issuperset, a, b, c, d, e
             yield self._test_is_strict_superset, a, b, c, d, e
             yield self._test_isdisjoint, a, b, c, d, e
+
+    def test_only_same_level(self):
+        def dummy(self, other):
+            return True
+
+        def failing_pairs(left, right):
+            assert_raises(TypeError, _only_same_level(dummy), left, right)
+
+        def succeeding_pairs(left, right):
+            assert_(_only_same_level(dummy)(left, right))
+
+        _only_same_level = mda.core.groups._only_same_level
+        u = make_Universe()
+
+        components = (u.atoms[0], u.residues[0], u.segments[0])
+        groups = (u.atoms, u.residues, u.segments)
+
+        # Do inter-levels pairs of groups fail as expected?
+        for left, right in itertools.permutations(groups, 2):
+            yield failing_pairs, left, right
+
+        # Do inter-levels pairs of components
+        for left, right in itertools.permutations(components, 2):
+            yield failing_pairs, left, right
+
+        # Do inter-levels pairs of components/groups fail as expected?
+        indexes = range(len(groups))
+        for idx_left, idx_right in itertools.permutations(indexes, 2):
+            left = groups[idx_left]
+            right = groups[idx_right]
+            yield failing_pairs, left, right
+            yield failing_pairs, right, left
+
+        # Do succeeding pair actually succeed
+        for level in ('atoms', 'residues', 'segments'):
+            # Groups
+            left = getattr(u, level)[0:2]
+            right = getattr(u, level)[1:3]
+            yield succeeding_pairs, left, right
+
+            # Components
+            left = getattr(u, level)[0]
+            right = getattr(u, level)[1]
+            yield succeeding_pairs, left, right
+
+            # Mixed
+            left = getattr(u, level)[0:2]
+            right = getattr(u, level)[1]
+            yield succeeding_pairs, left, right
+            yield succeeding_pairs, right, left
+
+        # Does the function fail with inputs that are not components or groups
+        yield failing_pairs, u.atoms, 'invalid'
+
+    def test_only_same_level_different_universes(self):
+        def dummy(self, other):
+            return True
+
+        u = make_Universe()
+        u2 = make_Universe()
+        _only_same_level = mda.core.groups._only_same_level
+        assert_raises(ValueError, _only_same_level(dummy), u.atoms, u2.atoms)
