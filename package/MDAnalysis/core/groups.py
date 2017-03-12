@@ -322,13 +322,17 @@ def _only_same_level(function):
     @functools.wraps(function)
     def wrapped(self, other):
         if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsuported operation between objects:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
+            raise TypeError("Can't perform '{}' between objects:"
+                            " '{}' and '{}'".format(
+                                function.__name__,
+                                type(self).__name__,
+                                type(other).__name__))
         if self.level != other.level:
-            raise TypeError("Can't add operate on different level objects")
-        if self._u is not other._u:
-            raise ValueError("Can't operate on objects from different Universes")
+            raise TypeError("Can't perform '{}' on different level objects"
+                            "".format(function.__name__))
+        if self.universe is not other.universe:
+            raise ValueError(
+                "Can't operate on objects from different Universes")
         return function(self, other)
     return wrapped
 
@@ -359,7 +363,7 @@ class GroupBase(_MutableBase):
     | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
     |                               |            | from ``s`` and from ``t``  |
     +-------------------------------+------------+----------------------------+
-    | ``s.substract(t)``            | ``s - t``  | new Group with elements    |
+    | ``s.subtract(t)``             | ``s - t``  | new Group with elements    |
     |                               |            | from ``s`` that are not    |
     |                               |            | in ``t``                   |
     +-------------------------------+------------+----------------------------+
@@ -433,7 +437,7 @@ class GroupBase(_MutableBase):
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
         if isinstance(item, (int, np.int_)):
-            return self.level.singular(self._ix[item], self._u)
+            return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
@@ -442,7 +446,7 @@ class GroupBase(_MutableBase):
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
-            return self._derived_class(self._ix[item], self._u)
+            return self._derived_class(self.ix[item], self.universe)
 
     def __repr__(self):
         name = self.level.name
@@ -492,7 +496,7 @@ class GroupBase(_MutableBase):
 
         """
         if other == 0:
-            return self._derived_class(self._ix, self._u)
+            return self._derived_class(self.ix, self.universe)
         else:
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
@@ -507,17 +511,17 @@ class GroupBase(_MutableBase):
         to different universe cannot be compared.
         """
         o_ix = other.ix_array
-        return np.array_equal(self._ix, o_ix)
+        return np.array_equal(self.ix, o_ix)
 
     def __contains__(self, other):
         if not other.level == self.level:
             # maybe raise TypeError instead?
             # eq method raises Error for wrong comparisons
             return False
-        return other.ix in self._ix
+        return other.ix in self.ix
 
     def __sub__(self, other):
-        return self.substract(other)
+        return self.subtract(other)
 
     def __or__(self, other):
         return self.union(other)
@@ -556,7 +560,7 @@ class GroupBase(_MutableBase):
 
     @property
     def dimensions(self):
-        return self._u.trajectory.ts.dimensions
+        return self.universe.trajectory.ts.dimensions
 
     def center(self, weights, pbc=None):
         """Calculate center of group given some weights
@@ -1042,7 +1046,8 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
         """
         o_ix = other.ix_array
-        return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
+        return self._derived_class(np.concatenate([self.ix, o_ix]),
+                                   self.universe)
 
     @_only_same_level
     def union(self, other):
@@ -1066,7 +1071,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
-        return self._derived_class(np.union1d(self._ix, o_ix), self._u)
+        return self._derived_class(np.union1d(self.ix, o_ix), self.universe)
 
     @_only_same_level
     def intersection(self, other):
@@ -1089,10 +1094,10 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
-        return self._derived_class(np.intersect1d(self._ix, o_ix), self._u)
+        return self._derived_class(np.intersect1d(self.ix, o_ix), self.universe)
 
     @_only_same_level
-    def substract(self, other):
+    def subtract(self, other):
         """Returns a group with the elements of this group that do not appear
         in an other Group or Component
 
@@ -1115,8 +1120,8 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
-        return self._derived_class([ix for ix in self.ix if ix not in o_ix],
-                                   self._u)
+        in_other = np.in1d(self.ix, o_ix)  # mask of in self.ix AND other
+        return self[~in_other]  # ie inverse of previous mask
 
     @_only_same_level
     def difference(self, other):
@@ -1202,7 +1207,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = set(other.ix_array)
-        s_ix = set(self._ix)
+        s_ix = set(self.ix)
         return s_ix.issubset(o_ix)
 
     def is_strict_subset(self, other):
@@ -1240,7 +1245,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = set(other.ix_array)
-        s_ix = set(self._ix)
+        s_ix = set(self.ix)
         return s_ix.issuperset(o_ix)
 
     def is_strict_superset(self, other):
@@ -1352,7 +1357,7 @@ class AtomGroup(GroupBase):
     @property
     def atoms(self):
         """Get another AtomGroup identical to this one."""
-        return self._u.atoms[self.ix]
+        return self.universe.atoms[self.ix]
 
     @property
     def n_atoms(self):
@@ -1365,7 +1370,7 @@ class AtomGroup(GroupBase):
     def residues(self):
         """Get sorted :class:`ResidueGroup` of the (unique) residues
         represented in the AtomGroup."""
-        return self._u.residues[np.unique(self.resindices)]
+        return self.universe.residues[np.unique(self.resindices)]
 
     @residues.setter
     def residues(self, new):
@@ -1407,7 +1412,7 @@ class AtomGroup(GroupBase):
     def segments(self):
         """Get sorted :class:`SegmentGroup` of the (unique) segments
         represented in the AtomGroup."""
-        return self._u.segments[np.unique(self.segindices)]
+        return self.universe.segments[np.unique(self.segindices)]
 
     @segments.setter
     def segments(self, new):
@@ -1426,7 +1431,7 @@ class AtomGroup(GroupBase):
     @property
     def unique(self):
         """Return an AtomGroup containing sorted and unique atoms only."""
-        return self._u.atoms[np.unique(self.ix)]
+        return self.universe.atoms[np.unique(self.ix)]
 
     @property
     def positions(self):
@@ -1445,12 +1450,12 @@ class AtomGroup(GroupBase):
                   method was used.
 
         """
-        return self._u.trajectory.ts.positions[self._ix]
+        return self.universe.trajectory.ts.positions[self.ix]
 
     @positions.setter
     def positions(self, values):
-        ts = self._u.trajectory.ts
-        ts.positions[self._ix, :] = values
+        ts = self.universe.trajectory.ts
+        ts.positions[self.ix, :] = values
 
     @property
     def velocities(self):
@@ -1466,17 +1471,17 @@ class AtomGroup(GroupBase):
         :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return np.array(ts.velocities[self._ix])
+            return np.array(ts.velocities[self.ix])
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @velocities.setter
     def velocities(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.velocities[self._ix, :] = values
+            ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -1490,17 +1495,17 @@ class AtomGroup(GroupBase):
         will give all particles zero velocity).
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.forces[self._ix]
+            return ts.forces[self.ix]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @forces.setter
     def forces(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.forces[self._ix, :] = values
+            ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -1763,7 +1768,7 @@ class AtomGroup(GroupBase):
                      'residue': 'resindices'}
 
         if level == "atom":
-            return [self._u.atoms[[a.ix]] for a in self]
+            return [self.universe.atoms[[a.ix]] for a in self]
 
         # higher level groupings
         try:
@@ -1836,7 +1841,7 @@ class AtomGroup(GroupBase):
         if len(self) != 2:
             raise ValueError(
                 "bond only makes sense for a group with exactly 2 atoms")
-        return topologyobjects.Bond(self._ix, self.universe)
+        return topologyobjects.Bond(self.ix, self.universe)
 
     @property
     def angle(self):
@@ -1856,7 +1861,7 @@ class AtomGroup(GroupBase):
         if len(self) != 3:
             raise ValueError(
                 "angle only makes sense for a group with exactly 3 atoms")
-        return topologyobjects.Angle(self._ix, self.universe)
+        return topologyobjects.Angle(self.ix, self.universe)
 
     @property
     def dihedral(self):
@@ -1876,7 +1881,7 @@ class AtomGroup(GroupBase):
         if len(self) != 4:
             raise ValueError(
                 "dihedral only makes sense for a group with exactly 4 atoms")
-        return topologyobjects.Dihedral(self._ix, self.universe)
+        return topologyobjects.Dihedral(self.ix, self.universe)
 
     @property
     def improper(self):
@@ -1896,7 +1901,7 @@ class AtomGroup(GroupBase):
         if len(self) != 4:
             raise ValueError(
                 "improper only makes sense for a group with exactly 4 atoms")
-        return topologyobjects.ImproperDihedral(self._ix, self.universe)
+        return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
     def write(self, filename=None, file_format="PDB",
               filenamefmt="{trjname}_{frame}", **kwargs):
@@ -2000,7 +2005,7 @@ class ResidueGroup(GroupBase):
         :class:`ResidueGroup`.  No duplicates are removed.
 
         """
-        return self._u.atoms[np.concatenate(self.indices)]
+        return self.universe.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -2017,7 +2022,7 @@ class ResidueGroup(GroupBase):
         """Get another :class:`ResidueGroup` identical to this one.
 
         """
-        return self._u.residues[self.ix]
+        return self.universe.residues[self.ix]
 
     @property
     def n_residues(self):
@@ -2032,7 +2037,7 @@ class ResidueGroup(GroupBase):
         ResidueGroup.
 
         """
-        return self._u.segments[np.unique(self.segindices)]
+        return self.universe.segments[np.unique(self.segindices)]
 
     @segments.setter
     def segments(self, new):
@@ -2075,7 +2080,7 @@ class ResidueGroup(GroupBase):
         """Return a ResidueGroup containing sorted and unique residues only.
 
         """
-        return self._u.residues[np.unique(self.ix)]
+        return self.universe.residues[np.unique(self.ix)]
 
 
 class SegmentGroup(GroupBase):
@@ -2096,7 +2101,7 @@ class SegmentGroup(GroupBase):
         segment in the SegmentGroup. No duplicates are removed.
 
         """
-        return self._u.atoms[np.concatenate(self.indices)]
+        return self.universe.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -2116,7 +2121,7 @@ class SegmentGroup(GroupBase):
         No duplicates are removed.
 
         """
-        return self._u.residues[np.concatenate(self.resindices)]
+        return self.universe.residues[np.concatenate(self.resindices)]
 
     @property
     def n_residues(self):
@@ -2133,7 +2138,7 @@ class SegmentGroup(GroupBase):
         """Get another SegmentGroup identical to this one.
 
         """
-        return self._u.segments[self.ix]
+        return self.universe.segments[self.ix]
 
     @property
     def n_segments(self):
@@ -2147,7 +2152,7 @@ class SegmentGroup(GroupBase):
         """Return a SegmentGroup containing sorted and unique segments only.
 
         """
-        return self._u.segments[np.unique(self.ix)]
+        return self.universe.segments[np.unique(self.ix)]
 
 
 @functools.total_ordering
@@ -2177,6 +2182,7 @@ class ComponentBase(_MutableBase):
     def __hash__(self):
         return hash(self.ix)
 
+    @_only_same_level
     def __add__(self, other):
         """Concatenate the Component with another Component or Group of the
         same level.
@@ -2192,27 +2198,10 @@ class ComponentBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
-        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
-        if self.level != other.level:
-            raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
-                            ' to {0}'.format(self.level.singular.__name__,
-                                             self.level.plural.__name__,
-                                             other.level.singular.__name__,
-                                             other.level.plural.__name__))
-
-        if self.universe is not other.universe:
-            raise ValueError("Can only add objects from the same Universe")
-
-        if isinstance(other.ix, int):
-            o_ix = np.array([other.ix])
-        else:
-            o_ix = other.ix
+        o_ix = other.ix_array
 
         return self.level.plural(
-                np.concatenate((np.array([self.ix]), o_ix)), self.universe)
+                np.concatenate([self.ix_array, o_ix]), self.universe)
 
     def __radd__(self, other):
         """Using built-in sum requires supporting 0 + self. If other is
@@ -2230,7 +2219,7 @@ class ComponentBase(_MutableBase):
 
         """
         if other == 0:
-            return self.level.plural(np.array([self._ix]), self._u)
+            return self.level.plural(self.ix_array, self.universe)
         else:
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
@@ -2253,9 +2242,8 @@ class ComponentBase(_MutableBase):
 
     @property
     def ix_array(self):
-        """Unique index of this component as an array.
-        """
-        return np.array([self._ix])
+        """Unique index of this component as an array."""
+        return np.array([self.ix])
 
 
 class Atom(ComponentBase):
@@ -2292,7 +2280,7 @@ class Atom(ComponentBase):
 
     @property
     def residue(self):
-        return self._u.residues[self._u._topology.resindices[self]]
+        return self.universe.residues[self.universe._topology.resindices[self]]
 
     @residue.setter
     def residue(self, new):
@@ -2303,7 +2291,7 @@ class Atom(ComponentBase):
 
     @property
     def segment(self):
-        return self._u.segments[self._u._topology.segindices[self]]
+        return self.universe.segments[self.universe._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -2320,11 +2308,11 @@ class Atom(ComponentBase):
                   frame from the trajectory will replace the change with that
                   from the file
         """
-        return self._u.trajectory.ts.positions[self._ix].copy()
+        return self.universe.trajectory.ts.positions[self.ix].copy()
 
     @position.setter
     def position(self, values):
-        self._u.trajectory.ts.positions[self._ix, :] = values
+        self.universe.trajectory.ts.positions[self.ix, :] = values
 
     @property
     def velocity(self):
@@ -2340,17 +2328,17 @@ class Atom(ComponentBase):
         does not contain velocities.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.velocities[self._ix].copy()
+            return ts.velocities[self.ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @velocity.setter
     def velocity(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.velocities[self.index, :] = values
+            ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -2368,17 +2356,17 @@ class Atom(ComponentBase):
         does not contain forces.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.forces[self._ix].copy()
+            return ts.forces[self.ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @force.setter
     def force(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.forces[self._ix, :] = values
+            ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -2403,11 +2391,11 @@ class Residue(ComponentBase):
 
     @property
     def atoms(self):
-        return self._u.atoms[self._u._topology.indices[self][0]]
+        return self.universe.atoms[self.universe._topology.indices[self][0]]
 
     @property
     def segment(self):
-        return self._u.segments[self._u._topology.segindices[self]]
+        return self.universe.segments[self.universe._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -2434,11 +2422,11 @@ class Segment(ComponentBase):
 
     @property
     def atoms(self):
-        return self._u.atoms[self._u._topology.indices[self][0]]
+        return self.universe.atoms[self.universe._topology.indices[self][0]]
 
     @property
     def residues(self):
-        return self._u.residues[self._u._topology.resindices[self][0]]
+        return self.universe.residues[self.universe._topology.resindices[self][0]]
 
     def __getattr__(self, attr):
         # Segment.r1 access
@@ -2529,7 +2517,7 @@ class UpdatingAtomGroup(AtomGroup):
         else:
             ix = np.array([], dtype=np.int)
         # Run back through AtomGroup init with this information to remake ourselves
-        super(UpdatingAtomGroup, self).__init__(ix, self._u)
+        super(UpdatingAtomGroup, self).__init__(ix, self.universe)
         self.is_uptodate = True
 
     @property
@@ -2548,16 +2536,16 @@ class UpdatingAtomGroup(AtomGroup):
 
         """
         try:
-            return self._u.trajectory.frame == self._lastupdate
-        except AttributeError: # self._u has no trajectory
+            return self.universe.trajectory.frame == self._lastupdate
+        except AttributeError: # self.universe has no trajectory
             return self._lastupdate == -1
 
     @is_uptodate.setter
     def is_uptodate(self, value):
         if value:
             try:
-                self._lastupdate = self._u.trajectory.frame
-            except AttributeError: # self._u has no trajectory
+                self._lastupdate = self.universe.trajectory.frame
+            except AttributeError: # self.universe has no trajectory
                 self._lastupdate = -1
         else:
             # This always marks the selection as outdated
@@ -2601,7 +2589,7 @@ class UpdatingAtomGroup(AtomGroup):
         sels = "'{}'".format("' + '".join(self.selection_strings))
         # Cheap comparison. Might fail for corner cases but this is
         # mostly cosmetic.
-        if self._base_group is self._u.atoms:
+        if self._base_group is self.universe.atoms:
             basegrp = "the entire Universe."
         else:
             basegrp = "another AtomGroup."
