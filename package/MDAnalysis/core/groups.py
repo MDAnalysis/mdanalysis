@@ -2495,8 +2495,8 @@ class UpdatingAtomGroup(AtomGroup):
         ----------
         base_group : :class:`AtomGroup`
             group on which *selections* are to be applied.
-        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection` instances
-            selections ready to be applied to *base_group*.
+        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection`
+            instances selections ready to be applied to *base_group*.
 
         """
         # Because we're implementing __getattribute__, which needs _u for
