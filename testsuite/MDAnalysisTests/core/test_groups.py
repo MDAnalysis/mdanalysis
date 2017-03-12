@@ -678,15 +678,15 @@ class TestGroupBaseOperators(object):
         assert_equal(len(a.intersection(d)), 0)
 
     @staticmethod
-    def _test_substract(a, b, c, d, e):
-        substract_ab = a.substract(b)
-        assert_array_equal(substract_ab.ix, np.array([1, 2, 1, 2]))
-        substract_ba = b.substract(a)
-        assert_array_equal(substract_ba, np.array([7, 6, 5, 7]))
-        substract_ad = a.substract(d)
-        assert_equal(substract_ad, a)
-        substract_ae = a.substract(e)
-        assert_equal(substract_ae, a)
+    def _test_subtract(a, b, c, d, e):
+        subtract_ab = a.subtract(b)
+        assert_array_equal(subtract_ab.ix, np.array([1, 2, 1, 2]))
+        subtract_ba = b.subtract(a)
+        assert_array_equal(subtract_ba, np.array([7, 6, 5, 7]))
+        subtract_ad = a.subtract(d)
+        assert_equal(subtract_ad, a)
+        subtract_ae = a.subtract(e)
+        assert_equal(subtract_ae, a)
 
     @staticmethod
     def _test_difference(a, b, c, d, e):
@@ -855,7 +855,7 @@ class TestGroupBaseOperators(object):
 
         operators = (
             (operator.add, 'concatenate'),
-            (operator.sub, 'substract'),
+            (operator.sub, 'subtract'),
             (operator.and_, 'intersection'),
             (operator.or_, 'union'),
             (operator.xor, 'symmetric_difference'),
