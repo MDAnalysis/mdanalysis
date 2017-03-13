@@ -133,6 +133,8 @@ __all__ = [
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
     "MMTF", "MMTF_gz",
+    "ALIGN_BOUND",  # two component bound system
+    "ALIGN_UNBOUND", # two component unbound system
 ]
 
 from pkg_resources import resource_filename
@@ -361,6 +363,9 @@ RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
+
+ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
+ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename

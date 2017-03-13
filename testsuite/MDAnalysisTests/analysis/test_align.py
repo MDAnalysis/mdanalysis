@@ -23,7 +23,7 @@ from __future__ import absolute_import, print_function
 import warnings
 import os.path
 
-import MDAnalysis
+import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis import SelectionError
@@ -35,7 +35,7 @@ from numpy.testing import (TestCase, dec,
 import numpy as np
 from nose.plugins.attrib import attr
 
-from MDAnalysisTests.datafiles import PSF, DCD, FASTA
+from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
@@ -94,8 +94,8 @@ class TestAlign(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.reference = MDAnalysis.Universe(PSF, DCD)
+        self.universe = mda.Universe(PSF, DCD)
+        self.reference = mda.Universe(PSF, DCD)
         # output is always same as input (=DCD)
         self.tempdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tempdir.name, 'align_test.dcd')
@@ -170,7 +170,7 @@ class TestAlign(TestCase):
         self.reference.trajectory[-1]
         align.rms_fit_trj(self.universe, self.reference, select="all",
                           filename=self.outfile, verbose=False)
-        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        fitted = mda.Universe(PSF, self.outfile)
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
@@ -198,7 +198,7 @@ class TestAlign(TestCase):
         self.reference.trajectory[-1]
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile).run()
-        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        fitted = mda.Universe(PSF, self.outfile)
 
         rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
         x.save(rmsd_outfile)
@@ -220,7 +220,7 @@ class TestAlign(TestCase):
     def test_AlignTraj_weighted(self):
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile, weights='mass').run()
-        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        fitted = mda.Universe(PSF, self.outfile)
         assert_almost_equal(x.rmsd[0], 0,  decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
@@ -244,7 +244,7 @@ class TestAlign(TestCase):
     def test_AlignTraj_custom_mass_weights(self):
         x = align.AlignTraj(self.universe, self.reference,
                             filename=self.outfile, weights=self.reference.atoms.masses).run()
-        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        fitted = mda.Universe(PSF, self.outfile)
         assert_almost_equal(x.rmsd[0], 0,  decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
@@ -259,7 +259,7 @@ class TestAlign(TestCase):
             x = align.AlignTraj(self.universe, self.reference,
                                 filename=self.outfile, mass_weighted=True).run()
         assert_equal(len(warn), 1)
-        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        fitted = mda.Universe(PSF, self.outfile)
         assert_almost_equal(x.rmsd[0], 0,  decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
@@ -272,7 +272,7 @@ class TestAlign(TestCase):
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(self.universe, self.reference, select='resid 1-20',
                         filename=self.outfile, weights='mass').run()
-        MDAnalysis.Universe(PSF, self.outfile)
+        mda.Universe(PSF, self.outfile)
 
     def test_AlignTraj_in_memory(self):
         self.reference.trajectory[-1]
@@ -313,6 +313,20 @@ class TestAlign(TestCase):
 
         assert_raises(SelectionError, different_atoms)
 
+    @staticmethod
+    def test_alignto_partial_universe():
+        u_bound = mda.Universe(ALIGN_BOUND)
+        u_free = mda.Universe(ALIGN_UNBOUND)
+        selection = 'segid B'
+
+        segB_bound = u_bound.select_atoms(selection)
+        segB_free = u_free.select_atoms(selection)
+        segB_free.translate(segB_bound.centroid() - segB_free.centroid())
+
+        align.alignto(u_free, u_bound, select=selection)
+        assert_array_almost_equal(segB_bound.positions, segB_free.positions, decimal=3)
+
+
 
 class TestAlignmentProcessing(object):
     def setUp(self):
@@ -351,7 +365,7 @@ class TestAlignmentProcessing(object):
                      err_msg="selection string has unexpected length")
 
 def test_sequence_alignment():
-    u = MDAnalysis.Universe(PSF)
+    u = mda.Universe(PSF)
     reference = u.atoms
     mobile = u.select_atoms("resid 122-159")
     aln = align.sequence_alignment(mobile, reference)
