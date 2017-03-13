@@ -672,16 +672,21 @@ class GroupBase(_MutableBase):
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
         return self
 
-    def rotate(self, R, point=None):
+    def rotate(self, R, point=(0, 0, 0)):
         r"""Apply a rotation matrix `R` to the selection's coordinates.
+        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
+        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
+
+        .. math::
+
+            \mathbf{x}' = \mathsf{R}\mathbf{x}
 
         Parameters
         ----------
         R : array_like
             3x3 rotation matrix to use for applying rotation.
         point : array_like, optional
-            Center of rotation. If ``None`` then the center of geometry of this
-            group is used.
+            Center of rotation
 
         Returns
         -------
@@ -689,17 +694,9 @@ class GroupBase(_MutableBase):
 
         Notes
         -----
-        By default (``point=None``) the rotation is performed around
-        the centroid of the group (:meth:`center_of_geometry`). In
-        order to perform a rotation around, say, the origin, use
-        ``point=[0, 0, 0]``.
-
-        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
-        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
-
-        .. math::
-
-            \mathbf{x}' = \mathsf{R}\mathbf{x}
+        By default rotates around center of origin ``point=(0, 0, 0)``. To
+        rotate around center of geometry of the atomgroup use ``ag.rotate(R,
+        point=ag.centroid)``.
 
         See Also
         --------
@@ -708,10 +705,10 @@ class GroupBase(_MutableBase):
 
         """
         R = np.asarray(R)
-        point = np.asarray(point) if point is not None else self.centroid()
+        point = np.asarray(point)
 
-        self.translate(-point)
         # changes the coordinates (in place)
+        self.translate(-point)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
