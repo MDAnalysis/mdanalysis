@@ -62,17 +62,18 @@ box_triclinic
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
-from MDAnalysis.core.groups import AtomGroup
-from six.moves import range, zip
 import itertools
 import warnings
-import numpy as np
 
-from ..core import flags
+import numpy as np
+from MDAnalysis.core.groups import AtomGroup
+from six.moves import range, zip
+
 from . import base
-from ..lib import util
 from .core import triclinic_box, triclinic_vectors
+from ..core import flags
 from ..exceptions import NoDataError
+from ..lib import util
 
 
 class Timestep(base.Timestep):
@@ -155,9 +156,9 @@ class GROReader(base.SingleFrameReaderBase):
                 if pos < 0:
                     continue
 
-                ts._pos[pos] = [line[20 + cs*i:20 + cs*(i+1)] for i in range(3)]
+                ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
                 try:
-                    velocities[pos] = [line[20 + cs*i:20 + cs*(i+1)] for i in range(3, 6)]
+                    velocities[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3, 6)]
                 except ValueError:
                     # Remember that we got this error
                     missed_vel = True
@@ -239,19 +240,20 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None,  **kwargs):
+    def __init__(self, filename, convert_units=None, n_atoms=None):
         """Set up a GROWriter with a precision of 3 decimal places.
 
-        :Arguments:
-            *filename*
-                output filename
+        Parameters
+        -----------
+        filename: str
+            output filename
 
-            *n_atoms*
-                int (optional)
+        n_atoms: int (optional)
+            number of atoms
 
         """
         self.filename = util.filename(filename, ext='gro')
-        self.n_atoms = kwargs.get('n_atoms', None)
+        self.n_atoms = n_atoms
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
@@ -260,12 +262,10 @@ class GROWriter(base.WriterBase):
     def write(self, obj):
         """Write selection at current trajectory frame to file.
 
-        :Arguments:
-          obj
-              This can be a Timestep, AtomGroup, or a Universe.
-        :Keywords:
-          frame
-              optionally move to frame number *frame*
+        Parameters
+        -----------
+        obj
+            This can be a Timestep, AtomGroup, or a Universe.
 
         The GRO format only allows 5 digits for resid and atom
         number. If these number become larger than 99,999 then this
@@ -276,15 +276,10 @@ class GROWriter(base.WriterBase):
         """
         # write() method that complies with the Trajectory API
 
-        # if frame is not None:
-        #     u.trajectory[frame]  # advance to frame
-        # else:
-        #     frame = u.trajectory.ts.frame
-
         try:
 
             # make sure to use atoms (Issue 46)
-            atoms = obj.atoms
+            selection = obj.atoms
             # can write from selection == Universe (Issue 49)
 
         except AttributeError:
@@ -292,17 +287,6 @@ class GROWriter(base.WriterBase):
                 selection = obj.copy()
             else:
                 raise TypeError("No Timestep found in obj argument")
-        finally:
-            if isinstance(obj, AtomGroup):
-                selection = obj
-            elif hasattr(obj, 'universe'):
-                ts_full = obj.universe.trajectory.ts.copy()
-                if ts_full.n_atoms == atoms.n_atoms:
-                    selection = ts_full
-                else:
-                    selection = ts_full.copy_slice(atoms.indices)
-            elif hasattr(obj, 'trajectory'):
-                selection = obj.trajectory.ts
 
         try:
             velocities = selection.velocities
@@ -342,7 +326,7 @@ class GROWriter(base.WriterBase):
             # Not inplace because AtomGroup is not a copy
             positions = self.convert_pos_to_native(positions, inplace=False)
             if has_velocities:
-               self.convert_velocities_to_native(velocities) 
+                velocities = self.convert_velocities_to_native(velocities, inplace=False)
         # check if any coordinates are illegal
         # (checks the coordinates in native nm!)
         if not self.has_valid_coordinates(self.gro_coor_limits, positions):
@@ -381,13 +365,8 @@ class GROWriter(base.WriterBase):
                         pos=positions[atom_index]
                     ))
 
-            try:  # for AtomGroup/Universe
-                tri_dims = obj.universe.coord.triclinic_dimensions
-            except AttributeError:  # for Timestep
-                tri_dims = obj.triclinic_dimensions
-
             # Footer: box dimensions
-            if np.all(selection.dimensions[3:] == [90., 90., 90.]):
+            if np.allclose(selection.dimensions[3:], [90., 90., 90.]):
                 box = self.convert_pos_to_native(
                     selection.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
@@ -395,6 +374,12 @@ class GROWriter(base.WriterBase):
                     box=box)
                 )
             else:
+
+                try:  # for AtomGroup/Universe
+                    tri_dims = obj.universe.coord.triclinic_dimensions
+                except AttributeError:  # for Timestep
+                    tri_dims = obj.triclinic_dimensions
+
                 # full output
                 box = self.convert_pos_to_native(
                     tri_dims.flatten(), inplace=False)
