@@ -240,15 +240,15 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None):
+    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         Parameters
         -----------
-        filename: str
+        filename : str
             output filename
 
-        n_atoms: int (optional)
+        n_atoms : int (optional)
             number of atoms
 
         """
@@ -264,8 +264,7 @@ class GROWriter(base.WriterBase):
 
         Parameters
         -----------
-        obj
-            This can be a Timestep, AtomGroup, or a Universe.
+        obj : AtomGroup / Universe / Timestep
 
         The GRO format only allows 5 digits for resid and atom
         number. If these number become larger than 99,999 then this
