@@ -357,7 +357,7 @@ class GroupBase(_MutableBase):
     | ``x in s``                    |            | test if ``x`` is part of   |
     |                               |            | ``s``                      |
     +-------------------------------+------------+----------------------------+
-    | ``x not in s``                |            | test if ``x`` is non part  |
+    | ``x not in s``                |            | test if ``x`` is not part  |
     |                               |            | of ``s``                   |
     +-------------------------------+------------+----------------------------+
     | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
@@ -368,9 +368,8 @@ class GroupBase(_MutableBase):
     |                               |            | in ``t``                   |
     +-------------------------------+------------+----------------------------+
 
-    The following operations treat the group as an ordered and deduplicated
-    set. The inputs are considered sorted and deduplicated, and the output is
-    sorted and deduplicated.
+    The following operations treat the Group as set. Any result will have any
+    duplicate entries removed and the Group will be sorted.
 
     +-------------------------------+------------+----------------------------+
     | Operation                     | Equivalent | Result                     |
@@ -1032,8 +1031,9 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def concatenate(self, other):
-        """Concatenate the Group with another Group or Component of the same
-        level.
+        """Concatenate with another Group or Component of the same level.
+
+        Duplicate entries and original order is preserved.
 
         Parameters
         ----------
@@ -1044,6 +1044,21 @@ class GroupBase(_MutableBase):
         -------
         Group
             Group with elements of `self` and `other` concatenated
+
+        Example
+        -------
+        The order of the original contents (including duplicates)
+        are preserved when performing a concatenation.
+
+        >>> ag1 = u.select_atoms('name O')
+        >>> ag2 = u.select_atoms('name N')
+        >>> ag3 = ag1 + ag2  # or ag1.concatenate(ag2)
+        >>> ag3[:3].names
+        array(['O', 'O', 'O'], dtype=object)
+        >>> ag3[-3:].names
+        array(['N', 'N', 'N'], dtype=object)
+
+        .. versionadded:: 0.16.0
         """
         o_ix = other.ix_array
         return self._derived_class(np.concatenate([self.ix, o_ix]),
@@ -1051,8 +1066,7 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def union(self, other):
-        """Return the union of this Group and an other Group or Component of
-        the same level
+        """Group of elements either in this Group or another
 
         On the contrary to concatenation, this method removes duplicate
         elements.
@@ -1068,6 +1082,17 @@ class GroupBase(_MutableBase):
             Group with the combined elements of `self` and `other`, without
             duplicate elements
 
+        Example
+        -------
+        In contrast to :meth:`concatenate`, any duplicates are dropped
+        and the result is sorted.
+
+        >>> ag1 = u.select_atoms('name O')
+        >>> ag2 = u.select_atoms('name N')
+        >>> ag3 = ag1 | ag2  # or ag1.union(ag2)
+        >>> ag3[:3].names
+        array(['N', 'O', 'N'], dtype=object)
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1075,10 +1100,9 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def intersection(self, other):
-        """Return the intersect of this Group and an other Group or Component
-        of the same level
+        """Group of elements which are in both this Group and another
 
-        This method removes duplicate elements.
+        This method removes duplicate elements and sorts the result.
 
         Parameters
         ----------
@@ -1091,6 +1115,17 @@ class GroupBase(_MutableBase):
             Group with the common elements of `self` and `other`, without
             duplicate elements
 
+        Example
+        -------
+        Intersections can be used when the select atoms string would
+        become too complicated.  For example to find the water atoms
+        which are within 4.0A of two segments:
+
+        >>> water = u.select_atoms('resname SOL')
+        >>> shell1 = water.select_atoms('around 4.0 segid 1')
+        >>> shell2 = water.select_atoms('around 4.0 segid 2')
+        >>> common = shell1 & shell2  # or shell1.intersection(shell2)
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1098,13 +1133,12 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def subtract(self, other):
-        """Returns a group with the elements of this group that do not appear
-        in an other Group or Component
+        """Group with elements from this Group that don't appear in other
 
-        The order is kept so as duplicated elements. If an element of this
-        Group is duplicated and appear in the other Group or Component, then
-        all the occurences of this element are removed from the resulting
-        Group.
+        The original order of this group is kept, as well as any duplicate
+        elements. If an element of this Group is duplicated and appears in
+        the other Group or Component, then all the occurences of that element
+        are removed from the returned Group.
 
         Parameters
         ----------
@@ -1117,6 +1151,17 @@ class GroupBase(_MutableBase):
             Group with the elements of `self` that are not in  `other`,
             conserves order and duplicates.
 
+        Example
+        -------
+        Unlike :meth:`difference` this method will not sort or remove
+        duplicates.
+
+        >>> ag1 = u.atoms[[3, 3, 2, 2, 1, 1]]
+        >>> ag2 = u.atoms[2]
+        >>> ag3 = ag1 - ag2  # or ag1.subtract(ag2)
+        >>> ag1.indices
+        array([3, 3, 1, 1])
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1125,10 +1170,9 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def difference(self, other):
-        """Return the set difference of this Group and an other Group or
-        Component of the same level
+        """Elements from this Group that do not appear in another
 
-        This method removes duplicate elements.
+        This method removes duplicate elements and sorts the result.
 
         Parameters
         ----------
@@ -1148,10 +1192,9 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def symmetric_difference(self, other):
-        """Return the set symmetric difference of this Group and an other Group
-        or Component of the same level
+        """Group of elements which are only in one of this Group or another
 
-        This method removes duplicate elements.
+        This method removes duplicate elements and the result is sorted.
 
         Parameters
         ----------
@@ -1170,8 +1213,7 @@ class GroupBase(_MutableBase):
         return self._derived_class(np.setxor1d(self._ix, o_ix), self._u)
 
     def isdisjoint(self, other):
-        """Return True if the Group has no elements in common with the other
-        Group
+        """If the Group has no elements in common with the other Group
 
         Parameters
         ----------
@@ -1189,8 +1231,7 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def issubset(self, other):
-        """Return True if all elements of this Group are part of an other Group
-        of the same level
+        """If all elements of this Group are part of another Group
 
         Note that an empty group is a subset of any group of the same level.
 
@@ -1211,8 +1252,7 @@ class GroupBase(_MutableBase):
         return s_ix.issubset(o_ix)
 
     def is_strict_subset(self, other):
-        """Returns True if this Group is a subset of an other Group of the same
-        level without being equal
+        """If this Group is a subset of another Group but not identical
 
         Parameters
         ----------
@@ -1230,7 +1270,7 @@ class GroupBase(_MutableBase):
 
     @_only_same_level
     def issuperset(self, other):
-        """Return True if all elements of an other Group are part of this Group
+        """If all elements of another Group are part of this Group
 
         Parameters
         ----------
@@ -1249,8 +1289,7 @@ class GroupBase(_MutableBase):
         return s_ix.issuperset(o_ix)
 
     def is_strict_superset(self, other):
-        """Returns True if this Group is a superset of an other Group of the
-        same level without being equal
+        """If this Group is a superset of another Group but not identical
 
         Parameters
         ----------
