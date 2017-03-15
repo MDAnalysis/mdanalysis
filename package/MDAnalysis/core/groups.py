@@ -354,16 +354,13 @@ class GroupBase(_MutableBase):
     |                               |            | contain the same elements  |
     |                               |            | in the same order          |
     +-------------------------------+------------+----------------------------+
-    | ``x in s``                    |            | test if ``x`` is part of   |
-    |                               |            | ``s``                      |
-    +-------------------------------+------------+----------------------------+
-    | ``x not in s``                |            | test if ``x`` is not part  |
-    |                               |            | of ``s``                   |
+    | ``x in s``                    |            | test if component ``x`` is |
+    |                               |            | part of group ``s``        |
     +-------------------------------+------------+----------------------------+
     | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
     |                               |            | from ``s`` and from ``t``  |
     +-------------------------------+------------+----------------------------+
-    | ``s.subtract(t)``             | ``s - t``  | new Group with elements    |
+    | ``s.subtract(t)``             |            | new Group with elements    |
     |                               |            | from ``s`` that are not    |
     |                               |            | in ``t``                   |
     +-------------------------------+------------+----------------------------+
@@ -398,7 +395,7 @@ class GroupBase(_MutableBase):
     | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
     |                               |            | common to ``s`` and ``t``  |
     +-------------------------------+------------+----------------------------+
-    | ``s.difference(t)``           |            | new Group with elements of |
+    | ``s.difference(t)``           | ``s - t``  | new Group with elements of |
     |                               |            | ``s`` that are not in ``t``|
     +-------------------------------+------------+----------------------------+
     | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
@@ -500,6 +497,8 @@ class GroupBase(_MutableBase):
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
+    def __sub__(self, other):
+        return self.difference(other)
 
     @_only_same_level
     def __eq__(self, other):
@@ -518,9 +517,6 @@ class GroupBase(_MutableBase):
             # eq method raises Error for wrong comparisons
             return False
         return other.ix in self.ix
-
-    def __sub__(self, other):
-        return self.subtract(other)
 
     def __or__(self, other):
         return self.union(other)
@@ -553,7 +549,12 @@ class GroupBase(_MutableBase):
     def ix_array(self):
         """Unique indices of the components in the Group.
 
-        For a Group, ix_array is the same as ix.
+        For a Group, ix_array is the same as ix. This method gives a
+        consistent API between components and groups.
+
+        See Also
+        --------
+        ix
         """
         return self._ix
 
@@ -1033,7 +1034,8 @@ class GroupBase(_MutableBase):
     def concatenate(self, other):
         """Concatenate with another Group or Component of the same level.
 
-        Duplicate entries and original order is preserved.
+        Duplicate entries and original order is preserved. It is synomymous to
+        the `+` operator.
 
         Parameters
         ----------
@@ -1068,8 +1070,8 @@ class GroupBase(_MutableBase):
     def union(self, other):
         """Group of elements either in this Group or another
 
-        On the contrary to concatenation, this method removes duplicate
-        elements.
+        On the contrary to concatenation, this method sort the elements and
+        removes duplicate ones. It is synomymous to the `|` operator.
 
         Parameters
         ----------
@@ -1093,6 +1095,10 @@ class GroupBase(_MutableBase):
         >>> ag3[:3].names
         array(['N', 'O', 'N'], dtype=object)
 
+        See Also
+        --------
+        concatenate, intersection
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1102,7 +1108,8 @@ class GroupBase(_MutableBase):
     def intersection(self, other):
         """Group of elements which are in both this Group and another
 
-        This method removes duplicate elements and sorts the result.
+        This method removes duplicate elements and sorts the result. It is
+        synomymous to the `&` operator.
 
         Parameters
         ----------
@@ -1125,6 +1132,10 @@ class GroupBase(_MutableBase):
         >>> shell1 = water.select_atoms('around 4.0 segid 1')
         >>> shell2 = water.select_atoms('around 4.0 segid 2')
         >>> common = shell1 & shell2  # or shell1.intersection(shell2)
+
+        See Also
+        --------
+        union
 
         .. versionadded:: 0.16
         """
@@ -1162,6 +1173,10 @@ class GroupBase(_MutableBase):
         >>> ag1.indices
         array([3, 3, 1, 1])
 
+        See Also
+        --------
+        concatenate, difference
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1172,7 +1187,9 @@ class GroupBase(_MutableBase):
     def difference(self, other):
         """Elements from this Group that do not appear in another
 
-        This method removes duplicate elements and sorts the result.
+        This method removes duplicate elements and sorts the result. As such,
+        it is different from :meth:`subtract`. :meth:`difference` is synomymous
+        to the `-` operator.
 
         Parameters
         ----------
@@ -1185,6 +1202,10 @@ class GroupBase(_MutableBase):
             Group with the elements of `self` that are not in  `other`, without
             duplicate elements
 
+        See Also
+        --------
+        subtract, symmetric_difference
+
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
@@ -1194,7 +1215,8 @@ class GroupBase(_MutableBase):
     def symmetric_difference(self, other):
         """Group of elements which are only in one of this Group or another
 
-        This method removes duplicate elements and the result is sorted.
+        This method removes duplicate elements and the result is sorted. It is
+        synomym to the `^` operator.
 
         Parameters
         ----------
@@ -1206,6 +1228,19 @@ class GroupBase(_MutableBase):
         Group
             Group with the elements that are in `self` or in `other` but not in
             both, without duplicate elements
+
+        Example
+        -------
+
+        >>> ag1 = u.atoms[[0, 1, 5, 3, 3, 2]]
+        >>> ag2 = u.atoms[[4, 4, 6, 2, 3, 5]]
+        >>> ag3 = ag1 ^ ag2  # or ag1.symmetric_difference(ag2)
+        >>> ag3.indices  # 0 and 1 are only in ag1, 4 and 6 are only in ag2
+        [0, 1, 4, 6]
+
+        See Also
+        --------
+        difference
 
         .. versionadded:: 0.16
         """
@@ -1358,6 +1393,88 @@ class AtomGroup(GroupBase):
         single :class:`Atom` if there is only one matching atom, *or* a
         new :class:`AtomGroup` for multiple matches.  This makes it
         difficult to use the feature consistently in scripts.
+
+    AtomGroups can be compared and combined using group operators. For
+    instance, AtomGroups can be concatenated using `+` or :meth:`concatenate`::
+
+        ag_concat = ag1 + ag2  # or ag_concat = ag1.concatenate(ag2)
+
+    When groups are concatenated, the order of the atoms is conserved. If atoms
+    appear several times in one of the groups, the duplicates are kept in the
+    resulting group. On the contrary to :meth:`concatenate`, :meth:`union`
+    treats the AtomGroups as sets, duplicates are removed from the resulting
+    group, and atoms are ordered. The `|` operator is synomymous to
+    :meth:`union`::
+
+        ag_union = ag1 | ag2  # or ag_union = ag1.union(ag2)
+
+    The opposite operation to :meth:`concatenate` is :meth:`subtract`. This
+    method creates a new group with all the atoms of the group that are not in
+    a given other group; the order of the atoms is kept, so as duplicates.
+    :meth:`difference` is the set version of :meth:`subtract`. The resulting
+    group is sorted and deduplicated.
+
+    All set methods are listed in the table below. These methods treat the
+    groups as sorted and deduplicated sets of atoms.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``s.isdisjoint(t)``           |            | ``True`` if ``s`` and      |
+    |                               |            | ``t`` do not share         |
+    |                               |            | elements                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issubset(t)``             |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_subset(t)``     |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issuperset(t)``           |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_superset(t)``   |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.union(t)``                | ``s | t``  | new Group with elements    |
+    |                               |            | from both ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
+    |                               |            | common to ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.difference(t)``           | ``s - t``  | new Group with elements of |
+    |                               |            | ``s`` that are not in ``t``|
+    +-------------------------------+------------+----------------------------+
+    | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
+    |                               |            | that are part of ``s`` or  |
+    |                               |            | ``t`` but not both         |
+    +-------------------------------+------------+----------------------------+
+
+    The following methods keep the order of the atoms, and keep duplicated
+    atoms.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``len(s)``                    |            | number of elements (atoms, |
+    |                               |            | residues or segment) in    |
+    |                               |            | the group                  |
+    +-------------------------------+------------+----------------------------+
+    | ``s == t``                    |            | test if ``s`` and ``t``    |
+    |                               |            | contain the same elements  |
+    |                               |            | in the same order          |
+    +-------------------------------+------------+----------------------------+
+    | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
+    |                               |            | from ``s`` and from ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.subtract(t)``             |            | new Group with elements    |
+    |                               |            | from ``s`` that are not    |
+    |                               |            | in ``t``                   |
+    +-------------------------------+------------+----------------------------+
+
+    The `in` operator allows to test if an :class:`Atom` is in the AtomGroup.
 
     AtomGroup instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
@@ -2033,6 +2150,8 @@ class ResidueGroup(GroupBase):
     :class:`GroupBase`, so this class only includes ad-hoc methods
     specific to ResidueGroups.
 
+    ResidueGroups can be compared and combined using group operators. See the
+    list of these operators on :class:`GroupBase`.
     """
 
     @property
@@ -2130,6 +2249,8 @@ class SegmentGroup(GroupBase):
     GroupBase, so this class only includes ad-hoc methods specific to
     SegmentGroups.
 
+    SegmentGroups can be compared and combined using group operators. See the
+    list of these operators on :class:`GroupBase`.
     """
 
     @property
@@ -2281,7 +2402,14 @@ class ComponentBase(_MutableBase):
 
     @property
     def ix_array(self):
-        """Unique index of this component as an array."""
+        """Unique index of this component as an array.
+        
+        This method gives a consistent API between components and groups.
+
+        See Also
+        --------
+        ix
+        """
         return np.array([self.ix])
 
 

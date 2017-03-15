@@ -735,7 +735,7 @@ class TestGroupBaseOperators(object):
         return a, b, c, d, e
 
     @staticmethod
-    def make_groups_duplicated_and_scrumbled(u, level):
+    def make_groups_duplicated_and_scrambled(u, level):
         # The content of the groups is the same as for make_groups, but the
         # elements can appear several times and their order is scrambled.
         a = getattr(u, level)[[1, 3, 2, 1, 2, 4, 4]]
@@ -771,7 +771,7 @@ class TestGroupBaseOperators(object):
         n_atoms = n_residues * 5
         u = make_Universe(size=(n_atoms, n_residues, n_segments))
         for level in ('atoms', 'residues', 'segments'):
-            a, b, c, d, e = self.make_groups_duplicated_and_scrumbled(u, level)
+            a, b, c, d, e = self.make_groups_duplicated_and_scrambled(u, level)
             yield self._test_len_duplicated_and_scrambled, a, b, c, d, e
             yield self._test_equal, a, b, c, d, e
             yield self._test_concatenate, a, b, c, d, e
@@ -855,7 +855,7 @@ class TestGroupBaseOperators(object):
 
         operators = (
             (operator.add, 'concatenate'),
-            (operator.sub, 'subtract'),
+            (operator.sub, 'difference'),
             (operator.and_, 'intersection'),
             (operator.or_, 'union'),
             (operator.xor, 'symmetric_difference'),
