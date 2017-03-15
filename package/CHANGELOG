@@ -66,6 +66,8 @@ Enhancements
     for a single frame (Issue #1199 PR #1201)
   * Correct the display error of HydrogenBondAnalysis when start is not 0 or 
     step is not one.
+  * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
+    included set operators (Issue #726)
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
