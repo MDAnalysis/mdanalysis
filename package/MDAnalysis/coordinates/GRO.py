@@ -62,12 +62,12 @@ box_triclinic
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
+
+from six.moves import range, zip
 import itertools
 import warnings
 
 import numpy as np
-from MDAnalysis.core.groups import AtomGroup
-from six.moves import range, zip
 
 from . import base
 from .core import triclinic_box, triclinic_vectors

@@ -36,6 +36,22 @@ class TestGROReader(BaseReaderTest):
             reference = GROReference()
         super(TestGROReader, self).__init__(reference)
 
+    def test_flag_convert_lengths(self):
+        assert_equal(mda.core.flags['convert_lengths'], True,
+                     "MDAnalysis.core.flags['convert_lengths'] should be True "
+                     "by default")
+
+    def test_time(self):
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        assert_equal(u.trajectory.time, 0.0,
+                     "wrong time of the frame")
+
+    def test_full_slice(self):
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        trj_iter = u.trajectory[:]
+        frames = [ts.frame for ts in trj_iter]
+        assert_equal(frames, np.arange(u.trajectory.n_frames))
+
 
 class TestGROWriter(BaseWriterTest):
     def __init__(self, reference=None):
