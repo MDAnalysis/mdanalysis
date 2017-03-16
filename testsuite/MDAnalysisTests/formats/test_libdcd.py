@@ -40,7 +40,7 @@ class DCDReadFrameTest(TestCase):
             list_chars = []
             for element in self.expected_remarks:
                 list_chars.append(element)
-            self.assertEqual(len(f.remarks), len(self.expected_remarks))
+            assert_equal(len(f.remarks), len(self.expected_remarks))
 
     def test_read_coords(self):
         # confirm shape of coordinate data against result from previous
