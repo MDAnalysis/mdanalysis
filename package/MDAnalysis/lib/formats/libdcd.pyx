@@ -127,9 +127,6 @@ cdef class DCDFile:
         self.fname = fname.encode('utf-8')
         self.n_atoms = 0
         self.is_open = False
-        if path.isfile(self.fname) and mode == 'w':
-            raise IOError('''Aborting -- attempted to overwrite an
-                                existing file path.''')
         self.open(self.fname, mode)
 
     def __dealloc__(self):
