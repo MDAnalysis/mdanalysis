@@ -129,8 +129,7 @@ Changes
     (Issue #1010)
   * atoms.translate/rotateby don't accept AtomGroup tuples as
     parameters anymore (Issue #1025)
-  * atoms.rotate by default now uses the centroid as center of
-    rotation like rotateby (Issue #1022)
+  * atoms.rotate can be given center of rotation (Issue #1022)
   * XTCFile and TRRFile only raise IOError now on error.
   * Deprecate usage of MDAnalaysis.core.AtomGroup
   * get_writer_for() returns NullWriter when filename=None instead of
