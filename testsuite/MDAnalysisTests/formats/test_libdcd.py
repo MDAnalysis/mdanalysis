@@ -279,32 +279,32 @@ class DCDByteArithmeticTest(TestCase):
 
     def setUp(self):
         self.dcdfile = DCDFile(DCD, 'r')
-        self.filesize = os.path.getsize(DCD)
+        self._filesize = os.path.getsize(DCD)
 
     def test_relative_frame_sizes(self):
         # the first frame of a DCD file should always be >= in size
         # to subsequent frames, as the first frame contains the same
         # atoms + (optional) fixed atoms
-        first_frame_size = self.dcdfile.firstframesize
-        general_frame_size = self.dcdfile.framesize
+        first_frame_size = self.dcdfile._firstframesize
+        general_frame_size = self.dcdfile._framesize
         self.assertGreaterEqual(first_frame_size, general_frame_size)
 
     def test_file_size_breakdown(self):
         # the size of a DCD file is equivalent to the sum of the header
         # size, first frame size, and (N - 1 frames) * size per general
         # frame
-        expected = self.filesize
-        actual = self.dcdfile.header_size + self.dcdfile.firstframesize + \
-                 ((self.dcdfile.n_frames - 1) * self.dcdfile.framesize)
+        expected = self._filesize
+        actual = self.dcdfile._header_size + self.dcdfile._firstframesize + \
+                 ((self.dcdfile.n_frames - 1) * self.dcdfile._framesize)
         assert_equal(actual, expected)
 
     def test_nframessize_int(self):
         # require that the (nframessize / framesize) value used by DCDFile 
         # is an integer (because nframessize / framesize + 1 = total frames,
         # which must also be an int)
-        nframessize = self.filesize - self.dcdfile.header_size - \
-                           self.dcdfile.firstframesize
-        self.assertTrue(float(nframessize) % float(self.dcdfile.framesize) == 0)
+        nframessize = self._filesize - self.dcdfile._header_size - \
+                           self.dcdfile._firstframesize
+        self.assertTrue(float(nframessize) % float(self.dcdfile._framesize) == 0)
 
 
 class DCDByteArithmeticTestNAMD(DCDByteArithmeticTest, TestCase):
@@ -312,7 +312,7 @@ class DCDByteArithmeticTestNAMD(DCDByteArithmeticTest, TestCase):
 
     def setUp(self):
         self.dcdfile = DCDFile(DCD_NAMD_TRICLINIC, 'r')
-        self.filesize = os.path.getsize(DCD_NAMD_TRICLINIC)
+        self._filesize = os.path.getsize(DCD_NAMD_TRICLINIC)
     
 
 class DCDWriteTestNAMD(DCDWriteTest, TestCase):

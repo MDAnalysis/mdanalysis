@@ -119,9 +119,9 @@ cdef class DCDFile:
     cdef int current_frame
     cdef readonly remarks
     cdef int reached_eof
-    cdef readonly int firstframesize
-    cdef readonly int framesize
-    cdef readonly int header_size
+    cdef readonly int _firstframesize
+    cdef readonly int _framesize
+    cdef readonly int _header_size
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -240,17 +240,17 @@ cdef class DCDFile:
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        self.firstframesize = (self.n_atoms + 2) * self.n_dims * sizeof(float) + extrablocksize
-        self.framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
+        self._firstframesize = (self.n_atoms + 2) * self.n_dims * sizeof(float) + extrablocksize
+        self._framesize = ((self.n_atoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
                           extrablocksize)
         filesize = path.getsize(self.fname)
         # It's safe to use ftell, even though ftell returns a long, because the
         # header size is < 4GB.
-        self.header_size = fio_ftell(self.fp)
+        self._header_size = fio_ftell(self.fp)
         # TODO: check that nframessize is larger then 0, the c-implementation
         # used to do that.
-        nframessize = filesize - self.header_size - self.firstframesize
-        return nframessize / self.framesize + 1
+        nframessize = filesize - self._header_size - self._firstframesize
+        return nframessize / self._framesize + 1
 
     @property
     def periodic(self):
@@ -332,9 +332,9 @@ cdef class DCDFile:
 
         cdef fio_size_t offset
         if frame == 0:
-            offset = self.header_size
+            offset = self._header_size
         else:
-            offset = self.header_size + self.firstframesize + self.framesize * (frame - 1)
+            offset = self._header_size + self._firstframesize + self._framesize * (frame - 1)
 
         ok = fio_fseek(self.fp, offset, _whence_vals["FIO_SEEK_SET"])
         if ok != 0:
