@@ -409,3 +409,5 @@ cdef class DCDFile:
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[1], <FLOAT_T*> &z[2],
                          <DOUBLE_T*> &box[0], charmm)
+
+        self.current_frame += 1
