@@ -113,20 +113,20 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     def __init__(self, filename, mode="w", numterms=None, preamble=None, **kwargs):
         """Set up for writing to *filename*.
 
-        :Arguments:
-           *filename*
-               output file
-           *mode*
-               create a new file ("w"), or append ("a") to existing
-               file ["w"]
-           *numterms*
-               number of individual index numbers per line for output
-               formats that write multiple entries in one line. If set
-               to 0 or ``False`` then no special formatting is done  [8]
-           *preamble*
-               string that is written as a comment at the top of the file []
-           *kwargs*
-               use as defaults for :meth:`write`
+        Parameters
+        ----------
+        filename:
+            output file
+        mode:
+            create a new file ("w"), or append ("a") to existing file ["w"]
+        numterms:
+            number of individual index numbers per line for output
+            formats that write multiple entries in one line. If set
+            to 0 or ``False`` then no special formatting is done  [8]
+        preamble:
+            string that is written as a comment at the top of the file []
+        kwargs:
+            use as defaults for :meth:`write`
         """
         self.filename = util.filename(filename, ext=self.ext)
         if not mode in ('a', 'w'):
@@ -169,19 +169,19 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     def write(self, selection, number=None, name=None, frame=None, mode=None):
         """Write selection to the output file.
 
-        :Arguments:
-           *selection*
-               a :class:`MDAnalysis.core.groups.AtomGroup`
-           *number*
-               selection will be named "mdanalysis<number>"
-               (``None`` auto increments between writes; useful
-               when appending) [``None``]
-           *name*
-               selection will be named *name* (instead of numbered)
-               [``None``]
-           *frame*
-               write selection of this frame (or the current one if
-               ``None`` [``None``]
+        Parameters
+        ----------
+        selection:
+            a :class:`MDAnalysis.core.groups.AtomGroup`
+        number:
+            selection will be named "mdanalysis<number>"
+            (``None`` auto increments between writes; useful
+            when appending) [``None``]
+        name:
+            selection will be named *name* (instead of numbered) [``None``]
+        frame:
+            write selection of this frame (or the current one if
+            ``None`` [``None``]
         """
         u = selection.universe
         if frame is not None:
