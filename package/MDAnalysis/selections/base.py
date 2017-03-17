@@ -94,6 +94,11 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     .. versionchanged:: 0.11.0
        Can now also write to a :class:`~MDAnalysis.lib.util.NamedStream` instead
        of a normal file (using :class:`~MDAnalysis.lib.util.openany`).
+
+    .. versionchanged:: 0.16.0
+       Remove the `wa` mode. The file is now open when the instane is created
+       and closed with the :meth:`close` method or when exiting the `with`
+       statement.
     """
     #: Name of the format.
     format = None
@@ -105,15 +110,15 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     commentfmt = None
     default_numterms = 8
 
-    def __init__(self, filename, mode="wa", numterms=None, preamble=None, **kwargs):
+    def __init__(self, filename, mode="w", numterms=None, preamble=None, **kwargs):
         """Set up for writing to *filename*.
 
         :Arguments:
            *filename*
                output file
            *mode*
-               overwrite ("w") for every write, append ("a") to existing
-               file, or overwrite an existing file and then append ("wa") ["wa"]
+               create a new file ("w"), or append ("a") to existing
+               file ["w"]
            *numterms*
                number of individual index numbers per line for output
                formats that write multiple entries in one line. If set
@@ -124,8 +129,8 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
                use as defaults for :meth:`write`
         """
         self.filename = util.filename(filename, ext=self.ext)
-        if not mode in ('a', 'w', 'wa'):
-            raise ValueError("mode must be one of 'w', 'a', 'wa', not {0!r}".format(mode))
+        if not mode in ('a', 'w'):
+            raise ValueError("mode must be one of 'w', 'a', not {0!r}".format(mode))
         self.mode = mode
         self._current_mode = mode[0]
         if numterms is None or numterms < 0:
@@ -137,6 +142,8 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
         self.preamble = preamble
         self.otherargs = kwargs  # hack
         self.number = 0
+
+        self._outfile = util.anyopen(self.filename, mode=self._current_mode)
 
         self.write_preamble()
 
@@ -157,9 +164,7 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
         """Write a header, depending on the file format."""
         if self.preamble is None:
             return
-        with util.openany(self.filename, self._current_mode) as out:
-            out.write(self.comment(self.preamble))
-        self._current_mode = 'a'
+        self._outfile.write(self.comment(self.preamble))
 
     def write(self, selection, number=None, name=None, frame=None, mode=None):
         """Write selection to the output file.
@@ -197,21 +202,24 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
         # selection_list must contain entries to be joined with spaces or linebreaks
         selection_terms = self._translate(selection.atoms)
         step = self.numterms or len(selection.atoms)
-        with util.openany(self.filename, self._current_mode) as out:
-            self._write_head(out, name=name)
-            for iatom in range(0, len(selection.atoms), step):
-                line = selection_terms[iatom:iatom + step]
-                out.write(" ".join(line))
-                if len(line) == step and not iatom + step == len(selection.atoms):
-                    out.write(' ' + self.continuation + '\n')
-            out.write(' ')  # safe so that we don't have to put a space at the start of tail
-            self._write_tail(out)
-            out.write('\n')  # always terminate with newline
 
-            if self.mode == 'wa':
-                self._current_mode = 'a'  # switch after first write
-            elif self.mode == 'w':
-                self._current_mode = 'w'  # switch back after eg preamble
+        out = self._outfile
+        self._write_head(out, name=name)
+        for iatom in range(0, len(selection.atoms), step):
+            line = selection_terms[iatom:iatom + step]
+            out.write(" ".join(line))
+            if len(line) == step and not iatom + step == len(selection.atoms):
+                out.write(' ' + self.continuation + '\n')
+        out.write(' ')  # safe so that we don't have to put a space at the start of tail
+        self._write_tail(out)
+        out.write('\n')  # always terminate with newline
+
+    def close(self):
+        """Close the file
+
+        .. versionadded:: 0.16.0
+        """
+        self._outfile.close()
 
     def _translate(self, atoms, **kwargs):
         """Translate atoms into a list of native selection terms.
@@ -241,4 +249,4 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
         return self
 
     def __exit__(self, *exc):
-        return False
+        self.close()

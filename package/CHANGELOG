@@ -145,6 +145,8 @@ Changes
     Reader -> ReaderBase, SingleFrameReader -> SingleFrameReaderBase,
     Writer -> WriterBase, TopologyReader -> TopologyReaderBase,
     SelectionWriter -> SelectionWriterBase (Issue #921)
+  * Selection writers do not have a 'wa' mode anymore, but they have a 'close'
+    method (Issue #1244)
 
 
 Deprecations (Issue #599)
