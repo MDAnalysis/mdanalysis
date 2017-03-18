@@ -96,7 +96,7 @@ class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
        of a normal file (using :class:`~MDAnalysis.lib.util.openany`).
 
     .. versionchanged:: 0.16.0
-       Remove the `wa` mode. The file is now open when the instane is created
+       Remove the `wa` mode. The file is now open when the instance is created
        and closed with the :meth:`close` method or when exiting the `with`
        statement.
     """
