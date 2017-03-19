@@ -30,6 +30,7 @@ The building blocks for MDAnalysis' description of topology
 from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
+import numbers
 import numpy as np
 import functools
 
@@ -749,7 +750,7 @@ class TopologyGroup(object):
            Allows indexing via boolean numpy array
         """
         # Grab a single Item, similar to Atom/AtomGroup relationship
-        if isinstance(item, int):
+        if isinstance(item, numbers.Integral):
             outclass = {'bond': Bond,
                         'angle': Angle,
                         'dihedral': Dihedral,

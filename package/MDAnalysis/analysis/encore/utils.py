@@ -21,6 +21,7 @@
 #
 from __future__ import division, absolute_import
 from six.moves import range
+import numbers
 from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
 from joblib import cpu_count
@@ -68,7 +69,7 @@ class TriangularMatrix(object):
         self.size = size
         if loadfile:
             self.loadz(loadfile)
-        elif isinstance(size, int):
+        elif isinstance(size, numbers.Integral):
             self.size = size
             self._elements = np.zeros((size + 1) * size // 2, dtype=np.float64)
         elif isinstance(size, SynchronizedArray):

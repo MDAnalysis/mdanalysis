@@ -363,7 +363,7 @@ class Timestep(object):
            correspond to atom indices,
            :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
         """
-        if isinstance(atoms, int):
+        if isinstance(atoms, numbers.Integral):
             return self._pos[atoms]
         elif isinstance(atoms, (slice, np.ndarray)):
             return self._pos[atoms]
@@ -1205,7 +1205,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                                  "".format(frame, len(self)))
             return frame
 
-        if isinstance(frame, int):
+        if isinstance(frame, numbers.Integral):
             frame = apply_limits(frame)
             return self._read_frame_with_aux(frame)
         elif isinstance(frame, (list, np.ndarray)):
@@ -1217,7 +1217,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
             def listiter(frames):
                 for f in frames:
-                    if not isinstance(f, (int, np.integer)):
+                    if not isinstance(f, numbers.Integral):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame_with_aux(apply_limits(f))
 

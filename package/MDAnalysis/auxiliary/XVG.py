@@ -69,6 +69,7 @@ from __future__ import absolute_import
 
 from six.moves import range
 
+import numbers
 import os
 import numpy as np
 from . import base
@@ -134,7 +135,7 @@ class XVGStep(base.AuxStep):
         if key is None:
             # here so that None is a valid value; just return
             return
-        if isinstance(key, int):
+        if isinstance(key, numbers.Integral):
             return self._select_data(key)
         else:
              raise ValueError('Time selector must be single index')
@@ -143,7 +144,7 @@ class XVGStep(base.AuxStep):
         if key is None:
             # here so that None is a valid value; just return
             return
-        if isinstance(key, int):
+        if isinstance(key, numbers.Integral):
             try:
                 return self._data[key]
             except IndexError:
