@@ -72,10 +72,6 @@ def reader(filename, **kwargs):
     :ref:`Supported coordinate formats`
 
 
-    .. deprecated:: 0.15.0
-       The "permissive" flag is not used anymore (and effectively
-       defaults to True); it will be completely removed in 0.16.0.
-
     """
     if isinstance(filename, tuple):
         Reader = get_reader_for(filename[0],

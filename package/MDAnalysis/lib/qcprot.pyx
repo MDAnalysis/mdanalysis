@@ -93,9 +93,10 @@ matrix [Liu2010]_.
 A full description of the method, along with the original C implementation can
 be found at http://theobald.brandeis.edu/qcp/
 
-.. SeeAlso:: The :func:`CalcRMSDRotationalMatrix` function is used in
-             :mod:`MDAnalysis.analysis.align` and
-             :mod:`MDAnalysis.analysis.rmsd`.
+See Also
+--------
+The :func:`CalcRMSDRotationalMatrix` function is used in
+:mod:`MDAnalysis.analysis.align` and :mod:`MDAnalysis.analysis.rmsd`.
 
 .. versionchanged:: 0.16.0
    Call signatures were changed to directly interface with MDAnalysis

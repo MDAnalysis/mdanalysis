@@ -213,29 +213,31 @@ class DCDWriter(base.WriterBase):
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
-        :Arguments:
-         *filename*
-           name of output file
-         *n_atoms*
-           number of atoms in dcd file
-         *start*
-           starting timestep
-         *step*
-           skip between subsequent timesteps (indicate that *step* MD
-           integrator steps (!) make up one trajectory frame); default is 1.
-         *delta*
-           timestep (MD integrator time step (!), in AKMA units); default is
-           20.45482949774598 (corresponding to 1 ps).
-         *remarks*
-           comments to annotate dcd file
-         *dt*
-           **Override** *step* and *delta* so that the DCD records that *dt* ps
-           lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
-           The default is ``None``, in which case *step* and *delta* are used.
-         *convert_units*
-           units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-           (see :ref:`flags-label`)
+        Parameters
+        ----------
+        filename: str
+            name of output file
+        n_atoms: int
+            number of atoms in dcd file
+        start: int
+            starting timestep
+        step: int
+            skip between subsequent timesteps (indicate that *step* MD
+            integrator steps (!) make up one trajectory frame); default is 1.
+        delta: float
+            timestep (MD integrator time step (!), in AKMA units); default is
+            20.45482949774598 (corresponding to 1 ps).
+        remarks: str
+            comments to annotate dcd file
+        dt: float
+            **Override** *step* and *delta* so that the DCD records that
+            *dt* ps lie between two frames. (It sets *step* = 1 and
+            *delta* = ``AKMA(dt)``.) The default is ``None``, in which case
+            *step* and *delta* are used.
+        convert_units: bool
+            units are converted to the MDAnalysis base format; ``None`` selects
+            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
+            (see :ref:`flags-label`)
 
        .. Note::
 
@@ -516,23 +518,24 @@ class DCDReader(base.ReaderBase):
                    format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
-        :Arguments:
-            *asel*
-               :class:`~MDAnalysis.core.groups.AtomGroup` object
-               Defaults to None, in which case the full set of coordinate data
-               is returned.
-            *start*, *stop*, *step*
-               A range of the trajectory to access, with start being inclusive
-               and stop being exclusive.
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
-        :Deprecated:
-            *skip*
-                Skip has been deprecated in favor of the standard keyword step.
+        Parameters
+        ----------
+        asel: :class:`~MDAnalysis.core.groups.AtomGroup`
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to None, in which case the full set of
+            coordinate data is returned.
+        start, stop, step: int
+            A range of the trajectory to access, with start being inclusive
+            and stop being exclusive.
+        format: str
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+        .. deprecated:: 0.016.0
+            *skip* has been deprecated in favor of the standard keyword step.
         """
         if skip is not None:
             step = skip
@@ -559,15 +562,15 @@ class DCDReader(base.ReaderBase):
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
-        :Arguments:
-            *timeseries*
-               :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-            *start, stop, step*
-               A subset of the trajectory to use, with start being inclusive
-               and stop being exclusive.
-        :Deprecated:
-            *skip*
-                Skip has been deprecated in favor of the standard keyword step.
+        Parameters
+        ----------
+        timeseries: :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
+        start, stop, step: int
+            A subset of the trajectory to use, with start being inclusive and
+            stop being exclusive.
+
+        .. deprecated:: 0.16.0
+            *skip* has been deprecated in favor of the standard keyword step.
         """
         if skip is not None:
             step = skip
@@ -596,26 +599,28 @@ class DCDReader(base.ReaderBase):
 
         All values can be changed through keyword arguments.
 
-        :Arguments:
-          *filename*
-              filename of the output DCD trajectory
-        :Keywords:
-          *n_atoms*
-              number of atoms
-          *start*
-              number of the first recorded MD step
-          *step*
-              indicate that *step* MD steps (!) make up one trajectory frame
-          *delta*
-              MD integrator time step (!), in AKMA units
-          *dt*
-             **Override** *step* and *delta* so that the DCD records that *dt* ps
-             lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
-             The default is ``None``, in which case *step* and *delta* are used.
-          *remarks*
-              string that is stored in the DCD header [XXX -- max length?]
+        Parameters
+        ----------
+        filename: str
+            filename of the output DCD trajectory
+        n_atoms: int
+            number of atoms
+        start: int
+            number of the first recorded MD step
+        step: int
+            indicate that *step* MD steps (!) make up one trajectory frame
+        delta: float
+            MD integrator time step (!), in AKMA units
+        dt: float
+            **Override** *step* and *delta* so that the DCD records that
+            *dt* ps lie between two frames. (It sets *step* = 1 and
+            *delta* = ``AKMA(dt)``.) The default is ``None``, in which case
+            *step* and *delta* are used.  *remarks* string that is stored in
+            the DCD header
 
-        :Returns: :class:`DCDWriter`
+        Returns
+        -------
+        :class:`DCDWriter`
 
         .. Note::
 
@@ -626,6 +631,8 @@ class DCDReader(base.ReaderBase):
         See Also
         --------
         :class:`DCDWriter`
+
+
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('start', self.start_timestep)

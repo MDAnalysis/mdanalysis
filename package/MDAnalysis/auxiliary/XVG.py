@@ -228,8 +228,12 @@ class XVGReader(base.AuxReader):
 
         Parameters
         ----------
-        i : int
+        i: int
             Step number (0-indexed) to move to
+
+        Returns
+        -------
+        :class:`XVGStep`
 
         Raises
         ------

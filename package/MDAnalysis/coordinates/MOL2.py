@@ -243,12 +243,13 @@ class MOL2Writer(base.WriterBase):
                  convert_units=None):
         """Create a new MOL2Writer
 
-        :Arguments:
-         *filename*
-           name of output file
-         *convert_units*
-           units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+        Parameters
+        ----------
+        filename: str
+            name of output file
+        convert_units: bool
+            units are converted to the MDAnalysis base format; ``None`` selects
+            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
         """
         self.filename = filename
         if convert_units is None:

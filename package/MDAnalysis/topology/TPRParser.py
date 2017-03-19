@@ -202,7 +202,7 @@ class TPRParser(TopologyReaderBase):
             raise IOError(msg)
 
         tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
-        
+
         return tpr_top
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS

@@ -572,18 +572,20 @@ class NCDFReader(base.ReaderBase):
 
         All values can be changed through keyword arguments.
 
-        :Arguments:
-          *filename*
-              filename of the output NCDF trajectory
-        :Keywords:
-          *n_atoms*
-              number of atoms
-          *dt*
-              length of one timestep in picoseconds
-          *remarks*
-              string that is stored in the title field
+        Parameters
+        ----------
+        filename: str
+            filename of the output NCDF trajectory
+        n_atoms: int
+            number of atoms
+        dt: float
+            length of one timestep in picoseconds
+        remarks: str
+            string that is stored in the title field
 
-        :Returns: :class:`NCDFWriter`
+        Returns
+        -------
+        :class:`NCDFWriter`
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('remarks', self.remarks)
@@ -639,30 +641,29 @@ class NCDFWriter(base.WriterBase):
                  **kwargs):
         """Create a new NCDFWriter
 
-        :Arguments:
-         *filename*
+        Parameters
+        ----------
+        filename: str
             name of output file
-         *n_atoms*
+        n_atoms: int
             number of atoms in trajectory file
-
-        :Keywords:
-          *start*
+        start: int
             starting timestep
-          *step*
+        step: int
             skip between subsequent timesteps
-          *dt*
+        dt: float
             timestep
-          *convert_units*
+        convert_units: bool
             ``True``: units are converted to the AMBER base format; ``None``
             selects the value of :data:`MDAnalysis.core.flags`
             ['convert_lengths'] (see :ref:`flags-label`).
-          *zlib*
+        zlib: bool
             compress data [``False``]
-          *cmplevel*
+        cmplevel: int
             compression level (1-9) [1]
-          *velocities*
+        velocities: bool
             Write velocities into the trajectory [``False``]
-          *forces*
+        forces: bool
             Write forces into the trajectory [``False``]
         """
         self.filename = filename

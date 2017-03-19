@@ -99,11 +99,14 @@ class CRDReader(base.SingleFrameReaderBase):
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
 
-        :Arguments:
-          *filename*
-              filename of the output CRD file
+        Parameters
+        ----------
+        filename: str
+            filename of the output CRD file
 
-        :Returns: :class:`CRDWriter`
+        Returns
+        -------
+        :class:`CRDWriter`
 
         """
         return CRDWriter(filename, **kwargs)

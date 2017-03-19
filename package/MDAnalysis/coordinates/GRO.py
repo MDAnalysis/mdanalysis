@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -121,7 +121,7 @@ class Timestep(base.Timestep):
 
 class GROReader(base.SingleFrameReaderBase):
     """Reader for the Gromacs GRO structure format.
-    
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
@@ -190,11 +190,14 @@ class GROReader(base.SingleFrameReaderBase):
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a CRDWriter for *filename*.
 
-        :Arguments:
-          *filename*
+        Parameters
+        ----------
+        filename: str
             filename of the output GRO file
 
-        :Returns: :class:`GROWriter`
+        Returns
+        -------
+        :class:`GROWriter`
 
         """
         if n_atoms is None:
@@ -251,6 +254,9 @@ class GROWriter(base.WriterBase):
         n_atoms : int (optional)
             number of atoms
 
+        convert_units: str (optional)
+            units are converted to the MDAnalysis base format; ``None`` selects
+            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
         """
         self.filename = util.filename(filename, ext='gro')
         self.n_atoms = n_atoms

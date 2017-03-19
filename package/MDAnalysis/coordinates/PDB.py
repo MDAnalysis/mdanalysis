@@ -326,11 +326,14 @@ class PDBReader(base.ReaderBase):
     def Writer(self, filename, **kwargs):
         """Returns a PDBWriter for *filename*.
 
-        :Arguments:
-          *filename*
-              filename of the output PDB file
+        Parameters
+        ----------
+        filename: str
+            filename of the output PDB file
 
-        :Returns: :class:`PDBWriter`
+        Returns
+        -------
+        :class:`PDBWriter`
 
         """
         kwargs.setdefault('multiframe', self.n_frames > 1)
@@ -423,11 +426,12 @@ class PDBWriter(base.WriterBase):
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
+
     Note
     ----
     This class is identical to :class:`MultiPDBWriter` with the one
     exception that it defaults to writing single-frame PDB files as if
-    *multiframe* = ``False`` was selected.
+    `multiframe` = ``False`` was selected.
 
 
     .. versionchanged:: 0.7.5
@@ -530,7 +534,6 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
-
 
         Note
         ----
@@ -729,10 +732,11 @@ class PDBWriter(base.WriterBase):
         used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
         details).
 
-        :Arguments:
-          *obj*
-            :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe`
+        Parameters
+        ----------
+        obj
+            The :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe` to write.
         """
 
         self._update_frame(obj)

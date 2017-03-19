@@ -189,16 +189,17 @@ class Flag(object):
 
           newflag = Flag(name,default,mapping,doc)
 
-        :Arguments:
-         *name*
+        Parameters
+        ----------
+        name: str
             name of the flag, must be a legal python name
-         *default*
+         default
             default value
-         *mapping*
+        mapping: dict
             dict that maps allowed input values to canonical values;
             if ``None`` then no argument checking will be performed and
             all values are directly set.
-         *doc*
+        doc: str
             doc string; may contain string interpolation mappings for::
 
                     %%(name)s        name of the flag

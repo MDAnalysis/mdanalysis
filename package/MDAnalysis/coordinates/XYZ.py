@@ -185,10 +185,11 @@ class XYZWriter(base.WriterBase):
         to the value of the *atoms* keyword supplied to the
         :class:`XYZWriter` constructor.
 
-        :Arguments:
-          *obj*
-            :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe`
+        Parameters
+        ----------
+        obj:
+            The :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe` to write.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write

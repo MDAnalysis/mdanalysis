@@ -1150,9 +1150,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         Sets the default keywords *start*, *step* and *dt* (if
         available). *n_atoms* is always set from :attr:`Reader.n_atoms`.
 
+
         See Also
         --------
         :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
+
         """
         kwargs['n_atoms'] = self.n_atoms  # essential
         kwargs.setdefault('start', self.frame)
@@ -1753,12 +1755,16 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
            min < x <= max
 
-        :Arguments:
-            *criteria*
-               dictionary containing the *max* and *min* values in native units
-            *x*
-               :class:`np.ndarray` of ``(x, y, z)`` coordinates of atoms selected to be written out.
-        :Returns: boolean
+        Parameters
+        ----------
+        criteria: dict
+            dictionary containing the *max* and *min* values in native units
+            *x* :class:`np.ndarray` of ``(x, y, z)`` coordinates of atoms
+            selected to be written out.
+
+        Returns
+        -------
+        bool
         """
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
