@@ -67,7 +67,7 @@ class TestXYZWriter(BaseWriterTest):
                 err_msg="coordinate mismatch between original and written "
                 "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
-
+        uni.trajectory.close()
 
     @raises(ValueError)
     def test_write_different_models_in_trajectory(self):
