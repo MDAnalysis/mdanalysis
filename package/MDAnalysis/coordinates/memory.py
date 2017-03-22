@@ -243,7 +243,8 @@ class MemoryReader(base.ProtoReader):
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
         filename: string, optional
-            The name of the file from which this instance is created
+            The name of the file from which this instance is created. Set to None
+            when created from an array
         """
 
         super(MemoryReader, self).__init__()
