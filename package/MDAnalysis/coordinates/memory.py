@@ -222,7 +222,7 @@ class MemoryReader(base.ProtoReader):
     _Timestep = Timestep
 
     def __init__(self, coordinate_array, order='fac',
-                 dimensions = None, dt=1, **kwargs):
+                 dimensions=None, dt=1, filename=None, **kwargs):
         """
 
         Parameters
@@ -242,10 +242,14 @@ class MemoryReader(base.ProtoReader):
         dt: float, optional
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
+        filename: string, optional
+            The name of the file from which this instance is created. Set to None
+            when created from an array
         """
 
         super(MemoryReader, self).__init__()
 
+        self.filename = filename
         self.stored_order = order
         self.set_array(np.asarray(coordinate_array), order)
         self.n_frames = \
