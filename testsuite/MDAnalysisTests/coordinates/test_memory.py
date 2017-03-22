@@ -58,11 +58,23 @@ class MemoryReference(BaseReference):
         return ts
 
 
-
 class TestMemoryReader(BaseReaderTest):
     def __init__(self):
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)
+
+    def test_filename_transefer_to_memory(self):
+        # MemoryReader should have a filename attribute set to the trajaectory filename
+        universe = mda.Universe(PSF, DCD)
+        universe.transfer_to_memory()
+        assert_equal(universe.trajectory.filename, PSF)
+
+    def test_filename_array(self):
+        # filename attribute of MemoryReader should be None when generated from an array
+        universe = mda.Universe(PSF, DCD)
+        coordinates = universe.trajectory.timeseries(universe.atoms)
+        universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
+        assert_equal(universe2.trajectory.filename, None)
 
     def test_default_memory_layout(self):
         universe1 = mda.Universe(PSF, DCD, in_memory=True)

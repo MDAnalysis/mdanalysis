@@ -21,6 +21,7 @@ The rules for this file:
   * 0.16.0
 
 Enhancements
+  * Added 'filename' attribute to 'MemoryReader'
   * Improved __str__ and __repr__ of 'GroupBase' class in
     MDAnalysis.core.groups (addresses Issue #1223)
   * Added dynamic selections (addresses Issues #175 and #1074).
