@@ -67,7 +67,7 @@ class TestMemoryReader(BaseReaderTest):
         # MemoryReader should have a filename attribute set to the trajaectory filename
         universe = mda.Universe(PSF, DCD)
         universe.transfer_to_memory()
-        assert_equal(universe.trajectory.filename, PSF)
+        assert_equal(universe.trajectory.filename, DCD)
 
     def test_filename_array(self):
         # filename attribute of MemoryReader should be None when generated from an array
