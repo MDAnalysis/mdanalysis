@@ -487,7 +487,7 @@ class Universe(object):
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,
                 dt=self.trajectory.ts.dt,
-                filename=self.filename)
+                filename=self.trajectory.filename)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.
