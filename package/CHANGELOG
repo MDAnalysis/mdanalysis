@@ -69,6 +69,7 @@ Enhancements
     step is not one.
   * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
     included set operators (Issue #726)
+  * Universes built with Merge now use the MemoryReader (Issue #1251)
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)

@@ -913,8 +913,12 @@ def Merge(*args):
     The complete system is then written out to a new PDB file.
 
 
-    .. versionchanged 0.9.0::
+    .. versionchanged:: 0.9.0
        Raises exceptions instead of assertion errors.
+
+    .. versionchanged:: 0.16.0
+       The trajectory is now a
+       :class:`~MDAnalysis.coordinates.memory.MemoryReader`.
 
     """
     from ..topology.base import squash_by
@@ -1030,15 +1034,9 @@ def Merge(*args):
                    atom_resindex=residx,
                    residue_segindex=segidx)
 
-    # Create blank Universe only from topology
-    u = Universe(top)
-
-    # Take one frame of coordinates from combined atomgroups
+    # Create and populate a universe
     coords = np.vstack([a.positions for a in args])
-    trajectory = MDAnalysis.coordinates.base.ReaderBase(None)
-    ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
-    setattr(trajectory, "ts", ts)
-    trajectory.n_frames = 1
-    u.trajectory = trajectory
+    u = Universe(top, coords[None, :, :],
+                 format=MDAnalysis.coordinates.memory.MemoryReader)
 
     return u
