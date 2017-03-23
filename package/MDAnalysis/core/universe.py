@@ -75,8 +75,6 @@ Functions
 
 """
 from __future__ import absolute_import
-from cStringIO import InputType
-
 import six
 
 import errno
@@ -84,6 +82,10 @@ import numpy as np
 import logging
 import copy
 import uuid
+try:
+    from cStringIO import InputType as _BaseForIO
+except ImportError:
+    from io import IOBase as _BaseForIO
 
 import MDAnalysis
 import sys
@@ -142,7 +144,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename or Topology object
+    topology : filename or Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
@@ -228,7 +230,7 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                if isinstance(args[0], InputType):
+                if isinstance(args[0], _BaseForIO):
                     self.filename = NamedStream(args[0], None)
                 else:
                     self.filename = args[0]
