@@ -75,6 +75,8 @@ Functions
 
 """
 from __future__ import absolute_import
+from cStringIO import InputType
+
 import six
 
 import errno
@@ -90,7 +92,7 @@ from .. import _ANCHOR_UNIVERSES
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
-from ..lib.util import cached
+from ..lib.util import cached, NamedStream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -226,7 +228,10 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                self.filename = args[0]
+                if isinstance(args[0], InputType):
+                    self.filename = NamedStream(args[0], None)
+                else:
+                    self.filename = args[0]
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
