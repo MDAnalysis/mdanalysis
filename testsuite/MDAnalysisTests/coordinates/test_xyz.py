@@ -13,7 +13,7 @@ from numpy.testing import (
 from MDAnalysis.coordinates.XYZ import XYZWriter
 
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
-from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest)
 from MDAnalysisTests import tempdir, make_Universe
 
@@ -32,7 +32,7 @@ class XYZReference(BaseReference):
         self.container_format = True
 
 
-class TestXYZReader(BaseReaderTest):
+class TestXYZReader(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = XYZReference()

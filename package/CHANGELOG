@@ -22,6 +22,7 @@ The rules for this file:
 
 Enhancements
   * Added 'filename' attribute to 'MemoryReader'
+  * GRO reader conforms to the reader API standard(#1196)
   * Improved __str__ and __repr__ of 'GroupBase' class in
     MDAnalysis.core.groups (addresses Issue #1223)
   * Added dynamic selections (addresses Issues #175 and #1074).

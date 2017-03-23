@@ -5,7 +5,7 @@ from nose.plugins.attrib import attr
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
-                           assert_)
+                           assert_, dec)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -108,31 +108,30 @@ class BaseReference(object):
         self.changing_dimensions = False
 
         # for testing auxiliary addition
-        self.aux_lowf = AUX_XVG_LOWF   # test auxiliary with lower frequency
-        self.aux_lowf_dt = 2    # has steps at 0ps, 2ps, 4ps
+        self.aux_lowf = AUX_XVG_LOWF  # test auxiliary with lower frequency
+        self.aux_lowf_dt = 2  # has steps at 0ps, 2ps, 4ps
         # representative data for each trajectory frame, assuming 'closest' option
-        self.aux_lowf_data = [[2 ** 0], # frame 0 = 0ps = step 0
-                              [np.nan], # frame 1 = 1ps = no step
-                              [2 ** 1], # frame 2 = 2ps = step 1
-                              [np.nan], # frame 3 = 3ps = no step
-                              [2 ** 2], # frame 4 = 4ps = step 2
-                             ]
-        self.aux_lowf_frames_with_steps = [0, 2, 4] # trajectory frames with
-                                                    # corresponding auxiliary steps
-
-        self.aux_highf = AUX_XVG_HIGHF # test auxiliary with higher frequency
-        self.aux_highf_dt = 0.5 # has steps at 0, 0.5, 1, ... 3.5, 4ps
-        self.aux_highf_data = [[2 ** 0], # frame 0 = 0ps = step 0
-                               [2 ** 2], # frame 1 = 1ps = step 2
-                               [2 ** 4], # frame 2 = 2ps = step 4
-                               [2 ** 6], # frame 3 = 3ps = step 6
-                               [2 ** 8], # frame 4 = 4ps = step 8
+        self.aux_lowf_data = [[2 ** 0],  # frame 0 = 0ps = step 0
+                              [np.nan],  # frame 1 = 1ps = no step
+                              [2 ** 1],  # frame 2 = 2ps = step 1
+                              [np.nan],  # frame 3 = 3ps = no step
+                              [2 ** 2],  # frame 4 = 4ps = step 2
                               ]
+        self.aux_lowf_frames_with_steps = [0, 2, 4]  # trajectory frames with
+        # corresponding auxiliary steps
+
+        self.aux_highf = AUX_XVG_HIGHF  # test auxiliary with higher frequency
+        self.aux_highf_dt = 0.5  # has steps at 0, 0.5, 1, ... 3.5, 4ps
+        self.aux_highf_data = [[2 ** 0],  # frame 0 = 0ps = step 0
+                               [2 ** 2],  # frame 1 = 1ps = step 2
+                               [2 ** 4],  # frame 2 = 2ps = step 4
+                               [2 ** 6],  # frame 3 = 3ps = step 6
+                               [2 ** 8],  # frame 4 = 4ps = step 8
+                               ]
         self.aux_highf_n_steps = 10
         self.aux_highf_all_data = [[2 ** i] for i in range(self.aux_highf_n_steps)]
 
         self.aux_offset_by = 0.25
-
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
@@ -169,10 +168,9 @@ class BaseReference(object):
         self.dt = 1
         self.totaltime = 4
 
-
     def iter_ts(self, i):
         ts = self.first_frame.copy()
-        ts.positions = 2**i * self.first_frame.positions
+        ts.positions = 2 ** i * self.first_frame.positions
         ts.time = i
         ts.frame = i
         ts.aux.lowf = np.array(self.aux_lowf_data[i])
@@ -206,33 +204,6 @@ class BaseReaderTest(object):
         self.reader.close()
         self.reader.close()
         self.reader._reopen()
-
-    def test_reopen(self):
-        self.reader.close()
-        self.reader._reopen()
-        ts = self.reader.next()
-        assert_timestep_almost_equal(ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
-
-    def test_last_frame(self):
-        ts = self.reader[-1]
-        assert_timestep_almost_equal(ts, self.ref.last_frame,
-                                     decimal=self.ref.prec)
-
-    def test_next_gives_second_frame(self):
-        reader = self.ref.reader(self.ref.trajectory)
-        ts = reader.next()
-        assert_timestep_almost_equal(ts, self.ref.second_frame,
-                                     decimal=self.ref.prec)
-
-    @raises(IndexError)
-    def test_go_over_last_frame(self):
-        self.reader[self.ref.n_frames + 1]
-
-    def test_frame_jump(self):
-        ts = self.reader[self.ref.jump_to_frame.frame]
-        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
-                                     decimal=self.ref.prec)
 
     def test_get_writer_1(self):
         with tempdir.in_tempdir():
@@ -299,21 +270,6 @@ class BaseReaderTest(object):
     def test_remove_nonexistant_auxiliary_raises_ValueError(self):
         self.reader.remove_auxiliary('nonexistant')
 
-    def test_iter_as_aux_highf(self):
-        # auxiliary has a higher frequency, so iter_as_aux should behave the
-        # same as regular iteration over the trjectory
-        for i, ts in enumerate(self.reader.iter_as_aux('highf')):
-            assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
-                                         decimal=self.ref.prec)
-
-    def test_iter_as_aux_lowf(self):
-        # auxiliary has a lower frequency, so iter_as_aux should iterate over
-        # only frames where there is a corresponding auxiliary value
-        for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
-            assert_timestep_almost_equal(ts,
-                       self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
-                       decimal=self.ref.prec)
-
     def test_iter_auxiliary(self):
         # should go through all steps in 'highf'
         for i, auxstep in enumerate(self.reader.iter_auxiliary('highf')):
@@ -338,18 +294,6 @@ class BaseReaderTest(object):
         assert_equal(num_frames, 0, "iter_as_aux should iterate over 0 frames,"
                                     " not {}".format(num_frames))
 
-    def test_rename_aux(self):
-        self.reader.rename_aux('lowf', 'lowf_renamed')
-        # data should now be in aux namespace under new name
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[0])
-        # old name should be removed
-        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
-        # new name should be retained
-        next(self.reader)
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[1])
-
     def test_reload_auxiliaries_from_description(self):
         # get auxiliary desscriptions form existing reader
         descriptions = self.reader.get_aux_descriptions()
@@ -372,6 +316,62 @@ class BaseReaderTest(object):
         for ts in self.reader[:-1]:
             pass
         assert_equal(self.reader.frame, 0)
+
+
+class MultiframeReaderTest(BaseReaderTest):
+    def test_last_frame(self):
+        ts = self.reader[-1]
+        assert_timestep_almost_equal(ts, self.ref.last_frame,
+                                     decimal=self.ref.prec)
+
+    @raises(IndexError)
+    def test_go_over_last_frame(self):
+        self.reader[self.ref.n_frames + 1]
+
+    def test_frame_jump(self):
+        ts = self.reader[self.ref.jump_to_frame.frame]
+        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
+                                     decimal=self.ref.prec)
+
+    def test_next_gives_second_frame(self):
+        reader = self.ref.reader(self.ref.trajectory)
+        ts = reader.next()
+        assert_timestep_almost_equal(ts, self.ref.second_frame,
+                                     decimal=self.ref.prec)
+
+    def test_reopen(self):
+        self.reader.close()
+        self.reader._reopen()
+        ts = self.reader.next()
+        assert_timestep_almost_equal(ts, self.ref.first_frame,
+                                     decimal=self.ref.prec)
+
+    def test_rename_aux(self):
+        self.reader.rename_aux('lowf', 'lowf_renamed')
+        # data should now be in aux namespace under new name
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[0])
+        # old name should be removed
+        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
+        # new name should be retained
+        next(self.reader)
+        assert_equal(self.reader.ts.aux.lowf_renamed,
+                     self.ref.aux_lowf_data[1])
+
+    def test_iter_as_aux_highf(self):
+        # auxiliary has a higher frequency, so iter_as_aux should behave the
+        # same as regular iteration over the trjectory
+        for i, ts in enumerate(self.reader.iter_as_aux('highf')):
+            assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
+                                         decimal=self.ref.prec)
+
+    def test_iter_as_aux_lowf(self):
+        # auxiliary has a lower frequency, so iter_as_aux should iterate over
+        # only frames where there is a corresponding auxiliary value
+        for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
+            assert_timestep_almost_equal(ts,
+                                         self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
+                                         decimal=self.ref.prec)
 
 
 class BaseWriterTest(object):
@@ -437,7 +437,7 @@ class BaseWriterTest(object):
             assert_array_almost_equal(
                 copy_ts._pos, sel.atoms.positions, self.ref.prec,
                 err_msg="coordinate mismatch between original and written "
-                "trajectory at frame {} (orig) vs {} (copy)".format(
+                        "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
     def _check_copy(self, fname):

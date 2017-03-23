@@ -1,24 +1,19 @@
-import MDAnalysis as mda
-import numpy as np
-import os
-import bz2
-
-from nose.plugins.attrib import attr
-from numpy.testing import (assert_equal, assert_almost_equal, dec,
-                           assert_array_almost_equal, assert_raises,
-                           )
 from unittest import TestCase
 
-from MDAnalysisTests.datafiles import (
-    GRO, GRO_velocity, GRO_large,
-    GRO_incomplete_vels,
-)
+import MDAnalysis as mda
+import numpy as np
+from MDAnalysis.coordinates.GRO import GROReader, GROWriter
+from MDAnalysisTests import make_Universe
+from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest
 from MDAnalysisTests.coordinates.reference import RefAdK
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests.datafiles import COORDINATES_GRO, COORDINATES_GRO_INCOMPLETE_VELOCITY, COORDINATES_GRO_BZ2, GRO, \
+    GRO_large
+from nose.plugins.attrib import attr
+from numpy.testing import (assert_almost_equal, )
+from numpy.testing import assert_array_almost_equal, dec, assert_equal, assert_raises
 
 
-class TestGROReader(TestCase, RefAdK):
+class TestGROReaderOld(TestCase, RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
@@ -40,27 +35,6 @@ class TestGROReader(TestCase, RefAdK):
                      "load Universe from small GRO")
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
-
-    def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
-                     "wrong number of atoms")
-
-    def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 1,
-                     "wrong number of frames")
-
-    def test_time(self):
-        assert_equal(self.universe.trajectory.time, 0.0,
-                     "wrong time of the frame")
-
-    def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0,
-                     "wrong frame number (should be 0 for 0-based ts.frame)")
-
-    def test_dt(self):
-        """testing that accessing universe.trajectory.dt gives
-        default of 1.0"""
-        assert_equal(self.universe.trajectory.dt, 1.0)
 
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
@@ -91,22 +65,8 @@ class TestGROReader(TestCase, RefAdK):
             self.prec,
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
-    def test_volume(self):
-        # test_volume: reduce precision for Gromacs comparison to 0 decimals
-        # (A**3 <--> nm**3!)
-        assert_almost_equal(
-            self.ts.volume,
-            self.ref_volume,
-            0,
-            err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
-    def test_full_slice(self):
-        trj_iter = self.universe.trajectory[:]
-        frames = [ts.frame for ts in trj_iter]
-        assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
-
-
-class TestGROReaderNoConversion(TestCase, RefAdK):
+class TestGROReaderNoConversionOld(TestCase, RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
@@ -123,7 +83,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # coordinates in nm
         assert_almost_equal(A10CA.position, RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
-                            "(in nm) for A10:CA")
+                                               "(in nm) for A10:CA")
 
     def test_distances(self):
         # 3 decimals on nm in gro but we compare to the distance
@@ -138,7 +98,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # coordinates in nm
         assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
                             self.prec - 1, err_msg="distance between M1:N "
-                            "and G214:C")
+                                                   "and G214:C")
 
     def test_unitcell(self):
         # lengths in A : convert to nm
@@ -163,93 +123,94 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
 
-class TestGROIncompleteVels(object):
-    def setUp(self):
-        self.u = mda.Universe(GRO_incomplete_vels)
+class GROReference(BaseReference):
+    def __init__(self):
+        super(GROReference, self).__init__()
+        self.trajectory = COORDINATES_GRO
+        self.topology = COORDINATES_GRO
+        self.reader = GROReader
+        self.writer = GROWriter
+        self.ext = 'gro'
+        self.n_frames = 1
+        self.prec = 4
+        self.first_frame.velocities = np.array(
+            [[0.0000, 0.100, 0.200],
+             [0.300, 0.400, 0.500],
+             [0.600, 0.700, 0.800],
+             [0.900, 1.000, 1.100],
+             [1.200, 1.300, 1.400]],
+            dtype=np.float32)
+        self.totaltime = 0
+        self.container_format = True
 
-    def tearDown(self):
-        del self.u
 
-    def test_load(self):
-        assert_equal(len(self.u.atoms), 4)
+class TestGROReader(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReference()
+        super(TestGROReader, self).__init__(reference)
 
-    def test_velocities(self):
-        assert_array_almost_equal(self.u.atoms[0].velocity,
-                                  np.array([ 79.56,  124.08,   49.49]),
-                                  decimal=3)
-        assert_array_almost_equal(self.u.atoms[2].velocity,
-                                  np.array([0.0, 0.0, 0.0]),
-                                  decimal=3)
+    def test_flag_convert_lengths(self):
+        assert_equal(mda.core.flags['convert_lengths'], True,
+                     "MDAnalysis.core.flags['convert_lengths'] should be True "
+                     "by default")
+
+    def test_time(self):
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        assert_equal(u.trajectory.time, 0.0,
+                     "wrong time of the frame")
+
+    def test_full_slice(self):
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        trj_iter = u.trajectory[:]
+        frames = [ts.frame for ts in trj_iter]
+        assert_equal(frames, np.arange(u.trajectory.n_frames))
 
 
-class TestGROWriter(TestCase, tempdir.TempDir):
-    def setUp(self):
-        self.universe = mda.Universe(GRO)
-        self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
-        ext = ".gro"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/gro-writer' + ext
-        self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
+class TestGROWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReference()
+        super(TestGROWriter, self).__init__(reference)
         self.u_no_resnames = make_Universe(['names', 'resids'],
-                                            trajectory=True)
+                                           trajectory=True)
         self.u_no_resids = make_Universe(['names', 'resnames'],
-                                          trajectory=True)
+                                         trajectory=True)
         self.u_no_names = make_Universe(['resids', 'resnames'],
-                                          trajectory=True)
+                                        trajectory=True)
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        try:
-            os.unlink(self.outfile2)
-        except OSError:
-            pass
-        del self.universe
-        del self.tmpdir
-        del self.u_no_resnames
-        del self.u_no_resids
-        del self.u_no_names
+    def test_write_velocities(self):
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        outfile = self.tmp_file('write-velocities-test')
+        u.atoms.write(outfile)
+
+        u2 = mda.Universe(outfile)
+        assert_array_almost_equal(u.atoms.velocities,
+                                  u2.atoms.velocities)
 
     @dec.slow
-    def test_writer(self):
-        self.universe.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.positions,
-                            self.universe.atoms.positions, self.prec,
-                            err_msg="Writing GRO file with GROWriter does "
-                            "not reproduce original coordinates")
-
-    @dec.slow
-    def test_writer_no_resnames(self):
-        self.u_no_resnames.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_write_no_resnames(self):
+        outfile = self.tmp_file('write-no-resnames-test')
+        self.u_no_resnames.atoms.write(outfile)
+        u = mda.Universe(outfile)
         expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
     @dec.slow
-    def test_writer_no_resids(self):
-        self.u_no_resids.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+    def test_write_no_resids(self):
+        outfile = self.tmp_file('write-no-resids-test')
+        self.u_no_resids.atoms.write(outfile)
+        u = mda.Universe(outfile)
         expected = np.ones((1,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
     def test_writer_no_atom_names(self):
-        self.u_no_names.atoms.write(self.outfile)
-        u = mda.Universe(self.outfile)
+        outfile = self.tmp_file('write-no-names-test')
+        self.u_no_names.atoms.write(outfile)
+        u = mda.Universe(outfile)
         expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
-
-    @dec.slow
-    def test_timestep_not_modified_by_writer(self):
-        ts = self.universe.trajectory.ts
-        x = ts._pos.copy()
-        self.universe.atoms.write(self.outfile)
-        assert_equal(ts._pos,
-                     x,
-                     err_msg="Positions in Timestep were modified by writer.")
 
     @dec.slow
     @attr('issue')
@@ -260,8 +221,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
+        outfile = self.tmp_file('coordinate-limits-min-test')
+        assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
     @attr('issue')
@@ -273,8 +234,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
+        outfile = self.tmp_file('coordinate-limits-max-test')
+        assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
     def test_check_coordinate_limits_max_noconversion(self):
@@ -284,51 +245,137 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
-        assert_raises(ValueError, u.atoms.write, self.outfile2,
-                      convert_units=False)
-        del u
+        outfile = self.tmp_file('coordinate-limits-max-noconversion-test')
+        assert_raises(ValueError, u.atoms.write, outfile, convert_units=False)
 
 
-class TestGROWriterLarge(TestCase, tempdir.TempDir):
+class GRONoConversionReference(GROReference):
+    def __init__(self):
+        super(GRONoConversionReference, self).__init__()
+        self.first_frame.positions /= 10.0
+        self.first_frame.velocities /= 10.0
+        self.dimensions[:3] /= 10.0
+        self.volume /= 1000
 
-    # not normally recommended to use class-level
-    # setup for universe (special case here)
-    @classmethod
-    def setUpClass(cls):
-        cls.tmpdir = tempdir.TempDir()
-        cls.large_universe = mda.Universe(GRO_large)
 
-    @classmethod
-    def tearDownClass(cls):
-        del cls.tmpdir
-        del cls.large_universe
+class TestGROReaderNoConversion(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GRONoConversionReference()
+        super(TestGROReaderNoConversion, self).__init__(reference)
+        self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
+        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
+                                  dt=self.ref.aux_lowf_dt,
+                                  initial_time=0, time_selector=None)
+        self.reader.add_auxiliary('highf', self.ref.aux_highf,
+                                  dt=self.ref.aux_highf_dt,
+                                  initial_time=0, time_selector=None)
+
+
+class TestGROWriterNoConversion(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GRONoConversionReference()
+        super(TestGROWriterNoConversion, self).__init__(reference)
+        self.writer = self.ref.writer(self.ref.trajectory, convert_units=False)
+
+
+class GROReaderIncompleteVelocitiesReference(GROReference):
+    def __init__(self):
+        super(GROReaderIncompleteVelocitiesReference, self).__init__()
+        self.trajectory = COORDINATES_GRO_INCOMPLETE_VELOCITY
+        self.topology = COORDINATES_GRO_INCOMPLETE_VELOCITY
+        self.first_frame.velocities = np.array(
+            [[0.0000, 0.100, 0.200],
+             [0.000, 0.000, 0.000],
+             [0.600, 0.700, 0.800],
+             [0.900, 1.000, 1.100],
+             [1.200, 1.300, 1.400]],
+            dtype=np.float32)
+
+
+class TestGROReaderIncompleteVelocities(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReaderIncompleteVelocitiesReference()
+        super(TestGROReaderIncompleteVelocities, self).__init__(reference)
+
+
+class TestGROWriterIncompleteVelocities(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROReaderIncompleteVelocitiesReference()
+        super(TestGROWriterIncompleteVelocities, self).__init__(reference)
+
+
+class GROBZReference(GROReference):
+    def __init__(self):
+        super(GROBZReference, self).__init__()
+        self.trajectory = COORDINATES_GRO_BZ2
+        self.topology = COORDINATES_GRO_BZ2
+
+
+class TestGROBZ2Reader(BaseReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROBZReference()
+        super(TestGROBZ2Reader, self).__init__(reference)
+
+
+class TestGROBZ2Writer(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROBZReference()
+        super(TestGROBZ2Writer, self).__init__(reference)
+
+
+class GROLargeReference(GROReference):
+    def __init__(self):
+        super(GROLargeReference, self).__init__()
+        self.trajectory = GRO_large
+        self.topology = GRO_large
+
+
+class TestGROLargeWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = GROLargeReference()
+        super(TestGROLargeWriter, self).__init__(reference)
 
     @dec.slow
     @attr('issue')
     def test_writer_large(self):
-        """Test that atom numbers are truncated for large
-        GRO files (Issue 550)."""
-        outfile = self.tmpdir.name + '/outfile1.gro'
-        self.large_universe.atoms.write(outfile)
+        """
+        Test that atom numbers are truncated for large
+        GRO files (Issue 550).
+        """
+        outfile = self.tmp_file('outfile1.gro')
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        u.atoms.write(outfile)
+
         with open(outfile, 'rt') as mda_output:
-            with mda.lib.util.anyopen(GRO_large, 'rt') as expected_output:
+            with mda.lib.util.anyopen(self.ref.topology, 'rt') as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,
                              expected_lines,
                              err_msg="Writing GRO file with > 100 000 "
-                                 "coords does not truncate properly.")
+                                     "coords does not truncate properly.")
 
     @dec.slow
     @attr('issue')
     def test_writer_large_residue_count(self):
-        """Ensure large residue number truncation for
-        GRO files (Issue 886)."""
-        outfile = os.path.join(self.tmpdir.name, 'outfile2.gro')
-        target_resname = self.large_universe.residues[-1].resname
+        """
+        Ensure large residue number truncation for
+        GRO files (Issue 886).
+        """
+        outfile = self.tmp_file('outfile2.gro')
+        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        target_resname = u.residues[-1].resname
         resid_value = 9999999
-        self.large_universe.residues[-1].resid = resid_value
-        self.large_universe.atoms.write(outfile)
+        u.residues[-1].resid = resid_value
+        u.atoms.write(outfile)
+
         with open(outfile, 'rt') as mda_output:
             output_lines = mda_output.readlines()
             produced_resid = output_lines[-2].split(target_resname)[0]
@@ -336,32 +383,7 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
             assert_equal(produced_resid,
                          expected_resid,
                          err_msg="Writing GRO file with > 99 999 "
-                             "resids does not truncate properly.")
-
-
-
-
-class TestGROWriterVels(object):
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/gro-writervels.gro'
-
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.tmpdir
-
-    def test_write_velocities(self):
-        u = mda.Universe(GRO_velocity)
-
-        u.atoms.write(self.outfile)
-
-        u2 = mda.Universe(self.outfile)
-
-        assert_array_almost_equal(u.atoms.velocities,
-                                  u2.atoms.velocities)
+                                 "resids does not truncate properly.")
 
 
 class TestGROTimestep(BaseTimestepTest):
@@ -381,6 +403,6 @@ class TestGROTimestep(BaseTimestepTest):
         ref = np.array([80.00515747, 80.00515747, 56.57218552,  # v1x, v2y, v3z
                         0., 0.,  # v1y v1z
                         0., 0.,  # v2x v2y
-                        40.00257874, 40.00257874],dtype=np.float32)  # v3x, v3y
+                        40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
         self.ts.dimensions = box
         assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
