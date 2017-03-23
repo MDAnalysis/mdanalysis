@@ -21,28 +21,27 @@
 #
 
 """
-================================================================
 Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 ================================================================
 
-
-Analysis of native contacts *Q* over a trajectory. Native contacts of a
-conformation are contacts that exist in a reference structure and in the
-conformation. Contacts in the reference structure are always defined as being
-closer then a distance `radius`. The fraction of native contacts for a
-conformation can be calculated in different ways. This module supports 3
-different metrics liseted below, as wel as custom metrics.
+This module contains classes to analyze native contacts *Q* over a
+trajectory. Native contacts of a conformation are contacts that exist
+in a reference structure and in the conformation. Contacts in the
+reference structure are always defined as being closer then a distance
+`radius`. The fraction of native contacts for a conformation can be
+calculated in different ways. This module supports 3 different metrics
+listed below, as well as custom metrics.
 
 1. *Hard Cut*: To count as a contact the atoms *i* and *j* have to be at least
    as close as in the reference structure.
 
 2. *Soft Cut*: The atom pair *i* and *j* is assigned based on a soft potential
-   that is 1 for if the distance is 0, 1/2 if the distance is the same as in
+   that is 1 if the distance is 0, 1/2 if the distance is the same as in
    the reference and 0 for large distances. For the exact definition of the
    potential and parameters have a look at function :func:`soft_cut_q`.
 
 3. *Radius Cut*: To count as a contact the atoms *i* and *j* cannot be further
-   apart then some distance `radius`.
+   apart than some distance `radius`.
 
 The "fraction of native contacts" *Q(t)* is a number between 0 and 1 and
 calculated as the total number of native contacts for a given time frame
@@ -139,9 +138,9 @@ Writing your own contact analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`Contacts` class has been designed to be extensible for your own
-analysis. As an example we will analysis when the acidic and basic groups of
-are in contact which each other, this means that at least one of the contacts
-formed in the reference is closer then 2.5 Å.
+analysis. As an example we will analyze when the acidic and basic groups of AdK
+are in contact which each other; this means that at least one of the contacts
+formed in the reference is closer than 2.5 Å.
 
 For this we define a new function to determine if any contact is closer than
 2.5 Å; this function must implement the API prescribed by :class:`Contacts`::

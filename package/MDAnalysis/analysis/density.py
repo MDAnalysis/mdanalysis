@@ -382,7 +382,7 @@ class Density(Grid):
 
         Parameters
         ----------
-        unit : str, optional
+        unit : str (optional)
               unit that the grid should be converted to: one of
               "Angstrom", "nm"
 
@@ -406,7 +406,7 @@ class Density(Grid):
 
         Parameters
         ----------
-        unit : str, optional
+        unit : str (optional)
              The target unit that the density should be converted to.
 
              `unit` can be one of the following:
@@ -475,43 +475,43 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     ----------
     universe : MDAnalysis.Universe
             :class:`MDAnalysis.Universe` object with a trajectory
-    atomselection : str, optional
+    atomselection : str (optional)
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
-    delta : float, optional
+    delta : float (optional)
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-    start : int, optional
-    stop : int, optional
-    step : int, optional
+    start : int (optional)
+    stop : int (optional)
+    step : int (optional)
             Slice the trajectory as ``trajectory[start:stop:step]``; default
             is to read the whole trajectory.
     metadata : dict. optional
             `dict` of additional data to be saved with the object; the meta data
             are passed through as they are.
-    padding : float, optional
+    padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
             in Angstroem [2.0]
-    soluteselection : str, optional
+    soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
-    cutoff : float, optional
+    cutoff : float (optional)
             With `cutoff`, select "<atomsel> NOT WITHIN <cutoff> OF <soluteselection>"
             (Special routines that are faster than the standard ``AROUND`` selection);
             any value that evaluates to ``False`` (such as the default 0) disables this
             special selection.
-    update_selection : bool, optional
+    update_selection : bool (optional)
             Should the selection of atoms be updated for every step? [``False``]
 
             - ``True``: atom selection is updated for each frame, can be slow
             - ``False``: atoms are only selected at the beginning
-    verbose : bool, optional
+    verbose : bool (optional)
             Print status update to the screen for every *interval* frame? [``True``]
 
             - ``False``: no status updates when a new frame is processed
             - ``True``: status update every frame (including number of atoms
               processed, which is interesting with ``update_selection=True``)
-    interval : int, optional
+    interval : int (optional)
            Show status update every `interval` frame [1]
-    parameters : dict, optional
+    parameters : dict (optional)
             `dict` with some special parameters for :class:`Density` (see docs)
 
     Returns
