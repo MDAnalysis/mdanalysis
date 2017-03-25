@@ -27,7 +27,7 @@ import MDAnalysis.analysis.pca as pca
 from numpy.testing import (assert_almost_equal, assert_equal, dec,
                            assert_array_almost_equal, raises)
 
-from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
+from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
 from MDAnalysisTests import module_not_found
 
@@ -35,7 +35,8 @@ from MDAnalysisTests import module_not_found
 class TestPCA(object):
     """ Test the PCA class """
     def setUp(self):
-        self.u = MDAnalysis.Universe(PDB, XTC)
+        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u.transfer_to_memory()
         self.pca = pca.PCA(self.u, select='backbone and name CA',
                            align=False)
         self.pca.run()
