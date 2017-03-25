@@ -119,14 +119,6 @@ class ChainReader(base.ProtoReader):
         """
         super(ChainReader, self).__init__()
 
-        if 'delta' in kwargs:
-            warnings.warn("Keyword 'delta' is now deprecated "
-                          "(from version 0.13); "
-                          "use 'dt' instead", DeprecationWarning)
-            delta = kwargs.pop('delta')
-            if 'dt' not in kwargs:
-                kwargs['dt'] = delta
-
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs)
                         for filename in self.filenames]

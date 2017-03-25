@@ -1000,23 +1000,6 @@ class PDBWriter(base.WriterBase):
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
 
-class PrimitivePDBReader(PDBReader):
-    def __init__(self, filename, *args, **kwargs):
-        warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
-                  ' it is deprecated in favor of the shorter name'
-                  ' removal targeted for version 0.16.0',
-                  category=DeprecationWarning)
-        super(PrimitivePDBReader, self).__init__(filename, *args, **kwargs)
-
-
-class PrimitivePDBWriter(PDBWriter):
-    def __init__(self, filename, *args, **kwargs):
-        warnings.warn('PrimitivePDBWriter is identical to the Writer,'
-                      'it is deprecated in favor of the shorter name'
-                      ' removal targeted for version 0.16.0',
-                      category=DeprecationWarning)
-        super(PrimitivePDBWriter, self).__init__(filename, *args, **kwargs)
-
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 

@@ -264,7 +264,6 @@ from . import core
 from . import PSFParser
 from . import TOPParser
 from . import PDBParser
-from . import PrimitivePDBParser
 from . import ExtendedPDBParser
 from . import PQRParser
 from . import GROParser
