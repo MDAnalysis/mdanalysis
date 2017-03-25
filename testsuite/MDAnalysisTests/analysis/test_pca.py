@@ -67,17 +67,16 @@ class TestPCA(object):
         assert_equal(dot.shape, (2, self.n_atoms*3))
 
     def test_transform(self):
-        self.ag = self.u.select_atoms('backbone and name CA')
-        self.pca_space = self.pca.transform(self.ag, n_components=1)
-        assert_equal(self.pca_space.shape,
+        ag = self.u.select_atoms('backbone and name CA')
+        pca_space = self.pca.transform(ag, n_components=1)
+        assert_equal(pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
     # Accepts universe as input, but shapes are not aligned due to n_atoms
     @raises(ValueError)
     def test_transform_mismatch(self):
-        self.ag = self.u.select_atoms('backbone and name CA')
-        self.pca_space = self.pca.transform(self.u, n_components=1)
-        assert_equal(self.pca_space.shape,
+        pca_space = self.pca.transform(self.u, n_components=1)
+        assert_equal(pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
     @staticmethod
