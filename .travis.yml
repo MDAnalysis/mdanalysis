@@ -37,7 +37,7 @@ matrix:
       #- env: SETUP=full PYTHON_VERSION=3.3
   include:
     - os: linux
-      env: MAIN_CMD="cd ./package && python setup.py build_ext --inplace && cd ./package/doc/sphinx && make clean html"
+      env: MAIN_CMD="cd ./package/doc/sphinx && make clean html"
            BUILD_DOCS=true
 
     - os: linux
@@ -69,20 +69,22 @@ install:
         HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
+  # ensure that cython files are rebuilt
+  - find . -name '*.pyx' -exec touch '{}' \;
+  # Install MDAnalysis based on build setup
   - |
     if [[ $BUILD_DOCS == "TRUE" ]] ; then \
         conda install sphinx=1.3
+        cd .package
+        python setup.py build_ext --inplace
+    else
+        pip install -v package/
+        pip install testsuite/
     fi
-  # ensure that cython files are rebuilt
-  - find . -name '*.pyx' -exec touch '{}' \;
-  # Install MDAnalysis
-  - pip install -v package/
-  - pip install testsuite/
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
   # we should still be here but make doubly sure:
   - cd ${TRAVIS_BUILD_DIR}
 
-# command to run tests
 script:
   - $MAIN_CMD
 
