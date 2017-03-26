@@ -18,7 +18,11 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=package/doc/html
     - MDA_OPTPACKAGES=opt/packages
-    - BUILD_DOCS=FALSE
+    - BUILD_DOCS=false
+    # Set default python version to avoid repetition later
+    - PYTHON_VERSION=2.7
+    - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files"
+    - SETUP=full
   matrix:
     - SETUP=minimal PYTHON_VERSION=2.7
     - SETUP=full PYTHON_VERSION=2.7
@@ -32,7 +36,11 @@ matrix:
       #- env: SETUP=full PYTHON_VERSION=3.3
   include:
     - os: linux
-      env: BUILD_DOCS=TRUE
+      env: MAIN_CMD="cd ./package && python setup.py build_ext --inplace && cd ./package/doc/sphinx && make clean html"
+           BUILD_DOCS=true
+
+    - os: linux
+      env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis"
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
@@ -75,19 +83,12 @@ install:
 
 # command to run tests
 script:
-  - pylint --rcfile=package/.pylintrc package/MDAnalysis
-  - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files
-  - |
-     test ${BUILD_DOCS} == "TRUE" && \
-     (cd ./package && python setup.py build_ext --inplace) && \
-     (cd ./package/doc/sphinx && make clean html) || \
-     true
+  - $MAIN_CMD
 
 after_success:
   - if [[ $SETUP == 'full' ]]; then coveralls; fi
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${TRAVIS_BUILD_NUMBER}.2" == "${TRAVIS_JOB_NUMBER}" && \
+     test "${BUILD_DOCS}" == "true" && \
      bash ./maintainer/deploy_docs.sh
