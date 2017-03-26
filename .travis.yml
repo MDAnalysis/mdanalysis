@@ -41,7 +41,7 @@ matrix:
            BUILD_DOCS=true
 
     - os: linux
-      env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis"
+      env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
