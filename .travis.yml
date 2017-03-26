@@ -23,9 +23,10 @@ env:
     - PYTHON_VERSION=2.7
     - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files"
     - SETUP=full
+    - COVERALLS=false
   matrix:
     - SETUP=minimal PYTHON_VERSION=2.7
-    - SETUP=full PYTHON_VERSION=2.7
+    - SETUP=full PYTHON_VERSION=2.7 COVERALLS=true
       #- SETUP=minimal PYTHON_VERSION=3.3
       #- SETUP=full PYTHON_VERSION=3.3
 
@@ -86,7 +87,7 @@ script:
   - $MAIN_CMD
 
 after_success:
-  - if [[ $SETUP == 'full' ]]; then coveralls; fi
+  - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
