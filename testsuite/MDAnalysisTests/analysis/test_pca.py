@@ -27,7 +27,7 @@ import MDAnalysis.analysis.pca as pca
 from numpy.testing import (assert_almost_equal, assert_equal, dec,
                            assert_array_almost_equal, raises)
 
-from MDAnalysisTests.datafiles import (PDB, XTC, RANDOM_WALK, RANDOM_WALK_TOPO,
+from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
 from MDAnalysisTests import module_not_found
 
@@ -35,7 +35,8 @@ from MDAnalysisTests import module_not_found
 class TestPCA(object):
     """ Test the PCA class """
     def setUp(self):
-        self.u = MDAnalysis.Universe(PDB, XTC)
+        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u.transfer_to_memory()
         self.pca = pca.PCA(self.u, select='backbone and name CA',
                            align=False)
         self.pca.run()
@@ -66,17 +67,16 @@ class TestPCA(object):
         assert_equal(dot.shape, (2, self.n_atoms*3))
 
     def test_transform(self):
-        self.ag = self.u.select_atoms('backbone and name CA')
-        self.pca_space = self.pca.transform(self.ag, n_components=1)
-        assert_equal(self.pca_space.shape,
+        ag = self.u.select_atoms('backbone and name CA')
+        pca_space = self.pca.transform(ag, n_components=1)
+        assert_equal(pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
     # Accepts universe as input, but shapes are not aligned due to n_atoms
     @raises(ValueError)
     def test_transform_mismatch(self):
-        self.ag = self.u.select_atoms('backbone and name CA')
-        self.pca_space = self.pca.transform(self.u, n_components=1)
-        assert_equal(self.pca_space.shape,
+        pca_space = self.pca.transform(self.u, n_components=1)
+        assert_equal(pca_space.shape,
                      (self.u.trajectory.n_frames, 1))
 
     @staticmethod
