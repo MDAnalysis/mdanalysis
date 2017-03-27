@@ -37,7 +37,7 @@ matrix:
       #- env: SETUP=full PYTHON_VERSION=3.3
   include:
     - os: linux
-      env: MAIN_CMD="make -C ./package/doc/sphinx clean html"
+      env: MAIN_CMD="cd package && python setup.py build_sphinx"
            BUILD_DOCS=true
            SETUP=full
 
@@ -72,7 +72,7 @@ install:
   # Install MDAnalysis based on build setup
   - |
     if [[ $BUILD_DOCS == "true" ]] ; then \
-        conda install sphinx=1.3; \
+        conda install sphinx=1.5.1; \
         cd ${TRAVIS_BUILD_DIR}/package ; \
         python setup.py build_ext --inplace ; \
     else
