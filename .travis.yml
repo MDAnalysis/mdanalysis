@@ -16,7 +16,7 @@ env:
     - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
     - GIT_CI_USER=TravisCI
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
-    - MDA_DOCDIR=package/doc/html
+    - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     - MDA_OPTPACKAGES=opt/packages
     # Set default python version to avoid repetition later
     - BUILD_DOCS=false
