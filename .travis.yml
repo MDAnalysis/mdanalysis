@@ -18,12 +18,13 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=package/doc/html
     - MDA_OPTPACKAGES=opt/packages
-    - BUILD_DOCS=false
     # Set default python version to avoid repetition later
+    - BUILD_DOCS=false
     - PYTHON_VERSION=2.7
     - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files"
     - SETUP=minimal
     - COVERALLS=false
+    - BUILD_CMD="pip install -v package/ && pip install testsuite/"
   matrix:
     - SETUP=minimal PYTHON_VERSION=2.7
     - SETUP=full PYTHON_VERSION=2.7 COVERALLS=true
@@ -40,9 +41,11 @@ matrix:
       env: MAIN_CMD="cd package && python setup.py build_sphinx"
            BUILD_DOCS=true
            SETUP=full
+           BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
 
     - os: linux
       env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
+           BUILD_CMD=""
 
 install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -70,16 +73,9 @@ install:
   # ensure that cython files are rebuilt
   - find . -name '*.pyx' -exec touch '{}' \;
   # Install MDAnalysis based on build setup
-  - |
-    if [[ $BUILD_DOCS == "true" ]] ; then \
-        conda install sphinx=1.5.1; \
-        cd ${TRAVIS_BUILD_DIR}/package ; \
-        python setup.py build_ext --inplace ; \
-    else
-        pip install -v package/ ; \
-        pip install testsuite/ ; \
-        chmod +x ${TRAVIS_BUILD_DIR}/testsuite/MDAnalysisTests/mda_nosetests ; \
-    fi
+  - if [[ $BUILD_DOCS == "true" ]] ; then conda install sphinx=1.5.1; fi
+  - eval $BUILD_CMD
+  - chmod +x ${TRAVIS_BUILD_DIR}/testsuite/MDAnalysisTests/mda_nosetests
   # we should still be here but make doubly sure:
   - cd ${TRAVIS_BUILD_DIR}
 
