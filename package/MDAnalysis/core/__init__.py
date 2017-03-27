@@ -385,17 +385,6 @@ _flags = [
         """
     ),
     _Flag(
-        'permissive_pdb_reader',
-        True,
-        {
-            'primitive': True, 'permissive': True, True: True,
-            'Bio.PDB': False, 'biopython': False, False: False,
-        },
-        """
-          This flag is deprecated and will be removed in 0.16.0.
-        """
-    ),
-    _Flag(
         'use_pbc',
         False,
         {True: True, False: False},

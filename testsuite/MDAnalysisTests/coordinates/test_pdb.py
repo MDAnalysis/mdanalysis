@@ -785,7 +785,7 @@ def test_deduce_PDB_atom_name():
 
     def _test_PDB_atom_name(atom, ref_atom_name):
         dummy_file = StringIO()
-        name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
+        name = (mda.coordinates.PDB.PDBWriter(dummy_file, n_atoms=1)
                 ._deduce_PDB_atom_name(atom.name, atom.resname))
         assert_equal(name, ref_atom_name)
 

@@ -770,12 +770,6 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     return angles
 
 
-calc_torsions = deprecate(calc_dihedrals,
-                          old_name='calc_torsions',
-                          new_name='calc_dihedrals',
-                          message="This will be removed in v0.15.0")
-
-
 def apply_PBC(incoords, box, backend="serial"):
     """Moves a set of coordinates to all be within the primary unit cell
 
@@ -837,9 +831,3 @@ def apply_PBC(incoords, box, backend="serial"):
                backend=backend)
 
     return coords
-
-
-applyPBC = deprecate(apply_PBC,
-                     old_name='applyPBC',
-                     new_name='apply_PBC',
-                     message="This will be removed in v0.15.0")
