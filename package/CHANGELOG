@@ -150,6 +150,9 @@ Changes
     SelectionWriter -> SelectionWriterBase (Issue #921)
   * Selection writers do not have a 'wa' mode anymore, but they have a 'close'
     method (Issue #1244)
+  * Remove deprecated PrimitivePDB* classes
+  * Remove deprecated `delta` keyword for ChainReader
+  * Remove deprecated permissive_pdb_reader flag
 
 
 Deprecations (Issue #599)
