@@ -12,78 +12,80 @@ os:
 env:
   global:
     - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
-    - GH_DOC_BRANCH: develop
-    - GH_REPOSITORY: github.com/MDAnalysis/mdanalysis.git
-    - GIT_CI_USER: TravisCI
-    - GIT_CI_EMAIL: TravisCI@mdanalysis.org
-    - MDA_DOCDIR: package/doc/html
-    - MDA_OPTPACKAGES: opt/packages
+    - GH_DOC_BRANCH=develop
+    - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
+    - GIT_CI_USER=TravisCI
+    - GIT_CI_EMAIL=TravisCI@mdanalysis.org
+    - MDA_DOCDIR=package/doc/html
+    - MDA_OPTPACKAGES=opt/packages
+    # Set default python version to avoid repetition later
+    - BUILD_DOCS=false
+    - PYTHON_VERSION=2.7
+    - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files"
+    - SETUP=minimal
+    - COVERALLS=false
+    - BUILD_CMD="pip install -v package/ && pip install testsuite/"
   matrix:
     - SETUP=minimal PYTHON_VERSION=2.7
-    - SETUP=full PYTHON_VERSION=2.7
+    - SETUP=full PYTHON_VERSION=2.7 COVERALLS=true
       #- SETUP=minimal PYTHON_VERSION=3.3
       #- SETUP=full PYTHON_VERSION=3.3
+
 matrix:
   fast_finish: true
   # allow_failures:
       #- env: SETUP=minimal PYTHON_VERSION=3.3
       #- env: SETUP=full PYTHON_VERSION=3.3
+  include:
+    - os: linux
+      env: MAIN_CMD="cd package && python setup.py build_sphinx"
+           BUILD_DOCS=true
+           SETUP=full
+           BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
 
-before_install:
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh; fi
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b -p $(pwd)/miniconda
+    - os: linux
+      env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
+           BUILD_CMD=""
+
+install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $(pwd)/miniconda
   - export PATH=$(pwd)/miniconda/bin:$PATH
   - conda config --add channels MDAnalysis
   - conda config --add channels conda-forge
-  - conda update --yes conda
-  - conda install --yes pylint
-install:
-  # Minimal installation!
-  -  conda create --yes -q -n pyenv python=$PYTHON_VERSION numpy mmtf-python nose=1.3.7 mock sphinx=1.3 six biopython networkx cython joblib
+  - conda config --set always_yes yes
+  - conda create -q -n pyenv python=$PYTHON_VERSION
   - source activate pyenv
+  # Minimal installation!
+  - conda install numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib pylint
   # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-  - pip install griddataformats
-  - pip install nose-timer
+  - pip install griddataformats nose-timer
   # Add missing packages for the full build
   - |
     if [[ $SETUP == 'full' ]]; then \
-        conda install --yes matplotlib netcdf4 scikit-learn scipy seaborn coveralls; \
-        conda install -c biobuilds --yes clustalw=2.1; \
+        conda install matplotlib netcdf4 scikit-learn scipy seaborn coveralls; \
+        conda install -c biobuilds clustalw=2.1; \
+        # additional external tools (Issue #898) -- HOLE
+        bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
+        HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
+        export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
-  # additional external tools (Issue #898) -- HOLE
-  - |
-     if [[ $SETUP == 'full' ]]; then \
-         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
-         HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
-         export PATH=${PATH}:${HOLE_BINDIR}; \
-     fi
   # ensure that cython files are rebuilt
   - find . -name '*.pyx' -exec touch '{}' \;
-  # Install MDAnalysis
-  - pip install -v package/
-  - pip install testsuite/
-  - chmod +x testsuite/MDAnalysisTests/mda_nosetests
+  # Install MDAnalysis based on build setup
+  - if [[ $BUILD_DOCS == "true" ]] ; then conda install sphinx=1.5.1; fi
+  - eval $BUILD_CMD
+  - chmod +x ${TRAVIS_BUILD_DIR}/testsuite/MDAnalysisTests/mda_nosetests
   # we should still be here but make doubly sure:
   - cd ${TRAVIS_BUILD_DIR}
 
-# command to run tests
 script:
-  - pylint --rcfile=package/.pylintrc package/MDAnalysis
-  - pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files
-  - |
-     test ${TRAVIS_PULL_REQUEST} == "false" && \
-     test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     # build docs when we do a full build run with all dependencies installed.
-     test "${TRAVIS_BUILD_NUMBER}.2" == "${TRAVIS_JOB_NUMBER}" && \
-     (cd ./package && python setup.py build_ext --inplace) && \
-     (cd ./package/doc/sphinx && make clean html) || \
-     true
+  - eval $MAIN_CMD
+
 after_success:
-  - if [[ $SETUP == 'full' ]]; then coveralls; fi
+  - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${TRAVIS_BUILD_NUMBER}.2" == "${TRAVIS_JOB_NUMBER}" && \
+     test "${BUILD_DOCS}" == "true" && \
      bash ./maintainer/deploy_docs.sh
