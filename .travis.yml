@@ -88,4 +88,4 @@ after_success:
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
      test "${BUILD_DOCS}" == "true" && \
-     bash ./maintainer/deploy_docs.sh
+     bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh
