@@ -57,7 +57,7 @@ install:
   - conda create -q -n pyenv python=$PYTHON_VERSION
   - source activate pyenv
   # Minimal installation!
-  - conda install numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib pylint psutil
+  - conda install numpy mmtf-python nose mock six biopython networkx cython joblib pylint psutil
   # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
   - pip install griddataformats nose-timer
   # Add missing packages for the full build
