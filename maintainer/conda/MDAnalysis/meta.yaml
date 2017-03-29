@@ -45,7 +45,7 @@ test:
     - MDAnalysis.lib.c_distances
 
   commands:
-    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v"])'
+    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v", "--no-open-files"])'
 
 about:
   home: http://www.mdanalysis.org
