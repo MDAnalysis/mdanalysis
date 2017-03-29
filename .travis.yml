@@ -48,7 +48,7 @@ matrix:
            BUILD_CMD=""
 
     - os: linux
-      env: MAIN_CMD="conda build ${TRAVIS_BUILD_DIR}/maintainer/conda/MDAnalysis"
+      env: MAIN_CMD="conda build ${TRAVIS_BUILD_DIR}/maintainer/conda/MDAnalysis --numpy=1.12"
            BUILD_CMD=""
 
 install:
