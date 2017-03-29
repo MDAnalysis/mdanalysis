@@ -21,7 +21,7 @@ env:
     # Set default python version to avoid repetition later
     - BUILD_DOCS=false
     - PYTHON_VERSION=2.7
-    - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --with-memleak --with-timer --timer-top-n 50 --no-open-files"
+    - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --with-timer --timer-top-n 50 --no-open-files"
     - SETUP=minimal
     - COVERALLS=false
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
