@@ -505,31 +505,32 @@ class PDBWriter(base.WriterBase):
                  convert_units=None, multiframe=None):
         """Create a new PDBWriter
 
-        :Arguments:
-         *filename*
+        Parameters
+        ----------
+        filename: str
            name of output file
-         *start*
+        start: int (optional)
            starting timestep
-         *step*
+        step: int (optional)
            skip between subsequent timesteps
-         *remarks*
-           comments to annotate pdb file (added to the TITLE record); note that
+        remarks: str (optional)
+           comments to annotate pdb file (added to the *TITLE* record); note that
            any remarks from the trajectory that serves as input are
            written to REMARK records with lines longer than :attr:`remark_max_length` (66
            characters) being wrapped.
-         *convert_units*
+        convert_units: str (optional)
            units are converted to the MDAnalysis base format; ``None`` selects
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-         *bonds*
-           write bonds to the PDB file as CONECT_ records [``False``]
-         *multiframe*
+        bonds : {"conect", "all", None} (optional)
+           If set to "conect", then only write those bonds that were already
+           defined in an input PDB file as PDB CONECT_ record. If set to "all",
+           write all bonds (including guessed ones) to the file. ``None`` does
+           not write any bonds. The default is "conect".
+        multiframe: bool (optional)
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
 
         Note
         ----
@@ -539,6 +540,11 @@ class PDBWriter(base.WriterBase):
         numbering in the CONECT_ records would not match the numbering of the
         atoms in the new PDB file and therefore a :exc:`NotImplementedError` is
         raised.)
+
+
+        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
 
         """
         # n_atoms = None : dummy keyword argument
