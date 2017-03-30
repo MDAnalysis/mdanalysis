@@ -206,6 +206,81 @@ def _check_lengths_match(*arrays):
     if not all( a.shape == ref for a in arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
+      
+## NOT COMPLETE - NEED REFINEMENT
+def distance(atom1,atom2,box=None):      
+       """
+       Checks the distance of only a pair of atoms, rather than the array check that works with distance_array
+       
+       TODO: refinement of the array structure to take advantage of numpy arrays, and generalize the input var 
+         
+       """
+        name1 = "bynum" + " " + str(atom1) # concatenate string for first selection 
+        name2 = "bynum" + " " + str(atom2) # concatenate string for the second selection 
+        
+        selection1 = u.select_atoms(name1) # select from universe
+        selection2 = u.select_atoms(name2) # ditto          
+ 
+        selection1_vec = selection1.positions[0] # As there is only one atom, we only need to extract the first row 
+        selection2_vec = selection2.positions[0] 
+        
+        selection1_selection2_array =  [selection1_vec, selection2_vec]
+        
+         # --- For a triclinic box --- # 
+        if box is not None:
+            box_type = box_check(box) ## Check type of box and store it in box_type variable
+
+            if box_type == 'tri_box':            
+                for i in range(len(selection1_selection2_array)):
+                    if abs(selection1_selection2_array[i][2]) > u.dimensions[5]:
+                       # Z axis minimum image - follows the LAMMPS convention
+                        if selection1_selection2_array[i][2] < 0.0:
+                               selection1_selection2_array[i][2] += u.dimensions[5]
+                               selection1_selection2_array[i][1] += u.dimensions[4]
+                               selection1_selection2_array[i][0] += u.dimensions[3]
+                        else:
+                               selection1_selection2_array[i][2] -= u.dimensions[5]
+                               selection1_selection2_array[i][1] -= u.dimensions[4]
+                               selection1_selection2_array[i][0] -= u.dimensions[3]
+                        # Y axis minimum image 
+                    if abs(selection1_selection2_array[i][1]) > u.dimensions[4]:
+                        if selection1_selection2_array[i][1] < 0.0:
+                               selection1_selection2_array[i][1] += u.dimensions[4]
+                               selection1_selection2_array[i][0] += u.dimensions[3]
+                        else:                       
+                               selection1_selection2_array[i][1] -= u.dimensions[4]
+                               selection1_selection2_array[i][0] -= u.dimensions[3]
+                         # X axis minimum image 
+                    if abs(selection1_selection2_array[i][0]) > u.dimensions[3]:
+                        if selection1_selection2_array[i][0] < 0.0:
+                               selection1_selection2_array[i][1] += u.dimensions[3]
+                        else:                       
+                               selection1_selection2_array[i][1] -= u.dimensions[3]
+                       
+            else:       # For non-trclinical boxes     
+                 for i in range(len(selection1_selection2_array)):
+                        # X axis
+                    if abs(selection1_selection2_array[i][0]) < -u.dimensions[3]/2:
+                               selection1_selection2_array[i][0] =  selection1_selection2_array[i][0] + u.dimensions[3]/2
+                    elif abs(selection1_selection2_array[i][0]) >= u.dimensions[3]/2:
+                               selection1_selection2_array[i][0] =  selection1_selection2_array[i][0] - u.dimensions[3]/2
+                             
+                    if abs(selection1_selection2_array[i][1]) < -u.dimensions[4]/2:
+                               selection1_selection2_array[i][1] =  selection1_selection2_array[i][1] + u.dimensions[4]/2
+                    elif abs(selection1_selection2_array[i][1]) >= u.dimensions[4]/2:
+                               selection1_selection2_array[i][1] =  selection1_selection2_array[i][1] - u.dimensions[4]/2
+                                                         
+                    if abs(selection1_selection2_array[i][2]) < -u.dimensions[5]/2:
+                               selection1_selection2_array[i][2] =  selection1_selection2_array[i][2] + u.dimensions[5]/2
+                    elif abs(selection1_selection2_array[i][2]) >= u.dimensions[5]/2:
+                               selection1_selection2_array[i][2] =  selection1_selection2_array[i][2] - u.dimensions[5]/2
+                           
+        
+                               separation = np.power((np.power((selection1_selection2_array[0][0] - selection1_selection2_array[1][0]),2) + np.power((selection1_selection2_array[1][0] - selection1_selection2_array[1][1]),2) + np.power((selection1_selection2_array[2][0] - selection1_selection2_array[2][1]),2)),2)
+
+           return separation 
+                            
+
 
 def distance_array(reference, configuration, box=None, result=None, backend="serial"):
     """Calculate all distances between a reference set and another configuration.
