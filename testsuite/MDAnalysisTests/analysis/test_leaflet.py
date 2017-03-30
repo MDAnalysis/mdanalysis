@@ -22,7 +22,7 @@
 import MDAnalysis
 from MDAnalysisTests import module_not_found
 
-from numpy.testing import TestCase, assert_equal, dec
+from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
 import numpy as np
 
 from MDAnalysisTests.datafiles import Martini_membrane_gro
@@ -37,6 +37,7 @@ class TestLeafletFinder(TestCase):
 
     def tearDown(self):
         del self.universe
+        del self.lipid_heads
         del self.lipid_head_string
 
     def test_leaflet_finder(self):
@@ -58,3 +59,10 @@ class TestLeafletFinder(TestCase):
         groups_string = lfls_string.groups()
         assert_equal(groups_string[0].indices, groups_ag[0].indices)
         assert_equal(groups_string[1].indices, groups_ag[1].indices)
+
+    def test_optimize_cutoff(self):
+        from MDAnalysis.analysis.leaflet import optimize_cutoff
+        cutoff, N = optimize_cutoff(self.universe, self.lipid_heads, pbc=True)
+        assert_equal(N, 2)
+        assert_almost_equal(cutoff, 10.5, decimal=4)
+
