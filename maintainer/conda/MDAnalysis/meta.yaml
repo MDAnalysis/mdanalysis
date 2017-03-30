@@ -20,14 +20,12 @@ requirements:
     - setuptools
     - numpy x.x
     - cython
-    - biopython
-    - nose
 
   run:
     - python
-    - numpy x.x
     - biopython
-    - nose
+    - nose ==1.3.7
+    - joblib
     - scipy
     - griddataformats
     - networkx
@@ -38,6 +36,7 @@ requirements:
     - psutil
     - netcdf4
     - mmtf-python
+    - scikit-learn
 
 test:
   imports:
@@ -47,7 +46,7 @@ test:
     - MDAnalysis.lib.c_distances
 
   commands:
-    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v"])'
+    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v", "--no-open-files"])'
 
 about:
   home: http://www.mdanalysis.org
