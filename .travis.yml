@@ -59,6 +59,7 @@ matrix:
       env: NAME='full'
            MAIN_CMD_OPTIONS='--with-coverage --cover-package MDAnalysis'
            CONDA_PACKAGES=${CONDA_ALL_PACKAGES}
+           COVERALLS='true'
 
 
 install:
