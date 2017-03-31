@@ -121,7 +121,7 @@ Analysis classes
 Utilities
 ---------
 
-.. autoclass:: ApplicationError
+.. autoexception:: ApplicationError
 
 """
 from __future__ import print_function
@@ -137,6 +137,7 @@ import os.path
 import subprocess
 import tempfile
 import textwrap
+from collections import OrderedDict
 
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
@@ -147,13 +148,28 @@ logger = logging.getLogger("MDAnalysis.analysis.x3dna")
 
 
 def mean_std_from_x3dnaPickle(profile):
-    """Get mean and standard deviation of helicoidal parameters from a saved *profile*.
+    """Get mean and standard deviation of helicoidal parameters from a saved `profile`.
 
-    The *profile* should have been saved with :meth:`BaseX3DNA.save`. Then
+    The `profile` should have been saved with :meth:`BaseX3DNA.save`. Then
     load it with ::
 
       profile = cPickle.load(open("x3dna.pickle"))
       h_mean, h_std = mean_std_from_x3dnaPickle(profile)
+
+    Arguments
+    ---------
+    profile : dict
+        A :attr:`X3DNA.profiles` dict with results from the
+        :class:`X3DNA` analysis.
+
+    Returns
+    -------
+    (list, list)
+        The tuple contains two lists with the means and the standard deviations
+        for the helicoidal parameters. The order for both lists is ``[shear,
+        stretch, stagger, buckle, propeller, opening, shift, slide, rise, tilt,
+        roll, twist]``.
+
     """
     if profile.x3dna_param is False:
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
@@ -217,8 +233,30 @@ def mean_std_from_x3dnaPickle(profile):
 class BaseX3DNA(object):
     """Baseclass for X3DNA_ analysis, providing plotting and utility functions.
 
+    When methods return helicoidal basepair parameter as lists, then the order
+    is always
+
+    ====== ==============
+    index  parameter
+    ====== ==============
+     0     shear
+     1     stretch
+     2     stagger
+     3     buckle
+     4     propeller
+     5     opening
+     6     shift
+     7     slide
+     8     rise
+     9     tilt
+    10     roll
+    11     twist
+    ====== ==============
+
+    for each nucleic acid pair.
 
     .. _X3DNA: http://x3dna.org
+
     """
 
     def save(self, filename="x3dna.pickle"):
@@ -235,9 +273,15 @@ class BaseX3DNA(object):
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def mean_std(self):
-        """H.mean_std() returns the mean and standard deviation of base parameters (order of base parameters:Shear,
-        Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.
+        """Returns the mean and standard deviation of base parameters.
 
+        Returns
+        -------
+        (list, list)
+            The tuple contains two lists with the means and the standard deviations
+            for the helicoidal parameters. The order for both lists is ``[shear,
+            stretch, stagger, buckle, propeller, opening, shift, slide, rise, tilt,
+            roll, twist]``.
         """
 
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
@@ -275,8 +319,14 @@ class BaseX3DNA(object):
         return na_avg, na_std
 
     def mean(self):
-        """H.mean() returns the mean value for the base parameters (order of base parameters:Shear,Stretch,Stagger,
-        Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.
+        """Returns the mean value for the base parameters.
+
+        Returns
+        -------
+        list
+            The list contains the means for the helicoidal parameters. The
+            order is ``[shear, stretch, stagger, buckle, propeller, opening,
+            shift, slide, rise, tilt, roll, twist]``.
 
         """
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
@@ -310,11 +360,16 @@ class BaseX3DNA(object):
         return na_avg
 
     def std(self):
-        """H.std() returns the standard deviation of base parameters (order of base parameters:Shear,Stretch,Stagger,
-        Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.
+        """Returns the standard deviation for the base parameters.
+
+        Returns
+        -------
+        list
+            The list contains the standard deviations for the helicoidal
+            parameters. The order is ``[shear, stretch, stagger, buckle,
+            propeller, opening, shift, slide, rise, tilt, roll, twist]``.
 
         """
-
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(self.profiles)):
@@ -346,11 +401,16 @@ class BaseX3DNA(object):
         return na_std
 
     def plot(self, **kwargs):
-        """Plot base parameter profiles  in a 1D graph
-           (plotting of the mean and standard deviation parameter value for each individual base pair).
+        """Plot time-averaged base parameters for each basse pair in a 1D graph.
 
-        :Keywords:
-           *Not available at this time*
+        One plot is produced for each parameter. It shows the the mean and
+        standard deviation for each individual base pair. Each plot is saved to
+        PNG file with name "<parameter_name>.png".
+
+        Parameters
+        ----------
+        ax : matplotlib.pyplot.Axes (optional)
+             Provide `ax` to have all plots plotted in the same axes.
 
         """
         import matplotlib.pyplot as plt
@@ -371,9 +431,10 @@ class BaseX3DNA(object):
             ax.figure.clf()
 
     def sorted_profiles_iter(self):
-        """Return an iterator over profiles sorted by frame/order parameter *q*.
+        """Return an iterator over profiles sorted by frame/order parameter.
 
-        The iterator produces tuples ``(q, profile)``.
+        The iterator produces tuples ``(q, profile)``. Typically, `q` is the
+        frame number.
         """
         if self.profiles is None:
             raise StopIteration
@@ -398,6 +459,26 @@ class X3DNA(BaseX3DNA):
     The class also provides some simple plotting functions of the collected
     data such as :meth:`X3DNA.plot` or :meth:`X3DNA.plot3D`.
 
+    When methods return helicoidal basepair parameter as lists, then the order
+    is always
+
+    ====== ==============
+    index  parameter
+    ====== ==============
+     0     shear
+     1     stretch
+     2     stagger
+     3     buckle
+     4     propeller
+     5     opening
+     6     shift
+     7     slide
+     8     rise
+     9     tilt
+    10     roll
+    11     twist
+    ====== ==============
+
     .. versionadded:: 0.8
 
     .. _`X3DNA docs`: http://forum.x3dna.org/
@@ -406,33 +487,29 @@ class X3DNA(BaseX3DNA):
     def __init__(self, filename, **kwargs):
         """Set up parameters to run X3DNA_ on PDB *filename*.
 
-        :Arguments:
-
-          *filename*
-
-               The *filename* is used as input for X3DNA in the "xdna_ensemble"
-               command.  It specifies the name of a PDB coordinate file
-               to be used. This must be in Brookhaven protein databank format
-               or something closely approximating this. Both ATOM and HETATM
-               records are read. Note that if water molecules or ions are
-               present in the channel these can be ignored on read by the use
-               of the *ignore_residues* keyword.
-
-        :Keywords:
-
-          *executable*
-
+        Parameters
+        ----------
+        filename : str
+               The `filename` is used as input for X3DNA in the
+               :program:`xdna_ensemble` command.  It specifies the name of a
+               PDB coordinate file to be used. This must be in Brookhaven
+               protein databank format or something closely approximating
+               this.
+        executable : str (optional)
                Path to the :program:`xdna_ensemble` executable directories
                (e.g. ``/opt/x3dna/2.1 and /opt/x3dna/2.1/bin``) must be set
                and then added to export in bashrc file. See X3DNA
                documentation for set-up instructions.
-
-          *x3dna_param*
-
+        x3dna_param : bool (optional)
                Determines whether base step or base pair parameters will be
-               calculated. If True then stacked base step parameters will be
-               analyzed [Default is True].  If False then stacked base pair
-               parameters will be analyzed.
+               calculated. If ``True`` (default) then stacked *base step*
+               parameters will be analyzed.  If ``False`` then stacked *base
+               pair* parameters will be analyzed.
+        logfile : str (optional)
+               Write output from X3DNA to `logfile` (default: "bp_step.par")
+
+
+        .. SeeAlso:: :class:`X3DNAtraj`
         """
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = [
@@ -469,7 +546,7 @@ class X3DNA(BaseX3DNA):
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
         # results
-        self.profiles = {}
+        self.profiles = OrderedDict()
 
     def run(self, **kwargs):
         """Run X3DNA on the input file."""
@@ -503,33 +580,29 @@ class X3DNA(BaseX3DNA):
     def collect(self, **kwargs):
         """Parse the output from a X3DNA run into numpy recarrays.
 
-        Can deal with outputs containing multiple frames. Output format:
+        Can deal with outputs containing multiple frames.
 
         The method saves the result as :attr:`X3DNA.profiles`, a dictionary
         indexed by the frame number. Each entry is a
         :class:`np.recarray`.
 
-        If the keyword *outdir* is supplied (e.g. ".") then each profile is
+        If the keyword `outdir` is supplied (e.g. ".") then each profile is
         saved to a gzipped data file.
 
-        :Keywords:
-           *run*
+        Parameters
+        ----------
+        run : str, int (optional
               identifier, free form [1]
-           *outdir*
-              save output data under *outdir*/*run* if set to any other
+        outdir : str (optional)
+              save output data under `outdir`/`run` if set to any other
               value but ``None`` [``None``]
 
         """
-        #        Shear    Stretch   Stagger   Buckle   Prop-Tw   Opening     Shift     Slide     Rise      Tilt
-        # Roll      Twist
-        #0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.
+        #        Shear    Stretch   Stagger   Buckle   Prop-Tw   Opening     Shift     Slide     Rise      Tilt        Roll      Twist
+        #0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
         #            11          22          33          44
-        #123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-        #1           13
-        #T-A     -0.033    -0.176     0.158   -12.177    -8.979     1.440     0.000     0.000     0.000     0.000
-        #  0.000     0.000
-        #C-G     -0.529     0.122    -0.002    -7.983   -10.083    -0.091    -0.911     1.375     3.213    -0.766
-        # -4.065    41.492
+        #T-A     -0.033    -0.176     0.158   -12.177    -8.979     1.440     0.000     0.000     0.000     0.000     0.000     0.000
+        #C-G     -0.529     0.122    -0.002    -7.983   -10.083    -0.091    -0.911     1.375     3.213    -0.766    -4.065    41.492
         # only parse bp_step.par
         x3dna_output = kwargs.pop("x3dnaout", self.logfile)
 
@@ -549,8 +622,7 @@ class X3DNA(BaseX3DNA):
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
 
         # one recarray for each frame, indexed by frame number
-        # TODO: use ordered dict
-        self.profiles = {}
+        self.profiles = OrderedDict()
 
         logger.info("Run %s: Reading %d X3DNA profiles from %r", run, length, x3dna_output)
         x3dna_profile_no = 0
@@ -651,31 +723,39 @@ class X3DNAtraj(BaseX3DNA):
     trajectory formats understood by MDAnalysis. This class can take any
     universe and feed it to X3DNA. By default it sequentially creates a PDB for
     each frame and runs X3DNA on the frame.
+
     """
 
     def __init__(self, universe, **kwargs):
         """Set up the class.
 
-        :Arguments:
-
-          *universe*
+        Parameters
+        ----------
+        universe : Universe
                The input trajectory as part of a
-               :class:`~MDAnalysis.core.universe.Universe`. trajectory is
+               :class:`~MDAnalysis.core.universe.Universe`; the trajectory is
                converted to a sequence of PDB files and X3DNA is run on each
-               individual file. (Use the *start*, *stop*, and *step* keywords
+               individual file. (Use the `start`, `stop`, and `step` keywords
                to slice the trajectory.)
-
-          *start*, *stop*, *step*
+        selection : str (optional)
+               MDAnalysis selection string (default: "nucleic") to select the
+               atoms that should be analyzed.
+        start : int (optional)
+        stop : int (optional)
+        step : int (optional)
                frame indices to slice the trajectory as
-               ``universe.trajectory[start, stop, step]``
-
-          *x3dna_param*
+               ``universe.trajectory[start, stop, step]``; by default, the whole
+               trajectory is analyzed.
+        x3dna_param : bool (optional)
                indicates whether stacked bases or stacked base-pairs will be
-               analyzed. True is bases or False is stacked base-pairs [Default
-               is True].
+               analyzed. ``True`` is bases and ``False`` is stacked base-pairs
+               [Default is ``True``].
+        kwargs : keyword arguments (optional)
+               All other keywords are passed on to :class:`X3DNA` (see there
+               for description).
 
-          *kwargs*
-               All other keywords are passed on to :class:`X3DNA` (see there for description).
+
+        .. SeeAlso:: :class:`X3DNA`
 
         """
         self.universe = universe
@@ -693,8 +773,9 @@ class X3DNAtraj(BaseX3DNA):
     def run(self, **kwargs):
         """Run X3DNA on the whole trajectory and collect profiles.
 
-        Keyword arguments *start*, *stop*, and *step* can be used to only
-        analyse part of the trajectory.
+        Keyword arguments `start`, `stop`, and `step` can be used to only
+        analyse part of the trajectory. The defaults are the values provided to
+        the class constructor.
         """
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
@@ -703,12 +784,10 @@ class X3DNAtraj(BaseX3DNA):
         x3dna_kw = self.x3dna_kwargs.copy()
         x3dna_kw.update(kwargs)
 
-        profiles = {}
+        profiles = OrderedDict()
 
         nucleic = self.universe.select_atoms(self.selection)
         for ts in self.universe.trajectory[start:stop:step]:
-            print(ts.frame)
-            print(nucleic.atoms)
             logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
@@ -716,12 +795,6 @@ class X3DNAtraj(BaseX3DNA):
             os.system("find_pair {0!s} 355d.bps".format(pdbfile))
             try:
                 nucleic.write(pdbfile)
-                '''
-                if int(ts.frame) in [int(start+1), 1]:
-                    #print start
-                    os.system("find_pair %s 355d.bps" %(pdbfile))
-                    #print "complete"
-                '''
                 x3dna_profiles = self.run_x3dna(pdbfile, **x3dna_kw)
             finally:
                 try:
@@ -737,7 +810,7 @@ class X3DNAtraj(BaseX3DNA):
         self.profiles = profiles
 
     def run_x3dna(self, pdbfile, **kwargs):
-        """Run X3DNA on a single PDB file *pdbfile*."""
+        """Run X3DNA on a single PDB file `pdbfile`."""
         kwargs['x3dna_param'] = self.x3dna_param
         H = X3DNA(pdbfile, **kwargs)
         H.run()
