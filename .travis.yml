@@ -21,7 +21,7 @@ env:
     # Set default python version to avoid repetition later
     - BUILD_DOCS=false
     - PYTHON_VERSION=2.7
-    - MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests --processes=2 --process-timeout=400 --no-open-files"
+    - MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests --processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
     - MAIN_CMD_OPTIONS=""
     - COVERALLS=false
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
@@ -31,15 +31,9 @@ env:
     - PIP_PACKAGES='griddataformats'
   matrix:
     - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
-    #- SETUP=full PYTHON_VERSION=2.7 COVERALLS=true
-    #- SETUP=minimal PYTHON_VERSION=3.3
-    #- SETUP=full PYTHON_VERSION=3.3
 
 matrix:
   fast_finish: true
-  # allow_failures:
-      #- env: SETUP=minimal PYTHON_VERSION=3.3
-      #- env: SETUP=full PYTHON_VERSION=3.3
   include:
     - os: linux
       env: NAME="Doc"
