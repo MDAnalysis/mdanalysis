@@ -71,6 +71,9 @@ Enhancements
   * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
     included set operators (Issue #726)
   * Universes built with Merge now use the MemoryReader (Issue #1251)
+  * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
+    weights="size") by about 5x (partially Issue #1191)
+    
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
@@ -153,13 +156,20 @@ Changes
   * Remove deprecated PrimitivePDB* classes
   * Remove deprecated `delta` keyword for ChainReader
   * Remove deprecated permissive_pdb_reader flag
-
+  * Removed superfluous and confusing keywords `start` and `end` for resid
+    selection in analysis.helanal.helanal_main() and
+    analysis.helanal.helanal_trajectory()
+  * weights="size" parameter in analysis.gnm.closeContactGNMAnalysis to
+    replace MassWeight=True
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
   * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
   * The keyword argument *quiet* is deprecated in favor of *verbose*
     throughout the library (Issue #903)
+  * MassWeight=True parameter in analysis.gnm.closeContactGNMAnalysis
+    deprecated in favor of weights="size".
+
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
