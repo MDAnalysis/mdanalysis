@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -20,8 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`
+"""Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`
 =======================================================================
 
 :Author: Alejandro Bernardin
@@ -30,51 +29,66 @@ Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`
 
 .. versionadded:: 0.11.0
 
-This module provides functions to analize water dynamics trajectories and water interactions with other molecules.
-The functions in this module are: water orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL) [Rapaport1983]_,
-angular distribution (AD) [Grigera1995]_, mean square displacement (MSD) [Brodka1994]_ and survival probability (SP) [Liu2004]_.
+This module provides functions to analize water dynamics trajectories and water
+interactions with other molecules.  The functions in this module are: water
+orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL)
+[Rapaport1983]_, angular distribution (AD) [Grigera1995]_, mean square
+displacement (MSD) [Brodka1994]_ and survival probability (SP) [Liu2004]_.
 
-For more information about this type of analysis please refer to [Araya-Secchi2014]_ (water in a protein cavity) and [Milischuk2011]_ (water in a nanopore).
+For more information about this type of analysis please refer to
+[Araya-Secchi2014]_ (water in a protein cavity) and [Milischuk2011]_ (water in
+a nanopore).
 
 .. rubric:: References
 
-.. [Rapaport1983] D.C. Rapaport (1983): Hydrogen bonds in water, Molecular Physics: An International
-            Journal at the Interface Between Chemistry and Physics, 50:5, 1151-1162.
+.. [Rapaport1983] D.C. Rapaport (1983): Hydrogen bonds in water, Molecular
+            Physics: An International Journal at the Interface Between
+            Chemistry and Physics, 50:5, 1151-1162.
 
-.. [Yeh1999] Yu-ling Yeh and Chung-Yuan Mou (1999).
-             Orientational Relaxation Dynamics of Liquid Water Studied by Molecular Dynamics
-             Simulation, J. Phys. Chem. B 1999, 103, 3699-3705.
+.. [Yeh1999] Yu-ling Yeh and Chung-Yuan Mou (1999).  Orientational Relaxation
+             Dynamics of Liquid Water Studied by Molecular Dynamics Simulation,
+             J. Phys. Chem. B 1999, 103, 3699-3705.
 
-.. [Grigera1995] Raul Grigera, Susana G. Kalko and Jorge Fischbarg (1995). Wall-Water Interface.
-                  A Molecular Dynamics Study, Langmuir 1996,12,154-158
+.. [Grigera1995] Raul Grigera, Susana G. Kalko and Jorge Fischbarg
+                 (1995). Wall-Water Interface.  A Molecular Dynamics Study,
+                 Langmuir 1996,12,154-158
 
-.. [Liu2004] Pu Liu, Edward Harder, and B. J. Berne (2004).On the Calculation of Diffusion Coefficients
-             in Confined Fluids and Interfaces with an Application to the Liquid-Vapor Interface of
-             Water, J. Phys. Chem. B 2004, 108, 6595-6602.
+.. [Liu2004] Pu Liu, Edward Harder, and B. J. Berne (2004).On the Calculation
+             of Diffusion Coefficients in Confined Fluids and Interfaces with
+             an Application to the Liquid-Vapor Interface of Water,
+             J. Phys. Chem. B 2004, 108, 6595-6602.
 
-.. [Brodka1994] Aleksander Brodka (1994). Diffusion in restricted volume, Molecular Physics, 1994, Vol.
-                82, No. 5, 1075-1078.
+.. [Brodka1994] Aleksander Brodka (1994). Diffusion in restricted volume,
+                Molecular Physics, 1994, Vol.  82, No. 5, 1075-1078.
 
-.. [Araya-Secchi2014] Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martinez,
-                     Isaac E. Garcia, Juan C. Saez, Ruhong Zhou (2014). Characterization of a novel water pocket inside the human Cx26 hemichannel structure. Biophysical journal, 107(3), 599-612.
+.. [Araya-Secchi2014] Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien
+                      Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio
+                      Garate, Agustin D. Martinez, Isaac E. Garcia, Juan
+                      C. Saez, Ruhong Zhou (2014). Characterization of a novel
+                      water pocket inside the human Cx26 hemichannel
+                      structure. Biophysical journal, 107(3), 599-612.
 
-.. [Milischuk2011] Anatoli A. Milischuk and Branka M. Ladanyi. Structure and dynamics of water confined
-                    in silica nanopores. J. Chem. Phys. 135, 174709 (2011); doi: 10.1063/1.3657408
+.. [Milischuk2011] Anatoli A. Milischuk and Branka M. Ladanyi. Structure and
+                   dynamics of water confined in silica
+                   nanopores. J. Chem. Phys. 135, 174709 (2011); doi:
+                   10.1063/1.3657408
 
 
 
-.. examples
+.. _examples:
 
-Examples
---------
+Example use of the analysis classes
+-----------------------------------
 
 HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both continuos and intermittent. In this case we are analyzing
-how residue 38 interact with a water sphere of radius 6.0 centered on the geometric center of protein and
-residue 42. If the hydrogen bond lifetimes are very stable, we can assume that residue 38 is hydrophilic, on the other
-hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
+Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both
+continuos and intermittent. In this case we are analyzing how residue 38
+interact with a water sphere of radius 6.0 centered on the geometric center of
+protein and residue 42. If the hydrogen bond lifetimes are very stable, we can
+assume that residue 38 is hydrophilic, on the other hand, if the are very
+unstable, we can assume that residue 38 is hydrophobic::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL
@@ -90,7 +104,7 @@ hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
   for HBLc, HBLi in HBL_analysis.timeseries:
         print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
         time += 1
-  
+
   #we can also plot our data
   plt.figure(1,figsize=(18, 6))
 
@@ -110,15 +124,22 @@ hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
 
   plt.show()
 
-where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is the value for the intermittent
-hydrogen bond lifetime, t0 = 0, tf = 2000 and dtmax = 30. In this way we create 30 windows timestep
-(30 values in x axis). The continuos hydrogen bond lifetimes should decay faster than intermittent.
+where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is
+the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and
+dtmax = 30. In this way we create 30 windows timestep (30 values in x
+axis). The continuos hydrogen bond lifetimes should decay faster than
+intermittent.
 
 
 WaterOrientationalRelaxation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing water orientational relaxation (WOR) :class:`WaterOrientationalRelaxation`. In this case we are analyzing "how fast" water molecules are rotating/changing direction. If WOR is very stable we can assume that water molecules are rotating/changing direction very slow, on the other hand, if WOR decay very fast, we can assume that water molecules are rotating/changing direction very fast::
+Analyzing water orientational relaxation (WOR)
+:class:`WaterOrientationalRelaxation`. In this case we are analyzing "how fast"
+water molecules are rotating/changing direction. If WOR is very stable we can
+assume that water molecules are rotating/changing direction very slow, on the
+other hand, if WOR decay very fast, we can assume that water molecules are
+rotating/changing direction very fast::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
@@ -158,20 +179,24 @@ Analyzing water orientational relaxation (WOR) :class:`WaterOrientationalRelaxat
   plt.title('WOR dip')
   plt.plot(range(0,time),[column[2] for column in WOR_analysis.timeseries])
 
-  plt.show()  
+  plt.show()
 
-where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows timesteps (20 values in the x axis),
-the first window is created with 1000 timestep average (1000/1), the second window is created with 500
-timestep average(1000/2), the third window is created with 333 timestep average (1000/3) and so on.
+where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows
+timesteps (20 values in the x axis), the first window is created with 1000
+timestep average (1000/1), the second window is created with 500 timestep
+average(1000/2), the third window is created with 333 timestep average (1000/3)
+and so on.
 
 AngularDistribution
 ~~~~~~~~~~~~~~~~~~~
 
-Analyzing angular distribution (AD) :class:`AngularDistribution` for OH vector, HH vector and dipole vector. It returns
-a line histogram with vector orientation preference. A straight line in the output graphic means no preferential
-orientation in water molecules. In this case we are analyzing if water molecules have some orientational
-preference, in this way we can see if water molecules are under an electric field or if they are interacting
-with something (residue, protein, etc)::
+Analyzing angular distribution (AD) :class:`AngularDistribution` for OH vector,
+HH vector and dipole vector. It returns a line histogram with vector
+orientation preference. A straight line in the output graphic means no
+preferential orientation in water molecules. In this case we are analyzing if
+water molecules have some orientational preference, in this way we can see if
+water molecules are under an electric field or if they are interacting with
+something (residue, protein, etc)::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import AngularDistribution as AD
@@ -214,13 +239,17 @@ with something (residue, protein, etc)::
   plt.show()
 
 
-where P(cos(theta)) is the angular distribution or angular probabilities.
+where `P(cos(theta))` is the angular distribution or angular probabilities.
+
 
 MeanSquareDisplacement
 ~~~~~~~~~~~~~~~~~~~~~~
-Analyzing mean square displacement (MSD) :class:`MeanSquareDisplacement` for water molecules. In this case we are analyzing the average distance
-that water molecules travels inside protein in XYZ direction (cylindric zone of radius 11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong
-rise mean a fast movement of water molecules, a weak rise mean slow movement of particles::
+
+Analyzing mean square displacement (MSD) :class:`MeanSquareDisplacement` for
+water molecules. In this case we are analyzing the average distance that water
+molecules travels inside protein in XYZ direction (cylindric zone of radius
+11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong rise mean a fast movement of
+water molecules, a weak rise mean slow movement of particles::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD
@@ -235,7 +264,7 @@ rise mean a fast movement of water molecules, a weak rise mean slow movement of 
   for msd in MSD_analysis.timeseries:
         print("{time} {msd}".format(time=time, msd=msd))
         time += 1
-  
+
   #Plot
   plt.xlabel('time')
   plt.ylabel('MSD')
@@ -243,12 +272,17 @@ rise mean a fast movement of water molecules, a weak rise mean slow movement of 
   plt.plot(range(0,time),MSD_analysis.timeseries)
   plt.show()
 
+
+.. _SP-examples:
+
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
-Analyzing survival probability (SP) :class:`SurvivalProbability` for water molecules. In this case we are analyzing how long water
-molecules remain in a sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34 and 80.
-A slow decay of SP means a long permanence time of water molecules in the zone, on the
-other hand, a fast decay means a short permanence time::
+
+Analyzing survival probability (SP) :class:`SurvivalProbability` for water
+molecules. In this case we are analyzing how long water molecules remain in a
+sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34
+and 80.  A slow decay of SP means a long permanence time of water molecules in
+the zone, on the other hand, a fast decay means a short permanence time::
 
   import MDAnalysis
   from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP
@@ -270,17 +304,19 @@ other hand, a fast decay means a short permanence time::
   plt.title('Survival Probability')
   plt.plot(range(0,time),MSD_analysis.timeseries)
   plt.show()
-  
 
-.. Output
+
+.. _Output:
 
 Output
 ------
 
 HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
-Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is stored in
-:attr:`HydrogenBondLifetimes.timeseries` (in all the following descriptions, # indicates comments that are not part of the output)::
+
+Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is
+stored in :attr:`HydrogenBondLifetimes.timeseries` (in all the following
+descriptions, # indicates comments that are not part of the output)::
 
     results = [
         [ # time t0
@@ -294,8 +330,9 @@ Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is sto
 
 WaterOrientationalRelaxation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Water orientational relaxation (WOR) data is returned per window timestep, which is stored in
-:attr:`WaterOrientationalRelaxation.timeseries`::
+
+Water orientational relaxation (WOR) data is returned per window timestep,
+which is stored in :attr:`WaterOrientationalRelaxation.timeseries`::
 
     results = [
         [ # time t0
@@ -309,8 +346,10 @@ Water orientational relaxation (WOR) data is returned per window timestep, which
 
 AngularDistribution
 ~~~~~~~~~~~~~~~~~~~
+
 Angular distribution (AD) data is returned per vector, which is stored in
-:attr:`AngularDistribution.graph`. In fact, AngularDistribution returns a histogram::
+:attr:`AngularDistribution.graph`. In fact, AngularDistribution returns a
+histogram::
 
     results = [
         [ # OH vector values
@@ -327,8 +366,10 @@ Angular distribution (AD) data is returned per vector, which is stored in
 
 MeanSquareDisplacement
 ~~~~~~~~~~~~~~~~~~~~~~
-Mean Square Displacement (MSD) data is returned in a list, which each element represents a MSD value in its respective
-window timestep. Data is stored in :attr:`MeanSquareDisplacement.timeseries`::
+
+Mean Square Displacement (MSD) data is returned in a list, which each element
+represents a MSD value in its respective window timestep. Data is stored in
+:attr:`MeanSquareDisplacement.timeseries`::
 
     results = [
          #MSD values orders by window timestep
@@ -337,8 +378,10 @@ window timestep. Data is stored in :attr:`MeanSquareDisplacement.timeseries`::
 
 SurvivalProbability
 ~~~~~~~~~~~~~~~~~~~
-Survival Probability (SP) data is returned in a list, which each element represents a SP value in its respective
-window timestep. Data is stored in :attr:`SurvivalProbability.timeseries`::
+
+Survival Probability (SP) data is returned in a list, which each element
+represents a SP value in its respective window timestep. Data is stored in
+:attr:`SurvivalProbability.timeseries`::
 
     results = [
          # SP values order by window timestep
@@ -370,7 +413,6 @@ Classes
    :members:
    :inherited-members:
 
-
 """
 from __future__ import print_function
 from six.moves import range, zip_longest
@@ -383,47 +425,53 @@ from MDAnalysis.lib.log import _set_verbose
 
 
 class HydrogenBondLifetimes(object):
-    r"""
-    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes" (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this
-    function we can obtain the continuos and intermittent behavior of hydrogen bonds in time. A
-    fast decay in these parameters indicate a fast change in HBs connectivity. A slow decay
-    indicate very stables hydrogen bonds, like in ice. The HBL is also know as "Hydrogen Bond Population
-    Relaxation" (HBPR). In the continuos case we have:
+    r"""Hydrogen bond lifetime analysis
+
+    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
+    (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
+    obtain the continuous and intermittent behavior of hydrogen bonds in
+    time. A fast decay in these parameters indicate a fast change in HBs
+    connectivity. A slow decay indicate very stables hydrogen bonds, like in
+    ice. The HBL is also know as "Hydrogen Bond Population Relaxation"
+    (HBPR). In the continuos case we have:
 
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
 
-    where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair :math:`ij` during time interval
-    :math:`t_0+\tau` (continuos) and :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case
-    we have:
+    where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
+    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and
+    :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
 
     .. math::
        C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
 
-    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair :math:`ij` at time
-    :math:`t_0+\tau` (intermittent) and :math:`h_{ij}(t_0+\tau)=0` otherwise.
+    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
+    :math:`ij` at time :math:`t_0+\tau` (intermittent) and
+    :math:`h_{ij}(t_0+\tau)=0` otherwise.
+
+
+    Parameters
+    ----------
+    universe : Universe
+      Universe object
+    selection1 : str
+      Selection string for first selection [‘byres name OH2’].
+      It could be any selection available in MDAnalysis, not just water.
+    selection2 : str
+      Selection string to analize its HBL against selection1
+    t0 : int
+      frame  where analysis begins
+    tf : int
+      frame where analysis ends
+    dtmax : int
+      Maximum dt size, `dtmax` < `tf` or it will crash.
+    nproc : int
+      Number of processors to use, by default is 1.
+
 
     .. versionadded:: 0.11.0
-
-    :Arguments:
-     *universe*
-       Universe object
-     *selection1*
-       Selection string for first selection [‘byres name OH2’]
-       It could be any selection available in MDAnalysis, not just water.
-     *selection2*
-       Selection string to analize its HBL against selection1
-     *t0*
-       Time where analysis begin
-     *tf*
-       Time where analysis end
-     *dtmax*
-       Maximum dt size, dtmax < tf or it will crash.
-     *nproc*
-       Number of processors to use, by default is 1.
-
     """
-    def __init__(self,universe ,selection1 ,selection2, t0 , tf , dtmax, nproc = 1):
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax, nproc=1):
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
@@ -618,10 +666,12 @@ class HydrogenBondLifetimes(object):
             self.timeseries = self._getGraphics(h_list.timeseries, self.t0, self.tf, self.dtmax)
 
 class WaterOrientationalRelaxation(object):
-    r"""
-    Function to evaluate the Water Orientational Relaxation proposed by Yu-ling Yeh
-    and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates "how fast" water molecules are rotating
-    or changing direction. This is a time correlation function given by:
+    r"""Water orientation relaxation analysis
+
+    Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
+    Yeh and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates
+    "how fast" water molecules are rotating or changing direction. This is a
+    time correlation function given by:
 
     .. math::
         C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle
@@ -629,23 +679,26 @@ class WaterOrientationalRelaxation(object):
     where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial and :math:`\hat{u}` is
     a unit vector along HH, OH or dipole vector.
 
-    .. versionadded:: 0.11.0
 
-    :Arguments:
-      *universe*
-         Universe object
-      *selection*
-       Selection string, only models with 3 atoms molecules are allowed (TIP3, TIP3P, etc)
-      *t0*
-       Time where analysis begin
-      *tf*
-       Time where analysis end
-      *dtmax*
-       Maximum dt size window, dtmax < tf or it will crash.
+    Parameters
+    ----------
+    universe : Universe
+      Universe object
+    selection : str
+      Selection string for water [‘byres name OH2’].
+    t0 : int
+      frame  where analysis begins
+    tf : int
+      frame where analysis ends
+    dtmax : int
+      Maximum dt size, `dtmax` < `tf` or it will crash.
+
+
+    .. versionadded:: 0.11.0
 
     """
 
-    def __init__(self,universe,selection,t0,tf,dtmax,nproc=1):
+    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
         self.universe = universe
         self.selection = selection
         self.t0 = t0
@@ -766,7 +819,7 @@ class WaterOrientationalRelaxation(object):
         sort = sorted(list(a.intersection(b)))
         return sort
 
-    def _selection_serial(self,universe,selection_str):
+    def _selection_serial(self, universe, selection_str):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
@@ -776,7 +829,7 @@ class WaterOrientationalRelaxation(object):
     # Second Legendre polynomial
     lg2 = lambda self,x : (3*x*x - 1)/2
 
-    def run(self,**kwargs):
+    def run(self, **kwargs):
         """
         Analyze trajectory and produce timeseries
         """
@@ -796,31 +849,33 @@ class WaterOrientationalRelaxation(object):
 
 
 class AngularDistribution(object):
-    r"""
+    r"""Angular distribution function analysis
+
     The angular distribution function (AD) is defined as the distribution
-    probability of the cosine of the :math:`\theta` angle formed by the OH vector, HH vector
-    or dipolar vector of water molecules and a vector :math:`\hat n` parallel to chosen axis
-    (z is the default value). The cosine is define as :math:`\cos \theta = \hat u \cdot \hat n`, where :math:`\hat u` is OH, HH or dipole vector.
-    It creates a histogram and returns a list of lists, see Output_. The AD is also know as Angular Probability (AP).
+    probability of the cosine of the :math:`\theta` angle formed by the OH
+    vector, HH vector or dipolar vector of water molecules and a vector
+    :math:`\hat n` parallel to chosen axis (z is the default value). The cosine
+    is define as :math:`\cos \theta = \hat u \cdot \hat n`, where :math:`\hat
+    u` is OH, HH or dipole vector.  It creates a histogram and returns a list
+    of lists, see Output_. The AD is also know as Angular Probability (AP).
+
+
+    Parameters
+    ----------
+    universe : Universe
+        Universe object
+    selection : str
+        Selection string to evaluate its angular distribution [‘byres name OH2’]
+    bins : int (optional)
+        Number of bins to create the histogram by means of :func:`numpy.histogram [40]
+    axis : {'x', 'y', 'z'} (optional)
+        Axis to create angle with the vector (HH, OH or dipole) and calculate
+        cosine theta ['z'].
+
 
     .. versionadded:: 0.11.0
-
-    :Arguments:
-         *universe*
-             Universe object
-         *selection*
-             Selection string to evaluate its angular distribution [‘byres name OH2’]
-         *bins*
-             Number of bins to create the histogram by means of numpy.histogram_ [40]
-         *axis*
-             Axis to create angle with the vector (HH, OH or dipole) and calculate cosine theta ['z']. Options: 'x',
-             'y', 'z'
-
-    .. _numpy.histogram: http://docs.scipy.org/doc/np/reference/generated/np.histogram.html
-
-
     """
-    def __init__(self,universe,selection_str,bins=40,nproc=1,axis="z"):
+    def __init__(self, universe, selection_str, bins=40, nproc=1, axis="z"):
         self.universe = universe
         self.selection_str = selection_str
         self.bins = bins
@@ -932,9 +987,10 @@ class AngularDistribution(object):
 
 
 class  MeanSquareDisplacement(object):
-    r"""
-    Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the average distance that
-    particles travels. The MSD is given by:
+    r"""Mean square displacement analysis
+
+    Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the
+    average distance that particles travels. The MSD is given by:
 
     .. math::
         \langle\Delta r(t)^2\rangle = 2nDt
@@ -945,23 +1001,25 @@ class  MeanSquareDisplacement(object):
 
     .. _MSD: http://en.wikipedia.org/wiki/Mean_squared_displacement
 
+
+    Parameters
+    ----------
+    universe : Universe
+      Universe object
+    selection : str
+      Selection string for water [‘byres name OH2’].
+    t0 : int
+      frame  where analysis begins
+    tf : int
+      frame where analysis ends
+    dtmax : int
+      Maximum dt size, `dtmax` < `tf` or it will crash.
+
+
     .. versionadded:: 0.11.0
-
-    :Arguments:
-      *universe*
-         Universe object
-      *selection*
-         Selection string
-      *t0*
-         Time where analysis begin
-      *tf*
-         Time where analysis end
-      *dtmax*
-         Maximum dt size window, dtmax < tf or it will crash.
-
     """
 
-    def __init__(self,universe,selection,t0,tf,dtmax,nproc=1):
+    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
         self.universe = universe
         self.selection = selection
         self.t0 = t0
@@ -1069,30 +1127,36 @@ class  MeanSquareDisplacement(object):
 
 
 class SurvivalProbability(object):
-    r"""
-    Function to evaluate the Survival Probability (SP). The SP gives the probability
-    for a group of particles to remain in certain region. The SP is given by:
+    r"""Survival probability analysis
+
+    Function to evaluate the Survival Probability (SP). The SP gives the
+    probability for a group of particles to remain in certain region. The SP is
+    given by:
 
     .. math::
         P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
 
-    where :math:`T` is the maximum time of simulation, :math:`\tau` is the timestep and
-    :math:`N` the number of particles in certain time.
+    where :math:`T` is the maximum time of simulation, :math:`\tau` is the
+    timestep and :math:`N` the number of particles in certain time.
+
+
+    Parameters
+    ----------
+    universe : Universe
+      Universe object
+    selection : str
+      Selection string; any selection is allowed. With this selection you
+      define the region/zone where to analyze, e.g.: "selection_a" and "zone"
+      (see `SP-examples`_ )
+    t0 : int
+      frame  where analysis begins
+    tf : int
+      frame where analysis ends
+    dtmax : int
+      Maximum dt size, `dtmax` < `tf` or it will crash.
+
 
     .. versionadded:: 0.11.0
-
-    :Arguments:
-     *universe*
-        Universe object
-     *selection*
-      Selection string, any selection is allowed, with this selection you define the region/zone where
-      to analize, i.e.: "selection_a" and "zone" (see SP examples_ )
-     *t0*
-      Time where analysis begin
-     *tf*
-      Time where analysis end
-     *dtmax*
-      Maximum dt size window, dtmax < tf or it will crash
 
     """
 
