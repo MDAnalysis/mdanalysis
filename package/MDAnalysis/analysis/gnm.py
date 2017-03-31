@@ -174,16 +174,18 @@ class GNMAnalysis(object):
           filename to write eigenvectors to, by default no output is written
           (``None``)
     Bonus_groups : tuple
-          This is a tuple of selection groups, the com of each which will be
-          added as a single point in the ENM (its a popular way of treating
-          small ligands such as drugs) but be careful that it doesn't have any
-          atoms which can be caught by the global selection as this could lead
-          to double counting. Default is ``None``.
+          This is a tuple of selection strings that identify additional groups
+          (such as ligands). The center of mass of each group will be added as
+          a single point in the ENM (it is a popular way of treating small
+          ligands such as drugs). You need to ensure that none of the atoms in
+          `Bonus_groups` is contained in `selection` as this could lead to
+          double counting. No checks are applied. Default is ``None``.
 
     .. SeeAlso:: :class:`closeContactGNMAnalysis`
 
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
+
     """
 
     def __init__(self, universe, selection='protein and name CA', cutoff=7.0,
@@ -338,7 +340,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
           .. Note:: This option does not perform a true mass weighting but
                     weighting by the number of atoms in each residue; the name
                     of the parameter exists for historical reasons and will
-                    be removed in 0.17.0.
+                    be removed in 0.17.0. Until then, setting `MassWeight` to
+                    anything but ``None`` will override `weights`.
 
     .. SeeAlso:: :class:`GNMAnalysis`
 
@@ -350,16 +353,13 @@ class closeContactGNMAnalysis(GNMAnalysis):
     """
 
     def __init__(self, universe, selection='protein', cutoff=4.5, ReportVector=None,
-                 weights="size",
-                 MassWeight=None):
+                 weights="size", MassWeight=None):
         self.u = universe
         self.selection = selection
         self.cutoff = cutoff
         self.results = []  # final result
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
-        # no bonus groups in this version of the GNM analysis tool; this is because this version doesn't use CA atoms
-        #  or centroids, and so doesn't need them
         self.ca = self.u.select_atoms(self.selection)
 
         self.weights = weights
@@ -381,7 +381,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
         cutoffsq = self.cutoff ** 2
 
         # cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])
-        sqrt_res_sizes = np.sqrt([r.atoms.n_atoms for r in  self.ca.residues]) if self.weights == "size" else None
+        sqrt_res_sizes = np.sqrt([r.atoms.n_atoms for r in  self.ca.residues]) \
+                         if self.weights == "size" else None
 
         for icounter in range(natoms):
             neighbour_atoms = []
@@ -398,7 +399,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
             for jcounter in neighbour_atoms:
                 if jcounter > icounter and _dsq(positions[icounter], positions[jcounter]) <= cutoffsq:
                     iresidue, jresidue = residue_index_map[icounter], residue_index_map[jcounter]
-                    contact = 1.0 / (sqrt_res_sizes[iresidue] * sqrt_res_sizes[jresidue]) if self.weights == "size" else 1.0
+                    contact = 1.0 / (sqrt_res_sizes[iresidue] * sqrt_res_sizes[jresidue]) \
+                              if self.weights == "size" else 1.0
                     matrix[iresidue][jresidue] -= contact
                     matrix[jresidue][iresidue] -= contact
                     matrix[iresidue][iresidue] += contact
