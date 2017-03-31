@@ -20,9 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-# MDAnalysis -- nucleic acid analysis
-# Copyright (c) 2011 Elizabeth Denning <denniej0@gmail.com>
-
 """
 Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 =============================================================
@@ -113,24 +110,34 @@ from MDAnalysis.lib import mdamath
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Watson-Crick basepair distance for residue *i* with residue *bp*.
+    """Watson-Crick basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
     computed.
 
-    :Arguments:
-      *universe*
-          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *seg1*
-          segment id for first base
-      *i*
-          resid of the first base
-      *seg2*
-          segment id for second base
-      *bp*
-          resid of the second base
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    i : int
+        resid of the first base
+    bp : int
+        resid of the second base
+    seg1 : str (optional)
+        segment id for first base ["SYSTEM"]
+    seg2 : str (optional)
+        segment id for second base ["SYSTEM"]
 
-    .. NOTE:: If failure occurs be sure to check the segment identification.
+    Returns
+    -------
+    float
+        Watson-Crick base pair distance
+
+
+    Notes
+    -----
+    If failure occurs be sure to check the segment identification.
+
 
     .. versionadded:: 0.7.6
     """
@@ -146,24 +153,33 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Minor-Groove basepair distance for residue *i* with residue *bp*.
+    """Minor-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen
     bond is computed.
 
-    :Arguments:
-      *universe*
-          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *seg1*
-          segment id for first base
-      *i*
-          resid of the first base
-      *seg2*
-          segment id for second base
-      *bp*
-          resid of the second base
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    i : int
+        resid of the first base
+    bp : int
+        resid of the second base
+    seg1 : str (optional)
+        segment id for first base ["SYSTEM"]
+    seg2 : str (optional)
+        segment id for second base ["SYSTEM"]
 
-    .. NOTE:: If failure occurs be sure to check the segment identification.
+    Returns
+    -------
+    float
+        Minor groove base pair distance
+
+    Notes
+    -----
+    If failure occurs be sure to check the segment identification.
+
 
     .. versionadded:: 0.7.6
     """
@@ -179,25 +195,34 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Major-Groove basepair distance for residue *i* with residue *bp*.
+    """Major-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen
     bond is computed.
 
-    :Arguments:
-      *universe*
-          :class:`~MDAnalysis.core.universe.Universe` containing the
-          trajectory *i*
-      *seg1*
-          segment id for first base
-      *i*
-          resid of the first base
-      *seg2*
-          segment id for second base
-      *bp*
-          resid of the second base
 
-    .. NOTE:: If failure occurs be sure to check the segment identification
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    i : int
+        resid of the first base
+    bp : int
+        resid of the second base
+    seg1 : str (optional)
+        segment id for first base ["SYSTEM"]
+    seg2 : str (optional)
+        segment id for second base ["SYSTEM"]
+
+    Returns
+    -------
+    float
+        Major groove base pair distance
+
+    Notes
+    -----
+    If failure occurs be sure to check the segment identification.
+
 
     .. versionadded:: 0.7.6
     """
@@ -219,18 +244,25 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def phase_cp(universe, seg, i):
-    """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the CP method.
+    """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.
 
     The angle is computed by the positions of atoms in the ribose ring.
 
-    :Arguments:
-      *universe*
-         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
 
-       *segid*
-         segment identity of resid
-      *i*
-         resid of the base
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    float
+        phase angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -287,17 +319,24 @@ def phase_cp(universe, seg, i):
 
 
 def phase_as(universe, seg, i):
-    """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the AS method
+    """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method
 
     The angle is computed by the position vector of atoms in the ribose ring.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segment identity of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    float
+        phase angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -353,19 +392,32 @@ def phase_as(universe, seg, i):
 
 
 def tors(universe, seg, i):
-    """Backbone dihedrals includes alpha, beta, gamma, delta, epsilon, zeta, chi
+    """Calculation of nucleic backbone dihedral angles.
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral angles are alpha, beta, gamma, delta, epsilon, zeta, chi.
 
-    :Arguments:
-      *universe*
+    The dihedral is computed based on position of atoms for resid `i`.
+
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
 
-    .. NOTE:: If failure occurs be sure to check the segment identification
+    Returns
+    -------
+    [alpha, beta, gamma, delta, epsilon, zeta, chi] : list of floats
+        torsion angles in degrees
+
+    Notes
+    -----
+    If failure occurs be sure to check the segment identification.
+
+
+    .. versionadded:: 0.7.6
 
     """
     a = universe.select_atoms(" atom {0!s} {1!s} O3\' ".format(seg, i - 1),
@@ -433,15 +485,22 @@ def tors(universe, seg, i):
 def tors_alpha(universe, seg, i):
     """alpha backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    alpha : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -458,15 +517,22 @@ def tors_alpha(universe, seg, i):
 def tors_beta(universe, seg, i):
     """beta  backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    beta : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -483,15 +549,22 @@ def tors_beta(universe, seg, i):
 def tors_gamma(universe, seg, i):
     """ Gamma backbone dihedral
 
-     The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    gamma : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -508,15 +581,22 @@ def tors_gamma(universe, seg, i):
 def tors_delta(universe, seg, i):
     """delta backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    delta : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -533,15 +613,22 @@ def tors_delta(universe, seg, i):
 def tors_eps(universe, seg, i):
     """Epsilon backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    epsilon : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -558,15 +645,22 @@ def tors_eps(universe, seg, i):
 def tors_zeta(universe, seg, i):
     """Zeta backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*.
+    The dihedral is computed based on position atoms for resid `i`.
 
-    :Arguments:
-      *universe*
+    Parameters
+    ----------
+    universe : Universe
          :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    zeta : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -583,16 +677,22 @@ def tors_zeta(universe, seg, i):
 def tors_chi(universe, seg, i):
     """chi nucleic acid dihedral
 
-     The dihedral is computed based on position atoms for resid *i*.
+     The dihedral is computed based on position atoms for resid `i`.
 
-     :Arguments:
-       *universe*
-           :class:`~MDAnalysis.core.universe.Universe` containing the
-           trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    chi : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
     """
@@ -614,19 +714,27 @@ def tors_chi(universe, seg, i):
 def hydroxyl(universe, seg, i):
     """2-hydroxyl dihedral. Useful only for RNA calculations.
 
-     .. Note:: This dihedral calculation will only work if using atom names as
-               documented by charmm force field parameters.
+     .. Note:: This dihedral calculation will only work if using atom
+               names as documented by charmm force field parameters,
+               namely "C1', C2', O2', H2'".
 
-     :Arguments:
-       *universe*
-           :class:`~MDAnalysis.core.universe.Universe` containing the
-           trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    Parameters
+    ----------
+    universe : Universe
+         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+    seg : str
+        segment id for base
+    i : int
+        resid of the first base
+
+    Returns
+    -------
+    hydroxyl_angle : float
+        torsion angle in degrees
+
 
     .. versionadded:: 0.7.6
+
     """
     h = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i),
                               " atom {0!s} {1!s} C2\' ".format(seg, i),
@@ -646,27 +754,34 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
                          seg1="SYSTEM", seg2="SYSTEM", seg3="SYSTEM"):
     """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
 
-     The dihedral is computed based on position atoms for resid *i*
+    The dihedral is computed based on position atoms for resid `i`
 
-     .. Note:: This dihedral calculation will only work if using atom names as
-               documented by charmm force field parameters.
+    .. Note:: This dihedral calculation will only work if using atom names as
+              documented by charmm force field parameters.
 
-     :Arguments:
-       *universe*
-           :class:`~MDAnalysis.core.universe.Universe` containing the
-           trajectory
-       *segid1*
-           segid of resid base pairing with bp2
-       *bp1*
-           resid that base pairs with bp2
-       *segid2*
-           segid same as that of segid of flipping resid
-       *bp2*
-           resid below the base that flips
-       *segid3*
-           segid of resid that flips
-       *i*
-           resid of the base that flips
+    Parameters
+    ----------
+    universe : Universe
+        :class:`~MDAnalysis.core.universe.Universe` containing the
+        trajectory
+    bp1 : int
+        resid that base pairs with `bp2`
+    bp2 : int
+        resid below the base that flips
+    i : int
+        resid of the base that flips
+    segid1 : str (optional)
+        segid of resid base pairing with `bp2`
+    segid2 : str (optional)
+        segid, same as that of segid of flipping resid `i`
+    segid3 : str (optional)
+        segid of resid `i` that flips
+
+    Returns
+    -------
+    float
+          pseudo dihedral angle in degrees
+
 
     .. versionadded:: 0.8.0
     """
