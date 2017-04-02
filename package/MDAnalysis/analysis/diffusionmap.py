@@ -20,8 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`
+"""Diffusion map --- :mod:`MDAnalysis.analysis.diffusionmap`
 =====================================================================
 
 :Authors: Eugen Hruska, John Detlefs
@@ -139,35 +138,30 @@ References
 ----------
 
 If you use this Dimension Reduction method in a publication, please
-cite:
+cite [Lafon1]_.
 
-.. [Lafon1]
-Coifman, Ronald R., Lafon, Stephane Diffusion maps. Appl. Comput. Harmon.
-Anal. 21, 5–30  (2006).
+If you choose the default metric, this module uses the fast QCP algorithm
+[Theobald2005]_ to calculate the root mean square distance (RMSD) between two
+coordinate sets (as implemented in
+:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
+module in published work please cite [Theobald2005]_.
 
-For more information
---------------------
 
-.. [deLaPorte1]
-J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
-An Introduction to Diffusion Maps.
+.. [Lafon1] Coifman, Ronald R., Lafon, Stephane. Diffusion
+            maps. Appl. Comput. Harmon.  Anal. 21, 5–30 (2006).
 
-.. [Clementi1]
-Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
-Determination of reaction coordinates via locally scaled
-diffusion map. J. Chem. Phys. 134, 124116 (2011).
+.. [deLaPorte1] J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
+             An Introduction to Diffusion Maps. In: The 19th Symposium of the
+             Pattern Recognition Association of South Africa (2008).
 
-.. [Ferguson1]
-Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-Debenedetti,  P. G. Nonlinear dimensionality reduction in molecular simulation:
-The diffusion map approach  Chem. Phys. Lett. 509, 1−11 (2011)
+.. [Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
+             Determination of reaction coordinates via locally scaled diffusion
+             map. J. Chem. Phys. 134, 124116 (2011).
 
-.. If you choose the default metric, this module uses the fast QCP algorithm
-[Theobald2005]_ to calculate the root mean square distance (RMSD) between
-two coordinate sets (as implemented
-in :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
-When using this module in published work please cite [Theobald2005]_.
-
+.. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
+             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
+             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
+             (2011)
 
 """
 from six.moves import range

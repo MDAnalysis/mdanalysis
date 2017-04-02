@@ -24,12 +24,15 @@
 Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 ================================================================
 
-Tools for calculating pair distribution functions
+Tools for calculating pair distribution functions ("radial
+distribution functions" or "RDF").
 
-# TODO
- - Structure factor?
- - Coordination number
+.. Not Implemented yet:
+.. - Structure factor?
+.. - Coordination number
+
 """
+
 import numpy as np
 
 from ..lib.util import blocks_of
@@ -44,44 +47,44 @@ class InterRDF(AnalysisBase):
 
     Arguments
     ---------
-    g1
+    g1 : AtomGroup
       First AtomGroup
-    g2
+    g2 : AtomGroup
       Second AtomGroup
-
-    Keywords
-    --------
-    nbins
+    nbins : int (optional)
           Number of bins in the histogram [75]
-    range
+    range : tuple or list (optional)
           The size of the RDF [0.0, 15.0]
-    exclusion_block
+    exclusion_block : tuple (optional)
           A tuple representing the tile to exclude from the distance
           array. [None]
-    start
-          The frame to start at [0]
-    stop
-          The frame to end at [-1]
-    step
-          The step size through the trajectory in frames [0]
+    start : int (optional)
+          The frame to start at (default is first)
+    stop : int (optional)
+          The frame to end at (default is last)
+    step : int (optional)
+          The step size through the trajectory in frames (default is
+          every frame)
 
     Example
     -------
-    First create the InterRDF object, by supplying two AtomGroups
-    then use the `run` method
+    First create the :class:`InterRDF` object, by supplying two
+    AtomGroups then use the :meth:`run` method ::
 
       rdf = InterRDF(ag1, ag2)
       rdf.run()
 
-    Results are available through the .bins and .rdf attributes
+    Results are available through the :attr:`bins` and :attr:`rdf`
+    attributes::
 
       plt.plot(rdf.bins, rdf.rdf)
 
     The `exclusion_block` keyword allows the masking of pairs from
     within the same molecule.  For example, if there are 7 of each
-    atom in each molecule, the exclusion mask (7, 7) can be used.
+    atom in each molecule, the exclusion mask `(7, 7)` can be used.
 
     .. versionadded:: 0.13.0
+
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,

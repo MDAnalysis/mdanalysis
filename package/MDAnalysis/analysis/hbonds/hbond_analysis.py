@@ -214,8 +214,8 @@ atom names to MDAnalysis.
 .. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
 
 
-Example
--------
+How to perform HydrogenBondAnalysis
+-----------------------------------
 
 All protein-water hydrogen bonds can be analysed with ::
 
@@ -464,61 +464,62 @@ class HydrogenBondAnalysis(object):
            you can improve performance by setting the *update_selection*
            keywords to ``False``.
 
-        :Arguments:
-          *universe*
+        Parameters
+        ----------
+        universe : universe
             Universe object
-          *selection1*
+        selection1 : str (optional)
             Selection string for first selection ['protein']
-          *selection2*
+        selection2 : str (optional)
             Selection string for second selection ['all']
-          *selection1_type*
+        selection1_type : str (optional)
             Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
             value for *selection1_type* automatically determines how
             *selection2* handles donors and acceptors: If *selection1* contains
             'both' then *selection2* will also contain *both*. If *selection1*
             is set to 'donor' then *selection2* is 'acceptor' (and vice versa).
             ['both'].
-          *update_selection1*
+        update_selection1 : bool (optional)
             Update selection 1 at each frame? [``False``]
-          *update_selection2*
+        update_selection2 : bool (optional)
             Update selection 2 at each frame? [``False``]
-          *filter_first*
+        filter_first : bool (optional)
             Filter selection 2 first to only atoms 3*distance away [``True``]
-          *distance*
+        distance : float (optional)
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
             <= *distance* (and the appropriate D-H-A angle, see *angle*) are
             recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]
-          *angle*
+        angle : float (optional)
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
             >=  *angle*. The default of 120º also finds fairly non-specific
             hydrogen interactions and a possibly better value is 150º. [120.0]
-          *forcefield*
+        forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
             Name of the forcefield used. Switches between different
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.
             Available values: "CHARMM27", "GLYCAM06", "other" ["CHARMM27"]
-          *donors*
+        donors : sequence (optional)
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
-          *acceptors*
+        acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
-          *start*
+        start : int (optional)
             starting frame-index for analysis, ``None`` is the first one, 0.
             *start* and *stop* are 0-based frame indices and are used to slice
             the trajectory (if supported) [``None``]
-          *stop*
+        stop : int (optional)
             last trajectory frame for analysis, ``None`` is the last one [``None``]
-          *step*
+        step : int (optional)
             read every *step* between *start* and *stop*, ``None`` selects 1.
             Note that not all trajectory reader from 1 [``None``]
-          *debug*
+        debug : bool (optional)
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
             the output, e.g. using :func:`MDAnalysis.start_logging`.)
-          *detect_hydrogens*
+        detect_hydrogens : {"distance", "heuristic"} (optional)
             Determine the algorithm to find hydrogens connected to donor
             atoms. Can be "distance" (default; finds all hydrogens in the
             donor's residue within a cutoff of the donor) or "heuristic"
@@ -526,14 +527,17 @@ class HydrogenBondAnalysis(object):
             always give the correct answer but "heuristic" is faster,
             especially when the donor list is updated each
             for each frame. ["distance"]
-          *distance_type*
+        distance_type : {"hydrogen", "heavy"} (optional)
             Measure hydrogen bond lengths between donor and acceptor heavy
             attoms ("heavy") or between donor hydrogen and acceptor heavy
             atom ("hydrogen"). If using "heavy" then one should set the *distance*
             cutoff to a higher value such as 3.5 Å. ["hydrogen"]
 
-        :Raises: :exc:`SelectionError` is raised for each static selection without
-                 the required donors and/or acceptors.
+        Raises
+        ------
+        :exc:`SelectionError`
+            is raised for each static selection without the required
+            donors and/or acceptors.
 
         .. versionchanged:: 0.7.6
            New *verbose* keyword (and per-frame debug logging disabled by

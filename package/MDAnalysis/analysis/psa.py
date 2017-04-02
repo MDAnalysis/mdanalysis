@@ -251,50 +251,67 @@ def get_path_metric_func(name):
 def sqnorm(v, axis=None):
     """Compute the sum of squares of elements along specified axes.
 
-    :Arguments:
-      *v*
-         :class:`numpy.ndarray` of coordinates
-      *axes*
-         None or int or tuple of ints, optional
-         Axes or axes along which a sum is performed. The default (*axes* =
-         ``None``) performs a sum over all the dimensions of the input array.
-         The value of *axes* may be negative, in which case it counts from the
-         last axis to the zeroth axis.
+    Parameters
+    ----------
+    v :  numpy.ndarray
+         coordinates
+    axes : None / int / tuple (optional)
+         Axes or axes along which a sum is performed. The default
+         (*axes* = ``None``) performs a sum over all the dimensions of
+         the input array.  The value of *axes* may be negative, in
+         which case it counts from the last axis to the zeroth axis.
 
-    :Returns:
-      float, the sum of the squares of the elements of *v* along *axes*
+    Returns
+    -------
+    float
+          the sum of the squares of the elements of `v` along `axes`
+
     """
     return np.sum(v*v, axis=axis)
 
 
 def get_msd_matrix(P, Q, axis=None):
-    """Generate the matrix of pairwise mean-squared deviations (MSDs) between
-    all pairs of points in *P* and *Q*, each pair having a point from *P* and a
-    point from *Q*.
+    r"""Generate the matrix of pairwise mean-squared deviations between paths.
 
-    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
+    The MSDs between all pairs of points in `P` and `Q` are
+    calculated, each pair having a point from `P` and a point from
+    `Q`.
+
+    `P` (`Q`) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). The pairwise MSD
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). The pairwise MSD
     matrix has dimensions :math:`N_p` by :math:`N_q`.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      :class:`numpy.ndarray` of pairwise MSDs between points in *P* and points
-      in *Q*
+    Returns
+    -------
+    msd_matrix : numpy.ndarray
+         matrix of pairwise MSDs between points in `P` and points
+         in `Q`
+
+    Notes
+    -----
+    We calculate the MSD matrix
+
+    .. math::
+       M_{ij} = ||p_i - q_j||^2
+
+    where :math:`p_i \in P` and :math:`q_j \in Q`.
     """
     return np.asarray([sqnorm(p - Q, axis=axis) for p in P])
 
 
 def get_coord_axes(path):
-    """Return the number of atoms and the axes (*axis*) corresponding to atoms
+    """Return the number of atoms and the axes corresponding to atoms
     and coordinates for a given path.
 
-    The *path* is assumed to be a :class:`numpy.ndarray` where the 0th axis
+    The `path` is assumed to be a :class:`numpy.ndarray` where the 0th axis
     corresponds to a frame (a snapshot of coordinates). The :math:`3N`
     (Cartesian) coordinates are assumed to be either:
 
@@ -304,13 +321,15 @@ def get_coord_axes(path):
        number and the 2nd axis contains the *x*,*y*,*z* coordinates of
        each atom.
 
-    :Arguments:
-      *path*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    path : numpy.ndarray
+         representing a path
 
-    :Returns:
-      ``(int, (int, ...))``, the number of atoms and the axes
-      containing coordinates
+    Returns
+    -------
+    (int, (int, ...))
+         the number of atoms and the axes containing coordinates
 
     """
     path_dimensions = len(path.shape)
@@ -330,23 +349,29 @@ def get_coord_axes(path):
 
 
 def hausdorff(P, Q):
-    r"""Calculate the Hausdorff distance between two paths.
+    r"""Calculate the symmetric Hausdorff distance between two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      float, the Hausdorff distance between paths *P* and *Q*
+    Returns
+    -------
+    float
+        the Hausdorff distance between paths `P` and `Q`
 
-    Example::
+    Example
+    -------
+    Calculate the Hausdorff distance between two halves of a trajectory:
+
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
@@ -361,6 +386,34 @@ def hausdorff(P, Q):
      4.7786639840135905
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      4.7786639840135905
+
+    Note that reversing the path does not change the Hausdorff distance.
+
+    Notes
+    -----
+    The Hausdorff distance is calculated in a brute force manner from the
+    distance matrix without further optimizations, essentially following
+    [Huttenlocher1993]_.
+
+    .. SeeAlso::
+
+       :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+       implementation of the early break algorithm of [Taha2015]_; note that
+       one still has to calculate the *symmetric* Hausdorff distance as
+       `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
+
+
+    References
+    ----------
+    .. [Huttenlocher1993] D. P. Huttenlocher, G. A. Klanderman, and
+        W. J. Rucklidge. Comparing images using the Hausdorff distance. IEEE
+        Transactions on Pattern Analysis and Machine Intelligence,
+        15(9):850–863, 1993.
+
+    .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for
+       calculating the exact Hausdorff distance. IEEE Transactions On Pattern
+       Analysis And Machine Intelligence, 37:2153-63, 2015.
+
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
@@ -373,23 +426,28 @@ def hausdorff_wavg(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form. The nearest
     neighbor distances for *P* (to *Q*) and those of *Q* (to *P*) are averaged
     individually to get the average nearest neighbor distance for *P* and
     likewise for *Q*. These averages are then summed and divided by 2 to get a
     measure that gives equal weight to *P* and *Q*.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      float, the weighted average Hausdorff distance between paths *P* and *Q*
+    Returns
+    -------
+    float
+        the weighted average Hausdorff distance between paths `P` and `Q`
 
-    Example::
+    Example
+    -------
+
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
      >>> u = Universe(PSF,DCD)
@@ -405,6 +463,13 @@ def hausdorff_wavg(P, Q):
      2.5669644353703447
      >>> hausdorff_wavg(P,Q[::-1]) # weighted avg hausdorff dist w/ Q reversed
      2.5669644353703447
+
+    Notes
+    -----
+    The weighted average Hausdorff distance is not a true metric (it does not
+    obey the triangle inequality); see [Seyler2015]_ for further details.
+
+
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
@@ -417,23 +482,28 @@ def hausdorff_avg(P, Q):
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form. The nearest
     neighbor distances for *P* (to *Q*) and those of *Q* (to *P*) are all
     averaged together to get a mean nearest neighbor distance. This measure
     biases the average toward the path that has more snapshots, whereas weighted
     average Hausdorff gives equal weight to both paths.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      float, the average Hausdorff distance between paths *P* and *Q*
+    Returns
+    -------
+    float
+        the average Hausdorff distance between paths `P` and `Q`
 
-    Example::
+    Example
+    -------
+
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
@@ -448,6 +518,13 @@ def hausdorff_avg(P, Q):
      2.5669646575869005
      >>> hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      2.5669646575869005
+
+
+    Notes
+    -----
+    The average Hausdorff distance is not a true metric (it does not obey the
+    triangle inequality); see [Seyler2015]_ for further details.
+
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
@@ -456,54 +533,75 @@ def hausdorff_avg(P, Q):
 
 
 def hausdorff_neighbors(P, Q):
-    r"""Calculate the Hausdorff distance between two paths.
+    r"""Find the Hausdorff neighbors of two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      dictionary of two pairs of numpy arrays, the first pair containing the
-      indices of (Hausdorff) nearest neighbors for *P* and *Q*, respectively, the
-      second containing (corresponding) nearest neighbor distances for *P* and
-      *Q*, respectively
+    Returns
+    -------
+    dict
+        dictionary of two pairs of numpy arrays, the first pair (key
+        "frames") containing the indices of (Hausdorff) nearest
+        neighbors for `P` and `Q`, respectively, the second (key
+        "distances") containing (corresponding) nearest neighbor
+        distances for `P` and `Q`, respectively
+
+    Notes
+    -----
+    Hausdorff neighbors are those points on the two paths that are separated by
+    the Hausdorff distance. They are the farthest nearest neighbors and are
+    maximally different in the sense of the Hausdorff distance [Seyler2015]_.
+
+    .. SeeAlso::
+
+       :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
+       Hausdorff neighbors.
+
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
-    nearest_neighbors =                                                         \
-            {'frames' :                                                         \
-                (np.argmin(d, axis=1), np.argmin(d, axis=0)),                   \
-             'distances' :                                                      \
-                ((np.amin(d,axis=1)/N)**0.5, (np.amin(d, axis=0)/N)**0.5),      \
-            }
+    nearest_neighbors = {
+        'frames' : (np.argmin(d, axis=1), np.argmin(d, axis=0)),
+        'distances' : ((np.amin(d,axis=1)/N)**0.5, (np.amin(d, axis=0)/N)**0.5)
+    }
     return nearest_neighbors
 
 
 def discrete_frechet(P, Q):
-    r"""Calculate the discrete Frechet distance between two paths.
+    r"""Calculate the discrete Fréchet distance between two paths.
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
-    :meth:`MDAnalysis.core.groups.AtomGroup.coordinates`). *P* (*Q*) has
+    :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or :|2Dp| (|2Dq|) in flattened form.
 
-    :Arguments:
-      *P*
-         :class:`numpy.ndarray` representing a path
-      *Q*
-         :class:`numpy.ndarray` representing a path
+    Parameters
+    ----------
+    P : numpy.ndarray
+        the points in the first path
+    Q : numpy.ndarray
+        the points in the second path
 
-    :Returns:
-      float, the discrete Frechet distance between paths *P* and *Q*
+    Returns
+    -------
+    float
+        the discrete Fréchet distance between paths *P* and *Q*
 
-    Example::
+    Example
+    -------
+    Calculate the discrete Fréchet distance between two halves of a
+    trajectory.
+
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
@@ -517,7 +615,43 @@ def discrete_frechet(P, Q):
      4.7786639840135905
      >>> discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
      6.8429011177113832
+
+    Note that reversing the direction increased the Fréchet distance:
+    it is sensitive to the direction of the path.
+
+    Notes
+    -----
+
+    The discrete Fréchet metric is an approximation to the continuous Fréchet
+    metric [Frechet1906]_ [Alt1995]_. The calculation of the continuous
+    Fréchet distance is implemented with the dynamic programming algorithm of
+    [EiterMannila1994]_ [EiterMannila1997]_.
+
+
+    References
+    ----------
+
+    .. [Frechet1906] M. Fréchet. Sur quelques points du calcul
+       fonctionnel. Rend. Circ. Mat. Palermo, 22(1):1–72, Dec. 1906.
+
+    .. [Alt1995] H. Alt and M. Godau. Computing the Fréchet distance between
+       two polygonal curves. Int J Comput Geometry & Applications,
+       5(01n02):75–91, 1995. doi: `10.1142/S0218195995000064`_
+
+    .. _`10.1142/S0218195995000064`: http://doi.org/10.1142/S0218195995000064
+
+    .. [EiterMannila1994] T. Eiter and H. Mannila. Computing discrete Fréchet
+       distance. Technical Report CD-TR 94/64, Christian Doppler Laboratory for
+       Expert Systems, Technische Universität Wien, Wien, 1994.
+
+    .. [EiterMannila1997] T. Eiter and H. Mannila. Distance measures for point
+       sets and their computation. Acta Informatica, 34:109–133, 1997. doi: `10.1007/s002360050075`_.
+
+
+    .. _10.1007/s002360050075: http://doi.org/10.1007/s002360050075
+
     """
+
     N, axis = get_coord_axes(P)
     Np, Nq = len(P), len(Q)
     d = get_msd_matrix(P, Q, axis=axis)
@@ -563,19 +697,24 @@ def dist_mat_to_vec(N, i, j):
     should be greater than *i+1*, corresponding to the upper triangle of the
     distance matrix.
 
-    :Arguments:
-      *N*
-         int, size of the distance matrix (of shape *N*-by-*N*)
-      *i*
-         int, row index (starting at 0) of the distance matrix
-      *j*
-         int, column index (starting at 0) of the distance matrix
+    Parameters
+    ----------
+    N : int
+        size of the distance matrix (of shape *N*-by-*N*)
+    i : int
+        row index (starting at 0) of the distance matrix
+    j : int
+        column index (starting at 0) of the distance matrix
 
-    :Returns:
-      int, index (of the matrix element) in the corresponding distance vector
+    Returns
+    -------
+    int
+        index (of the matrix element) in the corresponding distance vector
+
     """
 
-    if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral) or isinstance(j, numbers.Integral)):
+    if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral)
+            or isinstance(j, numbers.Integral)):
         err_str = "N, i, j all must be of type int"
         raise ValueError(err_str)
 
@@ -602,8 +741,10 @@ def dist_mat_to_vec(N, i, j):
 
 
 class Path(object):
-    """Pre-process a :class:`MDAnalysis.Universe` object: (1) fit the
-    trajectory to a reference structure, (2) convert fitted time series to a
+    """Represent a path based on a :class:`~MDAnalysis.core.universe.Universe`.
+
+    Pre-process a :class:`Universe` object: (1) fit the trajectory to a
+    reference structure, (2) convert fitted time series to a
     :class:`numpy.ndarray` representation of :attr:`Path.path`.
 
     The analysis is performed with :meth:`PSAnalysis.run` and stores the result
@@ -612,20 +753,20 @@ class Path(object):
     alignment of the original trajectories to a reference structure.
 
     .. versionadded:: 0.9.1
+
     """
 
     def __init__(self, universe, reference, ref_select='name CA',
                  path_select='all', ref_frame=0):
         """Setting up trajectory alignment and fitted path generation.
 
-        :Arguments:
-          *universe*
+        Parameters
+        ----------
+        universe : Universe
              :class:`MDAnalysis.Universe` object containing a trajectory
-          *reference*
-             reference structure; :class:`MDAnalysis.Universe` object; if
-             ``None`` then *traj* is used (uses the current time step of the
-             object) [``None``]
-          *ref_select*
+        reference : Universe
+             reference structure (uses `ref_frame` from the trajectory)
+        ref_select : str or dict or tuple (optional)
              The selection to operate on for rms fitting; can be one of:
 
              1. any valid selection string for
@@ -641,12 +782,12 @@ class Path(object):
              can also each be a list of selection strings (to generate an
              AtomGroup with defined atom order as described under
              :ref:`ordered-selections-label`).
-          *path_select*
+        ref_frame : int
+             frame index to select the coordinate frame from
+             `ref_select.trajectory`
+        path_select : selection_string
              atom selection composing coordinates of (fitted) path; if ``None``
-             then *path_select* is set to *ref_select* [``None``]
-
-        .. _ClustalW: http://www.clustal.org/
-        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+             then `path_select` is set to `ref_select` [``None``]
 
         """
         self.u_original = universe
@@ -666,26 +807,32 @@ class Path(object):
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
                          mass_weighted=False, tol_mass=0.1):
-        """Align each trajectory frame to the reference structure with
-        :func:`MDAnalysis.analysis.align.AlignTraj`.
+        """Align each trajectory frame to the reference structure
 
-        :Arguments:
-          *filename*
+        Parameters
+        ----------
+        filename : str (optional)
              file name for the RMS-fitted trajectory or pdb; defaults to the
              original trajectory filename (from :attr:`Path.u_original`) with
              *prefix* prepended
-          *prefix*
+        prefix : str (optional)
              prefix for auto-generating the new output filename
-          *rmsdfile*
+        rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-          *mass_weighted*
-             do a mass-weighted RMSD fit
-          *tol_mass*
+        mass_weighted : bool (optional)
+             do a mass-weighted RMSD fit, default is ``False``
+        tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
-             than *tol_mass* [0.1]
+             than `tol_mass` [0.1]
 
-        :Returns:
-          :class:`MDAnalysis.Universe` object containing a fitted trajectory
+        Returns
+        -------
+        Universe
+            :class:`MDAnalysis.Universe` object containing a fitted trajectory
+
+        Notes
+        -----
+        Uses :class:`MDAnalysis.analysis.align.AlignTraj` for the fitting.
         """
         head, tail = os.path.split(self.trj_name)
         oldname, ext = os.path.splitext(tail)
@@ -714,24 +861,28 @@ class Path(object):
         (if *flat* is ``True``) :class:`numpy.ndarray` representation of the
         fitted trajectory (with dimensions |3D| or |2D|, respectively).
 
-        :Arguments:
-          *fitted*
+        Parameters
+        ----------
+        fitted : bool (optional)
              construct a :attr:`Path.path` from the :attr:`Path.u_fitted`
              trajectory; if ``False`` then :attr:`Path.path` is generated with
              the trajectory from :attr:`Path.u_original` [``False``]
-          *select*
+        select : str (optional)
              the selection for constructing the coordinates of each frame in
              :attr:`Path.path`; if ``None`` then :attr:`Path.path_select`
              is used, else it is overridden by *select* [``None``]
-          *flat*
+        flat : bool (optional)
              represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
 
-        :Returns:
-          :class:`numpy.ndarray` representing a time series of atomic positions
-          of an :class:`MDAnalysis.core.groups.AtomGroup` selection from
-          :attr:`Path.u_fitted.trajectory`
+        Returns
+        -------
+        numpy.ndarray
+              representing a time series of atomic positions of an
+              :class:`MDAnalysis.core.groups.AtomGroup` selection from
+              :attr:`Path.u_fitted.trajectory`
+
         """
         select = select if select is not None else self.path_select
         if fitted:
@@ -756,8 +907,10 @@ class Path(object):
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
             targetdir=os.path.curdir, mass_weighted=False, tol_mass=0.1,
             flat=False):
-        r"""Generate a path from a trajectory and reference structure, aligning
-        to a reference structure if specified.
+        r"""Generate a path from a trajectory and reference structure.
+
+        As part of the path generation, the trajectory can be superimposed
+        ("aligned") to a reference structure if specified.
 
         This is a convenience method to generate a fitted trajectory from an
         inputted universe (:attr:`Path.u_original`) and reference structure
@@ -771,32 +924,35 @@ class Path(object):
         ``*`` operator, as in
         ``MDAnalysis.Universe(*(top_name, newtraj_name))``.
 
-        :Arguments:
-          *align*
+        Parameters
+        ----------
+        align : bool (optional)
              Align trajectory to atom selection :attr:`Path.ref_select` of
              :attr:`Path.u_reference`. If ``True``, a universe containing an
              aligned trajectory is produced with :meth:`Path.fit_to_reference`
              [``False``]
-          *filename*
+        filename : str (optional)
              filename for the RMS-fitted trajectory or pdb; defaults to the
              original trajectory filename (from :attr:`Path.u_original`) with
              *prefix* prepended
-          *prefix*
+        postfix : str (optional)
              prefix for auto-generating the new output filename
-          *rmsdfile*
+        rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-          *mass_weighted*
+        mass_weighted : bool (optional)
              do a mass-weighted RMSD fit
-          *tol_mass*
+        tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
-          *flat*
+        flat : bool (optional)
              represent :attr:`Path.path` with 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
 
-        :Returns:
-          A tuple of the topology name and new trajectory name.
+        Returns
+        -------
+        topology_trajectory : tuple
+             A tuple of the topology name and new trajectory name.
         """
         if align:
             self.u_fitted = self.fit_to_reference(                              \
@@ -812,13 +968,15 @@ class Path(object):
 
         Must run :meth:`Path.to_path` prior to calling this method.
 
-        :Returns:
-          ``int``, the number of atoms in the :class:`Path`
+        Returns
+        -------
+        int
+            the number of atoms in the :class:`Path`
+
 
         """
         if self.natoms is None:
-            err_str = "No path data; do 'Path.to_path()' first."
-            raise ValueError(err_str)
+            raise ValueError("No path data; do 'Path.to_path()' first.")
         return self.natoms
 
 
@@ -869,14 +1027,15 @@ class PSAPair(object):
         distances are actually computed), or a single ID (index) in the
         corresponding distance vector.
 
-        :Arguments:
-          *npaths*
-             int, total number of paths in :class:`PSA` used to generate *this*
-             :class:`PSAPair`
-          *i*
-             int, row index (starting at 0) of the distance matrix
-          *j*
-             int, column index (starting at 0) of the distance matrix
+        Parameters
+        ----------
+        npaths : int
+            total number of paths in :class:`PSA` used to generate *this*
+            :class:`PSAPair`
+        i : int
+             row index (starting at 0) of the distance matrix
+        j : int
+             column index (starting at 0) of the distance matrix
         """
         self.npaths = npaths
         self.matrix_idx = (i,j)
@@ -898,14 +1057,17 @@ class PSAPair(object):
         index *j* should be greater than *i+1*, corresponding to the upper
         triangle of the distance matrix.
 
-        :Arguments:
-          *i*
-             int, row index (starting at 0) of the distance matrix
-          *j*
-             int, column index (starting at 0) of the distance matrix
+        Parameters
+        ----------
+        i : int
+            row index (starting at 0) of the distance matrix
+        j : int
+            column index (starting at 0) of the distance matrix
 
-        :Returns:
-          int, (matrix element) index in the corresponding distance vector
+        Returns
+        -------
+        int
+             (matrix element) index in the corresponding distance vector
         """
         return (self.npaths*i) + j - (i+2)*(i+1)/2
 
@@ -923,13 +1085,15 @@ class PSAPair(object):
         :math:`i^\text{th}` path and *Q* is the :math:`j^\text{th}` path among
         the set of *N* total paths in the comparison.
 
-        :Arguments:
-          *P*
-             :class:`numpy.ndarray` representing a path
-          *Q*
-             :class:`numpy.ndarray` representing a path
-          *N*
-             int, size of the distance matrix (of shape *N*-by-*N*) [``None``]
+        Parameters
+        ----------
+        P : numpy.ndarray
+            representing a path
+        Q : numpy.ndarray
+            representing a path
+        N : int
+            size of the distance matrix (of shape *N*-by-*N*) [``None``]
+
         """
         hn = hausdorff_neighbors(P, Q)
         self.nearest_neighbors['frames'] = hn['frames']
@@ -974,21 +1138,25 @@ class PSAPair(object):
         calling :meth:`compute_nearest_neighbors`. At least one of *frames*
         or *distances* must be ``True``, or else a ``NoDataError`` is raised.
 
-        :Arguments:
-          *frames*
-             boolean; if ``True``, return nearest neighbor frame indices
+        Parameters
+        ----------
+        frames :  bool
+             if ``True``, return nearest neighbor frame indices
              [``True``]
-          *distances*
-             boolean; if ``True``, return nearest neighbor distances [``True``]
+         distances : bool
+             if ``True``, return nearest neighbor distances [``True``]
 
-        :Returns:
-          If both *frames* and *distances* are ``True``, return the entire
-          dictionary (:attr:`nearest_neighbors`); if only *frames* is
-          ``True``, return a pair of :class:`numpy.ndarray` containing the
-          indices of the frames (for the pair of paths) of the nearest
-          neighbors; if only *distances* is ``True``, return a pair of
-          :class:`numpy.ndarray` of the nearest neighbor distances (for the pair
-          of paths).
+        Returns
+        -------
+        dict or tuple
+             If both *frames* and *distances* are ``True``, return the entire
+             dictionary (:attr:`nearest_neighbors`); if only *frames* is
+             ``True``, return a pair of :class:`numpy.ndarray` containing the
+             indices of the frames (for the pair of paths) of the nearest
+             neighbors; if only *distances* is ``True``, return a pair of
+             :class:`numpy.ndarray` of the nearest neighbor distances (for the
+             pair of paths).
+
         """
         if self.nearest_neighbors['distances'] is None:
             err_str = "Nearest neighbors have not been calculated yet;"         \
@@ -1018,19 +1186,22 @@ class PSAPair(object):
         :meth:`find_hausdorff_pair`. At least one of *frames* or *distance*
         must be ``True``, or else a ``NoDataError`` is raised.
 
-        :Arguments:
-          *frames*
-             boolean; if ``True``, return the indices of the frames
+        Parameters
+        ----------
+        frames : bool
+             if ``True``, return the indices of the frames
              of the Hausdorff pair [``True``]
-          *distances*
-             boolean; if ``True``, return Hausdorff distance [``True``]
+        distances : bool
+             if ``True``, return Hausdorff distance [``True``]
 
-        :Returns:
-          If both *frames* and *distance* are ``True``, return the entire
-          dictionary (:attr:`hausdorff_pair`); if only *frames* is
-          ``True``, return a pair of ``int`` containing the indices of the
-          frames (one index per path) of the Hausdorff pair; if only *distance*
-          is ``True``, return the Hausdorff distance for this path pair.
+        Returns
+        -------
+        dict or tuple
+             If both *frames* and *distance* are ``True``, return the entire
+             dictionary (:attr:`hausdorff_pair`); if only *frames* is
+             ``True``, return a pair of ``int`` containing the indices of the
+             frames (one index per path) of the Hausdorff pair; if only *distance*
+             is ``True``, return the Hausdorff distance for this path pair.
         """
         if self.hausdorff_pair['distance'] is None:
             err_str = "Hausdorff pair has not been calculated yet;"             \
@@ -1069,15 +1240,16 @@ class PSAnalysis(object):
         The mutual similarity between all unique pairs of trajectories
         are computed using a selected path metric.
 
-        :Arguments:
-          *universes*
+        Parameters
+        ----------
+        universes : list
              a list of universes (:class:`MDAnalysis.Universe` object), each
              containing a trajectory
-          *reference*
+        reference : Universe
              reference coordinates; :class:`MDAnalysis.Universe` object; if
-             ``None`` the first time step of the first item in *trajs* is used
+             ``None`` the first time step of the first item in `universes` is used
              [``None``]
-          *ref_select*
+        ref_select : str or dict or tuple
              The selection to operate on; can be one of:
 
              1. any valid selection string for
@@ -1093,22 +1265,28 @@ class PSAnalysis(object):
              can also each be a list of selection strings (to generate an
              AtomGroup with defined atom order as described under
              :ref:`ordered-selections-label`).
-          *mass_weighted*
+        mass_weighted : bool
              do a mass-weighted RMSD fit [``False``]
-          *tol_mass*
+        tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
-          *ref_frame*
+        ref_frame : int
              frame index to select frame from *reference* [0]
-          *path_select*
+        path_select : str
              atom selection composing coordinates of (fitted) path; if ``None``
              then *path_select* is set to *ref_select* [``None``]
-          *targetdir*
-            output files are saved there [.]
-          *labels*
+        targetdir : str
+            output files are saved there; if ``None`` then "./psadata" is
+            created and used [.]
+        labels : list
              list of strings, names of trajectories to be analyzed
              (:class:`MDAnalysis.Universe`); if ``None``, defaults to trajectory
              names [``None``]
+
+
+        .. _ClustalW: http://www.clustal.org/
+        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
         """
         self.universes = universes
         self.u_reference = self.universes[0] if reference is None else reference
@@ -1177,34 +1355,36 @@ class PSAnalysis(object):
     def generate_paths(self, **kwargs):
         """Generate paths, aligning each to reference structure if necessary.
 
-        :Keywords:
-          *align*
+        Parameters
+        ----------
+        align : bool
              Align trajectories to atom selection :attr:`PSAnalysis.ref_select`
              of :attr:`PSAnalysis.u_reference` [``False``]
-          *filename*
+        filename : str
              strings representing base filename for fitted trajectories and
              paths [``None``]
-          *infix*
+        infix : str
              additional tag string that is inserted into the output filename of
              the fitted trajectory files ['']
-          *mass_weighted*
+        mass_weighted : bool
              do a mass-weighted RMSD fit
-          *tol_mass*
+        tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass*
-          *ref_frame*
+        ref_frame : int
              frame index to select frame from *reference*
-          *flat*
+        flat : bool
              represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
-          *save*
-             boolean; if ``True``, pickle list of names for fitted trajectories
+        save : bool
+             if ``True``, pickle list of names for fitted trajectories
              [``True``]
-          *store*
-             boolean; if ``True`` then writes each path (:class:`numpy.ndarray`)
+        store : bool
+             if ``True`` then writes each path (:class:`numpy.ndarray`)
              in :attr:`PSAnalysis.paths` to compressed npz (numpy) files
              [``False``]
+
 
         The fitted trajectories are written to new files in the
         "/trj_fit" subdirectory in :attr:`PSAnalysis.targetdir` named
@@ -1214,6 +1394,7 @@ class PSAnalysis(object):
         format in the "/paths" subdirectory in :attr:`PSAnalysis.targetdir` for
         persistence and can be accessed as the attribute
         :attr:`PSAnalysis.paths`.
+
         """
         align = kwargs.pop('align', False)
         filename = kwargs.pop('filename', 'fitted')
@@ -1258,18 +1439,24 @@ class PSAnalysis(object):
         A number of parameters can be changed from the defaults. The
         result is stored as the array :attr:`PSAnalysis.D`.
 
-        :Keywords:
-          *metric*
+        Parameters
+        ----------
+        metric : str or callable
              selection string specifying the path metric to measure pairwise
-             distances among :attr:`PSAnalysis.paths` [``'hausdorff'``]
-          *start*, *stop*, *step*
-             start and stop frame index with step size: analyze
+             distances among :attr:`PSAnalysis.paths` or a callable with the
+             same call signature as :func:`hausdorff`
+             [``'hausdorff'``]
+        start : int
+             `start` and `stop` frame index with `step` size: analyze
              ``trajectory[start:stop:step]`` [``None``]
-          *store*
-             boolean; if ``True`` then writes :attr:`PSAnalysis.D` to text and
+        stop : int
+        step : int
+        store : bool
+             if ``True`` then writes :attr:`PSAnalysis.D` to text and
              compressed npz (numpy) files [``True``]
-          *filename*
+        filename : str
              string, filename to save :attr:`PSAnalysis.D`
+
         """
         metric = kwargs.pop('metric', 'hausdorff')
         start = kwargs.pop('start', None)
@@ -1310,15 +1497,18 @@ class PSAnalysis(object):
         of Hausdorff pairs analysis that is available for each pair of path,
         including nearest neighbors lists and the Hausdorff pairs.
 
-        :Keywords:
-          *start*, *stop*, *step*
-             start and stop frame index with step size: analyze
+        Parameters
+        ----------
+        start : int
+             `start` and `stop` frame index with `step` size: analyze
              ``trajectory[start:stop:step]`` [``None``]
-          *neighbors*
-             boolean; if ``True``, then stores dictionary of nearest neighbor
+        stop : int
+        step : int
+        neighbors : bool
+             if ``True``, then stores dictionary of nearest neighbor
              frames/distances in :attr:`PSAnalysis.NN` [``False``]
-          *hausdorff_pairs*
-             boolean; if ``True``, then stores dictionary of Hausdorff pair
+        hausdorff_pairs : bool
+             if ``True``, then stores dictionary of Hausdorff pair
              frames/distances in :attr:`PSAnalysis.HP` [``False``]
         """
         start = kwargs.pop('start', None)
@@ -1350,13 +1540,19 @@ class PSAnalysis(object):
         """Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz
         file and text file.
 
-        :Arguments:
-          *filename*
-             string, specifies filename [``None``]
-
         The data are saved with :func:`numpy.savez_compressed` and
         :func:`numpy.savetxt` in the directory specified by
         :attr:`PSAnalysis.targetdir`.
+
+        Parameters
+        ----------
+        filename : str
+             specifies filename [``None``]
+
+        Returns
+        -------
+        filename : str
+
         """
         filename = filename or 'psa_distances'
         head = self.targetdir + self.datadirs['distance_matrices']
@@ -1373,12 +1569,18 @@ class PSAnalysis(object):
     def save_paths(self, filename=None):
         """Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.
 
-        :Arguments:
-          *filename*
-             string, specifies filename [``None``]
-
         The data are saved with :func:`numpy.savez_compressed` in the directory
         specified by :attr:`PSAnalysis.targetdir`.
+
+        Parameters
+        ----------
+        filename : str
+             specifies filename [``None``]
+
+        Returns
+        -------
+        filename : str
+
         """
         filename = filename or 'path_psa'
         head = self.targetdir + self.datadirs['paths']
@@ -1413,28 +1615,33 @@ class PSAnalysis(object):
 
     def plot(self, filename=None, linkage='ward', count_sort=False,
              distance_sort=False, figsize=4.5, labelsize=12):
-        """Plot a clustered distance matrix using method *linkage* along with
-        the corresponding dendrogram. Rows (and columns) are identified using
-        the list of strings specified by :attr:`PSAnalysis.labels`.
+        """Plot a clustered distance matrix.
 
-        :Arguments:
-          *filename*
-             string, save figure to *filename* [``None``]
-          *linkage*
-             string, name of linkage criterion for clustering [``'ward'``]
-          *count_sort*
-            boolean, see scipy.cluster.hierarchy.dendrogram [``False``]
-          *distance_sort*
-            boolean, see scipy.cluster.hierarchy.dendrogram [``False``]
-          *figsize*
+        Usese method *linkage* and plots the corresponding dendrogram. Rows
+        (and columns) are identified using the list of strings specified by
+        :attr:`PSAnalysis.labels`.
+
+        If `filename` is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`matplotlib.pyplot.imshow`.
+
+
+        Parameters
+        ----------
+        filename : str
+             save figure to *filename* [``None``]
+        linkage : str
+             name of linkage criterion for clustering [``'ward'``]
+        count_sort : bool
+             see :func:`scipy.cluster.hierarchy.dendrogram` [``False``]
+        distance_sort : bool
+             see :func:`scipy.cluster.hierarchy.dendrogram` [``False``]
+        figsize : float
              set the vertical size of plot in inches [``4.5``]
-          *labelsize*
+        labelsize : float
              set the font size for colorbar labels; font size for path labels on
              dendrogram default to 3 points smaller [``12``]
 
-        If *filename* is supplied then the figure is also written to file (the
-        suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`pylab.imshow`.
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
@@ -1511,29 +1718,33 @@ class PSAnalysis(object):
     def plot_annotated_heatmap(self, filename=None, linkage='ward',             \
                                count_sort=False, distance_sort=False,           \
                                figsize=8, annot_size=6.5):
-        """Plot a clustered distance matrix using method *linkage* with
-        annotated distances in the matrix. Rows (and columns) are identified
-        using the list of strings specified by :attr:`PSAnalysis.labels`.
+        """Plot a clustered distance matrix.
 
-        :Arguments:
-          *filename*
-             string, save figure to *filename* [``None``]
-          *count_sort*
-            boolean, see scipy.cluster.hierarchy.dendrogram [``False``]
-          *distance_sort*
-            boolean, see scipy.cluster.hierarchy.dendrogram [``False``]
-          *linkage*
-             string, name of linkage criterion for clustering [``'ward'``]
-          *figsize*
-             set the vertical size of plot in inches [``8``]
-          *annot_size*
-             float, font size of annotation labels on heat map [``6.5``]
+        Uses method `linkage` and plots annotated distances in the matrix. Rows
+        (and columns) are identified using the list of strings specified by
+        :attr:`PSAnalysis.labels`.
 
-        If *filename* is supplied then the figure is also written to file (the
+        If `filename` is supplied then the figure is also written to file (the
         suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`pylab.imshow`.
+        keyword arguments are passed on to :func:`matplotlib.pyplot.imshow`.
+
+        Parameters
+        ----------
+        filename : str
+             save figure to *filename* [``None``]
+        linkage : str
+             name of linkage criterion for clustering [``'ward'``]
+        count_sort : bool
+             see :func:`scipy.cluster.hierarchy.dendrogram` [``False``]
+        distance_sort : bool
+             see :func:`scipy.cluster.hierarchy.dendrogram` [``False``]
+        figsize : float
+             set the vertical size of plot in inches [``4.5``]
+        annot_size : float
+             font size of annotation labels on heat map [``6.5``]
+
         """
-        from matplotlib.pylab import figure, colorbar, cm, savefig, clf
+        from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         try:
             import seaborn.apionly as sns
@@ -1604,30 +1815,34 @@ class PSAnalysis(object):
                                multiplot=False, aspect_ratio=1.75,              \
                                labelsize=12):
         """Plot nearest neighbor distances as a function of normalized frame
-        number (mapped to the interval *[0,1]*).
+        number.
 
-        :Arguments:
-          *filename*
-             string, save figure to *filename* [``None``]
-          *idx*
-             integer, index of path (pair) comparison to plot [``0``]
-          *labels*
-             (string, string), pair of names to label nearest neighbor distance
+        The frame number is mapped to the interval *[0, 1]*.
+
+        If `filename` is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`matplotlib.pyplot.imshow`.
+
+        Parameters
+        ----------
+        filename : str
+             save figure to *filename* [``None``]
+        idx : int
+             index of path (pair) comparison to plot [``0``]
+        labels : (str, str)
+             pair of names to label nearest neighbor distance
              curves [``('Path 1', 'Path 2')``]
-          *figsize*
-             float, set the vertical size of plot in inches [``4.5``]
-          *multiplot*
-             boolean, set to ``True`` to enable plotting multiple nearest
+        figsize : float
+             set the vertical size of plot in inches [``4.5``]
+        multiplot : bool
+             set to ``True`` to enable plotting multiple nearest
              neighbor distances on the same figure [``False``]
-          *aspect_ratio*
-             float, set the ratio of width to height of the plot [``1.75``]
-          *labelsize*
+        aspect_ratio : float
+             set the ratio of width to height of the plot [``1.75``]
+        labelsize : float
              set the font size for colorbar labels; font size for path labels on
              dendrogram default to 3 points smaller [``12``]
 
-        If *filename* is supplied then the figure is also written to file (the
-        suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`pylab.imshow`.
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
@@ -1693,14 +1908,15 @@ class PSAnalysis(object):
                 color_threshold=4):
         """Cluster trajectories and optionally plot the dendrogram.
 
-        :Arguments:
-          *method*
-            string, name of linkage criterion for clustering [``'ward'``]
-          *no_plot*
-            boolean, if ``True``, do not render the dendrogram [``False``]
-          *no_labels*
-            boolean, if ``True`` then do not label dendrogram [``True``]
-          *color_threshold*
+        Parameters
+        ----------
+        method : str
+            name of linkage criterion for clustering [``'ward'``]
+        no_plot : bool
+            if ``True``, do not render the dendrogram [``False``]
+        no_labels : bool
+            if ``True`` then do not label dendrogram [``True``]
+        color_threshold : float
             For brevity, let t be the color_threshold. Colors all the
             descendent links below a cluster node k the same color if k is
             the first node below the cut threshold t. All links connecting
@@ -1709,9 +1925,12 @@ class PSAnalysis(object):
             colored blue. If color_threshold is None or ‘default’,
             corresponding with MATLAB(TM) behavior, the threshold is set to
             0.7*max(Z[:,2]). [``4``]]
-        :Returns:
-          list of indices representing the row-wise order of the objects
-          after clustering
+
+        Returns
+        -------
+        list
+            list of indices representing the row-wise order of the objects
+            after clustering
         """
         import matplotlib
         from scipy.cluster.hierarchy import linkage, dendrogram
@@ -1728,7 +1947,9 @@ class PSAnalysis(object):
     def _get_plot_obj_locs(self):
         """Find and return coordinates for dendrogram, heat map, and colorbar.
 
-        :Returns:
+        Returns
+        -------
+        tuple
           tuple of coordinates for placing the dendrogram, heat map, and
           colorbar in the plot.
         """
@@ -1759,8 +1980,10 @@ class PSAnalysis(object):
            Must run :meth:`PSAnalysis.generate_paths` prior to calling this
            method.
 
-        :Returns:
-          int, the number of atoms in :class:`PSA`'s :class:`Path`s'
+        Returns
+        -------
+        int
+           the number of atoms in :class:`PSA`'s :class:`Path`s'
         """
         if self.natoms is None:
             err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
@@ -1775,8 +1998,10 @@ class PSAnalysis(object):
            Must run :meth:`PSAnalysis.generate_paths` prior to calling this
            method.
 
-        :Returns:
-          int, the number of paths in :class:`PSA`
+        Returns
+        -------
+        int
+           the number of paths in :class:`PSA`
         """
         if self.npaths is None:
             err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
@@ -1791,9 +2016,11 @@ class PSAnalysis(object):
            Must run :meth:`PSAnalysis.generate_paths` prior to calling this
            method.
 
-        :Returns:
-          list of :class:`numpy.ndarray` representations of paths in
-          :class:`PSA`
+        Returns
+        -------
+        list
+            list of :class:`numpy.ndarray` representations of paths in
+            :class:`PSA`
         """
         if self.paths is None:
             err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
@@ -1808,13 +2035,15 @@ class PSAnalysis(object):
            Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
            calling this method.
 
-        :Arguments:
-          *vectorform*
-            boolean, if ``True``, return the distance vector instead [``False``]
+        Parameters
+        ----------
+        vectorform : bool
+             if ``True``, return the distance vector instead [``False``]
 
-        :Returns:
-          :class:`numpy.ndarray` representation of the distance matrix (or
-          vector)
+        Returns
+        -------
+        numpy.ndarray
+             representation of the distance matrix (or vector)
 
         """
         if self.D is None:
@@ -1829,15 +2058,16 @@ class PSAnalysis(object):
 
     @property
     def psa_pairs(self):
-        """Get the list of :class:`PSAPair` instances for each pair of paths.
+        """The list of :class:`PSAPair` instances for each pair of paths.
 
-        :meth:`psa_pairs` is a list of :class:`PSAPair` whose elements are
-        pairs of paths that have been compared using
-        :meth:`PSAnalysis.run_pairs_analysis`. Each :class:`PSAPair`
-        contains nearest neighbor and Hausdorff pair information specific to a
-        pair of paths. The nearest neighbor frames and distances for a
-        :class:`PSAPair` can be accessed in the nearest neighbor dictionary
-        using the keys 'frames' and 'distances', respectively. E.g.,
+        :attr:`psa_pairs` is a list of all :class:`PSAPair` objects (in
+        distance vector order). The elements of a :class:`PSAPair` are pairs of
+        paths that have been compared using
+        :meth:`PSAnalysis.run_pairs_analysis`. Each :class:`PSAPair` contains
+        nearest neighbor and Hausdorff pair information specific to a pair of
+        paths. The nearest neighbor frames and distances for a :class:`PSAPair`
+        can be accessed in the nearest neighbor dictionary using the keys
+        'frames' and 'distances', respectively. E.g.,
         :attr:`PSAPair.nearest_neighbors['distances']` returns a *pair* of
         :class:`numpy.ndarray` corresponding to the nearest neighbor distances
         for each path. Similarly, Hausdorff pair information can be accessed
@@ -1847,9 +2077,6 @@ class PSAnalysis(object):
         .. note::
            Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
            method.
-
-        :Returns:
-          list of all :class:`PSAPair` objects (in distance vector order)
 
         """
         if self._psa_pairs is None:
@@ -1861,20 +2088,18 @@ class PSAnalysis(object):
 
     @property
     def hausdorff_pairs(self):
-        """Get the Hausdorff pair for each (unique) pairs of paths.
+        """The Hausdorff pair for each (unique) pairs of paths.
 
-        This method returns a list of Hausdorff pair information, where each
-        element is a dictionary containing the pair of frames and the
-        (Hausdorff) distance between a pair of paths. See
-        :meth:`PSAnalysis.psa_pairs` and :attr:`PSAPair.hausdorff_pair` for
-        more information about accessing Hausdorff pair data.
+        This attribute contains a list of Hausdorff pair information (in
+        distance vector order), where each element is a dictionary containing
+        the pair of frames and the (Hausdorff) distance between a pair of
+        paths. See :meth:`PSAnalysis.psa_pairs` and
+        :attr:`PSAPair.hausdorff_pair` for more information about accessing
+        Hausdorff pair data.
 
         .. note::
            Must run :meth:`PSAnalysis.run_pairs_analysis` with
            ``hausdorff_pairs=True`` prior to calling this method.
-
-        :Returns:
-          list of all Hausdorff pairs (in distance vector order)
 
         """
         if self._HP is None:
@@ -1886,20 +2111,17 @@ class PSAnalysis(object):
 
     @property
     def nearest_neighbors(self):
-        """Get the nearest neighbors for each (unique) pair of paths.
+        """The nearest neighbors for each (unique) pair of paths.
 
-        This method returns a list of nearest neighbor information, where each
-        element is a dictionary containing the nearest neighbor frames and
-        distances between a pair of paths. See :meth:`PSAnalysis.psa_pairs`
-        and :attr:`PSAPair.nearest_neighbors` for more information about
-        accessing nearest neighbor data.
+        This attribute contains a list of nearest neighbor information (in
+        distance vector order), where each element is a dictionary containing
+        the nearest neighbor frames and distances between a pair of paths. See
+        :meth:`PSAnalysis.psa_pairs` and :attr:`PSAPair.nearest_neighbors` for
+        more information about accessing nearest neighbor data.
 
         .. note::
            Must run :meth:`PSAnalysis.run_pairs_analysis` with
            ``neighbors=True`` prior to calling this method.
-
-        :Returns:
-          list of all nearest neighbors (in distance vector order)
 
         """
         if self._NN is None:

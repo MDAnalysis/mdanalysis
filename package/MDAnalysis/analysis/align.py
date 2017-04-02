@@ -174,6 +174,7 @@ normal users.
 
 .. autofunction:: _fit_to
 .. autofunction:: fasta2select
+.. autofunction:: sequence_alignment
 .. autofunction:: get_matching_atoms
 
 """
@@ -281,9 +282,9 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
 
     Parameters
     ----------
-    mobile_coordinates : array
+    mobile_coordinates : ndarray
         Coordinates of atoms to be aligned
-    ref_coordinates : array
+    ref_coordinates : ndarray
         Coordinates of atoms to be fit against
     mobile_atoms : AtomGroup
         Atoms to be translated
@@ -291,7 +292,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
         array of xyz coordinate of mobile center of mass
     ref_com: ndarray
         array of xyz coordinate of reference center of mass
-    weights : numpy array, optional
+    weights : numpy array (optional)
         Array to be used for weighted rmsd
 
     Returns
@@ -352,7 +353,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     reference : Universe or AtomGroup
        reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup`
        or a whole :class:`~MDAnalysis.core.universe.Universe`
-    select: string or dict, optional
+    select: string or dict (optional)
        1. any valid selection string for
           :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
           produces identical selections in `mobile` and `reference`; or
@@ -364,15 +365,15 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
        When using 2. or 3. with *sel1* and *sel2* then these selections can
        also each be a list of selection strings (to generate a AtomGroup with
        defined atom order as described under :ref:`ordered-selections-label`).
-    mass_weighted : boolean, optional (deprecated)
+    mass_weighted : boolean (optional) (deprecated)
        ``True`` uses the masses :meth:`reference.masses` as weights for the
        RMSD fit.
-    weights : str/array_like, optional
+    weights : str/array_like (optional)
        weights to be used for fit. Can be either 'mass' or an array_like
-    tol_mass: float, optional
+    tol_mass: float (optional)
        Reject match if the atomic masses for matched atoms differ by more than
        *tol_mass*, default [0.1]
-    strict: boolean, optional
+    strict: boolean (optional)
        ``True``
            Will raise :exc:`SelectionError` if a single atom does not
            match between the two selections.
@@ -380,7 +381,7 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
            Will try to prepare a matching selection by dropping
            residues with non-matching atoms. See :func:`get_matching_atoms`
            for details.
-    subselection : string, optional
+    subselection : string (optional)
        Apply the transformation only to this selection.
 
        ``None`` [default]
@@ -399,12 +400,13 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     new_rmsd : float
         RMSD after spatial alignment
 
-    See Also
-    --------
-    AlignTraj: More efficient method for RMSD-fitting trajectories.
+    .. SeeAlso::
+       AlignTraj: More efficient method for RMSD-fitting trajectories.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
 
     .. versionchanged:: 0.8
        Added check that the two groups describe the same atoms including
@@ -412,13 +414,13 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
 
     .. versionchanged:: 0.10.0
        Uses :func:`get_matching_atoms` to work with incomplete selections
-       and new *strict* keyword. The new default is to be lenient whereas
-       the old behavior was the equivalent of *strict* = ``True``.
+       and new `strict` keyword. The new default is to be lenient whereas
+       the old behavior was the equivalent of ``strict = True``.
 
     .. versionchanged:: 0.16.0
        new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
     .. deprecated:: 0.16.0
-       Instead of ``mass_weighted=True`` use new ``weights='mass'`
+       Instead of ``mass_weighted=True`` use new ``weights='mass'``
 
     """
     if select in ('all', None):
@@ -510,36 +512,37 @@ class AlignTraj(AnalysisBase):
             Universe containing trajectory to be fitted to reference
         reference : Universe
             Universe containing trajectory frame to be used as reference
-        select : string, optional
+        select : string (optional)
             Set as default to all, is used for Universe.select_atoms to choose
             subdomain to be fitted against
-        filename : string, optional
+        filename : string (optional)
             Provide a filename for results to be written to
-        prefix : string, optional
+        prefix : string (optional)
             Provide a string to prepend to filename for results to be written
             to
-        mass_weighted : boolean, optional (deprecated)
-            Boolean, if true will rmsd will be mass-weighted corresponding to
-            the atoms selected in the reference trajectory
+        mass_weighted : boolean (optional, deprecated)
+            Boolean, if ``True`` will rmsd will be mass-weighted corresponding
+            to the atoms selected in the reference trajectory. However, this is
+            deprecated: rather use ``weights="mass"``.
         weights : str/array_like (optional)
             Can either be 'mass' to use reference masses as weights or an
             arbitrary array
-        tol_mass : float, optional
+        tol_mass : float (optional)
             Tolerance given to `get_matching_atoms` to find appropriate atoms
-        strict : boolean, optional
+        strict : boolean (optional)
             Force `get_matching_atoms` to fail if atoms can't be found using
             exact methods
-        force : boolean, optional
+        force : boolean (optional)
             Force overwrite of filename for rmsd-fitting
-        verbose : boolean, optional
+        verbose : boolean (optional)
             Set logger to show more information
-        start : int, optional
+        start : int (optional)
             First frame of trajectory to analyse, Default: 0
-        stop : int, optional
+        stop : int (optional)
             Last frame of trajectory to analyse, Default: -1
-        step : int, optional
+        step : int (optional)
             Step between frames to analyse, Default: 1
-        in_memory : boolean, optional
+        in_memory : boolean (optional)
             *Permanently* switch `mobile` to an in-memory trajectory
             so that alignment can be done in-place, which can improve
             performance substantially in some cases. In this case, no file
@@ -562,6 +565,7 @@ class AlignTraj(AnalysisBase):
            new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
         .. deprecated:: 0.16.0
            Instead of ``mass_weighted=True`` use new ``weights='mass'`
+
         """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
@@ -868,15 +872,15 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Atom group to be aligned
     reference : AtomGroup
         Atom group to be aligned against
-    match_score : float, optional, default 2
+    match_score : float (optional), default 2
          score for matching residues, default 2
-    mismatch_penalty : float, optional, default -1
+    mismatch_penalty : float (optional), default -1
          penalty for residues that do not match , default : -1
-    gap_penalty : float, optional, default -2
+    gap_penalty : float (optional), default -2
          penalty for opening a gap; the high default value creates compact
          alignments for highly identical sequences but might not be suitable
          for sequences with low identity, default : -2
-    gapextension_penalty : float, optional, default -0.1
+    gapextension_penalty : float (optional), default -0.1
          penalty for extending a gap, default: -0.1
 
     Returns
@@ -943,31 +947,31 @@ def fasta2select(fastafilename, is_aligned=False,
     fastafilename : str, path to filename
         FASTA file with first sequence as reference and
         second the one to be aligned (ORDER IS IMPORTANT!)
-    is_aligned : boolean, optional
-        ``False`` : [default]
+    is_aligned : boolean (optional)
+        ``False`` (default)
             run clustalw for sequence alignment;
         ``True``
             use the alignment in the file (e.g. from STAMP) [``False``]
-    ref_offset : int, optional
+    ref_offset : int (optional)
         add this number to the column number in the FASTA file
         to get the original residue number, default: 0
-    target_offset : int, optional
+    target_offset : int (optional)
         add this number to the column number in the FASTA file
         to get the original residue number, default: 0
-    ref_resids : str, optional
+    ref_resids : str (optional)
         sequence of resids as they appear in the reference structure
-    target_resids : str, optional
+    target_resids : str (optional)
         sequence of resids as they appear in the target
-    alnfilename : str, optional
+    alnfilename : str (optional)
         filename of ClustalW alignment (clustal format) that is
         produced by *clustalw* when *is_aligned* = ``False``.
         default ``None`` uses the name and path of *fastafilename* and
         subsititutes the suffix with '.aln'.
-    treefilename: str, optional
+    treefilename: str (optional)
         filename of ClustalW guide tree (Newick format);
         if default ``None``  the the filename is generated from *alnfilename*
         with the suffix '.dnd' instead of '.aln'
-    clustalw : str, optional
+    clustalw : str (optional)
         path to the ClustalW (or ClustalW2) binary; only
         needed for `is_aligned` = ``False``, default: "ClustalW2"
 
@@ -975,13 +979,14 @@ def fasta2select(fastafilename, is_aligned=False,
     -------
     select_dict : dict
         dictionary with 'reference' and 'mobile' selection string
-        that can be used immediately in :func:`rms_fit_trj` as
+        that can be used immediately in :class:`AlignTraj` as
         ``select=select_dict``.
 
-    See Also
-    --------
-    :func:`sequence_alignment`, which does not require external
-    programs.
+
+    .. SeeAlso::
+      :func:`sequence_alignment`, which does not require external
+      programs.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -1158,10 +1163,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     ag2 : AtomGroup
         Second :class:`~MDAnalysis.core.groups.AtomGroup` instance that is
         compared
-    tol_mass : float, optional
+    tol_mass : float (optional)
          Reject if the atomic masses for matched atoms differ by more than
          `tol_mass` [0.1]
-    strict : boolean, optional
+    strict : boolean (optional)
         ``True``
             Will raise :exc:`SelectionError` if a single atom does not
             match between the two selections.

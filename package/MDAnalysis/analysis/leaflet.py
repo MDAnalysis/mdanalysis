@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -25,14 +25,10 @@
 Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`
 ==============================================================
 
-:Author: Oliver Beckstein
-:Year: 2010
-:Copyright: GNU Public License v3
-
-Algorithm:
-  1. build a graph of all phosphate distances < cutoff
-  2. identify the largest connected subgraphs
-  3. analyse first and second largest graph, which correspond to the leaflets
+This module implements the *LeafletFinder* algorithm, described in
+[Michaud-Agrawal2011]_. It can identify the lipids in a bilayer of
+arbitrary shape and topology, including planar and undulating bilayers
+under periodic boundary conditions or vesicles.
 
 One can use this information to identify
 
@@ -50,6 +46,20 @@ See example scripts in the MDAnalysisCookbook_ on how to use
 algorithm.
 
 .. MDAnalysisCookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
+
+
+Algorithm
+---------
+
+1. build a graph of all phosphate distances < cutoff
+2. identify the largest connected subgraphs
+3. analyse first and second largest graph, which correspond to the leaflets
+
+For further details see [Michaud-Agrawal2011]_.
+
+
+Classes and Functions
+---------------------
 
 .. autoclass:: LeafletFinder
    :members:
@@ -73,6 +83,31 @@ from .. import selections
 class LeafletFinder(object):
     """Identify atoms in the same leaflet of a lipid bilayer.
 
+    This class implements the *LeafletFinder* algorithm [Michaud-Agrawal2011]_.
+
+    Parameters
+    ----------
+    universe : Universe or str
+        :class:`MDAnalysis.Universe` or a file name (e.g., in PDB or
+        GRO format)
+    selection : AtomGroup or str
+        A AtomGroup instance or a
+        :meth:`Universe.select_atoms` selection string
+        for atoms that define the lipid head groups, e.g.
+        universe.atoms.PO4 or "name PO4" or "name P*"
+    cutoff : float (optional)
+        head group-defining atoms within a distance of `cutoff`
+        Angstroms are deemed to be in the same leaflet [15.0]
+    pbc : bool (optional)
+        take periodic boundary conditions into account [``False``]
+    sparse : bool (optional)
+        ``None``: use fastest possible routine; ``True``: use slow
+        sparse matrix implementation (for large systems); ``False``:
+        use fast :func:`~MDAnalysis.lib.distances.distance_array`
+        implementation [``None``].
+
+    Example
+    -------
     The components of the graph are stored in the list
     :attr:`LeafletFinder.components`; the atoms in each component are numbered
     consecutively, starting at 0. To obtain the atoms in the input structure
@@ -93,29 +128,6 @@ class LeafletFinder(object):
     """
 
     def __init__(self, universe, selectionstring, cutoff=15.0, pbc=False, sparse=None):
-        """Initialize from a *universe* or pdb file.
-
-        :Arguments:
-             *universe*
-                 :class:`MDAnalysis.Universe` or a PDB file name.
-             *selection*
-                 :class:`MDAnalysis.core.groups.AtomGroup` or a
-                 :meth:`MDAnalysis.Universe.select_atoms` selection string
-                 for atoms that define the lipid head groups, e.g.
-                 universe.atoms.PO4 or "name PO4" or "name P*"
-        :Keywords:
-             *cutoff*
-                 head group-defining atoms within a distance of *cutoff*
-                 Angstroms are deemed to be in the same leaflet [15.0]
-             *pbc*
-                 take periodic boundary conditions into account (only works
-                 for orthorhombic boxes) [``False``]
-             *sparse*
-                 ``None``: use fastest possible routine; ``True``: use slow
-                 sparse matrix implementation (for large systems); ``False``:
-                 use fast :func:`~MDAnalysis.analysis.distances.distance_array`
-                 implementation [``None``].
-        """
         universe = core.universe.as_Universe(universe)
         self.universe = universe
         self.selectionstring = selectionstring
@@ -218,48 +230,62 @@ class LeafletFinder(object):
         options.
         """
         sw = selections.get_writer(filename, kwargs.pop('format', None))
-        writer = sw(
-            filename, mode=kwargs.pop('mode', 'wa'),
-            preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(**vars(self)),
-            **kwargs)
-        for i, ag in enumerate(self.groups_iter()):
-            name = "leaflet_{0:d}".format((i + 1))
-            writer.write(ag, name=name)
+        with sw(filename, mode=kwargs.pop('mode', 'w'),
+                preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(
+                    **vars(self)),
+                **kwargs) as writer:
+            for i, ag in enumerate(self.groups_iter()):
+                name = "leaflet_{0:d}".format((i + 1))
+                writer.write(ag, name=name)
 
     def __repr__(self):
-        return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(self.selectionstring, self.cutoff, self.selection.n_atoms,
-               len(self.components))
+        return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(
+            self.selectionstring, self.cutoff, self.selection.n_atoms,
+            len(self.components))
 
 
 def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
                     max_imbalance=0.2, **kwargs):
-    """Find cutoff that minimizes number of disconnected groups.
+    r"""Find cutoff that minimizes number of disconnected groups.
 
     Applies heuristics to find best groups:
 
     1. at least two groups (assumes that there are at least 2 leaflets)
     2. reject any solutions for which:
 
-              `|N0 - N1|/|N0 + N1| > *max_imbalance*`
+       .. math::
 
-       Ni = number of lipids in group i. This heuristic picks groups with
-       balanced numbers of lipids.
+              \frac{|N_0 - N_1|}{|N_0 + N_1|} > \mathrm{max_imbalance}
 
-    :Arguments:
-      *universe*
-          :class:`MDAnalysis.Universe` instance
-      *selection*
-          selection string as used for :class:`LeafletFinder`
-      *dmin*, *dmax*, *step*
-          scan cutoffs from *dmin* to *dmax* at stepsize*step (in Angstroms)
-      *max_imbalance*
-          tuning parameter for the balancing heuristic (2) [0.2]
-      *kwargs*
-          other arguments for  :class:`LeafletFinder`
+       with :math:`N_i` being the number of lipids in group
+       :math:`i`. This heuristic picks groups with balanced numbers of
+       lipids.
 
-    :Returns: ``(cutoff,N)`` optimum cutoff and number of groups found
-    :Raises: can die in various ways if really no appropriate number of groups
-             can be found; needs to be made more robust
+    Parameters
+    ----------
+    universe : Universe
+        :class:`MDAnalysis.Universe` instance
+    selection : AtomGroup or str
+        AtomGroup or selection string as used for :class:`LeafletFinder`
+    dmin : float (optional)
+    dmax : float (optional)
+    step : float (optional)
+        scan cutoffs from `dmin` to `dmax` at stepsize `step` (in Angstroms)
+    max_imbalance : float (optional)
+        tuning parameter for the balancing heuristic [0.2]
+    kwargs : other keyword arguments
+        other arguments for  :class:`LeafletFinder`
+
+    Returns
+    -------
+    (cutoff, N)
+         optimum cutoff and number of groups found
+
+
+    .. Note:: This function can die in various ways if really no
+              appropriate number of groups can be found; it ought  to be
+              made more robust.
+
     """
     kwargs.pop('cutoff', None)  # not used, so we filter it
     _sizes = []
