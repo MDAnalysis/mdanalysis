@@ -25,10 +25,10 @@ env:
     - MAIN_CMD_OPTIONS=""
     - COVERALLS=false
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_PACKAGES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
-    - CONDA_ALL_PACKAGES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
+    - CONDA_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
+    - CONDA_ALL_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-    - PIP_PACKAGES='griddataformats'
+    - PIP_DEPENDENCIES='griddataformats'
   matrix:
     - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
 
@@ -40,19 +40,19 @@ matrix:
            MAIN_CMD="cd package && python setup.py build_sphinx"
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
-           CONDA_PACKAGES=${CONDA_ALL_PACKAGES}
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
     - os: linux
       env: NAME="Lint"
            MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
            BUILD_CMD=""
-           CONDA_PACKAGES="pylint backports.functools_lru_cache"
-           PIP_PACKAGES=""
+           CONDA_DEPENDENCIES="pylint backports.functools_lru_cache"
+           PIP_DEPENDENCIES=""
 
     - os: linux
       env: NAME='full'
            MAIN_CMD_OPTIONS='--with-coverage --cover-package MDAnalysis'
-           CONDA_PACKAGES=${CONDA_ALL_PACKAGES}
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
 
@@ -66,8 +66,8 @@ install:
   - conda config --set always_yes yes
   - conda create -q -n pyenv python=$PYTHON_VERSION
   - source activate pyenv
-  - conda install ${CONDA_PACKAGES}
-  - pip install ${PIP_PACKAGES}
+  - conda install ${CONDA_DEPENDENCIES}
+  - pip install ${PIP_DEPENDENCIES}
   # additional external tools (Issue #898) -- HOLE
   - |
     if [[ $NAME == 'full' ]]; then \
