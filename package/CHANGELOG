@@ -113,6 +113,7 @@ Fixes
   * Fixed Principal Axes to order from highest to lowest eigenval (Issue #1162)
   * Fixed analysis.density with soluteselection and notwithin_coordinates_factory
     when using KDTree (Issue #1211)
+  * GRO files with greater than 99,999 residues now read correctly (Issue #728)
 
 Changes
   * Started unifying the API of analysis classes (named internally

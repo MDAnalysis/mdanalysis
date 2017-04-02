@@ -32,6 +32,7 @@ from MDAnalysisTests.datafiles import (
     two_water_gro_widebox,
     GRO_empty_atom,
     GRO_missing_atomname,
+    GRO_residwrap,
 )
 
 
@@ -72,3 +73,22 @@ def test_parse_missing_atomname_IOerror():
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_missing_atomname) as p:
       assert_raises(IOError, p.parse)
+
+def test_wrapping_resids():
+    # resid is 5 digit field, so is limited to 100k
+    # check that parser recognises when resids have wrapped
+    parser = mda.topology.GROParser.GROParser
+    with parser(GRO_residwrap) as p:
+        top = p.parse()
+
+    # should have 7 residues
+    # wraps twice
+    resids = [1, 99999, 100000, 100001, 199999, 200000, 200001]
+    names = ['MET', 'ARG', 'ILE', 'ILE', 'LEU', 'LEU', 'GLY']
+    lengths = [19, 24, 19, 19, 19, 19, 7]
+
+    assert_(top.tt.size == (126, 7, 1))
+    for i, (r, n, l) in enumerate(zip(resids, names, lengths)):
+        assert_(top.resids.values[i] == r)
+        assert_(top.resnames.values[i] == n)
+        assert_(len(top.tt.residues2atoms_1d([i])) == l)

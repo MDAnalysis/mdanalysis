@@ -106,6 +106,20 @@ class GROParser(TopologyReaderBase):
             raise IOError("Missing atom name on line: {0}"
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
 
+        # Fix wrapping of resids (if we ever saw a wrap)
+        if np.any(resids == 0):
+            # find places where resid hit zero again
+            wraps = np.where(resids == 0)[0]
+            # group these places together:
+            # find indices of first 0 in each block of zeroes
+            # 1) find large changes in index, (ie non sequential blocks)
+            diff = np.diff(wraps) != 1
+            # 2) make array of where 0-blocks start
+            starts = np.hstack([wraps[0], wraps[1:][diff]])
+            # for each resid after a wrap, add 100k (5 digit wrap)
+            for s in starts:
+                resids[s:] += 100000
+
         # Guess types and masses
         atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(atomtypes)
