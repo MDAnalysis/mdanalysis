@@ -89,8 +89,9 @@ class GROParser(TopologyReaderBase):
             names = np.zeros(n_atoms, dtype=object)
             indices = np.zeros(n_atoms, dtype=np.int32)
 
-            for i in range(n_atoms):
-                line = inf.readline()
+            for i, line in enumerate(inf):
+                if i == n_atoms:
+                    break
                 try:
                     resids[i] = int(line[:5])
                     resnames[i] = line[5:10].strip()
