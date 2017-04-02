@@ -490,44 +490,42 @@ class PDBWriter(base.WriterBase):
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
                  convert_units=None, multiframe=None):
-        """Create a new PDBWriter
-
-        :Arguments:
-         *filename*
+        """
+        Create a new PDBWriter
+         
+        Note
+        ____
+        Currently only works when writing a whole :class:`Universe` and                                                                  
+        if bond information is available in the topology. (For selections                                                                
+        smaller than the whole :class:`Universe`, the atom numbering in                                                                  
+        the CONECT_ records would not match the numbering of the atoms in                                                                
+        the new PDB file and therefore a :exc:`NotImplementedError` is                                                                   
+        raised.). 
+        
+        Parameters
+        __________
+        filename: str
            name of output file
-         *start*
+        start: int 
            starting timestep
-         *step*
+        step: str
            skip between subsequent timesteps
-         *remarks*
+        remarks: str
            comments to annotate pdb file (added to the TITLE record); note that
            any remarks from the trajectory that serves as input are
            written to REMARK records with lines longer than :attr:`remark_max_length` (66
            characters) being wrapped.
-         *convert_units*
+        convert_units: str
            units are converted to the MDAnalysis base format; ``None`` selects
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-         *bonds*
-           write bonds to the PDB file as CONECT_ records [``False``]
-
-           .. Note::
-
-              Currently only works when writing a whole :class:`Universe` and
-              if bond information is available in the topology. (For selections
-              smaller than the whole :class:`Universe`, the atom numbering in
-              the CONECT_ records would not match the numbering of the atoms in
-              the new PDB file and therefore a :exc:`NotImplementedError` is
-              raised.)
-
-         *multiframe*
+        bonds: :obj: 'str',optional
+           If set to "conect", then write those bonds to the output file that were already 
+           defined in an input PDB file as PDB CONECT_ record. If set to "all", write all bonds 
+           (including guessed ones) to the file. ``None`` does not write any bonds. The default is "conect".
+        multiframe: str
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
-
-        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
-
         """
         # n_atoms = None : dummy keyword argument
         # (not used, but Writer() always provides n_atoms as the second argument)
