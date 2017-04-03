@@ -1,4 +1,4 @@
-language: python
+language: generic
 
 # Only build for develop and master (and PRs)
 branches:
@@ -21,66 +21,67 @@ env:
     # Set default python version to avoid repetition later
     - BUILD_DOCS=false
     - PYTHON_VERSION=2.7
-    - MAIN_CMD="./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=400 --with-memleak --with-timer --timer-top-n 50 --no-open-files"
-    - SETUP=minimal
+    - MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests --processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
+    - MAIN_CMD_OPTIONS=""
     - COVERALLS=false
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
+    - CONDA_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
+    - CONDA_ALL_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
+    # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
+    - PIP_DEPENDENCIES='griddataformats'
   matrix:
-    - SETUP=minimal PYTHON_VERSION=2.7
-    - SETUP=full PYTHON_VERSION=2.7 COVERALLS=true
-      #- SETUP=minimal PYTHON_VERSION=3.3
-      #- SETUP=full PYTHON_VERSION=3.3
+    - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
 
 matrix:
   fast_finish: true
-  # allow_failures:
-      #- env: SETUP=minimal PYTHON_VERSION=3.3
-      #- env: SETUP=full PYTHON_VERSION=3.3
   include:
     - os: linux
-      env: MAIN_CMD="cd package && python setup.py build_sphinx"
+      env: NAME="Doc"
+           MAIN_CMD="cd package && python setup.py build_sphinx"
            BUILD_DOCS=true
-           SETUP=full
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
     - os: linux
-      env: MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
+      env: NAME="Lint"
+           MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
            BUILD_CMD=""
+           CONDA_DEPENDENCIES="pylint backports.functools_lru_cache"
+           PIP_DEPENDENCIES=""
+
+    - os: linux
+      env: NAME='full'
+           MAIN_CMD_OPTIONS='--with-coverage --cover-package MDAnalysis'
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+           COVERALLS='true'
+
 
 install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $(pwd)/miniconda
   - export PATH=$(pwd)/miniconda/bin:$PATH
+  - conda config --add channels biobuilds
   - conda config --add channels MDAnalysis
   - conda config --add channels conda-forge
   - conda config --set always_yes yes
   - conda create -q -n pyenv python=$PYTHON_VERSION
   - source activate pyenv
-  # Minimal installation!
-  - conda install numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib pylint
-  # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-  - pip install griddataformats nose-timer
-  # Add missing packages for the full build
+  - conda install ${CONDA_DEPENDENCIES}
+  - pip install ${PIP_DEPENDENCIES}
+  # additional external tools (Issue #898) -- HOLE
   - |
-    if [[ $SETUP == 'full' ]]; then \
-        conda install matplotlib netcdf4 scikit-learn scipy seaborn coveralls; \
-        conda install -c biobuilds clustalw=2.1; \
-        # additional external tools (Issue #898) -- HOLE
+    if [[ $NAME == 'full' ]]; then \
         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
         HOLE_BINDIR="${HOME}/${MDA_OPTPACKAGES}/hole2/exe"; \
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
-  # ensure that cython files are rebuilt
-  - find . -name '*.pyx' -exec touch '{}' \;
-  # Install MDAnalysis based on build setup
   - if [[ $BUILD_DOCS == "true" ]] ; then conda install sphinx=1.5.1; fi
   - eval $BUILD_CMD
-  - chmod +x ${TRAVIS_BUILD_DIR}/testsuite/MDAnalysisTests/mda_nosetests
-  # we should still be here but make doubly sure:
-  - cd ${TRAVIS_BUILD_DIR}
 
 script:
-  - eval $MAIN_CMD
+  - cd ${TRAVIS_BUILD_DIR}
+  - echo $MAIN_CMD $MAIN_CMD_OPTIONS
+  - eval $MAIN_CMD $MAIN_CMD_OPTIONS
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
