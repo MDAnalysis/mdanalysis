@@ -66,7 +66,8 @@ __all__ = [
     "GRO_incomplete_vels",
     "COORDINATES_GRO_BZ2",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
-    "GRO_residwrap",  # resids wrapping because of 5 digit field
+    "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
+    "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
@@ -204,6 +205,7 @@ GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
 GRO_incomplete_vels = resource_filename(__name__, 'data/grovels.gro')
 GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 GRO_residwrap = resource_filename(__name__, 'data/residwrap.gro')
+GRO_residwrap_0base = resource_filename(__name__, 'data/residwrap_0base.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')

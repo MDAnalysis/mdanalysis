@@ -117,6 +117,11 @@ class GROParser(TopologyReaderBase):
             diff = np.diff(wraps) != 1
             # 2) make array of where 0-blocks start
             starts = np.hstack([wraps[0], wraps[1:][diff]])
+
+            # remove 0 in starts, ie the first residue **can** be 0
+            if starts[0] == 0:
+                starts = starts[1:]
+
             # for each resid after a wrap, add 100k (5 digit wrap)
             for s in starts:
                 resids[s:] += 100000
