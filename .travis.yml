@@ -27,7 +27,7 @@ env:
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
     - CONDA_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
     - CONDA_ALL_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
-    - CONDA_CHANNELS="conda-forge, biobuilds"
+    - CONDA_CHANNELS="conda-forge biobuilds"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds MDAnalysis conda-forge'
