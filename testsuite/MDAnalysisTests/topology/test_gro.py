@@ -32,6 +32,8 @@ from MDAnalysisTests.datafiles import (
     two_water_gro_widebox,
     GRO_empty_atom,
     GRO_missing_atomname,
+    GRO_residwrap,
+    GRO_residwrap_0base,
 )
 
 
@@ -72,3 +74,37 @@ def test_parse_missing_atomname_IOerror():
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_missing_atomname) as p:
       assert_raises(IOError, p.parse)
+
+
+class TestGroResidWrapping(object):
+    # resid is 5 digit field, so is limited to 100k
+    # check that parser recognises when resids have wrapped
+    names = ['MET', 'ARG', 'ILE', 'ILE', 'LEU', 'LEU', 'GLY']
+    lengths = [19, 24, 19, 19, 19, 19, 7]
+    parser = mda.topology.GROParser.GROParser
+
+
+    def test_wrapping_resids(self):
+        parser = mda.topology.GROParser.GROParser
+        with self.parser(GRO_residwrap) as p:
+            top = p.parse()
+
+        resids = [1, 99999, 100000, 100001, 199999, 200000, 200001]
+
+        assert_(top.tt.size == (126, 7, 1))
+        for i, (r, n, l) in enumerate(zip(resids, self.names, self.lengths)):
+            assert_(top.resids.values[i] == r)
+            assert_(top.resnames.values[i] == n)
+            assert_(len(top.tt.residues2atoms_1d([i])) == l)
+
+    def test_wrapping_resids_0base(self):
+        with self.parser(GRO_residwrap_0base) as p:
+            top = p.parse()
+
+        resids = [0, 99999, 100000, 100001, 199999, 200000, 200001]
+
+        assert_(top.tt.size == (126, 7, 1))
+        for i, (r, n, l) in enumerate(zip(resids, self.names, self.lengths)):
+            assert_(top.resids.values[i] == r)
+            assert_(top.resnames.values[i] == n)
+            assert_(len(top.tt.residues2atoms_1d([i])) == l)
