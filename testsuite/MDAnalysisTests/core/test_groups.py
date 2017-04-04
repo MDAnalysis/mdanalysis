@@ -7,6 +7,7 @@ from numpy.testing import (
     assert_raises,
 )
 import operator
+import six
 
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
@@ -15,6 +16,28 @@ from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core.topologyattrs import Segids
 from MDAnalysis.topology.base import change_squash
+
+
+class TestGroupProperties(object):
+    """ Test attributes of all groups
+    """
+
+    def setUp(self):
+        self.u = make_Universe(trajectory=True)
+        self.group_dict = {
+            'atom': self.u.atoms,
+            'residue': self.u.residues,
+            'segment': self.u.segments
+        }
+
+    def test_dimensions(self):
+        dimensions = np.arange(6)
+
+        for group in six.itervalues(self.group_dict):
+            group.dimensions = dimensions.copy()
+            assert_array_equal(group.dimensions, dimensions)
+            assert_equal(self.u.dimensions, group.dimensions)
+
 
 
 class TestGroupSlicing(object):

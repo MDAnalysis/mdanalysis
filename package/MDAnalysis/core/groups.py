@@ -562,6 +562,10 @@ class GroupBase(_MutableBase):
     def dimensions(self):
         return self.universe.trajectory.ts.dimensions
 
+    @dimensions.setter
+    def dimensions(self, dimensions):
+        self.universe.trajectory.ts.dimensions = dimensions
+
     def center(self, weights, pbc=None):
         """Calculate center of group given some weights
 
