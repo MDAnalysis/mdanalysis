@@ -1587,7 +1587,24 @@ class AtomGroup(GroupBase):
 
     @property
     def unique(self):
-        """Return an AtomGroup containing sorted and unique atoms only."""
+        """Return an AtomGroup containing sorted and unique atoms only.
+
+        Examples
+        --------
+
+           >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
+           >>> ag
+           <AtomGroup with 6 atoms>
+           >>> ag.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> ag2 = ag.unique
+           >>> ag2
+           <AtomGroup with 3 atoms>
+           >>> ag2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
+        """
         return self.universe.atoms[np.unique(self.ix)]
 
     @property
@@ -2238,6 +2255,21 @@ class ResidueGroup(GroupBase):
     def unique(self):
         """Return a ResidueGroup containing sorted and unique residues only.
 
+        Examples
+        --------
+
+           >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
+           >>> rg
+           <ResidueGroup with 6 residues>
+           >>> rg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> rg2 = rg.unique
+           >>> rg2
+           <ResidueGroup with 3 residues>
+           >>> rg2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
         """
         return self.universe.residues[np.unique(self.ix)]
 
@@ -2311,6 +2343,22 @@ class SegmentGroup(GroupBase):
     @property
     def unique(self):
         """Return a SegmentGroup containing sorted and unique segments only.
+
+        Examples
+        --------
+
+           >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
+           >>> sg
+           <SegmentGroup with 6 segments>
+           >>> sg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> sg2 = sg.unique
+           >>> sg2
+           <SegmentGroup with 3 segments>
+           >>> sg2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
 
         """
         return self.universe.segments[np.unique(self.ix)]
