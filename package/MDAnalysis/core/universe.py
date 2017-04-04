@@ -82,10 +82,7 @@ import numpy as np
 import logging
 import copy
 import uuid
-try:
-    from cStringIO import InputType as _BaseForIO
-except ImportError:
-    from io import IOBase as _BaseForIO
+
 
 import MDAnalysis
 import sys
@@ -94,7 +91,7 @@ from .. import _ANCHOR_UNIVERSES
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
-from ..lib.util import cached, NamedStream
+from ..lib.util import cached, NamedStream, isstream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -230,7 +227,7 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                if isinstance(args[0], _BaseForIO):
+                if isstream(args[0]):
                     self.filename = NamedStream(args[0], None)
                 else:
                     self.filename = args[0]
