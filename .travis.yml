@@ -32,7 +32,6 @@ env:
     - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds MDAnalysis conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-
   matrix:
     - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
 
