@@ -1,11 +1,5 @@
 language: generic
 
-# Only build for develop and master (and PRs)
-branches:
-  only:
-    - master
-    - develop
-
 os:
   - linux
 
