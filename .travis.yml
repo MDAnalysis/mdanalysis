@@ -29,6 +29,9 @@ env:
     - CONDA_ALL_DEPENDENCIES="numpy mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='griddataformats'
+    - CONDA_CHANNELS='biobuilds MDAnalysis conda-forge'
+    - CONDA_CHANNEL_PRIORITY=True
+
   matrix:
     - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
 
@@ -57,17 +60,9 @@ matrix:
 
 
 install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $(pwd)/miniconda
-  - export PATH=$(pwd)/miniconda/bin:$PATH
-  - conda config --add channels biobuilds
-  - conda config --add channels MDAnalysis
-  - conda config --add channels conda-forge
-  - conda config --set always_yes yes
-  - conda create -q -n pyenv python=$PYTHON_VERSION
-  - source activate pyenv
-  - conda install ${CONDA_DEPENDENCIES}
-  - pip install ${PIP_DEPENDENCIES}
+  - git clone git://github.com/astropy/ci-helpers.git
+  - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+
   # additional external tools (Issue #898) -- HOLE
   - |
     if [[ $NAME == 'full' ]]; then \
@@ -85,8 +80,8 @@ script:
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
-  - |
-     test ${TRAVIS_PULL_REQUEST} == "false" && \
-     test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${BUILD_DOCS}" == "true" && \
-     bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh
+  - if test ${TRAVIS_PULL_REQUEST} == "false" && \
+       test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
+       test "${BUILD_DOCS}" == "true"; then
+           bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
+    fi
