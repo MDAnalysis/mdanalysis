@@ -32,7 +32,6 @@ env:
     - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds MDAnalysis conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - DEBUG=True
   matrix:
     - NAME='minimal' PYTHON_VERSION=2.7 MAIN_CMD_OPTIONS='--with-memleak'
 
@@ -61,8 +60,6 @@ matrix:
 
     - os: osx
       env: NAME='osx'
-           MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests --no-open-files"
-           MAIN_CMD_OPTIONS='-v'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
 
