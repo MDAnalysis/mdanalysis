@@ -58,6 +58,11 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
+    - os: osx
+      env: NAME='osx'
+           MAIN_CMD_OPTIONS=''
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
