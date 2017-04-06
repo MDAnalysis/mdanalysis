@@ -61,7 +61,7 @@ matrix:
 
     - os: osx
       env: NAME='osx'
-           MAIN_CMD_OPTIONS=''
+           MAIN_CMD_OPTIONS='-v'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
 
