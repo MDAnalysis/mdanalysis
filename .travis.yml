@@ -61,6 +61,7 @@ matrix:
 
     - os: osx
       env: NAME='osx'
+           MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests --no-open-files"
            MAIN_CMD_OPTIONS='-v'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
