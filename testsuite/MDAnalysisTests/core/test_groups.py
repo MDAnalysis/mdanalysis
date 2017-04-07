@@ -11,7 +11,7 @@ import six
 
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import PSF, DCD, PDB_small
+from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core.topologyattrs import Segids
@@ -899,6 +899,6 @@ class TestAtomGroup(object):
 
     @staticmethod
     def test_PDB_atom_repr():
-        u = mda.Universe(PDB_small)
+        u = make_Universe(extras=('altLoc'))
         # should execute without error
         u.atoms[0].__repr__()
