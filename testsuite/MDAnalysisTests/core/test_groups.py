@@ -11,7 +11,7 @@ import six
 
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, PDB
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core.topologyattrs import Segids
@@ -893,3 +893,12 @@ class TestGroupBaseOperators(object):
         for op, method in operators:
             for level in levels:
                 yield check_operator, op, method, level
+
+
+class TestAtomGroup(object):
+
+    @staticmethod
+    def test_PDB_atom_repr():
+        u = mda.Universe(PDB)
+        # should execute without error
+        u.atoms[0].__repr__()

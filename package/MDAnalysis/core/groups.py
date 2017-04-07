@@ -2491,7 +2491,7 @@ class Atom(ComponentBase):
         if hasattr(self, 'segid'):
             me += ' and segid {}'.format(self.segid)
         if hasattr(self, 'altLoc'):
-            me += ' and altloc {}'.format(self.altloc)
+            me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
     @property
