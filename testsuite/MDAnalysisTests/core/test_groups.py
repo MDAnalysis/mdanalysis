@@ -899,6 +899,5 @@ class TestAtomGroup(object):
 
     @staticmethod
     def test_PDB_atom_repr():
-        u = make_Universe(extras=('altLoc', 'names', 'types', 'resnames', 'resids', 'segids'))
-        # should execute without error
-        u.atoms[0].__repr__()
+        u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
+        assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
