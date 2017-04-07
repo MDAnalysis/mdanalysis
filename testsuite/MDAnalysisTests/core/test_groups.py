@@ -899,6 +899,6 @@ class TestAtomGroup(object):
 
     @staticmethod
     def test_PDB_atom_repr():
-        u = make_Universe(extras=('altLoc'))
+        u = make_Universe(extras=('altLoc', 'names', 'types', 'resnames', 'resids', 'segids'))
         # should execute without error
         u.atoms[0].__repr__()
