@@ -19,12 +19,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import MDAnalysis
 import MDAnalysis.analysis.waterdynamics
 
 from numpy.testing import TestCase, assert_equal, dec
-import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysisTests import parser_not_found

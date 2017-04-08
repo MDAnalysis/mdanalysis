@@ -1,10 +1,10 @@
+from __future__ import absolute_import
 from six import StringIO
 from six.moves import zip
 import os
 from unittest import TestCase
 
 import MDAnalysis as mda
-import numpy as np
 from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,

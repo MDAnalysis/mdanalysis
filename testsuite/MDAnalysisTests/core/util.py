@@ -24,6 +24,7 @@
 Avoids import of MDAnalysis at base level because of Issue #344
 
 """
+from __future__ import absolute_import
 from __future__ import division
 
 from six.moves import range

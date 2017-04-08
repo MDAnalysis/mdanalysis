@@ -19,13 +19,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import os
+from __future__ import absolute_import
 import re
 
 import numpy as np
-from numpy.testing import (dec, assert_raises, assert_,
+from numpy.testing import (dec, assert_raises,
                            assert_equal, assert_array_almost_equal)
-from six.moves import zip
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal

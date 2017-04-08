@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from six.moves import zip
 import MDAnalysis as mda
 import os
@@ -8,7 +9,6 @@ import numpy as np
 
 from unittest import TestCase
 
-from MDAnalysis import NoDataError
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.coordinates.base import BaseTimestepTest

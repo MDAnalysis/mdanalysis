@@ -19,24 +19,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 from six.moves import cPickle
 
 import MDAnalysis as mda
-from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.coordinates import XDR
 
-import numpy as np
-from numpy.testing import (assert_array_almost_equal, TestCase,
-                           assert_array_equal, assert_, assert_raises,
-                           assert_equal, dec)
+from numpy.testing import (assert_array_equal, assert_, assert_raises,
+                           assert_equal,)
 
-import os
 import gc
-import shutil
-import warnings
 
-from MDAnalysisTests.datafiles import PDB_small, GRO, XTC, TRR
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import PDB_small
 
 class TestAtomGroupPickle(object):
     def setUp(self):

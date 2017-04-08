@@ -1,5 +1,5 @@
+from __future__ import absolute_import
 import MDAnalysis as mda
-import mock
 import numpy as np
 import os
 from six.moves import zip
@@ -10,7 +10,7 @@ from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_raises, dec)
 from unittest import TestCase
 
-from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
+from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)

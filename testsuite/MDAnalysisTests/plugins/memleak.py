@@ -28,9 +28,9 @@ forcing a garbage collection round and checking for uncollectable objects.
 Implementation uses the startTest hook to register our memory leak check
 as a cleanup to the test.
 """
+from __future__ import absolute_import
 
 import gc
-import nose
 from nose.plugins.errorclass import ErrorClass, ErrorClassPlugin
 
 _leakedobjs = set() # We must keep track of seen leaks to avoid raising multiple 

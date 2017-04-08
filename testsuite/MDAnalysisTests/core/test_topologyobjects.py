@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 
 import numpy as np
 from numpy.testing import (
@@ -34,7 +35,7 @@ from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
     # TODO: the following items are not used
-    Bond, Angle, Dihedral, ImproperDihedral,
+    # Bond, Angle, Dihedral, ImproperDihedral,
 )
 
 

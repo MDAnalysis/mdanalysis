@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from six.moves import zip
 import os
 from numpy.testing import (

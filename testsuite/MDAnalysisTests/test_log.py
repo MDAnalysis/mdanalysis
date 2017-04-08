@@ -21,12 +21,12 @@
 #
 
 # initial simple tests for logging module
+from __future__ import absolute_import, division
 from six.moves import StringIO
 
 import sys
 import os
 import logging
-import warnings
 
 from numpy.testing import (TestCase, assert_, assert_equal,
                            assert_raises, assert_warns)
