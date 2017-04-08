@@ -67,6 +67,18 @@ matrix:
            NUMPY_VERSION=1.9.3
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
+    - os: linux
+      env: NAME='numpy dev'
+           NUMPY_VERSION=dev
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+           EVENT_TYPE='cron'
+
+  allow_failures:
+    - env: NAME='old numpy'
+           NUMPY_VERSION=1.9.3
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+
+
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
