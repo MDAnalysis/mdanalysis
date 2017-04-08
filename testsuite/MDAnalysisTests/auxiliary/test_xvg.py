@@ -1,10 +1,12 @@
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           raises)
+                           assert_array_equal, raises)
+import numpy as np
+
 import os
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL
+from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
 
 class XVGReference(BaseAuxReference):
@@ -73,3 +75,11 @@ class TestXVGFileReader(TestXVGReader):
         # should start us back at before step 0, so next takes us to step 0
         self.reader.next()
         assert_equal(self.reader.step, 0)
+
+def test_xvg_bz2():
+    reader = mda.auxiliary.XVG.XVGReader(XVG_BZ2)
+    assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
+
+def test_xvg_bz2():
+    reader = mda.auxiliary.XVG.XVGFileReader(XVG_BZ2)
+    assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))

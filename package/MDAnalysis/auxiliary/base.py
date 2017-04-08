@@ -46,7 +46,7 @@ import numpy as np
 import math
 import warnings
 
-from ..lib.util import asiterable
+from ..lib.util import asiterable, anyopen
 
 from . import _AUXREADERS
 
@@ -881,7 +881,7 @@ class AuxFileReader(AuxReader):
     """
     
     def __init__(self, filename, **kwargs):
-        self.auxfile = open(filename)
+        self.auxfile = anyopen(filename)
         self._auxdata = os.path.abspath(filename)
         super(AuxFileReader, self).__init__(**kwargs)
 

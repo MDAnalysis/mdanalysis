@@ -69,6 +69,7 @@ __all__ = [
     "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
@@ -229,6 +230,7 @@ TRR_multi_frame = resource_filename(
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
+XVG_BZ2 = resource_filename(__name__, 'data/cobrotoxin_protein_forces.xvg.bz2')
 
 XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
 # number is the gromacs version
