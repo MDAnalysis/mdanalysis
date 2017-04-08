@@ -893,3 +893,11 @@ class TestGroupBaseOperators(object):
         for op, method in operators:
             for level in levels:
                 yield check_operator, op, method, level
+
+
+class TestAtomGroup(object):
+
+    @staticmethod
+    def test_PDB_atom_repr():
+        u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
+        assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
