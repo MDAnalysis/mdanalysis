@@ -162,6 +162,7 @@ Changes
     analysis.helanal.helanal_trajectory()
   * weights="size" parameter in analysis.gnm.closeContactGNMAnalysis to
     replace MassWeight=True
+  * bump minimum numpy version to 1.9.3
 
 Deprecations (Issue #599)
   * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
