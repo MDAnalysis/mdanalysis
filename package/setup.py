@@ -189,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.9.3), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -497,15 +497,15 @@ if __name__ == '__main__':
           ext_modules=exts,
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
-          requires=['numpy (>=1.5.0)', 'biopython', 'mmtf (>=1.0.0)',
+          requires=['numpy (>=1.9.3)', 'biopython', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.5.0',
+              'numpy>=1.9.3',
           ],
           install_requires=[
-              'numpy>=1.5.0',
+              'numpy>=1.9.3',
               'biopython>=1.59',
               'networkx>=1.0',
               'GridDataFormats>=0.3.2',
