@@ -62,6 +62,7 @@ box_triclinic
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
+from __future__ import absolute_import
 
 from six.moves import range, zip
 import itertools

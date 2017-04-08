@@ -21,7 +21,7 @@
 #
 
 # Test the selection exporters in MDAnalysis.selections
-
+from __future__ import absolute_import
 # use StringIO and NamedStream to write to memory instead to temp files
 from six.moves import cPickle, StringIO
 

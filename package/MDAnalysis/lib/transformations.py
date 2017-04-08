@@ -188,7 +188,7 @@ Functions
    MDAnalysis.lib.transformations
 """
 
-from __future__ import division
+from __future__ import division, absolute_import
 
 from six.moves import range
 

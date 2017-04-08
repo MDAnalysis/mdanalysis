@@ -38,8 +38,7 @@ Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAna
 
 """
 
-from __future__ import division
-
+from __future__ import division, absolute_import
 import six
 from six.moves import range
 

@@ -42,6 +42,7 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 .. _Tripos: http://www.tripos.com/
 .. _DOCK: http://dock.compbio.ucsf.edu/
 """
+from __future__ import absolute_import
 
 import numpy as np
 

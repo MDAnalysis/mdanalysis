@@ -27,6 +27,7 @@ In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
 """
+from __future__ import absolute_import
 from six.moves import map
 
 import numpy as np

@@ -152,7 +152,7 @@ Examples
 
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
 from six.moves import zip
 import numpy as np
 import warnings
