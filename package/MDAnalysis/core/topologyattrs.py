@@ -30,7 +30,7 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
-
+from __future__ import division
 from six.moves import zip, range
 
 import Bio.Seq

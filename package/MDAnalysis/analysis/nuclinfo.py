@@ -102,6 +102,7 @@ Dihedral angles
 .. autofunction:: pseudo_dihe_baseflip
 
 """
+from __future__ import division
 
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow

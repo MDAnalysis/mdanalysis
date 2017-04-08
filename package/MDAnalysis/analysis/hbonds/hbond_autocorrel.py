@@ -152,6 +152,7 @@ Examples
 
 
 """
+from __future__ import division
 from six.moves import zip
 import numpy as np
 import warnings

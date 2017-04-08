@@ -37,6 +37,7 @@ This is all invisible to the user through the
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 """
+from __future__ import division
 import six
 from six.moves import zip
 
