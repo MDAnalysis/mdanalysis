@@ -43,7 +43,6 @@ from functools import reduce
 
 import itertools
 import numpy as np
-import warnings
 
 from .. import _PARSERS
 from ..coordinates.base import IOBase

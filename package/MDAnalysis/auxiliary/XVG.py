@@ -67,8 +67,6 @@ supported (the readers will stop at the first line starting '&').
 """
 from __future__ import absolute_import
 
-from six.moves import range
-
 import os
 import numpy as np
 from . import base

@@ -198,6 +198,7 @@ enable=abstract-class-instantiated,
        old-division,
        relative-import,
        no-absolute-import,
+       unused-import,
 
 # Things we'd like to try.
 # Procedure:
@@ -262,7 +263,6 @@ enable=abstract-class-instantiated,
        # unnecessary-semicolon,
        # unpacking-non-sequence,
        # unused-argument,
-       # unused-import,
        # unused-variable,
        # unused-wildcard-import,
        # used-before-assignment,

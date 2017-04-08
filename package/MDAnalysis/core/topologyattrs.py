@@ -44,7 +44,7 @@ import numpy as np
 from . import flags
 from ..lib.util import cached, convert_aa_code, iterable
 from ..lib import transformations, mdamath
-from ..exceptions import NoDataError, SelectionError
+from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,

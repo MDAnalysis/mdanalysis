@@ -190,16 +190,12 @@ Functions
 
 from __future__ import division, absolute_import
 
-from six.moves import range
-
 import sys
 import os
 import warnings
 import math
 import numpy as np
-from numpy.linalg import norm
 
-from .mdamath import angle as vecangle
 
 def identity_matrix():
     """Return 4x4 identity/unit matrix.

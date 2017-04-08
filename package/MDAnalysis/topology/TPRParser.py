@@ -141,7 +141,6 @@ __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
-from . import guessers
 from ..lib.util import anyopen
 from .tpr import utils as tpr_utils
 from .base import TopologyReaderBase

@@ -43,7 +43,6 @@ The raw tables are stored in the strings
 .. autodata:: TABLE_MASSES
 """
 from __future__ import absolute_import
-from ._elements import NUMBER_TO_ELEMENT
 
 
 def kv2dict(s, convertor=str):

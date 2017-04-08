@@ -428,16 +428,14 @@ class NCDFReader(base.ReaderBase):
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
-        try:
-            import netCDF4 as netcdf
-        except ImportError:
+        if NO_NETCDF:
             errmsg = ("netCDF4 package missing.\n"
                       "netcdf4-python with the netCDF and HDF5 libraries must"
                       " be installed for the AMBER ncdf Reader.\n"
                       "See installation instructions at "
                       "https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
             logger.fatal(errmsg)
-            raise ImportError(errmsg)
+            raise RuntimeError(errmsg)
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 

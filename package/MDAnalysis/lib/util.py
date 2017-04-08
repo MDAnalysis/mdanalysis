@@ -156,7 +156,7 @@ Class decorators
 """
 from __future__ import division, absolute_import
 import six
-from six.moves import range, map
+from six.moves import range
 import sys
 
 __docformat__ = "restructuredtext en"
@@ -172,7 +172,6 @@ import re
 import io
 import warnings
 from functools import wraps
-import mmtf
 import numpy as np
 import functools
 from numpy.testing import assert_equal

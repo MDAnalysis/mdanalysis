@@ -158,7 +158,6 @@ from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 

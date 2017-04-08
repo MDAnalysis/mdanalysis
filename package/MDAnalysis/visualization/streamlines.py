@@ -46,7 +46,6 @@ except ImportError:
 import MDAnalysis
 import multiprocessing
 import numpy as np
-import scipy
 
 
 def produce_grid(tuple_of_limits, grid_spacing):

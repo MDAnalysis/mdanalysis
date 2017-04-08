@@ -32,7 +32,7 @@ from __future__ import absolute_import
 import numpy as np
 from Bio.KDTree import KDTree
 
-from MDAnalysis.core.groups import AtomGroup, Atom
+from MDAnalysis.core.groups import Atom
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the

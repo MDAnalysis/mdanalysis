@@ -31,6 +31,7 @@ module. They are mostly of use to developers.
    :func:`guess_atom_mass`.
 
 """
+# pylint: disable=unused-import
 
 from __future__ import print_function, absolute_import
 import six

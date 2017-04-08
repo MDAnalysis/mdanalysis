@@ -5,7 +5,7 @@ Author: Tyler Reddy
 from __future__ import absolute_import
 
 from lib2to3.fixer_base import BaseFix
-from lib2to3.fixer_util import Name, Call, LParen, RParen, ArgList, Dot
+from lib2to3.fixer_util import Name, LParen, RParen, Dot
 from lib2to3 import pytree
 
 

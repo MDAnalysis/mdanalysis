@@ -34,7 +34,6 @@ while others are available only if scikit-learn is installed
 """
 from __future__ import absolute_import
 
-import logging
 import warnings
 
 # Import native affinity propagation implementation

@@ -27,7 +27,7 @@
 
 from __future__ import absolute_import
 
-__all__ = ["mean_std_from_x3dnaPickle", "X3DNA", "X3DNAtraj"]
+__all__ = ["mean_std_from_x3dnaPickle", "X3DNA", "X3DNAtraj", "BaseX3DNA"]
 
 import warnings
 

@@ -64,10 +64,7 @@ Functions
 
 """
 from __future__ import division, absolute_import
-from six.moves import range
-
 import numpy as np
-from numpy.lib.utils import deprecate
 
 from .mdamath import triclinic_vectors, triclinic_box
 
@@ -100,6 +97,7 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
+# pylint: disable=unused-import
 from .c_distances import (calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
