@@ -145,7 +145,7 @@ class TimeseriesCollection(object):
             datasize = len(t.getFormatCode())
             subarray = self.data[start:start + finish]
             if datasize != 1:
-                subarray.shape = (datasize, subarray.shape[0] / datasize, -1)
+                subarray.shape = (datasize, subarray.shape[0] // datasize, -1)
             t.__data__ = subarray
             t.__array_interface__ = subarray.__array_interface__
             start += finish
