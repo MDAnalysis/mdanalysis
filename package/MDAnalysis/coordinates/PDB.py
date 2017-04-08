@@ -141,6 +141,7 @@ Classes
     it will be completely removed in 0.16.0.
 
 """
+from __future__ import absolute_import
 
 from six.moves import range, zip
 

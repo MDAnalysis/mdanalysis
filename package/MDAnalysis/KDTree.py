@@ -1,5 +1,6 @@
 # Placeholder because KDTree moved
 # Remove this in version 1.0
+from __future__ import absolute_import
 __all__ = ['NeighborSearch']
 
 import warnings

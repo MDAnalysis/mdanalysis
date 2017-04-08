@@ -55,6 +55,7 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
+from __future__ import absolute_import
 
 from six.moves import zip
 import numpy as np

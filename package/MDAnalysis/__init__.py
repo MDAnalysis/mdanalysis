@@ -1,6 +1,8 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
+
+
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
@@ -139,6 +141,7 @@ the OPLS/AA force field.
    doi:10.1016/j.jmb.2009.09.009
 
 """
+from __future__ import absolute_import
 
 __all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection',
            'fetch_mmtf']

@@ -2,7 +2,7 @@
 run with: python ten2eleven.py -f framenumberingzerobased2 test_dummy_old_MDA_code.py 
 Author: Tyler Reddy
 '''
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 from lib2to3.fixer_base import BaseFix
 from lib2to3.fixer_util import Name, Call, LParen, RParen, ArgList, Dot

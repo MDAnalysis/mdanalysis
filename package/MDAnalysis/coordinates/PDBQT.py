@@ -37,6 +37,7 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
+from __future__ import absolute_import
 import os
 import errno
 import itertools

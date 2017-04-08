@@ -124,7 +124,7 @@ Utilities
 .. autoexception:: ApplicationError
 
 """
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from six.moves import range
 
 import glob

@@ -131,7 +131,7 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
 
 from six.moves import zip
 import numpy as np

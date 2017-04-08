@@ -2,6 +2,7 @@
 run with: python ten2eleven.py -f mdaimports test_dummy_old_MDA_code.py 
 Author: Tyler Reddy
 '''
+from __future__ import absolute_import
 
 
 from lib2to3.fixer_base import BaseFix

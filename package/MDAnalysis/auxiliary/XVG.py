@@ -65,6 +65,7 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
+from __future__ import absolute_import
 
 from six.moves import range
 
