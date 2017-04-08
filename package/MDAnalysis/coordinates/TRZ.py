@@ -77,6 +77,7 @@ Reads coordinates, velocities and more (see attributes of the
 .. autoclass:: TRZWriter
    :members:
 """
+from __future__ import division
 import six
 from six.moves import range
 

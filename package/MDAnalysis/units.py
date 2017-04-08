@@ -161,7 +161,7 @@ References and footnotes
 
 """
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 
 #: `Avogadro's constant`_ in mol**-1.
 #:

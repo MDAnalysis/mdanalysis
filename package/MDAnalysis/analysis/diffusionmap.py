@@ -164,6 +164,7 @@ module in published work please cite [Theobald2005]_.
              (2011)
 
 """
+from __future__ import division
 from six.moves import range
 import logging
 import warnings

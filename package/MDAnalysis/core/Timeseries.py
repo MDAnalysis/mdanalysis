@@ -58,6 +58,7 @@ Timeseries of observables
 .. autoclass:: WaterDipole
 
 """
+from __future__ import division
 import warnings
 
 from . import groups

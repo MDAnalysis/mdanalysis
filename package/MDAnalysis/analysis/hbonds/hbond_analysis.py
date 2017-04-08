@@ -343,6 +343,7 @@ Classes
         for version 0.16.0
 
 """
+from __future__ import division
 import six
 from six.moves import range, zip, map, cPickle
 

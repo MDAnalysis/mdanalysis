@@ -109,7 +109,7 @@ can be used in downstream processing).
 
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 from six.moves import range
 
 import numpy as np

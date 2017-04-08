@@ -32,6 +32,7 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 .. autofunction:: generate_streamlines_3d
 
 '''
+from __future__ import division
 import six
 from six.moves import range
 

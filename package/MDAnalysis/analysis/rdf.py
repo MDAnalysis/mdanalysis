@@ -32,7 +32,7 @@ distribution functions" or "RDF").
 .. - Coordination number
 
 """
-
+from __future__ import division
 import numpy as np
 
 from ..lib.util import blocks_of
