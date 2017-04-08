@@ -162,14 +162,14 @@ def conformational_distance_matrix(ensemble,
             subset_weights = None
 
     # Allocate for output matrix
-    matsize = framesn * (framesn + 1) / 2
+    matsize = framesn * (framesn + 1) // 2
     distmat = np.empty(matsize, np.float64)
 
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
     Parallel(n_jobs=n_jobs, verbose=verbose)(delayed(conf_dist_function)(
-        element,
+        np.int64(element),
         rmsd_coordinates,
         distmat,
         weights,
@@ -219,7 +219,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
 
     if fit_coords is None and fit_weights is None:
         sumweights = np.sum(weights)
-        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(coords[i].astype(np.float64),
+        rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(coords[i].astype(np.float64),
                                                 coords[j].astype(np.float64),
                                                 coords[j].shape[0],
                                                 weights,
@@ -239,7 +239,7 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
         rotamat = rotation_matrix(subset1_coords, subset2_coords,
                                   subset_weights)[0]
         rotated_i = np.transpose(np.dot(rotamat, np.transpose(translated_i)))
-        rmsdmat[(i + 1) * i / 2 + j] = PureRMSD(
+        rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(
             rotated_i.astype(np.float64), translated_j.astype(np.float64),
             coords[j].shape[0], weights, sumweights)
     else:

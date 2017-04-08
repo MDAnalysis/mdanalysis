@@ -732,7 +732,7 @@ class WaterOrientationalRelaxation(object):
         valHH = 0
         valdip= 0
         n = 0
-        for j in range(len(repInd[i])/3):
+        for j in range(len(repInd[i]) // 3):
             begj =  3*j
             universe.trajectory[t0]
             Ot0 = repInd[i][begj]
@@ -790,7 +790,7 @@ class WaterOrientationalRelaxation(object):
         valHHList = []
         valdipList = []
 
-        for j in range(totalFrames/dt-1):
+        for j in range(totalFrames // dt - 1):
             # If the selection of atoms is too small, there will be a division by zero in the next line.
             # The except clause avoid the use of the result of _getOneDeltaPoint() on the mean.
             try:
@@ -1081,13 +1081,13 @@ class  MeanSquareDisplacement(object):
         sumDeltaO = 0.0
         valOList = []
 
-        for j in range(totalFrames/dt-1):
+        for j in range(totalFrames // dt - 11):
             a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             sumDeltaO += a
             valOList.append(a)
             sumsdt +=  dt
             n += 1
-        return (sumDeltaO/n)
+        return sumDeltaO / n
 
     def _sameMolecTandDT(self,selection,t0d,tf):
         """

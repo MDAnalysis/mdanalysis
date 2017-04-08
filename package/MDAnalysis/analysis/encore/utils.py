@@ -70,7 +70,7 @@ class TriangularMatrix(object):
             self.loadz(loadfile)
         elif isinstance(size, int):
             self.size = size
-            self._elements = np.zeros((size + 1) * size / 2, dtype=np.float64)
+            self._elements = np.zeros((size + 1) * size // 2, dtype=np.float64)
         elif isinstance(size, SynchronizedArray):
             self._elements = np.array(size.get_obj(), dtype=np.float64)
             self.size = int((np.sqrt(1 + 8 * len(size)) - 1) / 2)
@@ -84,13 +84,13 @@ class TriangularMatrix(object):
         x, y = args
         if x < y:
             x, y = y, x
-        return self._elements[x * (x + 1) / 2 + y]
+        return self._elements[x * (x + 1) // 2 + y]
 
     def __setitem__(self, args, val):
         x, y = args
         if x < y:
             x, y = y, x
-        self._elements[x * (x + 1) / 2 + y] = val
+        self._elements[x * (x + 1) // 2 + y] = val
 
     def as_array(self):
         """Return standard numpy array equivalent"""
@@ -237,9 +237,9 @@ class ParallelCalculation(object):
 
         self.functions = function
         if not hasattr(self.functions, '__iter__'):
-            self.functions = [self.functions]*len(args)
+            self.functions = [self.functions] * len(args)
         if len(self.functions) != len(args):
-            self.functions = self.functions[:]*(len(args)/len(self.functions))
+            self.functions = self.functions[:] * (len(args) // len(self.functions))
 
         # Arguments should be present
         if args is None:
