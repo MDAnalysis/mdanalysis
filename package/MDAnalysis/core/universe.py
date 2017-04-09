@@ -83,7 +83,6 @@ import logging
 import copy
 import uuid
 
-
 import MDAnalysis
 import sys
 
@@ -141,7 +140,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename or Topology object or stream
+    topology : filename, Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
@@ -228,7 +227,10 @@ class Universe(object):
                 self.filename = None
             else:
                 if isstream(args[0]):
-                    self.filename = NamedStream(args[0], None)
+                    filename = None
+                    if hasattr(args[0], 'name'):
+                        filename = args[0].name
+                    self.filename = NamedStream(args[0], filename)
                 else:
                     self.filename = args[0]
                 parser = get_parser_for(self.filename, format=topology_format)
