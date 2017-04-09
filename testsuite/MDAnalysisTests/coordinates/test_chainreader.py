@@ -144,7 +144,7 @@ class TestChainReaderCommonDt(TestCase):
 
     def test_time(self):
         # We test this for the beginning, middle and end of the trajectory.
-        for frame_n in (0, self.trajectory.n_frames/2, -1):
+        for frame_n in (0, self.trajectory.n_frames // 2, -1):
             self.trajectory[frame_n]
             assert_almost_equal(self.trajectory.time,
                             self.trajectory.frame*self.common_dt,

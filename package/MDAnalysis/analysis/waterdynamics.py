@@ -1051,7 +1051,7 @@ class  MeanSquareDisplacement(object):
         """
         valO = 0
         n = 0
-        for j in range(len(repInd[i])/3):
+        for j in range(len(repInd[i]) // 3):
             begj =  3*j
             universe.trajectory[t0]
             #Plus zero is to avoid 0to be equal to 0tp
@@ -1081,7 +1081,7 @@ class  MeanSquareDisplacement(object):
         sumDeltaO = 0.0
         valOList = []
 
-        for j in range(totalFrames // dt - 11):
+        for j in range(totalFrames // dt - 1):
             a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             sumDeltaO += a
             valOList.append(a)
