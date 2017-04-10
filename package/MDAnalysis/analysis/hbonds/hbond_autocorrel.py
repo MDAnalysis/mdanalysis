@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -32,7 +38,8 @@ given startpoint, :math:`t_0`, is evaluated based on geometric criteria and
 then the lifetime of these bonds is monitored over time.  Multiple passes
 through the trajectory are used to build an average of the behaviour.
 
-    :math:`C_x(t) = \\left \\langle \\frac{h_{ij}(t_0) h_{ij}(t_0 + t)}{h_{ij}(t_0)^2} \\right\\rangle`
+.. math::
+   C_x(t) = \\left \\langle \\frac{h_{ij}(t_0) h_{ij}(t_0 + t)}{h_{ij}(t_0)^2} \\right\\rangle
 
 The subscript :math:`x` refers to the definition of lifetime being used, either
 continuous or intermittent.  The continuous definition measures the time that
@@ -41,7 +48,8 @@ intermittent definition allows a bond to break and then subsequently reform and
 be counted again.  The relevent lifetime, :math:`\\tau_x`, can then be found
 via integration of this function
 
-    :math:`\\tau_x = \\int_0^\\infty C_x(t) dt`
+.. math::
+   \\tau_x = \\int_0^\\infty C_x(t) dt`
 
 For this, the observed behaviour is fitted to a multi exponential function,
 using 2 exponents for the continuous lifetime and 3 for the intermittent
@@ -277,8 +285,8 @@ class HydrogenBondAutoCorrel(object):
     def run(self, force=False):
         """Run all the required passes
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         force : bool, optional
             Will overwrite previous results if they exist
         """

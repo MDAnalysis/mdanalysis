@@ -11,7 +11,7 @@ formats` by the file extension and hence most users probably do not need to
 concern themselves with classes and functions described here. However,
 if MDAnalysis fails to recognize a coordinate file then the user can
 provide the format in the keyword argument *format* to
-:class:`~MDAnalysis.core.AtomGroup.Universe` to force the format.
+:class:`~MDAnalysis.core.universe.Universe` to force the format.
 
 .. rubric:: Coordinate formats
 
@@ -27,6 +27,7 @@ provide the format in the keyword argument *format* to
    coordinates/GRO
    coordinates/INPCRD
    coordinates/LAMMPS
+   coordinates/MMTF
    coordinates/MOL2
    coordinates/PDB
    coordinates/PDBQT
@@ -36,6 +37,8 @@ provide the format in the keyword argument *format* to
    coordinates/XTC
    coordinates/XYZ
    coordinates/TRZ
+   coordinates/memory
+   coordinates/null
 
 .. rubric:: Coordinate core modules
 
@@ -49,6 +52,5 @@ functionality should first read the :ref:`Trajectory API`.
 
    coordinates/base
    coordinates/core
-   coordinates/xdrfile
-   coordinates/pdbextensions
-
+   coordinates/chain
+   coordinates/XDR

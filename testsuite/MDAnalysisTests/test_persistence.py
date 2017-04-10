@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -15,10 +21,8 @@
 #
 from six.moves import cPickle
 
-import MDAnalysis
-from MDAnalysis.tests.datafiles import PDB_small, GRO, XTC, TRR
-import MDAnalysis.core.AtomGroup
-from MDAnalysis.core.AtomGroup import AtomGroup
+import MDAnalysis as mda
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.coordinates import XDR
 
 import numpy as np
@@ -31,15 +35,16 @@ import gc
 import shutil
 import warnings
 
+from MDAnalysisTests.datafiles import PDB_small, GRO, XTC, TRR
+from MDAnalysisTests import make_Universe
 
-class TestAtomGroupPickle(TestCase):
+class TestAtomGroupPickle(object):
     def setUp(self):
         """Set up hopefully unique universes."""
         # _n marks named universes/atomgroups/pickled strings
-        self.universe = MDAnalysis.Universe(PDB_small, PDB_small, PDB_small)
-        self.universe_n = MDAnalysis.Universe(PDB_small, PDB_small, PDB_small,
-                                              is_anchor=False,
-                                              anchor_name="test1")
+        self.universe = mda.Universe(PDB_small, PDB_small, PDB_small)
+        self.universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
+                                       anchor_name="test1")
         self.ag = self.universe.atoms[:20]  # prototypical AtomGroup
         self.ag_n = self.universe_n.atoms[:10]
         self.pickle_str = cPickle.dumps(self.ag,
@@ -48,10 +53,14 @@ class TestAtomGroupPickle(TestCase):
                                           protocol=cPickle.HIGHEST_PROTOCOL)
 
     def tearDown(self):
-        del self.universe
-        del self.universe_n
-        del self.ag
-        del self.ag_n
+        # Some tests might delete attributes.
+        try:
+            del self.universe
+            del self.universe_n
+            del self.ag
+            del self.ag_n
+        except AttributeError:
+            pass
 
     def test_unpickle(self):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
@@ -70,15 +79,13 @@ class TestAtomGroupPickle(TestCase):
                 "Unpickled AtomGroup on wrong Universe.")
 
     def test_unpickle_missing(self):
-        # we kill the universes and ag's
-        self.tearDown()
+        # Kill AtomGroup and Universe
+        del self.ag_n
+        del self.universe_n
         # and make sure they're very dead
         gc.collect()
         # we shouldn't be able to unpickle
-        assert_raises(RuntimeError, cPickle.loads, self.pickle_str)
         assert_raises(RuntimeError, cPickle.loads, self.pickle_str_n)
-        # must reset these, otherwise tearDown fails
-        self.setUp()
 
     def test_unpickle_noanchor(self):
         # Shouldn't unpickle if the universe is removed from the anchors
@@ -102,16 +109,6 @@ class TestAtomGroupPickle(TestCase):
         assert_(newag.universe is self.universe,
                 "Unpickled AtomGroup on wrong Universe.")
 
-    def test_unpickle_reanchor_other(self):
-        # universe is removed from the anchors
-        self.universe.remove_anchor()
-        # and universe_n goes into the anchor list
-        self.universe_n.make_anchor()
-        newag = cPickle.loads(self.pickle_str)
-        assert_array_equal(self.ag.indices, newag.indices)
-        assert_(newag.universe is self.universe_n,
-                "Unpickled AtomGroup on wrong Universe.")
-
     def test_unpickle_wrongname(self):
         # we change the universe's anchor_name
         self.universe_n.anchor_name = "test2"
@@ -129,12 +126,33 @@ class TestAtomGroupPickle(TestCase):
         assert_(newag.universe is self.universe,
                 "Unpickled AtomGroup on wrong Universe.")
 
-
-class TestEmptyAtomGroupPickle(TestCase):
-    # This comes in a class just to get memleak testing
     def test_pickle_unpickle_empty(self):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
-        ag = AtomGroup([])
+        ag = self.universe.atoms[[]]
         pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
         newag = cPickle.loads(pickle_str)
         assert_equal(len(newag), 0)
+
+
+class TestPicklingUpdatingAtomGroups(object):
+    def setUp(self):
+        self.u = mda.Universe(PDB_small)
+
+    def tearDown(self):
+        del self.u
+
+    def test_pickling_uag(self):
+        ag = self.u.atoms[:100]
+        uag = ag.select_atoms('name C', updating=True)
+        pickle_str = cPickle.dumps(uag, protocol=cPickle.HIGHEST_PROTOCOL)
+        new_uag = cPickle.loads(pickle_str)
+
+        assert_array_equal(uag.indices, new_uag.indices)
+
+    def test_pickling_uag_of_uag(self):
+        uag1 = self.u.select_atoms('name C or name H', updating=True)
+        uag2 = uag1.select_atoms('name C', updating=True)
+        pickle_str = cPickle.dumps(uag2, protocol=cPickle.HIGHEST_PROTOCOL)
+        new_uag2 = cPickle.loads(pickle_str)
+
+        assert_array_equal(uag2.indices, new_uag2.indices)

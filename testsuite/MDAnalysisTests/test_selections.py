@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -58,9 +64,30 @@ class _SelectionWriter(TestCase):
 
     def _write_selection(self, **kwargs):
         g = self._selection()
-        g.write_selection(self.namedfile, **kwargs)
+        g.write(self.namedfile, **kwargs)
         return g
 
+    def _write_with(self, **kwargs):
+        g = self._selection()
+        with self.writer(self.namedfile, **kwargs) as outfile:
+            outfile.write(g)
+        return g
+
+    def test_write_bad_mode(self):
+        with self.assertRaises(ValueError):
+            self._write(name=self.ref_name, mode='a+')
+
+    def test_write(self):
+        self._write(name=self.ref_name)
+        self._assert_selectionstring()
+
+    def test_writeselection(self):
+        self._write_selection(name=self.ref_name)
+        self._assert_selectionstring()
+
+    def test_write_with(self):
+        self._write_with(name=self.ref_name)
+        self._assert_selectionstring()
 
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
@@ -73,6 +100,7 @@ def lines2one(lines):
 
 
 class TestSelectionWriter_Gromacs(_SelectionWriter):
+    writer = MDAnalysis.selections.gromacs.SelectionWriter
     filename = "CA.ndx"
     ref_name = "CA_selection"
     ref_indices = ndx2array(
@@ -81,7 +109,7 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
           ]
         )
 
-    def _assert_indices(self):
+    def _assert_selectionstring(self):
         header = self.namedfile.readline().strip()
         assert_equal(header, "[ {0} ]".format(self.ref_name),
                      err_msg="NDX file has wrong selection name")
@@ -89,16 +117,10 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
         assert_array_equal(indices, self.ref_indices,
                            err_msg="indices were not written correctly")
 
-    def test_write_ndx(self):
-        self._write(name=self.ref_name)
-        self._assert_indices()
-
-    def test_writeselection_ndx(self):
-        self._write_selection(name=self.ref_name)
-        self._assert_indices()
 
 
 class TestSelectionWriter_Charmm(_SelectionWriter):
+    writer = MDAnalysis.selections.charmm.SelectionWriter
     filename = "CA.str"
     ref_name = "CA_selection"
     ref_selectionstring = lines2one([
@@ -117,16 +139,10 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="Charmm selection was not written correctly")
 
-    def test_write_str(self):
-        self._write(name=self.ref_name)
-        self._assert_selectionstring()
-
-    def test_writeselection_str(self):
-        self._write_selection(name=self.ref_name)
-        self._assert_selectionstring()
 
 
 class TestSelectionWriter_PyMOL(_SelectionWriter):
+    writer = MDAnalysis.selections.pymol.SelectionWriter
     filename = "CA.pml"
     ref_name = "CA_selection"
     ref_selectionstring = lines2one([
@@ -142,16 +158,10 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="PyMOL selection was not written correctly")
 
-    def test_write_pml(self):
-        self._write(name=self.ref_name)
-        self._assert_selectionstring()
-
-    def test_writeselection_pml(self):
-        self._write_selection(name=self.ref_name)
-        self._assert_selectionstring()
 
 
 class TestSelectionWriter_VMD(_SelectionWriter):
+    writer = MDAnalysis.selections.vmd.SelectionWriter
     filename = "CA.vmd"
     ref_name = "CA_selection"
     ref_selectionstring = lines2one([
@@ -165,13 +175,6 @@ class TestSelectionWriter_VMD(_SelectionWriter):
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="PyMOL selection was not written correctly")
 
-    def test_write_vmd(self):
-        self._write(name=self.ref_name)
-        self._assert_selectionstring()
-
-    def test_writeselection_vmd(self):
-        self._write_selection(name=self.ref_name)
-        self._assert_selectionstring()
 
 
 def spt2array(line):
@@ -181,24 +184,14 @@ def spt2array(line):
 
 
 class TestSelectionWriter_Jmol(_SelectionWriter):
+    writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
     ref_name, ref_indices = spt2array(
         ( '@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
           ' 246 263 283 302 319 334 356});')
         )
 
-    def test_write_spt(self):
-        self._write(name=self.ref_name)
-
-        header, indices = spt2array(self.namedfile.readline())
-        assert_equal(header, self.ref_name,
-                     err_msg="SPT file has wrong selection name")
-        assert_array_equal(indices, self.ref_indices,
-                           err_msg="SPT indices were not written correctly")
-
-    def test_writeselection_spt(self):
-        self._write_selection(name=self.ref_name)
-
+    def _assert_selectionstring(self):
         header, indices = spt2array(self.namedfile.readline())
         assert_equal(header, self.ref_name,
                      err_msg="SPT file has wrong selection name")

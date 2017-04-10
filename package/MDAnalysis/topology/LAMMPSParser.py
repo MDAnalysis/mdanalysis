@@ -1,13 +1,20 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
@@ -17,8 +24,7 @@
 LAMMPSParser
 ============
 
-The :func:`parse` function reads a LAMMPS_ data file to build a system
-topology.
+Parses data files for LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
 
@@ -45,11 +51,24 @@ import logging
 import string
 import functools
 
-from ..core.AtomGroup import Atom
-from ..lib.util import openany, anyopen, conv_float
+from . import guessers
+from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
-from .base import TopologyReader
-from .core import guess_atom_mass, guess_atom_charge
+from .base import TopologyReaderBase, squash_by
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomtypes,
+    Atomids,
+    Angles,
+    Bonds,
+    Charges,
+    Dihedrals,
+    Impropers,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+)
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
@@ -118,7 +137,7 @@ HEADERS = set([
 ])
 
 
-class DATAParser(TopologyReader):
+class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
 
     Note that LAMMPS_ DATA files can be used standalone.
@@ -139,7 +158,7 @@ class DATAParser(TopologyReader):
     format = 'DATA'
 
     def iterdata(self):
-        with anyopen(self.filename, 'r') as f:
+        with openany(self.filename, 'r') as f:
             for line in f:
                 line = line.partition('#')[0].strip()
                 if line:
@@ -176,39 +195,37 @@ class DATAParser(TopologyReader):
 
         Returns
         -------
-        MDAnalysis internal *structure* dict.
+        MDAnalysis Topology object.
         """
         # Can pass atom_style to help parsing
         atom_style = self.kwargs.get('atom_style', None)
 
         head, sects = self.grab_datafile()
 
-        structure = {}
-
         try:
             masses = self._parse_masses(sects['Masses'])
         except KeyError:
-            masses = {}
+            masses = None
 
         try:
-            structure['atoms'] = self._parse_atoms(
-                sects['Atoms'],
-                masses,
-                atom_style)
+            top = self._parse_atoms(sects['Atoms'], masses)
         except KeyError:
             raise ValueError("Data file was missing Atoms section")
 
-        for L, M, nentries in [('Bonds', 'bonds', 2),
-                               ('Angles', 'angles', 3),
-                               ('Dihedrals', 'dihedrals', 4),
-                               ('Impropers', 'impropers', 4)]:
+        for attr, L, nentries in [
+                (Bonds, 'Bonds', 2),
+                (Angles, 'Angles', 3),
+                (Dihedrals, 'Dihedrals', 4),
+                (Impropers, 'Impropers', 4)
+        ]:
             try:
-                structure[M] = self._parse_section(
-                    sects[L], nentries)
+                type, sect = self._parse_bond_section(sects[L], nentries)
             except KeyError:
                 pass
+            else:
+                top.add_TopologyAttr(attr(sect, type))
 
-        return structure
+        return top
 
     def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs):
         """Read a DATA file and try and extract x, v, box.
@@ -249,38 +266,13 @@ class DATAParser(TopologyReader):
     def _parse_pos(self, datalines, pos):
         """Strip coordinate info into np array"""
         for line in datalines:
-            idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
-            # assumes atom ids are well behaved?
-            # LAMMPS sometimes dumps atoms in random order
-            pos[idx] = x, y, z
-
-    def _parse_atom_line(self, line):
-        """Parse a atom line into MDA stuff
-
-        Atom styles are customisable in LAMMPS.  To add different atom types
-        you'd put them here.
-
-        You could try and allow any type of atom type by making this method
-        look in the kwargs for a custom atom definition... Users could then
-        pass a function which decodes their atom style to the topology reader
-
-        This ultimately needs to return:
-          id, resid, atom type, charge, x, y, z
-        """
-        line = line.split()
-        n = len(line)
-        # logger.debug('Line length: {}'.format(n))
-        # logger.debug('Line is {}'.format(line))
-        q = guess_atom_charge(0.0)  # charge is zero by default
-
-        idx, resid, atype = map(int, line[:3])
-        idx -= 1  # 0 based atom ids in mda, 1 based in lammps
-        if n in [7, 10]:  # atom_style full
-            q, x, y, z = map(float, line[3:7])
-        elif n in [6, 9]:  # atom_style molecular
-            x, y, z = map(float, line[3:6])
-
-        return idx, resid, atype, q, x, y, z
+            line = line.split()
+            n = len(line)
+            idx = int(line[0]) - 1
+            if n in (7, 10):
+                pos[idx] = line[4:7]
+            elif n in (6, 9):
+                pos[idx] = line[3:6]
 
     def _parse_vel(self, datalines, vel):
         """Strip velocity info into np array in place"""
@@ -290,43 +282,102 @@ class DATAParser(TopologyReader):
             vx, vy, vz = map(float, line[1:4])
             vel[idx] = vx, vy, vz
 
-    def _parse_section(self, datalines, nentries):
-        """Read lines and strip information"""
+    def _parse_bond_section(self, datalines, nentries):
+        """Read lines and strip information
+
+        Arguments
+        ---------
+        datalines - the raw lines from the data file
+        nentries - number of integers per line
+        """
         section = []
+        type = []
         for line in datalines:
             line = line.split()
             # map to 0 based int
             section.append(tuple(map(lambda x: int(x) - 1,
                                      line[2:2 + nentries])))
-        return tuple(section)
+            type.append(line[1])
+        return tuple(type), tuple(section)
 
-    def _parse_atoms(self, datalines, mass, atom_style):
-        """Special parsing for atoms
+    def _parse_atoms(self, datalines, massdict=None):
+        """Creates a Topology object
 
-        Lammps atoms can have lots of different formats, and even custom formats
+        Adds the following attributes
+         - resid
+         - type
+         - masses (optional)
+         - charge (optional)
+
+        Lammps atoms can have lots of different formats,
+        and even custom formats
 
         http://lammps.sandia.gov/doc/atom_style.html
 
         Treated here are
         - atoms with 7 fields (with charge) "full"
         - atoms with 6 fields (no charge) "molecular"
+
+        Arguments
+        ---------
+        datalines - the relevent lines from the data file
+        massdict - dictionary relating type to mass
+
+        Returns
+        -------
+        top - Topology object
         """
         logger.info("Doing Atoms section")
-        atoms = []
-        for line in datalines:
-            idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
-            name = str(atype)
-            try:
-                m = mass[atype]
-            except KeyError:
-                m = 0.0
-            # Atom() format:
-            # Number, name, type, resname, resid, segid, mass, charge
-            atoms.append(Atom(idx, name, atype,
-                              str(resid), resid, str(resid),
-                              m, q, universe=self._u))
 
-        return atoms
+        n_atoms = len(datalines)
+
+        # Fields per line
+        n = len(datalines[0].split())
+        has_charge = True if n in [7, 10] else False
+
+        types = np.zeros(n_atoms, dtype='|S5')
+        resids = np.zeros(n_atoms, dtype=np.int32)
+        if has_charge:
+            charges = np.zeros(n_atoms, dtype=np.float32)
+
+        for line in datalines:
+            line = line.split()
+            idx, resid = map(int, line[:2])
+            atype = line[2]
+            idx -= 1
+            resids[idx] = resid
+            types[idx] = atype
+            if has_charge:
+                charge = float(line[3])
+                charges[idx] = charge
+
+        attrs = []
+        attrs.append(Atomtypes(types))
+        if has_charge:
+            attrs.append(Charges(charges))
+        if massdict is not None:
+            masses = np.zeros(n_atoms, dtype=np.float64)
+            for i, at in enumerate(types):
+                masses[i] = massdict[at]
+            attrs.append(Masses(masses))
+        else:
+            # Guess them
+            masses = guessers.guess_masses(types)
+            attrs.append(Masses(masses, guessed=True))
+
+        residx, resids = squash_by(resids)[:2]
+        n_residues = len(resids)
+
+        attrs.append(Atomids(np.arange(n_atoms) + 1))
+        attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
+        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+
+        top = Topology(n_atoms, n_residues, 1,
+                       attrs=attrs,
+                       atom_resindex=residx)
+
+        return top
 
     def _parse_masses(self, datalines):
         """Lammps defines mass on a per atom type basis.
@@ -338,7 +389,7 @@ class DATAParser(TopologyReader):
         masses = {}
         for line in datalines:
             line = line.split()
-            masses[int(line[0])] = float(line[1])
+            masses[line[0]] = float(line[1])
 
         return masses
 

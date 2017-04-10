@@ -16,13 +16,10 @@ written out.
 
 Code is hosted at https://github.com/MDAnalysis/mdanalysis
 
-The Online Documentation is available at http://pythonhosted.org//MDAnalysis/
-
-The html manual is also located in the docs/ directory of the source
-distribution.
+The Online Documentation is available at http://docs.mdanalysis.org
 
 For installation instruction please have a look at INSTALL and the
-instructions online at https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
+instructions online at http://wiki.mdanalysis.org/INSTALL
 
 
 
@@ -33,8 +30,8 @@ This software is copyright
 (c) 2005 Naveen Michaud-Agrawal
 (c) 2006 Naveen Michaud-Agrawal and Elizabeth J. Denning
 (c) 2007-2009 Naveen Michaud-Agrawal, Elizabeth J. Denning, and Oliver Beckstein
-(c) 2010-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, and Oliver Beckstein
-              and persons listed in the file AUTHORS
+(c) 2010-2016 The MDAnalysis Development Team and all contributors
+              listed in the file AUTHORS
 unless stated otherwise in the source files.
 
 MDAnalysis is released under the GPL software license, version 2, with
@@ -43,13 +40,8 @@ the following exceptions (see AUTHORS and LICENSE for details):
 - The DCD reading/writing code is licensed under the UIUC Open Source
   License.
 
-- The libxdr code for accessing Gromacs trajectories including our
-  modifications is published under the Lesser GNU Public Licence
-  (LGPL).
-
-- The KDTree and neigbour-searching code is Thomas Hamelryck's code
-  from the Biopython module (with minor modifications) and is used
-  under the terms of the Biopython license.
+- The Gromacs xdrlib code for accessing Gromacs trajectories is used
+  under a "BSD-2-clause" licence.
 
 - The transformations module was written by Christoph Gohlke and is
   used under a "BSD-3-clause" licence.
@@ -63,7 +55,16 @@ file.
 Citation
 =========
 
-When using MDAnalysis in published work, please cite
+When using MDAnalysis in published work, please cite the following
+two papers:
+
+    R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy,
+    M. N. Melo, S. L. Seyler, D. L. Dotson, J. Domanski,
+    S. Buchoux, I. M. Kenney, and O. Beckstein. MDAnalysis:
+    A Python package for the rapid analysis of molecular
+    dynamics simulations. In S. Benthall and S. Rostrup,
+    editors, Proceedings of the 15th Python in Science
+    Conference, pages 102-109, Austin, TX, 2016. SciPy.
 
     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
@@ -75,31 +76,10 @@ When using MDAnalysis in published work, please cite
 Included algorithms
 -------------------
 
-If you use the RMSD alignment code that uses the QCProt module please also cite
-
-    Douglas L. Theobald. Rapid calculation of RMSD using a
-    quaternion-based characteristic polynomial. Acta Crystallographica
-    A 61 (2005), 478--480.
-
-    Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
-    determination of the optimal rotational matrix for macromolecular
-    superpositions. J. Comput. Chem. 31 (2010), 1561--1563.
-
-If you use the helix analysis algorithm HELANAL in MDAnalysis.analysis.helanal
-please cite
-
-    Bansal M, Kumar S, Velavan R. HELANAL - A program to characterise
-    helix geometry in proteins. J. Biomol. Struct. Dyn. 17 (2000),
-    811--819
-
-If you use the GNM trajectory analysis code in MDAnalysis.analysis.gnm
-please cite
-
-    Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
-    Philip C. Biggin. Characterization of Protein Conformational
-    States by Normal-Mode Frequencies. JACS 129 (2007), 11394--11401.
-
-Thanks! 
+A number of algorithms are included in MDAnalysis and
+MDAnalysis.analysis that have been published separately. Please cite
+the appropriate paper as listed at
+http://docs.mdanalysis.org/documentation_pages/references.html#citations-for-included-algorithms-and-modules
 
 
 

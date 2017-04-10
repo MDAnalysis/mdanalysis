@@ -17,7 +17,7 @@ hence most users probably do not need to concern themselves with
 classes and functions described here. However, if MDAnalysis does not
 properly recognize a file format then a user can explicitly set the
 topology file format in the *topology_format* keyword argument to
-:class:`~MDAnalysis.core.AtomGroup.Universe`.
+:class:`~MDAnalysis.core.universe.Universe`.
 
 .. rubric:: Topology formats
 
@@ -25,23 +25,23 @@ topology file format in the *topology_format* keyword argument to
    :maxdepth: 1
 
    topology/init
-   topology/PSFParser
-   topology/TOPParser
    topology/CRDParser
+   topology/DLPolyParser
+   topology/DMSParser
+   topology/GMSParser
    topology/GROParser
+   topology/HoomdXMLParser
+   topology/LAMMPSParser
+   topology/MMTFParser
+   topology/MOL2Parser
    topology/PDBParser
-   topology/PrimitivePDBParser
    topology/ExtendedPDBParser
    topology/PDBQTParser
    topology/PQRParser
-   topology/DLPolyParser
-   topology/DMSParser
+   topology/PSFParser
+   topology/TOPParser
    topology/TPRParser
-   topology/MOL2Parser
    topology/XYZParser
-   topology/LAMMPSParser
-   topology/GMSParser
-   topology/HoomdXMLParser
 
 .. rubric:: Topology core modules
 
@@ -54,5 +54,6 @@ the topology readers.
 
    topology/base
    topology/core
+   topology/guessers
    topology/tables
    topology/tpr_util

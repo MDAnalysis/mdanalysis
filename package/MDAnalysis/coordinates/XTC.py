@@ -1,48 +1,66 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+XTC trajectory files --- :mod:`MDAnalysis.coordinates.XTC`
+==========================================================
+
+Read and write GROMACS XTC trajectories.
+
+See Also
+--------
+MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
+MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
+"""
+
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
 
 
 class XTCWriter(XDRBaseWriter):
-    """
-    XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    """XTC is a compressed trajectory format from Gromacs. The trajectory is saved
     with reduced precision (3 decimal places by default) compared to other
     lossless formarts like TRR and DCD. The main advantage of XTC files is that
     they require significantly less disk space and the loss of precision is
     usually not a problem.
-
-    Parameter
-    ---------
-    filename : str
-        filename of the trajectory
-    n_atoms : int
-        number of atoms to write
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    precision : float (optional)
-        set precision of saved trjactory to this number of decimal places.
     """
     format = 'XTC'
+    multiframe = True
     units = {'time': 'ps', 'length': 'nm'}
     _file = XTCFile
 
     def __init__(self, filename, n_atoms, convert_units=True,
                  precision=3, **kwargs):
+        """Parameters
+        ----------
+        filename : str
+            filename of the trajectory
+        n_atoms : int
+            number of atoms to write
+        convert_units : bool (optional)
+            convert into MDAnalysis units
+        precision : float (optional)
+            set precision of saved trjactory to this number of decimal places.
+        """
         super(XTCWriter, self).__init__(filename, n_atoms, convert_units,
                                         **kwargs)
         self.precision = precision
@@ -52,7 +70,7 @@ class XTCWriter(XDRBaseWriter):
 
         Parameters
         ----------
-        ts : TimeStep
+        ts: TimeStep
 
         See Also
         --------
@@ -83,17 +101,10 @@ class XTCReader(XDRBaseReader):
     require significantly less disk space and the loss of precision is usually
     not a problem.
 
-    Parameter
-    ---------
-    filename : str
-        filename of the trajectory
-    convert_units : bool (optional)
-        convert into MDAnalysis units
-    sub : atomgroup (optional)
-        Yeah what is that exactly
-    refresh_offsets : bool (optional)
-        Recalculate offsets for random access from file. If ``False`` try to
-        retrieve offsets from hidden offsets file.
+    Notes
+    -----
+    See :ref:`Notes on offsets <offsets-label>` for more information about
+    offsets.
 
     """
     format = 'XTC'

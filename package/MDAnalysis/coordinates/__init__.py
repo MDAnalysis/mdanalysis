@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -15,81 +21,86 @@
 #
 
 
-"""
+"""\
 Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
-============================================================================
+=================================================================
 
 The coordinates submodule contains code to read, write and store coordinate
-information,
-either single frames (e.g. the GRO module) or trajectories (such as the DCD
-reader).
+information, either single frames (e.g., the :mod:`~MDAnalysis.coordinates.GRO`
+format) or trajectories (such as the :mod:`~MDAnalyis.coordinates.DCD` format);
+see the :ref:`Supported coordinate formats` for all formats.
+
+MDAnalysis calls the classes that read a coordinate trajectory and make the
+data available *"Readers"*. Similarly, classes that write out coordinates are
+called *"Writers"*. Readers and Writers provide a common interface to the
+underlying coordinate data. This abstraction of coordinate access through an
+object-oriented interface is one of the key capabilities of MDAnalysis.
 
 
 Readers
 -------
 
-All Readers are supposed to expose a :class:`ProtoReader` object
-that presents a common `Trajectory API`_ to other code.
+All Readers are based on a :class:`ProtoReader` class that defines a common
+;ref:`Trajectory API` and allows other code to interface with all trajectory
+formats in the same way, independent of the details of the trajectory format
+itself.
 
-The :class:`~MDAnalysis.core.AtomGroup.Universe` contains the API
-entry point attribute
+The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
+attribute :attr:`Universe.trajectory` that points to the actual
+:class:`~MDAnalysis.coordinates.base.ProtoReader` object; all Readers are accessible
+through this entry point in the same manner ("`duck typing`_").
 
-  :attr:`Universe.trajectory`
+There are three types of base Reader which act as starting points for each
+specific format. These are:
 
-that points to the actual :class:`~MDAnalysis.coordinates.base.Reader`
-object; all Readers are supposed to be accessible through this entry
-point in the same manner ("`duck typing`_").
-
-There are three types of base Reader which act as starting points
-for each specific format. These are:
-
-:class:`~MDAnalysis.coordinates.base.Reader`
+:class:`~MDAnalysis.coordinates.base.ReaderBase`
    A standard multi frame Reader which allows iteration over a single
    file to provide multiple frames of data.  This is used by formats
    such as TRR and DCD.
 
-:class:`~MDAnalysis.coordinates.base.SingleFrameReader`
+:class:`~MDAnalysis.coordinates.base.SingleFrameReaderBase`
    A simplified Reader which reads a file containing only a single
    frame of information.  This is used with formats such as GRO
    and CRD
 
-:class:`~MDAnalysis.coordinates.baseChainReader`
+:class:`~MDAnalysis.coordinates.chain.ChainReader`
    An advanced Reader designed to read a sequence of files, to
    provide iteration over all the frames in each file seamlessly.
    This Reader can also provide this functionality over a
    sequence of files in different formats.
 
 Normally, one does not explicitly need to select a reader. This is handled
-automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and
+automatically when creating a :class:`~MDAnalysis.core.universe.Universe` and
 the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
-:class:`~MDAnalysis.core.AtomGroup.Universe`).
+:class:`~MDAnalysis.core.universe.Universe`).
 
+If additional simulation data is available, it may be added to and read
+alongside a trajectory using
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary` as described in
+the :ref:`Auxiliary API`.
+
+.. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 Writers
 -------
 
 In order to **write coordinates**, a factory function is provided
-(:func:`MDAnalysis.coordinates.core.writer`) which is made available
-as :func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for
-the desired file format (as indicated by the filename
-suffix). Furthermore, a trajectory
-:class:`~MDAnalysis.coordinates.base.Reader` can also have a method
-:meth:`~MDAnalysis.coordinates.base.Reader.Writer` that returns an
-appropriate :class:`~MDAnalysis.coordinates.base.Writer` for the file
-format of the trajectory.
+(:func:`MDAnalysis.coordinates.core.writer`, which is also made available as
+:func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for the desired
+file format (as indicated by the filename suffix). Furthermore, a trajectory
+:class:`~MDAnalysis.coordinates.base.ProtoReader` can also have a method
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.Writer` that returns an appropriate
+:class:`~MDAnalysis.coordinates.base.WriterBase` for the file format of the
+trajectory.
 
-In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is
-also a :func:`MDAnalysis.coordinates.core.reader` function available
-to return a trajectory :class:`~MDAnalysis.coordinates.base.Reader`
-instance although this is often not needed because the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class can choose an
-appropriate reader automatically.
+In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is also a
+:func:`MDAnalysis.coordinates.core.reader` function available to return a
+trajectory :class:`~MDAnalysis.coordinates.base.ProtoReader` instance although this
+is often not needed because the :class:`~MDAnalysis.core.universe.Universe`
+class can choose an appropriate reader automatically.
 
-.. _duck typing: http://c2.com/cgi/wiki?DuckTyping
-
-
-A typical approach is to generate a new trajectory from an old one, e.g. to
+A typical approach is to generate a new trajectory from an old one, e.g., to
 only keep the protein::
 
   u = MDAnalysis.Universe(PDB, XTC)
@@ -103,23 +114,26 @@ the last frame has been written.
 
 
 Timesteps
----------------
+---------
 
-Both Readers and Writers use Timesteps as their working object.  A Timestep
-represents all data for a given frame in a trajectory.  The data inside a
-Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-but it is also possible to manipulate Timesteps directly.
+Both Readers and Writers use Timesteps as their working object.  A
+:class:`~MDAnalysis.coordinates.base.Timestep` represents all data for a given
+frame in a trajectory.  The data inside a
+:class:`~MDAnalysis.coordinates.base.Timestep` is often accessed indirectly
+through a :class:`~MDAnalysis.core.groups.AtomGroup` but it is also possible to
+manipulate Timesteps directly.
 
-The current Timestep can be accessed through the trajectory read attached
-to the active :class:`~MDAnalysis.core.AtomGroup.Universe`
+The current :class:`~MDAnalysis.coordinates.base.Timestep` can be accessed
+through the :attr:`~MDAnalysis.coordinates.base.ProtoReader.ts` attribute of
+the trajectory attached to the active
+:class:`~MDAnalysis.core.universe.Universe`::
 
    ts = u.trajectory.ts
    ts.positions  # returns a numpy array of positions
 
-Most individual formats have slightly different data available
-in each Timestep due to differences in individual simulation
-packages, but all share in common a broad set of basic data,
-detailed in `Timestep API`_
+Most individual formats have slightly different data available in each Timestep
+due to differences in individual simulation packages, but all share in common a
+broad set of basic data, detailed in `Timestep API`_
 
 
 Supported coordinate formats
@@ -130,8 +144,8 @@ emphasis is on formats that are used in popular molecular dynamics codes. By
 default, MDAnalysis figures out formats by looking at the extension. Thus, a
 DCD file always has to end with ".dcd" to be recognized as such unless the
 format is explicitly specified with the *format* keyword to
-:class:`~MDAnalysis.core.AtomGroup.Universe` or
-:meth:`~MDAnalysis.core.AtomGroup.Universe.load_new`.  A number of files are
+:class:`~MDAnalysis.core.universe.Universe` or
+:meth:`~MDAnalysis.core.universe.Universe.load_new`.  A number of files are
 also recognized when they are compressed with :program:`gzip` or
 :program:`bzip2` such as ".xyz.bz2".
 
@@ -219,10 +233,13 @@ also recognized when they are compressed with :program:`gzip` or
    | DL_Poly [#a]_ | history   |  r    | DL_Poly ascii history file                           |
    |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
    +---------------+-----------+-------+------------------------------------------------------+
+   | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |
+   |               |           |       | :mod:`MDAnalysis.coordinates.MMTF`                   |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
-   full :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply
+   full :mod:`~MDAnalysis.core.universe.Universe` by simply
    providing a file of this format: ``u = Universe(filename)``
 
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
@@ -264,6 +281,7 @@ History
 - 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
 - 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)
 - 2016-04-03 Removed references to Strict Readers for PDBS [jdetle]
+
 .. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 
@@ -273,14 +291,18 @@ Registry
 In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must subclass either
-:class:`MDAnalysis.coordinates.base.ProtoReader` or
-:class:`MDAnalysis.coordinates.base.Writer` and set the `format` attribute
-with a string defining the expected suffix.
-To assign multiple suffixes to an I/O class, a list of suffixes
-can be given.
+:class:`MDAnalysis.coordinates.base.ReaderBase`,
+:class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`,
+or :class:`MDAnalysis.coordinates.base.WriterBase` and set the
+:attr:`~MDAnalysis.coordinates.base.ProtoReader.format` attribute with a string
+defining the expected suffix.  To assign multiple suffixes to an I/O class, a
+list of suffixes can be given.
 
 To define that a Writer can write multiple trajectory frames, set the
-`multiframe` attribute to True.  The default is False.
+`multiframe` attribute to ``True``.  The default is ``False``.
+To define that a Writer *does not* support single frame writing the
+`singleframe` attribute can be set to ``False``.  This is ``True``
+by default, ie we assume all Writers can also do a single frame.
 
 
 .. _Timestep API:
@@ -370,6 +392,8 @@ Attributes
       in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
+  ``aux``
+      namespace for the representative values of any added auxiliary data.
 
 
 Private attributes
@@ -405,7 +429,7 @@ but instead should use the attribute above.
 Trajectory Reader class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Reader`.
+Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.ReaderBase`.
 Typically, many methods and attributes are overriden.
 
 Methods
@@ -420,12 +444,14 @@ The following methods must be implemented in a Reader class.
 
  ``__init__(filename, **kwargs)``
      open *filename*; other *kwargs* are processed as needed and the
-     Reader is free to ignore them. Typically, MDAnalysis supplies as
-     much information as possible to the Reader in `kwargs`; at the moment the
-     following data are supplied in keywords when a trajectory is loaded from
-     within :class:`MDAnalysis.Universe`:
+     Reader is free to ignore them. Typically, when MDAnalysis creates
+     a Reader from :class:`MDAnalysis.Universe` it supplies as much
+     information as possible in `kwargs`; at the moment the following
+     data are supplied:
 
-      - *n_atoms*: the number of atoms (known from the topology)
+      - *n_atoms*: the number of atoms from the supplied topology.  This is
+                   not required for all readers and can be ignored if not
+                   required.
 
  ``__iter__()``
      allow iteration from beginning to end::
@@ -448,7 +474,7 @@ The following methods must be implemented in a Reader class.
 .. Note::
    a ``__del__()`` method should also be present to ensure that the
    trajectory is properly closed. However, certain types of Reader can ignore
-   this requirement. These include the :class:`SingleFrameReader` (file reading
+   this requirement. These include the :class:`SingleFrameReaderBase` (file reading
    is done within a context manager and needs no closing by hand) and the :class:`ChainReader`
    (it is a collection of Readers, each already with its own ``__del__`` method).
 
@@ -493,13 +519,13 @@ deal with missing methods gracefully.
      If the Reader is not able to provide random access to frames then it
      should raise :exc:`TypeError` on indexing. It is possible to partially
      implement ``__getitem__`` (as done on
-     :class:`MDAnalysis.coordinates.base.Reader.__getitem__` where slicing the
+     :class:`MDAnalysis.coordinates.base.ProtoReader.__getitem__` where slicing the
      full trajectory is equivalent to
-     :class:`MDAnalysis.coordinates.base.Reader.__iter__` (which is always
+     :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
 
  ``Writer(filename, **kwargs)``
-     returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
+     returns a :class:`~MDAnalysis.coordinates.base.WriterBase` which is set up with
      the same parameters as the trajectory that is being read (e.g. time step,
      length etc), which facilitates copying and simple on-the-fly manipulation.
 
@@ -547,6 +573,11 @@ Attributes
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
      frame number of the current time step (0-based)
+ ``aux_list``
+     list of the names of any added auxiliary data.
+ ``_auxs``
+     dictionary of the :class:`~MDAnalysis.auxiliary.base.AuxReader`
+     instances for any added auxiliary data.
 
 **Optional attributes**
 
@@ -569,9 +600,9 @@ Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory writers are derived from
-:class:`MDAnalysis.coordinates.base.Writer`. They are used to write
+:class:`MDAnalysis.coordinates.base.WriterBase`. They are used to write
 multiple frames to a trajectory file. Every time the
-:meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
+:meth:`~MDAnalysis.coordinates.base.WriterBase.write` method is called,
 another frame is appended to the trajectory.
 
 Typically, many methods and attributes are overriden.
@@ -656,8 +687,8 @@ Methods
    opens *filename* for writing; `kwargs` are typically ignored
  ``write(obj)``
    writes the object *obj*, containing a
-   :class:`~MDAnalysis.core.AtomGroup.AtomGroup` group of atoms (typically
-   obtained from a selection) or :class:`~MDAnalysis.core.AtomGroup.Universe`
+   :class:`~MDAnalysis.core.groups.AtomGroup` group of atoms (typically
+   obtained from a selection) or :class:`~MDAnalysis.core.universe.Universe`
    to the file and closes the file
 
 .. Note::
@@ -670,16 +701,11 @@ Methods
 
 __all__ = ['reader', 'writer']
 
-# Registry of all Readers & Writers
-# Get filled on class definition by metaclass magic
-_READERS = {}
-_SINGLEFRAME_WRITERS = {}
-_MULTIFRAME_WRITERS = {}
-
 import six
 
 from . import base
 from .core import reader, writer
+from . import chain
 from . import CRD
 from . import DLPoly
 from . import DMS
@@ -695,6 +721,10 @@ from . import TRR
 from . import TRZ
 from . import XTC
 from . import XYZ
+from . import memory
+from . import MMTF
+from . import null
+
 
 try:
     from . import DCD

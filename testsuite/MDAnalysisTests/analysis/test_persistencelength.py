@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -17,6 +23,7 @@ from __future__ import print_function
 
 import MDAnalysis
 from MDAnalysis.analysis import polymer
+from MDAnalysis.exceptions import NoDataError
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -41,7 +48,7 @@ class TestPersistenceLength(object):
         assert_raises(ValueError, polymer.PersistenceLength, ags)
 
     def _make_p(self):
-        ags = [r.select_atoms('type C or type N')
+        ags = [r.atoms.select_atoms('name C* N*')
                for r in self.u.residues]
 
         p = polymer.PersistenceLength(ags)
@@ -64,6 +71,27 @@ class TestPersistenceLength(object):
         assert_almost_equal(p.lp, 6.504, 3)
         assert_(len(p.fit) == len(p.results))
 
+    @dec.skipif(module_not_found('matplotlib'),
+                "Test skipped because matplotlib is not available.")
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
+    def test_plot_ax_return(self):
+        '''Ensure that a matplotlib axis object is
+        returned when plot() is called.'''
+        import matplotlib
+        p = self._make_p()
+        p.run()
+        p.perform_fit()
+        actual = p.plot()
+        expected = matplotlib.axes.Axes
+        assert_(isinstance(actual, expected))
+
+    def test_raise_NoDataError(self):
+        '''Ensure that a NoDataError is raised if
+        perform_fit() is called before the run()
+        method of AnalysisBase.'''
+        p = self._make_p()
+        assert_raises(NoDataError, p.perform_fit)
 
 class TestFitExponential(object):
     def setUp(self):
@@ -85,6 +113,10 @@ class TestFitExponential(object):
     @dec.skipif(module_not_found('scipy'),
                 "Test skipped because scipy is not available.")
     def test_fit_noisy(self):
-        y2 = self.y + (np.random.random(len(self.y)) - 0.5) * 0.05
+        noise = np.sin(self.x) * 0.01
+        y2 = noise + self.y
+
         a = polymer.fit_exponential_decay(self.x, y2)
-        assert_(np.rint(a) == self.a_ref)
+
+        assert_almost_equal(a, self.a_ref, decimal=3)
+        #assert_(np.rint(a) == self.a_ref)

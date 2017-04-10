@@ -2,14 +2,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -126,7 +131,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    RELEASE = "0.15.0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.16.0"  # this must be in-sync with MDAnalysis
 
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
@@ -201,14 +206,18 @@ For details see the report for `Issue 87`_.
                          'data/dlpoly/HISTORY*',
                          'data/*.xml',
                          'data/coordinates/*',
+                         'data/*xvg',
+                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*'
                         ],
           },
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'numpy>=1.5',
+              'numpy>=1.10.4',
               'nose>=1.3.7',
+              'psutil>=4.0.2',
+              'mock>=2.0.0',
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

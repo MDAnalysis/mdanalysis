@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -24,7 +30,7 @@ Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
 :Copyright: GNU Public License v3
 
 
-Given a :class:`~MDAnalysis.core.AtomGroup.Universe` (simulation
+Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
 trajectory with 1 or more frames) measure all hydrogen bonds for each
 frame between selections 1 and 2.
 
@@ -208,8 +214,8 @@ atom names to MDAnalysis.
 .. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
 
 
-Example
--------
+How to perform HydrogenBondAnalysis
+-----------------------------------
 
 All protein-water hydrogen bonds can be analysed with ::
 
@@ -346,10 +352,9 @@ import warnings
 import logging
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
-from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 
@@ -423,7 +428,7 @@ class HydrogenBondAnalysis(object):
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
-                 verbose=False, detect_hydrogens='distance'):
+                 debug=None, detect_hydrogens='distance', verbose=None):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
@@ -459,61 +464,62 @@ class HydrogenBondAnalysis(object):
            you can improve performance by setting the *update_selection*
            keywords to ``False``.
 
-        :Arguments:
-          *universe*
+        Parameters
+        ----------
+        universe : universe
             Universe object
-          *selection1*
+        selection1 : str (optional)
             Selection string for first selection ['protein']
-          *selection2*
+        selection2 : str (optional)
             Selection string for second selection ['all']
-          *selection1_type*
+        selection1_type : str (optional)
             Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
             value for *selection1_type* automatically determines how
             *selection2* handles donors and acceptors: If *selection1* contains
             'both' then *selection2* will also contain *both*. If *selection1*
             is set to 'donor' then *selection2* is 'acceptor' (and vice versa).
             ['both'].
-          *update_selection1*
+        update_selection1 : bool (optional)
             Update selection 1 at each frame? [``False``]
-          *update_selection2*
+        update_selection2 : bool (optional)
             Update selection 2 at each frame? [``False``]
-          *filter_first*
+        filter_first : bool (optional)
             Filter selection 2 first to only atoms 3*distance away [``True``]
-          *distance*
+        distance : float (optional)
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
             <= *distance* (and the appropriate D-H-A angle, see *angle*) are
             recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]
-          *angle*
+        angle : float (optional)
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
             >=  *angle*. The default of 120º also finds fairly non-specific
             hydrogen interactions and a possibly better value is 150º. [120.0]
-          *forcefield*
+        forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
             Name of the forcefield used. Switches between different
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.
             Available values: "CHARMM27", "GLYCAM06", "other" ["CHARMM27"]
-          *donors*
+        donors : sequence (optional)
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
-          *acceptors*
+        acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
-          *start*
+        start : int (optional)
             starting frame-index for analysis, ``None`` is the first one, 0.
             *start* and *stop* are 0-based frame indices and are used to slice
             the trajectory (if supported) [``None``]
-          *stop*
+        stop : int (optional)
             last trajectory frame for analysis, ``None`` is the last one [``None``]
-          *step*
+        step : int (optional)
             read every *step* between *start* and *stop*, ``None`` selects 1.
             Note that not all trajectory reader from 1 [``None``]
-          *verbose*
+        debug : bool (optional)
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
             the output, e.g. using :func:`MDAnalysis.start_logging`.)
-          *detect_hydrogens*
+        detect_hydrogens : {"distance", "heuristic"} (optional)
             Determine the algorithm to find hydrogens connected to donor
             atoms. Can be "distance" (default; finds all hydrogens in the
             donor's residue within a cutoff of the donor) or "heuristic"
@@ -521,14 +527,17 @@ class HydrogenBondAnalysis(object):
             always give the correct answer but "heuristic" is faster,
             especially when the donor list is updated each
             for each frame. ["distance"]
-          *distance_type*
+        distance_type : {"hydrogen", "heavy"} (optional)
             Measure hydrogen bond lengths between donor and acceptor heavy
             attoms ("heavy") or between donor hydrogen and acceptor heavy
             atom ("hydrogen"). If using "heavy" then one should set the *distance*
             cutoff to a higher value such as 3.5 Å. ["hydrogen"]
 
-        :Raises: :exc:`SelectionError` is raised for each static selection without
-                 the required donors and/or acceptors.
+        Raises
+        ------
+        :exc:`SelectionError`
+            is raised for each static selection without the required
+            donors and/or acceptors.
 
         .. versionchanged:: 0.7.6
            New *verbose* keyword (and per-frame debug logging disabled by
@@ -557,6 +566,11 @@ class HydrogenBondAnalysis(object):
         .. versionchanged:: 0.11.0
            Initial checks for selections that potentially raise :exc:`SelectionError`.
 
+        .. deprecated:: 0.16
+           The *verbose* keyword argument is replaced by *debug*. Note that the
+           *verbose* keyword argument is now comsistently used to toggle
+           progress meters throuthout the library.
+
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
         """
         warnings.warn(
@@ -584,9 +598,7 @@ class HydrogenBondAnalysis(object):
         self.distance = distance
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
-        self.traj_slice = slice(start if isinstance(start, int) else None,  # internal frames are 0 based
-                                stop if isinstance(stop, int) else None,
-                                step)
+        self.traj_slice = slice(start, stop, step)
 
         # set up the donors/acceptors lists
         if donors is None:
@@ -607,10 +619,19 @@ class HydrogenBondAnalysis(object):
 
         self.table = None  # placeholder for output table
 
-        self.verbose = True  # always enable debug output for initial selection update
+        self.debug = True  # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
-        self.verbose = verbose  # per-frame debugging output?
+        # per-frame debugging output?
+        # This line must be changed at the end of the deprecation period for
+        # the *quiet* keyword argument. Then it must become:
+        # self.debug = debug
+        # In the signature, *verbose* must be removed and the default value
+        # for *debug* must be set to False.
+        # See the docstring for lib.log._set_verbose, the pull request #1150,
+        # and the issue #903.
+        self.debug = _set_verbose(debug, verbose, default=False,
+                                  was='verbose', now='debug')
 
         self._log_parameters()
 
@@ -678,7 +699,7 @@ class HydrogenBondAnalysis(object):
         :class:`HydrogenBondAnalysis`.
 
         :Returns: list of hydrogens (can be a
-                  :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or empty list
+                  :class:`~MDAnalysis.core.groups.AtomGroup`) or empty list
                   ``[]`` if none were found.
 
         .. SeeAlso::
@@ -712,7 +733,7 @@ class HydrogenBondAnalysis(object):
         .. versionadded:: 0.7.6
         """
         try:
-            return atom.residue.select_atoms(
+            return atom.residue.atoms.select_atoms(
                 "(name H* 1H* 2H* 3H* or type H) and around {0:f} name {1!s}"
                 "".format(self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
@@ -810,7 +831,7 @@ class HydrogenBondAnalysis(object):
             self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
 
     def logger_debug(self, *args):
-        if self.verbose:
+        if self.debug:
             logger.debug(*args)
 
     def run(self, **kwargs):
@@ -820,10 +841,10 @@ class HydrogenBondAnalysis(object):
         :attr:`HydrogenBondAnalysis.timeseries` (see there for output
         format).
 
-        The method accepts a number of keywords, amongst them *quiet* (default
-        ``False``), which silences the porgress output (see
-        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *verbose* (which can
-        be used to change the value provided with the class constructor).
+        The method accepts a number of keywords, amongst them *verbose*
+        (default ``True``), which toggles the porgress output (see
+        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *debug* which can
+        be used to change the debug value provided to the class constructor.
 
         .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing
                      the data into a different format.
@@ -839,10 +860,15 @@ class HydrogenBondAnalysis(object):
            no donors or acceptors were found in a particular frame.
 
         .. deprecated:: 0.15.0
-            The donor and acceptor indices being 1-based is deprecated in favor of
-            a zero-based index. This can be accessed by "donor_index" or
-            "acceptor_index" removal of the 1-based indices is targeted
-            for version 0.16.0
+           The donor and acceptor indices being 1-based is deprecated in favor
+           of a zero-based index. This can be accessed by "donor_index" or
+           "acceptor_index" removal of the 1-based indices is targeted
+           for version 0.16.0
+
+        .. deprecated:: 0.16
+           The *quiet* keyword argument is deprecated in favor of the *verbose*
+           one. Previous use of *verbose* now corresponds to the new keyword
+           argument *debug*.
 
         """
         logger.info("HBond analysis: starting")
@@ -853,12 +879,12 @@ class HydrogenBondAnalysis(object):
         if not remove_duplicates:
             logger.warn("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
 
-        verbose = kwargs.pop('verbose', None)
-        if verbose is not None and verbose != self.verbose:
-            self.verbose = verbose
-            logger.debug("Toggling verbose to %r", self.verbose)
-        if not self.verbose:
-            logger.debug("HBond analysis: For full step-by-step debugging output use verbose=True")
+        debug = kwargs.pop('debug', None)
+        if debug is not None and debug != self.debug:
+            self.debug = debug
+            logger.debug("Toggling debug to %r", self.debug)
+        if not self.debug:
+            logger.debug("HBond analysis: For full step-by-step debugging output use debug=True")
 
         self.timeseries = []
         self.timesteps = []
@@ -870,9 +896,12 @@ class HydrogenBondAnalysis(object):
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
             raise
+        verbose = _set_verbose(verbose=kwargs.get('verbose', None),
+                               quiet=kwargs.get('quiet', None),
+                               default=True)
         pm = ProgressMeter(len(frames),
-                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
-                           quiet=kwargs.get('quiet', False))
+                           format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
+                           verbose=verbose)
 
         try:
             self.u.trajectory.time
@@ -892,7 +921,7 @@ class HydrogenBondAnalysis(object):
                     (self.traj_slice.start or 0),
                     (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
 
-        for ts in self.u.trajectory[self.traj_slice]:
+        for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
             # all bonds for this timestep
             frame_results = []
             # dict of tuples (atomid, atomid) for quick check if
@@ -903,7 +932,7 @@ class HydrogenBondAnalysis(object):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(ts.frame)
+            pm.echo(progress, current_step=frame)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
@@ -916,7 +945,7 @@ class HydrogenBondAnalysis(object):
                 for i, donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
@@ -938,7 +967,7 @@ class HydrogenBondAnalysis(object):
                 for i, donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             if remove_duplicates and (
                                     (h.index + 1, a.index + 1) in already_found
@@ -1241,7 +1270,7 @@ class HydrogenBondAnalysis(object):
         .. Note::
 
            *index* is the 0-based MDAnalysis index
-           (:attr:`MDAnalysis.core.AtomGroup.Atom.index`).  The
+           (:attr:`MDAnalysis.core.groups.Atom.index`).  The
            tables generated by :class:`HydrogenBondAnalysis` contain
            1-based indices and zero-based indices.
 

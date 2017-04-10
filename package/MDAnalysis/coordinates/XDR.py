@@ -1,20 +1,37 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
-
-
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""\
+XDR based trajectory files --- :mod:`MDAnalysis.coordinates.XDR`
+================================================================
+
+This module contains helper function and classes to read the XTC and TRR file
+formats.
+
+See Also
+--------
+MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
+MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
+MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
+"""
 import six
 
 import errno
@@ -27,7 +44,8 @@ from ..lib.mdamath import triclinic_box
 
 
 def offsets_filename(filename, ending='npz'):
-    """Return offset filename
+    """Return offset filename for XDR files. For this the filename is appended
+    with `_offsets.{ending}`.
 
     Parameters
     ----------
@@ -39,6 +57,7 @@ def offsets_filename(filename, ending='npz'):
     Returns
     -------
     offset_filename : str
+
     """
     head, tail = split(filename)
     return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
@@ -46,7 +65,9 @@ def offsets_filename(filename, ending='npz'):
 
 
 def read_numpy_offsets(filename):
-    """read offsets into a dictionary
+    """read offsets into dictionary.
+
+    This assume offsets have been saved using numpy
 
     Parameters
     ----------
@@ -57,14 +78,55 @@ def read_numpy_offsets(filename):
     -------
     offsets : dict
         dictionary of offsets information
+
     """
     return {k: v for k, v in six.iteritems(np.load(filename))}
 
 
-class XDRBaseReader(base.Reader):
-    """Base class for libmdaxdr file formats xtc and trr"""
+class XDRBaseReader(base.ReaderBase):
+    """Base class for libmdaxdr file formats xtc and trr
+
+    This class handles integration of XDR based formats into MDAnalysis. The
+    XTC and TRR classes only implement `write_next_timestep` and
+    `_frame_to_ts`.
+
+    .. _offsets-label:
+
+    Notes
+    -----
+    XDR based readers store persistent offsets on disk. The offsets are used to
+    enable access to random frames efficiently. These offsets will be generated
+    automatically the  first time the  trajectory is opened.  Generally offsets
+    are stored  in hidden  `*_offsets.npz` files.  Afterwards opening  the same
+    file again is fast. It sometimes can happen that the stored offsets get out
+    off sync with the trajectory they refer to. For this the offsets also store
+    the number of atoms, size of the file and last modification time. If any of
+    them change  the offsets are recalculated.  Writing of the offset  file can
+    fail when the  directory where the trajectory file resides  is not writable
+    or if the  disk is full. In this  case a warning message will  be shown but
+    the offsets will nevertheless be used during the lifetime of the trajectory
+    Reader. However, the  next time the trajectory is opened,  the offsets will
+    have to be rebuilt again.
+
+    """
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
+        """Parameters
+        ----------
+        filename : str
+            trajectory filename
+        convert_units : bool (optional)
+            convert units to MDAnalysis units
+        sub : array_like (optional)
+            `sub` is an array of indices to pick out the corresponding
+            coordinates and load only them; this requires that the topology
+            itself is that of the sub system.
+        refresh_offsets : bool (optional)
+            force refresh of offsets
+        **kwargs : dict
+            General reader arguments.
+
+        """
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,
                                             **kwargs)
@@ -80,7 +142,6 @@ class XDRBaseReader(base.Reader):
             self._load_offsets()
         else:
             self._read_offsets(store=True)
-
         frame = self._xdr.read()
         try:
             xdr_frame = self._xdr.read()
@@ -142,10 +203,6 @@ class XDRBaseReader(base.Reader):
             except Exception as e:
                 warnings.warn("Couldn't save offsets because: {}".format(e))
 
-    def rewind(self):
-        """Read the first frame again"""
-        self._read_frame(0)
-
     @property
     def n_frames(self):
         """number of frames in trajectory"""
@@ -191,10 +248,22 @@ class XDRBaseReader(base.Reader):
         return self._writer(filename, n_atoms=n_atoms, **kwargs)
 
 
-class XDRBaseWriter(base.Writer):
+class XDRBaseWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+        """
+        Parameters
+        ----------
+        filename : str
+            filename of trajectory
+        n_atoms : int
+            number of atoms to be written
+        convert_units : bool (optional)
+            convert from MDAnalysis units to format specific units
+        **kwargs : dict
+            General writer arguments
+        """
         self.filename = filename
         self._convert_units = convert_units
         self.n_atoms = n_atoms

@@ -19,16 +19,14 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 
     import MDAnalysis.analysis.align
 
-.. Note:: 
+.. Note::
 
-  Some of the modules require additional Python packages such as
-  :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
-  NetworkX_. These package are *not automatically installed* (although
-  one can add the ``[analysis]`` requirement to the
-  :program:`easy_install` command line to force their installation.
+  Some of the modules require additional Python packages such as :mod:`scipy`
+  from the SciPy_ package. These package are *not automatically installed*
+  (although one can add the ``[analysis]`` requirement to the :program:`pip`
+  command line to force their installation.
 
 .. _scipy: http://www.scipy.org/
-.. _networkx: http://networkx.lanl.gov/
 
 
 Building blocks for Analysis
@@ -38,7 +36,6 @@ Building blocks for Analysis
    :maxdepth: 1
 
    analysis/base
-
 
 Distances and contacts
 ======================
@@ -51,7 +48,8 @@ Distances and contacts
    analysis/distances
    analysis/rms
    analysis/psa
-
+   analysis/encore
+   
 Hydrogen bonding
 ================
 
@@ -59,7 +57,7 @@ Hydrogen bonding
    :maxdepth: 1
 
    analysis/hbond_analysis
-   analysis/hbond_autocorrel
+   analysis/hbond_autocorrel   
 
 Membranes and membrane proteins
 ===============================
@@ -77,7 +75,7 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
-   analysis/x3dna
+   analysis/legacy/x3dna
 
 Polymers
 ========
@@ -100,7 +98,7 @@ Structure
 
 
 Volumetric analysis
-===================   
+===================
 
 .. toctree::
    :maxdepth: 1
@@ -109,4 +107,22 @@ Volumetric analysis
    analysis/lineardensity
    analysis/waterdynamics
 
+Dimensionality Reduction
+========================
+.. toctree::
+   :maxdepth: 1
 
+   analysis/diffusionmap
+   analysis/pca
+
+Legacy analysis modules
+=======================
+
+The :mod:`MDAnalysis.analysis.legacy` module contains code that for a
+range of reasons is not as well maintained and tested as the other
+analysis modules. *Use with care.*
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/legacy_modules

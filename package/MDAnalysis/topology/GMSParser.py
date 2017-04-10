@@ -1,13 +1,20 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
@@ -40,15 +47,38 @@ Classes
 from __future__ import absolute_import
 
 import re
+import numpy as np
 
-from ..core.AtomGroup import Atom
+from . import guessers
 from ..lib.util import openany
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
-from .base import TopologyReader
+from .base import TopologyReaderBase
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+    AtomAttr,
+)
+
+class AtomicCharges(AtomAttr):
+    attrname = 'atomiccharges'
+    singular = 'atomiccharge'
+    per_object = 'atom'
 
 
-class GMSParser(TopologyReader):
+class GMSParser(TopologyReaderBase):
     """GAMESS_ topology parser.
+
+    Creates the following Attributes:
+     - names
+     - atomic charges
+    Guesses:
+     - types
+     - masses
 
     .. versionadded:: 0.9.1
     """
@@ -56,9 +86,10 @@ class GMSParser(TopologyReader):
 
     def parse(self):
         """Read list of atoms from a GAMESS file."""
+        names = []
+        at_charges = []
 
         with openany(self.filename, 'rt') as inf:
-            natoms = 0
             while True:
                 line = inf.readline()
                 if not line:
@@ -67,11 +98,7 @@ class GMSParser(TopologyReader):
                         line):
                     break
             line = inf.readline() # skip
-            atoms = []
-            i = 0
-            segid = "SYSTEM"
-            resid = 1
-            resname = "SYSTEM"
+
             while True:
                 line = inf.readline()
                 _m = re.match(\
@@ -80,15 +107,26 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 if _m is None:
                     break
                 name = _m.group(1)
-                elem = int(float(_m.group(2)))
-                charge = guess_atom_charge(name)
-                mass = get_atom_mass(elem)
+                at_charge = int(float(_m.group(2)))
+
+                names.append(name)
+                at_charges.append(at_charge)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
-                at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge, universe=self._u)
-                atoms.append(at)
-                i += 1
 
-        struc = {"atoms": atoms}
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
+        n_atoms = len(names)
+        attrs = [
+            Atomids(np.arange(n_atoms) + 1),
+            Atomnames(np.array(names, dtype=object)),
+            AtomicCharges(np.array(at_charges, dtype=np.int32)),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        return struc
+        return top

@@ -4,63 +4,39 @@ import MDAnalysis as mda
 import numpy as np
 
 from numpy.testing import (assert_equal, assert_almost_equal)
-from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
 
 
-class TestGMSReader(TestCase):
-    ''' Test cases for GAMESS output log-files '''
-
-    def setUp(self):
-        # optimize no-symmetry
-        self.u_aso = mda.Universe(GMS_ASYMOPT,
-                                  GMS_ASYMOPT,
-                                  format='GMS',
-                                  topology_format='GMS')
-        self.u_so = mda.Universe(GMS_SYMOPT, GMS_SYMOPT)
-        self.u_ass = mda.Universe(GMS_ASYMSURF, GMS_ASYMSURF)
+class _GMSBase(object):
+    def tearDown(self):
+        del self.u
+        del self.n_frames
+        del self.flavour
+        del self.step5d
 
     def test_n_frames(self):
-        desired = [21, 8, 10]
-        assert_equal(
-            self.u_aso.trajectory.n_frames,
-            desired[0],
-            err_msg="Wrong number of frames read from GAMESS C1 optimization")
-        assert_equal(
-            self.u_so.trajectory.n_frames,
-            desired[1],
-            err_msg="Wrong number of frames read from GAMESS D4H optimization")
-        assert_equal(
-            self.u_ass.trajectory.n_frames,
-            desired[2],
-            err_msg="Wrong number of frames read from GAMESS C1 surface")
+        assert_equal(self.u.trajectory.n_frames,
+                     self.n_frames,
+                     err_msg="Wrong number of frames read from {}".format(self.flavour))
 
-    def test_step5distances_asymopt(self):
-        '''TestGMSReader: C1 optimization:
-            distance between 1st and 4th atoms changes after 5 steps '''
-        desired = -0.0484664
-        assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
-                            err_msg="Wrong 1-4 atom distance change after "
-                            "5 steps for GAMESS C1 optimization")
+    def test_random_access(self):
+        u = self.u
+        pos1 = u.atoms[-1].position
 
-    def test_step5distances_symopt(self):
-        '''TestGMSReader: Symmetry-input optimization:
-            distance between 1st and 4th atoms changes after 5 steps '''
-        desired = 0.227637
-        assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
-                            err_msg="Wrong 1-4 atom distance change after 5 "
-                            "steps for GAMESS D4H optimization")
+        u.trajectory.next()
+        u.trajectory.next()
 
-    def test_step5distances_asymsurf(self):
-        '''TestGMSReader: Symmetry-input potential-energy surface:
-            distance between 1st and 4th atoms changes after 5 steps '''
-        desired = -0.499996
-        assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,
-                            err_msg="Wrong 1-4 atom distance change after 5 "
-                            "steps for GAMESS C1 surface")
+        pos3 = u.atoms[-1].position
 
-    def __calcFD(self, u):
+        u.trajectory[0]
+        assert_equal(u.atoms[-1].position, pos1)
+
+        u.trajectory[2]
+        assert_equal(u.atoms[-1].position, pos3)
+
+    @staticmethod
+    def _calcFD(u):
         u.trajectory.rewind()
         pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
         z1 = np.sqrt(sum(pp ** 2))
@@ -71,21 +47,43 @@ class TestGMSReader(TestCase):
         return z1 - z2
 
     def test_rewind(self):
-        self.u_aso.trajectory.rewind()
-        assert_equal(self.u_aso.trajectory.ts.frame, 0, "rewinding to frame 0")
+        self.u.trajectory.rewind()
+        assert_equal(self.u.trajectory.ts.frame, 0, "rewinding to frame 0")
 
     def test_next(self):
-        self.u_aso.trajectory.rewind()
-        self.u_aso.trajectory.next()
-        assert_equal(self.u_aso.trajectory.ts.frame, 1, "loading frame 1")
+        self.u.trajectory.rewind()
+        self.u.trajectory.next()
+        assert_equal(self.u.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self):
-        assert_almost_equal(self.u_aso.trajectory.dt,
+        assert_almost_equal(self.u.trajectory.dt,
                             1.0,
                             4,
                             err_msg="wrong timestep dt")
 
-    def tearDown(self):
-        del self.u_aso
-        del self.u_so
-        del self.u_ass
+    def test_step5distances(self):
+        assert_almost_equal(self._calcFD(self.u), self.step5d, decimal=5,
+                            err_msg="Wrong 1-4 atom distance change after "
+                            "5 steps for {}".format(self.flavour))
+
+
+class TestGMSReader(_GMSBase):
+    def setUp(self):
+        self.u =  mda.Universe(GMS_ASYMOPT)
+        self.n_frames = 21
+        self.flavour = "GAMESS C1 optimization"
+        self.step5d = -0.0484664
+
+class TestGMSReaderSO(_GMSBase):
+    def setUp(self):
+        self.u = mda.Universe(GMS_SYMOPT)
+        self.n_frames = 8
+        self.flavour = "GAMESS D4H optimization"
+        self.step5d = 0.227637
+
+class TestGMSReaderASS(_GMSBase):
+    def setUp(self):
+        self.u = mda.Universe(GMS_ASYMSURF)
+        self.n_frames = 10
+        self.flavour = "GAMESS C1 surface"
+        self.step5d = -0.499996

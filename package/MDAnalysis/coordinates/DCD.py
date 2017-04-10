@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -73,6 +79,7 @@ import errno
 import numpy as np
 import struct
 import types
+import warnings
 
 from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
@@ -83,6 +90,7 @@ from . import core
 from . import _dcdmodule
 # dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
 from . import dcdtimeseries
+
 
 
 class Timestep(base.Timestep):
@@ -159,7 +167,7 @@ class Timestep(base.Timestep):
         np.put(self._unitcell, self._ts_order, box)
 
 
-class DCDWriter(base.Writer):
+class DCDWriter(base.WriterBase):
     """Writes to a DCD file
 
     Typical usage::
@@ -354,7 +362,7 @@ class DCDWriter(base.Writer):
             self.dcdfile = None
 
 
-class DCDReader(base.Reader):
+class DCDReader(base.ReaderBase):
     """Reads from a DCD file
 
     :Data:
@@ -498,42 +506,70 @@ class DCDReader(base.Reader):
         ts.frame = frame
         return ts
 
-    def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
+    def timeseries(self, asel=None, start=None, stop=None, step=None, skip=None,
+                   format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         :Arguments:
             *asel*
-               :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
-            *start, stop, skip*
-               range of trajectory to access, start and stop are inclusive
+               :class:`~MDAnalysis.core.groups.AtomGroup` object
+               Defaults to None, in which case the full set of coordinate data
+               is returned.
+            *start*, *stop*, *step*
+               A range of the trajectory to access, with start being inclusive
+               and stop being exclusive.
             *format*
                the order/shape of the return data array, corresponding
                to (a)tom, (f)rame, (c)oordinates all six combinations
                of 'a', 'f', 'c' are allowed ie "fac" - return array
                where the shape is (frame, number of atoms,
                coordinates)
+        :Deprecated:
+            *skip*
+                Skip has been deprecated in favor of the standard keyword step.
         """
-        start, stop, skip = self.check_slice_indices(start, stop, skip)
-        if len(asel) == 0:
-            raise NoDataError("Timeseries requires at least one atom to analyze")
+        if skip is not None:
+            step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
+
+        start, stop, step = self.check_slice_indices(start, stop, step)
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise NoDataError("Timeseries requires at least one atom to analyze")
+            atom_numbers = list(asel.indices)
+        else:
+            atom_numbers = range(self.n_atoms)
+
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")
-        atom_numbers = list(asel.indices)
-        # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
+       # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
         # from trajectory file instead of an entire timestep
         # XXX needs to be implemented
-        return self._read_timeseries(atom_numbers, start, stop, skip, format)
+        return self._read_timeseries(atom_numbers, start, stop, step, format)
 
-    def correl(self, timeseries, start=0, stop=-1, skip=1):
+    def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
         :Arguments:
             *timeseries*
                :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-            *start, stop, skip*
-               subset of trajectory to use, with start and stop being inclusive
+            *start, stop, step*
+               A subset of the trajectory to use, with start being inclusive
+               and stop being exclusive.
+        :Deprecated:
+            *skip*
+                Skip has been deprecated in favor of the standard keyword step.
         """
-        start, stop, skip = self.check_slice_indices(start, stop, skip)
+        if skip is not None:
+            step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
+
+        start, stop, step = self.check_slice_indices(start, stop, step)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
         lowerb, upperb = timeseries._getBounds()
@@ -541,7 +577,7 @@ class DCDReader(base.Reader):
         atomcounts = timeseries._getAtomCounts()
         auxdata = timeseries._getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata,
-                                     sizedata, lowerb, upperb, start, stop, skip)
+                                     sizedata, lowerb, upperb, start, stop, step)
 
     def close(self):
         if self.dcdfile is not None:

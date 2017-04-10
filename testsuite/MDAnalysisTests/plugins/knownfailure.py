@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -22,8 +28,8 @@ Enhances numpy's own plugin by falling back to :class:`SkipTest` exceptions when
 isn't loaded (typically, when using nose's command-line `nosetests` script, which
 does not allow for runtime loading of external plugins).
 
-Beware that the decorator must be used as a function call: `@knownfailure()`, with parentheses 
-and, optionally, arguments.
+The decorator can be used without parentheses in case of default arguments as well as 
+a function call: `@knownfailure()`, with parentheses in case of optional arguments.
 """
 
 from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded
@@ -38,7 +44,7 @@ except ImportError:
 plugin_class = KnownFailurePlugin
 plugin_class.name = "knownfailure"
 
-def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
+def knownfailure(args=None, msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
     """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
     def knownfailure_decorator(f):
         def inner(*args, **kwargs):
@@ -55,6 +61,9 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
                 if not mightpass:
                     raise AssertionError('Failure expected')
         return nose.tools.make_decorator(f)(inner)
-    return knownfailure_decorator
+    if callable(args):
+        return knownfailure_decorator(args)
+    else:      
+        return knownfailure_decorator
 
 

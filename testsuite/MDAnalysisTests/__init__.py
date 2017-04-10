@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -92,8 +98,8 @@ especially as we are directly using this framework (imported from numpy).
 
 A number of plugins external to nose are automatically loaded. The `knownfailure`
 plugin provides the `@knownfailure()` decorator, which can be used to mark tests
-that are expected to fail. Beware that even if used with default arguments the
-parentheses must be included.
+that are expected to fail. If used with default arguments the parentheses can be 
+excluded.
 
 .. _NumPy: http://www.numpy.org/
 .. _nose:
@@ -109,7 +115,7 @@ parentheses must be included.
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.15.0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.16.0-dev0"  # keep in sync with RELEASE in setup.py
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:
@@ -120,19 +126,28 @@ except ImportError:
 # If MDAnalysis is imported here coverage accounting might fail because all the import
 #  code won't be run again under coverage's watch. See Issue 344.
 
-from os.path import dirname
+import os
+import sys
+
 # We get our nose from the plugins so that version-checking needs only be done there.
 from MDAnalysisTests.plugins import nose, loaded_plugins
-import sys
-import importlib
-# This is a de facto test for numpy's version, since we don't actually need assert_ here.
-#  Should we be clean about this and just call distutils to compare version strings?
-try:
-    from numpy.testing import assert_
-except ImportError:
-    raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
-                      """(For example, try "easy_install 'numpy>=1.5'").""")
 
+# Any tests that plot with matplotlib need to run with the simple agg backend because
+# on Travis there is no DISPLAY set
+try:
+    import matplotlib
+    matplotlib.use('agg')
+except ImportError:
+    pass
+
+from MDAnalysisTests.util import (
+    block_import,
+    executable_not_found,
+    module_not_found,
+    parser_not_found,
+    in_dir,
+)
+from MDAnalysisTests.core.util import make_Universe
 
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
@@ -153,52 +168,7 @@ def run(*args, **kwargs):
     except KeyError:
         kwargs['addplugins'] = loaded_plugins.values()
     # By default, test our testsuite
-    kwargs['defaultTest'] = dirname(__file__)
+    kwargs['defaultTest'] = os.path.dirname(__file__)
     return nose.run_exit(*args, **kwargs)
 
 
-def executable_not_found(*args):
-    """Return ``True`` if none of the executables in args can be found.
-
-    ``False`` otherwise (i.e. at least one was found).
-
-    To be used as the argument of::
-
-    @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
-    """
-    # This must come here so that MDAnalysis isn't imported prematurely,
-    #  which spoils coverage accounting (see Issue 344).
-    import MDAnalysis.lib.util
-    for name in args:
-        if MDAnalysis.lib.util.which(name) is not None:
-            return False
-    return True
-
-
-def module_not_found(module):
-    try:
-        importlib.import_module(module)
-    except ImportError:
-        return True
-    else:
-        return False
-
-
-def parser_not_found(parser_name):
-    """Return ``True`` if the parser of the given name cannot be found.
-
-    This allows to skip a test when the parser is unavailable (e.g in python 3
-    when the parser is not compatible).
-
-    To be used as the argument of::
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser is not available. Are you on python 3?')
-    """
-    import MDAnalysis.coordinates
-    try:
-        getattr(MDAnalysis.coordinates, parser_name)
-    except AttributeError:
-        return True
-    else:
-        return False

@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -17,9 +23,14 @@ from __future__ import print_function
 
 import MDAnalysis
 from MDAnalysisTests import module_not_found
+from MDAnalysisTests.datafiles import GRO
+from MDAnalysisTests.util import block_import
 
 from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
+import warnings
+from mock import Mock, patch
+import sys
 
 
 class TestContactMatrix(TestCase):
@@ -75,3 +86,145 @@ class TestContactMatrix(TestCase):
                      "wrong shape (should be {0})".format(self.shape))
         assert_equal(contacts.toarray(), self.res_pbc)
 
+class TestDist(TestCase):
+    '''Tests for MDAnalysis.analysis.distances.dist().
+    Imports do not happen at the top level of the module
+    because of the scipy dependency.'''
+
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
+
+    def setUp(self):
+        import MDAnalysis.analysis.distances
+        import scipy
+        import scipy.spatial
+        self.u = MDAnalysis.Universe(GRO)
+        self.ag = self.u.atoms[:20]
+        self.u2 = MDAnalysis.Universe(GRO)
+        self.ag2 = self.u2.atoms[:20]
+        self.ag2.positions = np.random.shuffle(self.ag2.positions)
+        self.expected = np.diag(scipy.spatial.distance.cdist(
+                                                self.ag.positions,
+                                                self.ag2.positions))
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+        del self.u2
+        del self.ag2
+        del self.expected
+
+    def test_pairwise_dist(self):
+        '''Ensure that pairwise distances between atoms are
+        correctly calculated.'''
+        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2)[2]
+        assert_equal(actual, self.expected)
+
+    def test_pairwise_dist_offset_effect(self):
+        '''Test that feeding in offsets to dist() doesn't alter
+        pairwise distance matrix.'''
+        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2,
+                                                    offset=229)[2]
+        assert_equal(actual, self.expected)
+
+
+    def test_offset_calculation(self):
+        '''Test that offsets fed to dist() are correctly calculated.'''
+        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2,
+                offset=33)[:2]
+        assert_equal(actual, np.array([self.ag.atoms.resids + 33,
+                                       self.ag2.atoms.resids + 33]))
+
+    def test_mismatch_exception(self):
+        '''A ValueError should be raised if the two atomgroups
+        don't have the same number of atoms.'''
+        with self.assertRaises(ValueError):
+            MDAnalysis.analysis.distances.dist(self.ag[:19], self.ag2)
+
+class TestBetween(TestCase):
+    '''Tests for MDAnalysis.analysis.distances.between().
+    Imports do not happen at the top level of the module
+    because of the scipy dependency.'''
+
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
+
+    def setUp(self):
+        import MDAnalysis.analysis.distances
+        import scipy
+        import scipy.spatial
+        self.u = MDAnalysis.Universe(GRO)
+        self.ag = self.u.atoms[:10]
+        self.ag2 = self.u.atoms[12:33]
+        self.group = self.u.atoms[40:]
+        self.distance = 5.9
+        self.distance_matrix_1 = scipy.spatial.distance.cdist(self.group.positions,
+                                                              self.ag.positions)
+        self.mask_1 = np.unique(np.where(self.distance_matrix_1 <= self.distance)[0])
+        self.group_filtered = self.group[self.mask_1]
+        self.distance_matrix_2 = scipy.spatial.distance.cdist(self.group_filtered.positions,
+                                                              self.ag2.positions)
+        self.mask_2 = np.unique(np.where(self.distance_matrix_2 <= self.distance)[0])
+        self.expected = self.group_filtered[self.mask_2].indices
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+        del self.ag2
+        del self.group
+        del self.distance
+        del self.distance_matrix_1
+        del self.distance_matrix_2
+        del self.mask_1
+        del self.mask_2
+        del self.group_filtered
+        del self.expected
+
+    def test_between_simple_case_indices_only(self):
+        '''Test MDAnalysis.analysis.distances.between() for
+        a simple input case. Checks the sorted atom indices
+        of returned AtomGroup against sorted expected index
+        values.'''
+        actual = sorted(MDAnalysis.analysis.distances.between(self.group,
+                                                              self.ag,
+                                                              self.ag2,
+                                                              self.distance).indices)
+        assert_equal(actual, self.expected)
+
+class TestImportWarnings(TestCase):
+    # see unit testing for warnings:
+    # http://stackoverflow.com/a/3892301
+
+    def setUp(self):
+        sys.modules.pop('MDAnalysis.analysis.distances', None)
+
+    @block_import('scipy')
+    def test_warning_raised_no_scipy_module_level(self):
+        # an appropriate warning rather than an exception should be
+        # raised if scipy is absent when importing
+        # MDAnalysis.analysis.distances
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            import MDAnalysis.analysis.distances
+            assert issubclass(w[-1].category, ImportWarning)
+
+    def test_silent_success_scipy_present_module_level(self):
+        # if scipy is present no module level ImportWarning should be
+        # raised when importing MDAnalysis.analysis.distances
+        mock = Mock() # mock presence of scipy
+        with patch.dict('sys.modules', {'scipy':mock}):
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                import MDAnalysis.analysis.distances
+                assert w == []
+
+    @block_import('scipy')
+    def test_import_error_contact_matrix_no_scipy(self):
+        # contact_matrix should raise an ImportError if returntype is
+        # "sparse" and scipy is not available
+        with self.assertRaises(ImportError):
+            np.random.seed(321)
+            points = np.random.random_sample((10, 3))
+            import MDAnalysis.analysis.distances
+            MDAnalysis.analysis.distances.contact_matrix(points,
+                                                         returntype="sparse")

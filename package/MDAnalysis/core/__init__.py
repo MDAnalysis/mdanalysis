@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -19,11 +25,11 @@
 Core functions of MDAnalysis
 ============================
 
-The basic class is an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
+The basic class is an :class:`~MDAnalysis.core.groups.AtomGroup`;
 the whole simulation is called the
-:class:`~MDAnalysis.core.AtomGroup.Universe`. Selections are computed
-on an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` and return another
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`.
+:class:`~MDAnalysis.core.universe.Universe`. Selections are computed
+on an :class:`~MDAnalysis.core.groups.AtomGroup` and return another
+:class:`~MDAnalysis.core.groups.AtomGroup`.
 
 :mod:`~MDAnalysis.Timeseries` are a convenient way to analyse trajectories.
 
@@ -379,23 +385,12 @@ _flags = [
         """
     ),
     _Flag(
-        'permissive_pdb_reader',
-        True,
-        {
-            'primitive': True, 'permissive': True, True: True,
-            'Bio.PDB': False, 'biopython': False, False: False,
-        },
-        """
-          This flag is deprecated and will be removed in 0.16.0.
-        """
-    ),
-    _Flag(
         'use_pbc',
         False,
         {True: True, False: False},
         """
         Choose whether to consider periodic boundary conditions when
-        performing many :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods.
+        performing many :class:`MDAnalysis.core.groups.AtomGroup` methods.
         This is set to ``False`` by default but can be enabled with:
 
         >>> MDAnalysis.core.flags['use_pbc'] = True
@@ -408,9 +403,9 @@ _flags = [
         .. Warning::
 
            Changing this to ``True`` changes the default behaviour of
-           commonly used :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods
-           such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass`
-           and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry`!
+           commonly used :class:`MDAnalysis.core.groups.AtomGroup` methods
+           such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`
+           and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!
         """),
 
 ]
@@ -426,6 +421,7 @@ class flagsDocs(object):
     __doc__ = flags.doc()
 
 
-from . import AtomGroup
-from . import Selection
+from . import groups
+from . import selection
 from . import Timeseries
+from . import AtomGroup

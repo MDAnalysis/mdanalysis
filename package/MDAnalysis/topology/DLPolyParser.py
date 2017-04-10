@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -19,21 +25,36 @@
 
 Read DL Poly_ format topology files
 
+DLPoly files have the following Attributes:
+ - Atomnames
+ - Atomids
+Guesses the following attributes:
+ - Atomtypes
+ - Masses
+
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from six.moves import zip
 import numpy as np
 
-from . import base
-from . import core
+from . import guessers
+from .base import TopologyReaderBase
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Resids,
+    Resnums,
+    Segids,
+)
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
 
 
-class ConfigParser(base.TopologyReader):
+class ConfigParser(TopologyReaderBase):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
@@ -43,7 +64,8 @@ class ConfigParser(base.TopologyReader):
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = map(int,
+                                        inf.readline().split()[:3])
             if not imcon == 0:
                 inf.readline()
                 inf.readline()
@@ -71,34 +93,35 @@ class ConfigParser(base.TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
 
-        for i, (name, num) in enumerate(zip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        structure = {'atoms': atoms}
-
-        return structure
+        return top
 
 
-class HistoryParser(base.TopologyReader):
+class HistoryParser(TopologyReaderBase):
     """DL_Poly History file parser
 
     .. versionadded:: 0.10.1
@@ -137,28 +160,29 @@ class HistoryParser(base.TopologyReader):
 
                 line = inf.readline()
 
+        n_atoms = len(names)
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
         else:
-            ids = np.arange(len(names))
+            ids = np.arange(n_atoms)
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
+        atomtypes = guessers.guess_types(names)
+        masses = guessers.guess_masses(atomtypes)
+            
+        attrs = [
+            Atomnames(names),
+            Atomids(ids),
+            Atomtypes(atomtypes, guessed=True),
+            Masses(masses, guessed=True),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(['SYSTEM'], dtype=object)),
+        ]
+        top = Topology(n_atoms, 1, 1,
+                       attrs=attrs)
 
-        for i, (name, num) in enumerate(zip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
-
-        structure = {'atoms': atoms}
-
-        return structure
+        return top

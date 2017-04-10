@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -52,8 +58,9 @@ Timeseries of observables
 .. autoclass:: WaterDipole
 
 """
+import warnings
 
-from . import AtomGroup
+from . import groups
 
 
 class TimeseriesCollection(object):
@@ -104,17 +111,31 @@ class TimeseriesCollection(object):
         '''clear the timeseries collection'''
         self.timeseries = []
 
-    def compute(self, trj, start=0, stop=-1, skip=1):
+    def compute(self, trj, start=None, stop=None, skip=None, step=None):
         '''Iterate through the trajectory *trj* and compute the time series.
 
          *trj*
             dcd trajectory object (i.e. :attr:`Universe.trajectory`)
+         *start*
+            First frame of trajectory to analyse, Default: None becomes 0.
+         *stop*
+            Frame index to stop analysis. Default: None becomes
+            n_frames. Iteration stops *before* this frame number,
+            which means that the trajectory would be read until the end.
+         *step*
+            Step between frames to analyse, Default: None becomes 1.
+         *Deprecated*
+            Skip is deprecated in favor of step.
 
-         *start, stop, skip*
-            Frames to calculate parts of the trajectory. It is important to
-            note that *start* and *stop* are inclusive
         '''
-        self.data = trj.correl(self, start, stop, skip)
+        if skip is not None:
+            step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
+
+        start, stop, step = trj.check_slice_indices(start, stop, step)
+        self.data = trj.correl(self, start, stop, step)
         # Now remap the timeseries data to each timeseries
         typestr = "|f8"
         start = 0
@@ -168,11 +189,11 @@ class Timeseries(object):
     '''
 
     def __init__(self, code, atoms, dsize):
-        if isinstance(atoms, AtomGroup.AtomGroup):
+        if isinstance(atoms, groups.AtomGroup):
             self.atoms = atoms.atoms
         elif isinstance(atoms, list):
             self.atoms = atoms
-        elif isinstance(atoms, AtomGroup.Atom):
+        elif isinstance(atoms, groups.Atom):
             self.atoms = [atoms]
         else:
             raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
@@ -228,9 +249,9 @@ class Atom(Timeseries):
           dimensions)
 
         *atoms*
-          can be a single :class:`~MDAnalysis.core.AtomGroup.Atom` object,
-          a list of :class:`~MDAnalysis.core.AtomGroup.Atom` objects, or an
-          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+          can be a single :class:`~MDAnalysis.core.groups.Atom` object,
+          a list of :class:`~MDAnalysis.core.groups.Atom` objects, or an
+          :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, code, atoms):
@@ -240,11 +261,11 @@ class Atom(Timeseries):
             size = 3
         else:
             size = 1
-        if isinstance(atoms, AtomGroup.AtomGroup):
+        if isinstance(atoms, groups.AtomGroup):
             n_atoms = len(atoms.atoms)
         elif isinstance(atoms, list):
             n_atoms = len(atoms)
-        elif isinstance(atoms, AtomGroup.Atom):
+        elif isinstance(atoms, groups.Atom):
             n_atoms = 1
         else:
             raise TypeError("Invalid atoms passed to {0!s} timeseries".format(self.__class__.__name__))
@@ -259,8 +280,8 @@ class Bond(Timeseries):
 
            t = Bond(atoms)
 
-        *atoms* must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* must contain 2 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -274,8 +295,8 @@ class Angle(Timeseries):
 
            t = Angle(atoms)
 
-        atoms must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 3 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -289,8 +310,8 @@ class Dihedral(Timeseries):
 
            t = Dihedral(atoms)
 
-        atoms must contain 4 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 4 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -305,8 +326,8 @@ class Distance(Timeseries):
            t = Distance(code, atoms)
 
         code is one of 'd' (distance vector), or 'r' (scalar distance)
-        atoms must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        atoms must contain 2 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, code, atoms):
@@ -326,8 +347,8 @@ class CenterOfGeometry(Timeseries):
 
            t = CenterOfGeometry(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
-        objects, or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
+        objects, or a :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -342,8 +363,8 @@ class CenterOfMass(Timeseries):
 
            t = CenterOfMass(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
-        objects or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
+        objects or a :class:`~MDAnalysis.core.groups.AtomGroup`
     '''
 
     def __init__(self, atoms):
@@ -358,9 +379,9 @@ class WaterDipole(Timeseries):
 
            d = WaterDipole(atoms)
 
-        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom`
+        *atoms* must contain 3 :class:`~MDAnalysis.core.groups.Atom`
         objects, either as a list or an
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`; the first one *must* be
+        :class:`~MDAnalysis.core.groups.AtomGroup`; the first one *must* be
         the oxygen, the other two are the hydrogens.
 
         The vector ``d``, multiplied by the partial charge on the oxygen atom

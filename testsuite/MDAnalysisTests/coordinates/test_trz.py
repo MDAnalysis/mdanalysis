@@ -1,6 +1,6 @@
+from six.moves import zip
 import MDAnalysis as mda
 import os
-from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_raises)
@@ -80,7 +80,7 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_coordinates(self):
         fortytwo = self.universe.atoms[41]  # 41 because is 0 based
-        assert_almost_equal(fortytwo.pos, self.ref_coordinates, self.prec,
+        assert_almost_equal(fortytwo.position, self.ref_coordinates, self.prec,
                             "wrong coordinates in trz")
 
     def test_velocities(self):

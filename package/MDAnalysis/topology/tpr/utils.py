@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -42,10 +48,41 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 from __future__ import absolute_import
 
 from six.moves import range
+import numpy as np
 
-from ...core.AtomGroup import Atom
 from . import obj
 from . import setting as S
+from ..base import squash_by
+from ...core.topology import Topology
+from ...core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Charges,
+    Resids,
+    Resnames,
+    Segids,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers
+)
+
+
+
+def do_string(data):
+    """Emulate gmx_fio_do_string
+
+    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
+    python unpack_string, gmx_fio_do_string reads the size as an unsigned
+    interger before reading the actual string.
+
+    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
+    """
+    data.unpack_int()
+    return data.unpack_string()
+
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
@@ -71,7 +108,7 @@ def ndo_ivec(data, n):
     return [data.unpack_farray(S.DIM, data.unpack_int) for i in range(n)]
 
 
-def fver_err(fver):
+def fileVersion_err(fver):
     if fver not in S.SUPPORTED_VERSIONS:
         raise NotImplementedError(
             "Your tpx version is {0}, which this parser does not support, yet ".format(
@@ -89,38 +126,39 @@ def define_unpack_real(prec, data):
 
 
 def read_tpxheader(data):
-    """this function is now compatible with do_tpxheader in tpxio.c"""
-    number = data.unpack_int()  # ?
-    ver_str = data.unpack_string()  # version string e.g. VERSION 4.0.5
+    """this function is now compatible with do_tpxheader in tpxio.cpp
+    """
+    # Last compatibility check with gromacs-2016
+    ver_str = do_string(data)  # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
-    fver = data.unpack_int()  # version of tpx file
-    fver_err(fver)
+    fileVersion = data.unpack_int()  # version of tpx file
+    fileVersion_err(fileVersion)
 
-    fgen = data.unpack_int() if fver >= 26 else 0  # generation of tpx file, e.g. 17
+    # This is for backward compatibility with development version 77-79 where
+    # the tag was, mistakenly, placed before the generation.
+    if 77 <= fileVersion <= 79:
+        data.unpack_int()  # the value is 8, but haven't found the
+        file_tag = do_string(data)
+
+    fileGeneration = data.unpack_int() if fileVersion >= 26 else 0  # generation of tpx file, e.g. 17
 
     # Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag
     # file_tag is used for comparing with tpx_tag. Only tpr files with a
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    if fver >= 80:
-        data.unpack_int()  # the value is 8, but haven't found the
-        # corresponding code in the
-        # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c yet.
-        file_tag = data.unpack_string()
-    else:
-        file_tag = S.TPX_TAG_RELEASE
+    file_tag = do_string(data) if fileVersion >= 81 else S.TPX_TAG_RELEASE
 
     natoms = data.unpack_int()  # total number of atoms
-    ngtc = data.unpack_int() if fver >= 28 else 0  # number of groups for T-coupling
+    ngtc = data.unpack_int() if fileVersion >= 28 else 0  # number of groups for T-coupling
 
-    if fver < 62:
+    if fileVersion < 62:
         # not sure what these two are for.
         data.unpack_int()  # idum
         data.unpack_real()  # rdum
 
-    fep_state = data.unpack_int() if fver >= 79 else 0
+    fep_state = data.unpack_int() if fileVersion >= 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
     # keywod in python
@@ -132,23 +170,23 @@ def read_tpxheader(data):
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
 
-    th = obj.TpxHeader(number, ver_str, precision,
-                       fver, fgen, file_tag, natoms, ngtc, fep_state, lamb,
+    th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
+                       file_tag, natoms, ngtc, fep_state, lamb,
                        bIr, bTop, bX, bV, bF, bBox)
     return th
 
 
-def extract_box_info(data, fver):
+def extract_box_info(data, fileVersion):
     box = ndo_rvec(data, S.DIM)
-    box_rel = ndo_rvec(data, S.DIM) if fver >= 51 else 0
-    box_v = ndo_rvec(data, S.DIM) if fver >= 28 else None
-    if (fver < 56):
+    box_rel = ndo_rvec(data, S.DIM) if fileVersion >= 51 else 0
+    box_v = ndo_rvec(data, S.DIM) if fileVersion >= 28 else None
+    if (fileVersion < 56):
         ndo_rvec(data, S.DIM)  # mdum?
 
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver, u):
+def do_mtop(data, fver):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -164,7 +202,19 @@ def do_mtop(data, fver, u):
 
     mtop = obj.Mtop(nmoltype, moltypes, nmolblock)
 
-    ttop = obj.TPRTopology(*[[] for i in range(5)])
+    bonds = []
+    angles = []
+    dihedrals = []
+    impropers = []
+
+    atomids = []
+    segids = []
+    resids = []
+    resnames = []
+    atomnames = []
+    atomtypes = []
+    charges = []
+    masses = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -177,20 +227,20 @@ def do_mtop(data, fver, u):
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
-                ttop.atoms.append(Atom(atomkind.id + atom_start_ndx,
-                                       atomkind.name,
-                                       atomkind.type,
-                                       atomkind.resname,
-                                       atomkind.resid + res_start_ndx,
-                                       segid,
-                                       atomkind.mass,
-                                       atomkind.charge,
-                                       universe=u))
+                atomids.append(atomkind.id + atom_start_ndx)
+                segids.append(segid)
+                resids.append(atomkind.resid + res_start_ndx)
+                resnames.append(atomkind.resname)
+                atomnames.append(atomkind.name)
+                atomtypes.append(atomkind.type)
+                charges.append(atomkind.charge)
+                masses.append(atomkind.mass)
+
             # remap_ method returns [blah, blah, ..] or []
-            ttop.bonds.extend(mt.remap_bonds(atom_start_ndx))
-            ttop.angles.extend(mt.remap_angles(atom_start_ndx))
-            ttop.dihe.extend(mt.remap_dihe(atom_start_ndx))
-            ttop.impr.extend(mt.remap_impr(atom_start_ndx))
+            bonds.extend(mt.remap_bonds(atom_start_ndx))
+            angles.extend(mt.remap_angles(atom_start_ndx))
+            dihedrals.extend(mt.remap_dihe(atom_start_ndx))
+            impropers.extend(mt.remap_impr(atom_start_ndx))
 
             atom_start_ndx += mt.number_of_atoms()
             res_start_ndx += mt.number_of_residues()
@@ -203,7 +253,39 @@ def do_mtop(data, fver, u):
     # mtop_ffparams_cmap_grid_grid_spacing = 0.1
     # mtop_ffparams_cmap_grid_cmapdata     = 'NULL'
     # do_groups(data, symtab)
-    return ttop
+
+    atomids = Atomids(np.array(atomids, dtype=np.int32))
+    atomnames = Atomnames(np.array(atomnames, dtype=object))
+    atomtypes = Atomtypes(np.array(atomtypes, dtype=object))
+    charges = Charges(np.array(charges, dtype=np.float32))
+    masses = Masses(np.array(masses, dtype=np.float32))
+
+    segids = np.array(segids, dtype=object)
+    resids = np.array(resids, dtype=np.int32)
+    resnames = np.array(resnames, dtype=object)
+    (residx, new_resids,
+     (new_resnames, perres_segids)) = squash_by(resids, resnames, segids)
+    residueids = Resids(new_resids)
+    residuenames = Resnames(new_resnames)
+
+    segidx, perseg_segids = squash_by(perres_segids)[:2]
+    segids = Segids(perseg_segids)
+
+    top = Topology(len(atomids), len(new_resids), len(perseg_segids),
+                   attrs=[atomids, atomnames, atomtypes,
+                          charges, masses,
+                          residueids, residuenames,
+                          segids],
+                   atom_resindex=residx,
+                   residue_segindex=segidx)
+    top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
+    top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
+    top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
+                                    if dihedral]))
+    top.add_TopologyAttr(Impropers([improper for improper in impropers
+                                    if improper]))
+
+    return top
 
 
 def do_symstr(data, symtab):
@@ -216,8 +298,7 @@ def do_symtab(data):
     symtab_nr = data.unpack_int()  # number of symbols
     symtab = []
     for i in range(symtab_nr):
-        j = data.unpack_fstring(1)  # strings are separated by void
-        j = data.unpack_string()
+        j = do_string(data)
         symtab.append(j)
     return symtab
 

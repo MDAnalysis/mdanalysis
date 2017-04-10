@@ -77,7 +77,7 @@ class _DLPConfig2(object):
 
     def test_pos(self):
         ref = np.array([-7.821414265, -4.635443539, -4.732164540])
-        assert_allclose(self.u.atoms[2].pos, ref)
+        assert_allclose(self.u.atoms[2].position, ref)
 
     def test_vel(self):
         ref = np.array([2.637614561, 0.5778767520E-01, -1.704765568])
@@ -135,7 +135,7 @@ class _DLHistory(object):
                          ], [-7.019565641, -7.264933320, -7.045213551],
                         [-6.787470785, -6.912685099, -6.922156843]])
         for ts, r in zip(self.u.trajectory, ref):
-            assert_allclose(self.u.atoms[0].pos, r)
+            assert_allclose(self.u.atoms[0].position, r)
 
     def test_velocity(self):
         ref = np.array([[1.109901682, -1.500264697, 4.752251711

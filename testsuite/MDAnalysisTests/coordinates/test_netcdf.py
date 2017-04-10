@@ -1,20 +1,21 @@
 import MDAnalysis as mda
+import mock
 import numpy as np
 import os
 from six.moves import zip
 
 from nose.plugins.attrib import attr
-from numpy.testing import (assert_equal, assert_array_almost_equal,
+from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_array_equal,
                            assert_almost_equal, assert_raises, dec)
 from unittest import TestCase
-from MDAnalysisTests import module_not_found
 
 from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import module_not_found, tempdir, block_import, make_Universe
+
 
 
 class _NCDFReaderTest(_TRJReaderTest):
@@ -38,6 +39,24 @@ class _NCDFReaderTest(_TRJReaderTest):
         ref = 0.0
         assert_almost_equal(ref, self.universe.trajectory.dt, self.prec)
         assert_almost_equal(ref, self.universe.trajectory.ts.dt, self.prec)
+
+    def test_get_writer(self):
+        with self.universe.trajectory.Writer('out.ncdf') as w: 
+            assert_(w.n_atoms == len(self.universe.atoms))
+            assert_(w.remarks.startswith('AMBER NetCDF format'))
+
+    def test_get_writer_custom_n_atoms(self):
+        with self.universe.trajectory.Writer('out.ncdf', n_atoms=42, remarks='Hi!') as w:
+            assert_(w.n_atoms == 42)
+            assert_(w.remarks == 'Hi!')
+
+    def test_wrong_natoms(self):
+        assert_raises(ValueError, mda.coordinates.TRJ.NCDFReader, self.filename, n_atoms=2)
+
+    def test_read_on_closed(self):
+        self.universe.trajectory.close()
+
+        assert_raises(IOError, self.universe.trajectory.__getitem__, 2)
 
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
@@ -358,3 +377,75 @@ class TestNCDFWriterVelsForces(TestCase):
 
     def test_pos_vel_force(self):
         self._write_ts(True, True, True)
+
+class TestNetCDFImport(object):
+    # test ImportErrors in netCDF format Reader & Writer
+    # `block_import` sniffs imports and blocks netCDF import calls
+
+    @block_import('netCDF4')
+    def test_import_netcdfreader(self):
+        # do it here because netcdf isn't required
+        from MDAnalysis.coordinates.TRJ import NCDFReader
+
+        # Check the error meessage that we're giving out
+        try:
+            rd = NCDFReader('myfile.ncdf', n_atoms=100)
+        except ImportError as e:
+            assert_('netCDF4 package missing' in e.args[0])
+            assert_('See installation instructions at' in e.args[0])
+        else:
+            # fail if we don't get importerror
+            raise AssertionError
+        finally:
+            try:
+                os.unlink('myfile.ncdf')
+            except OSError:
+                pass
+
+    @block_import('netCDF4')
+    def test_import_netcdfwriter(self):
+        # do it here because netcdf isn't required
+        from MDAnalysis.coordinates.TRJ import NCDFWriter
+
+        with NCDFWriter('myfile.ncdf', 100) as wr:
+            try:
+                wr._init_netcdf()
+            except ImportError as e:
+                assert_('netCDF4 package missing' in e.args[0])
+                assert_('See installation instructions at' in e.args[0])
+            else:
+                raise AssertionError
+
+
+class TestNCDFWriterErrors(object):
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name, 'out.ncdf')
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tmpdir
+        del self.outfile
+
+    def test_zero_atoms_VE(self):
+        from MDAnalysis.coordinates.TRJ import NCDFWriter
+
+        assert_raises(ValueError, NCDFWriter, self.outfile, 0)
+
+    def test_wrong_n_atoms(self):
+        from MDAnalysis.coordinates.TRJ import NCDFWriter
+
+        with NCDFWriter(self.outfile, 100) as w:
+            u = make_Universe(trajectory=True)
+            assert_raises(IOError, w.write, u.trajectory.ts)
+
+    def test_no_ts(self):
+        # no ts supplied at any point
+        from MDAnalysis.coordinates.TRJ import NCDFWriter
+
+        with NCDFWriter(self.outfile, 100) as w:
+            assert_raises(IOError, w.write_next_timestep)

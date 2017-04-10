@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -118,7 +124,7 @@ import numpy as np
 
 import MDAnalysis
 from MDAnalysis import FinishTimeException
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib import mdamath
 
 import logging
@@ -151,73 +157,86 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
-def helanal_trajectory(universe, selection="name CA", start=None, end=None, begin=None, finish=None,
-                       matrix_filename="bending_matrix.dat", origin_pdbfile="origin.pdb",
-                       summary_filename="summary.txt", screw_filename="screw.xvg",
-                       tilt_filename="local_tilt.xvg", fitted_tilt_filename="fit_tilt.xvg",
-                       bend_filename="local_bend.xvg", twist_filename="unit_twist.xvg",
-                       prefix="helanal_", ref_axis=None, quiet=False):
-    """Perform HELANAL_ helix analysis on all frames in *universe*.
+def helanal_trajectory(universe, selection="name CA",
+                       begin=None, finish=None,
+                       matrix_filename="bending_matrix.dat",
+                       origin_pdbfile="origin.pdb",
+                       summary_filename="summary.txt",
+                       screw_filename="screw.xvg",
+                       tilt_filename="local_tilt.xvg",
+                       fitted_tilt_filename="fit_tilt.xvg",
+                       bend_filename="local_bend.xvg",
+                       twist_filename="unit_twist.xvg",
+                       prefix="helanal_", ref_axis=None,
+                       verbose=None, quiet=None):
+    """Perform HELANAL helix analysis on all frames in `universe`.
+
+    Parameters
+    ----------
+    universe : Universe
+    selection : str (optional)
+        selection string that selects Calpha atoms [``"name CA"``]
+    begin : float (optional)
+        start analysing for time (ps) >= *begin*; ``None`` starts from the
+        beginning [``None``]
+    finish : float (optional)
+        stop analysis for time (ps) =< *finish*; ``None`` goes to the
+        end of the trajectory [``None``]
+    matrix_filename : str (optional)
+        Output file- bending matrix [``"bending_matrix.dat"``]
+    origin_pdbfile : str (optional)
+        Output file- origin pdb file [``"origin.pdb"``]
+    summary_filename : str (optional)
+        Output file- all of the basic data [``"summary.txt"``]
+    screw_filename : str (optional)
+        Output file- local tilts of individual residues from 2 to n-1
+        [``"screw.xvg"``]
+    tilt_filename : str (optional)
+        Output file- tilt of line of best fit applied to origin axes
+        [``"local_tilt.xvg"``]
+    bend_filename : str (optional)
+        Output file- local bend angles between successive local helix axes
+        [``"local_bend.xvg"``]
+    twist_filename : str (optional)
+        Output file- local unit twist between successive helix turns
+        [``"unit_twist.xvg"``]
+    prefix : str (optional)
+        Prefix to add to all output file names; set to ``None`` to disable
+        [``"helanal__"``]
+    ref_axis : array_like (optional)
+        Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
+        is chosen [``None``]
+    verbose : bool (optional)
+        Toggle diagnostic outputs. [``True``]
+
+    Raises
+    ------
+    FinishTimeException
+          If the specified finish time precedes the specified start time or
+          current time stamp of trajectory object.
 
     .. Note::
 
        Only a single helix is analyzed. Use the selection to specify the
        helix, e.g. with "name CA and resid 1:20" or use start=1, stop=20.
 
-    :Arguments:
-       *universe*
-          :class:`~MDAnalysis.core.AtomGroup.Universe`
-
-    :Keywords:
-       *selection*
-          selection string that selects Calpha atoms [``"name CA"``]
-       *start*
-          start residue resid
-       *end*
-          end residue resid
-       *begin*
-          start analysing for time (ps) >= *begin*; ``None`` starts from the
-          beginning [``None``]
-       *finish*
-          stop analysis for time (ps) =< *finish*; ``None`` goes to the
-          end of the trajectory [``None``]
-       *matrix_filename*
-          Output file- bending matrix [``"bending_matrix.dat"``]
-       *origin_pdbfile*
-          Output file- origin pdb file [``"origin.pdb"``]
-       *summary_filename*
-          Output file- all of the basic data [``"summary.txt"``]
-       *screw_filename*
-          Output file- local tilts of individual residues from 2 to n-1
-          [``"screw.xvg"``]
-       *tilt_filename*
-          Output file- tilt of line of best fit applied to origin axes
-          [``"local_tilt.xvg"``]
-       *bend_filename*
-          Output file- local bend angles between successive local helix axes
-          [``"local_bend.xvg"``]
-       *twist_filename*
-          Output file- local unit twist between successive helix turns
-          [``"unit_twist.xvg"``]
-       *prefix*
-          Prefix to add to all output file names; set to ``None`` to disable
-          [``"helanal__"``]
-       *ref_axis*
-          Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
-          is chosen [``None``]
-       *quiet*
-          Suppress most diagnostic output.
-
-    :Raises:
-       FinishTimeException
-          If the specified finish time precedes the specified start time or
-          current time stamp of trajectory object.
 
     .. versionchanged:: 0.13.0
-       New *quiet* keyword to silence frame progress output and most of the
+       New `quiet` keyword to silence frame progress output and most of the
        output that used to be printed to stdout is now logged to the logger
        *MDAnalysis.analysis.helanal* (at logelevel *INFO*).
+
+    .. versionchanged:: 0.16.0
+       Removed the `start` and `end` keywords for selecting residues because this can
+       be accomplished more transparently with `selection`. The first and last resid
+       are directly obtained from the selection.
+
+    .. deprecated:: 0.16.0
+       The `quiet` keyword argument is deprecated in favor of the new
+       `verbose` one.
+
     """
+    verbose = _set_verbose(verbose, quiet, default=True)
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
@@ -225,13 +244,8 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         # two atoms
         ref_axis = np.asarray(ref_axis)
 
-    if not (start is None and end is None):
-        if start is None:
-            start = universe.atoms[0].resid
-        if end is None:
-            end = universe.atoms[-1].resid
-        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
+    start, end = ca.resids[[0, -1]]
     trajectory = universe.trajectory
 
     if finish is not None:
@@ -278,7 +292,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressMeter(trajectory.n_frames, quiet=quiet,
+    pm = ProgressMeter(trajectory.n_frames, verbose=verbose,
                        format="Frame %(step)10d: %(time)20.1f ps\r")
     for ts in trajectory:
         pm.echo(ts.frame, time=ts.time)
@@ -466,8 +480,8 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
-def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=None):
-    """Simple HELANAL run on a single frame PDB/GRO.
+def helanal_main(pdbfile, selection="name CA", ref_axis=None):
+    """Simple HELANAL_ run on a single frame PDB/GRO.
 
     Computed data are returned as a dict and also logged at level INFO to the
     logger *MDAnalysis.analysis.helanal*. A simple way to enable a logger is to
@@ -476,21 +490,30 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     .. Note:: Only a single helix is analyzed. Use the selection to specify
               the helix, e.g. with "name CA and resid 1:20".
 
+    Parameters
+    ----------
+    pdbfile : str
+        filename of the single-frame input file
+    selection : str (optional)
+        selection string, default is "name CA" to select all C-alpha atoms.
+    ref_axis : array_like (optional)
+        Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
+        is chosen [``None``]
+
     Returns
     -------
-
-    Dict with keys for
-    * Height: mean, stdev, abs dev
-    * Twist: mean, stdev, abs dev
-    * Residues/turn: mean, stdev, abs dev
-    * Local bending angles: array for computed angles (per residue)
-    * Unit twist angles: array for computed angles (per residue)
-    * Best fit tilt
-    * Rotation angles: local screw angles (per residue)
+    result : dict
+       The `result` contains keys
+        * Height: mean, stdev, abs dev
+        * Twist: mean, stdev, abs dev
+        * Residues/turn: mean, stdev, abs dev
+        * Local bending angles: array for computed angles (per residue)
+        * Unit twist angles: array for computed angles (per residue)
+        * Best fit tilt
+        * Rotation angles: local screw angles (per residue)
 
     Example
     -------
-
     Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
     writes output to the file ``MDAnalysis.log``::
 
@@ -501,15 +524,13 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     .. versionchanged:: 0.13.0
        All output is returned as a dict and logged to the logger
        *MDAnalysis.analysis.helanal* instead of being printed to stdout.
+
+    .. versionchanged:: 0.16.0
+       Removed the `start` and `end` keywords for selecting residues because this can
+       be accomplished more transparently with `selection`.
     """
 
     universe = MDAnalysis.Universe(pdbfile)
-    if not (start is None and end is None):
-        if start is None:
-            start = universe.atoms[0].resid
-        if end is None:
-            end = universe.atoms[-1].resid
-        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
 
     logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)

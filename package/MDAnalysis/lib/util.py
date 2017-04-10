@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -45,7 +51,7 @@ general streams as inputs, such as a :func:`cStringIO.StringIO`
 instances (essentially, a memory buffer) by wrapping these instances
 into a :class:`NamedStream`. This :class:`NamedStream` can then be
 used in place of an ordinary file name (typically, with a
-class:`~MDAnalysis.core.AtomGroup.Universe` but it is also possible to
+class:`~MDAnalysis.core.universe.Universe` but it is also possible to
 *write* to such a stream using :func:`MDAnalysis.Writer`).
 
 .. rubric: Examples
@@ -67,7 +73,7 @@ It is important to provide a proper pseudo file name with the correct extension
 (".pdb") to :class:`NamedStream` because the file type recognition uses the
 extension of the file name to determine the file format or alternatively
 provide the ``format="pdb"`` keyword argument to the
-:class:`~MDAnalysis.core.AtomGroup.Universe`.
+:class:`~MDAnalysis.core.universe.Universe`.
 
 The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
@@ -102,6 +108,7 @@ Containers and lists
 .. autofunction:: iterable
 .. autofunction:: asiterable
 .. autofunction:: hasmethod
+.. autoclass:: Namespace
 
 File parsing
 ------------
@@ -147,11 +154,12 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
+import six
+from six.moves import range, map
+import sys
 
 __docformat__ = "restructuredtext en"
 
-from six.moves import range, map
-import six
 
 import os
 import os.path
@@ -163,8 +171,10 @@ import re
 import io
 import warnings
 from functools import wraps
+import mmtf
 import numpy as np
 import functools
+from numpy.testing import assert_equal
 
 from ..exceptions import StreamWarning
 
@@ -365,7 +375,12 @@ def _get_stream(filename, openfunction=open, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
-    except IOError:
+    except (IOError, OSError) as err:
+        # An exception might be raised due to two reasons, first the openfunction is unable to open the file, in this
+        # case we have to ignore the error and return None. Second is when openfunction can't open the file because
+        # either the file isn't there or the permissions don't allow access.
+        if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+            six.reraise(*sys.exc_info())
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?
@@ -746,6 +761,9 @@ class NamedStream(io.IOBase):
     def __eq__(self, x):
         return self.name == x
 
+    def __ne__(self, x):
+        return not self == x
+
     def __lt__(self, x):
         return self.name < x
 
@@ -867,7 +885,7 @@ def iterable(obj):
         return True  # any iterator will do
     try:
         len(obj)  # anything else that might work
-    except TypeError:
+    except (TypeError, AttributeError):
         return False
     return True
 
@@ -1077,7 +1095,7 @@ canonical_inverse_aa_codes = {
 #: The table is used for :func:`convert_aa_code`.
 amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
-#: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
+#: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
     'HISA': 'H', 'HISB': 'H', 'HSE': 'H', 'HSD': 'H', 'HID': 'H', 'HIE': 'H', 'HIS1': 'H',
     'HIS2': 'H',
@@ -1212,6 +1230,50 @@ def cached(key):
     return cached_lookup
 
 
+def unique_rows(arr, return_index=False):
+    """Return the unique rows from an array
+
+    Arguments
+    ---------
+    arr : np.array of shape (n1, m)
+    return_index : bool, optional
+      If True, returns indices of arr that formed answer (see np.unique)
+
+    Returns
+    -------
+    unique_rows (n2, m)
+
+    Examples
+    --------
+    Remove dupicate rows from an array:
+    >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
+    >>> b = unique_rows(a)
+    >>> b
+    array([[0, 1], [1, 2], [2, 3]])
+    """
+    # From here, but adapted to handle any size rows
+    # https://mail.scipy.org/pipermail/scipy-user/2011-December/031200.html
+
+    # This seems to fail if arr.flags['OWNDATA'] is False
+    # this can occur when second dimension was created through broadcasting
+    # eg: idx = np.array([1, 2])[None, :]
+    if not arr.flags['OWNDATA']:
+        arr = arr.copy()
+    
+    m = arr.shape[1]
+
+    if return_index:
+        u, r_idx = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype)
+                                                      for i in range(m)])),
+                             return_index=True)
+        return u.view(arr.dtype).reshape(-1, m), r_idx
+    else:
+        u = np.unique(arr.view(
+            dtype=np.dtype([(str(i), arr.dtype) for i in range(m)])
+        ))
+        return u.view(arr.dtype).reshape(-1, m)
+
+
 def blocks_of(a, n, m):
     """Extract a view of (n, m) blocks along the diagonal of the array `a`
 
@@ -1274,3 +1336,31 @@ def blocks_of(a, n, m):
                    a.strides[0], a.strides[1])
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
+
+class Namespace(dict):
+    """Class to allow storing attributes in new namespace. """
+    def __getattr__(self, key):
+        # a.this causes a __getattr__ call for key = 'this'
+        try:
+            return dict.__getitem__(self, key)
+        except KeyError:
+            raise AttributeError('"{}" is not known in the namespace.'
+                                 .format(key))
+
+    def __setattr__(self, key, value):
+        dict.__setitem__(self, key, value)
+
+    def __delattr__(self, key):
+        try:
+            dict.__delitem__(self, key)
+        except KeyError:
+            raise AttributeError('"{}" is not known in the namespace.'
+                                 .format(key))
+
+    def __eq__(self, other):
+        try:
+            # this'll allow us to compare if we're storing arrays
+            assert_equal(self, other)
+        except AssertionError:
+            return False
+        return True

@@ -36,7 +36,7 @@ class TestDMSReader(TestCase):
                              26.6800003051758,
                              12.7419996261597, ],
                             dtype=np.float32)
-        assert_array_equal(self.universe.atoms[0].pos, coords_0)
+        assert_array_equal(self.universe.atoms[0].position, coords_0)
 
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 1,

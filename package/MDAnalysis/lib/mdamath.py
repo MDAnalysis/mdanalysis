@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -32,6 +38,7 @@ Helper functions for common mathematical operations
 
 .. versionadded:: 0.11.0
 """
+from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError
@@ -265,7 +272,7 @@ def make_whole(atomgroup, reference_atom=None):
 
     :Arguments:
       *atomgroup*
-        The :class:`MDAnalysis.core.AtomGroup.AtomGroup` to work with.
+        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
         must belong in the same molecule or fragment.
 
@@ -328,7 +335,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     .. versionadded:: 0.11.0
     """
-    if not atomgroup.bonds:
+    try:
+        b = atomgroup.bonds
+    except (AttributeError, NoDataError):
         raise NoDataError("The atomgroup is required to have bonds")
 
     if reference_atom is None:
@@ -403,3 +412,39 @@ def make_whole(atomgroup, reference_atom=None):
                 ref_points.add(other)
 
             processed.add(atom)
+
+
+def one_to_many_pointers(Ni, Nj, i2j):
+    """Based on a many to one mapping of i to j, create the reverse mapping
+
+    Arguments
+    ---------
+    Ni, Nj - number of i and j components
+    i2j - the array relating i to parent js
+
+    Returns
+    -------
+    ordered - an ordered list of i indices [size (i,)]
+    ptrs - the start and end index for each j [size (Nj, 2)]
+
+    Example
+    -------
+    # Residx - the resid of each Atom
+    ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+
+    # Returns an array of the atom indices that are in resid 7
+    atoms = ordered[ptrs[7,0]:ptrs[7,1]]
+    
+    """
+    ordered = i2j.argsort()
+    sorted_idx = i2j[ordered]
+    borders = np.concatenate([[0],
+                              np.where(np.diff(sorted_idx))[0] + 1,
+                              [Ni]])
+
+    ptrs = np.zeros((Nj, 2), dtype=np.int32)
+    for x, y in zip(borders[:-1], borders[1:]):
+        i = sorted_idx[x]
+        ptrs[i] = x, y
+
+    return ordered, ptrs

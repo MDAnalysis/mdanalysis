@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -34,25 +40,25 @@ class TestWaterdynamics(TestCase):
 
     def test_HydrogenBondLifetimes(self):
         hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(self.universe, self.selection1, self.selection2, 0, 5, 3)
-        hbl.run(quiet=True)
+        hbl.run(verbose=False)
         assert_equal(round(hbl.timeseries[2][1],5), 0.75)
 
     def test_WaterOrientationalRelaxation(self):
         wor = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(self.universe, self.selection1, 0, 5, 2)
-        wor.run(quiet=True)
+        wor.run(verbose=False)
         assert_equal(round(wor.timeseries[1][2],5), 0.35887)
 
     def test_AngularDistribution(self):
         ad = MDAnalysis.analysis.waterdynamics.AngularDistribution(self.universe,self.selection1,40)
-        ad.run(quiet=True)
+        ad.run(verbose=False)
         assert_equal(str(ad.graph[0][39]), str("0.951172947884 0.48313682125") )
 
     def test_MeanSquareDisplacement(self):
         msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(self.universe, self.selection1, 0, 10, 2)
-        msd.run(quiet=True)
+        msd.run(verbose=False)
         assert_equal(round(msd.timeseries[1],5), 0.03984)
 
     def test_SurvivalProbability(self):
         sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
-        sp.run(quiet=True)
+        sp.run(verbose=False)
         assert_equal(round(sp.timeseries[1],5), 1.0)

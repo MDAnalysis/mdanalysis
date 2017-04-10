@@ -2,14 +2,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -70,9 +75,9 @@ except ImportError:
     cmdclass = {}
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.15.0"
+RELEASE = "0.16.0"
 
-is_release = not 'dev' in RELEASE
+is_release = 'dev' not in RELEASE
 
 if cython_found:
     # cython has to be >=0.16 to support cython.parallel
@@ -92,6 +97,12 @@ if cython_found:
         cython_found = False
     del Cython
     del LooseVersion
+else:
+    if not is_release:
+        print("*** package: Cython not found ***")
+        print("MDAnalysis requires cython for development builds")
+        sys.exit(1)
+
 
 class Config(object):
     """Config wrapper class to get build options
@@ -130,6 +141,7 @@ class Config(object):
         except configparser.NoOptionError:
             return default
 
+
 class MDAExtension(Extension, object):
     """Derived class to cleanly handle setup-time (numpy) dependencies.
     """
@@ -158,6 +170,7 @@ class MDAExtension(Extension, object):
     def include_dirs(self, val):
         self._mda_include_dir_args = val
 
+
 def get_numpy_include():
     # Obtain the numpy include directory. This logic works across numpy
     # versions.
@@ -176,15 +189,11 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.10.4), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
-    try:
-        numpy_include = np.get_include()
-    except AttributeError:
-        numpy_include = np.get_numpy_include()
-    return numpy_include
+    return np.get_include()
 
 
 def hasfunction(cc, funcname, include=None, extra_postargs=None):
@@ -282,6 +291,7 @@ def extensions(config):
     source_suffix = '.pyx' if use_cython else '.c'
 
     # The callable is passed so that it is only evaluated at install time.
+
     include_dirs = [get_numpy_include]
 
     dcd = MDAExtension('coordinates._dcdmodule',
@@ -332,8 +342,24 @@ def extensions(config):
                         sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
 
+    encore_utils = MDAExtension('analysis.encore.cutils',
+                            sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
+                            include_dirs = include_dirs,
+                            extra_compile_args = ["-O3", "-ffast-math"])
+    ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
+                            sources = ['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'MDAnalysis/analysis/encore/clustering/src/ap.c'],
+                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
+                            libraries=["m"],
+                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
+    spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
+                            sources = ['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
+                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
+                            libraries=["m"],
+                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
     pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, libmdaxdr, util]
+                  transformation, libmdaxdr, util, encore_utils,
+                  ap_clustering, spe_dimred]
+
     cython_generated = []
     if use_cython:
         extensions = cythonize(pre_exts)
@@ -467,19 +493,21 @@ if __name__ == '__main__':
           ext_modules=exts,
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
-          requires=['numpy (>=1.5.0)', 'biopython',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)'],
+          requires=['numpy (>=1.10.4)', 'biopython', 'mmtf (>=1.0.0)',
+                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.5.0',
+              'numpy>=1.9.3',
           ],
           install_requires=[
-              'numpy>=1.5.0',
+              'numpy>=1.10.4',
               'biopython>=1.59',
               'networkx>=1.0',
               'GridDataFormats>=0.3.2',
               'six>=1.4.0',
+              'mmtf-python>=1.0.0',
+              'joblib',
           ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
@@ -488,10 +516,12 @@ if __name__ == '__main__':
               'AMBER': ['netCDF4>=1.0'],  # for AMBER netcdf, also needs HDF5
                                           # and netcdf-4
               'analysis': [
-                  'matplotlib',
+                  'matplotlib>=1.5.1',
                   'scipy',
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
+                  'sklearn',  # For clustering and dimensionality reduction
+                              # functionality in encore
               ],
           },
           test_suite="MDAnalysisTests",
@@ -511,4 +541,3 @@ if __name__ == '__main__':
             except OSError as err:
                 print("Warning: failed to delete cythonized file {0}: {1}. "
                     "Moving on.".format(cythonized, err.strerror))
-

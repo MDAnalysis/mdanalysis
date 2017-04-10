@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -18,7 +24,7 @@ from __future__ import print_function
 import MDAnalysis
 import MDAnalysis.analysis.gnm
 
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal)
 import numpy as np
 
 from nose.plugins.attrib import attr
@@ -26,7 +32,7 @@ from nose.plugins.attrib import attr
 from MDAnalysisTests.datafiles import GRO, XTC
 from MDAnalysisTests import tempdir
 
-class TestGNM(TestCase):
+class TestGNM(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.universe = MDAnalysis.Universe(GRO, XTC)
@@ -47,9 +53,9 @@ class TestGNM(TestCase):
             3.9607304e-15, 4.1289113e-15, 2.5501084e-15, 4.0498182e-15,
             4.2058769e-15, 3.9839431e-15])
 
-    def test_gnm_run_skip(self):
+    def test_gnm_run_step(self):
         gnm = MDAnalysis.analysis.gnm.GNMAnalysis(self.universe)
-        gnm.run(skip=3)
+        gnm.run(step=3)
         result = gnm.results
         assert_equal(len(result), 4)
         time, eigenvalues, eigenvectors = zip(*result)
@@ -77,7 +83,7 @@ class TestGNM(TestCase):
 
     @attr('slow')
     def test_closeContactGNMAnalysis(self):
-        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe)
+        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe, weights="size")
         gnm.run()
 
         result = gnm.results
@@ -107,8 +113,8 @@ class TestGNM(TestCase):
             0.0, 0.0, -2.263157894736841, -0.24333213169614382])
 
     @attr('slow')
-    def test_closeContactGNMAnalysis_noMassWeight(self):
-        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe, MassWeight=False)
+    def test_closeContactGNMAnalysis_weights_None(self):
+        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe, weights=None)
         gnm.run()
 
         result = gnm.results
@@ -132,3 +138,17 @@ class TestGNM(TestCase):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.0, -3.0])
+
+
+    def test_closeContactGNMAnalysis_default_weights_is_size(self):
+        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe)
+        assert_equal(gnm.weights, "size")
+
+    def test_closeContactGNMAnalysis_deprecated_MassWeight_False(self):
+        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe, MassWeight=False)
+        assert_equal(gnm.weights, None)
+
+    def test_closeContactGNMAnalysis_deprecated_MassWeight_True(self):
+        gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(self.universe, MassWeight=True)
+        assert_equal(gnm.weights, "size")
+

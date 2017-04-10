@@ -1,15 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-
-
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -167,7 +171,7 @@ class Timestep(base.Timestep):
     order = 'C'
 
 
-class TRJReader(base.Reader):
+class TRJReader(base.ReaderBase):
     """AMBER trajectory reader.
 
     Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information
@@ -221,11 +225,17 @@ class TRJReader(base.Reader):
         self.box_line_parser = util.FORTRANReader("3F8.3")
 
         # Now check for box
-        self.periodic = False
         self._detect_amber_box()
 
         # open file, read first frame
         self._read_next_timestep()
+
+    def _read_frame(self, frame):
+        if self.trjfile is None:
+            self.open_trajectory()
+        self.trjfile.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in _read_next
+        return self._read_next_timestep()
 
     def _read_next_timestep(self):
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
@@ -322,17 +332,21 @@ class TRJReader(base.Reader):
             return self._n_frames
 
     def _read_trj_n_frames(self, filename):
-        self._reopen()
+        lpf = self.lines_per_frame
+        if self.periodic:
+            lpf += 1
 
+        self._offsets = offsets = []
         counter = 0
-        try:
-            while True:
-                next(self)
+        with util.openany(self.filename, 'r') as f:
+            line = f.readline()  # ignore first line
+            while line:
+                if counter % lpf == 0:
+                    offsets.append(f.tell())
+                line = f.readline()
                 counter += 1
-        except EOFError:
-            self.rewind()
-
-        return counter
+        offsets.pop()  # last offset is EOF
+        return len(offsets)
 
     @property
     def n_atoms(self):
@@ -364,13 +378,8 @@ class TRJReader(base.Reader):
         self.trjfile.close()
         self.trjfile = None
 
-    def rewind(self):
-        """Reposition at the beginning of the trajectory"""
-        self._reopen()
-        next(self)
 
-
-class NCDFReader(base.Reader):
+class NCDFReader(base.ReaderBase):
     """Reader for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
@@ -580,7 +589,7 @@ class NCDFReader(base.Reader):
         return NCDFWriter(filename, n_atoms, **kwargs)
 
 
-class NCDFWriter(base.Writer):
+class NCDFWriter(base.WriterBase):
     """Writer for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
@@ -606,6 +615,7 @@ class NCDFWriter(base.Writer):
     """
 
     format = 'NCDF'
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps',
              'length': 'Angstrom',
@@ -805,12 +815,12 @@ class NCDFWriter(base.Writer):
         be written to trajectory file
         '''
         if ts is None:
-            if not hasattr(self, "ts") or self.ts is None:
-                raise IOError(
-                    "NCDFWriter: no coordinate data to write to trajectory file")
-            else:
-                ts = self.ts  # self.ts would have to be assigned manually!
-        elif ts.n_atoms != self.n_atoms:
+            ts = self.ts
+        if ts is None:
+            raise IOError(
+                "NCDFWriter: no coordinate data to write to trajectory file")
+
+        if ts.n_atoms != self.n_atoms:
             raise IOError(
                 "NCDFWriter: Timestep does not have the correct number of atoms")
 
@@ -834,7 +844,9 @@ class NCDFWriter(base.Writer):
         .. _`netcdf4storage.py`:
            https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
-        assert self.trjfile is not None, "trjfile must be open in order to write to it"
+        pos = ts._pos
+        time = ts.time
+        unitcell = ts.dimensions
 
         if self.convert_units:
             # make a copy of the scaled positions so that the in-memory
@@ -843,18 +855,9 @@ class NCDFWriter(base.Writer):
             # implementation could lead to memory problems and/or slow-down for
             # very big systems because we temporarily create a new array pos
             # for each frame written
-            pos = self.convert_pos_to_native(ts._pos, inplace=False)
-            try:
-                time = self.convert_time_to_native(ts.time, inplace=False)
-            except AttributeError:
-                time = ts.frame * self.convert_time_to_native(self.dt,
-                                                              inplace=False)
+            pos = self.convert_pos_to_native(pos, inplace=False)
+            time = self.convert_time_to_native(time, inplace=False)
             unitcell = self.convert_dimensions_to_unitcell(ts)
-        else:
-            pos = ts._pos
-            time = ts.time
-
-            unitcell = ts.dimensions
 
         # write step
         self.trjfile.variables['coordinates'][self.curr_frame, :, :] = pos
@@ -864,21 +867,21 @@ class NCDFWriter(base.Writer):
                 self.curr_frame, :] = unitcell[:3]
             self.trjfile.variables['cell_angles'][
                 self.curr_frame, :] = unitcell[3:]
+
         if self.has_velocities:
+            velocities = ts._velocities
             if self.convert_units:
-                velocities = self.convert_velocities_to_native(ts._velocities,
-                                                               inplace=False)
-            else:
-                velocities = ts._velocities
-            self.trjfile.variables['velocities'][
-                self.curr_frame, :, :] = velocities
+                velocities = self.convert_velocities_to_native(
+                    velocities, inplace=False)
+            self.trjfile.variables['velocities'][self.curr_frame, :, :] = velocities
+
         if self.has_forces:
+            forces = ts._forces
             if self.convert_units:
-                forces = self.convert_forces_to_native(ts._forces,
-                                                       inplace=False)
-            else:
-                forces = ts._velocities
+                forces = self.convert_forces_to_native(
+                    forces, inplace=False)
             self.trjfile.variables['forces'][self.curr_frame, :, :] = forces
+
         self.trjfile.sync()
         self.curr_frame += 1
 

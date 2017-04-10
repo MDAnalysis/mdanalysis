@@ -1,18 +1,24 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 
 """
 :mod:`MDAnalysis` --- analysis of molecular simulations in python
@@ -107,7 +113,7 @@ and analyze all timesteps *ts* of the trajectory::
    9.72062
   ....
 
-.. SeeAlso:: :class:`MDAnalysis.core.AtomGroup.Universe` for details
+.. SeeAlso:: :class:`MDAnalysis.core.universe.Universe` for details
 
 
 Examples
@@ -134,7 +140,8 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
+__all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection',
+           'fetch_mmtf']
 
 import logging
 import warnings
@@ -147,6 +154,19 @@ try:
 except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
+
+# Registry of Readers, Parsers and Writers known to MDAnalysis
+# Metaclass magic fills these as classes are declared.
+_READERS = {}
+_SINGLEFRAME_WRITERS = {}
+_MULTIFRAME_WRITERS = {}
+_PARSERS = {}
+_SELECTION_WRITERS = {}
+
+# Storing anchor universes for unpickling groups
+import weakref
+_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
+del weakref
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -161,22 +181,22 @@ from .lib.log import start_logging, stop_logging
 logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
-# DeprecationWarnings are loud by default
-warnings.simplefilter('once', DeprecationWarning)
+# only MDAnalysis DeprecationWarnings are loud by default
+warnings.filterwarnings(action='once', category=DeprecationWarning,
+                        module='MDAnalysis')
 
 
 from . import units
 
 # Bring some often used objects into the current namespace
 from .core import Timeseries
-from .core.AtomGroup import Universe, as_Universe, Merge
+from .core.universe import Universe, as_Universe, Merge
 from .coordinates.core import writer as Writer
 
+# After Universe import
+from .coordinates.MMTF import fetch_mmtf
+
 collection = Timeseries.TimeseriesCollection()
-import weakref
-_anchor_universes = weakref.WeakSet()
-_named_anchor_universes = weakref.WeakSet()
-del weakref
 
 from .migration.ten2eleven import ten2eleven
 
@@ -188,3 +208,5 @@ MDAnalysis on python 3 is highly experimental!
 It is mostly non functional and dramatically untested.
 Use at your own risks!!!
 ''')
+
+

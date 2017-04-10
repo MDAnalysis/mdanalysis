@@ -8,12 +8,12 @@ Selection exporters
 
 The classes in this module allow writing a selection to a file that can be read by
 *another programme* to select the atoms in a MDAnalysis
-:class:`MDAnalysis.core.AtomGroup.AtomGroup`. Such cross-package interoperability
+:class:`MDAnalysis.core.groups.AtomGroup`. Such cross-package interoperability
 allows a user to combine their favourite tools with MDAnalysis for further
 visualization or simulation.
 
-There exist different :class:`~MDAnalysis.selections.base.SelectionWriter` classes
-for different package. The :func:`~MDAnalysis.selections.base.get_writer` function
+There exist different :class:`~MDAnalysis.selections.base.SelectionWriterBase` classes
+for different packages. The :func:`~MDAnalysis.selections.base.get_writer` function
 can automatically pick the appropriate one, based on the file name extension in the
 table below.
 

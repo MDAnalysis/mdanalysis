@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -43,20 +49,20 @@ class TestNuclinfo(TestCase):
         del self.universe
 
     def test_wc_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
         wc = nuclinfo.wc_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(wc, 2.9810174, err_msg="Watson-Crick distance does not match expected value.")
 
     def test_major_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
         maj = nuclinfo.major_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(maj, 2.9400151, err_msg="Watson-Crick distance does not match expected value.")
 
     def test_minor_pair(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
 
         minor = nuclinfo.minor_pair(self.universe, 4, 20, seg1, seg2)
         assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
@@ -81,8 +87,8 @@ class TestNuclinfo(TestCase):
                                   err_msg="RNA hydroxyl dihedrals do not match")
 
     def test_pseudo_dihe_baseflip(self):
-        seg1 = self.universe.residues[3].segids[0]
-        seg2 = self.universe.residues[19].segids[0]
+        seg1 = self.universe.residues[3].atoms.segids[0]
+        seg2 = self.universe.residues[19].atoms.segids[0]
 
         # There is not really a baseflip, just testing the code...
         flip = nuclinfo.pseudo_dihe_baseflip(self.universe, 4, 20, 5, seg1=seg1, seg2=seg2, seg3=seg1)

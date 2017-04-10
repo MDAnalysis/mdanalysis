@@ -13,6 +13,164 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
+         euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
+         dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
+         xiki-tempula
+
+  * 0.16.0
+
+Enhancements
+  * Added 'filename' attribute to 'MemoryReader'
+  * GRO reader conforms to the reader API standard(#1196)
+  * Improved __str__ and __repr__ of 'GroupBase' class in
+    MDAnalysis.core.groups (addresses Issue #1223)
+  * Added dynamic selections (addresses Issues #175 and #1074).
+  * Added 'MemoryReader' class to allow manipulation of trajectory data
+    in-memory, which can provide substantial speed-ups to certain
+    calculations.
+  * Universe creation now takes an 'in_memory' option, which will
+    transfer the corresponding trajectory to memory. Likewise a new
+    'Universe.transfer_to_memory()' method makes it possible to make
+    this transfer after construction of the universe
+  * Added 'in_memory' option to 'rms_fit_trj', which makes it possible
+    to do in-place (in-memory) alignment of trajectories.
+  * All classes derived from 'AnalysisBase' now display a ProgressMeter
+    with 'quiet=False'
+  * The 'run' method from all 'AnalysisBase' derived classes return the
+    class itself.
+  * Added boolean flag at lib.distances.USED_OPENMP to reveal if
+    OpenMP was used in compilation (Issue #883)
+  * Added Principal Component Analysis module for linear dimensionality
+    reduction.
+  * Added Auxiliary module for reading additional timeseries data alongside
+    trajectories (Issue #785)
+  * Added AnalysisFromFunction & analysis_class, see (Issue #946 and PR #950)
+  * Established the MDAnalysis.analysis.legacy module for unmaintained
+    analysis code (Issue #743)
+  * Added ProgressMeter to 'transfer_to_memory' function, to show progress
+    of loading trajectory to memory (Issue #1028 and PR #1055).
+  * Selecting atoms by resid now respects icodes if they were present. Ie
+    select_atoms('resid 163A') works! (Issue #839 PR #1066)
+  * Added ability to read MMTF format files (#907 PR #1069)
+  * Added MDAnalysis.fetch_mmtf function to download from PDB and create
+    Universe (#810 PR #1082)
+  * Added coordinates.null.NullWriter, which behaves like a Writer but
+    ignores all input; useful for suppressing output.
+  * Added random access support to GMSReader and TRJReader (#1081)
+  * Added atomgroup.center(weights, pbc) method to calculate the center
+    of a group given weights
+  * Universe anchors (for unpickling) now use a uuid (rather than filename)
+    to distinguish themselves by default. Can still use anchor_name kwarg to
+    control the anchor name manually. (PR #1125)
+  * Added groupby method to Group objects. (PR #1112)
+  * Added `singleframe` attribute to Writer API to exclude from known Writers
+    for a single frame (Issue #1199 PR #1201)
+  * Correct the display error of HydrogenBondAnalysis when start is not 0 or 
+    step is not one.
+  * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
+    included set operators (Issue #726)
+  * Universes built with Merge now use the MemoryReader (Issue #1251)
+  * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
+    weights="size") by about 5x (partially Issue #1191)
+    
+
+Fixes
+  * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
+  * Argument validation of dist_mat_to_vec is fixed (#597 PR #1183)
+  * Give correct error when the topology file format is not recognized (Issue #982)
+  * Give correct error when file doesn't exist/ has bad permissions (Issue #981)
+  * Improvement of analysis/waterdynamics module (Issue #935)
+  * Removed MDAnalysis.analysis.PDBToBinaryTraj (Issue #1035)
+  * MDAnalysis.analysis.distances.between() is no longer broken
+  * GROWriter resids now truncated properly (Issue #886)
+  * reading/writing lambda value in trr files (Issue #859)
+  * fix __iter__/next redundancy (Issue #869)
+  * SingleFrameReader now raises StopIteration instead of IOError on calling
+    next (Issue #869)
+  * Display of Deprecation warnings doesn't affect other modules anymore (Issue #754)
+  * Changed nframes to n_frames in analysis modules for consistency (Issue #890)
+  * fixed incompatibility with newer matplotlib in analysis.hole
+  * Fixed modules that improperly documented and/or used frame slicing
+    defaults (#914)
+  * Fixed same interRDF can be run twice (Issue #924)
+  * Support for TPR files produced by Gromacs-2016 (Issue #932)
+  * Fixed parsing PDB files with CONECT records to TER entries (Issue #936)
+  * Fixed parsing PDB files with single entry in CONECT record (Issue #937)
+  * Progress meters are now displayed as expected on jupyter notebooks
+    (Issue #927)
+  * Reset trajectory to 0 after sliced iteration (Issue #1031)
+  * Fixed rotaxis returning NaN if a=b (Issue #1045)
+  * Fixed align_principal_axis onto a principal axes (Issue #1045)
+  * Fixed NCDFWriter wrote velocities instead of forces if
+    convert_units=False was set: now correctly writes forces (PR #1113)
+  * Fixed warn about missing cython package in dev builds
+  * Fix align.rotation_matrix checks array shape equality (Issue #1152)
+  * Fixed strange error when writing a PDB with 0 atoms (Issue #1083 PR #1103)
+  * Fixed selections using operators backwards ('prop 10 > mass') and sensitivity
+    about whitespace around these (PR #1156 Issue #1011 #1009)
+  * Fixed PSA analysis is now using AlignTraj
+  * Fixed Principal Axes to order from highest to lowest eigenval (Issue #1162)
+  * Fixed analysis.density with soluteselection and notwithin_coordinates_factory
+    when using KDTree (Issue #1211)
+  * GRO files with greater than 99,999 residues now read correctly (Issue #728)
+
+Changes
+  * Started unifying the API of analysis classes (named internally
+    "Bauhaus" style; see Issue #719)
+  * Added protected variable _frame_index to to keep track of frame iteration
+    number in AnalysisBase
+  * Added new AlignTraj class for alignment. (Issue #845)
+  * Added new diffusionmap module for dimension reduction (Issue #857)
+  * Added new PCA module for dimension reduction (PR #896)
+  * Qcprot now takes N x 3 arrays instead of 3 x N arrays. This gives about a
+    40% speed up. (PR #930)
+  * The ProgressMeter class now has a `dynamic` keyword argument. It is now
+    recommended to provide format strings using the new python format syntax,
+    the old %-based syntax is still available but will be deprecated.
+    (PR #944)
+  * Analysis.rms.RMSD now confirms to standard analysis API (Issue #893)
+  * Fragments in Universe.fragment are now sorted by the index of their first
+    atom. (Issue 1007)
+  * atoms.tranform/translate/rotate/rotateby return original atomgroup
+    (Issue #1010)
+  * atoms.translate/rotateby don't accept AtomGroup tuples as
+    parameters anymore (Issue #1025)
+  * atoms.rotate can be given center of rotation (Issue #1022)
+  * XTCFile and TRRFile only raise IOError now on error.
+  * Deprecate usage of MDAnalysis.core.AtomGroup
+  * get_writer_for() returns NullWriter when filename=None instead of
+    raising TypeError and filename is now a required arg instead of kwarg
+  * moved coordinates.base.ChainReader to coordinates.chain.ChainReader
+  * renamed private method ChainReader.get_flname() to ChainReader._get_filename()
+  * totaltime now considers the first frame to be at time 0 (Issue #1137)
+  * analysis.rms.RMSF now conforms to standard analysis API (PR #1136)
+  * analysis.rms/align function keyword `mass_weighted` is replaced
+    by generic `weights='mass'`. This new keyword allows to pass it an
+    arbitrary weights array as well. (PR #1136)
+  * Renamed various base classes for clarity.  Iobase -> IOBase,
+    Reader -> ReaderBase, SingleFrameReader -> SingleFrameReaderBase,
+    Writer -> WriterBase, TopologyReader -> TopologyReaderBase,
+    SelectionWriter -> SelectionWriterBase (Issue #921)
+  * Selection writers do not have a 'wa' mode anymore, but they have a 'close'
+    method (Issue #1244)
+  * Remove deprecated PrimitivePDB* classes
+  * Remove deprecated `delta` keyword for ChainReader
+  * Remove deprecated permissive_pdb_reader flag
+  * Removed superfluous and confusing keywords `start` and `end` for resid
+    selection in analysis.helanal.helanal_main() and
+    analysis.helanal.helanal_trajectory()
+  * weights="size" parameter in analysis.gnm.closeContactGNMAnalysis to
+    replace MassWeight=True
+  * bump minimum numpy version to 1.10.4
+
+Deprecations (Issue #599)
+  * Use of rms_fit_trj deprecated in favor of AlignTraj class (Issue #845)
+  * Moved analysis.x3dna to the analysis.legacy module (Issue #906)
+  * The keyword argument *quiet* is deprecated in favor of *verbose*
+    throughout the library (Issue #903)
+  * MassWeight=True parameter in analysis.gnm.closeContactGNMAnalysis
+    deprecated in favor of weights="size".
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle
@@ -39,6 +197,7 @@ Enhancements
   * Iteration and seeking in PDB files made faster (Issue #848)
 
 Fixes
+  * Fixed TypeError in PSAnalysis heatmap-dendrogram plotting (Issue #1018)
   * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
   * rmsd now returns proper value when given array of weights (Issue #814)
   * change_release now finds number and dev (Issue #776)
@@ -55,7 +214,6 @@ Fixes
   * Fixed HistoryReader returning 1 based frame indices (Issue #851)
 
 Changes
-
   * Added zero_based indices for HBondsAnalysis. (Issue #807)
   * Generalized contact analysis class `Contacts` added. (Issue #702)
   * Removed Bio.PDBParser and sloppy structure builder and all of

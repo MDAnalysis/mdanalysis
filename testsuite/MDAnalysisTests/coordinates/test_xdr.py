@@ -23,12 +23,11 @@ from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
 
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
                                        COORDINATES_TRR)
-from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 from MDAnalysisTests import tempdir
 
-import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
 
 # I want to catch all warnings in the tests. If this is not set at the start it
@@ -195,7 +194,7 @@ class _GromacsReader(TestCase):
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
         assert_almost_equal(self.universe.trajectory.totaltime,
-                            1000.0,
+                            900.0,
                             3,
                             err_msg="wrong total length of trajectory")
 
@@ -235,17 +234,13 @@ class _GromacsReader(TestCase):
                             self.universe.atoms.positions, self.prec)
 
     @dec.slow
-    def test_EOFraisesIOErrorEIO(self):
+    def test_EOFraisesStopIteration(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
             self.universe.trajectory.next()
 
-        assert_raises(IOError, go_beyond_EOF)
-        try:
-            go_beyond_EOF()
-        except IOError as err:
-            assert_equal(err.errno, errno.EIO,
-                         "IOError produces wrong error code")
+        assert_raises(StopIteration, go_beyond_EOF)
+
 
 
 class TestXTCReader(_GromacsReader):
@@ -624,7 +619,7 @@ class XTCReference(BaseReference):
         self.changing_dimensions = True
 
 
-class TestXTCReader_2(BaseReaderTest):
+class TestXTCReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = XTCReference()
@@ -660,7 +655,7 @@ class TRRReference(BaseReference):
         self.changing_dimensions = True
         self.reader = mda.coordinates.TRR.TRRReader
         self.writer = mda.coordinates.TRR.TRRWriter
-        self.ext = 'xtc'
+        self.ext = 'trr'
         self.prec = 3
         self.first_frame.velocities = self.first_frame.positions / 10
         self.first_frame.forces = self.first_frame.positions / 100
@@ -684,7 +679,7 @@ class TRRReference(BaseReference):
         return ts
 
 
-class TestTRRReader_2(BaseReaderTest):
+class TestTRRReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = TRRReference()
@@ -696,6 +691,18 @@ class TestTRRWriter_2(BaseWriterTest):
         if reference is None:
             reference = TRRReference()
         super(TestTRRWriter_2, self).__init__(reference)
+
+    # tests writing and reading in one!
+    def test_lambda(self):
+        outfile = self.tmp_file('write-lambda-test')
+        with self.ref.writer(outfile, self.reader.n_atoms) as W:
+            for i, ts in enumerate(self.reader):
+                ts.data['lambda'] = i / float(self.reader.n_frames)
+                W.write(ts)
+
+        reader = self.ref.reader(outfile)
+        for i, ts in enumerate(reader):
+            assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(TestCase):
@@ -845,11 +852,11 @@ class TestXTCReader_offsets(_GromacsReader_offsets):
     filename = XTC
     ref_offsets = np.array([0, 165188, 330364, 495520, 660708, 825872, 991044,
                             1156212, 1321384, 1486544])
-    _reader = MDAnalysis.coordinates.XTC.XTCReader
+    _reader = mda.coordinates.XTC.XTCReader
 
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
     ref_offsets = np.array([0, 1144464, 2288928, 3433392, 4577856, 5722320,
                             6866784, 8011248, 9155712, 10300176])
-    _reader = MDAnalysis.coordinates.TRR.TRRReader
+    _reader = mda.coordinates.TRR.TRRReader

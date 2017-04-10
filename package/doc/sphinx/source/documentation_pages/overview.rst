@@ -1,3 +1,5 @@
+.. _overview-label:
+
 ==========================
  Overview over MDAnalysis
 ==========================
@@ -8,32 +10,32 @@ treats atoms, groups of atoms, trajectories, etc as different
 objects. Each object has a number of operations defined on itself
 (also known as "methods") and also contains values describing the
 object ("attributes"). For example, a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` object has a
-:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass` method that
+:class:`~MDAnalysis.core.groups.AtomGroup` object has a
+:meth:`~MDAnalysis.core.groups.AtomGroup.center_of_mass` method that
 returns the center of mass of the group of atoms. It also contains an
-attribute called :attr:`~MDAnalysis.core.AtomGroup.AtomGroup.residues`
+attribute called :attr:`~MDAnalysis.core.groups.AtomGroup.residues`
 that lists all the residues that belong to the group. Using methods
-such as :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
+such as :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
 (which uses `CHARMM-style`_ atom :ref:`selection-commands-label`) one
 can create new objects (in this case, another
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`).
+:class:`~MDAnalysis.core.groups.AtomGroup`).
 
 A typical usage pattern is to iterate through a trajectory and analyze
 coordinates for every frame. In the following example the end-to-end distance
 of a protein and the radius of gyration of the backbone atoms are calculated::
 
-  import MDAnalysis
-  from MDAnalysis.tests.datafiles import PSF,DCD   # test trajectory
-  import numpy.linalg
-  u = MDAnalysis.Universe(PSF,DCD)                 # always start with a Universe
-  nterm = u.s4AKE.N[0]   # can access structure via segid (s4AKE) and atom name
-  cterm = u.s4AKE.C[-1]  # ... takes the last atom named 'C'
-  bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
-  for ts in u.trajectory:     # iterate through all frames
-    r = cterm.pos - nterm.pos # end-to-end vector from atom positions
-    d = numpy.linalg.norm(r)  # end-to-end distance
-    rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
-    print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
+    import MDAnalysis
+    from MDAnalysis.tests.datafiles import PSF,DCD  # test trajectory
+    import numpy.linalg
+    u = MDAnalysis.Universe(PSF,DCD)  # always start with a Universe
+    nterm = u.s4AKE.N[0]  # can access structure via segid (s4AKE) and atom name
+    cterm = u.s4AKE.C[-1]  # ... takes the last atom named 'C'
+    bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
+    for ts in u.trajectory:  # iterate through all frames
+        r = cterm.pos - nterm.pos  # end-to-end vector from atom positions
+        d = numpy.linalg.norm(r)   # end-to-end distance
+        rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
+        print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
 
 
 .. _NumPy:   http://numpy.scipy.org
@@ -56,12 +58,12 @@ from within the interpreter::
  from MDAnalysis import *
 
 or ::
- 
+
  import MDAnalysis
 
 The idea behind MDAnalysis is to get trajectory data into NumPy_
 :class:`numpy.ndarray` arrays, where it can then be easily manipulated using
-all the power in NumPy_ and SciPy_. 
+all the power in NumPy_ and SciPy_.
 
 MDAnalysis works well both in scripts and in interactive use. The developers
 very much recommend using MDAnalysis from within the IPython_ Python shell.  It
@@ -70,7 +72,7 @@ online help), do analysis and immediately plot results. The examples in this man
 are typically run from an interactive :program:`ipython` session.
 
 Invariably, a MDAnalysis session starts with loading data into the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class (which can be accessed
+:class:`~MDAnalysis.core.universe.Universe` class (which can be accessed
 as :class:`MDAnalysis.Universe`)::
 
  from MDAnalysis import *
@@ -90,7 +92,7 @@ as :class:`MDAnalysis.Universe`)::
 For the remainder of this introduction we are using a short example trajectory
 that is provided with MDAnalysis (as part of the `MDAnalysis test suite`_). The
 trajectory is loaded with ::
- 
+
   >>> from MDAnalysis import Universe
   >>> from MDAnalysis.tests.datafiles import PSF,DCD
   >>> u = Universe(PSF, DCD)
@@ -98,17 +100,17 @@ trajectory is loaded with ::
 (The ``>>>`` signs are the Python input prompt and are not to be typed; they
 just make clear in the examples what is input and what is output.)
 
-The :class:`~MDAnalysis.core.AtomGroup.Universe` contains a number of important attributes,
+The :class:`~MDAnalysis.core.universe.Universe` contains a number of important attributes,
 the most important ones of which is
-:attr:`~MDAnalysis.core.AtomGroup.Universe.atoms`::
+:attr:`~MDAnalysis.core.universe.Universe.atoms`::
 
   >>> print u.atoms
   <AtomGroup with 3341 atoms>
 
 :attr:`Universe.atoms` is a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` and can be thought of as
-list consisting of :class:`~MDAnalysis.core.AtomGroup.Atom`
-objects. The :class:`~MDAnalysis.core.AtomGroup.Atom` is the
+:class:`~MDAnalysis.core.groups.AtomGroup` and can be thought of as
+list consisting of :class:`~MDAnalysis.core.groups.Atom`
+objects. The :class:`~MDAnalysis.core.groups.Atom` is the
 elementary and fundamental object in MDAnalysis.
 
 The :attr:`MDAnalysis.Universe.trajectory` attribute gives access to the coordinates
@@ -118,7 +120,7 @@ over time::
   < DCDReader '/..../MDAnalysis/tests/data/adk_dims.dcd' with 98 frames of 3341 atoms (0 fixed) >
 
 Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` according to a selection criterion
+:class:`~MDAnalysis.core.groups.AtomGroup` according to a selection criterion
 
   >>> calphas = u.select_atoms("name CA")
   >>> print calphas
@@ -134,10 +136,7 @@ as described in :ref:`selection-commands-label`.
 Examples
 ========
 
-The easiest way to get started with MDAnalysis is to read this
-introduction and the chapter on :ref:`selection-commands-label` and then
-explore the package interactively in IPython_ or another interactive
-Python interpreter.
+The easiest way to get started with MDAnalysis is to read this introduction and the chapters on :ref:`topology-label` and :ref:`selection-commands-label`, then explore the package interactively in IPython_ or another interactive Python interpreter.
 
 Included trajectories
 ---------------------
@@ -169,7 +168,7 @@ Code snippets
 
 The source code distribution comes with a directory `examples`_ that
 contains a number of code snippets that show how to use certain
-aspects of MDAnalysis. 
+aspects of MDAnalysis.
 
 For instance, there is code that shows how to
 

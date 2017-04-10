@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -44,7 +50,7 @@ from ..core import flags
 from ..lib import util
 
 
-class MOL2Reader(base.Reader):
+class MOL2Reader(base.ReaderBase):
     """Reader for MOL2 structure format.
 
     .. versionchanged:: 0.11.0
@@ -158,10 +164,25 @@ class MOL2Reader(base.Reader):
         self.ts.frame = -1
 
 
-class MOL2Writer(base.Writer):
-    """MOL2Writer Limitations ----------- MOL2Writer can only be used to write out previously loaded MOL2 files.  If you're trying to convert, for example, a PDB file to MOL you should use other tools, like rdkit (http://www.rdkit.org/docs/GettingStartedInPython.html).  Here is an example how to use rdkit to convert a PDB to MOL:: from rdkit import Chem mol = Chem.MolFromPDBFile("molecule.pdb", removeHs=False) Chem.MolToMolFile(mol, "molecule.mol" ) MOL2 writer is currently not available for rdkit master. It requires 
-    SYBYL atomtype generation.
-    See page 7 for list of SYBYL atomtypes (http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf).
+class MOL2Writer(base.WriterBase):
+    """
+
+    MOL2Writer Limitations
+    ----------------------
+    MOL2Writer can only be used to write out previously loaded MOL2 files.
+    If you're trying to convert, for example, a PDB file to MOL you should
+    use other tools, like rdkit (http://www.rdkit.org/docs/GettingStartedInPython.html).
+
+    Here is an example how to use rdkit to convert a PDB to MOL::
+    
+      from rdkit import Chem
+      mol = Chem.MolFromPDBFile("molecule.pdb", removeHs=False)
+      Chem.MolToMolFile(mol, "molecule.mol" )
+
+    MOL2 writer is currently not available for rdkit master. It requires SYBYL
+    atomtype generation.
+    See page 7 for list of SYBYL atomtypes
+    (http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf).
 
     * MOL2 Format Specification:  (http://www.tripos.com/data/support/mol2.pdf)
     * Example file (http://www.tripos.com/mol2/mol2_format3.html)::
@@ -249,6 +270,12 @@ class MOL2Writer(base.Writer):
         traj = obj.universe.trajectory
         ts = traj.ts
 
+        try:
+            molecule = ts.data['molecule']
+        except KeyError:
+            raise NotImplementedError(
+                "MOL2Writer cannot currently write non MOL2 data")
+
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
 
@@ -288,7 +315,6 @@ class MOL2Writer(base.Writer):
         except KeyError:
             substructure = ""
 
-        molecule = ts.data['molecule']
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
         molecule[1] = "{0}\n".format(" ".join(check_sums))

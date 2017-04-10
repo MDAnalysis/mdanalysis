@@ -1,13 +1,19 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
-# Beckstein and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
@@ -28,7 +34,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class TestMol2(TestCase):
@@ -154,3 +160,11 @@ class TestMOL2NoSubstructure(object):
         u2 = mda.Universe(outfile)
 
         assert_(len(u.atoms) == len(u2.atoms))
+
+
+def test_mol2_write_NIE():
+    mytempdir = tempdir.TempDir()
+    outfile = os.path.join(mytempdir.name, 'test.mol2')
+    u = make_Universe(trajectory=True)
+
+    assert_raises(NotImplementedError, u.atoms.write, outfile)

@@ -7,7 +7,7 @@ that are used in the test suite of the MDAnalysis package
 http://www.mdanalysis.org. They should be installed together
 with MDAnalysis.
 
-However, the test files change less frequently, take up almost 20 GB
+However, the test files change less frequently, take up about 70 MB
 of space, and are not needed for daily use of MDAnalysis so they are
 distributed separately from the main package.
 
@@ -73,33 +73,27 @@ tracker --- maybe the problem is recognized and a work around can be
 found in the comments
 
 
+Running tests
+=============
 
-Selecting an installation directory
------------------------------------
-
-In order to install in a non-default directory one can use various
-options to setup (see --help) such as ::
-
- python setup.py install --prefix LOCAL_DIRECTORY
-
-or any of the other options of distutil's setup.py to install in
-alternative directories, for instance
-
- python setup.py install --user
+See http://wiki.mdanalysis.org/UnitTests for details.
 
 
-
-Easy Install
+From sources
 ------------
 
-We are also exploring the use of easy_install. This is experimental
-but you might be able to do ::
+From the top directory of the checked out sources:
 
-  easy_install [options] ./MDAnalysisTests
- 
-A developer installation (that immediately reflects changes to the
-sources) with ::
+  ./testsuite/MDAnalysisTests/mda_nosetests --exe -v --processes=4 --process-timeout=120 
 
-  cd testsuite
-  python setup develop [options]
+(use --processes=4 if you have 4 cores available to run in parallel or
+adapt to available cores.)
+
+
+From installed package
+----------------------
+
+The test runner can be launched as
+
+  python -c 'from MDAnalysis.tests import test; test(argv=["--exe", "-v", "--processes=4", "--process-timeout=120"])'
 

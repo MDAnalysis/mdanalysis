@@ -1,18 +1,24 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-# Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 #
 
 """
@@ -23,17 +29,19 @@ This module provides functions to rapidly compute distances between
 atoms or groups of atoms.
 
 :func:`dist` and :func:`between` can take atom groups that do not even
-have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
+have to be from the same :class:`~MDAnalysis.core.universe.Universe`.
 
-.. SeeAlso:: :mod:`MDAnalysis.lib.distances` 
+.. SeeAlso:: :mod:`MDAnalysis.lib.distances`
 """
 
-__all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
+__all__ = ['distance_array', 'self_distance_array',
+           'contact_matrix', 'dist', 'between']
 
 import numpy as np
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
+from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 import warnings
 import logging
@@ -84,12 +92,16 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
 
     Note
     ----
-    :module:`scipy.sparse` is require for using *sparse* matrices; if it cannot
+    :mod:`scipy.sparse` is require for using *sparse* matrices; if it cannot
     be imported then an `ImportError` is raised.
+
+    See Also
+    --------
+    :mod:`MDAnalysis.analysis.contacts` for native contact analysis
+
 
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
-
     '''
 
     if returntype == "numpy":
@@ -124,9 +136,8 @@ def dist(A, B, offset=0):
 
     Arguments
     ---------
-
-    A, B: AtomGroup instances
-       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
+    A, B : AtomGroup
+       :class:`~MDAnalysis.core.groups.AtomGroup` with the
        same number of atoms
     offset : integer or tuple, optional, default 0
        An integer `offset` is added to *resids_A* and *resids_B* (see
@@ -145,7 +156,6 @@ def dist(A, B, offset=0):
        residue ids of the `B` group (possibly changed with `offset`)
     distances : array
        distances between the atoms
-
     """
     if A.atoms.n_atoms != B.atoms.n_atoms:
         raise ValueError("AtomGroups A and B do not have the same number of atoms")
@@ -155,7 +165,7 @@ def dist(A, B, offset=0):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    r = A.coordinates() - B.coordinates()
+    r = A.positions - B.positions
     d = np.sqrt(np.sum(r * r, axis=1))
     return np.array([residues_A, residues_B, d])
 
@@ -171,13 +181,13 @@ def between(group, A, B, distance):
 
     Parameters
     ----------
-
     group : AtomGroup
         Find members of `group` that are between `A` and `B`
-    A, B : AtomGroups
-        `A` and `B` are :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-        instances.  Works best if `group` is bigger than either `A` or
-        `B`.
+    A : AtomGroup
+    B : AtomGroup
+        `A` and `B` are the groups of atoms between which atoms in
+        `group` are searched for.  The function works is more
+        efficient if `group` is bigger than either `A` or `B`.
     distance : float
         maximum distance for an atom to be counted as in the vicinity of
         `A` or `B`
@@ -185,15 +195,14 @@ def between(group, A, B, distance):
     Returns
     -------
     AtomGroup
-       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` of atoms that
-       fulfill the criterion
+        :class:`~MDAnalysis.core.groups.AtomGroup` of atoms that
+        fulfill the criterion
+
 
     .. versionadded: 0.7.5
 
     """
-    from MDAnalysis.core.AtomGroup import AtomGroup
-
     ns_group = AtomNeighborSearch(group)
-    resA = set(ns_group.search_list(A, distance))
-    resB = set(ns_group.search_list(B, distance))
-    return AtomGroup(resB.intersection(resA))
+    resA = set(ns_group.search(A, distance))
+    resB = set(ns_group.search(B, distance))
+    return sum(sorted(resB.intersection(resA)))
