@@ -181,7 +181,7 @@ Classes
    :inherited-members:
 
 """
-import logging
+from __future__ import absolute_import
 import errno
 import numpy as np
 

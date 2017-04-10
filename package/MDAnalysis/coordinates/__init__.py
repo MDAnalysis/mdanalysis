@@ -698,7 +698,7 @@ Methods
    raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
 """
-
+from __future__ import absolute_import
 __all__ = ['reader', 'writer']
 
 import six

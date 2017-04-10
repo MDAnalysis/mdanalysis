@@ -154,8 +154,9 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
+from __future__ import division, absolute_import
 import six
-from six.moves import range, map
+from six.moves import range
 import sys
 
 __docformat__ = "restructuredtext en"
@@ -171,7 +172,6 @@ import re
 import io
 import warnings
 from functools import wraps
-import mmtf
 import numpy as np
 import functools
 from numpy.testing import assert_equal
@@ -1323,8 +1323,8 @@ def blocks_of(a, n, m):
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
 
-    nblocks = a.shape[0] / n
-    nblocks2 = a.shape[1] / m
+    nblocks = a.shape[0] // n
+    nblocks2 = a.shape[1] // m
 
     if not nblocks == nblocks2:
         raise ValueError("Must divide into same number of blocks in both"

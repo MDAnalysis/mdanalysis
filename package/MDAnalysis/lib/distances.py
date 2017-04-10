@@ -63,10 +63,8 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 
 """
-from six.moves import range
-
+from __future__ import division, absolute_import
 import numpy as np
-from numpy.lib.utils import deprecate
 
 from .mdamath import triclinic_vectors, triclinic_box
 
@@ -99,6 +97,7 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
+# pylint: disable=unused-import
 from .c_distances import (calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
@@ -359,7 +358,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
     refnum = ref.shape[0]
-    distnum = refnum * (refnum - 1) / 2
+    distnum = refnum * (refnum - 1) // 2
 
     if result is not None:
         _check_results_array(result, (distnum,))

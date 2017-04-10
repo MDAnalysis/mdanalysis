@@ -141,6 +141,7 @@ Classes
     it will be completely removed in 0.16.0.
 
 """
+from __future__ import absolute_import
 
 from six.moves import range, zip
 
@@ -157,7 +158,6 @@ from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 

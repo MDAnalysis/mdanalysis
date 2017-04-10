@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import numpy as np
 
@@ -5,7 +6,7 @@ import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
-                           assert_, assert_array_almost_equal)
+                           assert_)
 
 from MDAnalysisTests import tempdir, make_Universe
 from MDAnalysisTests.coordinates.reference import (

@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 import numpy as np
 
 from MDAnalysisTests import datafiles
-from MDAnalysisTests.datafiles import (PDB_small, PDB, PDB_full, LAMMPSdata,
+from MDAnalysisTests.datafiles import (LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
                                        LAMMPSdata_mini, PSF_TRICLINIC,
                                        DCD_TRICLINIC, PSF_NAMD_TRICLINIC,

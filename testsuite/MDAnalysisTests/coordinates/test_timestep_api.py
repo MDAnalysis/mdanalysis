@@ -25,6 +25,7 @@
 
 _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
+from __future__ import absolute_import
 
 from numpy.testing import assert_equal, dec
 from MDAnalysisTests import module_not_found, parser_not_found

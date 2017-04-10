@@ -1,13 +1,15 @@
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
+from __future__ import absolute_import
+import os
+
+from numpy.testing import (assert_equal,
                            assert_array_equal, raises)
 import numpy as np
-
-import os
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
+
 
 class XVGReference(BaseAuxReference):
     def __init__(self):

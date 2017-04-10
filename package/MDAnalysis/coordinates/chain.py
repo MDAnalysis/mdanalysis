@@ -42,8 +42,6 @@ interest to developers.
 """
 from __future__ import absolute_import
 
-import warnings
-
 import os.path
 import itertools
 import bisect

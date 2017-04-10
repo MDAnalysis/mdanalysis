@@ -239,7 +239,7 @@ References
               each of them in turn.
 """
 
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, division
 
 from six.moves import zip, cPickle
 import six

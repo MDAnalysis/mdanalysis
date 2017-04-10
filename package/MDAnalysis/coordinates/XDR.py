@@ -32,6 +32,7 @@ MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
 """
+from __future__ import absolute_import
 import six
 
 import errno

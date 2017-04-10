@@ -74,6 +74,7 @@ Functions
 .. autofunction:: Merge
 
 """
+from __future__ import absolute_import
 import six
 
 import errno

@@ -109,14 +109,10 @@ can be used in downstream processing).
 
 """
 
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
 from six.moves import range
 
 import numpy as np
-import sys
-import os
-import os.path
-import errno
 import warnings
 
 try:
@@ -145,10 +141,9 @@ except ImportError:
     )
 
 import MDAnalysis
-from MDAnalysis.core import groups
-from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
+from MDAnalysis.lib.util import fixedwidth_bins
 from MDAnalysis.lib import NeighborSearch as NS
-from MDAnalysis import NoDataError, MissingDataWarning
+from MDAnalysis import MissingDataWarning
 from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressMeter

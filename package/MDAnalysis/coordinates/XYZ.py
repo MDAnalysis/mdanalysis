@@ -75,6 +75,7 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
 """
+from __future__ import division, absolute_import
 import six
 from six.moves import range, zip
 

@@ -178,6 +178,7 @@ normal users.
 .. autofunction:: get_matching_atoms
 
 """
+from __future__ import division, absolute_import
 
 import os.path
 from six.moves import range, zip, zip_longest

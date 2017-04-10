@@ -35,6 +35,7 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 import six
 from six.moves import zip
 # While reduce is a built-in in python 2, it is not in python 3
@@ -42,7 +43,6 @@ from functools import reduce
 
 import itertools
 import numpy as np
-import warnings
 
 from .. import _PARSERS
 from ..coordinates.base import IOBase

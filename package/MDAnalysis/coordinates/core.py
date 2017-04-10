@@ -38,10 +38,6 @@ Helper functions:
 """
 from __future__ import absolute_import
 
-import six
-
-from ..lib import util
-from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 from ..core._get_readers import get_reader_for, get_writer_for
 
 

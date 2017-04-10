@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import itertools
 import numpy as np
 from numpy.testing import (
@@ -13,9 +14,6 @@ import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import Segids
-from MDAnalysis.topology.base import change_squash
 
 
 class TestGroupProperties(object):

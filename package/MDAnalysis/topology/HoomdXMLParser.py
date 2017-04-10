@@ -50,7 +50,6 @@ from __future__ import absolute_import
 import xml.etree.ElementTree as ET
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology

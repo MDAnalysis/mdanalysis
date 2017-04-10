@@ -72,8 +72,6 @@ from __future__ import absolute_import, division
 
 from six.moves import range, zip
 import numpy as np
-import functools
-from math import ceil
 
 from . import guessers
 from .tables import NUMBER_TO_ELEMENT

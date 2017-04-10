@@ -22,16 +22,15 @@
 
 # Test the selection exporters in MDAnalysis.selections
 
+from __future__ import absolute_import
 # use StringIO and NamedStream to write to memory instead to temp files
-from six.moves import cPickle, StringIO
+from six.moves import  StringIO
 
 import re
 
 import numpy as np
 from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
-from nose.plugins.attrib import attr
 
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysis.tests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found
 

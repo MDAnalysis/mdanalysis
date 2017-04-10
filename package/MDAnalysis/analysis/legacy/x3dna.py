@@ -124,10 +124,9 @@ Utilities
 .. autoexception:: ApplicationError
 
 """
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from six.moves import range
 
-import glob
 import os
 import errno
 import shutil
@@ -139,8 +138,7 @@ import tempfile
 import textwrap
 from collections import OrderedDict
 
-from MDAnalysis import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
+from MDAnalysis.lib.util import which
 
 import logging
 

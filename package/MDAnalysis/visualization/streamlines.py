@@ -32,6 +32,7 @@ Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 .. autofunction:: generate_streamlines
 
 '''
+from __future__ import absolute_import
 
 try:
     import matplotlib
@@ -45,7 +46,6 @@ except ImportError:
 import MDAnalysis
 import multiprocessing
 import numpy as np
-import scipy
 
 
 def produce_grid(tuple_of_limits, grid_spacing):

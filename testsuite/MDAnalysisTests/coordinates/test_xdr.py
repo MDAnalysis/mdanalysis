@@ -1,6 +1,6 @@
+from __future__ import absolute_import, division
 from six.moves import zip, range
 
-import errno
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 import numpy as np

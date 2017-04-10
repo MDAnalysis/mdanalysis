@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import print_function, absolute_import, division
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import contacts
@@ -28,8 +28,6 @@ from MDAnalysis.analysis.distances import distance_array
 from numpy.testing import (dec, assert_almost_equal, assert_equal, raises,
                            assert_array_equal, assert_array_almost_equal)
 import numpy as np
-
-import os
 
 from MDAnalysisTests.datafiles import (PSF,
                                        DCD,

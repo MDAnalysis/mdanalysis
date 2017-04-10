@@ -97,6 +97,7 @@ option are guaranteed to conform to the above format::
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 """
+from __future__ import absolute_import
 from six.moves import zip
 
 import itertools

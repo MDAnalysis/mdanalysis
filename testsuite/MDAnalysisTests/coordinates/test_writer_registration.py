@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from numpy.testing import assert_, assert_raises
 
 import MDAnalysis as mda

@@ -20,7 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import collections
 import os
@@ -28,7 +28,6 @@ import os
 import psutil
 
 from nose.plugins.base import Plugin
-from nose.pyversion import exc_to_unicode, force_unicode
 from nose.util import ln
 
 

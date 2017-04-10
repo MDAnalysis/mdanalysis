@@ -41,8 +41,6 @@ from __future__ import absolute_import
 import six
 from six.moves import range
 
-import os.path
-
 from ..lib import util
 from . import _SELECTION_WRITERS
 

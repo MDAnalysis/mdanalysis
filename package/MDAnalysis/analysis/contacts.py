@@ -210,7 +210,7 @@ The following classes are deprecated and are scheduled for removal in release 0.
    :members:
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
 from six.moves import zip
 
 import os

@@ -37,6 +37,7 @@ Classes
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
+from __future__ import absolute_import
 
 import mmtf
 

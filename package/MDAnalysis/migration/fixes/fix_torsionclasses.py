@@ -2,12 +2,11 @@
 run with: python ten2eleven.py -f torsionclasses test_dummy_old_MDA_code.py 
 Author: Tyler Reddy (but effectively a hack of lib2to3/fixes/fix_metaclass.py)
 '''
+from __future__ import absolute_import
 
-from lib2to3.fixer_base import BaseFix
-from lib2to3.fixer_util import Name, Dot, syms, Node, Leaf
-from lib2to3 import pytree
+from lib2to3.fixer_util import syms, Node, Leaf
 from lib2to3.fixes import fix_metaclass
-from lib2to3.fixes.fix_metaclass import has_metaclass, fixup_parse_tree, find_metas, fixup_indent
+from lib2to3.fixes.fix_metaclass import fixup_parse_tree
 from lib2to3.pygram import token
 
 

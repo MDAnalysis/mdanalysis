@@ -23,6 +23,7 @@
 Useful functions for running tests
 
 """
+from __future__ import absolute_import
 
 try:
     import __builtin__

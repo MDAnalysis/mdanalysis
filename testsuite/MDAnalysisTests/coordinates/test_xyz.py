@@ -1,4 +1,5 @@
-from six.moves import range, zip
+from __future__ import absolute_import
+from six.moves import zip
 
 import MDAnalysis as mda
 import numpy as np
@@ -6,7 +7,6 @@ import os
 from numpy.testing import (
     assert_array_almost_equal,
     raises,
-    assert_array_equal,
     assert_,
 )
 

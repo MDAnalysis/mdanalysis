@@ -31,6 +31,7 @@ does not allow for runtime loading of external plugins).
 The decorator can be used without parentheses in case of default arguments as well as 
 a function call: `@knownfailure()`, with parentheses in case of optional arguments.
 """
+from __future__ import absolute_import
 
 from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded
 import nose

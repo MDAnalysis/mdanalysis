@@ -35,13 +35,13 @@ For the example provided below, the minimum least-squares RMSD for the two
      [-0.0271479  -0.67963547  0.73304748]]
 
 """
+from __future__ import absolute_import, division
 
 import numpy as np
 
 import MDAnalysis.lib.qcprot as qcp
 
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
-from nose.plugins.attrib import attr
 import MDAnalysis.analysis.rms as rms
 
 

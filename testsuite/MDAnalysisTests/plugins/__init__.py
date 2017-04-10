@@ -61,6 +61,7 @@ happen only at test runtime. See Issue 344 for details.
 .. _API specification:
    http://nose.readthedocs.org/en/latest/plugins/interface.html
 """
+from __future__ import absolute_import
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import

@@ -131,6 +131,7 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
+from __future__ import division, absolute_import
 
 from six.moves import zip
 import numpy as np
@@ -141,7 +142,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter, _set_verbose
+from MDAnalysis.lib.log import _set_verbose
 from MDAnalysis.lib.util import asiterable
 
 

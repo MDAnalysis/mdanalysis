@@ -38,6 +38,7 @@ Helper functions for common mathematical operations
 
 .. versionadded:: 0.11.0
 """
+from __future__ import division, absolute_import
 from six.moves import zip
 import numpy as np
 

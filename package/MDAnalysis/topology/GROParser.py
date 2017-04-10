@@ -42,7 +42,6 @@ Classes
 from __future__ import absolute_import
 
 import numpy as np
-from six.moves import range
 
 from ..lib.util import openany
 from ..core.topologyattrs import (

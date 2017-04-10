@@ -28,6 +28,7 @@ Sample code to use the routine for nucleic acid analysis
 For the example provided below, the backbone dihedrals and WC distances
 
 """
+from __future__ import absolute_import
 
 import numpy as np
 import MDAnalysis
@@ -37,7 +38,6 @@ from MDAnalysis.tests.datafiles import NUCL
 
 from numpy.testing import assert_almost_equal ,assert_array_almost_equal, TestCase
 
-from nose.plugins.attrib import attr
 
 
 class TestNuclinfo(TestCase):

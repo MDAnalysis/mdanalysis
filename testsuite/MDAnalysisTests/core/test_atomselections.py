@@ -19,6 +19,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division
+
 
 from six.moves import range
 
@@ -33,14 +35,10 @@ from numpy.testing import(
     assert_warns,
     assert_raises,
 )
-from nose.plugins.attrib import attr
-import warnings
 
 import MDAnalysis
-import MDAnalysis as mda
 import MDAnalysis.core.selection
 from MDAnalysis.lib.distances import distance_array
-from MDAnalysis.core.topologyobjects import TopologyGroup
 from MDAnalysis.core.selection import Parser
 from MDAnalysis import SelectionError
 
@@ -50,7 +48,6 @@ from MDAnalysis.tests.datafiles import (
     PSF_NAMD, PDB_NAMD,
     GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
-    PDB_full,
     PDB_icodes,
 )
 from MDAnalysisTests import parser_not_found, make_Universe

@@ -65,8 +65,7 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
-
-from six.moves import range
+from __future__ import absolute_import
 
 import os
 import numpy as np

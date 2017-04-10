@@ -28,6 +28,7 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 "crd"). The CHARMM "extended format" is handled automatically.
 
 """
+from __future__ import absolute_import
 
 from six.moves import zip
 

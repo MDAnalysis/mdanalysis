@@ -42,7 +42,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 from six.moves import range
 
 import logging
@@ -51,7 +51,6 @@ from math import ceil
 import numpy as np
 
 from ..lib.util import openany
-from . import guessers
 from .base import TopologyReaderBase, squash_by
 from ..core.topologyattrs import (
     Atomids,

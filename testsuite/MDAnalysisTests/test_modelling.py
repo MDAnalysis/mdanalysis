@@ -19,25 +19,22 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-    TRZ, TRZ_psf, \
-    capping_input, capping_output, capping_ace, capping_nma, \
-    merge_protein, merge_ligand, merge_water
+from MDAnalysis.tests.datafiles import (PSF, DCD,
+                                        capping_input, capping_output, capping_ace, capping_nma,
+                                        merge_protein, merge_ligand, merge_water)
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis import NoDataError
 from MDAnalysisTests import parser_not_found, tempdir
 
-import numpy as np
 from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
                            assert_array_equal)
-from nose.plugins.attrib import attr
 
 import os
 
-from MDAnalysis import Universe, Merge
+from MDAnalysis import  Merge
 from MDAnalysis.analysis.align import alignto
 
 

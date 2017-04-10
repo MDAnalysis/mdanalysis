@@ -30,7 +30,7 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
-
+from __future__ import division, absolute_import
 from six.moves import zip, range
 
 import Bio.Seq
@@ -44,7 +44,7 @@ import numpy as np
 from . import flags
 from ..lib.util import cached, convert_aa_code, iterable
 from ..lib import transformations, mdamath
-from ..exceptions import NoDataError, SelectionError
+from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,

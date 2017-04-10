@@ -19,11 +19,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division
 import six
-from six.moves import zip, range
-from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
+from six.moves import range
+from MDAnalysisTests.datafiles import TRZ, TRZ_psf
 from MDAnalysisTests import module_not_found, tempdir
-from numpy.testing import assert_, assert_array_almost_equal, assert_raises, assert_, dec
+from numpy.testing import assert_, assert_array_almost_equal, assert_raises, dec
 import numpy as np
 import mock
 
@@ -156,7 +157,7 @@ class TestHydrogenBondAutocorrel(object):
             A2 = 0.25
             tau1 = 0.5
             tau2 = 0.1
-            return A1 * np.exp(-t/tau1) + A2 * np.exp(-t/tau2)
+            return A1 * np.exp(-t / tau1) + A2 * np.exp(-t / tau2)
         hbond.solution['time'] = time = np.arange(0, 0.06, 0.001)
         hbond.solution['results'] = actual_function_cont(time)
 
@@ -184,7 +185,7 @@ class TestHydrogenBondAutocorrel(object):
             tau1 = 5
             tau2 = 1
             tau3 = 0.1
-            return A1 * np.exp(-t/tau1) + A2 * np.exp(-t/tau2) + A3 * np.exp(-t/tau3)
+            return A1 * np.exp(-t / tau1) + A2 * np.exp(-t / tau2) + A3 * np.exp(-t / tau3)
         hbond.solution['time'] = time = np.arange(0, 6.0, 0.01)
         hbond.solution['results'] = actual_function_int(time)
 

@@ -27,6 +27,7 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
+from __future__ import absolute_import
 import six
 from six.moves import range, zip
 import inspect

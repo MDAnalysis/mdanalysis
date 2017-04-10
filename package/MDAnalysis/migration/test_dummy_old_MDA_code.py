@@ -1,3 +1,5 @@
+# pylint: disable=unused-import
+from __future__ import absolute_import
 import MDAnalysis
 from MDAnalysis.tests.datafiles import GRO, XTC
 universe = MDAnalysis.Universe(GRO, XTC)
