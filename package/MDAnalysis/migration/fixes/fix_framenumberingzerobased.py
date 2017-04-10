@@ -1,5 +1,5 @@
 '''
-run with: python ten2eleven.py -f framenumberingzerobased test_dummy_old_MDA_code.py 
+run with: python ten2sixteen.py -f framenumberingzerobased test_dummy_old_MDA_code.py 
 Author: Tyler Reddy
 '''
 
@@ -23,7 +23,7 @@ class FixFramenumberingzerobased(BaseFix):
         method_name = method.value
         head = results['head']
         head = [n.clone() for n in head]
-        comment_string = '\n#ten2eleven.py detected a possible incompatibility between this code and MDAnalysis >= 0.11.0\n#Frame numbering is now 0-based\n#Please manually review the following lines (and remove these comments afterwards):\n'
+        comment_string = '\n#ten2sixteen.py detected a possible incompatibility between this code and MDAnalysis >= 0.11.0\n#Frame numbering is now 0-based\n#Please manually review the following lines (and remove these comments afterwards):\n'
         #args = [Name('#dummy')] + head + [pytree.Node(syms.trailer, [Dot(), Name(method_name, prefix = method.prefix), Dot()])]
         #print 'node:', node
         if node.prefix:

@@ -198,7 +198,7 @@ from .coordinates.MMTF import fetch_mmtf
 
 collection = Timeseries.TimeseriesCollection()
 
-from .migration.ten2eleven import ten2eleven
+from .migration.ten2sixteen import ten2sixteen
 
 import six
 if six.PY3:

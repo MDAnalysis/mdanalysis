@@ -1,5 +1,5 @@
 '''
-run with: python ten2eleven.py -f numframes test_dummy_old_MDA_code.py 
+run with: python ten2sixteen.py -f numframes test_dummy_old_MDA_code.py 
 Author: Tyler Reddy
 '''
 
