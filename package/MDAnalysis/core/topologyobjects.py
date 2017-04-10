@@ -27,7 +27,7 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
-from __future__ import print_function, absolute_import
+from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
 import numpy as np

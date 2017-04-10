@@ -42,7 +42,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 from six.moves import range
 
 import logging

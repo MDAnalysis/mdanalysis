@@ -195,6 +195,7 @@ enable=abstract-class-instantiated,
        using-constant-test,
        yield-inside-async-function,
        yield-outside-function,
+       old-division,
 
 # Things we'd like to try.
 # Procedure:
@@ -237,7 +238,6 @@ enable=abstract-class-instantiated,
        # no-value-for-parameter,
        # nonzero-method,
        # not-callable,
-       # old-division,
        # pointless-statement,
        # pointless-string-statement,
        # print-statement,

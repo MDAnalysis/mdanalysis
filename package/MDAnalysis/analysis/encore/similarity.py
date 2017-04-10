@@ -168,7 +168,7 @@ Function reference
 
 
 """
-from __future__ import print_function
+from __future__ import print_function, division
 from six.moves import range, zip
 
 import MDAnalysis as mda
@@ -716,7 +716,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
                                               format='fac').shape[0]
 
-    rest_slices = ens_size / window_size
+    rest_slices = ens_size // window_size
     residuals = ens_size % window_size
     slices_n = [0]
 
