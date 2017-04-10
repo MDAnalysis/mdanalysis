@@ -32,7 +32,7 @@ module. They are mostly of use to developers.
 
 """
 
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import six
 
 # Global imports

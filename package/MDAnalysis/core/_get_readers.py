@@ -19,6 +19,7 @@ coordinates/core (all others).  They are declared here to avoid
 circular imports.
 
 """
+from __future__ import absolute_import
 
 import copy
 import inspect

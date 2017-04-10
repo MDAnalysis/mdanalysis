@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 
 from numpy.testing import assert_array_equal
 
@@ -33,7 +34,7 @@ class TestDatafiles(object):
     def test_all_exports(self):
         import MDAnalysisTests.datafiles
         missing = [name for name in dir(MDAnalysisTests.datafiles)
-                   if not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__]
+                   if not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'absolute_import']
         assert_array_equal(missing, [], err_msg="Variables need to be added to __all__.")
 
     def test_export_variables(self):

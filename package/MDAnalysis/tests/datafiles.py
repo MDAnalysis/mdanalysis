@@ -35,7 +35,7 @@ Real MD simulation data, used for examples and the unit tests::
    :mod:`MDAnalysisTests` package which must be downloaded from
    http://pypi.python.org/pypi/MDAnalysisTests and installed.
 """
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 try:
     from MDAnalysisTests.datafiles import *

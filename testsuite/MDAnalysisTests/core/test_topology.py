@@ -3,7 +3,7 @@
 Should convert between indices (*ix)
 Should work with both a single or an array of indices
 """
-import six
+from __future__ import absolute_import
 from six.moves import zip
 import itertools
 

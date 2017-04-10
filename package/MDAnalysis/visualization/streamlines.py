@@ -32,6 +32,7 @@ Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 .. autofunction:: generate_streamlines
 
 '''
+from __future__ import absolute_import
 
 try:
     import matplotlib

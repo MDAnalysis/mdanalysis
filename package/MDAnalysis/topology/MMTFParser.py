@@ -63,6 +63,7 @@ Classes
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
+from __future__ import absolute_import
 from six.moves import zip
 
 from collections import defaultdict

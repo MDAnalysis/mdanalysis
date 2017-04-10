@@ -1,4 +1,4 @@
-import numpy as np
+from __future__ import absolute_import
 from numpy.testing import (
     assert_,
     assert_array_equal,

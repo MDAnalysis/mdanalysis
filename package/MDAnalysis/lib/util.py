@@ -154,7 +154,7 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
-from __future__ import division
+from __future__ import division, absolute_import
 import six
 from six.moves import range, map
 import sys

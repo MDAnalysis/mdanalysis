@@ -63,7 +63,7 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
 from six.moves import range
 
 import numpy as np

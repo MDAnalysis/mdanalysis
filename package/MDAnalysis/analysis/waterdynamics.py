@@ -414,7 +414,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 from six.moves import range, zip_longest
 
 import numpy as np

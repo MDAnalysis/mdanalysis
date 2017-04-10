@@ -112,6 +112,7 @@ excluded.
 .. _Gromacs: http://www.gromacs.org
 
 """
+from __future__ import absolute_import
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 

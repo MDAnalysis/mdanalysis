@@ -27,6 +27,7 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 .. autofunction:: get_auxreader_for
 .. autofunction:: auxreader
 """
+from __future__ import absolute_import
 
 from six import string_types
 

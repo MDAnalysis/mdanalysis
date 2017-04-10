@@ -105,6 +105,7 @@ Classes
    :members:
    :inherited-members:
 """
+from __future__ import absolute_import
 
 from six.moves import zip, range
 import numpy as np

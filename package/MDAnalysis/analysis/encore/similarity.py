@@ -168,7 +168,7 @@ Function reference
 
 
 """
-from __future__ import print_function, division
+from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
 
 import MDAnalysis as mda
