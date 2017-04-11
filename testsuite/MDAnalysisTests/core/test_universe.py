@@ -86,8 +86,13 @@ class TestUniverseCreation(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
     @staticmethod
-    def test_load_stringio():
+    def test_load_topology_stringio():
         u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
+        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
+
+    @staticmethod
+    def test_load_trajectory_stringio():
+        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
     @staticmethod
