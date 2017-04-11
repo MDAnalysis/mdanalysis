@@ -89,6 +89,7 @@ class TestUniverseCreation(object):
     def test_load_topology_stringio():
         u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
+        assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
 
     @staticmethod
     def test_load_trajectory_stringio():
