@@ -198,6 +198,7 @@ enable=abstract-class-instantiated,
        old-division,
        relative-import,
        no-absolute-import,
+       print-statement,
 
 # Things we'd like to try.
 # Procedure:
@@ -241,7 +242,6 @@ enable=abstract-class-instantiated,
        # not-callable,
        # pointless-statement,
        # pointless-string-statement,
-       # print-statement,
        # property-on-old-class,
        # protected-access,
        # range-builtin-not-iterating,
