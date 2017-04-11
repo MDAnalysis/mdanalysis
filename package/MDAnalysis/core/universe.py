@@ -75,6 +75,7 @@ Functions
 
 """
 from __future__ import absolute_import
+from six.moves import range
 import six
 
 import errno

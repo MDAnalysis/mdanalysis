@@ -199,6 +199,10 @@ enable=abstract-class-instantiated,
        relative-import,
        no-absolute-import,
        print-statement,
+       xrange-builtin,
+       zip-builtin-not-iterating,
+       map-builtin-not-iterating,
+       range-builtin-not-iterating,
 
 # Things we'd like to try.
 # Procedure:
@@ -244,7 +248,6 @@ enable=abstract-class-instantiated,
        # pointless-string-statement,
        # property-on-old-class,
        # protected-access,
-       # range-builtin-not-iterating,
        # redefined-builtin,
        # redefined-outer-name,
        # reduce-builtin,
@@ -268,7 +271,6 @@ enable=abstract-class-instantiated,
        # used-before-assignment,
        # wildcard-import,
        # wrong-import-order,
-       # xrange-builtin,
        # zip-builtin-not-iterating,
 
 
