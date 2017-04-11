@@ -92,7 +92,7 @@ class TestUniverseCreation(object):
 
     @staticmethod
     def test_load_trajectory_stringio():
-        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO')
+        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
     @staticmethod
