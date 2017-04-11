@@ -33,6 +33,7 @@ Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 
 '''
 from __future__ import absolute_import
+from six.moves import zip
 
 try:
     import matplotlib
@@ -164,7 +165,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         if ts.frame > end_frame:
             break  # stop here
-    return zip(reconstruction_index_list, xy_deltas_to_write.tolist())
+    return list(zip(reconstruction_index_list, xy_deltas_to_write.tolist()))
 
 
 def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,

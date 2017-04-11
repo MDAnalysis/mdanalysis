@@ -67,7 +67,7 @@ class ConfigReader(base.SingleFrameReaderBase):
 
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             if not imcon == 0:
                 unitcell[0][:] = inf.readline().split()
                 unitcell[1][:] = inf.readline().split()
@@ -96,13 +96,13 @@ class ConfigReader(base.SingleFrameReaderBase):
                 else:
                     ids.append(idx)
 
-                xyz = list(map(float, inf.readline().split()))
+                xyz = np.float32(inf.readline().split())
                 coords.append(xyz)
                 if has_vels:
-                    vxyz = list(map(float, inf.readline().split()))
+                    vxyz = np.float32(inf.readline().split())
                     velocities.append(vxyz)
                 if has_forces:
-                    fxyz = list(map(float, inf.readline().split()))
+                    fxyz = np.float32(inf.readline().split())
                     forces.append(fxyz)
 
                 line = inf.readline().strip()
@@ -155,7 +155,7 @@ class HistoryReader(base.ReaderBase):
         # "private" file handle
         self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.n_atoms = map(int, self._file.readline().split()[:3])
+        self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 

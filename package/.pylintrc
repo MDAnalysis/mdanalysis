@@ -235,7 +235,6 @@ enable=abstract-class-instantiated,
        # invalid-slice-index,
        # logging-format-interpolation,
        # long-builtin,
-       # map-builtin-not-iterating,
        # metaclass-assignment,
        # missing-docstring,
        # next-method-called,
@@ -271,7 +270,6 @@ enable=abstract-class-instantiated,
        # used-before-assignment,
        # wildcard-import,
        # wrong-import-order,
-       # zip-builtin-not-iterating,
 
 
 [REPORTS]

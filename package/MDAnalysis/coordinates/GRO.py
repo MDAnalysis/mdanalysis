@@ -152,7 +152,7 @@ class GROReader(base.SingleFrameReaderBase):
             for pos, line in enumerate(grofile, start=-2):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.array(list(map(float, line.split())))
+                    unitcell = np.float32(line.split())
                     continue
                 if pos < 0:
                     continue

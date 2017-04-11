@@ -365,7 +365,7 @@ class XYZReader(base.ReaderBase):
             f.readline()
             f.readline()
             for i in range(self.n_atoms):
-                self.ts._pos[i] = list(map(float, f.readline().split()[1:4]))
+                self.ts._pos[i] = np.float32(f.readline().split()[1:4])
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:

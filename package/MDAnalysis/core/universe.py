@@ -997,8 +997,7 @@ def Merge(*args):
             tg = tg.atomgroup_intersection(ag, strict=True)
 
             # Map them so they refer to our new indices
-            new_idx = [tuple(map(lambda x:mapping[x], entry))
-                       for entry in tg.indices]
+            new_idx = [tuple([mapping[x] for x in entry]) for entry in tg.indices]
             bondidx.extend(new_idx)
             if hasattr(tg, '_bondtypes'):
                 types.extend(tg._bondtypes)
