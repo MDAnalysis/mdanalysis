@@ -90,7 +90,7 @@ from .. import _ANCHOR_UNIVERSES
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
-from ..lib.util import cached
+from ..lib.util import cached, NamedStream, isstream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -140,7 +140,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename or Topology object
+    topology : filename, Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
@@ -226,7 +226,13 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                self.filename = args[0]
+                if isstream(args[0]):
+                    filename = None
+                    if hasattr(args[0], 'name'):
+                        filename = args[0].name
+                    self.filename = NamedStream(args[0], filename)
+                else:
+                    self.filename = args[0]
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:

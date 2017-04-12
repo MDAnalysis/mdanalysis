@@ -25,7 +25,7 @@ import copy
 import inspect
 import mmtf
 import numpy as np
-
+from MDAnalysis.lib.util import isstream
 
 from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
 from ..lib import util
@@ -72,7 +72,7 @@ def get_reader_for(filename, format=None):
         return format
 
     # ChainReader gets returned even if format is specified
-    if not isinstance(filename, np.ndarray) and util.iterable(filename):
+    if not isinstance(filename, np.ndarray) and util.iterable(filename) and not isstream(filename):
         format = 'CHAIN'
     # Only guess if format is not specified
     elif format is None:
