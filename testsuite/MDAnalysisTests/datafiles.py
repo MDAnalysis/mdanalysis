@@ -154,6 +154,7 @@ ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
+COORDINATES_PQR = resource_filename(__name__, 'data/coordinates/test.pqr')
 COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
 COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
 COORDINATES_GRO_BZ2 = resource_filename(__name__, 'data/coordinates/test.gro.bz2')
