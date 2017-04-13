@@ -16,7 +16,8 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 mm/dd/17
 
   * 0.16.1
-
+    - Change core.util string.uppercase to string.ascii_uppercase for py3 
+      compatibility
 
 04/10/17 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
          tyler.je.reddy, utkbansal, vedantrathore, kash1102
