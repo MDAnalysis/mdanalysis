@@ -359,23 +359,27 @@ class PDBReader(base.ReaderBase):
         self._pdbfile.seek(start)
         chunk = self._pdbfile.read(stop - start)
 
+        tmp_buf = []
         for line in chunk.splitlines():
             if line[:6] in ('ATOM  ', 'HETATM'):
                 # we only care about coordinates
-                self.ts._pos[pos] = [line[30:38],
-                                     line[38:46],
-                                     line[46:54]]
+                tmp_buf.append([line[30:38], line[38:46], line[46:54]])
                 # TODO import bfactors - might these change?
                 try:
+                    # does an implicit str -> float conversion
                     occupancy[pos] = line[54:60]
                 except ValueError:
                     # Be tolerant for ill-formated or empty occupancies
                     pass
                 pos += 1
             elif line[:6] == 'CRYST1':
+                # does an implicit str -> float conversion
                 self.ts._unitcell[:] = [line[6:15], line[15:24],
                                         line[24:33], line[33:40],
                                         line[40:47], line[47:54]]
+
+        # doing the conversion at the end speeds up the parser
+        self.ts._pos[:] = np.float32(tmp_buf)
 
         # check if atom number changed
         if pos != self.n_atoms:
