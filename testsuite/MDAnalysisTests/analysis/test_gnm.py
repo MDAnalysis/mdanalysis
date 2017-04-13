@@ -47,7 +47,7 @@ class TestGNM(object):
         result = gnm.results
         assert_equal(len(result), 10)
         time, eigenvalues, eigenvectors = zip(*result)
-        assert_almost_equal(time, range(0, 1000, 100), decimal=4)
+        assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
           [ 2.0287113e-15, 4.1471575e-15, 1.8539533e-15, 4.3810359e-15,
             3.9607304e-15, 4.1289113e-15, 2.5501084e-15, 4.0498182e-15,
@@ -59,7 +59,7 @@ class TestGNM(object):
         result = gnm.results
         assert_equal(len(result), 4)
         time, eigenvalues, eigenvectors = zip(*result)
-        assert_almost_equal(time, range(0, 1200, 300), decimal=4)
+        assert_almost_equal(time, np.arange(0, 1200, 300), decimal=4)
         assert_almost_equal(eigenvalues,
           [ 2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15])
 
@@ -89,7 +89,7 @@ class TestGNM(object):
         result = gnm.results
         assert_equal(len(result), 10)
         time, eigenvalues, eigenvectors = zip(*result)
-        assert_almost_equal(time, range(0, 1000, 100), decimal=4)
+        assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
           [ 0.1502614,  0.1426407,  0.1412389,  0.1478305,  0.1425449,
             0.1563304,  0.156915 ,  0.1503619,  0.1572592,  0.1542063])
@@ -120,7 +120,7 @@ class TestGNM(object):
         result = gnm.results
         assert_equal(len(result), 10)
         time, eigenvalues, eigenvectors = zip(*result)
-        assert_almost_equal(time, range(0, 1000, 100), decimal=4)
+        assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
           [ 2.4328739,  2.2967251,  2.2950061,  2.4110916,  2.3271343,
             2.5213111,  2.5189955,  2.4481649,  2.5224835,  2.4824345])

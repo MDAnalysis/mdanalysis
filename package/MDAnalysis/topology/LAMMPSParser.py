@@ -279,7 +279,7 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             idx = int(line[0]) - 1
-            vx, vy, vz = map(float, line[1:4])
+            vx, vy, vz = np.float64(line[1:4])
             vel[idx] = vx, vy, vz
 
     def _parse_bond_section(self, datalines, nentries):
@@ -295,8 +295,7 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple(map(lambda x: int(x) - 1,
-                                     line[2:2 + nentries])))
+            section.append(tuple([int(x) - 1 for x in line[2:2 + nentries]]))
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -342,7 +341,7 @@ class DATAParser(TopologyReaderBase):
 
         for line in datalines:
             line = line.split()
-            idx, resid = map(int, line[:2])
+            idx, resid = np.int64(line[:2])
             atype = line[2]
             idx -= 1
             resids[idx] = resid
@@ -394,18 +393,18 @@ class DATAParser(TopologyReaderBase):
         return masses
 
     def _parse_box(self, header):
-        x1, x2 = map(float, header['xlo xhi'].split())
+        x1, x2 = np.float32(header['xlo xhi'].split())
         x = x2 - x1
-        y1, y2 = map(float, header['ylo yhi'].split())
+        y1, y2 = np.float32(header['ylo yhi'].split())
         y = y2 - y1
-        z1, z2 = map(float, header['zlo zhi'].split())
+        z1, z2 = np.float32(header['zlo zhi'].split())
         z = z2 - z1
 
         if 'xy xz yz' in header:
             # Triclinic
             unitcell = np.zeros((3, 3), dtype=np.float32)
 
-            xy, xz, yz = map(float, header['xy xz yz'].split())
+            xy, xz, yz = np.float32(header['xy xz yz'].split())
 
             unitcell[0][0] = x
             unitcell[1][0] = xy
@@ -553,7 +552,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
-                            data.append(tuple(map(conv_float, fields[1:])))
+                            data.append(tuple([conv_float(el) for el in fields[1:]]))
                         sections[line] = data
                     elif line in self.connections:
                         h, numfields = self.connections[line]
@@ -562,7 +561,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
-                            data.append(tuple(map(int, fields[1:])))
+                            data.append(tuple(np.int64(fields[1:])))
                         sections[line] = data
                     elif line == "Atoms":
                         file_iter.next()
@@ -624,7 +623,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     bonds = bond_list[index:index + 4]
                 except IndexError:
                     bonds = bond_list[index:-1]
-                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8), bonds)
+                bond_line = [string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8) for bond in bonds]
                 file.write(''.join(bond_line) + '\n')
 
     def writePDB(self, filename):

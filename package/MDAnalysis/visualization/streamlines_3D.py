@@ -34,7 +34,7 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 '''
 from __future__ import division, absolute_import
 import six
-from six.moves import range
+from six.moves import range, zip
 
 import MDAnalysis
 import multiprocessing
@@ -98,7 +98,7 @@ def split_grid(grid, num_cores):
     for x_sheet_coords, y_sheet_coords, z_sheet_coords in zip(ordered_list_per_sheet_x_values,
                                                               ordered_list_per_sheet_y_values,
                                                               ordered_list_per_sheet_z_values):
-        ordered_list_cartesian_coordinates_per_sheet.append(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords))
+        ordered_list_cartesian_coordinates_per_sheet.append(list(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords)))
     array_ordered_cartesian_coords_per_sheet = np.array(ordered_list_cartesian_coordinates_per_sheet)
     #now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /
     # centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input

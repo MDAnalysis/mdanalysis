@@ -20,6 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+from six.moves import range
 import numpy as np
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            raises)
@@ -114,7 +115,7 @@ class BaseAuxReference(object):
         # default None behavior set here so won't get errors when time/data 
         # selection not implemented. 
         self.time_selector = None 
-        self.select_time_ref = range(self.n_steps)
+        self.select_time_ref = np.arange(self.n_steps)
         self.data_selector = None 
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 

@@ -128,7 +128,7 @@ class PQRReader(base.SingleFrameReaderBase):
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
-                    coords.append(map(float, fields[-5:-2]))
+                    coords.append(np.float32(fields[-5:-2]))
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
             np.array(coords, dtype=np.float32),

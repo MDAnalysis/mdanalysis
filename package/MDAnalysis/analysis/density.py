@@ -110,7 +110,7 @@ can be used in downstream processing).
 """
 
 from __future__ import print_function, division, absolute_import
-from six.moves import range
+from six.moves import range, zip
 
 import numpy as np
 import sys
@@ -915,15 +915,15 @@ class BfactorDensityCreator(object):
         smax = np.max(coord, axis=0) + padding
 
         BINS = fixedwidth_bins(delta, smin, smax)
-        arange = zip(BINS['min'], BINS['max'])
+        arange = list(zip(BINS['min'], BINS['max']))
         bins = BINS['Nbins']
 
         # get edges by doing a fake run
         grid, self.edges = np.histogramdd(np.zeros((1, 3)),
                                              bins=bins, range=arange, normed=False)
-        self.delta = np.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
-        self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
-        self.origin = map(lambda m: m[0], self.midpoints)
+        self.delta = np.diag([(e[-1] - e[0]) / (len(e) - 1) for e in self.edges])
+        self.midpoints = [0.5 * (e[:-1] + e[1:]) for e in self.edges]
+        self.origin = [m[0] for m in self.midpoints]
         n_frames = 1
 
         if sigma is None:

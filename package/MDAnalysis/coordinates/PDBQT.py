@@ -155,15 +155,12 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     break
                 if line.startswith('CRYST1'):
                     # lengths
-                    x, y, z = map(
-                        float, (line[6:15], line[15:24], line[24:33]))
+                    x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
                     # angles
-                    A, B, G = map(
-                        float, (line[33:40], line[40:47], line[47:54]))
+                    A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
                     unitcell[:] = x, y, z, A, B, G
                 if line.startswith(('ATOM', 'HETATM')):
-                    x, y, z = map(
-                        float, (line[30:38], line[38:46], line[46:54]))
+                    x, y, z = np.float32((line[30:38], line[38:46], line[46:54]))
                     coords.append((x, y, z))
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(

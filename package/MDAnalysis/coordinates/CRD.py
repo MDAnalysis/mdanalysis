@@ -30,7 +30,7 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 """
 from __future__ import absolute_import
 
-from six.moves import zip
+from six.moves import zip, range
 
 import itertools
 import numpy as np

@@ -208,7 +208,7 @@ Classes, methods, and functions
 .. |Np| replace:: :math:`N_p`
 
 """
-from __future__ import division, absolute_import
+from __future__ import division, absolute_import, print_function
 
 import six
 from six.moves import range, cPickle
