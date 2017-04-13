@@ -13,12 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/17 utkbansal, kain88-de
+
+mm/dd/17 utkbansal, kain88-de, xiki-tempula
+
 
   * 0.16.1
 
 Enhancements
   * Universe now works with StringIO objects for topologies and trajectories.
+  * Residues with the same residue ids are not merged by default now 
+    (apply to PDB, GRO) (Issue #1306)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility

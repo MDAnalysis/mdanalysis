@@ -194,7 +194,7 @@ class TestPDBWriter(TestCase):
     def test_writer_no_resids(self):
         self.u_no_resids.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        expected = np.ones((1,))
+        expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow

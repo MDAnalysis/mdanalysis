@@ -56,7 +56,7 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, change_squash
 from . import guessers
 
 
@@ -129,8 +129,9 @@ class GROParser(TopologyReaderBase):
         # Guess types and masses
         atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(atomtypes)
-
-        residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
+        
+        residx, (new_resids, new_resnames) = change_squash(
+                                (resids, resnames), (resids, resnames))
 
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]
