@@ -223,7 +223,7 @@ class TestGROWriter(BaseWriterTest):
         outfile = self.tmp_file('write-no-resids-test')
         self.u_no_resids.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.ones((1,))
+        expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
