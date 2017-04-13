@@ -19,6 +19,8 @@ mm/dd/17 utkbansal
 
 Enhancements
   * Universe now works with StringIO objects for topologies and trajectories.
+  * Residues with the same residue ids are not merged by default now 
+    (apply to PDB, GRO) (Issue #1306)
 
 
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle

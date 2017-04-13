@@ -35,6 +35,7 @@ from MDAnalysisTests.datafiles import (
     GRO_missing_atomname,
     GRO_residwrap,
     GRO_residwrap_0base,
+    GRO_sameresid_diffresname,
 )
 
 
@@ -109,3 +110,13 @@ class TestGroResidWrapping(object):
             assert_(top.resids.values[i] == r)
             assert_(top.resnames.values[i] == n)
             assert_(len(top.tt.residues2atoms_1d([i])) == l)
+
+def test_sameresid_diffresname():
+    parser = mda.topology.GROParser.GROParser
+    with parser(GRO_sameresid_diffresname) as p:
+        top = p.parse()
+    resids = [9, 9]
+    resnames = ['GLN', 'POPC']
+    for i, (resid, resname) in enumerate(zip(resids, resnames)):
+        assert_(top.resids.values[i] == resid)
+        assert_(top.resnames.values[i] == resname)
