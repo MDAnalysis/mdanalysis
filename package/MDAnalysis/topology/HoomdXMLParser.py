@@ -122,7 +122,7 @@ class HoomdXMLParser(TopologyReaderBase):
         ):
             try:
                 val = configuration.find(attrname)
-                vals = map(mapper, val.text.strip().split())
+                vals = [mapper(el) for el in val.text.strip().split()]
             except:
                 pass
             else:
@@ -136,7 +136,7 @@ class HoomdXMLParser(TopologyReaderBase):
         ):
             try:
                 val = configuration.find(attrname)
-                vals = [tuple(map(int, line.split()[1:]))
+                vals = [(int(el) for el in line.split()[1:])
                         for line in val.text.strip().split('\n')
                         if line.strip()]
             except:

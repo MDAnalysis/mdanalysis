@@ -287,7 +287,7 @@ class TOPParser(TopologyReaderBase):
         for i in range(numlines):
             l = self.topfile.next()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = map(lambda x: int(x) - 1, l.split())
+            fields = np.int64(l.split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

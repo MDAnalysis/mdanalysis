@@ -183,7 +183,7 @@ class ClusterCollection(object):
             self.clusters = None
             return
 
-        if not len(set(map(type, elements))) == 1:
+        if not len(set((type(el) for el in elements))) == 1:
             raise TypeError("all the elements must have the same type")
         self.clusters = []
         elements_array = np.array(elements)

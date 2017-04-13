@@ -817,7 +817,7 @@ class ContactAnalysis(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
 
     def plot(self, **kwargs):
@@ -1145,7 +1145,7 @@ class ContactAnalysis1(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
         try:
             self.qavg = np.loadtxt(self.outarray)

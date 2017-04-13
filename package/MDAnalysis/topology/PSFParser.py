@@ -337,7 +337,7 @@ class PSFParser(TopologyReaderBase):
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = list(map(lambda x: int(x) - 1, lines().split()))
+            fields = np.int64(lines().split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

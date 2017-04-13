@@ -33,6 +33,7 @@ objects) or distance matrices, by resampling with replacement.
 
 """
 from __future__ import absolute_import
+from six.moves import zip
 
 import numpy as np
 import logging
@@ -116,7 +117,7 @@ def get_distance_matrix_bootstrap_samples(distance_matrix,
 
     pc_results = pc.run()
 
-    bootstrap_matrices = zip(*pc_results)[1]
+    bootstrap_matrices = list(zip(*pc_results))[1]
 
     return bootstrap_matrices
 

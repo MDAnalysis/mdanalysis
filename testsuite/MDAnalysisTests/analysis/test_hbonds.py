@@ -20,7 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function, absolute_import
-from six.moves import map
 
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
@@ -40,7 +39,8 @@ from MDAnalysis.core.topologyattrs import Atomtypes
 
 def guess_types(names):
     """GRO doesn't supply types, this returns an Attr"""
-    return Atomtypes(np.array(list(map(guess_atom_type, names)), dtype=object))
+    return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
+
 
 class TestHydrogenBondAnalysis(object):
     def setUp(self):
