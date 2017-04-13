@@ -364,8 +364,10 @@ class XYZReader(base.ReaderBase):
             # we assume that there are only two header lines per frame
             f.readline()
             f.readline()
+            tmp_buf = []
             for i in range(self.n_atoms):
-                self.ts._pos[i] = np.float32(f.readline().split()[1:4])
+                tmp_buf.append(f.readline().split()[1:4])
+            self.ts._pos[:] = np.float32(tmp_buf)
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
