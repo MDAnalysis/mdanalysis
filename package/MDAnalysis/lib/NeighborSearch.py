@@ -68,7 +68,7 @@ class AtomNeighborSearch(object):
 
         Parameters
         ----------
-        atoms : AtomGroup or Atom
+        atoms : AtomGroup, MDAnalysis.core.groups.Atom
           list of atoms
         radius : float
           Radius for search in Angstrom.

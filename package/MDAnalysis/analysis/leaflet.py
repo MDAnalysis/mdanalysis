@@ -45,7 +45,7 @@ See example scripts in the MDAnalysisCookbook_ on how to use
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.
 
-.. MDAnalysisCookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
+.. _MDAnalysisCookbook: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
 
 
 Algorithm

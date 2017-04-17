@@ -332,15 +332,6 @@ class TopologyDict(object):
 
       topologydict = TopologyDict(members)
 
-    Arguments
-    ---------
-    *members*
-      A list of :class:`TopologyObject` instances
-
-    Returns
-    -------
-    *topologydict*
-      A specialised dictionary of the topology instances passed to it
 
     TopologyDicts are also built lazily from a :class:`TopologyGroup.topDict`
     attribute.
@@ -377,6 +368,12 @@ class TopologyDict(object):
 
     Two :class:`TopologyDict` instances can be combined using
     addition and it will not create any duplicate bonds in the process.
+
+    Arguments
+    ---------
+    members :
+      A list of :class:`TopologyObject` instances
+
 
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
@@ -623,6 +620,7 @@ class TopologyGroup(object):
         strict : bool
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
+
 
         .. versionadded:: 0.9.0
         """

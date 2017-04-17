@@ -552,20 +552,21 @@ class AlignTraj(AnalysisBase):
 
         Notes
         -----
-        If set to `verbose=False`, it is recommended to wrap the statement in a
-        ``try ...  finally`` to guarantee restoring of the log level in the
-        case of an exception.
+        - If set to ``verbose=False``, it is recommended to wrap the statement in a
+          ``try ...  finally`` to guarantee restoring of the log level in the
+          case of an exception.
+        - The ``in_memory`` option changes the `mobile` universe to an
+          in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
+          for the remainder of the Python session. If ``mobile.trajectory`` is
+          already a :class:`MemoryReader` then it is *always* treated as if
+          ``in_memory`` had been set to ``True``.
 
-        The `in_memory` option changes the `mobile` universe to an in-memory
-        representation (see :mod:`MDAnalysis.coordinates.memory`) for the
-        remainder of the Python session. If ``mobile.trajectory```is already a
-        :class:`MemoryReader` then it is *always* treated as if `in_memory` had
-        been set to ``True``.
 
         .. versionchanged:: 0.16.0
-           new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+           new general ``weights`` kwarg replace ``mass_weights``
+
         .. deprecated:: 0.16.0
-           Instead of ``mass_weighted=True`` use new ``weights='mass'`
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``
 
         """
         select = rms.process_selection(select)

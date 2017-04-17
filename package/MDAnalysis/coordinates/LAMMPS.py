@@ -51,12 +51,12 @@ To load a LAMMPS simulation from a LAMMPS data file (using the
 :class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
 LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
->>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
 
 If the trajectory uses *units nano* then use ::
 
->>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
-...                          lengthunit="nm", timeunit="ns")
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
+    ...                          lengthunit="nm", timeunit="ns")
 
 To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,

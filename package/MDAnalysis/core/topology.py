@@ -151,8 +151,12 @@ class TransTable(object):
 
     Parameters
     ----------
-    n_atoms, n_residues, n_segments : int
-        number of atoms, residues, segments in topology
+    n_atoms : int
+        number of atoms in topology
+    n_residues : int
+        number of residues in topology
+    n_segments : int
+        number of segments in topology
     atom_resindex : 1-D array
         resindex for each atom in the topology; the number of unique values in
         this array must be <= `n_residues`, and the array must be length
@@ -165,8 +169,12 @@ class TransTable(object):
 
     Attributes
     ----------
-    n_atoms, n_residues, n_segments : int
-        number of atoms, residues, segments in topology
+    n_atoms : int
+        number of atoms in topology
+    n_residues : int
+        number of residues in topology
+    n_segments : int
+        number of segments in topology
     size
         tuple describing the shape of the TransTable
 
@@ -428,24 +436,29 @@ class Topology(object):
     to residues, residues to segments, and vice-versa, are handled internally
     by this object.
 
-    Parameters
-    ----------
-    n_atoms, n_residues, n_segments : int
-        number of atoms, residues, segments in topology; there must be at least
-        1 element of each level in the system
-    attrs : TopologyAttr objects
-        components of the topology to be included
-    atom_resindex : array
-        1-D array giving the resindex of each atom in the system
-    residue_segindex : array
-        1-D array giving the segindex of each residue in the system
-
     """
 
     def __init__(self, n_atoms=1, n_res=1, n_seg=1,
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
+        """
+        Parameters
+        ----------
+        n_atoms : int
+            number of atoms in topology. Must be larger then 1 at each level
+        n_residues : int
+            number of residues in topology. Must be larger then 1 at each level
+        n_segments : int
+            number of segments in topology. Must be larger then 1 at each level
+        attrs : TopologyAttr objects
+            components of the topology to be included
+        atom_resindex : array
+            1-D array giving the resindex of each atom in the system
+        residue_segindex : array
+            1-D array giving the segindex of each residue in the system
+
+        """
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)

@@ -74,9 +74,6 @@ a nanopore).
                    10.1063/1.3657408
 
 
-
-.. _examples:
-
 Example use of the analysis classes
 -----------------------------------
 
@@ -865,9 +862,9 @@ class AngularDistribution(object):
     universe : Universe
         Universe object
     selection : str
-        Selection string to evaluate its angular distribution [‘byres name OH2’]
+        Selection string to evaluate its angular distribution ['byres name OH2']
     bins : int (optional)
-        Number of bins to create the histogram by means of :func:`numpy.histogram [40]
+        Number of bins to create the histogram by means of :func:`numpy.histogram`
     axis : {'x', 'y', 'z'} (optional)
         Axis to create angle with the vector (HH, OH or dipole) and calculate
         cosine theta ['z'].

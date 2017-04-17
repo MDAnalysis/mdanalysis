@@ -77,9 +77,9 @@ Output should look like this (although the only real requirement is
 *whitespace* separation between *all* entries). The chainID is optional
 and can be omitted::
 
-ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
-ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
-ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
+  ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
+  ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
+  ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
 
 
 .. Warning:: Fields *must be white-space separated* or data are read
@@ -202,10 +202,11 @@ class PQRWriter(base.WriterBase):
 
         Parameters
         ----------
-        selection
+        selection : AtomGroup or Universe
             MDAnalysis AtomGroup or Universe
         frame : int, optional
             optionally move to frame number *frame*
+
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based

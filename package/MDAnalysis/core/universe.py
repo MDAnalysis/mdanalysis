@@ -141,7 +141,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename, Topology object or stream
+    topology : str, Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to

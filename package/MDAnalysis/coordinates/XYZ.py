@@ -408,7 +408,7 @@ class XYZReader(base.ReaderBase):
 
         See Also
         --------
-        :class: `XYZWriter`
+        :class:`XYZWriter`
         """
         if n_atoms is None:
             n_atoms = self.n_atoms

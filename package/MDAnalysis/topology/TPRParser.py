@@ -152,7 +152,7 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
 
 class TPRParser(TopologyReaderBase):
-    """Read topology information from a Gromacs_ TPR_ file.
+    """Read topology information from a Gromacs_ `TPR file`_.
 
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html

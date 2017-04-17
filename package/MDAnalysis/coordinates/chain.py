@@ -94,11 +94,9 @@ class ChainReader(base.ProtoReader):
            names in either plain file names format or ``(filename, format)``
            tuple combination. This allows explicit setting of the format for
            each individual trajectory file.
-
         skip : int, optional
            skip step (also passed on to the individual trajectory readers);
            must be same for all trajectories
-
         dt : float, optional
           Passed to individual trajectory readers to enforce a common time
           difference between frames, in MDAnalysis time units. If not set, each
@@ -106,15 +104,15 @@ class ChainReader(base.ProtoReader):
           files, or set to the reader's default) when reporting frame times;
           note that this might lead an inconsistent time difference between
           frames.
-
         **kwargs : dict, optional
           all other keyword arguments are passed on to each trajectory reader
           unchanged
 
+
         .. versionchanged:: 0.8
-           The *delta* keyword was added.
+           The ``delta`` keyword was added.
         .. versionchanged:: 0.13
-           The *delta* keyword was deprecated in favor of using *dt*.
+           The ``delta`` keyword was deprecated in favor of using ``dt``.
 
         """
         super(ChainReader, self).__init__()
