@@ -21,7 +21,7 @@
 #
 
 # Hydrogen Bonding Analysis
-"""
+r"""
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
 ===========================================================================
 
@@ -283,6 +283,7 @@ Classes
             ],
             ...
         ]
+
       The time of each step is not stored with each hydrogen bond frame but in
       :attr:`~HydrogenBondAnalysis.timesteps`.
 
@@ -467,7 +468,7 @@ class HydrogenBondAnalysis(object):
 
         Parameters
         ----------
-        universe : universe
+        universe : Universe
             Universe object
         selection1 : str (optional)
             Selection string for first selection ['protein']
@@ -1019,14 +1020,15 @@ class HydrogenBondAnalysis(object):
           2. "acceptor_idx"
           3. "donor_index"
           4. "acceptor_index"
-          4. "donor_resnm"
-          5. "donor_resid"
-          6. "donor_atom"
-          7. "acceptor_resnm"
-          8. "acceptor_resid"
-          9. "acceptor_atom"
-          10. "distance"
-          11. "angle"
+          5. "donor_resnm"
+          6. "donor_resid"
+          7. "donor_atom"
+          8. "acceptor_resnm"
+          9. "acceptor_resid"
+          10. "acceptor_atom"
+          11. "distance"
+          12. "angle"
+
 
         .. _recsql: http://pypi.python.org/pypi/RecSQL
         """

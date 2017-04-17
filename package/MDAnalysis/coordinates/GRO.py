@@ -40,8 +40,7 @@ n_atoms
 xyz
   An atom line without velocities.  Requires that the 'resid', 'resname',
   'name', 'index' and 'pos' keys be supplied.
-  Eg: fmt['xyz'].format(resid=1, resname='SOL', name='OW2', index=2,
-      pos=(0.0, 1.0, 2.0))
+  Eg: fmt['xyz'].format(resid=1, resname='SOL', name='OW2', index=2, pos=(0.0, 1.0, 2.0))
 
 xyz_v
   As above, but with velocities.  Needs an additional keyword 'vel'.
@@ -267,9 +266,12 @@ class GROWriter(base.WriterBase):
         -----------
         obj : AtomGroup / Universe / Timestep
 
+        Note
+        ----
         The GRO format only allows 5 digits for resid and atom
         number. If these number become larger than 99,999 then this
         routine will chop off the leading digits.
+
 
         .. versionchanged:: 0.7.6
            resName and atomName are truncated to a maximum of 5 characters

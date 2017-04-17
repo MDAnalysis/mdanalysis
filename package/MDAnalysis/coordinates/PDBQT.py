@@ -230,11 +230,12 @@ class PDBQTWriter(base.WriterBase):
         frame : int, optional
             optionally move to *frame* before writing
 
-        .. Note::
+        Note
+        ----
+        The first letter of the
+        :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
+        chainID.
 
-           The first letter of the
-           :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
-           chainID.
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based

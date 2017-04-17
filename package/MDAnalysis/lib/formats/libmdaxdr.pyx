@@ -502,7 +502,7 @@ cdef class TRRFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(n_atoms, 3)
+        xyz : ndarray, shape=(`n_atoms`, 3)
             cartesion coordinates
         box : ndarray, shape=(3, 3)
             Box vectors for this frame
@@ -685,7 +685,7 @@ cdef class XTCFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(n_atoms, 3)
+        xyz : ndarray, shape=(`n_atoms`, 3)
             cartesion coordinates
         box : ndarray, shape=(3, 3)
             Box vectors for this frame

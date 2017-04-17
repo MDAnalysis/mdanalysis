@@ -1978,14 +1978,14 @@ class PSAnalysis(object):
         """Return the number of atoms used to construct the :class:`Path` instances in
         :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
-
         Returns
         -------
-        int
-           the number of atoms in :class:`PSA`'s :class:`Path`s'
+        the number of atoms
+
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+        method.
         """
         if self.natoms is None:
             err_str = "No path data; do 'PSAnalysis.generate_paths()' first."

@@ -24,8 +24,12 @@ Enhancements
   * Residues with the same residue ids are not merged by default now 
     (apply to PDB, GRO) (Issue #1306)
 
+Fixes
+  * Various documentation sphinx errors (PR #1312)
+
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
+  * Change Mathjax cdn (Issue #1313)
 
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,

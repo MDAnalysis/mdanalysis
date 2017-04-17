@@ -113,7 +113,7 @@ def guess_atom_element(atomname):
         return atomname[0]
 
 
-def guess_bonds(atoms, coords, **kwargs):
+def guess_bonds(atoms, coords, box=None, **kwargs):
     r"""Guess if bonds exist between two atoms based on their distance.
 
     Bond between two atoms is created, if the two atoms are within
@@ -135,21 +135,18 @@ def guess_bonds(atoms, coords, **kwargs):
     fudge_factor : float, optional
         The factor by which atoms must overlap eachother to be considered a
         bond.  Larger values will increase the number of bonds found. [0.72]
-
     vdwradii : dict, optional
         To supply custom vdwradii for atoms in the algorithm. Must be a dict
         of format {type:radii}. The default table of van der Waals radii is
         hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
         defined vdwradii passed as an argument will supercede the table
         values. [``None``]
-
     lower_bound : float, optional
         The minimum bond length. All bonds found shorter than this length will
         be ignored. This is useful for parsing PDB with altloc records where
         atoms with altloc A and B maybe very close together and there should be
         no chemical bond between them. [0.1]
-
-    box : dimensions, optional
+    box : array_like, optional
         Bonds are found using a distance search, if unit cell information is
         given, periodic boundary conditions will be considered in the distance
         search. [``None``]
@@ -203,7 +200,8 @@ def guess_bonds(atoms, coords, **kwargs):
 
     lower_bound = kwargs.get('lower_bound', 0.1)
 
-    box = kwargs.get('box', None)
+    if box is not None:
+        box = np.asarray(box)
 
     # to speed up checking, calculate what the largest possible bond
     # atom that would warrant attention.

@@ -55,7 +55,7 @@ trajectory, while writing each frame::
   W.close()
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB
+step is the final END_ record written, which is required by the `PDB 3.2
 standard`_.
 
 
@@ -72,7 +72,7 @@ Simple PDB Reader and Writer
 -----------------------------------------
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and
-:class:`PDBWriter`. It only implements a subset of the `PDB standard`_
+:class:`PDBWriter`. It only implements a subset of the `PDB 3.2 standard`_
 (for instance, it does not deal with insertion codes) and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
@@ -140,6 +140,9 @@ Classes
     The "permissive" flag is not used anymore (and effectively defaults to True);
     it will be completely removed in 0.16.0.
 
+
+.. _`PDB 3.2 standard`:
+    http://www.wwpdb.org/documentation/format32/v3.2.html
 """
 from __future__ import absolute_import
 
@@ -1030,8 +1033,6 @@ class MultiPDBWriter(PDBWriter):
     *multiframe* = ``True``), consisting of multiple models (using the MODEL_
     and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/format32/v3.2.html
 
     .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL

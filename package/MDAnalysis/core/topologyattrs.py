@@ -1362,7 +1362,7 @@ class Bonds(_Connection):
 
     Must be initialised by a list of zero based tuples.
     These indices refer to the atom indices.
-        Eg:  [(0, 1), (1, 2), (2, 3)]
+    E.g., ` [(0, 1), (1, 2), (2, 3)]`
 
     Also adds the `bonded_atoms`, `fragment` and `fragments`
     attributes.
@@ -1416,8 +1416,7 @@ class Angles(_Connection):
     """Angles between three atoms
 
     Initialise with a list of 3 long tuples
-    Eg:
-      [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+    E.g.,  `[(0, 1, 2), (1, 2, 3), (2, 3, 4)]`
 
     These indices refer to the atom indices.
     """

@@ -170,7 +170,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
 
 def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
                          end_frame, xmin, xmax, ymin, ymax, maximum_delta_magnitude, num_cores='maximum'):
-    '''Produce the x and y components of a 2D streamplot data set.
+    """Produce the x and y components of a 2D streamplot data set.
 
     :Parameters:
         **coordinate_file_path** : str
@@ -234,10 +234,10 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
     .. image:: testing_streamline.png
 
     .. [Chavent2014] Chavent, M.\*, Reddy, T.\*, Dahl, C.E., Goose, J., Jobard, B., and Sansom, M.S.P. (2014)
-    Methodologies for the analysis of instantaneous lipid diffusion in MD simulations of large membrane systems.
-    *Faraday Discussions* **169**: **Accepted**
+       Methodologies for the analysis of instantaneous lipid diffusion in MD simulations of large membrane systems.
+       *Faraday Discussions* **169**: **Accepted**
 
-    '''
+    """
     # work out the number of cores to use:
     if num_cores == 'maximum':
         num_cores = multiprocessing.cpu_count()  # use all available cores
