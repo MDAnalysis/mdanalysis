@@ -81,8 +81,8 @@ def guess_atom_type(atomname):
 
     See Also
     --------
-    :func:`guess_atom_element` and
-                 :mod:`MDAnalysis.topology.tables`
+    :func:`guess_atom_element` and :mod:`MDAnalysis.topology.tables`
+
     """
     return guess_atom_element(atomname)
 
@@ -242,11 +242,15 @@ def guess_angles(bonds):
     Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
     then (1,2,3) must be an angle.
 
-    :Returns:
-      List of tuples defining the angles.
-      Suitable for use in u._topology
+    Returns
+    -------
+    List of tuples defining the angles.
+    Suitable for use in u._topology
 
-    .. seeAlso:: :meth:`guess_bonds`
+    See Also
+    --------
+    :meth:`guess_bonds`
+
 
     .. versionadded 0.9.0
     """

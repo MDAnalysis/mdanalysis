@@ -420,10 +420,10 @@ class PDBWriter(base.WriterBase):
 
     See Also
     --------
-    
-       This class is identical to :class:`MultiPDBWriter` with the one
-       exception that it defaults to writing single-frame PDB files as if
-       *multiframe* = ``False`` was selected.
+    This class is identical to :class:`MultiPDBWriter` with the one
+    exception that it defaults to writing single-frame PDB files as if
+    *multiframe* = ``False`` was selected.
+
 
     .. versionchanged:: 0.7.5
        Initial support for multi-frame PDB files.
@@ -1047,10 +1047,10 @@ class MultiPDBWriter(PDBWriter):
 
     See Also
     --------
-    
-       This class is identical to :class:`PDBWriter` with the one
-       exception that it defaults to writing multi-frame PDB files instead of
-       single frames.
+    This class is identical to :class:`PDBWriter` with the one
+    exception that it defaults to writing multi-frame PDB files instead of
+    single frames.
+
 
     .. versionadded:: 0.7.6
 

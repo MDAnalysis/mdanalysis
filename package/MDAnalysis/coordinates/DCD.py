@@ -38,23 +38,24 @@ within MDAnalysis will work seamlessly but if you process those
 trajectories with other tools you might need to watch out that time
 and unitcell dimensions are correctly interpreted.
 
-.. Note::
-
-   The DCD file format is not well defined. In particular, NAMD and
-   CHARMM use it differently. Currently, MDAnalysis tries to guess the
-   correct **format for the unitcell representation** but it can be
-   wrong. **Check the unitcell dimensions**, especially for triclinic
-   unitcells (see `Issue 187`_ and :attr:`Timestep.dimensions`). A
-   second potential issue are the units of time which are AKMA for the
-   :class:`DCDReader` (following CHARMM) but ps for NAMD. As a
-   workaround one can employ the configurable
-   :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
-   trajectories.
+Note
+----
+The DCD file format is not well defined. In particular, NAMD and
+CHARMM use it differently. Currently, MDAnalysis tries to guess the
+correct **format for the unitcell representation** but it can be
+wrong. **Check the unitcell dimensions**, especially for triclinic
+unitcells (see `Issue 187`_ and :attr:`Timestep.dimensions`). A
+second potential issue are the units of time which are AKMA for the
+:class:`DCDReader` (following CHARMM) but ps for NAMD. As a
+workaround one can employ the configurable
+:class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
+trajectories.
 
 See Also
 --------
 The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
-             a more flexible DCD reader/writer.
+a more flexible DCD reader/writer.
+
 
 The classes in this module are the reference implementations for the
 Trajectory API.

@@ -39,11 +39,10 @@ handle such residue numbers.
 
 See Also
 --------
+* :mod:`MDAnalysis.topology.PDBParser`
+* :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+* :class:`MDAnalysis.core.universe.Universe`
 
-
-   * :mod:`MDAnalysis.topology.PDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
-   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------

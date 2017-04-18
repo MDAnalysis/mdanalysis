@@ -708,9 +708,8 @@ class HydrogenBondAnalysis(object):
 
         See Also
         --------
-        
+        :meth:`_get_bonded_hydrogens_dist` and :meth:`_get_bonded_hydrogens_list`
 
-           :meth:`_get_bonded_hydrogens_dist` and :meth:`_get_bonded_hydrogens_list`
 
         .. versionchanged:: 0.7.6
            Can switch algorithm by using the *detect_hydrogens* keyword to the

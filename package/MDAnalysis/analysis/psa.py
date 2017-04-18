@@ -55,9 +55,9 @@ preserve the triangle inequality.
 See Also
 --------
 The `PSAnalysisTutorial`_ outlines a typical application of PSA to
-             a set of trajectories, including doing proper alignment,
-             performing distance comparisons, and generating heat
-             map-dendrogram plots from hierarchical clustering.
+a set of trajectories, including doing proper alignment,
+performing distance comparisons, and generating heat
+map-dendrogram plots from hierarchical clustering.
 
 
 .. Rubric:: References
@@ -401,13 +401,10 @@ def hausdorff(P, Q):
 
     See Also
     --------
-    
-
-       :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-       implementation of the early break algorithm of [Taha2015]_; note that
-       one still has to calculate the *symmetric* Hausdorff distance as
-       `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
-
+    :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+    implementation of the early break algorithm of [Taha2015]_; note that
+    one still has to calculate the *symmetric* Hausdorff distance as
+    `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
 
     References
     ----------

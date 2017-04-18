@@ -712,8 +712,8 @@ class Timestep(object):
 
         See Also
         --------
-        
-           :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
+        :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
+
 
         .. versionadded:: 0.11.0
         """

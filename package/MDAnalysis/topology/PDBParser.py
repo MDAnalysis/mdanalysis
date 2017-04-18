@@ -42,11 +42,10 @@ numbers up to 99,999.
 
 See Also
 --------
+* :mod:`MDAnalysis.topology.ExtendedPDBParser`
+* :class:`MDAnalysis.coordinates.PDB.PDBReader`
+* :class:`MDAnalysis.core.universe.Universe`
 
-
-   * :mod:`MDAnalysis.topology.ExtendedPDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.PDBReader`
-   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------
