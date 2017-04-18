@@ -44,7 +44,9 @@ implemented in
 
 When using this module in published work please cite [Theobald2005]_.
 
-.. SeeAlso::
+See Also
+--------
+
 
    :mod:`MDAnalysis.analysis.align`
        aligning structures based on RMSD

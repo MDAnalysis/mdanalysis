@@ -43,7 +43,9 @@ trajectories respectively.
 The :ref:`RMS-fitting-tutorial` shows how to do the individual steps
 manually and explains the intermediate steps.
 
-.. SeeAlso::
+See Also
+--------
+
 
    :mod:`MDAnalysis.analysis.rms`
         contains functions to compute RMSD (when structural alignment is not
@@ -401,7 +403,9 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     new_rmsd : float
         RMSD after spatial alignment
 
-    .. SeeAlso::
+    See Also
+    --------
+    
        AlignTraj: More efficient method for RMSD-fitting trajectories.
 
 
@@ -985,7 +989,9 @@ def fasta2select(fastafilename, is_aligned=False,
         ``select=select_dict``.
 
 
-    .. SeeAlso::
+    See Also
+    --------
+    
       :func:`sequence_alignment`, which does not require external
       programs.
 

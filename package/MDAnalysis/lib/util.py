@@ -259,7 +259,9 @@ def openany(datasource, mode='r', reset=True):
        with openany(urllib2.urlopen("http://www.MDAnalysis.org/")) as html:
           print(html.read())
 
-    .. SeeAlso:: :func:`anyopen`
+    See Also
+    --------
+    :func:`anyopen`
     """
     stream = anyopen(datasource, mode=mode, reset=reset)
     try:
@@ -309,7 +311,9 @@ def anyopen(datasource, mode='r', reset=True):
 
     :Returns: tuple ``stream`` which is a file-like object
 
-    .. SeeAlso:: :func:`openany` to be used with the :keyword:`with` statement.
+    See Also
+    --------
+    :func:`openany` to be used with the :keyword:`with` statement.
 
     .. versionchanged:: 0.9.0
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
@@ -447,7 +451,9 @@ def isstream(obj):
     - ``read()``, ``readline()``, ``readlines()``
     - ``write()``, ``writeline()``, ``writelines()``
 
-    .. SeeAlso:: :mod:`io`
+    See Also
+    --------
+    :mod:`io`
 
     :Arguments:
       *obj*
@@ -997,7 +1003,9 @@ class FORTRANReader(object):
         :Raises: :exc:`ValueError` if any of the conversions cannot be made
                  (e.g. space for an int)
 
-        .. SeeAlso:: :meth:`FORTRANReader.number_of_matches`
+        See Also
+        --------
+        :meth:`FORTRANReader.number_of_matches`
         """
         return [e.read(line) for e in self.entries]
 
@@ -1115,7 +1123,9 @@ inverse_aa_codes.update(alternative_inverse_aa_codes)
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes.
 
-    .. SeeAlso:: Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
+    See Also
+    --------
+    Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
     """
     if len(x) == 1:
         d = amino_acid_codes

@@ -67,7 +67,9 @@ def reader(filename, **kwargs):
     -------
     A Reader object
 
-    .. SeeAlso:: For trajectory formats: :class:`~DCD.DCDReader`,
+    See Also
+    --------
+    For trajectory formats: :class:`~DCD.DCDReader`,
        :class:`~XTC.XTCReader`, :class:`~TRR.TRRReader`,
        :class:`~XYZ.XYZReader`.  For single frame formats:
        :class:`~CRD.CRDReader`, and

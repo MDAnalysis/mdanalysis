@@ -509,7 +509,9 @@ class X3DNA(BaseX3DNA):
                Write output from X3DNA to `logfile` (default: "bp_step.par")
 
 
-        .. SeeAlso:: :class:`X3DNAtraj`
+        See Also
+        --------
+        :class:`X3DNAtraj`
         """
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = [
@@ -755,7 +757,9 @@ class X3DNAtraj(BaseX3DNA):
                for description).
 
 
-        .. SeeAlso:: :class:`X3DNA`
+        See Also
+        --------
+        :class:`X3DNA`
 
         """
         self.universe = universe

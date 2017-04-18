@@ -29,7 +29,9 @@ build a basic topology.
 
 Atom types and masses are guessed.
 
-.. SeeAlso:: :mod:`MDAnalysis.coordinates.GRO`
+See Also
+--------
+:mod:`MDAnalysis.coordinates.GRO`
 
 Classes
 -------

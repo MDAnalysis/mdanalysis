@@ -221,7 +221,9 @@ class PDBReader(base.ReaderBase):
     =============  ============  ===========  =============================================
 
 
-    .. SeeAlso:: :class:`PDBWriter`; :class:`PDBReader`
+    See Also
+    --------
+    :class:`PDBWriter`; :class:`PDBReader`
                  implements a larger subset of the header records,
                  which are accessible as :attr:`PDBReader.metadata`.
 
@@ -416,7 +418,9 @@ class PDBWriter(base.WriterBase):
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
-    .. SeeAlso::
+    See Also
+    --------
+    
        This class is identical to :class:`MultiPDBWriter` with the one
        exception that it defaults to writing single-frame PDB files as if
        *multiframe* = ``False`` was selected.
@@ -1013,7 +1017,9 @@ class ExtendedPDBReader(PDBReader):
     insertion code in the PDB standard). PDB files in this format are written
     by popular programs such as VMD_.
 
-    .. SeeAlso:: :class:`PDBReader`
+    See Also
+    --------
+    :class:`PDBReader`
 
     .. _PDB standard: http://www.wwpdb.org/documentation/format32/sect9.html
     .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
@@ -1039,7 +1045,9 @@ class MultiPDBWriter(PDBWriter):
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
 
-    .. SeeAlso::
+    See Also
+    --------
+    
        This class is identical to :class:`PDBWriter` with the one
        exception that it defaults to writing multi-frame PDB files instead of
        single frames.

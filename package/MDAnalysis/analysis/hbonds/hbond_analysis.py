@@ -388,7 +388,9 @@ class HydrogenBondAnalysis(object):
       *GLYCAM06*
         N,NT,O,O2,OH,OS,OW,OY,P,S,SM
 
-    .. SeeAlso:: Table :ref:`Default atom names for hydrogen bonding analysis`
+    See Also
+    --------
+    Table :ref:`Default atom names for hydrogen bonding analysis`
 
     .. versionchanged:: 0.7.6
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
@@ -704,7 +706,9 @@ class HydrogenBondAnalysis(object):
                   :class:`~MDAnalysis.core.groups.AtomGroup`) or empty list
                   ``[]`` if none were found.
 
-        .. SeeAlso::
+        See Also
+        --------
+        
 
            :meth:`_get_bonded_hydrogens_dist` and :meth:`_get_bonded_hydrogens_list`
 
@@ -848,7 +852,9 @@ class HydrogenBondAnalysis(object):
         :class:`~MDAnalysis.lib.log.ProgressMeter`) and *debug* which can
         be used to change the debug value provided to the class constructor.
 
-        .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing
+        See Also
+        --------
+        :meth:`HydrogenBondAnalysis.generate_table` for processing
                      the data into a different format.
 
         .. versionchanged:: 0.7.6
@@ -1068,7 +1074,9 @@ class HydrogenBondAnalysis(object):
            import cPickle
            table = cPickle.load(open(filename))
 
-        .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
+        See Also
+        --------
+        :mod:`cPickle` module and :class:`numpy.recarray`
         """
         if self.table is None:
             self.generate_table()

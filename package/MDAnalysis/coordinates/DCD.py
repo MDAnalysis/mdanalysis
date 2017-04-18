@@ -51,7 +51,9 @@ and unitcell dimensions are correctly interpreted.
    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
    trajectories.
 
-.. SeeAlso:: The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
+See Also
+--------
+The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
              a more flexible DCD reader/writer.
 
 The classes in this module are the reference implementations for the
@@ -337,7 +339,9 @@ class DCDWriter(base.WriterBase):
     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
         """Read dimensions from timestep *ts* and return appropriate native unitcell.
 
-        .. SeeAlso:: :attr:`Timestep.dimensions`
+        See Also
+        --------
+        :attr:`Timestep.dimensions`
         """
         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines
         lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
@@ -618,7 +622,9 @@ class DCDReader(base.ReaderBase):
            according to the CHARMM format. The time between two frames would be
            *delta* * *step* !
 
-        .. SeeAlso:: :class:`DCDWriter` has detailed argument description
+        See Also
+        --------
+        :class:`DCDWriter` has detailed argument description
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('start', self.start_timestep)

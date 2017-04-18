@@ -52,7 +52,9 @@ is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-.. SeeAlso:: The `PSAnalysisTutorial`_ outlines a typical application of PSA to
+See Also
+--------
+The `PSAnalysisTutorial`_ outlines a typical application of PSA to
              a set of trajectories, including doing proper alignment,
              performing distance comparisons, and generating heat
              map-dendrogram plots from hierarchical clustering.
@@ -397,7 +399,9 @@ def hausdorff(P, Q):
     distance matrix without further optimizations, essentially following
     [Huttenlocher1993]_.
 
-    .. SeeAlso::
+    See Also
+    --------
+    
 
        :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
        implementation of the early break algorithm of [Taha2015]_; note that
@@ -564,7 +568,9 @@ def hausdorff_neighbors(P, Q):
     the Hausdorff distance. They are the farthest nearest neighbors and are
     maximally different in the sense of the Hausdorff distance [Seyler2015]_.
 
-    .. SeeAlso::
+    See Also
+    --------
+    
 
        :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
        Hausdorff neighbors.

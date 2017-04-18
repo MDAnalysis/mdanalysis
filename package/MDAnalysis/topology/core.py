@@ -26,7 +26,9 @@ Common functions for topology building --- :mod:`MDAnalysis.topology.core`
 The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.
 
-.. SeeAlso:: :mod:`MDAnalysis.topology.tables` for some hard-coded atom
+See Also
+--------
+:mod:`MDAnalysis.topology.tables` for some hard-coded atom
    information that is used by functions such as :func:`guess_atom_type` and
    :func:`guess_atom_mass`.
 

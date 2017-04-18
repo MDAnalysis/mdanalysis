@@ -640,7 +640,9 @@ class HOLE(BaseHOLE):
             similar for a HOLE run from identical starting conditions to be
             useful).
 
-            .. SeeAlso::
+            See Also
+            --------
+            
 
                An alternative way to load in multiple files is a direct read
                from a CHARMM binary dynamics DCD coordinate file - using the

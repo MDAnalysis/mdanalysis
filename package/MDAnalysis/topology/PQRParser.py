@@ -27,12 +27,10 @@ PQR topology parser
 Read atoms with charges from a PQR_ file (as written by PDB2PQR_). No
 connectivity is deduced.
 
-.. SeeAlso:: The file format is described in :mod:`MDAnalysis.coordinates.PQR`.
+See Also
+--------
+The file format is described in :mod:`MDAnalysis.coordinates.PQR`.
 
-.. _PQR:     http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
-.. _APBS:    http://www.poissonboltzmann.org/apbs
-.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
-.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 
 Classes
 -------
@@ -40,6 +38,12 @@ Classes
 .. autoclass:: PQRParser
    :members:
    :inherited-members:
+
+
+.. _PQR:     http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
+.. _APBS:    http://www.poissonboltzmann.org/apbs
+.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
+.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 
 """
 from __future__ import absolute_import
