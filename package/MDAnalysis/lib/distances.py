@@ -207,7 +207,7 @@ def _check_lengths_match(*arrays):
     if not all( a.shape == ref for a in arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
-
+      
 def distance_array(reference, configuration, box=None, result=None, backend="serial"):
     """Calculate all distances between a reference set and another configuration.
 
