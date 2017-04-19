@@ -1,4 +1,5 @@
 [run]
+plugins = Cython.Coverage
 branch = True
 source = MDAnalysis
 omit =
