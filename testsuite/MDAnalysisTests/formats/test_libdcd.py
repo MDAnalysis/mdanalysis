@@ -167,8 +167,9 @@ class DCDWriteTest(TestCase):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
+        self.readfile = DCD
         self.dcdfile = DCDFile(self.testfile, 'w')
-        self.dcdfile_r = DCDFile(DCD, 'r')
+        self.dcdfile_r = DCDFile(self.readfile, 'r')
         self.natoms = 3341
         self.expected_frames = 98
         self.seek_frame = 91
@@ -185,7 +186,6 @@ class DCDWriteTest(TestCase):
                             time_step=f_in.delta,
                             ts_between_saves=f_in.nsavc,
                             remarks=f_in.remarks)
-
 
     def tearDown(self):
         try: 
@@ -275,6 +275,43 @@ class DCDWriteTest(TestCase):
         actual = DCDFile(self.testfile).delta
         assert_equal(actual, expected)
 
+    def test_coord_match(self):
+        # ensure that all coordinates match in each frame for the
+        # written DCD file relative to original
+        test = DCDFile(self.testfile)
+        ref = DCDFile(self.readfile)
+
+        if test.n_frames > 1:
+            for frame in test:
+                written_coords = test.read()[0]
+                ref_coords = ref.read()[0]
+                assert_equal(written_coords, ref_coords)
+        else:
+            written_coords = test.read()[0]
+            ref_coords = ref.read()[0]
+            assert_equal(written_coords, ref_coords)
+            
+
+class DCDByteArithmeticTest(TestCase):
+
+    def setUp(self):
+        self.dcdfile = DCDFile(DCD, 'r')
+        self._filesize = os.path.getsize(DCD)
+
+    def test_relative_frame_sizes(self):
+        # the first frame of a DCD file should always be >= in size
+        # to subsequent frames, as the first frame contains the same
+        # atoms + (optional) fixed atoms
+        first_frame_size = self.dcdfile._firstframesize
+        general_frame_size = self.dcdfile._framesize
+
+        for frame in test:
+            print('frame iteration')
+            written_coords = test.read()[0]
+            print('after test read')
+            ref_coords = ref.read()[0]
+            assert_equal(written_coords, ref_coords)
+
 class DCDByteArithmeticTest(TestCase):
 
     def setUp(self):
@@ -322,7 +359,8 @@ class DCDWriteTestNAMD(DCDWriteTest, TestCase):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
         self.dcdfile = DCDFile(self.testfile, 'w')
-        self.dcdfile_r = DCDFile(DCD_NAMD_TRICLINIC, 'r')
+        self.readfile = DCD_NAMD_TRICLINIC
+        self.dcdfile_r = DCDFile(self.readfile, 'r')
         self.natoms = 5545
         self.expected_frames = 1
         self.seek_frame = 0
