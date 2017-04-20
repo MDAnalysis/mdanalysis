@@ -395,19 +395,15 @@ cdef class DCDFile:
         cdef FLOAT_T[::1] y = xyz[:, 1]
         cdef FLOAT_T[::1] z = xyz[:, 2]
 
-	# prerequisite is a file struct for which the dcd header data
-	# has already been written
-        self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
-                           ts_between_saves=ts_between_saves,
-                           time_step=time_step)
-
-	
         if self.current_frame == 0:
+            self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
+                               ts_between_saves=ts_between_saves,
+                               time_step=time_step)
             self.n_atoms = xyz.shape[0]
 
         ok = write_dcdstep(self.fp, step, self.current_frame,
                          self.n_atoms, <FLOAT_T*> &x[0],
-                         <FLOAT_T*> &y[1], <FLOAT_T*> &z[2],
+                         <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                          <DOUBLE_T*> &box[0], charmm)
 
         self.current_frame += 1
