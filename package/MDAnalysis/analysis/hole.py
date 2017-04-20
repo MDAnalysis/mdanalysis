@@ -166,11 +166,12 @@ numbers but :class:`HOLEtraj` can take the optional *orderparameters*
 keyword argument and load an arbitrary order parameter for each
 frame. In that case, the key becomes the orderparameter.
 
-.. Note::
-   The profiles dict is not ordered and hence one typically needs to manually
-   order the keys first. Furthermore, duplicate keys are not possible:
-   In the case of *duplicate orderparameters*, the last one read will
-   be stored in the dict.
+Notes
+-----
+The profiles dict is not ordered and hence one typically needs to manually
+order the keys first. Furthermore, duplicate keys are not possible:
+In the case of *duplicate orderparameters*, the last one read will
+be stored in the dict.
 
 
 Analysis
@@ -736,13 +737,13 @@ class HOLE(BaseHOLE):
         shorto : int, optional
              Determines the output of output in the `logfile`; for automated processing
              this must be < 3. The default is 0, which shows all output.
-             - 0: Full text output
-             - 1: All text output given except "run in progress" (i.e.,
-               detailed contemporary description of what HOLE is doing).
-             - 2: Ditto plus no graph type output - only leaving minimum
-               radius and conductance calculations.
-             - 3: All text output other than input card mirroring and error messages
-               turned off.
+             0: Full text output,
+             1: All text output given except "run in progress" (i.e.,
+             detailed contemporary description of what HOLE is doing).
+             2: Ditto plus no graph type output - only leaving minimum
+             radius and conductance calculations.
+             3: All text output other than input card mirroring and error messages
+             turned off.
         ignore_residues : array_like, optional
              sequence of three-letter residues that are not taken into
              account during the calculation; wildcards are *not*
