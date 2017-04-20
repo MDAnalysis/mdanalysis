@@ -53,8 +53,8 @@ trajectories.
 
 See Also
 --------
-The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
-a more flexible DCD reader/writer.
+:mod:`MDAnalysis.coordinates.LAMMPS`
+  module provides a more flexible DCD reader/writer.
 
 
 The classes in this module are the reference implementations for the
@@ -625,7 +625,7 @@ class DCDReader(base.ReaderBase):
 
         See Also
         --------
-        :class:`DCDWriter` has detailed argument description
+        :class:`DCDWriter`
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('start', self.start_timestep)

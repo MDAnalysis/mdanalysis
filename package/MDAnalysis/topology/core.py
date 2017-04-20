@@ -27,8 +27,9 @@ module. They are mostly of use to developers.
 
 See Also
 --------
-:mod:`MDAnalysis.topology.tables` for some hard-coded atom information that is
-used by functions such as :func:`guess_atom_type` and :func:`guess_atom_mass`.
+:mod:`MDAnalysis.topology.tables`
+  for some hard-coded atom information that is used by functions such as
+  :func:`guess_atom_type` and :func:`guess_atom_mass`.
 
 """
 

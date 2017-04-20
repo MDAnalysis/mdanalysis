@@ -81,7 +81,8 @@ def guess_atom_type(atomname):
 
     See Also
     --------
-    :func:`guess_atom_element` and :mod:`MDAnalysis.topology.tables`
+    :func:`guess_atom_element`
+    :mod:`MDAnalysis.topology.tables`
 
     """
     return guess_atom_element(atomname)
@@ -100,8 +101,8 @@ def guess_atom_element(atomname):
 
     See Also
     --------
-    :func:`guess_atom_type` and
-    :mod:`MDAnalysis.topology.tables` (where the data are stored)
+    :func:`guess_atom_type`
+    :mod:`MDAnalysis.topology.tables`
     """
     if atomname == '':
         return ''

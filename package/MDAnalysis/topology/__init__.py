@@ -156,8 +156,8 @@ the attributes they provide.
         parsing coordinates from a TPR file is currently not implemented
         in :mod:`~MDAnalysis.topology.TPRParser`.
 
-See Also
---------
+Note
+----
 :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 
 

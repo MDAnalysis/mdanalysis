@@ -34,7 +34,7 @@ partial charges (:attr:`Atom.charge`).
 Notes
 -----
 Only reads atoms and their names; connectivity is not
-          deduced. Masses are guessed and set to 0 if unknown.
+deduced. Masses are guessed and set to 0 if unknown.
 
 
 See Also

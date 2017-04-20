@@ -205,7 +205,8 @@ class LeafletFinder(object):
 
         See Also
         --------
-        :meth:`LeafletFinder.group` and :meth:`LeafletFinder.groups_iter`
+        :meth:`LeafletFinder.group`
+        :meth:`LeafletFinder.groups_iter`
         """
         if component_index is None:
             return list(self.groups_iter())

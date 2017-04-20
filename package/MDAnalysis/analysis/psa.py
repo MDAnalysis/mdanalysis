@@ -52,8 +52,8 @@ is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-See Also
---------
+Note
+----
 The `PSAnalysisTutorial`_ outlines a typical application of PSA to
 a set of trajectories, including doing proper alignment,
 performing distance comparisons, and generating heat
@@ -396,16 +396,13 @@ def hausdorff(P, Q):
 
     Notes
     -----
-    The Hausdorff distance is calculated in a brute force manner from the
-    distance matrix without further optimizations, essentially following
-    [Huttenlocher1993]_.
-
-    See Also
-    --------
-    :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-    implementation of the early break algorithm of [Taha2015]_; note that
-    one still has to calculate the *symmetric* Hausdorff distance as
-    `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
+    - The Hausdorff distance is calculated in a brute force manner from the
+      distance matrix without further optimizations, essentially following
+      [Huttenlocher1993]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+      implementation of the early break algorithm of [Taha2015]_; note that
+      one still has to calculate the *symmetric* Hausdorff distance as
+      `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
 
     References
     ----------
@@ -562,16 +559,11 @@ def hausdorff_neighbors(P, Q):
 
     Notes
     -----
-    Hausdorff neighbors are those points on the two paths that are separated by
-    the Hausdorff distance. They are the farthest nearest neighbors and are
-    maximally different in the sense of the Hausdorff distance [Seyler2015]_.
-
-    See Also
-    --------
-    
-
-       :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
-       Hausdorff neighbors.
+    - Hausdorff neighbors are those points on the two paths that are separated by
+      the Hausdorff distance. They are the farthest nearest neighbors and are
+      maximally different in the sense of the Hausdorff distance [Seyler2015]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
+      ausdorff neighbors.
 
     """
     N, axis = get_coord_axes(P)

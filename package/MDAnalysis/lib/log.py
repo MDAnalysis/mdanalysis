@@ -57,8 +57,8 @@ The important point is that the name of the logger begins with
 .. _logging to multiple destinations:
    http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
 
-See Also
---------
+Note
+----
 The :mod:`logging` module in the standard library contains in depth
 documentation about using logging.
 

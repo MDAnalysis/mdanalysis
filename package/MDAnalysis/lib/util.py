@@ -313,7 +313,9 @@ def anyopen(datasource, mode='r', reset=True):
 
     See Also
     --------
-    :func:`openany` to be used with the :keyword:`with` statement.
+    :func:`openany`
+      to be used with the :keyword:`with` statement.
+
 
     .. versionchanged:: 0.9.0
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
@@ -454,6 +456,7 @@ def isstream(obj):
     See Also
     --------
     :mod:`io`
+
 
     :Arguments:
       *obj*
@@ -1123,8 +1126,8 @@ inverse_aa_codes.update(alternative_inverse_aa_codes)
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes.
 
-    See Also
-    --------
+    Note
+    ----
     Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
     """
     if len(x) == 1:

@@ -223,9 +223,11 @@ class PDBReader(base.ReaderBase):
 
     See Also
     --------
-    :class:`PDBWriter`; :class:`PDBReader`
-                 implements a larger subset of the header records,
-                 which are accessible as :attr:`PDBReader.metadata`.
+    :class:`PDBWriter`
+    :class:`PDBReader`
+       implements a larger subset of the header records,
+       which are accessible as :attr:`PDBReader.metadata`.
+
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
@@ -418,8 +420,8 @@ class PDBWriter(base.WriterBase):
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
-    See Also
-    --------
+    Note
+    ----
     This class is identical to :class:`MultiPDBWriter` with the one
     exception that it defaults to writing single-frame PDB files as if
     *multiframe* = ``False`` was selected.
@@ -517,16 +519,6 @@ class PDBWriter(base.WriterBase):
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
          *bonds*
            write bonds to the PDB file as CONECT_ records [``False``]
-
-           .. Note::
-
-              Currently only works when writing a whole :class:`Universe` and
-              if bond information is available in the topology. (For selections
-              smaller than the whole :class:`Universe`, the atom numbering in
-              the CONECT_ records would not match the numbering of the atoms in
-              the new PDB file and therefore a :exc:`NotImplementedError` is
-              raised.)
-
          *multiframe*
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
@@ -535,6 +527,15 @@ class PDBWriter(base.WriterBase):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
+        Note
+        ----
+        Writing bonds currently only works when writing a whole
+        :class:`Universe` and if bond information is available in the topology.
+        (For selections smaller than the whole :class:`Universe`, the atom
+        numbering in the CONECT_ records would not match the numbering of the
+        atoms in the new PDB file and therefore a :exc:`NotImplementedError` is
+        raised.)
 
         """
         # n_atoms = None : dummy keyword argument
