@@ -101,7 +101,7 @@ def guess_atom_element(atomname):
     See Also
     --------
     :func:`guess_atom_type` and
-                 :mod:`MDAnalysis.topology.tables` (where the data are stored)
+    :mod:`MDAnalysis.topology.tables` (where the data are stored)
     """
     if atomname == '':
         return ''

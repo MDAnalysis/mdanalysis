@@ -854,7 +854,8 @@ class HydrogenBondAnalysis(object):
         See Also
         --------
         :meth:`HydrogenBondAnalysis.generate_table` for processing
-                     the data into a different format.
+        the data into a different format.
+
 
         .. versionchanged:: 0.7.6
            Results are not returned, only stored in

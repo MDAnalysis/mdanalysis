@@ -360,6 +360,8 @@ def hausdorff(P, Q):
     :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
+    Note that reversing the path does not change the Hausdorff distance.
+
     Parameters
     ----------
     P : numpy.ndarray
@@ -391,7 +393,6 @@ def hausdorff(P, Q):
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      4.7786639840135905
 
-    Note that reversing the path does not change the Hausdorff distance.
 
     Notes
     -----
