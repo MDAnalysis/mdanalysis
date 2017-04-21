@@ -133,10 +133,16 @@ __all__ = [
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
     "MMTF", "MMTF_gz",
+    "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
+    "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
 ]
 
 from pkg_resources import resource_filename
 
+legacy_DCD_NAMD_coords = resource_filename(__name__,
+'data/legacy_DCD_NAMD_coords.p')
+legacy_DCD_ADK_coords = resource_filename(__name__,
+'data/legacy_DCD_adk_coords.p')
 AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
 XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')

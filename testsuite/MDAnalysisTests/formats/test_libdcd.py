@@ -8,7 +8,9 @@ from numpy.testing import assert_almost_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
 from MDAnalysisTests.datafiles import (PSF, DCD, DCD_NAMD_TRICLINIC,
-                                       PSF_NAMD_TRICLINIC)
+                                       PSF_NAMD_TRICLINIC,
+                                       legacy_DCD_ADK_coords,
+                                       legacy_DCD_NAMD_coords)
 
 from unittest import TestCase
 import MDAnalysis
@@ -16,6 +18,7 @@ from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
 import os
+import pickle
 
 class DCDReadFrameTest(TestCase):
 
@@ -26,6 +29,9 @@ class DCDReadFrameTest(TestCase):
         self.new_frame = 91
         self.context_frame = 22
         self.num_iters = 3
+        self.selected_legacy_frames = [5, 29]
+        self.legacy_DCD_frame_data = pickle.load(open(legacy_DCD_ADK_coords,
+        'rb'), encoding='latin1')
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
     def tearDown(self):
@@ -49,6 +55,20 @@ class DCDReadFrameTest(TestCase):
         dcd_frame = self.dcdfile.read()
         xyz = dcd_frame[0]
         assert_equal(xyz.shape, (self.natoms, 3))
+
+    def test_read_coord_values(self):
+        # test the actual values of coordinates read in versus
+        # stored values read in by the legacy DCD handling framework
+
+        # to reduce repo storage burden, we only compare for a few
+        # randomly selected frames
+        for frame_num in self.selected_legacy_frames:
+            self.dcdfile.seek(frame_num)
+            actual_coords = self.dcdfile.read()[0]
+            desired_coords = self.legacy_DCD_frame_data.pop(0)
+            assert_equal(actual_coords,
+                         desired_coords)
+
 
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
@@ -393,4 +413,7 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
         self.new_frame = 0
         self.context_frame = 0
         self.num_iters = 0
+        self.selected_legacy_frames = [0]
+        self.legacy_DCD_frame_data = pickle.load(open(legacy_DCD_NAMD_coords,
+        'rb'), encoding='latin1')
         self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
