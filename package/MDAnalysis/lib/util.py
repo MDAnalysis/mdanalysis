@@ -30,11 +30,7 @@ Files and directories
 ---------------------
 
 .. autofunction:: filename
-.. function:: openany(directory[,mode='r'])
-
-   Context manager to open a compressed (bzip2, gzip) or plain file
-   (uses :func:`anyopen`).
-
+.. autofunction:: openany
 .. autofunction:: anyopen
 .. autofunction:: greedy_splitext
 .. autofunction:: which
@@ -237,27 +233,29 @@ def openany(datasource, mode='r', reset=True):
     compressed files) to open file objects to sockets and strings---as long as
     they have a file-like interface.
 
-    :Arguments:
-     *datasource*
-        a file or a stream
-     *mode*
-        'r' or 'w'
-     *reset*
+    Parameters
+    ----------
+    datasource : a file or a stream
+    mode : str
+        `r` or `w`
+    reset : bool
         try to read (*mode* 'r') the stream from the start [``True``]
 
-    .. rubric:: Examples
-
+    Examples
+    --------
     Open a gzipped file and process it line by line::
 
-       with openany("input.pdb.gz") as pdb:
-          for line in pdb:
-              if line.startswith('ATOM'): print(line)
+        with openany("input.pdb.gz") as pdb:
+            for line in pdb:
+                if line.startswith('ATOM'):
+                    print(line)
 
     Open a URL and read it::
 
        import urllib2
        with openany(urllib2.urlopen("http://www.MDAnalysis.org/")) as html:
-          print(html.read())
+           print(html.read())
+
 
     See Also
     --------

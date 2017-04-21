@@ -1025,7 +1025,7 @@ class ExtendedPDBReader(PDBReader):
     --------
     :class:`PDBReader`
 
-    .. _PDB standard: http://www.wwpdb.org/documentation/format32/sect9.html
+
     .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 
     .. versionadded:: 0.8
