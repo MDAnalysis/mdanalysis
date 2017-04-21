@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import absolute_import
 
 from nose.tools import raises
 from numpy.testing import assert_equal, assert_array_equal
@@ -280,12 +281,12 @@ class DCDWriteTest(TestCase):
         # written DCD file relative to original
         test = DCDFile(self.testfile)
         ref = DCDFile(self.readfile)
-	curr_frame = 0
-	while curr_frame < test.n_frames:
-		written_coords = test.read()[0]
-		ref_coords = ref.read()[0]
-		curr_frame += 1
-		assert_equal(written_coords, ref_coords)
+        curr_frame = 0
+        while curr_frame < test.n_frames:
+            written_coords = test.read()[0]
+            ref_coords = ref.read()[0]
+            curr_frame += 1
+            assert_equal(written_coords, ref_coords)
 
 class DCDByteArithmeticTest(TestCase):
 
