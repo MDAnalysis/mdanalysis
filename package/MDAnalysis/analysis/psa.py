@@ -563,7 +563,7 @@ def hausdorff_neighbors(P, Q):
       the Hausdorff distance. They are the farthest nearest neighbors and are
       maximally different in the sense of the Hausdorff distance [Seyler2015]_.
     - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
-      ausdorff neighbors.
+      hausdorff neighbors.
 
     """
     N, axis = get_coord_axes(P)

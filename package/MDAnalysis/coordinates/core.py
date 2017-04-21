@@ -69,10 +69,7 @@ def reader(filename, **kwargs):
 
     See Also
     --------
-    For trajectory formats :class:`~DCD.DCDReader`, :class:`~XTC.XTCReader`,
-    :class:`~TRR.TRRReader`, :class:`~XYZ.XYZReader`. For single frame formats:
-    :class:`~CRD.CRDReader`, and :class:`~PDB.PDBReader`,
-    :class:`~GRO.GROReader`
+    :ref:`Supported coordinate formats`
 
 
     .. deprecated:: 0.15.0
@@ -117,9 +114,7 @@ def writer(filename, n_atoms=None, **kwargs):
 
     See Also
     --------
-    MDAnalysis.coordinates.DCD.DCDWriter : DCD trajectories
-    MDAnalysis.coordinates.XTC.XTCWriter : Gromacs XTC trajectories
-    MDAnalysis.coordinates.TRR.TRRWriter : Gromacs TRR trajectories
+    :ref:`Supported coordinate formats`
 
 
     .. versionchanged:: 0.7.6
