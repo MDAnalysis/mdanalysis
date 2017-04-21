@@ -280,17 +280,12 @@ class DCDWriteTest(TestCase):
         # written DCD file relative to original
         test = DCDFile(self.testfile)
         ref = DCDFile(self.readfile)
-
-        if test.n_frames > 1:
-            for frame in test:
-                written_coords = test.read()[0]
-                ref_coords = ref.read()[0]
-                assert_equal(written_coords, ref_coords)
-        else:
-            written_coords = test.read()[0]
-            ref_coords = ref.read()[0]
-            assert_equal(written_coords, ref_coords)
-            
+	curr_frame = 0
+	while curr_frame < test.n_frames:
+		written_coords = test.read()[0]
+		ref_coords = ref.read()[0]
+		curr_frame += 1
+		assert_equal(written_coords, ref_coords)
 
 class DCDByteArithmeticTest(TestCase):
 
