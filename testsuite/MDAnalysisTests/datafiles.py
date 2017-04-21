@@ -147,10 +147,16 @@ __all__ = [
     "MMTF", "MMTF_gz",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
+    "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
+    "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
 ]
 
 from pkg_resources import resource_filename
 
+legacy_DCD_NAMD_coords = resource_filename(__name__,
+'data/legacy_DCD_NAMD_coords.npy')
+legacy_DCD_ADK_coords = resource_filename(__name__,
+'data/legacy_DCD_adk_coords.npy')
 AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
 XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')
