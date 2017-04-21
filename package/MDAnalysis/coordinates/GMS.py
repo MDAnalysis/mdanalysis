@@ -32,6 +32,7 @@ Current version was approbated with US-GAMESS & Firefly only.
 There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
 """
+from __future__ import absolute_import
 
 import os
 import errno
@@ -41,7 +42,7 @@ from . import base
 import MDAnalysis.lib.util as util
 
 
-class GMSReader(base.Reader):
+class GMSReader(base.ReaderBase):
     """Reads from an GAMESS output file
 
     :Data:

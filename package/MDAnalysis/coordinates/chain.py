@@ -64,20 +64,17 @@ class ChainReader(base.ProtoReader):
 
     Notes
     -----
-
-    - Trajectory API attributes exist but most of them only reflect
-      the first trajectory in the list; :attr:`ChainReader.n_frames`,
-      :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are
-      properly set, though
-
-    - slicing not implemented
-
+    The trajectory API attributes exist but most of them only reflect the first
+    trajectory in the list; :attr:`ChainReader.n_frames`,
+    :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are properly
+    set, though
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     .. versionchanged:: 0.13.0
        :attr:`time` now reports the time summed over each trajectory's
        frames and individual :attr:`dt`.
+
     """
     format = 'CHAIN'
 
@@ -97,11 +94,9 @@ class ChainReader(base.ProtoReader):
            names in either plain file names format or ``(filename, format)``
            tuple combination. This allows explicit setting of the format for
            each individual trajectory file.
-
         skip : int, optional
            skip step (also passed on to the individual trajectory readers);
            must be same for all trajectories
-
         dt : float, optional
           Passed to individual trajectory readers to enforce a common time
           difference between frames, in MDAnalysis time units. If not set, each
@@ -109,26 +104,18 @@ class ChainReader(base.ProtoReader):
           files, or set to the reader's default) when reporting frame times;
           note that this might lead an inconsistent time difference between
           frames.
-
         **kwargs : dict, optional
           all other keyword arguments are passed on to each trajectory reader
           unchanged
 
+
         .. versionchanged:: 0.8
-           The *delta* keyword was added.
+           The ``delta`` keyword was added.
         .. versionchanged:: 0.13
-           The *delta* keyword was deprecated in favor of using *dt*.
+           The ``delta`` keyword was deprecated in favor of using ``dt``.
 
         """
         super(ChainReader, self).__init__()
-
-        if 'delta' in kwargs:
-            warnings.warn("Keyword 'delta' is now deprecated "
-                          "(from version 0.13); "
-                          "use 'dt' instead", DeprecationWarning)
-            delta = kwargs.pop('delta')
-            if 'dt' not in kwargs:
-                kwargs['dt'] = delta
 
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs)
@@ -325,13 +312,13 @@ class ChainReader(base.ProtoReader):
         frame index and the :class:`Timestep` instance in
         :attr:`ChainReader.ts` is updated.
 
-        Note
-        ----
+        Notes
+        -----
         `frame` is 0-based, i.e. the first frame in the trajectory is
         accessed with ``frame = 0``.
 
-        SeeAlso
-        -------
+        See Also
+        --------
         :meth:`~ChainReader._get_local_frame`
 
         """

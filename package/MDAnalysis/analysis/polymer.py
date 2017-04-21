@@ -32,6 +32,7 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 This module contains various commonly used tools in analysing polymers.
 
 """
+from __future__ import division, absolute_import
 from six.moves import range
 
 import numpy as np

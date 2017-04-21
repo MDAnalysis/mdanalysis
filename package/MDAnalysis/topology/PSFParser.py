@@ -42,7 +42,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 from six.moves import range
 
 import logging
@@ -52,7 +52,7 @@ import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, squash_by
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -73,7 +73,7 @@ from ..core.topology import Topology
 logger = logging.getLogger("MDAnalysis.topology.PSF")
 
 
-class PSFParser(TopologyReader):
+class PSFParser(TopologyReaderBase):
     """Read topology information from a CHARMM/NAMD/XPLOR PSF_ file.
 
     Creates a Topology with the following Attributes:
@@ -337,7 +337,7 @@ class PSFParser(TopologyReader):
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = list(map(lambda x: int(x) - 1, lines().split()))
+            fields = np.int64(lines().split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

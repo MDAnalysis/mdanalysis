@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
 
 import numpy as np
 import os
@@ -143,7 +144,7 @@ class TestChainReaderCommonDt(TestCase):
 
     def test_time(self):
         # We test this for the beginning, middle and end of the trajectory.
-        for frame_n in (0, self.trajectory.n_frames/2, -1):
+        for frame_n in (0, self.trajectory.n_frames // 2, -1):
             self.trajectory[frame_n]
             assert_almost_equal(self.trajectory.time,
                             self.trajectory.frame*self.common_dt,

@@ -1,5 +1,6 @@
 # Placeholder because log moved
 # Remove this in version 1.0
+from __future__ import absolute_import
 import warnings
 
 with warnings.catch_warnings():

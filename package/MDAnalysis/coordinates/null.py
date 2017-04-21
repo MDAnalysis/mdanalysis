@@ -35,7 +35,7 @@ from __future__ import absolute_import
 from . import base
 
 
-class NullWriter(base.Writer):
+class NullWriter(base.WriterBase):
     """A trajectory Writer that does not do anything.
 
     The NullWriter is the equivalent to ``/dev/null``: it behaves like
@@ -44,6 +44,7 @@ class NullWriter(base.Writer):
 
     """
     format = 'NULL'
+    multiframe = True
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):

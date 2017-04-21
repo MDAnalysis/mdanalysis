@@ -1,79 +1,55 @@
 package:
   name: mdanalysis
   # This has to be changed after a release
-  version: "0.15.0"
+  version: "0.16.1dev"
 
 source:
-   # to build from source you can speficy the path to the code directly.
-   # path: ../../../
-   # This ensures that you will build from a clean checkout
    git_url: https://github.com/MDAnalysis/mdanalysis
-   # git_branch: master
-   git_tag: release-0.15.0
+   git_branch: develop
+   # git_tag: release-0.15.0
 
 # specify the subversion of the conda package. Defaults to 0. If you make
 # changes to the conda package alone with out an increase in the source package
 # version increase this number. Should be reset to 0 after a new release
 build:
-  number: 1
+  number: 0
 
 requirements:
   build:
     - python
     - setuptools
-    - pip
-    - numpy
+    - numpy x.x
     - cython
-    - biopython
-    - networkx
-    - griddataformats
-    - nose
 
   run:
     - python
-    - numpy
+    - biopython
+    - nose ==1.3.7
+    - joblib
     - scipy
     - griddataformats
     - networkx
-    - biopython
     - matplotlib
+    - mock
     - seaborn
     - six
+    - psutil
     - netcdf4
-    - nose
+    - mmtf-python
+    - scikit-learn
 
 test:
   imports:
     - MDAnalysis
     - MDAnalysis.analysis
-    # check that distance cython modules have been build
     - MDAnalysis.lib.c_distances_openmp
     - MDAnalysis.lib.c_distances
 
-  requires:
-    # this is the same list as the run requirements
-    - python
-    - numpy
-    - scipy
-    - griddataformats
-    - networkx
-    - biopython
-    - matplotlib
-    - seaborn
-    - six
-    - netcdf4
-    - nose
-
   commands:
-    # run the testsuite with 2 processes
-    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v"])'
+    - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v", "--no-open-files"])'
 
 about:
   home: http://www.mdanalysis.org
   license: GPLv2
   license_file: package/LICENSE
   summary: 'MDAnalysis is a Python library to analyze molecular dynamics trajectories.'
-
-# See
-# http://docs.continuum.io/conda/build.html for
-# more information about meta.yaml

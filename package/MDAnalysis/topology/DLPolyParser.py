@@ -40,7 +40,7 @@ from __future__ import (absolute_import, division,
 import numpy as np
 
 from . import guessers
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -54,7 +54,7 @@ from ..core.topologyattrs import (
 from ..lib.util import openany
 
 
-class ConfigParser(TopologyReader):
+class ConfigParser(TopologyReaderBase):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
@@ -64,8 +64,7 @@ class ConfigParser(TopologyReader):
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
-            levcfg, imcon, megatm = map(int,
-                                        inf.readline().split()[:3])
+            levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             if not imcon == 0:
                 inf.readline()
                 inf.readline()
@@ -121,7 +120,7 @@ class ConfigParser(TopologyReader):
         return top
 
 
-class HistoryParser(TopologyReader):
+class HistoryParser(TopologyReaderBase):
     """DL_Poly History file parser
 
     .. versionadded:: 0.10.1
@@ -131,7 +130,7 @@ class HistoryParser(TopologyReader):
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             inf.readline()
             if not imcon == 0:
                 inf.readline()

@@ -58,8 +58,9 @@ sys.path.insert(0, os.path.abspath('../../..'))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon',]
-mathjax_path = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+              'sphinx.ext.napoleon', 'sphinx.ext.todo']
+
+mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -302,9 +303,10 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,
+intersphinx_mapping = {'https://docs.python.org/': None,
+                       'https://docs.scipy.org/doc/numpy/': None,
+                       'https://docs.scipy.org/doc/scipy/reference/': None,
                        'http://matplotlib.org': None,
                        'https://networkx.readthedocs.io/en/stable/': None,
+                       'https://gridDataFormats.readthedocs.io/en/stable/': None,
                        }

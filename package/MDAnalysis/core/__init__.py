@@ -87,6 +87,7 @@ Classes
 
 
 """
+from __future__ import absolute_import
 
 import six
 
@@ -382,17 +383,6 @@ _flags = [
 
            >>> flags['%(name)s'] = value
 
-        """
-    ),
-    _Flag(
-        'permissive_pdb_reader',
-        True,
-        {
-            'primitive': True, 'permissive': True, True: True,
-            'Bio.PDB': False, 'biopython': False, False: False,
-        },
-        """
-          This flag is deprecated and will be removed in 0.16.0.
         """
     ),
     _Flag(

@@ -42,7 +42,7 @@ from __future__ import absolute_import
 
 from . import base
 
-class SelectionWriter(base.SelectionWriter):
+class SelectionWriter(base.SelectionWriterBase):
     format = ["Gromacs", "ndx"]
     ext = "ndx"
     default_numterms = 12

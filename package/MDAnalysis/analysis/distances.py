@@ -34,6 +34,8 @@ have to be from the same :class:`~MDAnalysis.core.universe.Universe`.
 .. SeeAlso:: :mod:`MDAnalysis.lib.distances`
 """
 
+from __future__ import absolute_import
+
 __all__ = ['distance_array', 'self_distance_array',
            'contact_matrix', 'dist', 'between']
 
@@ -94,6 +96,10 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     ----
     :mod:`scipy.sparse` is require for using *sparse* matrices; if it cannot
     be imported then an `ImportError` is raised.
+
+    See Also
+    --------
+    :mod:`MDAnalysis.analysis.contacts` for native contact analysis
 
 
     .. versionchanged:: 0.11.0
@@ -179,10 +185,11 @@ def between(group, A, B, distance):
     ----------
     group : AtomGroup
         Find members of `group` that are between `A` and `B`
-    A, B : AtomGroups
-        `A` and `B` are :class:`~MDAnalysis.core.groups.AtomGroup`
-        instances.  Works best if `group` is bigger than either `A` or
-        `B`.
+    A : AtomGroup
+    B : AtomGroup
+        `A` and `B` are the groups of atoms between which atoms in
+        `group` are searched for.  The function works is more
+        efficient if `group` is bigger than either `A` or `B`.
     distance : float
         maximum distance for an atom to be counted as in the vicinity of
         `A` or `B`
@@ -195,6 +202,7 @@ def between(group, A, B, distance):
 
 
     .. versionadded: 0.7.5
+
     """
     ns_group = AtomNeighborSearch(group)
     resA = set(ns_group.search(A, distance))

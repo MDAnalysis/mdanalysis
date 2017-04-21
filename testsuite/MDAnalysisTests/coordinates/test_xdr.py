@@ -1,3 +1,25 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+from __future__ import division, absolute_import
 from six.moves import zip, range
 
 import errno
@@ -23,7 +45,7 @@ from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
 
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
                                        COORDINATES_TRR)
-from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 from MDAnalysisTests import tempdir
@@ -619,7 +641,7 @@ class XTCReference(BaseReference):
         self.changing_dimensions = True
 
 
-class TestXTCReader_2(BaseReaderTest):
+class TestXTCReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = XTCReference()
@@ -679,7 +701,7 @@ class TRRReference(BaseReference):
         return ts
 
 
-class TestTRRReader_2(BaseReaderTest):
+class TestTRRReader_2(MultiframeReaderTest):
     def __init__(self, reference=None):
         if reference is None:
             reference = TRRReference()

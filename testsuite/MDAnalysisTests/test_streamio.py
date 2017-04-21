@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 import six
 from six.moves import range, cStringIO, StringIO
 
@@ -216,7 +217,7 @@ class TestNamedStream_filename_behavior(object):
     # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
     @dec.skipif(True)
     @dec.skipif("HOME" not in os.environ)
-    @knownfailure()
+    @knownfailure
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)

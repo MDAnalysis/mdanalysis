@@ -1,4 +1,4 @@
-import numpy as np
+from __future__ import absolute_import
 from numpy.testing import (
     assert_,
     assert_array_equal,
@@ -62,6 +62,7 @@ class TestMMTFUniverse(object):
         assert_array_equal(self.u.residues.resids[-3:], [2008, 2009, 2010])
 
     def test_occupancies(self):
+        # pylint: disable=unsubscriptable-object
         assert_array_equal(self.u.atoms.occupancies[:3], [1.0, 1.0, 1.0])
 
     def test_bfactors(self):

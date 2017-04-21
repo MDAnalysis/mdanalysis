@@ -10,8 +10,8 @@
 .. versionadded:: 0.16.0
 
 The module contains implementations of similarity measures between protein
-ensembles described in [Lindorff-Larsen2009]_. The implementation and examples
-are described in [Tiberti2015]_.
+ensembles described in [Lindorff-Larsen2009_doc]_. The implementation and examples
+are described in [Tiberti2015_doc]_.
 
 The module includes facilities for handling ensembles and trajectories through
 the :class:`Universe` class, performing clustering or dimensionality reduction
@@ -34,7 +34,7 @@ as well as two methods to evaluate the convergence of trajectories:
 + **Dimensionality-reduction based convergence evaluation** : :func:`~MDAnalysis.analysis.encore.similarity.dres_convergence`
 
 
-When using this module in published work please cite [Tiberti2015]_.
+When using this module in published work please cite [Tiberti2015_doc]_.
 
 
 Modules
@@ -55,7 +55,6 @@ Modules
 References
 ----------
 
-.. [Lindorff-Larsen2009] Similarity Measures for Protein Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.
+.. [Lindorff-Larsen2009_doc] Similarity Measures for Protein Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.
 
-.. [Tiberti2015] ENCORE: Software for Quantitative Ensemble.. Comparison. Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten Lindorff- Larsen. PLoS Comput Biol. 2015, 11, e1004415
-
+.. [Tiberti2015_doc] ENCORE: Software for Quantitative Ensemble.. Comparison. Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten Lindorff- Larsen. PLoS Comput Biol. 2015, 11, e1004415

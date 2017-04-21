@@ -37,6 +37,7 @@ This is all invisible to the user through the
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 """
+from __future__ import division, absolute_import
 import six
 from six.moves import zip
 
@@ -763,7 +764,7 @@ class RangeSelection(Selection):
                 if not selrange:
                     raise ValueError(
                         "Failed to parse number: {0}".format(val))
-                lower, upper = map(int, selrange.groups())
+                lower, upper = np.int64(selrange.groups())
 
             lowers.append(lower)
             uppers.append(upper)

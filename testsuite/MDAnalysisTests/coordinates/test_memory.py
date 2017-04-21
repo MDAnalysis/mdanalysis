@@ -1,10 +1,32 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.mdanalysis.org
+# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+from __future__ import absolute_import
 import numpy as np
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
-                                              BaseReaderTest)
+                                              MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
 from numpy.testing import assert_equal, dec
 from MDAnalysisTests import parser_not_found
@@ -58,11 +80,23 @@ class MemoryReference(BaseReference):
         return ts
 
 
-
-class TestMemoryReader(BaseReaderTest):
+class TestMemoryReader(MultiframeReaderTest):
     def __init__(self):
         reference = MemoryReference()
         super(TestMemoryReader, self).__init__(reference)
+
+    def test_filename_transefer_to_memory(self):
+        # MemoryReader should have a filename attribute set to the trajaectory filename
+        universe = mda.Universe(PSF, DCD)
+        universe.transfer_to_memory()
+        assert_equal(universe.trajectory.filename, DCD)
+
+    def test_filename_array(self):
+        # filename attribute of MemoryReader should be None when generated from an array
+        universe = mda.Universe(PSF, DCD)
+        coordinates = universe.trajectory.timeseries(universe.atoms)
+        universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
+        assert_equal(universe2.trajectory.filename, None)
 
     def test_default_memory_layout(self):
         universe1 = mda.Universe(PSF, DCD, in_memory=True)

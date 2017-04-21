@@ -98,8 +98,8 @@ especially as we are directly using this framework (imported from numpy).
 
 A number of plugins external to nose are automatically loaded. The `knownfailure`
 plugin provides the `@knownfailure()` decorator, which can be used to mark tests
-that are expected to fail. Beware that even if used with default arguments the
-parentheses must be included.
+that are expected to fail. If used with default arguments the parentheses can be 
+excluded.
 
 .. _NumPy: http://www.numpy.org/
 .. _nose:
@@ -112,10 +112,11 @@ parentheses must be included.
 .. _Gromacs: http://www.gromacs.org
 
 """
+from __future__ import absolute_import
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.16.0-dev0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.16.1-dev0"  # keep in sync with RELEASE in setup.py
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:

@@ -19,11 +19,13 @@ coordinates/core (all others).  They are declared here to avoid
 circular imports.
 
 """
+from __future__ import absolute_import
 
+import copy
 import inspect
 import mmtf
 import numpy as np
-
+from MDAnalysis.lib.util import isstream
 
 from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
 from ..lib import util
@@ -70,7 +72,7 @@ def get_reader_for(filename, format=None):
         return format
 
     # ChainReader gets returned even if format is specified
-    if not isinstance(filename, np.ndarray) and util.iterable(filename):
+    if not isinstance(filename, np.ndarray) and util.iterable(filename) and not isstream(filename):
         format = 'CHAIN'
     # Only guess if format is not specified
     elif format is None:
@@ -159,34 +161,27 @@ def get_writer_for(filename, format=None, multiframe=None):
                              .format(filename))
         else:
             format = util.check_compressed_format(root, ext)
-
+    format = format.upper()
     if multiframe is None:
-        try:
-            return _MULTIFRAME_WRITERS[format]
-        except KeyError:
-            try:
-                return _SINGLEFRAME_WRITERS[format]
-            except KeyError:
-                raise TypeError(
-                    "No trajectory or frame writer for format '{0}'"
-                    .format(format))
+        # Multiframe takes priority, else use singleframe
+        options = copy.copy(_SINGLEFRAME_WRITERS)  # do copy to avoid changing in place
+        options.update(_MULTIFRAME_WRITERS)  # update overwrites existing entries
+        errmsg = "No trajectory or frame writer for format '{0}'"
     elif multiframe is True:
-        try:
-            return _MULTIFRAME_WRITERS[format]
-        except KeyError:
-            raise TypeError(
-                "No trajectory writer for format {0}"
-                "".format(format))
+        options = _MULTIFRAME_WRITERS
+        errmsg = "No trajectory writer for format '{0}'" 
     elif multiframe is False:
-        try:
-            return _SINGLEFRAME_WRITERS[format]
-        except KeyError:
-            raise TypeError(
-                "No single frame writer for format {0}".format(format))
+        options = _SINGLEFRAME_WRITERS
+        errmsg = "No single frame writer for format '{0}'"
     else:
         raise ValueError("Unknown value '{0}' for multiframe,"
                          " only True, False, None allowed"
                          "".format(multiframe))
+
+    try:
+        return options[format]
+    except KeyError:
+        raise TypeError(errmsg.format(format))
 
 
 def get_parser_for(filename, format=None):

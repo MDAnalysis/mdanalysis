@@ -191,8 +191,8 @@ trajectory. This includes
 Topology readers are generally called "parsers" in MDAnalysis (for
 historical reasons and in order to distinguish them from coordinate
 "readers"). All parsers are derived from
-:class:`MDAnalysis.topology.base.TopologyReader` and have a
-:meth:`~MDAnalysis.topology.base.TopologyReader.parse` method that
+:class:`MDAnalysis.topology.base.TopologyReaderBase` and have a
+:meth:`~MDAnalysis.topology.base.TopologyReaderBase.parse` method that
 returns a :class:`MDAnalysis.core.topology.Topology` instance.
 
 
@@ -254,6 +254,7 @@ four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.
 
 """
+from __future__ import absolute_import
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
@@ -264,7 +265,6 @@ from . import core
 from . import PSFParser
 from . import TOPParser
 from . import PDBParser
-from . import PrimitivePDBParser
 from . import ExtendedPDBParser
 from . import PQRParser
 from . import GROParser

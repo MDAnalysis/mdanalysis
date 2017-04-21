@@ -21,7 +21,7 @@
 #
 
 # Hydrogen Bonding Analysis
-"""
+r"""
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
 ===========================================================================
 
@@ -214,8 +214,8 @@ atom names to MDAnalysis.
 .. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
 
 
-Example
--------
+How to perform HydrogenBondAnalysis
+-----------------------------------
 
 All protein-water hydrogen bonds can be analysed with ::
 
@@ -283,6 +283,7 @@ Classes
             ],
             ...
         ]
+
       The time of each step is not stored with each hydrogen bond frame but in
       :attr:`~HydrogenBondAnalysis.timesteps`.
 
@@ -343,6 +344,7 @@ Classes
         for version 0.16.0
 
 """
+from __future__ import division, absolute_import
 import six
 from six.moves import range, zip, map, cPickle
 
@@ -464,61 +466,62 @@ class HydrogenBondAnalysis(object):
            you can improve performance by setting the *update_selection*
            keywords to ``False``.
 
-        :Arguments:
-          *universe*
+        Parameters
+        ----------
+        universe : Universe
             Universe object
-          *selection1*
+        selection1 : str (optional)
             Selection string for first selection ['protein']
-          *selection2*
+        selection2 : str (optional)
             Selection string for second selection ['all']
-          *selection1_type*
+        selection1_type : str (optional)
             Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
             value for *selection1_type* automatically determines how
             *selection2* handles donors and acceptors: If *selection1* contains
             'both' then *selection2* will also contain *both*. If *selection1*
             is set to 'donor' then *selection2* is 'acceptor' (and vice versa).
             ['both'].
-          *update_selection1*
+        update_selection1 : bool (optional)
             Update selection 1 at each frame? [``False``]
-          *update_selection2*
+        update_selection2 : bool (optional)
             Update selection 2 at each frame? [``False``]
-          *filter_first*
+        filter_first : bool (optional)
             Filter selection 2 first to only atoms 3*distance away [``True``]
-          *distance*
+        distance : float (optional)
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
             <= *distance* (and the appropriate D-H-A angle, see *angle*) are
             recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]
-          *angle*
+        angle : float (optional)
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
             >=  *angle*. The default of 120º also finds fairly non-specific
             hydrogen interactions and a possibly better value is 150º. [120.0]
-          *forcefield*
+        forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
             Name of the forcefield used. Switches between different
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.
             Available values: "CHARMM27", "GLYCAM06", "other" ["CHARMM27"]
-          *donors*
+        donors : sequence (optional)
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
-          *acceptors*
+        acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
-          *start*
+        start : int (optional)
             starting frame-index for analysis, ``None`` is the first one, 0.
             *start* and *stop* are 0-based frame indices and are used to slice
             the trajectory (if supported) [``None``]
-          *stop*
+        stop : int (optional)
             last trajectory frame for analysis, ``None`` is the last one [``None``]
-          *step*
+        step : int (optional)
             read every *step* between *start* and *stop*, ``None`` selects 1.
             Note that not all trajectory reader from 1 [``None``]
-          *debug*
+        debug : bool (optional)
             If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
             the output, e.g. using :func:`MDAnalysis.start_logging`.)
-          *detect_hydrogens*
+        detect_hydrogens : {"distance", "heuristic"} (optional)
             Determine the algorithm to find hydrogens connected to donor
             atoms. Can be "distance" (default; finds all hydrogens in the
             donor's residue within a cutoff of the donor) or "heuristic"
@@ -526,14 +529,17 @@ class HydrogenBondAnalysis(object):
             always give the correct answer but "heuristic" is faster,
             especially when the donor list is updated each
             for each frame. ["distance"]
-          *distance_type*
+        distance_type : {"hydrogen", "heavy"} (optional)
             Measure hydrogen bond lengths between donor and acceptor heavy
             attoms ("heavy") or between donor hydrogen and acceptor heavy
             atom ("hydrogen"). If using "heavy" then one should set the *distance*
             cutoff to a higher value such as 3.5 Å. ["hydrogen"]
 
-        :Raises: :exc:`SelectionError` is raised for each static selection without
-                 the required donors and/or acceptors.
+        Raises
+        ------
+        :exc:`SelectionError`
+            is raised for each static selection without the required
+            donors and/or acceptors.
 
         .. versionchanged:: 0.7.6
            New *verbose* keyword (and per-frame debug logging disabled by
@@ -594,9 +600,7 @@ class HydrogenBondAnalysis(object):
         self.distance = distance
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
-        self.traj_slice = slice(start if isinstance(start, int) else None,  # internal frames are 0 based
-                                stop if isinstance(stop, int) else None,
-                                step)
+        self.traj_slice = slice(start, stop, step)
 
         # set up the donors/acceptors lists
         if donors is None:
@@ -898,7 +902,7 @@ class HydrogenBondAnalysis(object):
                                quiet=kwargs.get('quiet', None),
                                default=True)
         pm = ProgressMeter(len(frames),
-                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
+                           format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
                            verbose=verbose)
 
         try:
@@ -919,7 +923,7 @@ class HydrogenBondAnalysis(object):
                     (self.traj_slice.start or 0),
                     (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
 
-        for ts in self.u.trajectory[self.traj_slice]:
+        for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
             # all bonds for this timestep
             frame_results = []
             # dict of tuples (atomid, atomid) for quick check if
@@ -930,7 +934,7 @@ class HydrogenBondAnalysis(object):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(ts.frame)
+            pm.echo(progress, current_step=frame)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
@@ -1016,14 +1020,15 @@ class HydrogenBondAnalysis(object):
           2. "acceptor_idx"
           3. "donor_index"
           4. "acceptor_index"
-          4. "donor_resnm"
-          5. "donor_resid"
-          6. "donor_atom"
-          7. "acceptor_resnm"
-          8. "acceptor_resid"
-          9. "acceptor_atom"
-          10. "distance"
-          11. "angle"
+          5. "donor_resnm"
+          6. "donor_resid"
+          7. "donor_atom"
+          8. "acceptor_resnm"
+          9. "acceptor_resid"
+          10. "acceptor_atom"
+          11. "distance"
+          12. "angle"
+
 
         .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
@@ -1083,7 +1088,7 @@ class HydrogenBondAnalysis(object):
 
         out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
         for cursor, time_count in enumerate(zip(self.timesteps,
-                                                map(len, self.timeseries))):
+                                               (len(series) for series in self.timeseries))):
             out[cursor] = time_count
         return out.view(np.recarray)
 

@@ -30,7 +30,7 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
-
+from __future__ import division, absolute_import
 from six.moves import zip, range
 
 import Bio.Seq
@@ -885,7 +885,7 @@ class Masses(AtomAttr):
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
-        indices = np.argsort(e_val)
+        indices = np.argsort(e_val)[::-1]
         # Return transposed in more logical form. See Issue 33.
         return e_vec[:, indices].T
 
@@ -1362,7 +1362,7 @@ class Bonds(_Connection):
 
     Must be initialised by a list of zero based tuples.
     These indices refer to the atom indices.
-        Eg:  [(0, 1), (1, 2), (2, 3)]
+    E.g., ` [(0, 1), (1, 2), (2, 3)]`
 
     Also adds the `bonded_atoms`, `fragment` and `fragments`
     attributes.
@@ -1416,8 +1416,7 @@ class Angles(_Connection):
     """Angles between three atoms
 
     Initialise with a list of 3 long tuples
-    Eg:
-      [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+    E.g.,  `[(0, 1, 2), (1, 2, 3), (2, 3, 4)]`
 
     These indices refer to the atom indices.
     """

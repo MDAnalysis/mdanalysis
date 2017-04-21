@@ -55,7 +55,7 @@ trajectory, while writing each frame::
   W.close()
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB
+step is the final END_ record written, which is required by the `PDB 3.2
 standard`_.
 
 
@@ -72,7 +72,7 @@ Simple PDB Reader and Writer
 -----------------------------------------
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and
-:class:`PDBWriter`. It only implements a subset of the `PDB standard`_
+:class:`PDBWriter`. It only implements a subset of the `PDB 3.2 standard`_
 (for instance, it does not deal with insertion codes) and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
@@ -140,7 +140,11 @@ Classes
     The "permissive" flag is not used anymore (and effectively defaults to True);
     it will be completely removed in 0.16.0.
 
+
+.. _`PDB 3.2 standard`:
+    http://www.wwpdb.org/documentation/format32/v3.2.html
 """
+from __future__ import absolute_import
 
 from six.moves import range, zip
 
@@ -166,7 +170,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
 
-class PDBReader(base.Reader):
+class PDBReader(base.ReaderBase):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
 
     The following *PDB records* are parsed (see `PDB coordinate section`_ for
@@ -394,7 +398,7 @@ class PDBReader(base.Reader):
         self._pdbfile.close()
 
 
-class PDBWriter(base.Writer):
+class PDBWriter(base.WriterBase):
     """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
@@ -666,7 +670,7 @@ class PDBWriter(base.Writer):
 
         conect = ([a] + sorted(con[a])
                   for a in atoms if a in con)
-        conect = (map(lambda x: mapping[x], row) for row in conect)
+        connect = ([mapping[x] for x in row] for row in conect)
 
         for c in conect:
             self.CONECT(c)
@@ -1000,23 +1004,6 @@ class PDBWriter(base.Writer):
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
 
-class PrimitivePDBReader(PDBReader):
-    def __init__(self, filename, *args, **kwargs):
-        warnings.warn('PrimitivePDBReader is identical to the PDBReader,'
-                  ' it is deprecated in favor of the shorter name'
-                  ' removal targeted for version 0.16.0',
-                  category=DeprecationWarning)
-        super(PrimitivePDBReader, self).__init__(filename, *args, **kwargs)
-
-
-class PrimitivePDBWriter(PDBWriter):
-    def __init__(self, filename, *args, **kwargs):
-        warnings.warn('PrimitivePDBWriter is identical to the Writer,'
-                      'it is deprecated in favor of the shorter name'
-                      ' removal targeted for version 0.16.0',
-                      category=DeprecationWarning)
-        super(PrimitivePDBWriter, self).__init__(filename, *args, **kwargs)
-
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
@@ -1046,8 +1033,6 @@ class MultiPDBWriter(PDBWriter):
     *multiframe* = ``True``), consisting of multiple models (using the MODEL_
     and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/format32/v3.2.html
 
     .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
@@ -1062,5 +1047,6 @@ class MultiPDBWriter(PDBWriter):
     .. versionadded:: 0.7.6
 
     """
-    format = 'PDB'
+    format = ['PDB', 'ENT']
     multiframe = True  # For Writer registration
+    singleframe = False

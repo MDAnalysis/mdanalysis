@@ -31,6 +31,7 @@ def main():
     create_test_trj(u, 'test.xyz')
     create_test_trj(u, 'test.xtc')
     create_test_trj(u, 'test.trr')
+    create_test_trj(u, 'test.gro')
 
 if __name__ == '__main__':
     main()

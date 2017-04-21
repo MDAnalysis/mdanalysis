@@ -65,12 +65,14 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
+from __future__ import absolute_import
 
 from six.moves import range
 
 import os
 import numpy as np
 from . import base
+from ..lib.util import anyopen
 
 def uncomment(lines):
     """ Remove comments from lines in an .xvg file
@@ -179,7 +181,7 @@ class XVGReader(base.AuxReader):
 
     def __init__(self, filename, **kwargs):
         self._auxdata = os.path.abspath(filename)
-        with open(filename) as xvg_file:
+        with anyopen(filename) as xvg_file:
             lines = xvg_file.readlines()
         auxdata_values = []
         # remove comments before storing
@@ -294,7 +296,7 @@ class XVGFileReader(base.AuxFileReader):
         StopIteration
             When end of file or end of first data set is reached.
         """
-        line = self.auxfile.readline()
+        line = next(self.auxfile)
         while True:
             if not line or (line.strip() and line.strip()[0] == '&'):
                 # at end of file or end of first set of data (multiple sets
@@ -319,7 +321,7 @@ class XVGFileReader(base.AuxFileReader):
                                                   auxstep._n_cols))
                 return auxstep
             # line is comment only - move to next
-            line = self.auxfile.readline()
+            line = next(self.auxfile)
 
     def _count_n_steps(self):
         """ Iterate through all steps to count total number.
@@ -359,3 +361,4 @@ class XVGFileReader(base.AuxFileReader):
         for step in self:
             times.append(self.time)
         return np.array(times)
+

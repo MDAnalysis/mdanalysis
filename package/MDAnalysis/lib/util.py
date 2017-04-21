@@ -154,12 +154,13 @@ Class decorators
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 """
+from __future__ import division, absolute_import
+import six
+from six.moves import range, map
 import sys
 
 __docformat__ = "restructuredtext en"
 
-from six.moves import range, map
-import six
 
 import os
 import os.path
@@ -558,28 +559,26 @@ class NamedStream(io.IOBase):
         the keyword *reset* is set to ``False``. If rewinding fails, a
         :class:`MDAnalysis.StreamWarning` is issued.
 
-        .. Note::
-
-           By default, this stream will *not* be closed by :keyword:`with` and
-           :meth:`close` (see there) unless the *close* keyword is set to
-           ``True``.
-
-        Arguments
-        ---------
+        Parameters
+        ----------
         stream : stream
-               an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
+            an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
         filename : str
-               the filename that should be associated with the stream
+            the filename that should be associated with the stream
+        reset : bool
+            start the stream from the beginning (either :meth:`reset` or :meth:`seek`)
+            when the class instance is constructed
+        close : bool
+            close the stream when a :keyword:`with` block exits or when
+            :meth:`close` is called; note that the default is **not to close
+            the stream**
 
-        Keywords
-        --------
-        reset : boolean, default ``True``
-               start the stream from the beginning (either :meth:`reset` or :meth:`seek`)
-               when the class instance is constructed
-        close : booelan, default ``True``
-               close the stream when a :keyword:`with` block exits or when
-               :meth:`close` is called; note that the default is **not to close
-               the stream**
+        Notes
+        -----
+        By default, this stream will *not* be closed by :keyword:`with` and
+        :meth:`close` (see there) unless the `close` keyword is set to
+        ``True``.
+
 
         .. versionadded:: 0.9.0
         """
@@ -1323,8 +1322,8 @@ def blocks_of(a, n, m):
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
 
-    nblocks = a.shape[0] / n
-    nblocks2 = a.shape[1] / m
+    nblocks = a.shape[0] // n
+    nblocks2 = a.shape[1] // m
 
     if not nblocks == nblocks2:
         raise ValueError("Must divide into same number of blocks in both"

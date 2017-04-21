@@ -107,45 +107,44 @@ in :mod:`MDAnalysis.coordinates.__init__`.
    .. automethod:: copy
    .. automethod:: copy_slice
 
-.. autoclass:: IObase
+.. autoclass:: IOBase
    :members:
 
 .. autoclass:: ProtoReader
    :members:
 
-.. autoclass:: Reader
+.. autoclass:: ReaderBase
    :members:
    :inherited-members:
 
-.. autoclass:: Writer
+.. autoclass:: WriterBase
    :members:
    :inherited-members:
 
 """
 from __future__ import absolute_import
-
-from six.moves import range
 import six
-
-import warnings
+from six.moves import range
 
 import numpy as np
+import numbers
 import copy
+import warnings
 import weakref
 
+from . import core
+from .. import NoDataError
 from .. import (
     _READERS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
 )
-from ..core import flags
 from .. import units
-from ..lib.util import asiterable, Namespace
-from . import core
-from .. import NoDataError
-
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
+from ..core import flags
+from ..lib.util import asiterable, Namespace
+
 
 class Timestep(object):
     """Timestep data for one frame
@@ -785,7 +784,7 @@ class Timestep(object):
         del self.data['time']
 
 
-class IObase(object):
+class IOBase(object):
     """Base class bundling common functionality for trajectory I/O.
 
     .. versionchanged:: 0.8
@@ -1049,10 +1048,10 @@ class _Readermeta(type):
                 _READERS[f] = cls
 
 
-class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
+class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     """Base class for Readers, without a :meth:`__del__` method.
 
-    Extends :class:`IObase` with most attributes and methods of a generic
+    Extends :class:`IOBase` with most attributes and methods of a generic
     Reader, with the exception of a :meth:`__del__` method. It should be used
     as base for Readers that do not need :meth:`__del__`, especially since
     having even an empty :meth:`__del__` might lead to memory leaks.
@@ -1061,7 +1060,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
     methods.
 
-    .. SeeAlso:: :class:`Reader`
+    .. SeeAlso:: :class:`ReaderBase`
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -1191,6 +1190,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         ----
         *frame* is a 0-based frame index.
         """
+
         def apply_limits(frame):
             if frame < 0:
                 frame += len(self)
@@ -1214,6 +1214,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
                     if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame_with_aux(apply_limits(f))
+
             return listiter(frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
@@ -1277,14 +1278,36 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         -------
         start, stop, step : int
           Integers representing the slice
+
+        Warning
+        -------
+        The returned values start, stop and step give the expected result when passed
+        in range() but gives unexpected behaviour when passed in a slice when stop=None
+        and step=-1
+
+        This is because when we slice the trajectory (u.trajectory[::-1]), the values
+        returned by check_slice_indices are passed to range. Instead, in AnalysisBase
+        the values returned by check_slice_indices are used to splice the trajectory.
+        This creates a discrepancy because these two lines are not equivalent:
+
+            range(10, -1, -1)  # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            range(10)[10:-1:-1]  # []
+
         """
-        for var, varname in (
-                (start, 'start'),
-                (stop, 'stop'),
-                (step, 'step')
-        ):
-            if not (isinstance(var, int) or (var is None)):
+
+        slice_dict = {'start': start, 'stop': stop, 'step': step}
+        for varname, var in slice_dict.items():
+            if isinstance(var, numbers.Integral):
+                slice_dict[varname] = int(var)
+            elif (var is None):
+                pass
+            else:
                 raise TypeError("{0} is not an integer".format(varname))
+
+        start = slice_dict['start']
+        stop = slice_dict['stop']
+        step = slice_dict['step']
+
         if step == 0:
             raise ValueError("Step size is zero")
 
@@ -1295,33 +1318,30 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
             start = 0 if step > 0 else nframes - 1
         elif start < 0:
             start += nframes
+        if start < 0:
+            start = 0
 
-        if stop is not None:
-            if stop < 0:
-                stop += nframes
-            elif stop > nframes:
-                stop = nframes
-        else:
+        if step < 0 and start > nframes:
+            start = nframes - 1
+
+        if stop is None:
             stop = nframes if step > 0 else -1
+        elif stop < 0:
+            stop += nframes
 
-        if step > 0 and stop < start:
-            raise IndexError("Stop frame is lower than start frame")
-        elif step < 0 and start < stop:
-            raise IndexError("Start frame is lower than stop frame")
-        if not (0 <= start < nframes) or stop > nframes:
-            raise IndexError(
-                "Frame start/stop outside of the range of the trajectory.")
+        if step > 0 and stop > nframes:
+            stop = nframes
 
         return start, stop, step
 
     def __repr__(self):
         return ("<{cls} {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
-                    cls=self.__class__.__name__,
-                    fname=self.filename,
-                    nframes=self.n_frames,
-                    natoms=self.n_atoms
-                ))
+            cls=self.__class__.__name__,
+            fname=self.filename,
+            nframes=self.n_frames,
+            natoms=self.n_atoms
+        ))
 
     def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
@@ -1421,7 +1441,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
-        while aux.step_to_frame(aux.step+1, ts) < 0:
+        while aux.step_to_frame(aux.step + 1, ts) < 0:
             next(aux)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
@@ -1555,7 +1575,6 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         setattr(self.ts.aux, new, self.ts.aux[auxname])
         delattr(self.ts.aux, auxname)
 
-
     def get_aux_descriptions(self, auxnames=None):
         """Get descriptions to allow reloading the specified auxiliaries.
 
@@ -1586,12 +1605,11 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         return descriptions
 
 
-
-class Reader(ProtoReader):
+class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
 
-    New Readers should subclass :class:`Reader` and properly implement a
+    New Readers should subclass :class:`ReaderBase` and properly implement a
     :meth:`close` method, to ensure proper release of resources (mainly file
     handles). Readers that are inherently safe in this regard should subclass
     :class:`ProtoReader` instead.
@@ -1604,15 +1622,16 @@ class Reader(ProtoReader):
 
     .. versionchanged:: 0.11.0
        Most of the base Reader class definitions were offloaded to
-       :class:`ProtoReader` so as to allow the subclassing of Readers without a
+       :class:`ProtoReader` so as to allow the subclassing of ReaderBases without a
        :meth:`__del__` method.  Created init method to create common
-       functionality, all Reader subclasses must now :func:`super` through this
+       functionality, all ReaderBase subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
 
     """
+
     def __init__(self, filename, convert_units=None, **kwargs):
-        super(Reader, self).__init__()
+        super(ReaderBase, self).__init__()
 
         self.filename = filename
 
@@ -1638,32 +1657,38 @@ class Reader(ProtoReader):
 
 
 class _Writermeta(type):
-    # Auto register upon class creation
+    # Auto register this format upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
+            # grab the string which describes this format
+            # could be either 'PDB' or ['PDB', 'ENT'] for multiple formats
             fmt = asiterable(classdict['format'])
         except KeyError:
+            # not required however
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _SINGLEFRAME_WRITERS[f] = cls
-            try:
-                if classdict['multiframe']:
-                    for f in fmt:
-                        f = f.upper()
-                        _MULTIFRAME_WRITERS[f] = cls
-            except KeyError:
-                pass
+            # does the Writer support single and multiframe writing?
+            single = classdict.get('singleframe', True)
+            multi = classdict.get('multiframe', False)
+
+            if single:
+                for f in fmt:
+                    f = f.upper()
+                    _SINGLEFRAME_WRITERS[f] = cls
+            if multi:
+                for f in fmt:
+                    f = f.upper()
+                    _MULTIFRAME_WRITERS[f] = cls
 
 
-class Writer(six.with_metaclass(_Writermeta, IObase)):
+class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
+
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -1730,10 +1755,10 @@ class Writer(six.with_metaclass(_Writermeta, IObase)):
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
-    # def write_next_timestep(self, ts=None)
+        # def write_next_timestep(self, ts=None)
 
 
-class SingleFrameReader(ProtoReader):
+class SingleFrameReaderBase(ProtoReader):
     """Base class for Readers that only have one frame.
 
     To use this base class, define the method :meth:`_read_first_frame` to
@@ -1747,8 +1772,8 @@ class SingleFrameReader(ProtoReader):
     """
     _err = "{0} only contains a single frame"
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        super(SingleFrameReader, self).__init__()
+    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+        super(SingleFrameReaderBase, self).__init__()
 
         self.filename = filename
         if convert_units is None:
@@ -1756,6 +1781,7 @@ class SingleFrameReader(ProtoReader):
         self.convert_units = convert_units
 
         self.n_frames = 1
+        self.n_atom = n_atoms
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):
@@ -1795,5 +1821,5 @@ class SingleFrameReader(ProtoReader):
     def close(self):
         # all single frame readers should use context managers to access
         # self.filename. Explicitly setting it to the null action in case
-        # the IObase.close method is ever changed from that.
+        # the IOBase.close method is ever changed from that.
         pass

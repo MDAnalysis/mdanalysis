@@ -24,6 +24,7 @@
 Avoids import of MDAnalysis at base level because of Issue #344
 
 """
+from __future__ import absolute_import
 from __future__ import division
 
 from six.moves import range
@@ -138,21 +139,21 @@ def make_resnames(size):
     """Creates residues named RsA RsB ... """
     import MDAnalysis.core.topologyattrs as ta
     na, nr, ns = size
-    return ta.Resnames(np.array(['Rs{}'.format(string.uppercase[i])
+    return ta.Resnames(np.array(['Rs{}'.format(string.ascii_uppercase[i])
                                  for i in range(nr)], dtype=object))
 
 def make_segids(size):
     """Segids SegA -> SegY"""
     import MDAnalysis.core.topologyattrs as ta
     na, nr, ns = size
-    return ta.Segids(np.array(['Seg{}'.format(string.uppercase[i])
+    return ta.Segids(np.array(['Seg{}'.format(string.ascii_uppercase[i])
                                for i in range(ns)], dtype=object))
 
 def make_types(size):
     """Atoms are given types TypeA -> TypeE on a loop"""
     import MDAnalysis.core.topologyattrs as ta
     na, nr, ns = size
-    types = itertools.cycle(string.uppercase[:5])
+    types = itertools.cycle(string.ascii_uppercase[:5])
     return ta.Atomtypes(np.array(
         ['Type{}'.format(next(types))
          for _ in range(na)], dtype=object))
@@ -162,7 +163,7 @@ def make_names(size):
     import MDAnalysis.core.topologyattrs as ta
     na, nr, ns = size
     # produces, AAA, AAB, AAC, ABA etc
-    names = itertools.product(*[string.uppercase] * 3)
+    names = itertools.product(*[string.ascii_uppercase] * 3)
     return ta.Atomnames(np.array(
         ['{}'.format(''.join(next(names)))
          for _ in range(na)], dtype=object))
@@ -225,9 +226,9 @@ _MENU = {
 }
 
 def make_FakeReader(n_atoms=None, velocities=False, forces=False):
-    from MDAnalysis.coordinates.base import SingleFrameReader
+    from MDAnalysis.coordinates.base import SingleFrameReaderBase
 
-    class FakeReader(SingleFrameReader):
+    class FakeReader(SingleFrameReaderBase):
         def __init__(self, n_atoms=None, velocities=False, forces=False):
             self.n_atoms = n_atoms if not n_atoms is None else _N_ATOMS
             self.filename = 'FakeReader'

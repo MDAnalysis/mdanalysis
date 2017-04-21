@@ -42,6 +42,7 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 .. _Tripos: http://www.tripos.com/
 .. _DOCK: http://dock.compbio.ucsf.edu/
 """
+from __future__ import absolute_import
 
 import numpy as np
 
@@ -50,7 +51,7 @@ from ..core import flags
 from ..lib import util
 
 
-class MOL2Reader(base.Reader):
+class MOL2Reader(base.ReaderBase):
     """Reader for MOL2 structure format.
 
     .. versionchanged:: 0.11.0
@@ -164,7 +165,7 @@ class MOL2Reader(base.Reader):
         self.ts.frame = -1
 
 
-class MOL2Writer(base.Writer):
+class MOL2Writer(base.WriterBase):
     """
 
     MOL2Writer Limitations

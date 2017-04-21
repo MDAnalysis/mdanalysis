@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
 
 from glob import glob
 import itertools
@@ -328,16 +329,25 @@ class TestAtomGroupTransformations(object):
         assert_array_almost_equal(diff, disp, decimal=5)
 
     def test_rotate(self):
+        # ensure that selection isn't centered at 0, 0, 0
+        self.u.atoms.translate((1, 1, 1))
+        self.coords += 1
+
+        # check identify does nothing
         R = np.eye(3)
         self.u.atoms.rotate(R)
         assert_array_almost_equal(self.u.atoms.positions, self.coords)
 
+        # check default rotation center is at 0, 0, 0. Changing this center
+        # will break an unpredictable amount of old code.
+        ag = self.u.atoms[:2]
+        ag.positions = np.array([[1, 0, 0], [-1, 0, 0]])
+        ag.rotate(transformations.rotation_matrix(1, [0, 0, 1])[:3, :3])
+        assert_array_almost_equal(ag.positions[0], [np.cos(1), np.sin(1), 0])
+
+        # check general rotation cases
         vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
-
-        ag = self.u.atoms[:2]
-        ag.positions = vec
-
         for angle in np.linspace(0, np.pi):
             R = transformations.rotation_matrix(angle, axis)
             ag.positions = vec.copy()
@@ -456,16 +466,6 @@ class TestCenter(object):
 
         assert_raises(TypeError, self.ag.center, weights)
 
-def test_representations():
-    u = make_Universe()
-    for level in (mda.core.groups.ATOMLEVEL, mda.core.groups.RESIDUELEVEL,
-                  mda.core.groups.SEGMENTLEVEL):
-        singular = level.name
-        plural = level.name + 's'
-        group = getattr(u, plural)
-        assert str(group)[:-1].endswith(plural)
-        assert str(group[:0])[:-1].endswith(plural)
-        assert str(group[:1])[:-1].endswith(singular)
 
 class TestSplit(object):
     def setUp(self):
@@ -796,9 +796,9 @@ class TestPBCFlag(object):
                                 dtype=np.float32),
             'BSph': (173.40482, np.array([4.23789883, 0.62429816, 2.43123484], dtype=np.float32)),
             'PAxes': np.array([
-                [0.46294889, -0.85135849, 0.24671249],
+                [-0.78787867, -0.26771575, 0.55459488],
                 [0.40611024, 0.45112859, 0.7947059],
-                [-0.78787867, -0.26771575, 0.55459488]])
+                [0.46294889, -0.85135849, 0.24671249]])
         }
         self.ref_PBC = {
             'COG': np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32),
@@ -814,9 +814,9 @@ class TestPBCFlag(object):
                 dtype=np.float32),
             'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32)),
             'PAxes': np.array([
-                [-0.50622389, -0.18364489, -0.84262206],
+                [-0.85911708, 0.19258726, 0.4741603],
                 [-0.07520116, -0.96394227, 0.25526473],
-                [-0.85911708, 0.19258726, 0.4741603]])
+                [-0.50622389, -0.18364489, -0.84262206]])
         }
         self.ag = self.universe.residues[0:3]
 
@@ -978,9 +978,9 @@ class TestAtomGroup(object):
     def test_principal_axes(self):
         assert_array_almost_equal(
             self.ag.principal_axes(),
-            np.array([[-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+            np.array([[1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                      [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
+                      [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],]))
 
     def test_total_charge(self):
         assert_almost_equal(self.ag.total_charge(), -4.0, decimal=4)
@@ -992,6 +992,7 @@ class TestAtomGroup(object):
         assert_equal(isinstance(self.ag.indices, np.ndarray), True)
 
     def test_indices(self):
+        # pylint: disable=unsubscriptable-object
         assert_array_equal(self.ag.indices[:5], np.array([0, 1, 2, 3, 4]))
 
     def test_resids_ndarray(self):

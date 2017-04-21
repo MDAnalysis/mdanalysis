@@ -75,6 +75,7 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
 """
+from __future__ import division, absolute_import
 import six
 from six.moves import range, zip
 
@@ -93,7 +94,7 @@ from ..exceptions import NoDataError
 from ..version import __version__
 
 
-class XYZWriter(base.Writer):
+class XYZWriter(base.WriterBase):
     """Writes an XYZ file
 
     The XYZ file format is not formally defined. This writer follows
@@ -255,7 +256,7 @@ class XYZWriter(base.Writer):
                             "".format(atom, x, y, z))
 
 
-class XYZReader(base.Reader):
+class XYZReader(base.ReaderBase):
     """Reads from an XYZ file
 
     :Data:
@@ -364,7 +365,7 @@ class XYZReader(base.Reader):
             f.readline()
             f.readline()
             for i in range(self.n_atoms):
-                self.ts._pos[i] = list(map(float, f.readline().split()[1:4]))
+                self.ts._pos[i] = np.float32(f.readline().split()[1:4])
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
@@ -407,7 +408,7 @@ class XYZReader(base.Reader):
 
         See Also
         --------
-        :class: `XYZWriter`
+        :class:`XYZWriter`
         """
         if n_atoms is None:
             n_atoms = self.n_atoms

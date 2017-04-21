@@ -73,6 +73,7 @@ Classes
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
+from six.moves import range
 
 import os
 import errno
@@ -167,7 +168,7 @@ class Timestep(base.Timestep):
         np.put(self._unitcell, self._ts_order, box)
 
 
-class DCDWriter(base.Writer):
+class DCDWriter(base.WriterBase):
     """Writes to a DCD file
 
     Typical usage::
@@ -362,7 +363,7 @@ class DCDWriter(base.Writer):
             self.dcdfile = None
 
 
-class DCDReader(base.Reader):
+class DCDReader(base.ReaderBase):
     """Reads from a DCD file
 
     :Data:
@@ -541,7 +542,7 @@ class DCDReader(base.Reader):
                 raise NoDataError("Timeseries requires at least one atom to analyze")
             atom_numbers = list(asel.indices)
         else:
-            atom_numbers = range(self.n_atoms)
+            atom_numbers = list(range(self.n_atoms))
 
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")

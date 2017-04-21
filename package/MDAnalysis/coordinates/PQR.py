@@ -77,9 +77,9 @@ Output should look like this (although the only real requirement is
 *whitespace* separation between *all* entries). The chainID is optional
 and can be omitted::
 
-ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
-ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
-ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
+  ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
+  ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
+  ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
 
 
 .. Warning:: Fields *must be white-space separated* or data are read
@@ -97,6 +97,7 @@ option are guaranteed to conform to the above format::
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 """
+from __future__ import absolute_import
 from six.moves import zip
 
 import itertools
@@ -108,7 +109,7 @@ from ..lib import util
 from . import base
 
 
-class PQRReader(base.SingleFrameReader):
+class PQRReader(base.SingleFrameReaderBase):
     """Read a PQR_ file into MDAnalysis.
 
     .. _PQR:
@@ -127,7 +128,7 @@ class PQRReader(base.SingleFrameReader):
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
-                    coords.append(map(float, fields[-5:-2]))
+                    coords.append(np.float32(fields[-5:-2]))
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
             np.array(coords, dtype=np.float32),
@@ -151,7 +152,7 @@ class PQRReader(base.SingleFrameReader):
         return PQRWriter(filename, **kwargs)
 
 
-class PQRWriter(base.Writer):
+class PQRWriter(base.WriterBase):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
     Charges ("Q") are taken from the
@@ -201,10 +202,11 @@ class PQRWriter(base.Writer):
 
         Parameters
         ----------
-        selection
+        selection : AtomGroup or Universe
             MDAnalysis AtomGroup or Universe
         frame : int, optional
             optionally move to frame number *frame*
+
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based

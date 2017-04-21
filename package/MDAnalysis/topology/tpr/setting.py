@@ -35,6 +35,7 @@ The currently read file format versions are defined in
 :data:`SUPPORTED_VERSIONS`.
 
 """
+from __future__ import absolute_import
 
 from six.moves import range
 

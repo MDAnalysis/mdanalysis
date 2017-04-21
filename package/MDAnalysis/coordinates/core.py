@@ -89,8 +89,8 @@ def reader(filename, **kwargs):
 def writer(filename, n_atoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     filename : str
         Output filename of the trajectory; the extension determines the
         format.
@@ -103,26 +103,25 @@ def writer(filename, n_atoms=None, **kwargs):
         a multiframe writer and then fall back to single frame [``None``]
     kwargs : optional
         Keyword arguments for the writer; all trajectory Writers accept
-        at least
-            *start*
-                starting time [0]
-            *step*
-                step size in frames [1]
-            *dt*
-                length of time between two frames, in ps [1.0]
-       Some readers accept additional arguments, which need to be looked
-       up in the documentation of the reader.
+        ``start``: starting time [0], ``step``: step size in frames [1],
+        ``dt``: length of time between two frames, in ps [1.0] Some readers
+        accept additional arguments, which need to be looked up in the
+        documentation of the reader.
 
     Returns
     -------
     A Writer object
 
-    .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
-                 trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
-                 and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
+    See Also
+    --------
+    MDAnalysis.coordinates.DCD.DCDWriter : DCD trajectories
+    MDAnalysis.coordinates.XTC.XTCWriter : Gromacs XTC trajectories
+    MDAnalysis.coordinates.TRR.TRRWriter : Gromacs TRR trajectories
+
 
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword. See also :func:`get_writer_for`.
+
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))

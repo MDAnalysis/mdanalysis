@@ -63,6 +63,7 @@ Classes
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
+from __future__ import absolute_import
 from six.moves import zip
 
 from collections import defaultdict
@@ -144,7 +145,7 @@ class ModelSelection(RangeSelection):
         return group[mask].unique
 
 
-class MMTFParser(base.TopologyReader):
+class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
     def parse(self):

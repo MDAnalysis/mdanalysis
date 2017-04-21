@@ -144,15 +144,15 @@ import xdrlib
 from . import guessers
 from ..lib.util import anyopen
 from .tpr import utils as tpr_utils
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
 
-class TPRParser(TopologyReader):
-    """Read topology information from a Gromacs_ TPR_ file.
+class TPRParser(TopologyReaderBase):
+    """Read topology information from a Gromacs_ `TPR file`_.
 
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html

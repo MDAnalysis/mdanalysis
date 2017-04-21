@@ -21,28 +21,27 @@
 #
 
 """
-================================================================
 Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 ================================================================
 
-
-Analysis of native contacts *Q* over a trajectory. Native contacts of a
-conformation are contacts that exist in a reference structure and in the
-conformation. Contacts in the reference structure are always defined as being
-closer then a distance `radius`. The fraction of native contacts for a
-conformation can be calculated in different ways. This module supports 3
-different metrics liseted below, as wel as custom metrics.
+This module contains classes to analyze native contacts *Q* over a
+trajectory. Native contacts of a conformation are contacts that exist
+in a reference structure and in the conformation. Contacts in the
+reference structure are always defined as being closer then a distance
+`radius`. The fraction of native contacts for a conformation can be
+calculated in different ways. This module supports 3 different metrics
+listed below, as well as custom metrics.
 
 1. *Hard Cut*: To count as a contact the atoms *i* and *j* have to be at least
    as close as in the reference structure.
 
 2. *Soft Cut*: The atom pair *i* and *j* is assigned based on a soft potential
-   that is 1 for if the distance is 0, 1/2 if the distance is the same as in
+   that is 1 if the distance is 0, 1/2 if the distance is the same as in
    the reference and 0 for large distances. For the exact definition of the
    potential and parameters have a look at function :func:`soft_cut_q`.
 
 3. *Radius Cut*: To count as a contact the atoms *i* and *j* cannot be further
-   apart then some distance `radius`.
+   apart than some distance `radius`.
 
 The "fraction of native contacts" *Q(t)* is a number between 0 and 1 and
 calculated as the total number of native contacts for a given time frame
@@ -139,9 +138,9 @@ Writing your own contact analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`Contacts` class has been designed to be extensible for your own
-analysis. As an example we will analysis when the acidic and basic groups of
-are in contact which each other, this means that at least one of the contacts
-formed in the reference is closer then 2.5 Å.
+analysis. As an example we will analyze when the acidic and basic groups of AdK
+are in contact which each other; this means that at least one of the contacts
+formed in the reference is closer than 2.5 Å.
 
 For this we define a new function to determine if any contact is closer than
 2.5 Å; this function must implement the API prescribed by :class:`Contacts`::
@@ -211,13 +210,13 @@ The following classes are deprecated and are scheduled for removal in release 0.
    :members:
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
+from six.moves import zip
 
 import os
 import errno
 import warnings
 import bz2
-from six.moves import zip
 
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -537,7 +536,6 @@ def q1q2(u, selection='all', radius=4.5,
 # until then it remains because we don't have the functionality
 # elsewhere.
 
-@deprecate(new_name="Contacts", message="This class will be removed in 0.17")
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
 
@@ -565,48 +563,47 @@ class ContactAnalysis(object):
     accessible as the attribute
     :attr:`ContactAnalysis.timeseries`.
 
+    Parameters
+    ----------
+    topology : filename as str
+        topology file
+    trajectory : filename as str
+        trajectory
+    ref1 : filename or ``None``, optional
+        structure of the reference conformation 1 (pdb); if ``None`` the
+        *first* frame of the trajectory is chosen
+    ref2 : filename or ``None``, optional
+        structure of the reference conformation 2 (pdb); if ``None`` the
+        *last* frame of the trajectory is chosen
+    radius : float, optional, default 8 A
+        contacts are deemed any Ca within radius
+    targetdir : path, optional, default ``.``
+        output files are saved in this directory
+    infix : string, optional
+        additional tag string that is inserted into the output filename of
+        the data file
+     selection : string, optional, default ``"name CA"``
+        MDAnalysis selection string that selects the particles of
+        interest; the default is to only select the C-alpha atoms
+        in `ref1` and `ref2`
+
+        .. Note:: If `selection` produces more than one atom per
+                  residue then you will get multiple contacts per
+                  residue unless you also set `centroids` = ``True``
+     centroids : bool
+        If set to ``True``, use the centroids for the selected atoms on a
+        per-residue basis to compute contacts. This allows, for instance
+        defining the sidechains as `selection` and then computing distances
+        between sidechain centroids.
+
 
     .. deprecated:: 0.15.0
     """
 
+    @deprecate(new_name="Contacts", message="This class will be removed in 0.17")
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False,
                  selection="name CA", centroids=False):
-        """
-        Parameters
-        ----------
-        topology : filename as str
-            topology file
-        trajectory : filename as str
-            trajectory
-        ref1 : filename or ``None``, optional
-            structure of the reference conformation 1 (pdb); if ``None`` the
-            *first* frame of the trajectory is chosen
-        ref2 : filename or ``None``, optional
-            structure of the reference conformation 2 (pdb); if ``None`` the
-            *last* frame of the trajectory is chosen
-        radius : float, optional, default 8 A
-            contacts are deemed any Ca within radius
-        targetdir : path, optional, default ``.``
-            output files are saved in this directory
-        infix : string, optional
-            additional tag string that is inserted into the output filename of
-            the data file
-         selection : string, optional, default ``"name CA"``
-            MDAnalysis selection string that selects the particles of
-            interest; the default is to only select the C-alpha atoms
-            in `ref1` and `ref2`
-
-            .. Note:: If `selection` produces more than one atom per
-                      residue then you will get multiple contacts per
-                      residue unless you also set `centroids` = ``True``
-         centroids : bool
-            If set to ``True``, use the centroids for the selected atoms on a
-            per-residue basis to compute contacts. This allows, for instance
-            defining the sidechains as `selection` and then computing distances
-            between sidechain centroids.
-
-        """
 
         self.topology = topology
         self.trajectory = trajectory
@@ -818,7 +815,7 @@ class ContactAnalysis(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
 
     def plot(self, **kwargs):
@@ -835,7 +832,6 @@ class ContactAnalysis(object):
         ylabel(r"$q_2$")
 
 
-@deprecate(new_name="Contacts", message="This class will be removed in 0.17")
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single
     reference.
@@ -901,6 +897,7 @@ class ContactAnalysis1(object):
     .. deprecated:: 0.15.0
     """
 
+    @deprecate(new_name="Contacts", message="This class will be removed in 0.17")
     def __init__(self, *args, **kwargs):
         """Calculate native contacts within a group or between two groups.
 
@@ -1146,7 +1143,7 @@ class ContactAnalysis1(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
         try:
             self.qavg = np.loadtxt(self.outarray)

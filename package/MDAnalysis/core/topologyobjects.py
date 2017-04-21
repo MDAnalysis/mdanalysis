@@ -27,7 +27,7 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
-from __future__ import print_function, absolute_import
+from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
 import numpy as np
@@ -332,15 +332,6 @@ class TopologyDict(object):
 
       topologydict = TopologyDict(members)
 
-    Arguments
-    ---------
-    *members*
-      A list of :class:`TopologyObject` instances
-
-    Returns
-    -------
-    *topologydict*
-      A specialised dictionary of the topology instances passed to it
 
     TopologyDicts are also built lazily from a :class:`TopologyGroup.topDict`
     attribute.
@@ -377,6 +368,12 @@ class TopologyDict(object):
 
     Two :class:`TopologyDict` instances can be combined using
     addition and it will not create any duplicate bonds in the process.
+
+    Arguments
+    ---------
+    members :
+      A list of :class:`TopologyObject` instances
+
 
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
@@ -574,6 +571,7 @@ class TopologyGroup(object):
 
     @property
     def universe(self):
+        """The Universe that we belong to"""
         return self._u
 
     def select_bonds(self, selection):
@@ -614,11 +612,15 @@ class TopologyGroup(object):
         """Retrieve all bonds from within this TopologyGroup that are within
         the AtomGroup which is passed.
 
-        Keywords
-        --------
-          *strict*
+        Parameters
+        ----------
+        ag : AtomGroup
+            The `:class:~MDAnalysis.core.groups.AtomGroup` to intersect
+            with.
+        strict : bool
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
+
 
         .. versionadded:: 0.9.0
         """
@@ -642,21 +644,33 @@ class TopologyGroup(object):
 
     @property
     def indices(self):
+        """all bond indices
+
+        See Also
+        --------
+        to_indices : function that just returns `indices`
+        """
         return self._bix
 
     def to_indices(self):
-        """Return a tuple of tuples which define the contents of this
-        TopologyGroup in terms of the atom numbers,
-        (0 based index within u.atoms)
+        """Return a data structure with atom indices describing the bonds.
 
         This format should be identical to the original contents of the
         entries in universe._topology.
         Note that because bonds are sorted as they are initialised, the order
         that atoms are defined in each entry might be reversed.
 
+        Returns
+        -------
+        indices : tuple
+            A tuple of tuples which define the contents of this
+            TopologyGroup in terms of the atom numbers.  (0 based
+            index within u.atoms)
+
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Renamed from "dump_contents" to "to_indices"
+
         """
         return self.indices
 

@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
 
 from six.moves import zip
 import numpy as np
@@ -34,7 +34,7 @@ import MDAnalysis as mda
 # be tested in the absence of scipy
 ## import MDAnalysis.analysis.density
 
-from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests.datafiles import TPR, XTC, GRO
 from MDAnalysisTests import module_not_found, tempdir
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
@@ -89,6 +89,18 @@ class TestDensity(TestCase):
         origin = [m[0] for m in midpoints]
         assert_almost_equal(self.D.origin, origin)
 
+    def test_check_set_unit_keyerror(self):
+        units = {'weight': 'A'}
+        assert_raises(ValueError, self.D._check_set_unit, units)
+
+    def test_check_set_unit_attributeError(self):
+        units = []
+        assert_raises(ValueError, self.D._check_set_unit, units)
+
+    def test_check_set_unit_nolength(self):
+        del self.D.units['length']
+        units = {'density': 'A^{-3}'}
+        assert_raises(ValueError, self.D._check_set_unit, units)
 
 
 class Test_density_from_Universe(TestCase):
@@ -97,14 +109,18 @@ class Test_density_from_Universe(TestCase):
     delta = 2.0
     selections = {'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
+                  'solute': "protein and not name H*",
                   }
     references = {'static':
                       {'meandensity': 0.016764271713091212, },
                   'static_sliced':
                       {'meandensity': 0.016764270747693617, },
                   'dynamic':
-                      {'meandensity': 0.00062423404854011104, },
+                      {'meandensity': 0.0012063418843728784, },
+                  'notwithin':
+                      {'meandensity': 0.015535385132107926, },
                   }
+    cutoffs = {'notwithin': 4.0, }
     precision = 5
 
     @dec.skipif(module_not_found('scipy'),
@@ -150,7 +166,15 @@ class Test_density_from_Universe(TestCase):
         self.check_density_from_Universe(
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
-            update_selections=True)
+            update_selection=True)
+
+    def test_density_from_Universe_notwithin(self):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['notwithin']['meandensity'],
+            soluteselection=self.selections['solute'],
+            cutoff=self.cutoffs['notwithin'])
+
 
 class TestGridImport(TestCase):
 
@@ -177,3 +201,29 @@ class TestGridImport(TestCase):
             except ImportError:
                 self.fail('''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
+
+
+class TestNotWithin(object):
+    # tests notwithin_coordinates_factory
+    # only checks that KDTree and distance_array give same results
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+
+    def tearDown(self):
+        del self.u
+
+    def test_within(self):
+        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
+
+        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=True)()
+        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=False)()
+
+        assert_equal(vers1, vers2)
+
+    def test_not_within(self):
+        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
+
+        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=True)()
+        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=False)()
+
+        assert_equal(vers1, vers2)

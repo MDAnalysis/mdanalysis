@@ -51,12 +51,12 @@ To load a LAMMPS simulation from a LAMMPS data file (using the
 :class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
 LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
->>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
 
 If the trajectory uses *units nano* then use ::
 
->>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
-...                          lengthunit="nm", timeunit="ns")
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
+    ...                          lengthunit="nm", timeunit="ns")
 
 To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,
@@ -105,6 +105,7 @@ Classes
    :members:
    :inherited-members:
 """
+from __future__ import absolute_import
 
 from six.moves import zip, range
 import numpy as np
@@ -172,7 +173,7 @@ class DCDReader(DCD.DCDReader):
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 
-class DATAReader(base.SingleFrameReader):
+class DATAReader(base.SingleFrameReaderBase):
     """Reads a single frame of coordinate information from a LAMMPS DATA file.
 
     .. versionadded:: 0.9.0
@@ -201,7 +202,7 @@ class DATAReader(base.SingleFrameReader):
             except AttributeError:
                 pass
 
-class DATAWriter(base.Writer):
+class DATAWriter(base.WriterBase):
     """Write out the current time step as a LAMMPS DATA file.
 
     This writer supports the sections Atoms, Masses, Velocities, Bonds,

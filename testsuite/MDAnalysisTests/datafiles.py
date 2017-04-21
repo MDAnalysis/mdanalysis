@@ -34,6 +34,7 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
+from __future__ import absolute_import
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
@@ -61,11 +62,17 @@ __all__ = [
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
     "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB_chainidnewres",  # Issue 1110
+    "PDB_sameresid_diffresname", #Case where two residues share the same resid
     "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
+    "COORDINATES_GRO_BZ2",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
+    "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
+    "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
+    "GRO_sameresid_diffresname", # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
@@ -121,6 +128,8 @@ __all__ = [
     "Plength",
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
+    "COORDINATES_GRO",
+    "COORDINATES_GRO_INCOMPLETE_VELOCITY",
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
@@ -135,6 +144,8 @@ __all__ = [
     "MMTF", "MMTF_gz",
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
+    "ALIGN_BOUND",  # two component bound system
+    "ALIGN_UNBOUND", # two component unbound system
 ]
 
 from pkg_resources import resource_filename
@@ -151,6 +162,9 @@ ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
 
+COORDINATES_GRO = resource_filename(__name__, 'data/coordinates/test.gro')
+COORDINATES_GRO_INCOMPLETE_VELOCITY = resource_filename(__name__, 'data/coordinates/test_incomplete_vel.gro')
+COORDINATES_GRO_BZ2 = resource_filename(__name__, 'data/coordinates/test.gro.bz2')
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
@@ -188,6 +202,7 @@ PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
 PDB_mc_gz = resource_filename(__name__, 'data/model_then_cryst.pdb.gz')
 PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_chainidnewres = resource_filename(__name__, 'data/chainIDnewres.pdb.gz')
+PDB_sameresid_diffresname = resource_filename(__name__, 'data/sameresid_diffresname.pdb')
 PDB_chainidrepeat = resource_filename(__name__, 'data/chainIDrepeat.pdb.gz')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
@@ -200,6 +215,9 @@ GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
 GRO_incomplete_vels = resource_filename(__name__, 'data/grovels.gro')
 GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
+GRO_residwrap = resource_filename(__name__, 'data/residwrap.gro')
+GRO_residwrap_0base = resource_filename(__name__, 'data/residwrap_0base.gro')
+GRO_sameresid_diffresname = resource_filename(__name__, 'data/sameresid_diffresname.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
@@ -223,6 +241,7 @@ TRR_multi_frame = resource_filename(
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
+XVG_BZ2 = resource_filename(__name__, 'data/cobrotoxin_protein_forces.xvg.bz2')
 
 XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
 # number is the gromacs version
@@ -367,6 +386,9 @@ RANDOM_WALK_TOPO = resource_filename(__name__, 'data/RANDOM_WALK_TOPO.pdb')
 
 MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
+
+ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
+ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename

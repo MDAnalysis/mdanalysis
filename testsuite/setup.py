@@ -131,7 +131,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    RELEASE = "0.16.0-dev0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.16.1-dev0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -206,14 +206,14 @@ For details see the report for `Issue 87`_.
                          'data/*.xml',
                          'data/coordinates/*',
                          'data/*xvg',
-                         'data/*.mmtf', 'data/*.mmtf.gz',
+                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*'
                         ],
           },
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'numpy>=1.5',
+              'numpy>=1.10.4',
               'nose>=1.3.7',
               'psutil>=4.0.2',
               'mock>=2.0.0',

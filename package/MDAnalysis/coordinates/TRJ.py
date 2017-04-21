@@ -171,7 +171,7 @@ class Timestep(base.Timestep):
     order = 'C'
 
 
-class TRJReader(base.Reader):
+class TRJReader(base.ReaderBase):
     """AMBER trajectory reader.
 
     Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information
@@ -379,7 +379,7 @@ class TRJReader(base.Reader):
         self.trjfile = None
 
 
-class NCDFReader(base.Reader):
+class NCDFReader(base.ReaderBase):
     """Reader for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
@@ -589,7 +589,7 @@ class NCDFReader(base.Reader):
         return NCDFWriter(filename, n_atoms, **kwargs)
 
 
-class NCDFWriter(base.Writer):
+class NCDFWriter(base.WriterBase):
     """Writer for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
@@ -615,6 +615,7 @@ class NCDFWriter(base.Writer):
     """
 
     format = 'NCDF'
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps',
              'length': 'Angstrom',

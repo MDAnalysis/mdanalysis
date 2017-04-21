@@ -70,15 +70,15 @@ Classes
 """
 from __future__ import absolute_import, division
 
-import numpy as np
 from six.moves import range, zip
+import numpy as np
 import functools
 from math import ceil
 
 from . import guessers
 from .tables import NUMBER_TO_ELEMENT
 from ..lib.util import openany, FORTRANReader
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -102,7 +102,7 @@ class TypeIndices(AtomAttr):
     level = 'atom'
 
 
-class TOPParser(TopologyReader):
+class TOPParser(TopologyReaderBase):
     """Reads topology information from an AMBER top file.
 
     Reads the following Attributes if in topology:
@@ -287,7 +287,7 @@ class TOPParser(TopologyReader):
         for i in range(numlines):
             l = self.topfile.next()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = map(lambda x: int(x) - 1, l.split())
+            fields = np.int64(l.split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

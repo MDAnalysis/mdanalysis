@@ -26,11 +26,11 @@ Base classes for the selection writers
 ======================================
 
 Specialized SelectionWriters are derived from
-:class:`SelectionWriter`. Override the :meth:`~SelectionWriter._write_head`,
-:meth:`~SelectionWriter._translate`, and :meth:`~SelectionWriter._write_tail`
+:class:`SelectionWriterBase`. Override the :meth:`~SelectionWriterBase._write_head`,
+:meth:`~SelectionWriterBase._translate`, and :meth:`~SelectionWriterBase._write_tail`
 methods.
 
-.. autoclass:: SelectionWriter
+.. autoclass:: SelectionWriterBase
    :members: __init__, write, _translate, _write_head, _write_tail, comment
 
 .. autofunction:: join
@@ -74,15 +74,15 @@ class _Selectionmeta(type):
                 _SELECTION_WRITERS[f] = cls
 
 
-class SelectionWriter(six.with_metaclass(_Selectionmeta)):
+class SelectionWriterBase(six.with_metaclass(_Selectionmeta)):
     """Export a selection in MDAnalysis to a format usable in an external package.
 
-    The :class:`SelectionWriter` writes a selection string to a file
+    The :class:`SelectionWriterBase` writes a selection string to a file
     that can be used in another package such as `VMD`_, `PyMOL`_,
     `Gromacs`_ or `CHARMM`_. In this way, analysis and visualization
     can be done with the best or most convenient tools at hand.
 
-    :class:`SelectionWriter` is a base class and child classes are
+    :class:`SelectionWriterBase` is a base class and child classes are
     derived with the appropriate customizations for the package file
     format.
 
@@ -94,6 +94,11 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
     .. versionchanged:: 0.11.0
        Can now also write to a :class:`~MDAnalysis.lib.util.NamedStream` instead
        of a normal file (using :class:`~MDAnalysis.lib.util.openany`).
+
+    .. versionchanged:: 0.16.0
+       Remove the `wa` mode. The file is now open when the instance is created
+       and closed with the :meth:`close` method or when exiting the `with`
+       statement.
     """
     #: Name of the format.
     format = None
@@ -105,27 +110,27 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
     commentfmt = None
     default_numterms = 8
 
-    def __init__(self, filename, mode="wa", numterms=None, preamble=None, **kwargs):
+    def __init__(self, filename, mode="w", numterms=None, preamble=None, **kwargs):
         """Set up for writing to *filename*.
 
-        :Arguments:
-           *filename*
-               output file
-           *mode*
-               overwrite ("w") for every write, append ("a") to existing
-               file, or overwrite an existing file and then append ("wa") ["wa"]
-           *numterms*
-               number of individual index numbers per line for output
-               formats that write multiple entries in one line. If set
-               to 0 or ``False`` then no special formatting is done  [8]
-           *preamble*
-               string that is written as a comment at the top of the file []
-           *kwargs*
-               use as defaults for :meth:`write`
+        Parameters
+        ----------
+        filename:
+            output file
+        mode:
+            create a new file ("w"), or append ("a") to existing file ["w"]
+        numterms:
+            number of individual index numbers per line for output
+            formats that write multiple entries in one line. If set
+            to 0 or ``False`` then no special formatting is done  [8]
+        preamble:
+            string that is written as a comment at the top of the file []
+        kwargs:
+            use as defaults for :meth:`write`
         """
         self.filename = util.filename(filename, ext=self.ext)
-        if not mode in ('a', 'w', 'wa'):
-            raise ValueError("mode must be one of 'w', 'a', 'wa', not {0!r}".format(mode))
+        if not mode in ('a', 'w'):
+            raise ValueError("mode must be one of 'w', 'a', not {0!r}".format(mode))
         self.mode = mode
         self._current_mode = mode[0]
         if numterms is None or numterms < 0:
@@ -138,12 +143,14 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
         self.otherargs = kwargs  # hack
         self.number = 0
 
+        self._outfile = util.anyopen(self.filename, mode=self._current_mode)
+
         self.write_preamble()
 
     def comment(self, s):
         """Return string *s* interpolated into the comment format string.
 
-        If no :attr:`SelectionWriter.commentfmt` is defined (None) then the
+        If no :attr:`SelectionWriterBase.commentfmt` is defined (None) then the
         empty string is returned because presumably there is no way to enter
         comments into the file.
 
@@ -157,26 +164,24 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
         """Write a header, depending on the file format."""
         if self.preamble is None:
             return
-        with util.openany(self.filename, self._current_mode) as out:
-            out.write(self.comment(self.preamble))
-        self._current_mode = 'a'
+        self._outfile.write(self.comment(self.preamble))
 
     def write(self, selection, number=None, name=None, frame=None, mode=None):
         """Write selection to the output file.
 
-        :Arguments:
-           *selection*
-               a :class:`MDAnalysis.core.groups.AtomGroup`
-           *number*
-               selection will be named "mdanalysis<number>"
-               (``None`` auto increments between writes; useful
-               when appending) [``None``]
-           *name*
-               selection will be named *name* (instead of numbered)
-               [``None``]
-           *frame*
-               write selection of this frame (or the current one if
-               ``None`` [``None``]
+        Parameters
+        ----------
+        selection:
+            a :class:`MDAnalysis.core.groups.AtomGroup`
+        number:
+            selection will be named "mdanalysis<number>"
+            (``None`` auto increments between writes; useful
+            when appending) [``None``]
+        name:
+            selection will be named *name* (instead of numbered) [``None``]
+        frame:
+            write selection of this frame (or the current one if
+            ``None`` [``None``]
         """
         u = selection.universe
         if frame is not None:
@@ -197,21 +202,24 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
         # selection_list must contain entries to be joined with spaces or linebreaks
         selection_terms = self._translate(selection.atoms)
         step = self.numterms or len(selection.atoms)
-        with util.openany(self.filename, self._current_mode) as out:
-            self._write_head(out, name=name)
-            for iatom in range(0, len(selection.atoms), step):
-                line = selection_terms[iatom:iatom + step]
-                out.write(" ".join(line))
-                if len(line) == step and not iatom + step == len(selection.atoms):
-                    out.write(' ' + self.continuation + '\n')
-            out.write(' ')  # safe so that we don't have to put a space at the start of tail
-            self._write_tail(out)
-            out.write('\n')  # always terminate with newline
 
-            if self.mode == 'wa':
-                self._current_mode = 'a'  # switch after first write
-            elif self.mode == 'w':
-                self._current_mode = 'w'  # switch back after eg preamble
+        out = self._outfile
+        self._write_head(out, name=name)
+        for iatom in range(0, len(selection.atoms), step):
+            line = selection_terms[iatom:iatom + step]
+            out.write(" ".join(line))
+            if len(line) == step and not iatom + step == len(selection.atoms):
+                out.write(' ' + self.continuation + '\n')
+        out.write(' ')  # safe so that we don't have to put a space at the start of tail
+        self._write_tail(out)
+        out.write('\n')  # always terminate with newline
+
+    def close(self):
+        """Close the file
+
+        .. versionadded:: 0.16.0
+        """
+        self._outfile.close()
 
     def _translate(self, atoms, **kwargs):
         """Translate atoms into a list of native selection terms.
@@ -241,4 +249,4 @@ class SelectionWriter(six.with_metaclass(_Selectionmeta)):
         return self
 
     def __exit__(self, *exc):
-        return False
+        self.close()

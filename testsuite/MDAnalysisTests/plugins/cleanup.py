@@ -23,6 +23,7 @@
 """Plugin that cleans up all .npz created during testing.
 """
 # We may want to make the glob pattern an option, for extensibility.
+from __future__ import absolute_import
 
 import nose
 from nose.plugins.base import Plugin 

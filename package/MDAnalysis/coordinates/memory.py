@@ -181,6 +181,7 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 import logging
 import errno
 import numpy as np
@@ -222,7 +223,7 @@ class MemoryReader(base.ProtoReader):
     _Timestep = Timestep
 
     def __init__(self, coordinate_array, order='fac',
-                 dimensions = None, dt=1, **kwargs):
+                 dimensions=None, dt=1, filename=None, **kwargs):
         """
 
         Parameters
@@ -242,10 +243,14 @@ class MemoryReader(base.ProtoReader):
         dt: float, optional
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
+        filename: string, optional
+            The name of the file from which this instance is created. Set to None
+            when created from an array
         """
 
         super(MemoryReader, self).__init__()
 
+        self.filename = filename
         self.stored_order = order
         self.set_array(np.asarray(coordinate_array), order)
         self.n_frames = \
@@ -256,8 +261,10 @@ class MemoryReader(base.ProtoReader):
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
             provided_n_atoms != self.n_atoms):
-                raise ValueError("The provided value for n_atoms does not match "
-                                 "the shape of the coordinate array")
+                raise ValueError("The provided value for n_atoms ({}) "
+                                 "does not match the shape of the coordinate "
+                                 "array ({})"
+                                 .format(provided_n_atoms, self.n_atoms))
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt

@@ -56,11 +56,11 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .base import TopologyReader, squash_by
+from .base import TopologyReaderBase, change_squash
 from . import guessers
 
 
-class GROParser(TopologyReader):
+class GROParser(TopologyReaderBase):
     """Reads a Gromacs GRO file
 
     Reads the following attributes:
@@ -89,8 +89,9 @@ class GROParser(TopologyReader):
             names = np.zeros(n_atoms, dtype=object)
             indices = np.zeros(n_atoms, dtype=np.int32)
 
-            for i in range(n_atoms):
-                line = inf.readline()
+            for i, line in enumerate(inf):
+                if i == n_atoms:
+                    break
                 try:
                     resids[i] = int(line[:5])
                     resnames[i] = line[5:10].strip()
@@ -106,11 +107,31 @@ class GROParser(TopologyReader):
             raise IOError("Missing atom name on line: {0}"
                           "".format(missing[0][0] + 3))  # 2 header, 1 based
 
+        # Fix wrapping of resids (if we ever saw a wrap)
+        if np.any(resids == 0):
+            # find places where resid hit zero again
+            wraps = np.where(resids == 0)[0]
+            # group these places together:
+            # find indices of first 0 in each block of zeroes
+            # 1) find large changes in index, (ie non sequential blocks)
+            diff = np.diff(wraps) != 1
+            # 2) make array of where 0-blocks start
+            starts = np.hstack([wraps[0], wraps[1:][diff]])
+
+            # remove 0 in starts, ie the first residue **can** be 0
+            if starts[0] == 0:
+                starts = starts[1:]
+
+            # for each resid after a wrap, add 100k (5 digit wrap)
+            for s in starts:
+                resids[s:] += 100000
+
         # Guess types and masses
         atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(atomtypes)
-
-        residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
+        
+        residx, (new_resids, new_resnames) = change_squash(
+                                (resids, resnames), (resids, resnames))
 
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]

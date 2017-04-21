@@ -38,6 +38,7 @@ Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAna
 
 """
 
+from __future__ import division, absolute_import
 import six
 from six.moves import range
 
@@ -46,7 +47,7 @@ import numpy as np
 import math
 import warnings
 
-from ..lib.util import asiterable
+from ..lib.util import asiterable, anyopen
 
 from . import _AUXREADERS
 
@@ -65,7 +66,7 @@ class _AuxReaderMeta(type):
 
 
 class AuxStep(object):
-    """ Base class for auxiliary timesteps.
+    """Base class for auxiliary timesteps.
 
     Stores the auxiliary data for the current auxiliary step. On creation, 
     ``step`` is set to -1.
@@ -81,11 +82,11 @@ class AuxStep(object):
         determine from auxiliary data; otherwise defaults to 0 ps. Ignored if
         ``constant_dt`` is False.
     time_selector: optional
-        Key to select 'time' value from the full set of data read for each step,
-        if time selection is enabled; type will vary depending on the auxiliary
-        data format (see individual AuxReader documentation). 
-        If ``None`` (default value), time is instead calculated as::
-            time = step * dt + initial_time
+        Key to select 'time' value from the full set of data read for each
+        step, if time selection is enabled; type will vary depending on the
+        auxiliary data format (see individual AuxReader documentation). If
+        ``None`` (default value), time is instead calculated as: ``time = step
+        * dt + initial_time``
     data_selector: optional
         Key(s) to select auxiliary data values of interest from the full set of
         data read for each step, if data selection is enabled by the reader; 
@@ -96,13 +97,13 @@ class AuxStep(object):
         (Default: True) Set to False if ``dt`` is not constant 
         throughout the auxiliary data set, in which case a valid 
         ``time_selector`` must be provided. 
-        
 
     Attributes
     ----------
     step : int
         Number of the current auxiliary step (0-based).
-    """ 
+
+    """
     def __init__(self, dt=1, initial_time=0, time_selector=None, 
                  data_selector=None, constant_dt=True):
         self.step = -1
@@ -881,7 +882,7 @@ class AuxFileReader(AuxReader):
     """
     
     def __init__(self, filename, **kwargs):
-        self.auxfile = open(filename)
+        self.auxfile = anyopen(filename)
         self._auxdata = os.path.abspath(filename)
         super(AuxFileReader, self).__init__(**kwargs)
 

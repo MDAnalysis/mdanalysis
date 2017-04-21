@@ -19,9 +19,14 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, print_function
 from six.moves import cPickle
 
 import os
+try:
+    from cStringIO import StringIO
+except:
+    from io import StringIO
 from MDAnalysisTests.tempdir import TempDir
 
 import numpy as np
@@ -49,13 +54,28 @@ from MDAnalysisTests import parser_not_found
 
 import MDAnalysis as mda
 import MDAnalysis.coordinates
-from MDAnalysis.topology.base import TopologyReader
+from MDAnalysis.topology.base import TopologyReaderBase
 
 
-class IOErrorParser(TopologyReader):
+class IOErrorParser(TopologyReaderBase):
     def parse(self):
         raise IOError("Useful information")
 
+# This string is not in the `TestUniverseCreation` class or its method because of problems
+# with whitespace. Extra indentations make the string unreadable.
+CHOL_GRO = """\
+Single cholesterol molecule
+8
+  153CHOL   ROH 1793   6.558   2.936   4.005 -0.1044 -0.1252  0.0966
+  153CHOL    R1 1794   6.591   2.999   4.279  0.0998  0.1297  0.0158
+  153CHOL    R2 1795   6.657   2.810   4.469  0.0780  0.2817  0.1592
+  153CHOL    R3 1796   6.859   2.983   4.524  0.2233  0.2112 -0.1215
+  153CHOL    R4 1797   6.804   2.849   4.779  0.4156  0.3232  0.0001
+  153CHOL    R5 1798   6.810   3.064   4.744  0.4811  0.3182 -0.0905
+  153CHOL    C1 1799   7.080   3.034   5.012  0.7486  0.2811 -0.3559
+  153CHOL    C2 1800   6.993   3.163   5.284  0.3677 -0.2104 -0.0829
+10 10 10
+"""
 
 class TestUniverseCreation(object):
     # tests concerning Universe creation and errors encountered
@@ -66,12 +86,28 @@ class TestUniverseCreation(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
     @staticmethod
+    def test_load_topology_stringio():
+        u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
+        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
+        assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
+
+    @staticmethod
+    def test_load_trajectory_stringio():
+        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
+        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
+
+    @staticmethod
     def test_make_universe_no_args():
         # universe creation without args should work
         u = mda.Universe()
 
         assert_(isinstance(u, mda.Universe))
         assert_(u.atoms == None)
+
+    @staticmethod
+    def test_make_universe_stringio_no_format():
+        # Loading from StringIO without format arg should raise TypeError
+        assert_raises(TypeError, mda.Universe, StringIO(CHOL_GRO))
 
     @staticmethod
     def test_Universe_no_trajectory_AE():
@@ -171,6 +207,14 @@ class TestUniverseCreation(object):
 
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
+
+    @staticmethod
+    def test_universe_topology_class_with_coords():
+        u = mda.Universe(PSF, PDB_small)
+        u2 = mda.Universe(u._topology, PDB_small)
+        assert_(isinstance(u2.trajectory, type(u.trajectory)))
+        assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
+        assert_(u2._topology is u._topology)
 
 
 class TestUniverse(object):

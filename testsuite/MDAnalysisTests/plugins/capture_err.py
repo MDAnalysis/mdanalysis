@@ -27,6 +27,7 @@ or raises an error, the captured output will be appended to the error
 or failure output. It is enabled by default but can be disabled with
 the option `--no-errorcapture`.
 """
+from __future__ import absolute_import
 
 import os
 import sys

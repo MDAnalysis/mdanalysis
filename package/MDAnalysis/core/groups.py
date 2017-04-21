@@ -89,6 +89,7 @@ class::
 
 
 """
+from __future__ import absolute_import
 from six.moves import zip
 from six import string_types
 
@@ -317,9 +318,91 @@ class _ImmutableBase(object):
     __new__ = object.__new__
 
 
+
+def _only_same_level(function):
+    @functools.wraps(function)
+    def wrapped(self, other):
+        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
+            raise TypeError("Can't perform '{}' between objects:"
+                            " '{}' and '{}'".format(
+                                function.__name__,
+                                type(self).__name__,
+                                type(other).__name__))
+        if self.level != other.level:
+            raise TypeError("Can't perform '{}' on different level objects"
+                            "".format(function.__name__))
+        if self.universe is not other.universe:
+            raise ValueError(
+                "Can't operate on objects from different Universes")
+        return function(self, other)
+    return wrapped
+
+
 class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
+	Instances of :class:`GroupBase` provide the following operations that
+    conserve element repetitions and order:
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``len(s)``                    |            | number of elements (atoms, |
+    |                               |            | residues or segment) in    |
+    |                               |            | the group                  |
+    +-------------------------------+------------+----------------------------+
+    | ``s == t``                    |            | test if ``s`` and ``t``    |
+    |                               |            | contain the same elements  |
+    |                               |            | in the same order          |
+    +-------------------------------+------------+----------------------------+
+    | ``x in s``                    |            | test if component ``x`` is |
+    |                               |            | part of group ``s``        |
+    +-------------------------------+------------+----------------------------+
+    | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
+    |                               |            | from ``s`` and from ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.subtract(t)``             |            | new Group with elements    |
+    |                               |            | from ``s`` that are not    |
+    |                               |            | in ``t``                   |
+    +-------------------------------+------------+----------------------------+
+
+    The following operations treat the Group as set. Any result will have any
+    duplicate entries removed and the Group will be sorted.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``s.isdisjoint(t)``           |            | ``True`` if ``s`` and      |
+    |                               |            | ``t`` do not share         |
+    |                               |            | elements                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issubset(t)``             |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_subset(t)``     |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issuperset(t)``           |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_superset(t)``   |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.union(t)``                | ``s | t``  | new Group with elements    |
+    |                               |            | from both ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
+    |                               |            | common to ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.difference(t)``           | ``s - t``  | new Group with elements of |
+    |                               |            | ``s`` that are not in ``t``|
+    +-------------------------------+------------+----------------------------+
+    | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
+    |                               |            | that are part of ``s`` or  |
+    |                               |            | ``t`` but not both         |
+    +-------------------------------+------------+----------------------------+
     """
     def __init__(self, *args):
         if len(args) == 1:
@@ -351,7 +434,7 @@ class GroupBase(_MutableBase):
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
         if isinstance(item, (int, np.int_)):
-            return self.level.singular(self._ix[item], self._u)
+            return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
@@ -360,13 +443,22 @@ class GroupBase(_MutableBase):
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
-            return self._derived_class(self._ix[item], self._u)
+            return self._derived_class(self.ix[item], self.universe)
 
     def __repr__(self):
         name = self.level.name
         return ("<{}Group with {} {}{}>"
                 "".format(name.capitalize(), len(self), name,
                 "s"[len(self)==1:])) # Shorthand for a conditional plural 's'.
+
+    def __str__(self):
+        name = self.level.name
+        if len(self) <= 10:
+            return '<{}Group {}>'.format(name.capitalize(), repr(list(self)))
+        else:
+            return '<{}Group {}, ..., {}>'.format(name.capitalize(),
+                                                  repr(list(self)[:3])[:-1],
+                                                  repr(list(self)[-3:])[1:])
 
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
@@ -383,23 +475,7 @@ class GroupBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
-        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
-        if self.level != other.level:
-            raise TypeError("Can't add different level objects")
-        if self._u is not other._u:
-            raise ValueError("Can't add objects from different Universes")
-
-        # for the case where other is a Component, and so other._ix is an
-        # integer
-        if isinstance(other._ix, int):
-            o_ix = np.array([other._ix])
-        else:
-            o_ix = other._ix
-
-        return self._derived_class(np.concatenate([self._ix, o_ix]), self._u)
+        return self.concatenate(other)
 
     def __radd__(self, other):
         """Using built-in sum requires supporting 0 + self. If other is
@@ -417,18 +493,40 @@ class GroupBase(_MutableBase):
 
         """
         if other == 0:
-            return self._derived_class(self._ix, self._u)
+            return self._derived_class(self.ix, self.universe)
         else:
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
                                                     type(other).__name__))
+    def __sub__(self, other):
+        return self.difference(other)
+
+    @_only_same_level
+    def __eq__(self, other):
+        """Test group equality.
+
+        Two groups are equal if they contain the same indices in
+        the same order. Groups that are not at the same level or that belong
+        to different universe cannot be compared.
+        """
+        o_ix = other.ix
+        return np.array_equal(self.ix, o_ix)
 
     def __contains__(self, other):
         if not other.level == self.level:
             # maybe raise TypeError instead?
             # eq method raises Error for wrong comparisons
             return False
-        return other.ix in self._ix
+        return other.ix in self.ix
+
+    def __or__(self, other):
+        return self.union(other)
+
+    def __and__(self, other):
+        return self.intersection(other)
+
+    def __xor__(self, other):
+        return self.symmetric_difference(other)
 
     @property
     def universe(self):
@@ -449,8 +547,25 @@ class GroupBase(_MutableBase):
         return self._ix
 
     @property
+    def ix_array(self):
+        """Unique indices of the components in the Group.
+
+        For a Group, ix_array is the same as ix. This method gives a
+        consistent API between components and groups.
+
+        See Also
+        --------
+        ix
+        """
+        return self._ix
+
+    @property
     def dimensions(self):
-        return self._u.trajectory.ts.dimensions
+        return self.universe.trajectory.ts.dimensions
+
+    @dimensions.setter
+    def dimensions(self, dimensions):
+        self.universe.trajectory.ts.dimensions = dimensions
 
     def center(self, weights, pbc=None):
         """Calculate center of group given some weights
@@ -533,15 +648,16 @@ class GroupBase(_MutableBase):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
-
         Returns
         -------
          corners : array
             2x3 array giving corners of bounding box as
             [[xmin, ymin, zmin], [xmax, ymax, zmax]].
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionadded:: 0.7.2
@@ -568,16 +684,17 @@ class GroupBase(_MutableBase):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
-
         Returns
         -------
         R : float
             Radius of bounding sphere.
         center : array
             Coordinates of sphere center as ``[xcen,ycen,zcen]``.
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionadded:: 0.7.3
@@ -663,16 +780,21 @@ class GroupBase(_MutableBase):
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
         return self
 
-    def rotate(self, R, point=None):
+    def rotate(self, R, point=(0, 0, 0)):
         r"""Apply a rotation matrix `R` to the selection's coordinates.
+        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
+        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
+
+        .. math::
+
+            \mathbf{x}' = \mathsf{R}\mathbf{x}
 
         Parameters
         ----------
         R : array_like
             3x3 rotation matrix to use for applying rotation.
         point : array_like, optional
-            Center of rotation. If ``None`` then the center of geometry of this
-            group is used.
+            Center of rotation
 
         Returns
         -------
@@ -680,17 +802,9 @@ class GroupBase(_MutableBase):
 
         Notes
         -----
-        By default (``point=None``) the rotation is performed around
-        the centroid of the group (:meth:`center_of_geometry`). In
-        order to perform a rotation around, say, the origin, use
-        ``point=[0, 0, 0]``.
-
-        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
-        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
-
-        .. math::
-
-            \mathbf{x}' = \mathsf{R}\mathbf{x}
+        By default rotates around center of origin ``point=(0, 0, 0)``. To
+        rotate around center of geometry of the atomgroup use ``ag.rotate(R,
+        point=ag.centroid)``.
 
         See Also
         --------
@@ -699,10 +813,10 @@ class GroupBase(_MutableBase):
 
         """
         R = np.asarray(R)
-        point = np.asarray(point) if point is not None else self.centroid()
+        point = np.asarray(point)
 
-        self.translate(-point)
         # changes the coordinates (in place)
+        self.translate(-point)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
@@ -920,6 +1034,316 @@ class GroupBase(_MutableBase):
         ta = getattr(self, topattr)
         return {i: self[ta == i] for i in set(ta)}
 
+    @_only_same_level
+    def concatenate(self, other):
+        """Concatenate with another Group or Component of the same level.
+
+        Duplicate entries and original order is preserved. It is synomymous to
+        the `+` operator.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with elements of `self` and `other` concatenated
+
+        Example
+        -------
+        The order of the original contents (including duplicates)
+        are preserved when performing a concatenation.
+
+        >>> ag1 = u.select_atoms('name O')
+        >>> ag2 = u.select_atoms('name N')
+        >>> ag3 = ag1 + ag2  # or ag1.concatenate(ag2)
+        >>> ag3[:3].names
+        array(['O', 'O', 'O'], dtype=object)
+        >>> ag3[-3:].names
+        array(['N', 'N', 'N'], dtype=object)
+
+        .. versionadded:: 0.16.0
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.concatenate([self.ix, o_ix]),
+                                   self.universe)
+
+    @_only_same_level
+    def union(self, other):
+        """Group of elements either in this Group or another
+
+        On the contrary to concatenation, this method sort the elements and
+        removes duplicate ones. It is synomymous to the `|` operator.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the combined elements of `self` and `other`, without
+            duplicate elements
+
+        Example
+        -------
+        In contrast to :meth:`concatenate`, any duplicates are dropped
+        and the result is sorted.
+
+        >>> ag1 = u.select_atoms('name O')
+        >>> ag2 = u.select_atoms('name N')
+        >>> ag3 = ag1 | ag2  # or ag1.union(ag2)
+        >>> ag3[:3].names
+        array(['N', 'O', 'N'], dtype=object)
+
+        See Also
+        --------
+        concatenate, intersection
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.union1d(self.ix, o_ix), self.universe)
+
+    @_only_same_level
+    def intersection(self, other):
+        """Group of elements which are in both this Group and another
+
+        This method removes duplicate elements and sorts the result. It is
+        synomymous to the `&` operator.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the common elements of `self` and `other`, without
+            duplicate elements
+
+        Example
+        -------
+        Intersections can be used when the select atoms string would
+        become too complicated.  For example to find the water atoms
+        which are within 4.0A of two segments:
+
+        >>> water = u.select_atoms('resname SOL')
+        >>> shell1 = water.select_atoms('around 4.0 segid 1')
+        >>> shell2 = water.select_atoms('around 4.0 segid 2')
+        >>> common = shell1 & shell2  # or shell1.intersection(shell2)
+
+        See Also
+        --------
+        union
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.intersect1d(self.ix, o_ix), self.universe)
+
+    @_only_same_level
+    def subtract(self, other):
+        """Group with elements from this Group that don't appear in other
+
+        The original order of this group is kept, as well as any duplicate
+        elements. If an element of this Group is duplicated and appears in
+        the other Group or Component, then all the occurences of that element
+        are removed from the returned Group.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements of `self` that are not in  `other`,
+            conserves order and duplicates.
+
+        Example
+        -------
+        Unlike :meth:`difference` this method will not sort or remove
+        duplicates.
+
+        >>> ag1 = u.atoms[[3, 3, 2, 2, 1, 1]]
+        >>> ag2 = u.atoms[2]
+        >>> ag3 = ag1 - ag2  # or ag1.subtract(ag2)
+        >>> ag1.indices
+        array([3, 3, 1, 1])
+
+        See Also
+        --------
+        concatenate, difference
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        in_other = np.in1d(self.ix, o_ix)  # mask of in self.ix AND other
+        return self[~in_other]  # ie inverse of previous mask
+
+    @_only_same_level
+    def difference(self, other):
+        """Elements from this Group that do not appear in another
+
+        This method removes duplicate elements and sorts the result. As such,
+        it is different from :meth:`subtract`. :meth:`difference` is synomymous
+        to the `-` operator.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements of `self` that are not in  `other`, without
+            duplicate elements
+
+        See Also
+        --------
+        subtract, symmetric_difference
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.setdiff1d(self._ix, o_ix), self._u)
+
+    @_only_same_level
+    def symmetric_difference(self, other):
+        """Group of elements which are only in one of this Group or another
+
+        This method removes duplicate elements and the result is sorted. It is
+        synomym to the `^` operator.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with the elements that are in `self` or in `other` but not in
+            both, without duplicate elements
+
+        Example
+        -------
+
+        >>> ag1 = u.atoms[[0, 1, 5, 3, 3, 2]]
+        >>> ag2 = u.atoms[[4, 4, 6, 2, 3, 5]]
+        >>> ag3 = ag1 ^ ag2  # or ag1.symmetric_difference(ag2)
+        >>> ag3.indices  # 0 and 1 are only in ag1, 4 and 6 are only in ag2
+        [0, 1, 4, 6]
+
+        See Also
+        --------
+        difference
+
+        .. versionadded:: 0.16
+        """
+        o_ix = other.ix_array
+        return self._derived_class(np.setxor1d(self._ix, o_ix), self._u)
+
+    def isdisjoint(self, other):
+        """If the Group has no elements in common with the other Group
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if the two Groups do not have common elements
+
+        .. versionadded:: 0.16
+        """
+        return len(self.intersection(other)) == 0
+
+    @_only_same_level
+    def issubset(self, other):
+        """If all elements of this Group are part of another Group
+
+        Note that an empty group is a subset of any group of the same level.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        o_ix = set(other.ix_array)
+        s_ix = set(self.ix)
+        return s_ix.issubset(o_ix)
+
+    def is_strict_subset(self, other):
+        """If this Group is a subset of another Group but not identical
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issubset(other) and not self == other
+
+    @_only_same_level
+    def issuperset(self, other):
+        """If all elements of another Group are part of this Group
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a subset of the other one
+
+        .. versionadded:: 0.16
+        """
+        o_ix = set(other.ix_array)
+        s_ix = set(self.ix)
+        return s_ix.issuperset(o_ix)
+
+    def is_strict_superset(self, other):
+        """If this Group is a superset of another Group but not identical
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Bool
+            True if this Group is a strict superset of the other one
+
+        .. versionadded:: 0.16
+        """
+        return self.issuperset(other) and not self == other
+
 
 class AtomGroup(GroupBase):
     """A group of atoms.
@@ -974,6 +1398,88 @@ class AtomGroup(GroupBase):
         new :class:`AtomGroup` for multiple matches.  This makes it
         difficult to use the feature consistently in scripts.
 
+    AtomGroups can be compared and combined using group operators. For
+    instance, AtomGroups can be concatenated using `+` or :meth:`concatenate`::
+
+        ag_concat = ag1 + ag2  # or ag_concat = ag1.concatenate(ag2)
+
+    When groups are concatenated, the order of the atoms is conserved. If atoms
+    appear several times in one of the groups, the duplicates are kept in the
+    resulting group. On the contrary to :meth:`concatenate`, :meth:`union`
+    treats the AtomGroups as sets, duplicates are removed from the resulting
+    group, and atoms are ordered. The `|` operator is synomymous to
+    :meth:`union`::
+
+        ag_union = ag1 | ag2  # or ag_union = ag1.union(ag2)
+
+    The opposite operation to :meth:`concatenate` is :meth:`subtract`. This
+    method creates a new group with all the atoms of the group that are not in
+    a given other group; the order of the atoms is kept, so as duplicates.
+    :meth:`difference` is the set version of :meth:`subtract`. The resulting
+    group is sorted and deduplicated.
+
+    All set methods are listed in the table below. These methods treat the
+    groups as sorted and deduplicated sets of atoms.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``s.isdisjoint(t)``           |            | ``True`` if ``s`` and      |
+    |                               |            | ``t`` do not share         |
+    |                               |            | elements                   |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issubset(t)``             |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_subset(t)``     |            | test if all elements of    |
+    |                               |            | ``s`` are part of ``t``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.issuperset(t)``           |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``    |
+    +-------------------------------+------------+----------------------------+
+    | ``s.is_strict_superset(t)``   |            | test if all elements of    |
+    |                               |            | ``t`` are part of ``s``,   |
+    |                               |            | and ``s != t``             |
+    +-------------------------------+------------+----------------------------+
+    | ``s.union(t)``                | ``s | t``  | new Group with elements    |
+    |                               |            | from both ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.intersection(t)``         | ``s & t``  | new Group with elements    |
+    |                               |            | common to ``s`` and ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.difference(t)``           | ``s - t``  | new Group with elements of |
+    |                               |            | ``s`` that are not in ``t``|
+    +-------------------------------+------------+----------------------------+
+    | ``s.symmetric_difference(t)`` | ``s ^ t``  | new Group with elements    |
+    |                               |            | that are part of ``s`` or  |
+    |                               |            | ``t`` but not both         |
+    +-------------------------------+------------+----------------------------+
+
+    The following methods keep the order of the atoms, and keep duplicated
+    atoms.
+
+    +-------------------------------+------------+----------------------------+
+    | Operation                     | Equivalent | Result                     |
+    +===============================+============+============================+
+    | ``len(s)``                    |            | number of elements (atoms, |
+    |                               |            | residues or segment) in    |
+    |                               |            | the group                  |
+    +-------------------------------+------------+----------------------------+
+    | ``s == t``                    |            | test if ``s`` and ``t``    |
+    |                               |            | contain the same elements  |
+    |                               |            | in the same order          |
+    +-------------------------------+------------+----------------------------+
+    | ``s.concatenate(t)``          | ``s + t``  | new Group with elements    |
+    |                               |            | from ``s`` and from ``t``  |
+    +-------------------------------+------------+----------------------------+
+    | ``s.subtract(t)``             |            | new Group with elements    |
+    |                               |            | from ``s`` that are not    |
+    |                               |            | in ``t``                   |
+    +-------------------------------+------------+----------------------------+
+
+    The `in` operator allows to test if an :class:`Atom` is in the AtomGroup.
+
     AtomGroup instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
@@ -1011,7 +1517,7 @@ class AtomGroup(GroupBase):
     @property
     def atoms(self):
         """Get another AtomGroup identical to this one."""
-        return self._u.atoms[self.ix]
+        return self.universe.atoms[self.ix]
 
     @property
     def n_atoms(self):
@@ -1024,7 +1530,7 @@ class AtomGroup(GroupBase):
     def residues(self):
         """Get sorted :class:`ResidueGroup` of the (unique) residues
         represented in the AtomGroup."""
-        return self._u.residues[np.unique(self.resindices)]
+        return self.universe.residues[np.unique(self.resindices)]
 
     @residues.setter
     def residues(self, new):
@@ -1066,7 +1572,7 @@ class AtomGroup(GroupBase):
     def segments(self):
         """Get sorted :class:`SegmentGroup` of the (unique) segments
         represented in the AtomGroup."""
-        return self._u.segments[np.unique(self.segindices)]
+        return self.universe.segments[np.unique(self.segindices)]
 
     @segments.setter
     def segments(self, new):
@@ -1084,8 +1590,25 @@ class AtomGroup(GroupBase):
 
     @property
     def unique(self):
-        """Return an AtomGroup containing sorted and unique atoms only."""
-        return self._u.atoms[np.unique(self.ix)]
+        """Return an AtomGroup containing sorted and unique atoms only.
+
+        Examples
+        --------
+
+           >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
+           >>> ag
+           <AtomGroup with 6 atoms>
+           >>> ag.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> ag2 = ag.unique
+           >>> ag2
+           <AtomGroup with 3 atoms>
+           >>> ag2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
+        """
+        return self.universe.atoms[np.unique(self.ix)]
 
     @property
     def positions(self):
@@ -1104,12 +1627,12 @@ class AtomGroup(GroupBase):
                   method was used.
 
         """
-        return self._u.trajectory.ts.positions[self._ix]
+        return self.universe.trajectory.ts.positions[self.ix]
 
     @positions.setter
     def positions(self, values):
-        ts = self._u.trajectory.ts
-        ts.positions[self._ix, :] = values
+        ts = self.universe.trajectory.ts
+        ts.positions[self.ix, :] = values
 
     @property
     def velocities(self):
@@ -1125,17 +1648,17 @@ class AtomGroup(GroupBase):
         :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return np.array(ts.velocities[self._ix])
+            return np.array(ts.velocities[self.ix])
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @velocities.setter
     def velocities(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.velocities[self._ix, :] = values
+            ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -1149,17 +1672,17 @@ class AtomGroup(GroupBase):
         will give all particles zero velocity).
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.forces[self._ix]
+            return ts.forces[self.ix]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @forces.setter
     def forces(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.forces[self._ix, :] = values
+            ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -1360,7 +1883,7 @@ class AtomGroup(GroupBase):
                 ``global`` absent, the result would be an empty selection since
                 the ``protein`` subselection would itself be empty. When issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
-                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
+                :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
         **Dynamic selections**
             If :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` is
@@ -1422,7 +1945,7 @@ class AtomGroup(GroupBase):
                      'residue': 'resindices'}
 
         if level == "atom":
-            return [self._u.atoms[[a.ix]] for a in self]
+            return [self.universe.atoms[[a.ix]] for a in self]
 
         # higher level groupings
         try:
@@ -1495,7 +2018,7 @@ class AtomGroup(GroupBase):
         if len(self) != 2:
             raise ValueError(
                 "bond only makes sense for a group with exactly 2 atoms")
-        return topologyobjects.Bond(self._ix, self.universe)
+        return topologyobjects.Bond(self.ix, self.universe)
 
     @property
     def angle(self):
@@ -1515,7 +2038,7 @@ class AtomGroup(GroupBase):
         if len(self) != 3:
             raise ValueError(
                 "angle only makes sense for a group with exactly 3 atoms")
-        return topologyobjects.Angle(self._ix, self.universe)
+        return topologyobjects.Angle(self.ix, self.universe)
 
     @property
     def dihedral(self):
@@ -1535,7 +2058,7 @@ class AtomGroup(GroupBase):
         if len(self) != 4:
             raise ValueError(
                 "dihedral only makes sense for a group with exactly 4 atoms")
-        return topologyobjects.Dihedral(self._ix, self.universe)
+        return topologyobjects.Dihedral(self.ix, self.universe)
 
     @property
     def improper(self):
@@ -1555,7 +2078,7 @@ class AtomGroup(GroupBase):
         if len(self) != 4:
             raise ValueError(
                 "improper only makes sense for a group with exactly 4 atoms")
-        return topologyobjects.ImproperDihedral(self._ix, self.universe)
+        return topologyobjects.ImproperDihedral(self.ix, self.universe)
 
     def write(self, filename=None, file_format="PDB",
               filenamefmt="{trjname}_{frame}", **kwargs):
@@ -1568,26 +2091,20 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         filename : str, optional
-           ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
-
+            ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
         file_format : str, optional
             PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
             Jmol (spt); case-insensitive and can also be supplied as the
             filename extension [PDB]
-
         filenamefmt : str, optional
             format string for default filename; use substitution tokens
             'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
-
         bonds : str, optional
-           how to handle bond information, especially relevant for PDBs;
-           default is ``"conect"``.
-
-           * ``"conect"``: write only the CONECT records defined in the original
-             file
-           * ``"all"``: write out all bonds, both the original defined and those
-             guessed by MDAnalysis
-           * ``None``: do not write out bonds
+            how to handle bond information, especially relevant for PDBs.
+            ``"conect"``: write only the CONECT records defined in the original
+            file. ``"all"``: write out all bonds, both the original defined and
+            those guessed by MDAnalysis. ``None``: do not write out bonds.
+            Default os ``"conect"``.
 
 
         .. versionchanged:: 0.9.0
@@ -1653,7 +2170,10 @@ class ResidueGroup(GroupBase):
     :class:`GroupBase`, so this class only includes ad-hoc methods
     specific to ResidueGroups.
 
+    ResidueGroups can be compared and combined using group operators. See the
+    list of these operators on :class:`GroupBase`.
     """
+
     @property
     def atoms(self):
         """Get an :class:`AtomGroup` of atoms represented in this
@@ -1663,7 +2183,7 @@ class ResidueGroup(GroupBase):
         :class:`ResidueGroup`.  No duplicates are removed.
 
         """
-        return self._u.atoms[np.concatenate(self.indices)]
+        return self.universe.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1680,7 +2200,7 @@ class ResidueGroup(GroupBase):
         """Get another :class:`ResidueGroup` identical to this one.
 
         """
-        return self._u.residues[self.ix]
+        return self.universe.residues[self.ix]
 
     @property
     def n_residues(self):
@@ -1695,7 +2215,7 @@ class ResidueGroup(GroupBase):
         ResidueGroup.
 
         """
-        return self._u.segments[np.unique(self.segindices)]
+        return self.universe.segments[np.unique(self.segindices)]
 
     @segments.setter
     def segments(self, new):
@@ -1737,8 +2257,23 @@ class ResidueGroup(GroupBase):
     def unique(self):
         """Return a ResidueGroup containing sorted and unique residues only.
 
+        Examples
+        --------
+
+           >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
+           >>> rg
+           <ResidueGroup with 6 residues>
+           >>> rg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> rg2 = rg.unique
+           >>> rg2
+           <ResidueGroup with 3 residues>
+           >>> rg2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
         """
-        return self._u.residues[np.unique(self.ix)]
+        return self.universe.residues[np.unique(self.ix)]
 
 
 class SegmentGroup(GroupBase):
@@ -1749,7 +2284,10 @@ class SegmentGroup(GroupBase):
     GroupBase, so this class only includes ad-hoc methods specific to
     SegmentGroups.
 
+    SegmentGroups can be compared and combined using group operators. See the
+    list of these operators on :class:`GroupBase`.
     """
+
     @property
     def atoms(self):
         """Get an AtomGroup of atoms represented in this SegmentGroup.
@@ -1758,7 +2296,7 @@ class SegmentGroup(GroupBase):
         segment in the SegmentGroup. No duplicates are removed.
 
         """
-        return self._u.atoms[np.concatenate(self.indices)]
+        return self.universe.atoms[np.concatenate(self.indices)]
 
     @property
     def n_atoms(self):
@@ -1778,7 +2316,7 @@ class SegmentGroup(GroupBase):
         No duplicates are removed.
 
         """
-        return self._u.residues[np.concatenate(self.resindices)]
+        return self.universe.residues[np.concatenate(self.resindices)]
 
     @property
     def n_residues(self):
@@ -1795,7 +2333,7 @@ class SegmentGroup(GroupBase):
         """Get another SegmentGroup identical to this one.
 
         """
-        return self._u.segments[self.ix]
+        return self.universe.segments[self.ix]
 
     @property
     def n_segments(self):
@@ -1808,8 +2346,24 @@ class SegmentGroup(GroupBase):
     def unique(self):
         """Return a SegmentGroup containing sorted and unique segments only.
 
+        Examples
+        --------
+
+           >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
+           >>> sg
+           <SegmentGroup with 6 segments>
+           >>> sg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> sg2 = sg.unique
+           >>> sg2
+           <SegmentGroup with 3 segments>
+           >>> sg2.ix
+           array([0, 1, 2])
+
+        .. versionadded:: 0.16.0
+
         """
-        return self._u.segments[np.unique(self.ix)]
+        return self.universe.segments[np.unique(self.ix)]
 
 
 @functools.total_ordering
@@ -1822,10 +2376,6 @@ class ComponentBase(_MutableBase):
         # index of component
         self._ix = ix
         self._u = u
-
-    def __repr__(self):
-        return ("<{} {}>"
-                "".format(self.level.name.capitalize(), self._ix))
 
     def __lt__(self, other):
         if self.level != other.level:
@@ -1843,6 +2393,7 @@ class ComponentBase(_MutableBase):
     def __hash__(self):
         return hash(self.ix)
 
+    @_only_same_level
     def __add__(self, other):
         """Concatenate the Component with another Component or Group of the
         same level.
@@ -1858,27 +2409,10 @@ class ComponentBase(_MutableBase):
             Group with elements of `self` and `other` concatenated
 
         """
-        if not isinstance(other, (ComponentBase, GroupBase)):  # sanity check
-            raise TypeError("unsupported operand type(s) for +:"
-                            " '{}' and '{}'".format(type(self).__name__,
-                                                    type(other).__name__))
-        if self.level != other.level:
-            raise TypeError('Can only add {0}s or {1}s (not {2}s/{3}s)'
-                            ' to {0}'.format(self.level.singular.__name__,
-                                             self.level.plural.__name__,
-                                             other.level.singular.__name__,
-                                             other.level.plural.__name__))
-
-        if self.universe is not other.universe:
-            raise ValueError("Can only add objects from the same Universe")
-
-        if isinstance(other.ix, int):
-            o_ix = np.array([other.ix])
-        else:
-            o_ix = other.ix
+        o_ix = other.ix_array
 
         return self.level.plural(
-                np.concatenate((np.array([self.ix]), o_ix)), self.universe)
+                np.concatenate([self.ix_array, o_ix]), self.universe)
 
     def __radd__(self, other):
         """Using built-in sum requires supporting 0 + self. If other is
@@ -1896,7 +2430,7 @@ class ComponentBase(_MutableBase):
 
         """
         if other == 0:
-            return self.level.plural(np.array([self._ix]), self._u)
+            return self.level.plural(self.ix_array, self.universe)
         else:
             raise TypeError("unsupported operand type(s) for +:"
                             " '{}' and '{}'".format(type(self).__name__,
@@ -1917,6 +2451,18 @@ class ComponentBase(_MutableBase):
         """
         return self._ix
 
+    @property
+    def ix_array(self):
+        """Unique index of this component as an array.
+        
+        This method gives a consistent API between components and groups.
+
+        See Also
+        --------
+        ix
+        """
+        return np.array([self.ix])
+
 
 class Atom(ComponentBase):
     """Atom base class.
@@ -1934,9 +2480,25 @@ class Atom(ComponentBase):
             raise AttributeError("{cls} has no attribute {attr}".format(
                 cls=self.__class__.__name__, attr=attr))
 
+    def __repr__(self):
+        me = '<Atom {}:'.format(self.ix + 1)
+        if hasattr(self, 'name'):
+            me += ' {}'.format(self.name)
+        if hasattr(self, 'type'):
+            me += ' of type {}'.format(self.type)
+        if hasattr(self, 'resname'):
+            me += ' of resname {},'.format(self.resname)
+        if hasattr(self, 'resid'):
+            me += ' resid {}'.format(self.resid)
+        if hasattr(self, 'segid'):
+            me += ' and segid {}'.format(self.segid)
+        if hasattr(self, 'altLoc'):
+            me += ' and altLoc {}'.format(self.altLoc)
+        return me + '>'
+
     @property
     def residue(self):
-        return self._u.residues[self._u._topology.resindices[self]]
+        return self.universe.residues[self.universe._topology.resindices[self]]
 
     @residue.setter
     def residue(self, new):
@@ -1947,7 +2509,7 @@ class Atom(ComponentBase):
 
     @property
     def segment(self):
-        return self._u.segments[self._u._topology.segindices[self]]
+        return self.universe.segments[self.universe._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -1964,11 +2526,11 @@ class Atom(ComponentBase):
                   frame from the trajectory will replace the change with that
                   from the file
         """
-        return self._u.trajectory.ts.positions[self._ix].copy()
+        return self.universe.trajectory.ts.positions[self.ix].copy()
 
     @position.setter
     def position(self, values):
-        self._u.trajectory.ts.positions[self._ix, :] = values
+        self.universe.trajectory.ts.positions[self.ix, :] = values
 
     @property
     def velocity(self):
@@ -1984,17 +2546,17 @@ class Atom(ComponentBase):
         does not contain velocities.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.velocities[self._ix].copy()
+            return ts.velocities[self.ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @velocity.setter
     def velocity(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.velocities[self.index, :] = values
+            ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -2012,17 +2574,17 @@ class Atom(ComponentBase):
         does not contain forces.
 
         """
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            return ts.forces[self._ix].copy()
+            return ts.forces[self.ix].copy()
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @force.setter
     def force(self, values):
-        ts = self._u.trajectory.ts
+        ts = self.universe.trajectory.ts
         try:
-            ts.forces[self._ix, :] = values
+            ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -2036,13 +2598,22 @@ class Residue(ComponentBase):
     Residues.
 
     """
+    def __repr__(self):
+        me = '<Residue'
+        if hasattr(self, 'resname'):
+            me += ' {},'.format(self.resname)
+        if hasattr(self, 'resid'):
+            me += ' {}'.format(self.resid)
+
+        return me + '>'
+
     @property
     def atoms(self):
-        return self._u.atoms[self._u._topology.indices[self][0]]
+        return self.universe.atoms[self.universe._topology.indices[self][0]]
 
     @property
     def segment(self):
-        return self._u.segments[self._u._topology.segindices[self]]
+        return self.universe.segments[self.universe._topology.segindices[self]]
 
     @segment.setter
     def segment(self, new):
@@ -2061,13 +2632,19 @@ class Segment(ComponentBase):
     Segments.
 
     """
+    def __repr__(self):
+        me = '<Segment'
+        if hasattr(self, 'segid'):
+            me += ' {}'.format(self.segid)
+        return me + '>'
+
     @property
     def atoms(self):
-        return self._u.atoms[self._u._topology.indices[self][0]]
+        return self.universe.atoms[self.universe._topology.indices[self][0]]
 
     @property
     def residues(self):
-        return self._u.residues[self._u._topology.resindices[self][0]]
+        return self.universe.residues[self.universe._topology.resindices[self][0]]
 
     def __getattr__(self, attr):
         # Segment.r1 access
@@ -2085,7 +2662,7 @@ class Segment(ComponentBase):
 
 # Accessing these attrs doesn't trigger an update. The class and instance
 # methods of UpdatingAtomGroup that are used during __init__ must all be
-# here, otherwise we get __getattribute__ infinite loops. 
+# here, otherwise we get __getattribute__ infinite loops.
 _UAG_SHORTCUT_ATTRS = {
     # Class information of the UAG
     "__class__", "_derived_class",
@@ -2124,8 +2701,8 @@ class UpdatingAtomGroup(AtomGroup):
         ----------
         base_group : :class:`AtomGroup`
             group on which *selections* are to be applied.
-        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection` instances
-            selections ready to be applied to *base_group*.
+        selections : a tuple of :class:`~MDAnalysis.core.selection.Selection`
+            instances selections ready to be applied to *base_group*.
 
         """
         # Because we're implementing __getattribute__, which needs _u for
@@ -2158,7 +2735,7 @@ class UpdatingAtomGroup(AtomGroup):
         else:
             ix = np.array([], dtype=np.int)
         # Run back through AtomGroup init with this information to remake ourselves
-        super(UpdatingAtomGroup, self).__init__(ix, self._u)
+        super(UpdatingAtomGroup, self).__init__(ix, self.universe)
         self.is_uptodate = True
 
     @property
@@ -2177,16 +2754,16 @@ class UpdatingAtomGroup(AtomGroup):
 
         """
         try:
-            return self._u.trajectory.frame == self._lastupdate
-        except AttributeError: # self._u has no trajectory
+            return self.universe.trajectory.frame == self._lastupdate
+        except AttributeError: # self.universe has no trajectory
             return self._lastupdate == -1
 
     @is_uptodate.setter
     def is_uptodate(self, value):
         if value:
             try:
-                self._lastupdate = self._u.trajectory.frame
-            except AttributeError: # self._u has no trajectory
+                self._lastupdate = self.universe.trajectory.frame
+            except AttributeError: # self.universe has no trajectory
                 self._lastupdate = -1
         else:
             # This always marks the selection as outdated
@@ -2230,7 +2807,7 @@ class UpdatingAtomGroup(AtomGroup):
         sels = "'{}'".format("' + '".join(self.selection_strings))
         # Cheap comparison. Might fail for corner cases but this is
         # mostly cosmetic.
-        if self._base_group is self._u.atoms:
+        if self._base_group is self.universe.atoms:
             basegrp = "the entire Universe."
         else:
             basegrp = "another AtomGroup."

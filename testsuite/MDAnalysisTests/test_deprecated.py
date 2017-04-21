@@ -23,6 +23,7 @@
 # test deprecated code
 # - in particular stubs introduced in 0.11.0 (and which
 #   will be removed in 1.0)
+from __future__ import absolute_import
 
 class TestImports(object):
     def test_core_units(self):

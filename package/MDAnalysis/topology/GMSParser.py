@@ -51,7 +51,7 @@ import numpy as np
 
 from . import guessers
 from ..lib.util import openany
-from .base import TopologyReader
+from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -70,7 +70,7 @@ class AtomicCharges(AtomAttr):
     per_object = 'atom'
 
 
-class GMSParser(TopologyReader):
+class GMSParser(TopologyReaderBase):
     """GAMESS_ topology parser.
 
     Creates the following Attributes:

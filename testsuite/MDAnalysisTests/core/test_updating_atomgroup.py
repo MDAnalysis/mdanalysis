@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 
 import numpy as np
 from numpy.testing import (
@@ -115,7 +116,7 @@ class TestUpdatingSelectionNotraj(object):
         assert_(self.ag_updating._lastupdate is None)
 
 
-class UAGReader(mda.coordinates.base.Reader):
+class UAGReader(mda.coordinates.base.ReaderBase):
     """
     Positions in this reader are defined as:
     (atom number + frame number, 0, 0)

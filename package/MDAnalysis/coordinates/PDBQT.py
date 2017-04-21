@@ -37,6 +37,7 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
+from __future__ import absolute_import
 import os
 import errno
 import itertools
@@ -47,7 +48,7 @@ from ..lib import util
 from . import base
 
 
-class PDBQTReader(base.SingleFrameReader):
+class PDBQTReader(base.SingleFrameReaderBase):
     """PDBQTReader that reads a PDBQT-formatted file, no frills.
 
     Records read:
@@ -154,15 +155,12 @@ class PDBQTReader(base.SingleFrameReader):
                     break
                 if line.startswith('CRYST1'):
                     # lengths
-                    x, y, z = map(
-                        float, (line[6:15], line[15:24], line[24:33]))
+                    x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
                     # angles
-                    A, B, G = map(
-                        float, (line[33:40], line[40:47], line[47:54]))
+                    A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
                     unitcell[:] = x, y, z, A, B, G
                 if line.startswith(('ATOM', 'HETATM')):
-                    x, y, z = map(
-                        float, (line[30:38], line[38:46], line[46:54]))
+                    x, y, z = np.float32((line[30:38], line[38:46], line[46:54]))
                     coords.append((x, y, z))
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
@@ -191,7 +189,7 @@ class PDBQTReader(base.SingleFrameReader):
         return PDBQTWriter(filename, **kwargs)
 
 
-class PDBQTWriter(base.Writer):
+class PDBQTWriter(base.WriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
     .. _PDB: http://www.wwpdb.org/documentation/format32/v3.2.html
@@ -232,11 +230,12 @@ class PDBQTWriter(base.Writer):
         frame : int, optional
             optionally move to *frame* before writing
 
-        .. Note::
+        Note
+        ----
+        The first letter of the
+        :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
+        chainID.
 
-           The first letter of the
-           :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
-           chainID.
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
