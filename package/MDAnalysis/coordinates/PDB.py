@@ -135,6 +135,9 @@ Classes
 .. autoclass:: MultiPDBWriter
    :members:
 
+.. autoclass:: ExtendedPDBReader
+   :members:
+   :inherited-members:
 
 ..deprecated:: 0.15.0
     The "permissive" flag is not used anymore (and effectively defaults to True);
@@ -1012,7 +1015,7 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB standard`_ because it allows
+    This reader does not conform to the `PDB 3.2 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
