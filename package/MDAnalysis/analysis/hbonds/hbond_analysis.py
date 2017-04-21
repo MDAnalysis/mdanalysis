@@ -390,7 +390,8 @@ class HydrogenBondAnalysis(object):
 
     See Also
     --------
-    Table :ref:`Default heavy atom names for CHARMM27 force field.`
+    :ref:`Default atom names for hydrogen bonding analysis`
+
 
     .. versionchanged:: 0.7.6
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
