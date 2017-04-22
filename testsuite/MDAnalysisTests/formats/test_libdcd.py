@@ -19,6 +19,7 @@ from MDAnalysisTests import tempdir
 import numpy as np
 import os
 import pickle
+import sys
 
 class DCDReadFrameTest(TestCase):
 
@@ -30,8 +31,7 @@ class DCDReadFrameTest(TestCase):
         self.context_frame = 22
         self.num_iters = 3
         self.selected_legacy_frames = [5, 29]
-        self.legacy_DCD_frame_data = pickle.load(open(legacy_DCD_ADK_coords,
-        'rb'), encoding='latin1')
+        self.legacy_data = legacy_DCD_ADK_coords
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
     def tearDown(self):
@@ -62,6 +62,13 @@ class DCDReadFrameTest(TestCase):
 
         # to reduce repo storage burden, we only compare for a few
         # randomly selected frames
+        if sys.version_info[0] > 2:
+            self.legacy_DCD_frame_data = pickle.load(open(self.legacy_data,
+            'rb'), encoding='latin1')
+        else:
+            self.legacy_DCD_frame_data = pickle.load(open(self.legacy_data,
+            'rb'))
+
         for frame_num in self.selected_legacy_frames:
             self.dcdfile.seek(frame_num)
             actual_coords = self.dcdfile.read()[0]
@@ -414,6 +421,5 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
         self.context_frame = 0
         self.num_iters = 0
         self.selected_legacy_frames = [0]
-        self.legacy_DCD_frame_data = pickle.load(open(legacy_DCD_NAMD_coords,
-        'rb'), encoding='latin1')
+        self.legacy_data = legacy_DCD_NAMD_coords
         self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
