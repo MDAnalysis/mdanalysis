@@ -206,7 +206,8 @@ For details see the report for `Issue 87`_.
                          'data/*.xml',
                          'data/coordinates/*',
                          'data/*xvg',
-                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*'
+                         'data/*.mmtf', 'data/*.mmtf.gz', 'data/analysis/*',
+                         'data/*.p'
                         ],
           },
           classifiers=CLASSIFIERS,
