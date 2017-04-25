@@ -1483,7 +1483,9 @@ class AtomGroup(GroupBase):
     AtomGroup instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
-    .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
+    See Also
+    --------
+    :class:`MDAnalysis.core.universe.Universe`
 
     """
     def __getitem__(self, item):

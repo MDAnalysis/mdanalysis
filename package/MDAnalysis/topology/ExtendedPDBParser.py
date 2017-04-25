@@ -37,11 +37,12 @@ reads residue numbers up to 99,999 correctly. If you have systems containing at
 least 100,000 residues then you need to use a different file format that can
 handle such residue numbers.
 
-.. SeeAlso::
+See Also
+--------
+* :mod:`MDAnalysis.topology.PDBParser`
+* :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+* :class:`MDAnalysis.core.universe.Universe`
 
-   * :mod:`MDAnalysis.topology.PDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
-   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------
@@ -74,7 +75,9 @@ class ExtendedPDBParser(PDBParser.PDBParser):
      - resnames
      - segids
 
-    .. SeeAlso:: :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+    See Also
+    --------
+    :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
 
     .. versionadded:: 0.8
     """

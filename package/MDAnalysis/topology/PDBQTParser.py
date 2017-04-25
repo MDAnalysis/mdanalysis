@@ -31,23 +31,28 @@ partial charges (:attr:`Atom.charge`).
 * Reads a PDBQT file line by line and does not require sequential atom numbering.
 * Multi-model PDBQT files are not supported.
 
-.. Note:: Only reads atoms and their names; connectivity is not
-          deduced. Masses are guessed and set to 0 if unknown.
+Notes
+-----
+Only reads atoms and their names; connectivity is not
+deduced. Masses are guessed and set to 0 if unknown.
 
-.. SeeAlso:: `MDAnalysis.coordinates.PDBQT`
+
+See Also
+--------
+`MDAnalysis.coordinates.PDBQT`
+
+
+Classes
+-------
+.. autoclass:: PDBQTParser
+   :members:
+   :inherited-members:
+
 
 .. _PDBQT:
    http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 .. _AutoDock:
    http://autodock.scripps.edu/
-
-Classes
--------
-
-.. autoclass:: PDBQTParser
-   :members:
-   :inherited-members:
-
 """
 from __future__ import absolute_import
 

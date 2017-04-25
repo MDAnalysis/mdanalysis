@@ -52,10 +52,12 @@ is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-.. SeeAlso:: The `PSAnalysisTutorial`_ outlines a typical application of PSA to
-             a set of trajectories, including doing proper alignment,
-             performing distance comparisons, and generating heat
-             map-dendrogram plots from hierarchical clustering.
+Note
+----
+The `PSAnalysisTutorial`_ outlines a typical application of PSA to
+a set of trajectories, including doing proper alignment,
+performing distance comparisons, and generating heat
+map-dendrogram plots from hierarchical clustering.
 
 
 .. Rubric:: References
@@ -358,6 +360,8 @@ def hausdorff(P, Q):
     :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
+    Note that reversing the path does not change the Hausdorff distance.
+
     Parameters
     ----------
     P : numpy.ndarray
@@ -389,21 +393,16 @@ def hausdorff(P, Q):
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      4.7786639840135905
 
-    Note that reversing the path does not change the Hausdorff distance.
 
     Notes
     -----
-    The Hausdorff distance is calculated in a brute force manner from the
-    distance matrix without further optimizations, essentially following
-    [Huttenlocher1993]_.
-
-    .. SeeAlso::
-
-       :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-       implementation of the early break algorithm of [Taha2015]_; note that
-       one still has to calculate the *symmetric* Hausdorff distance as
-       `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
-
+    - The Hausdorff distance is calculated in a brute force manner from the
+      distance matrix without further optimizations, essentially following
+      [Huttenlocher1993]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+      implementation of the early break algorithm of [Taha2015]_; note that
+      one still has to calculate the *symmetric* Hausdorff distance as
+      `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
 
     References
     ----------
@@ -560,14 +559,11 @@ def hausdorff_neighbors(P, Q):
 
     Notes
     -----
-    Hausdorff neighbors are those points on the two paths that are separated by
-    the Hausdorff distance. They are the farthest nearest neighbors and are
-    maximally different in the sense of the Hausdorff distance [Seyler2015]_.
-
-    .. SeeAlso::
-
-       :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
-       Hausdorff neighbors.
+    - Hausdorff neighbors are those points on the two paths that are separated by
+      the Hausdorff distance. They are the farthest nearest neighbors and are
+      maximally different in the sense of the Hausdorff distance [Seyler2015]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
+      hausdorff neighbors.
 
     """
     N, axis = get_coord_axes(P)

@@ -408,7 +408,9 @@ class NCDFReader(base.ReaderBase):
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
-    .. SeeAlso:: :class:`NCDFWriter`
+    See Also
+    --------
+    :class:`NCDFWriter`
 
     .. versionadded: 0.7.6
     .. versionchanged:: 0.10.0
@@ -604,7 +606,9 @@ class NCDFWriter(base.WriterBase):
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
-    .. SeeAlso:: :class:`NCDFReader`
+    See Also
+    --------
+    :class:`NCDFReader`
 
     .. versionadded: 0.7.6
 

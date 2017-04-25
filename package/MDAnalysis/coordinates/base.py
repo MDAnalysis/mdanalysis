@@ -710,8 +710,10 @@ class Timestep(object):
           array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
                   72.45159912,  71.56504822], dtype=float32)
 
-        .. SeeAlso::
-           :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
+        See Also
+        --------
+        :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
+
 
         .. versionadded:: 0.11.0
         """
@@ -1060,7 +1062,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
     methods.
 
-    .. SeeAlso:: :class:`ReaderBase`
+    See Also
+    --------
+    :class:`ReaderBase`
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -1146,7 +1150,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         Sets the default keywords *start*, *step* and *dt* (if
         available). *n_atoms* is always set from :attr:`Reader.n_atoms`.
 
-        .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
+        See Also
+        --------
+        :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
         kwargs['n_atoms'] = self.n_atoms  # essential
         kwargs.setdefault('start', self.frame)
@@ -1618,7 +1624,9 @@ class ReaderBase(ProtoReader):
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
     methods.
 
-    .. SeeAlso:: :class:`ProtoReader`
+    See Also
+    --------
+    :class:`ProtoReader`
 
     .. versionchanged:: 0.11.0
        Most of the base Reader class definitions were offloaded to

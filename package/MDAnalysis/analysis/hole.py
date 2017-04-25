@@ -166,11 +166,12 @@ numbers but :class:`HOLEtraj` can take the optional *orderparameters*
 keyword argument and load an arbitrary order parameter for each
 frame. In that case, the key becomes the orderparameter.
 
-.. Note::
-   The profiles dict is not ordered and hence one typically needs to manually
-   order the keys first. Furthermore, duplicate keys are not possible:
-   In the case of *duplicate orderparameters*, the last one read will
-   be stored in the dict.
+Notes
+-----
+The profiles dict is not ordered and hence one typically needs to manually
+order the keys first. Furthermore, duplicate keys are not possible:
+In the case of *duplicate orderparameters*, the last one read will
+be stored in the dict.
 
 
 Analysis
@@ -624,7 +625,6 @@ class HOLE(BaseHOLE):
             are read. Note that if water molecules or ions are present in the
             channel these can be ignored on read by the use of the
             `ignore_residues` keyword.
-
             **Wildcard pattern**. A new feature (in release 2.1 of HOLE) was
             the option to include a wild card (``*``) in the filename. e.g.,
             ``filename="ab*.pdb"`` will apply hole to all files in the
@@ -639,18 +639,10 @@ class HOLE(BaseHOLE):
             atoms or atom order etc. (though they should be sufficiently
             similar for a HOLE run from identical starting conditions to be
             useful).
-
-            .. SeeAlso::
-
-               An alternative way to load in multiple files is a direct read
-               from a CHARMM binary dynamics DCD coordinate file - using the
-               `dcd` keyword or use :class:`HOLEtraj`.
-
         dcd : string, optional
             File name of DCD trajectory (must be supplied together with a
             matching PDB file `filename`) and then HOLE runs its analysis on
             each frame.
-
             It does multiple HOLE runs on positions taken from a CHARMM binary
             dynamics format DCD trajectory file. The `dcd` file must have
             exactly the same number of atoms in exactly the same order as the
@@ -663,21 +655,12 @@ class HOLE(BaseHOLE):
             controlled by the `step` keyword and/or setting
             :attr:`HOLE.dcd_iniskip` to the number of frames to be skipped
             initially.
-
-            .. Note::
-
-               HOLE is very picky and does not read all DCD-like
-               formats [#HOLEDCD]_. If in doubt, look into the `logfile` for
-               error diagnostics.
-
         logfile : string, optional
             file name of the file collecting HOLE's output (which can be
             parsed using :meth:`HOLE.collect`);  the default is "hole.out".
-
         sphpdb : string, optional
             path to the HOLE sph file, a PDB-like file containig the
             coordinates of the pore centers; the default is "hole.sph".
-
             This keyword specifies the filename for output of the sphere centre
             information in pdb form. Its typical suffix is ".sph". The
             co-ordinates are set to the sphere centres and the occupancies are
@@ -689,20 +672,16 @@ class HOLE(BaseHOLE):
             objects are best displayed as "Points". Displaying .sph objects
             rather than rendered or dot surfaces can be useful to analyze the
             distance of particular atoms from the sphere-centre line.
-
             Most usefully .sph files can be used to produce molecular graphical
             output from a hole run. This is achieved by using the
             :program:`sph_process` program to read the .sph file.
-
         step : int, optional
              step size for going through the trajectory (skips `step` - 1
              frames); the default is 1.
-
         cpoint : array_like, optional
              coordinates of a point inside the pore, e.g. ``[12.3, 0.7,
              18.55]``. If set to ``None`` (the default) then HOLE's own search
              algorithm is used.
-
              `cpoint` specifies a point which lies within the channel. For
              simple channels such as gramicidin results do not show great
              sensitivity to the exact point taken. An easy way to produce an
@@ -712,7 +691,6 @@ class HOLE(BaseHOLE):
              then take the coordinates of one of these (and use the
              `ignore_residues` keyword to ignore them in the pore radius
              calculation).
-
              If this card is not specified then HOLE now (from version 2.2)
              attempts to make a guess where the channel will be. The procedure
              assumes the channel is reasonably symmetric. The initial guess on
@@ -721,12 +699,10 @@ class HOLE(BaseHOLE):
              Å from the original position. This procedure works most of the
              time but is clearly far from infallible — results should be
              careful checked (with molecular graphics) if it is used.
-
         cvect : array_like, optional
              Search direction, should be parallel to the pore axis,
              e.g. ``[0,0,1]`` for the z-axis. The default is ``None`` so that
              HOLE's built-in procedure is used.
-
              If this keyword is ``None`` then HOLE attempts to make a guess
              where the channel will be. The procedure assumes the channel is
              reasonably symmetric. The guess will be either along the X axis
@@ -734,22 +710,17 @@ class HOLE(BaseHOLE):
              aligned on one of these axis the results will clearly be
              approximate. If a guess is used then results should be carefully
              checked.
-
         sample : float, optional
              distance of sample points in Å; the default is 0.2 Å.
-
              Specifies the distance between the planes used in the HOLE
              procedure. The default value should be reasonable for most
              purposes. However, if you wish to visualize a very tight
              constriction then specify a smaller value.
-
              This value determines how many points in the pore profile are
              calculated.
-
         dotden : int, optional
              density of facettes for generating a 3D pore representation;
              default is 15.
-
              This number controls the density of dots which will be used by
              the program. A sphere of dots is placed on each centre
              determined in the Monte Carlo procedure. Only dots which do not
@@ -757,38 +728,32 @@ class HOLE(BaseHOLE):
              dots written is therefore controlled by `dotden` and
              `sample`. `dotden` should be set to between 5 (few dots per
              sphere) and 35 (large number of dots per sphere).
-
         endrad : float, optional
              Radius which is considered to be the end of the pore. This
              keyword can be used to specify the radius above which the
              program regards a result as indicating that the end of the pore
              has been reached. The default value is 22.0 Å. This may need to
              be increased for large channels or reduced for small.
-
         shorto : int, optional
              Determines the output of output in the `logfile`; for automated processing
              this must be < 3. The default is 0, which shows all output.
-
-             - 0: Full text output
-             - 1: All text output given except "run in progress" (i.e.,
-               detailed contemporary description of what HOLE is doing).
-             - 2: Ditto plus no graph type output - only leaving minimum
-               radius and conductance calculations.
-             - 3: All text output other than input card mirroring and error messages
-               turned off.
-
+             0: Full text output,
+             1: All text output given except "run in progress" (i.e.,
+             detailed contemporary description of what HOLE is doing).
+             2: Ditto plus no graph type output - only leaving minimum
+             radius and conductance calculations.
+             3: All text output other than input card mirroring and error messages
+             turned off.
         ignore_residues : array_like, optional
              sequence of three-letter residues that are not taken into
              account during the calculation; wildcards are *not*
              supported. The default is ``["SOL","WAT", "TIP", "HOH", "K ",
              "NA ", "CL "]``.
-
         radius : string, optional
              path to the file specifying van der Waals radii for each atom. If
              set to ``None`` (the default) then a set of default radii,
              :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
              the HOLE distribution)
-
         executable : string, optional
              Path to the :program:`hole` executable
              (e.g. ``~/hole2/exe/hole``); the other programs
@@ -796,12 +761,21 @@ class HOLE(BaseHOLE):
              to live in the same directory as :program:`hole`. If
              :program:`hole` is found on the :envvar:`PATH` then the bare
              executable name is sufficient. The default is "hole".
-
         raseed : int, optional
              integer number to start the random number generator; by default,
              :program:`hole` will use the time of the day (default value
              ``None``) but for reproducible runs (e.g., for testing) set it to
              an integer.
+
+
+        Notes
+        -----
+        - An alternative way to load in multiple files is a direct read
+          from a CHARMM binary dynamics DCD coordinate file - using the
+          `dcd` keyword or use :class:`HOLEtraj`.
+        - HOLE is very picky and does not read all DCD-like
+          formats [#HOLEDCD]_. If in doubt, look into the `logfile` for
+          error diagnostics.
 
         """
 

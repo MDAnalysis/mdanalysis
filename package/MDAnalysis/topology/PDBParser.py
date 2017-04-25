@@ -40,11 +40,12 @@ numbers up to 99,999.
    The parser processes atoms and their names. Masses are guessed and set to 0
    if unknown. Partial charges are not set.
 
-.. SeeAlso::
+See Also
+--------
+* :mod:`MDAnalysis.topology.ExtendedPDBParser`
+* :class:`MDAnalysis.coordinates.PDB.PDBReader`
+* :class:`MDAnalysis.core.universe.Universe`
 
-   * :mod:`MDAnalysis.topology.ExtendedPDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.PDBReader`
-   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------

@@ -135,6 +135,9 @@ Classes
 .. autoclass:: MultiPDBWriter
    :members:
 
+.. autoclass:: ExtendedPDBReader
+   :members:
+   :inherited-members:
 
 ..deprecated:: 0.15.0
     The "permissive" flag is not used anymore (and effectively defaults to True);
@@ -221,9 +224,13 @@ class PDBReader(base.ReaderBase):
     =============  ============  ===========  =============================================
 
 
-    .. SeeAlso:: :class:`PDBWriter`; :class:`PDBReader`
-                 implements a larger subset of the header records,
-                 which are accessible as :attr:`PDBReader.metadata`.
+    See Also
+    --------
+    :class:`PDBWriter`
+    :class:`PDBReader`
+       implements a larger subset of the header records,
+       which are accessible as :attr:`PDBReader.metadata`.
+
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
@@ -416,10 +423,12 @@ class PDBWriter(base.WriterBase):
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
-    .. SeeAlso::
-       This class is identical to :class:`MultiPDBWriter` with the one
-       exception that it defaults to writing single-frame PDB files as if
-       *multiframe* = ``False`` was selected.
+    Note
+    ----
+    This class is identical to :class:`MultiPDBWriter` with the one
+    exception that it defaults to writing single-frame PDB files as if
+    *multiframe* = ``False`` was selected.
+
 
     .. versionchanged:: 0.7.5
        Initial support for multi-frame PDB files.
@@ -513,16 +522,6 @@ class PDBWriter(base.WriterBase):
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
          *bonds*
            write bonds to the PDB file as CONECT_ records [``False``]
-
-           .. Note::
-
-              Currently only works when writing a whole :class:`Universe` and
-              if bond information is available in the topology. (For selections
-              smaller than the whole :class:`Universe`, the atom numbering in
-              the CONECT_ records would not match the numbering of the atoms in
-              the new PDB file and therefore a :exc:`NotImplementedError` is
-              raised.)
-
          *multiframe*
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
@@ -531,6 +530,15 @@ class PDBWriter(base.WriterBase):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
+        Note
+        ----
+        Writing bonds currently only works when writing a whole
+        :class:`Universe` and if bond information is available in the topology.
+        (For selections smaller than the whole :class:`Universe`, the atom
+        numbering in the CONECT_ records would not match the numbering of the
+        atoms in the new PDB file and therefore a :exc:`NotImplementedError` is
+        raised.)
 
         """
         # n_atoms = None : dummy keyword argument
@@ -1007,15 +1015,17 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB standard`_ because it allows
+    This reader does not conform to the `PDB 3.2 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
     by popular programs such as VMD_.
 
-    .. SeeAlso:: :class:`PDBReader`
+    See Also
+    --------
+    :class:`PDBReader`
 
-    .. _PDB standard: http://www.wwpdb.org/documentation/format32/sect9.html
+
     .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 
     .. versionadded:: 0.8
@@ -1039,10 +1049,12 @@ class MultiPDBWriter(PDBWriter):
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
 
-    .. SeeAlso::
-       This class is identical to :class:`PDBWriter` with the one
-       exception that it defaults to writing multi-frame PDB files instead of
-       single frames.
+    See Also
+    --------
+    This class is identical to :class:`PDBWriter` with the one
+    exception that it defaults to writing multi-frame PDB files instead of
+    single frames.
+
 
     .. versionadded:: 0.7.6
 

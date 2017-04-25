@@ -30,11 +30,7 @@ Files and directories
 ---------------------
 
 .. autofunction:: filename
-.. function:: openany(directory[,mode='r'])
-
-   Context manager to open a compressed (bzip2, gzip) or plain file
-   (uses :func:`anyopen`).
-
+.. autofunction:: openany
 .. autofunction:: anyopen
 .. autofunction:: greedy_splitext
 .. autofunction:: which
@@ -237,29 +233,33 @@ def openany(datasource, mode='r', reset=True):
     compressed files) to open file objects to sockets and strings---as long as
     they have a file-like interface.
 
-    :Arguments:
-     *datasource*
-        a file or a stream
-     *mode*
-        'r' or 'w'
-     *reset*
+    Parameters
+    ----------
+    datasource : a file or a stream
+    mode : str
+        `r` or `w`
+    reset : bool
         try to read (*mode* 'r') the stream from the start [``True``]
 
-    .. rubric:: Examples
-
+    Examples
+    --------
     Open a gzipped file and process it line by line::
 
-       with openany("input.pdb.gz") as pdb:
-          for line in pdb:
-              if line.startswith('ATOM'): print(line)
+        with openany("input.pdb.gz") as pdb:
+            for line in pdb:
+                if line.startswith('ATOM'):
+                    print(line)
 
     Open a URL and read it::
 
        import urllib2
        with openany(urllib2.urlopen("http://www.MDAnalysis.org/")) as html:
-          print(html.read())
+           print(html.read())
 
-    .. SeeAlso:: :func:`anyopen`
+
+    See Also
+    --------
+    :func:`anyopen`
     """
     stream = anyopen(datasource, mode=mode, reset=reset)
     try:
@@ -309,7 +309,11 @@ def anyopen(datasource, mode='r', reset=True):
 
     :Returns: tuple ``stream`` which is a file-like object
 
-    .. SeeAlso:: :func:`openany` to be used with the :keyword:`with` statement.
+    See Also
+    --------
+    :func:`openany`
+      to be used with the :keyword:`with` statement.
+
 
     .. versionchanged:: 0.9.0
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
@@ -447,7 +451,10 @@ def isstream(obj):
     - ``read()``, ``readline()``, ``readlines()``
     - ``write()``, ``writeline()``, ``writelines()``
 
-    .. SeeAlso:: :mod:`io`
+    See Also
+    --------
+    :mod:`io`
+
 
     :Arguments:
       *obj*
@@ -997,7 +1004,9 @@ class FORTRANReader(object):
         :Raises: :exc:`ValueError` if any of the conversions cannot be made
                  (e.g. space for an int)
 
-        .. SeeAlso:: :meth:`FORTRANReader.number_of_matches`
+        See Also
+        --------
+        :meth:`FORTRANReader.number_of_matches`
         """
         return [e.read(line) for e in self.entries]
 
@@ -1115,7 +1124,9 @@ inverse_aa_codes.update(alternative_inverse_aa_codes)
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes.
 
-    .. SeeAlso:: Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
+    Note
+    ----
+    Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
     """
     if len(x) == 1:
         d = amino_acid_codes

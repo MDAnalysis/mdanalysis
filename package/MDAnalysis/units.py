@@ -112,7 +112,10 @@ concentration:
   from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
 
 
-.. SeeAlso:: Maybe we should simply use Quantities_ or :mod:`scipy.constants`?
+Note
+----
+Maybe we should simply use Quantities_ or :mod:`scipy.constants`?
+
 
 .. _Quantities: http://packages.python.org/quantities/
 

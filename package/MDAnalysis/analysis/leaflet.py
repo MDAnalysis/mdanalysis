@@ -203,7 +203,10 @@ class LeafletFinder(object):
 
         If no argument is supplied, then a list of all leaflet groups is returned.
 
-        .. SeeAlso:: :meth:`LeafletFinder.group` and :meth:`LeafletFinder.groups_iter`
+        See Also
+        --------
+        :meth:`LeafletFinder.group`
+        :meth:`LeafletFinder.groups_iter`
         """
         if component_index is None:
             return list(self.groups_iter())
