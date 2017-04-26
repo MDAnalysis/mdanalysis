@@ -415,6 +415,7 @@ from __future__ import print_function, division, absolute_import
 from six.moves import range, zip_longest
 
 import numpy as np
+import sys
 import multiprocessing
 
 import MDAnalysis.analysis.hbonds
@@ -706,7 +707,7 @@ class WaterOrientationalRelaxation(object):
 
     def _repeatedIndex(self,selection,dt,totalFrames):
         """
-        Indicate the comparation between all the t+dt.
+        Indicates the comparation between all the t+dt.
         The results is a list of list with all the repeated index per frame (or time).
         Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
         Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
@@ -720,7 +721,7 @@ class WaterOrientationalRelaxation(object):
 
     def _getOneDeltaPoint(self,universe, repInd, i ,t0, dt):
         """
-        Give one point to promediate and get one point of the graphic  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the graphic  C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         i = come from getMeanOnePoint (named j) (int)
@@ -766,14 +767,18 @@ class WaterOrientationalRelaxation(object):
             valHH += self.lg2(np.dot(unitHHVector0,unitHHVectorp))
             valdip +=  self.lg2(np.dot(unitdipVector0,unitdipVectorp))
             n += 1
-        valOH = valOH/n
-        valHH = valHH/n
-        valdip = valdip/n
-        return (valOH,valHH,valdip)
+
+        if n == 0:
+            return (0,0,0)
+        else:
+            valOH = valOH/n
+            valHH = valHH/n
+            valdip = valdip/n
+            return (valOH,valHH,valdip)
 
     def _getMeanOnePoint(self,universe,selection1,selection_str,dt,totalFrames):
         """
-        This function get one point of the graphic C_OH vs t. It uses the
+        This function gets one point of the graphic C_vec vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
@@ -788,12 +793,7 @@ class WaterOrientationalRelaxation(object):
         valdipList = []
 
         for j in range(totalFrames // dt - 1):
-            # If the selection of atoms is too small, there will be a division by zero in the next line.
-            # The except clause avoid the use of the result of _getOneDeltaPoint() on the mean.
-            try:
-                a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
-            except ZeroDivisionError:
-                continue
+            a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
@@ -802,7 +802,12 @@ class WaterOrientationalRelaxation(object):
             valdipList.append(a[2])
             sumsdt +=  dt
             n += 1
-        return (sumDeltaOH/n,sumDeltaHH/n,sumDeltadip/n)
+
+        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
+        if n == 0:
+            return (0,0,0)
+        else:
+            return (sumDeltaOH/n,sumDeltaHH/n,sumDeltadip/n)
 
     def _sameMolecTandDT(self,selection,t0d,tf):
         """
@@ -820,7 +825,8 @@ class WaterOrientationalRelaxation(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print(ts.frame)
+            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
+            sys.stdout.flush()
         return selection
 
     # Second Legendre polynomial
@@ -979,7 +985,8 @@ class AngularDistribution(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print(ts.frame)
+            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
+            sys.stdout.flush()
         return selection
 
 
@@ -1041,7 +1048,7 @@ class  MeanSquareDisplacement(object):
 
     def _getOneDeltaPoint(self,universe, repInd, i ,t0, dt):
         """
-        Give one point to promediate and get one point of the grapic  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the grapic  C_vect vs t
         Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 intervale.
         Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 intervale
         i = come from getMeanOnePoint (named j) (int)
@@ -1063,12 +1070,17 @@ class  MeanSquareDisplacement(object):
             #here it is the difference with waterdynamics.WaterOrientationalRelaxation
             valO += np.dot(OVector, OVector)
             n += 1
-        valO = valO/n
-        return (valO)
+        
+        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
+        if n == 0:                                                                                              
+            return (0,0,0)                                                                                      
+        else:
+            valO = valO/n
+            return (valO)
 
     def _getMeanOnePoint(self,universe,selection1,selection_str,dt,totalFrames):
         """
-        This function get one point of the graphic C_OH vs t. It's uses the
+        This function gets one point of the graphic C_vec vs t. It's uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
@@ -1084,7 +1096,12 @@ class  MeanSquareDisplacement(object):
             valOList.append(a)
             sumsdt +=  dt
             n += 1
-        return sumDeltaO / n
+            
+        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
+        if n == 0:
+            return (0,0,0)
+        else:
+            return (sumDeltaO/n)
 
     def _sameMolecTandDT(self,selection,t0d,tf):
         """
@@ -1102,7 +1119,8 @@ class  MeanSquareDisplacement(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print(ts.frame)
+            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
+            sys.stdout.flush()
         return selection
 
     def run(self,**kwargs):
@@ -1168,7 +1186,7 @@ class SurvivalProbability(object):
 
     def _getOneDeltaPoint(self,selection, totalFrames, t0, tau):
         """
-        Give one point to promediate and get one point of the graphic  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the graphic C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         """
@@ -1179,7 +1197,7 @@ class SurvivalProbability(object):
 
     def _getMeanOnePoint(self,universe,selection1,selection_str,wint,totalFrames):
         """
-        This function get one point of the graphic P(t) vs t. It uses the
+        This function gets one point of the graphic P(t) vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
@@ -1194,12 +1212,16 @@ class SurvivalProbability(object):
                 continue
             sumDeltaP += a
             n += 1
-
-        return sumDeltaP/n
+        
+        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
+        if n == 0:
+            return (0,0,0)
+        else:
+            return sumDeltaP/n
 
     def _NumPart_tau(self,selection, totalFrames, t0,tau):
         """
-        Compare the molecules in t0 selection and t0+tau selection and
+        Compares the molecules in t0 selection and t0+tau selection and
         select only the particles that remaing from t0 to t0+tau. It returns
         the number of remaining particles.
         """
@@ -1218,7 +1240,8 @@ class SurvivalProbability(object):
         selection = []
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            print(ts.frame)
+            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
+            sys.stdout.flush()
         return selection
 
     def run(self,**kwargs):
