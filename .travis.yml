@@ -91,11 +91,15 @@ script:
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
+  - if [[ ${TRAVIS_PULL_REQUEST} == "true" && \
+          ${BUILD_DOCS} == "true"]]; then
+            echo "Yeah it works this should fix deployment"
+    fi
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
-  - if test ${TRAVIS_PULL_REQUEST} == "false" && \
-       test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-       test "${BUILD_DOCS}" == "true"; then
-           bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
+  - if [[ ${TRAVIS_PULL_REQUEST} == "false" && \
+          ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
+          ${BUILD_DOCS} == "true"]]; then
+            bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
     fi
