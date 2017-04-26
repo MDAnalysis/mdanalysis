@@ -491,7 +491,8 @@ class Universe(object):
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
-            if step is None: step=1 
+            if step is None:
+                step = 1 
             self.trajectory = MemoryReader(
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,

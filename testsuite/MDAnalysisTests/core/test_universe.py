@@ -498,15 +498,16 @@ class TestInMemoryUniverse(object):
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
+
     @staticmethod
     def test_slicing_step_dt():
         universe = MDAnalysis.Universe(PDB_small, DCD)
-        times=[ts.time for ts in universe.trajectory]
+        times = [ts.time for ts in universe.trajectory]
         universe.transfer_to_memory(step=2)
-        times2=[ts.time for ts in universe.trajectory]
-        assert_almost_equal(times[::2],times2,
+        times2 = [ts.time for ts in universe.trajectory]
+        assert_almost_equal(times[::2], times2,
                 err_msg="Unexpected in-memory timestep: "
-                        +"dt not updated with step information")
+                        + "dt not updated with step information")
 
     @staticmethod
     def test_slicing_negative_start():
