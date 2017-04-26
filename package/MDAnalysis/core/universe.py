@@ -491,10 +491,11 @@ class Universe(object):
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
+            if step is None: step=1 
             self.trajectory = MemoryReader(
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,
-                dt=self.trajectory.ts.dt,
+                dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
