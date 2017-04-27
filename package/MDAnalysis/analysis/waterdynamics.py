@@ -96,11 +96,11 @@ unstable, we can assume that residue 38 is hydrophobic::
   HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)
   HBL_analysis.run()
   time = 0
-  #now we print the data ready to graph. The first two columns are the HBLc vs t graph and
-  #the second two columns are the HBLi vs t graph
+  #now we print the data ready to plot. The first two columns are the HBLc vs t
+  #plot and the second two columns are the HBLi vs t graph
   for HBLc, HBLi in HBL_analysis.timeseries:
-        print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
-        time += 1
+      print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
+      time += 1
 
   #we can also plot our data
   plt.figure(1,figsize=(18, 6))
@@ -146,7 +146,7 @@ rotating/changing direction very fast::
   WOR_analysis = WOR(universe, selection, 0, 1000, 20)
   WOR_analysis.run()
   time = 0
-  #now we print the data ready to graph. The first two columns are WOR_OH vs t graph,
+  #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,
   #the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph
   for WOR_OH, WOR_HH, WOR_dip in WOR_analysis.timeseries:
         print("{time} {WOR_OH} {time} {WOR_HH} {time} {WOR_dip}".format(time=time, WOR_OH=WOR_OH, WOR_HH=WOR_HH,WOR_dip=WOR_dip))
@@ -468,7 +468,9 @@ class HydrogenBondLifetimes(object):
 
     .. versionadded:: 0.11.0
     """
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax, nproc=1):
+
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax, 
+                 nproc=1):
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
@@ -492,7 +494,7 @@ class HydrogenBondLifetimes(object):
         if len(HBP[t0]) == 0:
             return 0.0
         else:
-            return float(C_i)/len(HBP[t0])
+            return float(C_i) / len(HBP[t0])
 
     def _getC_c(self, HBP, t0, t):
         """
@@ -507,10 +509,11 @@ class HydrogenBondLifetimes(object):
         newHBP = []
         if t0 == t:
             return 1.0
-        while t0+dt <= t:
+        while t0 + dt <= t:
             for i in range(len(HBP_t0)):
-                for j in range(len(HBP_cp[t0+dt])):
-                    if (HBP_t0[i][0] == HBP_cp[t0+dt][j][0] and HBP_t0[i][1] == HBP_cp[t0+dt][j][1]):
+                for j in range(len(HBP_cp[t0 + dt])):
+                    if (HBP_t0[i][0] == HBP_cp[t0 + dt][j][0] and
+                        HBP_t0[i][1] == HBP_cp[t0 + dt][j][1]):
                         newHBP.append(HBP_t0[i])
                         break
             C_c = len(newHBP)
@@ -520,7 +523,7 @@ class HydrogenBondLifetimes(object):
         if len(HBP[begt0]) == 0:
             return 0
         else:
-            return C_c/float(len(HBP[begt0]))
+            return C_c / float(len(HBP[begt0]))
 
     def _intervC_c(self, HBP, t0, tf, dt):
         """
@@ -531,17 +534,17 @@ class HydrogenBondLifetimes(object):
         a = 0
         count = 0
         for i in range(len(HBP)):
-            if (t0+dt <= tf):
-                if t0 == t0+dt:
+            if (t0 + dt <= tf):
+                if t0 == t0 + dt:
                     b = self._getC_c(HBP, t0, t0)
                     break
-                b = self._getC_c(HBP, t0, t0+dt)
+                b = self._getC_c(HBP, t0, t0 + dt)
                 t0 += dt
                 a += b
                 count += 1
         if count == 0:
             return 1.0
-        return a/count
+        return a / count
 
     def _intervC_i(self, HBP, t0, tf, dt):
         """
@@ -552,12 +555,12 @@ class HydrogenBondLifetimes(object):
         a = 0
         count = 0
         for i in range(len(HBP)):
-            if (t0+dt <= tf):
-                b = self._getC_i(HBP, t0, t0+dt)
+            if (t0 + dt <= tf):
+                b = self._getC_i(HBP, t0, t0 + dt)
                 t0 += dt
                 a += b
                 count += 1
-        return a/count
+        return a / count
 
     def _finalGraphGetC_i(self, HBP, t0, tf, maxdt):
         """
@@ -600,9 +603,13 @@ class HydrogenBondLifetimes(object):
         finalGetResidue1 = selAtom1
         finalGetResidue2 = selAtom2
         frame = ts.frame
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, finalGetResidue1,
-                                                            finalGetResidue2, distance=3.5, angle=120.0,
-                                                            start=frame-1, stop=frame)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe,
+                                                            finalGetResidue1,
+                                                            finalGetResidue2,
+                                                            distance=3.5,
+                                                            angle=120.0,
+                                                            start=frame - 1,
+                                                            stop=frame)
         while True:
             try:
                 h.run(verbose=verbose)
@@ -622,44 +629,50 @@ class HydrogenBondLifetimes(object):
         h_list = []
         i = 0
         if (self.nproc > 1):
-                while i < len(self.universe.trajectory):
-                    jobs = []
-                    k = i
-                    for j in range(self.nproc):
-                        #start
-                        print("ts=", i+1)
-                        if i >= len(self.universe.trajectory):
+            while i < len(self.universe.trajectory):
+                jobs = []
+                k = i
+                for j in range(self.nproc):
+                        # start
+                    print("ts=", i + 1)
+                    if i >= len(self.universe.trajectory):
+                        break
+                    conn_parent, conn_child = multiprocessing.Pipe(False)
+                    while True:
+                        try:
+                            # new thread
+                            jobs.append(
+                                (multiprocessing.Process(
+                                    target=self._HBA,
+                                    args=(self.universe.trajectory[i],
+                                          conn_child, self.universe,
+                                          self.selection1, self.selection2,)),
+                                 conn_parent))
                             break
-                        conn_parent, conn_child = multiprocessing.Pipe(False)
-                        while True:
-                            try:
-                                #new thread
-                                jobs.append(
-                                    (multiprocessing.Process(
-                                            target=self._HBA,
-                                            args=(self.universe.trajectory[i], conn_child, self.universe,
-                                                  self.selection1, self.selection2,)),
-                                     conn_parent))
-                                break
-                            except:
-                                print("error in jobs.append")
-                        jobs[j][0].start()
-                        i = i + 1
+                        except:
+                            print("error in jobs.append")
+                    jobs[j][0].start()
+                    i = i + 1
 
-                    for j in range(self.nproc):
-                        if k >= len(self.universe.trajectory):
-                            break
-                        rec01 = jobs[j][1]
-                        received = rec01.recv()
-                        h_list.append(received)
-                        jobs[j][0].join()
-                        k += 1
-                self.timeseries = self._getGraphics(h_list, 0, self.tf-1, self.dtmax)
+                for j in range(self.nproc):
+                    if k >= len(self.universe.trajectory):
+                        break
+                    rec01 = jobs[j][1]
+                    received = rec01.recv()
+                    h_list.append(received)
+                    jobs[j][0].join()
+                    k += 1
+            self.timeseries = self._getGraphics(
+                h_list, 0, self.tf - 1, self.dtmax)
         else:
-            h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, self.selection1,
-                                                                     self.selection2, distance=3.5, angle=120.0)
+            h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
+                                                                     self.selection1,
+                                                                     self.selection2,
+                                                                     distance=3.5,
+                                                                     angle=120.0)
             h_list.run(**kwargs)
-            self.timeseries = self._getGraphics(h_list.timeseries, self.t0, self.tf, self.dtmax)
+            self.timeseries = self._getGraphics(
+                h_list.timeseries, self.t0, self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):
@@ -707,20 +720,23 @@ class WaterOrientationalRelaxation(object):
     def _repeatedIndex(self, selection, dt, totalFrames):
         """
         Indicates the comparation between all the t+dt.
-        The results is a list of list with all the repeated index per frame (or time).
+        The results is a list of list with all the repeated index per frame
+        (or time).
         Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
         Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
         Ex: dt=3, so compare frames (1,4),(4,7),(7,10)...
         """
         rep = []
-        for i in range(int(round((totalFrames-1)/float(dt)))):
-            if (dt*i+dt < totalFrames):
-                rep.append(self._sameMolecTandDT(selection, dt*i, (dt*i)+dt))
+        for i in range(int(round((totalFrames - 1) / float(dt)))):
+            if (dt * i + dt < totalFrames):
+                rep.append(self._sameMolecTandDT(
+                    selection, dt * i, (dt * i) + dt))
         return rep
 
     def _getOneDeltaPoint(self, universe, repInd, i, t0, dt):
         """
-        Gives one point to calculate the mean and gets one point of the plot  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot
+        C_vect vs t.
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         i = come from getMeanOnePoint (named j) (int)
@@ -730,23 +746,23 @@ class WaterOrientationalRelaxation(object):
         valdip = 0
         n = 0
         for j in range(len(repInd[i]) // 3):
-            begj = 3*j
+            begj = 3 * j
             universe.trajectory[t0]
             Ot0 = repInd[i][begj]
-            H1t0 = repInd[i][begj+1]
-            H2t0 = repInd[i][begj+2]
+            H1t0 = repInd[i][begj + 1]
+            H2t0 = repInd[i][begj + 2]
             OHVector0 = H1t0.position - Ot0.position
-            HHVector0 = H1t0.position-H2t0.position
-            dipVector0 = ((H1t0.position + H2t0.position)*0.5)-Ot0.position
+            HHVector0 = H1t0.position - H2t0.position
+            dipVector0 = ((H1t0.position + H2t0.position) * 0.5) - Ot0.position
 
-            universe.trajectory[t0+dt]
+            universe.trajectory[t0 + dt]
             Otp = repInd[i][begj]
-            H1tp = repInd[i][begj+1]
-            H2tp = repInd[i][begj+2]
+            H1tp = repInd[i][begj + 1]
+            H2tp = repInd[i][begj + 2]
 
             OHVectorp = H1tp.position - Otp.position
             HHVectorp = H1tp.position - H2tp.position
-            dipVectorp = ((H1tp.position + H2tp.position)*0.5)-Otp.position
+            dipVectorp = ((H1tp.position + H2tp.position) * 0.5) - Otp.position
 
             normOHVector0 = np.linalg.norm(OHVector0)
             normOHVectorp = np.linalg.norm(OHVectorp)
@@ -755,22 +771,34 @@ class WaterOrientationalRelaxation(object):
             normdipVector0 = np.linalg.norm(dipVector0)
             normdipVectorp = np.linalg.norm(dipVectorp)
 
-            unitOHVector0 = [OHVector0[0]/normOHVector0, OHVector0[1]/normOHVector0, OHVector0[2]/normOHVector0]
-            unitOHVectorp = [OHVectorp[0]/normOHVectorp, OHVectorp[1]/normOHVectorp, OHVectorp[2]/normOHVectorp]
-            unitHHVector0 = [HHVector0[0]/normHHVector0, HHVector0[1]/normHHVector0, HHVector0[2]/normHHVector0]
-            unitHHVectorp = [HHVectorp[0]/normHHVectorp, HHVectorp[1]/normHHVectorp, HHVectorp[2]/normHHVectorp]
-            unitdipVector0 = [dipVector0[0]/normdipVector0, dipVector0[1]/normdipVector0, dipVector0[2]/normdipVector0]
-            unitdipVectorp = [dipVectorp[0]/normdipVectorp, dipVectorp[1]/normdipVectorp, dipVectorp[2]/normdipVectorp]
+            unitOHVector0 = [OHVector0[0] / normOHVector0,
+                             OHVector0[1] / normOHVector0,
+                             OHVector0[2] / normOHVector0]
+            unitOHVectorp = [OHVectorp[0] / normOHVectorp,
+                             OHVectorp[1] / normOHVectorp,
+                             OHVectorp[2] / normOHVectorp]
+            unitHHVector0 = [HHVector0[0] / normHHVector0,
+                             HHVector0[1] / normHHVector0,
+                             HHVector0[2] / normHHVector0]
+            unitHHVectorp = [HHVectorp[0] / normHHVectorp,
+                             HHVectorp[1] / normHHVectorp,
+                             HHVectorp[2] / normHHVectorp]
+            unitdipVector0 = [dipVector0[0] / normdipVector0,
+                              dipVector0[1] / normdipVector0,
+                              dipVector0[2] / normdipVector0]
+            unitdipVectorp = [dipVectorp[0] / normdipVectorp,
+                              dipVectorp[1] / normdipVectorp,
+                              dipVectorp[2] / normdipVectorp]
 
             valOH += self.lg2(np.dot(unitOHVector0, unitOHVectorp))
             valHH += self.lg2(np.dot(unitHHVector0, unitHHVectorp))
             valdip += self.lg2(np.dot(unitdipVector0, unitdipVectorp))
             n += 1
-            
-        return  (valOH/n, valHH/n, valdip/n) if n > 0 else (0, 0, 0)
-       
 
-    def _getMeanOnePoint(self, universe, selection1, selection_str, dt, totalFrames):
+        return (valOH / n, valHH / n, valdip / n) if n > 0 else (0, 0, 0)
+
+    def _getMeanOnePoint(self, universe, selection1, selection_str, dt,
+                         totalFrames):
         """
         This function gets one point of the plot C_vec vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
@@ -791,14 +819,16 @@ class WaterOrientationalRelaxation(object):
             sumsdt += dt
             n += 1
 
-        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        return (sumDeltaOH/n, sumDeltaHH/n, sumDeltadip/n) if n > 0 else (0, 0, 0)
+        # if no water molecules remain in selection, there is nothing to get
+        # the mean, so n = 0.
+        return (sumDeltaOH / n, sumDeltaHH / n, sumDeltadip / n) if n > 0 else (0, 0, 0)
 
     def _sameMolecTandDT(self, selection, t0d, tf):
         """
         Compare the molecules in the t0d selection and the t0d+dt selection and
-        select only the particles that are repeated in both frame. This is to consider
-        only the molecules that remains in the selection after the dt time has elapsed.
+        select only the particles that are repeated in both frame. This is to
+        consider only the molecules that remains in the selection after the dt
+        time has elapsed.
         The result is a list with the indexs of the atoms.
         """
         a = set(selection[t0d])
@@ -808,30 +838,36 @@ class WaterOrientationalRelaxation(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
+        pm = ProgressMeter(universe.trajectory.n_frames,
+                           interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
             pm.echo(ts.frame)
         return selection
 
     # Second Legendre polynomial
-    lg2 = lambda self, x: (3*x*x - 1)/2
+    def lg2(self, x): return (3 * x * x - 1) / 2
 
     def run(self, **kwargs):
         """
         Analyze trajectory and produce timeseries
         """
 
-        #All the selection to an array, this way is faster than selecting later.
+        # All the selection to an array, this way is faster than selecting
+        # later.
         if self.nproc == 1:
-            selection_out = self._selection_serial(self.universe, self.selection)
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         else:
-            #selection_out = self._selection_parallel(self.universe, self.selection, self.nproc)
-            #parallel selection to be implemented
-            selection_out = self._selection_serial(self.universe, self.selection)
+            # selection_out = self._selection_parallel(self.universe,
+            # self.selection, self.nproc)
+            # parallel selection to be implemented
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         self.timeseries = []
-        for dt in list(range(1, self.dtmax+1)):
-            output = self._getMeanOnePoint(self.universe, selection_out, self.selection, dt, self.tf)
+        for dt in list(range(1, self.dtmax + 1)):
+            output = self._getMeanOnePoint(
+                self.universe, selection_out, self.selection, dt, self.tf)
             self.timeseries.append(output)
 
 
@@ -862,6 +898,7 @@ class AngularDistribution(object):
 
     .. versionadded:: 0.11.0
     """
+
     def __init__(self, universe, selection_str, bins=40, nproc=1, axis="z"):
         self.universe = universe
         self.selection_str = selection_str
@@ -876,7 +913,7 @@ class AngularDistribution(object):
         valdip = []
 
         i = 0
-        while i <= (len(selection)-1):
+        while i <= (len(selection) - 1):
             universe.trajectory[i]
             line = selection[i].positions
 
@@ -886,14 +923,17 @@ class AngularDistribution(object):
 
             OHVector0 = H1t0 - Ot0
             HHVector0 = H1t0 - H2t0
-            dipVector0 = (H1t0 + H2t0)*0.5 - Ot0
+            dipVector0 = (H1t0 + H2t0) * 0.5 - Ot0
 
-            unitOHVector0 = OHVector0/np.linalg.norm(OHVector0, axis=1)[:, None]
-            unitHHVector0 = HHVector0/np.linalg.norm(HHVector0, axis=1)[:, None]
-            unitdipVector0 = dipVector0/np.linalg.norm(dipVector0, axis=1)[:, None]
+            unitOHVector0 = OHVector0 / \
+                np.linalg.norm(OHVector0, axis=1)[:, None]
+            unitHHVector0 = HHVector0 / \
+                np.linalg.norm(HHVector0, axis=1)[:, None]
+            unitdipVector0 = dipVector0 / \
+                np.linalg.norm(dipVector0, axis=1)[:, None]
 
             j = 0
-            while j < len(line)/3:
+            while j < len(line) / 3:
                 if axis == "z":
                     valOH.append(unitOHVector0[j][2])
                     valHH.append(unitHHVector0[j][2])
@@ -915,7 +955,8 @@ class AngularDistribution(object):
 
     def _getHistogram(self, universe, selection, bins, axis):
         """
-        This function gets a normalized histogram of the cos(theta) values. It return a list of list.
+        This function gets a normalized histogram of the cos(theta) values. It
+        return a list of list.
         """
         a = self._getCosTheta(universe, selection, axis)
         cosThetaOH = a[0]
@@ -947,16 +988,20 @@ class AngularDistribution(object):
         """
 
         if self.nproc == 1:
-            selection = self._selection_serial(self.universe, self.selection_str)
+            selection = self._selection_serial(
+                self.universe, self.selection_str)
         else:
-            #not implemented yet
-            #selection = self._selection_parallel(self.universe,self.selection_str,self.nproc)
-            selection = self._selection_serial(self.universe, self.selection_str)
+            # not implemented yet
+            # selection = self._selection_parallel(self.universe,
+            # self.selection_str,self.nproc)
+            selection = self._selection_serial(
+                self.universe, self.selection_str)
 
         self.graph = []
-        output = self._getHistogram(self.universe, selection, self.bins, self.axis)
-        #this is to format the exit of the file
-        #maybe this output could be improved
+        output = self._getHistogram(
+            self.universe, selection, self.bins, self.axis)
+        # this is to format the exit of the file
+        # maybe this output could be improved
         listOH = [list(output[0][1]), list(output[0][0])]
         listHH = [list(output[1][1]), list(output[1][0])]
         listdip = [list(output[2][1]), list(output[2][0])]
@@ -967,14 +1012,15 @@ class AngularDistribution(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
+        pm = ProgressMeter(universe.trajectory.n_frames,
+                           interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
             pm.echo(ts.frame)
         return selection
 
 
-class  MeanSquareDisplacement(object):
+class MeanSquareDisplacement(object):
     r"""Mean square displacement analysis
 
     Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the
@@ -983,9 +1029,10 @@ class  MeanSquareDisplacement(object):
     .. math::
         \langle\Delta r(t)^2\rangle = 2nDt
 
-    where :math:`r(t)` is the position of particle in time :math:`t`, :math:`\Delta r(t)` is the displacement
-    after time lag :math:`t`, :math:`n` is the dimensionality, in this case :math:`n=3`, :math:`D` is the diffusion
-    coefficient and :math:`t` is the time.
+    where :math:`r(t)` is the position of particle in time :math:`t`,
+    :math:`\Delta r(t)` is the displacement after time lag :math:`t`,
+    :math:`n` is the dimensionality, in this case :math:`n=3`,
+    :math:`D` is the diffusion coefficient and :math:`t` is the time.
 
     .. _MSD: http://en.wikipedia.org/wiki/Mean_squared_displacement
 
@@ -1019,20 +1066,23 @@ class  MeanSquareDisplacement(object):
     def _repeatedIndex(self, selection, dt, totalFrames):
         """
         Indicate the comparation between all the t+dt.
-        The results is a list of list with all the repeated index per frame (or time).
+        The results is a list of list with all the repeated index per frame
+        (or time).
         Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
         Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
         Ex: dt=3, so compare frames (1,4),(4,7),(7,10)...
         """
         rep = []
-        for i in range(int(round((totalFrames-1)/float(dt)))):
-            if (dt*i+dt < totalFrames):
-                rep.append(self._sameMolecTandDT(selection, dt*i, (dt*i)+dt))
+        for i in range(int(round((totalFrames - 1) / float(dt)))):
+            if (dt * i + dt < totalFrames):
+                rep.append(self._sameMolecTandDT(
+                    selection, dt * i, (dt * i) + dt))
         return rep
 
     def _getOneDeltaPoint(self, universe, repInd, i, t0, dt):
         """
-        Gives one point to calculate the mean and gets one point of the plot C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot
+        C_vect vs t.
         Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 intervale.
         Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 intervale
         i = come from getMeanOnePoint (named j) (int)
@@ -1040,25 +1090,28 @@ class  MeanSquareDisplacement(object):
         valO = 0
         n = 0
         for j in range(len(repInd[i]) // 3):
-            begj = 3*j
+            begj = 3 * j
             universe.trajectory[t0]
-            #Plus zero is to avoid 0to be equal to 0tp
+            # Plus zero is to avoid 0to be equal to 0tp
             Ot0 = repInd[i][begj].position + 0
 
-            universe.trajectory[t0+dt]
-            #Plus zero is to avoid 0to be equal to 0tp
+            universe.trajectory[t0 + dt]
+            # Plus zero is to avoid 0to be equal to 0tp
             Otp = repInd[i][begj].position + 0
 
-            #position oxygen
+            # position oxygen
             OVector = Ot0 - Otp
-            #here it is the difference with waterdynamics.WaterOrientationalRelaxation
+            # here it is the difference with
+            # waterdynamics.WaterOrientationalRelaxation
             valO += np.dot(OVector, OVector)
             n += 1
 
-        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        return valO/n if n > 0 else 0
+        # if no water molecules remain in selection, there is nothing to get
+        # the mean, so n = 0.
+        return valO / n if n > 0 else 0
 
-    def _getMeanOnePoint(self, universe, selection1, selection_str, dt, totalFrames):
+    def _getMeanOnePoint(self, universe, selection1, selection_str, dt,
+                         totalFrames):
         """
         This function gets one point of the plot C_vec vs t. It's uses the
         _getOneDeltaPoint() function to calculate the average.
@@ -1077,15 +1130,16 @@ class  MeanSquareDisplacement(object):
             sumsdt += dt
             n += 1
 
-        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        return sumDeltaO/n if n > 0 else 0
-        
+        # if no water molecules remain in selection, there is nothing to get
+        # the mean, so n = 0.
+        return sumDeltaO / n if n > 0 else 0
+
     def _sameMolecTandDT(self, selection, t0d, tf):
         """
         Compare the molecules in the t0d selection and the t0d+dt selection and
-        select only the particles that are repeated in both frame. This is to consider
-        only the molecules that remains in the selection after the dt time has elapsed.
-        The result is a list with the indexs of the atoms.
+        select only the particles that are repeated in both frame. This is to
+        consider only the molecules that remains in the selection after the dt
+        time has elapsed. The result is a list with the indexs of the atoms.
         """
         a = set(selection[t0d])
         b = set(selection[tf])
@@ -1094,7 +1148,8 @@ class  MeanSquareDisplacement(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
+        pm = ProgressMeter(universe.trajectory.n_frames,
+                           interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
             pm.echo(ts.frame)
@@ -1105,16 +1160,20 @@ class  MeanSquareDisplacement(object):
         Analyze trajectory and produce timeseries
         """
 
-        #All the selection to an array, this way is faster than selecting later.
+        # All the selection to an array, this way is faster than selecting
+        # later.
         if self.nproc == 1:
-            selection_out = self._selection_serial(self.universe, self.selection)
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         else:
-            #parallel not yet implemented
-            #selection = selection_parallel(universe, selection_str, nproc)
-            selection_out = self._selection_serial(self.universe, self.selection)
+            # parallel not yet implemented
+            # selection = selection_parallel(universe, selection_str, nproc)
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         self.timeseries = []
-        for dt in list(range(1, self.dtmax+1)):
-            output = self._getMeanOnePoint(self.universe, selection_out, self.selection, dt, self.tf)
+        for dt in list(range(1, self.dtmax + 1)):
+            output = self._getMeanOnePoint(
+                self.universe, selection_out, self.selection, dt, self.tf)
             self.timeseries.append(output)
 
 
@@ -1163,16 +1222,18 @@ class SurvivalProbability(object):
 
     def _getOneDeltaPoint(self, selection, totalFrames, t0, tau):
         """
-        Gives one point to calculate the mean and gets one point of the plot C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot
+        C_vect vs t.
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         """
         Ntau = self._NumPart_tau(selection, totalFrames, t0, tau)
         Nt = float(self._NumPart(selection, t0))
 
-        return Ntau/Nt if Nt > 0 else 0
+        return Ntau / Nt if Nt > 0 else 0
 
-    def _getMeanOnePoint(self, universe, selection1, selection_str, wint, totalFrames):
+    def _getMeanOnePoint(self, universe, selection1, selection_str, wint,
+                         totalFrames):
         """
         This function gets one point of the plot P(t) vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
@@ -1180,13 +1241,14 @@ class SurvivalProbability(object):
         """
         n = 0.0
         sumDeltaP = 0.0
-        for frame in range(totalFrames-wint):
+        for frame in range(totalFrames - wint):
             a = self._getOneDeltaPoint(selection1, totalFrames, frame, wint)
             sumDeltaP += a
             n += 1
 
-        #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        return sumDeltaP/n if n > 0 else 0
+        # if no water molecules remain in selection, there is nothing to get
+        # the mean, so n = 0.
+        return sumDeltaP / n if n > 0 else 0
 
     def _NumPart_tau(self, selection, totalFrames, t0, tau):
         """
@@ -1196,8 +1258,8 @@ class SurvivalProbability(object):
         """
         a = set(selection[t0])
         i = 0
-        while (t0+i) < t0+tau and (t0+i) < totalFrames:
-            b = set(selection[t0+i])
+        while (t0 + i) < t0 + tau and (t0 + i) < totalFrames:
+            b = set(selection[t0 + i])
             a = a.intersection(b)
             i += 1
         return len(a)
@@ -1207,7 +1269,8 @@ class SurvivalProbability(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
+        pm = ProgressMeter(universe.trajectory.n_frames,
+                           interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
             pm.echo(ts.frame)
@@ -1218,15 +1281,19 @@ class SurvivalProbability(object):
         Analyze trajectory and produce timeseries
         """
 
-        #All the selection to an array, this way is faster than selecting later.
+        # All the selection to an array, this way is faster than selecting
+        # later.
         if self.nproc == 1:
-            selection_out = self._selection_serial(self.universe, self.selection)
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         else:
-            #selection = selection_parallel(universe, selection_str, nproc)
-            #parallel selection to be implemented
-            selection_out = self._selection_serial(self.universe, self.selection)
+            # selection = selection_parallel(universe, selection_str, nproc)
+            # parallel selection to be implemented
+            selection_out = self._selection_serial(
+                self.universe, self.selection)
         self.timeseries = []
-        for dt in list(range(1, self.dtmax+1)):
-            output = self._getMeanOnePoint(self.universe, selection_out, self.selection, dt, self.tf)
+        for dt in list(range(1, self.dtmax + 1)):
+            output = self._getMeanOnePoint(
+                self.universe, selection_out, self.selection, dt, self.tf)
             self.timeseries.append(output)
 
