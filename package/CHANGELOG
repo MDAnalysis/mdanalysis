@@ -23,10 +23,13 @@ Enhancements
   * Universe now works with StringIO objects for topologies and trajectories.
   * Residues with the same residue ids are not merged by default now 
     (apply to PDB, GRO) (Issue #1306)
+  * Improved print to screen format in waterdynamics module (using 
+        ProgressMeter).
 
 Fixes
   * Various documentation sphinx errors (PR #1312)
-  * Fixed bug "no molecules in water selection" in waterdynamics analysis module.
+  * Fixed bug "no molecules in water selection" in waterdynamics analysis 
+        module.
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility

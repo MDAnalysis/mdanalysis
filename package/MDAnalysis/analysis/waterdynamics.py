@@ -189,7 +189,7 @@ AngularDistribution
 
 Analyzing angular distribution (AD) :class:`AngularDistribution` for OH vector,
 HH vector and dipole vector. It returns a line histogram with vector
-orientation preference. A straight line in the output graphic means no
+orientation preference. A straight line in the output plot means no
 preferential orientation in water molecules. In this case we are analyzing if
 water molecules have some orientational preference, in this way we can see if
 water molecules are under an electric field or if they are interacting with
@@ -415,11 +415,10 @@ from __future__ import print_function, division, absolute_import
 from six.moves import range, zip_longest
 
 import numpy as np
-import sys
 import multiprocessing
 
 import MDAnalysis.analysis.hbonds
-from MDAnalysis.lib.log import _set_verbose
+from MDAnalysis.lib.log import _set_verbose, ProgressMeter
 
 
 class HydrogenBondLifetimes(object):
@@ -526,7 +525,7 @@ class HydrogenBondLifetimes(object):
     def _intervC_c(self, HBP, t0, tf, dt):
         """
         This function gets all the data for the h(t0)h(t0+dt)', where
-        t0 = 1,2,3,...,tf. This function give us one point of the final graphic
+        t0 = 1,2,3,...,tf. This function give us one point of the final plot
         HBL vs t
         """
         a = 0
@@ -547,7 +546,7 @@ class HydrogenBondLifetimes(object):
     def _intervC_i(self, HBP, t0, tf, dt):
         """
         This function gets all the data for the h(t0)h(t0+dt), where
-        t0 = 1,2,3,...,tf. This function give us a point of the final graphic
+        t0 = 1,2,3,...,tf. This function give us a point of the final plot
         HBL vs t
         """
         a = 0
@@ -582,7 +581,7 @@ class HydrogenBondLifetimes(object):
 
     def _getGraphics(self, HBP, t0, tf, maxdt):
         """
-        Function that join all the results into a graphics.
+        Function that join all the results into a plot.
         """
         a = []
         cont = self._finalGraphGetC_c(HBP, t0, tf, maxdt)
@@ -721,7 +720,7 @@ class WaterOrientationalRelaxation(object):
 
     def _getOneDeltaPoint(self, universe, repInd, i, t0, dt):
         """
-        Gives one point to calculate the mean and gets one point of the graphic  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot  C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         i = come from getMeanOnePoint (named j) (int)
@@ -767,18 +766,13 @@ class WaterOrientationalRelaxation(object):
             valHH += self.lg2(np.dot(unitHHVector0, unitHHVectorp))
             valdip += self.lg2(np.dot(unitdipVector0, unitdipVectorp))
             n += 1
-
-        if n == 0:
-            return (0, 0, 0)
-        else:
-            valOH = valOH/n
-            valHH = valHH/n
-            valdip = valdip/n
-            return (valOH, valHH, valdip)
+            
+        return  (valOH/n, valHH/n, valdip/n) if n > 0 else (0, 0, 0)
+       
 
     def _getMeanOnePoint(self, universe, selection1, selection_str, dt, totalFrames):
         """
-        This function gets one point of the graphic C_vec vs t. It uses the
+        This function gets one point of the plot C_vec vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
@@ -788,26 +782,17 @@ class WaterOrientationalRelaxation(object):
         sumDeltaOH = 0.0
         sumDeltaHH = 0.0
         sumDeltadip = 0.0
-        valOHList = []
-        valHHList = []
-        valdipList = []
 
         for j in range(totalFrames // dt - 1):
             a = self._getOneDeltaPoint(universe, repInd, j, sumsdt, dt)
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
-            valOHList.append(a[0])
-            valHHList.append(a[1])
-            valdipList.append(a[2])
             sumsdt += dt
             n += 1
 
         #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        if n == 0:
-            return (0, 0, 0)
-        else:
-            return (sumDeltaOH/n, sumDeltaHH/n, sumDeltadip/n)
+        return (sumDeltaOH/n, sumDeltaHH/n, sumDeltadip/n) if n > 0 else (0, 0, 0)
 
     def _sameMolecTandDT(self, selection, t0d, tf):
         """
@@ -823,10 +808,10 @@ class WaterOrientationalRelaxation(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
+        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
-            sys.stdout.flush()
+            pm.echo(ts.frame)
         return selection
 
     # Second Legendre polynomial
@@ -982,10 +967,10 @@ class AngularDistribution(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
+        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
-            sys.stdout.flush()
+            pm.echo(ts.frame)
         return selection
 
 
@@ -1047,7 +1032,7 @@ class  MeanSquareDisplacement(object):
 
     def _getOneDeltaPoint(self, universe, repInd, i, t0, dt):
         """
-        Gives one point to calculate the mean and gets one point of the grapic  C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot C_vect vs t
         Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 intervale.
         Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 intervale
         i = come from getMeanOnePoint (named j) (int)
@@ -1071,15 +1056,11 @@ class  MeanSquareDisplacement(object):
             n += 1
 
         #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        if n == 0:
-            return (0, 0, 0)
-        else:
-            valO = valO/n
-            return valO
+        return valO/n if n > 0 else 0
 
     def _getMeanOnePoint(self, universe, selection1, selection_str, dt, totalFrames):
         """
-        This function gets one point of the graphic C_vec vs t. It's uses the
+        This function gets one point of the plot C_vec vs t. It's uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
@@ -1097,11 +1078,8 @@ class  MeanSquareDisplacement(object):
             n += 1
 
         #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        if n == 0:
-            return (0, 0, 0)
-        else:
-            return sumDeltaO/n
-
+        return sumDeltaO/n if n > 0 else 0
+        
     def _sameMolecTandDT(self, selection, t0d, tf):
         """
         Compare the molecules in the t0d selection and the t0d+dt selection and
@@ -1116,10 +1094,10 @@ class  MeanSquareDisplacement(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
+        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
-            sys.stdout.flush()
+            pm.echo(ts.frame)
         return selection
 
     def run(self, **kwargs):
@@ -1185,38 +1163,30 @@ class SurvivalProbability(object):
 
     def _getOneDeltaPoint(self, selection, totalFrames, t0, tau):
         """
-        Gives one point to calculate the mean and gets one point of the graphic C_vect vs t
+        Gives one point to calculate the mean and gets one point of the plot C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
         """
         Ntau = self._NumPart_tau(selection, totalFrames, t0, tau)
         Nt = float(self._NumPart(selection, t0))
 
-        return Ntau/Nt
+        return Ntau/Nt if Nt > 0 else 0
 
     def _getMeanOnePoint(self, universe, selection1, selection_str, wint, totalFrames):
         """
-        This function gets one point of the graphic P(t) vs t. It uses the
+        This function gets one point of the plot P(t) vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
 
         """
         n = 0.0
         sumDeltaP = 0.0
         for frame in range(totalFrames-wint):
-            #This "try" is to avoid a division by zero when there is no particles in time t0,
-            #this happens in very small selection regions.
-            try:
-                a = self._getOneDeltaPoint(selection1, totalFrames, frame, wint)
-            except ZeroDivisionError:
-                continue
+            a = self._getOneDeltaPoint(selection1, totalFrames, frame, wint)
             sumDeltaP += a
             n += 1
 
         #if no water molecules remain in selection, there is nothing to get the mean, so n = 0.
-        if n == 0:
-            return (0, 0, 0)
-        else:
-            return sumDeltaP/n
+        return sumDeltaP/n if n > 0 else 0
 
     def _NumPart_tau(self, selection, totalFrames, t0, tau):
         """
@@ -1237,10 +1207,10 @@ class SurvivalProbability(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
+        pm = ProgressMeter(universe.trajectory.n_frames, interval=10, verbose=True)
         for ts in universe.trajectory:
             selection.append(universe.select_atoms(selection_str))
-            sys.stdout.write("\rSelecting atoms from frame: %i"%ts.frame)
-            sys.stdout.flush()
+            pm.echo(ts.frame)
         return selection
 
     def run(self, **kwargs):
