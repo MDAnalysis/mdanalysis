@@ -151,9 +151,9 @@ __all__ = [
 from pkg_resources import resource_filename
 
 legacy_DCD_NAMD_coords = resource_filename(__name__,
-'data/legacy_DCD_NAMD_coords.p')
+'data/legacy_DCD_NAMD_coords.npy')
 legacy_DCD_ADK_coords = resource_filename(__name__,
-'data/legacy_DCD_adk_coords.p')
+'data/legacy_DCD_adk_coords.npy')
 AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
 XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')

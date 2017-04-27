@@ -18,8 +18,6 @@ from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
 import os
-import pickle
-import sys
 
 class DCDReadFrameTest(TestCase):
 
@@ -62,17 +60,12 @@ class DCDReadFrameTest(TestCase):
 
         # to reduce repo storage burden, we only compare for a few
         # randomly selected frames
-        if sys.version_info[0] > 2:
-            self.legacy_DCD_frame_data = pickle.load(open(self.legacy_data,
-            'rb'), encoding='latin1')
-        else:
-            self.legacy_DCD_frame_data = pickle.load(open(self.legacy_data,
-            'rb'))
+        self.legacy_DCD_frame_data = np.load(self.legacy_data)
 
-        for frame_num in self.selected_legacy_frames:
+        for index, frame_num in enumerate(self.selected_legacy_frames):
             self.dcdfile.seek(frame_num)
             actual_coords = self.dcdfile.read()[0]
-            desired_coords = self.legacy_DCD_frame_data.pop(0)
+            desired_coords = self.legacy_DCD_frame_data[index]
             assert_equal(actual_coords,
                          desired_coords)
 
