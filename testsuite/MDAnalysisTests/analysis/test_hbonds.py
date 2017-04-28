@@ -31,6 +31,7 @@ import numpy as np
 
 import itertools
 import warnings
+from six import StringIO
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
 # For type guessing:
@@ -86,6 +87,17 @@ class TestHydrogenBondAnalysis(object):
         assert_(isinstance(h.table, np.core.records.recarray))
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
+
+    @staticmethod
+    def test_atoms_too_far():
+        pdb = '''
+ATOM      1  N   LEU     1      32.310  13.778  14.372  1.00  0.00      SYST N 0
+ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0'''
+
+        u = MDAnalysis.Universe(StringIO(pdb), format="pdb")
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
+        h.run(verbose=False)
+        assert_equal(h.timeseries, [[]])
 
     @staticmethod
     def test_true_traj():
