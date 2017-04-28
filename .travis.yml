@@ -94,14 +94,17 @@ script:
           ${BUILD_DOCS} == "true" ]]; then \
             echo "Yeah it works this should fix deployment"; \
     fi
+  - |
+    test ${TRAVIS_PULL_REQUEST} == "true" && \
+    test ${BUILD_DOCS} == "true" && \
+    echo "yeah it works"
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
   - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "false" && \
-          ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-          ${BUILD_DOCS} == "true" ]]; then \
-            bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh; \
-    fi
+    test ${TRAVIS_PULL_REQUEST} == "false" && \
+    test ${BUILD_DOCS} == "true" && \
+    test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
+    bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh
