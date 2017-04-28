@@ -816,20 +816,21 @@ class HydrogenBondAnalysis(object):
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
-        if self.selection1_type in ('donor', 'both'):
-            self._s2_acceptors = self._s2.select_atoms(
-                'name {0}'.format(' '.join(self.acceptors)))
-            self.logger_debug("Selection 2 acceptors: {0:d}".format(len(self._s2_acceptors)))
-        if self.selection1_type in ('acceptor', 'both'):
-            self._s2_donors = self._s2.select_atoms(
-                'name {0}'.format(' '.join(self.donors)))
-            self._s2_donors_h = {}
-            for i, d in enumerate(self._s2_donors):
-                tmp = self._get_bonded_hydrogens(d)
-                if tmp:
-                    self._s2_donors_h[i] = tmp
-            self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
-            self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
+        if self._s2:
+            if self.selection1_type in ('donor', 'both'):
+                self._s2_acceptors = self._s2.select_atoms(
+                    'name {0}'.format(' '.join(self.acceptors)))
+                self.logger_debug("Selection 2 acceptors: {0:d}".format(len(self._s2_acceptors)))
+            if self.selection1_type in ('acceptor', 'both'):
+                self._s2_donors = self._s2.select_atoms(
+                    'name {0}'.format(' '.join(self.donors)))
+                self._s2_donors_h = {}
+                for i, d in enumerate(self._s2_donors):
+                    tmp = self._get_bonded_hydrogens(d)
+                    if tmp:
+                        self._s2_donors_h[i] = tmp
+                self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
+                self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
 
     def logger_debug(self, *args):
         if self.debug:

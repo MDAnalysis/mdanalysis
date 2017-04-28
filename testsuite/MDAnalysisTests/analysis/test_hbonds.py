@@ -32,7 +32,7 @@ import numpy as np
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
+from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, HBond_atoms_far
 # For type guessing:
 from MDAnalysis.topology.core import guess_atom_type
 from MDAnalysis.core.topologyattrs import Atomtypes
@@ -77,6 +77,12 @@ class TestHydrogenBondAnalysis(object):
         if h.timeseries[0]:
             assert_equal((int(h.timeseries[0][0][0])-int(h.timeseries[0][0][2])),1)
             assert_equal((int(h.timeseries[0][0][1])-int(h.timeseries[0][0][3])),1)
+    
+    def test_atoms_too_far(self):
+        u = MDAnalysis.Universe(HBond_atoms_far)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
+        h.run(verbose=False)
+        assert_equal(h.timeseries, [[]])
 
     def test_generate_table(self):
         h = self._run()
