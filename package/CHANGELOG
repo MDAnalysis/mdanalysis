@@ -14,6 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
+
 mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma
 
 
@@ -33,6 +34,8 @@ Fixes
     (issue #1324)
   * Fixed bug "no molecules in water selection" in waterdynamics analysis
     module.
+  * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
+    (PR #1325)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
