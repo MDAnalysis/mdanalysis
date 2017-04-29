@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon
+mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma
 
 
   * 0.16.1
@@ -29,6 +29,8 @@ Fixes
   * Various documentation sphinx errors (PR #1312)
   * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
     (PR #1325)
+  * Bugfix in confdistmatrix.get_distance_matrix; now works on all trajectory types.
+    (issue #1324)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
