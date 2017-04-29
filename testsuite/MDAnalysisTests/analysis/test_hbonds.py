@@ -31,12 +31,9 @@ import numpy as np
 
 import itertools
 import warnings
-try:
-    from BytesIO import BytesIO
-except ImportError:
-    from io import BytesIO
+from six import StringIO
 
-from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, HBond_atoms_far
+from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC
 # For type guessing:
 from MDAnalysis.topology.core import guess_atom_type
 from MDAnalysis.core.topologyattrs import Atomtypes
@@ -92,18 +89,17 @@ class TestHydrogenBondAnalysis(object):
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
     @staticmethod
-    def test_atoms_too_far(self):
-        pdb = '''TITLE     Two atoms far away
-CRYST1   52.763   52.763   52.763  90.00  90.00  90.00 P 1           1
-MODEL         1
+    def test_atoms_too_far():
+        pdb = '''
 ATOM      1  N   LEU     1      32.310  13.778  14.372  1.00  0.00      SYST N 0
 ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0'''
 
-        u = MDAnalysis.Universe(BytesIO(pdb.encode()), format="pdb")
+        u = MDAnalysis.Universe(StringIO(pdb), format="pdb")
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
         h.run(verbose=False)
         assert_equal(h.timeseries, [[]])
 
+    @staticmethod
     def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
         u.add_TopologyAttr(guess_types(u.atoms.names))
