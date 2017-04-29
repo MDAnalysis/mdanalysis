@@ -31,6 +31,7 @@ import numpy as np
 
 import itertools
 import warnings
+import StringIO
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, HBond_atoms_far
 # For type guessing:
@@ -77,12 +78,6 @@ class TestHydrogenBondAnalysis(object):
         if h.timeseries[0]:
             assert_equal((int(h.timeseries[0][0][0])-int(h.timeseries[0][0][2])),1)
             assert_equal((int(h.timeseries[0][0][1])-int(h.timeseries[0][0][3])),1)
-    
-    def test_atoms_too_far(self):
-        u = MDAnalysis.Universe(HBond_atoms_far)
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
-        h.run(verbose=False)
-        assert_equal(h.timeseries, [[]])
 
     def test_generate_table(self):
         h = self._run()
@@ -92,6 +87,18 @@ class TestHydrogenBondAnalysis(object):
         assert_(isinstance(h.table, np.core.records.recarray))
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
+
+    def test_atoms_too_far(self):
+        pdb = '''TITLE     Two atoms far away
+CRYST1   52.763   52.763   52.763  90.00  90.00  90.00 P 1           1
+MODEL         1
+ATOM      1  N   LEU     1      32.310  13.778  14.372  1.00  0.00      SYST N 0
+ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0'''
+
+        u = MDAnalysis.Universe(StringIO.StringIO(pdb), format="pdb")
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
+        h.run(verbose=False)
+        assert_equal(h.timeseries, [[]])
 
     @staticmethod
     def test_true_traj():
