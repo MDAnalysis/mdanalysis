@@ -31,7 +31,10 @@ import numpy as np
 
 import itertools
 import warnings
-import StringIO
+try:
+    from BytesIO import BytesIO
+except ImportError:
+    from io import BytesIO
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, HBond_atoms_far
 # For type guessing:
@@ -95,7 +98,7 @@ MODEL         1
 ATOM      1  N   LEU     1      32.310  13.778  14.372  1.00  0.00      SYST N 0
 ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0'''
 
-        u = MDAnalysis.Universe(StringIO.StringIO(pdb), format="pdb")
+        u = MDAnalysis.Universe(BytesIO(pdb.encode()), format="pdb")
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'resname SOL', 'protein')
         h.run(verbose=False)
         assert_equal(h.timeseries, [[]])

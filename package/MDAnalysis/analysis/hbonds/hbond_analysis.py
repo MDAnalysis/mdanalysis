@@ -823,7 +823,7 @@ class HydrogenBondAnalysis(object):
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
-        if self._s2:
+        if not self._s2:
             return None
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.select_atoms(
