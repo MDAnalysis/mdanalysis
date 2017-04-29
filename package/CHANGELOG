@@ -27,6 +27,7 @@ Enhancements
 Fixes
   * In Universe.transfer_to_memory(): dt is now adjusted with step (Issue #1310)
   * Various documentation sphinx errors (PR #1312)
+  * Bugfix in confdistmatrix.get_distance_matrix; now works on all trajectory types.
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
