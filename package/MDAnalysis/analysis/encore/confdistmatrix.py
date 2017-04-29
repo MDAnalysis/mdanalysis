@@ -333,6 +333,10 @@ def get_distance_matrix(ensemble,
 
     # Calculate the matrix
     else:
+
+        # Transfer universe to memory to ensure timeseries() support
+        ensemble.transfer_to_memory()
+
         if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
             weight_type = 'Mass'
         elif weights is None:
