@@ -144,7 +144,6 @@ __all__ = [
     "MMTF", "MMTF_gz",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
-    "HBond_atoms_far", # Universe with two atoms far away
 ]
 
 from pkg_resources import resource_filename
@@ -222,7 +221,6 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
-HBond_atoms_far = resource_filename(__name__, 'data/HBond_atoms_far.pdb')
 XTC_single_frame = resource_filename(
     __name__, 'data/xtc_test_only_single_frame_10_atoms.xtc')
 XTC_multi_frame = resource_filename(
