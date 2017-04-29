@@ -91,6 +91,7 @@ class TestHydrogenBondAnalysis(object):
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
+    @staticmethod
     def test_atoms_too_far(self):
         pdb = '''TITLE     Two atoms far away
 CRYST1   52.763   52.763   52.763  90.00  90.00  90.00 P 1           1
@@ -103,7 +104,6 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
         h.run(verbose=False)
         assert_equal(h.timeseries, [[]])
 
-    @staticmethod
     def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
         u.add_TopologyAttr(guess_types(u.atoms.names))
