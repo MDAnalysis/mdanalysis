@@ -76,7 +76,8 @@ the attributes they provide.
    PQR [#a]_         pqr       names, charges,   PDB-like but whitespace-separated files with charge
                                types,            and radius information;
                                radii, resids,    :mod:`MDAnalysis.topology.PQRParser`
-                               resnames, segids
+                               resnames, icodes,
+                               segids
 
    PDBQT [#a]_       pdbqt     names, types,     file format used by AutoDock with atom types and
                                altLocs, charges, partial charges. Module:

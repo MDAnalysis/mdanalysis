@@ -88,6 +88,8 @@ class PQRParser(TopologyReaderBase):
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
        'SYSTEM' as the new segid).
+    .. versionchanged:: 0.16.1
+       Now reads insertion codes and splits into new residues around these
     """
     format = 'PQR'
 
