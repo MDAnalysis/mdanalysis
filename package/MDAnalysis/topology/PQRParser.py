@@ -57,6 +57,7 @@ from ..core.topologyattrs import (
     Atomnames,
     Atomtypes,
     Charges,
+    ICodes,
     Masses,
     Radii,
     Resids,
@@ -65,7 +66,7 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, change_squash
 
 
 class PQRParser(TopologyReaderBase):
@@ -87,6 +88,8 @@ class PQRParser(TopologyReaderBase):
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
        'SYSTEM' as the new segid).
+    .. versionchanged:: 0.16.1
+       Now reads insertion codes and splits into new residues around these
     """
     format = 'PQR'
 
@@ -102,6 +105,7 @@ class PQRParser(TopologyReaderBase):
         resnames = []
         chainIDs = []
         resids = []
+        icodes = []
         charges = []
         radii = []
 
@@ -118,10 +122,20 @@ class PQRParser(TopologyReaderBase):
                         (recordName, serial, name, resName,
                          resSeq, x, y, z, charge, radius) = fields
                         chainID = "SYSTEM"
+                    try:
+                        resid = int(resSeq)
+                    except ValueError:
+                        # has icode present
+                        resid = int(resSeq[:-1])
+                        icode = resSeq[-1]
+                    else:
+                        icode = ''
+
                     serials.append(serial)
                     names.append(name)
                     resnames.append(resName)
-                    resids.append(resSeq)
+                    resids.append(resid)
+                    icodes.append(icode)
                     charges.append(charge)
                     radii.append(radius)
                     chainIDs.append(chainID)
@@ -140,16 +154,19 @@ class PQRParser(TopologyReaderBase):
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
         resids = np.array(resids, dtype=np.int32)
+        icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainIDs = np.array(chainIDs, dtype=object)
 
-        residx, resids, (resnames, chainIDs) = squash_by(
-            resids, resnames, chainIDs)
+        residx, (resids, resnames, icodes, chainIDs) = change_squash(
+            (resids, resnames, icodes, chainIDs),
+            (resids, resnames, icodes, chainIDs))
 
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
         attrs.append(Resnames(resnames))
+        attrs.append(ICodes(icodes))
 
         segidx, chainIDs = squash_by(chainIDs)[:2]
 
