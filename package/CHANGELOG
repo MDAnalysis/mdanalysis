@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
-         richardjgowers
+         richardjgowers, Shtkddud123
 
   * 0.16.1
 
@@ -36,6 +36,7 @@ Fixes
     module.
   * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
     (PR #1325)
+  * Fix PDBParser docs for conect (issue #1246)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
