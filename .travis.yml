@@ -94,8 +94,7 @@ script:
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
-  - if test ${TRAVIS_PULL_REQUEST} == "false" && \
-       test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-       test "${BUILD_DOCS}" == "true"; then
-           bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
+  # can't use test here since this leads to travis fails even though the build passes
+  - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
+            bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
     fi
