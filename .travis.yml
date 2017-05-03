@@ -89,24 +89,12 @@ install:
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
-  - echo $TRAVIS_PULL_REQUEST
-  - echo $BUILD_DOCS
-  - if [[ ${TRAVIS_PULL_REQUEST} == "1320" ]] && [[ ${BUILD_DOCS} == "true" ]]; then
-            echo "Yeah it works this should fix deployment";
-    fi
-  - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "1320" ]] && [[ ${BUILD_DOCS} == "true" ]]; then
-            echo "Yeah it works this should fix deployment"
-    fi
-  - |
-    test ${TRAVIS_PULL_REQUEST} == "1320" && \
-    test ${BUILD_DOCS} == "true" && \
-    echo "yeah it works"
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
 
 after_success:
   - if [[ $COVERALLS == 'true' ]]; then coveralls; fi
+  # can't use test here since this leads to travis fails even though the build passes
   - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
             bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
     fi
