@@ -32,6 +32,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPSdata,
     LAMMPScnt, LAMMPScnt2,
     LAMMPShyd, LAMMPShyd2,
+    LAMMPSdata_deletedatoms,
 )
 
 
@@ -144,3 +145,17 @@ class TestLAMMPSHYD(LammpsBase):
 
 class TestLAMMPSHYD2(TestLAMMPSHYD):
     filename = LAMMPShyd2
+
+
+class TestLAMMPSDeletedAtoms(LammpsBase):
+    filename = LAMMPSdata_deletedatoms
+
+    expected_n_atoms = 10
+    expected_n_atom_types = 2
+    expected_n_residues = 1
+
+    ref_n_bonds = 9
+    ref_bond = (0, 3)
+    ref_n_angles = 0
+    ref_n_dihedrals = 0
+    ref_n_impropers = 0
