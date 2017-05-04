@@ -185,15 +185,13 @@ class Flag(object):
     """A Flag, essentially a variable that knows its default and legal values."""
 
     def __init__(self, name, default, mapping=None, doc=None):
-        """Create a new flag which will be registered with FLags.
-
-          newflag = Flag(name,default,mapping,doc)
+        """Create a new flag which will be registered with Flags.
 
         Parameters
         ----------
         name: str
             name of the flag, must be a legal python name
-         default
+        default
             default value
         mapping: dict
             dict that maps allowed input values to canonical values;
@@ -208,6 +206,14 @@ class Flag(object):
                     %%(mapping)r     mapping
 
             Doc strings are generated dynamically and reflect the current state.
+
+
+        Example
+        -------
+        Create a new flag::
+
+            newflag = Flag(name, default, mapping, doc)
+
         """
         self.name = name
         self.value = default
@@ -266,8 +272,8 @@ _flags = [
         'use_KDTree_routines',
         'fast',
         {True: 'fast', 'fast': 'fast',  # only KDTree if advantageous
-            'always': 'always',  # always even if slower (for testing)
-            False: 'never', 'never': 'never'},  # never, only use (slower) alternatives
+         'always': 'always',  # always even if slower (for testing)
+         False: 'never', 'never': 'never'},  # never, only use (slower) alternatives
         """
            Determines which KDTree routines are used for distance selections
 

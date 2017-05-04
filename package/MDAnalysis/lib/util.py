@@ -193,14 +193,15 @@ def filename(name, ext=None, keep=False):
     Parameters
     ----------
     name: str or :class:`NamedStream`
-        filename; extension is replaced unless keep=True;
-        *name* can also be a :class:`NamedStream` (and its
+        filename; extension is replaced unless ``keep=True``;
+        `name` can also be a :class:`NamedStream` (and its
         :attr:`NamedStream.name` will be changed accordingly)
     ext: None or str
         extension to use in the new filename
     keep: bool
-        - ``False``: replace existing extension with *ext*;
+        - ``False``: replace existing extension with `ext`;
         - ``True``: keep old extension if one existed
+
 
     .. versionchanged:: 0.9.0
        Also permits :class:`NamedStream` to pass through.

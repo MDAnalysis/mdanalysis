@@ -285,6 +285,22 @@ def make_whole(atomgroup, reference_atom=None):
 
     Atoms are modified in place.
 
+    This function is most useful when atoms have been packed into the primary
+    unit cell, causing breaks mid molecule, with the molecule then appearing
+    on either side of the unit cell. This is problematic for operations
+    such as calculating the center of mass of the molecule. ::
+
+       +-----------+     +-----------+
+       |           |     |           |
+       | 6       3 |     |         3 | 6
+       | !       ! |     |         ! | !
+       |-5-8   1-2-| ->  |       1-2-|-5-8
+       | !       ! |     |         ! | !
+       | 7       4 |     |         4 | 7
+       |           |     |           |
+       +-----------+     +-----------+
+
+
     Parameters
     ----------
     atomgroup
@@ -306,23 +322,13 @@ def make_whole(atomgroup, reference_atom=None):
         caused by the atomgroup not being a single fragment.
         (ie the molecule can't be traversed by following bonds)
 
-    This function is most useful when atoms have been packed into the primary
-    unit cell, causing breaks mid molecule, with the molecule then appearing
-    on either side of the unit cell. This is problematic for operations
-    such as calculating the center of mass of the molecule. ::
-
-       +-----------+     +-----------+
-       |           |     |           |
-       | 6       3 |     |         3 | 6
-       | !       ! |     |         ! | !
-       |-5-8   1-2-| ->  |       1-2-|-5-8
-       | !       ! |     |         ! | !
-       | 7       4 |     |         4 | 7
-       |           |     |           |
-       +-----------+     +-----------+
+    Note
+    ----
+    Only orthogonal boxes are currently supported
 
     Example
     -------
+    Make fragments whole::
 
         from MDAnalysis.util.mdamath import make_whole
 
@@ -342,9 +348,6 @@ def make_whole(atomgroup, reference_atom=None):
         # and all other atoms will move (if necessary).
         make_whole(atomgroup, reference_atom=atomgroup[10])
 
-    .. Note::
-
-       Only orthogonal boxes are currently supported
 
     .. versionadded:: 0.11.0
     """
