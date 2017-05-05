@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -145,7 +145,7 @@ class PQRReader(base.SingleFrameReaderBase):
 
         Parameters
         ----------
-        filename: str
+        filename : str
             filename of the output PQR file
 
         Returns
@@ -188,7 +188,7 @@ class PQRWriter(base.WriterBase):
         ----------
         filename : str
              output filename
-        remarks : str, optionak
+        remarks : str (optional)
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
@@ -207,12 +207,14 @@ class PQRWriter(base.WriterBase):
         ----------
         selection : AtomGroup or Universe
             MDAnalysis AtomGroup or Universe
-        frame : int, optional
-            optionally move to frame number *frame*
+        frame : int (optional)
+            optionally move to frame index `frame`; by default, write the
+            current frame
 
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
         """
         # write() method that complies with the Trajectory API
         u = selection.universe

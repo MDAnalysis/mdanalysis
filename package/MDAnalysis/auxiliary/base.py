@@ -47,8 +47,9 @@ import numbers
 import math
 import warnings
 
-from ..lib.util import asiterable, anyopen
 import numpy as np
+
+from ..lib.util import asiterable, anyopen
 
 from . import _AUXREADERS
 

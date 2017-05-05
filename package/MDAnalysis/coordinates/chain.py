@@ -69,6 +69,7 @@ class ChainReader(base.ProtoReader):
     :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are properly
     set, though
 
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     .. versionchanged:: 0.13.0
@@ -94,17 +95,17 @@ class ChainReader(base.ProtoReader):
            names in either plain file names format or ``(filename, format)``
            tuple combination. This allows explicit setting of the format for
            each individual trajectory file.
-        skip : int, optional
+        skip : int (optional)
            skip step (also passed on to the individual trajectory readers);
            must be same for all trajectories
-        dt : float, optional
+        dt : float (optional)
           Passed to individual trajectory readers to enforce a common time
           difference between frames, in MDAnalysis time units. If not set, each
           reader's `dt` will be used (either inferred from the trajectory
           files, or set to the reader's default) when reporting frame times;
           note that this might lead an inconsistent time difference between
           frames.
-        **kwargs : dict, optional
+        **kwargs : dict (optional)
           all other keyword arguments are passed on to each trajectory reader
           unchanged
 
@@ -173,7 +174,7 @@ class ChainReader(base.ProtoReader):
         Returns
         -------
         (i, f) : tuple
-            **local frame** tuple `
+            **local frame** tuple
 
         Raises
         ------

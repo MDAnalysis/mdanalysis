@@ -57,7 +57,7 @@ def norm(v):
 
     Parameters
     ----------
-    v: array_like
+    v : array_like
         1D array of shape (N) for a vector of length N
 
     Returns
@@ -188,21 +188,20 @@ def triclinic_vectors(dimensions):
 
     Parameters
     ----------
-    dimensions: list of floats
+    dimensions : [A, B, C, alpha, beta, gamma]
         list of box lengths and angles (in degrees) such as
-        [A,B,C,alpha,beta,gamma]
+        ``[A,B,C,alpha,beta,gamma]``
 
     Returns
     -------
     numpy.array
-        numpy 3x3 array B, with B[0] = first box vector,
-        B[1] = second vector, B[2] third box vector.
+        numpy 3x3 array B, with ``B[0]`` as first box vector,
+        ``B[1]``as second vector, ``B[2]`` as third box vector.
 
     Notes
     -----
-
-    The first vector is always pointing along the X-axis
-    i.e. parallel to (1,0,0).
+    The first vector is always pointing along the X-axis,
+    i.e., parallel to (1, 0, 0).
 
 
     .. versionchanged:: 0.7.6
@@ -239,15 +238,13 @@ def box_volume(dimensions):
 
     Parameters
     ----------
-    dimensions: list of floats
+    dimensions : [A, B, C, alpha, beta, gamma]
         list of box lengths and angles (in degrees) such as
         [A,B,C,alpha,beta,gamma]
 
     Returns
     -------
-    numpy.array
-        numpy 3x3 array B, with B[0] = first box vector,
-        B[1] = second vector, B[2] third box vector.
+    volume : float
     """
     return np.linalg.det(triclinic_vectors(dimensions))
 
@@ -305,11 +302,11 @@ def make_whole(atomgroup, reference_atom=None):
 
     Parameters
     ----------
-    atomgroup
+    atomgroup : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
         must belong in the same molecule or fragment.
-    reference_atom: :class:`~MDAnalysis.core.groups.Atom`
+    reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
 
@@ -326,7 +323,7 @@ def make_whole(atomgroup, reference_atom=None):
 
     Note
     ----
-    Only orthogonal boxes are currently supported
+    Only orthogonal boxes are currently supported.
 
     Example
     -------
@@ -437,13 +434,19 @@ def one_to_many_pointers(Ni, Nj, i2j):
 
     Arguments
     ---------
-    Ni, Nj - number of i and j components
-    i2j - the array relating i to parent js
+    Ni : int
+       number of i  components
+    Nj : int
+       number of j components
+    i2j : numpy.ndarray
+       relates i to parent js
 
     Returns
     -------
-    ordered - an ordered list of i indices [size (i,)]
-    ptrs - the start and end index for each j [size (Nj, 2)]
+    ordered : list
+       an ordered list of i indices [size (i,)]
+    ptrs : list
+       the start and end index for each j [size (Nj, 2)]
 
     Example
     -------

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -24,10 +24,17 @@
 """INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`
 ================================================================================
 
-Read and write coordinates in Amber_ coordinate/restart file (suffix
-"inpcrd").
+Read coordinates in Amber_ coordinate/restart file (suffix "inpcrd").
 
 .. _Amber: http://ambermd.org/formats.html#restart
+
+
+Classes
+-------
+
+.. autoclass:: INPReader
+   :members:
+
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -36,6 +43,8 @@ from six.moves import range
 from . import base
 
 class INPReader(base.SingleFrameReaderBase):
+    """Reader for Amber restart files."""
+
     format = ['INPCRD', 'RESTRT']
     units = {'length': 'Angstrom'}
 
@@ -61,7 +70,7 @@ class INPReader(base.SingleFrameReaderBase):
                 for i, dest in enumerate([(2*p, 0), (2*p, 1), (2*p, 2),
                                           (2*p + 1, 0), (2*p + 1, 1), (2*p + 1, 2)]):
                     self.ts._pos[dest] = float(line[i*12:(i+1)*12])
-            # Read last coordinate if necessary            
+            # Read last coordinate if necessary
             if self.n_atoms % 2:
                 line = inf.readline()
                 for i in range(3):

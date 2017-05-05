@@ -124,6 +124,7 @@ class Timestep(base.Timestep):
         it is assumed it is a new-style CHARMM unitcell (at least since c36b2)
         in which box vectors were recorded.
 
+
         .. warning:: The DCD format is not well defined. Check your unit cell
            dimensions carefully, especially when using triclinic
            boxes. Different software packages implement different conventions
@@ -176,26 +177,26 @@ class DCDWriter(base.WriterBase):
 
     Parameters
     ----------
-    filename: str
+    filename : str
         name of output file
-    n_atoms: int (optional)
+    n_atoms : int (optional)
         number of atoms in dcd file
-    start: int (optional)
+    start : int (optional)
         starting frame number
-    step: int (optional)
+    step : int (optional)
         skip between subsequent timesteps (indicate that `step` **MD
         integrator steps (!)** make up one trajectory frame); default is 1.
-    delta: float (optional)
+    delta : float (optional)
         timestep (**MD integrator time step (!)**, in AKMA units); default is
         20.45482949774598 (corresponding to 1 ps).
-    remarks: str (optional)
+    remarks : str (optional)
         comments to annotate dcd file
-    dt: float (optional)
+    dt : float (optional)
         **Override** `step` and `delta` so that the DCD records that
         `dt` ps lie between two frames. (It sets `step` = 1 and
         `delta` ``= AKMA(dt)``.) The default is ``None``, in which case
         `step` and `delta` are used.
-    convert_units: bool (optional)
+    convert_units : bool (optional)
         units are converted to the MDAnalysis base format; ``None`` selects
         the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
         (see :ref:`flags-label`)
@@ -403,13 +404,13 @@ class DCDReader(base.ReaderBase):
 
     Note
     ----
-
     The DCD file format is not well defined. In particular, NAMD and CHARMM use
     it differently. Currently, MDAnalysis tries to guess the correct format for
     the unitcell representation but it can be wrong. **Check the unitcell
     dimensions**, especially for triclinic unitcells (see `Issue 187`_ and
     :attr:`Timestep.dimensions`). A second potential issue are the units of
     time (TODO).
+
 
     .. versionchanged:: 0.9.0
        The underlying DCD reader (written in C and derived from the
@@ -529,7 +530,7 @@ class DCDReader(base.ReaderBase):
 
         Parameters
         ----------
-        asel: :class:`~MDAnalysis.core.groups.AtomGroup`
+        asel : :class:`~MDAnalysis.core.groups.AtomGroup`
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to None, in which case the full set of
             coordinate data is returned.
@@ -543,7 +544,7 @@ class DCDReader(base.ReaderBase):
         step : int (optional)
              Step size for reading; the default ``None`` is equivalent to 1 and means to
              read every frame.
-        format: str (optional)
+        format : str (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
@@ -578,7 +579,11 @@ class DCDReader(base.ReaderBase):
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
-        """Populate a `TimeseriesCollection` object with timeseries computed from the trajectory.
+        """Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
+        with time series computed from the trajectory.
+
+        Calling this method will iterate through the whole trajectory and
+        perform the calculations prescribed in `timeseries`.
 
         Parameters
         ----------
@@ -595,6 +600,11 @@ class DCDReader(base.ReaderBase):
         step : int (optional)
              Step size for reading; the default ``None`` is equivalent to 1 and means to
              read every frame.
+
+        Note
+        ----
+        The `correl` functionality is only implemented for DCD trajectories and
+        the :class:`DCDReader`.
 
 
         .. deprecated:: 0.16.0
@@ -631,17 +641,17 @@ class DCDReader(base.ReaderBase):
 
         Parameters
         ----------
-        filename: str
+        filename : str
             filename of the output DCD trajectory
-        n_atoms: int (optional)
+        n_atoms : int (optional)
             number of atoms
-        start: int (optional)
+        start : int (optional)
             number of the first recorded MD step
-        step: int (optional)
+        step : int (optional)
             indicate that `step` **MD steps (!)** make up one trajectory frame
-        delta: float (optional)
+        delta : float (optional)
             **MD integrator time step (!)**, in AKMA units
-        dt: float (optional)
+        dt : float (optional)
             **Override** `step` and `delta` so that the DCD records that
             `dt` ps lie between two frames. (It sets `step` `` = 1`` and
             `delta` `` = AKMA(dt)``.) The default is ``None``, in which case
@@ -654,17 +664,17 @@ class DCDReader(base.ReaderBase):
         -------
         :class:`DCDWriter`
 
-        .. Note::
 
-           The keyword arguments set the low-level attributes of the DCD
-           according to the CHARMM format. The time between two frames would be
-           `delta` * `step` !
+        Note
+        ----
+        The keyword arguments set the low-level attributes of the DCD according
+        to the CHARMM format. The time between two frames would be `delta` *
+        `step`!
 
-           Here `step` is really the number of MD integrator time
-           steps that occured after this frame, including the frame
-           itself that is the coordinate snapshot and `delta` is the
-           integrator stime step.  The DCD file format contains this
-           information so it needs to be provided here.
+        Here `step` is really the number of MD integrator time steps that
+        occured after this frame, including the frame itself that is the
+        coordinate snapshot and `delta` is the integrator stime step.  The DCD
+        file format contains this information so it needs to be provided here.
 
 
         See Also

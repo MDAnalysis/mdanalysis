@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -64,15 +64,20 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
     ...
     atomN x y z [ ...         ]                                                 line N+2
 
-.. Note::
-   * comment lines not implemented (do not include them)
-   * molecule name: the line is required but the content is ignored
-     at the moment
-   * optional data (after the coordinates) are presently ignored
+
+Note
+----
+* comment lines not implemented (do not include them)
+* molecule name: the line is required but the content is ignored
+  at the moment
+* optional data (after the coordinates) are presently ignored
 
 
 .. Links
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
+Classes
+-------
 
 """
 from __future__ import division, absolute_import
@@ -176,18 +181,15 @@ class XYZWriter(base.WriterBase):
         self._xyz = None
 
     def write(self, obj):
-        """Write object *obj* at current trajectory frame to file.
+        """Write object `obj` at current trajectory frame to file.
 
-        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
-        or a whole :class:`~MDAnalysis.core.universe.Universe`.
-
-        Atom names in the output are taken from the *obj* or default
-        to the value of the *atoms* keyword supplied to the
+        Atom names in the output are taken from the `obj` or default
+        to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
         Parameters
         ----------
-        obj:
+        obj : Universe or AtomGroup
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
         """

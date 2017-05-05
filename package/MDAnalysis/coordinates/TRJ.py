@@ -19,26 +19,28 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`
+"""AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`
 ========================================================
 
 AMBER_ can write :ref:`ASCII trajectories<ascii-trajectories>` ("traj") and
 :ref:`binary trajectories<netcdf-trajectories>` ("netcdf"). MDAnalysis supports
 reading of both formats and writing for the binary trajectories.
 
-.. Note::
+Note
+----
+Support for AMBER is still somewhat *experimental* and feedback and
+contributions are highly appreciated. Use the `Issue Tracker`_ or get in touch
+on the `MDAnalysis mailinglist`_.
 
-   Support for AMBER is *experimental* and feedback and contributions
-   are highly appreciated. Use the `Issue Tracker`_ or get in touch on
-   the `MDAnalysis mailinglist`_.
 
 .. rubric:: Units
+
+AMBER trajectories are assumed to be in the following units:
 
 * lengths in Angstrom (Å)
 * time in ps (but see below)
 
-AMBER trajectory coordinate frames are based on a :class:`Timestep`
+AMBER trajectory coordinate frames are based on a custom :class:`Timestep`
 object.
 
 .. autoclass:: Timestep
@@ -127,8 +129,6 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
 .. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
 
-
-
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -161,8 +161,8 @@ except ImportError:
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
 
-    The Timestep can be initialized with *arg* being an integer
-    (the number of atoms) and an optional keyword argument *velocities* to
+    The Timestep can be initialized with `arg` being an integer
+    (the number of atoms) and an optional keyword argument `velocities` to
     allocate space for both coordinates and velocities;
 
     .. versionchanged:: 0.10.0
@@ -192,8 +192,8 @@ class TRJReader(base.ReaderBase):
     .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
-       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
+       Frames now 0-based instead of 1-based.
+       kwarg `delta` renamed to `dt`, for uniformity with other Readers
     """
     format = ['TRJ', 'MDCRD', 'CRDBOX']
     units = {'time': 'ps', 'length': 'Angstrom'}
@@ -293,7 +293,8 @@ class TRJReader(base.ReaderBase):
          - this WILL fail if we have exactly 1 atom in the trajectory because
            there's no way to distinguish the coordinates from the box
            so for 1 atom we always assume no box
-         XXX: needs a Timestep that knows about AMBER unitcells!
+
+        .. TODO:: needs a Timestep that knows about AMBER unitcells!
         """
         if self.n_atoms == 1:
             # for 1 atom we cannot detect the box with the current approach
@@ -385,7 +386,7 @@ class NCDFReader(base.ReaderBase):
     AMBER binary trajectories are automatically recognised by the
     file extension ".ncdf".
 
-    The number of atoms (*n_atoms*) does not have to be provided as it can
+    The number of atoms (`n_atoms`) does not have to be provided as it can
     be read from the trajectory. The trajectory reader can randomly access
     frames and therefore supports direct indexing (with 0-based frame
     indices) and full-feature trajectory iteration, including slicing.
@@ -412,12 +413,13 @@ class NCDFReader(base.ReaderBase):
     --------
     :class:`NCDFWriter`
 
+
     .. versionadded: 0.7.6
     .. versionchanged:: 0.10.0
        Added ability to read Forces
     .. versionchanged:: 0.11.0
-       Frame labels now 0-based instead of 1-based
-       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
+       Frame labels now 0-based instead of 1-based.
+       kwarg `delta` renamed to `dt`, for uniformity with other Readers.
     """
 
     format = ['NCDF', 'NC']
@@ -568,19 +570,19 @@ class NCDFReader(base.ReaderBase):
             self.trjfile = None
 
     def Writer(self, filename, **kwargs):
-        """Returns a NCDFWriter for *filename* with the same parameters as this NCDF.
+        """Returns a NCDFWriter for `filename` with the same parameters as this NCDF.
 
         All values can be changed through keyword arguments.
 
         Parameters
         ----------
-        filename: str
+        filename : str
             filename of the output NCDF trajectory
-        n_atoms: int
+        n_atoms : int (optional)
             number of atoms
-        dt: float
+        dt : float (optional)
             length of one timestep in picoseconds
-        remarks: str
+        remarks : str (optional)
             string that is stored in the title field
 
         Returns
@@ -612,12 +614,13 @@ class NCDFWriter(base.WriterBase):
     --------
     :class:`NCDFReader`
 
+
     .. versionadded: 0.7.6
 
     .. versionchanged:: 0.10.0
        Added ability to write velocities and forces
     .. versionchanged:: 0.11.0
-       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
+       kwarg `delta` renamed to `dt`, for uniformity with other Readers
     """
 
     format = 'NCDF'
@@ -643,27 +646,27 @@ class NCDFWriter(base.WriterBase):
 
         Parameters
         ----------
-        filename: str
+        filename : str
             name of output file
-        n_atoms: int
+        n_atoms : int
             number of atoms in trajectory file
-        start: int
+        start : int (optional)
             starting timestep
-        step: int
+        step : int (optional)
             skip between subsequent timesteps
-        dt: float
+        dt : float (optional)
             timestep
-        convert_units: bool
+        convert_units : bool (optional)
             ``True``: units are converted to the AMBER base format; ``None``
             selects the value of :data:`MDAnalysis.core.flags`
             ['convert_lengths'] (see :ref:`flags-label`).
-        zlib: bool
+        zlib : bool (optional)
             compress data [``False``]
-        cmplevel: int
+        cmplevel : int (optional)
             compression level (1-9) [1]
-        velocities: bool
+        velocities : bool (optional)
             Write velocities into the trajectory [``False``]
-        forces: bool
+        forces : bool (optional)
             Write forces into the trajectory [``False``]
         """
         self.filename = filename
@@ -807,18 +810,33 @@ class NCDFWriter(base.WriterBase):
         self.trjfile = ncfile
 
     def is_periodic(self, ts=None):
-        """Return ``True`` if :class:`Timestep` *ts* contains a valid
-        simulation box
+        """Test if `Timestep` contains a periodic trajectory.
+
+        Parameters
+        ----------
+        ts : :class:`Timestep`
+             :class:`Timestep` instance containing coordinates to
+             be written to trajectory file; default is the current
+             timestep
+
+        Returns
+        -------
+        bool
+            Return ``True`` if `ts` contains a valid simulation box
         """
         ts = ts if ts is not None else self.ts
         return np.all(ts.dimensions > 0)
 
     def write_next_timestep(self, ts=None):
-        '''write a new timestep to the trj file
+        """write a new timestep to the trj file
 
-        *ts* is a :class:`Timestep` instance containing coordinates to
-        be written to trajectory file
-        '''
+        Parameters
+        ----------
+        ts : :class:`Timestep`
+             :class:`Timestep` instance containing coordinates to
+             be written to trajectory file; default is the current
+             timestep
+        """
         if ts is None:
             ts = self.ts
         if ts is None:

@@ -217,6 +217,9 @@ class MemoryReader(base.ProtoReader):
     A trajectory reader interface to a numpy array of the coordinates.
     For compatibility with the timeseries interface, support is provided for
     specifying the order of columns through the format option.
+
+    .. versionadded:: 0.16.0
+
     """
 
     format = 'MEMORY'
@@ -225,27 +228,34 @@ class MemoryReader(base.ProtoReader):
     def __init__(self, coordinate_array, order='fac',
                  dimensions=None, dt=1, filename=None, **kwargs):
         """
-
         Parameters
         ----------
-        coordinate_array : :class:`~numpy.ndarray` object
+        coordinate_array : numpy.ndarray
             The underlying array of coordinates
-        order : str, optional
+        order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
-            coordinates)
-        dimensions: (*A*, *B*, *C*, *alpha*, *beta*, *gamma*), optional
+            coordinates).
+        dimensions: [A, B, C, alpha, beta, gamma] (optional)
             unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
             lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
             angles are in degrees.
-        dt: float, optional
+        dt: float (optional)
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
-        filename: string, optional
-            The name of the file from which this instance is created. Set to None
+        filename: string (optional)
+            The name of the file from which this instance is created. Set to ``None``
             when created from an array
+
+        Note
+        ----
+        At the moment, only a fixed `dimension` is supported, i.e., the same
+        unit cell for all frames in `coordinate_array`. See issue `#1041`_.
+
+        .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
+
         """
 
         super(MemoryReader, self).__init__()
@@ -282,12 +292,12 @@ class MemoryReader(base.ProtoReader):
         ----------
         coordinate_array : :class:`~numpy.ndarray` object
             The underlying array of coordinates
-        order
-            The order/shape of the return data array, corresponding
+        order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
+            the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
-            coordinates)
+            coordinates).
         """
         # Only make copy if not already in float32 format
         self.coordinate_array = coordinate_array.astype('float32', copy=False)
@@ -307,29 +317,36 @@ class MemoryReader(base.ProtoReader):
     def timeseries(self, asel=None, start=0, stop=-1, step=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order/format. If no selection is given, it will return a view of
-        the underlying array, while a copy is returned otherwise. 
+        the underlying array, while a copy is returned otherwise.
 
         Parameters
         ---------
-        asel : :class:`~MDAnalysis.core.groups.AtomGroup` object
-            Atom selection. Defaults to None, in which case the full set of
+        asel : AtomGroup (optional)
+            Atom selection. Defaults to ``None``, in which case the full set of
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
-            data is returned whenever asel is different from None.
-        start, stop, skip : int
-            range of trajectory to access, start and stop are inclusive
-        format : str
+            data is returned whenever `asel` is different from ``None``.
+        start : int (optional)
+        stop : int (optional)
+        step : int (optional)
+            range of trajectory to access, `start` and `stop` are *inclusive*
+        format : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
-            coordinates). 
-        """
+            coordinates).
 
-        # The "format" name is used for compliance with DCD.timeseries
-        # Renaming it to order here for internal consistency in this class
+        Note
+        ----
+        The `format` parameter name is used to mimic the
+        :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is
+        identical to the `order` parameter for :class:`MemoryReader`. In a
+        future version, `format` will be renamed to `order`.
+        """
+        # Renaming 'format' to 'order' here for internal consistency in this class
         order = format
-        
+
         array = self.get_array()
         if order == self.stored_order:
             pass

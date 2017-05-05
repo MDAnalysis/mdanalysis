@@ -38,7 +38,9 @@ from ..lib.mdamath import triclinic_vectors, triclinic_box
 
 
 class XTCWriter(XDRBaseWriter):
-    """XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    """Writer for the Gromacs XTC trajectory format.
+
+    XTC is a compressed trajectory format from Gromacs. The trajectory is saved
     with reduced precision (3 decimal places by default) compared to other
     lossless formarts like TRR and DCD. The main advantage of XTC files is that
     they require significantly less disk space and the loss of precision is
@@ -51,7 +53,8 @@ class XTCWriter(XDRBaseWriter):
 
     def __init__(self, filename, n_atoms, convert_units=True,
                  precision=3, **kwargs):
-        """Parameters
+        """
+        Parameters
         ----------
         filename : str
             filename of the trajectory
@@ -71,7 +74,7 @@ class XTCWriter(XDRBaseWriter):
 
         Parameters
         ----------
-        ts: TimeStep
+        ts : :class:`~base.Timestep`
 
         See Also
         --------
@@ -96,7 +99,9 @@ class XTCWriter(XDRBaseWriter):
 
 
 class XTCReader(XDRBaseReader):
-    """XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    """Reader for the Gromacs XTC trajectory format.
+
+    XTC is a compressed trajectory format from Gromacs. The trajectory is saved
     with reduced precision (3 decimal places) compared to other lossless
     formarts like TRR and DCD. The main advantage of XTC files is that they
     require significantly less disk space and the loss of precision is usually

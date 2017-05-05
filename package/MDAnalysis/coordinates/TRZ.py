@@ -32,6 +32,9 @@ Reads coordinates, velocities and more (see attributes of the
 .. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
 .. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
 
+Classes
+-------
+
 .. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
    :members:
 
@@ -153,11 +156,11 @@ class TRZReader(base.ReaderBase):
 
         Parameters
         ----------
-        trzfilename: str
+        trzfilename : str
             name of input file
-        n_atoms: int
+        n_atoms : int
             number of atoms in trajectory, must be taken from topology file!
-        convert_units: bool
+        convert_units : bool (optional)
             converts units to MDAnalysis defaults
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
@@ -445,14 +448,14 @@ class TRZWriter(base.WriterBase):
 
         Parameters
         ----------
-        filename: str
+        filename : str
             name of output file
-        n_atoms: int
+        n_atoms : int
             number of atoms in trajectory
-        title: str
+        title : str (optional)
             title of the trajectory; the title must be 80 characters or
             shorter, a longer title raises a ValueError exception.
-        convert_units: bool
+        convert_units : bool (optional)
             units are converted to the MDAnalysis base format; ``None`` selects
             the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
             (see :ref:`flags-label`)
