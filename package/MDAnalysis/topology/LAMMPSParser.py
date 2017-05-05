@@ -258,7 +258,7 @@ class DATAParser(TopologyReaderBase):
         ts = TS_class.from_coordinates(positions,
                                        velocities=velocities,
                                        **TS_kwargs)
-        ts.unitcell = unitcell
+        ts.dimensions = unitcell
 
         return ts
 
