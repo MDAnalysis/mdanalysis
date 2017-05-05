@@ -213,9 +213,7 @@ class DATAParser(TopologyReaderBase):
             raise ValueError("Data file was missing Atoms section")
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
-        mapping = {}
-        for i, atom_id in enumerate(top.ids.values):
-            mapping[atom_id] = i
+        mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
 
         for attr, L, nentries in [
                 (Bonds, 'Bonds', 2),
@@ -247,30 +245,29 @@ class DATAParser(TopologyReaderBase):
 
         unitcell = self._parse_box(header)
 
-        positions = np.zeros((n_atoms, 3),
-                             dtype=np.float32, order='F')
         try:
-            positions = self._parse_pos(sects['Atoms'], positions)
+            positions, ordering = self._parse_pos(sects['Atoms'])
         except KeyError:
             raise IOError("Position information not found")
 
         if 'Velocities' in sects:
-            velocities = np.zeros((n_atoms, 3),
-                                  dtype=np.float32, order='F')
-            velocities = self._parse_vel(sects['Velocities'], velocities)
+            velocities = self._parse_vel(sects['Velocities'], ordering)
         else:
             velocities = None
 
         ts = TS_class.from_coordinates(positions,
                                        velocities=velocities,
                                        **TS_kwargs)
-        ts._unitcell = unitcell
+        ts.unitcell = unitcell
 
         return ts
 
-    def _parse_pos(self, datalines, pos):
+    def _parse_pos(self, datalines):
         """Strip coordinate info into np array"""
+        pos = np.zeros((len(datalines), 3), dtype=np.float32)
         # TODO: could maybe store this from topology parsing?
+        # Or try to reach into Universe?
+        # but ugly because assumes lots of things, and Reader should be standalone
         ids = np.zeros(len(pos), dtype=np.int32)
 
         for i, line in enumerate(datalines):
@@ -282,20 +279,31 @@ class DATAParser(TopologyReaderBase):
                 pos[i] = line[4:7]
             elif n in (6, 9):
                 pos[i] = line[3:6]
-    
-        # save to class for vels later
-        self.order = np.argsort(ids)
-        pos = pos[self.order]
 
-        return pos
+        order = np.argsort(ids)
+        pos = pos[order]
 
-    def _parse_vel(self, datalines, vel):
-        """Strip velocity info into np array in place"""
+        # return order for velocities
+        return pos, order
+
+    def _parse_vel(self, datalines, order):
+        """Strip velocity info into np array in place
+
+        Parameters
+        ----------
+        datalines : list
+          list of strings from file
+        order : np.array
+          array which rearranges the velocities into correct order
+          (from argsort on atom ids)
+        """
+        vel = np.zeros((len(datalines), 3), dtype=np.float32)
+
         for i, line in enumerate(datalines):
             line = line.split()
             vel[i] = line[1:4]
 
-        vel = vel[self.order]
+        vel = vel[order]
 
         return vel
 
