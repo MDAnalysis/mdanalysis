@@ -198,10 +198,12 @@ def triclinic_vectors(dimensions):
         numpy 3x3 array B, with B[0] = first box vector,
         B[1] = second vector, B[2] third box vector.
 
-    .. note::
+    Notes
+    -----
 
-       The first vector is always pointing along the X-axis
-       i.e. parallel to (1,0,0).
+    The first vector is always pointing along the X-axis
+    i.e. parallel to (1,0,0).
+
 
     .. versionchanged:: 0.7.6
        Null-vectors are returned for non-periodic (or missing) unit cell.
@@ -445,11 +447,13 @@ def one_to_many_pointers(Ni, Nj, i2j):
 
     Example
     -------
-    # Residx - the resid of each Atom
-    ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+    .. code:: python
 
-    # Returns an array of the atom indices that are in resid 7
-    atoms = ordered[ptrs[7,0]:ptrs[7,1]]
+        # Residx - the resid of each Atom
+        ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+
+        # Returns an array of the atom indices that are in resid 7
+        atoms = ordered[ptrs[7,0]:ptrs[7,1]]
 
     """
     ordered = i2j.argsort()

@@ -95,8 +95,12 @@ be found at http://theobald.brandeis.edu/qcp/
 
 See Also
 --------
-The :func:`CalcRMSDRotationalMatrix` function is used in
-:mod:`MDAnalysis.analysis.align` and :mod:`MDAnalysis.analysis.rmsd`.
+MDAnalysis.analysis.align:
+    Align structures using :func:`CalcRMSDRotationalMatrix`
+MDAnalysis.analysis.rms.rmsd:
+    Calculate the RMSD between two structures using
+    :func:`CalcRMSDRotationalMatrix`
+
 
 .. versionchanged:: 0.16.0
    Call signatures were changed to directly interface with MDAnalysis
