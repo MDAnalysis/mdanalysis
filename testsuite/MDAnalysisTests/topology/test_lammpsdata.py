@@ -25,6 +25,7 @@ from numpy.testing import (
     assert_,
     assert_equal,
 )
+import numpy as np
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -159,3 +160,26 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
     ref_n_angles = 0
     ref_n_dihedrals = 0
     ref_n_impropers = 0
+
+    def test_atom_ids(self):
+        u = mda.Universe(self.filename)
+
+        assert_equal(u.atoms.ids,
+                     [1, 10, 1002, 2003, 2004, 2005, 2006, 2007, 2008, 2009])
+
+    def test_traj(self):
+        u = mda.Universe(self.filename)
+
+        assert_equal(u.atoms.positions,
+                     np.array([[11.8998565674, 48.4455718994, 19.0971984863],
+                               [14.5285415649, 50.6892776489, 19.9419136047],
+                               [12.8466796875, 48.1473007202, 18.6461906433],
+                               [11.0093536377, 48.7145767212, 18.5247917175],
+                               [12.4033203125, 49.2582168579, 20.2825050354],
+                               [13.0947723389, 48.8437194824, 21.0175533295],
+                               [11.540184021,  49.6138534546, 20.8459072113],
+                               [13.0085144043, 50.6062469482, 19.9141769409],
+                               [12.9834518433, 51.1562423706, 18.9713554382],
+                               [12.6588821411, 51.4160842896, 20.5548400879]],
+                              dtype=np.float32))
+
