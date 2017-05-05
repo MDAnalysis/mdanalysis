@@ -90,6 +90,7 @@ __all__ = [
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
+    "PRMcs", # Amber (format, Issue 1331)
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes 
     "PDBQT_input",  # PDBQT
@@ -291,6 +292,8 @@ TRJ12_bz2 = resource_filename(__name__, 'data/Amber/anti_md1.mdcrd.bz2')
 
 PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
 NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
+
+PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')

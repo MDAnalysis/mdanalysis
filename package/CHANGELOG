@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
-         richardjgowers, Shtkddud123
+         richardjgowers, Shtkddud123, QuantumEntangledAndy
 
   * 0.16.1
 
@@ -37,6 +37,8 @@ Fixes
   * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
     (PR #1325)
   * Fix PDBParser docs for conect (issue #1246)
+  * Fixed bug where amber topology files would fail to load if number of atoms was
+    exectly divisible by number of atoms per line (issue #1331)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
