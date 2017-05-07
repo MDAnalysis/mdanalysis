@@ -157,7 +157,7 @@ class AuxStep(object):
         Will be passed to ``_select_time()``, defined separately for each
         auxiliary format, when returning the time of the current step.
         Format will depend on the auxiliary format. e.g. for the XVGReader,
-        this is an index and `_select_time()` returns the value in that column
+        this is an index and ``_select_time()`` returns the value in that column
         of the current step data.
 
         Defaults to 'None' if time selection is not enabled.
