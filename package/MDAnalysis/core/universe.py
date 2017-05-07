@@ -859,7 +859,9 @@ def as_Universe(*args, **kwargs):
          as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
          as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
-    :Returns: an instance of :class:`~MDAnalysis.core.groups.Universe`
+    Returns
+    -------
+    :class:`~MDAnalysis.core.groups.Universe`
     """
     if len(args) == 0:
         raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
@@ -881,9 +883,12 @@ def Merge(*args):
     -------
     universe : :class:`Universe`
 
-    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
-             empty and :exc:`TypeError` if arguments are not
-             :class:`AtomGroup` instances.
+    Raises
+    ------
+    ValueError
+        Too few arguments or an AtomGroup is empty and
+    TypeError
+        Arguments are not :class:`AtomGroup` instances.
 
     Notes
     -----

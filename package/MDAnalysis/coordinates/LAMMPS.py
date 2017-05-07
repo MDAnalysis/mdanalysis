@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -45,7 +45,8 @@ keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
 :class:`~MDAnalysis.core.universe.Universe` (which then calls
 :class:`DCDReader`).
 
-.. Rubric:: Example: Loading a LAMMPS simulation
+Example: Loading a LAMMPS simulation
+------------------------------------
 
 To load a LAMMPS simulation from a LAMMPS data file (using the
 :class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
@@ -70,10 +71,9 @@ data file,
 
 Note
 ----
-
-   Lennard-Jones units are not implemented. See :mod:`MDAnalysis.units` for
-   other recognized values and the documentation for the LAMMPS `units
-   command`_.
+Lennard-Jones units are not implemented. See :mod:`MDAnalysis.units`
+for other recognized values and the documentation for the LAMMPS
+`units command`_.
 
 See Also
 --------
@@ -104,6 +104,7 @@ Classes
 .. autoclass:: DATAWriter
    :members:
    :inherited-members:
+
 """
 from __future__ import absolute_import
 
@@ -249,7 +250,7 @@ class DATAWriter(base.WriterBase):
         self.units = {'time': 'fs', 'length': 'Angstrom'}
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
-        self.units['velocity'] = kwargs.pop('velocityunit', 
+        self.units['velocity'] = kwargs.pop('velocityunit',
                                  self.units['length']+'/'+self.units['time'])
 
     def _write_atoms(self, atoms):
@@ -344,11 +345,13 @@ class DATAWriter(base.WriterBase):
 
     @requires('types', 'masses')
     def write(self, selection, frame=None):
-        """Write selection at current trajectory frame to file, including
-        sections Atoms, Masses, Velocities, Bonds, Angles, Dihedrals, and
-        Impropers (if these are defined). Atoms section is written in the
-        "full" sub-style if charges are available or "molecular" sub-style if
-        they are not. Molecule id in atoms section is set to to 0.
+        """Write selection at current trajectory frame to file.
+
+        The sections for Atoms, Masses, Velocities, Bonds, Angles,
+        Dihedrals, and Impropers (if these are defined) are
+        written. The Atoms section is written in the "full" sub-style
+        if charges are available or "molecular" sub-style if they are
+        not. Molecule id in atoms section is set to to 0.
 
         No other sections are written to the DATA file.
         As of this writing, other sections are not parsed into the topology
@@ -356,15 +359,17 @@ class DATAWriter(base.WriterBase):
 
         Note
         ----
-           If the selection includes a partial fragment, then only the bonds, angles,
-           etc. whose atoms are contained within the selection will be included.
+        If the selection includes a partial fragment, then only the bonds,
+        angles, etc. whose atoms are contained within the selection will be
+        included.
 
         Parameters
         ----------
-        selection : AtomGroup
+        selection : AtomGroup or Universe
             MDAnalysis AtomGroup (selection or Universe.atoms) or also Universe
-        frame : Optional[int]
-            optionally move to frame number *frame*
+        frame : int (optional)
+            optionally move to frame number `frame`
+
         """
         u = selection.universe
         if frame is not None:

@@ -21,21 +21,20 @@
 #
 
 
-"""
-Core functions of MDAnalysis
+"""Core functions of MDAnalysis
 ============================
 
-The basic class is an :class:`~MDAnalysis.core.groups.AtomGroup`;
-the whole simulation is called the
-:class:`~MDAnalysis.core.universe.Universe`. Selections are computed
-on an :class:`~MDAnalysis.core.groups.AtomGroup` and return another
+The basic class is an :class:`~MDAnalysis.core.groups.AtomGroup`; the whole
+simulation is called the
+:class:`~MDAnalysis.core.universe.Universe`. Selections are computed on an
+:class:`~MDAnalysis.core.groups.AtomGroup` and return another
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 :mod:`~MDAnalysis.Timeseries` are a convenient way to analyse trajectories.
 
 To get started, load the Universe::
 
-  u = Universe(psffilename,dcdfilename)
+  u = Universe(topology_file, trajectory_file)
 
 A simple selection of all water oxygens within 4 A of the protein::
 
@@ -43,9 +42,9 @@ A simple selection of all water oxygens within 4 A of the protein::
   water_shell.n_atoms           # how many waters were selected
   water_shell.total_mass()       # their total mass
 
-:class:`AtomGroup` instances have various methods that allow
-calculation of simple properties. For more complicated analysis,
-obtain the coordinates as a numpy array ::
+:class:`~MDAnalysis.core.groups.AtomGroup` instances have various methods that
+allow calculation of simple properties. For more complicated analysis, obtain
+the coordinates as a numpy array ::
 
   coords = water_shell.positions
 
@@ -84,7 +83,6 @@ Classes
 
 .. autoclass:: Flag
    :members:
-
 
 """
 from __future__ import absolute_import
@@ -185,20 +183,19 @@ class Flag(object):
     """A Flag, essentially a variable that knows its default and legal values."""
 
     def __init__(self, name, default, mapping=None, doc=None):
-        """Create a new flag which will be registered with FLags.
+        """Create a new flag which will be registered with Flags.
 
-          newflag = Flag(name,default,mapping,doc)
-
-        :Arguments:
-         *name*
+        Parameters
+        ----------
+        name : str
             name of the flag, must be a legal python name
-         *default*
+        default
             default value
-         *mapping*
+        mapping : dict
             dict that maps allowed input values to canonical values;
             if ``None`` then no argument checking will be performed and
             all values are directly set.
-         *doc*
+        doc : str
             doc string; may contain string interpolation mappings for::
 
                     %%(name)s        name of the flag
@@ -207,6 +204,14 @@ class Flag(object):
                     %%(mapping)r     mapping
 
             Doc strings are generated dynamically and reflect the current state.
+
+
+        Example
+        -------
+        Create a new flag::
+
+            newflag = Flag(name, default, mapping, doc)
+
         """
         self.name = name
         self.value = default
@@ -265,8 +270,8 @@ _flags = [
         'use_KDTree_routines',
         'fast',
         {True: 'fast', 'fast': 'fast',  # only KDTree if advantageous
-            'always': 'always',  # always even if slower (for testing)
-            False: 'never', 'never': 'never'},  # never, only use (slower) alternatives
+         'always': 'always',  # always even if slower (for testing)
+         False: 'never', 'never': 'never'},  # never, only use (slower) alternatives
         """
            Determines which KDTree routines are used for distance selections
 

@@ -97,6 +97,7 @@ from collections import namedtuple
 import numpy as np
 import functools
 import itertools
+import numbers
 import os
 import warnings
 
@@ -433,7 +434,7 @@ class GroupBase(_MutableBase):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if isinstance(item, (int, np.int_)):
+        if isinstance(item, numbers.Integral):
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list

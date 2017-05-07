@@ -112,7 +112,8 @@ class XDRBaseReader(base.ReaderBase):
     """
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
-        """Parameters
+        """
+        Parameters
         ----------
         filename : str
             trajectory filename

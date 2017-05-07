@@ -49,31 +49,22 @@ writer (keyword *multiframe* = ``True``) and then iterate through the
 trajectory, while writing each frame::
 
   calphas = universe.select_atoms("name CA")
-  W = MDAnalysis.Writer("calpha_traj.pdb", multiframe=True)
-  for ts in u.trajectory:
-      W.write(calphas)
-  W.close()
+  with MDAnalysis.Writer("calpha_traj.pdb", multiframe=True) as W:
+      for ts in u.trajectory:
+          W.write(calphas)
 
 It is important to *always close the trajectory* when done because only at this
 step is the final END_ record written, which is required by the `PDB 3.2
-standard`_.
+standard`_. Using the writer as a context manager ensures that this always
+happens.
 
 
-Implementations
----------------
+Capabilities
+------------
 
-PDB I/O is available in the form of the Simple PDB Reader/Writers.
-
-..deprecated:: 0.15.0
-Readers and writers solely available in the form of
-Simple Readers and Writers, see below.
-
-Simple PDB Reader and Writer
------------------------------------------
 A pure-Python implementation for PDB files commonly encountered in MD
-simulations comes under the names :class:`PDBReader` and
-:class:`PDBWriter`. It only implements a subset of the `PDB 3.2 standard`_
-(for instance, it does not deal with insertion codes) and also allows some
+simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It
+only implements a subset of the `PDB 3.2 standard`_ and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
 The :class:`PDBReader` can read multi-frame PDB files and represents
@@ -83,26 +74,11 @@ writes single frames. On the other hand, the :class:`MultiPDBWriter` is set up
 to write a PDB trajectory by default (equivalent to using *multiframe* =
 ``True``).
 
-Examples
-~~~~~~~~
 
-In order to write a **multi-frame PDB trajectory** from a universe *u* one can
-do the following::
+Examples for working with PDB files
+-----------------------------------
 
-  pdb = MDAnalysis.Writer("all.pdb", multiframe=True)
-  for ts in u.trajectory:
-      pdb.write(u)
-  pdb.close()
-
-Similarly, writing only a protein::
-
-  pdb = MDAnalysis.Writer("protein.pdb", multiframe=True)
-  protein = u.select_atoms("protein")
-  for ts in u.trajectory:
-      pdb.write(protein)
-  pdb.close()
-
-A single frame can be written with the
+A **single frame PDB** can be written with the
 :meth:`~MDAnalysis.core.groups.AtomGroup.write` method of any
 :class:`~MDAnalysis.core.groups.AtomGroup`::
 
@@ -112,14 +88,33 @@ A single frame can be written with the
 Alternatively, get the single frame writer and supply the
 :class:`~MDAnalysis.core.groups.AtomGroup`::
 
-  pdb = MDAnalysis.Writer("protein.pdb")
   protein = u.select_atoms("protein")
-  pdb.write(protein)
-  pdb.close()
+  with MDAnalysis.Writer("protein.pdb") as pdb:
+      pdb.write(protein)
+
+In order to write a **multi-frame PDB trajectory** from a universe *u* one can
+do the following::
+
+  with MDAnalysis.Writer("all.pdb", multiframe=True) as pdb:
+      for ts in u.trajectory:
+          pdb.write(u)
+
+Similarly, writing only a protein::
+
+  protein = u.select_atoms("protein")
+  with MDAnalysis.Writer("protein.pdb", multiframe=True) as pdb:
+      for ts in u.trajectory:
+          pdb.write(protein)
+
 
 
 Classes
-~~~~~~~
+-------
+
+.. versionchanged:: 0.16.0
+   PDB readers and writers based on :class:`Bio.PDB.PDBParser` were retired and
+   removed.
+
 
 .. autoclass:: PDBReader
    :members:
@@ -139,13 +134,10 @@ Classes
    :members:
    :inherited-members:
 
-..deprecated:: 0.15.0
-    The "permissive" flag is not used anymore (and effectively defaults to True);
-    it will be completely removed in 0.16.0.
-
 
 .. _`PDB 3.2 standard`:
     http://www.wwpdb.org/documentation/format32/v3.2.html
+
 """
 from __future__ import absolute_import
 
@@ -326,11 +318,14 @@ class PDBReader(base.ReaderBase):
     def Writer(self, filename, **kwargs):
         """Returns a PDBWriter for *filename*.
 
-        :Arguments:
-          *filename*
-              filename of the output PDB file
+        Parameters
+        ----------
+        filename : str
+            filename of the output PDB file
 
-        :Returns: :class:`PDBWriter`
+        Returns
+        -------
+        :class:`PDBWriter`
 
         """
         kwargs.setdefault('multiframe', self.n_frames > 1)
@@ -423,11 +418,12 @@ class PDBWriter(base.WriterBase):
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
+
     Note
     ----
     This class is identical to :class:`MultiPDBWriter` with the one
     exception that it defaults to writing single-frame PDB files as if
-    *multiframe* = ``False`` was selected.
+    `multiframe` = ``False`` was selected.
 
 
     .. versionchanged:: 0.7.5
@@ -530,7 +526,6 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
-
 
         Note
         ----
@@ -729,10 +724,11 @@ class PDBWriter(base.WriterBase):
         used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
         details).
 
-        :Arguments:
-          *obj*
-            :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe`
+        Parameters
+        ----------
+        obj
+            The :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe` to write.
         """
 
         self._update_frame(obj)

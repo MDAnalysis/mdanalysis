@@ -34,6 +34,7 @@ See Also
 :mod:`MDAnalysis.coordinates.GRO`
 
 
+
 Classes
 -------
 
@@ -132,7 +133,7 @@ class GROParser(TopologyReaderBase):
         # Guess types and masses
         atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(atomtypes)
-        
+
         residx, (new_resids, new_resnames) = change_squash(
                                 (resids, resnames), (resids, resnames))
 

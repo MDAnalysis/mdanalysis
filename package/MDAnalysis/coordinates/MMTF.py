@@ -54,9 +54,7 @@ def _parse_mmtf(fn):
 
 
 class MMTFReader(base.SingleFrameReaderBase):
-    """Topology parser for the Macromolecular Transmission Format format (MMTF_).
-
-    """
+    """Coordinate reader for the Macromolecular Transmission Format format (MMTF_)."""
     format = 'MMTF'
 
     def _read_first_frame(self):
@@ -88,7 +86,8 @@ def fetch_mmtf(pdb_id):
 
     Returns
     -------
-    MDAnalysis Universe of the corresponding PDB system
+    Universe
+        MDAnalysis Universe of the corresponding PDB system
 
 
     See Also

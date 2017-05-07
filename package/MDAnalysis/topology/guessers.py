@@ -79,10 +79,12 @@ def guess_atom_type(atomname):
     At the moment, this function simply returns the element, as
     guessed by :func:`guess_atom_element`.
 
+
     See Also
     --------
     :func:`guess_atom_element`
     :mod:`MDAnalysis.topology.tables`
+
 
     """
     return guess_atom_element(atomname)
@@ -245,8 +247,10 @@ def guess_angles(bonds):
 
     Returns
     -------
-    List of tuples defining the angles.
-    Suitable for use in u._topology
+    list of tuples
+        List of tuples defining the angles.
+        Suitable for use in u._topology
+
 
     See Also
     --------
@@ -277,9 +281,11 @@ def guess_dihedrals(angles):
     Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
     then (1,2,3,4) must be a dihedral.
 
-    :Returns:
-      List of tuples defining the dihedrals.
-      Suitable for use in u._topology
+    Returns
+    -------
+    list of tuples
+        List of tuples defining the dihedrals.
+        Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """
@@ -311,9 +317,10 @@ def guess_improper_dihedrals(angles):
     ie the improper dihedral is the angle between the planes formed by
     (1, 2, 3) and (1, 3, 4)
 
-    :Returns:
-      List of tuples defining the improper dihedrals.
-      Suitable for use in u._topology
+    Returns
+    -------
+        List of tuples defining the improper dihedrals.
+        Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """

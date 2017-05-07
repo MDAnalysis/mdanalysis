@@ -39,6 +39,7 @@ import Bio.Alphabet
 from collections import defaultdict
 import functools
 import itertools
+import numbers
 import numpy as np
 
 from . import flags
@@ -607,7 +608,7 @@ class Masses(AtomAttr):
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
-        if isinstance(rg._ix, int):
+        if isinstance(rg._ix, numbers.Integral):
             # for a single residue
             masses = self.values[resatoms].sum()
         else:
@@ -621,7 +622,7 @@ class Masses(AtomAttr):
     def get_segments(self, sg):
         segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
-        if isinstance(sg._ix, int):
+        if isinstance(sg._ix, numbers.Integral):
             # for a single segment
             masses = self.values[segatoms].sum()
         else:
@@ -933,7 +934,7 @@ class Charges(AtomAttr):
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
-        if isinstance(rg._ix, int):
+        if isinstance(rg._ix, numbers.Integral):
             charges = self.values[resatoms].sum()
         else:
             charges = np.empty(len(rg))
@@ -945,7 +946,7 @@ class Charges(AtomAttr):
     def get_segments(self, sg):
         segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
-        if isinstance(sg._ix, int):
+        if isinstance(sg._ix, numbers.Integral):
             # for a single segment
             charges = self.values[segatoms].sum()
         else:

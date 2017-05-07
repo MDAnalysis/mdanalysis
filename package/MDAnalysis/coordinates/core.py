@@ -65,16 +65,13 @@ def reader(filename, **kwargs):
 
     Returns
     -------
-    A Reader object
+    :class:`~base.Reader`
+        A trajectory Reader instance
 
     See Also
     --------
     :ref:`Supported coordinate formats`
 
-
-    .. deprecated:: 0.15.0
-       The "permissive" flag is not used anymore (and effectively
-       defaults to True); it will be completely removed in 0.16.0.
 
     """
     if isinstance(filename, tuple):
@@ -94,10 +91,10 @@ def writer(filename, n_atoms=None, **kwargs):
     filename : str
         Output filename of the trajectory; the extension determines the
         format.
-    n_atoms : int, optional
+    n_atoms : int (optional)
         The number of atoms in the output trajectory; can be ommitted
         for single-frame writers.
-    multiframe : bool, optional
+    multiframe : bool (optional)
         ``True``: write a trajectory with multiple frames; ``False``
         only write a single frame snapshot; ``None`` first try to get
         a multiframe writer and then fall back to single frame [``None``]
@@ -110,7 +107,8 @@ def writer(filename, n_atoms=None, **kwargs):
 
     Returns
     -------
-    A Writer object
+    :class:`~base.Writer`
+        A trajectory Writer instance
 
     See Also
     --------
@@ -118,7 +116,7 @@ def writer(filename, n_atoms=None, **kwargs):
 
 
     .. versionchanged:: 0.7.6
-       Added *multiframe* keyword. See also :func:`get_writer_for`.
+       Added `multiframe` keyword. See also :func:`get_writer_for`.
 
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
