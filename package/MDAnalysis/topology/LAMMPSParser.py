@@ -287,7 +287,7 @@ class DATAParser(TopologyReaderBase):
         return pos, order
 
     def _parse_vel(self, datalines, order):
-        """Strip velocity info into np array in place
+        """Strip velocity info into np array
 
         Parameters
         ----------
@@ -296,6 +296,10 @@ class DATAParser(TopologyReaderBase):
         order : np.array
           array which rearranges the velocities into correct order
           (from argsort on atom ids)
+
+        Returns
+        -------
+        velocities : np.ndarray
         """
         vel = np.zeros((len(datalines), 3), dtype=np.float32)
 
@@ -373,6 +377,9 @@ class DATAParser(TopologyReaderBase):
         for i, line in enumerate(datalines):
             line = line.split()
 
+            # these numpy array are already typed correctly,
+            # so just pass the raw strings
+            # and let numpy handle the conversion
             atom_ids[i] = line[0]
             resids[i] = line[1]
             types[i] = line[2]
@@ -381,7 +388,6 @@ class DATAParser(TopologyReaderBase):
 
         # at this point, we've read the atoms section,
         # but it's still (potentially) unordered
-
         # TODO: Maybe we can optimise by checking if we need to sort
         # ie `if np.any(np.diff(atom_ids) > 1)`  but we want to search
         # in a generatorish way, np.any() would check everything at once
