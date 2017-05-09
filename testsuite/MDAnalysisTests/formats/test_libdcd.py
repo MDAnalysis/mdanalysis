@@ -31,6 +31,8 @@ class DCDReadFrameTest(TestCase):
         self.selected_legacy_frames = [5, 29]
         self.legacy_data = legacy_DCD_ADK_coords
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
+        self.expected_unit_cell = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
+                            dtype=np.float32)
 
     def tearDown(self):
         del self.dcdfile
@@ -75,9 +77,7 @@ class DCDReadFrameTest(TestCase):
         # MDAnalysis implementation of DCD file handling
         dcd_frame = self.dcdfile.read()
         unitcell = dcd_frame[1]
-        expected = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
-                            dtype=np.float32)
-        assert_equal(unitcell, expected)
+        assert_equal(unitcell, self.expected_unit_cell)
 
     def test_seek_over_max(self):
         # should raise IOError if beyond 98th frame
@@ -416,3 +416,7 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
         self.selected_legacy_frames = [0]
         self.legacy_data = legacy_DCD_NAMD_coords
         self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
+        # expected unit cell based on previous DCD framework read in:
+        self.expected_unit_cell = np.array([ 38.42659378,  38.39310074, 44.75979996,
+                                             90.        ,  90.        , 60.02891541], 
+                                             dtype=np.float32) 

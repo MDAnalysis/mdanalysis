@@ -277,7 +277,7 @@ cdef class DCDFile:
         cdef int lowerb = 0
         cdef int upperb = self.n_atoms - 1
 
-        ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
+        ok = read_dcdstep(self.fp, self.n_atoms,
                           <FLOAT_T*> &x[0],
                           <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                           <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
