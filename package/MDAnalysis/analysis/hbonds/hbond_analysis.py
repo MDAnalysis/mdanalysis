@@ -620,7 +620,7 @@ class HydrogenBondAnalysis(object):
         elif self.selection1_type not in ('both', 'donor', 'acceptor'):
             raise ValueError('HydrogenBondAnalysis: Invalid selection type {0!s}'.format(self.selection1_type))
 
-        self.timeseries = None  # final result
+        self._timeseries = None  # final result accessed as self.timeseries
         self.timesteps = None  # time for each frame
 
         self.table = None  # placeholder for output table
@@ -898,7 +898,7 @@ class HydrogenBondAnalysis(object):
         if not self.debug:
             logger.debug("HBond analysis: For full step-by-step debugging output use debug=True")
 
-        self.timeseries = []
+        self._timeseries = []
         self.timesteps = []
 
         logger.info("checking trajectory...")  # n_frames can take a while!
@@ -968,8 +968,8 @@ class HydrogenBondAnalysis(object):
                                 #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
                                 frame_results.append(
                                     [h.index + 1, a.index + 1, h.index, a.index,
-                                    '{0!s}{1!s}:{2!s}'.format(h.resname, repr(h.resid), h.name),
-                                    '{0!s}{1!s}:{2!s}'.format(a.resname, repr(a.resid), a.name),
+                                    (h.resname, h.resid, h.name),
+                                    (a.resname, a.resid, a.name),
                                     dist, angle])
 
                                 already_found[(h.index + 1, a.index + 1)] = True
@@ -994,11 +994,11 @@ class HydrogenBondAnalysis(object):
                                 #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
                                 frame_results.append(
                                     [h.index + 1, a.index + 1, h.index, a.index,
-                                    '{0!s}{1!s}:{2!s}'.format(h.resname, repr(h.resid), h.name),
-                                    '{0!s}{1!s}:{2!s}'.format(a.resname, repr(a.resid), a.name),
+                                     (h.resname, h.resid, h.name),
+                                     (a.resname, a.resid, a.name),
                                     dist, angle])
 
-            self.timeseries.append(frame_results)
+            self._timeseries.append(frame_results)
 
         logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",
                     self.count_by_time().count.sum(), self.__class__.__name__)
@@ -1016,6 +1016,12 @@ class HydrogenBondAnalysis(object):
     def calc_eucl_distance(a1, a2):
         """Calculate the Euclidean distance between two atoms. """
         return norm(a2.position - a1.position)
+
+    @property
+    def timeseries(self):
+        """Time series of hydrogen bonds."""
+
+        return self._timeseries
 
     def generate_table(self):
         """Generate a normalised table of the results.
@@ -1042,13 +1048,13 @@ class HydrogenBondAnalysis(object):
 
         .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
-        if self.timeseries is None:
+        if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warn(msg)
             return
 
-        num_records = np.sum([len(hframe) for hframe in self.timeseries])
+        num_records = np.sum([len(hframe) for hframe in self._timeseries])
         # build empty output table
         dtype = [
             ("time", float), ("donor_idx", int), ("acceptor_idx", int),
@@ -1060,11 +1066,12 @@ class HydrogenBondAnalysis(object):
         # and speedups of ~x10 can be achieved by filling a standard array, like this:
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in zip(self.timesteps, self.timeseries):
+        for t, hframe in zip(self.timesteps, self._timeseries):
             for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
             acceptor, distance, angle) in hframe:
+                # donor|acceptor = (resname, resid, atomid)
                 out[cursor] = (t, donor_idx, acceptor_idx, donor_index, acceptor_index) + \
-                parse_residue(donor) + parse_residue(acceptor) + (distance, angle)
+                donor + acceptor + (distance, angle)
                 cursor += 1
         assert cursor == num_records, "Internal Error: Not all HB records stored"
         self.table = out.view(np.recarray)
@@ -1089,7 +1096,7 @@ class HydrogenBondAnalysis(object):
         :Returns: a class:`numpy.recarray`
         """
 
-        if self.timeseries is None:
+        if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warn(msg)
@@ -1097,7 +1104,7 @@ class HydrogenBondAnalysis(object):
 
         out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
         for cursor, time_count in enumerate(zip(self.timesteps,
-                                               (len(series) for series in self.timeseries))):
+                                               (len(series) for series in self._timeseries))):
             out[cursor] = time_count
         return out.view(np.recarray)
 
@@ -1112,14 +1119,14 @@ class HydrogenBondAnalysis(object):
 
         :Returns: a class:`numpy.recarray`
         """
-        if self.timeseries is None:
+        if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warn(msg)
             return
 
         hbonds = defaultdict(int)
-        for hframe in self.timeseries:
+        for hframe in self._timeseries:
             for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
                 acceptor, distance, angle) in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
@@ -1173,14 +1180,14 @@ class HydrogenBondAnalysis(object):
         :Returns: a class:`numpy.recarray`
         """
 
-        if self.timeseries is None:
+        if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warn(msg)
             return
 
         hbonds = defaultdict(list)
-        for (t, hframe) in zip(self.timesteps, self.timeseries):
+        for (t, hframe) in zip(self.timesteps, self._timeseries):
             for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
             acceptor, distance, angle) in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
