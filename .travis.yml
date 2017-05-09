@@ -11,7 +11,7 @@ os:
 
 env:
   global:
-    - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
+    - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
     - GH_DOC_BRANCH=develop
     - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
     - GIT_CI_USER=TravisCI
