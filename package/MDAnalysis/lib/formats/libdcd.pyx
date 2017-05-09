@@ -92,7 +92,7 @@ cdef extern from 'include/readdcd.h':
     int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
                    int istart, int nsavc, double delta, int with_unitcell, 
                    int charmm);
-    int write_dcdstep(fio_fd fd, int curstep, int curframe, 
+    int write_dcdstep(fio_fd fd, int curframe, int curstep, 
 			 int natoms, const float *x, const float *y, const float *z,
 			 const double *unitcell, int charmm);
 
@@ -274,10 +274,7 @@ cdef class DCDFile:
 
         first_frame = self.current_frame == 0
 
-        cdef int lowerb = 0
-        cdef int upperb = self.n_atoms - 1
-
-        ok = read_dcdsubset(self.fp, self.n_atoms, lowerb, upperb,
+        ok = read_dcdstep(self.fp, self.n_atoms,
                           <FLOAT_T*> &x[0],
                           <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                           <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
@@ -339,7 +336,8 @@ cdef class DCDFile:
         self.current_frame = frame
 
     def _write_header(self, remarks, int n_atoms, int starting_step, 
-                      int ts_between_saves, double time_step):
+                      int ts_between_saves, double time_step,
+                      int charmm):
 
         if not self.is_open:
             raise IOError("No file open")
@@ -351,6 +349,7 @@ cdef class DCDFile:
         cdef int len_remarks = 0
         cdef int with_unitcell = 1
 
+
         if isinstance(remarks, six.string_types):
             try:
                 remarks = bytearray(remarks, 'ascii')
@@ -359,7 +358,7 @@ cdef class DCDFile:
 
         ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
                              ts_between_saves, time_step, with_unitcell, 
-                             self.charmm)
+                             charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
@@ -394,14 +393,33 @@ cdef class DCDFile:
         cdef FLOAT_T[::1] x = xyz[:, 0]
         cdef FLOAT_T[::1] y = xyz[:, 1]
         cdef FLOAT_T[::1] z = xyz[:, 2]
+        cdef float alpha, beta, gamma, a, b, c;
 
         if self.current_frame == 0:
             self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
                                ts_between_saves=ts_between_saves,
-                               time_step=time_step)
+                               time_step=time_step,
+                               charmm=charmm)
             self.n_atoms = xyz.shape[0]
 
-        ok = write_dcdstep(self.fp, step, self.current_frame,
+        # looks like self.nsavc is just 0 all the time
+        step = self.current_frame * self.nsavc
+
+        # we only support writing charmm format unit cell info
+        alpha = box[3]
+        beta = box[4]
+        gamma = box[5]
+        a = box[0]
+        b = box[1]
+        c = box[2]
+        box[0] = a
+        box[1] = gamma
+        box[2] = b
+        box[3] = beta
+        box[4] = alpha
+        box[5] = c
+
+        ok = write_dcdstep(self.fp, self.current_frame, step,
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                          <DOUBLE_T*> &box[0], charmm)
