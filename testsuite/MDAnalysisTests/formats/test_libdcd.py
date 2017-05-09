@@ -242,16 +242,14 @@ class DCDWriteTest(TestCase):
 
     def test_written_unit_cell(self):
         # written unit cell dimensions should match for all frames
-        expected = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
-                            dtype=np.float32)
-        with DCDFile(self.testfile) as f:
-            if f.n_frames > 1:
-                for frame in f:
-                    unitcell = f.read()[1]
-                    assert_equal(unitcell, expected)
-            else:
-                unitcell = f.read()[1]
-                assert_equal(unitcell, expected)
+        test = DCDFile(self.testfile)
+        ref = DCDFile(self.readfile)
+        curr_frame = 0
+        while curr_frame < test.n_frames:
+            written_unitcell = test.read()[1]
+            ref_unitcell = ref.read()[1]
+            curr_frame += 1
+            assert_equal(written_unitcell, ref_unitcell)
 
     def test_written_num_frames(self):
         with DCDFile(self.testfile) as f:
@@ -393,6 +391,11 @@ class DCDWriteTestNAMD(DCDWriteTest, TestCase):
                                 time_step=f_in.delta,
                                 ts_between_saves=f_in.nsavc,
                                 remarks=f_in.remarks)
+
+    def test_written_unit_cell(self):
+        # there's no expectation that we can write unit cell
+        # data in NAMD format at the moment
+        pass
 
 class DCDWriteHeaderTestNAMD(DCDWriteHeaderTest, TestCase):
     # repeat header writing tests for NAMD format DCD
