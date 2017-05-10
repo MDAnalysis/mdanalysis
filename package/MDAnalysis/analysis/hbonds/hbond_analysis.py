@@ -65,12 +65,12 @@ indicates comments that are not part of the output.)::
     results = [
         [ # frame 1
            [ # hbond 1
-              <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+              <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
               <acceptor index (0-based)>, <donor string>, <acceptor string>,
               <distance>, <angle>
            ],
            [ # hbond 2
-              <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+              <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
               <acceptor index (0-based)>, <donor string>, <acceptor string>,
               <distance>, <angle>
            ],
@@ -84,21 +84,23 @@ indicates comments that are not part of the output.)::
 
 .. Note::
 
-   For historic reasons, the *donor index* and *acceptor index* are a 1-based
-   indices. To get the :attr:`Atom.index` (the 0-based index typically used in
-   MDAnalysis simply subtract 1. For instance, to find an atom in
-   :attr:`Universe.atoms` by *index* from the output one would use
-   ``u.atoms[index-1]``.
+   For historic reasons, the output contains 1-based indices (named *donor idx*
+   and *acceptor idx*) in addition to 0-based indices (named *donor index* and
+   *acceptor index*). To get the :attr:`Atom.index` (the 0-based index
+   typically used in MDAnalysis), use the *index* values (or subtract 1 from
+   *idx*). For instance, to find an atom in :attr:`Universe.atoms` by *index*
+   from the output one would use ``u.atoms[index]``.
 
    .. deprecated:: 0.15.0
       The 1-based indices are being deprecated in favor of zero-based indices
-      and is targeted for removal in 0.17.0.
+      and are targeted for removal in 0.17.0.
 
 
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
-database for further processing. :meth:`HydrogenBondAnalysis.save_table` saves
-the table to a pickled file. The table itself is a :class:`numpy.recarray`.
+database or dataframe for further
+processing. :meth:`HydrogenBondAnalysis.save_table` saves the table to a
+pickled file. The table itself is a :class:`numpy.recarray`.
 
 
 Detection of hydrogen bonds
@@ -107,12 +109,12 @@ Detection of hydrogen bonds
 Hydrogen bonds are recorded based on a geometric criterion:
 
 1. The distance between acceptor and hydrogen is less than or equal to
-   *distance* (default is 3 Å).
+   `distance` (default is 3 Å).
 
 2. The angle between donor-hydrogen-acceptor is greater than or equal to
-   *angle* (default is 120º).
+   `angle` (default is 120º).
 
-The cut-off values *angle* and *distance* can be set as keywords to
+The cut-off values `angle` and `distance` can be set as keywords to
 :class:`HydrogenBondAnalysis`.
 
 Donor and acceptor heavy atoms are detected from atom names. The current
@@ -120,19 +122,17 @@ defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined
 in Table `Default atom names for hydrogen bonding analysis`_.
 
 Hydrogen atoms bonded to a donor are searched with one of two algorithms,
-selected with the *detect_hydrogens* keyword.
+selected with the `detect_hydrogens` keyword.
 
-*distance*
-
+"distance"
    Searches for all hydrogens (name "H*" or name "[123]H" or type "H") in the
    same residue as the donor atom within a cut-off distance of 1.2 Å.
 
-*heuristic*
-
+"heuristic"
    Looks at the next three atoms in the list of atoms following the donor and
    selects any atom whose name matches (name "H*" or name "[123]H"). For
 
-The *distance* search is more rigorous but slower and is set as the
+The "distance" search is more rigorous but slower and is set as the
 default. Until release 0.7.6, only the heuristic search was implemented.
 
 .. versionchanged:: 0.7.6
@@ -186,16 +186,16 @@ This can potentially lead to some ambiguity in the assignment of
 donors/acceptors for residues such as histidine or cytosine.
 
 For more information about the naming convention in GLYCAM06 have a look at the
-`Carbohydrate Naming Convention in Glycam`.
+`Carbohydrate Naming Convention in Glycam`_.
 
 .. _`Carbohydrate Naming Convention in Glycam`:
    http://glycam.ccrc.uga.edu/documents/FutureNomenclature.htm
 
 The lists of donor and acceptor names can be extended by providing lists of
-atom names in the *donors* and *acceptors* keywords to
+atom names in the `donors` and `acceptors` keywords to
 :class:`HydrogenBondAnalysis`. If the lists are entirely inappropriate
 (e.g. when analysing simulations done with a force field that uses very
-different atom names) then one should either use the value "other" for *forcefield*
+different atom names) then one should either use the value "other" for `forcefield`
 to set no default values, or derive a new class and set the default list oneself::
 
  class HydrogenBondAnalysis_OtherFF(HydrogenBondAnalysis):
@@ -203,7 +203,7 @@ to set no default values, or derive a new class and set the default list oneself
        DEFAULT_ACCEPTORS = {"OtherFF": tuple(set([...]))}
 
 Then simply use the new class instead of the parent class and call it with
-*forcefield* = "OtherFF". Please also consider to contribute the list of heavy
+`forcefield` = "OtherFF". Please also consider to contribute the list of heavy
 atom names to MDAnalysis.
 
 .. rubric:: References
@@ -224,27 +224,55 @@ All protein-water hydrogen bonds can be analysed with ::
   import MDAnalysis.analysis.hbonds
 
   u = MDAnalysis.Universe('topology', 'trajectory')
-  h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', distance=3.0, angle=120.0)
+  h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname HOH', distance=3.0, angle=120.0)
   h.run()
-
-The results are stored as the attribute
-:attr:`HydrogenBondAnalysis.timeseries`; see :ref:`Analysis Output`
-for the format and further options.
 
 .. Note::
 
    Due to the way :class:`HydrogenBondAnalysis` is implemented, it is
-   more efficient to have the second selection (*selection2*) be the
+   more efficient to have the second selection (`selection2`) be the
    *larger* group, e.g. the water when looking at water-protein
    H-bonds or the whole protein when looking at ligand-protein
    interactions.
 
-.. Note::
 
-   The topology supplied and the trajectory must reflect the same total number
-   of atoms.
+The results are stored as the attribute
+:attr:`HydrogenBondAnalysis.timeseries`; see :ref:`Analysis Output` for the
+format and further options.
 
-.. TODO: how to analyse the ouput and notes on selection updating
+A number of convenience functions are provided to process the
+:attr:`~HydrogenBondAnalysis.timeseries` according to varying criteria:
+
+:meth:`~HydrogenBondAnalysis.count_by_time`
+   time series of the number of hydrogen bonds per time step
+:meth:`~HydrogenBondAnalysis.count_by_type`
+   data structure with the frequency of each observed hydrogen bond
+:meth:`~HydrogenBondAnalysis.timesteps_by_type`
+   data structure with a list of time steps for each observed hydrogen bond
+
+For further data analysis it is convenient to process the
+:attr:`~HydrogenBondAnalysis.timeseries` data into a normalized table with the
+:meth:`~HydrogenBondAnalysis.generate_table` method, which creates a new data
+structure :attr:`HydrogenBondAnalysis.table` that contains one row for each
+observation of a hydrogen bond::
+
+  h.generate_table()
+
+This table can then be easily turned into, e.g., a `pandas.DataFrame`_, and
+further analyzed::
+
+  import pandas as pd
+  df = pd.DataFrame.from_records(h.table)
+
+For example, plotting a histogram of the hydrogen bond angles and lengths is as
+simple as ::
+
+  df.hist(column=["angle", "distance"])
+
+.. _pandas.DataFrame: http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html
+
+
+.. TODO: notes on selection updating
 
 
 Classes
@@ -280,31 +308,36 @@ Classes
           11. "distance"
           12. "angle"
 
-      It takes up more space than
-      :attr:`~HydrogenBondAnalysis.timeseries` but it is easier to
-      analyze and to import into databases (e.g. using recsql_).
+      It takes up more space than :attr:`~HydrogenBondAnalysis.timeseries` but
+      it is easier to analyze and to import into databases or dataframes.
+
+
+      .. rubric:: Example
+
+      For example, to create a `pandas.DataFrame`_ from ``h.table``::
+
+         import pandas as pd
+         df = pd.DataFrame.from_records(h.table)
 
       .. Note::
 
-         The *index* is a 1-based index. To get the :attr:`Atom.index` (the
-         0-based index typically used in MDAnalysis simply subtract 1. For
-         instance, to find an atom in :attr:`Universe.atoms` by *index* one
-         would use ``u.atoms[idx_zero]``. The 1-based index is deprecated and
-         targeted for removal in 0.17.0
+         Each index variable named *idx* is a 1-based index. To get the :attr:`Atom.index` (the
+         0-based index typically used in MDAnalysis) simply subtract 1, or better, use the 0-based variables named *index*.
 
+         For instance, to find an acceptor atom in :attr:`Universe.atoms` by *index* one
+         would use ``u.atoms[acceptor_index]``.
 
+      .. deprecated:: 0.15.0
+         The donor and acceptor indices being 1-based is deprecated in favor of
+         a zero-based index. The 0-based indices can be accessed by
+         *donor_index* or "acceptor_index"; removal of the 1-based indices is
+         targeted for version 0.17.0
 
    .. automethod:: _get_bonded_hydrogens
 
    .. automethod:: _get_bonded_hydrogens_dist
 
    .. automethod:: _get_bonded_hydrogens_list
-
-   .. deprecated:: 0.15.0
-        The donor and acceptor indices being 1-based is deprecated in favor of
-        a zero-based index. This can be accessed by "donor_index" or
-        "acceptor_index" removal of the 1-based indices is targeted
-        for version 0.17.0
 
 """
 from __future__ import division, absolute_import
@@ -364,9 +397,9 @@ class HydrogenBondAnalysis(object):
     # table; set() takes care for removing duplicates. At the end the
     # DEFAULT_DONORS and DEFAULT_ACCEPTORS should simply be tuples.
 
-    # : default heavy atom names whose hydrogens are treated as *donors*
-    # : (see :ref:`Default atom names for hydrogen bonding analysis`)
-    #: Use the keyword *donors* to add a list of additional donor names.
+    #: default heavy atom names whose hydrogens are treated as *donors*
+    #: (see :ref:`Default atom names for hydrogen bonding analysis`);
+    #: use the keyword `donors` to add a list of additional donor names.
     DEFAULT_DONORS = {
         'CHARMM27': tuple(set([
             'N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2', 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
@@ -374,8 +407,8 @@ class HydrogenBondAnalysis(object):
         'other': tuple(set([]))}
 
     #: default atom names that are treated as hydrogen *acceptors*
-    #: (see :ref:`Default atom names for hydrogen bonding analysis`)
-    #: Use the keyword *acceptors* to add a list of additional acceptor names.
+    #: (see :ref:`Default atom names for hydrogen bonding analysis`);
+    #: use the keyword `acceptors` to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {
         'CHARMM27': tuple(set([
             'O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
@@ -401,35 +434,19 @@ class HydrogenBondAnalysis(object):
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
         Some initial checks are performed. If there are no atoms selected by
-        *selection1* or *selection2* or if no donor hydrogens or acceptor atoms
+        `selection1` or `selection2` or if no donor hydrogens or acceptor atoms
         are found then a :exc:`SelectionError` is raised for any selection that
-        does *not* update (*update_selection1* and *update_selection2*
+        does *not* update (`update_selection1` and `update_selection2`
         keywords). For selections that are set to update, only a warning is
         logged because it is assumed that the selection might contain atoms at
         a later frame (e.g. for distance based selections).
 
         If no hydrogen bonds are detected or if the initial check fails, look
         at the log output (enable with :func:`MDAnalysis.start_logging` and set
-        *verbose* = ``True``). It is likely that the default names for donors
+        `verbose` ``=True``). It is likely that the default names for donors
         and acceptors are not suitable (especially for non-standard
-        ligands). In this case, either change the *forcefield* or use
-        customized *donors* and/or *acceptors*.
-
-        .. Note::
-
-           In order to speed up processing, atoms are filtered by a coarse
-           distance criterion before a detailed hydrogen bonding analysis is
-           performed (*filter_first* = ``True``). If one of your selections is
-           e.g. the solvent then *update_selection1* (or *update_selection2*)
-           must also be ``True`` so that the list of candidate atoms is updated
-           at each step: this is now the default.
-
-           If your selections will essentially remain the same for all time
-           steps (i.e. residues are not moving farther than 3 x *distance*), for
-           instance, if no water or large conformational changes are involved
-           or if the optimization is disabled (*filter_first* = ``False``) then
-           you can improve performance by setting the *update_selection*
-           keywords to ``False``.
+        ligands). In this case, either change the `forcefield` or use
+        customized `donors` and/or `acceptors`.
 
         Parameters
         ----------
@@ -441,31 +458,31 @@ class HydrogenBondAnalysis(object):
             Selection string for second selection ['all']
         selection1_type : str (optional)
             Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
-            value for *selection1_type* automatically determines how
-            *selection2* handles donors and acceptors: If *selection1* contains
-            'both' then *selection2* will also contain *both*. If *selection1*
-            is set to 'donor' then *selection2* is 'acceptor' (and vice versa).
+            value for `selection1_type` automatically determines how
+            `selection2` handles donors and acceptors: If `selection1` contains
+            'both' then `selection2` will also contain *both*. If `selection1`
+            is set to 'donor' then `selection2` is 'acceptor' (and vice versa).
             ['both'].
         update_selection1 : bool (optional)
             Update selection 1 at each frame? [``False``]
         update_selection2 : bool (optional)
             Update selection 2 at each frame? [``False``]
         filter_first : bool (optional)
-            Filter selection 2 first to only atoms 3*distance away [``True``]
+            Filter selection 2 first to only atoms 3 * `distance` away [``True``]
         distance : float (optional)
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
-            <= *distance* (and the appropriate D-H-A angle, see *angle*) are
-            recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]
+            <= `distance` (and the appropriate D-H-A angle, see `angle`) are
+            recorded. (Note: `distance_type` can change this to the D-A distance.) [3.0]
         angle : float (optional)
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
-            >=  *angle*. The default of 120º also finds fairly non-specific
+            >=  `angle`. The default of 120º also finds fairly non-specific
             hydrogen interactions and a possibly better value is 150º. [120.0]
         forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
             Name of the forcefield used. Switches between different
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.
-            Available values: "CHARMM27", "GLYCAM06", "other" ["CHARMM27"]
+            ["CHARMM27"]
         donors : sequence (optional)
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
@@ -474,18 +491,13 @@ class HydrogenBondAnalysis(object):
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
         start : int (optional)
             starting frame-index for analysis, ``None`` is the first one, 0.
-            *start* and *stop* are 0-based frame indices and are used to slice
+            `start` and `stop` are 0-based frame indices and are used to slice
             the trajectory (if supported) [``None``]
         stop : int (optional)
             last trajectory frame for analysis, ``None`` is the last one [``None``]
         step : int (optional)
-            read every *step* between *start* and *stop*, ``None`` selects 1.
-            Note that not all trajectory reader from 1 [``None``]
-        debug : bool (optional)
-            If set to ``True`` enables per-frame debug logging. This is disabled
-            by default because it generates a very large amount of output in
-            the log file. (Note that a logger must have been started to see
-            the output, e.g. using :func:`MDAnalysis.start_logging`.)
+            read every `step` between `start` (included) and `stop` (excluded),
+            ``None`` selects 1. [``None``]
         detect_hydrogens : {"distance", "heuristic"} (optional)
             Determine the algorithm to find hydrogens connected to donor
             atoms. Can be "distance" (default; finds all hydrogens in the
@@ -499,6 +511,14 @@ class HydrogenBondAnalysis(object):
             attoms ("heavy") or between donor hydrogen and acceptor heavy
             atom ("hydrogen"). If using "heavy" then one should set the *distance*
             cutoff to a higher value such as 3.5 Å. ["hydrogen"]
+        debug : bool (optional)
+            If set to ``True`` enables per-frame debug logging. This is disabled
+            by default because it generates a very large amount of output in
+            the log file. (Note that a logger must have been started to see
+            the output, e.g. using :func:`MDAnalysis.start_logging`.)
+        verbose : bool (optional)
+            Toggle progress output. (Can also be given as keyword argument to
+            :meth:`run`.)
 
         Raises
         ------
@@ -506,28 +526,44 @@ class HydrogenBondAnalysis(object):
             is raised for each static selection without the required
             donors and/or acceptors.
 
+        Notes
+        -----
+        In order to speed up processing, atoms are filtered by a coarse
+        distance criterion before a detailed hydrogen bonding analysis is
+        performed (`filter_first` = ``True``). If one of your selections is
+        e.g. the solvent then `update_selection1` (or `update_selection2`) must
+        also be ``True`` so that the list of candidate atoms is updated at each
+        step: this is now the default.
+
+        If your selections will essentially remain the same for all time steps
+        (i.e. residues are not moving farther than 3 x `distance`), for
+        instance, if neither water nor large conformational changes are
+        involved or if the optimization is disabled (`filter_first` =
+        ``False``) then you can improve performance by setting the
+        `update_selection1` and/or `update_selection2` keywords to ``False``.
+
 
         .. versionchanged:: 0.7.6
-           New *verbose* keyword (and per-frame debug logging disabled by
+           New `verbose` keyword (and per-frame debug logging disabled by
            default).
 
-           New *detect_hydrogens* keyword to switch between two different
+           New `detect_hydrogens` keyword to switch between two different
            algorithms to detect hydrogens bonded to donor. "distance" is a new,
            rigorous distance search within the residue of the donor atom,
            "heuristic" is the previous list scan (improved with an additional
            distance check).
 
-           New *forcefield* keyword to switch between different values of
+           New `forcefield` keyword to switch between different values of
            DEFAULT_DONORS/ACCEPTORS to accomodate different force fields.
            Also has an option "other" for no default values.
 
         .. versionchanged:: 0.8
-           The new default for *update_selection1* and *update_selection2* is now
+           The new default for `update_selection1` and `update_selection2` is now
            ``True`` (see `Issue 138`_). Set to ``False`` if your selections only
            need to be determined once (will increase performance).
 
         .. versionchanged:: 0.9.0
-           New keyword *distance_type* to select between calculation between
+           New keyword `distance_type` to select between calculation between
            heavy atoms or hydrogen-acceptor. It defaults to the previous
            behavior (i.e. "hydrogen").
 
@@ -535,11 +571,12 @@ class HydrogenBondAnalysis(object):
            Initial checks for selections that potentially raise :exc:`SelectionError`.
 
         .. deprecated:: 0.16
-           The *verbose* keyword argument is replaced by *debug*. Note that the
-           *verbose* keyword argument is now comsistently used to toggle
-           progress meters throuthout the library.
+           The previous `verbose` keyword argument was replaced by
+           `debug`. Note that the `verbose` keyword argument is now
+           consistently used to toggle progress meters throughout the library.
 
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
+
         """
         warnings.warn(
              "The donor and acceptor indices being 1-based is deprecated in favor"
@@ -660,15 +697,25 @@ class HydrogenBondAnalysis(object):
         logger.info("HBond analysis: bonded hydrogen detection algorithm: %r", self.detect_hydrogens)
 
     def _get_bonded_hydrogens(self, atom, **kwargs):
-        """Find hydrogens bonded to *atom*.
+        """Find hydrogens bonded to `atom`.
 
         This method is typically not called by a user but it is documented to
         facilitate understanding of the internals of
         :class:`HydrogenBondAnalysis`.
 
-        :Returns: list of hydrogens (can be a
-                  :class:`~MDAnalysis.core.groups.AtomGroup`) or empty list
-                  ``[]`` if none were found.
+        Parameters
+        ----------
+        atom : groups.Atom
+             heavy atom
+        **kwargs
+             passed through to the calculation method that was selected with
+             the `detect_hydrogens` kwarg of :class:`HydrogenBondAnalysis`.
+
+        Returns
+        -------
+        hydrogen_atoms : AtomGroup or []
+            list of hydrogens (can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
+            or empty list ``[]`` if none were found.
 
         See Also
         --------
@@ -677,30 +724,47 @@ class HydrogenBondAnalysis(object):
 
 
         .. versionchanged:: 0.7.6
-           Can switch algorithm by using the *detect_hydrogens* keyword to the
+           Can switch algorithm by using the `detect_hydrogens` keyword to the
            constructor. *kwargs* can be used to supply arguments for algorithm.
+
         """
         return self._get_bonded_hydrogens_algorithms[self.detect_hydrogens](atom, **kwargs)
 
     def _get_bonded_hydrogens_dist(self, atom):
-        """Find hydrogens bonded within *cutoff* to *atom*.
+        """Find hydrogens bonded within cutoff to `atom`.
 
-        * hydrogens are detected by either name ("H*", "[123]H*") or type
-          ("H"); this is not fool-proof as the atom type is not always a
-          character but the name pattern should catch most typical occurrences.
+        Hydrogens are detected by either name ("H*", "[123]H*") or type ("H");
+        this is not fool-proof as the atom type is not always a character but
+        the name pattern should catch most typical occurrences.
 
-        * The distance from *atom* is calculated for all hydrogens in the
-          residue and only those within a cutoff are kept. The cutoff depends
-          on the heavy atom (more precisely, on its element, which is taken as
-          the first letter of its name ``atom.name[0]``) and is parameterized
-          in :attr:`HydrogenBondAnalysis.r_cov`. If no match is found then the
-          default of 1.5 Å is used.
+        The distance from `atom` is calculated for all hydrogens in the residue
+        and only those within a cutoff are kept. The cutoff depends on the
+        heavy atom (more precisely, on its element, which is taken as the first
+        letter of its name ``atom.name[0]``) and is parameterized in
+        :attr:`HydrogenBondAnalysis.r_cov`. If no match is found then the
+        default of 1.5 Å is used.
 
+
+        Parameters
+        ----------
+        atom : groups.Atom
+             heavy atom
+
+        Returns
+        -------
+        hydrogen_atoms : AtomGroup or []
+            list of hydrogens (can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
+            or empty list ``[]`` if none were found.
+
+        Notes
+        -----
         The performance of this implementation could be improved once the
         topology always contains bonded information; it currently uses the
         selection parser with an "around" selection.
 
+
         .. versionadded:: 0.7.6
+
         """
         try:
             return atom.residue.atoms.select_atoms(
@@ -721,6 +785,20 @@ class HydrogenBondAnalysis(object):
         within a maximum distance from the heavy atom. The cutoff distance
         depends on the heavy atom and is parameterized in
         :attr:`HydrogenBondAnalysis.r_cov`.
+
+        Parameters
+        ----------
+        atom : groups.Atom
+             heavy atom
+        **kwargs
+             ignored
+
+        Returns
+        -------
+        hydrogen_atoms : AtomGroup or []
+            list of hydrogens (can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
+            or empty list ``[]`` if none were found.
+
 
         .. versionchanged:: 0.7.6
 
@@ -813,25 +891,37 @@ class HydrogenBondAnalysis(object):
         :attr:`HydrogenBondAnalysis.timeseries` (see there for output
         format).
 
-        The method accepts a number of keywords, amongst them *verbose*
-        (default ``True``), which toggles the porgress output (see
-        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *debug* which can
-        be used to change the debug value provided to the class constructor.
+        Parameters
+        ----------
+        verbose : bool (optional)
+             toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`
+             [``True``]
+        debug : bool (optional)
+             enable detailed logging of debugging information; this can create
+             *very big* log files so it is disable (``False``) by default; setting
+             `debug` toggles the debug status for :class:`HydrogenBondAnalysis`,
+             namely the value of :attr:`HydrogenBondAnalysis.debug`.
 
-        Note
-        ----
-        Use :meth:`HydrogenBondAnalysis.generate_table` for processing the data
-        into a different format.
+        Other Parameters
+        ----------------
+        remove_duplicates : bool (optional)
+             duplicate hydrogen bonds are removed from output if set to the
+             default value ``True``; normally, this should not be changed.
+
+        See Also
+        --------
+        :meth:`HydrogenBondAnalysis.generate_table` :
+               processing the data into a different format.
 
 
         .. versionchanged:: 0.7.6
            Results are not returned, only stored in
            :attr:`~HydrogenBondAnalysis.timeseries` and duplicate hydrogen bonds
-           are removed from output (can be suppressed with *remove_duplicates* =
+           are removed from output (can be suppressed with `remove_duplicates` =
            ``False``)
 
         .. versionchanged:: 0.11.0
-           Accept *quiet* keyword. Analysis will now proceed through frames even if
+           Accept `quiet` keyword. Analysis will now proceed through frames even if
            no donors or acceptors were found in a particular frame.
 
         .. deprecated:: 0.15.0
@@ -841,9 +931,9 @@ class HydrogenBondAnalysis(object):
            for version 0.17.0
 
         .. deprecated:: 0.16
-           The *quiet* keyword argument is deprecated in favor of the *verbose*
-           one. Previous use of *verbose* now corresponds to the new keyword
-           argument *debug*.
+           The `quiet` keyword argument is deprecated in favor of the `verbose`
+           one. Previous use of `verbose` now corresponds to the new keyword
+           argument `debug`.
 
         """
         logger.info("HBond analysis: starting")
@@ -963,8 +1053,8 @@ class HydrogenBondAnalysis(object):
 
             self._timeseries.append(frame_results)
 
-        logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",
-                    self.count_by_time().count.sum(), self.__class__.__name__)
+        logger.info("HBond analysis: complete; timeseries  %s.timeseries",
+                    self.__class__.__name__)
 
     @staticmethod
     def calc_angle(d, h, a):
@@ -1001,12 +1091,12 @@ class HydrogenBondAnalysis(object):
           results = [
               [ # frame 1
                  [ # hbond 1
-                    <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                    <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
                     <acceptor index (0-based)>, <donor string>, <acceptor string>,
                     <distance>, <angle>
                  ],
                  [ # hbond 2
-                    <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                    <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
                     <acceptor index (0-based)>, <donor string>, <acceptor string>,
                     <distance>, <angle>
                  ],
@@ -1024,23 +1114,28 @@ class HydrogenBondAnalysis(object):
 
         Note
         ----
-        The *index* is a 1-based index. To get the :attr:`Atom.index` (the
-        0-based index typically used in MDAnalysis simply subtract 1. For
-        instance, to find an atom in :attr:`Universe.atoms` by *index* one
-        would use ``u.atoms[index-1]``.
+        Each index variable named *idx* is a 1-based index. To get the
+        :attr:`Atom.index` (the 0-based index typically used in MDAnalysis)
+        simply subtract 1, or better, use the 0-based variables named
+        *index*.
 
-        The :attr:`timeseries` is a managed attribute and it is generated from
-        the underlying data in :attr:`_timeseries` every time the attribute is
-        accessed. It is therefore costly to call and if :attr:`timeseries` is
-        needed repeatedly it is recommended that you assign to a variable::
+        For instance, to find an acceptor atom in :attr:`Universe.atoms` by
+        *index* one would use ``u.atoms[acceptor_index]``.
 
-          h = HydrogenBondAnalysis(u)
-          h.run()
-          timeseries = h.timeseries
+        The :attr:`timeseries` is a managed attribute and it is generated
+        from the underlying data in :attr:`_timeseries` every time the
+        attribute is accessed. It is therefore costly to call and if
+        :attr:`timeseries` is needed repeatedly it is recommended that you
+        assign to a variable::
+
+           h = HydrogenBondAnalysis(u)
+           h.run()
+           timeseries = h.timeseries
+
 
         See Also
         --------
-        HydrogenBondAnalysis.table : structured array of the data
+        :attr:`table` : structured array of the data
 
 
         .. versionchanged:: 0.16.1
@@ -1048,12 +1143,9 @@ class HydrogenBondAnalysis(object):
            :attr:`_timeseries` when needed. :attr:`_timeseries` contains the donor atom and
            acceptor atom specifiers as tuples `(resname, resid, atomid)` instead of strings.
 
-       .. deprecated:: 0.15.0
-          The 1-based indices are being deprecated in favor of zero-based indices
-          and they are targeted for removal in 0.17.0.
-
-        .. deprecated:: 1.0
-           :attr:`timeseries` will be replaced/changed
+        .. deprecated:: 0.15.0
+           The 1-based indices are being deprecated in favor of zero-based indices
+           and they are targeted for removal in 0.17.0.
 
         """
         return [[self._reformat_hb(hb) for hb in hframe] for hframe in self._timeseries]
@@ -1077,26 +1169,12 @@ class HydrogenBondAnalysis(object):
         """Generate a normalised table of the results.
 
         The table is stored as a :class:`numpy.recarray` in the
-        attribute :attr:`~HydrogenBondAnalysis.table` and can be used
-        with e.g. `recsql`_.
+        attribute :attr:`~HydrogenBondAnalysis.table`.
 
-        Columns:
-          0. "time"
-          1. "donor_idx"
-          2. "acceptor_idx"
-          3. "donor_index"
-          4. "acceptor_index"
-          5. "donor_resnm"
-          6. "donor_resid"
-          7. "donor_atom"
-          8. "acceptor_resnm"
-          9. "acceptor_resid"
-          10. "acceptor_atom"
-          11. "distance"
-          12. "angle"
+        See Also
+        --------
+        HydrogenBondAnalysis.table
 
-
-        .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
         if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
@@ -1130,6 +1208,16 @@ class HydrogenBondAnalysis(object):
     def save_table(self, filename="hbond_table.pickle"):
         """Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.
 
+        If :attr:`~HydrogenBondAnalysis.table` does not exist yet,
+        :meth:`generate_table` is called first.
+
+        Parameters
+        ----------
+        filename : str (optional)
+             path to the filename
+
+        Example
+        -------
         Load with ::
 
            import cPickle
@@ -1140,16 +1228,22 @@ class HydrogenBondAnalysis(object):
             self.generate_table()
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
 
-    def count_by_time(self):
-        """Counts the number of hydrogen bonds per timestep.
-
-        :Returns: a class:`numpy.recarray`
-        """
-
-        if self._timeseries is None:
+    def _has_timeseries(self):
+        has_timeseries = (self._timeseries is not None)
+        if not has_timeseries:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warn(msg)
+        return has_timeseries
+
+    def count_by_time(self):
+        """Counts the number of hydrogen bonds per timestep.
+
+        Returns
+        -------
+        numpy.recarray
+        """
+        if not self._has_timeseries():
             return
 
         out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
@@ -1161,18 +1255,17 @@ class HydrogenBondAnalysis(object):
     def count_by_type(self):
         """Counts the frequency of hydrogen bonds of a specific type.
 
-        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns
-        a :class:`numpy.recarray` containing atom indices, residue
-        names, residue numbers (for donors and acceptors) and the
-        fraction of the total time during which the hydrogen bond was
-        detected.
+        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns a
+        :class:`numpy.recarray` containing atom indices, residue names, residue
+        numbers (for donors and acceptors) and the fraction of the total time
+        during which the hydrogen bond was detected.
 
-        :Returns: a class:`numpy.recarray`
+        Returns
+        -------
+        numpy.recarray
+
         """
-        if self._timeseries is None:
-            msg = "No timeseries computed, do run() first."
-            warnings.warn(msg, category=MissingDataWarning)
-            logger.warn(msg)
+        if not self._has_timeseries():
             return
 
         hbonds = defaultdict(int)
@@ -1222,18 +1315,17 @@ class HydrogenBondAnalysis(object):
     def timesteps_by_type(self):
         """Frames during which each hydrogen bond existed, sorted by hydrogen bond.
 
-        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns
-        a :class:`numpy.recarray` containing atom indices, residue
-        names, residue numbers (for donors and acceptors) and a list
-        of timesteps at which the hydrogen bond was detected.
+        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns a
+        :class:`numpy.recarray` containing atom indices, residue names, residue
+        numbers (for donors and acceptors) and a list of timesteps at which the
+        hydrogen bond was detected.
 
-        :Returns: a class:`numpy.recarray`
+        Returns
+        -------
+        numpy.recarray
+
         """
-
-        if self._timeseries is None:
-            msg = "No timeseries computed, do run() first."
-            warnings.warn(msg, category=MissingDataWarning)
-            logger.warn(msg)
+        if not self._has_timeseries():
             return
 
         hbonds = defaultdict(list)
@@ -1292,7 +1384,7 @@ class HydrogenBondAnalysis(object):
         * selections have not changed (because we are simply looking at the last content
           of the donors and donor hydrogen lists)
 
-        Donors from *selection1* and *selection2* are merged.
+        Donors from `selection1` and `selection2` are merged.
 
         Output dictionary ``h2donor`` can be used as::
 
@@ -1330,7 +1422,7 @@ class HydrogenBondAnalysis(object):
         * selections have not changed (because we are simply looking at the last content
           of the donors and donor hydrogen lists)
 
-        Donors from *selection1* and *selection2* are merged.
+        Donors from `selection1` and `selection2` are merged.
 
         Output dictionary ``h2donor`` can be used as::
 
@@ -1342,6 +1434,7 @@ class HydrogenBondAnalysis(object):
         (:attr:`MDAnalysis.core.groups.Atom.index`).  The
         tables generated by :class:`HydrogenBondAnalysis` contain
         1-based indices and zero-based indices.
+
 
         .. deprecated:: 0.15.0
             The 1-based indices are deprecated in favor of the zero-based indices
