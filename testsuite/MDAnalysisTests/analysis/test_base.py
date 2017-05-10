@@ -102,6 +102,12 @@ class TestAnalysisBase(object):
     def test_old_api(self):
         OldAPIAnalysis(self.u.trajectory).run()
 
+    def test_start_stop_step_conversion(self):
+        an = FrameAnalysis(self.u.trajectory)
+        assert_equal(an.start, 0)
+        assert_equal(an.stop, self.u.trajectory.n_frames)
+        assert_equal(an.step, 1)
+
 
 def test_filter_baseanalysis_kwargs():
     def bad_f(mobile, step=2):
