@@ -89,9 +89,10 @@ indicates comments that are not part of the output.)::
    MDAnalysis simply subtract 1. For instance, to find an atom in
    :attr:`Universe.atoms` by *index* from the output one would use
    ``u.atoms[index-1]``.
+
    .. deprecated:: 0.15.0
-   This feature is being deprecated in favor of zero-based indices and is targeted
-   for removal in 0.16.0.
+      The 1-based indices are being deprecated in favor of zero-based indices
+      and is targeted for removal in 0.17.0.
 
 
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
@@ -258,44 +259,6 @@ Classes
       :attr:`~HydrogenBondAnalysis.timeseries` to find the specific time point
       of a hydrogen bond existence, or see :attr:`~HydrogenBondAnalysis.table`.
 
-   .. attribute:: timeseries
-
-      Results of the hydrogen bond analysis, stored for each frame. In
-      the following description, # indicates comments that are not
-      part of the output::
-
-        results = [
-            [ # frame 1
-               [ # hbond 1
-                  <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
-                  <acceptor index (0-based)>, <donor string>, <acceptor string>,
-                  <distance>, <angle>
-               ],
-               [ # hbond 2
-                  <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
-                  <acceptor index (0-based)>, <donor string>, <acceptor string>,
-                  <distance>, <angle>
-               ],
-               ....
-            ],
-            [ # frame 2
-              [ ... ], [ ... ], ...
-            ],
-            ...
-        ]
-
-      The time of each step is not stored with each hydrogen bond frame but in
-      :attr:`~HydrogenBondAnalysis.timesteps`.
-
-      .. Note::
-
-         The *index* is a 1-based index. To get the :attr:`Atom.index` (the
-         0-based index typically used in MDAnalysis simply subtract 1. For
-         instance, to find an atom in :attr:`Universe.atoms` by *index* one
-         would use ``u.atoms[index-1]``.
-
-
-
    .. attribute:: table
 
       A normalised table of the data in
@@ -327,7 +290,7 @@ Classes
          0-based index typically used in MDAnalysis simply subtract 1. For
          instance, to find an atom in :attr:`Universe.atoms` by *index* one
          would use ``u.atoms[idx_zero]``. The 1-based index is deprecated and
-         targeted for removal in 0.16.0
+         targeted for removal in 0.17.0
 
 
 
@@ -341,7 +304,7 @@ Classes
         The donor and acceptor indices being 1-based is deprecated in favor of
         a zero-based index. This can be accessed by "donor_index" or
         "acceptor_index" removal of the 1-based indices is targeted
-        for version 0.16.0
+        for version 0.17.0
 
 """
 from __future__ import division, absolute_import
@@ -354,7 +317,6 @@ import warnings
 import logging
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
-from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
@@ -583,7 +545,7 @@ class HydrogenBondAnalysis(object):
              "The donor and acceptor indices being 1-based is deprecated in favor"
              " of a zero-based index. These can be accessed by 'donor_index' or"
              " 'acceptor_index', removal of the 1-based indices is targeted for"
-             " version 0.16.0", category=DeprecationWarning)
+             " version 0.17.0", category=DeprecationWarning)
 
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,  # 0.7.6 default
@@ -858,7 +820,8 @@ class HydrogenBondAnalysis(object):
 
         Note
         ----
-        Use :meth:`HydrogenBondAnalysis.generate_table` for processing the data into a different format.
+        Use :meth:`HydrogenBondAnalysis.generate_table` for processing the data
+        into a different format.
 
 
         .. versionchanged:: 0.7.6
@@ -875,7 +838,7 @@ class HydrogenBondAnalysis(object):
            The donor and acceptor indices being 1-based is deprecated in favor
            of a zero-based index. This can be accessed by "donor_index" or
            "acceptor_index" removal of the 1-based indices is targeted
-           for version 0.16.0
+           for version 0.17.0
 
         .. deprecated:: 0.16
            The *quiet* keyword argument is deprecated in favor of the *verbose*
@@ -1019,9 +982,96 @@ class HydrogenBondAnalysis(object):
 
     @property
     def timeseries(self):
-        """Time series of hydrogen bonds."""
+        """Time series of hydrogen bonds.
 
-        return self._timeseries
+        The results of the hydrogen bond analysis can be accessed as a `list` of `list` of `list`:
+
+        1. `timeseries[i]`: data for the i-th trajectory frame (at time
+           `timesteps[i]`, see :attr:`timesteps`)
+        2. `timeseries[i][j]`: j-th hydrogen bond that was detected at the i-th
+           frame.
+        3. ``donor_idx, acceptor_idx, donor_index, acceptor_index,
+           donor_name_str, acceptor_name_str, distance, angle =
+           timeseries[i][j]``: structure of one hydrogen bond data item
+
+
+        In the following description, ``#`` indicates comments that are not
+        part of the output::
+
+          results = [
+              [ # frame 1
+                 [ # hbond 1
+                    <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                    <acceptor index (0-based)>, <donor string>, <acceptor string>,
+                    <distance>, <angle>
+                 ],
+                 [ # hbond 2
+                    <donor index (1-based)>, <acceptor index (1-based)>, <donor index (0-based)>,
+                    <acceptor index (0-based)>, <donor string>, <acceptor string>,
+                    <distance>, <angle>
+                 ],
+                 ....
+              ],
+              [ # frame 2
+                [ ... ], [ ... ], ...
+              ],
+              ...
+          ]
+
+        The time of each step is not stored with each hydrogen bond frame but in
+        :attr:`~HydrogenBondAnalysis.timesteps`.
+
+
+        Note
+        ----
+        The *index* is a 1-based index. To get the :attr:`Atom.index` (the
+        0-based index typically used in MDAnalysis simply subtract 1. For
+        instance, to find an atom in :attr:`Universe.atoms` by *index* one
+        would use ``u.atoms[index-1]``.
+
+        The :attr:`timeseries` is a managed attribute and it is generated from
+        the underlying data in :attr:`_timeseries` every time the attribute is
+        accessed. It is therefore costly to call and if :attr:`timeseries` is
+        needed repeatedly it is recommended that you assign to a variable::
+
+          h = HydrogenBondAnalysis(u)
+          h.run()
+          timeseries = h.timeseries
+
+        See Also
+        --------
+        HydrogenBondAnalysis.table : structured array of the data
+
+
+        .. versionchanged:: 0.16.1
+           :attr:`timeseries` has become a managed attribute and is generated from the stored
+           :attr:`_timeseries` when needed. :attr:`_timeseries` contains the donor atom and
+           acceptor atom specifiers as tuples `(resname, resid, atomid)` instead of strings.
+
+       .. deprecated:: 0.15.0
+          The 1-based indices are being deprecated in favor of zero-based indices
+          and they are targeted for removal in 0.17.0.
+
+        .. deprecated:: 1.0
+           :attr:`timeseries` will be replaced/changed
+
+        """
+        return [[self._reformat_hb(hb) for hb in hframe] for hframe in self._timeseries]
+
+    @staticmethod
+    def _reformat_hb(hb, atomformat="{0[0]!s}{0[1]!s}:{0[2]!s}"):
+        """Convert 0.16.1 _timeseries hbond item to 0.16.0 hbond item.
+
+        In 0.16.1, donor and acceptor are stored as a tuple(resname,
+        resid, atomid). In 0.16.0 and earlier they were stored as a string.
+
+        .. deprecated:: 1.0
+
+        """
+        # change indices once we remove 1-based donor_idx and acceptor_idx
+        return (hb[:4]
+                + [atomformat.format(hb[4]), atomformat.format(hb[5])]
+                + hb[6:])
 
     def generate_table(self):
         """Generate a normalised table of the results.
@@ -1129,8 +1179,8 @@ class HydrogenBondAnalysis(object):
         for hframe in self._timeseries:
             for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
                 acceptor, distance, angle) in hframe:
-                donor_resnm, donor_resid, donor_atom = parse_residue(donor)
-                acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
+                donor_resnm, donor_resid, donor_atom = donor
+                acceptor_resnm, acceptor_resid, acceptor_atom = acceptor
                 # generate unambigous key for current hbond \
                 # (the donor_heavy_atom placeholder '?' is added later)
                 # idx_zero is redundant for an unambigous key, but included for
@@ -1190,8 +1240,8 @@ class HydrogenBondAnalysis(object):
         for (t, hframe) in zip(self.timesteps, self._timeseries):
             for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
             acceptor, distance, angle) in hframe:
-                donor_resnm, donor_resid, donor_atom = parse_residue(donor)
-                acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
+                donor_resnm, donor_resid, donor_atom = donor
+                acceptor_resnm, acceptor_resid, acceptor_atom = acceptor
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
                 # idx_zero is redundant for key but added for consistency
