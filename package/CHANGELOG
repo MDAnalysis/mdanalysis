@@ -39,6 +39,7 @@ Fixes
   * Fix PDBParser docs for conect (issue #1246)
   * Fixed bug where amber topology files would fail to load if number of atoms was
     exectly divisible by number of atoms per line (issue #1331)
+  * Fixed AnalysisBase class provides numerical start,stop,step values (PR #1340)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
