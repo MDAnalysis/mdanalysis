@@ -531,8 +531,8 @@ static int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z,
                         int reverseEndian, int charmm) {
   int ret_val;   /* Return value from read */
   float alpha, beta, gamma;
-  unitcell[0] = unitcell[2] = unitcell[5] = 0.0f;
-  unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;
+  /*unitcell[0] = unitcell[2] = unitcell[5] = 0.0f;*/
+  /*unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;*/
 
   if ((num_fixed==0) || first) {
     int tmpbuf[6];      /* temp storage for reading formatting info */

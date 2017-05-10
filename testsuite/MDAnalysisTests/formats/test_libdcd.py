@@ -33,6 +33,7 @@ class DCDReadFrameTest(TestCase):
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
         self.expected_unit_cell = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
                             dtype=np.float32)
+        print('self.expected_unit_cell:', self.expected_unit_cell)
 
     def tearDown(self):
         del self.dcdfile
@@ -75,6 +76,7 @@ class DCDReadFrameTest(TestCase):
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
         # MDAnalysis implementation of DCD file handling
+        print('self.dcdfile.fname:', self.dcdfile.fname)
         dcd_frame = self.dcdfile.read()
         unitcell = dcd_frame[1]
         assert_equal(unitcell, self.expected_unit_cell)
@@ -163,7 +165,8 @@ class DCDWriteHeaderTest(TestCase):
         # header for a new / empty file
         self.dcdfile._write_header(remarks='Crazy!', n_atoms=22,
                                    starting_step=12, ts_between_saves=10,
-                                   time_step=0.02)
+                                   time_step=0.02,
+                                   charmm=1)
         self.dcdfile.close()
 
         # we're not actually asserting anything, yet
@@ -179,7 +182,8 @@ class DCDWriteHeaderTest(TestCase):
         with self.assertRaises(IOError):
             self.dcdfile_r._write_header(remarks='Crazy!', n_atoms=22,
                                          starting_step=12, ts_between_saves=10,
-                                         time_step=0.02)
+                                         time_step=0.02,
+                                         charmm=1)
 
 
 
@@ -198,12 +202,14 @@ class DCDWriteTest(TestCase):
 
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
             for frame in f_in:
-                frame = frame._asdict()
-                f_out.write(xyz=frame['x'],
-                            box=frame['unitcell'].astype(np.float64),
+                frame_dict = frame._asdict()
+                box=frame_dict['unitcell'].astype(np.float64)
+                print('setUp box:', box)
+                f_out.write(xyz=frame_dict['x'],
+                            box=box,
                             step=f_in.istart,
-                            natoms=frame['x'].shape[0],
-                            charmm=0,
+                            natoms=frame_dict['x'].shape[0],
+                            charmm=1, # DCD should be CHARMM
                             time_step=f_in.delta,
                             ts_between_saves=f_in.nsavc,
                             remarks=f_in.remarks)
@@ -246,8 +252,11 @@ class DCDWriteTest(TestCase):
         ref = DCDFile(self.readfile)
         curr_frame = 0
         while curr_frame < test.n_frames:
+            print('curr_frame:', curr_frame)
             written_unitcell = test.read()[1]
+            print('written_unitcell:', written_unitcell)
             ref_unitcell = ref.read()[1]
+            print('ref_unitcell:', ref_unitcell)
             curr_frame += 1
             assert_equal(written_unitcell, ref_unitcell)
 
@@ -423,3 +432,6 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
         self.expected_unit_cell = np.array([ 38.42659378,  38.39310074, 44.75979996,
                                              90.        ,  90.        , 60.02891541], 
                                              dtype=np.float32) 
+
+    def tearDown(self):
+        del self.dcdfile

@@ -301,7 +301,8 @@ cdef class DCDFile:
             e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
             uc = triclinic_box(e1, e2, e3)
 
-        unitcell = uc
+        unitcell = uc.astype(np.float32)
+        print 'Cython unitcell read-in:', unitcell
 
         return DCDFrame(xyz, unitcell)
 
@@ -339,7 +340,8 @@ cdef class DCDFile:
         self.current_frame = frame
 
     def _write_header(self, remarks, int n_atoms, int starting_step, 
-                      int ts_between_saves, double time_step):
+                      int ts_between_saves, double time_step,
+                      int charmm):
 
         if not self.is_open:
             raise IOError("No file open")
@@ -351,6 +353,7 @@ cdef class DCDFile:
         cdef int len_remarks = 0
         cdef int with_unitcell = 1
 
+
         if isinstance(remarks, six.string_types):
             try:
                 remarks = bytearray(remarks, 'ascii')
@@ -359,7 +362,7 @@ cdef class DCDFile:
 
         ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
                              ts_between_saves, time_step, with_unitcell, 
-                             self.charmm)
+                             charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
@@ -398,9 +401,13 @@ cdef class DCDFile:
         if self.current_frame == 0:
             self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
                                ts_between_saves=ts_between_saves,
-                               time_step=time_step)
+                               time_step=time_step,
+                               charmm=charmm)
             self.n_atoms = xyz.shape[0]
 
+        print('box in Cython write function:', box[0], box[1],
+              box[2], box[3], box[4], box[5],
+              'for frame:', self.current_frame)
         ok = write_dcdstep(self.fp, step, self.current_frame,
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
