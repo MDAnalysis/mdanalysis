@@ -5,6 +5,7 @@ from nose.tools import raises
 from numpy.testing import assert_equal, assert_array_equal
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
 from MDAnalysisTests.datafiles import (PSF, DCD, DCD_NAMD_TRICLINIC,
@@ -18,6 +19,7 @@ from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
 import os
+import math
 
 class DCDReadFrameTest(TestCase):
 
@@ -33,7 +35,6 @@ class DCDReadFrameTest(TestCase):
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
         self.expected_unit_cell = np.array([  0.,   0.,   0.,  90.,  90.,  90.],
                             dtype=np.float32)
-        print('self.expected_unit_cell:', self.expected_unit_cell)
 
     def tearDown(self):
         del self.dcdfile
@@ -76,7 +77,6 @@ class DCDReadFrameTest(TestCase):
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
         # MDAnalysis implementation of DCD file handling
-        print('self.dcdfile.fname:', self.dcdfile.fname)
         dcd_frame = self.dcdfile.read()
         unitcell = dcd_frame[1]
         assert_equal(unitcell, self.expected_unit_cell)
@@ -204,7 +204,6 @@ class DCDWriteTest(TestCase):
             for frame in f_in:
                 frame_dict = frame._asdict()
                 box=frame_dict['unitcell'].astype(np.float64)
-                print('setUp box:', box)
                 f_out.write(xyz=frame_dict['x'],
                             box=box,
                             step=f_in.istart,
@@ -248,15 +247,12 @@ class DCDWriteTest(TestCase):
 
     def test_written_unit_cell(self):
         # written unit cell dimensions should match for all frames
-        test = DCDFile(self.testfile)
         ref = DCDFile(self.readfile)
+        test = DCDFile(self.testfile)
         curr_frame = 0
         while curr_frame < test.n_frames:
-            print('curr_frame:', curr_frame)
             written_unitcell = test.read()[1]
-            print('written_unitcell:', written_unitcell)
             ref_unitcell = ref.read()[1]
-            print('ref_unitcell:', ref_unitcell)
             curr_frame += 1
             assert_equal(written_unitcell, ref_unitcell)
 
@@ -329,9 +325,7 @@ class DCDByteArithmeticTest(TestCase):
         general_frame_size = self.dcdfile._framesize
 
         for frame in test:
-            print('frame iteration')
             written_coords = test.read()[0]
-            print('after test read')
             ref_coords = ref.read()[0]
             assert_equal(written_coords, ref_coords)
 
@@ -435,3 +429,64 @@ class DCDReadFrameTestNAMD(DCDReadFrameTest, TestCase):
 
     def tearDown(self):
         del self.dcdfile
+
+class DCDWriteTestRandom(TestCase):
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.readfile = DCD
+        self.dcdfile = DCDFile(self.testfile, 'w')
+        self.dcdfile_r = DCDFile(self.readfile, 'r')
+        self.natoms = 3341
+        self.expected_frames = 98
+        self.seek_frame = 91
+        self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
+
+        # we should probably pin down the random seed in a numpy
+        # array rather than having tests that are actually random
+        # between runs
+        self.list_random_unit_cell_dims = []
+        with self.dcdfile_r as f_in, self.dcdfile as f_out:
+            for frame in f_in:
+                random_unitcell = np.random.random(6).astype(np.float64) 
+                self.list_random_unit_cell_dims.append(random_unitcell)
+                frame_dict = frame._asdict()
+                box=frame_dict['unitcell'].astype(np.float64)
+                f_out.write(xyz=frame_dict['x'],
+                            box=random_unitcell,
+                            step=f_in.istart,
+                            natoms=frame_dict['x'].shape[0],
+                            charmm=1, # DCD should be CHARMM
+                            time_step=f_in.delta,
+                            ts_between_saves=f_in.nsavc,
+                            remarks=f_in.remarks)
+
+    def tearDown(self):
+        try: 
+            os.unlink(self.testfile)
+        except OSError:
+            pass
+        del self.tmpdir
+
+    def test_written_unit_cell_random(self):
+        # written unit cell dimensions should match for all frames
+        # using randomly generated unit cells but some processing
+        # of the cosine data stored in charmm format is needed
+        # as well as shuffling of the orders in the unitcell
+        # array based on the prcoessing performed by 
+        # DCDFile read and more generally relating to Issue 187
+        test = DCDFile(self.testfile)
+        curr_frame = 0
+        while curr_frame < test.n_frames:
+            written_unitcell = test.read()[1]
+            ref_unitcell = self.list_random_unit_cell_dims[curr_frame]
+            ref_unitcell[1] = math.degrees(math.acos(ref_unitcell[1]))
+            ref_unitcell[3] = math.degrees(math.acos(ref_unitcell[3]))
+            ref_unitcell[4] = math.degrees(math.acos(ref_unitcell[4]))
+
+            _ts_order = [0, 2, 5, 4, 3, 1]
+            ref_unitcell = np.take(ref_unitcell, _ts_order)
+            curr_frame += 1
+            assert_allclose(written_unitcell, ref_unitcell,
+                            rtol=1e-05)

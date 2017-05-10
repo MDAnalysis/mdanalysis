@@ -92,7 +92,7 @@ cdef extern from 'include/readdcd.h':
     int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
                    int istart, int nsavc, double delta, int with_unitcell, 
                    int charmm);
-    int write_dcdstep(fio_fd fd, int curstep, int curframe, 
+    int write_dcdstep(fio_fd fd, int curframe, int curstep, 
 			 int natoms, const float *x, const float *y, const float *z,
 			 const double *unitcell, int charmm);
 
@@ -274,9 +274,6 @@ cdef class DCDFile:
 
         first_frame = self.current_frame == 0
 
-        cdef int lowerb = 0
-        cdef int upperb = self.n_atoms - 1
-
         ok = read_dcdstep(self.fp, self.n_atoms,
                           <FLOAT_T*> &x[0],
                           <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
@@ -301,8 +298,7 @@ cdef class DCDFile:
             e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
             uc = triclinic_box(e1, e2, e3)
 
-        unitcell = uc.astype(np.float32)
-        print 'Cython unitcell read-in:', unitcell
+        unitcell = uc
 
         return DCDFrame(xyz, unitcell)
 
@@ -397,6 +393,7 @@ cdef class DCDFile:
         cdef FLOAT_T[::1] x = xyz[:, 0]
         cdef FLOAT_T[::1] y = xyz[:, 1]
         cdef FLOAT_T[::1] z = xyz[:, 2]
+        cdef float alpha, beta, gamma, a, b, c;
 
         if self.current_frame == 0:
             self._write_header(remarks=remarks, n_atoms=xyz.shape[0], starting_step=step,
@@ -405,10 +402,24 @@ cdef class DCDFile:
                                charmm=charmm)
             self.n_atoms = xyz.shape[0]
 
-        print('box in Cython write function:', box[0], box[1],
-              box[2], box[3], box[4], box[5],
-              'for frame:', self.current_frame)
-        ok = write_dcdstep(self.fp, step, self.current_frame,
+        # looks like self.nsavc is just 0 all the time
+        step = self.current_frame * self.nsavc
+
+        # we only support writing charmm format unit cell info
+        alpha = box[3]
+        beta = box[4]
+        gamma = box[5]
+        a = box[0]
+        b = box[1]
+        c = box[2]
+        box[0] = a
+        box[1] = gamma
+        box[2] = b
+        box[3] = beta
+        box[4] = alpha
+        box[5] = c
+
+        ok = write_dcdstep(self.fp, self.current_frame, step,
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                          <DOUBLE_T*> &box[0], charmm)
