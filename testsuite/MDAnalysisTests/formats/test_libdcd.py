@@ -93,13 +93,9 @@ class DCDReadFrameTest(TestCase):
             self.dcdfile.seek(-78)
 
     def test_iteration(self):
-        expected = 0
-        while self.num_iters > 0:
+        for i in range(self.num_iters):
             self.dcdfile.__next__()
-            self.num_iters -= 1
-            expected += 1
-        
-        assert_equal(self.dcdfile.tell(), expected)
+        assert_equal(self.dcdfile.tell(), self.num_iters)
 
     def test_zero_based_frames(self):
         expected_frame = 0
