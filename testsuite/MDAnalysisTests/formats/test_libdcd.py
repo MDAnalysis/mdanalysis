@@ -506,18 +506,14 @@ class DCDWriteTestRandom(TestCase):
         self.seek_frame = 91
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
-        # we should probably pin down the random seed in a numpy
-        # array rather than having tests that are actually random
-        # between runs
-        self.list_random_unit_cell_dims = []
+        np.random.seed(1178083)
+        self.random_unitcells = np.random.random((self.expected_frames, 6)).astype(np.float64)
         with self.dcdfile_r as f_in, self.dcdfile as f_out:
-            for frame in f_in:
-                random_unitcell = np.random.random(6).astype(np.float64) 
-                self.list_random_unit_cell_dims.append(random_unitcell)
+            for index, frame in enumerate(f_in):
                 frame_dict = frame._asdict()
                 box=frame_dict['unitcell'].astype(np.float64)
                 f_out.write(xyz=frame_dict['x'],
-                            box=random_unitcell,
+                            box=self.random_unitcells[index],
                             step=f_in.istart,
                             natoms=frame_dict['x'].shape[0],
                             charmm=1, # DCD should be CHARMM
@@ -543,7 +539,7 @@ class DCDWriteTestRandom(TestCase):
         curr_frame = 0
         while curr_frame < test.n_frames:
             written_unitcell = test.read()[1]
-            ref_unitcell = self.list_random_unit_cell_dims[curr_frame]
+            ref_unitcell = self.random_unitcells[curr_frame]
             ref_unitcell[1] = math.degrees(math.acos(ref_unitcell[1]))
             ref_unitcell[3] = math.degrees(math.acos(ref_unitcell[3]))
             ref_unitcell[4] = math.degrees(math.acos(ref_unitcell[4]))
