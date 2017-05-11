@@ -45,13 +45,6 @@ class DCDReadFrameTest(TestCase):
     def test_header_remarks(self):
         # confirm correct header remarks section reading
         with self.dcdfile as f:
-            list_chars = []
-            for element in f.remarks:
-                list_chars.append(element)
-
-            list_chars = []
-            for element in self.expected_remarks:
-                list_chars.append(element)
             assert_equal(len(f.remarks), len(self.expected_remarks))
 
     def test_read_coords(self):
