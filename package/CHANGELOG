@@ -30,6 +30,8 @@ Enhancements
 Fixes
   * In Universe.transfer_to_memory(): dt is now adjusted with step (Issue #1310)
   * Various documentation sphinx errors (PR #1312)
+  * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
+    (PR #1325)
   * Bugfix in confdistmatrix.get_distance_matrix; now works on all trajectory types.
     (issue #1324)
   * Fixed bug "no molecules in water selection" in waterdynamics analysis
