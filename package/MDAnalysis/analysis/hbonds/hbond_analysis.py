@@ -456,17 +456,19 @@ class HydrogenBondAnalysis(object):
             Selection string for first selection ['protein']
         selection2 : str (optional)
             Selection string for second selection ['all']
-        selection1_type : str (optional)
+        selection1_type : {"donor", "acceptor", "both"} (optional)
             Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
             value for `selection1_type` automatically determines how
             `selection2` handles donors and acceptors: If `selection1` contains
-            'both' then `selection2` will also contain *both*. If `selection1`
+            'both' then `selection2` will also contain 'both'. If `selection1`
             is set to 'donor' then `selection2` is 'acceptor' (and vice versa).
             ['both'].
         update_selection1 : bool (optional)
-            Update selection 1 at each frame? [``False``]
+            Update selection 1 at each frame? Setting to ``False`` is recommended
+            for any static selection to increase performance. [``True``]
         update_selection2 : bool (optional)
-            Update selection 2 at each frame? [``False``]
+            Update selection 2 at each frame? Setting to ``False`` is recommended
+            for any static selection to increase performance. [``True``]
         filter_first : bool (optional)
             Filter selection 2 first to only atoms 3 * `distance` away [``True``]
         distance : float (optional)
