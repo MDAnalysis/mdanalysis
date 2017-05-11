@@ -970,16 +970,13 @@ class HydrogenBondAnalysis(object):
 
         try:
             self.u.trajectory.time
-
             def _get_timestep():
                 return self.u.trajectory.time
-
             logger.debug("HBond analysis is recording time step")
         except NotImplementedError:
             # chained reader or xyz(?) cannot do time yet
             def _get_timestep():
                 return self.u.trajectory.frame
-
             logger.warn("HBond analysis is recording frame number instead of time step")
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
@@ -989,7 +986,7 @@ class HydrogenBondAnalysis(object):
         for progress, ts in enumerate(self.u.trajectory[self.traj_slice]):
             # all bonds for this timestep
             frame_results = []
-            # dict of tuples (atomid, atomid) for quick check if
+            # dict of tuples (atom.index, atom.index) for quick check if
             # we already have the bond (to avoid duplicates)
             already_found = {}
 
@@ -1017,15 +1014,14 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index + 1, a.index + 1, dist, angle))
-                                #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
+                                    "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
                                 frame_results.append(
                                     [h.index + 1, a.index + 1, h.index, a.index,
                                     (h.resname, h.resid, h.name),
                                     (a.resname, a.resid, a.name),
                                     dist, angle])
 
-                                already_found[(h.index + 1, a.index + 1)] = True
+                                already_found[(h.index, a.index)] = True
             if self.selection1_type in ('acceptor', 'both') and self._s1_acceptors:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = AtomNeighborSearch(self._s1_acceptors)
@@ -1035,16 +1031,15 @@ class HydrogenBondAnalysis(object):
                         res = ns_acceptors.search(h, self.distance)
                         for a in res:
                             if remove_duplicates and (
-                                    (h.index + 1, a.index + 1) in already_found
-                                    or (a.index + 1, h.index + 1) in already_found):
+                                    (h.index, a.index) in already_found or
+                                    (a.index, h.index) in already_found):
                                 continue
                             angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index + 1, h.index + 1, dist, angle))
-                                #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
+                                    "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))
                                 frame_results.append(
                                     [h.index + 1, a.index + 1, h.index, a.index,
                                      (h.resname, h.resid, h.name),
