@@ -148,7 +148,7 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
    =========== ==============  =========== ====================================
-   main chain  N               O
+   main chain  N               O, OC1, OC2
    water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
 
    ARG         NE, NH1, NH2
@@ -382,7 +382,7 @@ class HydrogenBondAnalysis(object):
 
     *Acceptors*
       *CHARMM 27*
-        O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
+        O, OC1, OC2 of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
         GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH
       *GLYCAM06*
         N,NT,O,O2,OH,OS,OW,OY,P,S,SM
@@ -415,7 +415,7 @@ class HydrogenBondAnalysis(object):
     #: use the keyword `acceptors` to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {
         'CHARMM27': tuple(set([
-            'O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
+            'O', 'OC1', 'OC2', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
         'GLYCAM06': tuple(set(['N', 'NT', 'O', 'O2', 'OH', 'OS', 'OW', 'OY', 'SM'])),
         'other': tuple(set([]))}
 
