@@ -100,6 +100,20 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
         assert_equal(h.timeseries, [[]])
 
     @staticmethod
+    def test_acceptor_OC1_OC2():
+        gro = '''test
+3
+    1ALA    OC1    1   0.000   0.000   0.000
+    2ALA      N    2   0.300   0.000   0.000
+    2ALA     H1    3   0.200   0.000   0.000
+7.29748 7.66094 9.82962'''
+
+        u = MDAnalysis.Universe(StringIO(gro), format="gro")
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u)
+        h.run(verbose=False)
+        assert_equal(h.timeseries[0][0][4], 'ALA2:H1')
+
+    @staticmethod
     def test_true_traj():
         u = MDAnalysis.Universe(GRO, XTC)
         u.add_TopologyAttr(guess_types(u.atoms.names))
