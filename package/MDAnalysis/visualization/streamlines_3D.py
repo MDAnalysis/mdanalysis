@@ -20,34 +20,58 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-'''
-Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visualization.streamlines_3D`
-=========================================================================================================
+"""Streamplots (3D) --- :mod:`MDAnalysis.visualization.streamlines_3D`
+===================================================================
 
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
 :Citation: [Chavent2014]_
 
+The :func:`generate_streamlines_3d` function can generate a 3D flow field from
+a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
+use of multiple cores to perform the analyis in parallel (using
+:mod:`multiprocessing`).
+
+
+See Also
+--------
+MDAnalysis.visualization.streamlines : streamplots in 2D
+
+
 .. autofunction:: generate_streamlines_3d
 
-'''
+"""
 from __future__ import division, absolute_import
 import six
 from six.moves import range, zip
 
-import MDAnalysis
 import multiprocessing
+
 import numpy as np
 import numpy.testing
 import scipy
 import scipy.spatial.distance
 
+import MDAnalysis
 
-def determine_container_limits(coordinate_file_path, trajectory_file_path, buffer_value):
-    '''A function for the parent process which should take the input trajectory and calculate the limits of the
-    container for the system and return these limits.'''
-    universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
+def determine_container_limits(topology_file_path, trajectory_file_path, buffer_value):
+    """Calculate the extent of the atom coordinates + buffer.
+
+    A function for the parent process which should take the input trajectory
+    and calculate the limits of the container for the system and return these
+    limits.
+
+    Parameters
+    ----------
+    topology_file_path : str
+        topology file name
+    trajectory_file_path : str
+        trajectory file name
+    buffer_value : float
+        buffer value (padding) in +/- {x, y, z}
+    """
+    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
     all_atom_selection = universe_object.select_atoms('all')  # select all particles
     all_atom_coordinate_array = all_atom_selection.positions
     x_min, x_max, y_min, y_max, z_min, z_max = [
@@ -64,16 +88,50 @@ def determine_container_limits(coordinate_file_path, trajectory_file_path, buffe
 
 
 def produce_grid(tuple_of_limits, grid_spacing):
-    '''Produce a grid for the simulation system based on the tuple of Cartesian Coordinate limits calculated in an
-    earlier step.'''
+    """Produce a 3D grid for the simulation system.
+
+    The partitioning is based on the tuple of Cartesian Coordinate limits
+    calculated in an earlier step.
+
+    Parameters
+    ----------
+    tuple_of_limits : tuple
+        ``x_min, x_max, y_min, y_max, z_min, z_max``
+    grid_spacing : float
+        grid size in all directions in ångström
+
+    Returns
+    -------
+    grid : array
+        ``numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]``
+
+    """
     x_min, x_max, y_min, y_max, z_min, z_max = tuple_of_limits
     grid = np.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]
     return grid
 
 
 def split_grid(grid, num_cores):
-    '''Take the overall grid for the system and split it into lists of cube vertices that can be distributed to each
-    core.'''
+    """Split the grid into blocks of vertices.
+
+    Take the overall `grid` for the system and split it into lists of cube
+    vertices that can be distributed to each core.
+
+    Parameters
+    ----------
+    grid : numpy.array
+        3D array
+    num_cores : int
+        number of partitions to generate
+
+    Returns
+    -------
+    list_dictionaries_for_cores : list of dict
+    total_cubes : int
+    num_sheets : int
+    delta_array_shape : tuple
+
+    """
     # unpack the x,y,z mgrid arrays
     x, y, z = grid
     num_z_values = z.shape[-1]
@@ -169,13 +227,16 @@ def split_grid(grid, num_cores):
 
 def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cube_data_this_core, MDA_selection,
                   start_frame, end_frame):
-    '''The code to perform on a given core given the dictionary of cube data.'''
+    """Run the analysis on one core.
+
+    The code to perform on a given core given the dictionary of cube data.
+    """
     list_previous_frame_centroids = []
     list_previous_frame_indices = []
     # define some utility functions for trajectory iteration:
 
     def point_in_cube(array_point_coordinates, list_cube_vertices, cube_centroid):
-        '''Determine if an array of coordinates are within a cube.'''
+        """Determine if an array of coordinates are within a cube."""
         #the simulation particle point can't be more than half the cube side length away from the cube centroid in
         # any given dimension:
         array_cube_vertices = np.array(list_cube_vertices)
@@ -201,9 +262,9 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
 
     def update_dictionary_point_in_cube_start_frame(array_simulation_particle_coordinates,
                                                     dictionary_cube_data_this_core):
-        '''Basically update the cube dictionary objects assigned to this core to contain a new key/value pair
+        """Basically update the cube dictionary objects assigned to this core to contain a new key/value pair
         corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,
-        store a key/value pair for the centroid of the particles that fall within the cube.'''
+        store a key/value pair for the centroid of the particles that fall within the cube."""
         cube_counter = 0
         for key, cube in six.iteritems(dictionary_cube_data_this_core):
             index_list_in_cube = point_in_cube(array_simulation_particle_coordinates, cube['vertex_list'],
@@ -218,7 +279,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
             cube_counter += 1
 
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
-        '''Update the cube dictionary objects again as appropriate for the second and final frame.'''
+        """Update the cube dictionary objects again as appropriate for the second and final frame."""
         cube_counter = 0
         for key, cube in six.iteritems(dictionary_cube_data_this_core):
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
@@ -248,12 +309,17 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
     return dictionary_cube_data_this_core
 
 
-def produce_coordinate_arrays_single_process(coordinate_file_path, trajectory_file_path, MDA_selection, start_frame,
+def produce_coordinate_arrays_single_process(topology_file_path, trajectory_file_path, MDA_selection, start_frame,
                                              end_frame):
-    '''To reduce memory footprint produce only a single MDA selection and get desired coordinate arrays; can later
-    send these coordinate arrays to all child processes rather than having each child process open a trajectoryand
-    waste memory.'''
-    universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
+    """Generate coordinate arrays.
+
+    To reduce memory footprint produce only a single MDA selection and get
+    desired coordinate arrays; can later send these coordinate arrays to all
+    child processes rather than having each child process open a trajectory and
+    waste memory.
+
+    """
+    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
     relevant_particles = universe_object.select_atoms(MDA_selection)
     # pull out coordinate arrays from desired frames:
     for ts in universe_object.trajectory:
@@ -268,77 +334,87 @@ def produce_coordinate_arrays_single_process(coordinate_file_path, trajectory_fi
     return (start_frame_relevant_particle_coordinate_array_xyz, end_frame_relevant_particle_coordinate_array_xyz)
 
 
-def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
+def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
                             end_frame, xmin, xmax, ymin, ymax, zmin, zmax, maximum_delta_magnitude=2.0,
                             num_cores='maximum'):
-    '''Produce the x, y and z components of a 3D streamplot data set.
+    r"""Produce the x, y and z components of a 3D streamplot data set.
 
-    :Parameters:
-        **coordinate_file_path** : str
-            Absolute path to the coordinate file
-        **trajectory_file_path** : str
-            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
-            such as GROMACS g_filter (see [Chavent2014]_)
-        **grid_spacing** : float
+    Parameters
+    ----------
+    topology_file_path : str
+            Absolute path to the topology file
+    trajectory_file_path : str
+            Absolute path to the trajectory file. It will normally be desirable
+            to filter the trajectory with a tool such as GROMACS
+            :program:`g_filter` (see [Chavent2014]_)
+    grid_spacing : float
             The spacing between grid lines (angstroms)
-        **MDA_selection** : str
+    MDA_selection : str
             MDAnalysis selection string
-        **start_frame** : int
+    start_frame : int
             First frame number to parse
-        **end_frame** : int
+    end_frame : int
             Last frame number to parse
-        **xmin** : float
+    xmin : float
             Minimum coordinate boundary for x-axis (angstroms)
-        **xmax** : float
+    xmax : float
             Maximum coordinate boundary for x-axis (angstroms)
-        **ymin** : float
+    ymin : float
             Minimum coordinate boundary for y-axis (angstroms)
-        **ymax** : float
+    ymax : float
             Maximum coordinate boundary for y-axis (angstroms)
-        **zmin** : float
-            Minimum coordinate boundary for z-axis (angstroms)
-        **zmax** : float
-            Maximum coordinate boundary for z-axis (angstroms)
-        **maximum_delta_magnitude** : float
-            Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of
-            particles (angstroms; default: 2.0). Values above this displacement will not count in the streamplot (
-            treated as excessively large displacements crossing the periodic boundary)
-        **num_cores** : int, optional
-            The number of cores to use. (Default 'maximum' uses all available cores)
+    maximum_delta_magnitude : float
+            Absolute value of the largest displacement tolerated for the
+            centroid of a group of particles ( angstroms). Values above this
+            displacement will not count in the streamplot (treated as
+            excessively large displacements crossing the periodic boundary)
+    num_cores : int or 'maximum' (optional)
+            The number of cores to use. (Default 'maximum' uses all available
+            cores)
 
-    :Returns:
-        **dx_array** : array of floats
+    Returns
+    -------
+    dx_array : array of floats
             An array object containing the displacements in the x direction
-        **dy_array** : array of floats
+    dy_array : array of floats
             An array object containing the displacements in the y direction
-        **dz_array** : array of floats
+    dz_array : array of floats
             An array object containing the displacements in the z direction
 
-    :Examples:
-
-    ::
+    Examples
+    --------
+    Generate 3D streamlines and visualize in `mayavi`_::
 
         import np as np
+
         import MDAnalysis
         import MDAnalysis.visualization.streamlines_3D
+
         import mayavi, mayavi.mlab
 
-        #assign coordinate system limits and grid spacing:
+        # assign coordinate system limits and grid spacing:
         x_lower,x_upper = -8.73, 1225.96
         y_lower,y_upper = -12.58, 1224.34
         z_lower,z_upper = -300, 300
         grid_spacing_value = 20
 
-        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d('testing.gro',
-        'testing_filtered.xtc',xmin=x_lower,xmax=x_upper,ymin=y_lower,ymax=y_upper,zmin=z_lower,zmax=z_upper,
-        grid_spacing = grid_spacing_value, MDA_selection = 'name PO4',start_frame=2,end_frame=3,num_cores='maximum')
-        x,y,z = np.mgrid[x_lower:x_upper:x1.shape[0]*1j,y_lower:y_upper:y1.shape[1]*1j,z_lower:z_upper:z1.shape[
-        2]*1j]
+        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d(
+                        'testing.gro', 'testing_filtered.xtc',
+                         xmin=x_lower, xmax=x_upper,
+                         ymin=y_lower, ymax=y_upper,
+                         zmin=z_lower, zmax=z_upper,
+                         grid_spacing=grid_spacing_value, MDA_selection = 'name PO4',
+                         start_frame=2, end_frame=3, num_cores='maximum')
 
-        #plot with mayavi:
-        fig = mayavi.mlab.figure(bgcolor=(1.0,1.0,1.0),size=(800,800),fgcolor=(0, 0, 0))
-        for z_value in np.arange(z_lower,z_upper,grid_spacing_value):
-            st = mayavi.mlab.flow(x,y,z,x1,y1,z1,line_width=1,seedtype='plane',integration_direction='both')
+        x, y, z = np.mgrid[x_lower:x_upper:x1.shape[0]*1j,
+                          y_lower:y_upper:y1.shape[1]*1j,
+                          z_lower:z_upper:z1.shape[2]*1j]
+
+        # plot with mayavi:
+        fig = mayavi.mlab.figure(bgcolor=(1.0, 1.0, 1.0), size=(800, 800), fgcolor=(0, 0, 0))
+        for z_value in np.arange(z_lower, z_upper, grid_spacing_value):
+            st = mayavi.mlab.flow(x, y, z, x1, y1, z1, line_width=1,
+                                  seedtype='plane', integration_direction='both')
             st.streamline_type = 'tube'
             st.tube_filter.radius = 2
             st.seed.widget.origin = np.array([ x_lower,  y_upper,   z_value])
@@ -346,14 +422,20 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
             st.seed.widget.point2 = np.array([ x_lower, y_lower,  z_value])
             st.seed.widget.resolution = int(x1.shape[0])
             st.seed.widget.enabled = False
-        mayavi.mlab.axes(extent = [0,1200,0,1200,-300,300])
+        mayavi.mlab.axes(extent = [0, 1200, 0, 1200, -300, 300])
         fig.scene.z_plus_view()
         mayavi.mlab.savefig('test_streamplot_3D.png')
-        #more compelling examples can be produced for vesicles and other spherical systems
+        # more compelling examples can be produced for vesicles and other spherical systems
 
     .. image:: test_streamplot_3D.png
 
-    '''
+    See Also
+    --------
+    MDAnalysis.visualization.streamlines.generate_streamlines
+
+
+    .. _mayavi: http://docs.enthought.com/mayavi/mayavi/
+    """
     # work out the number of cores to use:
     if num_cores == 'maximum':
         num_cores = multiprocessing.cpu_count()  # use all available cores
@@ -367,7 +449,7 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
         parent_cube_dictionary.update(process_dict)
 
     #step 1: produce tuple of cartesian coordinate limits for the first frame
-    #tuple_of_limits = determine_container_limits(coordinate_file_path = coordinate_file_path,trajectory_file_path =
+    #tuple_of_limits = determine_container_limits(topology_file_path = topology_file_path,trajectory_file_path =
     # trajectory_file_path,buffer_value=buffer_value)
     tuple_of_limits = (xmin, xmax, ymin, ymax, zmin, zmax)
     #step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or
@@ -376,7 +458,7 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
     #step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:
     list_dictionaries_for_cores, total_cubes, num_sheets, delta_array_shape = split_grid(grid=grid, num_cores=num_cores)
     #step 3b: produce required coordinate arrays on a single core to avoid making a universe object on each core:
-    start_frame_coord_array, end_frame_coord_array = produce_coordinate_arrays_single_process(coordinate_file_path,
+    start_frame_coord_array, end_frame_coord_array = produce_coordinate_arrays_single_process(topology_file_path,
                                                                                               trajectory_file_path,
                                                                                               MDA_selection,
                                                                                               start_frame, end_frame)
@@ -427,6 +509,3 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
     dy_array[abs(dy_array) >= maximum_delta_magnitude] = 1.0
     dz_array[abs(dz_array) >= maximum_delta_magnitude] = 1.0
     return (dx_array, dy_array, dz_array)
-
-# if __name__ == '__main__': #execute the main control function only if this file is called as a top-level script
-#will probably mostly use this for testing on a trajectory
