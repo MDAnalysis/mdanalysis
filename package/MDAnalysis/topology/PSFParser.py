@@ -52,7 +52,7 @@ import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, change_squash
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -311,8 +311,9 @@ class PSFParser(TopologyReaderBase):
 
         # Residue
         # resids, resnames
-        residx, new_resids, (new_resnames, perres_segids) = squash_by(
-            resids, resnames, segids)
+        residx, (new_resids, new_resnames, perres_segids) = change_squash(
+            (resids, resnames, segids),
+            (resids, resnames, segids))
         # transform from atom:Rid to atom:Rix
         residueids = Resids(new_resids)
         residuenums = Resnums(new_resids.copy())

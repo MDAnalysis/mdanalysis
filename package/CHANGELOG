@@ -42,6 +42,8 @@ Fixes
   * Fixed incorrect handling of residue names with trailing numbers in
     HydrogenBondAnalysis (issue #801)
   * Fixed AnalysisBase class provides numerical start,stop,step values (PR #1340)
+  * Fixed PSFParser not creating multiple residues for identical resids in
+    different segments. (Issue #1347, PR #1348)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
