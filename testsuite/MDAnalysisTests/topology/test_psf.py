@@ -32,6 +32,7 @@ from MDAnalysisTests.datafiles import (
     PSF,
     PSF_nosegid,
     PSF_NAMD,
+    XYZ_psf, XYZ,
 )
 
 
@@ -108,6 +109,28 @@ class TestNAMDPSFParser(ParserBase):
     expected_n_atoms = 130
     expected_n_residues = 6
     expected_n_segments = 1
+
+
+class TestPSFParser2(ParserBase):
+    parser = mda.topology.PSFParser.PSFParser
+    filename = XYZ_psf
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges',
+                      'resids', 'resnames',
+                      'segids',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_n_atoms = 1284
+    expected_n_residues = 152
+    expected_n_segments = 4
+
+    def test_as_universe_resids(self):
+        u = mda.Universe(XYZ_psf, XYZ)
+
+        # each segment has [380, 381, 382, 383] as the first
+        # 4 residues
+        for seg in u.segments:
+            assert_equal(seg.residues.resids[:4],
+                         [380, 381, 382, 383])
 
 
 def test_psf_nosegid():
