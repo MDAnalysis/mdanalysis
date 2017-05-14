@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
-         richardjgowers, Shtkddud123, QuantumEntangledAndy
+         richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst
 
   * 0.16.1
 
@@ -38,7 +38,9 @@ Fixes
     (PR #1325)
   * Fix PDBParser docs for conect (issue #1246)
   * Fixed bug where amber topology files would fail to load if number of atoms was
-    exectly divisible by number of atoms per line (issue #1331)
+    exactly divisible by number of atoms per line (issue #1331)
+  * Fixed incorrect handling of residue names with trailing numbers in
+    HydrogenBondAnalysis (issue #801)
   * Fixed AnalysisBase class provides numerical start,stop,step values (PR #1340)
 
 Changes
