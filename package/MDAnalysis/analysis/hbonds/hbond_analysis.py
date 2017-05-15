@@ -148,7 +148,7 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
    =========== ==============  =========== ====================================
-   main chain  N               O, OC1, OC2
+   main chain  N               O, OC1, OC2 OC1, OC2 from amber99sb-ildn (Gromacs)
    water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
 
    ARG         NE, NH1, NH2
@@ -382,10 +382,12 @@ class HydrogenBondAnalysis(object):
 
     *Acceptors*
       *CHARMM 27*
-        O, OC1, OC2 of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
+        O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
         GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH
       *GLYCAM06*
         N,NT,O,O2,OH,OS,OW,OY,P,S,SM
+      *amber99sb-ildn(Gromacs)*
+        OC1, OC2 of the main chain
 
     See Also
     --------
