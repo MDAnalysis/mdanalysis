@@ -148,7 +148,8 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
    =========== ==============  =========== ====================================
-   main chain  N               O, OC1, OC2 OC1, OC2 from amber99sb-ildn (Gromacs)
+   main chain  N               O, OC1, OC2 OC1, OC2 from amber99sb-ildn
+                                           (Gromacs)
    water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
 
    ARG         NE, NH1, NH2
