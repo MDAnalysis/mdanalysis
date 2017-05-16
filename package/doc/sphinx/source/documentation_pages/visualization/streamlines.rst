@@ -1,4 +1,1 @@
-2D Streamplot
-*************
-
- .. automodule:: MDAnalysis.visualization.streamlines
+.. automodule:: MDAnalysis.visualization.streamlines

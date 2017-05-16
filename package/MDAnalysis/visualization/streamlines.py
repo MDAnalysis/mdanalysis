@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -20,20 +20,34 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-'''
-Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visualization.streamlines`
-=====================================================================================================
+"""Streamplots (2D)  --- :mod:`MDAnalysis.visualization.streamlines`
+=================================================================
 
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
 :Citation: [Chavent2014]_
 
+The :func:`generate_streamlines` function can generate a 2D flow field from a
+MD trajectory, for instance, lipid molecules in a flat membrane. It can make
+use of multiple cores to perform the analyis in parallel (using
+:mod:`multiprocessing`).
+
+See Also
+--------
+MDAnalysis.visualization.streamlines_3D : streamplots in 3D
+
+
 .. autofunction:: generate_streamlines
 
-'''
+"""
 from __future__ import absolute_import
 from six.moves import zip
+
+import multiprocessing
+
+import numpy as np
+import scipy
 
 try:
     import matplotlib
@@ -45,22 +59,63 @@ except ImportError:
         'http://matplotlib.org/faq/installing_faq.html?highlight=install')
 
 import MDAnalysis
-import multiprocessing
-import numpy as np
-import scipy
+
 
 
 def produce_grid(tuple_of_limits, grid_spacing):
-    '''Produce a grid for the simulation system based on the tuple of Cartesian Coordinate limits calculated in an
-    earlier step.'''
+    """Produce a 2D grid for the simulation system.
+
+    The grid is based on the tuple of Cartesian Coordinate limits calculated in
+    an earlier step.
+
+    Parameters
+    ----------
+    tuple_of_limits : tuple
+        ``x_min, x_max, y_min, y_max``
+    grid_spacing : float
+        grid size in all directions in ångström
+
+    Returns
+    -------
+    grid : array
+       ``numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing]``
+    """
     x_min, x_max, y_min, y_max = tuple_of_limits
     grid = np.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing]
     return grid
 
 
 def split_grid(grid, num_cores):
-    '''Take the overall grid for the system and split it into lists of square vertices that can be distributed to
-    each core. Limited to 2D for now'''
+    """Split the grid into blocks of vertices.
+
+    Take the overall `grid` for the system and split it into lists of
+    square vertices that can be distributed to each core.
+
+    Parameters
+    ----------
+    grid : numpy.array
+        2D array
+    num_cores : int
+        number of partitions to generate
+
+    Returns
+    -------
+    list_square_vertex_arrays_per_core : array of arrays
+         split the list of square vertices
+         ``[[v1,v2,v3,v4],[v1,v2,v3,v4],...,...]`` into roughly equally-sized
+         sublists to be distributed over the available cores on the system
+    list_parent_index_values : array of arrays
+         arrays of `[[row, column], [row, column], ...]`` for each core
+    current_row : int
+         last row + 1
+    current_column : int
+         last column + 1
+
+    Note
+    ----
+    Limited to 2D for now.
+
+    """
 
     # produce an array containing the cartesian coordinates of all vertices in the grid:
     x_array, y_array = grid
@@ -97,11 +152,14 @@ def split_grid(grid, num_cores):
     return [list_square_vertex_arrays_per_core, list_parent_index_values, current_row, current_column]
 
 
-def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex_arrays_this_core, MDA_selection,
+def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_arrays_this_core, MDA_selection,
                   start_frame, end_frame, reconstruction_index_list, maximum_delta_magnitude):
-    '''The code to perform on a given core given the list of square vertices assigned to it.'''
+    """Run the analysis on one core.
+
+    The code to perform on a given core given the list of square vertices assigned to it.
+    """
     # obtain the relevant coordinates for particles of interest
-    universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
+    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
     list_previous_frame_centroids = []
     list_previous_frame_indices = []
     #define some utility functions for trajectory iteration:
@@ -168,74 +226,93 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
     return list(zip(reconstruction_index_list, xy_deltas_to_write.tolist()))
 
 
-def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
+def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
                          end_frame, xmin, xmax, ymin, ymax, maximum_delta_magnitude, num_cores='maximum'):
-    """Produce the x and y components of a 2D streamplot data set.
+    r"""Produce the x and y components of a 2D streamplot data set.
 
-    :Parameters:
-        **coordinate_file_path** : str
-            Absolute path to the coordinate file
-        **trajectory_file_path** : str
-            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
-            such as GROMACS g_filter (see [Chavent2014]_)
-        **grid_spacing** : float
+    Parameters
+    ----------
+    topology_file_path : str
+            Absolute path to the topology file
+    trajectory_file_path : str
+            Absolute path to the trajectory file. It will normally be desirable
+            to filter the trajectory with a tool such as GROMACS
+            :program:`g_filter` (see [Chavent2014]_)
+    grid_spacing : float
             The spacing between grid lines (angstroms)
-        **MDA_selection** : str
+    MDA_selection : str
             MDAnalysis selection string
-        **start_frame** : int
+    start_frame : int
             First frame number to parse
-        **end_frame** : int
+    end_frame : int
             Last frame number to parse
-        **xmin** : float
+    xmin : float
             Minimum coordinate boundary for x-axis (angstroms)
-        **xmax** : float
+    xmax : float
             Maximum coordinate boundary for x-axis (angstroms)
-        **ymin** : float
+    ymin : float
             Minimum coordinate boundary for y-axis (angstroms)
-        **ymax** : float
+    ymax : float
             Maximum coordinate boundary for y-axis (angstroms)
-        **maximum_delta_magnitude** : float
-            Absolute value of the largest displacement tolerated for the centroid of a group of particles (
-            angstroms). Values above this displacement will not count in the streamplot (treated as excessively large
-            displacements crossing the periodic boundary)
-        **num_cores** : int, optional
-            The number of cores to use. (Default 'maximum' uses all available cores)
+    maximum_delta_magnitude : float
+            Absolute value of the largest displacement tolerated for the
+            centroid of a group of particles ( angstroms). Values above this
+            displacement will not count in the streamplot (treated as
+            excessively large displacements crossing the periodic boundary)
+    num_cores : int or 'maximum' (optional)
+            The number of cores to use. (Default 'maximum' uses all available
+            cores)
 
-    :Returns:
-        **dx_array** : array of floats
+    Returns
+    -------
+    dx_array : array of floats
             An array object containing the displacements in the x direction
-        **dy_array** : array of floats
+    dy_array : array of floats
             An array object containing the displacements in the y direction
-        **average_displacement** : float
-            :math:`\\frac {\\sum \\sqrt[]{dx^2 + dy^2}} {N}`
-        **standard_deviation_of_displacement** : float
-            standard deviation of :math:`\\sqrt[]{dx^2 + dy^2}`
+    average_displacement : float
+            :math:`\frac{\sum\sqrt[]{dx^2 + dy^2}}{N}`
+    standard_deviation_of_displacement : float
+            standard deviation of :math:`\sqrt[]{dx^2 + dy^2}`
 
-    :Examples:
-
-    ::
+    Examples
+    --------
+    Generate 2D streamlines and plot::
 
         import matplotlib, matplotlib.pyplot, np
         import MDAnalysis, MDAnalysis.visualization.streamlines
-        u1, v1, average_displacement,standard_deviation_of_displacement =
-        MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro','testing_filtered.xtc',grid_spacing =
-        20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
-        ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
-        x = np.linspace(0,1200,61)
-        y = np.linspace(0,1200,61)
+
+        u1, v1, average_displacement, standard_deviation_of_displacement =
+            MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro', 'testing_filtered.xtc',
+                    grid_spacing=20, MDA_selection='name PO4', start_frame=2, end_frame=3,
+                    xmin=-8.73000049591, xmax= 1225.96008301,
+                    ymin= -12.5799999237, ymax=1224.34008789,
+                    maximum_delta_magnitude=1.0, num_cores=16)
+        x = np.linspace(0, 1200, 61)
+        y = np.linspace(0, 1200, 61)
         speed = np.sqrt(u1*u1 + v1*v1)
         fig = matplotlib.pyplot.figure()
-        ax = fig.add_subplot(111,aspect='equal')
+        ax = fig.add_subplot(111, aspect='equal')
         ax.set_xlabel('x ($\AA$)')
         ax.set_ylabel('y ($\AA$)')
-        ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())
+        ax.streamplot(x, y, u1, v1, density=(10,10), color=speed, linewidth=3*speed/speed.max())
         fig.savefig('testing_streamline.png',dpi=300)
 
     .. image:: testing_streamline.png
 
-    .. [Chavent2014] Chavent, M.\*, Reddy, T.\*, Dahl, C.E., Goose, J., Jobard, B., and Sansom, M.S.P. (2014)
-       Methodologies for the analysis of instantaneous lipid diffusion in MD simulations of large membrane systems.
-       *Faraday Discussions* **169**: **Accepted**
+
+    References
+    ----------
+    .. [Chavent2014] Chavent, M.*, Reddy, T.*, Dahl, C.E., Goose, J., Jobard,
+       B., and Sansom, M.S.P. Methodologies for the analysis of instantaneous
+       lipid diffusion in MD simulations of large membrane systems.  *Faraday
+       Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
+
+    .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+
+
+    See Also
+    --------
+    MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d
 
     """
     # work out the number of cores to use:
@@ -258,7 +335,7 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
     pool = multiprocessing.Pool(num_cores)
     for vertex_sublist, index_sublist in zip(list_square_vertex_arrays_per_core, list_parent_index_values):
         pool.apply_async(per_core_work, args=(
-            coordinate_file_path, trajectory_file_path, vertex_sublist, MDA_selection, start_frame, end_frame,
+            topology_file_path, trajectory_file_path, vertex_sublist, MDA_selection, start_frame, end_frame,
             index_sublist, maximum_delta_magnitude), callback=log_result_to_parent)
     pool.close()
     pool.join()
@@ -287,5 +364,3 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
 
     return (dx_array, dy_array, average_displacement, standard_deviation_of_displacement)
 
-# if __name__ == '__main__': #execute the main control function only if this file is called as a top-level script
-#will probably mostly use this for testing on a trajectory:

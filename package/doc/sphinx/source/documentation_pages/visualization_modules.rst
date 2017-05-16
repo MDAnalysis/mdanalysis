@@ -4,8 +4,8 @@
 Visualization modules
 *********************
 
-The MDAnalysis.visualization namespace contains code to carry out analyses
-which return data that is specifically-tailored for visualization.
+The :mod:`MDAnalysis.visualization` namespace contains code to carry out
+analyses which return data that is specifically-tailored for visualization.
 
 Please see the individual module documentation for additional references and
 citation information.
@@ -15,18 +15,23 @@ import them from :mod:`MDAnalysis.visualization`, for instance: ::
 
     import MDAnalysis.visualization.streamlines
 
-.. Note:: 
+.. Note::
 
-  Some of the modules require additional Python packages such as numpy_ or matplotlib_. 
+  Some of the modules require additional Python packages such as matplotlib_ or
+  scipy_.
 
-.. _numpy: http://www.numpy.org
 .. _matplotlib: http://matplotlib.org
+.. _scipy: https://www.scipy.org/scipylib/index.html
+
 
 Visualization of Lipid Flow
-============================
+===========================
 
 .. toctree::
    :maxdepth: 1
 
    visualization/streamlines
    visualization/streamlines_3D
+
+
+

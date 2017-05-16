@@ -100,6 +100,18 @@ If you use the implementation of the ENCORE ensemble analysis in
 
 .. _`10.1371/journal.pcbi.1004415`: http://doi.org/10.1371/journal.pcbi.1004415
 
+If you use the streamline visualization in
+:mod:`MDAnalysis.visualization.streamlines` and
+:mod:`MDAnalysis.visualization.streamlines_3D` please cite
+
+.. [Chavent2014b] Chavent, M., Reddy, T., Dahl, C.E., Goose, J., Jobard, B.,
+   and Sansom, M.S.P. Methodologies for the analysis of instantaneous lipid
+   diffusion in MD simulations of large membrane systems.  *Faraday
+   Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
+
+.. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+
+
 Thanks!
 
 
