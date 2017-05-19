@@ -45,6 +45,7 @@ Fixes
   * Fixed PSFParser not creating multiple residues for identical resids in
     different segments. (Issue #1347, PR #1348)
   * Add the OC1 and OC2 from amber99sb-ildn to hydrogen bond acceptors (issue #1342)
+  * Fix RMSF run return value (PR #1354)
 
 
 Changes
