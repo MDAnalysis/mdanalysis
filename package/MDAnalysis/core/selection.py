@@ -822,7 +822,9 @@ class ProteinSelection(Selection):
 
       * still missing: Amber N- and C-terminal residue names
 
-    .. SeeAlso:: :func:`MDAnalysis.lib.util.convert_aa_code`
+    See Also
+    --------
+    :func:`MDAnalysis.lib.util.convert_aa_code`
     """
     token = 'protein'
 

@@ -39,6 +39,7 @@ import Bio.Alphabet
 from collections import defaultdict
 import functools
 import itertools
+import numbers
 import numpy as np
 
 from . import flags
@@ -607,7 +608,7 @@ class Masses(AtomAttr):
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
-        if isinstance(rg._ix, int):
+        if isinstance(rg._ix, numbers.Integral):
             # for a single residue
             masses = self.values[resatoms].sum()
         else:
@@ -621,7 +622,7 @@ class Masses(AtomAttr):
     def get_segments(self, sg):
         segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
-        if isinstance(sg._ix, int):
+        if isinstance(sg._ix, numbers.Integral):
             # for a single segment
             masses = self.values[segatoms].sum()
         else:
@@ -933,7 +934,7 @@ class Charges(AtomAttr):
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
-        if isinstance(rg._ix, int):
+        if isinstance(rg._ix, numbers.Integral):
             charges = self.values[resatoms].sum()
         else:
             charges = np.empty(len(rg))
@@ -945,7 +946,7 @@ class Charges(AtomAttr):
     def get_segments(self, sg):
         segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
-        if isinstance(sg._ix, int):
+        if isinstance(sg._ix, numbers.Integral):
             # for a single segment
             charges = self.values[segatoms].sum()
         else:
@@ -1362,7 +1363,7 @@ class Bonds(_Connection):
 
     Must be initialised by a list of zero based tuples.
     These indices refer to the atom indices.
-        Eg:  [(0, 1), (1, 2), (2, 3)]
+    E.g., ` [(0, 1), (1, 2), (2, 3)]`
 
     Also adds the `bonded_atoms`, `fragment` and `fragments`
     attributes.
@@ -1416,8 +1417,7 @@ class Angles(_Connection):
     """Angles between three atoms
 
     Initialise with a list of 3 long tuples
-    Eg:
-      [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+    E.g.,  `[(0, 1, 2), (1, 2, 3), (2, 3, 4)]`
 
     These indices refer to the atom indices.
     """

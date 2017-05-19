@@ -182,7 +182,9 @@ class TOPParser(TopologyReaderBase):
                     next_getter = self.skipper
                 else:
                     num = sys_info[sect_num]
-                    numlines = (num // per_line) + 1
+                    numlines = (num // per_line)
+                    if num % per_line != 0:
+                        numlines += 1
 
                     attrs[name] = func(atoms_per, numlines)
 

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -55,7 +55,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
      - ATOM. HETATM for x,y,z
 
-    Original `PDB format documentation`_    with  `AutoDOCK extensions`_
+    Original `PDB format documentation`_ with `AutoDOCK extensions`_
 
 
     .. _PDB format documentation:
@@ -220,23 +220,24 @@ class PDBQTWriter(base.WriterBase):
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
-        write(selection, frame=FRAME)
-
         Parameters
         ----------
         selection : AtomGroup
             The selection to be written
-        frame : int, optional
-            optionally move to *frame* before writing
+        frame : int (optional)
+            optionally move to frame index `frame` before writing; the default
+            is to write the current trajectory frame
 
-        .. Note::
+        Note
+        ----
+        The first letter of the
+        :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
+        chainID.
 
-           The first letter of the
-           :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
-           chainID.
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
         """
         u = selection.universe
         if frame is not None:

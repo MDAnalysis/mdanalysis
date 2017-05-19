@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -20,13 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-
-"""
-:mod:`MDAnalysis.visualization` --- Visualization library in MDAnalysis
-================================================================
-"""
 from __future__ import absolute_import
-__all__ = ['streamlines', 'streamlines_3D']
+from . import streamlines
+from . import streamlines_3D
 
-import streamlines
-import streamlines_3D
+__all__ = ['streamlines', 'streamlines_3D']

@@ -23,7 +23,7 @@
 
 """
 Parallel distance calculation library --- :mod:`MDAnalysis.lib.c_distances_openmp`
-=================================================================================
+==================================================================================
 
 
 Contains OpenMP versions of the contents of "calc_distances.h"

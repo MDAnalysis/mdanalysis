@@ -29,6 +29,12 @@ any output files. This is similar to writing to ``/dev/null``.
 
 This class exists to allow developers writing generic code and tests.
 
+Classes
+-------
+
+.. autoclass:: NullWriter
+   :members:
+
 """
 from __future__ import absolute_import
 
@@ -41,7 +47,6 @@ class NullWriter(base.WriterBase):
     The NullWriter is the equivalent to ``/dev/null``: it behaves like
     a Writer but ignores all input. It can be used in order to
     suppress output.
-
     """
     format = 'NULL'
     multiframe = True

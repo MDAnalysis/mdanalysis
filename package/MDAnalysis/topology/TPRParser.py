@@ -92,7 +92,10 @@ Classes
    :members:
    :inherited-members:
 
-.. SeeAlso:: :mod:`MDAnalysis.topology.tpr`
+See Also
+--------
+:mod:`MDAnalysis.topology.tpr`
+
 
 Development notes
 -----------------
@@ -152,7 +155,7 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
 
 class TPRParser(TopologyReaderBase):
-    """Read topology information from a Gromacs_ TPR_ file.
+    """Read topology information from a Gromacs_ `TPR file`_.
 
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
@@ -199,7 +202,7 @@ class TPRParser(TopologyReaderBase):
             raise IOError(msg)
 
         tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
-        
+
         return tpr_top
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS

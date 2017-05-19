@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -77,9 +77,9 @@ Output should look like this (although the only real requirement is
 *whitespace* separation between *all* entries). The chainID is optional
 and can be omitted::
 
-ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
-ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
-ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
+  ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
+  ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
+  ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
 
 
 .. Warning:: Fields *must be white-space separated* or data are read
@@ -142,11 +142,14 @@ class PQRReader(base.SingleFrameReaderBase):
     def Writer(self, filename, **kwargs):
         """Returns a PQRWriter for *filename*.
 
-        :Arguments:
-           *filename*
-              filename of the output PQR file
+        Parameters
+        ----------
+        filename : str
+            filename of the output PQR file
 
-        :Returns: :class:`PQRWriter`
+        Returns
+        -------
+        :class:`PQRWriter`
         """
         return PQRWriter(filename, **kwargs)
 
@@ -184,7 +187,7 @@ class PQRWriter(base.WriterBase):
         ----------
         filename : str
              output filename
-        remarks : str, optionak
+        remarks : str (optional)
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
@@ -201,13 +204,16 @@ class PQRWriter(base.WriterBase):
 
         Parameters
         ----------
-        selection
+        selection : AtomGroup or Universe
             MDAnalysis AtomGroup or Universe
-        frame : int, optional
-            optionally move to frame number *frame*
+        frame : int (optional)
+            optionally move to frame index `frame`; by default, write the
+            current frame
+
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
         """
         # write() method that complies with the Trajectory API
         u = selection.universe

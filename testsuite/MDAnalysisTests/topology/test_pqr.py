@@ -29,6 +29,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PQR,
+    PQR_icodes,
 )
 
 
@@ -36,7 +37,7 @@ class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
     filename = PQR
     expected_attrs = ['ids', 'names', 'charges', 'radii',
-                      'resids', 'resnames',
+                      'resids', 'resnames', 'icodes',
                       'segids']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 3341
@@ -51,3 +52,9 @@ class TestPQRParser(ParserBase):
         assert_(len(self.top.resids) == self.top.n_residues)
         assert_(len(self.top.resnames) == self.top.n_residues)
         assert_(len(self.top.segids) == self.top.n_segments)
+
+class TestPQRParser2(TestPQRParser):
+    filename = PQR_icodes
+
+    expected_n_atoms = 5313
+    expected_n_residues = 474

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -57,7 +57,7 @@ def norm(v):
 
     Parameters
     ----------
-    v: array_like
+    v : array_like
         1D array of shape (N) for a vector of length N
 
     Returns
@@ -164,7 +164,9 @@ def triclinic_box(x, y, z):
     * beta   = angle(x,z)
     * gamma  = angle(x,y)
 
-    .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
+    Note
+    ----
+    Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
     A, B, C = [norm(v) for v in (x, y, z)]
     alpha = _angle(y, z)
@@ -184,18 +186,23 @@ def triclinic_vectors(dimensions):
     .. _code by Tsjerk Wassenaar:
        http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
 
-    :Arguments:
-      *dimensions*
+    Parameters
+    ----------
+    dimensions : [A, B, C, alpha, beta, gamma]
         list of box lengths and angles (in degrees) such as
-        [A,B,C,alpha,beta,gamma]
+        ``[A,B,C,alpha,beta,gamma]``
 
-    :Returns: numpy 3x3 array B, with B[0] = first box vector,
-              B[1] = second vector, B[2] third box vector.
+    Returns
+    -------
+    numpy.array
+        numpy 3x3 array B, with ``B[0]`` as first box vector,
+        ``B[1]``as second vector, ``B[2]`` as third box vector.
 
-    .. note::
+    Notes
+    -----
+    The first vector is always pointing along the X-axis,
+    i.e., parallel to (1, 0, 0).
 
-       The first vector is always pointing along the X-axis
-       i.e. parallel to (1,0,0).
 
     .. versionchanged:: 0.7.6
        Null-vectors are returned for non-periodic (or missing) unit cell.
@@ -229,13 +236,15 @@ def box_volume(dimensions):
     The volume is computed as `det(x1,x2,x2)` where the xi are the
     triclinic box vectors from :func:`triclinic_vectors`.
 
-    :Arguments:
-       *dimensions*
-          list of box lengths and angles (in degrees) such as
-          [A,B,C,alpha,beta,gamma]
+    Parameters
+    ----------
+    dimensions : [A, B, C, alpha, beta, gamma]
+        list of box lengths and angles (in degrees) such as
+        [A,B,C,alpha,beta,gamma]
 
-    :Returns: numpy 3x3 array B, with B[0] = first box vector,
-              B[1] = second vector, B[2] third box vector.
+    Returns
+    -------
+    volume : float
     """
     return np.linalg.det(triclinic_vectors(dimensions))
 
@@ -243,10 +252,12 @@ def box_volume(dimensions):
 def _is_contiguous(atomgroup, atom):
     """Walk through atomgroup, starting with atom.
 
-    :Returns:
-       ``True`` if all of *atomgroup* is accessible through walking
+    Returns
+    -------
+    bool
+        ``True`` if all of *atomgroup* is accessible through walking
         along bonds.
-       ``False`` otherwise.
+        ``False`` otherwise.
     """
     seen = set([atom])
     walked = set()
@@ -271,29 +282,7 @@ def _is_contiguous(atomgroup, atom):
 def make_whole(atomgroup, reference_atom=None):
     """Move all atoms in a single molecule so that bonds don't split over images
 
-    :Arguments:
-      *atomgroup*
-        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
-        The positions of this are modified in place.  All these atoms
-        must belong in the same molecule or fragment.
-
-    :Keywords:
-      *reference_atom*
-        The atom around which all other atoms will be moved.
-        Defaults to atom 0 in the atomgroup.
-
-    :Returns:
-       ``None``.  Atom positions are modified in place
-
-    :Raises:
-      `NoDataError`
-         if there are no bonds present.
-         (See :func:`~MDAnalysis.topology.core.guess_bonds`)
-
-      `ValueError`
-         if the algorithm fails to work.  This is usually
-         caused by the atomgroup not being a single fragment.
-         (ie the molecule can't be traversed by following bonds)
+    Atoms are modified in place.
 
     This function is most useful when atoms have been packed into the primary
     unit cell, causing breaks mid molecule, with the molecule then appearing
@@ -310,29 +299,54 @@ def make_whole(atomgroup, reference_atom=None):
        |           |     |           |
        +-----------+     +-----------+
 
-    Usage::
 
-      from MDAnalysis.util.mdamath import make_whole
+    Parameters
+    ----------
+    atomgroup : AtomGroup
+        The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
+        The positions of this are modified in place.  All these atoms
+        must belong in the same molecule or fragment.
+    reference_atom : :class:`~MDAnalysis.core.groups.Atom`
+        The atom around which all other atoms will be moved.
+        Defaults to atom 0 in the atomgroup.
 
-      # This algorithm requires bonds, these can be guessed!
-      u = mda.Universe(......, guess_bonds=True)
+    Raises
+    ------
+    NoDataError
+        There are no bonds present.
+        (See :func:`~MDAnalysis.topology.core.guess_bonds`)
 
-      # MDAnalysis can split molecules into their fragments
-      # based on bonding information.
-      # Note that this function will only handle a single fragment
-      # at a time, necessitating a loop.
-      for frag in u.fragments:
+    ValueError
+        The algorithm fails to work.  This is usually
+        caused by the atomgroup not being a single fragment.
+        (ie the molecule can't be traversed by following bonds)
+
+    Note
+    ----
+    Only orthogonal boxes are currently supported.
+
+    Example
+    -------
+    Make fragments whole::
+
+        from MDAnalysis.util.mdamath import make_whole
+
+        # This algorithm requires bonds, these can be guessed!
+        u = mda.Universe(......, guess_bonds=True)
+
+        # MDAnalysis can split molecules into their fragments
+        # based on bonding information.
+        # Note that this function will only handle a single fragment
+        # at a time, necessitating a loop.
+        for frag in u.fragments:
           make_whole(frag)
 
     Alternatively, to keep a single atom in place as the anchor::
 
-      # This will mean that atomgroup[10] will NOT get moved,
-      # and all other atoms will move (if necessary).
-      make_whole(atomgroup, reference_atom=atomgroup[10])
+        # This will mean that atomgroup[10] will NOT get moved,
+        # and all other atoms will move (if necessary).
+        make_whole(atomgroup, reference_atom=atomgroup[10])
 
-    .. Note::
-
-       Only orthogonal boxes are currently supported
 
     .. versionadded:: 0.11.0
     """
@@ -420,22 +434,30 @@ def one_to_many_pointers(Ni, Nj, i2j):
 
     Arguments
     ---------
-    Ni, Nj - number of i and j components
-    i2j - the array relating i to parent js
+    Ni : int
+       number of i  components
+    Nj : int
+       number of j components
+    i2j : numpy.ndarray
+       relates i to parent js
 
     Returns
     -------
-    ordered - an ordered list of i indices [size (i,)]
-    ptrs - the start and end index for each j [size (Nj, 2)]
+    ordered : list
+       an ordered list of i indices [size (i,)]
+    ptrs : list
+       the start and end index for each j [size (Nj, 2)]
 
     Example
     -------
-    # Residx - the resid of each Atom
-    ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+    .. code:: python
 
-    # Returns an array of the atom indices that are in resid 7
-    atoms = ordered[ptrs[7,0]:ptrs[7,1]]
-    
+        # Residx - the resid of each Atom
+        ordered, ptrs = one_to_many_pointers(Natoms, Nres, Residx)
+
+        # Returns an array of the atom indices that are in resid 7
+        atoms = ordered[ptrs[7,0]:ptrs[7,1]]
+
     """
     ordered = i2j.argsort()
     sorted_idx = i2j[ordered]

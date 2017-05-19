@@ -19,16 +19,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-Common functions for topology building --- :mod:`MDAnalysis.topology.core`
+"""Common functions for topology building --- :mod:`MDAnalysis.topology.core`
 ==========================================================================
 
 The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.
 
-.. SeeAlso:: :mod:`MDAnalysis.topology.tables` for some hard-coded atom
-   information that is used by functions such as :func:`guess_atom_type` and
-   :func:`guess_atom_mass`.
+See Also
+--------
+:mod:`MDAnalysis.topology.tables`
+  for some hard-coded atom information that is used by functions such as
+  :func:`guess_atom_type` and :func:`guess_atom_mass`.
 
 """
 

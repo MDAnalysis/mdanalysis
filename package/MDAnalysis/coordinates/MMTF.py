@@ -23,8 +23,8 @@
 """MMTF trajectory reader --- :mod:`MDAnalysis.coordinates.MMTF`
 ================================================================
 
-Reads coordinates data from the `Macromolecular Transmission Format
-(MMTF) format`_.  This should generally be a quicker alternative to PDB.
+Reads coordinates data from the Macromolecular Transmission Format format
+(MMTF_). This should generally be a quicker alternative to PDB.
 
 .. versionadded:: 0.16.0
 
@@ -35,7 +35,8 @@ Classes
    :members:
 .. autofunction:: fetch_mmtf
 
-.. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
+.. _MMTF: https://mmtf.rcsb.org/
+
 """
 from __future__ import absolute_import
 
@@ -53,11 +54,7 @@ def _parse_mmtf(fn):
 
 
 class MMTFReader(base.SingleFrameReaderBase):
-    """Topology parser for the MMTF_ format.
-
-    .. _Macromolecular Transmission Format (MMTF) format:
-       https://mmtf.rcsb.org/
-    """
+    """Coordinate reader for the Macromolecular Transmission Format format (MMTF_)."""
     format = 'MMTF'
 
     def _read_first_frame(self):
@@ -89,7 +86,8 @@ def fetch_mmtf(pdb_id):
 
     Returns
     -------
-    MDAnalysis Universe of the corresponding PDB system
+    Universe
+        MDAnalysis Universe of the corresponding PDB system
 
 
     See Also

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -27,31 +27,50 @@ GRO file format --- :mod:`MDAnalysis.coordinates.GRO`
 Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.
 
-GROWriter format strings
-------------------------
 
-The GROWriter class has a .fmt attribute, which is a dictionary of different
-strings for writing lines in .gro files.  These are as follows:
+Classes
+-------
 
-n_atoms
+.. autoclass:: Timestep
+   :members:
+
+.. autoclass:: GROReader
+   :members:
+
+.. autoclass:: GROWriter
+   :members:
+
+
+Developer notes: ``GROWriter`` format strings
+---------------------------------------------
+
+The :class:`GROWriter` class has a :attr:`GROWriter.fmt` attribute, which is a dictionary of different
+strings for writing lines in ``.gro`` files.  These are as follows:
+
+``n_atoms``
   For the first line of the gro file, supply the number of atoms in the system.
-  Eg: fmt['n_atoms'].format(42)
+  E.g.::
 
-xyz
+      fmt['n_atoms'].format(42)
+
+``xyz``
   An atom line without velocities.  Requires that the 'resid', 'resname',
   'name', 'index' and 'pos' keys be supplied.
-  Eg: fmt['xyz'].format(resid=1, resname='SOL', name='OW2', index=2,
-      pos=(0.0, 1.0, 2.0))
+  E.g.::
 
-xyz_v
+     fmt['xyz'].format(resid=1, resname='SOL', name='OW2', index=2, pos=(0.0, 1.0, 2.0))
+
+``xyz_v``
   As above, but with velocities.  Needs an additional keyword 'vel'.
 
-box_orthorhombic
+``box_orthorhombic``
   The final line of the gro file which gives box dimensions.  Requires
   the box keyword to be given, which should be the three cartesian dimensions.
-  Eg: fmt['box_orthorhombic'].format(box=(10.0, 10.0, 10.0))
+  E.g.::
 
-box_triclinic
+     fmt['box_orthorhombic'].format(box=(10.0, 10.0, 10.0))
+
+``box_triclinic``
   As above, but for a non orthorhombic box. Requires the box keyword, but this
   time as a length 9 vector.  This is a flattened version of the (3,3) triclinic
   vector representation of the unit cell.  The rearrangement into the odd
@@ -61,6 +80,7 @@ box_triclinic
 .. _Gromacs: http://www.gromacs.org
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
+
 """
 from __future__ import absolute_import
 
@@ -122,7 +142,7 @@ class Timestep(base.Timestep):
 
 class GROReader(base.SingleFrameReaderBase):
     """Reader for the Gromacs GRO structure format.
-    
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
@@ -191,11 +211,14 @@ class GROReader(base.SingleFrameReaderBase):
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a CRDWriter for *filename*.
 
-        :Arguments:
-          *filename*
+        Parameters
+        ----------
+        filename: str
             filename of the output GRO file
 
-        :Returns: :class:`GROWriter`
+        Returns
+        -------
+        :class:`GROWriter`
 
         """
         if n_atoms is None:
@@ -211,18 +234,19 @@ class GROWriter(base.WriterBase):
      - resnames (defaults to 'UNK')
      - resids (defaults to '1')
 
-    .. Note::
+    Note
+    ----
+    The precision is hard coded to three decimal places
 
-       The precision is hard coded to three decimal places
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     .. versionchanged:: 0.13.0
-       Now strictly writes positions with 3dp precision
-       and velocities with 4dp
+       Now strictly writes positions with 3dp precision.
+       and velocities with 4dp.
        Removed the `convert_dimensions_to_unitcell` method,
-       use `Timestep.triclinic_dimensions` instead
-       Now now writes velocities where possible
+       use `Timestep.triclinic_dimensions` instead.
+       Now now writes velocities where possible.
     """
 
     format = 'GRO'
@@ -252,6 +276,9 @@ class GROWriter(base.WriterBase):
         n_atoms : int (optional)
             number of atoms
 
+        convert_units : str (optional)
+            units are converted to the MDAnalysis base format; ``None`` selects
+            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
         """
         self.filename = util.filename(filename, ext='gro')
         self.n_atoms = n_atoms
@@ -265,16 +292,19 @@ class GROWriter(base.WriterBase):
 
         Parameters
         -----------
-        obj : AtomGroup / Universe / Timestep
+        obj : AtomGroup or Universe or :class:`Timestep`
 
-        The GRO format only allows 5 digits for resid and atom
-        number. If these number become larger than 99,999 then this
+        Note
+        ----
+        The GRO format only allows 5 digits for *resid* and *atom
+        number*. If these numbers become larger than 99,999 then this
         routine will chop off the leading digits.
 
+
         .. versionchanged:: 0.7.6
-           resName and atomName are truncated to a maximum of 5 characters
+           *resName* and *atomName* are truncated to a maximum of 5 characters
         .. versionchanged:: 0.16.0
-           frame kwarg has been removed
+           `frame` kwarg has been removed
         """
         # write() method that complies with the Trajectory API
 

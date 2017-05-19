@@ -500,6 +500,16 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    def test_slicing_step_dt():
+        universe = MDAnalysis.Universe(PDB_small, DCD)
+        times = [ts.time for ts in universe.trajectory]
+        universe.transfer_to_memory(step=2)
+        times2 = [ts.time for ts in universe.trajectory]
+        assert_almost_equal(times[::2], times2,
+                err_msg="Unexpected in-memory timestep: "
+                        + "dt not updated with step information")
+
+    @staticmethod
     def test_slicing_negative_start():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame

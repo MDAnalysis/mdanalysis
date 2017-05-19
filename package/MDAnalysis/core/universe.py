@@ -141,7 +141,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename, Topology object or stream
+    topology : str, Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
@@ -491,10 +491,12 @@ class Universe(object):
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
+            if step is None:
+                step = 1 
             self.trajectory = MemoryReader(
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,
-                dt=self.trajectory.ts.dt,
+                dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
@@ -857,7 +859,9 @@ def as_Universe(*args, **kwargs):
          as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
          as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
-    :Returns: an instance of :class:`~MDAnalysis.core.groups.Universe`
+    Returns
+    -------
+    :class:`~MDAnalysis.core.groups.Universe`
     """
     if len(args) == 0:
         raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
@@ -879,9 +883,12 @@ def Merge(*args):
     -------
     universe : :class:`Universe`
 
-    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
-             empty and :exc:`TypeError` if arguments are not
-             :class:`AtomGroup` instances.
+    Raises
+    ------
+    ValueError
+        Too few arguments or an AtomGroup is empty and
+    TypeError
+        Arguments are not :class:`AtomGroup` instances.
 
     Notes
     -----

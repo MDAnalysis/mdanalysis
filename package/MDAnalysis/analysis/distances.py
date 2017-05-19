@@ -31,7 +31,9 @@ atoms or groups of atoms.
 :func:`dist` and :func:`between` can take atom groups that do not even
 have to be from the same :class:`~MDAnalysis.core.universe.Universe`.
 
-.. SeeAlso:: :mod:`MDAnalysis.lib.distances`
+See Also
+--------
+:mod:`MDAnalysis.lib.distances`
 """
 
 from __future__ import absolute_import

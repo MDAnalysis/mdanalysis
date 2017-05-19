@@ -97,6 +97,7 @@ from collections import namedtuple
 import numpy as np
 import functools
 import itertools
+import numbers
 import os
 import warnings
 
@@ -433,7 +434,7 @@ class GroupBase(_MutableBase):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if isinstance(item, (int, np.int_)):
+        if isinstance(item, numbers.Integral):
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
@@ -648,15 +649,16 @@ class GroupBase(_MutableBase):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
-
         Returns
         -------
          corners : array
             2x3 array giving corners of bounding box as
             [[xmin, ymin, zmin], [xmax, ymax, zmax]].
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionadded:: 0.7.2
@@ -683,16 +685,17 @@ class GroupBase(_MutableBase):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        .. note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-            ``True`` allows the *pbc* flag to be used by default.
-
         Returns
         -------
         R : float
             Radius of bounding sphere.
         center : array
             Coordinates of sphere center as ``[xcen,ycen,zcen]``.
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionadded:: 0.7.3
@@ -1481,7 +1484,9 @@ class AtomGroup(GroupBase):
     AtomGroup instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
-    .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
+    See Also
+    --------
+    :class:`MDAnalysis.core.universe.Universe`
 
     """
     def __getitem__(self, item):
@@ -2089,7 +2094,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         filename : str, optional
-           ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
+            ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
         file_format : str, optional
             PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
             Jmol (spt); case-insensitive and can also be supplied as the
@@ -2098,13 +2103,12 @@ class AtomGroup(GroupBase):
             format string for default filename; use substitution tokens
             'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
         bonds : str, optional
-           how to handle bond information, especially relevant for PDBs;
-           default is ``"conect"``.
-           * ``"conect"``: write only the CONECT records defined in the original
-             file
-           * ``"all"``: write out all bonds, both the original defined and those
-             guessed by MDAnalysis
-           * ``None``: do not write out bonds
+            how to handle bond information, especially relevant for PDBs.
+            ``"conect"``: write only the CONECT records defined in the original
+            file. ``"all"``: write out all bonds, both the original defined and
+            those guessed by MDAnalysis. ``None``: do not write out bonds.
+            Default os ``"conect"``.
+
 
         .. versionchanged:: 0.9.0
            Merged with write_selection.  This method can now write both

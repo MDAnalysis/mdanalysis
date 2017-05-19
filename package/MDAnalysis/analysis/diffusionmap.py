@@ -115,6 +115,7 @@ epsilon determination or other manipulations on the diffusion
 map method. The :class:`DistanceMatrix` exists in
 :mod:`~MDAnalysis.analysis.diffusionmap` and can be passed
 as an initialization argument for :class:`DiffusionMap`.
+
     >>> import MDAnalysis as mda
     >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
     >>> from MDAnalysis.tests.datafiles import PSF, DCD

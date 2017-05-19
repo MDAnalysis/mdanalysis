@@ -30,6 +30,7 @@ The building blocks for MDAnalysis' description of topology
 from __future__ import print_function, absolute_import, division
 
 from six.moves import zip
+import numbers
 import numpy as np
 import functools
 
@@ -332,15 +333,6 @@ class TopologyDict(object):
 
       topologydict = TopologyDict(members)
 
-    Arguments
-    ---------
-    *members*
-      A list of :class:`TopologyObject` instances
-
-    Returns
-    -------
-    *topologydict*
-      A specialised dictionary of the topology instances passed to it
 
     TopologyDicts are also built lazily from a :class:`TopologyGroup.topDict`
     attribute.
@@ -377,6 +369,12 @@ class TopologyDict(object):
 
     Two :class:`TopologyDict` instances can be combined using
     addition and it will not create any duplicate bonds in the process.
+
+    Arguments
+    ---------
+    members :
+      A list of :class:`TopologyObject` instances
+
 
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
@@ -624,6 +622,7 @@ class TopologyGroup(object):
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
 
+
         .. versionadded:: 0.9.0
         """
         # Issue #780 - if self is empty, return self to avoid invalid mask
@@ -751,7 +750,7 @@ class TopologyGroup(object):
            Allows indexing via boolean numpy array
         """
         # Grab a single Item, similar to Atom/AtomGroup relationship
-        if isinstance(item, int):
+        if isinstance(item, numbers.Integral):
             outclass = {'bond': Bond,
                         'angle': Angle,
                         'dihedral': Dihedral,
