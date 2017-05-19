@@ -263,13 +263,6 @@ def process_selection(select):
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
-            select['mobile'] = select['target']
-            warnings.warn("use key 'mobile' instead of deprecated 'target'; "
-                          "'target' will be removed in 0.8",
-                          DeprecationWarning)
-        except KeyError:
-            pass
-        try:
             select['mobile']
             select['reference']
         except KeyError:
