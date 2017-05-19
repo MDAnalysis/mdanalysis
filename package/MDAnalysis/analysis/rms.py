@@ -646,7 +646,7 @@ class RMSF(AnalysisBase):
             super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
                                        start=start, stop=stop, step=step,
                                        verbose=verbose)
-        super(RMSF, self).run()
+        return super(RMSF, self).run()
 
     def _prepare(self):
         self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
