@@ -21,12 +21,11 @@
 #
 
 # Hydrogen Bonding Analysis
-r"""
-Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
+r"""Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
 ===========================================================================
 
 :Author: David Caplan, Lukas Grossar, Oliver Beckstein
-:Year: 2010-2012
+:Year: 2010-2017
 :Copyright: GNU Public License v3
 
 
@@ -65,12 +64,12 @@ indicates comments that are not part of the output.)::
     results = [
         [ # frame 1
            [ # hbond 1
-              <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
+              <donor index (0-based)>,
               <acceptor index (0-based)>, <donor string>, <acceptor string>,
               <distance>, <angle>
            ],
            [ # hbond 2
-              <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
+              <donor index (0-based)>,
               <acceptor index (0-based)>, <donor string>, <acceptor string>,
               <distance>, <angle>
            ],
@@ -82,26 +81,11 @@ indicates comments that are not part of the output.)::
         ...
     ]
 
-.. Note::
-
-   For historic reasons, the output contains 1-based indices (named *donor idx*
-   and *acceptor idx*) in addition to 0-based indices (named *donor index* and
-   *acceptor index*). To get the :attr:`Atom.index` (the 0-based index
-   typically used in MDAnalysis), use the *index* values (or subtract 1 from
-   *idx*). For instance, to find an atom in :attr:`Universe.atoms` by *index*
-   from the output one would use ``u.atoms[index]``.
-
-   .. deprecated:: 0.15.0
-      The 1-based indices "donor_idx" and "acceptor_idx" are being deprecated
-      in favor of zero-based indices "donor_index" and "acceptor_index" and are
-      targeted for removal in 0.17.0.
-
-
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
-database or dataframe for further
-processing. :meth:`HydrogenBondAnalysis.save_table` saves the table to a
-pickled file. The table itself is a :class:`numpy.recarray`.
+database or dataframe for further processing.
+:meth:`HydrogenBondAnalysis.save_table` saves the table to a pickled file. The
+table itself is a :class:`numpy.recarray`.
 
 
 Detection of hydrogen bonds
@@ -297,18 +281,16 @@ Classes
       :class:`numpy.recarray` with the following columns:
 
           0. "time"
-          1. "donor_idx"
-          2. "acceptor_idx"
-          3. "donor_index"
-          4. "acceptor_index"
-          5. "donor_resnm"
-          6. "donor_resid"
-          7. "donor_atom"
-          8. "acceptor_resnm"
-          9. "acceptor_resid"
-          10. "acceptor_atom"
-          11. "distance"
-          12. "angle"
+          1. "donor_index"
+          2. "acceptor_index"
+          3. "donor_resnm"
+          4. "donor_resid"
+          5. "donor_atom"
+          6. "acceptor_resnm"
+          7. "acceptor_resid"
+          8. "acceptor_atom"
+          9. "distance"
+          10. "angle"
 
       It takes up more space than :attr:`~HydrogenBondAnalysis.timeseries` but
       it is easier to analyze and to import into databases or dataframes.
@@ -321,22 +303,10 @@ Classes
          import pandas as pd
          df = pd.DataFrame.from_records(h.table)
 
-      .. Note::
 
-         The index variables *donor_idx* and *acceptor_idx* are 1-based
-         indices. To get the :attr:`Atom.index` (the 0-based index typically
-         used in MDAnalysis) simply subtract 1, or better, use the 0-based
-         variables named *donor_index* and *acceptor_index*.
-
-         For instance, to find an acceptor atom in :attr:`Universe.atoms` by
-         *index* one would use ``u.atoms[acceptor_index]``.
-
-
-      .. deprecated:: 0.15.0
+      .. versionchanged:: 0.17.0
          The 1-based donor and acceptor indices (*donor_idx* and
-         *acceptor_idx*) are deprecated in favor of 0-based indices. The
-         0-based indices can be accessed by *donor_index* and *acceptor_index*;
-         removal of the 1-based indices is targeted for version 0.17.0
+         *acceptor_idx*) are deprecated in favor of 0-based indices.
 
    .. automethod:: _get_bonded_hydrogens
 
@@ -579,6 +549,9 @@ class HydrogenBondAnalysis(object):
         .. versionchanged:: 0.11.0
            Initial checks for selections that potentially raise :exc:`SelectionError`.
 
+        .. versionchanged:: 0.17.0
+           use 0-based indexing
+
         .. deprecated:: 0.16
            The previous `verbose` keyword argument was replaced by
            `debug`. Note that the `verbose` keyword argument is now
@@ -587,34 +560,6 @@ class HydrogenBondAnalysis(object):
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
 
         """
-        warnings.warn(
-             "The donor and acceptor indices being 1-based is deprecated in favor"
-             " of a zero-based index. These can be accessed by 'donor_index' or"
-             " 'acceptor_index', removal of the 1-based indices is targeted for"
-             " version 0.17.0", category=DeprecationWarning)
-        # REMOVAL (DEPRECATION) instructions for 0.17.0: "1-based indices" (aka "idx" vs 0-based "index")
-        # - remove the warning
-        # - replace 'deprecated 0.15.0' with 'versionchanged 0.17.0' (and adjust text)
-        # - update docs for "timeseries" by removing all "idx (1-based)" entries:
-        #   one hydrogen bond should now look like
-        #      <donor index (0-based)>, <acceptor index (0-based)>, <donor string>, <acceptor string>,
-        #      <distance>, <angle>
-        # - update docs for "table": removed *_idx and renumber
-        # - in run(): removed the 1-based indices (h.index + 1, a.index + 1) from frame_results:
-        #   for instance, should now read (two occurences!)
-        #        frame_results.append(
-        #                            [h.index, a.index,
-        #                             (h.resname, h.resid, h.name),
-        #                             (a.resname, a.resid, a.name),
-        #                              dist, angle])
-        # - _reformat_hb(): change indices hb[:4] --> hb[:2]
-        # - generate_table(), count_*(), timesteps_by_type():
-        #   remove any donor_idx, acceptor_idx variables and fields.
-        # - update tests (change indices in analysis/test_hbonds.py)
-        # - update any docs in this file that mention "1-based"
-        #
-        # I suggest to keep this removal a separate commit. [@orbeckst]
-
 
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,  # 0.7.6 default
@@ -1042,7 +987,7 @@ class HydrogenBondAnalysis(object):
                                 self.logger_debug(
                                     "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index, a.index, dist, angle))
                                 frame_results.append(
-                                    [h.index + 1, a.index + 1, h.index, a.index,
+                                    [h.index, a.index,
                                     (h.resname, h.resid, h.name),
                                     (a.resname, a.resid, a.name),
                                     dist, angle])
@@ -1067,7 +1012,7 @@ class HydrogenBondAnalysis(object):
                                 self.logger_debug(
                                     "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index, h.index, dist, angle))
                                 frame_results.append(
-                                    [h.index + 1, a.index + 1, h.index, a.index,
+                                    [h.index, a.index,
                                      (h.resname, h.resid, h.name),
                                      (a.resname, a.resid, a.name),
                                     dist, angle])
@@ -1101,7 +1046,7 @@ class HydrogenBondAnalysis(object):
            `timesteps[i]`, see :attr:`timesteps`)
         2. `timeseries[i][j]`: j-th hydrogen bond that was detected at the i-th
            frame.
-        3. ``donor_idx, acceptor_idx, donor_index, acceptor_index,
+        3. ``donor_index, acceptor_index,
            donor_name_str, acceptor_name_str, distance, angle =
            timeseries[i][j]``: structure of one hydrogen bond data item
 
@@ -1112,14 +1057,12 @@ class HydrogenBondAnalysis(object):
           results = [
               [ # frame 1
                  [ # hbond 1
-                    <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
-                    <acceptor index (0-based)>, <donor string>, <acceptor string>,
-                    <distance>, <angle>
+                    <donor index (0-based)>, <acceptor index (0-based)>,
+                    <donor string>, <acceptor string>, <distance>, <angle>
                  ],
                  [ # hbond 2
-                    <donor idx (1-based)>, <acceptor idx (1-based)>, <donor index (0-based)>,
-                    <acceptor index (0-based)>, <donor string>, <acceptor string>,
-                    <distance>, <angle>
+                    <donor index (0-based)>, <acceptor index (0-based)>,
+                    <donor string>, <acceptor string>, <distance>, <angle>
                  ],
                  ....
               ],
@@ -1135,12 +1078,6 @@ class HydrogenBondAnalysis(object):
 
         Note
         ----
-        The index variables named *donor_idx* and *acceptor_idx* are 1-based
-        indices, which were used historically. To get the :attr:`Atom.index`
-        (the 0-based index typically used in MDAnalysis) simply subtract 1, or
-        better, use the 0-based variables named *donor_index* and
-        *acceptor_index*.
-
         For instance, to find an acceptor atom in :attr:`Universe.atoms` by
         *index* one would use ``u.atoms[acceptor_index]``.
 
@@ -1165,10 +1102,10 @@ class HydrogenBondAnalysis(object):
            :attr:`_timeseries` when needed. :attr:`_timeseries` contains the donor atom and
            acceptor atom specifiers as tuples `(resname, resid, atomid)` instead of strings.
 
-        .. deprecated:: 0.15.0
+        .. versionchanged:: 0.17.0
            The 1-based indices "donor_idx" and "acceptor_idx" are being
-           deprecated in favor of the 0-based indices "donor_index" and
-           "acceptor_index" and they are targeted for removal in 0.17.0.
+           removed in favor of the 0-based indices "donor_index" and
+           "acceptor_index".
 
         """
         return [[self._reformat_hb(hb) for hb in hframe] for hframe in self._timeseries]
@@ -1187,11 +1124,9 @@ class HydrogenBondAnalysis(object):
            the un-ambiguous representation provided in _timeseries.
 
         """
-        # change indices once we remove 1-based donor_idx and acceptor_idx:
-        # change indices hb[:4]... --> hb[:2], hb[2], hb[3], hb[4:]
-        return (hb[:4]
-                + [atomformat.format(hb[4]), atomformat.format(hb[5])]
-                + hb[6:])
+        return (hb[:2]
+                + [atomformat.format(hb[2]), atomformat.format(hb[3])]
+                + hb[4:])
 
     def generate_table(self):
         """Generate a normalised table of the results.
@@ -1213,7 +1148,7 @@ class HydrogenBondAnalysis(object):
         num_records = np.sum([len(hframe) for hframe in self._timeseries])
         # build empty output table
         dtype = [
-            ("time", float), ("donor_idx", int), ("acceptor_idx", int),
+            ("time", float),
             ("donor_index", int),  ("acceptor_index", int),
             ("donor_resnm", "|U4"), ("donor_resid", int), ("donor_atom", "|U4"),
             ("acceptor_resnm", "|U4"), ("acceptor_resid", int), ("acceptor_atom", "|U4"),
@@ -1223,10 +1158,10 @@ class HydrogenBondAnalysis(object):
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
         for t, hframe in zip(self.timesteps, self._timeseries):
-            for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
+            for (donor_index, acceptor_index, donor,
                  acceptor, distance, angle) in hframe:
                 # donor|acceptor = (resname, resid, atomid)
-                out[cursor] = (t, donor_idx, acceptor_idx, donor_index, acceptor_index) + \
+                out[cursor] = (t, donor_index, acceptor_index) + \
                 donor + acceptor + (distance, angle)
                 cursor += 1
         assert cursor == num_records, "Internal Error: Not all HB records stored"
@@ -1254,7 +1189,8 @@ class HydrogenBondAnalysis(object):
         """
         if self.table is None:
             self.generate_table()
-        cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+        with open(filename, 'w') as f:
+            cPickle.dump(self.table, f, protocol=cPickle.HIGHEST_PROTOCOL)
 
     def _has_timeseries(self):
         has_timeseries = self._timeseries is not None
@@ -1304,17 +1240,16 @@ class HydrogenBondAnalysis(object):
              it has been observed.
 
 
-        .. deprecated:: 0.15.0
+        .. versionchanged:: 0.17.0
            The 1-based indices "donor_idx" and "acceptor_idx" are being
-           deprecated in favor of zero-based indices and they are targeted for
-           removal in 0.17.0.
+           deprecated in favor of zero-based indices.
         """
         if not self._has_timeseries():
             return
 
         hbonds = defaultdict(int)
         for hframe in self._timeseries:
-            for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
+            for (donor_index, acceptor_index, donor,
                  acceptor, distance, angle) in hframe:
                 donor_resnm, donor_resid, donor_atom = donor
                 acceptor_resnm, acceptor_resid, acceptor_atom = acceptor
@@ -1323,7 +1258,7 @@ class HydrogenBondAnalysis(object):
                 # idx_zero is redundant for an unambigous key, but included for
                 # consistency.
                 hb_key = (
-                    donor_idx, acceptor_idx, donor_index, acceptor_index,
+                    donor_index, acceptor_index,
                     donor_resnm, donor_resid, "?", donor_atom,
                     acceptor_resnm, acceptor_resid, acceptor_atom)
 
@@ -1331,7 +1266,6 @@ class HydrogenBondAnalysis(object):
 
         # build empty output table
         dtype = [
-            ('donor_idx', int), ('acceptor_idx', int),
             ("donor_index", int), ("acceptor_index", int), ('donor_resnm', 'U4'),
             ('donor_resid', int), ('donor_heavy_atom', 'U4'), ('donor_atom', 'U4'),
             ('acceptor_resnm', 'U4'), ('acceptor_resid', int), ('acceptor_atom', 'U4'),
@@ -1374,10 +1308,9 @@ class HydrogenBondAnalysis(object):
         data : numpy.recarray
 
 
-        .. deprecated:: 0.15.0
+        .. versionchanged:: 0.17.0
            The 1-based indices "donor_idx" and "acceptor_idx" are being
-           deprecated in favor of zero-based indices and they are targeted for
-           removal in 0.17.0.
+           replaced in favor of zero-based indices.
 
         """
         if not self._has_timeseries():
@@ -1385,7 +1318,7 @@ class HydrogenBondAnalysis(object):
 
         hbonds = defaultdict(list)
         for (t, hframe) in zip(self.timesteps, self._timeseries):
-            for (donor_idx, acceptor_idx, donor_index, acceptor_index, donor,
+            for (donor_index, acceptor_index, donor,
                  acceptor, distance, angle) in hframe:
                 donor_resnm, donor_resid, donor_atom = donor
                 acceptor_resnm, acceptor_resid, acceptor_atom = acceptor
@@ -1393,7 +1326,6 @@ class HydrogenBondAnalysis(object):
                 # (the donor_heavy_atom placeholder '?' is added later)
                 # idx_zero is redundant for key but added for consistency
                 hb_key = (
-                    donor_idx, acceptor_idx,
                     donor_index, acceptor_index,
                     donor_resnm, donor_resid, "?", donor_atom,
                     acceptor_resnm, acceptor_resid, acceptor_atom)
@@ -1406,7 +1338,7 @@ class HydrogenBondAnalysis(object):
 
         # build empty output table
         dtype = [
-            ('donor_idx', int), ('acceptor_idx', int),('donor_index', int),
+            ('donor_index', int),
             ('acceptor_index', int), ('donor_resnm', 'U4'), ('donor_resid', int),
             ('donor_heavy_atom', 'U4'), ('donor_atom', 'U4'),('acceptor_resnm', 'U4'),
             ('acceptor_resid', int), ('acceptor_atom', 'U4'), ('time', float)]
@@ -1426,7 +1358,7 @@ class HydrogenBondAnalysis(object):
 
         # patch in donor heavy atom names (replaces '?' in the key)
         h2donor = self._donor_lookup_table_byindex()
-        r.donor_heavy_atom[:] = [h2donor[idx - 1] for idx in r.donor_idx]
+        r.donor_heavy_atom[:] = [h2donor[idx] for idx in r.donor_index]
 
         return r
 
