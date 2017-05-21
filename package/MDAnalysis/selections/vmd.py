@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -26,16 +26,25 @@ VMD selections
 ==============
 
 Write :class:`MDAnalysis.core.groups.AtomGroup` selection to a VMD_ `tcl` file
-that defines `atomselect macros`_. To be used in VMD like this::
+(for example, "macros.vmd") that defines `atomselect macros`_. To be used in
+VMD like this (assuming the default macro name "mdanalysis001"):
 
-  source macros.vmd
-  set sel [atomselect top mdanalysis001]  # use macro 001
+.. code-block:: tcl
+
+   source macros.vmd
+   set sel [atomselect top mdanalysis001]
+
+In the VMD_ GUI the macro "mdanalysis001" appears in the
+:menuselection:`Graphics --> Representations` window under
+:guilabel:`Selections: Singlewords`.
+
 
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _atomselect macros: http://www.ks.uiuc.edu/Research/vmd/current/ug/node120.html
 
 .. autoclass:: SelectionWriter
    :inherited-members:
+
 """
 from __future__ import absolute_import
 
