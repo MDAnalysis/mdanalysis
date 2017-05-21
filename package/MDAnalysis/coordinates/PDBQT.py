@@ -160,11 +160,11 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
                     unitcell[:] = x, y, z, A, B, G
                 if line.startswith(('ATOM', 'HETATM')):
-                    x, y, z = np.float32((line[30:38], line[38:46], line[46:54]))
-                    coords.append((x, y, z))
+                    # convert all entries at the end once for optimal speed
+                    coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
-            np.array(coords, dtype=np.float32),
+            np.float32(coords),
             **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
