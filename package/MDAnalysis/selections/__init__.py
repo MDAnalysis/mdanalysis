@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -57,7 +57,25 @@ from . import jmol
 
 
 def get_writer(filename, defaultformat):
-    """Return a SelectionWriter for *filename* or a *defaultformat*."""
+    """Return a SelectionWriter for `filename` or a `defaultformat`.
+
+    Parameters
+    ----------
+    filename : str
+       name of the output file; the extension is used to guess the file format
+    defaultformat : str
+       if `filename` does not have an extension, use `defaultformat` instead
+
+    Returns
+    -------
+    SelectionWriter : `type`
+        the writer *class* for the detected format
+
+    Raises
+    ------
+    :exc:`NotImplementedError`
+        for any format that is not defined
+    """
 
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
