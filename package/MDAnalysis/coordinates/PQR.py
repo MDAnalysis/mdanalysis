@@ -128,6 +128,7 @@ class PQRReader(base.SingleFrameReaderBase):
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
+                    # convert all entries at the end once for optimal speed
                     coords.append(fields[-5:-2])
 
         self.n_atoms = len(coords)
