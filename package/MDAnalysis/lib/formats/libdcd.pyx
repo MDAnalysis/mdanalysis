@@ -134,6 +134,8 @@ cdef class DCDFile:
 
     def __enter__(self):
         """Support context manager"""
+        if not self.is_open:
+            self.open(self.fname, self.mode)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -178,9 +180,10 @@ cdef class DCDFile:
                           "ErrorCode: {}".format(self.fname, ok))
         self.is_open = True
         self.current_frame = 0
+        self.reached_eof = False
+        # Has to come last since it checks the reached_eof flag
         if self.mode == 'r':
             self.remarks = self._read_header()
-        self.reached_eof = False
 
     def close(self):
         if self.is_open:
