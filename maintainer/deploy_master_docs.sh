@@ -18,6 +18,23 @@
 # NOTE: If any of these environment variables are not set or 
 #       empty then the script will exit with and error (-o nounset).
 
+# TESTING TO PUSH TO THE docs repo
+# Assume that this is MANUALLY run from top level of repo
+# and the docs were built with
+#
+#  (cd package && python setup.py build_sphinx)
+#
+
+GH_REPOSITORY=github.com/MDAnalysis/docs.git
+#MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
+MDA_DOCDIR=package/doc/html/html
+GIT_CI_USER="TravisCI"
+GIT_CI_EMAIL="TravisCI@mdanalysis.org"
+
+# for informational purposes at the moment
+GH_DOC_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+
 set -o errexit -o nounset
 
 function die () {
@@ -35,19 +52,22 @@ test -n "${MDA_DOCDIR}" || die "MDA_DOCDIR must be set in .travis.yml" 100
 
 cd ${MDA_DOCDIR} || die "Failed to 'cd ${MDA_DOCDIR}'. Run from the top level of the repository"
 
+# for local testing
+test -d .git && rm -rf .git
+
 git init
 git config user.name "${GIT_CI_USER}"
 git config user.email "${GIT_CI_EMAIL}"
 
-git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
-git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
-git reset upstream/gh-pages
+git remote add docs "https://${GH_TOKEN}@${GH_REPOSITORY}"
+git fetch --depth 50 docs master
+git reset docs/master
 
 touch .
 touch .nojekyll
 
 git add -A .
-git commit -m "rebuilt html docs from branch ${GH_DOC_BRANCH} with sphinx at ${rev}"
-git push -q upstream HEAD:gh-pages
+git commit -m "rebuilt html docs from branch ${GH_DOC_BRANCH} with sphinx at MDAnalysis/mdanalysis@${rev}"
+git push -q docs HEAD:master
 
 

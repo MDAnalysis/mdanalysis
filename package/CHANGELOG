@@ -26,6 +26,7 @@ Enhancements
   * Improved print to screen format in waterdynamics module (using
     ProgressMeter).
   * PQRParser now treats insertion codes properly (Issue #1317)
+  * made online docs responsive with the Alabaster Sphinx theme (#378)
 
 Fixes
   * In Universe.transfer_to_memory(): dt is now adjusted with step (Issue #1310)
@@ -106,14 +107,14 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
   * Added `singleframe` attribute to Writer API to exclude from known Writers
     for a single frame (Issue #1199 PR #1201)
-  * Correct the display error of HydrogenBondAnalysis when start is not 0 or 
+  * Correct the display error of HydrogenBondAnalysis when start is not 0 or
     step is not one.
   * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
     included set operators (Issue #726)
   * Universes built with Merge now use the MemoryReader (Issue #1251)
   * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
     weights="size") by about 5x (partially Issue #1191)
-    
+
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
