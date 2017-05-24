@@ -22,9 +22,9 @@ through the standard "python doc strings". Type ::
 
   In ipython you can use the question mark operator ::
 
-       MDAnalysis ?
-       MDAnalysis.Universe ?
-       MDAnalysis.Universs ??
+       MDAnalysis?
+       MDAnalysis.Universe?
+       MDAnalysis.Universe??
 
   (The '??' also shows the source code.)
 
@@ -34,22 +34,18 @@ Online html manual
 
 The documentation for the latest stable release can always be found at
 
-   https://pythonhosted.org/MDAnalysis/
+   http://docs.mdanalysis.org
 
 The docs for the latest development version are also on the internet
 at
 
-   http://www.mdanalysis.org/mdanalysis/package/doc/html/
+   http://devdocs.mdanalysis.org
 
 The manual includes all the doc strings with some additional text; it
 is a work in progress and suggestions to improve it are welcome. File
 them via the Issue Tracker at
 https://github.com/MDAnalysis/mdanalysis/issues/ or mention it on the
 mailing list http://groups.google.com/group/mdnalysis-discussion .
-
-The manual corresponding to the current sources is provided in the
-doc/html directory (start at doc/html/index.html).
-
 
 
 Wiki and online docs

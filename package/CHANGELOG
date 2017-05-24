@@ -48,10 +48,12 @@ Fixes
   * Add the OC1 and OC2 from amber99sb-ildn to hydrogen bond acceptors (issue #1342)
   * Fix RMSF run return value (PR #1354)
 
-
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
   * Change Mathjax cdn (Issue #1313)
+  * Docs moved to http://docs.mdanalysis.org (Issue #1315)
+    and made responsive (Alabaster theme with readable-sphinx CSS)
+    (Issue #378)
 
 
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
