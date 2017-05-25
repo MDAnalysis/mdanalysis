@@ -4,12 +4,18 @@
    There is also an advanced version of this, so anything complicated
    can be deferred to there.
 
-AtomGroup access to the trajectory
+===========================
+ Working with trajectories
+===========================
 
-One frame at a time policy
+TODO
 
-Trajectory manipulation, ie iteration and seeking
+* AtomGroup access to the trajectory
+* One frame at a time policy
+* Trajectory manipulation, ie iteration and seeking
 
-The timestep object
+
+The Timestep object
+===================
 
 Timestep object attributes (time, dt, others)

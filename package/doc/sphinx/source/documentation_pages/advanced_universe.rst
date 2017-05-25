@@ -2,7 +2,10 @@
 
 .. All the advanced options in Universe creation
 
-transfer to memory
+=======================
+ Advanced Universe use
+=======================
 
-anchoring
+* transfer to memory
+* anchoring
 

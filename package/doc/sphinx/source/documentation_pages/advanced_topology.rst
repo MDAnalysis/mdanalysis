@@ -2,4 +2,8 @@
 
 .. Manipulating the Topology object and TopologyAttrs
 
-Adding custom topology attrs
+=====================================
+ Advanced use of the topology system
+=====================================
+
+* Adding custom topology attrs

@@ -2,8 +2,10 @@
 
 .. All the advanced options in Reader usage and creation
 
-chainreader
+=========================
+ Advanced use of Readers
+=========================
 
-memoryreader
-
-auxiliaries
+* chainreader
+* memoryreader
+* auxiliaries
