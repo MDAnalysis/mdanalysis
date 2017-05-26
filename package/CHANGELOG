@@ -117,10 +117,6 @@ Enhancements
   * Universes built with Merge now use the MemoryReader (Issue #1251)
   * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
     weights="size") by about 5x (partially Issue #1191)
-<<<<<<< HEAD
-
-=======
->>>>>>> update changelog
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)

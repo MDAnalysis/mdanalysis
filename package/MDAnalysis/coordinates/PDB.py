@@ -383,8 +383,8 @@ class PDBReader(base.ReaderBase):
                                         line[24:33], line[33:40],
                                         line[40:47], line[47:54]]
 
-        # doing the conversion at the end speeds up the parser
-        self.ts._pos[:] = np.float32(tmp_buf)
+        # doing the conversion from list to array at the end is faster
+        self.ts.positions = tmp_buf
 
         # check if atom number changed
         if pos != self.n_atoms:

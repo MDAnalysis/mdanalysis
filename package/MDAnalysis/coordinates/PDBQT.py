@@ -164,7 +164,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
-            np.float32(coords),
+            coords,
             **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
