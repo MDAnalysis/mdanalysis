@@ -128,11 +128,12 @@ class PQRReader(base.SingleFrameReaderBase):
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
-                    coords.append(np.float32(fields[-5:-2]))
+                    # convert all entries at the end once for optimal speed
+                    coords.append(fields[-5:-2])
+
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
-            np.array(coords, dtype=np.float32),
-            **self._ts_kwargs)
+            coords, **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:

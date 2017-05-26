@@ -54,6 +54,7 @@ Changes
   * Docs moved to http://docs.mdanalysis.org (Issue #1315)
     and made responsive (Alabaster theme with readable-sphinx CSS)
     (Issue #378)
+  * speed improvements parsing PDB / PDBQT / PQR / XYZ coordinate reader (Issue #1308)
 
 
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
@@ -116,7 +117,6 @@ Enhancements
   * Universes built with Merge now use the MemoryReader (Issue #1251)
   * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
     weights="size") by about 5x (partially Issue #1191)
-
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
