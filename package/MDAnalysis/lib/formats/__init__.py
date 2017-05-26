@@ -21,5 +21,6 @@
 #
 from __future__ import absolute_import
 from . import libmdaxdr
+from . import libdcd
 
-__all__ = ['libmdaxdr']
+__all__ = ['libmdaxdr', 'libdcd']
