@@ -724,6 +724,7 @@ from . import XYZ
 from . import memory
 from . import MMTF
 from . import null
+from . import TNG
 
 
 try:

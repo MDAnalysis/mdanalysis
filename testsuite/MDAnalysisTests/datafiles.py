@@ -64,7 +64,7 @@ __all__ = [
     "PDB_chainidnewres",  # Issue 1110
     "PDB_sameresid_diffresname", #Case where two residues share the same resid
     "PDB_chainidrepeat",  # Issue #1107
-    "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "PDB", "GRO", "XTC", "TRR", "TNG", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
     "COORDINATES_GRO_BZ2",
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
@@ -218,6 +218,7 @@ GRO_sameresid_diffresname = resource_filename(__name__, 'data/sameresid_diffresn
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
+TNG = resource_filename(__name__, 'data/adk_oplsaa.tng')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')

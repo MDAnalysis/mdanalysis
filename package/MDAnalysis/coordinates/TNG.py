@@ -52,8 +52,8 @@ class TNGReader(base.ReaderBase):
     format = 'TNG'
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
-    _writer = TRRWriter
-    _file = TRRFile
+    # _writer = TRRWriter
+    # _file = TRRFile
 
     def __init__(self, filename, convert_units=True, **kwargs):
         """
