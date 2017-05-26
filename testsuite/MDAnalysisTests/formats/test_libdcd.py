@@ -19,6 +19,8 @@ from MDAnalysisTests import tempdir
 import numpy as np
 import os
 import math
+from hypothesis import given
+import hypothesis.strategies as st
 
 
 class TestDCDReadFrame():
@@ -189,16 +191,23 @@ class TestDCDWrite():
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile2 = self.tmpdir.name + '/test2.dcd'
         self.readfile = DCD
         self.natoms = 3341
         self.expected_frames = 98
         self.seek_frame = 91
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
-        self._write_files()
+        self._write_files(testfile=self.testfile,
+                          remarks_setting='input')
 
-    def _write_files(self):
+    def _write_files(self, testfile, remarks_setting):
+
         with DCDFile(self.readfile) as f_in, DCDFile(self.testfile, 'w') as f_out:
             for frame in f_in:
+                if remarks_setting == 'input':
+                    remarks = f_in.remarks
+                else: # accept the random remarks strings from hypothesis
+                    remarks = remarks_setting
                 box=frame.unitcell.astype(np.float64)
                 f_out.write(xyz=frame.x,
                             box=box,
@@ -207,7 +216,7 @@ class TestDCDWrite():
                             charmm=1, # DCD should be CHARMM
                             time_step=f_in.delta,
                             ts_between_saves=f_in.nsavc,
-                            remarks=f_in.remarks)
+                            remarks=remarks)
 
     def tearDown(self):
         try:
@@ -273,6 +282,16 @@ class TestDCDWrite():
         # in the written DCD file
         with DCDFile(self.testfile) as f:
             assert_equal(f.remarks, self.expected_remarks)
+
+    @given(st.text()) # handle the full unicode range of strings
+    def test_written_remarks_property(self, remarks_str):
+        # property based testing for writing of a wide range of string
+        # values to REMARKS field
+        self._write_files(testfile=self.testfile2,
+                          remarks_setting=remarks_str)
+        expected_remarks = remarks_str
+        with DCDFile(self.testfile2) as f:
+            assert_equal(f.remarks, expected_remarks)
 
     def test_written_nsavc(self):
         # ensure that nsavc, the timesteps between frames written
@@ -382,12 +401,14 @@ class  TestDCDWriteNAMD(TestDCDWrite):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile2 = self.tmpdir.name + '/test2.dcd'
         self.readfile = DCD_NAMD_TRICLINIC
         self.natoms = 5545
         self.expected_frames = 1
         self.seek_frame = 0
         self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
-        self._write_files()
+        self._write_files(testfile=self.testfile,
+                          remarks_setting='input')
 
     def test_written_unit_cell(self):
         # there's no expectation that we can write unit cell
@@ -402,12 +423,14 @@ class TestDCDWriteCharmm36(TestDCDWrite):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile2 = self.tmpdir.name + '/test2.dcd'
         self.readfile = DCD_TRICLINIC
         self.natoms = 375
         self.expected_frames = 10
         self.seek_frame = 7
         self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
-        self._write_files()
+        self._write_files(testfile=self.testfile,
+                          remarks_setting='input')
 
     def test_written_unit_cell(self):
         # there's no expectation that we can write unit cell
