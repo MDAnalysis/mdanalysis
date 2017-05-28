@@ -20,7 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
+r"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 =====================================================================
 
 :Authors: John Detlefs
@@ -94,8 +94,9 @@ is the sum of the variances from 0 to i.
 From here, inspection of the ``pca_space`` and conclusions to be drawn from the
 data are left to the user.
 
-Functions
----------
+Classes and Functions
+---------------------
+
 .. autoclass:: PCA
 .. autofunction:: cosine_content
 

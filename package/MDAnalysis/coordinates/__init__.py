@@ -41,7 +41,7 @@ Readers
 -------
 
 All Readers are based on a :class:`ProtoReader` class that defines a common
-;ref:`Trajectory API` and allows other code to interface with all trajectory
+:ref:`Trajectory API` and allows other code to interface with all trajectory
 formats in the same way, independent of the details of the trajectory format
 itself.
 
