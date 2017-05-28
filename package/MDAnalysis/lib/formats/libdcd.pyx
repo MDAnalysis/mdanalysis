@@ -26,6 +26,8 @@ cimport numpy as np
 
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
+from libc.math cimport M_PI_2, asin
+
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
                 "FIO_SEEK_END": SEEK_END}
@@ -263,54 +265,6 @@ cdef class DCDFile:
                       (self.charmm & DCD_HAS_EXTRA_BLOCK))
 
 
-    def read(self):
-        if self.reached_eof:
-            raise IOError('Reached last frame in DCD, seek to 0')
-        if not self.is_open:
-            raise IOError("No file open")
-        if self.mode != 'r':
-            raise IOError('File opened in mode: {}. Reading only allow '
-                               'in mode "r"'.format('self.mode'))
-        if self.n_frames == 0:
-            raise IOError("opened empty file. No frames are saved")
-
-        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=FLOAT,
-                                       order='F')
-        cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
-
-        cdef FLOAT_T[::1] x = xyz[:, 0]
-        cdef FLOAT_T[::1] y = xyz[:, 1]
-        cdef FLOAT_T[::1] z = xyz[:, 2]
-
-        first_frame = self.current_frame == 0
-
-        ok = read_dcdstep(self.fp, self.n_atoms,
-                          <FLOAT_T*> &x[0],
-                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                          <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
-                          self.freeind, self.fixedcoords,
-                          self.reverse_endian, self.charmm)
-        if ok != 0 and ok != -4:
-            raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
-
-        # we couldn't read any more frames.
-        if ok == -4:
-            self.reached_eof = True
-            raise StopIteration
-
-        self.current_frame += 1
-
-        _ts_order = [0, 2, 5, 4, 3, 1]
-        uc = np.take(unitcell, _ts_order)
-        if np.any(uc < 0.) or np.any(uc[3:] > 180.):
-            # might be new CHARMM: box matrix vectors
-            H = unitcell
-            e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
-            uc = triclinic_box(e1, e2, e3)
-
-        unitcell = uc
-
-        return DCDFrame(xyz, unitcell)
 
     def seek(self, frame):
         """Seek to Frame.
@@ -398,13 +352,20 @@ cdef class DCDFile:
         if self.mode != 'w':
             raise IOError('File opened in mode: {}. Writing only allowed '
                                'in mode "w"'.format('self.mode'))
+        if len(box) != 6:
+            raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
+
+        # print("box to write ", box)
 
         #cdef double [:,:] unitcell = box
         xyz = np.asarray(xyz, order='F', dtype=np.float32)
-        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=np.float64)
 
-        if c_box.size != 6:
-            raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
+        # we only support writing charmm format unit cell info
+        # The DCD unitcell is written as ``[A, gamma, B, beta, alpha, C]``
+        _ts_order = [0, 5, 1, 4, 3, 2]
+        box = np.take(box, _ts_order)
+        # print("writting box ", box)
+        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=np.float64)
 
         if xyz.shape != (natoms, 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
@@ -423,24 +384,86 @@ cdef class DCDFile:
 
         # looks like self.nsavc is just 0 all the time
         step = self.current_frame * self.nsavc
-
-        # we only support writing charmm format unit cell info
-        alpha = box[3]
-        beta = box[4]
-        gamma = box[5]
-        a = box[0]
-        b = box[1]
-        c = box[2]
-        box[0] = a
-        box[1] = gamma
-        box[2] = b
-        box[3] = beta
-        box[4] = alpha
-        box[5] = c
-
         ok = write_dcdstep(self.fp, self.current_frame, step,
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                          <DOUBLE_T*> &c_box[0], charmm)
 
         self.current_frame += 1
+
+    def read(self):
+        if self.reached_eof:
+            raise IOError('Reached last frame in DCD, seek to 0')
+        if not self.is_open:
+            raise IOError("No file open")
+        if self.mode != 'r':
+            raise IOError('File opened in mode: {}. Reading only allow '
+                               'in mode "r"'.format('self.mode'))
+        if self.n_frames == 0:
+            raise IOError("opened empty file. No frames are saved")
+
+        cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=FLOAT,
+                                       order='F')
+        cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
+        unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
+        unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
+
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
+
+        first_frame = self.current_frame == 0
+        ok = read_dcdstep(self.fp, self.n_atoms,
+                          <FLOAT_T*> &x[0],
+                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
+                          <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
+                          self.freeind, self.fixedcoords,
+                          self.reverse_endian, self.charmm)
+        if ok != 0 and ok != -4:
+            raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+
+        # we couldn't read any more frames.
+        if ok == -4:
+            self.reached_eof = True
+            raise StopIteration
+
+        self.current_frame += 1
+
+        if (unitcell[1] >= -1.0 and unitcell[1] <= 1.0 and
+            unitcell[3] >= -1.0 and unitcell[3] <= 1.0 and
+            unitcell[4] >= -1.0 and unitcell[4] <= 1.0):
+            # This file was generated by Charmm, or by NAMD > 2.5, with the angle
+            # cosines of the periodic cell angles written to the DCD file.
+            # This formulation improves rounding behavior for orthogonal cells
+            # so that the angles end up at precisely 90 degrees, unlike acos().
+            # (changed in MDAnalysis 0.9.0 to have NAMD ordering of the angles;
+            # see Issue 187) */
+            alpha = 90.0 - asin(unitcell[4]) * 90.0 / M_PI_2;
+            beta  = 90.0 - asin(unitcell[3]) * 90.0 / M_PI_2;
+            gamma = 90.0 - asin(unitcell[1]) * 90.0 / M_PI_2;
+        else:
+            # This file was likely generated by NAMD 2.5 and the periodic cell
+            # angles are specified in degrees rather than angle cosines.
+            alpha = unitcell[4];
+            beta  = unitcell[3];
+            gamma = unitcell[1];
+
+        unitcell[4] = alpha;
+        unitcell[3] = beta;
+        unitcell[1] = gamma;
+
+        # The original unitcell is read as ``[A, gamma, B, beta, alpha, C]``
+        _ts_order = [0, 2, 5, 4, 3, 1]
+        uc = np.take(unitcell, _ts_order)
+
+        # heuristic sanity check: uc = A,B,C,alpha,beta,gamma
+        # XXX: should we worry about these comparisons with floats?
+        if np.any(uc < 0.) or np.any(uc[3:] > 180.):
+            # might be new CHARMM: box matrix vectors
+            H = unitcell
+            e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
+            uc = triclinic_box(e1, e2, e3)
+
+        unitcell = uc
+
+        return DCDFrame(xyz, unitcell)
