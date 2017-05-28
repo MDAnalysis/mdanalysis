@@ -202,7 +202,7 @@ class TestDCDWrite():
 
     def _write_files(self, testfile, remarks_setting):
 
-        with DCDFile(self.readfile) as f_in, DCDFile(self.testfile, 'w') as f_out:
+        with DCDFile(self.readfile) as f_in, DCDFile(testfile, 'w') as f_out:
             for frame in f_in:
                 if remarks_setting == 'input':
                     remarks = f_in.remarks
