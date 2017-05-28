@@ -365,15 +365,15 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-    def write(self, xyz, double [:] box, int step, int natoms,
+    def write(self, xyz,  box, int step, int natoms,
               int ts_between_saves, int charmm, double time_step, remarks):
         """write one frame into DCD file.
 
         Parameters
         ----------
-        xyz : ndarray, shape=(n_atoms, 3)
+        xyz : array_like, shape=(n_atoms, 3)
             cartesion coordinates
-        box : ndarray, shape=(3, 3)
+        box : array_like, shape=(6)
             Box vectors for this frame
         step : int
             current step number, 1 indexed
@@ -393,6 +393,15 @@ cdef class DCDFile:
                                'in mode "w"'.format('self.mode'))
 
         #cdef double [:,:] unitcell = box
+        xyz = np.asarray(xyz, order='F', dtype=np.float32)
+        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=np.float64)
+
+        if c_box.size != 6:
+            raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
+
+        if xyz.shape != (natoms, 3):
+            raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
+
         cdef FLOAT_T[::1] x = xyz[:, 0]
         cdef FLOAT_T[::1] y = xyz[:, 1]
         cdef FLOAT_T[::1] z = xyz[:, 2]
@@ -425,6 +434,6 @@ cdef class DCDFile:
         ok = write_dcdstep(self.fp, self.current_frame, step,
                          self.n_atoms, <FLOAT_T*> &x[0],
                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                         <DOUBLE_T*> &box[0], charmm)
+                         <DOUBLE_T*> &c_box[0], charmm)
 
         self.current_frame += 1

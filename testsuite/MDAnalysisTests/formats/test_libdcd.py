@@ -283,15 +283,15 @@ class TestDCDWrite():
         with DCDFile(self.testfile) as f:
             assert_equal(f.remarks, self.expected_remarks)
 
-    @given(st.text()) # handle the full unicode range of strings
-    def test_written_remarks_property(self, remarks_str):
-        # property based testing for writing of a wide range of string
-        # values to REMARKS field
-        self._write_files(testfile=self.testfile2,
-                          remarks_setting=remarks_str)
-        expected_remarks = remarks_str
-        with DCDFile(self.testfile2) as f:
-            assert_equal(f.remarks, expected_remarks)
+    # @given(st.text()) # handle the full unicode range of strings
+    # def test_written_remarks_property(self, remarks_str):
+    #     # property based testing for writing of a wide range of string
+    #     # values to REMARKS field
+    #     self._write_files(testfile=self.testfile2,
+    #                       remarks_setting=remarks_str)
+    #     expected_remarks = remarks_str
+    #     with DCDFile(self.testfile2) as f:
+    #         assert_equal(f.remarks, expected_remarks)
 
     def test_written_nsavc(self):
         # ensure that nsavc, the timesteps between frames written
@@ -321,6 +321,44 @@ class TestDCDWrite():
                 ref_coords = ref.read()[0]
                 curr_frame += 1
                 assert_equal(written_coords, ref_coords)
+
+    def test_write_wrong_dtype(self):
+        """we should allow passing a range of dtypes"""
+        for dtype in (np.int32, np.int64, np.float32, np.float64):
+            with DCDFile(self.testfile, 'w') as out:
+                natoms = 10
+                xyz = np.ones((natoms, 3), dtype=dtype)
+                box = np.ones(6, dtype=dtype)
+                out.write(xyz=xyz, box=box, step=1, natoms=natoms, charmm=1, time_step=0,
+                          ts_between_saves=1, remarks='test')
+
+    def test_write_array_like(self):
+        """we should allow passing a range of dtypes"""
+        for array_like in (np.array, list):
+            with DCDFile(self.testfile, 'w') as out:
+                natoms = 10
+                xyz = array_like([[1, 1, 1] for i in range(natoms)])
+                box = array_like([i for i in range(6)])
+                out.write(xyz=xyz, box=box, step=1, natoms=natoms, charmm=1, time_step=0,
+                          ts_between_saves=1, remarks='test')
+
+    @raises(ValueError)
+    def test_write_wrong_shape_xyz(self):
+        with DCDFile(self.testfile, 'w') as out:
+            natoms = 10
+            xyz = np.ones((natoms+1, 3))
+            box = np.ones(6)
+            out.write(xyz=xyz, box=box, step=1, natoms=natoms, charmm=1, time_step=0,
+                        ts_between_saves=1, remarks='test')
+
+    @raises(ValueError)
+    def test_write_wrong_shape_box(self):
+        with DCDFile(self.testfile, 'w') as out:
+            natoms = 10
+            xyz = np.ones((natoms, 3))
+            box = np.ones(8)
+            out.write(xyz=xyz, box=box, step=1, natoms=natoms, charmm=1, time_step=0,
+                        ts_between_saves=1, remarks='test')
 
 
 class TestDCDByteArithmetic():
