@@ -377,28 +377,7 @@ class TestDCDWrite():
                         ts_between_saves=1, remarks='test')
 
 
-class TestDCDByteArithmetic():
-
-    def setUp(self):
-
-        self.dcdfile = DCD
-        self._filesize = os.path.getsize(DCD)
-
-    def test_relative_frame_sizes(self):
-        # the first frame of a DCD file should always be >= in size
-        # to subsequent frames, as the first frame contains the same
-        # atoms + (optional) fixed atoms
-        with DCDFile(self.dcdfile) as dcd:
-            first_frame_size = dcd._firstframesize
-            general_frame_size = dcd._framesize
-
-            # for frame in test:
-            #     written_coords = test.read()[0]
-            #     ref_coords = ref.read()[0]
-            #     assert_equal(written_coords, ref_coords)
-
-
-class TestDCDByteArithmetic():
+class TestDCDByteArithmetic(object):
 
     def setUp(self):
         self.dcdfile = DCD
