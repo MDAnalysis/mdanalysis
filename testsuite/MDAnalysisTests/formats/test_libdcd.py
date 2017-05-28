@@ -377,57 +377,6 @@ class TestDCDWrite():
                         ts_between_saves=1, remarks='test')
 
 
-class TestDCDByteArithmetic(object):
-
-    def setUp(self):
-        self.dcdfile = DCD
-        self._filesize = os.path.getsize(DCD)
-
-    def test_relative_frame_sizes(self):
-        # the first frame of a DCD file should always be >= in size
-        # to subsequent frames, as the first frame contains the same
-        # atoms + (optional) fixed atoms
-        with DCDFile(self.dcdfile) as dcd:
-            first_frame_size = dcd._firstframesize
-            general_frame_size = dcd._framesize
-
-        assert_equal(first_frame_size >= general_frame_size, True)
-
-    def test_file_size_breakdown(self):
-        # the size of a DCD file is equivalent to the sum of the header
-        # size, first frame size, and (N - 1 frames) * size per general
-        # frame
-        expected = self._filesize
-        with DCDFile(self.dcdfile) as dcd:
-            actual = dcd._header_size + dcd._firstframesize + ((dcd.n_frames - 1) * dcd._framesize)
-        assert_equal(actual, expected)
-
-    def test_nframessize_int(self):
-        # require that the (nframessize / framesize) value used by DCDFile
-        # is an integer (because nframessize / framesize + 1 = total frames,
-        # which must also be an int)
-        with DCDFile(self.dcdfile) as dcd:
-            nframessize = self._filesize - dcd._header_size - dcd._firstframesize
-            assert_equal(float(nframessize) % float(dcd._framesize), 0)
-
-
-
-class TestDCDByteArithmeticNAMD(TestDCDByteArithmetic):
-    # repeat byte arithmetic tests for NAMD format DCD
-
-    def setUp(self):
-        self.dcdfile = DCD_NAMD_TRICLINIC
-        self._filesize = os.path.getsize(DCD_NAMD_TRICLINIC)
-
-
-class TestDCDByteArithmeticCharmm36(TestDCDByteArithmetic):
-    # repeat byte arithmetic tests for Charmm36 format DCD
-
-    def setUp(self):
-        self.dcdfile = DCD_TRICLINIC
-        self._filesize = os.path.getsize(DCD_TRICLINIC)
-
-
 class  TestDCDWriteNAMD(TestDCDWrite):
     # repeat writing tests for NAMD format DCD
 
@@ -543,19 +492,18 @@ class TestDCDWriteRandom():
         self.random_unitcells = np.random.random((self.expected_frames, 6)).astype(np.float64)
         with DCDFile(self.readfile) as f_in, DCDFile(self.testfile, 'w') as f_out:
             for index, frame in enumerate(f_in):
-                frame_dict = frame._asdict()
-                box=frame_dict['unitcell'].astype(np.float64)
-                f_out.write(xyz=frame_dict['x'],
+                box=frame.unitcell.astype(np.float64)
+                f_out.write(xyz=frame.x,
                             box=self.random_unitcells[index],
                             step=f_in.istart,
-                            natoms=frame_dict['x'].shape[0],
+                            natoms=frame.x.shape[0],
                             charmm=1, # DCD should be CHARMM
                             time_step=f_in.delta,
                             ts_between_saves=f_in.nsavc,
                             remarks=f_in.remarks)
 
     def tearDown(self):
-        try: 
+        try:
             os.unlink(self.testfile)
         except OSError:
             pass
@@ -582,3 +530,54 @@ class TestDCDWriteRandom():
                 curr_frame += 1
                 assert_allclose(written_unitcell, ref_unitcell,
                                 rtol=1e-05)
+
+
+class TestDCDByteArithmetic(object):
+
+    def setUp(self):
+        self.dcdfile = DCD
+        self._filesize = os.path.getsize(DCD)
+
+    def test_relative_frame_sizes(self):
+        # the first frame of a DCD file should always be >= in size
+        # to subsequent frames, as the first frame contains the same
+        # atoms + (optional) fixed atoms
+        with DCDFile(self.dcdfile) as dcd:
+            first_frame_size = dcd._firstframesize
+            general_frame_size = dcd._framesize
+
+        assert_equal(first_frame_size >= general_frame_size, True)
+
+    def test_file_size_breakdown(self):
+        # the size of a DCD file is equivalent to the sum of the header
+        # size, first frame size, and (N - 1 frames) * size per general
+        # frame
+        expected = self._filesize
+        with DCDFile(self.dcdfile) as dcd:
+            actual = dcd._header_size + dcd._firstframesize + ((dcd.n_frames - 1) * dcd._framesize)
+        assert_equal(actual, expected)
+
+    def test_nframessize_int(self):
+        # require that the (nframessize / framesize) value used by DCDFile
+        # is an integer (because nframessize / framesize + 1 = total frames,
+        # which must also be an int)
+        with DCDFile(self.dcdfile) as dcd:
+            nframessize = self._filesize - dcd._header_size - dcd._firstframesize
+            assert_equal(float(nframessize) % float(dcd._framesize), 0)
+
+
+
+class TestDCDByteArithmeticNAMD(TestDCDByteArithmetic):
+    # repeat byte arithmetic tests for NAMD format DCD
+
+    def setUp(self):
+        self.dcdfile = DCD_NAMD_TRICLINIC
+        self._filesize = os.path.getsize(DCD_NAMD_TRICLINIC)
+
+
+class TestDCDByteArithmeticCharmm36(TestDCDByteArithmetic):
+    # repeat byte arithmetic tests for Charmm36 format DCD
+
+    def setUp(self):
+        self.dcdfile = DCD_TRICLINIC
+        self._filesize = os.path.getsize(DCD_TRICLINIC)
