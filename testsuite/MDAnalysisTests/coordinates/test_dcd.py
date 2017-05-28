@@ -157,31 +157,31 @@ class TestDCDReader(TestCase):
                             err_msg="wrong volume for unitcell (no unitcell "
                             "in DCD so this should be 0)")
 
-    def test_timeseries_slicing(self):
-        # check that slicing behaves correctly
-        # should  before issue #914 resolved
-        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
-             (0, 5, 5), (3, 5, 1), (None, None, None)]
-        for start, stop, step in x:
-            yield self._slice_generation_test, start, stop, step
+    # def test_timeseries_slicing(self):
+    #     # check that slicing behaves correctly
+    #     # should  before issue #914 resolved
+    #     x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
+    #          (0, 5, 5), (3, 5, 1), (None, None, None)]
+    #     for start, stop, step in x:
+    #         yield self._slice_generation_test, start, stop, step
 
-    def test_backwards_stepping(self):
-        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
-        for start, stop, step in x:
-            yield self._failed_slices_test, start, stop, step
+    # def test_backwards_stepping(self):
+    #     x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
+    #     for start, stop, step in x:
+    #         yield self._failed_slices_test, start, stop, step
 
-    def _slice_generation_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+    # def _slice_generation_test(self, start, stop, step):
+    #     self.u = mda.Universe(PSF, DCD)
+    #     ts = self.u.trajectory.timeseries(self.u.atoms)
+    #     ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+    #     assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
-    @knownfailure
-    def _failed_slices_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+    # @knownfailure
+    # def _failed_slices_test(self, start, stop, step):
+    #     self.u = mda.Universe(PSF, DCD)
+    #     ts = self.u.trajectory.timeseries(self.u.atoms)
+    #     ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+    #     assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
 
 def test_DCDReader_set_dt(dt=100., frame=3):
@@ -397,10 +397,12 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new
         CHARMM format (at least since c36b2)"""
+        print("writing")
         with self.u.trajectory.OtherWriter(self.dcd) as w:
             for ts in self.u.trajectory:
                 w.write(ts)
         w = mda.Universe(self.topology, self.dcd)
+        print("reading\n")
         for ts_orig, ts_copy in zip(self.u.trajectory,
                                     w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
@@ -466,19 +468,3 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.frame))
 
 
-class TestDCDTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.DCD.Timestep
-    name = "DCD"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 90., 11., 90., 90., 12.])
-    uni_args = (PSF, DCD)
-
-    def test_ts_order_define(self):
-        """Check that users can hack in a custom unitcell order"""
-        old = self.Timestep._ts_order
-        self.ts._ts_order = [0, 2, 5, 1, 3, 4]
-        self.ts.dimensions = np.array([10, 11, 12, 80, 85, 90])
-        assert_allclose(self.ts._unitcell, np.array([10, 80, 11, 85, 90, 12]))
-        self.ts._ts_order = old
-        self.ts.dimensions = np.zeros(6)
