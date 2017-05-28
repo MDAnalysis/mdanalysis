@@ -119,7 +119,8 @@ class DCDReader(base.ReaderBase):
         self.n_atoms = self._file.n_atoms
 
 
-        dt = self._file.delta
+        delta = mdaunits.convert(self._file.delta, self.units['time'], 'ps')
+        dt = delta * self._file.nsavc
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file.read()
@@ -194,6 +195,10 @@ class DCDReader(base.ReaderBase):
             self.convert_pos_from_native(ts.positions)
 
         return ts
+
+    @property
+    def dt(self):
+        return self.ts.dt
 
 
 class DCDWriter(base.WriterBase):
