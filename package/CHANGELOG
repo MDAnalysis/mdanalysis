@@ -51,6 +51,8 @@ Fixes
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
   * Change Mathjax cdn (Issue #1313)
+  * Change mass_weight to weights for PSA analysis
+  * Move mass_weights deprecation to version 0.18
   * Docs moved to http://docs.mdanalysis.org (Issue #1315)
     and made responsive (Alabaster theme with readable-sphinx CSS)
     (Issue #378)
