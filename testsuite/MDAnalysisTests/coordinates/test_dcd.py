@@ -157,31 +157,31 @@ class TestDCDReader(object):
                             err_msg="wrong volume for unitcell (no unitcell "
                             "in DCD so this should be 0)")
 
-    def test_timeseries_slicing(self):
-        # check that slicing behaves correctly
-        # should  before issue #914 resolved
-        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
-             (0, 5, 5), (3, 5, 1), (None, None, None)]
-        for start, stop, step in x:
-            yield self._slice_generation_test, start, stop, step
+    # def test_timeseries_slicing(self):
+    #     # check that slicing behaves correctly
+    #     # should  before issue #914 resolved
+    #     x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
+    #          (0, 5, 5), (3, 5, 1), (None, None, None)]
+    #     for start, stop, step in x:
+    #         yield self._slice_generation_test, start, stop, step
 
-    def test_backwards_stepping(self):
-        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
-        for start, stop, step in x:
-            yield self._failed_slices_test, start, stop, step
+    # def test_backwards_stepping(self):
+    #     x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
+    #     for start, stop, step in x:
+    #         yield self._failed_slices_test, start, stop, step
 
-    def _slice_generation_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+    # def _slice_generation_test(self, start, stop, step):
+    #     self.u = mda.Universe(PSF, DCD)
+    #     ts = self.u.trajectory.timeseries(self.u.atoms)
+    #     ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+    #     assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
-    @knownfailure
-    def _failed_slices_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+    # @knownfailure
+    # def _failed_slices_test(self, start, stop, step):
+    #     self.u = mda.Universe(PSF, DCD)
+    #     ts = self.u.trajectory.timeseries(self.u.atoms)
+    #     ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+    #     assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
 
 def test_DCDReader_set_dt(dt=100., frame=3):
@@ -394,10 +394,12 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new
         CHARMM format (at least since c36b2)"""
+        print("writing")
         with self.u.trajectory.OtherWriter(self.dcd) as w:
             for ts in self.u.trajectory:
                 w.write(ts)
         w = mda.Universe(self.topology, self.dcd)
+        print("reading\n")
         for ts_orig, ts_copy in zip(self.u.trajectory,
                                     w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
@@ -463,167 +465,167 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.frame))
 
 
-class TestDCDCorrel(TestCase):
-    def setUp(self):
-        # Note: setUp is executed for *every* test !
-        import MDAnalysis.core.Timeseries as TS
-        self.universe = mda.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
-        self.ts = self.universe.coord
-        self.collection = TS.TimeseriesCollection()
-        self.collection_slicing = TS.TimeseriesCollection()
-        C = self.collection
-        C_step = self.collection_slicing
-        all = self.universe.atoms
-        ca = self.universe.s4AKE.atoms.CA
-        ca_termini = ca[[0, -1]]
-        # note that this is not quite phi... HN should be C of prec. residue
-        phi151 = self.universe.select_atoms('resid 151').select_atoms(
-            'name HN', 'name N', 'name CA', 'name CB')
-        C.addTimeseries(TS.Atom('v', ca_termini))  # 0
-        C.addTimeseries(TS.Bond(ca_termini))  # 1
-        C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
-        C.addTimeseries(TS.Angle(phi151[1:4]))  # 3
-        C.addTimeseries(TS.Dihedral(phi151))  # 4
-        C.addTimeseries(TS.Distance('r', ca_termini))  # 5
-        C.addTimeseries(TS.CenterOfMass(ca))  # 6
-        C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
-        C.addTimeseries(TS.CenterOfMass(all))  # 8
-        C.addTimeseries(TS.CenterOfGeometry(all))  # 9
+# class TestDCDCorrel(TestCase):
+#     def setUp(self):
+#         # Note: setUp is executed for *every* test !
+#         import MDAnalysis.core.Timeseries as TS
+#         self.universe = mda.Universe(PSF, DCD)
+#         self.dcd = self.universe.trajectory
+#         self.ts = self.universe.coord
+#         self.collection = TS.TimeseriesCollection()
+#         self.collection_slicing = TS.TimeseriesCollection()
+#         C = self.collection
+#         C_step = self.collection_slicing
+#         all = self.universe.atoms
+#         ca = self.universe.s4AKE.atoms.CA
+#         ca_termini = ca[[0, -1]]
+#         # note that this is not quite phi... HN should be C of prec. residue
+#         phi151 = self.universe.select_atoms('resid 151').select_atoms(
+#             'name HN', 'name N', 'name CA', 'name CB')
+#         C.addTimeseries(TS.Atom('v', ca_termini))  # 0
+#         C.addTimeseries(TS.Bond(ca_termini))  # 1
+#         C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
+#         C.addTimeseries(TS.Angle(phi151[1:4]))  # 3
+#         C.addTimeseries(TS.Dihedral(phi151))  # 4
+#         C.addTimeseries(TS.Distance('r', ca_termini))  # 5
+#         C.addTimeseries(TS.CenterOfMass(ca))  # 6
+#         C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
+#         C.addTimeseries(TS.CenterOfMass(all))  # 8
+#         C.addTimeseries(TS.CenterOfGeometry(all))  # 9
 
-        C_step.addTimeseries(TS.Atom('v', ca_termini))
+#         C_step.addTimeseries(TS.Atom('v', ca_termini))
 
-        # cannot test WaterDipole because there's no water in the test dcd
-        C.compute(self.dcd)
-        C_step.compute(self.dcd, step=10)
+#         # cannot test WaterDipole because there's no water in the test dcd
+#         C.compute(self.dcd)
+#         C_step.compute(self.dcd, step=10)
 
-    def tearDown(self):
-        del self.collection
-        del self.collection_slicing
-        del self.universe
-        del self.dcd
-        del self.ts
+#     def tearDown(self):
+#         del self.collection
+#         del self.collection_slicing
+#         del self.universe
+#         del self.dcd
+#         del self.ts
 
-    def test_correl(self):
-        assert_equal(len(self.collection), 10, "Correl: len(collection)")
+#     def test_correl(self):
+#         assert_equal(len(self.collection), 10, "Correl: len(collection)")
 
-    def test_Atom(self):
-        assert_equal(self.collection[0].shape, (2, 3, 98),
-                     "Correl: Atom positions")
+#     def test_Atom(self):
+#         assert_equal(self.collection[0].shape, (2, 3, 98),
+#                      "Correl: Atom positions")
 
-    def test_Bonds(self):
-        C = self.collection
-        assert_array_equal(C[1].__data__, C[2].__data__,
-                           "Correl: Bonds with lists and AtomGroup")
+#     def test_Bonds(self):
+#         C = self.collection
+#         assert_array_equal(C[1].__data__, C[2].__data__,
+#                            "Correl: Bonds with lists and AtomGroup")
 
-    def test_Angle(self):
-        C = self.collection
-        avg_angle = 1.9111695972912988
-        assert_almost_equal(C[3].__data__.mean(),
-                            avg_angle,
-                            err_msg="Correl: average Angle")
+#     def test_Angle(self):
+#         C = self.collection
+#         avg_angle = 1.9111695972912988
+#         assert_almost_equal(C[3].__data__.mean(),
+#                             avg_angle,
+#                             err_msg="Correl: average Angle")
 
-    def test_Dihedral(self):
-        C = self.collection
-        avg_phi151 = 0.0088003870749735619
-        assert_almost_equal(C[4].__data__.mean(),
-                            avg_phi151,
-                            err_msg="Correl: average Dihedral")
+#     def test_Dihedral(self):
+#         C = self.collection
+#         avg_phi151 = 0.0088003870749735619
+#         assert_almost_equal(C[4].__data__.mean(),
+#                             avg_phi151,
+#                             err_msg="Correl: average Dihedral")
 
-    def test_scalarDistance(self):
-        C = self.collection
-        avg_dist = 9.7960210987736236
-        assert_almost_equal(C[5].__data__.mean(),
-                            avg_dist,
-                            err_msg="Correl: average scalar Distance")
+#     def test_scalarDistance(self):
+#         C = self.collection
+#         avg_dist = 9.7960210987736236
+#         assert_almost_equal(C[5].__data__.mean(),
+#                             avg_dist,
+#                             err_msg="Correl: average scalar Distance")
 
-    def test_CenterOfMass(self):
-        C = self.collection
-        avg_com_ca = np.array([0.0043688, -0.27812258, 0.0284051])
-        avg_com_all = np.array([-0.10086529, -0.16357276, 0.12724672])
-        assert_array_almost_equal(C[6].__data__.mean(axis=1),
-                                  avg_com_ca,
-                                  err_msg="Correl: average CA CenterOfMass")
-        assert_almost_equal(C[8].__data__.mean(axis=1),
-                            avg_com_all,
-                            err_msg="Correl: average all CenterOfMass")
+#     def test_CenterOfMass(self):
+#         C = self.collection
+#         avg_com_ca = np.array([0.0043688, -0.27812258, 0.0284051])
+#         avg_com_all = np.array([-0.10086529, -0.16357276, 0.12724672])
+#         assert_array_almost_equal(C[6].__data__.mean(axis=1),
+#                                   avg_com_ca,
+#                                   err_msg="Correl: average CA CenterOfMass")
+#         assert_almost_equal(C[8].__data__.mean(axis=1),
+#                             avg_com_all,
+#                             err_msg="Correl: average all CenterOfMass")
 
-    def test_CenterOfGeometry(self):
-        C = self.collection
-        avg_cog_all = np.array([-0.13554797, -0.20521885, 0.2118998])
-        assert_almost_equal(C[9].__data__.mean(axis=1),
-                            avg_cog_all,
-                            err_msg="Correl: average all CenterOfGeometry")
+#     def test_CenterOfGeometry(self):
+#         C = self.collection
+#         avg_cog_all = np.array([-0.13554797, -0.20521885, 0.2118998])
+#         assert_almost_equal(C[9].__data__.mean(axis=1),
+#                             avg_cog_all,
+#                             err_msg="Correl: average all CenterOfGeometry")
 
-    def test_CA_COMeqCOG(self):
-        C = self.collection
-        assert_array_almost_equal(
-            C[6].__data__,
-            C[7].__data__,
-            err_msg="Correl: CA CentreOfMass == CenterOfGeometry")
+#     def test_CA_COMeqCOG(self):
+#         C = self.collection
+#         assert_array_almost_equal(
+#             C[6].__data__,
+#             C[7].__data__,
+#             err_msg="Correl: CA CentreOfMass == CenterOfGeometry")
 
-    def test_clear(self):
-        C = self.collection
-        C.clear()
-        assert_equal(len(C), 0, "Correl: clear()")
+#     def test_clear(self):
+#         C = self.collection
+#         C.clear()
+#         assert_equal(len(C), 0, "Correl: clear()")
 
-    def test_Atom_slicing(self):
-        assert_equal(self.collection_slicing[0].shape, (2, 3, 10),
-                     "Correl: Atom positions")
-        assert_array_almost_equal(self.collection[0][:, :, ::10],
-                                  self.collection_slicing[0])
+#     def test_Atom_slicing(self):
+#         assert_equal(self.collection_slicing[0].shape, (2, 3, 10),
+#                      "Correl: Atom positions")
+#         assert_array_almost_equal(self.collection[0][:, :, ::10],
+#                                   self.collection_slicing[0])
 
-# notes:
-def compute_correl_references():
-    universe = mda.Universe(PSF, DCD)
+# # notes:
+# def compute_correl_references():
+#     universe = mda.Universe(PSF, DCD)
 
-    all = universe.atoms
-    ca = universe.s4AKE.CA
-    ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
-    phi151 = universe.select_atoms('resid 151').select_atoms(
-        'name HN', 'name N', 'name CA', 'name CB')
+#     all = universe.atoms
+#     ca = universe.s4AKE.CA
+#     ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
+#     phi151 = universe.select_atoms('resid 151').select_atoms(
+#         'name HN', 'name N', 'name CA', 'name CB')
 
-    C = mda.collection
-    C.clear()
+#     C = mda.collection
+#     C.clear()
 
-    C.addTimeseries(TS.Atom('v', ca_termini))  # 0
-    C.addTimeseries(TS.Bond(ca_termini))  # 1
-    C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
-    C.addTimeseries(TS.Angle(phi151[1:4]))  # 3
-    C.addTimeseries(TS.Dihedral(phi151))  # 4
-    C.addTimeseries(TS.Distance('r', ca_termini))  # 5
-    C.addTimeseries(TS.CenterOfMass(ca))  # 6
-    C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
-    C.addTimeseries(TS.CenterOfMass(all))  # 8
-    C.addTimeseries(TS.CenterOfGeometry(all))  # 9
+#     C.addTimeseries(TS.Atom('v', ca_termini))  # 0
+#     C.addTimeseries(TS.Bond(ca_termini))  # 1
+#     C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
+#     C.addTimeseries(TS.Angle(phi151[1:4]))  # 3
+#     C.addTimeseries(TS.Dihedral(phi151))  # 4
+#     C.addTimeseries(TS.Distance('r', ca_termini))  # 5
+#     C.addTimeseries(TS.CenterOfMass(ca))  # 6
+#     C.addTimeseries(TS.CenterOfGeometry(ca))  # 7
+#     C.addTimeseries(TS.CenterOfMass(all))  # 8
+#     C.addTimeseries(TS.CenterOfGeometry(all))  # 9
 
-    C.compute(universe.dcd)
+#     C.compute(universe.dcd)
 
-    results = {
-        "avg_angle": C[3].__data__.mean(),
-        "avg_phi151": C[4].__data__.mean(),
-        "avg_dist": C[5].__data__.mean(),
-        "avg_com_ca": C[6].__data__.mean(axis=1),
-        "avg_com_all": C[8].__data__.mean(axis=1),
-        "avg_cog_all": C[9].__data__.mean(axis=1),
-    }
-    C.clear()
-    return results
+#     results = {
+#         "avg_angle": C[3].__data__.mean(),
+#         "avg_phi151": C[4].__data__.mean(),
+#         "avg_dist": C[5].__data__.mean(),
+#         "avg_com_ca": C[6].__data__.mean(axis=1),
+#         "avg_com_all": C[8].__data__.mean(axis=1),
+#         "avg_cog_all": C[9].__data__.mean(axis=1),
+#     }
+#     C.clear()
+#     return results
 
 
-class TestDCDTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.DCD.Timestep
-    name = "DCD"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 90., 11., 90., 90., 12.])
-    uni_args = (PSF, DCD)
+# class TestDCDTimestep(BaseTimestepTest):
+#     Timestep = mda.coordinates.DCD.Timestep
+#     name = "DCD"
+#     has_box = True
+#     set_box = True
+#     unitcell = np.array([10., 90., 11., 90., 90., 12.])
+#     uni_args = (PSF, DCD)
 
-    def test_ts_order_define(self):
-        """Check that users can hack in a custom unitcell order"""
-        old = self.Timestep._ts_order
-        self.ts._ts_order = [0, 2, 5, 1, 3, 4]
-        self.ts.dimensions = np.array([10, 11, 12, 80, 85, 90])
-        assert_allclose(self.ts._unitcell, np.array([10, 80, 11, 85, 90, 12]))
-        self.ts._ts_order = old
-        self.ts.dimensions = np.zeros(6)
+#     def test_ts_order_define(self):
+#         """Check that users can hack in a custom unitcell order"""
+#         old = self.Timestep._ts_order
+#         self.ts._ts_order = [0, 2, 5, 1, 3, 4]
+#         self.ts.dimensions = np.array([10, 11, 12, 80, 85, 90])
+#         assert_allclose(self.ts._unitcell, np.array([10, 80, 11, 85, 90, 12]))
+#         self.ts._ts_order = old
+#         self.ts.dimensions = np.zeros(6)
