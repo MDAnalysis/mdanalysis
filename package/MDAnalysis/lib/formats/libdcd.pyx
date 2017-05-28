@@ -224,8 +224,13 @@ cdef class DCDFile:
         self.b_read_header = True
 
         # make sure fixed atoms have been read
-        self.read()
-        self.seek(0)
+        try:
+            self.read()
+            self.seek(0)
+        except:
+            # if this fails the file is empty. Set flag and warn using during read
+            if self.n_frames != 0:
+                raise IOError("DCD is corrupted")
 
         if sys.version_info[0] < 3:
             py_remarks = unicode(py_remarks, 'ascii', "ignore")
@@ -266,6 +271,8 @@ cdef class DCDFile:
         if self.mode != 'r':
             raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
+        if self.n_frames == 0:
+            raise IOError("opened empty file. No frames are saved")
 
         cdef np.ndarray xyz = np.empty((self.n_atoms, 3), dtype=FLOAT,
                                        order='F')
@@ -359,8 +366,8 @@ cdef class DCDFile:
             except UnicodeDecodeError:
                 remarks = bytearray(remarks)
 
-        ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step, 
-                             ts_between_saves, time_step, with_unitcell, 
+        ok = write_dcdheader(self.fp, remarks, n_atoms, starting_step,
+                             ts_between_saves, time_step, with_unitcell,
                              charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
