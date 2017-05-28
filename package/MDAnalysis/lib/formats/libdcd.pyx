@@ -172,7 +172,7 @@ cdef class DCDFile:
             fio_mode = FIO_WRITE
         else:
             raise IOError("unkown mode '{}', use either r or w".format(mode))
-        self.mode = mode
+        self.mode = str(mode)
 
         ok = fio_open(self.fname, fio_mode, <fio_fd*> &self.fp)
         if ok != 0:
