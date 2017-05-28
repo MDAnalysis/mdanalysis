@@ -272,8 +272,8 @@ class TestDCDWrite():
         with DCDFile(self.testfile) as test, DCDFile(self.readfile) as ref:
             curr_frame = 0
             while curr_frame < test.n_frames:
-                written_unitcell = test.read()[1]
-                ref_unitcell = ref.read()[1]
+                written_unitcell = test.read().unitcell
+                ref_unitcell = ref.read().unitcell
                 curr_frame += 1
                 assert_equal(written_unitcell, ref_unitcell)
 
@@ -476,7 +476,7 @@ class TestDCDReadFrameTestCharmm36(TestDCDReadFrame):
                                              dtype=np.float32)
 
 
-class TestDCDWriteRandom():
+class TestDCDWriteRandom(object):
     # should only be supported for Charmm24 format writing (for now)
 
     def setUp(self):
@@ -489,7 +489,8 @@ class TestDCDWriteRandom():
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
         np.random.seed(1178083)
-        self.random_unitcells = np.random.random((self.expected_frames, 6)).astype(np.float64)
+        self.random_unitcells = np.random.uniform(high=80,size=(self.expected_frames, 6)).astype(np.float64)
+
         with DCDFile(self.readfile) as f_in, DCDFile(self.testfile, 'w') as f_out:
             for index, frame in enumerate(f_in):
                 box=frame.unitcell.astype(np.float64)
@@ -510,23 +511,12 @@ class TestDCDWriteRandom():
         del self.tmpdir
 
     def test_written_unit_cell_random(self):
-        # written unit cell dimensions should match for all frames
-        # using randomly generated unit cells but some processing
-        # of the cosine data stored in charmm format is needed
-        # as well as shuffling of the orders in the unitcell
-        # array based on the prcoessing performed by 
-        # DCDFile read and more generally relating to Issue 187
         with DCDFile(self.testfile) as test:
             curr_frame = 0
             while curr_frame < test.n_frames:
                 written_unitcell = test.read()[1]
                 ref_unitcell = self.random_unitcells[curr_frame]
-                ref_unitcell[1] = math.degrees(math.acos(ref_unitcell[1]))
-                ref_unitcell[3] = math.degrees(math.acos(ref_unitcell[3]))
-                ref_unitcell[4] = math.degrees(math.acos(ref_unitcell[4]))
 
-                _ts_order = [0, 2, 5, 4, 3, 1]
-                ref_unitcell = np.take(ref_unitcell, _ts_order)
                 curr_frame += 1
                 assert_allclose(written_unitcell, ref_unitcell,
                                 rtol=1e-05)
