@@ -96,7 +96,7 @@ class TestDCDReadFrame():
 
     def test_iteration(self):
         with DCDFile(self.dcdfile) as dcd:
-            for i in range(self.num_iters):
+            for _ in range(self.num_iters):
                 dcd.__next__()
             assert_equal(dcd.tell(), self.num_iters)
 
@@ -137,11 +137,11 @@ class TestDCDReadFrame():
     def test_iteration_2(self):
         with DCDFile(self.dcdfile) as dcd:
             with dcd as f:
-                for frame in f:
-                    pass
+                for i, _ in enumerate(f):
+                    assert_equal(i + 1, f.tell())
                 # second iteration should work from start again
-                for frame in f:
-                    pass
+                for i, _ in enumerate(f):
+                    assert_equal(i + 1, f.tell())
 
 
 class TestDCDWriteHeader():
