@@ -101,7 +101,7 @@ class DCDReader(base.ReaderBase):
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, convert_units=True, **kwargs):
+    def __init__(self, filename, convert_units=True, dt=None, **kwargs):
         """Parameters
         ----------
         filename : str
@@ -120,8 +120,11 @@ class DCDReader(base.ReaderBase):
 
 
         delta = mdaunits.convert(self._file.delta, self.units['time'], 'ps')
-        dt = delta * self._file.nsavc
+        if dt is None:
+            dt = delta * self._file.nsavc
+        self.skip_timestep = self._file.nsavc
 
+        self._ts_kwargs['dt'] = dt
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file.read()
         self._frame = 0
@@ -172,7 +175,8 @@ class DCDReader(base.ReaderBase):
             ts = self.ts
         frame = self._file.read()
         self._frame += 1
-        self._frame_to_ts(frame, ts)
+        ts = self._frame_to_ts(frame, ts)
+        self.ts = ts
         return ts
 
     def Writer(self, filename, n_atoms=None, **kwargs):
@@ -183,8 +187,8 @@ class DCDReader(base.ReaderBase):
 
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""
-        ts.time = self._file.tell() * self._file.delta
         ts.frame = self._frame
+        ts.time = ts.frame * self.ts.dt
         ts.data['step'] = self._file.tell()
 
         ts.dimensions = frame.unitcell
@@ -208,7 +212,7 @@ class DCDWriter(base.WriterBase):
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+    def __init__(self, filename, n_atoms, convert_units=True, step=1, dt=None, **kwargs):
         """
         Parameters
         ----------
@@ -224,7 +228,9 @@ class DCDWriter(base.WriterBase):
         self.filename = filename
         self._convert_units = convert_units
         self.n_atoms = n_atoms
-        self._file = self._file(self.filename, 'w')
+        self._file = DCDFile(self.filename, 'w')
+        self.step = step
+        self.dt = dt
 
     def write_next_timestep(self, ts):
         """Write timestep object into trajectory.
@@ -247,8 +253,11 @@ class DCDWriter(base.WriterBase):
             xyz = self.convert_pos_to_native(xyz, inplace=False)
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
 
+        dt = self.dt if self.dt is not None else ts.dt
+        dt = mdaunits.convert(dt, 'ps', self.units['time'])
+
         self._file.write(xyz=xyz, box=dimensions, step=step, natoms=xyz.shape[0],
-                         charmm=1, time_step=ts.dt * step, ts_between_saves=1, remarks='test')
+                         charmm=1, time_step=dt, ts_between_saves=self.step, remarks='test')
 
     def close(self):
         """close trajectory"""
