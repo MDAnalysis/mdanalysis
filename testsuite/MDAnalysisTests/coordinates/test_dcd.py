@@ -31,12 +31,49 @@ from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_allclose, dec)
 from unittest import TestCase
 
-from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
+from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF,
+                                       COORDINATES_TOPOLOGY, COORDINATES_DCD)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
+# from MDAnalysisTests.coordinates.base import BaseTimestepTest
+
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
+                                              BaseWriterTest,
+                                              assert_timestep_almost_equal)
+
 from MDAnalysisTests import module_not_found, tempdir
-from MDAnalysisTests.plugins.knownfailure import knownfailure
+# from MDAnalysisTests.plugins.knownfailure import knownfailure
+
+
+class DCDReference(BaseReference):
+    def __init__(self):
+        super(DCDReference, self).__init__()
+        self.trajectory = COORDINATES_DCD
+        self.topology = COORDINATES_TOPOLOGY
+        self.reader = mda.coordinates.DCD.DCDReader
+        self.writer = mda.coordinates.DCD.DCDWriter
+        self.ext = 'xtc'
+        self.prec = 3
+        self.changing_dimensions = True
+
+
+class TestDCDReader(MultiframeReaderTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = DCDReference()
+        super(TestDCDReader, self).__init__(reference)
+
+
+class TestDCDWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = DCDReference()
+        super(TestDCDWriter, self).__init__(reference)
+
+
+################
+# Legacy tests #
+################
 
 @attr('issue')
 def TestDCD_Issue32():
@@ -65,7 +102,7 @@ class TestDCDReaderClass(TestCase):
             err_msg="with_statement: DCDReader does not read all frames")
 
 
-class TestDCDReader(object):
+class TestDCDReader_old(object):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
@@ -193,7 +230,7 @@ def test_DCDReader_set_dt(dt=100., frame=3):
     assert_almost_equal(u.trajectory.dt, dt,
                         err_msg="trajectory.dt does not match set dt")
 
-class TestDCDWriter(TestCase):
+class TestDCDWriter_old(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"

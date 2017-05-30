@@ -242,13 +242,13 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, 100)
 
     def test_dt(self):
-        assert_equal(self.reader.dt, self.ref.dt)
+        assert_almost_equal(self.reader.dt, self.ref.dt)
 
     def test_ts_dt_matches_reader(self):
         assert_equal(self.reader.ts.dt, self.reader.dt)
 
     def test_total_time(self):
-        assert_equal(self.reader.totaltime, self.ref.totaltime)
+        assert_almost_equal(self.reader.totaltime, self.ref.totaltime)
 
     def test_first_dimensions(self):
         self.reader.rewind()
@@ -1067,7 +1067,8 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                              'A.frame = {}, B.frame={}'.format(
                                  A.frame, B.frame))
 
-    if A.time != B.time:
+    # if A.time != B.time:
+    if not np.allclose(A.time, B.time):
         raise AssertionError('A and B refer to different times: '
                              'A.time = {}, B.time={}'.format(
                                  A.time, B.time))
