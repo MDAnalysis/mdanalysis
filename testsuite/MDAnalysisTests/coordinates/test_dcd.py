@@ -21,6 +21,7 @@
 #
 from __future__ import absolute_import
 import MDAnalysis as mda
+from MDAnalysis.coordinates.DCD import DCDReader
 import numpy as np
 import os
 from six.moves import zip, range
@@ -63,28 +64,12 @@ class TestDCDReader(MultiframeReaderTest):
             reference = DCDReference()
         super(TestDCDReader, self).__init__(reference)
 
+    @staticmethod
+    def test_empty_dcd():
+        assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
-class TestDCDWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = DCDReference()
-        super(TestDCDWriter, self).__init__(reference)
-
-
-################
-# Legacy tests #
-################
-
-@attr('issue')
-def TestDCD_Issue32():
-    """Test for Issue 32: 0-size dcds lead to a segfault: now caught with
-    IOError"""
-    assert_raises(IOError, mda.Universe, PSF, DCD_empty)
-
-
-class TestDCDReaderClass(TestCase):
-    def test_with_statement(self):
-        from MDAnalysis.coordinates.DCD import DCDReader
+    @staticmethod
+    def test_with_statement():
 
         try:
             with DCDReader(DCD) as trj:
@@ -100,6 +85,22 @@ class TestDCDReaderClass(TestCase):
             frames,
             np.arange(0, N),
             err_msg="with_statement: DCDReader does not read all frames")
+
+
+class TestDCDWriter(BaseWriterTest):
+    def __init__(self, reference=None):
+        if reference is None:
+            reference = DCDReference()
+        super(TestDCDWriter, self).__init__(reference)
+
+
+################
+# Legacy tests #
+################
+
+
+class TestDCDReaderClass(TestCase):
+    pass
 
 
 class TestDCDReader_old(object):
@@ -121,10 +122,6 @@ class TestDCDReader_old(object):
         self.dcd.rewind()
         self.dcd.next()
         assert_equal(self.ts.frame, 1, "loading frame 1")
-
-    def test_jump_dcd(self):
-        self.dcd[15]  # index is 0-based and frames are 0-based
-        assert_equal(self.ts.frame, 15, "jumping to frame 15")
 
     def test_jump_lastframe_dcd(self):
         self.dcd[-1]
@@ -154,45 +151,6 @@ class TestDCDReader_old(object):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
         assert_equal(frames, list(range(20, 5, -1)),
                      "reversing dcd [20:5:-1]")
-
-    def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, 3341,
-                     "wrong number of atoms")
-
-    def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 98,
-                     "wrong number of frames in dcd")
-
-    def test_dt(self):
-        assert_almost_equal(self.universe.trajectory.dt,
-                            1.0,
-                            4,
-                            err_msg="wrong timestep dt")
-
-    def test_totaltime(self):
-        # test_totaltime(): need to reduce precision because dt is only precise
-        # to ~4 decimals and accumulating the inaccuracy leads to even lower
-        # precision in the totaltime (consequence of fixing Issue 64)
-        assert_almost_equal(self.universe.trajectory.totaltime,
-                            97.0,
-                            3,
-                            err_msg="wrong total length of AdK trajectory")
-
-    def test_frame(self):
-        self.dcd[15]  # index is 0-based and frames are 0-based
-        assert_equal(self.universe.trajectory.frame, 15, "wrong frame number")
-
-    def test_time(self):
-        self.dcd[15]  # index is 0-based and frames are 0-based
-        assert_almost_equal(self.universe.trajectory.time,
-                            15.0,
-                            5,
-                            err_msg="wrong time of frame")
-
-    def test_volume(self):
-        assert_almost_equal(self.ts.volume, 0.0, 3,
-                            err_msg="wrong volume for unitcell (no unitcell "
-                            "in DCD so this should be 0)")
 
     # def test_timeseries_slicing(self):
     #     # check that slicing behaves correctly
@@ -230,7 +188,7 @@ def test_DCDReader_set_dt(dt=100., frame=3):
     assert_almost_equal(u.trajectory.dt, dt,
                         err_msg="trajectory.dt does not match set dt")
 
-class TestDCDWriter_old(TestCase):
+class TestDCDWriter_old(object):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"
@@ -246,26 +204,6 @@ class TestDCDWriter_old(TestCase):
         del self.universe
         del self.Writer
         del self.tmpdir
-
-    @attr('issue')
-    def test_write_trajectory(self):
-        """Test writing DCD trajectories (Issue 50)"""
-        t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.n_atoms, dt=t.dt, step=t.skip_timestep)
-        for ts in self.universe.trajectory:
-            W.write_next_timestep(ts)
-        W.close()
-
-        uw = mda.Universe(PSF, self.outfile)
-
-        # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in zip(self.universe.trajectory,
-                                       uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
-                                      err_msg="coordinate mismatch between "
-                                      "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
 
     def test_dt(self):
         DT = 5.0
@@ -314,24 +252,8 @@ class TestDCDWriter_old(TestCase):
                             3,
                             err_msg="coordinates do not match")
 
-    def test_with_statement(self):
-        u = mda.Universe(PSF, CRD)
-        try:
-            with mda.Writer(self.outfile, u.atoms.n_atoms) as W:
-                W.write(u.atoms)
-        except AttributeError:  # misses __exit__
-            raise AssertionError("DCDWriter: does not support with statement")
-        w = mda.Universe(PSF, self.outfile)
-        assert_equal(w.trajectory.n_frames, 1,
-                     "with_statement: single frame trajectory has wrong "
-                     "number of frames")
-        assert_almost_equal(w.atoms.positions,
-                            u.atoms.positions,
-                            3,
-                            err_msg="with_statement: coordinates do not match")
 
-
-class TestDCDWriter_Issue59(TestCase):
+class TestDCDWriter_Issue59(object):
     def setUp(self):
         """Generate input xtc."""
         self.u = mda.Universe(PSF, DCD)
@@ -402,7 +324,7 @@ class TestDCDWriter_Issue59(TestCase):
             dcd.trajectory.frame))
 
 
-class _TestDCDReader_TriclinicUnitcell(TestCase):
+class _TestDCDReader_TriclinicUnitcell(object):
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory)
         self.tempdir = tempdir.TempDir()
@@ -455,7 +377,7 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
     pass
 
 
-class TestNCDF2DCD(TestCase):
+class TestNCDF2DCD(object):
     @dec.skipif(module_not_found("netCDF4"),
                 "Test skipped because netCDF is not available.")
     def setUp(self):
@@ -500,6 +422,11 @@ class TestNCDF2DCD(TestCase):
                 3,
                 err_msg="NCDF->DCD: coordinates wrong at frame {0:d}".format(
                 ts_orig.frame))
+
+
+###
+# Correl / Timeseries tests
+###
 
 
 # class TestDCDCorrel(TestCase):
