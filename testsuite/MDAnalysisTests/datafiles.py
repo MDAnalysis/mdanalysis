@@ -136,6 +136,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
     "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
@@ -178,6 +179,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
 PSF = resource_filename(__name__, 'data/adk.psf')

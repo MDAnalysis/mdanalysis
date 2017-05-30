@@ -127,11 +127,15 @@ class DCDReader(base.ReaderBase):
         self._ts_kwargs['dt'] = dt
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file.read()
+        # reset trajectory
+        if self._file.n_frames > 1:
+            self._file.seek(1)
+        else:
+            self._file.seek(0)
         self._frame = 0
         self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
-        self._file.seek(0)
         self.ts.dimensions = frame.unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts.dimensions[:3])
@@ -183,7 +187,7 @@ class DCDReader(base.ReaderBase):
         """Return writer for trajectory format"""
         if n_atoms is None:
             n_atoms = self.n_atoms
-        return self._writer(filename, n_atoms=n_atoms, **kwargs)
+        return DCDWriter(filename, n_atoms=n_atoms, **kwargs)
 
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""
