@@ -133,6 +133,10 @@ cdef class DCDFile:
 
     def __dealloc__(self):
         self.close()
+        if self.fixedcoords != NULL:
+            free(self.fixedcoords)
+        if self.freeind != NULL:
+            free(self.freeind)
 
     def __enter__(self):
         """Support context manager"""
@@ -244,6 +248,18 @@ cdef class DCDFile:
         py_remarks = "".join(s for s in py_remarks if s in string.printable)
 
         return py_remarks
+
+    @property
+    def header(self):
+        return {'n_atoms': self.n_atoms,
+                'nsets': self.nsets,
+                'istart': self.istart,
+                'nsavc': self.nsacv,
+                'delta': self.delta,
+                'nfixed': self.nfixed,
+                'reverse_endian': self.reverse_endian,
+                'charmm': self.charmm,
+                'remarks': self.remarks}
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
