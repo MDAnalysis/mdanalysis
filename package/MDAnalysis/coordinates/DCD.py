@@ -67,8 +67,6 @@ Trajectory API.
 Classes
 -------
 
-.. autoclass:: Timestep
-   :inherited-members:
 .. autoclass:: DCDReader
    :inherited-members:
 .. autoclass:: DCDWriter
@@ -108,6 +106,8 @@ class DCDReader(base.ReaderBase):
             trajectory filename
         convert_units : bool (optional)
             convert units to MDAnalysis units
+        dt : float (optional)
+            overwrite time delta stored in DCD
         **kwargs : dict
             General reader arguments.
 
@@ -159,22 +159,13 @@ class DCDReader(base.ReaderBase):
     def _read_frame(self, i):
         """read frame i"""
         self._frame = i - 1
-        try:
-            self._file.seek(i)
-            timestep = self._read_next_timestep()
-        except IOError:
-            warnings.warn('seek failed, recalculating offsets and retrying')
-            offsets = self._file.calc_offsets()
-            self._file.set_offsets(offsets)
-            self._read_offsets(store=True)
-            self._file.seek(i)
-            timestep = self._read_next_timestep()
-        return timestep
+        self._file.seek(i)
+        return self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
         if self._frame == self.n_frames - 1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+            raise IOError('trying to go over trajectory limit')
         if ts is None:
             ts = self.ts
         frame = self._file.read()
@@ -226,6 +217,10 @@ class DCDWriter(base.WriterBase):
             number of atoms to be written
         convert_units : bool (optional)
             convert from MDAnalysis units to format specific units
+        step : int (optional)
+            number of steps between frames to be written
+        dt : float (optional)
+            use this time step in DCD. If ``None`` guess from written TimeStep
         **kwargs : dict
             General writer arguments
         """
