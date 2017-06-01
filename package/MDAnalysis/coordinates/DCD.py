@@ -243,6 +243,53 @@ class DCDReader(base.ReaderBase):
     def dt(self):
         return self.ts.dt
 
+    def timeseries(self, asel=None, start=None, stop=None, step=None, skip=None,
+                   format='afc'):
+        """Return a subset of coordinate data for an AtomGroup
+            Parameters
+            ----------
+            asel : :class:`~MDAnalysis.core.groups.AtomGroup`
+                The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+                coordinates from. Defaults to None, in which case the full set of
+                coordinate data is returned.
+            start :  int (optional)
+                Begin reading the trajectory at frame index `start` (where 0 is the index
+                of the first frame in the trajectory); the default ``None`` starts
+                at the beginning.
+            stop : int (optional)
+                End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+                The trajectory is read to the end with the default ``None``.
+            step : int (optional)
+                Step size for reading; the default ``None`` is equivalent to 1 and means to
+                read every frame.
+            format : str (optional)
+                the order/shape of the return data array, corresponding
+                to (a)tom, (f)rame, (c)oordinates all six combinations
+                of 'a', 'f', 'c' are allowed ie "fac" - return array
+                where the shape is (frame, number of atoms,
+                coordinates)
+            .. deprecated:: 0.16.0
+            `skip` has been deprecated in favor of the standard keyword `step`.
+        """
+        if skip is not None:
+            step = skip
+            warnings.warn("Skip is deprecated and will be removed in"
+                          "in 1.0. Use step instead.",
+                          category=DeprecationWarning)
+
+        start, stop, step = self.check_slice_indices(start, stop, step)
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise NoDataError("Timeseries requires at least one atom to analyze")
+            atom_numbers = list(asel.indices)
+        else:
+            atom_numbers = list(range(self.n_atoms))
+
+        if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
+            raise ValueError("Invalid timeseries format")
+        frames = self._file.read_nframes(self.n_frames)
+        return frames.xyz[start:stop:step, atom_numbers]
 
 class DCDWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""

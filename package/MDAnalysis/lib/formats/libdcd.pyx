@@ -401,7 +401,7 @@ cdef class DCDFile:
         if self.n_frames == 0:
             raise IOError("opened empty file. No frames are saved")
 
-        cdef np.ndarray xyz = np.empty((self.natoms, 3), dtype=FLOAT, order='F')
+        cdef np.ndarray xyz = np.empty((self.natoms, self.ndims), dtype=FLOAT, order='F')
         cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
         unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
         unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
@@ -427,3 +427,16 @@ cdef class DCDFile:
 
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
+
+    def read_nframes(self, n):
+
+        xyz = np.empty((n, self.natoms, self.ndims))
+        box = np.empty((n, 6))
+        cdef int i
+
+        for i in range(n):
+            f = self.read()
+            xyz[i] = f.xyz
+            box[i] = f.unitcell
+
+        return DCDFrame(xyz, box)
