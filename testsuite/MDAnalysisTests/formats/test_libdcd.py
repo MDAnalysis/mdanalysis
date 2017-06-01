@@ -3,28 +3,22 @@ from __future__ import absolute_import
 
 from nose.tools import raises
 from numpy.testing import assert_equal, assert_almost_equal
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_array_almost_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
-from MDAnalysisTests.datafiles import (PSF, DCD, DCD_NAMD_TRICLINIC,
-                                       PSF_NAMD_TRICLINIC,
-                                       legacy_DCD_ADK_coords,
-                                       legacy_DCD_NAMD_coords,
-                                       legacy_DCD_c36_coords,
-                                       PSF_TRICLINIC,
-                                       DCD_TRICLINIC)
+from MDAnalysisTests.datafiles import (
+    DCD, DCD_NAMD_TRICLINIC, legacy_DCD_ADK_coords, legacy_DCD_NAMD_coords,
+    legacy_DCD_c36_coords, DCD_TRICLINIC)
 
 from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
 import os
-import math
 from hypothesis import given
 import hypothesis.strategies as st
 
 
-class TestDCDReadFrame():
-
+class TestDCDReadFrame(object):
     def setUp(self):
         self.dcdfile = DCD
         self.natoms = 3341
@@ -33,15 +27,20 @@ class TestDCDReadFrame():
         self.context_frame = 22
         self.num_iters = 3
         self.selected_legacy_frames = [5, 29]
+        self.is_periodic = False
         self.legacy_data = legacy_DCD_ADK_coords
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
-        self.expected_unit_cell = np.array([  0.,   90.,   0.,  90.,  90.,  0.],
-                            dtype=np.float32)
+        self.expected_unit_cell = np.array(
+            [0., 90., 0., 90., 90., 0.], dtype=np.float32)
 
     def test_header_remarks(self):
         # confirm correct header remarks section reading
         with DCDFile(self.dcdfile) as f:
             assert_equal(len(f.header['remarks']), len(self.expected_remarks))
+
+    def test_is_periodic(self):
+        with DCDFile(self.dcdfile) as f:
+            assert_equal(f.is_periodic, self.is_periodic)
 
     def test_read_coords(self):
         # confirm shape of coordinate data against result from previous
@@ -54,7 +53,6 @@ class TestDCDReadFrame():
     def test_read_coord_values(self):
         # test the actual values of coordinates read in versus
         # stored values read in by the legacy DCD handling framework
-
         # to reduce repo storage burden, we only compare for a few
         # randomly selected frames
         legacy_DCD_frame_data = np.load(self.legacy_data)
@@ -64,17 +62,14 @@ class TestDCDReadFrame():
                 dcd.seek(frame_num)
                 actual_coords = dcd.read()[0]
                 desired_coords = legacy_DCD_frame_data[index]
-                assert_equal(actual_coords,
-                             desired_coords)
-
+                assert_equal(actual_coords, desired_coords)
 
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
         # MDAnalysis implementation of DCD file handling
         with DCDFile(self.dcdfile) as dcd:
             dcd_frame = dcd.read()
-        unitcell = dcd_frame[1]
-        assert_allclose(unitcell, self.expected_unit_cell, rtol=1e-05)
+        assert_array_almost_equal(dcd_frame.unitcell, self.expected_unit_cell)
 
     @raises(IOError)
     def test_seek_over_max(self):
@@ -118,9 +113,9 @@ class TestDCDReadFrame():
     def test_raise_not_existing(self):
         DCDFile('foo')
 
-    def test_n_atoms(self):
+    def test_natoms(self):
         with DCDFile(self.dcdfile) as dcd:
-            assert_equal(dcd.header['n_atoms'], self.natoms)
+            assert_equal(dcd.header['natoms'], self.natoms)
 
     @raises(IOError)
     @run_in_tempdir()
@@ -145,7 +140,6 @@ class TestDCDReadFrame():
 
 
 class TestDCDWriteHeader():
-
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
@@ -162,10 +156,13 @@ class TestDCDWriteHeader():
         # test that _write_header() can produce a very crude
         # header for a new / empty file
         with DCDFile(self.testfile, 'w') as dcd:
-            dcd.write_header(remarks='Crazy!', n_atoms=22,
-                             istart=12, nsavc=10,
-                             delta=0.02,
-                             charmm=1)
+            dcd.write_header(
+                remarks='Crazy!',
+                natoms=22,
+                istart=12,
+                nsavc=10,
+                delta=0.02,
+                charmm=1)
 
         # we're not actually asserting anything, yet
         # run with: nosetests test_libdcd.py --nocapture
@@ -173,33 +170,54 @@ class TestDCDWriteHeader():
         with DCDFile(self.testfile) as dcd:
             header = dcd.header
             assert_equal(header['remarks'], 'Crazy!')
-            assert_equal(header['n_atoms'], 22)
+            assert_equal(header['natoms'], 22)
             assert_equal(header['istart'], 12)
             assert_equal(header['charmm'], 5)
             assert_equal(header['nsavc'], 10)
             assert_almost_equal(header['delta'], .02)
 
-    # @raises(IOError)
-    # def test_write_no_header(self):
-    #     # test that _write_header() can produce a very crude
-    #     # header for a new / empty file
-    #     with DCDFile(self.testfile, 'w') as dcd:
-    #         dcd.write(remarks='Crazy!', n_atoms=22,
+    @raises(IOError)
+    def test_write_no_header(self):
+        # test that _write_header() can produce a very crude
+        # header for a new / empty file
+        with DCDFile(self.testfile, 'w') as dcd:
+            dcd.write(np.ones(3), np.ones(6))
+
+    @raises(IOError)
+    def test_write_header_twice(self):
+        # test that _write_header() can produce a very crude
+        # header for a new / empty file
+        with DCDFile(self.testfile, 'w') as dcd:
+            dcd.write_header(
+                remarks='Crazy!',
+                natoms=22,
+                istart=12,
+                nsavc=10,
+                delta=0.02,
+                charmm=1)
+            dcd.write_header(
+                remarks='Crazy!',
+                natoms=22,
+                istart=12,
+                nsavc=10,
+                delta=0.02,
+                charmm=1)
 
     @raises(IOError)
     def test_write_header_mode_sensitivy(self):
         # an exception should be raised on any attempt to use
         # _write_header with a DCDFile object in 'r' mode
         with DCDFile(self.dcdfile) as dcd:
-            dcd.write_header(remarks='Crazy!', n_atoms=22,
-                             istart=12, nsavc=10,
-                             delta=0.02,
-                             charmm=1)
-
+            dcd.write_header(
+                remarks='Crazy!',
+                natoms=22,
+                istart=12,
+                nsavc=10,
+                delta=0.02,
+                charmm=1)
 
 
 class TestDCDWrite():
-
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
@@ -209,8 +227,7 @@ class TestDCDWrite():
         self.expected_frames = 98
         self.seek_frame = 91
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
-        self._write_files(testfile=self.testfile,
-                          remarks_setting='input')
+        self._write_files(testfile=self.testfile, remarks_setting='input')
 
     def _write_files(self, testfile, remarks_setting):
 
@@ -218,14 +235,13 @@ class TestDCDWrite():
             header = f_in.header
             if remarks_setting == 'input':
                 remarks = header['remarks']
-            else: # accept the random remarks strings from hypothesis
+            else:  # accept the random remarks strings from hypothesis
                 remarks = remarks_setting
             header['remarks'] = remarks
             f_out.write_header(**header)
             for frame in f_in:
-                box=frame.unitcell.astype(np.float64)
-                f_out.write(xyz=frame.x,
-                            box=box)
+                box = frame.unitcell.astype(np.float64)
+                f_out.write(xyz=frame.x, box=box)
 
     def tearDown(self):
         try:
@@ -239,8 +255,7 @@ class TestDCDWrite():
         # ensure that writing of DCD files only occurs with properly
         # opened files
         with DCDFile(self.readfile) as dcd:
-            dcd.write(xyz=np.zeros((3,3)),
-                      box=np.zeros(6, dtype=np.float64))
+            dcd.write(xyz=np.zeros((3, 3)), box=np.zeros(6, dtype=np.float64))
 
     def test_written_dcd_coordinate_data_shape(self):
         # written coord shape should match for all frames
@@ -332,7 +347,13 @@ class TestDCDWrite():
                 natoms = 10
                 xyz = np.ones((natoms, 3), dtype=dtype)
                 box = np.ones(6, dtype=dtype)
-                out.write_header(remarks='test', n_atoms=natoms, charmm=1, delta=1, nsavc=1, istart=1)
+                out.write_header(
+                    remarks='test',
+                    natoms=natoms,
+                    charmm=1,
+                    delta=1,
+                    nsavc=1,
+                    istart=1)
                 out.write(xyz=xyz, box=box)
 
     def test_write_array_like(self):
@@ -342,16 +363,28 @@ class TestDCDWrite():
                 natoms = 10
                 xyz = array_like([[1, 1, 1] for i in range(natoms)])
                 box = array_like([i for i in range(6)])
-                out.write_header(remarks='test', n_atoms=natoms, charmm=1, delta=1, nsavc=1, istart=1)
+                out.write_header(
+                    remarks='test',
+                    natoms=natoms,
+                    charmm=1,
+                    delta=1,
+                    nsavc=1,
+                    istart=1)
                 out.write(xyz=xyz, box=box)
 
     @raises(ValueError)
     def test_write_wrong_shape_xyz(self):
         with DCDFile(self.testfile, 'w') as out:
             natoms = 10
-            xyz = np.ones((natoms+1, 3))
+            xyz = np.ones((natoms + 1, 3))
             box = np.ones(6)
-            out.write_header(remarks='test', n_atoms=natoms, charmm=1, delta=1, nsavc=1, istart=1)
+            out.write_header(
+                remarks='test',
+                natoms=natoms,
+                charmm=1,
+                delta=1,
+                nsavc=1,
+                istart=1)
             out.write(xyz=xyz, box=box)
 
     @raises(ValueError)
@@ -363,7 +396,7 @@ class TestDCDWrite():
             out.write(xyz=xyz, box=box)
 
 
-class  TestDCDWriteNAMD(TestDCDWrite):
+class TestDCDWriteNAMD(TestDCDWrite):
     # repeat writing tests for NAMD format DCD
 
     def setUp(self):
@@ -375,8 +408,7 @@ class  TestDCDWriteNAMD(TestDCDWrite):
         self.expected_frames = 1
         self.seek_frame = 0
         self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
-        self._write_files(testfile=self.testfile,
-                          remarks_setting='input')
+        self._write_files(testfile=self.testfile, remarks_setting='input')
 
     def test_written_unit_cell(self):
         # there's no expectation that we can write unit cell
@@ -397,8 +429,7 @@ class TestDCDWriteCharmm36(TestDCDWrite):
         self.expected_frames = 10
         self.seek_frame = 7
         self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
-        self._write_files(testfile=self.testfile,
-                          remarks_setting='input')
+        self._write_files(testfile=self.testfile, remarks_setting='input')
 
     def test_written_unit_cell(self):
         # there's no expectation that we can write unit cell
@@ -433,14 +464,15 @@ class TestDCDReadFrameTestNAMD(TestDCDReadFrame):
         self.traj_length = 1
         self.new_frame = 0
         self.context_frame = 0
+        self.is_periodic = True
         self.num_iters = 0
         self.selected_legacy_frames = [0]
         self.legacy_data = legacy_DCD_NAMD_coords
         self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
         # expect raw unit cell unprocessed
-        self.expected_unit_cell = np.array([ 38.42659378,  0.499563, 38.393102,
-                                             0.        ,  0.        , 44.7598],
-                                             dtype=np.float32)
+        self.expected_unit_cell = np.array(
+            [38.42659378, 0.499563, 38.393102, 0., 0., 44.7598],
+            dtype=np.float32)
 
 
 class TestDCDReadFrameTestCharmm36(TestDCDReadFrame):
@@ -453,13 +485,14 @@ class TestDCDReadFrameTestCharmm36(TestDCDReadFrame):
         self.new_frame = 2
         self.context_frame = 5
         self.num_iters = 7
+        self.is_periodic = True
         self.selected_legacy_frames = [1, 4]
         self.legacy_data = legacy_DCD_c36_coords
         self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              * TEST EXTENDED SYSTEM CONSTANT PRESSURE AND TEMPERATURE                        * DYNAMICS WITH WATER BOX.                                                      *  DATE:     7/ 7/14     13:59:46      CREATED BY USER: oliver                  '
         # expect raw unit cell unprocessed
-        self.expected_unit_cell = np.array([ 30.841836,  14.578635,  31.780088,
-                                             9.626323,  -2.60815, 32.67009],
-                                             dtype=np.float32)
+        self.expected_unit_cell = np.array(
+            [30.841836, 14.578635, 31.780088, 9.626323, -2.60815, 32.67009],
+            dtype=np.float32)
 
 
 class TestDCDWriteRandom(object):
@@ -475,15 +508,16 @@ class TestDCDWriteRandom(object):
         self.expected_remarks = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
 
         np.random.seed(1178083)
-        self.random_unitcells = np.random.uniform(high=80,size=(self.expected_frames, 6)).astype(np.float64)
+        self.random_unitcells = np.random.uniform(
+            high=80, size=(self.expected_frames, 6)).astype(np.float64)
 
-        with DCDFile(self.readfile) as f_in, DCDFile(self.testfile, 'w') as f_out:
+        with DCDFile(self.readfile) as f_in, DCDFile(self.testfile,
+                                                     'w') as f_out:
             in_header = f_in.header
             f_out.write_header(**in_header)
             for index, frame in enumerate(f_in):
-                box=frame.unitcell.astype(np.float64)
-                f_out.write(xyz=frame.x,
-                            box=self.random_unitcells[index])
+                box = frame.unitcell.astype(np.float64)
+                f_out.write(xyz=frame.x, box=self.random_unitcells[index])
 
     def tearDown(self):
         try:
@@ -500,12 +534,10 @@ class TestDCDWriteRandom(object):
                 ref_unitcell = self.random_unitcells[curr_frame]
 
                 curr_frame += 1
-                assert_allclose(written_unitcell, ref_unitcell,
-                                rtol=1e-05)
+                assert_allclose(written_unitcell, ref_unitcell, rtol=1e-05)
 
 
 class TestDCDByteArithmetic(object):
-
     def setUp(self):
         self.dcdfile = DCD
         self._filesize = os.path.getsize(DCD)
@@ -526,7 +558,8 @@ class TestDCDByteArithmetic(object):
         # frame
         expected = self._filesize
         with DCDFile(self.dcdfile) as dcd:
-            actual = dcd._header_size + dcd._firstframesize + ((dcd.n_frames - 1) * dcd._framesize)
+            actual = dcd._header_size + dcd._firstframesize + (
+                (dcd.n_frames - 1) * dcd._framesize)
         assert_equal(actual, expected)
 
     def test_nframessize_int(self):
@@ -536,7 +569,6 @@ class TestDCDByteArithmetic(object):
         with DCDFile(self.dcdfile) as dcd:
             nframessize = self._filesize - dcd._header_size - dcd._firstframesize
             assert_equal(float(nframessize) % float(dcd._framesize), 0)
-
 
 
 class TestDCDByteArithmeticNAMD(TestDCDByteArithmetic):
