@@ -14,8 +14,9 @@ from MDAnalysisTests.tempdir import run_in_tempdir
 from MDAnalysisTests import tempdir
 import numpy as np
 import os
-from hypothesis import given
+from hypothesis import given, example
 import hypothesis.strategies as st
+import string
 
 
 class TestDCDReadFrame(object):
@@ -301,15 +302,18 @@ class TestDCDWrite():
         with DCDFile(self.testfile) as f:
             assert_equal(f.header['remarks'], self.expected_remarks)
 
-    # @given(st.text()) # handle the full unicode range of strings
-    # def test_written_remarks_property(self, remarks_str):
-    #     # property based testing for writing of a wide range of string
-    #     # values to REMARKS field
-    #     self._write_files(testfile=self.testfile2,
-    #                       remarks_setting=remarks_str)
-    #     expected_remarks = remarks_str
-    #     with DCDFile(self.testfile2) as f:
-    #         assert_equal(f.remarks, expected_remarks)
+    @given(st.text(alphabet=string.printable,
+                   min_size=0,
+                   max_size=240)) # handle the printable ASCII strings
+    @example('')
+    def test_written_remarks_property(self, remarks_str):
+        # property based testing for writing of a wide range of string
+        # values to REMARKS field
+        self._write_files(testfile=self.testfile2,
+                          remarks_setting=remarks_str)
+        expected_remarks = remarks_str[:240]
+        with DCDFile(self.testfile2) as f:
+            assert_equal(f.header['remarks'], expected_remarks)
 
     def test_written_nsavc(self):
         # ensure that nsavc, the timesteps between frames written
