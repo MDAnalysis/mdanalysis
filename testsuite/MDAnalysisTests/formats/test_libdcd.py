@@ -1,5 +1,4 @@
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 from nose.tools import raises
 from numpy.testing import assert_equal, assert_almost_equal

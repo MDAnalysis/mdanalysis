@@ -13,6 +13,40 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""\
+Low level DCD  trajectory reading - :mod:`MDAnalysis.lib.formats.libdcd`
+------------------------------------------------------------------------
+
+:mod:`libdcd` contains the class :class:`DCDFile` to read and write frames of a
+DCD file. The class tries to behave similar to a normal file object.
+
+:mod:`libdcd` contains the classes :class:`XTCFile` and
+:class:`TRRFile`. Both can be used to read and write frames from and to
+Gromacs_ XTC and TRR files. These classes are used internally by MDAnalysis in
+:mod:`MDAnalysis.coordinates.XTC` and :mod:`MDAnalysis.coordinates.TRR`. They
+behave similar to normal file objects.
+
+For example, one can use a :class:`DCDFile` to directly calculate mean
+coordinates (where the coordinates are stored in `x` attribute of the
+:class:`namedtuple` `frame`):
+
+.. code-block:: python
+   :emphasize-lines: 1,2,5
+
+   with DCDFile("trajectory.dcd") as dcd:
+       header = dcd.header
+       mean = np.zeros((header['natoms'], 3))
+       # iterate over trajectory
+       for frame in dcd:
+           mean += frame.x
+   mean /= header['natoms']
+
+
+Besides iteration one can also seek to arbitrary frames using the
+:meth:`~DCDFile.seek` method.
+
+"""
+
 
 from os import path
 import numpy as np
@@ -96,6 +130,26 @@ cdef extern from 'include/readdcd.h':
 DCDFrame = namedtuple('DCDFrame', 'x unitcell')
 
 cdef class DCDFile:
+    """File like wrapper for DCD files
+
+    This class can be similar to the normal file objects in python. The read()
+    function will return a frame and all information in it instead of a single
+    line. Additionally the context-manager protocoll is supported as well.
+
+    Parameters
+    ----------
+    fname : str
+        The filename to open.
+    mode : ('r', 'w')
+        The mode in which to open the file, either 'r' read or 'w' write
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.formats.libdcd import DCDFile
+    >>> with DCDFile('foo.dcd') as f:
+    >>>     for frame in f:
+    >>>         print(frame.x)
+    """
     cdef fio_fd fp
     cdef readonly fname
     cdef int istart
@@ -158,9 +212,29 @@ cdef class DCDFile:
         return self.n_frames
 
     def tell(self):
+        """
+        Returns
+        -------
+        current frame
+        """
         return self.current_frame
 
     def open(self, filename, mode='r'):
+        """Open a DCD file
+
+        If another DCD file is currently opened it will be closed
+
+        Parameters
+        ----------
+        fname : str
+            The filename to open.
+        mode : ('r', 'w')
+            The mode in which to open the file, either 'r' read or 'w' write
+
+        Raises
+        ------
+        IOError
+        """
         if self.is_open:
             self.close()
 
@@ -182,9 +256,15 @@ cdef class DCDFile:
         self.wrote_header = False
         # Has to come last since it checks the reached_eof flag
         if self.mode == 'r':
-            self.remarks = self._read_header()
+            self._read_header()
 
     def close(self):
+        """Close the open DCD file
+
+        Raises
+        ------
+        IOError
+        """
         if self.is_open:
             # In case there are fixed atoms we should free the memory again.
             # Both pointers are guaranted to be non NULL if either one is.
@@ -198,7 +278,8 @@ cdef class DCDFile:
                               "ErrorCode: {}".format(self.fname, ok))
 
 
-    def _read_header(self):
+    cdef void _read_header(self):
+        """read header and populate internal fields"""
         if not self.is_open:
             raise IOError("No file open")
 
@@ -241,9 +322,9 @@ cdef class DCDFile:
 
         py_remarks = "".join(s for s in py_remarks if s in string.printable)
 
-        return py_remarks
+        self.remarks = py_remarks
 
-    def _estimate_n_frames(self):
+    cdef int _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
         self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
         self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
@@ -257,8 +338,13 @@ cdef class DCDFile:
 
     @property
     def is_periodic(self):
-          return bool((self.charmm & DCD_IS_CHARMM) and
-                      (self.charmm & DCD_HAS_EXTRA_BLOCK))
+        """
+        Returns
+        -------
+        bool if periodic unitcell is available
+        """
+        return bool((self.charmm & DCD_IS_CHARMM) and
+                    (self.charmm & DCD_HAS_EXTRA_BLOCK))
 
     def seek(self, frame):
         """Seek to Frame.
@@ -295,6 +381,11 @@ cdef class DCDFile:
 
     @property
     def header(self):
+        """
+        Returns
+        -------
+        dict of header values needed to write new dcd
+        """
         return {'natoms': self.natoms,
                 'istart': self.istart,
                 'nsavc': self.nsavc,
@@ -302,10 +393,9 @@ cdef class DCDFile:
                 'charmm': self.charmm,
                 'remarks': self.remarks}
 
-    def write_header(self, remarks, natoms, istart,
-                     nsavc, delta,
-                     charmm):
-        """write DCD header
+    def write_header(self, remarks, natoms, istart, nsavc, delta, charmm):
+        """write DCD header. This function needs to be called before a frame can be
+        written.
 
         Parameters
         ----------
@@ -314,9 +404,14 @@ cdef class DCDFile:
         natoms : int
             number of atoms to write
         istart : int
+            starting frame
         nsavc : int
+            number of frames between saves
         delta : float
+            timepstep
         charmm : int
+            is charmm dcd
+
         """
         if not self.is_open:
             raise IOError("No file open")
@@ -353,12 +448,6 @@ cdef class DCDFile:
             cartesion coordinates
         box : array_like, shape=(6)
             Box vectors for this frame
-        step : int
-            current step number, 1 indexed
-        time : float
-            current time
-        natoms : int
-            number of atoms in frame
 
         Raises
         ------
@@ -387,10 +476,26 @@ cdef class DCDFile:
                            self.natoms, <FLOAT_T*> &x[0],
                            <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                            <DOUBLE_T*> &c_box[0], self.charmm)
+        if ok != 0:
+            raise IOError("Couldn't write DCD frame")
 
         self.current_frame += 1
 
     def read(self):
+        """
+        Read next dcd frame
+
+        Returns
+        -------
+        DCDFrame : namedtuple
+            positions are in ``x`` and unitcell in ``unitcell`` attribute of DCDFrame
+
+        Notes
+        -----
+        unitcell is read as it from DCD. Post processing depending the program this
+        DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
+        for possible post processing into a common unitcell data structure.
+        """
         if self.reached_eof:
             raise IOError('Reached last frame in DCD, seek to 0')
         if not self.is_open:
@@ -406,17 +511,8 @@ cdef class DCDFile:
         unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
         unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
 
-        cdef FLOAT_T[::1] x = xyz[:, 0]
-        cdef FLOAT_T[::1] y = xyz[:, 1]
-        cdef FLOAT_T[::1] z = xyz[:, 2]
-
         first_frame = self.current_frame == 0
-        ok = read_dcdstep(self.fp, self.natoms,
-                          <FLOAT_T*> &x[0],
-                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                          <DOUBLE_T*> unitcell.data, self.nfixed, first_frame,
-                          self.freeind, self.fixedcoords,
-                          self.reverse_endian, self.charmm)
+        ok = self.c_readframes_helper(xyz[:, 0], xyz[:, 1], xyz[:, 2], unitcell, first_frame)
         if ok != 0 and ok != -4:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
@@ -430,6 +526,30 @@ cdef class DCDFile:
 
 
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
+        """
+        read multiple frames at once
+
+        Parameters
+        ----------
+        start, stop, step : int
+            range of frames
+        order : str (optional)
+            give order of returned array with `f`:frames, `a`:atoms, `c`:coordinates
+        indices : array_like (optional)
+            only read selected atoms. In ``None`` read all.
+
+        Returns
+        -------
+        DCDFrame : namedtuple
+            positions are in ``x`` and unitcell in ``unitcell`` attribute of DCDFrame.
+            Here the attributes contain the positions for all frames in the given order
+
+        Notes
+        -----
+        unitcell is read as it from DCD. Post processing depending the program this
+        DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
+        for possible post processing into a common unitcell data structure.
+        """
         if self.reached_eof:
             raise IOError('Reached last frame in DCD, seek to 0')
         if not self.is_open:
@@ -448,7 +568,7 @@ cdef class DCDFile:
         n = len(range(start, stop, step))
 
         cdef np.ndarray[np.int64_t, ndim=1] c_indices
-        if indices == 'None':
+        if indices is None:
             c_indices = np.arange(self.natoms)
             natoms = self.natoms
         else:
@@ -502,6 +622,7 @@ cdef class DCDFile:
 
         return DCDFrame(xyz, box)
 
+    # Helper to read current DCD frame
     cdef int c_readframes_helper(self, FLOAT_T[::1] x,
                                  FLOAT_T[::1] y, FLOAT_T[::1] z,
                                  DOUBLE_T[::1] unitcell, int first_frame):
@@ -515,6 +636,7 @@ cdef class DCDFile:
         return ok
 
 
+# Helper in readframes to copy given a specific memory layout
 cdef void copy_in_order(FLOAT_T[:, :] source, FLOAT_T[:, :, :] target, int order, int index):
     if order == 1:  #  'fac':
         target[index] = source
