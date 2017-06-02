@@ -65,6 +65,23 @@ class TestDCDReadFrame(object):
                 desired_coords = legacy_DCD_frame_data[index]
                 assert_equal(actual_coords, desired_coords)
 
+    def test_readframes(self):
+        legacy_DCD_frame_data = np.load(self.legacy_data)
+        with DCDFile(self.dcdfile) as dcd:
+            frames = dcd.readframes()
+            xyz = frames.x
+            assert_equal(len(xyz), len(dcd))
+            for index, frame_num in enumerate(self.selected_legacy_frames):
+                assert_array_almost_equal(xyz[frame_num], legacy_DCD_frame_data[index])
+
+    def test_readframes_slice(self):
+        with DCDFile(self.dcdfile) as dcd:
+            if len(dcd) > 6:
+                frames = dcd.readframes(start=2, stop=6, step=2)
+                xyz = frames.x
+                assert_equal(len(xyz), 2)
+
+
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
         # MDAnalysis implementation of DCD file handling

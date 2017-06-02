@@ -155,7 +155,7 @@ class TestDCDReader_old(TestCase):
     def test_timeseries_slicing(self):
         # check that slicing behaves correctly
         # should  before issue #914 resolved
-        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
+        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 4, 2), (1, 4, 4),
              (0, 5, 5), (3, 5, 1), (None, None, None)]
         for start, stop, step in x:
             yield self._slice_generation_test, start, stop, step

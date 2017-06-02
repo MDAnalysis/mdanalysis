@@ -428,15 +428,32 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-    def readframes(self, n):
+    def readframes(self, start=None, stop=None, step=None):
+        cdef int i, cstart, cstop, cstep, n, counter
         self.seek(0)
+        cstop = stop if not stop is None else self.n_frames
+        cstart = start if not start is None else 0
+        cstep = step if not step is None else 1
+        #n = (cstop - cstart) / cstep
+        n = len(range(cstart, cstop, cstep))
+        print("n = ", n)
+
         xyz = np.empty((n, self.natoms, self.ndims))
         box = np.empty((n, 6))
-        cdef int i
 
-        for i in range(n):
-            f = self.read()
-            xyz[i] = f.x
-            box[i] = f.unitcell
+        if cstart == 0 and cstep == 1 and cstop == self.n_frames:
+            for i in range(n):
+                f = self.read()
+                xyz[i] = f.x
+                box[i] = f.unitcell
+        else:
+            counter = 0
+            for i in range(cstart, cstop, cstep):
+                print("i = ", i)
+                self.seek(i)
+                f = self.read()
+                xyz[counter] = f.x
+                box[counter] = f.unitcell
+                counter += 1
 
         return DCDFrame(xyz, box)
