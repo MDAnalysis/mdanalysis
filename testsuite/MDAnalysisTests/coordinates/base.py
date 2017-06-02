@@ -249,7 +249,7 @@ class BaseReaderTest(object):
         assert_equal(self.reader.ts.dt, self.reader.dt)
 
     def test_total_time(self):
-        assert_almost_equal(self.reader.totaltime, self.ref.totaltime)
+        assert_almost_equal(self.reader.totaltime, self.ref.totaltime, decimal=5)
 
     def test_first_dimensions(self):
         self.reader.rewind()
