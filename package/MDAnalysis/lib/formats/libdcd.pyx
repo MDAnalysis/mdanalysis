@@ -428,15 +428,15 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-    def read_nframes(self, n):
-
+    def readframes(self, n):
+        self.seek(0)
         xyz = np.empty((n, self.natoms, self.ndims))
         box = np.empty((n, 6))
         cdef int i
 
         for i in range(n):
             f = self.read()
-            xyz[i] = f.xyz
+            xyz[i] = f.x
             box[i] = f.unitcell
 
         return DCDFrame(xyz, box)

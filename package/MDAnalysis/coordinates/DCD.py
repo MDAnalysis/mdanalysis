@@ -288,8 +288,8 @@ class DCDReader(base.ReaderBase):
 
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")
-        frames = self._file.read_nframes(self.n_frames)
-        return frames.xyz[start:stop:step, atom_numbers]
+        frames = self._file.readframes(self.n_frames)
+        return frames.x[start:stop:step, atom_numbers]
 
 class DCDWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
