@@ -157,7 +157,7 @@ class TestDCDReadFrame(object):
                     assert_equal(i + 1, f.tell())
 
 
-class TestDCDWriteHeader():
+class TestDCDWriteHeader(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
@@ -235,7 +235,7 @@ class TestDCDWriteHeader():
                 charmm=1)
 
 
-class TestDCDWrite():
+class TestDCDWrite(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.testfile = self.tmpdir.name + '/test.dcd'
