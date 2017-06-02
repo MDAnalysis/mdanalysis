@@ -428,7 +428,7 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-    def readframes(self, start=None, stop=None, step=None, order='fac'):
+    def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
         cdef int i, cstart, cstop, cstep, n, counter
         self.seek(0)
         cstop = stop if not stop is None else self.n_frames
@@ -436,21 +436,26 @@ cdef class DCDFile:
         cstep = step if not step is None else 1
         #n = (cstop - cstart) / cstep
         n = len(range(cstart, cstop, cstep))
-        print("n = ", n)
+
+        if indices == 'None':
+            indices = np.arange(self.natoms)
+            natoms = self.natoms
+        else:
+            natoms = len(indices)
 
         shape = []
         if order == 'fac':
-            shape = (n, self.natoms, self.ndims)
+            shape = (n, natoms, self.ndims)
         elif order == 'fca':
-            shape = (n, self.ndims, self.natoms)
+            shape = (n, self.ndims, natoms)
         elif order == 'afc':
-            shape = (self.natoms, n, self.ndims)
+            shape = (natoms, n, self.ndims)
         elif order == 'acf':
-            shape = (self.natoms, self.ndims, n)
+            shape = (natoms, self.ndims, n)
         elif order == 'caf':
-            shape = (self.ndims, self.natoms, n)
+            shape = (self.ndims, natoms, n)
         elif order == 'cfa':
-            shape = (self.ndims, n, self.natoms)
+            shape = (self.ndims, n, natoms)
         else:
             raise ValueError("unkown order '{}'".format(order))
 
@@ -460,15 +465,16 @@ cdef class DCDFile:
         if cstart == 0 and cstep == 1 and cstop == self.n_frames:
             for i in range(n):
                 f = self.read()
-                copy_in_order(f.x, xyz, order, i)
+                x = f.x[indices]
+                copy_in_order(x, xyz, order, i)
                 box[i] = f.unitcell
         else:
             counter = 0
             for i in range(cstart, cstop, cstep):
-                print("i = ", i)
                 self.seek(i)
                 f = self.read()
-                copy_in_order(f.x, xyz, order, counter)
+                x = f.x[indices]
+                copy_in_order(x, xyz, order, counter)
                 box[counter] = f.unitcell
                 counter += 1
 

@@ -290,14 +290,9 @@ class DCDReader(base.ReaderBase):
 
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")
-        frames = self._file.readframes(start, stop, step, order=format)
-
-        if format == 'fac' or format == 'caf':
-            return frames.x[:, atom_numbers]
-        elif format == 'fca' or format == 'fca':
-            return frames.x[:, :, atom_numbers]
-        elif format == 'afc' or format == 'acf':
-            return frames.x[atom_numbers]
+        frames = self._file.readframes(start, stop, step,
+                                       order=format, indices=atom_numbers)
+        return frames.x
 
 
 class DCDWriter(base.WriterBase):
