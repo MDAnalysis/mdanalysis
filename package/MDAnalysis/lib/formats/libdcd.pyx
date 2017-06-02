@@ -428,7 +428,7 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-    def readframes(self, start=None, stop=None, step=None):
+    def readframes(self, start=None, stop=None, step=None, order='fac'):
         cdef int i, cstart, cstop, cstep, n, counter
         self.seek(0)
         cstop = stop if not stop is None else self.n_frames
@@ -438,13 +438,29 @@ cdef class DCDFile:
         n = len(range(cstart, cstop, cstep))
         print("n = ", n)
 
-        xyz = np.empty((n, self.natoms, self.ndims))
+        shape = []
+        if order == 'fac':
+            shape = (n, self.natoms, self.ndims)
+        elif order == 'fca':
+            shape = (n, self.ndims, self.natoms)
+        elif order == 'afc':
+            shape = (self.natoms, n, self.ndims)
+        elif order == 'acf':
+            shape = (self.natoms, self.ndims, n)
+        elif order == 'caf':
+            shape = (self.ndims, self.natoms, n)
+        elif order == 'cfa':
+            shape = (self.ndims, n, self.natoms)
+        else:
+            raise ValueError("unkown order '{}'".format(order))
+
+        xyz = np.empty(shape)
         box = np.empty((n, 6))
 
         if cstart == 0 and cstep == 1 and cstop == self.n_frames:
             for i in range(n):
                 f = self.read()
-                xyz[i] = f.x
+                copy_in_order(f.x, xyz, order, i)
                 box[i] = f.unitcell
         else:
             counter = 0
@@ -452,8 +468,23 @@ cdef class DCDFile:
                 print("i = ", i)
                 self.seek(i)
                 f = self.read()
-                xyz[counter] = f.x
+                copy_in_order(f.x, xyz, order, counter)
                 box[counter] = f.unitcell
                 counter += 1
 
         return DCDFrame(xyz, box)
+
+
+def copy_in_order(source, target, order, index):
+    if order == 'fac':
+        target[index] = source
+    elif order == 'fca':
+        target[index] = source.T
+    elif order == 'afc':
+        target[:, index] = source
+    elif order == 'acf':
+        target[:, :, index] = source
+    elif order == 'caf':
+        target[:, :, index] = source.T
+    elif order == 'cfa':
+        target[:, index] = source.T
