@@ -109,7 +109,7 @@ cdef class DCDFile:
     cdef int charmm
     cdef remarks
     cdef str mode
-    cdef readonly int n_dims
+    cdef readonly int ndims
     cdef readonly int n_frames
     cdef bint b_read_header
     cdef int current_frame
@@ -219,7 +219,7 @@ cdef class DCDFile:
         else:
             py_remarks = ""
 
-        self.n_dims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
+        self.ndims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
         self.n_frames = self._estimate_n_frames()
         self.b_read_header = True
 
@@ -245,8 +245,8 @@ cdef class DCDFile:
 
     def _estimate_n_frames(self):
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
-        self._firstframesize = (self.natoms + 2) * self.n_dims * sizeof(float) + extrablocksize
-        self._framesize = ((self.natoms - self.nfixed + 2) * self.n_dims * sizeof(float) +
+        self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
+        self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
                           extrablocksize)
         filesize = path.getsize(self.fname)
         # It's safe to use ftell, even though ftell returns a long, because the
