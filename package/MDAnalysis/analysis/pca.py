@@ -87,7 +87,7 @@ components is conveniently stored in the one-dimensional array attribute
 ``cumulated_variance``. The value at the ith index of `cumulated_variance`
 is the sum of the variances from 0 to i.
 
-    >>> n_pcs = np.where(PSF_pca.cumulated_varance > 0.95)[0][0]
+    >>> n_pcs = np.where(PSF_pca.cumulated_variance > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
     >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
