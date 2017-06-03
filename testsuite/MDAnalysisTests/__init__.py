@@ -112,10 +112,11 @@ excluded.
 .. _Gromacs: http://www.gromacs.org
 
 """
+from __future__ import absolute_import
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.16.0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.16.1"  # keep in sync with RELEASE in setup.py
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:

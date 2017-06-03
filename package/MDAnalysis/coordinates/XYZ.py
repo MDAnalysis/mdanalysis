@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -64,17 +64,23 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
     ...
     atomN x y z [ ...         ]                                                 line N+2
 
-.. Note::
-   * comment lines not implemented (do not include them)
-   * molecule name: the line is required but the content is ignored
-     at the moment
-   * optional data (after the coordinates) are presently ignored
+
+Note
+----
+* comment lines not implemented (do not include them)
+* molecule name: the line is required but the content is ignored
+  at the moment
+* optional data (after the coordinates) are presently ignored
 
 
 .. Links
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
+Classes
+-------
+
 """
+from __future__ import division, absolute_import
 import six
 from six.moves import range, zip
 
@@ -175,19 +181,17 @@ class XYZWriter(base.WriterBase):
         self._xyz = None
 
     def write(self, obj):
-        """Write object *obj* at current trajectory frame to file.
+        """Write object `obj` at current trajectory frame to file.
 
-        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
-        or a whole :class:`~MDAnalysis.core.universe.Universe`.
-
-        Atom names in the output are taken from the *obj* or default
-        to the value of the *atoms* keyword supplied to the
+        Atom names in the output are taken from the `obj` or default
+        to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
-        :Arguments:
-          *obj*
-            :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe`
+        Parameters
+        ----------
+        obj : Universe or AtomGroup
+            The :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe` to write.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
@@ -363,8 +367,11 @@ class XYZReader(base.ReaderBase):
             # we assume that there are only two header lines per frame
             f.readline()
             f.readline()
+            # convert all entries at the end once for optimal speed
+            tmp_buf = []
             for i in range(self.n_atoms):
-                self.ts._pos[i] = list(map(float, f.readline().split()[1:4]))
+                tmp_buf.append(f.readline().split()[1:4])
+            ts.positions = tmp_buf
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
@@ -407,7 +414,7 @@ class XYZReader(base.ReaderBase):
 
         See Also
         --------
-        :class: `XYZWriter`
+        :class:`XYZWriter`
         """
         if n_atoms is None:
             n_atoms = self.n_atoms

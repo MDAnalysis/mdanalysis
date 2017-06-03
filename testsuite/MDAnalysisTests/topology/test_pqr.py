@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 from numpy.testing import (
     assert_,
 )
@@ -28,6 +29,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PQR,
+    PQR_icodes,
 )
 
 
@@ -35,7 +37,7 @@ class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
     filename = PQR
     expected_attrs = ['ids', 'names', 'charges', 'radii',
-                      'resids', 'resnames',
+                      'resids', 'resnames', 'icodes',
                       'segids']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 3341
@@ -50,3 +52,9 @@ class TestPQRParser(ParserBase):
         assert_(len(self.top.resids) == self.top.n_residues)
         assert_(len(self.top.resnames) == self.top.n_residues)
         assert_(len(self.top.segids) == self.top.n_segments)
+
+class TestPQRParser2(TestPQRParser):
+    filename = PQR_icodes
+
+    expected_n_atoms = 5313
+    expected_n_residues = 474

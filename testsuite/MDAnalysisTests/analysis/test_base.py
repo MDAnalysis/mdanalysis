@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division
+from __future__ import division, absolute_import
 from six.moves import range
 
 import numpy as np
@@ -101,6 +101,12 @@ class TestAnalysisBase(object):
 
     def test_old_api(self):
         OldAPIAnalysis(self.u.trajectory).run()
+
+    def test_start_stop_step_conversion(self):
+        an = FrameAnalysis(self.u.trajectory)
+        assert_equal(an.start, 0)
+        assert_equal(an.stop, self.u.trajectory.n_frames)
+        assert_equal(an.step, 1)
 
 
 def test_filter_baseanalysis_kwargs():

@@ -21,7 +21,7 @@
 set -o errexit -o nounset
 
 function die () {
-    local msg="$1" err={$2:-1}
+    local msg="$1" err=${2:-1}
     echo "ERROR: $msg [$err]"
     exit $err
 }

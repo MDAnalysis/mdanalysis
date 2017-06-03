@@ -1,0 +1,78 @@
+/* override css for readable.css */
+
+/*  styles/fonts to match http://mdanalysis.org (see public/css) */
+/* MDAnalysis orange: #FF9200 */
+/* MDAnalysis gray: #808080 */
+/* MDAnalysis white: #FFFFFF */
+/* MDAnalysis black: #000000 */
+
+@import url('readable.css');
+
+/* -- page layout --------------------------------------------------------- */
+
+body {
+    font-family: 'PT Sans', Helvetica, Arial, 'sans-serif';
+    font-size: 17px;    
+}
+
+div.body {
+    color: #000000;
+}
+
+div.sphinxsidebar a:hover {
+    color: #FF9200;
+}
+
+div.sphinxsidebar p {
+    color: #808080;
+}
+
+
+/* -- body styles --------------------------------------------------------- */
+
+a {
+    color: #FF9200;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #FF9200;
+}
+ 
+a:hover {
+    color: #FF9200;
+    text-decoration: underline;
+}
+
+
+pre, tt, code {
+    font-family: Menlo, Monaco, 'Courier New', monospace
+}
+
+
+div.body h1 {
+    font-weight: bolder;
+}
+
+a.headerlink {
+    color: #808080;
+    font-size: 0.8em;
+    padding: 0 4px 0 4px;
+    text-decoration: none;
+}
+ 
+a.headerlink:hover {
+    background-color: #808080;
+    color: #fff;
+}
+
+
+div.admonition {
+    margin: 10px 0px;
+    padding: 10px 10px;
+}
+
+div.admonition p.admonition-title {
+    font-size: 100%;
+    font-weight: bolder;
+}

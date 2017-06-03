@@ -65,17 +65,14 @@ def reader(filename, **kwargs):
 
     Returns
     -------
-    A Reader object
+    :class:`~base.Reader`
+        A trajectory Reader instance
 
-    .. SeeAlso:: For trajectory formats: :class:`~DCD.DCDReader`,
-       :class:`~XTC.XTCReader`, :class:`~TRR.TRRReader`,
-       :class:`~XYZ.XYZReader`.  For single frame formats:
-       :class:`~CRD.CRDReader`, and
-       :class:`~PDB.PDBReader`, :class:`~GRO.GROReader`,
+    See Also
+    --------
+    :ref:`Supported coordinate formats`
 
-    .. deprecated:: 0.15.0
-    The "permissive" flag is not used anymore (and effectively
-    defaults to True); it will be completely removed in 0.16.0.
+
     """
     if isinstance(filename, tuple):
         Reader = get_reader_for(filename[0],
@@ -94,37 +91,33 @@ def writer(filename, n_atoms=None, **kwargs):
     filename : str
         Output filename of the trajectory; the extension determines the
         format.
-    n_atoms : int, optional
+    n_atoms : int (optional)
         The number of atoms in the output trajectory; can be ommitted
         for single-frame writers.
-    multiframe : bool, optional
+    multiframe : bool (optional)
         ``True``: write a trajectory with multiple frames; ``False``
         only write a single frame snapshot; ``None`` first try to get
         a multiframe writer and then fall back to single frame [``None``]
     kwargs : optional
         Keyword arguments for the writer; all trajectory Writers accept
-        at least
-            *start*
-                starting time [0]
-            *step*
-                step size in frames [1]
-            *dt*
-                length of time between two frames, in ps [1.0]
-       Some readers accept additional arguments, which need to be looked
-       up in the documentation of the reader.
+        ``start``: starting time [0], ``step``: step size in frames [1],
+        ``dt``: length of time between two frames, in ps [1.0] Some readers
+        accept additional arguments, which need to be looked up in the
+        documentation of the reader.
 
     Returns
     -------
-    A Writer object
+    :class:`~base.Writer`
+        A trajectory Writer instance
 
     See Also
     --------
-    MDAnalysis.coordinates.DCD.DCDWriter : DCD trajectories
-    MDAnalysis.coordinates.XTC.XTCWriter : Gromacs XTC trajectories
-    MDAnalysis.coordinates.TRR.TRRWriter : Gromacs TRR trajectories
+    :ref:`Supported coordinate formats`
+
 
     .. versionchanged:: 0.7.6
-       Added *multiframe* keyword. See also :func:`get_writer_for`.
+       Added `multiframe` keyword. See also :func:`get_writer_for`.
+
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))

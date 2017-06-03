@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
 from six.moves import range
 
 import warnings
@@ -276,15 +276,13 @@ class TestRMSF(TestCase):
                             "values")
 
     def test_rmsf_single_frame(self):
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'), start=5, stop=6)
-        rmsfs.run()
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'), start=5, stop=6).run()
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
     def test_rmsf_old_run(self):
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
-        rmsfs.run(start=5, stop=6)
+        rmsfs = rms.RMSF(self.universe.select_atoms('name CA')).run(start=5, stop=6)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")

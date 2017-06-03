@@ -533,11 +533,11 @@ class TestConvFloat(object):
         assert_equal(util.conv_float('a.b'), 'a.b')
 
     def test_map_1(self):
-        ret = list(map(util.conv_float, ['0.45', '0.56', '6.7']))
+        ret = [util.conv_float(el) for el in ('0.45', '0.56', '6.7')]
         assert_equal(ret, [0.45, 0.56, 6.7])
 
     def test_map_2(self):
-        ret = list(map(util.conv_float, ['0.45', 'a.b', '!!']))
+        ret = [util.conv_float(el) for el in ('0.45', 'a.b', '!!')]
         assert_equal(ret, [0.45, 'a.b', '!!'])
 
 class TestFixedwidthBins(object):

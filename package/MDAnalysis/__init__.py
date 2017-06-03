@@ -113,7 +113,9 @@ and analyze all timesteps *ts* of the trajectory::
    9.72062
   ....
 
-.. SeeAlso:: :class:`MDAnalysis.core.universe.Universe` for details
+See Also
+--------
+:class:`MDAnalysis.core.universe.Universe` for details
 
 
 Examples
@@ -139,6 +141,7 @@ the OPLS/AA force field.
    doi:10.1016/j.jmb.2009.09.009
 
 """
+from __future__ import absolute_import
 
 __all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection',
            'fetch_mmtf']

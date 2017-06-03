@@ -19,8 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-=================================================================================
+"""=================================================================================
 Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity`
 =================================================================================
 
@@ -56,9 +55,12 @@ When using this module in published work please cite [Tiberti2015]_.
 References
 ==========
 
-    .. [Lindorff-Larsen2009] Similarity Measures for Protein Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.
+.. [Lindorff-Larsen2009] Similarity Measures for Protein
+   Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.
 
-    .. [Tiberti2015] ENCORE: Software for Quantitative Ensemble Comparison. Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten Lindorff- Larsen. PLoS Comput Biol. 2015, 11
+.. [Tiberti2015] ENCORE: Software for Quantitative Ensemble Comparison. Matteo
+   Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten
+   Lindorff-Larsen. PLoS Comput Biol. 2015, 11, e1004415.
 
 .. _Examples:
 Examples
@@ -166,9 +168,8 @@ Function reference
 
 .. All functions are included via automodule :members:.
 
-
 """
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
 
 import MDAnalysis as mda
@@ -716,7 +717,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
                                               format='fac').shape[0]
 
-    rest_slices = ens_size / window_size
+    rest_slices = ens_size // window_size
     residuals = ens_size % window_size
     slices_n = [0]
 

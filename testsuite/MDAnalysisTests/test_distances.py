@@ -19,6 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
 import MDAnalysis
 import MDAnalysis.lib.distances
 
@@ -193,7 +194,7 @@ class _TestSelfDistanceArrayDCD(TestCase):
         self.trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
-        N = natoms * (natoms - 1) / 2
+        N = natoms * (natoms - 1) // 2
         d = np.zeros((N,), np.float64)
         MDAnalysis.lib.distances.self_distance_array(x0, result=d, backend=self.backend)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
@@ -699,7 +700,7 @@ class TestDistanceBackendSelection(object):
     def __init__(self):
         self.positions = np.random.rand(10, 3)
         N = self.positions.shape[0]
-        self.result = np.empty(N*(N-1)/2, dtype=np.float64)
+        self.result = np.empty(N * (N - 1) // 2, dtype=np.float64)
 
     def _case_insensitivity_test(self, backend):
         try:

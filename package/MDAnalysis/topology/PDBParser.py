@@ -40,11 +40,12 @@ numbers up to 99,999.
    The parser processes atoms and their names. Masses are guessed and set to 0
    if unknown. Partial charges are not set.
 
-.. SeeAlso::
+See Also
+--------
+* :mod:`MDAnalysis.topology.ExtendedPDBParser`
+* :class:`MDAnalysis.coordinates.PDB.PDBReader`
+* :class:`MDAnalysis.core.universe.Universe`
 
-   * :mod:`MDAnalysis.topology.ExtendedPDBParser`
-   * :class:`MDAnalysis.coordinates.PDB.PDBReader`
-   * :class:`MDAnalysis.core.universe.Universe`
 
 Classes
 -------
@@ -244,7 +245,7 @@ class PDBParser(TopologyReaderBase):
         segids = np.array(segids, dtype=object)
 
         residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (resids, icodes, segids), (resids, resnames, icodes, resnums, segids))
+            (resids, resnames, icodes, segids), (resids, resnames, icodes, resnums, segids))
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))

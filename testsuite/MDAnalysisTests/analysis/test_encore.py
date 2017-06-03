@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.encore as encore
@@ -33,11 +33,12 @@ import warnings
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
                            assert_warns)
 
-from MDAnalysisTests.datafiles import DCD, DCD2, PSF
+from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import parser_not_found, module_not_found, block_import
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
+import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 
 class TestEncore(TestCase):
@@ -828,6 +829,11 @@ class TestEncoreDimensionalityReduction(TestCase):
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
+class TestEncoreConfDistMatrix(TestCase):
+    def test_get_distance_matrix(self):
+        # Issue #1324
+        u = mda.Universe(TPR,XTC)
+        dm = confdistmatrix.get_distance_matrix(u)
 
 class TestEncoreImportWarnings(object):
     def setUp(self):

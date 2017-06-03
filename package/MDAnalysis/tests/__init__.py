@@ -108,6 +108,7 @@ The `SciPy testing guidelines`_ are also a good howto for writing test cases.
 .. _Gromacs: http://www.gromacs.org
 
 """
+from __future__ import absolute_import, print_function
 
 try:
     from MDAnalysisTests import run as test

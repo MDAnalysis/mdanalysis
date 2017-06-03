@@ -34,6 +34,7 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
+from __future__ import absolute_import
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
@@ -61,6 +62,7 @@ __all__ = [
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
     "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB_chainidnewres",  # Issue 1110
+    "PDB_sameresid_diffresname", #Case where two residues share the same resid
     "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
@@ -68,6 +70,7 @@ __all__ = [
     "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
     "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
+    "GRO_sameresid_diffresname", # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
@@ -87,7 +90,9 @@ __all__ = [
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
-    "PQR",  # PQR
+    "PRMcs", # Amber (format, Issue 1331)
+    "PQR",  # PQR v1
+    "PQR_icodes",  # PQR v2 with icodes 
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
@@ -111,6 +116,7 @@ __all__ = [
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
+    "LAMMPSdata_deletedatoms",  # with deleted atoms
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -193,6 +199,7 @@ PDB_mc = resource_filename(__name__, 'data/model_then_cryst.pdb')
 PDB_mc_gz = resource_filename(__name__, 'data/model_then_cryst.pdb.gz')
 PDB_mc_bz2 = resource_filename(__name__, 'data/model_then_cryst.pdb.bz2')
 PDB_chainidnewres = resource_filename(__name__, 'data/chainIDnewres.pdb.gz')
+PDB_sameresid_diffresname = resource_filename(__name__, 'data/sameresid_diffresname.pdb')
 PDB_chainidrepeat = resource_filename(__name__, 'data/chainIDrepeat.pdb.gz')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
@@ -207,6 +214,7 @@ GRO_incomplete_vels = resource_filename(__name__, 'data/grovels.gro')
 GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 GRO_residwrap = resource_filename(__name__, 'data/residwrap.gro')
 GRO_residwrap_0base = resource_filename(__name__, 'data/residwrap_0base.gro')
+GRO_sameresid_diffresname = resource_filename(__name__, 'data/sameresid_diffresname.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
@@ -286,7 +294,10 @@ TRJ12_bz2 = resource_filename(__name__, 'data/Amber/anti_md1.mdcrd.bz2')
 PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
 NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
+PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
+
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
+PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
 
 PDBQT_input = resource_filename(__name__, 'data/pdbqt_inputpdbqt.pdbqt')
 PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
@@ -337,6 +348,7 @@ LAMMPScnt = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data")
 LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2")
 LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
+LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

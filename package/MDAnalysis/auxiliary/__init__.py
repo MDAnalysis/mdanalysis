@@ -497,6 +497,7 @@ For convinience, when reading auxiliary data from an open file, step at a time,
 :class:`~MDAnalysis.auxiliary.base.AuxFileReader` 
 extends :class:`~MDAnalysis.auxiliary.base.AuxReader` by providing the
 following (these may be overwritten by subclasses as appropriate):
+
   ``__init__(auxfile, **kwargs)``
     Open *auxfile* and any additional processing of *kwargs*.
 
@@ -514,6 +515,8 @@ following (these may be overwritten by subclasses as appropriate):
 
 
 """
+
+from __future__ import absolute_import
 
 # registry of auxiliary readers
 _AUXREADERS = {}

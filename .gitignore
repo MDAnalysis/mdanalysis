@@ -29,7 +29,7 @@ examples/output.txt
 .gram_A_identical_frames.xtc_offsets.pkl
 *.npz
 # Ignore html build
-doc/html/
+package/doc/html/
 # Ignore vim files
 *.sw[a-z]
 # Ignore MDAnalysis log files

@@ -42,7 +42,7 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 from six.moves import range
 
 import logging
@@ -52,7 +52,7 @@ import numpy as np
 
 from ..lib.util import openany
 from . import guessers
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, change_squash
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -311,8 +311,9 @@ class PSFParser(TopologyReaderBase):
 
         # Residue
         # resids, resnames
-        residx, new_resids, (new_resnames, perres_segids) = squash_by(
-            resids, resnames, segids)
+        residx, (new_resids, new_resnames, perres_segids) = change_squash(
+            (resids, resnames, segids),
+            (resids, resnames, segids))
         # transform from atom:Rid to atom:Rix
         residueids = Resids(new_resids)
         residuenums = Resnums(new_resids.copy())
@@ -337,7 +338,7 @@ class PSFParser(TopologyReaderBase):
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = list(map(lambda x: int(x) - 1, lines().split()))
+            fields = np.int64(lines().split()) - 1
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

@@ -52,10 +52,12 @@ is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-.. SeeAlso:: The `PSAnalysisTutorial`_ outlines a typical application of PSA to
-             a set of trajectories, including doing proper alignment,
-             performing distance comparisons, and generating heat
-             map-dendrogram plots from hierarchical clustering.
+Note
+----
+The `PSAnalysisTutorial`_ outlines a typical application of PSA to
+a set of trajectories, including doing proper alignment,
+performing distance comparisons, and generating heat
+map-dendrogram plots from hierarchical clustering.
 
 
 .. Rubric:: References
@@ -208,6 +210,8 @@ Classes, methods, and functions
 .. |Np| replace:: :math:`N_p`
 
 """
+from __future__ import division, absolute_import, print_function
+
 import six
 from six.moves import range, cPickle
 
@@ -356,6 +360,8 @@ def hausdorff(P, Q):
     :attr:`MDAnalysis.core.groups.AtomGroup.positions`). *P* (*Q*) has
     either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
+    Note that reversing the path does not change the Hausdorff distance.
+
     Parameters
     ----------
     P : numpy.ndarray
@@ -387,21 +393,16 @@ def hausdorff(P, Q):
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      4.7786639840135905
 
-    Note that reversing the path does not change the Hausdorff distance.
 
     Notes
     -----
-    The Hausdorff distance is calculated in a brute force manner from the
-    distance matrix without further optimizations, essentially following
-    [Huttenlocher1993]_.
-
-    .. SeeAlso::
-
-       :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-       implementation of the early break algorithm of [Taha2015]_; note that
-       one still has to calculate the *symmetric* Hausdorff distance as
-       `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
-
+    - The Hausdorff distance is calculated in a brute force manner from the
+      distance matrix without further optimizations, essentially following
+      [Huttenlocher1993]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+      implementation of the early break algorithm of [Taha2015]_; note that
+      one still has to calculate the *symmetric* Hausdorff distance as
+      `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
 
     References
     ----------
@@ -558,14 +559,11 @@ def hausdorff_neighbors(P, Q):
 
     Notes
     -----
-    Hausdorff neighbors are those points on the two paths that are separated by
-    the Hausdorff distance. They are the farthest nearest neighbors and are
-    maximally different in the sense of the Hausdorff distance [Seyler2015]_.
-
-    .. SeeAlso::
-
-       :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
-       Hausdorff neighbors.
+    - Hausdorff neighbors are those points on the two paths that are separated by
+      the Hausdorff distance. They are the farthest nearest neighbors and are
+      maximally different in the sense of the Hausdorff distance [Seyler2015]_.
+    - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
+      hausdorff neighbors.
 
     """
     N, axis = get_coord_axes(P)
@@ -806,7 +804,7 @@ class Path(object):
 
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
-                         mass_weighted=False, tol_mass=0.1):
+                         mass_weighted=None, weights=None, tol_mass=0.1):
         """Align each trajectory frame to the reference structure
 
         Parameters
@@ -819,8 +817,10 @@ class Path(object):
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (optional)
-             do a mass-weighted RMSD fit, default is ``False``
+        mass_weighted : bool (deprecated)
+            do a mass-weighted RMSD fit
+        weights : str/array_like (optional)
+            choose weights. If 'str' uses masses as weights
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass` [0.1]
@@ -833,7 +833,18 @@ class Path(object):
         Notes
         -----
         Uses :class:`MDAnalysis.analysis.align.AlignTraj` for the fitting.
+
+
+        .. deprecated:: 0.16.1
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``;
+           refactored to fit with AnalysisBase API
         """
+        if mass_weighted is not None:
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            if mass_weighted:
+                weights = 'mass'
         head, tail = os.path.split(self.trj_name)
         oldname, ext = os.path.splitext(tail)
         filename = filename or oldname
@@ -844,7 +855,7 @@ class Path(object):
                                                        select=self.ref_select,
                                                        filename=self.newtrj_name,
                                                        prefix=prefix,
-                                                       mass_weighted=mass_weighted,
+                                                       weights=weights,
                                                        tol_mass=tol_mass).run()
         if rmsdfile is not None:
             aligntrj.save(rmsdfile)
@@ -905,7 +916,7 @@ class Path(object):
 
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
-            targetdir=os.path.curdir, mass_weighted=False, tol_mass=0.1,
+            targetdir=os.path.curdir, mass_weighted=None, weights=None, tol_mass=0.1,
             flat=False):
         r"""Generate a path from a trajectory and reference structure.
 
@@ -939,8 +950,10 @@ class Path(object):
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (optional)
-             do a mass-weighted RMSD fit
+        mass_weighted : bool (deprecated)
+            do a mass-weighted RMSD fit
+        weights : str/array_like (optional)
+            choose weights. If 'str' uses masses as weights
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
@@ -953,12 +966,23 @@ class Path(object):
         -------
         topology_trajectory : tuple
              A tuple of the topology name and new trajectory name.
+
+
+        .. deprecated:: 0.16.1
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``;
+           refactored to fit with AnalysisBase API
         """
+        if mass_weighted is not None:
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            if mass_weighted:
+                weights = 'mass'
         if align:
-            self.u_fitted = self.fit_to_reference(                              \
-                                filename=filename, postfix=postfix,             \
-                                rmsdfile=rmsdfile, targetdir=targetdir,         \
-                                mass_weighted=False, tol_mass=0.1)
+            self.u_fitted = self.fit_to_reference(
+                                filename=filename, postfix=postfix,
+                                rmsdfile=rmsdfile, targetdir=targetdir,
+                                weights=weights, tol_mass=0.1)
         self.path = self.to_path(fitted=align, flat=flat)
         return self.top_name, self.newtrj_name
 
@@ -1265,8 +1289,6 @@ class PSAnalysis(object):
              can also each be a list of selection strings (to generate an
              AtomGroup with defined atom order as described under
              :ref:`ordered-selections-label`).
-        mass_weighted : bool
-             do a mass-weighted RMSD fit [``False``]
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
@@ -1352,7 +1374,8 @@ class PSAnalysis(object):
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
-    def generate_paths(self, **kwargs):
+    def generate_paths(self, align=False, filename='fitted', infix='', mass_weighted=None, weights=None,
+                       tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
         """Generate paths, aligning each to reference structure if necessary.
 
         Parameters
@@ -1366,8 +1389,10 @@ class PSAnalysis(object):
         infix : str
              additional tag string that is inserted into the output filename of
              the fitted trajectory files ['']
-        mass_weighted : bool
-             do a mass-weighted RMSD fit
+        mass_weighted : bool (deprecated)
+            do a mass-weighted RMSD fit
+        weights : str/array_like (optional)
+            choose weights. If 'str' uses masses as weights
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass*
@@ -1395,28 +1420,31 @@ class PSAnalysis(object):
         persistence and can be accessed as the attribute
         :attr:`PSAnalysis.paths`.
 
+
+        .. deprecated:: 0.16.1
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``;
+           refactored to fit with AnalysisBase API
         """
-        align = kwargs.pop('align', False)
-        filename = kwargs.pop('filename', 'fitted')
-        infix = kwargs.pop('infix', '')
-        mass_weighted = kwargs.pop('mass_weighted', False)
-        tol_mass = kwargs.pop('tol_mass', False)
-        ref_frame = kwargs.pop('ref_frame', self.ref_frame)
-        flat = kwargs.pop('flat', False)
-        save = kwargs.pop('save', True)
-        store = kwargs.pop('store', False)
+        if mass_weighted is not None:
+            warnings.warn("mass weighted is deprecated argument. Please use "
+                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
+                          category=DeprecationWarning)
+            if mass_weighted:
+                weights = 'mass'
+        if ref_frame is None:
+            ref_frame = self.ref_frame
 
         paths = []
         fit_trj_names = []
         for i, u in enumerate(self.universes):
-            p = Path(u, self.u_reference, ref_select=self.ref_select,           \
+            p = Path(u, self.u_reference, ref_select=self.ref_select,
                      path_select=self.path_select, ref_frame=ref_frame)
             trj_dir = self.targetdir + self.datadirs['fitted_trajs']
             postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)
-            top_name, fit_trj_name = p.run(align=align, filename=filename,      \
-                                           postfix=postfix,                     \
-                                           targetdir=trj_dir,                   \
-                                           mass_weighted=mass_weighted,         \
+            top_name, fit_trj_name = p.run(align=align, filename=filename,
+                                           postfix=postfix,
+                                           targetdir=trj_dir,
+                                           weights=weights,
                                            tol_mass=tol_mass, flat=flat)
             paths.append(p.path)
             fit_trj_names.append(fit_trj_name)
@@ -1428,7 +1456,6 @@ class PSAnalysis(object):
             with open(self._fit_trjs_pkl, 'wb') as output:
                 cPickle.dump(self.fit_trj_names, output)
         if store:
-            filename = kwargs.pop('filename', None)
             self.save_paths(filename=filename)
 
 
@@ -1976,14 +2003,14 @@ class PSAnalysis(object):
         """Return the number of atoms used to construct the :class:`Path` instances in
         :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
-
         Returns
         -------
-        int
-           the number of atoms in :class:`PSA`'s :class:`Path`s'
+        the number of atoms
+
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+        method.
         """
         if self.natoms is None:
             err_str = "No path data; do 'PSAnalysis.generate_paths()' first."

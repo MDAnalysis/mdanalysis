@@ -74,6 +74,8 @@ Functions
 .. autofunction:: Merge
 
 """
+from __future__ import absolute_import
+from six.moves import range
 import six
 
 import errno
@@ -89,7 +91,7 @@ from .. import _ANCHOR_UNIVERSES
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
-from ..lib.util import cached
+from ..lib.util import cached, NamedStream, isstream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (GroupBase, Atom, Residue, Segment,
@@ -139,7 +141,7 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : filename or Topology object
+    topology : str, Topology object or stream
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
@@ -225,7 +227,13 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                self.filename = args[0]
+                if isstream(args[0]):
+                    filename = None
+                    if hasattr(args[0], 'name'):
+                        filename = args[0].name
+                    self.filename = NamedStream(args[0], filename)
+                else:
+                    self.filename = args[0]
                 parser = get_parser_for(self.filename, format=topology_format)
                 try:
                     with parser(self.filename) as p:
@@ -483,10 +491,12 @@ class Universe(object):
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
             # to be manipulated
+            if step is None:
+                step = 1 
             self.trajectory = MemoryReader(
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,
-                dt=self.trajectory.ts.dt,
+                dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
@@ -849,7 +859,9 @@ def as_Universe(*args, **kwargs):
          as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
          as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
-    :Returns: an instance of :class:`~MDAnalysis.core.groups.Universe`
+    Returns
+    -------
+    :class:`~MDAnalysis.core.groups.Universe`
     """
     if len(args) == 0:
         raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
@@ -871,9 +883,12 @@ def Merge(*args):
     -------
     universe : :class:`Universe`
 
-    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
-             empty and :exc:`TypeError` if arguments are not
-             :class:`AtomGroup` instances.
+    Raises
+    ------
+    ValueError
+        Too few arguments or an AtomGroup is empty and
+    TypeError
+        Arguments are not :class:`AtomGroup` instances.
 
     Notes
     -----
@@ -989,8 +1004,7 @@ def Merge(*args):
             tg = tg.atomgroup_intersection(ag, strict=True)
 
             # Map them so they refer to our new indices
-            new_idx = [tuple(map(lambda x:mapping[x], entry))
-                       for entry in tg.indices]
+            new_idx = [tuple([mapping[x] for x in entry]) for entry in tg.indices]
             bondidx.extend(new_idx)
             if hasattr(tg, '_bondtypes'):
                 types.extend(tg._bondtypes)

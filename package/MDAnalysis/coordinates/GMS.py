@@ -30,8 +30,13 @@ GAMESS distributions: US-GAMESS, Firefly (PC-GAMESS) and GAMESS-UK.
 Current version was approbated with US-GAMESS & Firefly only.
 
 There appears to be no rigid format definition so it is likely users
-will need to tweak this Class.
+will need to tweak the :class:`GMSReader`.
+
+.. autoclass:: GMSReader
+   :members:
+
 """
+from __future__ import absolute_import
 
 import os
 import errno
@@ -54,13 +59,17 @@ class GMSReader(base.ReaderBase):
         ``for ts in out:``
           iterate through trajectory
 
-    .. Note: this can read both compressed (foo.out) and compressed
-          (foo.out.bz2 or foo.out.gz) files; uncompression is handled
-          on the fly
+    Note
+    ----
+    :class:`GMSReader` can read both uncompressed (``foo.out``) and
+    compressed (``foo.out.bz2`` or ``foo.out.gz``) files;
+    decompression is handled on the fly
+
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
-       Added dt and time_offset keywords (passed to Timestep)
+       Frames now 0-based instead of 1-based.
+       Added `dt` and `time_offset` keywords (passed to :class:`Timestep`).
+
     """
 
     format = "GMS"
@@ -170,7 +179,7 @@ class GMSReader(base.ReaderBase):
         self.outfile.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in _read_next
         return self._read_next_timestep()
-    
+
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
         if ts is None:

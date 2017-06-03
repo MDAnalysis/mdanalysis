@@ -115,8 +115,8 @@ Functions
 .. autofunction:: helanal_main
 
 """
-from __future__ import print_function
-from six.moves import range
+from __future__ import print_function, division, absolute_import
+from six.moves import range, zip
 
 import os
 
@@ -401,7 +401,7 @@ def helanal_trajectory(universe, selection="name CA",
     logger.info("Residues/turn: %g  SD: %g  ABDEV: %g", rnou_mean, rnou_sd, rnou_abdev)
     logger.info("Fitted tilt: %g  SD: %g  ABDEV: %g", ftilt_mean, ftilt_sd, ftilt_abdev)
     logger.info("Local bending angles:")
-    residue_statistics = zip(*bending_statistics)
+    residue_statistics = list(zip(*bending_statistics))
     measure_names = ["Mean ", "SD   ", "ABDEV"]
     if start is None:
         output = " ".join(["{0:8d}".format(item)

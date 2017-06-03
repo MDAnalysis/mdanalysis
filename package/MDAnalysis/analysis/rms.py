@@ -44,12 +44,14 @@ implemented in
 
 When using this module in published work please cite [Theobald2005]_.
 
-.. SeeAlso::
 
-   :mod:`MDAnalysis.analysis.align`
-       aligning structures based on RMSD
-   :mod:`MDAnalysis.lib.qcprot`
-        implements the fast RMSD algorithm.
+See Also
+--------
+:mod:`MDAnalysis.analysis.align`
+   aligning structures based on RMSD
+:mod:`MDAnalysis.lib.qcprot`
+   implements the fast RMSD algorithm.
+
 
 Example applications
 --------------------
@@ -131,6 +133,7 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
+from __future__ import division, absolute_import
 
 from six.moves import zip
 import numpy as np
@@ -643,7 +646,7 @@ class RMSF(AnalysisBase):
             super(RMSF, self).__init__(self.atomgroup.universe.trajectory,
                                        start=start, stop=stop, step=step,
                                        verbose=verbose)
-        super(RMSF, self).run()
+        return super(RMSF, self).run()
 
     def _prepare(self):
         self.sumsquares = np.zeros((self.atomgroup.n_atoms, 3))

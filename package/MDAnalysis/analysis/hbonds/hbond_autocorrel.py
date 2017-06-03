@@ -152,6 +152,7 @@ Examples
 
 
 """
+from __future__ import division, absolute_import
 from six.moves import zip
 import numpy as np
 import warnings
@@ -276,7 +277,7 @@ class HydrogenBondAutoCorrel(object):
         # limit stop points using clip
         self._stops = np.clip(self._starts + req_frames, 0, n_frames)
 
-        self._skip = req_frames / self.nsamples
+        self._skip = req_frames // self.nsamples
         if self._skip == 0:  # If nsamples > req_frames
             warnings.warn("Desired number of sample points too high, using {0}"
                           .format(req_frames), RuntimeWarning)

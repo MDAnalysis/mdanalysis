@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
@@ -37,6 +37,7 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
+from __future__ import absolute_import
 import os
 import errno
 import itertools
@@ -54,7 +55,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
      - ATOM. HETATM for x,y,z
 
-    Original `PDB format documentation`_    with  `AutoDOCK extensions`_
+    Original `PDB format documentation`_ with `AutoDOCK extensions`_
 
 
     .. _PDB format documentation:
@@ -154,19 +155,16 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     break
                 if line.startswith('CRYST1'):
                     # lengths
-                    x, y, z = map(
-                        float, (line[6:15], line[15:24], line[24:33]))
+                    x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
                     # angles
-                    A, B, G = map(
-                        float, (line[33:40], line[40:47], line[47:54]))
+                    A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
                     unitcell[:] = x, y, z, A, B, G
                 if line.startswith(('ATOM', 'HETATM')):
-                    x, y, z = map(
-                        float, (line[30:38], line[38:46], line[46:54]))
-                    coords.append((x, y, z))
+                    # convert all entries at the end once for optimal speed
+                    coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
-            np.array(coords, dtype=np.float32),
+            coords,
             **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
@@ -223,23 +221,24 @@ class PDBQTWriter(base.WriterBase):
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
-        write(selection, frame=FRAME)
-
         Parameters
         ----------
         selection : AtomGroup
             The selection to be written
-        frame : int, optional
-            optionally move to *frame* before writing
+        frame : int (optional)
+            optionally move to frame index `frame` before writing; the default
+            is to write the current trajectory frame
 
-        .. Note::
+        Note
+        ----
+        The first letter of the
+        :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
+        chainID.
 
-           The first letter of the
-           :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
-           chainID.
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
         """
         u = selection.universe
         if frame is not None:

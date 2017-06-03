@@ -45,7 +45,7 @@ See example scripts in the MDAnalysisCookbook_ on how to use
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.
 
-.. MDAnalysisCookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
+.. _MDAnalysisCookbook: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
 
 
 Algorithm
@@ -67,6 +67,7 @@ Classes and Functions
 .. autofunction:: optimize_cutoff
 
 """
+from __future__ import division, absolute_import
 
 from six.moves import range
 
@@ -202,7 +203,10 @@ class LeafletFinder(object):
 
         If no argument is supplied, then a list of all leaflet groups is returned.
 
-        .. SeeAlso:: :meth:`LeafletFinder.group` and :meth:`LeafletFinder.groups_iter`
+        See Also
+        --------
+        :meth:`LeafletFinder.group`
+        :meth:`LeafletFinder.groups_iter`
         """
         if component_index is None:
             return list(self.groups_iter())

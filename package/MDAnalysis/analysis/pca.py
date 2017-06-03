@@ -20,7 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
+r"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 =====================================================================
 
 :Authors: John Detlefs
@@ -67,6 +67,7 @@ The example uses files provided as part of the MDAnalysis test suite
 PCA class.
 
 First load all modules and test data
+
     >>> import MDAnalysis as mda
     >>> import MDAnalysis.analysis.pca as pca
     >>> from MDAnalysis.tests.datafiles import PSF, DCD
@@ -74,6 +75,7 @@ First load all modules and test data
 Given a universe containing trajectory data we can perform Principal Component
 Analyis by using the class :class:`PCA` and retrieving the principal
 components.
+
     >>> u = mda.Universe(PSF, DCD)
     >>> PSF_pca = pca.PCA(u, select='backbone')
     >>> PSF_pca.run()
@@ -85,19 +87,21 @@ components is conveniently stored in the one-dimensional array attribute
 ``cumulated_variance``. The value at the ith index of `cumulated_variance`
 is the sum of the variances from 0 to i.
 
-    >>> n_pcs = np.where(PSF_pca.cumulated_var > 0.95)[0][0]
+    >>> n_pcs = np.where(PSF_pca.cumulated_variance > 0.95)[0][0]
     >>> atomgroup = u.select_atoms('backbone')
     >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
 From here, inspection of the ``pca_space`` and conclusions to be drawn from the
 data are left to the user.
 
-Functions
----------
+Classes and Functions
+---------------------
+
 .. autoclass:: PCA
 .. autofunction:: cosine_content
 
 """
+from __future__ import division, absolute_import
 from six.moves import range
 import warnings
 
@@ -116,8 +120,10 @@ class PCA(AnalysisBase):
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
     variance will be available for analysis. As an example:
+
         >>> pca = PCA(universe, select='backbone').run()
         >>> pca_space =  pca.transform(universe.select_atoms('backbone'), 3)
+
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
@@ -149,7 +155,6 @@ class PCA(AnalysisBase):
         Take an atomgroup or universe with the same number of atoms as was
         used for the calculation in :meth:`PCA.run` and project it onto the
         principal components.
-
 
     Notes
     -----

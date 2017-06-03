@@ -75,7 +75,6 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
-   analysis/legacy/x3dna
 
 Polymers
 ========

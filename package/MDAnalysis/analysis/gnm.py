@@ -24,7 +24,7 @@
 #Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame
 #Copyright 2011; Consider under GPL v2 or later
 
-"""
+r"""
 Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 ==============================================================================
 
@@ -37,21 +37,22 @@ Analyse a trajectory using elastic network models, following the approach of [Ha
 
 An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 
-.. GNMExample_: https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py
-.. Cookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook
+.. _GNMExample: https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py
+.. _Cookbook: https://github.com/MDAnalysis/MDAnalysisCookbook
 
 The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
 the analysis::
 
-   u = MDAnalysis.Universe(PSF, DCD)
-   C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
+    u = MDAnalysis.Universe(PSF, DCD)
+    C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
 
-   C.run()
-   output = zip(*C.results)
+    C.run()
+    output = zip(*C.results)
 
-   with open("eigenvalues.dat", "w") as outputfile:
-      for item in output[1]:
-           outputfile.write(item + "\n")
+    with open("eigenvalues.dat", "w") as outputfile:
+        for item in output[1]:
+            outputfile.write(item + "\n")
+
 
 The results are found in :attr:`GNMAnalysis.results`, which can be
 used for further processing (see [Hall2007]_).
@@ -85,7 +86,7 @@ directly needed to perform the analysis.
 
 """
 
-from __future__ import print_function
+from __future__ import print_function, division, absolute_import
 from six.moves import range
 
 import numpy as np
@@ -181,7 +182,10 @@ class GNMAnalysis(object):
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied. Default is ``None``.
 
-    .. SeeAlso:: :class:`closeContactGNMAnalysis`
+    See Also
+    --------
+    :class:`closeContactGNMAnalysis`
+
 
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
@@ -337,13 +341,18 @@ class closeContactGNMAnalysis(GNMAnalysis):
           the atoms that form a contact.
     MassWeight : bool (deprecated, optional)
           if set to ``True`` equivalent to `weights` set to "size".
-          .. Note:: This option does not perform a true mass weighting but
-                    weighting by the number of atoms in each residue; the name
-                    of the parameter exists for historical reasons and will
-                    be removed in 0.17.0. Until then, setting `MassWeight` to
-                    anything but ``None`` will override `weights`.
 
-    .. SeeAlso:: :class:`GNMAnalysis`
+    Notes
+    -----
+    The `MassWeight` option does not perform a true mass weighting but
+    weighting by the number of atoms in each residue; the name of the parameter
+    exists for historical reasons and will be removed in 0.17.0. Until then,
+    setting `MassWeight` to anything but ``None`` will override `weights`.
+
+    See Also
+    --------
+    :class:`GNMAnalysis`
+
 
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.

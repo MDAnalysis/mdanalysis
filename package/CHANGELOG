@@ -13,6 +13,53 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
+         richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst,
+         kaceyreidy
+
+  * 0.16.1
+
+Enhancements
+  * Universe now works with StringIO objects for topologies and trajectories.
+  * Residues with the same residue ids are not merged by default now
+    (apply to PDB, GRO) (Issue #1306)
+  * Improved print to screen format in waterdynamics module (using
+    ProgressMeter).
+  * PQRParser now treats insertion codes properly (Issue #1317)
+  * made online docs responsive with the Alabaster Sphinx theme (#378)
+
+Fixes
+  * In Universe.transfer_to_memory(): dt is now adjusted with step (Issue #1310)
+  * Various documentation sphinx errors (PR #1312)
+  * Bugfix in confdistmatrix.get_distance_matrix; now works on all trajectory types.
+    (issue #1324)
+  * Fixed bug "no molecules in water selection" in waterdynamics analysis
+    module.
+  * Fix hbond_analysis cannot deal with Universe where no two atoms are with 3A.
+    (PR #1325)
+  * Fix PDBParser docs for conect (issue #1246)
+  * Fixed bug where amber topology files would fail to load if number of atoms was
+    exactly divisible by number of atoms per line (issue #1331)
+  * Fixed incorrect handling of residue names with trailing numbers in
+    HydrogenBondAnalysis (issue #801)
+  * Fixed AnalysisBase class provides numerical start,stop,step values (PR #1340)
+  * Fixed PSFParser not creating multiple residues for identical resids in
+    different segments. (Issue #1347, PR #1348)
+  * Add the OC1 and OC2 from amber99sb-ildn to hydrogen bond acceptors (issue #1342)
+  * Fix RMSF run return value (PR #1354)
+  * Fixed documentation in pca (Issue #1378 PR #1379)
+
+Changes
+  * Enable various pylint warnings to increase python 3 compatibility
+  * Change Mathjax cdn (Issue #1313)
+  * Change mass_weight to weights for PSA analysis
+  * Move mass_weights deprecation to version 0.18
+  * Docs moved to http://docs.mdanalysis.org (Issue #1315)
+    and made responsive (Alabaster theme with readable-sphinx CSS)
+    (Issue #378)
+  * speed improvements parsing PDB / PDBQT / PQR / XYZ coordinate reader (Issue #1308)
+
+
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
@@ -66,14 +113,13 @@ Enhancements
   * Added groupby method to Group objects. (PR #1112)
   * Added `singleframe` attribute to Writer API to exclude from known Writers
     for a single frame (Issue #1199 PR #1201)
-  * Correct the display error of HydrogenBondAnalysis when start is not 0 or 
+  * Correct the display error of HydrogenBondAnalysis when start is not 0 or
     step is not one.
   * Groups (atomgroup, residuegroup, and segmentgroup) have more operators,
     included set operators (Issue #726)
   * Universes built with Merge now use the MemoryReader (Issue #1251)
   * speed improvement for analysis.gnm.closeContactGNMAnalysis(...,
     weights="size") by about 5x (partially Issue #1191)
-    
 
 Fixes
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)

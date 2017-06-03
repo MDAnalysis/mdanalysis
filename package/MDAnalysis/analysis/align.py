@@ -43,13 +43,13 @@ trajectories respectively.
 The :ref:`RMS-fitting-tutorial` shows how to do the individual steps
 manually and explains the intermediate steps.
 
-.. SeeAlso::
-
-   :mod:`MDAnalysis.analysis.rms`
-        contains functions to compute RMSD (when structural alignment is not
-        required)
-   :mod:`MDAnalysis.lib.qcprot`
-        implements the fast RMSD algorithm.
+See Also
+--------
+:mod:`MDAnalysis.analysis.rms`
+     contains functions to compute RMSD (when structural alignment is not
+     required)
+:mod:`MDAnalysis.lib.qcprot`
+     implements the fast RMSD algorithm.
 
 
 .. _RMS-fitting-tutorial:
@@ -63,8 +63,8 @@ The example uses files provided as part of the MDAnalysis test suite
 :data:`~MDAnalysis.tests.datafiles.PDB_small`). For all further
 examples execute first ::
 
-   >>> from MDAnalysis import *
-   >>> from MDAnalysis.analysis.align import *
+   >>> import MDAnalysis as mda
+   >>> from MDAnalysis.analysis import align
    >>> from MDAnalysis.analysis.rms import rmsd
    >>> from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 
@@ -72,8 +72,8 @@ examples execute first ::
 In the simplest case, we can simply calculate the C-alpha RMSD between
 two structures, using :func:`rmsd`::
 
-   >>> ref = Universe(PDB_small)
-   >>> mobile = Universe(PSF,DCD)
+   >>> ref = mda.Universe(PDB_small)
+   >>> mobile = mda.Universe(PSF,DCD)
    >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions)
    16.282308620224068
 
@@ -98,7 +98,7 @@ function ::
 
    >>> mobile0 = mobile.atoms.CA.positions - mobile.atoms.center_of_mass()
    >>> ref0 = ref.atoms.CA.positions - ref.atoms.center_of_mass()
-   >>> R, rmsd = rotation_matrix(mobile0, ref0)
+   >>> R, rmsd = align.rotation_matrix(mobile0, ref0)
    >>> print rmsd
    6.8093965864717951
    >>> print R
@@ -119,9 +119,9 @@ Common usage
 
 To **fit a single structure** with :func:`alignto`::
 
-   >>> ref = Universe(PSF, PDB_small)
-   >>> mobile = Universe(PSF, DCD)     # we use the first frame
-   >>> alignto(mobile, ref, select="protein and name CA", mass_weighted=True)
+   >>> ref = mda.Universe(PSF, PDB_small)
+   >>> mobile = mda.Universe(PSF, DCD)     # we use the first frame
+   >>> align.alignto(mobile, ref, select="protein and name CA", mass_weighted=True)
 
 This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).
@@ -129,10 +129,10 @@ C-alpha atoms are optimally superimposed (translation and rotation).
 To **fit a whole trajectory** to a reference structure with the
 :class:`AlignTraj` class::
 
-   >>> ref = Universe(PSF, PDB_small)   # reference structure 1AKE
-   >>> trj = Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
-   >>> align =  AlignTraj(trj, ref, filename='rmsfit.dcd')
-   >>> align.run()
+   >>> ref = mda.Universe(PSF, PDB_small)   # reference structure 1AKE
+   >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
+   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
+   >>> alignment.run()
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
@@ -142,9 +142,9 @@ If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
 function and then feed the resulting dictionary to :class:`AlignTraj`::
 
-   >>> seldict = fasta2select('sequences.aln')
-   >>> align = AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict)
-   >>> align.run()
+   >>> seldict = align.fasta2select('sequences.aln')
+   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict)
+   >>> alignment.run()
 
 (See the documentation of the functions for this advanced usage.)
 
@@ -178,6 +178,7 @@ normal users.
 .. autofunction:: get_matching_atoms
 
 """
+from __future__ import division, absolute_import
 
 import os.path
 from six.moves import range, zip, zip_longest
@@ -400,8 +401,9 @@ def alignto(mobile, reference, select="all", mass_weighted=None, weights=None,
     new_rmsd : float
         RMSD after spatial alignment
 
-    .. SeeAlso::
-       AlignTraj: More efficient method for RMSD-fitting trajectories.
+    See Also
+    --------
+    AlignTraj: More efficient method for RMSD-fitting trajectories.
 
 
     .. _ClustalW: http://www.clustal.org/
@@ -551,20 +553,21 @@ class AlignTraj(AnalysisBase):
 
         Notes
         -----
-        If set to `verbose=False`, it is recommended to wrap the statement in a
-        ``try ...  finally`` to guarantee restoring of the log level in the
-        case of an exception.
+        - If set to ``verbose=False``, it is recommended to wrap the statement in a
+          ``try ...  finally`` to guarantee restoring of the log level in the
+          case of an exception.
+        - The ``in_memory`` option changes the `mobile` universe to an
+          in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
+          for the remainder of the Python session. If ``mobile.trajectory`` is
+          already a :class:`MemoryReader` then it is *always* treated as if
+          ``in_memory`` had been set to ``True``.
 
-        The `in_memory` option changes the `mobile` universe to an in-memory
-        representation (see :mod:`MDAnalysis.coordinates.memory`) for the
-        remainder of the Python session. If ``mobile.trajectory```is already a
-        :class:`MemoryReader` then it is *always* treated as if `in_memory` had
-        been set to ``True``.
 
         .. versionchanged:: 0.16.0
-           new general 'weights' kwarg replace mass_weights, deprecated 'mass_weights'
+           new general ``weights`` kwarg replace ``mass_weights``
+
         .. deprecated:: 0.16.0
-           Instead of ``mass_weighted=True`` use new ``weights='mass'`
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``
 
         """
         select = rms.process_selection(select)
@@ -983,9 +986,10 @@ def fasta2select(fastafilename, is_aligned=False,
         ``select=select_dict``.
 
 
-    .. SeeAlso::
-      :func:`sequence_alignment`, which does not require external
-      programs.
+    See Also
+    --------
+    :func:`sequence_alignment`, which does not require external
+    programs.
 
 
     .. _ClustalW: http://www.clustal.org/

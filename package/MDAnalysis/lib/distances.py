@@ -63,6 +63,7 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 
 """
+from __future__ import division, absolute_import
 from six.moves import range
 
 import numpy as np
@@ -359,7 +360,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
     refnum = ref.shape[0]
-    distnum = refnum * (refnum - 1) / 2
+    distnum = refnum * (refnum - 1) // 2
 
     if result is not None:
         _check_results_array(result, (distnum,))

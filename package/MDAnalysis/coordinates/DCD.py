@@ -38,21 +38,24 @@ within MDAnalysis will work seamlessly but if you process those
 trajectories with other tools you might need to watch out that time
 and unitcell dimensions are correctly interpreted.
 
-.. Note::
+Note
+----
+The DCD file format is not well defined. In particular, NAMD and
+CHARMM use it differently. Currently, MDAnalysis tries to guess the
+correct **format for the unitcell representation** but it can be
+wrong. **Check the unitcell dimensions**, especially for triclinic
+unitcells (see `Issue 187`_ and :attr:`Timestep.dimensions`). A
+second potential issue are the units of time which are AKMA for the
+:class:`DCDReader` (following CHARMM) but ps for NAMD. As a
+workaround one can employ the configurable
+:class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
+trajectories.
 
-   The DCD file format is not well defined. In particular, NAMD and
-   CHARMM use it differently. Currently, MDAnalysis tries to guess the
-   correct **format for the unitcell representation** but it can be
-   wrong. **Check the unitcell dimensions**, especially for triclinic
-   unitcells (see `Issue 187`_ and :attr:`Timestep.dimensions`). A
-   second potential issue are the units of time which are AKMA for the
-   :class:`DCDReader` (following CHARMM) but ps for NAMD. As a
-   workaround one can employ the configurable
-   :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
-   trajectories.
+See Also
+--------
+:mod:`MDAnalysis.coordinates.LAMMPS`
+  module provides a more flexible DCD reader/writer.
 
-.. SeeAlso:: The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
-             a more flexible DCD reader/writer.
 
 The classes in this module are the reference implementations for the
 Trajectory API.
@@ -73,6 +76,7 @@ Classes
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
+from six.moves import range
 
 import os
 import errno
@@ -119,6 +123,7 @@ class Timestep(base.Timestep):
         of these values are < 0 or if any of the angles are > 180 degrees then
         it is assumed it is a new-style CHARMM unitcell (at least since c36b2)
         in which box vectors were recorded.
+
 
         .. warning:: The DCD format is not well defined. Check your unit cell
            dimensions carefully, especially when using triclinic
@@ -168,8 +173,57 @@ class Timestep(base.Timestep):
 
 
 class DCDWriter(base.WriterBase):
-    """Writes to a DCD file
+    """Write to a CHARMM/NAMD DCD trajectory file.
 
+    Parameters
+    ----------
+    filename : str
+        name of output file
+    n_atoms : int (optional)
+        number of atoms in dcd file
+    start : int (optional)
+        starting frame number
+    step : int (optional)
+        skip between subsequent timesteps (indicate that `step` **MD
+        integrator steps (!)** make up one trajectory frame); default is 1.
+    delta : float (optional)
+        timestep (**MD integrator time step (!)**, in AKMA units); default is
+        20.45482949774598 (corresponding to 1 ps).
+    remarks : str (optional)
+        comments to annotate dcd file
+    dt : float (optional)
+        **Override** `step` and `delta` so that the DCD records that
+        `dt` ps lie between two frames. (It sets `step` = 1 and
+        `delta` ``= AKMA(dt)``.) The default is ``None``, in which case
+        `step` and `delta` are used.
+    convert_units : bool (optional)
+        units are converted to the MDAnalysis base format; ``None`` selects
+        the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
+        (see :ref:`flags-label`)
+
+    Note
+    ----
+    The keyword arguments set the **low-level attributes of the DCD** according
+    to the CHARMM format. The time between two frames would be `delta` *
+    `step`!  For convenience, one can alternatively supply the `dt` keyword
+    (see above) to just tell the writer that it should record "There are `dt`
+    ps between each frame".
+
+    The Writer will write the **unit cell information** to the DCD in a format
+    compatible with NAMD and older CHARMM versions, namely the unit cell
+    lengths in Angstrom and the angle cosines (see :class:`Timestep`). Newer
+    versions of CHARMM (at least c36b2) store the matrix of the box
+    vectors. Writing this matrix to a DCD is currently not supported (although
+    reading is supported with the :class:`DCDReader`); instead the angle
+    cosines are written, which *might make the DCD file unusable in CHARMM
+    itself*. See `Issue 187`_ for further information.
+
+    The writing behavior of the :class:`DCDWriter` is identical to that of the
+    DCD molfile plugin of VMD with the exception that by default it will use
+    AKMA time units.
+
+    Example
+    -------
     Typical usage::
 
        with DCDWriter("new.dcd", u.atoms.n_atoms) as w:
@@ -178,26 +232,8 @@ class DCDWriter(base.WriterBase):
 
     Keywords are available to set some of the low-level attributes of the DCD.
 
-    :Methods:
-       ``d = DCDWriter(dcdfilename, n_atoms, start, step, delta, remarks)``
-
-    .. Note::
-
-       The Writer will write the **unit cell information** to the DCD in a
-       format compatible with NAMD and older CHARMM versions, namely the unit
-       cell lengths in Angstrom and the angle cosines (see
-       :class:`Timestep`). Newer versions of CHARMM (at least c36b2) store the
-       matrix of the box vectors. Writing this matrix to a DCD is currently not
-       supported (although reading is supported with the
-       :class:`DCDReader`); instead the angle cosines are written,
-       which *might make the DCD file unusable in CHARMM itself*. See
-       `Issue 187`_ for further information.
-
-       The writing behavior of the :class:`DCDWriter` is identical to
-       that of the DCD molfile plugin of VMD with the exception that
-       by default it will use AKMA time units.
-
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
+
     """
     format = 'DCD'
     multiframe = True
@@ -207,41 +243,6 @@ class DCDWriter(base.WriterBase):
     def __init__(self, filename, n_atoms, start=0, step=1,
                  delta=mdaunits.convert(1., 'ps', 'AKMA'), dt=None,
                  remarks="Created by DCDWriter", convert_units=None):
-        """Create a new DCDWriter
-
-        :Arguments:
-         *filename*
-           name of output file
-         *n_atoms*
-           number of atoms in dcd file
-         *start*
-           starting timestep
-         *step*
-           skip between subsequent timesteps (indicate that *step* MD
-           integrator steps (!) make up one trajectory frame); default is 1.
-         *delta*
-           timestep (MD integrator time step (!), in AKMA units); default is
-           20.45482949774598 (corresponding to 1 ps).
-         *remarks*
-           comments to annotate dcd file
-         *dt*
-           **Override** *step* and *delta* so that the DCD records that *dt* ps
-           lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
-           The default is ``None``, in which case *step* and *delta* are used.
-         *convert_units*
-           units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-           (see :ref:`flags-label`)
-
-       .. Note::
-
-          The keyword arguments set the low-level attributes of the DCD
-          according to the CHARMM format. The time between two frames would be
-          *delta* * *step* ! For convenience, one can alternatively supply the
-          *dt* keyword (see above) to just tell the writer that it should
-          record "There are dt ps between each frame".
-
-        """
         if n_atoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
         elif n_atoms is None:
@@ -308,15 +309,29 @@ class DCDWriter(base.WriterBase):
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
     def write_next_timestep(self, ts=None):
-        ''' write a new timestep to the dcd file
+        """Write a new timestep to the DCD file.
 
-        *ts* - timestep object containing coordinates to be written to dcd file
+        Parameters
+        ----------
+        ts : `Timestep` (optional)
+            `Timestep` object containing coordinates to be written to DCD file;
+            by default it uses the current `Timestep` associated with the
+            Writer.
+
+        Raises
+        ------
+        :exc:`ValueError`
+           if wrong number of atoms supplied
+        :exc:`~MDAnalysis.NoDataError`
+           if no coordinates to be written.
+
 
         .. versionchanged:: 0.7.5
            Raises :exc:`ValueError` instead of generic :exc:`Exception`
            if wrong number of atoms supplied and :exc:`~MDAnalysis.NoDataError`
            if no coordinates to be written.
-        '''
+
+        """
         if ts is None:
             try:
                 ts = self.ts
@@ -336,7 +351,9 @@ class DCDWriter(base.WriterBase):
     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
         """Read dimensions from timestep *ts* and return appropriate native unitcell.
 
-        .. SeeAlso:: :attr:`Timestep.dimensions`
+        See Also
+        --------
+        :attr:`Timestep.dimensions`
         """
         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines
         lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
@@ -385,15 +402,15 @@ class DCDReader(base.ReaderBase):
         ``data = dcd.correl(...)``
            populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
 
-    .. Note::
+    Note
+    ----
+    The DCD file format is not well defined. In particular, NAMD and CHARMM use
+    it differently. Currently, MDAnalysis tries to guess the correct format for
+    the unitcell representation but it can be wrong. **Check the unitcell
+    dimensions**, especially for triclinic unitcells (see `Issue 187`_ and
+    :attr:`Timestep.dimensions`). A second potential issue are the units of
+    time (TODO).
 
-       The DCD file format is not well defined. In particular, NAMD
-       and CHARMM use it differently. Currently, MDAnalysis tries to
-       guess the correct format for the unitcell representation but it
-       can be wrong. **Check the unitcell dimensions**, especially for
-       triclinic unitcells (see `Issue 187`_ and
-       :attr:`Timestep.dimensions`). A second potential issue are the
-       units of time (TODO).
 
     .. versionchanged:: 0.9.0
        The underlying DCD reader (written in C and derived from the
@@ -404,9 +421,10 @@ class DCDReader(base.ReaderBase):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
-       Native frame number read into ts._frame
-       Removed skip keyword and functionality
+       Frames now 0-based instead of 1-based.
+       Native frame number read into `ts._frame`.
+       Removed `skip` keyword and functionality.
+
     """
     format = 'DCD'
     flavor = 'CHARMM'
@@ -510,23 +528,33 @@ class DCDReader(base.ReaderBase):
                    format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
-        :Arguments:
-            *asel*
-               :class:`~MDAnalysis.core.groups.AtomGroup` object
-               Defaults to None, in which case the full set of coordinate data
-               is returned.
-            *start*, *stop*, *step*
-               A range of the trajectory to access, with start being inclusive
-               and stop being exclusive.
-            *format*
-               the order/shape of the return data array, corresponding
-               to (a)tom, (f)rame, (c)oordinates all six combinations
-               of 'a', 'f', 'c' are allowed ie "fac" - return array
-               where the shape is (frame, number of atoms,
-               coordinates)
-        :Deprecated:
-            *skip*
-                Skip has been deprecated in favor of the standard keyword step.
+        Parameters
+        ----------
+        asel : :class:`~MDAnalysis.core.groups.AtomGroup`
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to None, in which case the full set of
+            coordinate data is returned.
+        start :  int (optional)
+             Begin reading the trajectory at frame index `start` (where 0 is the index
+             of the first frame in the trajectory); the default ``None`` starts
+             at the beginning.
+        stop : int (optional)
+             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+             The trajectory is read to the end with the default ``None``.
+        step : int (optional)
+             Step size for reading; the default ``None`` is equivalent to 1 and means to
+             read every frame.
+        format : str (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+
+        .. deprecated:: 0.16.0
+           `skip` has been deprecated in favor of the standard keyword `step`.
+
         """
         if skip is not None:
             step = skip
@@ -541,7 +569,7 @@ class DCDReader(base.ReaderBase):
                 raise NoDataError("Timeseries requires at least one atom to analyze")
             atom_numbers = list(asel.indices)
         else:
-            atom_numbers = range(self.n_atoms)
+            atom_numbers = list(range(self.n_atoms))
 
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
             raise ValueError("Invalid timeseries format")
@@ -551,17 +579,37 @@ class DCDReader(base.ReaderBase):
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
-        """Populate a TimeseriesCollection object with timeseries computed from the trajectory
+        """Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
+        with time series computed from the trajectory.
 
-        :Arguments:
-            *timeseries*
-               :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-            *start, stop, step*
-               A subset of the trajectory to use, with start being inclusive
-               and stop being exclusive.
-        :Deprecated:
-            *skip*
-                Skip has been deprecated in favor of the standard keyword step.
+        Calling this method will iterate through the whole trajectory and
+        perform the calculations prescribed in `timeseries`.
+
+        Parameters
+        ----------
+        timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
+             The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
+             of computations should be performed on the data in this trajectory.
+        start :  int (optional)
+             Begin reading the trajectory at frame index `start` (where 0 is the index
+             of the first frame in the trajectory); the default ``None`` starts
+             at the beginning.
+        stop : int (optional)
+             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+             The trajectory is read to the end with the default ``None``.
+        step : int (optional)
+             Step size for reading; the default ``None`` is equivalent to 1 and means to
+             read every frame.
+
+        Note
+        ----
+        The `correl` functionality is only implemented for DCD trajectories and
+        the :class:`DCDReader`.
+
+
+        .. deprecated:: 0.16.0
+           `skip` has been deprecated in favor of the standard keyword `step`.
+
         """
         if skip is not None:
             step = skip
@@ -586,38 +634,53 @@ class DCDReader(base.ReaderBase):
             self.dcdfile = None
 
     def Writer(self, filename, **kwargs):
-        """Returns a DCDWriter for *filename* with the same parameters as this DCD.
+        """Returns a DCDWriter for `filename` with the same parameters as this DCD.
 
-        All values can be changed through keyword arguments.
+        Defaults for all values are obtained from the `DCDReader` itself but
+        all values can be changed through keyword arguments.
 
-        :Arguments:
-          *filename*
-              filename of the output DCD trajectory
-        :Keywords:
-          *n_atoms*
-              number of atoms
-          *start*
-              number of the first recorded MD step
-          *step*
-              indicate that *step* MD steps (!) make up one trajectory frame
-          *delta*
-              MD integrator time step (!), in AKMA units
-          *dt*
-             **Override** *step* and *delta* so that the DCD records that *dt* ps
-             lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
-             The default is ``None``, in which case *step* and *delta* are used.
-          *remarks*
-              string that is stored in the DCD header [XXX -- max length?]
+        Parameters
+        ----------
+        filename : str
+            filename of the output DCD trajectory
+        n_atoms : int (optional)
+            number of atoms
+        start : int (optional)
+            number of the first recorded MD step
+        step : int (optional)
+            indicate that `step` **MD steps (!)** make up one trajectory frame
+        delta : float (optional)
+            **MD integrator time step (!)**, in AKMA units
+        dt : float (optional)
+            **Override** `step` and `delta` so that the DCD records that
+            `dt` ps lie between two frames. (It sets `step` `` = 1`` and
+            `delta` `` = AKMA(dt)``.) The default is ``None``, in which case
+            `step` and `delta` are used.
 
-        :Returns: :class:`DCDWriter`
+        remarks : str (optional)
+            string that is stored in the DCD header
 
-        .. Note::
+        Returns
+        -------
+        :class:`DCDWriter`
 
-           The keyword arguments set the low-level attributes of the DCD
-           according to the CHARMM format. The time between two frames would be
-           *delta* * *step* !
 
-        .. SeeAlso:: :class:`DCDWriter` has detailed argument description
+        Note
+        ----
+        The keyword arguments set the low-level attributes of the DCD according
+        to the CHARMM format. The time between two frames would be `delta` *
+        `step`!
+
+        Here `step` is really the number of MD integrator time steps that
+        occured after this frame, including the frame itself that is the
+        coordinate snapshot and `delta` is the integrator stime step.  The DCD
+        file format contains this information so it needs to be provided here.
+
+
+        See Also
+        --------
+        :class:`DCDWriter`
+
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('start', self.start_timestep)

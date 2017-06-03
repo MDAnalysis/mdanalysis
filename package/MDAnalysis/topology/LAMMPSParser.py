@@ -212,6 +212,9 @@ class DATAParser(TopologyReaderBase):
         except KeyError:
             raise ValueError("Data file was missing Atoms section")
 
+        # create mapping of id to index (ie atom id 10 might be the 0th atom)
+        mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
+
         for attr, L, nentries in [
                 (Bonds, 'Bonds', 2),
                 (Angles, 'Angles', 3),
@@ -219,7 +222,7 @@ class DATAParser(TopologyReaderBase):
                 (Impropers, 'Impropers', 4)
         ]:
             try:
-                type, sect = self._parse_bond_section(sects[L], nentries)
+                type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
                 pass
             else:
@@ -242,61 +245,90 @@ class DATAParser(TopologyReaderBase):
 
         unitcell = self._parse_box(header)
 
-        positions = np.zeros((n_atoms, 3),
-                             dtype=np.float32, order='F')
         try:
-            self._parse_pos(sects['Atoms'], positions)
+            positions, ordering = self._parse_pos(sects['Atoms'])
         except KeyError:
             raise IOError("Position information not found")
 
         if 'Velocities' in sects:
-            velocities = np.zeros((n_atoms, 3),
-                                  dtype=np.float32, order='F')
-            self._parse_vel(sects['Velocities'], velocities)
+            velocities = self._parse_vel(sects['Velocities'], ordering)
         else:
             velocities = None
 
         ts = TS_class.from_coordinates(positions,
                                        velocities=velocities,
                                        **TS_kwargs)
-        ts._unitcell = unitcell
+        ts.dimensions = unitcell
 
         return ts
 
-    def _parse_pos(self, datalines, pos):
+    def _parse_pos(self, datalines):
         """Strip coordinate info into np array"""
-        for line in datalines:
+        pos = np.zeros((len(datalines), 3), dtype=np.float32)
+        # TODO: could maybe store this from topology parsing?
+        # Or try to reach into Universe?
+        # but ugly because assumes lots of things, and Reader should be standalone
+        ids = np.zeros(len(pos), dtype=np.int32)
+
+        for i, line in enumerate(datalines):
             line = line.split()
             n = len(line)
-            idx = int(line[0]) - 1
+            ids[i] = line[0]
+
             if n in (7, 10):
-                pos[idx] = line[4:7]
+                pos[i] = line[4:7]
             elif n in (6, 9):
-                pos[idx] = line[3:6]
+                pos[i] = line[3:6]
 
-    def _parse_vel(self, datalines, vel):
-        """Strip velocity info into np array in place"""
-        for line in datalines:
+        order = np.argsort(ids)
+        pos = pos[order]
+
+        # return order for velocities
+        return pos, order
+
+    def _parse_vel(self, datalines, order):
+        """Strip velocity info into np array
+
+        Parameters
+        ----------
+        datalines : list
+          list of strings from file
+        order : np.array
+          array which rearranges the velocities into correct order
+          (from argsort on atom ids)
+
+        Returns
+        -------
+        velocities : np.ndarray
+        """
+        vel = np.zeros((len(datalines), 3), dtype=np.float32)
+
+        for i, line in enumerate(datalines):
             line = line.split()
-            idx = int(line[0]) - 1
-            vx, vy, vz = map(float, line[1:4])
-            vel[idx] = vx, vy, vz
+            vel[i] = line[1:4]
 
-    def _parse_bond_section(self, datalines, nentries):
+        vel = vel[order]
+
+        return vel
+
+    def _parse_bond_section(self, datalines, nentries, mapping):
         """Read lines and strip information
 
         Arguments
         ---------
-        datalines - the raw lines from the data file
-        nentries - number of integers per line
+        datalines : list
+          the raw lines from the data file
+        nentries : int
+          number of integers per line
+        mapping : dict
+          converts atom_ids to index within topology
         """
         section = []
         type = []
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple(map(lambda x: int(x) - 1,
-                                     line[2:2 + nentries])))
+            section.append(tuple([mapping[int(x)] for x in line[2:2 + nentries]]))
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -335,21 +367,36 @@ class DATAParser(TopologyReaderBase):
         n = len(datalines[0].split())
         has_charge = True if n in [7, 10] else False
 
-        types = np.zeros(n_atoms, dtype='|S5')
+        # atom ids aren't necessarily sequential
+        atom_ids = np.zeros(n_atoms, dtype=np.int32)
+        types = np.zeros(n_atoms, dtype=object)
         resids = np.zeros(n_atoms, dtype=np.int32)
         if has_charge:
             charges = np.zeros(n_atoms, dtype=np.float32)
 
-        for line in datalines:
+        for i, line in enumerate(datalines):
             line = line.split()
-            idx, resid = map(int, line[:2])
-            atype = line[2]
-            idx -= 1
-            resids[idx] = resid
-            types[idx] = atype
+
+            # these numpy array are already typed correctly,
+            # so just pass the raw strings
+            # and let numpy handle the conversion
+            atom_ids[i] = line[0]
+            resids[i] = line[1]
+            types[i] = line[2]
             if has_charge:
-                charge = float(line[3])
-                charges[idx] = charge
+                charges[i] = line[3]
+
+        # at this point, we've read the atoms section,
+        # but it's still (potentially) unordered
+        # TODO: Maybe we can optimise by checking if we need to sort
+        # ie `if np.any(np.diff(atom_ids) > 1)`  but we want to search
+        # in a generatorish way, np.any() would check everything at once
+        order = np.argsort(atom_ids)
+        atom_ids = atom_ids[order]
+        types = types[order]
+        resids = resids[order]
+        if has_charge:
+            charges = charges[order]
 
         attrs = []
         attrs.append(Atomtypes(types))
@@ -368,7 +415,7 @@ class DATAParser(TopologyReaderBase):
         residx, resids = squash_by(resids)[:2]
         n_residues = len(resids)
 
-        attrs.append(Atomids(np.arange(n_atoms) + 1))
+        attrs.append(Atomids(atom_ids))
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
@@ -394,18 +441,18 @@ class DATAParser(TopologyReaderBase):
         return masses
 
     def _parse_box(self, header):
-        x1, x2 = map(float, header['xlo xhi'].split())
+        x1, x2 = np.float32(header['xlo xhi'].split())
         x = x2 - x1
-        y1, y2 = map(float, header['ylo yhi'].split())
+        y1, y2 = np.float32(header['ylo yhi'].split())
         y = y2 - y1
-        z1, z2 = map(float, header['zlo zhi'].split())
+        z1, z2 = np.float32(header['zlo zhi'].split())
         z = z2 - z1
 
         if 'xy xz yz' in header:
             # Triclinic
             unitcell = np.zeros((3, 3), dtype=np.float32)
 
-            xy, xz, yz = map(float, header['xy xz yz'].split())
+            xy, xz, yz = np.float32(header['xy xz yz'].split())
 
             unitcell[0][0] = x
             unitcell[1][0] = xy
@@ -553,7 +600,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
-                            data.append(tuple(map(conv_float, fields[1:])))
+                            data.append(tuple([conv_float(el) for el in fields[1:]]))
                         sections[line] = data
                     elif line in self.connections:
                         h, numfields = self.connections[line]
@@ -562,7 +609,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         data = []
                         for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
-                            data.append(tuple(map(int, fields[1:])))
+                            data.append(tuple(np.int64(fields[1:])))
                         sections[line] = data
                     elif line == "Atoms":
                         file_iter.next()
@@ -624,7 +671,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     bonds = bond_list[index:index + 4]
                 except IndexError:
                     bonds = bond_list[index:-1]
-                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8), bonds)
+                bond_line = [string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8) for bond in bonds]
                 file.write(''.join(bond_line) + '\n')
 
     def writePDB(self, filename):

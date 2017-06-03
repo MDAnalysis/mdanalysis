@@ -1,2 +1,2 @@
-.. automodule:: MDAnalysis.lib._distances
+.. automodule:: MDAnalysis.lib.c_distances
    :members:

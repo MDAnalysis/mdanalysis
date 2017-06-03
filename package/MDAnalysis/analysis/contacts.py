@@ -210,7 +210,7 @@ The following classes are deprecated and are scheduled for removal in release 0.
    :members:
 
 """
-from __future__ import division
+from __future__ import division, absolute_import
 from six.moves import zip
 
 import os
@@ -536,7 +536,6 @@ def q1q2(u, selection='all', radius=4.5,
 # until then it remains because we don't have the functionality
 # elsewhere.
 
-@deprecate(new_name="Contacts", message="This class will be removed in 0.17")
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
 
@@ -564,48 +563,47 @@ class ContactAnalysis(object):
     accessible as the attribute
     :attr:`ContactAnalysis.timeseries`.
 
+    Parameters
+    ----------
+    topology : filename as str
+        topology file
+    trajectory : filename as str
+        trajectory
+    ref1 : filename or ``None``, optional
+        structure of the reference conformation 1 (pdb); if ``None`` the
+        *first* frame of the trajectory is chosen
+    ref2 : filename or ``None``, optional
+        structure of the reference conformation 2 (pdb); if ``None`` the
+        *last* frame of the trajectory is chosen
+    radius : float, optional, default 8 A
+        contacts are deemed any Ca within radius
+    targetdir : path, optional, default ``.``
+        output files are saved in this directory
+    infix : string, optional
+        additional tag string that is inserted into the output filename of
+        the data file
+     selection : string, optional, default ``"name CA"``
+        MDAnalysis selection string that selects the particles of
+        interest; the default is to only select the C-alpha atoms
+        in `ref1` and `ref2`
+
+        .. Note:: If `selection` produces more than one atom per
+                  residue then you will get multiple contacts per
+                  residue unless you also set `centroids` = ``True``
+     centroids : bool
+        If set to ``True``, use the centroids for the selected atoms on a
+        per-residue basis to compute contacts. This allows, for instance
+        defining the sidechains as `selection` and then computing distances
+        between sidechain centroids.
+
 
     .. deprecated:: 0.15.0
     """
 
+    @deprecate(new_name="Contacts", message="This class will be removed in 0.17")
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False,
                  selection="name CA", centroids=False):
-        """
-        Parameters
-        ----------
-        topology : filename as str
-            topology file
-        trajectory : filename as str
-            trajectory
-        ref1 : filename or ``None``, optional
-            structure of the reference conformation 1 (pdb); if ``None`` the
-            *first* frame of the trajectory is chosen
-        ref2 : filename or ``None``, optional
-            structure of the reference conformation 2 (pdb); if ``None`` the
-            *last* frame of the trajectory is chosen
-        radius : float, optional, default 8 A
-            contacts are deemed any Ca within radius
-        targetdir : path, optional, default ``.``
-            output files are saved in this directory
-        infix : string, optional
-            additional tag string that is inserted into the output filename of
-            the data file
-         selection : string, optional, default ``"name CA"``
-            MDAnalysis selection string that selects the particles of
-            interest; the default is to only select the C-alpha atoms
-            in `ref1` and `ref2`
-
-            .. Note:: If `selection` produces more than one atom per
-                      residue then you will get multiple contacts per
-                      residue unless you also set `centroids` = ``True``
-         centroids : bool
-            If set to ``True``, use the centroids for the selected atoms on a
-            per-residue basis to compute contacts. This allows, for instance
-            defining the sidechains as `selection` and then computing distances
-            between sidechain centroids.
-
-        """
 
         self.topology = topology
         self.trajectory = trajectory
@@ -817,7 +815,7 @@ class ContactAnalysis(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
 
     def plot(self, **kwargs):
@@ -834,7 +832,6 @@ class ContactAnalysis(object):
         ylabel(r"$q_2$")
 
 
-@deprecate(new_name="Contacts", message="This class will be removed in 0.17")
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single
     reference.
@@ -900,6 +897,7 @@ class ContactAnalysis1(object):
     .. deprecated:: 0.15.0
     """
 
+    @deprecate(new_name="Contacts", message="This class will be removed in 0.17")
     def __init__(self, *args, **kwargs):
         """Calculate native contacts within a group or between two groups.
 
@@ -1145,7 +1143,7 @@ class ContactAnalysis1(object):
             for line in data:
                 if line.startswith('#'):
                     continue
-                records.append(map(float, line.split()))
+                records.append(np.float32(line.split()))
         self.timeseries = np.array(records).T
         try:
             self.qavg = np.loadtxt(self.outarray)

@@ -27,7 +27,7 @@ In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
 """
-from six.moves import map
+from __future__ import absolute_import
 
 import numpy as np
 import warnings
@@ -48,7 +48,7 @@ def guess_masses(atom_types):
     -------
     atom_masses : np.ndarray dtype float64
     """
-    masses = np.array(list(map(get_atom_mass, atom_types)), dtype=np.float64)
+    masses = np.array([get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
     if np.any(masses == 0.0):
         # figure out where the misses were and report
         misses = np.unique(np.asarray(atom_types)[np.where(masses == 0.0)])
@@ -69,8 +69,8 @@ def guess_types(atom_names):
     -------
     atom_types : np.ndarray dtype object
     """
-    return np.array(list(map(guess_atom_element, atom_names)),
-                    dtype=object)
+    return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
+
 
 
 def guess_atom_type(atomname):
@@ -79,8 +79,13 @@ def guess_atom_type(atomname):
     At the moment, this function simply returns the element, as
     guessed by :func:`guess_atom_element`.
 
-    .. SeeAlso:: :func:`guess_atom_element` and
-                 :mod:`MDAnalysis.topology.tables`
+
+    See Also
+    --------
+    :func:`guess_atom_element`
+    :mod:`MDAnalysis.topology.tables`
+
+
     """
     return guess_atom_element(atomname)
 
@@ -96,8 +101,10 @@ def guess_atom_element(atomname):
     .. Warning: The translation table is incomplete. This will probably result
                 in some mistakes, but it still better than nothing!
 
-    .. SeeAlso:: :func:`guess_atom_type` and
-                 :mod:`MDAnalysis.topology.tables` (where the data are stored)
+    See Also
+    --------
+    :func:`guess_atom_type`
+    :mod:`MDAnalysis.topology.tables`
     """
     if atomname == '':
         return ''
@@ -113,7 +120,7 @@ def guess_atom_element(atomname):
         return atomname[0]
 
 
-def guess_bonds(atoms, coords, **kwargs):
+def guess_bonds(atoms, coords, box=None, **kwargs):
     r"""Guess if bonds exist between two atoms based on their distance.
 
     Bond between two atoms is created, if the two atoms are within
@@ -135,21 +142,18 @@ def guess_bonds(atoms, coords, **kwargs):
     fudge_factor : float, optional
         The factor by which atoms must overlap eachother to be considered a
         bond.  Larger values will increase the number of bonds found. [0.72]
-
     vdwradii : dict, optional
         To supply custom vdwradii for atoms in the algorithm. Must be a dict
         of format {type:radii}. The default table of van der Waals radii is
         hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
         defined vdwradii passed as an argument will supercede the table
         values. [``None``]
-
     lower_bound : float, optional
         The minimum bond length. All bonds found shorter than this length will
         be ignored. This is useful for parsing PDB with altloc records where
         atoms with altloc A and B maybe very close together and there should be
         no chemical bond between them. [0.1]
-
-    box : dimensions, optional
+    box : array_like, optional
         Bonds are found using a distance search, if unit cell information is
         given, periodic boundary conditions will be considered in the distance
         search. [``None``]
@@ -203,7 +207,8 @@ def guess_bonds(atoms, coords, **kwargs):
 
     lower_bound = kwargs.get('lower_bound', 0.1)
 
-    box = kwargs.get('box', None)
+    if box is not None:
+        box = np.asarray(box)
 
     # to speed up checking, calculate what the largest possible bond
     # atom that would warrant attention.
@@ -240,11 +245,17 @@ def guess_angles(bonds):
     Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
     then (1,2,3) must be an angle.
 
-    :Returns:
-      List of tuples defining the angles.
-      Suitable for use in u._topology
+    Returns
+    -------
+    list of tuples
+        List of tuples defining the angles.
+        Suitable for use in u._topology
 
-    .. seeAlso:: :meth:`guess_bonds`
+
+    See Also
+    --------
+    :meth:`guess_bonds`
+
 
     .. versionadded 0.9.0
     """
@@ -270,9 +281,11 @@ def guess_dihedrals(angles):
     Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
     then (1,2,3,4) must be a dihedral.
 
-    :Returns:
-      List of tuples defining the dihedrals.
-      Suitable for use in u._topology
+    Returns
+    -------
+    list of tuples
+        List of tuples defining the dihedrals.
+        Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """
@@ -304,9 +317,10 @@ def guess_improper_dihedrals(angles):
     ie the improper dihedral is the angle between the planes formed by
     (1, 2, 3) and (1, 3, 4)
 
-    :Returns:
-      List of tuples defining the improper dihedrals.
-      Suitable for use in u._topology
+    Returns
+    -------
+        List of tuples defining the improper dihedrals.
+        Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """

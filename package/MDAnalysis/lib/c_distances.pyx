@@ -23,7 +23,7 @@
 
 """
 Distance calculation library --- :mod:`MDAnalysis.lib.c_distances`
-=================================================================
+==================================================================
 
 Serial versions of all distance calculations
 """
