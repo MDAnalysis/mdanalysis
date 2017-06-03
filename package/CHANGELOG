@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
-         richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst
+         richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst,
+         kaceyreidy
 
   * 0.16.1
 
@@ -47,6 +48,7 @@ Fixes
     different segments. (Issue #1347, PR #1348)
   * Add the OC1 and OC2 from amber99sb-ildn to hydrogen bond acceptors (issue #1342)
   * Fix RMSF run return value (PR #1354)
+  * Fixed documentation in pca (Issue #1378 PR #1379)
 
 Changes
   * Enable various pylint warnings to increase python 3 compatibility
