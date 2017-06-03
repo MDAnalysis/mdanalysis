@@ -1988,7 +1988,7 @@ static const char __pyx_k_calc_distance_array_triclinic[] = "calc_distance_array
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_calc_self_distance_array_ortho[] = "calc_self_distance_array_ortho";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
-static const char __pyx_k_Distance_calculation_library_mo[] = "\nDistance calculation library --- :mod:`MDAnalysis.lib.c_distances`\n=================================================================\n\nSerial versions of all distance calculations\n";
+static const char __pyx_k_Distance_calculation_library_mo[] = "\nDistance calculation library --- :mod:`MDAnalysis.lib.c_distances`\n==================================================================\n\nSerial versions of all distance calculations\n";
 static const char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/MDAnalysis/lib/c_distances.pyx";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";

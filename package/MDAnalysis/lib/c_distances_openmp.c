@@ -1375,7 +1375,7 @@ static const char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C cont
 static const char __pyx_k_calc_bond_distance_triclinic[] = "calc_bond_distance_triclinic";
 static const char __pyx_k_calc_distance_array_triclinic[] = "calc_distance_array_triclinic";
 static const char __pyx_k_calc_self_distance_array_ortho[] = "calc_self_distance_array_ortho";
-static const char __pyx_k_Parallel_distance_calculation_l[] = "\nParallel distance calculation library --- :mod:`MDAnalysis.lib.c_distances_openmp`\n=================================================================================\n\n\nContains OpenMP versions of the contents of \"calc_distances.h\"\n";
+static const char __pyx_k_Parallel_distance_calculation_l[] = "\nParallel distance calculation library --- :mod:`MDAnalysis.lib.c_distances_openmp`\n==================================================================================\n\n\nContains OpenMP versions of the contents of \"calc_distances.h\"\n";
 static const char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/MDAnalysis/lib/c_distances_openmp.pyx";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
