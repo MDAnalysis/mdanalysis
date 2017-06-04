@@ -198,17 +198,6 @@ Classes
 .. autoclass:: Contacts
    :members:
 
-
-Deprecated
-----------
-
-The following classes are deprecated and are scheduled for removal in release 0.17.0.
-
-.. autoclass:: ContactAnalysis1
-   :members:
-.. autoclass:: ContactAnalysis
-   :members:
-
 """
 from __future__ import division, absolute_import
 from six.moves import zip
