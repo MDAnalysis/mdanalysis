@@ -32,12 +32,15 @@ env:
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
-  matrix:
-    - NAME='minimal' PYTHON_VERSION=2.7 SETUP_CMD='--with-memleak'
 
 matrix:
   fast_finish: true
   include:
+    - os : linux
+      env: NAME='minimal'
+           PYTHON_VERSION=2.7
+           SETUP_CMD='--with-memleak'
+
     - os: linux
       env: NAME="Doc"
            MAIN_CMD="cd package && python setup.py"
