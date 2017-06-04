@@ -168,7 +168,8 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
-            ts = self.ts
+            # use a copy to avoid that ts always points to the same reference
+            ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
         ts = self._frame_to_ts(frame, ts)

@@ -107,25 +107,23 @@ class TestDCDReader_old(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
-        self.ts = self.universe.coord
 
     def tearDown(self):
         del self.universe
         del self.dcd
-        del self.ts
 
     def test_rewind_dcd(self):
         self.dcd.rewind()
-        assert_equal(self.ts.frame, 0, "rewinding to frame 0")
+        assert_equal(self.dcd.ts.frame, 0, "rewinding to frame 0")
 
     def test_next_dcd(self):
         self.dcd.rewind()
         self.dcd.next()
-        assert_equal(self.ts.frame, 1, "loading frame 1")
+        assert_equal(self.dcd.ts.frame, 1, "loading frame 1")
 
     def test_jump_lastframe_dcd(self):
         self.dcd[-1]
-        assert_equal(self.ts.frame, 97, "indexing last frame with dcd[-1]")
+        assert_equal(self.dcd.ts.frame, 97, "indexing last frame with dcd[-1]")
 
     def test_slice_dcd(self):
         frames = [ts.frame for ts in self.dcd[5:17:3]]
