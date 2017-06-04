@@ -158,23 +158,22 @@ class TestDCDReader_old(TestCase):
         for start, stop, step in x:
             yield self._slice_generation_test, start, stop, step
 
-    # def test_backwards_stepping(self):
-    #     x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
-    #     for start, stop, step in x:
-    #         yield self._failed_slices_test, start, stop, step
+    def test_backwards_stepping(self):
+        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
+        for start, stop, step in x:
+            yield self._failed_slices_test, start, stop, step
 
     def _slice_generation_test(self, start, stop, step):
         self.u = mda.Universe(PSF, DCD)
         ts = self.u.trajectory.timeseries(self.u.atoms)
         ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[start:stop:step], ts_skip, 5)
+        assert_array_almost_equal(ts[:,start:stop:step], ts_skip, 5)
 
-    # @knownfailure
-    # def _failed_slices_test(self, start, stop, step):
-    #     self.u = mda.Universe(PSF, DCD)
-    #     ts = self.u.trajectory.timeseries(self.u.atoms)
-    #     ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-    #     assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+    def _failed_slices_test(self, start, stop, step):
+        self.u = mda.Universe(PSF, DCD)
+        ts = self.u.trajectory.timeseries(self.u.atoms)
+        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
+        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
 
 
 def test_DCDReader_set_dt(dt=100., frame=3):
