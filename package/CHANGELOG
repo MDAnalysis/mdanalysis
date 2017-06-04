@@ -13,8 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+mm/dd/yy
 
-mm/dd/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
+  * 0.16.2
+
+Enhancements
+
+Fixes
+
+Changes
+
+
+06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
          richardjgowers, Shtkddud123, QuantumEntangledAndy, orbeckst,
          kaceyreidy
 
