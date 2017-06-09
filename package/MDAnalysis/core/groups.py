@@ -419,7 +419,7 @@ class GroupBase(_MutableBase):
             ix, u = args
 
         # indices for the objects I hold
-        self._ix = np.asarray(ix, dtype=np.int64)
+        self._ix = np.asarray(ix, dtype=np.intp)
         self._u = u
         self._cache = dict()
 
