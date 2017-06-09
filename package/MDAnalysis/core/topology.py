@@ -125,12 +125,12 @@ def make_downshift_arrays(upshift, nparents):
         counter += 1
         # If parent is skipped, eg (0, 0, 2, 2, etc)
         while counter != upshift[order[x:y][0]]:
-            downshift.append(np.array([], dtype=np.int))
+            downshift.append(np.array([], dtype=np.int64))
             counter += 1
-        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.int)))
+        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.int64)))
     # Add entries for childless parents at end of range
     while counter < (nparents - 1):
-        downshift.append(np.array([], dtype=np.int))
+        downshift.append(np.array([], dtype=np.int64))
         counter += 1
     # Add None to end of array to force it to be of type Object
     # Without this, a rectangular array gets squashed into a single array
