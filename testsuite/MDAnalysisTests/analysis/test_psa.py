@@ -221,7 +221,8 @@ class _BaseHausdorffDistance(TestCase):
         for a given Hausdorff metric, h.'''
         forward = self.h(self.path_1, self.path_2)
         reverse = self.h(self.path_2, self.path_1)
-        self.assertEqual(forward, reverse)
+        # lower precision on 32bit
+        assert_almost_equal(forward, reverse, decimal=15)
 
     def test_hausdorff_value(self):
         '''Test that the undirected Hausdorff
