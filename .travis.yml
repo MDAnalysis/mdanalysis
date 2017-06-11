@@ -92,6 +92,7 @@ matrix:
            PYTHON_VERSION=2.7
            ARCHITECTURE_32BIT=True
            ADD_CFLAGS='-m32'
+           CONDA_FORCE_32BIT=1
       addons:
         apt:
           packages:
