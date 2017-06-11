@@ -37,6 +37,7 @@ env:
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
+    - ARCHITECTURE_32BIT=False
 
 
 
@@ -86,8 +87,14 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            EVENT_TYPE='cron'
 
+    - os : linux
+      env: NAME='32bits'
+           PYTHON_VERSION=2.7
+           ARCHITECTURE_32BIT=True
+
 install:
-  - git clone git://github.com/astropy/ci-helpers.git
+  #- git clone git://github.com/astropy/ci-helpers.git
+  - git clone -b 32bits git://github.com/jbarnoud/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
   # additional external tools (Issue #898) -- HOLE
   - |
