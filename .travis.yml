@@ -38,6 +38,7 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
     - ARCHITECTURE_32BIT=False
+    - ADD_CFLAGS=""
 
 
 
@@ -91,6 +92,7 @@ matrix:
       env: NAME='32bits'
            PYTHON_VERSION=2.7
            ARCHITECTURE_32BIT=True
+           ADD_CFLAGS='-m32'
       addons:
         apt:
           packages:
