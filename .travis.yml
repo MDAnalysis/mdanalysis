@@ -91,6 +91,11 @@ matrix:
       env: NAME='32bits'
            PYTHON_VERSION=2.7
            ARCHITECTURE_32BIT=True
+      addons:
+        apt:
+          packages:
+            - libstdc++6:i386
+            - gcc-multilib
 
 install:
   #- git clone git://github.com/astropy/ci-helpers.git
