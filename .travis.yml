@@ -29,7 +29,7 @@ env:
     - NOSE_COVERAGE2="coverage2"
     - MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST1} ${NOSE_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST2} ${NOSE_FLAGS}"
     - SETUP_CMD=""
-    - BUILD_CMD="CFLAGS=${ADD_CFLAGS} pip install -v package/ && pip install testsuite/"
+    - BUILD_CMD="OPT=${ADD_CFLAGS} pip install -v package/ && pip install testsuite/"
     - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='griddataformats mmtf-python'
