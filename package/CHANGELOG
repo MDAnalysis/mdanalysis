@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy
+mm/dd/17
 
-  * 0.16.2
+  * 0.16.2 richardjgowers
 
 Enhancements
 
 Fixes
+  * fixed GROWriter truncating long resids from the wrong end (Issue #1395)
 
 Changes
 
