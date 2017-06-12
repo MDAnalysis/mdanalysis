@@ -125,12 +125,12 @@ def make_downshift_arrays(upshift, nparents):
         counter += 1
         # If parent is skipped, eg (0, 0, 2, 2, etc)
         while counter != upshift[order[x:y][0]]:
-            downshift.append(np.array([], dtype=np.int64))
+            downshift.append(np.array([], dtype=np.intp))
             counter += 1
-        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.int64)))
+        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.intp)))
     # Add entries for childless parents at end of range
     while counter < (nparents - 1):
-        downshift.append(np.array([], dtype=np.int64))
+        downshift.append(np.array([], dtype=np.intp))
         counter += 1
     # Add None to end of array to force it to be of type Object
     # Without this, a rectangular array gets squashed into a single array
@@ -210,18 +210,18 @@ class TransTable(object):
 
         # built atom-to-residue mapping, and vice-versa
         if atom_resindex is None:
-            self._AR = np.zeros(n_atoms, dtype=np.int64)
+            self._AR = np.zeros(n_atoms, dtype=np.intp)
         else:
-            self._AR = atom_resindex.copy()
+            self._AR = np.asarray(atom_resindex, dtype=np.intp).copy()
             if not len(self._AR) == n_atoms:
                 raise ValueError("atom_resindex must be len n_atoms")
         self._RA = make_downshift_arrays(self._AR, n_residues)
 
         # built residue-to-segment mapping, and vice-versa
         if residue_segindex is None:
-            self._RS = np.zeros(n_residues, dtype=np.int64)
+            self._RS = np.zeros(n_residues, dtype=np.intp)
         else:
-            self._RS = residue_segindex.copy()
+            self._RS = np.asarray(residue_segindex, dtype=np.intp).copy()
             if not len(self._RS) == n_residues:
                 raise ValueError("residue_segindex must be len n_residues")
         self._SR = make_downshift_arrays(self._RS, n_segments)
