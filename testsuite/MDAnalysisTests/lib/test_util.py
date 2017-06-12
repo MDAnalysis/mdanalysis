@@ -968,3 +968,19 @@ class TestNamespace(object):
             seen.append(val)
         for val in ['this', 'that', 'other']:
             assert_(val in seen)
+
+
+class TestTruncateInteger(object):
+    @staticmethod
+    def _check_vals(a, b):
+        assert_(util.ltruncate_int(*a) == b)
+
+    def test_ltruncate_int(self):
+        for vals, exp in (
+                ((1234, 1), 4),
+                ((1234, 2), 34),
+                ((1234, 3), 234),
+                ((1234, 4), 1234),
+                ((1234, 5), 1234),
+        ):
+            yield self._check_vals, vals, exp
