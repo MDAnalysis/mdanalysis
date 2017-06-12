@@ -20,22 +20,32 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from unittest import TestCase
 
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest
+from MDAnalysisTests.coordinates.base import (
+    BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
+)
 from MDAnalysisTests.coordinates.reference import RefAdK
-from MDAnalysisTests.datafiles import COORDINATES_GRO, COORDINATES_GRO_INCOMPLETE_VELOCITY, COORDINATES_GRO_BZ2, GRO, \
-    GRO_large
+from MDAnalysisTests.datafiles import (
+    COORDINATES_GRO,
+    COORDINATES_GRO_INCOMPLETE_VELOCITY,
+    COORDINATES_GRO_BZ2,
+    GRO,
+    GRO_large,
+)
 from nose.plugins.attrib import attr
-from numpy.testing import (assert_almost_equal, )
-from numpy.testing import assert_array_almost_equal, dec, assert_equal, assert_raises
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_almost_equal,
+    dec,
+    assert_equal,
+    assert_raises
+)
 
-
-class TestGROReaderOld(TestCase, RefAdK):
+class TestGROReaderOld(RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
@@ -88,7 +98,7 @@ class TestGROReaderOld(TestCase, RefAdK):
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 
-class TestGROReaderNoConversionOld(TestCase, RefAdK):
+class TestGROReaderNoConversionOld(RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
