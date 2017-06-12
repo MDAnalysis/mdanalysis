@@ -19,13 +19,14 @@
   MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
   J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <math.h>
+#include <math.h>
 #include <time.h>
 #include <sys/types.h>
-#include <time.h>
+#include <unistd.h>
 
 #define EPSILON 1e-8
 
@@ -179,7 +180,7 @@ double CStochasticProximityEmbedding(
         int nstep,
         int stressfreq) {
 
-    int a = 0, b = 0, idx = 0, idxa = 0, idxb = 0, idxak = 0, idxbk = 0;
+    int a = 0, b = 0, idxa = 0, idxb = 0, idxak = 0, idxbk = 0;
     double dab = 0.0, rab = 0.0;
     double lam = maxlam;
     double t = 0.0;

@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy
+mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti
 
   * 0.17.0
 
@@ -24,6 +24,8 @@ Deprecations
 Fixes
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
+  * Fixed type matching and inclusion compilation warnings for the
+  ENCORE analysis package (issue #1390)
 
 Changes
   * remove deprecated TimeSeriesCollection
