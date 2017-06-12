@@ -320,12 +320,12 @@ class PDBQTWriter(base.WriterBase):
                     attrs['resids'], attrs['icodes'], attrs['occupancies'],
                     attrs['tempfactors'], attrs['charges'], attrs['types']),
                          start=1):
-            serial = int(str(serial)[-5:])  # check for overflow here?
+            serial = util.ltruncate_int(serial, 5)  # check for overflow here?
+            resid = util.ltruncate_int(resid, 4)
             name = name[:4]
             if len(name) < 4:
                 name = " " + name  # customary to start in column 14
             chainid = chainid.strip()[-1:]  # take the last character
-            resid = int(str(resid)[-4:])  # check for overflow here?
 
             self.pdb.write(self.fmt['ATOM'].format(
                 serial=serial,

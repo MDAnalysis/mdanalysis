@@ -377,8 +377,8 @@ class GROWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
                     range(ag_or_ts.n_atoms), resids, resnames, names):
-                truncated_atom_index = int(str(atom_index + 1)[-5:])
-                truncated_resid = int(str(resid)[:5])
+                truncated_atom_index = util.ltruncate_int(atom_index + 1, 5)
+                truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
                         resid=truncated_resid,
