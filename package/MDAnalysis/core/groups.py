@@ -2464,7 +2464,7 @@ class ComponentBase(_MutableBase):
         --------
         ix
         """
-        return np.array([self.ix])
+        return np.array([self.ix], dtype=np.intp)
 
 
 class Atom(ComponentBase):
@@ -2736,7 +2736,7 @@ class UpdatingAtomGroup(AtomGroup):
             ix = sum([sel.apply(bg) for sel in sels[1:]],
                      sels[0].apply(bg)).ix
         else:
-            ix = np.array([], dtype=np.int)
+            ix = np.array([], dtype=np.intp)
         # Run back through AtomGroup init with this information to remake ourselves
         super(UpdatingAtomGroup, self).__init__(ix, self.universe)
         self.is_uptodate = True
