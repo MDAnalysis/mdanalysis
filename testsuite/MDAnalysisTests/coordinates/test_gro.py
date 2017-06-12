@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests import make_Universe, tempdir
 from MDAnalysisTests.coordinates.base import (
     BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
 )
@@ -38,6 +38,7 @@ from MDAnalysisTests.datafiles import (
 )
 from nose.plugins.attrib import attr
 from numpy.testing import (
+    assert_,
     assert_almost_equal,
     assert_array_almost_equal,
     dec,
@@ -417,6 +418,18 @@ class TestGROLargeWriter(BaseWriterTest):
                          err_msg="Writing GRO file with > 99 999 "
                                  "resids does not truncate properly.")
 
+@tempdir.run_in_tempdir()
+def test_growriter_resid_truncation():
+    u = make_Universe(extras=['resids'], trajectory=True)
+    u.residues[0].resid = 123456789
+    u.atoms.write('out.gro')
+
+    with open('out.gro', 'r') as grofile:
+        grofile.readline()
+        grofile.readline()
+        line = grofile.readline()
+    # larger digits should get truncated
+    assert_(line.startswith('56789UNK'))
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep
