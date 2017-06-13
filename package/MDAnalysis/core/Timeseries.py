@@ -70,8 +70,9 @@ Timeseries of observables
 from __future__ import division, absolute_import
 import warnings
 
-from . import groups
+from numpy.lib.utils import deprecate
 
+from . import groups
 
 with warnings.catch_warnings():
     warnings.simplefilter('always', DeprecationWarning)
@@ -80,7 +81,7 @@ with warnings.catch_warnings():
                    'https://github.com/MDAnalysis/mdanalysis/issues/1373'),
                   DeprecationWarning)
 
-
+@deprecate(message="This class will be removed in 0.17")
 class TimeseriesCollection(object):
     '''A collection of timeseries objects.
 
@@ -210,6 +211,7 @@ class TimeseriesCollection(object):
         return auxData
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Timeseries(object):
     '''Base timeseries class - define subclasses for specific timeseries computations.
 
@@ -272,6 +274,7 @@ class Timeseries(object):
         return [0.] * self.n_atoms
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Atom(Timeseries):
     '''Create a timeseries that returns coordinate data for an atom or group of atoms ::
 
@@ -315,6 +318,7 @@ class Atom(Timeseries):
         return [1, ] * self.n_atoms
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Bond(Timeseries):
     '''Create a timeseries that returns a timeseries for a bond
 
@@ -337,6 +341,7 @@ class Bond(Timeseries):
         Timeseries.__init__(self, 'r', atoms, 1)
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Angle(Timeseries):
     '''Create a timeseries that returns a timeseries for an angle
 
@@ -359,6 +364,7 @@ class Angle(Timeseries):
         Timeseries.__init__(self, 'a', atoms, 1)
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Dihedral(Timeseries):
     '''Create a timeseries that returns a timeseries for a dihedral angle
 
@@ -381,6 +387,7 @@ class Dihedral(Timeseries):
         Timeseries.__init__(self, 'h', atoms, 1)
 
 
+@deprecate(message="This class will be removed in 0.17")
 class Distance(Timeseries):
     '''Create a timeseries that returns distances between 2 atoms
 
@@ -410,6 +417,7 @@ class Distance(Timeseries):
         Timeseries.__init__(self, code, atoms, size)
 
 
+@deprecate(message="This class will be removed in 0.17")
 class CenterOfGeometry(Timeseries):
     '''Create a timeseries that returns the center of geometry of a group of atoms
 
@@ -434,6 +442,7 @@ class CenterOfGeometry(Timeseries):
         return [1.] * self.n_atoms
 
 
+@deprecate(message="This class will be removed in 0.17")
 class CenterOfMass(Timeseries):
     '''Create a timeseries that returns the center of mass of a group of atoms
 
@@ -457,6 +466,7 @@ class CenterOfMass(Timeseries):
         return [a.mass for a in self.atoms]
 
 
+@deprecate(message="This class will be removed in 0.17")
 class WaterDipole(Timeseries):
     r'''Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
 
