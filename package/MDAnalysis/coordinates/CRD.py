@@ -251,9 +251,9 @@ class CRDWriter(base.WriterBase):
                     current_resid += 1
 
                 # Truncate numbers
-                serial = int(str(i + 1)[-serial_len:])
-                resid = int(str(resid)[-resid_len:])
-                current_resid = int(str(current_resid)[-totres_len:])
+                serial = util.ltruncate_int(i + 1, serial_len)
+                resid = util.ltruncate_int(resid, resid_len)
+                current_resid = util.ltruncate_int(current_resid, totres_len)
 
                 crd.write(at_fmt.format(
                     serial=serial, totRes=current_resid, resname=resname,
