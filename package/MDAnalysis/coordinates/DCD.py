@@ -81,6 +81,7 @@ from six.moves import range
 import os
 import errno
 import numpy as np
+from numpy.lib.utils import deprecate
 import struct
 import types
 import warnings
@@ -578,6 +579,7 @@ class DCDReader(base.ReaderBase):
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
+    @deprecate(message="This method will be removed in 0.17")
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
         """Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
         with time series computed from the trajectory.
