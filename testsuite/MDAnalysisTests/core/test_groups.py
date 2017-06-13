@@ -25,6 +25,7 @@ from six.moves import range
 import itertools
 import numpy as np
 from numpy.testing import (
+    dec,
     assert_,
     assert_array_equal,
     assert_equal,
@@ -34,7 +35,7 @@ import operator
 import six
 
 import MDAnalysis as mda
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests import make_Universe, parser_not_found
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
@@ -578,6 +579,8 @@ class TestGroupBy(object):
 
 
 class TestReprs(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -917,6 +920,64 @@ class TestGroupBaseOperators(object):
         for op, method in operators:
             for level in levels:
                 yield check_operator, op, method, level
+
+
+class TestGroupHash(object):
+    """
+    Groups should be hashable.
+
+    See issue #1397
+    """
+    def test_hash_exists(self):
+        def _hash_type(group):
+            assert_(isinstance(hash(group), int))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            group = getattr(u, level)
+            yield _hash_type, group
+
+    def test_hash_equality(self):
+        def _hash_equal(a, b):
+            assert_equal(hash(a), hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)[0:-1]
+            b = getattr(u, level)[0:-1]
+            yield _hash_equal, a, b
+
+    def test_hash_difference(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)[:-1]
+            b = getattr(u, level)[1:]
+            yield _hash_not_equal, a, b
+
+    def test_hash_difference_cross(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        levels = ('atoms', 'residues', 'segments')
+        for level_a, level_b in itertools.permutations(levels, 2):
+            a = getattr(u, level_a)[0:-1]
+            b = getattr(u, level_b)[0:-1]
+            yield _hash_not_equal, a, b
+
+    def test_hash_diff_cross_universe(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        u2 = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)
+            b = getattr(u2, level)
+            yield _hash_not_equal, a, b
 
 
 class TestAtomGroup(object):
