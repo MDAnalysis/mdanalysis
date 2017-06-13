@@ -538,10 +538,6 @@ deal with missing methods gracefully.
  ``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
      returns a subset of coordinate data
 
- ``correl(timeseriesCollection[,start[,stop[,skip]]])``
-     populate a :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` object
-     with observable timeseries computed from the trajectory
-
 
 Attributes
 ..........
