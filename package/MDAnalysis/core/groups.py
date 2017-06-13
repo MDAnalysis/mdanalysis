@@ -423,6 +423,9 @@ class GroupBase(_MutableBase):
         self._u = u
         self._cache = dict()
 
+    def __hash__(self):
+        return hash((self._u, self.__class__, tuple(self.ix.tolist())))
+
     def __len__(self):
         return len(self._ix)
 
