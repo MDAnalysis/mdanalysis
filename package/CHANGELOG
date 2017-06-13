@@ -17,6 +17,9 @@ mm/dd/yy
 
   * 0.16.2
 
+Deprecations
+  * deprecated core.Timeseries module (Issue #1383)
+
 Enhancements
 
 Fixes
