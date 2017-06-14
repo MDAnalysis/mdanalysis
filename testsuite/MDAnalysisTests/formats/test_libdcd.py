@@ -1,8 +1,10 @@
 from __future__ import absolute_import, print_function
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 from nose.tools import raises
 from numpy.testing import assert_equal, assert_almost_equal
-from numpy.testing import assert_allclose, assert_array_almost_equal
+from numpy.testing import (assert_allclose, assert_array_almost_equal,
+                           assert_)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
 from MDAnalysisTests.datafiles import (
@@ -159,7 +161,7 @@ class TestDCDReadFrame(object):
 class TestDCDWriteHeader(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
         self.dcdfile = DCD
 
     def tearDown(self):
@@ -195,15 +197,16 @@ class TestDCDWriteHeader(object):
 
     @raises(IOError)
     def test_write_no_header(self):
-        # test that _write_header() can produce a very crude
-        # header for a new / empty file
+        # an IOError should be raised if we
+        # attempt to write inappropriate header
+        # data that looks like frame data
         with DCDFile(self.testfile, 'w') as dcd:
             dcd.write(np.ones(3), np.ones(6))
 
     @raises(IOError)
     def test_write_header_twice(self):
-        # test that _write_header() can produce a very crude
-        # header for a new / empty file
+        # an IOError should be raised if a duplicate
+        # header writing is attempted
         with DCDFile(self.testfile, 'w') as dcd:
             dcd.write_header(
                 remarks='Crazy!',
@@ -237,8 +240,8 @@ class TestDCDWriteHeader(object):
 class TestDCDWrite(object):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
-        self.testfile2 = self.tmpdir.name + '/test2.dcd'
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
         self.readfile = DCD
         self.natoms = 3341
         self.expected_frames = 98
@@ -259,6 +262,16 @@ class TestDCDWrite(object):
             for frame in f_in:
                 box = frame.unitcell.astype(np.float64)
                 f_out.write(xyz=frame.x, box=box)
+
+    def _test_written_unit_cell(self):
+        # written unit cell dimensions should match for all frames
+        with DCDFile(self.testfile) as test, DCDFile(self.readfile) as ref:
+            curr_frame = 0
+            while curr_frame < test.n_frames:
+                written_unitcell = test.read().unitcell
+                ref_unitcell = ref.read().unitcell
+                curr_frame += 1
+                assert_almost_equal(written_unitcell, ref_unitcell)
 
     def tearDown(self):
         try:
@@ -287,14 +300,7 @@ class TestDCDWrite(object):
                 assert_equal(xyz.shape, expected)
 
     def test_written_unit_cell(self):
-        # written unit cell dimensions should match for all frames
-        with DCDFile(self.testfile) as test, DCDFile(self.readfile) as ref:
-            curr_frame = 0
-            while curr_frame < test.n_frames:
-                written_unitcell = test.read().unitcell
-                ref_unitcell = ref.read().unitcell
-                curr_frame += 1
-                assert_equal(written_unitcell, ref_unitcell)
+        self._test_written_unit_cell()
 
     def test_written_num_frames(self):
         with DCDFile(self.testfile) as f:
@@ -416,45 +422,8 @@ class TestDCDWrite(object):
             out.write(xyz=xyz, box=box)
 
 
-class TestDCDWriteNAMD(TestDCDWrite):
-    # repeat writing tests for NAMD format DCD
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
-        self.testfile2 = self.tmpdir.name + '/test2.dcd'
-        self.readfile = DCD_NAMD_TRICLINIC
-        self.natoms = 5545
-        self.expected_frames = 1
-        self.seek_frame = 0
-        self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
-        self._write_files(testfile=self.testfile, remarks_setting='input')
-
-    def test_written_unit_cell(self):
-        # there's no expectation that we can write unit cell
-        # data in NAMD format at the moment
-        pass
 
 
-class TestDCDWriteCharmm36(TestDCDWrite):
-    # repeat writing tests for Charmm36 format DCD
-    # no expectation that we can write unit cell info though (yet)
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
-        self.testfile2 = self.tmpdir.name + '/test2.dcd'
-        self.readfile = DCD_TRICLINIC
-        self.natoms = 375
-        self.expected_frames = 10
-        self.seek_frame = 7
-        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
-        self._write_files(testfile=self.testfile, remarks_setting='input')
-
-    def test_written_unit_cell(self):
-        # there's no expectation that we can write unit cell
-        # data in NAMD format at the moment
-        pass
 
 
 class TestDCDWriteHeaderNAMD(TestDCDWriteHeader):
@@ -462,7 +431,7 @@ class TestDCDWriteHeaderNAMD(TestDCDWriteHeader):
 
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
         self.dcdfile = DCD_NAMD_TRICLINIC
 
 
@@ -471,7 +440,7 @@ class TestDCDWriteHeaderCharmm36(TestDCDWriteHeader):
 
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
         self.dcdfile = DCD_TRICLINIC
 
 
@@ -520,7 +489,7 @@ class TestDCDWriteRandom(object):
 
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.testfile = self.tmpdir.name + '/test.dcd'
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
         self.readfile = DCD
         self.natoms = 3341
         self.expected_frames = 98
@@ -546,7 +515,7 @@ class TestDCDWriteRandom(object):
             pass
         del self.tmpdir
 
-    def test_written_unit_cell_random(self):
+    def _test_written_unit_cell_random(self):
         with DCDFile(self.testfile) as test:
             curr_frame = 0
             while curr_frame < test.n_frames:
@@ -555,6 +524,9 @@ class TestDCDWriteRandom(object):
 
                 curr_frame += 1
                 assert_allclose(written_unitcell, ref_unitcell, rtol=1e-05)
+
+    def test_written_unit_cell_random(self):
+        self._test_written_unit_cell_random()
 
 
 class TestDCDByteArithmetic(object):
@@ -570,7 +542,7 @@ class TestDCDByteArithmetic(object):
             first_frame_size = dcd._firstframesize
             general_frame_size = dcd._framesize
 
-        assert_equal(first_frame_size >= general_frame_size, True)
+        assert_(first_frame_size >= general_frame_size)
 
     def test_file_size_breakdown(self):
         # the size of a DCD file is equivalent to the sum of the header
@@ -605,3 +577,58 @@ class TestDCDByteArithmeticCharmm36(TestDCDByteArithmetic):
     def setUp(self):
         self.dcdfile = DCD_TRICLINIC
         self._filesize = os.path.getsize(DCD_TRICLINIC)
+
+class TestDCDWriteNAMD(TestDCDWrite, TestDCDWriteRandom):
+    # repeat writing tests for NAMD format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
+        self.readfile = DCD_NAMD_TRICLINIC
+        self.natoms = 5545
+        self.expected_frames = 1
+        self.seek_frame = 0
+        self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
+        self._write_files(testfile=self.testfile, remarks_setting='input')
+        np.random.seed(1178083)
+        self.random_unitcells = np.random.uniform(
+            high=80, size=(self.expected_frames, 6)).astype(np.float64)
+
+    #@knownfailure
+    def test_written_unit_cell(self):
+        # there's no expectation that we can write unit cell
+        # data in NAMD format at the moment
+        self._test_written_unit_cell()
+
+    @knownfailure
+    def test_written_unit_cell_random(self):
+        self._test_written_unit_cell_random()
+
+class TestDCDWriteCharmm36(TestDCDWrite, TestDCDWriteRandom):
+    # repeat writing tests for Charmm36 format DCD
+    # no expectation that we can write unit cell info though (yet)
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
+        self.readfile = DCD_TRICLINIC
+        self.natoms = 375
+        self.expected_frames = 10
+        self.seek_frame = 7
+        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
+        self._write_files(testfile=self.testfile, remarks_setting='input')
+        np.random.seed(1178083)
+        self.random_unitcells = np.random.uniform(
+            high=80, size=(self.expected_frames, 6)).astype(np.float64)
+
+    #@knownfailure
+    def test_written_unit_cell(self):
+        # there's no expectation that we can write unit cell
+        # data in charmm format at the moment
+        self._test_written_unit_cell()
+
+    @knownfailure
+    def test_written_unit_cell_random(self):
+        self._test_written_unit_cell_random()
