@@ -90,9 +90,10 @@ class TestDCDReadFrame(object):
             dcd_frame = dcd.read()
         assert_array_almost_equal(dcd_frame.unitcell, self.expected_unit_cell)
 
-    @raises(IOError)
+    @raises(EOFError)
     def test_seek_over_max(self):
-        # should raise IOError if beyond 98th frame
+        # should raise EOFError if beyond frame
+        # total
         with DCDFile(DCD) as dcd:
             dcd.seek(102)
 
