@@ -285,6 +285,17 @@ across frames::
 Instant selectors
 =================
 
+.. deprecated:: 0.16.2
+
+   *Instant selectors* will be removed in the 1.0 release in order to
+   streamline the MDAnalysis user interface. They do not seem to be
+   widely used anymore, can produce cryptic error messages, and are
+   not considered "Pythonic" (and therefore not very intuitive for new
+   users). See issue `#1377
+   <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more
+   details.
+
+
 For interactive work it becomes rather tedious to type common selection strings
 repeatedly. MDAnalysis automatically generates a number of *instant selectors*
 as attributes of the :class:`~MDAnalysis.core.universe.Universe` and number of

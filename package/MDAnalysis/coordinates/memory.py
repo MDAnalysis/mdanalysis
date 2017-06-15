@@ -106,6 +106,8 @@ extracted from a DCD
     universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
 
 
+.. _create-in-memory-trajectory-with-AnalysisFromFunction:
+
 .. rubric:: Creating an in-memory trajectory with
             :func:`~MDAnalysis.analysis.base.AnalysisFromFunction`
 
