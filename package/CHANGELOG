@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud
+mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
 
   * 0.16.2
 
@@ -27,6 +27,9 @@ Fixes
   * Groups are hashable on python 3 (Issue #1397)
 
 Changes
+  * added deprecation warnings for API changes (removal of Timeseries and
+    DCD correl functionality, removal of instant selectors, and removal of
+    the core.flag registry) (Issue #1383)
 
 
 06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,
