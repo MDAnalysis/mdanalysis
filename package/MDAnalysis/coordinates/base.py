@@ -1692,6 +1692,60 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             natoms=self.n_atoms
         ))
 
+    def timeseries(self, asel=None, start=None, stop=None, step=None,
+                   format='fac'):
+        """Return a subset of coordinate data for an AtomGroup
+
+        Parameters
+        ----------
+        asel : :class:`~MDAnalysis.core.groups.AtomGroup` (optional)
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to None, in which case the full set of
+            coordinate data is returned.
+        start :  int (optional)
+             Begin reading the trajectory at frame index `start` (where 0 is the index
+             of the first frame in the trajectory); the default ``None`` starts
+             at the beginning.
+        stop : int (optional)
+             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+             The trajectory is read to the end with the default ``None``.
+        step : int (optional)
+             Step size for reading; the default ``None`` is equivalent to 1 and means to
+             read every frame.
+        format : str (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+        """
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        nframes = len(range(start, stop, step))
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise NoDataError(
+                    "Timeseries requires at least one atom to analyze")
+            atom_numbers = asel.indices
+            natoms = len(atom_numbers)
+        else:
+            atom_numbers = None
+            natoms = self.n_atoms
+
+        if not format in ('fac', None):
+            # need to add swapping around axes etc
+            raise NotImplementedError
+
+        # allocate output array
+        coordinates = np.empty((nframes, natoms, 3), dtype=np.float32)
+        for i, ts in enumerate(self[start:stop:step]):
+            # if atom_number == None, this will cause view of array
+            # do we need copy in this case?
+            coordinates[i] = ts.positions[atom_numbers].copy()
+
+        return coordinates
+
     def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
