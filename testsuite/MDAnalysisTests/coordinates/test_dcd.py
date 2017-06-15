@@ -20,30 +20,27 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
+from six.moves import zip, range
 import MDAnalysis as mda
 from MDAnalysis.coordinates.DCD import DCDReader
 import numpy as np
 import os
-from six.moves import zip, range
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal,
                            assert_allclose, dec)
-from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
-# from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 
-from MDAnalysisTests import module_not_found, tempdir
-# from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import tempdir
 
 
 class DCDReference(BaseReference):
@@ -99,11 +96,7 @@ class TestDCDWriter(BaseWriterTest):
 ################
 
 
-class TestDCDReaderClass(TestCase):
-    pass
-
-
-class TestDCDReader_old(TestCase):
+class TestDCDReaderOld(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
@@ -153,7 +146,7 @@ class TestDCDReader_old(TestCase):
     def test_timeseries_slicing(self):
         # check that slicing behaves correctly
         # should  before issue #914 resolved
-        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 4, 2), (1, 4, 4),
+        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
              (0, 5, 5), (3, 5, 1), (None, None, None)]
         for start, stop, step in x:
             yield self._slice_generation_test, start, stop, step
@@ -351,12 +344,10 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new
         CHARMM format (at least since c36b2)"""
-        print("writing")
         with self.u.trajectory.OtherWriter(self.dcd) as w:
             for ts in self.u.trajectory:
                 w.write(ts)
         w = mda.Universe(self.topology, self.dcd)
-        print("reading\n")
         for ts_orig, ts_copy in zip(self.u.trajectory,
                                     w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
@@ -376,8 +367,6 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
 
 
 class TestNCDF2DCD(object):
-    @dec.skipif(module_not_found("netCDF4"),
-                "Test skipped because netCDF is not available.")
     def setUp(self):
         self.u = mda.Universe(PRMncdf, NCDF)
         # create the DCD
@@ -420,5 +409,3 @@ class TestNCDF2DCD(object):
                 3,
                 err_msg="NCDF->DCD: coordinates wrong at frame {0:d}".format(
                 ts_orig.frame))
-
-
