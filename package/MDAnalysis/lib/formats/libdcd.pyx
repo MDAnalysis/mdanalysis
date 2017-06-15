@@ -20,11 +20,10 @@ Low level DCD  trajectory reading - :mod:`MDAnalysis.lib.formats.libdcd`
 :mod:`libdcd` contains the class :class:`DCDFile` to read and write frames of a
 DCD file. The class tries to behave similar to a normal file object.
 
-:mod:`libdcd` contains the classes :class:`XTCFile` and
-:class:`TRRFile`. Both can be used to read and write frames from and to
-Gromacs_ XTC and TRR files. These classes are used internally by MDAnalysis in
-:mod:`MDAnalysis.coordinates.XTC` and :mod:`MDAnalysis.coordinates.TRR`. They
-behave similar to normal file objects.
+:mod:`libdcd` contains the classes :class:`DCDFile`, which can be used to read
+and write frames from and to DCD files. These classes are used internally by
+MDAnalysis in :mod:`MDAnalysis.coordinates.DCD`. They behave similar to normal
+file objects.
 
 For example, one can use a :class:`DCDFile` to directly calculate mean
 coordinates (where the coordinates are stored in `x` attribute of the
@@ -88,14 +87,14 @@ cdef enum:
     DCD_HAS_EXTRA_BLOCK = 0x04
 
 DCD_ERRORS = {
-    0: 'No Problem',
+    0: 'Success',
     -1: 'Normal EOF',
     -2: 'DCD file does not exist',
     -3: 'Open of DCD file failed',
     -4: 'read call on DCD file failed',
     -5: 'premature EOF found in DCD file',
     -6: 'format of DCD file is wrong',
-    -7: 'output file already exiss',
+    -7: 'output file already exists',
     -8: 'malloc failed'
 }
 
@@ -134,7 +133,7 @@ cdef class DCDFile:
 
     This class can be similar to the normal file objects in python. The read()
     function will return a frame and all information in it instead of a single
-    line. Additionally the context-manager protocoll is supported as well.
+    line. Additionally the context-manager protocol is supported as well.
 
     Parameters
     ----------
@@ -149,6 +148,11 @@ cdef class DCDFile:
     >>> with DCDFile('foo.dcd') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
+
+
+    Raises
+    ------
+    IOError
     """
     cdef fio_fd fp
     cdef readonly fname
@@ -179,7 +183,7 @@ cdef class DCDFile:
         self.natoms = 0
         self.is_open = False
         self.wrote_header = False
-        self.open(self.fname, mode)
+        self.open(mode)
 
     def __dealloc__(self):
         self.close()
@@ -187,7 +191,7 @@ cdef class DCDFile:
     def __enter__(self):
         """Support context manager"""
         if not self.is_open:
-            self.open(self.fname, self.mode)
+            self.open(self.mode)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -198,7 +202,7 @@ cdef class DCDFile:
 
     def __iter__(self):
         self.close()
-        self.open(self.fname, self.mode)
+        self.open(self.mode)
         return self
 
     def __next__(self):
@@ -219,15 +223,13 @@ cdef class DCDFile:
         """
         return self.current_frame
 
-    def open(self, filename, mode='r'):
+    def open(self, mode='r'):
         """Open a DCD file
 
         If another DCD file is currently opened it will be closed
 
         Parameters
         ----------
-        fname : str
-            The filename to open.
         mode : ('r', 'w')
             The mode in which to open the file, either 'r' read or 'w' write
 
@@ -249,7 +251,7 @@ cdef class DCDFile:
         ok = fio_open(self.fname, fio_mode, <fio_fd*> &self.fp)
         if ok != 0:
             raise IOError("couldn't open file: {}\n"
-                          "ErrorCode: {}".format(self.fname, ok))
+                          "ErrorCode: {}".format(self.fname, DCD_ERRORS[ok]))
         self.is_open = True
         self.current_frame = 0
         self.reached_eof = False
@@ -275,7 +277,7 @@ cdef class DCDFile:
             self.is_open = False
             if ok != 0:
                 raise IOError("couldn't close file: {}\n"
-                              "ErrorCode: {}".format(self.fname, ok))
+                              "ErrorCode: {}".format(self.fname, DCD_ERRORS[ok]))
 
 
     cdef void _read_header(self):
@@ -299,8 +301,9 @@ cdef class DCDFile:
             free(c_remarks)
         else:
             py_remarks = ""
-
         self.ndims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
+        # This function assumes that the dcd header was already read and
+        # self.ndims is set. It will only work when called here !!!
         self.n_frames = self._estimate_n_frames()
         self.b_read_header = True
 
@@ -308,7 +311,7 @@ cdef class DCDFile:
         try:
             self.read()
             self.seek(0)
-        except:
+        except IOError:
             # if this fails the file is empty. Set flag and warn using during read
             if self.n_frames != 0:
                 raise IOError("DCD is corrupted")
@@ -325,6 +328,8 @@ cdef class DCDFile:
         self.remarks = py_remarks
 
     cdef int _estimate_n_frames(self):
+        """ Only call this function in _read_header!!!
+        """
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
         self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
         self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
@@ -349,10 +354,6 @@ cdef class DCDFile:
     def seek(self, frame):
         """Seek to Frame.
 
-        Please note that this function will generate internal file offsets if
-        they haven't been set before. For large file this means the first seek
-        can be very slow. Later seeks will be very fast.
-
         Parameters
         ----------
         frame : int
@@ -365,7 +366,7 @@ cdef class DCDFile:
             seek fails (the low-level system error is reported).
         """
         if frame >= self.n_frames:
-            raise IOError('Trying to seek over max number of frames')
+            raise EOFError('Trying to seek over max number of frames')
         self.reached_eof = False
 
         cdef fio_size_t offset
@@ -376,7 +377,7 @@ cdef class DCDFile:
 
         ok = fio_fseek(self.fp, offset, _whence_vals["FIO_SEEK_SET"])
         if ok != 0:
-            raise IOError("DCD seek failed with system errno={}".format(ok))
+            raise IOError("DCD seek failed with system errno={}".format(DCD_ERRORS[ok]))
         self.current_frame = frame
 
     @property
@@ -408,7 +409,7 @@ cdef class DCDFile:
         nsavc : int
             number of frames between saves
         delta : float
-            timepstep
+            integrator time step. The time for 1 frame is nsavc * delta
         charmm : int
             is charmm dcd
 
@@ -462,11 +463,11 @@ cdef class DCDFile:
             raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
         if not self.wrote_header:
             raise IOError("write header first before frames can be written")
-        xyz = np.asarray(xyz, order='F', dtype=np.float32)
+        xyz = np.asarray(xyz, order='F', dtype=FLOAT)
         if xyz.shape != (self.natoms, 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
 
-        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=np.float64)
+        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
         cdef FLOAT_T[::1] x = xyz[:, 0]
         cdef FLOAT_T[::1] y = xyz[:, 1]
         cdef FLOAT_T[::1] z = xyz[:, 2]
@@ -477,7 +478,7 @@ cdef class DCDFile:
                            <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
                            <DOUBLE_T*> &c_box[0], self.charmm)
         if ok != 0:
-            raise IOError("Couldn't write DCD frame")
+            raise IOError("Couldn't write DCD frame: reason {}".format(DCD_ERRORS[ok]))
 
         self.current_frame += 1
 
@@ -492,9 +493,14 @@ cdef class DCDFile:
 
         Notes
         -----
-        unitcell is read as it from DCD. Post processing depending the program this
+        unitcell is read as is from DCD. Post processing depending on the program this
         DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
         for possible post processing into a common unitcell data structure.
+
+        Raises
+        ------
+        IOError
+        StopIteration
         """
         if self.reached_eof:
             raise IOError('Reached last frame in DCD, seek to 0')
@@ -531,8 +537,12 @@ cdef class DCDFile:
 
         Parameters
         ----------
-        start, stop, step : int
-            range of frames
+        start : int (optional)
+            starting frame, default to 0
+        stop : int (optional)
+            stop frame, default to ``n_frames``
+        step : int (optional)
+            step between frames read, defaults to 1
         order : str (optional)
             give order of returned array with `f`:frames, `a`:atoms, `c`:coordinates
         indices : array_like (optional)
@@ -549,6 +559,11 @@ cdef class DCDFile:
         unitcell is read as it from DCD. Post processing depending the program this
         DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
         for possible post processing into a common unitcell data structure.
+
+        Raises
+        ------
+        IOError
+        ValueError
         """
         if self.reached_eof:
             raise IOError('Reached last frame in DCD, seek to 0')
