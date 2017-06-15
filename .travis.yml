@@ -32,6 +32,7 @@ env:
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
+    - DEBUG=True
 
 matrix:
   fast_finish: true
@@ -80,6 +81,7 @@ matrix:
 install:
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+  - cat ~/.condarc
   # additional external tools (Issue #898) -- HOLE
   - |
     if [[ $NAME == 'full' ]]; then \
