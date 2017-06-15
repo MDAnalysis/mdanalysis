@@ -312,7 +312,6 @@ cdef class DCDFile:
             self.read()
             self.seek(0)
         except IOError:
-            # if this fails the file is empty. Set flag and warn using during read
             if self.n_frames != 0:
                 raise IOError("DCD is corrupted")
 

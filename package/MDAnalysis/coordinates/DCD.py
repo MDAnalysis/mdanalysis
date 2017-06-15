@@ -147,7 +147,7 @@ class DCDReader(base.ReaderBase):
         self.ts.frame = 0
         self._frame = -1
         self._file.close()
-        self._file.open(self.filename.encode('utf-8'), 'r')
+        self._file.open('r')
 
     def _read_frame(self, i):
         """read frame i"""
