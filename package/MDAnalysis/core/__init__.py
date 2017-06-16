@@ -451,5 +451,4 @@ class flagsDocs(object):
 
 from . import groups
 from . import selection
-from . import Timeseries
 from . import AtomGroup
