@@ -81,7 +81,7 @@ matrix:
            EVENT_TYPE='cron'
 
 before_install:
-    - sudo apt-get update python-virtualenv
+    - sudo apt-get install python-virtualenv
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
