@@ -87,8 +87,6 @@ class TestPCA(object):
         pca_test.transform(u2)
 
     @staticmethod
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_cosine_content():
         rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
         pca_random = pca.PCA(rand).run()
