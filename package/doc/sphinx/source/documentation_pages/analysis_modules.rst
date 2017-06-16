@@ -4,29 +4,39 @@
 Analysis modules
 ****************
 
-The :mod:`MDAnalysis.analysis` module contains code to carry out
-specific analysis functionality. It is based on the core functionality
-(i.e. trajectory I/O, selections etc). The analysis modules can be
-used as examples for how to use MDAnalysis but also as working code
-for research projects; typically all contributed code has been used by
-the authors in their own work.
+The :mod:`MDAnalysis.analysis` module contains code to carry out specific
+analysis functionality. It is based on the core functionality (i.e. trajectory
+I/O, selections etc). The analysis modules can be used as examples for how to
+use MDAnalysis but also as working code for research projects; typically all
+contributed code has been used by the authors in their own work.
 
-Please see the individual module documentation for additional
-references and citation information.
+Please see the individual module documentation for additional references and
+citation information.
 
-These modules are not imported by default; in order to use them one
-has to import them from :mod:`MDAnalysis.analysis`, for instance ::
+These modules are not imported by default; in order to use them one has to
+import them from :mod:`MDAnalysis.analysis`, for instance ::
 
     import MDAnalysis.analysis.align
 
-.. Note::
+.. rubric:: Additional dependencies
 
-  Some of the modules require additional Python packages such as :mod:`scipy`
-  from the SciPy_ package. These package are *not automatically installed*
-  (although one can add the ``[analysis]`` requirement to the :program:`pip`
-  command line to force their installation.
+Some of the modules in :mod:`MDAnalysis.analysis` require additional Python
+packages to enable full functionality. For example,
+:mod:`MDAnalysis.analysis.encore` provides more options if `scikit-learn`_ is
+installed. These package are *not automatically installed* with
+:program:`pip`(although one can add the ``[analysis]`` requirement to the
+:program:`pip` command line to force their installation). If you install
+MDAnalysis with :program:`conda` (see :ref:`installation-instructions`) then a
+*full set of dependencies* is automatically installed.
 
-.. _scipy: http://www.scipy.org/
+Other modules require external programs. For instance, the
+:mod:`MDAnalysis.analysis.hole` module requires an installation of the HOLE_
+suite of programs. You will need to install these external dependencies by
+following their installation instructions before you can use the corresponding
+MDAnalysis module.
+
+.. _scikit-learn: http://scikit-learn.org/
+.. _HOLE: http://www.smartsci.uk/hole/
 
 
 Building blocks for Analysis
