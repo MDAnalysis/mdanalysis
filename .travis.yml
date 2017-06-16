@@ -80,16 +80,12 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            EVENT_TYPE='cron'
 
-before_install:
-    - sudo apt-get install python-virtualenv
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
   # - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
-  - virtualenv venv --system-site-packages
-  - source venv/bin/activate
-  - pip install $PIP_DEPENDENCIES
+  - sudo pip install $PIP_DEPENDENCIES
   - |
     if [[ $NAME == 'full' ]]; then \
         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
