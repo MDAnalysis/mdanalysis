@@ -1,23 +1,36 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 from __future__ import absolute_import, print_function
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 
-from nose.tools import raises
-from numpy.testing import assert_equal, assert_almost_equal
-from numpy.testing import (assert_allclose, assert_array_almost_equal,
-                           assert_)
-
-from MDAnalysis.lib.formats.libdcd import DCDFile
-from MDAnalysisTests.datafiles import (
-    DCD, DCD_NAMD_TRICLINIC, legacy_DCD_ADK_coords, legacy_DCD_NAMD_coords,
-    legacy_DCD_c36_coords, DCD_TRICLINIC)
-
-from MDAnalysisTests.tempdir import run_in_tempdir
-from MDAnalysisTests import tempdir
 import numpy as np
 import os
 from hypothesis import given, example
 import hypothesis.strategies as st
 import string
+
+from numpy.testing import (assert_, assert_allclose, assert_almost_equal,
+                           assert_array_almost_equal, assert_equal, raises)
+
+from MDAnalysis.lib.formats.libdcd import DCDFile
+
+from MDAnalysisTests.datafiles import (
+    DCD, DCD_NAMD_TRICLINIC, legacy_DCD_ADK_coords, legacy_DCD_NAMD_coords,
+    legacy_DCD_c36_coords, DCD_TRICLINIC)
+from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import tempdir
 
 
 class TestDCDReadFrame(object):
@@ -73,7 +86,8 @@ class TestDCDReadFrame(object):
             xyz = frames.x
             assert_equal(len(xyz), len(dcd))
             for index, frame_num in enumerate(self.selected_legacy_frames):
-                assert_array_almost_equal(xyz[frame_num], legacy_DCD_frame_data[index])
+                assert_array_almost_equal(xyz[frame_num],
+                                          legacy_DCD_frame_data[index])
 
     def test_readframes_slice(self):
         with DCDFile(self.dcdfile) as dcd:
@@ -81,7 +95,6 @@ class TestDCDReadFrame(object):
                 frames = dcd.readframes(start=2, stop=6, step=2)
                 xyz = frames.x
                 assert_equal(len(xyz), 2)
-
 
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
@@ -138,7 +151,7 @@ class TestDCDReadFrame(object):
             assert_equal(dcd.header['natoms'], self.natoms)
 
     @raises(IOError)
-    @run_in_tempdir()
+    @tempdir.run_in_tempdir()
     def test_read_write_mode_file(self):
         with DCDFile('foo', 'w') as f:
             f.read()
@@ -157,6 +170,46 @@ class TestDCDReadFrame(object):
                 # second iteration should work from start again
                 for i, _ in enumerate(f):
                     assert_equal(i + 1, f.tell())
+
+
+class TestDCDReadFrameTestNAMD(TestDCDReadFrame):
+    # repeat frame reading tests for NAMD format DCD
+
+    def setUp(self):
+        self.dcdfile = DCD_NAMD_TRICLINIC
+        self.natoms = 5545
+        self.traj_length = 1
+        self.new_frame = 0
+        self.context_frame = 0
+        self.is_periodic = True
+        self.num_iters = 0
+        self.selected_legacy_frames = [0]
+        self.legacy_data = legacy_DCD_NAMD_coords
+        self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
+        # expect raw unit cell unprocessed
+        self.expected_unit_cell = np.array(
+            [38.42659378, 0.499563, 38.393102, 0., 0., 44.7598],
+            dtype=np.float32)
+
+
+class TestDCDReadFrameTestCharmm36(TestDCDReadFrame):
+    # repeat frame reading tests for Charmm36 format DCD
+
+    def setUp(self):
+        self.dcdfile = DCD_TRICLINIC
+        self.natoms = 375
+        self.traj_length = 10
+        self.new_frame = 2
+        self.context_frame = 5
+        self.num_iters = 7
+        self.is_periodic = True
+        self.selected_legacy_frames = [1, 4]
+        self.legacy_data = legacy_DCD_c36_coords
+        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              * TEST EXTENDED SYSTEM CONSTANT PRESSURE AND TEMPERATURE                        * DYNAMICS WITH WATER BOX.                                                      *  DATE:     7/ 7/14     13:59:46      CREATED BY USER: oliver                  '
+        # expect raw unit cell unprocessed
+        self.expected_unit_cell = np.array(
+            [30.841836, 14.578635, 31.780088, 9.626323, -2.60815, 32.67009],
+            dtype=np.float32)
 
 
 class TestDCDWriteHeader(object):
@@ -236,6 +289,24 @@ class TestDCDWriteHeader(object):
                 nsavc=10,
                 delta=0.02,
                 charmm=1)
+
+
+class TestDCDWriteHeaderNAMD(TestDCDWriteHeader):
+    # repeat header writing tests for NAMD format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.dcdfile = DCD_NAMD_TRICLINIC
+
+
+class TestDCDWriteHeaderCharmm36(TestDCDWriteHeader):
+    # repeat header writing tests for Charmm36 format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.dcdfile = DCD_TRICLINIC
 
 
 class TestDCDWrite(object):
@@ -327,13 +398,12 @@ class TestDCDWrite(object):
 
     @given(st.text(alphabet=string.printable,
                    min_size=0,
-                   max_size=240)) # handle the printable ASCII strings
+                   max_size=240))  # handle the printable ASCII strings
     @example('')
     def test_written_remarks_property(self, remarks_str):
         # property based testing for writing of a wide range of string
         # values to REMARKS field
-        self._write_files(testfile=self.testfile2,
-                          remarks_setting=remarks_str)
+        self._write_files(testfile=self.testfile2, remarks_setting=remarks_str)
         expected_remarks = remarks_str[:240]
         with DCDFile(self.testfile2) as f:
             assert_equal(f.header['remarks'], expected_remarks)
@@ -423,68 +493,6 @@ class TestDCDWrite(object):
             out.write(xyz=xyz, box=box)
 
 
-
-
-
-
-class TestDCDWriteHeaderNAMD(TestDCDWriteHeader):
-    # repeat header writing tests for NAMD format DCD
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
-        self.dcdfile = DCD_NAMD_TRICLINIC
-
-
-class TestDCDWriteHeaderCharmm36(TestDCDWriteHeader):
-    # repeat header writing tests for Charmm36 format DCD
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
-        self.dcdfile = DCD_TRICLINIC
-
-
-class TestDCDReadFrameTestNAMD(TestDCDReadFrame):
-    # repeat frame reading tests for NAMD format DCD
-
-    def setUp(self):
-        self.dcdfile = DCD_NAMD_TRICLINIC
-        self.natoms = 5545
-        self.traj_length = 1
-        self.new_frame = 0
-        self.context_frame = 0
-        self.is_periodic = True
-        self.num_iters = 0
-        self.selected_legacy_frames = [0]
-        self.legacy_data = legacy_DCD_NAMD_coords
-        self.expected_remarks = 'Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'
-        # expect raw unit cell unprocessed
-        self.expected_unit_cell = np.array(
-            [38.42659378, 0.499563, 38.393102, 0., 0., 44.7598],
-            dtype=np.float32)
-
-
-class TestDCDReadFrameTestCharmm36(TestDCDReadFrame):
-    # repeat frame reading tests for Charmm36 format DCD
-
-    def setUp(self):
-        self.dcdfile = DCD_TRICLINIC
-        self.natoms = 375
-        self.traj_length = 10
-        self.new_frame = 2
-        self.context_frame = 5
-        self.num_iters = 7
-        self.is_periodic = True
-        self.selected_legacy_frames = [1, 4]
-        self.legacy_data = legacy_DCD_c36_coords
-        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              * TEST EXTENDED SYSTEM CONSTANT PRESSURE AND TEMPERATURE                        * DYNAMICS WITH WATER BOX.                                                      *  DATE:     7/ 7/14     13:59:46      CREATED BY USER: oliver                  '
-        # expect raw unit cell unprocessed
-        self.expected_unit_cell = np.array(
-            [30.841836, 14.578635, 31.780088, 9.626323, -2.60815, 32.67009],
-            dtype=np.float32)
-
-
 class TestDCDWriteRandom(object):
     # should only be supported for Charmm24 format writing (for now)
 
@@ -526,6 +534,61 @@ class TestDCDWriteRandom(object):
                 curr_frame += 1
                 assert_allclose(written_unitcell, ref_unitcell, rtol=1e-05)
 
+    def test_written_unit_cell_random(self):
+        self._test_written_unit_cell_random()
+
+
+class TestDCDWriteNAMD(TestDCDWrite, TestDCDWriteRandom):
+    # repeat writing tests for NAMD format DCD
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
+        self.readfile = DCD_NAMD_TRICLINIC
+        self.natoms = 5545
+        self.expected_frames = 1
+        self.seek_frame = 0
+        self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
+        self._write_files(testfile=self.testfile, remarks_setting='input')
+        np.random.seed(1178083)
+        self.random_unitcells = np.random.uniform(
+            high=80, size=(self.expected_frames, 6)).astype(np.float64)
+
+    def test_written_unit_cell(self):
+        # there's no expectation that we can write unit cell
+        # data in NAMD format at the moment
+        self._test_written_unit_cell()
+
+    @knownfailure
+    def test_written_unit_cell_random(self):
+        self._test_written_unit_cell_random()
+
+
+class TestDCDWriteCharmm36(TestDCDWrite, TestDCDWriteRandom):
+    # repeat writing tests for Charmm36 format DCD
+    # no expectation that we can write unit cell info though (yet)
+
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
+        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
+        self.readfile = DCD_TRICLINIC
+        self.natoms = 375
+        self.expected_frames = 10
+        self.seek_frame = 7
+        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
+        self._write_files(testfile=self.testfile, remarks_setting='input')
+        np.random.seed(1178083)
+        self.random_unitcells = np.random.uniform(
+            high=80, size=(self.expected_frames, 6)).astype(np.float64)
+
+    def test_written_unit_cell(self):
+        # there's no expectation that we can write unit cell
+        # data in charmm format at the moment
+        self._test_written_unit_cell()
+
+    @knownfailure
     def test_written_unit_cell_random(self):
         self._test_written_unit_cell_random()
 
@@ -578,58 +641,3 @@ class TestDCDByteArithmeticCharmm36(TestDCDByteArithmetic):
     def setUp(self):
         self.dcdfile = DCD_TRICLINIC
         self._filesize = os.path.getsize(DCD_TRICLINIC)
-
-class TestDCDWriteNAMD(TestDCDWrite, TestDCDWriteRandom):
-    # repeat writing tests for NAMD format DCD
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
-        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
-        self.readfile = DCD_NAMD_TRICLINIC
-        self.natoms = 5545
-        self.expected_frames = 1
-        self.seek_frame = 0
-        self.expected_remarks = '''Created by DCD pluginREMARKS Created 06 July, 2014 at 17:29Y5~CORD,'''
-        self._write_files(testfile=self.testfile, remarks_setting='input')
-        np.random.seed(1178083)
-        self.random_unitcells = np.random.uniform(
-            high=80, size=(self.expected_frames, 6)).astype(np.float64)
-
-    #@knownfailure
-    def test_written_unit_cell(self):
-        # there's no expectation that we can write unit cell
-        # data in NAMD format at the moment
-        self._test_written_unit_cell()
-
-    @knownfailure
-    def test_written_unit_cell_random(self):
-        self._test_written_unit_cell_random()
-
-class TestDCDWriteCharmm36(TestDCDWrite, TestDCDWriteRandom):
-    # repeat writing tests for Charmm36 format DCD
-    # no expectation that we can write unit cell info though (yet)
-
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.testfile = os.path.join(self.tmpdir.name, 'test.dcd')
-        self.testfile2 = os.path.join(self.tmpdir.name, 'test2.dcd')
-        self.readfile = DCD_TRICLINIC
-        self.natoms = 375
-        self.expected_frames = 10
-        self.seek_frame = 7
-        self.expected_remarks = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              '
-        self._write_files(testfile=self.testfile, remarks_setting='input')
-        np.random.seed(1178083)
-        self.random_unitcells = np.random.uniform(
-            high=80, size=(self.expected_frames, 6)).astype(np.float64)
-
-    #@knownfailure
-    def test_written_unit_cell(self):
-        # there's no expectation that we can write unit cell
-        # data in charmm format at the moment
-        self._test_written_unit_cell()
-
-    @knownfailure
-    def test_written_unit_cell_random(self):
-        self._test_written_unit_cell_random()
