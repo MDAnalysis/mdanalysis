@@ -143,30 +143,73 @@ class TestDCDReaderOld(TestCase):
         assert_equal(frames, list(range(20, 5, -1)),
                      "reversing dcd [20:5:-1]")
 
-    def test_timeseries_slicing(self):
-        # check that slicing behaves correctly
-        # should  before issue #914 resolved
-        x = [(0, 1, 1), (1,1,1), (1, 2, 1), (1, 2, 2), (1, 4, 2), (1, 4, 4),
-             (0, 5, 5), (3, 5, 1), (None, None, None)]
-        for start, stop, step in x:
-            yield self._slice_generation_test, start, stop, step
 
-    def test_backwards_stepping(self):
-        x = [(4, 0, -1), (5, 0, -2), (5, 0, -4)]
-        for start, stop, step in x:
-            yield self._failed_slices_test, start, stop, step
+def test_timeseries_slices():
+        slices = [([None, None, None], 98),
+                  ([0, None, None], 98),
+                  ([None, 98, None], 98),
+                  ([None, None, 1], 98),
+                  ([None, None, -1], 98),
+                  ([2, 6, 2], 2),
+                  ([0, 10, None], 10),
+                  ([2, 10, None], 8),
+                  ([0, 1, 1], 1),
+                  ([1, 1, 1], 0),
+                  ([1, 2, 1], 1),
+                  ([1, 2, 2], 1),
+                  ([1, 4, 2], 2),
+                  ([1, 4, 4], 1),
+                  ([0, 5, 5], 1),
+                  ([3, 5, 1], 2),
+                  ([4, 0, -1], 4),
+                  ([5, 0, -2], 3),
+                  ([5, 0, -4], 2),
+                  ]
+        u = mda.Universe(PSF, DCD)
+        allframes = u.trajectory.timeseries(format='fac')
+        for (start, stop, step), l in slices:
+            xyz = u.trajectory.timeseries(start=start, stop=stop, step=step,
+                                          format='fac')
+            assert_equal(len(xyz), l)
+            assert_array_almost_equal(xyz, allframes[start:stop:step])
 
-    def _slice_generation_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:,start:stop:step], ts_skip, 5)
 
-    def _failed_slices_test(self, start, stop, step):
-        self.u = mda.Universe(PSF, DCD)
-        ts = self.u.trajectory.timeseries(self.u.atoms)
-        ts_skip = self.u.trajectory.timeseries(self.u.atoms, start, stop, step)
-        assert_array_almost_equal(ts[:, start:stop:step,:], ts_skip, 5)
+def test_timeseries_order():
+    orders = ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa')
+
+    u = mda.Universe(PSF, DCD)
+    natoms = u.atoms.n_atoms
+    ndims = 3
+    n = u.trajectory.n_frames
+
+    for order in orders:
+        if order == 'fac':
+            shape = (n, natoms, ndims)
+        elif order == 'fca':
+            shape = (n, ndims, natoms)
+        elif order == 'afc':
+            shape = (natoms, n, ndims)
+        elif order == 'acf':
+            shape = (natoms, ndims, n)
+        elif order == 'caf':
+            shape = (ndims, natoms, n)
+        elif order == 'cfa':
+            shape = (ndims, n, natoms)
+        x = u.trajectory.timeseries(format=order)
+        assert_array_equal(x.shape, shape)
+
+
+def test_readframes_atomindices():
+    indices = [[1, 2, 3, 4],
+               [5, 10, 15, 19],
+               [9, 4, 2, 0, 50]]
+    u = mda.Universe(PSF, DCD)
+    allframes = u.trajectory.timeseries(format='afc')
+    for idxs in indices:
+        asel = u.atoms[idxs]
+        xyz = u.trajectory.timeseries(asel=asel, format='afc')
+        assert_equal(len(xyz), len(idxs))
+        assert_array_almost_equal(xyz, allframes[idxs])
 
 
 def test_DCDReader_set_dt(dt=100., frame=3):
