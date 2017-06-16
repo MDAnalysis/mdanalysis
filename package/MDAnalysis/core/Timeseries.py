@@ -81,6 +81,7 @@ with warnings.catch_warnings():
                    'https://github.com/MDAnalysis/mdanalysis/issues/1373'),
                   DeprecationWarning)
 
+
 @deprecate(message="This class will be removed in 0.17")
 class TimeseriesCollection(object):
     '''A collection of timeseries objects.
@@ -211,7 +212,6 @@ class TimeseriesCollection(object):
         return auxData
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Timeseries(object):
     '''Base timeseries class - define subclasses for specific timeseries computations.
 
