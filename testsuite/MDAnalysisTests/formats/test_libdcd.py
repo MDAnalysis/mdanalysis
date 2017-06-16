@@ -22,7 +22,8 @@ import hypothesis.strategies as st
 import string
 
 from numpy.testing import (assert_, assert_allclose, assert_almost_equal,
-                           assert_array_almost_equal, assert_equal, raises)
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_equal, raises)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
 
@@ -78,23 +79,6 @@ class TestDCDReadFrame(object):
                 actual_coords = dcd.read()[0]
                 desired_coords = legacy_DCD_frame_data[index]
                 assert_equal(actual_coords, desired_coords)
-
-    def test_readframes(self):
-        legacy_DCD_frame_data = np.load(self.legacy_data)
-        with DCDFile(self.dcdfile) as dcd:
-            frames = dcd.readframes()
-            xyz = frames.x
-            assert_equal(len(xyz), len(dcd))
-            for index, frame_num in enumerate(self.selected_legacy_frames):
-                assert_array_almost_equal(xyz[frame_num],
-                                          legacy_DCD_frame_data[index])
-
-    def test_readframes_slice(self):
-        with DCDFile(self.dcdfile) as dcd:
-            if len(dcd) > 6:
-                frames = dcd.readframes(start=2, stop=6, step=2)
-                xyz = frames.x
-                assert_equal(len(xyz), 2)
 
     def test_read_unit_cell(self):
         # confirm unit cell read against result from previous
@@ -170,6 +154,16 @@ class TestDCDReadFrame(object):
                 # second iteration should work from start again
                 for i, _ in enumerate(f):
                     assert_equal(i + 1, f.tell())
+
+    def test_readframes(self):
+        legacy_DCD_frame_data = np.load(self.legacy_data)
+        with DCDFile(self.dcdfile) as dcd:
+            frames = dcd.readframes()
+            xyz = frames.x
+            assert_equal(len(xyz), len(dcd))
+            for index, frame_num in enumerate(self.selected_legacy_frames):
+                assert_array_almost_equal(xyz[frame_num],
+                                          legacy_DCD_frame_data[index])
 
 
 class TestDCDReadFrameTestNAMD(TestDCDReadFrame):
@@ -641,3 +635,71 @@ class TestDCDByteArithmeticCharmm36(TestDCDByteArithmetic):
     def setUp(self):
         self.dcdfile = DCD_TRICLINIC
         self._filesize = os.path.getsize(DCD_TRICLINIC)
+
+
+def test_readframes_slices():
+        slices = [([None, None, None], 98),
+                  ([0, None, None], 98),
+                  ([None, 98, None], 98),
+                  ([None, None, 1], 98),
+                  ([None, None, -1], 98),
+                  ([2, 6, 2], 2),
+                  ([0, 10, None], 10),
+                  ([2, 10, None], 8),
+                  ([0, 1, 1], 1),
+                  ([1, 1, 1], 0),
+                  ([1, 2, 1], 1),
+                  ([1, 2, 2], 1),
+                  ([1, 4, 2], 2),
+                  ([1, 4, 4], 1),
+                  ([0, 5, 5], 1),
+                  ([3, 5, 1], 2),
+                  ([4, 0, -1], 4),
+                  ([5, 0, -2], 3),
+                  ([5, 0, -4], 2),
+                  ]
+        with DCDFile(DCD) as dcd:
+            allframes = dcd.readframes().x
+            for (start, stop, step), l in slices:
+                frames = dcd.readframes(start=start, stop=stop, step=step)
+                xyz = frames.x
+                assert_equal(len(xyz), l)
+                assert_array_almost_equal(xyz, allframes[start:stop:step])
+
+
+def test_readframes_order():
+    orders = ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa')
+
+    with DCDFile(DCD) as dcd:
+        natoms = dcd.header['natoms']
+        ndims = 3
+        n = dcd.n_frames
+
+        for order in orders:
+            if order == 'fac':
+                shape = (n, natoms, ndims)
+            elif order == 'fca':
+                shape = (n, ndims, natoms)
+            elif order == 'afc':
+                shape = (natoms, n, ndims)
+            elif order == 'acf':
+                shape = (natoms, ndims, n)
+            elif order == 'caf':
+                shape = (ndims, natoms, n)
+            elif order == 'cfa':
+                shape = (ndims, n, natoms)
+            x = dcd.readframes(order=order).x
+            assert_array_equal(x.shape, shape)
+
+
+def test_readframes_atomindices():
+    indices = [[1, 2, 3, 4],
+               [5, 10, 15, 19],
+               [9, 4, 2, 0, 50]]
+    with DCDFile(DCD) as dcd:
+        allframes = dcd.readframes(order='afc').x
+        for idxs in indices:
+            frames = dcd.readframes(indices=idxs, order='afc')
+            xyz = frames.x
+            assert_equal(len(xyz), len(idxs))
+            assert_array_almost_equal(xyz, allframes[idxs])
