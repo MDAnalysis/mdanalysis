@@ -11,8 +11,6 @@ os:
 
 cache:
    pip: true
-   directories:
-       - $HOME/miniconda
 
 env:
   global:
