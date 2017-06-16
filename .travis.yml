@@ -9,6 +9,11 @@ branches:
 os:
   - linux
 
+cache:
+   pip: true
+   directories:
+       - $HOME/miniconda
+
 env:
   global:
     - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
