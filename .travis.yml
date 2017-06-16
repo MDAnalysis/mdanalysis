@@ -89,7 +89,7 @@ install:
   - git clone git://github.com/astropy/ci-helpers.git
   # - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
-  - sudo pip install --upgrade-pip
+  - sudo pip install --upgrade pip
   - sudo pip install $PIP_DEPENDENCIES
   - |
     if [[ $NAME == 'full' ]]; then \
