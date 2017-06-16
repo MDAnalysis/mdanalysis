@@ -40,8 +40,6 @@ matrix:
   fast_finish: true
   include:
     - os : linux
-      dist: trusty
-      sudo: required
       env: NAME='minimal'
            PYTHON_VERSION=2.7
            SETUP_CMD='--with-memleak'
@@ -62,8 +60,6 @@ matrix:
            PIP_DEPENDENCIES=""
 
     - os: linux
-      dist: trusty
-      sudo: required
       env: NAME='full'
            SETUP_CMD='--with-coverage --cover-package MDAnalysis'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
@@ -86,6 +82,7 @@ matrix:
 
 
 install:
+  - sudo apt-get install libssl1.0.0
   - git clone git://github.com/astropy/ci-helpers.git
   # - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
