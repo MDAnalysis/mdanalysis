@@ -31,7 +31,7 @@ env:
     - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
     - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-    - PIP_DEPENDENCIES='griddataformats'
+    - PIP_DEPENDENCIES='griddataformats mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer'
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
@@ -82,8 +82,9 @@ matrix:
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
-  - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+  # - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
+  - pip install $PIP_DEPENDENCIES
   - |
     if [[ $NAME == 'full' ]]; then \
         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
