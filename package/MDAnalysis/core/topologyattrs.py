@@ -42,6 +42,8 @@ import itertools
 import numbers
 import numpy as np
 
+from numpy.lib.utils import deprecate
+
 from . import flags
 from ..lib.util import cached, convert_aa_code, iterable
 from ..lib import transformations, mdamath
@@ -409,6 +411,9 @@ class Atomnames(AtomAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     atomgroup.__class__.__name__, name))
 
+    @deprecate(message="Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
+               "is deprecated and will be removed in 1.0. "
+               "Use AtomGroup.select_atoms('name <name>') instead.")
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -417,6 +422,14 @@ class Atomnames(AtomAttr):
         no atoms are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``AtomGroup.select_atoms('name <name>')`` instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
+
         """
         # There can be more than one atom with the same name
         atomlist = group.atoms.unique[group.atoms.unique.names == name]
@@ -1057,6 +1070,13 @@ class Resnames(ResidueAttr):
     # This transplant is hardcoded for now to allow for multiple getattr things
     #transplants[Segment].append(('__getattr__', getattr__))
 
+
+    @deprecate(message="Instant selector ResidueGroup.<name> "
+               "or Segment.<name> "
+               "is deprecated and will be removed in 1.0. "
+               "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
+               "or Segment.residues[Segment.residues == '<name>'] "
+               "instead.")
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
         or Segment.
@@ -1067,6 +1087,15 @@ class Resnames(ResidueAttr):
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``ResidueGroup[ResidueGroup.resnames == '<name>']``
+           or ``Segment.residues[Segment.residues == '<name>']``
+           instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
 
         """
         # There can be more than one residue with the same name
@@ -1244,6 +1273,10 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
 
+    @deprecate(message="Instant selector SegmentGroup.<name> "
+               "is deprecated and will be removed in 1.0. "
+               "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
+               "instead.")
     def _get_named_segment(group, segid):
         """Get all segments with name *segid* in the current SegmentGroup.
 
@@ -1253,6 +1286,13 @@ class Segids(SegmentAttr):
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
 
         """
         # Undo adding 's' if segid started with digit

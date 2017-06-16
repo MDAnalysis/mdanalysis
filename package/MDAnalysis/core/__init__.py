@@ -30,9 +30,6 @@ simulation is called the
 :class:`~MDAnalysis.core.groups.AtomGroup` and return another
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
-:mod:`~MDAnalysis.core.Timeseries` are a convenient way to analyse
-trajectories.
-
 To get started, load the Universe::
 
   u = Universe(topology_file, trajectory_file)
