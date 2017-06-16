@@ -25,10 +25,9 @@ env:
     - SETUP_CMD=""
     - COVERALLS=false
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
-    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
-    # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-    - PIP_DEPENDENCIES='griddataformats'
+    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib scipy griddataformats"
+    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy griddataformats seaborn coveralls clustalw=2.1"
+    - PIP_DEPENDENCIES=""
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable

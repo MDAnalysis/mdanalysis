@@ -29,8 +29,6 @@ import numpy as np
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 
 class TestLeafletFinder(TestCase):
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def setUp(self):
         self.universe = MDAnalysis.Universe(Martini_membrane_gro, Martini_membrane_gro)
         self.lipid_heads = self.universe.select_atoms("name PO4")

@@ -42,6 +42,7 @@ __all__ = ['distance_array', 'self_distance_array',
            'contact_matrix', 'dist', 'between']
 
 import numpy as np
+import scipy.sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
@@ -51,15 +52,6 @@ import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
-try:
-   from scipy import sparse
-except ImportError:
-   sparse = None
-   msg = "scipy.sparse could not be imported: some functionality will " \
-         "not be available in contact_matrix()"
-   warnings.warn(msg, category=ImportWarning)
-   logger.warn(msg)
-   del msg
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     '''Calculates a matrix of contacts.
@@ -93,12 +85,6 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
        The contact matrix is returned in a format determined by the `returntype`
        keyword.
 
-
-    Note
-    ----
-    :mod:`scipy.sparse` is require for using *sparse* matrices; if it cannot
-    be imported then an `ImportError` is raised.
-
     See Also
     --------
     :mod:`MDAnalysis.analysis.contacts` for native contact analysis
@@ -112,14 +98,9 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         adj = (distance_array(coord, coord, box=box) < cutoff)
         return adj
     elif returntype == "sparse":
-        if sparse is None:
-            # hack: if we are running with minimal dependencies then scipy was
-            #       not imported and we have to bail here (see scipy import at top)
-            raise ImportError("For sparse matrix functionality you need to "
-                              "import scipy.")
         # Initialize square List of Lists matrix of dimensions equal to number
         # of coordinates passed
-        sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
+        sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         if box is not None:
             # with PBC
             contact_matrix_pbc(coord, sparse_contacts, box, cutoff)

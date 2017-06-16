@@ -28,6 +28,8 @@ from numpy.testing import (TestCase, dec, assert_array_less,
                            assert_array_almost_equal, assert_,
                            assert_almost_equal, assert_equal)
 import numpy as np
+import scipy
+import scipy.spatial
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 from MDAnalysisTests import parser_not_found, tempdir, module_not_found
@@ -36,10 +38,6 @@ from MDAnalysisTests import parser_not_found, tempdir, module_not_found
 class TestPSAnalysis(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    @dec.skipif(module_not_found('matplotlib'),
-                "Test skipped because matplotlib is not available.")
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)
@@ -187,9 +185,6 @@ class _BaseHausdorffDistance(TestCase):
     for various Hausdorff distance
     calculation properties.'''
 
-    @dec.skipif(module_not_found('scipy'),
-                'scipy not available')
-
     def setUp(self):
         self.random_angles = np.random.random((100,)) * np.pi * 2
         self.random_columns = np.column_stack((self.random_angles,
@@ -247,10 +242,9 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
 class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for weighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
+
     def setUp(self):
         super(TestWeightedAvgHausdorffSymmetric, self).setUp()
-        import scipy
-        import scipy.spatial
         self.h = PSA.hausdorff_wavg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)
@@ -270,10 +264,9 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
 class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for unweighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
+
     def setUp(self):
         super(TestAvgHausdorffSymmetric, self).setUp()
-        import scipy
-        import scipy.spatial
         self.h = PSA.hausdorff_avg
         self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
                                                             self.path_2)

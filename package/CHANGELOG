@@ -27,6 +27,7 @@ Fixes
   * Groups are hashable on python 3 (Issue #1397)
 
 Changes
+  * scipy and matplotlib are now required dependencies (Issue #1159)
 
 
 06/03/17 utkbansal, kain88-de, xiki-tempula, kaplajon, wouterboomsma,

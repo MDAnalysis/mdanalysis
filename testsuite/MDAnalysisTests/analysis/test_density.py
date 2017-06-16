@@ -30,9 +30,6 @@ from numpy.testing import (TestCase, assert_equal, assert_almost_equal, dec,
                            assert_raises)
 
 import MDAnalysis as mda
-# imported inside a skipif-protected method so that it can
-# be tested in the absence of scipy
-## import MDAnalysis.analysis.density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO
 from MDAnalysisTests import module_not_found, tempdir
@@ -45,8 +42,6 @@ class TestDensity(TestCase):
     counts = 100
     Lmax = 10.
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def setUp(self):
         import MDAnalysis.analysis.density
 
@@ -123,8 +118,6 @@ class Test_density_from_Universe(TestCase):
     cutoffs = {'notwithin': 4.0, }
     precision = 5
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def setUp(self):
         self.outfile = 'density.dx'
         self.universe = mda.Universe(self.topology, self.trajectory)
