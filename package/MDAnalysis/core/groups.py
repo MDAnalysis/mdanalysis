@@ -101,6 +101,8 @@ import numbers
 import os
 import warnings
 
+from numpy.lib.utils import deprecate
+
 import MDAnalysis
 from .. import _ANCHOR_UNIVERSES
 from ..lib import util
@@ -1502,9 +1504,7 @@ class AtomGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of AtomGroup will be removed in the 1.0 release.
-       See issue `#1377
-       <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-       more details.
+       See :ref:`Instant selectors`_ for details and alternatives.
 
     """
     def __getitem__(self, item):
@@ -2199,6 +2199,11 @@ class ResidueGroup(GroupBase):
 
     ResidueGroups can be compared and combined using group operators. See the
     list of these operators on :class:`GroupBase`.
+
+    .. deprecated:: 0.16.2
+       *Instant selectors* of Segments will be removed in the 1.0 release.
+       See :ref:`Instant selectors`_ for details and alternatives.
+
     """
 
     @property
@@ -2313,6 +2318,11 @@ class SegmentGroup(GroupBase):
 
     SegmentGroups can be compared and combined using group operators. See the
     list of these operators on :class:`GroupBase`.
+
+    .. deprecated:: 0.16.2
+       *Instant selectors* of Segments will be removed in the 1.0 release.
+       See :ref:`Instant selectors`_ for details and alternatives.
+
     """
 
     @property
@@ -2660,9 +2670,7 @@ class Segment(ComponentBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See issue `#1377
-       <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-       more details.
+       See :ref:`Instant selectors`_ for details and alternatives.
 
     """
     def __repr__(self):
@@ -2686,7 +2694,11 @@ class Segment(ComponentBase):
         # Segment.r1 access
         if attr.startswith('r') and attr[1:].isdigit():
             resnum = int(attr[1:])
-            return self.residues[resnum - 1]  # convert to 0 based
+            rg = self.residues[resnum - 1]  # convert to 0 based
+            warnings.warn("Instant selectors Segment.r<N> will be removed in 1.0. "
+                          "Use Segment.residues[N-1] instead.",
+                          DeprecationWarning)
+            return rg
         # Resname accesss
         if hasattr(self.residues, 'resnames'):
             try:

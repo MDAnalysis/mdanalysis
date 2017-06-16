@@ -30,12 +30,13 @@ from numpy.testing import (
     assert_array_equal,
     assert_equal,
     assert_raises,
+    assert_warns,
 )
 import operator
 import six
 
 import MDAnalysis as mda
-from MDAnalysisTests import make_Universe, parser_not_found
+from MDAnalysisTests import make_Universe, parser_not_found, assert_nowarns
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
@@ -986,3 +987,38 @@ class TestAtomGroup(object):
     def test_PDB_atom_repr():
         u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
+
+
+class TestInstantSelectorDeprecationWarnings(object):
+    def setUp(self):
+        self.u = make_Universe(("resids", "resnames", "segids", "names"))
+
+    def test_AtomGroup_warn_getitem(self):
+        name = self.u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: self.u.atoms[x], name)
+
+    def test_AtomGroup_nowarn_getitem_index(self):
+        assert_nowarns(DeprecationWarning, lambda x: self.u.atoms[x], 0)
+
+    def test_AtomGroup_warn_getattr(self):
+        name = self.u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), name)
+
+    def test_ResidueGroup_warn_getattr_resname(self):
+        name = self.u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.residues, x), name)
+
+    def test_Segment_warn_getattr_resname(self):
+        name = self.u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), name)
+
+    def test_Segment_warn_getattr_rRESNUM(self):
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), 'r1')
+
+    def test_SegmentGroup_warn_getattr(self):
+        name = self.u.segments[0].segid
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments, x), name)
+
+    def test_SegmentGroup_nowarn_getitem(self):
+        assert_nowarns(DeprecationWarning, lambda x: self.u.segments[x], 0)
+
