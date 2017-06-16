@@ -575,9 +575,15 @@ cdef class DCDFile:
             raise IOError("opened empty file. No frames are saved")
 
         self.seek(0)
+        # if we only want to iterate backwards flip start and end
+        if start is None and stop is None and step is not None and step < 0:
+            stop = -1
+            start = self.n_frames - 1
         stop = stop if not stop is None else self.n_frames
         start = start if not start is None else 0
         step = step if not step is None else 1
+
+
         cdef int n
         n = len(range(start, stop, step))
 
