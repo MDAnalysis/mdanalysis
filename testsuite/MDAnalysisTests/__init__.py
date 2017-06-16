@@ -98,7 +98,7 @@ especially as we are directly using this framework (imported from numpy).
 
 A number of plugins external to nose are automatically loaded. The `knownfailure`
 plugin provides the `@knownfailure()` decorator, which can be used to mark tests
-that are expected to fail. If used with default arguments the parentheses can be 
+that are expected to fail. If used with default arguments the parentheses can be
 excluded.
 
 .. _NumPy: http://www.numpy.org/
@@ -148,6 +148,7 @@ from MDAnalysisTests.util import (
     module_not_found,
     parser_not_found,
     in_dir,
+    assert_nowarns,
 )
 from MDAnalysisTests.core.util import make_Universe
 
