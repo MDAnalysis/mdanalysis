@@ -5,6 +5,7 @@ branches:
   only:
     - master
     - develop
+    - travis-cache
 
 os:
   - linux
