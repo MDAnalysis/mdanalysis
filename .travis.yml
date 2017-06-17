@@ -5,9 +5,15 @@ branches:
   only:
     - master
     - develop
+    - travis-cache
 
 os:
   - linux
+
+cache:
+   pip: true
+   directories:
+       - $HOME/miniconda
 
 env:
   global:
@@ -78,7 +84,8 @@ matrix:
            EVENT_TYPE='cron'
 
 install:
-  - git clone git://github.com/astropy/ci-helpers.git
+  - git clone git://github.com/utkbansal/ci-helpers
+  - cd ci-helpers && git checkout caching && cd ..
   - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
   - |
