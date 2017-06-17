@@ -423,6 +423,7 @@ class HydrogenBondAutoCorrel(object):
             Initial guess for the leastsq fit, must match the shape of the
             expected coefficients
 
+
         Continuous defition results are fitted to a double exponential with
         :func:`scipy.optimize.leastsq`, intermittent definition are fit to a
         triple exponential.

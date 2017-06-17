@@ -409,26 +409,27 @@ def hausdorff(P, Q):
     still has to calculate the *symmetric* Hausdorff distance as
     `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
 
+
     References
     ----------
     .. [Huttenlocher1993] D. P. Huttenlocher, G. A. Klanderman, and
         W. J. Rucklidge. Comparing images using the Hausdorff distance. IEEE
         Transactions on Pattern Analysis and Machine Intelligence,
         15(9):850–863, 1993.
-
     .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for
        calculating the exact Hausdorff distance. IEEE Transactions On Pattern
        Analysis And Machine Intelligence, 37:2153-63, 2015.
 
-    SeeAlso
-    -------
+
+    See Also
+    --------
     scipy.spatial.distance.directed_hausdorff
 
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
-    return ( max( np.amax(np.amin(d, axis=0)),                                  \
-                  np.amax(np.amin(d, axis=1)) ) / N  )**0.5
+    return (max(np.amax(np.amin(d, axis=0)),
+                np.amax(np.amin(d, axis=1))) / N)**0.5
 
 
 def hausdorff_wavg(P, Q):
