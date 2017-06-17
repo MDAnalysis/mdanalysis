@@ -1515,7 +1515,8 @@ class AtomGroup(GroupBase):
         if isinstance(item, string_types):
             warnings.warn("Using the [] operator with strings is deprecated."
                           "Please use `select_atoms('name {}')` "
-                          "instead.".format(item))
+                          "instead.".format(item),
+                          category=DeprecationWarning)
             try:
                 return self._get_named_atom(item)
             except (AttributeError, selection.SelectionError):
