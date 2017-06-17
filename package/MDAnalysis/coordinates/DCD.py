@@ -581,36 +581,37 @@ class DCDReader(base.ReaderBase):
 
     @deprecate(message="This method will be removed in 0.17")
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
-        """Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
-        with time series computed from the trajectory.
+        """
+Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
+with time series computed from the trajectory.
 
-        Calling this method will iterate through the whole trajectory and
-        perform the calculations prescribed in `timeseries`.
+Calling this method will iterate through the whole trajectory and
+perform the calculations prescribed in `timeseries`.
 
-        Parameters
-        ----------
-        timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-             The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
-             of computations should be performed on the data in this trajectory.
-        start :  int (optional)
-             Begin reading the trajectory at frame index `start` (where 0 is the index
-             of the first frame in the trajectory); the default ``None`` starts
-             at the beginning.
-        stop : int (optional)
-             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
-             The trajectory is read to the end with the default ``None``.
-        step : int (optional)
-             Step size for reading; the default ``None`` is equivalent to 1 and means to
-             read every frame.
+Parameters
+----------
+timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
+     The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
+     of computations should be performed on the data in this trajectory.
+start :  int (optional)
+     Begin reading the trajectory at frame index `start` (where 0 is the index
+     of the first frame in the trajectory); the default ``None`` starts
+     at the beginning.
+stop : int (optional)
+     End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+     The trajectory is read to the end with the default ``None``.
+step : int (optional)
+     Step size for reading; the default ``None`` is equivalent to 1 and means to
+     read every frame.
 
-        Note
-        ----
-        The `correl` functionality is only implemented for DCD trajectories and
-        the :class:`DCDReader`.
+Note
+----
+The `correl` functionality is only implemented for DCD trajectories and
+the :class:`DCDReader`.
 
 
-        .. deprecated:: 0.16.0
-           `skip` has been deprecated in favor of the standard keyword `step`.
+.. deprecated:: 0.16.0
+   `skip` has been deprecated in favor of the standard keyword `step`.
 
         """
         if skip is not None:

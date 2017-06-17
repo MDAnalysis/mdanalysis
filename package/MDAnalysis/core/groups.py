@@ -1488,13 +1488,13 @@ class AtomGroup(GroupBase):
     group. These *instant selector* attributes are auto-generated for
     each atom name encountered in the group.
 
-    .. note::
-
-        The name-attribute instant selector access to atoms is mainly
-        meant for quick interactive work. Thus it either returns a
-        single :class:`Atom` if there is only one matching atom, *or* a
-        new :class:`AtomGroup` for multiple matches.  This makes it
-        difficult to use the feature consistently in scripts.
+    Notes
+    -----
+    The name-attribute instant selector access to atoms is mainly
+    meant for quick interactive work. Thus it either returns a
+    single :class:`Atom` if there is only one matching atom, *or* a
+    new :class:`AtomGroup` for multiple matches.  This makes it
+    difficult to use the feature consistently in scripts.
 
 
     See Also
@@ -1504,7 +1504,7 @@ class AtomGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of AtomGroup will be removed in the 1.0 release.
-       See :ref:`Instant selectors`_ for details and alternatives.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
 
     """
     def __getitem__(self, item):
@@ -2202,7 +2202,7 @@ class ResidueGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors`_ for details and alternatives.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
 
     """
 
@@ -2321,7 +2321,7 @@ class SegmentGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors`_ for details and alternatives.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
 
     """
 
@@ -2670,7 +2670,7 @@ class Segment(ComponentBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors`_ for details and alternatives.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
 
     """
     def __repr__(self):

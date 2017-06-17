@@ -82,7 +82,6 @@ with warnings.catch_warnings():
                   DeprecationWarning)
 
 
-@deprecate(message="This class will be removed in 0.17")
 class TimeseriesCollection(object):
     '''A collection of timeseries objects.
 
@@ -110,6 +109,7 @@ class TimeseriesCollection(object):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self):
         self.timeseries = []
 
@@ -223,6 +223,7 @@ class Timeseries(object):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms, dsize):
         if isinstance(atoms, groups.AtomGroup):
             self.atoms = atoms.atoms
@@ -274,7 +275,6 @@ class Timeseries(object):
         return [0.] * self.n_atoms
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Atom(Timeseries):
     '''Create a timeseries that returns coordinate data for an atom or group of atoms ::
 
@@ -297,6 +297,7 @@ class Atom(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms):
         if code not in ('x', 'y', 'z', 'v', 'w'):
             raise ValueError("Bad code")
@@ -318,7 +319,6 @@ class Atom(Timeseries):
         return [1, ] * self.n_atoms
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Bond(Timeseries):
     '''Create a timeseries that returns a timeseries for a bond
 
@@ -335,13 +335,13 @@ class Bond(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 2:
             raise ValueError("Bond timeseries requires a 2 atom selection")
         Timeseries.__init__(self, 'r', atoms, 1)
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Angle(Timeseries):
     '''Create a timeseries that returns a timeseries for an angle
 
@@ -358,13 +358,13 @@ class Angle(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 3:
             raise ValueError("Angle timeseries requires a 3 atom selection")
         Timeseries.__init__(self, 'a', atoms, 1)
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Dihedral(Timeseries):
     '''Create a timeseries that returns a timeseries for a dihedral angle
 
@@ -381,13 +381,13 @@ class Dihedral(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 4:
             raise ValueError("Dihedral timeseries requires a 4 atom selection")
         Timeseries.__init__(self, 'h', atoms, 1)
 
 
-@deprecate(message="This class will be removed in 0.17")
 class Distance(Timeseries):
     '''Create a timeseries that returns distances between 2 atoms
 
@@ -405,6 +405,7 @@ class Distance(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms):
         if code not in ('d', 'r'):
             raise ValueError("Bad code")
@@ -417,7 +418,6 @@ class Distance(Timeseries):
         Timeseries.__init__(self, code, atoms, size)
 
 
-@deprecate(message="This class will be removed in 0.17")
 class CenterOfGeometry(Timeseries):
     '''Create a timeseries that returns the center of geometry of a group of atoms
 
@@ -435,6 +435,7 @@ class CenterOfGeometry(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
 
@@ -442,7 +443,6 @@ class CenterOfGeometry(Timeseries):
         return [1.] * self.n_atoms
 
 
-@deprecate(message="This class will be removed in 0.17")
 class CenterOfMass(Timeseries):
     '''Create a timeseries that returns the center of mass of a group of atoms
 
@@ -459,6 +459,7 @@ class CenterOfMass(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
 
@@ -466,7 +467,6 @@ class CenterOfMass(Timeseries):
         return [a.mass for a in self.atoms]
 
 
-@deprecate(message="This class will be removed in 0.17")
 class WaterDipole(Timeseries):
     r'''Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
 
@@ -512,6 +512,7 @@ class WaterDipole(Timeseries):
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 3:
             raise ValueError("WaterDipole timeseries requires a 3 atom selection")

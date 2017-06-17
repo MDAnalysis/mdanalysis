@@ -281,6 +281,7 @@ across frames::
  >>> static_ag
  <UpdatingAtomGroup with 3 atoms>
 
+.. _instance-selectors:
 
 Instant selectors
 =================
