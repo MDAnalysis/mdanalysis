@@ -118,18 +118,18 @@ class TestEncore(TestCase):
 
         incremented_triangular_matrix = triangular_matrix + scalar
         assert_equal(incremented_triangular_matrix[0,1], expected_value + scalar,
-                        err_msg="Error in TriangularMatrix: addition of scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: addition of scalar gave"
+                     "inconsistent results")
 
         triangular_matrix += scalar
         assert_equal(triangular_matrix[0,1], expected_value + scalar,
-                        err_msg="Error in TriangularMatrix: addition of scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: addition of scalar gave"
+                     "inconsistent results")
 
         multiplied_triangular_matrix_2 = triangular_matrix_2 * scalar
         assert_equal(multiplied_triangular_matrix_2[0,1], expected_value * scalar,
-            err_msg="Error in TriangularMatrix: multiplication by scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: multiplication by scalar gave"
+                     "inconsistent results")
 
         triangular_matrix_2 *= scalar
         assert_equal(triangular_matrix_2[0,1], expected_value * scalar,
