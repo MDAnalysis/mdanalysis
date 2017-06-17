@@ -30,4 +30,4 @@ def test_failure():
     # Have a file open to trigger an output from the open_files plugin.
     f = open('./failure.txt', 'w')
     if u'MDA_FAILURE_TEST' in os.environ:
-        assert False
+        raise AssertionError("the MDA_FAILURE_TEST environment variable is set")
