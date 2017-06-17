@@ -1513,7 +1513,8 @@ class AtomGroup(GroupBase):
         #
         # u.atoms['HT1'] access, otherwise default
         if isinstance(item, string_types):
-            warnings.warn("Using the [] operator with strings is deprecated."
+            warnings.warn("Using the [] operator with strings is deprecated "
+                          "and will be removed in 1.0. "
                           "Please use `select_atoms('name {}')` "
                           "instead.".format(item),
                           category=DeprecationWarning)
