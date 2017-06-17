@@ -42,7 +42,6 @@ import os
 
 from numpy.testing import assert_warns
 
-
 def block_import(package):
     """Block import of a given package
 
@@ -195,6 +194,5 @@ def assert_nowarns(warning_class, *args, **kwargs):
         return True
     else:
         # There was a warning even though we do not want to see one.
-        raise AssertionError
-
-
+        raise AssertionError("function {0} raises warning of class {1}".format(
+            func.__name__, warning_class.__name__))
