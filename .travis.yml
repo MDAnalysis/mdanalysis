@@ -9,9 +9,6 @@ branches:
 os:
   - linux
 
-cache:
-   pip: true
-
 env:
   global:
     - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
@@ -31,7 +28,7 @@ env:
     - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
     - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-    - PIP_DEPENDENCIES='griddataformats mmtf-python nose==1.3.7 mock six biopython networkx cython joblib nose-timer'
+    - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
@@ -80,14 +77,10 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            EVENT_TYPE='cron'
 
-
 install:
-  - sudo apt-get install libssl1.0.0
-  - git clone git://github.com/astropy/ci-helpers.git
-  # - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+  - git clone git://github.com/utkbansal/ci-helpers
+  - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
   # additional external tools (Issue #898) -- HOLE
-  - sudo pip install --upgrade pip
-  - sudo pip install $PIP_DEPENDENCIES
   - |
     if [[ $NAME == 'full' ]]; then \
         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}/${MDA_OPTPACKAGES}"; \
