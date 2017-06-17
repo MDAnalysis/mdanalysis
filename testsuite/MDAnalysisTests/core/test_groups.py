@@ -1000,6 +1000,9 @@ class TestInstantSelectorDeprecationWarnings(object):
     def test_AtomGroup_nowarn_getitem_index(self):
         assert_nowarns(DeprecationWarning, lambda x: self.u.atoms[x], 0)
 
+    def test_AtomGroup_nowarn_segids_attribute(self):
+        assert_nowarns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), "segids")
+
     def test_AtomGroup_warn_getattr(self):
         name = self.u.atoms[0].name
         assert_warns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), name)
