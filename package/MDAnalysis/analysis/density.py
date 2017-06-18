@@ -118,31 +118,7 @@ import os
 import os.path
 import errno
 import warnings
-
-try:
-    from gridData import Grid
-except ImportError:
-    raise ImportError(
-        """ImportError: The GridDataFormats package can not be found!
-
-        The 'gridData' module from GridDataFormats could not be
-        imported. Please install it first.  You can try installing
-        directly from the internet:
-
-          pip install GridDataFormats
-
-        or
-
-          conda config --add channels conda-forge
-          conda install griddataformats
-
-        Alternatively, download the package from
-
-          http://pypi.python.org/pypi/GridDataFormats/
-
-        and install in the usual manner.
-        """
-    )
+from gridData import Grid
 
 import MDAnalysis
 from MDAnalysis.core import groups

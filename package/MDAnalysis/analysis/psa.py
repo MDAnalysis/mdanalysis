@@ -216,8 +216,6 @@ import six
 from six.moves import range, cPickle
 
 import numpy as np
-from scipy import spatial, cluster
-import matplotlib
 
 import warnings
 import numbers
@@ -225,6 +223,18 @@ import numbers
 import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
+
+# Optional and/or lazily loaded modules
+#from scipy import spatial, cluster
+#import matplotlib
+from MDAnalysis.lib import lazy
+spatial = lazy.import_module("scipy.spatial")
+cluster = lazy.import_module("scipy.cluster")
+
+matplotlib = lazy.import_module('matplotlib')
+plt = lazy.import_module('matplotlib.pyplot')
+
+sns = lazy.import_module('seaborn.apionly')
 
 import os
 
@@ -1689,7 +1699,6 @@ class PSAnalysis(object):
           clustered distance matrix (reordered)
 
         """
-        from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         if self.D is None:
             err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
@@ -1699,14 +1708,14 @@ class PSAnalysis(object):
 
         dgram_loc, hmap_loc, cbar_loc = self._get_plot_obj_locs()
         aspect_ratio = 1.25
-        clf()
-        fig = figure(figsize=(figsize*aspect_ratio, figsize))
+        plt.clf()
+        fig = plt.figure(figsize=(figsize*aspect_ratio, figsize))
         ax_hmap = fig.add_axes(hmap_loc)
         ax_dgram = fig.add_axes(dgram_loc)
 
-        Z, dgram = self.cluster(dist_matrix,                                    \
-                                method=linkage,                                 \
-                                count_sort=count_sort,                          \
+        Z, dgram = self.cluster(dist_matrix,
+                                method=linkage,
+                                count_sort=count_sort,
                                 distance_sort=distance_sort)
         rowidx = colidx = dgram['leaves'] # get row-wise ordering from clustering
         ax_dgram.invert_yaxis() # Place origin at up left (from low left)
@@ -1714,26 +1723,44 @@ class PSAnalysis(object):
         minDist, maxDist = 0, np.max(dist_matrix)
         dist_matrix_clus = dist_matrix[rowidx,:]
         dist_matrix_clus = dist_matrix_clus[:,colidx]
-        im = ax_hmap.matshow(dist_matrix_clus, aspect='auto', origin='lower',   \
-                    cmap=cm.YlGn, vmin=minDist, vmax=maxDist)
+        im = ax_hmap.matshow(dist_matrix_clus,
+                             aspect='auto',
+                             origin='lower',
+                             cmap=plt.cm.YlGn,
+                             vmin=minDist,
+                             vmax=maxDist)
         ax_hmap.invert_yaxis() # Place origin at upper left (from lower left)
         ax_hmap.locator_params(nbins=npaths)
         ax_hmap.set_xticks(np.arange(npaths), minor=True)
         ax_hmap.set_yticks(np.arange(npaths), minor=True)
-        ax_hmap.tick_params(axis='x', which='both', labelleft='off',            \
-                        labelright='off', labeltop='on', labelsize=0)
-        ax_hmap.tick_params(axis='y', which='both', labelleft='on',             \
-                labelright='off', labeltop='off', labelsize=0)
+        ax_hmap.tick_params(axis='x',
+                            which='both',
+                            labelleft='off',
+                            labelright='off',
+                            labeltop='on',
+                            labelsize=0)
+        ax_hmap.tick_params(axis='y',
+                            which='both',
+                            labelleft='on',
+                            labelright='off',
+                            labeltop='off',
+                            labelsize=0)
         rowlabels = [self.labels[i] for i in rowidx]
         collabels = [self.labels[i] for i in colidx]
-        ax_hmap.set_xticklabels(collabels, rotation='vertical',                 \
-                size=(labelsize-4), multialignment='center', minor=True)
-        ax_hmap.set_yticklabels(rowlabels, rotation='horizontal',               \
-                size=(labelsize-4), multialignment='left', ha='right',          \
-                minor=True)
+        ax_hmap.set_xticklabels(collabels,
+                                rotation='vertical',
+                                size=(labelsize-4),
+                                multialignment='center',
+                                minor=True)
+        ax_hmap.set_yticklabels(rowlabels,
+                                rotation='horizontal',
+                                size=(labelsize-4),
+                                multialignment='left',
+                                ha='right',
+                                minor=True)
 
         ax_color = fig.add_axes(cbar_loc)
-        colorbar(im, cax=ax_color, ticks=np.linspace(minDist, maxDist, 10),  \
+        plt.colorbar(im, cax=ax_color, ticks=np.linspace(minDist, maxDist, 10),  \
                 format="%0.1f")
         ax_color.tick_params(labelsize=labelsize)
 
@@ -1756,7 +1783,7 @@ class PSAnalysis(object):
         if filename is not None:
             head = self.targetdir + self.datadirs['plots']
             outfile = os.path.join(head, filename)
-            savefig(outfile, dpi=300, bbox_inches='tight')
+            plt.savefig(outfile, dpi=300, bbox_inches='tight')
 
         return Z, dgram, dist_matrix_clus
 
@@ -1807,28 +1834,6 @@ class PSAnalysis(object):
         .. _seaborn: https://seaborn.pydata.org/
 
         """
-        from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
-
-        try:
-            import seaborn.apionly as sns
-        except ImportError:
-            raise ImportError(
-                """ERROR --- The seaborn package cannot be found!
-
-                The seaborn API could not be imported. Please install it first.
-                You can try installing with pip directly from the
-                internet:
-
-                  pip install seaborn
-
-                Alternatively, download the package from
-
-                  http://pypi.python.org/pypi/seaborn/
-
-                and install in the usual manner.
-                """
-            )
-
         if self.D is None:
             err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
@@ -1843,14 +1848,18 @@ class PSAnalysis(object):
         dist_matrix_clus = dist_matrix[rowidx,:]
         dist_matrix_clus = dist_matrix_clus[:,colidx]
 
-        clf()
+        plt.clf()
         aspect_ratio = 1.25
-        fig = figure(figsize=(figsize*aspect_ratio, figsize))
+        fig = plt.figure(figsize=(figsize*aspect_ratio, figsize))
         ax_hmap = fig.add_subplot(111)
-        ax_hmap = sns.heatmap(dist_matrix_clus,                                 \
-                         linewidths=0.25, cmap=cm.YlGn, annot=True, fmt='3.1f', \
-                         square=True, xticklabels=rowidx, yticklabels=colidx,   \
-                         annot_kws={"size": 7}, ax=ax_hmap)
+        ax_hmap = sns.heatmap(dist_matrix_clus,
+                              linewidths=0.25, cmap=plt.cm.YlGn,
+                              annot=True, fmt='3.1f',
+                              square=True,
+                              xticklabels=rowidx,
+                              yticklabels=colidx,
+                              annot_kws={"size": 7},
+                              ax=ax_hmap)
 
         # Remove major ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_major_ticks():
@@ -1868,7 +1877,7 @@ class PSAnalysis(object):
         if filename is not None:
             head = self.targetdir + self.datadirs['plots']
             outfile = os.path.join(head, filename)
-            savefig(outfile, dpi=600, bbox_inches='tight')
+            plt.savefig(outfile, dpi=600, bbox_inches='tight')
 
         return Z, dgram, dist_matrix_clus
 
@@ -1918,27 +1927,6 @@ class PSAnalysis(object):
         .. _seaborn: https://seaborn.pydata.org/
 
         """
-        from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
-        try:
-            import seaborn.apionly as sns
-        except ImportError:
-            raise ImportError(
-                """ERROR --- The seaborn package cannot be found!
-
-                The seaborn API could not be imported. Please install it first.
-                You can try installing with pip directly from the
-                internet:
-
-                  pip install seaborn
-
-                Alternatively, download the package from
-
-                  http://pypi.python.org/pypi/seaborn/
-
-                and install in the usual manner.
-                """
-            )
-
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
         if self._NN is None:
@@ -1949,8 +1937,8 @@ class PSAnalysis(object):
         sns.set_style('whitegrid')
 
         if not multiplot:
-            clf()
-        fig = figure(figsize=(figsize*aspect_ratio, figsize))
+            plt.clf()
+        fig = plt.figure(figsize=(figsize*aspect_ratio, figsize))
         ax = fig.add_subplot(111)
 
         nn_dist_P, nn_dist_Q = self._NN[idx]['distances']
@@ -1968,12 +1956,12 @@ class PSAnalysis(object):
         ax.tick_params(axis='both', which='major', labelsize=12, pad=4)
 
         sns.despine(bottom=True, left=True, ax=ax)
-        tight_layout()
+        plt.tight_layout()
 
         if filename is not None:
             head = self.targetdir + self.datadirs['plots']
             outfile = os.path.join(head, filename)
-            savefig(outfile, dpi=300, bbox_inches='tight')
+            plt.savefig(outfile, dpi=300, bbox_inches='tight')
 
         return ax
 

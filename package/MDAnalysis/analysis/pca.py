@@ -106,14 +106,16 @@ from six.moves import range
 import warnings
 
 import numpy as np
-import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressMeter
 
-from .base import AnalysisBase
+from MDAnalysis.analysis.base import AnalysisBase
 
+# Optional and/or lazily imported modules
+from MDAnalysis.lib import lazy
+scipy = lazy.import_function('scipy.integrate', level='base')
 
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory.

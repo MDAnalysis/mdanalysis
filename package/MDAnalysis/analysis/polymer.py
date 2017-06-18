@@ -40,9 +40,14 @@ import scipy.optimize
 
 import logging
 
-from .. import NoDataError
-from ..lib.distances import calc_bonds
-from .base import AnalysisBase
+from MDAnalysis import NoDataError
+from MDAnalysis.lib.distances import calc_bonds
+from MDAnalysis.analysis.base import AnalysisBase
+
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+curve_fit = lazy.import_function('scipy.optimize.curve_fit')
+plt = lazy.import_module('matplotlib.pyplot')
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +143,6 @@ class PersistenceLength(AnalysisBase):
 
     def plot(self, ax=None):
         """Oooh fancy"""
-        import matplotlib.pyplot as plt
         if ax is None:
             ax = plt.gca()
         ax.plot(self.x, self.results, 'ro', label='Result')

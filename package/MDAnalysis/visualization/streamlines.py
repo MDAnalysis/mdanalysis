@@ -30,7 +30,7 @@
 
 The :func:`generate_streamlines` function can generate a 2D flow field from a
 MD trajectory, for instance, lipid molecules in a flat membrane. It can make
-use of multiple cores to perform the analyis in parallel (using
+use of multiple cores to perform the analysis in parallel (using
 :mod:`multiprocessing`).
 
 See Also
@@ -47,19 +47,11 @@ from six.moves import zip
 import multiprocessing
 
 import numpy as np
-import scipy
-
-try:
-    import matplotlib
-    import matplotlib.path
-except ImportError:
-    raise ImportError(
-        '2d streamplot module requires: matplotlib.path for its path.Path.contains_points method. The installation '
-        'instructions for the matplotlib module can be found here: '
-        'http://matplotlib.org/faq/installing_faq.html?highlight=install')
-
 import MDAnalysis
 
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+matplotlib = lazy.import_module('matplotlib.path', level='base')
 
 
 def produce_grid(tuple_of_limits, grid_spacing):

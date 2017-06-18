@@ -42,7 +42,6 @@ __all__ = ['distance_array', 'self_distance_array',
            'contact_matrix', 'dist', 'between']
 
 import numpy as np
-import scipy.sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
@@ -52,6 +51,9 @@ import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
+# Optional and/or lazily imported modules
+from MDAnalysis.lib import lazy
+scipy = lazy.import_module('scipy.sparse', level='base')
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     '''Calculates a matrix of contacts.

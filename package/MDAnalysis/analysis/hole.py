@@ -258,14 +258,17 @@ import logging
 from itertools import cycle
 
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
 from MDAnalysis.lib.util import FORTRANReader
 
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+# This makes 'cm' available as an attr of 'matplotlib'
+matplotlib = lazy.import_module('matplotlib.cm', level='base')
+plt = lazy.import_module('matplotlib.pyplot')
 
 logger = logging.getLogger("MDAnalysis.analysis.hole")
 

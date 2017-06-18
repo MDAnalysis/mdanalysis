@@ -19,7 +19,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""=================================================================================
+r"""
 Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity`
 =================================================================================
 
@@ -176,7 +176,6 @@ import warnings
 import logging
 
 import numpy as np
-import scipy.stats
 
 import MDAnalysis as mda
 
@@ -194,6 +193,10 @@ from .covariance import (
     covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator)
 from .utils import merge_universes
 from .utils import trm_indices_diag, trm_indices_nodiag
+
+# Optional and/or lazily imported modules
+from MDAnalysis.lib import lazy
+scipy = lazy.import_module('scipy.stats', level='base')
 
 # Low boundary value for log() argument - ensure no nans
 EPSILON = 1E-15

@@ -139,10 +139,13 @@ import textwrap
 from collections import OrderedDict
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
+
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+plt = lazy.import_module('matplotlib.pyplot')
 
 import logging
 

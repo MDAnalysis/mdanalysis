@@ -162,6 +162,10 @@ import warnings
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
 
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+leastsq = lazy.import_function('scipy.optimize.leastsq')
+
 
 class HydrogenBondAutoCorrel(object):
     """Perform a time autocorrelation of the hydrogen bonds in the system.

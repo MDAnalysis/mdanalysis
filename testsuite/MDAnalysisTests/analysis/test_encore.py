@@ -30,11 +30,10 @@ import numpy as np
 import sys
 import warnings
 
-from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
-                           assert_warns)
+from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
-from MDAnalysisTests import parser_not_found, module_not_found, block_import
+from MDAnalysisTests import parser_not_found, module_not_found
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
@@ -824,22 +823,3 @@ class TestEncoreConfDistMatrix(TestCase):
         # Issue #1324
         u = mda.Universe(TPR,XTC)
         dm = confdistmatrix.get_distance_matrix(u)
-
-class TestEncoreImportWarnings(object):
-    def setUp(self):
-        # clear cache of encore module
-        for mod in list(sys.modules):  # list as we're changing as we iterate
-            if 'encore' in mod:
-                sys.modules.pop(mod, None)
-
-    @block_import('sklearn')
-    def _check_sklearn_import_warns(self, package):
-        warnings.simplefilter('always')
-        assert_warns(ImportWarning, importlib.import_module, package)
-
-    def test_import_warnings(self):
-        for pkg in (
-                'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
-                'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
-        ):
-            yield self._check_sklearn_import_warns, pkg

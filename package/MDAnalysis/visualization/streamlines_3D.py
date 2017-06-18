@@ -50,10 +50,13 @@ import multiprocessing
 
 import numpy as np
 import numpy.testing
-import scipy
-import scipy.spatial.distance
 
 import MDAnalysis
+
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+scipy = lazy.import_module('scipy.spatial.distance', level='base')
+
 
 def determine_container_limits(topology_file_path, trajectory_file_path, buffer_value):
     """Calculate the extent of the atom coordinates + buffer.

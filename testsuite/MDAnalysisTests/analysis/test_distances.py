@@ -27,7 +27,6 @@ import scipy.spatial
 import MDAnalysis
 from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import GRO
-from MDAnalysisTests.util import block_import
 
 import MDAnalysis.analysis.distances
 

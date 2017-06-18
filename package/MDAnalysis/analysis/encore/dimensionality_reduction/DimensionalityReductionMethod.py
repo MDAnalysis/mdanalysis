@@ -40,15 +40,10 @@ import warnings
 # Import native affinity propagation implementation
 from . import stochasticproxembed
 
-# Attempt to import scikit-learn clustering algorithms
-try:
-    import sklearn.decomposition
-except ImportError:
-    sklearn = None
-    import warnings
-    warnings.warn("sklearn.decomposition could not be imported: some "
-                  "functionality will not be available in "
-                  "encore.dimensionality_reduction()", category=ImportWarning)
+# Optional and/or lazily loaded modules
+from MDAnalysis.lib import lazy
+# scikit-learn clustering algorithms
+sklearn = lazy.import_module('sklearn.decomposition', level='base')
 
 
 class DimensionalityReductionMethod (object):
@@ -150,45 +145,42 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
         return coordinates, {"final_stress": final_stress}
 
 
+class PrincipalComponentAnalysis(DimensionalityReductionMethod):
+    """
+    Interface to the PCA dimensionality reduction method implemented in
+    sklearn.
+    """
 
-if sklearn:
+    # Whether the method accepts a distance matrix
+    accepts_distance_matrix = False
 
-    class PrincipalComponentAnalysis(DimensionalityReductionMethod):
+    def __init__(self,
+                 dimension = 2,
+                 **kwargs):
         """
-        Interface to the PCA dimensionality reduction method implemented in
-        sklearn.
+        Parameters
+        ----------
+
+        dimension : int
+            Number of dimensions to which the conformational space will be
+            reduced to (default is 3).
         """
+        self.pca = sklearn.decomposition.PCA(n_components=dimension,
+                                             **kwargs)
 
-        # Whether the method accepts a distance matrix
-        accepts_distance_matrix = False
+    def __call__(self, coordinates):
+        """
+        Parameters
+        ----------
 
-        def __init__(self,
-                     dimension = 2,
-                     **kwargs):
-            """
-            Parameters
-            ----------
-
-            dimension : int
-                Number of dimensions to which the conformational space will be
-                reduced to (default is 3).
-            """
-            self.pca = sklearn.decomposition.PCA(n_components=dimension,
-                                                 **kwargs)
-
-        def __call__(self, coordinates):
-            """
-            Parameters
-            ----------
-
-            coordinates : np.array
-                trajectory atom coordinates
+        coordinates : np.array
+            trajectory atom coordinates
 
 
-            Returns
-            -------
-            numpy.array
-                coordinates in reduced space
-            """
-            coordinates = self.pca.fit_transform(coordinates)
-            return coordinates.T, {}
+        Returns
+        -------
+        numpy.array
+            coordinates in reduced space
+        """
+        coordinates = self.pca.fit_transform(coordinates)
+        return coordinates.T, {}
