@@ -37,7 +37,6 @@ env:
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
-    - DEBUG=True
 
 
 
