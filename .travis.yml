@@ -1,5 +1,8 @@
 language: generic
 
+sudo: false
+dist: trusty
+
 # Only build for develop and master (and PRs)
 branches:
   only:
