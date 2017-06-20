@@ -33,7 +33,7 @@ env:
     - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
     - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
-    - PIP_DEPENDENCIES='griddataformats pytest-cov'
+    - PIP_DEPENDENCIES='griddataformats pytest pytest-cov'
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
