@@ -41,6 +41,7 @@ import functools
 import itertools
 import numbers
 import numpy as np
+import warnings
 
 from numpy.lib.utils import deprecate
 
@@ -411,9 +412,6 @@ class Atomnames(AtomAttr):
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     atomgroup.__class__.__name__, name))
 
-    @deprecate(message="Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
-               "is deprecated and will be removed in 1.0. "
-               "Use AtomGroup.select_atoms('name <name>') instead.")
     def _get_named_atom(group, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -438,10 +436,12 @@ class Atomnames(AtomAttr):
                 "No atoms with name '{0}'".format(name))
         elif len(atomlist) == 1:
             # XXX: keep this, makes more sense for names
-            return atomlist[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return atomlist
+            atomlist = atomlist[0]
+        warnings.warn("Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
+                      "is deprecated and will be removed in 1.0. "
+                      "Use AtomGroup.select_atoms('name <name>') instead.",
+                      DeprecationWarning)
+        return atomlist
 
     # AtomGroup already has a getattr
 #    transplants[AtomGroup].append(
