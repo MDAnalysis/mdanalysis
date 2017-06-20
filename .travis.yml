@@ -98,6 +98,7 @@ install:
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
   - eval $BUILD_CMD
+  - pip install --upgrade pytest pytest-cov
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
