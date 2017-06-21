@@ -42,8 +42,7 @@ Lazy module loading --- :mod:`MDAnalysis.lib.lazy`
 ====================================================
 
 Functions and classes for lazy module loading that also delay import errors.
-Heavily borrowed from the `importing`_ module, which is not very
-subclass-friendly.
+Heavily borrowed from the `importing`_ module.
 
 .. versionadded:: 0.16.2
 .. _`importing`: http://peak.telecommunity.com/DevCenter/Importing
@@ -60,7 +59,15 @@ __all__ = ['import_module', 'import_function']
 
 from types import ModuleType
 import sys
-import imp
+try:
+    # imp is deprecated since python 3.4 but there's no clear alternative to
+    # the lock mechanism, other than to import directly from _imp.
+    from imp import acquire_lock, release_lock 
+except ImportError:
+    from _imp import acquire_lock, release_lock 
+
+import six
+from six.moves import reload_module
 
 _MSG = ("{0} attempted to use a functionality that requires module {1}, but "
         "it couldn't be loaded. Please install {2} and retry.")
@@ -69,84 +76,57 @@ _MSG_FN = ("{0} attempted to use a functionality that requires function {1} "
            "of module {2}, but it couldn't be found in that module. Please "
            "install a version of {2} that has {1} and retry.")
 
+
 class LazyModule(ModuleType):
+    """Class for lazily-loaded modules that triggers proper loading on access
+
+    Instantiation should be made from a subclass of
+    :class:`MDAnalysis.lib.lazy.LazyModule`, with one subclass per instantiated
+    module. Regular attribute set/access can then be recovered by setting the
+    subclass's :meth:`__getattribute__` and :meth:`__setattribute__` to those
+    of :class:`types.ModuleType`.
+    """
     # peak.util.imports sets __slots__ to (), but it seems pointless because
     # the base ModuleType doesn't itself set __slots__.
-    #__mda_lazy_armed__ = True
-
     def __init__(self, modname):
         super(ModuleType, self).__setattr__('__name__', modname)
 
     def __getattribute__(self, attr):
-        #if (attr != '__mda_lazy_armed__' and
-        #        self.__mda_lazy_armed__):
-        print("getting attr {} from module '{}'".format(attr,
-                                super(ModuleType, self).__getattribute__('__name__')))
+        # IPython tries to be too clever and constantly inspects, asking for
+        #  modules' attrs, which causes premature module loading and unesthetic
+        #  internal errors if the lazily-loaded module doesn't exist. Returning
+        #  Nones seems to satisfy those needs:
+        caller_base = _caller_name().partition('.')[0]
+        if run_from_ipython and caller_base in ('inspect', 'IPython'):
+            return None
         _load_module(self)
         return ModuleType.__getattribute__(self, attr)
 
     def __setattr__(self, attr, value):
-        #if attr != '__mda_lazy_armed__' and self.__mda_lazy_armed__:
-        print("setting attr {}".format(attr))
         _load_module(self)
         return ModuleType.__setattr__(self, attr, value)
 
-def _load_module(module):
-    modclass = type(module)
-    # We only take care of our own LazyModule instances
-    if not issubclass(modclass, LazyModule):
-        return
-    imp.acquire_lock()
-    try:
-        modclass.__getattribute__ = ModuleType.__getattribute__
-        modclass.__setattr__ = ModuleType.__setattr__
-        try:
-            # Alreay-loaded _LazyModule classes lose their
-            # _mda_lazy_caller_name attr. No need to redo
-            # those cases.
-            caller_name = modclass._mda_lazy_caller_name
-        except AttributeError:
-            return
-        del modclass._mda_lazy_caller_name
-        # don't reload if already loaded!
-        #if module.__dict__.keys() == ['__name__']:
-        #if (set(ModuleType.__getattribute__(module, '__dict__').keys()) ==
-        #    set(('__name__', '_mda_lazy_caller_name'))):
-        print("loading module '{}'".format(module))
-        #module.__mda_lazy_armed__ = False
-        # First, ensure the parent is loaded
-        # (using recursion; negligible chance we'll ever hit a stack limit
-        #  in this case).
-        parent, _, modname = module.__name__.rpartition('.')
-        if parent:
-            _load_module(sys.modules[parent])
-            setattr(sys.modules[parent], modname, module)
-        # Get Python to do the real import!
-        try:
-            reload(module)           
-        except:
-            #module.__mda_lazy_armed__ = True
-            del modclass.__getattribute__
-            del modclass.__setattr__
-            modclass._mda_lazy_caller_name = caller_name
-            raise
-        #del module.__mda_lazy_armed__
-        print("done loading module '{}'".format(module))
-    except ImportError as err:
-        print("Got an ImportError: '{}'".format(err))
-        modname = ModuleType.__getattribute__(module, '__name__')
-        base_modname = modname.split(".")[0]
-        raise ImportError(_MSG.format(caller_name, modname, base_modname))
-    finally:
-        imp.release_lock()
 
 def _caller_name(depth=2):
+    """Returns the name of the calling namespace
+
+    """
     # the presence of sys._getframe might be implementation-dependent.
     # It isn't that serious if we can't get the caller's name.
     try:
         return sys._getframe(depth).f_globals['__name__']
     except AttributeError:
         return 'MDAnalysis'
+
+
+def run_from_ipython():
+    # Taken from https://stackoverflow.com/questions/5376837
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False
+
 
 def import_module(modname, level='leaf'):
     """Function allowing lazy importing of a module into the namespace
@@ -194,8 +174,9 @@ def import_module(modname, level='leaf'):
     else:
         raise ValueError("Parameter 'level' must be one of ('base', 'leaf')")
 
+
 def _import_module(modname, caller_name):
-    imp.acquire_lock()
+    acquire_lock()
     try:
         fullmodname = modname
         fullsubmodname = None
@@ -218,10 +199,11 @@ def _import_module(modname, caller_name):
             modname, _, submodname = modname.rpartition('.')
         return sys.modules[fullmodname]
     finally:
-        imp.release_lock()
+        release_lock()
+
 
 def import_function(modname, *funcnames):
-    """Function allowing lazy importing of a function into the namespace
+    """Performs lazy importing of one or more functions into the namespace
 
     Parameters
     ----------
@@ -236,9 +218,9 @@ def import_function(modname, *funcnames):
     Returns
     -------
     function or list of functions
-        If *funcnames* is passed, a list of imported functions -- one for each
-        element in  *funcnames* -- is returned.
-        If only *modnames* is passed it is assumed to be a full
+        If *funcnames* is passed, returns a list of imported functions, one for
+        each element in *funcnames*.
+        If only *modname* is passed it is assumed to be a full
         'module_name.function_name' string, in which case the imported function
         is returned directly, and not in a list.
         The module specified by *modname* is always imported lazily, via
@@ -254,10 +236,11 @@ def import_function(modname, *funcnames):
     if not funcnames:
         # We allow passing a single string as 'modname.funcname',
         # in which case the function is returned directly and not as a list.
-        modname, funcname = modname.rsplit(".", 1)
+        modname, _, funcname = modname.rpartition(".")
         return _import_function(modname, funcname, _caller_name())
     else:
         return [_import_function(modname, fn, _caller_name()) for fn in funcnames]
+
 
 def _import_function(modname, funcname, caller_name):
     module = _import_module(modname, caller_name)
@@ -268,4 +251,62 @@ def _import_function(modname, funcname, caller_name):
         except AttributeError:
             raise AttributeError(_MSG_FN.format(caller_name, funcname, modname))
     return retfun
+
+
+def _load_module(module):
+    """Ensures that a module, and its parents, are properly loaded
+
+    """
+    modclass = type(module)
+    # We only take care of our own LazyModule instances
+    if not issubclass(modclass, LazyModule):
+        return
+    acquire_lock()
+    try:
+        try:
+            # Alreay-loaded _LazyModule classes lose their
+            # _mda_lazy_caller_name attr. No need to redo
+            # those cases.
+            caller_name = modclass._mda_lazy_caller_name
+        except AttributeError:
+            return
+        modclass.__getattribute__ = ModuleType.__getattribute__
+        modclass.__setattr__ = ModuleType.__setattr__
+        del modclass._mda_lazy_caller_name
+
+        # First, ensure the parent is loaded
+        # (using recursion; negligible chance we'll ever hit a stack limit
+        #  in this case).
+        parent, _, modname = module.__name__.rpartition('.')
+        try:
+            if parent:
+                _load_module(sys.modules[parent])
+                setattr(sys.modules[parent], modname, module)
+            # Get Python to do the real import!
+            reload_module(module)           
+        except:
+            # We reset our state
+            del modclass.__getattribute__
+            del modclass.__setattr__
+            modclass._mda_lazy_caller_name = caller_name
+            raise
+    except (AttributeError, ImportError) as err:
+        # Under Python 3 reloading our dummy LazyModule instances causes an
+        #  AttributeError if the module can't be found. Would be preferrable if
+        #  we could always rely on an ImportError. As it is we vet the
+        #  AttributeError as thoroughly as possible.
+        if (six.PY3 and isinstance(err, AttributeError) and
+                err.args[0] != "'NoneType' object has no attribute 'name'"):
+            # Not the AttributeError we were looking for.
+            raise
+        modname = ModuleType.__getattribute__(module, '__name__')
+        base_modname = modname.split(".")[0]
+        # Way to silence context tracebacks in Python 3 but with a syntax
+        # compatible with Python 2. This would normally be:
+        #  raise ImportError(...) from None
+        exc = ImportError(_MSG.format(caller_name, modname, base_modname))
+        exc.__suppress_context__ = True
+        raise exc
+    finally:
+        release_lock()
 

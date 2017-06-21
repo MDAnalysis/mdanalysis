@@ -115,7 +115,7 @@ from MDAnalysis.analysis.base import AnalysisBase
 
 # Optional and/or lazily imported modules
 from MDAnalysis.lib import lazy
-scipy = lazy.import_function('scipy.integrate', level='base')
+scipy = lazy.import_module('scipy.integrate', level='base')
 
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory.

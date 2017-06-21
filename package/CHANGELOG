@@ -15,11 +15,13 @@ The rules for this file:
 ------------------------------------------------------------------------------
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud
+mm/dd/17 richardjgowers, rathann, jbarnoud, manuel.nuno.melo
 
   * 0.16.2
 
 Enhancements
+  * Added support for lazy loading of modules, with delayed, on-access errors
+    for missing optional dependencies (addresses Issues #577, #1361 and #1159)
 
 Fixes
   * fixed GROWriter truncating long resids from the wrong end (Issue #1395)
