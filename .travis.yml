@@ -23,15 +23,16 @@ env:
     - PYTHON_VERSION=2.7
     - COVERALLS=false
     - NOSE_FLAGS="--processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
-    - NOSE_TEST_LIST1="analysis auxiliary coordinates core formats topology utils"
-    - NOSE_TEST_LIST2="lib"
-    - NOSE_COVERAGE1="coverage1"
-    - NOSE_COVERAGE2="coverage2"
-    - MAIN_CMD="python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST1} ${NOSE_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST2} ${NOSE_FLAGS}"
+    - NOSE_TEST_LIST="analysis auxiliary coordinates core formats topology utils"
+    - PYTEST_FLAGS="--disable-pytest-warnings"
+    - PYTEST_LIST="testsuite/MDAnalysisTests/lib"
+    - NOSE_COVERAGE_FILE="nose_coverage"
+    - PYTEST_COVERAGE_FILE="pytest_coverage"
+    - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS}"
     - SETUP_CMD=""
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer"
-    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1"
+    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer pytest=3.1.2 pytest-cov=2.5.1"
+    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy seaborn coveralls clustalw=2.1 pytest=3.1.2 pytest-cov=2.5.1"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds conda-forge'
@@ -47,7 +48,7 @@ matrix:
       env: NAME='minimal'
            PYTHON_VERSION=2.7
            MEMLEAK='--with-memleak'
-           MAIN_CMD='python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST1} ${NOSE_FLAGS} ${MEMLEAK}; python ./testsuite/MDAnalysisTests/mda_nosetests  ${NOSE_TEST_LIST2} ${NOSE_FLAGS} ${MEMLEAK}'
+           MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${MEMLEAK}'
 
     - os: linux
       env: NAME="Doc"
@@ -66,8 +67,9 @@ matrix:
 
     - os: linux
       env: NAME='full'
-           COVERAGE='--with-coverage --cover-package MDAnalysis'
-           MAIN_CMD='export COVERAGE_FILE=$NOSE_COVERAGE1; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST1} ${NOSE_FLAGS} ${COVERAGE}; export COVERAGE_FILE=$NOSE_COVERAGE2; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST2} ${NOSE_FLAGS} ${COVERAGE}'
+           NOSE_COVERAGE='--with-coverage --cover-package MDAnalysis'
+           PYTEST_COVERAGE='--cov=MDAnalysis'
+           MAIN_CMD='export COVERAGE_FILE=$PYTEST_COVERAGE_FILE; pytest ${PYTEST_LIST} ${PYTEST_FLAGS} ${PYTEST_COVERAGE}; export COVERAGE_FILE=$NOSE_COVERAGE_FILE; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${NOSE_COVERAGE}'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
@@ -108,7 +110,7 @@ script:
 after_success:
   - |
     if [[ $COVERALLS == 'true' ]]; then \
-      coverage combine $NOSE_COVERAGE1 $NOSE_COVERAGE2; \
+      coverage combine $NOSE_COVERAGE_FILE $PYTEST_COVERAGE_FILE; \
       coveralls; \
     fi
   # can't use test here since this leads to travis fails even though the build passes
