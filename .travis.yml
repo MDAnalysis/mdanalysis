@@ -23,9 +23,9 @@ env:
     - PYTHON_VERSION=2.7
     - COVERALLS=false
     - NOSE_FLAGS="--processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
-    - NOSE_TEST_LIST="analysis auxiliary coordinates core formats topology utils"
+    - NOSE_TEST_LIST="analysis auxiliary coordinates core topology utils"
     - PYTEST_FLAGS="--disable-pytest-warnings"
-    - PYTEST_LIST="testsuite/MDAnalysisTests/lib"
+    - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats"
     - NOSE_COVERAGE_FILE="nose_coverage"
     - PYTEST_COVERAGE_FILE="pytest_coverage"
     - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS}"
