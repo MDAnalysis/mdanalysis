@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
@@ -47,7 +49,10 @@ from numpy.testing import (
 )
 
 
-class TestGROReaderOld(RefAdK):
+class TestGROReaderOld(TestCase, RefAdK):
+
+    __test__ = True
+
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
@@ -100,7 +105,10 @@ class TestGROReaderOld(RefAdK):
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 
-class TestGROReaderNoConversionOld(RefAdK):
+class TestGROReaderNoConversionOld(TestCase, RefAdK):
+
+    __test__ = True
+
     def setUp(self):
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
