@@ -30,6 +30,10 @@ from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
                            assert_array_equal)
 
 from MDAnalysis.lib import transformations as t
+
+from unittest import TestCase
+
+
 """
 Testing transformations is weird because there are 2 versions of many of
 these functions.  This is because both python and Cython versions of
@@ -232,7 +236,7 @@ class TestProjectionMatrixCy(_ProjectionMatrix):
     f = staticmethod(t.projection_matrix)
 
 
-class TestProjectionFromMatrix(object):
+class TestProjectionFromMatrix(TestCase):
     def setUp(self):
         self.point = np.array([0.2, 0.2, 0.2])  # arbitrary values
         self.normal = np.array([0.4, 0.4, 0.4])
@@ -267,6 +271,8 @@ class TestProjectionFromMatrix(object):
 
 
 class _ClipMatrix(unittest.TestCase):
+    __test__ = False
+
     def test_clip_matrix_1(self):
         frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])  # arbitrary values
         frustrum[1] += frustrum[0]
@@ -311,10 +317,14 @@ class _ClipMatrix(unittest.TestCase):
 
 
 class TestClipMatrixNP(_ClipMatrix):
+    __test__ = True
+
     f = staticmethod(t._py_clip_matrix)
 
 
 class TestClipMatrixCy(_ClipMatrix):
+    __test__ = True
+
     f = staticmethod(t.clip_matrix)
 
 
