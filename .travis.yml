@@ -26,8 +26,8 @@ env:
     - NOSE_TEST_LIST="analysis auxiliary coordinates core formats topology utils"
     - PYTEST_FLAGS="--disable-pytest-warnings"
     - PYTEST_LIST="testsuite/MDAnalysisTests/lib"
-    - NOSE_COVERAGE="nose_coverage"
-    - PYTEST_COVERAGE="pytest_coverage"
+    - NOSE_COVERAGE_FILE="nose_coverage"
+    - PYTEST_COVERAGE_FILE="pytest_coverage"
     - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS}"
     - SETUP_CMD=""
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
@@ -69,7 +69,7 @@ matrix:
       env: NAME='full'
            NOSE_COVERAGE='--with-coverage --cover-package MDAnalysis'
            PYTEST_COVERAGE='--cov=MDAnalysis'
-           MAIN_CMD='export COVERAGE_FILE=$PYTEST_COVERAGE; pytest ${PYTEST_LIST} ${PYTEST_FLAGS} ${PYTEST_COVERAGE}; export COVERAGE_FILE=$NOSE_COVERAGE; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${NOSE_COVERAGE}'
+           MAIN_CMD='export COVERAGE_FILE=$PYTEST_COVERAGE_FILE; pytest ${PYTEST_LIST} ${PYTEST_FLAGS} ${PYTEST_COVERAGE}; export COVERAGE_FILE=$NOSE_COVERAGE_FILE; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${NOSE_COVERAGE}'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
@@ -111,7 +111,7 @@ script:
 after_success:
   - |
     if [[ $COVERALLS == 'true' ]]; then \
-      coverage combine $NOSE_COVERAGE $PYTEST_COVERAGE; \
+      coverage combine $NOSE_COVERAGE_FILE $PYTEST_COVERAGE_FILE; \
       coveralls; \
     fi
   # can't use test here since this leads to travis fails even though the build passes
