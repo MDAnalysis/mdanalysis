@@ -158,6 +158,9 @@ class TestNCDFReader2(TestCase):
 
 
 class _NCDFWriterTest(TestCase):
+
+    __test__ = False
+
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
@@ -313,10 +316,10 @@ class _NCDFWriterTest(TestCase):
                                       err_msg="unitcells are not identical")
 
 class TestNCDFWriter(_NCDFWriterTest, RefVGV):
-    pass
+    __test__ = True
 
 class TestNCDFWriterTZ2(_NCDFWriterTest, RefTZ2):
-    pass
+    __test__ = True
 
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
