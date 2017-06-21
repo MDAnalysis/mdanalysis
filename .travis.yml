@@ -36,7 +36,7 @@ env:
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='griddataformats'
     - CONDA_CHANNELS='biobuilds conda-forge'
-    - CONDA_CHANNEL_PRIORITY=True
+    - CONDA_CHANNEL_PRIORITY=False
     - NUMPY_VERSION=stable
     - DEBUG=True
 
