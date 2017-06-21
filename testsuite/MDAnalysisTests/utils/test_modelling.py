@@ -21,25 +21,18 @@
 #
 from __future__ import absolute_import, print_function
 
-import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-    TRZ, TRZ_psf, \
-    capping_input, capping_output, capping_ace, capping_nma, \
-    merge_protein, merge_ligand, merge_water
-import MDAnalysis.core.groups
-from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis import NoDataError
-from MDAnalysisTests import parser_not_found, tempdir
-
-import numpy as np
-from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
-                           assert_array_equal)
-from nose.plugins.attrib import attr
-
 import os
 
-from MDAnalysis import Universe, Merge
+import MDAnalysis
+import MDAnalysis.core.groups
+from MDAnalysis import Merge
 from MDAnalysis.analysis.align import alignto
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.tests.datafiles import PSF, DCD, capping_input, capping_output, capping_ace, capping_nma, \
+    merge_protein, merge_ligand, merge_water
+from MDAnalysisTests import parser_not_found, tempdir
+from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
+                           assert_array_equal)
 
 
 def capping(ref, ace, nma, output):
@@ -55,12 +48,12 @@ def capping(ref, ace, nma, output):
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a
     #  post-processing step
     alignto(ace, ref, select={
-            "mobile": "resid {0} and backbone".format(resid_min),
-            "reference": "resid {0} and backbone".format(resid_min)},
+        "mobile": "resid {0} and backbone".format(resid_min),
+        "reference": "resid {0} and backbone".format(resid_min)},
             strict=True)
     alignto(nma, ref, select={
-            "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
-            "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
+        "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
+        "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
             strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
@@ -129,6 +122,7 @@ class TestCapping(TestCase):
         assert_array_equal(peptide.trajectory.ts.dimensions,
                            u.trajectory.ts.dimensions)
 
+
 class TestMerge(TestCase):
     ext = "pdb"
 
@@ -158,9 +152,9 @@ class TestMerge(TestCase):
         # Check that the output Universe has the same number of residues and
         # segments as the starting AtomGroups
         assert_equal(len(u0.residues), (len(u1.residues) + len(u2.residues) +
-                                                           len(u3.residues)))
+                                        len(u3.residues)))
         assert_equal(len(u0.segments), (len(u1.segments) + len(u2.segments) +
-                                                           len(u3.segments)))
+                                        len(u3.segments)))
 
         # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe
@@ -188,9 +182,9 @@ class TestMerge(TestCase):
         u1, _, _ = self.universes
 
         u0 = MDAnalysis.Merge(u1.atoms, u1.atoms, u1.atoms)
-        assert_equal(len(u0.atoms), 3*len(u1.atoms))
-        assert_equal(len(u0.residues), 3*len(u1.residues))
-        assert_equal(len(u0.segments), 3*len(u1.segments))
+        assert_equal(len(u0.atoms), 3 * len(u1.atoms))
+        assert_equal(len(u0.residues), 3 * len(u1.residues))
+        assert_equal(len(u0.segments), 3 * len(u1.segments))
 
     def test_residue_references(self):
         u1, u2, u3 = self.universes
@@ -217,8 +211,10 @@ class TestMerge(TestCase):
 
         assert_raises(ValueError, Merge, a, b)
 
-class TestMergeTopology(object):
+
+class TestMergeTopology(TestCase):
     """Test that Merge correct does topology"""
+
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -244,7 +240,7 @@ class TestMergeTopology(object):
         # All these bonds are in the merged Universe
         assert_(len(ag1[0].bonds) == len(u2.atoms[0].bonds))
         # One of these bonds isn't in the merged Universe
-        assert_(len(ag2[0].bonds) -1 == len(u2.atoms[20].bonds))
+        assert_(len(ag2[0].bonds) - 1 == len(u2.atoms[20].bonds))
 
     def test_merge_with_topology_from_different_universes(self):
         u3 = MDAnalysis.Merge(self.u.atoms[:110], self.u2.atoms)
@@ -254,7 +250,7 @@ class TestMergeTopology(object):
         print(u3.atoms.bonds)
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
-        #assert_(not hasattr(u3.atoms, 'bonds') or len(u3.atoms.bonds) == 0)
+        # assert_(not hasattr(u3.atoms, 'bonds') or len(u3.atoms.bonds) == 0)
         assert_(not hasattr(u3.atoms, 'angles') or len(u3.atoms.bonds) == 0)
         assert_(not hasattr(u3.atoms, 'dihedrals') or len(u3.atoms.bonds) == 0)
         assert_(not hasattr(u3.atoms, 'impropers') or len(u3.atoms.bonds) == 0)
@@ -268,4 +264,3 @@ class TestMergeTopology(object):
         assert_(len(u2.atoms.angles) == 0)
         assert_(len(u2.atoms.dihedrals) == 0)
         assert_(len(u2.atoms.impropers) == 0)
-

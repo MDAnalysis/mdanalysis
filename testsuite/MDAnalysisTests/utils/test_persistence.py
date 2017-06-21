@@ -20,26 +20,18 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from six.moves import cPickle
+
+import gc
 
 import MDAnalysis as mda
-from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.coordinates import XDR
-
-import numpy as np
-from numpy.testing import (assert_array_almost_equal, TestCase,
+from MDAnalysisTests.datafiles import PDB_small
+from numpy.testing import (TestCase,
                            assert_array_equal, assert_, assert_raises,
-                           assert_equal, dec)
+                           assert_equal)
+from six.moves import cPickle
 
-import os
-import gc
-import shutil
-import warnings
 
-from MDAnalysisTests.datafiles import PDB_small, GRO, XTC, TRR
-from MDAnalysisTests import make_Universe
-
-class TestAtomGroupPickle(object):
+class TestAtomGroupPickle(TestCase):
     def setUp(self):
         """Set up hopefully unique universes."""
         # _n marks named universes/atomgroups/pickled strings
@@ -135,7 +127,7 @@ class TestAtomGroupPickle(object):
         assert_equal(len(newag), 0)
 
 
-class TestPicklingUpdatingAtomGroups(object):
+class TestPicklingUpdatingAtomGroups(TestCase):
     def setUp(self):
         self.u = mda.Universe(PDB_small)
 

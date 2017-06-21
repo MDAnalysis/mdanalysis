@@ -20,22 +20,25 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import division, absolute_import
+
 import MDAnalysis
 import MDAnalysis.lib.distances
-
 import numpy as np
-from numpy.testing import (TestCase, dec, raises, assert_,
-                           assert_almost_equal, assert_equal, assert_raises,)
-
-from nose.plugins.attrib import attr
-
-from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
+from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysisTests import parser_not_found
+from nose.plugins.attrib import attr
+from numpy.testing import (TestCase, dec, raises, assert_,
+                           assert_almost_equal, assert_equal, assert_raises, )
+
 
 class _TestDistanceArray(TestCase):
     # override backend in test classes
+
+    __test__ = False
+
     backend = None
+
     def setUp(self):
         self.box = np.array([1., 1., 2.], dtype=np.float32)
         self.points = np.array(
@@ -81,13 +84,22 @@ class _TestDistanceArray(TestCase):
         assert_almost_equal(val, ref, decimal=6,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
+
 class TestDistanceArray_Serial(_TestDistanceArray):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestDistanceArray_OpenMP(_TestDistanceArray):
+    __test__ = True
+
     backend = "OpenMP"
 
+
 class _TestDistanceArrayDCD(TestCase):
+    __test__ = False
+
     backend = None
 
     @dec.skipif(parser_not_found('DCD'),
@@ -155,12 +167,20 @@ class _TestDistanceArrayDCD(TestCase):
 
 
 class TestDistanceArrayDCD_Serial(_TestDistanceArrayDCD):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestDistanceArrayDCD_OpenMP(_TestDistanceArrayDCD):
+    __test__ = True
+
     backend = "OpenMP"
 
+
 class _TestSelfDistanceArrayDCD(TestCase):
+    __test__ = False
+
     backend = None
 
     @dec.skipif(parser_not_found('DCD'),
@@ -218,11 +238,18 @@ class _TestSelfDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
+
 class TestSelfDistanceArrayDCD_Serial(_TestSelfDistanceArrayDCD):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestSelfDistanceArrayDCD_OpenMP(_TestSelfDistanceArrayDCD):
+    __test__ = True
+
     backend = "OpenMP"
+
 
 class _TestTriclinicDistances(TestCase):
     """Unit tests for the Triclinic PBC functions.
@@ -234,6 +261,9 @@ class _TestTriclinicDistances(TestCase):
       mda.lib.distances.self_distance_array
       mda.lib.distances.distance_array
     """
+
+    __test__ = False
+
     backend = None
 
     def setUp(self):
@@ -281,7 +311,7 @@ class _TestTriclinicDistances(TestCase):
 
     def test_selfdist(self):
         from MDAnalysis.lib.distances import self_distance_array
-        from MDAnalysis.lib.distances import transform_RtoS, transform_StoR
+        from MDAnalysis.lib.distances import transform_StoR
 
         R_coords = transform_StoR(self.S_mol1, self.box, backend=self.backend)
         # Transform functions are tested elsewhere so taken as working here
@@ -325,7 +355,7 @@ class _TestTriclinicDistances(TestCase):
 
     def test_distarray(self):
         from MDAnalysis.lib.distances import distance_array
-        from MDAnalysis.lib.distances import transform_StoR, transform_RtoS
+        from MDAnalysis.lib.distances import transform_StoR
 
         R_mol1 = transform_StoR(self.S_mol1, self.box, backend=self.backend)
         R_mol2 = transform_StoR(self.S_mol2, self.box, backend=self.backend)
@@ -362,16 +392,26 @@ class _TestTriclinicDistances(TestCase):
         assert_almost_equal(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
+
 class TestTriclinicDistances_Serial(_TestTriclinicDistances):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestTriclinicDistances_OpenMP(_TestTriclinicDistances):
+    __test__ = True
+
     backend = "OpenMP"
+
 
 class _TestCythonFunctions(TestCase):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
     # Tests both numerical results as well as input types as Cython will silently
     # produce nonsensical results if given wrong data types otherwise.
+
+    __test__ = False
+
     backend = None
 
     def setUp(self):
@@ -387,7 +427,7 @@ class _TestCythonFunctions(TestCase):
                                   dtype=np.float64)  # declared as float64 and should raise TypeError
         self.wronglength = np.array([[0., 0., 0.], [3., 3., 3.]],
                                     dtype=np.float32)  # has a different length to other inputs and should raise
-                                    # ValueError
+        # ValueError
 
     def tearDown(self):
         del self.box
@@ -405,11 +445,11 @@ class _TestCythonFunctions(TestCase):
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
         dists_pbc = MDAnalysis.lib.distances.calc_bonds(self.a, self.b, box=self.box,
                                                         backend=self.backend)
-        #tests 0 length
+        # tests 0 length
         assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
         assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
                             err_msg="Standard length calc_bonds fail")  # arbitrary length check
-        #PBC checks, 2 without, 2 with
+        # PBC checks, 2 without, 2 with
         assert_almost_equal(dists[2], 11.0, self.prec,
                             err_msg="PBC check #1 w/o box")  # pbc check 1, subtract single box length
         assert_almost_equal(dists_pbc[2], 1.0, self.prec,
@@ -418,7 +458,8 @@ class _TestCythonFunctions(TestCase):
                             err_msg="PBC check #2 w/o box")  # lengths in all directions
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
-        #Bad input checking
+        # Bad input checking
+
     def test_bonds_wrongtype(self):
         assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, self.a,
                       self.wrongtype, backend=self.backend)
@@ -497,6 +538,7 @@ class _TestCythonFunctions(TestCase):
         assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
         assert_almost_equal(dihedrals[3], 0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
+
     # Check data type checks
     def test_dihedrals_wrongtype(self):
         assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
@@ -561,13 +603,22 @@ class _TestCythonFunctions(TestCase):
         assert_almost_equal(dihedrals[2:], dihedrals_numpy[2:], self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
+
 class TestCythonFunctions_Serial(_TestCythonFunctions):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestCythonFunctions_OpenMP(_TestCythonFunctions):
+    __test__ = True
+
     backend = "OpenMP"
 
+
 class _Test_apply_PBC(TestCase):
+    __test__ = False
+
     backend = None
 
     def setUp(self):
@@ -603,8 +654,8 @@ class _Test_apply_PBC(TestCase):
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 
-        #print box2
-        #print box2.shape
+        # print box2
+        # print box2.shape
 
         def numpy_PBC(coords, box):
             coords -= np.array([box[2] * val for val in np.floor(coords[:, 2] / box[2][2])])
@@ -622,16 +673,25 @@ class _Test_apply_PBC(TestCase):
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Trlclinic apply_PBC failed comparison with np")
 
+
 class _Test_apply_PBC_Serial(_Test_apply_PBC):
+    __test__ = True
+
     backend = "serial"
 
+
 class _Test_apply_PBC_OpenMP(_Test_apply_PBC):
+    __test__ = True
+
     backend = "OpenMP"
+
 
 class _TestPeriodicAngles(TestCase):
     """Test case for properly considering minimum image convention when calculating angles and dihedrals
     (Issue 172)
     """
+
+    __test__ = False
 
     def setUp(self):
         self.prec = 5
@@ -690,14 +750,21 @@ class _TestPeriodicAngles(TestCase):
         for val in [test1, test2, test3, test4, test5]:
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
 
+
 class TestPeriodicAngles_Serial(_TestPeriodicAngles):
+    __test__ = True
+
     backend = "serial"
 
+
 class TestPeriodicAngles_OpenMP(_TestPeriodicAngles):
+    __test__ = True
+
     backend = "OpenMP"
 
-class TestDistanceBackendSelection(object):
-    def __init__(self):
+
+class TestDistanceBackendSelection(TestCase):
+    def setUp(self):
         self.positions = np.random.rand(10, 3)
         N = self.positions.shape[0]
         self.result = np.empty(N * (N - 1) // 2, dtype=np.float64)

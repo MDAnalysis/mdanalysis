@@ -22,24 +22,22 @@
 
 # Test the selection exporters in MDAnalysis.selections
 from __future__ import absolute_import
-# use StringIO and NamedStream to write to memory instead to temp files
-from six.moves import cPickle, StringIO
 
 import re
 
+import MDAnalysis
 import numpy as np
-from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
-from nose.plugins.attrib import attr
-
-from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysis.lib.util import NamedStream
 from MDAnalysis.tests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found
-
-import MDAnalysis
-from MDAnalysis.lib.util import NamedStream
+from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
+# use StringIO and NamedStream to write to memory instead to temp files
+from six.moves import StringIO
 
 
 class _SelectionWriter(TestCase):
+    __test__ = False
+
     filename = None
     max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
 
@@ -89,6 +87,7 @@ class _SelectionWriter(TestCase):
         self._write_with(name=self.ref_name)
         self._assert_selectionstring()
 
+
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
     return np.array(" ".join(lines).replace("\n", "").split(), dtype=int)
@@ -100,14 +99,16 @@ def lines2one(lines):
 
 
 class TestSelectionWriter_Gromacs(_SelectionWriter):
+    __test__ = True
+
     writer = MDAnalysis.selections.gromacs.SelectionWriter
     filename = "CA.ndx"
     ref_name = "CA_selection"
     ref_indices = ndx2array(
-        [ '5 22 46 65 84 103 122 129 141 153 160 170 \n',
-          '177 199 206 220 237 247 264 284 303 320 335 357 \n',
-          ]
-        )
+        ['5 22 46 65 84 103 122 129 141 153 160 170 \n',
+         '177 199 206 220 237 247 264 284 303 320 335 357 \n',
+         ]
+    )
 
     def _assert_selectionstring(self):
         header = self.namedfile.readline().strip()
@@ -118,8 +119,9 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
                            err_msg="indices were not written correctly")
 
 
-
 class TestSelectionWriter_Charmm(_SelectionWriter):
+    __test__ = True
+
     writer = MDAnalysis.selections.charmm.SelectionWriter
     filename = "CA.str"
     ref_name = "CA_selection"
@@ -140,8 +142,9 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
                      err_msg="Charmm selection was not written correctly")
 
 
-
 class TestSelectionWriter_PyMOL(_SelectionWriter):
+    __test__ = True
+
     writer = MDAnalysis.selections.pymol.SelectionWriter
     filename = "CA.pml"
     ref_name = "CA_selection"
@@ -159,8 +162,9 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
                      err_msg="PyMOL selection was not written correctly")
 
 
-
 class TestSelectionWriter_VMD(_SelectionWriter):
+    __test__ = True
+
     writer = MDAnalysis.selections.vmd.SelectionWriter
     filename = "CA.vmd"
     ref_name = "CA_selection"
@@ -176,7 +180,6 @@ class TestSelectionWriter_VMD(_SelectionWriter):
                      err_msg="PyMOL selection was not written correctly")
 
 
-
 def spt2array(line):
     """Get name of and convert Jmol SPT definition to integer array"""
     match = re.search(r'\@~(\w+) \(\{([\d\s]*)\}\)', line)
@@ -184,12 +187,14 @@ def spt2array(line):
 
 
 class TestSelectionWriter_Jmol(_SelectionWriter):
+    __test__ = True
+
     writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
     ref_name, ref_indices = spt2array(
-        ( '@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
-          ' 246 263 283 302 319 334 356});')
-        )
+        ('@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
+         ' 246 263 283 302 319 334 356});')
+    )
 
     def _assert_selectionstring(self):
         header, indices = spt2array(self.namedfile.readline())
