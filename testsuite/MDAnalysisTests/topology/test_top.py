@@ -36,6 +36,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TOPBase(ParserBase):
+
+    __test__ = False
+
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = ["names", "types", "type_indices", "charges", "masses",
                       "resnames"]
@@ -51,6 +54,9 @@ class TOPBase(ParserBase):
 
 
 class TestPRMParser(TOPBase):
+
+    __test__ = True
+
     filename = PRM
     expected_n_atoms = 252
     expected_n_residues = 14
@@ -58,6 +64,9 @@ class TestPRMParser(TOPBase):
 
 
 class TestPRM12Parser(TOPBase):
+
+    __test__ = True
+
     expected_attrs = ["names", "types", "type_indices", "charges", "masses",
                       "resnames"]
     filename = PRM12
@@ -67,6 +76,9 @@ class TestPRM12Parser(TOPBase):
 
 
 class TestParm7Parser(TOPBase):
+
+    __test__ = True
+
     filename = PRM7
     expected_n_atoms = 5827
     expected_n_residues = 1882
@@ -74,6 +86,9 @@ class TestParm7Parser(TOPBase):
 
 
 class TestPRM2(TOPBase):
+
+    __test__ = True
+
     filename = PRMpbc
     expected_n_atoms = 5071
     expected_n_residues = 1686

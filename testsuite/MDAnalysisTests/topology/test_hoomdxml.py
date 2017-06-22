@@ -33,6 +33,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestHoomdXMLParser(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
     filename = HoomdXMLdata
     expected_attrs = ['types', 'masses', 'charges', 'radii',

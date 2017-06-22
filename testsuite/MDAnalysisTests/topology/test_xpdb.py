@@ -29,6 +29,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestXPDBParser(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
     filename = XPDB_small
     expected_attrs = ['ids', 'names',

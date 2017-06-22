@@ -36,33 +36,27 @@ from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
 
 class TestGuessMasses(object):
-    @staticmethod
-    def test_guess_masses():
+    def test_guess_masses(self):
         out = guessers.guess_masses(['C', 'C', 'H'])
         
         assert_(isinstance(out, np.ndarray))
         assert_array_equal(out,
                            np.array([12.011, 12.011, 1.008]))
 
-    @staticmethod
-    def test_guess_masses_warn():
+    def test_guess_masses_warn(self):
         assert_warns(UserWarning, guessers.guess_masses, ['X'])
 
-    @staticmethod
-    def test_guess_masses_miss():
+    def test_guess_masses_miss(self):
         out = guessers.guess_masses(['X', 'Z'])
         assert_array_equal(out, np.array([0.0, 0.0]))
 
-    @staticmethod
-    def test_get_atom_mass():
+    def test_get_atom_mass(self):
         assert_(guessers.get_atom_mass('H') == 1.008)
 
-    @staticmethod
-    def test_get_atom_mass_miss():
+    def test_get_atom_mass_miss(self):
         assert_(guessers.get_atom_mass('XYZ') == 0.0)
 
-    @staticmethod
-    def test_guess_atom_mass():
+    def test_guess_atom_mass(self):
         assert_(guessers.guess_atom_mass('1H') == 1.008)
 
 
@@ -70,27 +64,22 @@ class TestGuessTypes(object):
     # guess_types
     # guess_atom_type
     # guess_atom_element
-    @staticmethod
-    def test_guess_types():
+    def test_guess_types(self):
         out = guessers.guess_types(['MG2+', 'C12'])
 
         assert_(isinstance(out, np.ndarray))
         assert_array_equal(out, np.array(['MG', 'C'], dtype=object))
-    
-    @staticmethod
-    def test_guess_atom_element():
+
+    def test_guess_atom_element(self):
         assert_(guessers.guess_atom_element('MG2+') == 'MG')
-    
-    @staticmethod
-    def test_guess_atom_element_empty():
+
+    def test_guess_atom_element_empty(self):
         assert_(guessers.guess_atom_element('') == '')
 
-    @staticmethod
-    def test_guess_atom_element_singledigit():
+    def test_guess_atom_element_singledigit(self):
         assert_(guessers.guess_atom_element('1') == '1')
 
-    @staticmethod
-    def test_guess_atom_element_1H():
+    def test_guess_atom_element_1H(self):
         assert_(guessers.guess_atom_element('1H') == 'H')
         assert_(guessers.guess_atom_element('2H') == 'H')
 
