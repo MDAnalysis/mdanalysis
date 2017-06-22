@@ -24,7 +24,10 @@ from __future__ import print_function, division, absolute_import
 import MDAnalysis
 from MDAnalysis.analysis import polymer
 from MDAnalysis.exceptions import NoDataError
+
 import numpy as np
+import matplotlib
+
 from numpy.testing import (
     assert_,
     assert_almost_equal,
@@ -61,8 +64,6 @@ class TestPersistenceLength(object):
         assert_(len(p.results) == 280)
         assert_almost_equal(p.lb, 1.485, 3)
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_fit(self):
         p = self._make_p()
         p.run()
@@ -71,14 +72,9 @@ class TestPersistenceLength(object):
         assert_almost_equal(p.lp, 6.504, 3)
         assert_(len(p.fit) == len(p.results))
 
-    @dec.skipif(module_not_found('matplotlib'),
-                "Test skipped because matplotlib is not available.")
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_plot_ax_return(self):
         '''Ensure that a matplotlib axis object is
         returned when plot() is called.'''
-        import matplotlib
         p = self._make_p()
         p.run()
         p.perform_fit()
@@ -104,14 +100,10 @@ class TestFitExponential(object):
         del self.a_ref
         del self.y
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_fit_simple(self):
         a = polymer.fit_exponential_decay(self.x, self.y)
         assert_(a == self.a_ref)
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_fit_noisy(self):
         noise = np.sin(self.x) * 0.01
         y2 = noise + self.y
