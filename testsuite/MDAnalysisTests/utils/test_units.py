@@ -30,30 +30,27 @@ from MDAnalysis.core import flags
 
 
 class TestDefaultUnits(TestCase):
-    @staticmethod
-    def test_length():
+    def test_length(self):
         assert_equal(flags['length_unit'], 'Angstrom',
                      u"The default length unit should be Angstrom (in core.flags)")
-    @staticmethod
-    def test_time():
+
+    def test_time(self):
         assert_equal(flags['time_unit'], 'ps',
                      u"The default length unit should be pico seconds (in core.flags)")
-    @staticmethod
-    def test_convert_gromacs_trajectories():
+
+    def test_convert_gromacs_trajectories(self):
         assert_equal(flags['convert_lengths'], True,
                      u"The default behaviour should be to auto-convert Gromacs trajectories")
 
 
 class TestUnitEncoding(TestCase):
-    @staticmethod
-    def test_unicode():
+    def test_unicode(self):
         try:
             assert_equal(units.lengthUnit_factor[u"\u212b"], 1.0)
         except KeyError:
             raise AssertionError("Unicode symbol for Angtrom not supported")
 
-    @staticmethod
-    def test_unicode_encoding_with_symbol():
+    def test_unicode_encoding_with_symbol(self):
         try:
             assert_equal(units.lengthUnit_factor[u"Å"], 1.0)
         except KeyError:
@@ -106,14 +103,12 @@ class TestConversion(object):
         yield self._assert_almost_equal_convert, 2.5, 'kJ/(mol*nm)', 'kJ/(mol*A)', 0.25
         yield self._assert_almost_equal_convert, 1, 'kcal/(mol*Angstrom)', 'kJ/(mol*Angstrom)', 4.184
 
-    @staticmethod
-    def test_unit_unknown():
+    def test_unit_unknown(self):
         nm = 12.34567
         assert_raises(ValueError, units.convert, nm, 'Stone', 'nm')
         assert_raises(ValueError, units.convert, nm, 'nm', 'Stone')
-    
-    @staticmethod
-    def test_unit_unconvertable():
+
+    def test_unit_unconvertable(self):
         nm = 12.34567
         A = nm * 10.
         assert_raises(ValueError, units.convert, A, 'A', 'ps')
