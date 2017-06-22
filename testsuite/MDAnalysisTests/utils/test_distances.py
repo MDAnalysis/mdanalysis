@@ -24,6 +24,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 
 import numpy as np
+import pytest
 from numpy.testing import (TestCase, dec, raises, assert_,
                            assert_almost_equal, assert_equal, assert_raises,)
 
@@ -33,9 +34,22 @@ from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
 from MDAnalysisTests import parser_not_found
 
-class _TestDistanceArray(TestCase):
-    # override backend in test classes
-    backend = None
+@pytest.fixture()
+def ref_system():
+    box = np.array([1., 1., 2.], dtype=np.float32)
+    points = np.array(
+        [
+            [0, 0, 0], [1, 1, 2], [1, 0, 2],  # identical under PBC
+            [0.5, 0.5, 1.5],
+        ], dtype=np.float32)
+    ref = points[0:1]
+    conf = points[1:]
+
+    return box, points, ref, conf
+    
+
+@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+class TestDistanceArray(object):
     def setUp(self):
         self.box = np.array([1., 1., 2.], dtype=np.float32)
         self.points = np.array(
@@ -46,26 +60,32 @@ class _TestDistanceArray(TestCase):
         self.ref = self.points[0:1]
         self.conf = self.points[1:]
 
-    def _dist(self, n, ref=None):
-        if ref is None:
-            ref = self.ref[0]
-        else:
-            ref = np.asarray(ref, dtype=np.float32)
-        x = self.points[n]
+    @staticmethod
+    def _dist(x, ref):
+        ref = np.asarray(ref, dtype=np.float32)
         r = x - ref
         return np.sqrt(np.dot(r, r))
 
-    def test_noPBC(self):
-        d = MDAnalysis.lib.distances.distance_array(self.ref, self.points,
-                                                    backend=self.backend)
-        assert_almost_equal(d, np.array([[self._dist(0), self._dist(1), self._dist(2), self._dist(3)]]))
+    def test_noPBC(self, backend, ref_system):
+        box, points, ref, conf = ref_system
 
-    def test_PBC(self):
-        d = MDAnalysis.lib.distances.distance_array(self.ref, self.points,
-                                                    box=self.box, backend=self.backend)
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(3, ref=[1, 1, 2])]]))
+        d = MDAnalysis.lib.distances.distance_array(ref, points, backend=backend)
 
-    def test_PBC2(self):
+        assert_almost_equal(d, np.array([[
+            self._dist(points[0], ref[0]),
+            self._dist(points[1], ref[0]),
+            self._dist(points[2], ref[0]),
+            self._dist(points[3], ref[0])]
+        ]))
+
+    def test_PBC(self, backend, ref_system):
+        box, points, ref, conf = ref_system
+
+        d = MDAnalysis.lib.distances.distance_array(ref, points, box=box, backend=backend)
+
+        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
+
+    def test_PBC2(self, backend):
         a = np.array([7.90146923, -13.72858524, 3.75326586], dtype=np.float32)
         b = np.array([-1.36250901, 13.45423985, -0.36317623], dtype=np.float32)
         box = np.array([5.5457325, 5.5457325, 5.5457325], dtype=np.float32)
@@ -76,77 +96,68 @@ class _TestDistanceArray(TestCase):
 
         ref = mindist(a, b, box)
         val = MDAnalysis.lib.distances.distance_array(np.array([a]), np.array([b]),
-                                                      box=box, backend=self.backend)[0, 0]
+                                                      box=box, backend=backend)[0, 0]
 
         assert_almost_equal(val, ref, decimal=6,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
-class TestDistanceArray_Serial(_TestDistanceArray):
-    backend = "serial"
+@pytest.fixture()
+def DCD_Universe():
+    universe = MDAnalysis.Universe(PSF, DCD)
+    trajectory = universe.trajectory
 
-class TestDistanceArray_OpenMP(_TestDistanceArray):
-    backend = "OpenMP"
+    return universe, trajectory
 
-class _TestDistanceArrayDCD(TestCase):
-    backend = None
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.trajectory = self.universe.trajectory
-        self.ca = self.universe.select_atoms('name CA')
-        # reasonable precision so that tests succeed on 32 and 64 bit machines
-        # (the reference values were obtained on 64 bit)
-        # Example:
-        #   Items are not equal: wrong maximum distance value
-        #   ACTUAL: 52.470254967456412
-        #   DESIRED: 52.470257062419059
-        self.prec = 5
-
-    def tearDown(self):
-        del self.universe
-        del self.trajectory
-        del self.ca
+@pytest.mark.skipif(parser_not_found('DCD'),
+                    reason='DCD parser not available. Are you using python 3?')
+@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+class TestDistanceArrayDCD(object):
+    # reasonable precision so that tests succeed on 32 and 64 bit machines
+    # (the reference values were obtained on 64 bit)
+    # Example:
+    #   Items are not equal: wrong maximum distance value
+    #   ACTUAL: 52.470254967456412
+    #   DESIRED: 52.470257062419059
+    prec = 5
 
     @attr('issue')
-    def test_simple(self):
-        U = self.universe
-        self.trajectory.rewind()
+    def test_simple(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
-        self.trajectory[10]
+        trajectory[10]
         x1 = U.atoms.positions
-        d = MDAnalysis.lib.distances.distance_array(x0, x1, backend=self.backend)
+        d = MDAnalysis.lib.distances.distance_array(x0, x1, backend=backend)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
-    def test_outarray(self):
-        U = self.universe
-        self.trajectory.rewind()
+    def test_outarray(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
-        self.trajectory[10]
+        trajectory[10]
         x1 = U.atoms.positions
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
-        MDAnalysis.lib.distances.distance_array(x0, x1, result=d, backend=self.backend)
+        MDAnalysis.lib.distances.distance_array(x0, x1, result=d, backend=backend)
         assert_equal(d.shape, (natoms, natoms), "wrong shape, shoud be  (Natoms,Natoms) entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
-    def test_periodic(self):
+    def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U = self.universe
-        self.trajectory.rewind()
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
-        self.trajectory[10]
+        trajectory[10]
         x1 = U.atoms.positions
         d = MDAnalysis.lib.distances.distance_array(x0, x1, box=U.coord.dimensions,
-                                                    backend=self.backend)
+                                                    backend=backend)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value with PBC")
@@ -154,34 +165,17 @@ class _TestDistanceArrayDCD(TestCase):
                             err_msg="wrong maximum distance value with PBC")
 
 
-class TestDistanceArrayDCD_Serial(_TestDistanceArrayDCD):
-    backend = "serial"
+@pytest.mark.skipif(parser_not_found('DCD'),
+                    reason='DCD parser not available. Are you using python 3?')
+@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+class TestSelfDistanceArrayDCD(object):
+    prec = 5
 
-class TestDistanceArrayDCD_OpenMP(_TestDistanceArrayDCD):
-    backend = "OpenMP"
-
-class _TestSelfDistanceArrayDCD(TestCase):
-    backend = None
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.trajectory = self.universe.trajectory
-        self.ca = self.universe.select_atoms('name CA')
-        # see comments above on precision
-        self.prec = 5
-
-    def tearDown(self):
-        del self.universe
-        del self.trajectory
-        del self.ca
-
-    def test_simple(self):
-        U = self.universe
-        self.trajectory.rewind()
+    def test_simple(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
-        d = MDAnalysis.lib.distances.self_distance_array(x0, backend=self.backend)
+        d = MDAnalysis.lib.distances.self_distance_array(x0, backend=backend)
         N = 3341 * (3341 - 1) / 2
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
@@ -189,40 +183,35 @@ class _TestSelfDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value")
 
-    def test_outarray(self):
-        U = self.universe
-        self.trajectory.rewind()
+    def test_outarray(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) // 2
         d = np.zeros((N,), np.float64)
-        MDAnalysis.lib.distances.self_distance_array(x0, result=d, backend=self.backend)
+        MDAnalysis.lib.distances.self_distance_array(x0, result=d, backend=backend)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value")
 
-    def test_periodic(self):
+    def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U = self.universe
-        self.trajectory.rewind()
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) / 2
         d = MDAnalysis.lib.distances.self_distance_array(x0, box=U.coord.dimensions,
-                                                         backend=self.backend)
+                                                         backend=backend)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
-class TestSelfDistanceArrayDCD_Serial(_TestSelfDistanceArrayDCD):
-    backend = "serial"
-
-class TestSelfDistanceArrayDCD_OpenMP(_TestSelfDistanceArrayDCD):
-    backend = "OpenMP"
 
 class _TestTriclinicDistances(TestCase):
     """Unit tests for the Triclinic PBC functions.
