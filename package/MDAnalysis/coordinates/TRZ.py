@@ -24,10 +24,12 @@
 """TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`
 ============================================================
 
-Classes to read `IBIsCO`_ / `YASP`_ binary trajectories.
+Classes to read `IBIsCO`_ / `YASP`_ TRZ binary trajectories, including
+coordinates, velocities and more (see attributes of the :class:`Timestep`).
 
-Reads coordinates, velocities and more (see attributes of the
-:class:`Timestep`).
+Data are read and written in binary representation but because this depends on
+the machine hardware architecture, MDAnalysis *always* reads and writes TRZ
+trajectories in *little-endian* byte order.
 
 .. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
 .. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
@@ -79,6 +81,7 @@ Classes
 
 .. autoclass:: TRZWriter
    :members:
+
 """
 from __future__ import division, absolute_import
 import six
@@ -123,28 +126,26 @@ class Timestep(base.Timestep):
 
 
 class TRZReader(base.ReaderBase):
-    """ Reads an IBIsCO or YASP trajectory file
+    """Reads an IBIsCO or YASP trajectory file
 
-    :Data:
-        ts
-          :class:`~MDAnalysis.coordinates.TRZ.Timestep` object
-          containing coordinates of current frame
+    Attributes
+    ----------
+    ts : TRZ.Timestep
+         :class:`~MDAnalysis.coordinates.TRZ.Timestep` object containing
+         coordinates of current frame
 
-    :Methods:
-      ``len(trz)``
-        returns the number of frames
-      ``for ts in trz``
-        iterates through the trajectory
-      ``for ts in trz[start:stop:skip]``
-        iterate through a trajectory using slicing
-      ``trz[i]``
-        random access of a trajectory frame
+    Note
+    ----
+    Binary TRZ trajectories are *always* assumed to be written in
+    *little-endian* byte order and are read as such.
+
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
+       Frames now 0-based instead of 1-based.
        Extra data (Temperature, Energies, Pressures, etc) now read
-       into ts.data dictionary
-       Now passes a weakref of self to ts (ts._reader)
+       into ts.data dictionary.
+       Now passes a weakref of self to ts (ts._reader).
+
     """
 
     format = "TRZ"
@@ -180,46 +181,46 @@ class TRZReader(base.ReaderBase):
                            **self._ts_kwargs)
 
         # structured dtype of a single trajectory frame
-        readarg = str(n_atoms) + 'f4'
+        readarg = str(n_atoms) + '<f4'
         frame_contents = [
-            ('p1', 'i4'),
-            ('nframe', 'i4'),
-            ('ntrj', 'i4'),
-            ('natoms', 'i4'),
-            ('treal', 'f8'),
-            ('p2', '2i4'),
-            ('box', '9f8'),
-            ('p3', '2i4'),
-            ('pressure', 'f8'),
-            ('ptensor', '6f8'),
-            ('p4', '3i4'),
-            ('etot', 'f8'),
-            ('ptot', 'f8'),
-            ('ek', 'f8'),
-            ('T', 'f8'),
-            ('p5', '6i4'),
+            ('p1', '<i4'),
+            ('nframe', '<i4'),
+            ('ntrj', '<i4'),
+            ('natoms', '<i4'),
+            ('treal', '<f8'),
+            ('p2', '<2i4'),
+            ('box', '<9f8'),
+            ('p3', '<2i4'),
+            ('pressure', '<f8'),
+            ('ptensor', '<6f8'),
+            ('p4', '<3i4'),
+            ('etot', '<f8'),
+            ('ptot', '<f8'),
+            ('ek', '<f8'),
+            ('T', '<f8'),
+            ('p5', '<6i4'),
             ('rx', readarg),
-            ('pad2', '2i4'),
+            ('pad2', '<2i4'),
             ('ry', readarg),
-            ('pad3', '2i4'),
+            ('pad3', '<2i4'),
             ('rz', readarg),
-            ('pad4', '2i4'),
+            ('pad4', '<2i4'),
             ('vx', readarg),
-            ('pad5', '2i4'),
+            ('pad5', '<2i4'),
             ('vy', readarg),
-            ('pad6', '2i4'),
+            ('pad6', '<2i4'),
             ('vz', readarg)]
         if not self.has_force:
-            frame_contents += [('pad7', 'i4')]
+            frame_contents += [('pad7', '<i4')]
         else:
             frame_contents += [
-                ('pad7', '2i4'),
+                ('pad7', '<2i4'),
                 ('fx', readarg),
-                ('pad8', '2i4'),
+                ('pad8', '<2i4'),
                 ('fy', readarg),
-                ('pad9', '2i4'),
+                ('pad9', '<2i4'),
                 ('fz', readarg),
-                ('pad10', 'i4')]
+                ('pad10', '<i4')]
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
@@ -227,11 +228,11 @@ class TRZReader(base.ReaderBase):
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
         self._headerdtype = np.dtype([
-            ('p1', 'i4'),
+            ('p1', '<i4'),
             ('title', '80c'),
-            ('p2', '2i4'),
-            ('force', 'i4'),
-            ('p3', 'i4')])
+            ('p2', '<2i4'),
+            ('force', '<i4'),
+            ('p3', '<i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
         if data['force'] == 10:
@@ -434,8 +435,10 @@ class TRZReader(base.ReaderBase):
 class TRZWriter(base.WriterBase):
     """Writes a TRZ format trajectory.
 
-    :Methods:
-       ``W = TRZWriter(trzfilename, n_atoms, title='TRZ')``
+    Note
+    ----
+    Binary TRZ trajectories are *always* written in *little-endian* byte order.
+
     """
 
     format = 'TRZ'
@@ -478,52 +481,52 @@ class TRZWriter(base.WriterBase):
 
         self._writeheader(title)
 
-        floatsize = str(n_atoms) + 'f4'
+        floatsize = str(n_atoms) + '<f4'
         self.frameDtype = np.dtype([
-            ('p1a', 'i4'),
-            ('nframe', 'i4'),
-            ('ntrj', 'i4'),
-            ('natoms', 'i4'),
-            ('treal', 'f8'),
-            ('p1b', 'i4'),
-            ('p2a', 'i4'),
-            ('box', '9f8'),
-            ('p2b', 'i4'),
-            ('p3a', 'i4'),
-            ('pressure', 'f8'),
-            ('ptensor', '6f8'),
-            ('p3b', 'i4'),
-            ('p4a', 'i4'),
-            ('six', 'i4'),
-            ('etot', 'f8'),
-            ('ptot', 'f8'),
-            ('ek', 'f8'),
-            ('T', 'f8'),
-            ('blanks', '2f8'),
-            ('p4b', 'i4'),
-            ('p5a', 'i4'),
+            ('p1a', '<i4'),
+            ('nframe', '<i4'),
+            ('ntrj', '<i4'),
+            ('natoms', '<i4'),
+            ('treal', '<f8'),
+            ('p1b', '<i4'),
+            ('p2a', '<i4'),
+            ('box', '<9f8'),
+            ('p2b', '<i4'),
+            ('p3a', '<i4'),
+            ('pressure', '<f8'),
+            ('ptensor', '<6f8'),
+            ('p3b', '<i4'),
+            ('p4a', '<i4'),
+            ('six', '<i4'),
+            ('etot', '<f8'),
+            ('ptot', '<f8'),
+            ('ek', '<f8'),
+            ('T', '<f8'),
+            ('blanks', '<2f8'),
+            ('p4b', '<i4'),
+            ('p5a', '<i4'),
             ('rx', floatsize),
-            ('p5b', 'i4'),
-            ('p6a', 'i4'),
+            ('p5b', '<i4'),
+            ('p6a', '<i4'),
             ('ry', floatsize),
-            ('p6b', 'i4'),
-            ('p7a', 'i4'),
+            ('p6b', '<i4'),
+            ('p7a', '<i4'),
             ('rz', floatsize),
-            ('p7b', 'i4'),
-            ('p8a', 'i4'),
+            ('p7b', '<i4'),
+            ('p8a', '<i4'),
             ('vx', floatsize),
-            ('p8b', 'i4'),
-            ('p9a', 'i4'),
+            ('p8b', '<i4'),
+            ('p9a', '<i4'),
             ('vy', floatsize),
-            ('p9b', 'i4'),
-            ('p10a', 'i4'),
+            ('p9b', '<i4'),
+            ('p10a', '<i4'),
             ('vz', floatsize),
-            ('p10b', 'i4')])
+            ('p10b', '<i4')])
 
     def _writeheader(self, title):
         hdt = np.dtype([
-            ('pad1', 'i4'), ('title', '80c'), ('pad2', 'i4'),
-            ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
+            ('pad1', '<i4'), ('title', '80c'), ('pad2', '<i4'),
+            ('pad3', '<i4'), ('nrec', '<i4'), ('pad4', '<i4')])
         out = np.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
         out['title'] = title + ' ' * (80 - len(title))
