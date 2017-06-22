@@ -19,6 +19,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division
+
+from unittest import TestCase
+
 from six.moves import range, StringIO
 import six
 
@@ -122,7 +126,7 @@ class TestIterable(object):
         assert_equal(util.iterable(u"unicode string"), False)
 
 
-class TestFilename(object):
+class TestFilename(TestCase):
     def setUp(self):
         self.root = "foo"
         self.filename = "foo.psf"
@@ -159,7 +163,7 @@ class TestFilename(object):
         assert_equal(ns.name, self.filename2)
 
 
-class TestGeometryFunctions(object):
+class TestGeometryFunctions(TestCase):
     def setUp(self):
         self.e1 = np.array([1., 0, 0])
         self.e2 = np.array([0, 1., 0])
@@ -228,7 +232,7 @@ class TestGeometryFunctions(object):
         cd = bc + self.e3
         assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
-class TestMakeWhole(object):
+class TestMakeWhole(TestCase):
     """Set up a simple system:
 
     +-----------+
@@ -440,7 +444,7 @@ class Class_with_Caches(object):
         self._cache[name] = value
 
 
-class TestCachedDecorator(object):
+class TestCachedDecorator(TestCase):
     def setUp(self):
         self.obj = Class_with_Caches()
 
@@ -893,7 +897,7 @@ class TestBlocksOf(object):
         assert_raises(ValueError, util.blocks_of, arr, 2, 1)
 
 
-class TestNamespace(object):
+class TestNamespace(TestCase):
     def setUp(self):
         self.ns = util.Namespace()
 

@@ -25,6 +25,8 @@
 #   will be removed in 1.0)
 from __future__ import absolute_import
 
+from numpy.testing import assert_raises
+
 class TestImports(object):
     def test_core_units(self):
         try:
@@ -74,4 +76,13 @@ class TestImports(object):
             from MDAnalysis.analysis.x3dna import X3DNA
         except ImportError:
             raise AssertionError("MDAnalysis.analysis.x3dna not available")
+
+def test_collections_NotImplementedError():
+    import MDAnalysis
+    with assert_raises(NotImplementedError):
+        MDAnalysis.collection.clear()
+
+
+
+
 

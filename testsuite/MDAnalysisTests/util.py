@@ -40,6 +40,7 @@ import importlib
 import mock
 import os
 
+from numpy.testing import assert_warns
 
 def block_import(package):
     """Block import of a given package
@@ -148,3 +149,50 @@ def in_dir(dirname):
     os.chdir(dirname)
     yield dirname
     os.chdir(old_path)
+
+
+def assert_nowarns(warning_class, *args, **kwargs):
+    """Fail if the given callable throws the specified warning.
+
+    A warning of class warning_class should NOT be thrown by the callable when
+    invoked with arguments args and keyword arguments kwargs.
+    If a different type of warning is thrown, it will not be caught.
+
+    Parameters
+    ----------
+    warning_class : class
+        The class defining the warning that `func` is expected to throw.
+    func : callable
+        The callable to test.
+    \*args : Arguments
+        Arguments passed to `func`.
+    \*\*kwargs : Kwargs
+        Keyword arguments passed to `func`.
+
+    Returns
+    -------
+    True
+         if no `AssertionError` is raised
+
+    Note
+    ----
+    numpy.testing.assert_warn returns the value returned by `func`; we would
+    need a second func evaluation so in order to avoid it, only True is
+    returned if no assertion is raised.
+
+    SeeAlso
+    -------
+    numpy.testing.assert_warn
+
+    """
+    func = args[0]
+    args = args[1:]
+    try:
+        value = assert_warns(DeprecationWarning, func, *args, **kwargs)
+    except AssertionError:
+        # a warning was NOT emitted: all good
+        return True
+    else:
+        # There was a warning even though we do not want to see one.
+        raise AssertionError("function {0} raises warning of class {1}".format(
+            func.__name__, warning_class.__name__))

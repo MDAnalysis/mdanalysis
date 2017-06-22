@@ -281,9 +281,20 @@ across frames::
  >>> static_ag
  <UpdatingAtomGroup with 3 atoms>
 
+.. _instance-selectors:
 
 Instant selectors
 =================
+
+.. deprecated:: 0.16.2
+   *Instant selectors* will be removed in the 1.0 release in order to
+   streamline the MDAnalysis user interface. They do not seem to be
+   widely used anymore, can produce cryptic error messages, and are
+   not considered "Pythonic" (and therefore not very intuitive for new
+   users). See issue `#1377
+   <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more
+   details.
+
 
 For interactive work it becomes rather tedious to type common selection strings
 repeatedly. MDAnalysis automatically generates a number of *instant selectors*
@@ -298,6 +309,11 @@ other levels of the structural hierarchy, namely for
 Segment selector
 ----------------
 
+.. deprecated:: 0.16.2
+   Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead. Note that this
+   *always* returns a :class:`SegmentGroup` and *never* a :class:`Segment`
+   (unlike the instant selector).
+   
 - ``universe.<segid>`` or ``universe.s<segid>`` (if *<segid>* starts with a
   number)
 - returns a :class:`~MDAnalysis.core.groups.Segment`
@@ -309,6 +325,9 @@ Segment selector
 Resid selector
 --------------
 
+.. deprecated:: 0.16.2
+   Use ``Segment.residues[N-1]`` instead.
+   
 - ``seg.r<N>`` selects residue with number ``<N>``
 - returns a :class:`~MDAnalysis.core.groups.Residue`
 - works for :class:`~MDAnalysis.core.groups.Segment` and :class:`~MDAnalysis.core.groups.SegmentGroup`
@@ -318,6 +337,12 @@ Resid selector
  
 Residue name selector
 ---------------------
+
+.. deprecated:: 0.16.2
+   Use ``ResidueGroup[ResidueGroup.resnames == '<name>']`` or
+   ``Segment.residues[Segment.residues == '<name>']`` instead. Note that this
+   *always* returns a :class:`ResidueGroup` and *never* a :class:`Residue`
+   (unlike the instant selector).
 
 - ``seg.<resname>`` selects residues with residue name ``<resname>``
 - returns a :class:`~MDAnalysis.core.groups.ResidueGroup`
@@ -334,6 +359,11 @@ Residue name selector
 
 Atom name selector
 ------------------
+
+.. deprecated:: 0.16.2
+   Use ``AtomGroup.select_atoms('name <name>')`` instead. Note that this
+   *always* returns an :class:`AtomGroup` and *never* an :class:`Atom` (unlike
+   the instant selector).
 
 - ``g.<atomname>`` selects a single atom or a group of atoms with name
   ``<atomname>``

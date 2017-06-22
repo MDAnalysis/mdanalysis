@@ -30,8 +30,6 @@ simulation is called the
 :class:`~MDAnalysis.core.groups.AtomGroup` and return another
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
-:mod:`~MDAnalysis.Timeseries` are a convenient way to analyse trajectories.
-
 To get started, load the Universe::
 
   u = Universe(topology_file, trajectory_file)
@@ -55,6 +53,12 @@ and write your own Python code.
 
 Flags
 -----
+
+.. deprecated:: 0.16.2
+   The flags registry will be removed in release 1.0.
+   Use keyword arguments for functions to obtain the desired behavior.
+   See issue `#782 <https://github.com/MDAnalysis/mdanalysis/issues/782>`_
+   for more details.
 
 (This is an advanced topic and can probably be skipped by most people.)
 
@@ -92,8 +96,9 @@ import six
 __all__ = ['AtomGroup', 'Selection', 'Timeseries']
 
 
-# set up flags for core routines (more convoluted than strictly necessary but should
-# be clean to add more flags if needed)
+# set up flags for core routines (more convoluted than strictly necessary but
+# should be clean to add more flags if needed)
+
 class Flags(dict):
     """Global registry of flags. Acts like a dict for item access.
 
@@ -109,6 +114,13 @@ class Flags(dict):
 
     New flags are added with the :meth:`Flags.register` method which takes a new :class:`Flag`
     instance as an argument.
+
+    .. deprecated:: 0.16.2
+       The flags registry will be removed in release 1.0.
+       Use keyword arguments for functions to obtain the desired behavior.
+       See issue `#782 <https://github.com/MDAnalysis/mdanalysis/issues/782>`_
+       for more details.
+
     """
 
     def __init__(self, *args):
@@ -180,7 +192,14 @@ class IdentityMapping(dict):
 
 
 class Flag(object):
-    """A Flag, essentially a variable that knows its default and legal values."""
+    """A Flag, essentially a variable that knows its default and legal values.
+
+    .. deprecated:: 0.16.2
+       The flags registry will be removed in release 1.0.
+       Use keyword arguments for functions to obtain the desired behavior.
+       See issue `#782 <https://github.com/MDAnalysis/mdanalysis/issues/782>`_
+       for more details.
+    """
 
     def __init__(self, name, default, mapping=None, doc=None):
         """Create a new flag which will be registered with Flags.
@@ -429,5 +448,4 @@ class flagsDocs(object):
 
 from . import groups
 from . import selection
-from . import Timeseries
 from . import AtomGroup

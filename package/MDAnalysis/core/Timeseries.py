@@ -21,9 +21,18 @@
 #
 
 
-"""
-Compute observable timeseries from trajectories --- :mod:`MDAnalysis.core.Timeseries`
+"""Compute observable timeseries from trajectories --- :mod:`MDAnalysis.core.Timeseries`
 =======================================================================================
+
+.. deprecated:: 0.16.2
+   The Timeseries functionality (in particular correl) will be removed in the
+   0.17 release. See issue `#1372
+   <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more details.
+   To extract coordinates efficiently one can use
+   :class:`MDAnalysis.analysis.base.AnalysisFromFunction` as shown in
+   :ref:`Creating an in-memory trajectory with AnalysisFromFunction
+   <create-in-memory-trajectory-with-AnalysisFromFunction>`.
+
 
 The collection of timeseries (such as :class:`Atom`, :class:`Bond`,
 :class:`Dihedral`...)  can be computed from a trajectory in one go, foregoing
@@ -61,7 +70,16 @@ Timeseries of observables
 from __future__ import division, absolute_import
 import warnings
 
+from numpy.lib.utils import deprecate
+
 from . import groups
+
+with warnings.catch_warnings():
+    warnings.simplefilter('always', DeprecationWarning)
+    warnings.warn(('The Timeseries module and TimeseriesCollection will be '
+                   'removed in the 0.17 release. See issue #1372 '
+                   'https://github.com/MDAnalysis/mdanalysis/issues/1373'),
+                  DeprecationWarning)
 
 
 class TimeseriesCollection(object):
@@ -81,8 +99,17 @@ class TimeseriesCollection(object):
        collection.clear()                             - clear the collection
        collection[i]                                  - access the i'th timeseries
        len(collection)                                - return the number of Timeseries added to the collection
+
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self):
         self.timeseries = []
 
@@ -186,9 +213,17 @@ class TimeseriesCollection(object):
 
 
 class Timeseries(object):
-    '''Base timeseries class - define subclasses for specific timeseries computations
+    '''Base timeseries class - define subclasses for specific timeseries computations.
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms, dsize):
         if isinstance(atoms, groups.AtomGroup):
             self.atoms = atoms.atoms
@@ -253,8 +288,16 @@ class Atom(Timeseries):
           can be a single :class:`~MDAnalysis.core.groups.Atom` object,
           a list of :class:`~MDAnalysis.core.groups.Atom` objects, or an
           :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms):
         if code not in ('x', 'y', 'z', 'v', 'w'):
             raise ValueError("Bad code")
@@ -281,10 +324,18 @@ class Bond(Timeseries):
 
            t = Bond(atoms)
 
-        *atoms* must contain 2 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`
+    *atoms* must contain 2 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
+    :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 2:
             raise ValueError("Bond timeseries requires a 2 atom selection")
@@ -296,10 +347,18 @@ class Angle(Timeseries):
 
            t = Angle(atoms)
 
-        atoms must contain 3 :class:`~MDAnalysis.core.groups.Atom` instances, either as a list or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`
+    atoms must contain 3 :class:`~MDAnalysis.core.groups.Atom` instances,
+    either as a list or an :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 3:
             raise ValueError("Angle timeseries requires a 3 atom selection")
@@ -311,10 +370,18 @@ class Dihedral(Timeseries):
 
            t = Dihedral(atoms)
 
-        atoms must contain 4 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`
+    atoms must contain 4 :class:`~MDAnalysis.core.groups.Atom` objects, either
+    as a list or an :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 4:
             raise ValueError("Dihedral timeseries requires a 4 atom selection")
@@ -326,11 +393,19 @@ class Distance(Timeseries):
 
            t = Distance(code, atoms)
 
-        code is one of 'd' (distance vector), or 'r' (scalar distance)
-        atoms must contain 2 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`
+    code is one of 'd' (distance vector), or 'r' (scalar distance) atoms must
+    contain 2 :class:`~MDAnalysis.core.groups.Atom` objects, either as a list
+    or an :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, code, atoms):
         if code not in ('d', 'r'):
             raise ValueError("Bad code")
@@ -348,10 +423,19 @@ class CenterOfGeometry(Timeseries):
 
            t = CenterOfGeometry(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
-        objects, or a :class:`~MDAnalysis.core.groups.AtomGroup`
+    *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom` objects, or
+    a :class:`~MDAnalysis.core.groups.AtomGroup`
+
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
 
@@ -364,10 +448,18 @@ class CenterOfMass(Timeseries):
 
            t = CenterOfMass(atoms)
 
-        *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom`
-        objects or a :class:`~MDAnalysis.core.groups.AtomGroup`
+    *atoms* can be a list of :class:`~MDAnalysis.core.groups.Atom` objects or a
+    :class:`~MDAnalysis.core.groups.AtomGroup`
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
+
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
 
@@ -380,41 +472,47 @@ class WaterDipole(Timeseries):
 
            d = WaterDipole(atoms)
 
-        *atoms* must contain 3 :class:`~MDAnalysis.core.groups.Atom`
-        objects, either as a list or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`; the first one *must* be
-        the oxygen, the other two are the hydrogens.
+    *atoms* must contain 3 :class:`~MDAnalysis.core.groups.Atom` objects,
+    either as a list or an :class:`~MDAnalysis.core.groups.AtomGroup`; the
+    first one *must* be the oxygen, the other two are the hydrogens.
 
-        The vector ``d``, multiplied by the partial charge on the oxygen atom
-        (e.g. *q* = -0.0.834 for TIP3P water), gives the actual dipole moment.
+    The vector ``d``, multiplied by the partial charge on the oxygen atom
+    (e.g. *q* = -0.0.834 for TIP3P water), gives the actual dipole moment.
 
-        The vector is calculated from the positions of the oxygen atom
-        (:math:`\mathbf{x}_{\text{O}}`) and the two hydrogen atoms
-        (:math:`\mathbf{x}_{\text{H}_1}`, :math:`\mathbf{x}_{\text{H}_2}`) as
+    The vector is calculated from the positions of the oxygen atom
+    (:math:`\mathbf{x}_{\text{O}}`) and the two hydrogen atoms
+    (:math:`\mathbf{x}_{\text{H}_1}`, :math:`\mathbf{x}_{\text{H}_2}`) as
 
-        .. math::
+    .. math::
 
-           \mathbf{d} = \mathbf{x}_{\text{O}} - \frac{1}{2}(\mathbf{x}_{\text{H}_1} + \mathbf{x}_{\text{H}_2})
+       \mathbf{d} = \mathbf{x}_{\text{O}} - \frac{1}{2}(\mathbf{x}_{\text{H}_1} + \mathbf{x}_{\text{H}_2})
 
-        and the dipole moment vector is
+    and the dipole moment vector is
 
-         .. math::
+    .. math::
 
-           \boldsymbol{\mu} = q_{\text{O}} \mathbf{d}
+       \boldsymbol{\mu} = q_{\text{O}} \mathbf{d}
 
-        .. Note::
+    .. Note::
 
-           This will only work for water models that have half of the oxygen
-           charge on each hydrogen. The vector :math:`\mathbf{d}` has the
-           opposite direction of the dipole moment; multiplying with the oxygen
-           charge (:math:`q_{\text{O}}<0`) will flip the direction and produce
-           the correct orientation.
+       This will only work for water models that have half of the oxygen charge
+       on each hydrogen. The vector :math:`\mathbf{d}` has the opposite
+       direction of the dipole moment; multiplying with the oxygen charge
+       (:math:`q_{\text{O}}<0`) will flip the direction and produce the correct
+       orientation.
 
-           There are no sanity checks; *if the first atom in a water
-           molecule is not oxygen then results will be wrong.*
+       There are no sanity checks; *if the first atom in a water
+       molecule is not oxygen then results will be wrong.*
+
+    .. deprecated:: 0.16.2
+       The Timeseries functionality (in particular correl) will be removed in
+       the 0.17 release. See issue `#1372
+       <https://github.com/MDAnalysis/mdanalysis/issues/1373>`_ for more
+       details. Use :class:`MDAnalysis.analysis.base.AnalysisFromFunction` instead.
 
     '''
 
+    @deprecate(message="This class will be removed in 0.17")
     def __init__(self, atoms):
         if not len(atoms) == 3:
             raise ValueError("WaterDipole timeseries requires a 3 atom selection")
