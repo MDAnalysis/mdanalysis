@@ -180,46 +180,46 @@ class TRZReader(base.ReaderBase):
                            **self._ts_kwargs)
 
         # structured dtype of a single trajectory frame
-        readarg = str(n_atoms) + 'f4'
+        readarg = str(n_atoms) + '<f4'
         frame_contents = [
-            ('p1', 'i4'),
-            ('nframe', 'i4'),
-            ('ntrj', 'i4'),
-            ('natoms', 'i4'),
-            ('treal', 'f8'),
-            ('p2', '2i4'),
-            ('box', '9f8'),
-            ('p3', '2i4'),
-            ('pressure', 'f8'),
-            ('ptensor', '6f8'),
-            ('p4', '3i4'),
-            ('etot', 'f8'),
-            ('ptot', 'f8'),
-            ('ek', 'f8'),
-            ('T', 'f8'),
-            ('p5', '6i4'),
+            ('p1', '<i4'),
+            ('nframe', '<i4'),
+            ('ntrj', '<i4'),
+            ('natoms', '<i4'),
+            ('treal', '<f8'),
+            ('p2', '<2i4'),
+            ('box', '<9f8'),
+            ('p3', '<2i4'),
+            ('pressure', '<f8'),
+            ('ptensor', '<6f8'),
+            ('p4', '<3i4'),
+            ('etot', '<f8'),
+            ('ptot', '<f8'),
+            ('ek', '<f8'),
+            ('T', '<f8'),
+            ('p5', '<6i4'),
             ('rx', readarg),
-            ('pad2', '2i4'),
+            ('pad2', '<2i4'),
             ('ry', readarg),
-            ('pad3', '2i4'),
+            ('pad3', '<2i4'),
             ('rz', readarg),
-            ('pad4', '2i4'),
+            ('pad4', '<2i4'),
             ('vx', readarg),
-            ('pad5', '2i4'),
+            ('pad5', '<2i4'),
             ('vy', readarg),
-            ('pad6', '2i4'),
+            ('pad6', '<2i4'),
             ('vz', readarg)]
         if not self.has_force:
-            frame_contents += [('pad7', 'i4')]
+            frame_contents += [('pad7', '<i4')]
         else:
             frame_contents += [
-                ('pad7', '2i4'),
+                ('pad7', '<2i4'),
                 ('fx', readarg),
-                ('pad8', '2i4'),
+                ('pad8', '<2i4'),
                 ('fy', readarg),
-                ('pad9', '2i4'),
+                ('pad9', '<2i4'),
                 ('fz', readarg),
-                ('pad10', 'i4')]
+                ('pad10', '<i4')]
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
@@ -227,11 +227,11 @@ class TRZReader(base.ReaderBase):
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
         self._headerdtype = np.dtype([
-            ('p1', 'i4'),
+            ('p1', '<i4'),
             ('title', '80c'),
-            ('p2', '2i4'),
-            ('force', 'i4'),
-            ('p3', 'i4')])
+            ('p2', '<2i4'),
+            ('force', '<i4'),
+            ('p3', '<i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
         if data['force'] == 10:
@@ -478,52 +478,52 @@ class TRZWriter(base.WriterBase):
 
         self._writeheader(title)
 
-        floatsize = str(n_atoms) + 'f4'
+        floatsize = str(n_atoms) + '<f4'
         self.frameDtype = np.dtype([
-            ('p1a', 'i4'),
-            ('nframe', 'i4'),
-            ('ntrj', 'i4'),
-            ('natoms', 'i4'),
-            ('treal', 'f8'),
-            ('p1b', 'i4'),
-            ('p2a', 'i4'),
-            ('box', '9f8'),
-            ('p2b', 'i4'),
-            ('p3a', 'i4'),
-            ('pressure', 'f8'),
-            ('ptensor', '6f8'),
-            ('p3b', 'i4'),
-            ('p4a', 'i4'),
-            ('six', 'i4'),
-            ('etot', 'f8'),
-            ('ptot', 'f8'),
-            ('ek', 'f8'),
-            ('T', 'f8'),
-            ('blanks', '2f8'),
-            ('p4b', 'i4'),
-            ('p5a', 'i4'),
+            ('p1a', '<i4'),
+            ('nframe', '<i4'),
+            ('ntrj', '<i4'),
+            ('natoms', '<i4'),
+            ('treal', '<f8'),
+            ('p1b', '<i4'),
+            ('p2a', '<i4'),
+            ('box', '<9f8'),
+            ('p2b', '<i4'),
+            ('p3a', '<i4'),
+            ('pressure', '<f8'),
+            ('ptensor', '<6f8'),
+            ('p3b', '<i4'),
+            ('p4a', '<i4'),
+            ('six', '<i4'),
+            ('etot', '<f8'),
+            ('ptot', '<f8'),
+            ('ek', '<f8'),
+            ('T', '<f8'),
+            ('blanks', '<2f8'),
+            ('p4b', '<i4'),
+            ('p5a', '<i4'),
             ('rx', floatsize),
-            ('p5b', 'i4'),
-            ('p6a', 'i4'),
+            ('p5b', '<i4'),
+            ('p6a', '<i4'),
             ('ry', floatsize),
-            ('p6b', 'i4'),
-            ('p7a', 'i4'),
+            ('p6b', '<i4'),
+            ('p7a', '<i4'),
             ('rz', floatsize),
-            ('p7b', 'i4'),
-            ('p8a', 'i4'),
+            ('p7b', '<i4'),
+            ('p8a', '<i4'),
             ('vx', floatsize),
-            ('p8b', 'i4'),
-            ('p9a', 'i4'),
+            ('p8b', '<i4'),
+            ('p9a', '<i4'),
             ('vy', floatsize),
-            ('p9b', 'i4'),
-            ('p10a', 'i4'),
+            ('p9b', '<i4'),
+            ('p10a', '<i4'),
             ('vz', floatsize),
-            ('p10b', 'i4')])
+            ('p10b', '<i4')])
 
     def _writeheader(self, title):
         hdt = np.dtype([
-            ('pad1', 'i4'), ('title', '80c'), ('pad2', 'i4'),
-            ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
+            ('pad1', '<i4'), ('title', '80c'), ('pad2', '<i4'),
+            ('pad3', '<i4'), ('nrec', '<i4'), ('pad4', '<i4')])
         out = np.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
         out['title'] = title + ' ' * (80 - len(title))
