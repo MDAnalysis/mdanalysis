@@ -36,6 +36,8 @@ from __future__ import division, absolute_import
 from six.moves import range
 
 import numpy as np
+import scipy.optimize
+
 import logging
 
 from .. import NoDataError
@@ -165,13 +167,10 @@ def fit_exponential_decay(x, y):
     -----
     This function assumes that data starts at 1.0 and decays to 0.0
 
-    Requires scipy
     """
-    from scipy.optimize import curve_fit
-
     def expfunc(x, a):
         return np.exp(-x/a)
 
-    a = curve_fit(expfunc, x, y)[0][0]
+    a = scipy.optimize.curve_fit(expfunc, x, y)[0][0]
 
     return a

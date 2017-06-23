@@ -155,6 +155,8 @@ Examples
 from __future__ import division, absolute_import
 from six.moves import zip
 import numpy as np
+import scipy.optimize
+
 import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
@@ -162,7 +164,7 @@ from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
 
 
 class HydrogenBondAutoCorrel(object):
-    """Perform a time autocorrelation of the hydrogen bonds in the system. 
+    """Perform a time autocorrelation of the hydrogen bonds in the system.
 
     Parameters
     ----------
@@ -421,8 +423,10 @@ class HydrogenBondAutoCorrel(object):
             Initial guess for the leastsq fit, must match the shape of the
             expected coefficients
 
-        Continuous defition results are fitted to a double exponential,
-        intermittent definition are fit to a triple exponential.
+
+        Continuous defition results are fitted to a double exponential with
+        :func:`scipy.optimize.leastsq`, intermittent definition are fit to a
+        triple exponential.
 
         The results of this fitting procedure are saved into the *fit*,
         *tau* and *estimate* keywords in the solution dict.
@@ -434,14 +438,14 @@ class HydrogenBondAutoCorrel(object):
          - *estimate* contains the estimate provided by the fit of the time
            autocorrelation function
 
-        In addition, the output of the leastsq function is saved into the
-        solution dict
+        In addition, the output of the :func:`~scipy.optimize.leastsq` function
+        is saved into the solution dict
 
          - *infodict*
          - *mesg*
          - *ier*
+
         """
-        from scipy.optimize import leastsq
 
         if self.solution['results'] is None:
             raise ValueError(
@@ -498,9 +502,8 @@ class HydrogenBondAutoCorrel(object):
             if p_guess is None:
                 p_guess = (0.5, 10 * self.sample_time, self.sample_time)
 
-            p, cov, infodict, mesg, ier = leastsq(err, p_guess,
-                                                  args=(time, results),
-                                                  full_output=True)
+                p, cov, infodict, mesg, ier = scipy.optimize.leastsq(
+                err, p_guess, args=(time, results), full_output=True)
             self.solution['fit'] = p
             A1, tau1, tau2 = p
             A2 = 1 - A1
@@ -512,9 +515,8 @@ class HydrogenBondAutoCorrel(object):
                 p_guess = (0.33, 0.33, 10 * self.sample_time,
                            self.sample_time, 0.1 * self.sample_time)
 
-            p, cov, infodict, mesg, ier = leastsq(err, p_guess,
-                                                  args=(time, results),
-                                                  full_output=True)
+            p, cov, infodict, mesg, ier = scipy.optimize.leastsq(
+                err, p_guess, args=(time, results), full_output=True)
             self.solution['fit'] = p
             A1, A2, tau1, tau2, tau3 = p
             A3 = 1 - A1 - A2

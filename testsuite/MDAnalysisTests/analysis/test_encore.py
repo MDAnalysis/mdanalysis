@@ -118,18 +118,18 @@ class TestEncore(TestCase):
 
         incremented_triangular_matrix = triangular_matrix + scalar
         assert_equal(incremented_triangular_matrix[0,1], expected_value + scalar,
-                        err_msg="Error in TriangularMatrix: addition of scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: addition of scalar gave"
+                     "inconsistent results")
 
         triangular_matrix += scalar
         assert_equal(triangular_matrix[0,1], expected_value + scalar,
-                        err_msg="Error in TriangularMatrix: addition of scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: addition of scalar gave"
+                     "inconsistent results")
 
         multiplied_triangular_matrix_2 = triangular_matrix_2 * scalar
         assert_equal(multiplied_triangular_matrix_2[0,1], expected_value * scalar,
-			err_msg="Error in TriangularMatrix: multiplication by scalar gave\
-inconsistent results")
+                     err_msg="Error in TriangularMatrix: multiplication by scalar gave"
+                     "inconsistent results")
 
         triangular_matrix_2 *= scalar
         assert_equal(triangular_matrix_2[0,1], expected_value * scalar,
@@ -299,8 +299,6 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_dres_to_self(self):
         results, details = encore.dres([self.ens1, self.ens1])
         result_value = results[0,1]
@@ -308,8 +306,6 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_dres(self):
         results, details = encore.dres([self.ens1, self.ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
@@ -317,8 +313,6 @@ inconsistent results")
         self.assertLess(result_value, upper_bound,
                         msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound))
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_dres_without_superimposition(self):
         distance_matrix = encore.get_distance_matrix(
             encore.merge_universes([self.ens1, self.ens2]),
@@ -338,8 +332,6 @@ inconsistent results")
             assert_almost_equal(ev, results[i], decimal=2,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_dres_convergence(self):
         expected_values = [ 0.3, 0.]
         results = encore.dres_convergence(self.ens1, 10)
@@ -399,8 +391,6 @@ inconsistent results")
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
     @dec.slow
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def test_dres_error_estimation(self):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
@@ -847,18 +837,9 @@ class TestEncoreImportWarnings(object):
         warnings.simplefilter('always')
         assert_warns(ImportWarning, importlib.import_module, package)
 
-    @block_import('scipy')
-    def _check_scipy_import_warns(self, package):
-        warnings.simplefilter('always')
-        assert_warns(ImportWarning, importlib.import_module, package)
-
     def test_import_warnings(self):
         for pkg in (
                 'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
                 'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
         ):
             yield self._check_sklearn_import_warns, pkg
-        for pkg in (
-                'MDAnalysis.analysis.encore.similarity',
-        ):
-            yield self._check_scipy_import_warns, pkg
