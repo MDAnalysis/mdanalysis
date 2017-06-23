@@ -12,6 +12,8 @@ from MDAnalysis.core.groups import AtomGroup
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
+from unittest import TestCase
+
 
 class TestMMTFParser(ParserBase):
     __test__ = False
