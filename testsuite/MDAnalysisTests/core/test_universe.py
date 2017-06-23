@@ -452,6 +452,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected differences between arrays.")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_with_start_stop():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -461,6 +463,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_without_start():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -470,6 +474,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_without_stop():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -480,6 +486,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_step_without_start_stop():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -490,6 +498,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_step_with_start_stop():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -500,6 +510,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_step_dt():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         times = [ts.time for ts in universe.trajectory]
@@ -510,6 +522,8 @@ class TestInMemoryUniverse(object):
                         + "dt not updated with step information")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_negative_start():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
@@ -520,6 +534,8 @@ class TestInMemoryUniverse(object):
                      err_msg="Unexpected shape of trajectory timeseries")
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_slicing_negative_stop():
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame

@@ -644,6 +644,9 @@ class NamedStream(io.IOBase):
     def __iter__(self):
         return iter(self.stream)
 
+    def __next__(self):
+        return self.stream.__next__()
+
     def __enter__(self):
         # do not call the stream's __enter__ because the stream is already open
         return self
@@ -799,6 +802,12 @@ class NamedStream(io.IOBase):
         except AttributeError:
             # IOBase.fileno does not raise IOError as advertised so we do this here
             raise IOError("This NamedStream does not use a file descriptor.")
+
+    def readline(self):
+        try:
+            return self.stream.readline()
+        except AttributeError:
+            return super(NamedStream, self).readline()
 
     # fake the important parts of the string API
     # (other methods such as rfind() are automatically dealt with via __getattr__)

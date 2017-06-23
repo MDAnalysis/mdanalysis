@@ -601,7 +601,7 @@ class TestAddingResidues(object):
         try:
             u.add_Residue(segment=u.segments[0], resid=42)
         except NoDataError as e:
-            assert_('resname' in e[0])
+            assert_('resname' in str(e))
         else:
             raise AssertionError
 
@@ -612,8 +612,8 @@ class TestAddingResidues(object):
         try:
             u.add_Residue(segment=u.segments[0])
         except NoDataError as e:
-            assert_('resname' in e[0])
-            assert_('resid' in e[0])
+            assert_('resname' in str(e))
+            assert_('resid' in str(e))
         else:
             raise AssertionError
 
@@ -636,7 +636,7 @@ class TestAddingResidues(object):
         try:
             u.add_Segment()
         except NoDataError as e:
-            assert_('segid' in e[0])
+            assert_('segid' in str(e))
         else:
             raise AssertionError
 
