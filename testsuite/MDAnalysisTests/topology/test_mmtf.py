@@ -1,17 +1,16 @@
 from __future__ import absolute_import
-
-from unittest import TestCase
-
-import MDAnalysis as mda
-import mmtf
-import mock
-from MDAnalysis.core.groups import AtomGroup
-from MDAnalysisTests.datafiles import MMTF, MMTF_gz
-from MDAnalysisTests.topology.base import ParserBase
 from numpy.testing import (
     assert_,
     assert_array_equal,
 )
+import mmtf
+import mock
+
+import MDAnalysis as mda
+from MDAnalysis.core.groups import AtomGroup
+
+from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
 
 class TestMMTFParser(ParserBase):
