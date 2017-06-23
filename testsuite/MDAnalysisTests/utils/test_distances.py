@@ -20,17 +20,18 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import division, absolute_import
-
 import MDAnalysis
 import MDAnalysis.lib.distances
-import numpy as np
-from MDAnalysis.lib import mdamath
-from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
-from MDAnalysisTests import parser_not_found
-from nose.plugins.attrib import attr
-from numpy.testing import (TestCase, dec, raises, assert_,
-                           assert_almost_equal, assert_equal, assert_raises, )
 
+import numpy as np
+from numpy.testing import (TestCase, dec, raises, assert_,
+                           assert_almost_equal, assert_equal, assert_raises,)
+
+from nose.plugins.attrib import attr
+
+from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
+from MDAnalysis.lib import mdamath
+from MDAnalysisTests import parser_not_found
 
 class _TestDistanceArray(TestCase):
     # override backend in test classes
@@ -121,7 +122,6 @@ class _TestDistanceArrayDCD(TestCase):
         del self.trajectory
         del self.ca
 
-    @attr('issue')
     def test_simple(self):
         U = self.universe
         self.trajectory.rewind()

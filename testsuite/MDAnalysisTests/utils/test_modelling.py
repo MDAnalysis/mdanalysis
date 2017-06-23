@@ -21,18 +21,29 @@
 #
 from __future__ import absolute_import, print_function
 
-import os
-
 import MDAnalysis
+from MDAnalysis.tests.datafiles import (
+    PSF,
+    DCD,
+    capping_input,
+    capping_output,
+    capping_ace,
+    capping_nma,
+    merge_protein,
+    merge_ligand,
+    merge_water
+)
 import MDAnalysis.core.groups
-from MDAnalysis import Merge
-from MDAnalysis.analysis.align import alignto
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.tests.datafiles import PSF, DCD, capping_input, capping_output, capping_ace, capping_nma, \
-    merge_protein, merge_ligand, merge_water
 from MDAnalysisTests import parser_not_found, tempdir
+
 from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
                            assert_array_equal)
+
+import os
+
+from MDAnalysis import Merge
+from MDAnalysis.analysis.align import alignto
 
 
 def capping(ref, ace, nma, output):
@@ -48,12 +59,12 @@ def capping(ref, ace, nma, output):
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a
     #  post-processing step
     alignto(ace, ref, select={
-        "mobile": "resid {0} and backbone".format(resid_min),
-        "reference": "resid {0} and backbone".format(resid_min)},
+            "mobile": "resid {0} and backbone".format(resid_min),
+            "reference": "resid {0} and backbone".format(resid_min)},
             strict=True)
     alignto(nma, ref, select={
-        "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
-        "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
+            "mobile": "resid {0} and backbone and not (resname NMA NME)".format(resid_max),
+            "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
             strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
@@ -152,9 +163,9 @@ class TestMerge(TestCase):
         # Check that the output Universe has the same number of residues and
         # segments as the starting AtomGroups
         assert_equal(len(u0.residues), (len(u1.residues) + len(u2.residues) +
-                                        len(u3.residues)))
+                                                           len(u3.residues)))
         assert_equal(len(u0.segments), (len(u1.segments) + len(u2.segments) +
-                                        len(u3.segments)))
+                                                           len(u3.segments)))
 
         # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe

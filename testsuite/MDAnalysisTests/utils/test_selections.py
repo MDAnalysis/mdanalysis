@@ -22,17 +22,19 @@
 
 # Test the selection exporters in MDAnalysis.selections
 from __future__ import absolute_import
+# use StringIO and NamedStream to write to memory instead to temp files
+from six.moves import StringIO
 
 import re
 
-import MDAnalysis
 import numpy as np
-from MDAnalysis.lib.util import NamedStream
+from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
+
 from MDAnalysis.tests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found
-from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
-# use StringIO and NamedStream to write to memory instead to temp files
-from six.moves import StringIO
+
+import MDAnalysis
+from MDAnalysis.lib.util import NamedStream
 
 
 class _SelectionWriter(TestCase):
@@ -105,10 +107,10 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
     filename = "CA.ndx"
     ref_name = "CA_selection"
     ref_indices = ndx2array(
-        ['5 22 46 65 84 103 122 129 141 153 160 170 \n',
-         '177 199 206 220 237 247 264 284 303 320 335 357 \n',
-         ]
-    )
+        [ '5 22 46 65 84 103 122 129 141 153 160 170 \n',
+          '177 199 206 220 237 247 264 284 303 320 335 357 \n',
+          ]
+        )
 
     def _assert_selectionstring(self):
         header = self.namedfile.readline().strip()
@@ -192,9 +194,9 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
     writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
     ref_name, ref_indices = spt2array(
-        ('@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
-         ' 246 263 283 302 319 334 356});')
-    )
+        ( '@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
+          ' 246 263 283 302 319 334 356});')
+        )
 
     def _assert_selectionstring(self):
         header, indices = spt2array(self.namedfile.readline())

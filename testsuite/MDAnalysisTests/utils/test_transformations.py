@@ -21,15 +21,18 @@
 #
 from __future__ import division, absolute_import
 
-import unittest
+from six.moves import range
 from itertools import permutations
-from unittest import TestCase
 
 import numpy as np
-from MDAnalysis.lib import transformations as t
+import unittest
 from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
                            assert_array_equal)
-from six.moves import range
+
+from MDAnalysis.lib import transformations as t
+
+from unittest import TestCase
+
 
 """
 Testing transformations is weird because there are 2 versions of many of
@@ -565,7 +568,7 @@ class _QuaternionFromMatrix(object):
         q = self.f(np.diag([1., -1., -1., 1.]))
         check = (np.allclose(
             q, [0, 1, 0, 0], atol=_ATOL) or np.allclose(
-            q, [0, -1, 0, 0], atol=_ATOL))
+                q, [0, -1, 0, 0], atol=_ATOL))
         assert_equal(check, True)
 
     def test_quaternion_from_matrix_3(self):
@@ -886,7 +889,7 @@ def test_transformations_old_module():
         raise AssertionError("MDAnalysis.core.transformations not importable. "
                              "Only remove for 1.0")
 
-        # NOTE: removed this test with release 1.0 when we remove the stub
+    # NOTE: removed this test with release 1.0 when we remove the stub
 
 
 def test_rotaxis_equal_vectors():

@@ -20,15 +20,20 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+from six.moves import cPickle
+
+import MDAnalysis as mda
+from numpy.testing import (
+    TestCase,
+    assert_array_equal,
+    assert_,
+    assert_raises,
+    assert_equal
+)
 
 import gc
 
-import MDAnalysis as mda
 from MDAnalysisTests.datafiles import PDB_small
-from numpy.testing import (TestCase,
-                           assert_array_equal, assert_, assert_raises,
-                           assert_equal)
-from six.moves import cPickle
 
 
 class TestAtomGroupPickle(TestCase):
