@@ -17,6 +17,9 @@ mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
 
   * 0.17.0
 
+Deprecations
+  * deprecated core.Timeseries module (Issue #1383)
+
 Enhancements
 
 Deprecations

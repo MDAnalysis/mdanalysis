@@ -476,26 +476,8 @@ class Universe(object):
         verbose = _set_verbose(verbose, quiet, default=False)
 
         if not isinstance(self.trajectory, MemoryReader):
-            # Try to extract coordinates using Timeseries object
-            # This is significantly faster, but only implemented for certain
-            # trajectory file formats
-            try:
-                coordinates = self.trajectory.timeseries(
-                    self.atoms, start=start, stop=stop, step=step, format='fac')
-            # if the Timeseries extraction fails,
-            # fall back to a slower approach
-            except AttributeError:
-                n_frames = len(range(
-                    *self.trajectory.check_slice_indices(start, stop, step)
-                ))
-                pm_format = '{step}/{numsteps} frames copied to memory (frame {frame})'
-                pm = ProgressMeter(n_frames, interval=1,
-                                   verbose=verbose, format=pm_format)
-                coordinates = []  # TODO: use pre-allocated array
-                for i, ts in enumerate(self.trajectory[start:stop:step]):
-                    coordinates.append(np.copy(ts.positions))
-                    pm.echo(i, frame=ts.frame)
-                coordinates = np.array(coordinates)
+            coordinates = self.trajectory.timeseries(
+                self.atoms, start=start, stop=stop, step=step, format='fac')
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
