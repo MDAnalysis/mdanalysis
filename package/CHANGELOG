@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
 
-  * 0.17.0
+  * 0.17.0 kain88-de
 
 Enhancements
 
@@ -24,6 +24,7 @@ Deprecations
 Fixes
 
 Changes
+  * remove deprecated TimeSeriesCollection
 
 
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
