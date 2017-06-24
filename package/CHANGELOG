@@ -13,9 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
+mm/dd/17 richardjgowers, rathann, orbeckst
 
-  * 0.17.0 kain88-de
+  * 0.17.0
 
 Enhancements
 
@@ -34,7 +34,7 @@ Changes
   * remove deprecated analysis.rms `target` keyword from functions
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
+mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
