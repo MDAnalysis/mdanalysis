@@ -93,9 +93,6 @@ from . import base
 from . import core
 # Add the c functions to their respective classes so they act as class methods
 from . import _dcdmodule
-# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
-from . import dcdtimeseries
-
 
 
 class Timestep(base.Timestep):
@@ -400,8 +397,6 @@ class DCDReader(base.ReaderBase):
            random access into the trajectory (i corresponds to frame number)
         ``data = dcd.timeseries(...)``
            retrieve a subset of coordinate information for a group of atoms
-        ``data = dcd.correl(...)``
-           populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
 
     Note
     ----
@@ -579,57 +574,6 @@ class DCDReader(base.ReaderBase):
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
-    @deprecate(message="This method will be removed in 0.17")
-    def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
-        """
-Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
-with time series computed from the trajectory.
-
-Calling this method will iterate through the whole trajectory and
-perform the calculations prescribed in `timeseries`.
-
-Parameters
-----------
-timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-     The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
-     of computations should be performed on the data in this trajectory.
-start :  int (optional)
-     Begin reading the trajectory at frame index `start` (where 0 is the index
-     of the first frame in the trajectory); the default ``None`` starts
-     at the beginning.
-stop : int (optional)
-     End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
-     The trajectory is read to the end with the default ``None``.
-step : int (optional)
-     Step size for reading; the default ``None`` is equivalent to 1 and means to
-     read every frame.
-
-Note
-----
-The `correl` functionality is only implemented for DCD trajectories and
-the :class:`DCDReader`.
-
-
-.. deprecated:: 0.16.0
-   `skip` has been deprecated in favor of the standard keyword `step`.
-
-        """
-        if skip is not None:
-            step = skip
-            warnings.warn("Skip is deprecated and will be removed in"
-                          "in 1.0. Use step instead.",
-                          category=DeprecationWarning)
-
-        start, stop, step = self.check_slice_indices(start, stop, step)
-        atomlist = timeseries._getAtomList()
-        format = timeseries._getFormat()
-        lowerb, upperb = timeseries._getBounds()
-        sizedata = timeseries._getDataSize()
-        atomcounts = timeseries._getAtomCounts()
-        auxdata = timeseries._getAuxData()
-        return self._read_timecorrel(atomlist, atomcounts, format, auxdata,
-                                     sizedata, lowerb, upperb, start, stop, step)
-
     def close(self):
         if self.dcdfile is not None:
             self._finish_dcd_read()
@@ -709,6 +653,3 @@ DCDReader._read_timeseries = types.MethodType(_dcdmodule.__read_timeseries, None
 DCDWriter._write_dcd_header = types.MethodType(_dcdmodule.__write_dcd_header, None, DCDWriter)
 DCDWriter._write_next_frame = types.MethodType(_dcdmodule.__write_next_frame, None, DCDWriter)
 DCDWriter._finish_dcd_write = types.MethodType(_dcdmodule.__finish_dcd_write, None, DCDWriter)
-
-#DCDReader._read_timeseries = types.MethodType(dcdtimeseries.__read_timeseries, None, DCDReader)
-DCDReader._read_timecorrel = types.MethodType(dcdtimeseries.__read_timecorrel, None, DCDReader)

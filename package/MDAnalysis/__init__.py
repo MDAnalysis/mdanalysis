@@ -143,8 +143,7 @@ the OPLS/AA force field.
 """
 from __future__ import absolute_import
 
-__all__ = ['Universe', 'as_Universe', 'Writer', 'collection',
-           'fetch_mmtf']
+__all__ = ['Universe', 'as_Universe', 'Writer',
 
 import logging
 import warnings
@@ -197,41 +196,6 @@ from .coordinates.core import writer as Writer
 
 # After Universe import
 from .coordinates.MMTF import fetch_mmtf
-
-# REMOVE in 0.17.0
-class _MockTimeseriesCollection(object):
-    """When accessed the first time, emit warning and raise NotImplementedError.
-
-    This breaks existing code that relies on MDAnalysis.collection by
-    replacing ::
-
-      collection = Timeseries.TimeseriesCollection()
-
-    with::
-
-      collection = _MockTimeseriesCollection()
-
-    """
-
-    def __getattr__(self, name):
-        self._warn_and_die()
-
-    def __getitem__(self, index):
-        self._warn_and_die()
-
-    def _warn_and_die(self):
-        import logging
-        msg = "collection = Timeseries.TimeseriesCollection() will be removed in 0.17.0\n" \
-              "and MDAnalysis.collection has been disabled. If you want to use it, \n" \
-              "instantiate a collection yourself:\n\n" \
-              "   from MDAnalysis.core.Timeseries import TimeseriesCollection\n" \
-              "   collection = TimeseriesCollection()\n\n" \
-              "Note that release 0.16.2 is the LAST RELEASE with TimeseriesCollection."
-        logging.getLogger("MDAnalysis").warn(msg)
-        warnings.warn(msg, DeprecationWarning)
-        raise NotImplementedError("TimeseriesCollection will be REMOVED IN THE NEXT RELEASE 0.17.0")
-collection = _MockTimeseriesCollection()
-del _MockTimeseriesCollection
 
 from .migration.ten2eleven import ten2eleven
 

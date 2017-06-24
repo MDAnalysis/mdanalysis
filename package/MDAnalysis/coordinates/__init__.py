@@ -538,7 +538,6 @@ deal with missing methods gracefully.
  ``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
      returns a subset of coordinate data
 
-
 Attributes
 ..........
 
