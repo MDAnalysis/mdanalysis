@@ -76,12 +76,6 @@ class TestHydrogenBondAnalysis(object):
                      self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds")
         assert_equal(h.timesteps, [0.0])
 
-    def test_zero_vs_1based(self):
-        h = self._run()
-        if h.timeseries[0]:
-            assert_equal((int(h.timeseries[0][0][0])-int(h.timeseries[0][0][2])),1)
-            assert_equal((int(h.timeseries[0][0][1])-int(h.timeseries[0][0][3])),1)
-
     def test_generate_table(self):
         h = self._run()
         h.generate_table()
@@ -114,7 +108,7 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
         u = MDAnalysis.Universe(StringIO(gro), format="gro")
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u)
         h.run(verbose=False)
-        assert_equal(h.timeseries[0][0][4], 'ALA2:H1')
+        assert_equal(h.timeseries[0][0][2], 'ALA2:H1')
 
     @staticmethod
     def test_true_traj():
@@ -278,12 +272,10 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # with keys being field names in h.table
         self.columns = {
             'time': 0,
-            'donor_idx': 1,
-            'acceptor_idx': 2,
-            'donor_index': 3,
-            'acceptor_index': 4,
-            'distance': 7,
-            'angle': 8,
+            'donor_index': 1,
+            'acceptor_index': 2,
+            'distance': 5,
+            'angle': 6,
         }
 
         # hackish way to allow looping over self.reference and generating tests

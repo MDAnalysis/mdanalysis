@@ -162,37 +162,6 @@ class TestAlign(TestCase):
         rmsd_weights = align.alignto(self.universe, self.reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
-    @dec.slow
-    @attr('issue')
-    def test_rms_fit_trj(self):
-        """Testing align.rms_fit_trj() for all atoms (Issue 58)"""
-        # align to *last frame* in target... just for the heck of it
-        self.reference.trajectory[-1]
-        align.rms_fit_trj(self.universe, self.reference, select="all",
-                          filename=self.outfile, verbose=False)
-        fitted = mda.Universe(PSF, self.outfile)
-        # RMSD against the reference frame
-        # calculated on Mac OS X x86 with MDA 0.7.2 r689
-        # VMD: 6.9378711
-        self._assert_rmsd(fitted, 0, 6.929083044751061)
-        self._assert_rmsd(fitted, -1, 0.0)
-
-    @dec.slow
-    @attr('issue')
-    def test_rms_fit_trj_defaultfilename(self):
-        filename = 'rmsfit_' + os.path.basename(self.universe.trajectory.filename)
-        with tempdir.in_tempdir():
-            # Need to pretend to have the universe trajectory INSIDE the tempdir because
-            # filename=None uses the full path
-            self.universe.trajectory.filename = os.path.abspath(
-                os.path.join(
-                    os.curdir,
-                    os.path.basename(self.universe.trajectory.filename)))
-            #test filename=none and different selection
-            align.rms_fit_trj(self.universe, self.reference, select="name CA",
-                              filename=None, verbose=False)
-            assert_(os.path.exists(filename),
-                    "rms_fit_trj did not write to {}".format(filename))
 
     def test_AlignTraj(self):
         self.reference.trajectory[-1]
