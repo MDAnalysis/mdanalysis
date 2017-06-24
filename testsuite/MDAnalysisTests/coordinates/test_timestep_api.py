@@ -39,7 +39,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-
+from numpy.testing import TestCase
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
@@ -67,7 +67,7 @@ class TestBaseTimestep(BaseTimestepTest):
 # TODO: Merge this into generic Reader tests
 # These tests are all included in BaseReaderTest
 # Once Readers use that TestClass, delete this one
-class BaseTimestepInterfaceTest(object):
+class BaseTimestepInterfaceTest(TestCase):
     """Test the Timesteps created by Readers
 
     This checks that Readers are creating correct Timestep objects,
@@ -77,6 +77,8 @@ class BaseTimestepInterfaceTest(object):
 
     See Issue #250 for discussion
     """
+    __test__ = False
+
     def tearDown(self):
         del self.ts
         del self.u
@@ -89,12 +91,14 @@ class BaseTimestepInterfaceTest(object):
 
 
 class TestCRD(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(XYZ_five, INPCRD)
         self.ts = u.trajectory.ts
 
 
 class TestDCD(BaseTimestepInterfaceTest):
+    __test__ = True
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -103,24 +107,28 @@ class TestDCD(BaseTimestepInterfaceTest):
 
 
 class TestDLPConfig(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(DLP_CONFIG, format='CONFIG')
         self.ts = u.trajectory.ts
 
 
 class TestDLPHistory(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(DLP_HISTORY, format='HISTORY')
         self.ts = u.trajectory.ts
 
 
 class TestDMS(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(DMS)
         self.ts = u.trajectory.ts
 
 
 class TestGMS(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT,
                                   format='GMS', topology_format='GMS')
@@ -128,18 +136,22 @@ class TestGMS(BaseTimestepInterfaceTest):
 
 
 class TestGRO(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(GRO)
         self.ts = u.trajectory.ts
 
 
 class TestINPCRD(BaseTimestepInterfaceTest):
+    __test__ = True
     def setUp(self):
         u = self.u = mda.Universe(XYZ_five, INPCRD)
         self.ts = u.trajectory.ts
 
 
 class TestLAMMPS(BaseTimestepInterfaceTest):
+    __test__ = True
+
     @dec.skipif(parser_not_found('LAMMPS'),
                 'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
@@ -148,6 +160,8 @@ class TestLAMMPS(BaseTimestepInterfaceTest):
 
 
 class TestLAMMPSDCD(BaseTimestepInterfaceTest):
+    __test__ = True
+
     @dec.skipif(parser_not_found('LAMMPS'),
                 'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
@@ -158,36 +172,48 @@ class TestLAMMPSDCD(BaseTimestepInterfaceTest):
 
 
 class TestMOL2(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(mol2_molecules)
         self.ts = u.trajectory.ts
 
 
 class TestPDB(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(PDB_small)
         self.ts = u.trajectory.ts
 
 
 class TestPDBQT(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(PDBQT_input)
         self.ts = u.trajectory.ts
 
 
 class TestPQR(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(PQR)
         self.ts = u.trajectory.ts
 
 
 class TestTRJ(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(PRM, TRJ)
         self.ts = u.trajectory.ts
 
 
 class TestNCDF(BaseTimestepInterfaceTest):
+    __test__ = True
+
     @dec.skipif(module_not_found("netCDF4"),
                 "Test skipped because netCDF is not available.")
     def setUp(self):
@@ -196,12 +222,16 @@ class TestNCDF(BaseTimestepInterfaceTest):
 
 
 class TestTRR(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(GRO, TRR)
         self.ts = u.trajectory.ts
 
 
 class TestTRZ(BaseTimestepInterfaceTest):
+    __test__ = True
+
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
@@ -210,6 +240,8 @@ class TestTRZ(BaseTimestepInterfaceTest):
 
 
 class TestXTC(BaseTimestepInterfaceTest):
+    __test__ = True
+
     def setUp(self):
         u = self.u = mda.Universe(GRO, XTC)
         self.ts = u.trajectory.ts

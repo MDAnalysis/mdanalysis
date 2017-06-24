@@ -29,9 +29,9 @@ from numpy.testing import (
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
 from MDAnalysis.coordinates.MMTF import MMTFReader
+from numpy.testing import TestCase
 
-
-class TestMMTFReader(object):
+class TestMMTFReader(TestCase):
     def setUp(self):
         self.r = MMTFReader(MMTF)
 
@@ -59,7 +59,7 @@ class TestMMTFReader(object):
         # should be single frame
         assert_(len(self.r) == 1)
 
-class TestMMTFReaderGZ(object):
+class TestMMTFReaderGZ(TestCase):
     def setUp(self):
         self.r = MMTFReader(MMTF_gz)
 

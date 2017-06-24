@@ -34,9 +34,9 @@ from numpy.testing import (
 
 import os
 from MDAnalysisTests import tempdir, make_Universe
+from numpy.testing import TestCase
 
-
-class TestPDBQT(object):
+class TestPDBQT(TestCase):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = mda.Universe(PDBQT_input)  # PDBQT
@@ -86,7 +86,7 @@ class TestPDBQT(object):
                      "wrong frame number (0-based, should be 0 for single frame readers)")
 
 
-class TestPDBQTWriter(object):
+class TestPDBQTWriter(TestCase):
     def setUp(self):
         self.reqd_attributes = ['names', 'types', 'resids', 'resnames', 'radii', 'charges']
         self.tmpdir = tempdir.TempDir()

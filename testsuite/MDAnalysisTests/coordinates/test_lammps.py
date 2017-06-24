@@ -37,17 +37,20 @@ from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
 )
 
+from unittest import TestCase
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
     assert_raises(ValueError, DATAReader, 'filename')
 
 
-class _TestLammpsData_Coords(object):
+class _TestLammpsData_Coords(TestCase):
     """Tests using a .data file for loading single frame.
 
     All topology loading from MDAnalysisTests.data is done in test_topology
     """
+
+    __test__ = False
 
     def setUp(self):
         self.u = mda.Universe(self.filename)
@@ -83,13 +86,14 @@ class _TestLammpsData_Coords(object):
 
 
 class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
-    pass
+    __test__ = True
 
 
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
-    pass
+    __test__ = True
 
-class _TestLAMMPSDATAWriter(object):
+class _TestLAMMPSDATAWriter(TestCase):
+    __test__ = False
     all_attrs = set(['types', 'bonds', 'angles', 'dihedrals', 'impropers'])
     all_numerical_attrs = set(['masses', 'charges', 'velocities', 'positions'])
 
@@ -145,18 +149,23 @@ class _TestLAMMPSDATAWriter(object):
 
 
 class TestLAMMPSDATAWriter_data(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata
 
 class TestLAMMPSDATAWriter_mini(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata_mini
 
 class TestLAMMPSDATAWriter_cnt(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPScnt
 
 class TestLAMMPSDATAWriter_hyd(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPShyd
 
 class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
+    __test__ = True
     filename = LAMMPSdata
     N_kept = 5
 
@@ -191,7 +200,7 @@ class TestLAMMPSDATAWriter_data_partial(_TestLAMMPSDATAWriter):
 
 # need more tests of the LAMMPS DCDReader
 
-class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
+class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -253,7 +262,7 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_raises(ValueError, wrong_load)
 
 
-class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
+class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -315,7 +324,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
                             self.u.trajectory[0].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
 
-class TestLAMMPSDCDWriterClass(object):
+class TestLAMMPSDCDWriterClass(TestCase):
     flavor = 'LAMMPS'
 
     def setUp(self):
@@ -361,7 +370,7 @@ class TestLAMMPSDCDWriterClass(object):
         assert_raises(ValueError, wrong_load)
 
 
-class TestLammpsDataTriclinic(object):
+class TestLammpsDataTriclinic(TestCase):
     def setUp(self):
         self.u = mda.Universe(LAMMPScnt)
 
@@ -373,7 +382,7 @@ class TestLammpsDataTriclinic(object):
         assert_(self.u.dimensions[4] == 90.)
         assert_(self.u.dimensions[5] == 120.)
 
-class TestDataWriterErrors(object):
+class TestDataWriterErrors(TestCase):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tmpdir.name, 'out.data')
