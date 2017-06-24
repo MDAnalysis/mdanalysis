@@ -27,7 +27,11 @@ Fixes
     
 Changes
   * remove deprecated TimeSeriesCollection
-
+  * remove deprecated analysis.align.rms_fit_trj
+  * remove deprecated analysis.contacts.ContactAnalysis
+  * remove deprecated analysis.contacts.ContactAnalysis1
+  * remove deprecated analysis.hbonds.hbond_analysis 1-indexing
+  * remove deprecated analysis.rms `target` keyword from functions
 
 
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst
