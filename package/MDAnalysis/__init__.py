@@ -143,7 +143,7 @@ the OPLS/AA force field.
 """
 from __future__ import absolute_import
 
-__all__ = ['Universe', 'as_Universe', 'Writer',
+__all__ = ['Universe', 'as_Universe', 'Writer', 'fetch_mmtf']
 
 import logging
 import warnings
