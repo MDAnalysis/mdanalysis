@@ -44,6 +44,9 @@ class TestTPR(TPRAttrs):
     """
     this test the data/adk_oplsaa.tpr which is of tpx version 58
     """
+
+    __test__ = True
+
     filename = TPR
     expected_n_atoms = 47681
     expected_n_residues = 11302
@@ -63,42 +66,81 @@ class TPRBase(TPRAttrs):
 # All these classes should be generated in a loop. Yet, nose test generation
 # seems to work only with functions, and not with classes.
 class TestTPR400(TPRBase):
+
+    __test__ = True
+
     filename = TPR400
 
 class TestTPR402(TPRBase):
+
+    __test__ = True
+
     filename = TPR402
 
 class TestTPR403(TPRBase):
+
+    __test__ = True
+
     filename = TPR403
 
 class TestTPR404(TPRBase):
+
+    __test__ = True
+
     filename = TPR404
 
 class TestTPR405(TPRBase):
+
+    __test__ = True
+
     filename = TPR405
 
 class TestTPR406(TPRBase):
+
+    __test__ = True
+
     filename = TPR406
 
 class TestTPR407(TPRBase):
+
+    __test__ = True
+
     filename = TPR407
 
 class TestTPR450(TPRBase):
+
+    __test__ = True
+
     filename = TPR450
 
 class TestTPR451(TPRBase):
+
+    __test__ = True
+
     filename = TPR451
 
 class TestTPR452(TPRBase):
+
+    __test__ = True
+
     filename = TPR452
 
 class TestTPR453(TPRBase):
+
+    __test__ = True
+
     filename = TPR453
 
 class TestTPR454(TPRBase):
+
+    __test__ = True
+
     filename = TPR454
 
 class TestTPR455(TPRBase):
+
+    __test__ = True
+
     filename = TPR455
 
 class TPRDouble(TPRAttrs):
@@ -107,6 +149,9 @@ class TPRDouble(TPRAttrs):
     expected_n_segments = 7
 
 class TestTPR455Double(TPRDouble):
+
+    __test__ = True
+
     filename = TPR455Double
 
 
@@ -117,25 +162,46 @@ class TPR46xBase(TPRAttrs):
 
 
 class TestTPR460(TPR46xBase):
+
+    __test__ = True
+
     filename = TPR460
 
 class TestTPR461(TPR46xBase):
+
+    __test__ = True
+
     filename = TPR461
 
 
 class TestTPR502(TPRBase):
+
+    __test__ = True
+
     filename = TPR502
 
 class TestTPR504(TPRBase):
+
+    __test__ = True
+
     filename = TPR504
 
 class TestTPR505(TPRBase):
+
+    __test__ = True
+
     filename = TPR505
 
 class TestTPR510(TPRBase):
+
+    __test__ = True
+
     filename = TPR510
 
 class TPR2016(TPRBase):
+
+    __test__ = True
+
     filename = TPR2016
 
 

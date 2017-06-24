@@ -34,6 +34,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestPQRParser(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.PQRParser.PQRParser
     filename = PQR
     expected_attrs = ['ids', 'names', 'charges', 'radii',
@@ -54,6 +57,9 @@ class TestPQRParser(ParserBase):
         assert_(len(self.top.segids) == self.top.n_segments)
 
 class TestPQRParser2(TestPQRParser):
+
+    __test__ = True
+
     filename = PQR_icodes
 
     expected_n_atoms = 5313

@@ -40,6 +40,9 @@ class TestPSFParser(ParserBase):
     """
     Based on small PDB with AdK (:data:`PDB_small`).
     """
+
+    __test__ = True
+
     parser = mda.topology.PSFParser.PSFParser
     filename = PSF
     expected_attrs = ['ids', 'names', 'types', 'masses',
@@ -98,6 +101,9 @@ class TestNAMDPSFParser(ParserBase):
 
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
+
+    __test__ = True
+
     parser = mda.topology.PSFParser.PSFParser
     filename = PSF_NAMD
     expected_attrs = ['ids', 'names', 'types', 'masses',
@@ -112,6 +118,9 @@ class TestNAMDPSFParser(ParserBase):
 
 
 class TestPSFParser2(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.PSFParser.PSFParser
     filename = XYZ_psf
     expected_attrs = ['ids', 'names', 'types', 'masses',

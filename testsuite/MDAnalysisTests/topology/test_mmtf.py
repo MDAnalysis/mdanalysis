@@ -12,8 +12,12 @@ from MDAnalysis.core.groups import AtomGroup
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
+from unittest import TestCase
+
 
 class TestMMTFParser(ParserBase):
+    __test__ = False
+
     parser = mda.topology.MMTFParser.MMTFParser
     filename = MMTF
     expected_attrs = ['ids', 'names', 'types', 'altLocs',
@@ -27,13 +31,15 @@ class TestMMTFParser(ParserBase):
 
 
 class TestMMTFParser_gz(TestMMTFParser):
+    __test__ = True
+
     filename = MMTF_gz
     expected_n_atoms = 1140
     expected_n_residues = 36
     expected_n_segments = 4
 
 
-class TestMMTFUniverse(object):
+class TestMMTFUniverse(TestCase):
     def setUp(self):
         self.u = mda.Universe(MMTF)
 
@@ -87,7 +93,7 @@ class TestMMTFUniverseFromDecoder(TestMMTFUniverse):
         self.u = mda.Universe(top)
 
 
-class TestMMTFgzUniverse(object):
+class TestMMTFgzUniverse(TestCase):
     def setUp(self):
         self.u = mda.Universe(MMTF_gz)
 
@@ -119,9 +125,9 @@ class TestMMTFFetch(TestMMTFUniverse):
         top = mmtf.parse(MMTF)
         mock_fetch.return_value = top
         self.u = mda.fetch_mmtf('173D')  # string is irrelevant
-        
 
-class TestSelectModels(object):
+
+class TestSelectModels(TestCase):
     # tests for 'model' keyword in select_atoms
     def setUp(self):
         self.u = mda.Universe(MMTF_gz)

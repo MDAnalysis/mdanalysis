@@ -33,6 +33,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestDMSParser(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.DMSParser.DMSParser
     filename = DMS
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
