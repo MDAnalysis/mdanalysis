@@ -39,6 +39,9 @@ from MDAnalysis.tests.datafiles import (
 
 
 class LammpsBase(ParserBase):
+
+    __test__ = False
+
     parser = mda.topology.LAMMPSParser.DATAParser
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges']
@@ -100,6 +103,9 @@ class TestLammpsData(LammpsBase):
     The reading of coords and velocities is done separately in
     test_coordinates
     """
+
+    __test__ = True
+
     filename = LAMMPSdata
     expected_n_atoms = 18364
     expected_n_atom_types = 10
@@ -114,6 +120,9 @@ class TestLammpsData(LammpsBase):
 
 
 class TestLAMMPSCNT(LammpsBase):
+
+    __test__ = True
+
     filename = LAMMPScnt
     expected_n_atoms = 604
     expected_n_atom_types = 1
@@ -129,10 +138,16 @@ class TestLAMMPSCNT(LammpsBase):
 
 
 class TestLAMMPSCNT2(TestLAMMPSCNT):
+
+    __test__ = True
+
     filename = LAMMPScnt2
 
 
 class TestLAMMPSHYD(LammpsBase):
+
+    __test__ = True
+
     filename = LAMMPShyd
     expected_n_atoms = 2
     expected_n_atom_types = 1
@@ -145,10 +160,16 @@ class TestLAMMPSHYD(LammpsBase):
 
 
 class TestLAMMPSHYD2(TestLAMMPSHYD):
+
+    __test__ = True
+
     filename = LAMMPShyd2
 
 
 class TestLAMMPSDeletedAtoms(LammpsBase):
+
+    __test__ = True
+
     filename = LAMMPSdata_deletedatoms
 
     expected_n_atoms = 10

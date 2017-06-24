@@ -35,6 +35,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class MOL2Base(ParserBase):
+
+    __test__ = False
+
     parser = mda.topology.MOL2Parser.MOL2Parser
     expected_attrs = ['ids', 'names', 'types', 'charges',
                       'resids', 'resnames', 'bonds']
@@ -57,10 +60,16 @@ class MOL2Base(ParserBase):
 
     
 class TestMOL2Parser(MOL2Base):
+
+    __test__ = True
+
     filename = mol2_molecule
 
 
 class TestMOL2Parser2(MOL2Base):
+
+    __test__ = True
+
     filename = mol2_molecules
 
 

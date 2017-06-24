@@ -41,6 +41,7 @@ from MDAnalysisTests import tempdir
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
+    __test__ = False
 
     def tearDown(self):
         del self.universe
@@ -491,7 +492,7 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(copy_ts, ts)
 
 
-class BaseTimestepTest(object):
+class BaseTimestepTest(TestCase):
     """Test all the base functionality of a Timestep
 
     All Timesteps must pass these tests!

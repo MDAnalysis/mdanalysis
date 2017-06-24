@@ -20,6 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 from numpy.testing import (
     assert_,
 )
@@ -28,11 +31,14 @@ import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
 
-class ParserBase(object):
+class ParserBase(TestCase):
     """Base class for testing Topology parsers.
 
     All Parsers must subclass this class!
     """
+
+    __test__ = False
+
     expected_attrs = []
     guessed_attrs = []
 

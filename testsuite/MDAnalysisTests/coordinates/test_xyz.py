@@ -38,7 +38,7 @@ from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest)
 from MDAnalysisTests import tempdir, make_Universe
-
+from numpy.testing import TestCase
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -123,7 +123,7 @@ class Test_XYZBZWriter(TestXYZWriter):
         super(Test_XYZBZWriter, self).__init__(XYZ_BZ_Reference())
 
 
-class TestXYZWriterNames(object):
+class TestXYZWriterNames(TestCase):
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/outfile.xyz'

@@ -36,6 +36,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class GMSBase(ParserBase):
+
+    __test__ = False
+
     parser = mda.topology.GMSParser.GMSParser
     expected_attrs = ['names', 'atomiccharges']
     guessed_attrs = ['masses', 'types']
@@ -44,6 +47,9 @@ class GMSBase(ParserBase):
 
 
 class TestGMSASYMOPT(GMSBase):
+
+    __test__ = True
+
     filename = GMS_ASYMOPT
     expected_n_atoms = 6
 
@@ -57,6 +63,9 @@ class TestGMSASYMOPT(GMSBase):
 
 
 class TestGMSSYMOPT(GMSBase):
+
+    __test__ = True
+
     filename = GMS_SYMOPT
     expected_n_atoms = 4
 
@@ -69,4 +78,7 @@ class TestGMSSYMOPT(GMSBase):
                            [6, 6, 1, 1])
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
+
+    __test__ = True
+
     filename = GMS_ASYMSURF

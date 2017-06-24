@@ -40,6 +40,9 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestGROParser(ParserBase):
+
+    __test__ = True
+
     parser = mda.topology.GROParser.GROParser
     filename = GRO
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']

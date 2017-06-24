@@ -34,9 +34,10 @@ from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import PQR
 from MDAnalysisTests import tempdir, make_Universe
-
+from numpy.testing import TestCase
 
 class TestPQRReader(_SingleFrameReader):
+    __test__ = True
     def setUp(self):
         self.universe = mda.Universe(PQR)
         # 3 decimals in PDB spec
@@ -68,7 +69,7 @@ class TestPQRReader(_SingleFrameReader):
             "Charges for N atoms in Pro residues do not match.")
 
 
-class TestPQRWriter(RefAdKSmall):
+class TestPQRWriter(TestCase, RefAdKSmall):
     def setUp(self):
         self.universe = mda.Universe(PQR)
         self.prec = 3
@@ -135,7 +136,7 @@ class TestPQRWriter(RefAdKSmall):
             u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
             "Total charge (in CHARMM) does not match expected value.")
 
-class TestPQRWriterMissingAttrs(object):
+class TestPQRWriterMissingAttrs(TestCase):
     # pqr requires names, resids, resnames, segids, radii, charges
     def setUp(self):
         self.reqd_attributes = ['names', 'resids', 'resnames', 'radii', 'charges']

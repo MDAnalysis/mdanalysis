@@ -41,6 +41,8 @@ from MDAnalysisTests import module_not_found, tempdir, block_import, make_Univer
 
 
 class _NCDFReaderTest(_TRJReaderTest):
+    __test__ = False
+
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
@@ -82,10 +84,10 @@ class _NCDFReaderTest(_TRJReaderTest):
 
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
-    pass
+    __test__ = True
 
 class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
-    pass
+    __test__ = True
 
 
 class TestNCDFReader2(TestCase):
@@ -156,6 +158,9 @@ class TestNCDFReader2(TestCase):
 
 
 class _NCDFWriterTest(TestCase):
+
+    __test__ = False
+
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
@@ -311,10 +316,10 @@ class _NCDFWriterTest(TestCase):
                                       err_msg="unitcells are not identical")
 
 class TestNCDFWriter(_NCDFWriterTest, RefVGV):
-    pass
+    __test__ = True
 
 class TestNCDFWriterTZ2(_NCDFWriterTest, RefTZ2):
-    pass
+    __test__ = True
 
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
@@ -439,7 +444,7 @@ class TestNetCDFImport(object):
                 raise AssertionError
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrors(TestCase):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()

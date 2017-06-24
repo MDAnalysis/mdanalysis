@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import (TPR, XTC)
+from numpy.testing import TestCase
 
-
-class TestNullWriter(object):
+class TestNullWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(TPR, XTC)
 

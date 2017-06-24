@@ -47,6 +47,9 @@ _PDBPARSER = mda.topology.PDBParser.PDBParser
 
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
+
+    __test__ = True
+
     parser = mda.topology.PDBParser.PDBParser
     filename = PDB
     expected_attrs = ['ids', 'names',
@@ -59,6 +62,9 @@ class TestPDBParser(ParserBase):
 
 class TestPDBParserSegids(ParserBase):
     """Has segids"""
+
+    __test__ = True
+
     parser = mda.topology.PDBParser.PDBParser
     filename = PDB_small
     expected_attrs = ['ids', 'names',
@@ -70,8 +76,7 @@ class TestPDBParserSegids(ParserBase):
 
 class TestPDBConect(object):
     """Testing PDB topology parsing (PDB)"""
-    @staticmethod
-    def test_conect_parser():
+    def test_conect_parser(self):
         lines = ("CONECT1233212331",
                  "CONECT123331233112334",
                  "CONECT123341233312335",
@@ -92,14 +97,12 @@ class TestPDBConect(object):
             for bond, res_bond in zip(bonds[1], res[1]):
                 assert_equal(bond, res_bond)
 
-    @staticmethod
-    def test_conect_parser_runtime():
+    def test_conect_parser_runtime(self):
         assert_raises(RuntimeError,
                       mda.topology.PDBParser._parse_conect,
                       'CONECT12337 7718 84081234012344123')
 
-    @staticmethod
-    def test_conect_topo_parser():
+    def test_conect_topo_parser(self):
         """Check that the parser works as intended,
         and that the returned value is a dictionary
         """
@@ -144,6 +147,7 @@ def test_new_chainid_new_res():
     assert_(len(u.segments[1].atoms) == 5)
     assert_(len(u.segments[2].atoms) == 5)
     assert_(len(u.segments[3].atoms) == 7)
+
 
 def test_sameresid_diffresname():
     with _PDBPARSER(PDB_sameresid_diffresname) as p:

@@ -34,8 +34,9 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import CRD
 from MDAnalysisTests import tempdir, make_Universe
 
+from unittest import TestCase
 
-class TestCRDWriter(object):
+class TestCRDWriter(TestCase):
     def setUp(self):
         self.u = mda.Universe(CRD)
         self.tmpdir = tempdir.TempDir()
