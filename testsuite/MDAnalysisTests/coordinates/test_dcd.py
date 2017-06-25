@@ -248,7 +248,7 @@ def test_other_writer(universe_dcd, tmpdir, ext, decimal):
                                       decimal,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
+                                      "frame {} (orig) vs {} (written)".format(
                                           orig_ts.frame, written_ts.frame))
 
 
