@@ -434,6 +434,10 @@ cdef class DCDFile:
         charmm : bool
             write unitcell information. Also pretends that file was written by CHARMM 24
 
+
+        Raises
+        ------
+        IOError
         """
         if not self.is_open:
             raise IOError("No file open")
@@ -474,6 +478,7 @@ cdef class DCDFile:
         Raises
         ------
         IOError
+        ValueError
         """
         if not self.is_open:
             raise IOError("No file open")
