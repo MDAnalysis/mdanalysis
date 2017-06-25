@@ -192,7 +192,7 @@ def test_readframes(dcdfile, legacy_data, frame_idx):
     legacy = np.load(legacy_data)
     with DCDFile(dcdfile) as dcd:
         frames = dcd.readframes()
-        xyz = frames.x
+        xyz = frames.xyz
         assert_equal(len(xyz), len(dcd))
         for index, frame_num in enumerate(frame_idx):
             assert_array_almost_equal(xyz[frame_num], legacy[index])
@@ -280,7 +280,7 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
             header = f_in.header
         f_out.write_header(**header)
         for frame in f_in:
-            f_out.write(xyz=frame.x, box=frame.unitcell)
+            f_out.write(xyz=frame.xyz, box=frame.unitcell)
 
 
 @given(remarks=st.text(
@@ -334,7 +334,7 @@ def test_written_dcd_coordinate_data_shape(written_dcd):
     with DCDFile(written_dcd.testfile) as dcd, DCDFile(
             written_dcd.orgfile) as other:
         for frame, other_frame in zip(dcd, other):
-            assert frame.x.shape == other_frame.x.shape
+            assert frame.xyz.shape == other_frame.xyz.shape
 
 
 def test_written_seek(written_dcd):
@@ -348,7 +348,7 @@ def test_written_coord_match(written_dcd):
     with DCDFile(written_dcd.testfile) as test, DCDFile(
             written_dcd.orgfile) as ref:
         for frame, o_frame in zip(test, ref):
-            assert_array_almost_equal(frame.x, o_frame.x)
+            assert_array_almost_equal(frame.xyz, o_frame.xyz)
 
 
 def test_written_unit_cell(written_dcd):
@@ -473,9 +473,9 @@ def test_nframessize_int(dcdfile):
 def test_readframes_slices(slice, length):
     start, stop, step = slice
     with DCDFile(DCD) as dcd:
-        allframes = dcd.readframes().x
+        allframes = dcd.readframes().xyz
         frames = dcd.readframes(start=start, stop=stop, step=step)
-        xyz = frames.x
+        xyz = frames.xyz
         assert len(xyz) == length
         assert_array_almost_equal(xyz, allframes[start:stop:step])
 
@@ -489,7 +489,7 @@ def test_readframes_slices(slice, length):
     ('cfa', (3, 98, 3341)), ))
 def test_readframes_order(order, shape):
     with DCDFile(DCD) as dcd:
-        x = dcd.readframes(order=order).x
+        x = dcd.readframes(order=order).xyz
         assert x.shape == shape
 
 
@@ -497,9 +497,9 @@ def test_readframes_order(order, shape):
                                      [9, 4, 2, 0, 50]])
 def test_readframes_atomindices(indices):
     with DCDFile(DCD) as dcd:
-        allframes = dcd.readframes(order='afc').x
+        allframes = dcd.readframes(order='afc').xyz
         frames = dcd.readframes(indices=indices, order='afc')
-        xyz = frames.x
+        xyz = frames.xyz
         assert len(xyz) == len(indices)
         assert_array_almost_equal(xyz, allframes[indices])
 
@@ -514,7 +514,7 @@ def test_write_random_unitcell(tmpdir):
         with DCDFile(DCD) as f_in, DCDFile(testname, 'w') as f_out:
             f_out.write_header(**f_in.header)
             for index, frame in enumerate(f_in):
-                f_out.write(xyz=frame.x, box=random_unitcells[index])
+                f_out.write(xyz=frame.xyz, box=random_unitcells[index])
 
         with DCDFile(testname) as test:
             for index, frame in enumerate(test):

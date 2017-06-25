@@ -221,7 +221,7 @@ class DCDReader(base.ReaderBase):
         unitcell = uc
 
         ts.dimensions = unitcell
-        ts.positions = frame.x
+        ts.positions = frame.xyz
 
         if self.convert_units:
             self.convert_pos_from_native(ts.dimensions[:3])
@@ -329,7 +329,7 @@ class DCDReader(base.ReaderBase):
             raise ValueError("Invalid timeseries format")
         frames = self._file.readframes(
             start, stop, step, order=format, indices=atom_numbers)
-        return frames.x
+        return frames.xyz
 
 
 class DCDWriter(base.WriterBase):

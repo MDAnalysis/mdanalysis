@@ -126,7 +126,7 @@ cdef extern from 'include/readdcd.h':
 			 int natoms, const float *x, const float *y, const float *z,
 			 const double *unitcell, int charmm);
 
-DCDFrame = namedtuple('DCDFrame', 'x unitcell')
+DCDFrame = namedtuple('DCDFrame', 'xyz unitcell')
 
 cdef class DCDFile:
     """File like wrapper for DCD files
