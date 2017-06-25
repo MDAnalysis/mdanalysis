@@ -84,8 +84,8 @@ class GROParser(TopologyReaderBase):
         # Gro has the following columns
         # resid, resname, name, index, (x,y,z)
         with openany(self.filename, 'rt') as inf:
-            inf.readline()
-            n_atoms = int(inf.readline())
+            next(inf)
+            n_atoms = int(next(inf))
 
             # Allocate shizznizz
             resids = np.zeros(n_atoms, dtype=np.int32)

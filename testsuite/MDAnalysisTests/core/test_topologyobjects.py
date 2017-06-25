@@ -23,6 +23,7 @@ from __future__ import absolute_import
 
 import numpy as np
 from numpy.testing import (
+    dec,
     assert_array_equal,
     assert_almost_equal,
     assert_equal,
@@ -40,6 +41,7 @@ from MDAnalysis.core.topologyobjects import (
 
 
 from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
+from MDAnalysisTests import parser_not_found
 
 
 class TestTopologyObjects(object):
@@ -53,6 +55,8 @@ class TestTopologyObjects(object):
     len
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
         self.u = mda.Universe(PSF, DCD)
@@ -241,7 +245,7 @@ class TestTopologyGroup(object):
                      False)
 
     def test_angles_reversal(self):
-        bondtypes = self.a_td.keys()
+        bondtypes = list(self.a_td.keys())
         b = bondtypes[1]
         assert_equal(all([b in self.a_td, b[::-1] in self.a_td]), True)
 
@@ -262,7 +266,7 @@ class TestTopologyGroup(object):
                      False)
 
     def test_dihedrals_reversal(self):
-        bondtypes = self.t_td.keys()
+        bondtypes = list(self.t_td.keys())
         b = bondtypes[1]
         assert_equal(all([b in self.t_td, b[::-1] in self.t_td]), True)
 
@@ -556,6 +560,8 @@ class TestTopologyGroup_Cython(object):
      - work (return proper values)
      - catch errors
     """
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
         # topologygroups for testing

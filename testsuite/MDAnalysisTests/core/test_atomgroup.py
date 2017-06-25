@@ -62,6 +62,8 @@ warnings.simplefilter('always')
 
 class TestDeprecationWarnings(object):
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_AtomGroupUniverse_usage_warning():
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
@@ -69,6 +71,8 @@ class TestDeprecationWarnings(object):
         assert_equal(len(warn), 1)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_AtomGroup_init_warns():
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
@@ -78,6 +82,8 @@ class TestDeprecationWarnings(object):
         assert_equal(len(warn), 1)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_AtomGroup_init_works():
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
@@ -88,6 +94,8 @@ class TestDeprecationWarnings(object):
         assert_equal(ag.names, u.atoms[:10].names)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_ResidueGroup_init_warns():
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
@@ -97,6 +105,8 @@ class TestDeprecationWarnings(object):
         assert_equal(len(warn), 1)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_ResidueGroup_init_works():
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
@@ -107,6 +117,8 @@ class TestDeprecationWarnings(object):
         assert_equal(rg.resnames, u.residues[:10].resnames)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_SegmentGroup_init_warns():
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
@@ -116,6 +128,8 @@ class TestDeprecationWarnings(object):
         assert_equal(len(warn), 1)
 
     @staticmethod
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_old_SegmentGroup_init_works():
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
@@ -128,6 +142,8 @@ class TestDeprecationWarnings(object):
 
 class TestAtomGroupToTopology(object):
     """Test the conversion of AtomGroup to TopologyObjects"""
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -165,6 +181,8 @@ class TestAtomGroupToTopology(object):
 
 
 class TestAtomGroupWriting(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -311,6 +329,8 @@ class TestWriteGRO(_WriteAtoms):
 
 
 class TestAtomGroupTransformations(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
         self.coords = self.u.atoms.positions.copy()
@@ -468,6 +488,8 @@ class TestCenter(object):
 
 
 class TestSplit(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
 

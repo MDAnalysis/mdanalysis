@@ -26,6 +26,7 @@ from __future__ import division, absolute_import
 import numpy as np
 
 from numpy.testing import (
+    dec,
     assert_,
     assert_array_equal,
     assert_array_almost_equal,
@@ -34,7 +35,7 @@ from numpy.testing import (
 from nose.tools import raises
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests import parser_not_found, make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
@@ -151,6 +152,8 @@ class TestAtomids(TestAtomAttr):
 
 
 class TestIndicesClasses(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -370,6 +373,8 @@ class TestSegmentAttr(TopologyAttrMixin):
 
 
 class TestAttr(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.ag = self.universe.atoms  # prototypical AtomGroup

@@ -47,6 +47,8 @@ class TestSequence(object):
         "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
     )
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
