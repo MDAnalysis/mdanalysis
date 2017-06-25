@@ -93,7 +93,8 @@ class DCDReader(base.ReaderBase):
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self, filename, convert_units=True, dt=None, **kwargs):
-        """Parameters
+        """
+        Parameters
         ----------
         filename : str
             trajectory filename
@@ -103,6 +104,7 @@ class DCDReader(base.ReaderBase):
             overwrite time delta stored in DCD
         **kwargs : dict
             General reader arguments.
+
 
         .. versionchanged:: 0.17.0
            Changed to use libdcd.pyx library and removed the correl function

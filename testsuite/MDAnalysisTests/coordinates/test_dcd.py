@@ -35,14 +35,12 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
-
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 
-from MDAnalysisTests import tempdir
-from unittest import TestCase
+from MDAnalysisTests import module_not_found
 import pytest
 
 
@@ -303,6 +301,7 @@ def ncdf2dcd(tmpdir_factory):
     return ncdf, mda.Universe(PRMncdf, testfile)
 
 
+@pytest.mark.skipif(module_not_found("netCDF4"))
 def test_ncdf2dcd_unitcell(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
@@ -311,6 +310,7 @@ def test_ncdf2dcd_unitcell(ncdf2dcd):
                             3)
 
 
+@pytest.mark.skipif(module_not_found("netCDF4"))
 def test_ncdf2dcd_coords(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
