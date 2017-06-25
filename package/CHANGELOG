@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti
+mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de
 
   * 0.17.0
 
@@ -41,10 +41,14 @@ Changes
     writing (if available) or fall back to netcdf (see also Issue #506)
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud, kain88-de
+mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
+Deprecations
+  * deprecated core.Timeseries module for 0.17.0 (Issue #1383)
+  * deprecated instant selectors for 1.0 (Issue #1377)
+  * deprecated the core.flag registry for 1.0 (Issue #782)
 
 Fixes
   * fixed GROWriter truncating long resids from the wrong end (Issue #1395)

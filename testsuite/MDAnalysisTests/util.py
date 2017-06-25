@@ -37,14 +37,10 @@ except ImportError:
 from contextlib import contextmanager
 from functools import wraps
 import importlib
-try:
-    import mock
-except ImportError: # python 3
-    from unittest import mock
+import mock
 import os
 
 from numpy.testing import assert_warns
-
 
 def block_import(package):
     """Block import of a given package

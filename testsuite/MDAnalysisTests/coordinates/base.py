@@ -1068,7 +1068,6 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                              'A.frame = {}, B.frame={}'.format(
                                  A.frame, B.frame))
 
-    # if A.time != B.time:
     if not np.allclose(A.time, B.time):
         raise AssertionError('A and B refer to different times: '
                              'A.time = {}, B.time={}'.format(

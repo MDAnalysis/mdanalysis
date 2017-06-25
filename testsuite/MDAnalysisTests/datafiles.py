@@ -151,8 +151,6 @@ __all__ = [
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
-    "ALIGN_BOUND",  # two component bound system
-    "ALIGN_UNBOUND", # two component unbound system
 ]
 
 from pkg_resources import resource_filename
