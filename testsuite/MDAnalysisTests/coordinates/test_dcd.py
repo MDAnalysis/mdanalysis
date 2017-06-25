@@ -21,12 +21,12 @@
 #
 from __future__ import absolute_import, print_function
 from six.moves import zip, range
-import MDAnalysis as mda
-from MDAnalysis.coordinates.DCD import DCDReader
 import numpy as np
 import os
 
-from nose.plugins.attrib import attr
+import MDAnalysis as mda
+from MDAnalysis.coordinates.DCD import DCDReader
+
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal,
                            assert_allclose, dec)
@@ -36,11 +36,14 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF,
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 
-from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
+                                              BaseReference,
                                               BaseWriterTest,
                                               assert_timestep_almost_equal)
 
 from MDAnalysisTests import tempdir
+from unittest import TestCase
+import pytest
 
 
 class DCDReference(BaseReference):
@@ -91,364 +94,226 @@ class TestDCDWriter(BaseWriterTest):
         super(TestDCDWriter, self).__init__(reference)
 
 
+def test_write_random_unitcell(tmpdir):
+    with tmpdir.as_cwd():
+        testname = 'test.dcd'
+        rstate = np.random.RandomState(1178083)
+        random_unitcells = rstate.uniform(
+            high=80, size=(98, 6)).astype(np.float64)
+
+        u = mda.Universe(PSF, DCD)
+        with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
+            for index, ts in enumerate(u.trajectory):
+                u.atoms.dimensions = random_unitcells[index]
+                w.write(u.atoms)
+
+        u2 = mda.Universe(PSF, testname)
+        for index, ts in enumerate(u2.trajectory):
+            assert_array_almost_equal(ts.dimensions, random_unitcells[index],
+                                      decimal=5)
+
+
 ################
 # Legacy tests #
 ################
 
-
-class TestDCDReaderOld(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
-
-    def tearDown(self):
-        del self.universe
-        del self.dcd
-
-    def test_rewind_dcd(self):
-        self.dcd.rewind()
-        assert_equal(self.dcd.ts.frame, 0, "rewinding to frame 0")
-
-    def test_next_dcd(self):
-        self.dcd.rewind()
-        self.dcd.next()
-        assert_equal(self.dcd.ts.frame, 1, "loading frame 1")
-
-    def test_jump_lastframe_dcd(self):
-        self.dcd[-1]
-        assert_equal(self.dcd.ts.frame, 97, "indexing last frame with dcd[-1]")
-
-    def test_slice_dcd(self):
-        frames = [ts.frame for ts in self.dcd[5:17:3]]
-        assert_equal(frames, [5, 8, 11, 14], "slicing dcd [5:17:3]")
-
-    def test_list_trajectory(self):
-        frames = [ts.frame for ts in self.dcd[[0, 3, 4, 5]]]
-        assert_equal(frames, [0, 3, 4, 5])
-
-    def test_array_trajectory(self):
-        frames = [ts.frame for ts in self.dcd[np.array([0, 3, 4, 5])]]
-        assert_equal(frames, [0, 3, 4, 5])
-
-    def test_list_reverse_trajectory(self):
-        frames = [ts.frame for ts in self.dcd[[0, 4, 2, 3, 0, 1]]]
-        assert_equal(frames, [0, 4, 2, 3, 0, 1])
-
-    def test_list_repeated_trajectory(self):
-        frames = [ts.frame for ts in self.dcd[[0, 0, 1, 1, 2, 1, 1]]]
-        assert_equal(frames, [0, 0, 1, 1, 2, 1, 1])
-
-    def test_reverse_dcd(self):
-        frames = [ts.frame for ts in self.dcd[20:5:-1]]
-        assert_equal(frames, list(range(20, 5, -1)),
-                     "reversing dcd [20:5:-1]")
+@pytest.fixture(scope='module')
+def universe_dcd():
+    return mda.Universe(PSF, DCD)
 
 
-def test_timeseries_slices():
-        slices = [([None, None, None], 98),
-                  ([0, None, None], 98),
-                  ([None, 98, None], 98),
-                  ([None, None, 1], 98),
-                  ([None, None, -1], 98),
-                  ([2, 6, 2], 2),
-                  ([0, 10, None], 10),
-                  ([2, 10, None], 8),
-                  ([0, 1, 1], 1),
-                  ([1, 1, 1], 0),
-                  ([1, 2, 1], 1),
-                  ([1, 2, 2], 1),
-                  ([1, 4, 2], 2),
-                  ([1, 4, 4], 1),
-                  ([0, 5, 5], 1),
-                  ([3, 5, 1], 2),
-                  ([4, 0, -1], 4),
-                  ([5, 0, -2], 3),
-                  ([5, 0, -4], 2),
-                  ]
-        u = mda.Universe(PSF, DCD)
-        allframes = u.trajectory.timeseries(format='fac')
-        for (start, stop, step), l in slices:
-            xyz = u.trajectory.timeseries(start=start, stop=stop, step=step,
-                                          format='fac')
-            assert_equal(len(xyz), l)
-            assert_array_almost_equal(xyz, allframes[start:stop:step])
+def test_rewind(universe_dcd):
+    universe_dcd.trajectory.rewind()
+    assert universe_dcd.trajectory.ts.frame == 0
 
 
-def test_timeseries_order():
-    orders = ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa')
-
-    u = mda.Universe(PSF, DCD)
-    natoms = u.atoms.n_atoms
-    ndims = 3
-    n = u.trajectory.n_frames
-
-    for order in orders:
-        if order == 'fac':
-            shape = (n, natoms, ndims)
-        elif order == 'fca':
-            shape = (n, ndims, natoms)
-        elif order == 'afc':
-            shape = (natoms, n, ndims)
-        elif order == 'acf':
-            shape = (natoms, ndims, n)
-        elif order == 'caf':
-            shape = (ndims, natoms, n)
-        elif order == 'cfa':
-            shape = (ndims, n, natoms)
-        x = u.trajectory.timeseries(format=order)
-        assert_array_equal(x.shape, shape)
+def test_next(universe_dcd):
+    universe_dcd.trajectory.rewind()
+    universe_dcd.trajectory.next()
+    assert universe_dcd.trajectory.ts.frame == 1
 
 
-def test_readframes_atomindices():
-    indices = [[1, 2, 3, 4],
-               [5, 10, 15, 19],
-               [9, 4, 2, 0, 50]]
-    u = mda.Universe(PSF, DCD)
-    allframes = u.trajectory.timeseries(format='afc')
-    for idxs in indices:
-        asel = u.atoms[idxs]
-        xyz = u.trajectory.timeseries(asel=asel, format='afc')
-        assert_equal(len(xyz), len(idxs))
-        assert_array_almost_equal(xyz, allframes[idxs])
+def test_jump_last_frame(universe_dcd):
+    universe_dcd.trajectory[-1]
+    assert universe_dcd.trajectory.ts.frame == 97
 
 
-def test_DCDReader_set_dt(dt=100., frame=3):
+@pytest.mark.parametrize("start, stop, step", ((5, 17, 3),
+                                               (20, 5, -1)))
+def test_slice(universe_dcd, start, stop, step):
+    frames = [ts.frame for ts in universe_dcd.trajectory[start:stop:step]]
+    assert frames == list(range(start, stop, step))
+
+
+@pytest.mark.parametrize("array_like", [list, np.array])
+def test_array_like(universe_dcd, array_like):
+    ar = array_like([0, 3, 4, 5])
+    frames = [ts.frame for ts in universe_dcd.trajectory[ar]]
+    assert_array_equal(frames, ar)
+
+
+@pytest.mark.parametrize("indices", ([0, 4, 2, 3, 0, 1],
+                                     [0, 0, 1, 1, 2, 1, 1]))
+def test_list_indices(universe_dcd, indices):
+    frames = [ts.frame for ts in universe_dcd.trajectory[indices]]
+    assert frames == indices
+
+
+@pytest.mark.parametrize(
+    "slice, length",
+    [([None, None, None], 98), ([0, None, None], 98), ([None, 98, None], 98),
+     ([None, None, 1], 98), ([None, None, -1], 98), ([2, 6, 2], 2),
+     ([0, 10, None], 10), ([2, 10, None], 8), ([0, 1, 1], 1), ([1, 1, 1], 0),
+     ([1, 2, 1], 1), ([1, 2, 2], 1), ([1, 4, 2], 2), ([1, 4, 4], 1),
+     ([0, 5, 5], 1), ([3, 5, 1], 2), ([4, 0, -1], 4), ([5, 0, -2], 3),
+     ([5, 0, -4], 2)])
+def test_timeseries_slices(slice, length, universe_dcd):
+    start, stop, step = slice
+    allframes = universe_dcd.trajectory.timeseries(format='fac')
+    xyz = universe_dcd.trajectory.timeseries(start=start, stop=stop, step=step,
+                                             format='fac')
+    assert len(xyz) == length
+    assert_array_almost_equal(xyz, allframes[start:stop:step])
+
+
+@pytest.mark.parametrize("order, shape", (
+    ('fac', (98, 3341, 3)),
+    ('fca', (98, 3, 3341)),
+    ('afc', (3341, 98, 3)),
+    ('acf', (3341, 3, 98)),
+    ('caf', (3, 3341, 98)),
+    ('cfa', (3, 98, 3341)), ))
+def test_timeseries_order(order, shape, universe_dcd):
+    x = universe_dcd.trajectory.timeseries(format=order)
+    assert x.shape == shape
+
+
+@pytest.mark.parametrize("indices", [[1, 2, 3, 4], [5, 10, 15, 19],
+                                     [9, 4, 2, 0, 50]])
+def test_timeseries_atomindices(indices, universe_dcd):
+        allframes = universe_dcd.trajectory.timeseries(format='afc')
+        asel = universe_dcd.atoms[indices]
+        xyz = universe_dcd.trajectory.timeseries(asel=asel, format='afc')
+        assert len(xyz) == len(indices)
+        assert_array_almost_equal(xyz, allframes[indices])
+
+
+def test_reader_set_dt():
+    dt = 100
+    frame = 3
     u = mda.Universe(PSF, DCD, dt=dt)
     assert_almost_equal(u.trajectory[frame].time, frame*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
-            dt, u.trajectory._ts_kwargs['dt']))
+                            dt, u.trajectory._ts_kwargs['dt']))
     assert_almost_equal(u.trajectory.dt, dt,
                         err_msg="trajectory.dt does not match set dt")
 
-class TestDCDWriter_old(object):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        ext = ".dcd"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/dcd-writer' + ext
-        self.Writer = mda.coordinates.DCD.DCDWriter
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.universe
-        del self.Writer
-        del self.tmpdir
+@pytest.mark.parametrize("ext, decimal", (("dcd", 5),
+                                          ("xtc", 3)))
+def test_writer_dt(tmpdir, ext, decimal):
+    dt = 5.0  # set time step to 5 ps
+    universe_dcd = mda.Universe(PSF, DCD, dt=dt)
+    t = universe_dcd.trajectory
+    outfile = "test.{}".format(ext)
+    with tmpdir.as_cwd():
+        with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt) as W:
+            for ts in universe_dcd.trajectory:
+                W.write(universe_dcd.atoms)
 
-    def test_dt(self):
-        DT = 5.0
-        t = self.universe.trajectory
-        with self.Writer(self.outfile,
-                         t.n_atoms,
-                         dt=DT) as W:  # set time step to 5 ps
-            for ts in self.universe.trajectory:
-                W.write_next_timestep(ts)
-
-        uw = mda.Universe(PSF, self.outfile)
+        uw = mda.Universe(PSF, outfile)
         assert_almost_equal(uw.trajectory.totaltime,
-                            (uw.trajectory.n_frames - 1) * DT, 5)
+                            (uw.trajectory.n_frames - 1) * dt, decimal)
         times = np.array([uw.trajectory.time for ts in uw.trajectory])
         frames = np.array([ts.frame for ts in uw.trajectory])
-        assert_array_almost_equal(times, frames * DT, 5)
+        assert_array_almost_equal(times, frames * dt, decimal)
 
-    def test_OtherWriter(self):
-        t = self.universe.trajectory
-        W = t.OtherWriter(self.outfile)
-        for ts in self.universe.trajectory:
-            W.write_next_timestep(ts)
-        W.close()
 
-        uw = mda.Universe(PSF, self.outfile)
+@pytest.mark.parametrize("ext, decimal", (("dcd", 5),
+                                          ("xtc", 2)))
+def test_other_writer(universe_dcd, tmpdir, ext, decimal):
+    t = universe_dcd.trajectory
+    outfile = "test.{}".format(ext)
+    with tmpdir.as_cwd():
+        with t.OtherWriter(outfile) as W:
+            for ts in universe_dcd.trajectory:
+                W.write_next_timestep(ts)
 
+        uw = mda.Universe(PSF, outfile)
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in zip(self.universe.trajectory,
+        for orig_ts, written_ts in zip(universe_dcd.trajectory,
                                        uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+            assert_array_almost_equal(written_ts.positions, orig_ts.positions,
+                                      decimal,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
                                       "frame %d (orig) vs %d (written)" % (
                                           orig_ts.frame, written_ts.frame))
 
-    def test_single_frame(self):
-        u = mda.Universe(PSF, CRD)
-        W = mda.Writer(self.outfile, u.atoms.n_atoms)
-        W.write(u.atoms)
-        W.close()
-        w = mda.Universe(PSF, self.outfile)
-        assert_equal(w.trajectory.n_frames, 1,
-                     "single frame trajectory has wrong number of frames")
+
+def test_single_frame(universe_dcd, tmpdir):
+    u = universe_dcd
+    outfile = "test.dcd"
+    with tmpdir.as_cwd():
+        with mda.Writer(outfile, u.atoms.n_atoms) as W:
+            W.write(u.atoms)
+        w = mda.Universe(PSF, outfile)
+        assert w.trajectory.n_frames == 1
         assert_almost_equal(w.atoms.positions,
                             u.atoms.positions,
                             3,
                             err_msg="coordinates do not match")
 
 
-class TestDCDWriter_Issue59(object):
-    def setUp(self):
-        """Generate input xtc."""
-        self.u = mda.Universe(PSF, DCD)
-        self.tmpdir = tempdir.TempDir()
-        self.xtc = self.tmpdir.name + '/dcd-writer-issue59-test.xtc'
-        wXTC = mda.Writer(self.xtc, self.u.atoms.n_atoms)
-        for ts in self.u.trajectory:
-            wXTC.write(ts)
-        wXTC.close()
-
-    def tearDown(self):
-        try:
-            os.unlink(self.xtc)
-        except OSError:
-            pass
-        try:
-            os.unlink(self.dcd)
-        except (AttributeError, OSError):
-            pass
-        del self.u
-        del self.tmpdir
-
-    @attr('issue')
-    def test_issue59(self):
-        """Test writing of XTC to DCD (Issue 59)"""
-        xtc = mda.Universe(PSF, self.xtc)
-        self.dcd = self.tmpdir.name + '/dcd-writer-issue59-test.dcd'
-        wDCD = mda.Writer(self.dcd, xtc.atoms.n_atoms)
-        for ts in xtc.trajectory:
-            wDCD.write(ts)
-        wDCD.close()
-
-        dcd = mda.Universe(PSF, self.dcd)
-
-        xtc.trajectory.rewind()
-        dcd.trajectory.rewind()
-
-        assert_array_almost_equal(
-            xtc.atoms.positions,
-            dcd.atoms.positions,
-            3,
-            err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
-
-    def test_OtherWriter(self):
-        dcd = self.u
-        wXTC = dcd.trajectory.OtherWriter(self.xtc)
-        for ts in dcd.trajectory:
-            wXTC.write(ts)
-        wXTC.close()
-
-        xtc = mda.Universe(PSF, self.xtc)
-        xtc.trajectory.rewind()
-        dcd.trajectory.rewind()
-
-        assert_array_almost_equal(
-            dcd.atoms.positions,
-            xtc.atoms.positions,
-            2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
-            dcd.trajectory.frame))
-        xtc.trajectory[3]
-        dcd.trajectory[3]
-        assert_array_almost_equal(
-            dcd.atoms.positions,
-            xtc.atoms.positions,
-            2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
-            dcd.trajectory.frame))
+@pytest.mark.parametrize("ref", (RefCHARMMtriclinicDCD, RefNAMDtriclinicDCD))
+def test_read_unitcell_triclinic(ref):
+    u = mda.Universe(ref.topology, ref.trajectory)
+    for ts, box in zip(u.trajectory, ref.ref_dimensions[:, 1:]):
+        assert_array_almost_equal(ts.dimensions, box, 4,
+                                  err_msg="box dimensions A,B,C,alpha,"
+                                  "beta,gamma not identical at frame "
+                                  "{}".format(ts.frame))
 
 
-class _TestDCDReader_TriclinicUnitcell(TestCase):
-    __test__ = False
-    def setUp(self):
-        self.u = mda.Universe(self.topology, self.trajectory)
-        self.tempdir = tempdir.TempDir()
-        self.dcd = self.tempdir.name + '/dcd-reader-triclinic.dcd'
-
-    def tearDown(self):
-        try:
-            os.unlink(self.dcd)
-        except (AttributeError, OSError):
-            pass
-        del self.u
-        del self.tempdir
-
-    @attr('issue')
-    def test_read_triclinic(self):
-        """test reading of triclinic unitcell (Issue 187) for NAMD or new
-        CHARMM format (at least since c36b2)"""
-        for ts, box in zip(self.u.trajectory,
-                           self.ref_dimensions[:, 1:]):
-            assert_array_almost_equal(ts.dimensions, box, 4,
-                                      err_msg="box dimensions A,B,C,alpha,"
-                                      "beta,gamma not identical at frame "
-                                      "{}".format(ts.frame))
-
-    @attr('issue')
-    def test_write_triclinic(self):
-        """test writing of triclinic unitcell (Issue 187) for NAMD or new
-        CHARMM format (at least since c36b2)"""
-        with self.u.trajectory.OtherWriter(self.dcd) as w:
-            for ts in self.u.trajectory:
+@pytest.mark.parametrize("ref", (RefCHARMMtriclinicDCD, RefNAMDtriclinicDCD))
+def test_write_unitcell_triclinic(ref, tmpdir):
+    u = mda.Universe(ref.topology, ref.trajectory)
+    outfile = 'triclinic.dcd'
+    with tmpdir.as_cwd():
+        with u.trajectory.OtherWriter(outfile) as w:
+            for ts in u.trajectory:
                 w.write(ts)
-        w = mda.Universe(self.topology, self.dcd)
-        for ts_orig, ts_copy in zip(self.u.trajectory,
-                                    w.trajectory):
+
+        w = mda.Universe(ref.topology, outfile)
+        for ts_orig, ts_copy in zip(u.trajectory, w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
                                 err_msg="DCD->DCD: unit cell dimensions wrong "
                                 "at frame {0}".format(ts_orig.frame))
-        del w
 
 
-class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell,
-                                    RefCHARMMtriclinicDCD):
-    __test__ = True
+@pytest.fixture(scope='module')
+def ncdf2dcd(tmpdir_factory):
+    testfile = tmpdir_factory.mktemp('dcd').join('ncdf2dcd.dcd')
+    testfile = str(testfile)
+    ncdf = mda.Universe(PRMncdf, NCDF)
+    with mda.Writer(testfile, n_atoms=ncdf.atoms.n_atoms) as w:
+        for ts in ncdf.trajectory:
+            w.write(ts)
+    return ncdf, mda.Universe(PRMncdf, testfile)
 
 
-class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
-                                  RefNAMDtriclinicDCD):
-    __test__ = True
+def test_ncdf2dcd_unitcell(ncdf2dcd):
+    ncdf, dcd = ncdf2dcd
+    for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
+        assert_almost_equal(ts_ncdf.dimensions,
+                            ts_dcd.dimensions,
+                            3)
 
 
-class TestNCDF2DCD(object):
-    def setUp(self):
-        self.u = mda.Universe(PRMncdf, NCDF)
-        # create the DCD
-        self.tmpdir = tempdir.TempDir()
-        self.dcd = self.tmpdir.name + '/ncdf-2-dcd.dcd'
-        DCD = mda.Writer(self.dcd, n_atoms=self.u.atoms.n_atoms)
-        for ts in self.u.trajectory:
-            DCD.write(ts)
-        DCD.close()
-        self.w = mda.Universe(PRMncdf, self.dcd)
-
-    def tearDown(self):
-        try:
-            os.unlink(self.dcd)
-        except (AttributeError, OSError):
-            pass
-        del self.u
-        del self.w
-        del self.tmpdir
-
-    @attr('issue')
-    def test_unitcell(self):
-        """NCDFReader: Test that DCDWriter correctly writes the CHARMM
-        unit cell"""
-        for ts_orig, ts_copy in zip(self.u.trajectory,
-                                    self.w.trajectory):
-            assert_almost_equal(
-                ts_orig.dimensions,
-                ts_copy.dimensions,
-                3,
-                err_msg="NCDF->DCD: unit cell dimensions wrong at frame {0:d}".format(
-                ts_orig.frame))
-
-    def test_coordinates(self):
-        for ts_orig, ts_copy in zip(self.u.trajectory,
-                                    self.w.trajectory):
-            assert_almost_equal(
-                self.u.atoms.positions,
-                self.w.atoms.positions,
-                3,
-                err_msg="NCDF->DCD: coordinates wrong at frame {0:d}".format(
-                ts_orig.frame))
+def test_ncdf2dcd_coords(ncdf2dcd):
+    ncdf, dcd = ncdf2dcd
+    for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
+        assert_almost_equal(ts_ncdf.positions,
+                            ts_dcd.positions,
+                            3)
