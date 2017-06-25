@@ -152,7 +152,23 @@ cdef class DCDFile:
 
     Raises
     ------
-    IOError
+    IOError, EOFError
+
+
+    Notes
+    -----
+    This DCDFile reader can process files written by different MD simulation
+    programs. For files produced by CHARMM or other programs that follow the
+    same convention we are reading a special CHARMM bitfield that stores
+    different flags about additional information that is stored in the dcd.
+    This field cannot be written. The flags it might have are.
+
+    DCD_IS_CHARMM       = 0x01
+    DCD_HAS_4DIMS       = 0x02
+    DCD_HAS_EXTRA_BLOCK = 0x04
+
+    Here `DCD_HAS_EXTRA_BLOCK` means that unitcell information is stored.
+
     """
     cdef fio_fd fp
     cdef readonly fname
@@ -385,6 +401,12 @@ cdef class DCDFile:
         Returns
         -------
         dict of header values needed to write new dcd
+            natoms: number of atoms
+            istart: starting frame number
+            nsavc: number of frames between saves
+            delta: integrator time step.
+            charm: bitfield integer if file contains special CHARMM information
+            remarks: remark string, max 240 bytes.
         """
         return {'natoms': self.natoms,
                 'istart': self.istart,
@@ -404,13 +426,13 @@ cdef class DCDFile:
         natoms : int
             number of atoms to write
         istart : int
-            starting frame
+            starting frame number
         nsavc : int
             number of frames between saves
         delta : float
             integrator time step. The time for 1 frame is nsavc * delta
-        charmm : int
-            is charmm dcd
+        charmm : bool
+            write unitcell information. Also pretends that file was written by CHARMM 24
 
         """
         if not self.is_open:
