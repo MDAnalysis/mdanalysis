@@ -145,7 +145,7 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 from . import guessers
-from ..lib.util import anyopen
+from ..lib.util import openany
 from .tpr import utils as tpr_utils
 from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
@@ -169,7 +169,8 @@ class TPRParser(TopologyReaderBase):
         -------
         structure : dict
         """
-        tprf = anyopen(self.filename, mode='rb').read()
+        with openany(self.filename, mode='rb') as infile:
+            tprf = infile.read()
         data = xdrlib.Unpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
