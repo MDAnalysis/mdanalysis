@@ -340,7 +340,7 @@ class DCDWriter(base.WriterBase):
     alpha, C]``
 
     """
-
+    format = 'DCD'
     multiframe = True
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -382,6 +382,8 @@ class DCDWriter(base.WriterBase):
         """
         self.filename = filename
         self._convert_units = convert_units
+        if n_atoms is None:
+            raise ValueError("n_atoms argument is required")
         self.n_atoms = n_atoms
         self._file = DCDFile(self.filename, 'w')
         self.step = step
@@ -389,7 +391,7 @@ class DCDWriter(base.WriterBase):
         dt = mdaunits.convert(dt, 'ps', self.units['time'])
         self._file.write_header(
             remarks=remarks,
-            natoms=n_atoms,
+            natoms=self.n_atoms,
             nsavc=nsavc,
             delta=float(dt),
             charmm=1,
