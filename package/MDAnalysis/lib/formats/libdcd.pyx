@@ -290,6 +290,7 @@ cdef class DCDFile:
                 close_dcd_read(self.freeind, self.fixedcoords);
 
             ok = fio_fclose(self.fp)
+
             self.is_open = False
             if ok != 0:
                 raise IOError("couldn't close file: {}\n"
@@ -400,13 +401,15 @@ cdef class DCDFile:
         """
         Returns
         -------
-        dict of header values needed to write new dcd
-            natoms: number of atoms
-            istart: starting frame number
-            nsavc: number of frames between saves
-            delta: integrator time step.
-            charm: bitfield integer if file contains special CHARMM information
-            remarks: remark string, max 240 bytes.
+        dict of header values needed to write new dcd.
+        natoms: number of atoms
+        istart: starting frame number
+        nsavc: number of frames between saves
+        delta: integrator time step.
+        charm: bitfield integer if file contains special CHARMM information
+        remarks: remark string, max 240 bytes.
+
+
         """
         return {'natoms': self.natoms,
                 'istart': self.istart,

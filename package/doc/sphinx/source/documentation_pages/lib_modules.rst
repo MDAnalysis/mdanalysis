@@ -65,3 +65,4 @@ Python-based projects.
    :maxdepth: 1
 
    ./lib/formats/libmdaxdr
+   ./lib/formats/libdcd
