@@ -70,8 +70,8 @@ def test_read_unit_cell(dcdfile, unit_cell):
 
 
 def test_seek_over_max():
-    with pytest.raises(EOFError):
-        with DCDFile(DCD) as dcd:
+    with DCDFile(DCD) as dcd:
+        with pytest.raises(EOFError):
             dcd.seek(102)
 
 
@@ -84,8 +84,8 @@ def test_seek_normal(new_frame):
 
 
 def test_seek_negative():
-    with pytest.raises(IOError):
-        with DCDFile(DCD) as dcd:
+    with DCDFile(DCD) as dcd:
+        with pytest.raises(IOError):
             dcd.seek(-78)
 
 
@@ -121,9 +121,9 @@ def test_natoms(dcdfile, natoms):
 
 
 def test_read_closed():
-    with pytest.raises(IOError):
-        with DCDFile(DCD) as dcd:
-            dcd.close()
+    with DCDFile(DCD) as dcd:
+        dcd.close()
+        with pytest.raises(IOError):
             dcd.read()
 
 
@@ -136,9 +136,9 @@ def test_length_traj(dcdfile, nframes):
 
 
 def test_read_write_mode_file(tmpdir):
-    with pytest.raises(IOError):
-        with tmpdir.as_cwd():
-            with DCDFile('foo', 'w') as f:
+    with tmpdir.as_cwd():
+        with DCDFile('foo', 'w') as f:
+            with pytest.raises(IOError):
                 f.read()
 
 
@@ -223,12 +223,9 @@ def test_write_header(tmpdir):
 
 
 def test_write_no_header(tmpdir):
-    # an IOError should be raised if we
-    # attempt to write inappropriate header
-    # data that looks like frame data
-    with pytest.raises(IOError):
-        with tmpdir.as_cwd():
-            with DCDFile('test.dcd', 'w') as dcd:
+    with tmpdir.as_cwd():
+        with DCDFile('test.dcd', 'w') as dcd:
+            with pytest.raises(IOError):
                 dcd.write(np.ones(3), np.ones(6))
 
 
@@ -245,18 +242,18 @@ def test_write_header_twice(tmpdir):
         "charmm": 1
     }
 
-    with pytest.raises(IOError):
-        with tmpdir.as_cwd():
-            with DCDFile('test.dcd', 'w') as dcd:
-                dcd.write_header(**header)
+    with tmpdir.as_cwd():
+        with DCDFile('test.dcd', 'w') as dcd:
+            dcd.write_header(**header)
+            with pytest.raises(IOError):
                 dcd.write_header(**header)
 
 
 def test_write_header_wrong_mode():
     # an exception should be raised on any attempt to use
     # _write_header with a DCDFile object in 'r' mode
-    with pytest.raises(IOError):
-        with DCDFile(DCD) as dcd:
+    with DCDFile(DCD) as dcd:
+        with pytest.raises(IOError):
             dcd.write_header(
                 remarks='Crazy!',
                 natoms=22,
@@ -269,8 +266,8 @@ def test_write_header_wrong_mode():
 def test_write_mode():
     # ensure that writing of DCD files only occurs with properly
     # opened files
-    with pytest.raises(IOError):
-        with DCDFile(DCD) as dcd:
+    with DCDFile(DCD) as dcd:
+        with pytest.raises(IOError):
             dcd.write(xyz=np.zeros((3, 3)), box=np.zeros(6, dtype=np.float64))
 
 
@@ -358,38 +355,39 @@ def test_written_unit_cell(written_dcd):
             assert_array_almost_equal(frame.unitcell, o_frame.unitcell)
 
 
-def test_write_all_dtypes(tmpdir):
+@pytest.mark.parametrize(
+    "dtype", (np.int32, np.int64, np.float32, np.float64, int, float))
+def test_write_all_dtypes(tmpdir, dtype):
     with tmpdir.as_cwd():
-        for dtype in (np.int32, np.int64, np.float32, np.float64):
-            with DCDFile('foo.dcd', 'w') as out:
-                natoms = 10
-                xyz = np.ones((natoms, 3), dtype=dtype)
-                box = np.ones(6, dtype=dtype)
-                out.write_header(
-                    remarks='test',
-                    natoms=natoms,
-                    charmm=1,
-                    delta=1,
-                    nsavc=1,
-                    istart=1)
-                out.write(xyz=xyz, box=box)
+        with DCDFile('foo.dcd', 'w') as out:
+            natoms = 10
+            xyz = np.ones((natoms, 3), dtype=dtype)
+            box = np.ones(6, dtype=dtype)
+            out.write_header(
+                remarks='test',
+                natoms=natoms,
+                charmm=1,
+                delta=1,
+                nsavc=1,
+                istart=1)
+            out.write(xyz=xyz, box=box)
 
 
-def test_write_array_like(tmpdir):
+@pytest.mark.parametrize("array_like", (np.array, list))
+def test_write_array_like(tmpdir, array_like):
     with tmpdir.as_cwd():
-        for array_like in (np.array, list):
-            with DCDFile('foo.dcd', 'w') as out:
-                natoms = 10
-                xyz = array_like([[1, 1, 1] for i in range(natoms)])
-                box = array_like([i for i in range(6)])
-                out.write_header(
-                    remarks='test',
-                    natoms=natoms,
-                    charmm=1,
-                    delta=1,
-                    nsavc=1,
-                    istart=1)
-                out.write(xyz=xyz, box=box)
+        with DCDFile('foo.dcd', 'w') as out:
+            natoms = 10
+            xyz = array_like([[1, 1, 1] for i in range(natoms)])
+            box = array_like([i for i in range(6)])
+            out.write_header(
+                remarks='test',
+                natoms=natoms,
+                charmm=1,
+                delta=1,
+                nsavc=1,
+                istart=1)
+            out.write(xyz=xyz, box=box)
 
 
 def test_write_wrong_shape_xyz(tmpdir):

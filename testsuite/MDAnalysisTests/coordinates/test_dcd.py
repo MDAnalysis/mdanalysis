@@ -37,7 +37,6 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference,
                                               BaseWriterTest)
-from MDAnalysisTests import module_not_found
 
 import pytest
 
@@ -343,6 +342,7 @@ def test_write_unitcell_triclinic(ref, tmpdir):
 
 @pytest.fixture(scope='module')
 def ncdf2dcd(tmpdir_factory):
+    pytest.importorskip("netCDF4")
     testfile = tmpdir_factory.mktemp('dcd').join('ncdf2dcd.dcd')
     testfile = str(testfile)
     ncdf = mda.Universe(PRMncdf, NCDF)
@@ -352,8 +352,6 @@ def ncdf2dcd(tmpdir_factory):
     return ncdf, mda.Universe(PRMncdf, testfile)
 
 
-@pytest.mark.skipif(module_not_found("netCDF4"),
-                    reason="netcdf4 module not installed")
 def test_ncdf2dcd_unitcell(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
@@ -362,8 +360,6 @@ def test_ncdf2dcd_unitcell(ncdf2dcd):
                             3)
 
 
-@pytest.mark.skipif(module_not_found("netCDF4"),
-                    reason="netcdf4 module not installed")
 def test_ncdf2dcd_coords(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
