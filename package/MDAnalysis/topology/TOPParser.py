@@ -152,7 +152,7 @@ class TOPParser(TopologyReaderBase):
 
         # Open and check top validity
         # Reading header info POINTERS
-        with openany(self.filename) as self.topfile:
+        with openany(self.filename, mode='rt') as self.topfile:
             header = next(self.topfile)
             if not header.startswith("%VE"):
                 raise ValueError(

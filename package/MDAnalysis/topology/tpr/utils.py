@@ -230,9 +230,9 @@ def do_mtop(data, fver):
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
                 resids.append(atomkind.resid + res_start_ndx)
-                resnames.append(atomkind.resname)
-                atomnames.append(atomkind.name)
-                atomtypes.append(atomkind.type)
+                resnames.append(atomkind.resname.decode())
+                atomnames.append(atomkind.name.decode())
+                atomtypes.append(atomkind.type.decode())
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
 
