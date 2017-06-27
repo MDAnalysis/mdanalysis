@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -245,7 +245,6 @@ from __future__ import absolute_import, division
 from six.moves import zip, cPickle
 import six
 
-import numpy as np
 import glob
 import os
 import errno
@@ -257,6 +256,10 @@ import tempfile
 import textwrap
 import logging
 from itertools import cycle
+
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
@@ -370,8 +373,6 @@ class BaseHOLE(object):
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
-        import matplotlib.colors
-
         kw = {}
         frames = kwargs.pop('frames', None)
         if frames is None:
@@ -448,9 +449,6 @@ class BaseHOLE(object):
            Returns ``ax``.
 
         """
-
-        import matplotlib.pyplot as plt
-
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
         ax = kwargs.pop('ax', None)
@@ -517,8 +515,7 @@ class BaseHOLE(object):
            Returns ``ax``.
 
         """
-
-        import matplotlib.pyplot as plt
+        # installed with matplotlib; imported here to enable 3D axes
         from mpl_toolkits.mplot3d import Axes3D
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
@@ -540,8 +537,7 @@ class BaseHOLE(object):
                 rxncoord = profile.rxncoord
             else:
                 # does not seem to work with masked arrays but with nan hack!
-                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value
-                # -for-the-z-axis
+                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
                 #radius = np.ma.masked_greater(profile.radius, rmax)
                 #rxncoord = np.ma.array(profile.rxncoord, mask=radius.mask)
                 rxncoord = profile.rxncoord

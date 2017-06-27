@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -106,6 +106,7 @@ from six.moves import range
 import warnings
 
 import numpy as np
+import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -357,9 +358,9 @@ def cosine_content(pca_space, i):
     .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
                    Phys. Rev. E 65, 031910 (2002).
     """
-    from scipy.integrate import simps
+
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (simps(cos*pca_space[:, i])) ** 2 /
-            simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simps(pca_space[:, i] ** 2))

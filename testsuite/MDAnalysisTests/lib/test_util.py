@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -19,6 +19,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division
+
 from six.moves import range, StringIO
 import six
 
@@ -968,3 +970,19 @@ class TestNamespace(object):
             seen.append(val)
         for val in ['this', 'that', 'other']:
             assert_(val in seen)
+
+
+class TestTruncateInteger(object):
+    @staticmethod
+    def _check_vals(a, b):
+        assert_(util.ltruncate_int(*a) == b)
+
+    def test_ltruncate_int(self):
+        for vals, exp in (
+                ((1234, 1), 4),
+                ((1234, 2), 34),
+                ((1234, 3), 234),
+                ((1234, 4), 1234),
+                ((1234, 5), 1234),
+        ):
+            yield self._check_vals, vals, exp

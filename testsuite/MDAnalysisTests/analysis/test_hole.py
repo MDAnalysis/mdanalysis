@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -32,6 +32,9 @@ from numpy.testing import (TestCase, dec,
                            assert_array_equal,
                            assert_array_almost_equal, assert_)
 import numpy as np
+import matplotlib
+import mpl_toolkits.mplot3d
+
 import nose
 from nose.plugins.attrib import attr
 
@@ -150,27 +153,21 @@ class TestHOLEtraj(TestCase):
 
     @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    @dec.skipif(module_not_found("matplotlib"))
     def test_plot(self):
-        import matplotlib.axes
         ax = self.H.plot(label=True)
         assert_(isinstance(ax, matplotlib.axes.Axes),
                 msg="H.plot() did not produce an Axes instance")
 
     @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    @dec.skipif(module_not_found("matplotlib"))
     def test_plot3D(self):
-        import mpl_toolkits.mplot3d
         ax = self.H.plot3D()
         assert_(isinstance(ax, mpl_toolkits.mplot3d.Axes3D),
                 msg="H.plot3D() did not produce an Axes3D instance")
 
     @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
-    @dec.skipif(module_not_found("matplotlib"))
     def test_plot3D_rmax(self):
-        import mpl_toolkits.mplot3d
         ax = self.H.plot3D(rmax=2.5)
         assert_(isinstance(ax, mpl_toolkits.mplot3d.Axes3D),
                 msg="H.plot3D(rmax=float) did not produce an Axes3D instance")

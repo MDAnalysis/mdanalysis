@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -21,22 +21,25 @@
 #
 from __future__ import print_function, absolute_import
 
+import scipy
+import scipy.spatial
+
 import MDAnalysis
 from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import GRO
 from MDAnalysisTests.util import block_import
 
+import MDAnalysis.analysis.distances
+
 from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
+
 import warnings
-from mock import Mock, patch
 import sys
 
 
 class TestContactMatrix(TestCase):
 
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
     def setUp(self):
         import MDAnalysis.analysis.distances
         self.coord = np.array([[1, 1, 1],
@@ -87,17 +90,7 @@ class TestContactMatrix(TestCase):
         assert_equal(contacts.toarray(), self.res_pbc)
 
 class TestDist(TestCase):
-    '''Tests for MDAnalysis.analysis.distances.dist().
-    Imports do not happen at the top level of the module
-    because of the scipy dependency.'''
-
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
-
     def setUp(self):
-        import MDAnalysis.analysis.distances
-        import scipy
-        import scipy.spatial
         self.u = MDAnalysis.Universe(GRO)
         self.ag = self.u.atoms[:20]
         self.u2 = MDAnalysis.Universe(GRO)
@@ -142,17 +135,7 @@ class TestDist(TestCase):
             MDAnalysis.analysis.distances.dist(self.ag[:19], self.ag2)
 
 class TestBetween(TestCase):
-    '''Tests for MDAnalysis.analysis.distances.between().
-    Imports do not happen at the top level of the module
-    because of the scipy dependency.'''
-
-    @dec.skipif(module_not_found('scipy'),
-                "Test skipped because scipy is not available.")
-
     def setUp(self):
-        import MDAnalysis.analysis.distances
-        import scipy
-        import scipy.spatial
         self.u = MDAnalysis.Universe(GRO)
         self.ag = self.u.atoms[:10]
         self.ag2 = self.u.atoms[12:33]
@@ -190,41 +173,3 @@ class TestBetween(TestCase):
                                                               self.ag2,
                                                               self.distance).indices)
         assert_equal(actual, self.expected)
-
-class TestImportWarnings(TestCase):
-    # see unit testing for warnings:
-    # http://stackoverflow.com/a/3892301
-
-    def setUp(self):
-        sys.modules.pop('MDAnalysis.analysis.distances', None)
-
-    @block_import('scipy')
-    def test_warning_raised_no_scipy_module_level(self):
-        # an appropriate warning rather than an exception should be
-        # raised if scipy is absent when importing
-        # MDAnalysis.analysis.distances
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            import MDAnalysis.analysis.distances
-            assert issubclass(w[-1].category, ImportWarning)
-
-    def test_silent_success_scipy_present_module_level(self):
-        # if scipy is present no module level ImportWarning should be
-        # raised when importing MDAnalysis.analysis.distances
-        mock = Mock() # mock presence of scipy
-        with patch.dict('sys.modules', {'scipy':mock}):
-            with warnings.catch_warnings(record=True) as w:
-                warnings.simplefilter("always")
-                import MDAnalysis.analysis.distances
-                assert w == []
-
-    @block_import('scipy')
-    def test_import_error_contact_matrix_no_scipy(self):
-        # contact_matrix should raise an ImportError if returntype is
-        # "sparse" and scipy is not available
-        with self.assertRaises(ImportError):
-            np.random.seed(321)
-            points = np.random.random_sample((10, 3))
-            import MDAnalysis.analysis.distances
-            MDAnalysis.analysis.distances.contact_matrix(points,
-                                                         returntype="sparse")

@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -25,16 +25,18 @@ from six.moves import range
 import itertools
 import numpy as np
 from numpy.testing import (
+    dec,
     assert_,
     assert_array_equal,
     assert_equal,
     assert_raises,
+    assert_warns,
 )
 import operator
 import six
 
 import MDAnalysis as mda
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests import make_Universe, parser_not_found, assert_nowarns
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
@@ -578,6 +580,8 @@ class TestGroupBy(object):
 
 
 class TestReprs(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -919,9 +923,105 @@ class TestGroupBaseOperators(object):
                 yield check_operator, op, method, level
 
 
+class TestGroupHash(object):
+    """
+    Groups should be hashable.
+
+    See issue #1397
+    """
+    def test_hash_exists(self):
+        def _hash_type(group):
+            assert_(isinstance(hash(group), int))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            group = getattr(u, level)
+            yield _hash_type, group
+
+    def test_hash_equality(self):
+        def _hash_equal(a, b):
+            assert_equal(hash(a), hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)[0:-1]
+            b = getattr(u, level)[0:-1]
+            yield _hash_equal, a, b
+
+    def test_hash_difference(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)[:-1]
+            b = getattr(u, level)[1:]
+            yield _hash_not_equal, a, b
+
+    def test_hash_difference_cross(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        levels = ('atoms', 'residues', 'segments')
+        for level_a, level_b in itertools.permutations(levels, 2):
+            a = getattr(u, level_a)[0:-1]
+            b = getattr(u, level_b)[0:-1]
+            yield _hash_not_equal, a, b
+
+    def test_hash_diff_cross_universe(self):
+        def _hash_not_equal(a, b):
+            assert_(hash(a) != hash(b))
+
+        u = make_Universe(size=(3, 3, 3))
+        u2 = make_Universe(size=(3, 3, 3))
+        for level in ('atoms', 'residues', 'segments'):
+            a = getattr(u, level)
+            b = getattr(u2, level)
+            yield _hash_not_equal, a, b
+
+
 class TestAtomGroup(object):
 
     @staticmethod
     def test_PDB_atom_repr():
         u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
+
+
+class TestInstantSelectorDeprecationWarnings(object):
+    def setUp(self):
+        self.u = make_Universe(("resids", "resnames", "segids", "names"))
+
+    def test_AtomGroup_warn_getitem(self):
+        name = self.u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: self.u.atoms[x], name)
+
+    def test_AtomGroup_nowarn_getitem_index(self):
+        assert_nowarns(DeprecationWarning, lambda x: self.u.atoms[x], 0)
+
+    def test_AtomGroup_nowarn_segids_attribute(self):
+        assert_nowarns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), "segids")
+
+    def test_AtomGroup_warn_getattr(self):
+        name = self.u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), name)
+
+    def test_ResidueGroup_warn_getattr_resname(self):
+        name = self.u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.residues, x), name)
+
+    def test_Segment_warn_getattr_resname(self):
+        name = self.u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), name)
+
+    def test_Segment_warn_getattr_rRESNUM(self):
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), 'r1')
+
+    def test_SegmentGroup_warn_getattr(self):
+        name = self.u.segments[0].segid
+        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments, x), name)
+
+    def test_SegmentGroup_nowarn_getitem(self):
+        assert_nowarns(DeprecationWarning, lambda x: self.u.segments[x], 0)
+

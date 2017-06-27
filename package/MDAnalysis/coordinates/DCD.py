@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -81,6 +81,7 @@ from six.moves import range
 import os
 import errno
 import numpy as np
+from numpy.lib.utils import deprecate
 import struct
 import types
 import warnings
@@ -578,37 +579,39 @@ class DCDReader(base.ReaderBase):
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, step, format)
 
+    @deprecate(message="This method will be removed in 0.17")
     def correl(self, timeseries, start=None, stop=None, step=None, skip=None):
-        """Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
-        with time series computed from the trajectory.
+        """
+Populate a :class:`~MDAnalysis.core.Timeseries.TimeseriesCollection` object
+with time series computed from the trajectory.
 
-        Calling this method will iterate through the whole trajectory and
-        perform the calculations prescribed in `timeseries`.
+Calling this method will iterate through the whole trajectory and
+perform the calculations prescribed in `timeseries`.
 
-        Parameters
-        ----------
-        timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
-             The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
-             of computations should be performed on the data in this trajectory.
-        start :  int (optional)
-             Begin reading the trajectory at frame index `start` (where 0 is the index
-             of the first frame in the trajectory); the default ``None`` starts
-             at the beginning.
-        stop : int (optional)
-             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
-             The trajectory is read to the end with the default ``None``.
-        step : int (optional)
-             Step size for reading; the default ``None`` is equivalent to 1 and means to
-             read every frame.
+Parameters
+----------
+timeseries : :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
+     The :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` that defines what kind
+     of computations should be performed on the data in this trajectory.
+start :  int (optional)
+     Begin reading the trajectory at frame index `start` (where 0 is the index
+     of the first frame in the trajectory); the default ``None`` starts
+     at the beginning.
+stop : int (optional)
+     End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+     The trajectory is read to the end with the default ``None``.
+step : int (optional)
+     Step size for reading; the default ``None`` is equivalent to 1 and means to
+     read every frame.
 
-        Note
-        ----
-        The `correl` functionality is only implemented for DCD trajectories and
-        the :class:`DCDReader`.
+Note
+----
+The `correl` functionality is only implemented for DCD trajectories and
+the :class:`DCDReader`.
 
 
-        .. deprecated:: 0.16.0
-           `skip` has been deprecated in favor of the standard keyword `step`.
+.. deprecated:: 0.16.0
+   `skip` has been deprecated in favor of the standard keyword `step`.
 
         """
         if skip is not None:

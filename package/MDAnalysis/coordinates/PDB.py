@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -902,12 +902,12 @@ class PDBWriter(base.WriterBase):
 
         for i, atom in enumerate(atoms):
             vals = {}
-            vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
+            vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
             vals['chainID'] = segids[i][:1]
-            vals['resSeq'] = int(str(resids[i])[-4:])
+            vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             vals['occupancy'] = occupancies[i]

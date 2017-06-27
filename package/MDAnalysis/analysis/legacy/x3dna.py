@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -132,12 +132,14 @@ import os
 import errno
 import shutil
 import warnings
-import numpy as np
 import os.path
 import subprocess
 import tempfile
 import textwrap
 from collections import OrderedDict
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
@@ -413,7 +415,6 @@ class BaseX3DNA(object):
              Provide `ax` to have all plots plotted in the same axes.
 
         """
-        import matplotlib.pyplot as plt
 
         na_avg, na_std = self.mean_std()
         for k in range(len(na_avg[0])):

@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -98,7 +98,7 @@ especially as we are directly using this framework (imported from numpy).
 
 A number of plugins external to nose are automatically loaded. The `knownfailure`
 plugin provides the `@knownfailure()` decorator, which can be used to mark tests
-that are expected to fail. If used with default arguments the parentheses can be 
+that are expected to fail. If used with default arguments the parentheses can be
 excluded.
 
 .. _NumPy: http://www.numpy.org/
@@ -116,7 +116,7 @@ from __future__ import absolute_import
 import logging
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
-__version__ = "0.16.1"  # keep in sync with RELEASE in setup.py
+__version__ = "0.16.2-dev0"  # keep in sync with RELEASE in setup.py
 try:
     from MDAnalysisTests.authors import __authors__
 except ImportError:
@@ -147,6 +147,7 @@ from MDAnalysisTests.util import (
     module_not_found,
     parser_not_found,
     in_dir,
+    assert_nowarns,
 )
 from MDAnalysisTests.core.util import make_Universe
 

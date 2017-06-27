@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -216,7 +216,11 @@ import six
 from six.moves import range, cPickle
 
 import numpy as np
-import warnings,numbers
+from scipy import spatial, cluster
+import matplotlib
+
+import warnings
+import numbers
 
 import MDAnalysis
 import MDAnalysis.analysis.align
@@ -396,13 +400,15 @@ def hausdorff(P, Q):
 
     Notes
     -----
-    - The Hausdorff distance is calculated in a brute force manner from the
-      distance matrix without further optimizations, essentially following
-      [Huttenlocher1993]_.
-    - :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-      implementation of the early break algorithm of [Taha2015]_; note that
-      one still has to calculate the *symmetric* Hausdorff distance as
-      `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
+    The Hausdorff distance is calculated in a brute force manner from the
+    distance matrix without further optimizations, essentially following
+    [Huttenlocher1993]_.
+
+    :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
+    implementation of the early break algorithm of [Taha2015]_; note that one
+    still has to calculate the *symmetric* Hausdorff distance as
+    `max(directed_hausdorff(P, Q)[0], directed_hausdorff(Q, P)[0])`.
+
 
     References
     ----------
@@ -410,16 +416,20 @@ def hausdorff(P, Q):
         W. J. Rucklidge. Comparing images using the Hausdorff distance. IEEE
         Transactions on Pattern Analysis and Machine Intelligence,
         15(9):850–863, 1993.
-
     .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for
        calculating the exact Hausdorff distance. IEEE Transactions On Pattern
        Analysis And Machine Intelligence, 37:2153-63, 2015.
 
+
+    See Also
+    --------
+    scipy.spatial.distance.directed_hausdorff
+
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
-    return ( max( np.amax(np.amin(d, axis=0)),                                  \
-                  np.amax(np.amin(d, axis=1)) ) / N  )**0.5
+    return (max(np.amax(np.amin(d, axis=0)),
+                np.amax(np.amin(d, axis=1))) / N)**0.5
 
 
 def hausdorff_wavg(P, Q):
@@ -1650,7 +1660,7 @@ class PSAnalysis(object):
 
         If `filename` is supplied then the figure is also written to file (the
         suffix determines the file type, e.g. pdf, png, eps, ...). All other
-        keyword arguments are passed on to :func:`matplotlib.pyplot.imshow`.
+        keyword arguments are passed on to :func:`matplotlib.pyplot.matshow`.
 
 
         Parameters
@@ -1668,6 +1678,15 @@ class PSAnalysis(object):
         labelsize : float
              set the font size for colorbar labels; font size for path labels on
              dendrogram default to 3 points smaller [``12``]
+
+        Returns
+        -------
+        Z
+          `Z` from :meth:`cluster`
+        dgram
+          `dgram` from :meth:`cluster`
+        dist_matrix_clus
+          clustered distance matrix (reordered)
 
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
@@ -1770,6 +1789,23 @@ class PSAnalysis(object):
         annot_size : float
              font size of annotation labels on heat map [``6.5``]
 
+        Returns
+        -------
+        Z
+          `Z` from :meth:`cluster`
+        dgram
+          `dgram` from :meth:`cluster`
+        dist_matrix_clus
+          clustered distance matrix (reordered)
+
+
+        Note
+        ----
+        This function requires the seaborn_ package, which can be installed
+        with `pip install seaborn` or `conda install seaborn`.
+
+        .. _seaborn: https://seaborn.pydata.org/
+
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
@@ -1870,6 +1906,17 @@ class PSAnalysis(object):
              set the font size for colorbar labels; font size for path labels on
              dendrogram default to 3 points smaller [``12``]
 
+        Returns
+        -------
+        ax : axes
+
+        Note
+        ----
+        This function requires the seaborn_ package, which can be installed
+        with `pip install seaborn` or `conda install seaborn`.
+
+        .. _seaborn: https://seaborn.pydata.org/
+
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
@@ -1927,7 +1974,8 @@ class PSAnalysis(object):
             head = self.targetdir + self.datadirs['plots']
             outfile = os.path.join(head, filename)
             savefig(outfile, dpi=300, bbox_inches='tight')
-        show()
+
+        return ax
 
 
     def cluster(self, distArray, method='ward', count_sort=False,               \
@@ -1955,21 +2003,27 @@ class PSAnalysis(object):
 
         Returns
         -------
-        list
+        Z
+            output from :func:`scipy.cluster.hierarchy.linkage`;
             list of indices representing the row-wise order of the objects
             after clustering
+        dgram
+            output from :func:`scipy.cluster.hierarchy.dendrogram`
         """
-        import matplotlib
-        from scipy.cluster.hierarchy import linkage, dendrogram
-
+        # perhaps there is a better way to manipulate the plot... or perhaps it
+        # is not even necessary? In any case, the try/finally makes sure that
+        # we are not permanently changing the user's global state
+        orig_linewidth = matplotlib.rcParams['lines.linewidth']
         matplotlib.rcParams['lines.linewidth'] = 0.5
-
-        Z = linkage(distArray, method=method)
-        dgram = dendrogram(Z, no_labels=no_labels, orientation='left',          \
-                           count_sort=count_sort, distance_sort=distance_sort,  \
-                           no_plot=no_plot, color_threshold=color_threshold)
+        try:
+            Z = cluster.hierarchy.linkage(distArray, method=method)
+            dgram = cluster.hierarchy.dendrogram(
+                Z, no_labels=no_labels, orientation='left',
+                count_sort=count_sort, distance_sort=distance_sort,
+                no_plot=no_plot, color_threshold=color_threshold)
+        finally:
+            matplotlib.rcParams['lines.linewidth'] = orig_linewidth
         return Z, dgram
-
 
     def _get_plot_obj_locs(self):
         """Find and return coordinates for dendrogram, heat map, and colorbar.
@@ -2005,7 +2059,8 @@ class PSAnalysis(object):
 
         Returns
         -------
-        the number of atoms
+        int
+            the number of atoms
 
         Note
         ----
@@ -2077,8 +2132,7 @@ class PSAnalysis(object):
             err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
         if vectorform:
-            from scipy.spatial.distance import squareform
-            return squareform(self.D)
+            return spatial.distance.squareform(self.D)
         else:
             return self.D
 

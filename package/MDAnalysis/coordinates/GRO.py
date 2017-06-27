@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -377,8 +377,8 @@ class GROWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
                     range(ag_or_ts.n_atoms), resids, resnames, names):
-                truncated_atom_index = int(str(atom_index + 1)[-5:])
-                truncated_resid = int(str(resid)[:5])
+                truncated_atom_index = util.ltruncate_int(atom_index + 1, 5)
+                truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(self.fmt['xyz_v'].format(
                         resid=truncated_resid,

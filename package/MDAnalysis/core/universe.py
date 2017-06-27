@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -46,6 +46,11 @@ Working with Universes
 
 Quick segid selection
 ---------------------
+
+.. deprecated:: 0.16.2
+   Instant selectors will be removed in the 1.0 release.  See issue `#1377
+   <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more details.
+
 
 If the loaded topology provided segids, then these are made accessible
 as attributes of the Universe.  If the segid starts with a number such
@@ -313,6 +318,10 @@ class Universe(object):
 
         # Update Universe namespace with segids
         # Many segments can have same segid, so group together first
+        #
+        # DEPRECATED in 0.16.2
+        # REMOVE in 1.0
+        # See https://github.com/MDAnalysis/mdanalysis/issues/1377
         try:
             # returns dict of segid:segment
             segids = self.segments.groupby('segids')
@@ -492,7 +501,7 @@ class Universe(object):
             # object, to provide fast access and allow coordinates
             # to be manipulated
             if step is None:
-                step = 1 
+                step = 1
             self.trajectory = MemoryReader(
                 coordinates,
                 dimensions=self.trajectory.ts.dimensions,

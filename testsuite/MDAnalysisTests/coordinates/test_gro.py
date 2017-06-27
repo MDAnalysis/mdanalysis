@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -20,22 +20,33 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from unittest import TestCase
 
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
-from MDAnalysisTests import make_Universe
-from MDAnalysisTests.coordinates.base import BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest
+from MDAnalysisTests import make_Universe, tempdir
+from MDAnalysisTests.coordinates.base import (
+    BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
+)
 from MDAnalysisTests.coordinates.reference import RefAdK
-from MDAnalysisTests.datafiles import COORDINATES_GRO, COORDINATES_GRO_INCOMPLETE_VELOCITY, COORDINATES_GRO_BZ2, GRO, \
-    GRO_large
+from MDAnalysisTests.datafiles import (
+    COORDINATES_GRO,
+    COORDINATES_GRO_INCOMPLETE_VELOCITY,
+    COORDINATES_GRO_BZ2,
+    GRO,
+    GRO_large,
+)
 from nose.plugins.attrib import attr
-from numpy.testing import (assert_almost_equal, )
-from numpy.testing import assert_array_almost_equal, dec, assert_equal, assert_raises
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_array_almost_equal,
+    dec,
+    assert_equal,
+    assert_raises
+)
 
-
-class TestGROReaderOld(TestCase, RefAdK):
+class TestGROReaderOld(RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
@@ -88,7 +99,7 @@ class TestGROReaderOld(TestCase, RefAdK):
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 
-class TestGROReaderNoConversionOld(TestCase, RefAdK):
+class TestGROReaderNoConversionOld(RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
@@ -407,6 +418,18 @@ class TestGROLargeWriter(BaseWriterTest):
                          err_msg="Writing GRO file with > 99 999 "
                                  "resids does not truncate properly.")
 
+@tempdir.run_in_tempdir()
+def test_growriter_resid_truncation():
+    u = make_Universe(extras=['resids'], trajectory=True)
+    u.residues[0].resid = 123456789
+    u.atoms.write('out.gro')
+
+    with open('out.gro', 'r') as grofile:
+        grofile.readline()
+        grofile.readline()
+        line = grofile.readline()
+    # larger digits should get truncated
+    assert_(line.startswith('56789UNK'))
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

@@ -57,28 +57,60 @@ members agree and adhere to --- please read it.
    http://groups.google.com/group/mdnalysis-discussion
 .. _`Code of Conduct`: http://www.mdanalysis.org/pages/conduct/
 
+.. _installation-instructions: 
 
 Installing MDAnalysis
 =====================
 
-To `install the latest release`_ using `pip`_:
+The easiest approach to `install the latest release`_ is to use a package that
+can be installed either with pip_ or conda_.
+
+pip
+---
+
+Installation with `pip`_ and a *minimal set of dependencies*:
 
 .. code-block:: bash 
 
    pip install --upgrade MDAnalysis
 
-Alternatively, to install with conda_ do
+To install with a *full set of dependencies* (which includes everything needed
+for :mod:`MDAnalysis.analysis`), add the ``[analysis]`` tag:
+
+.. code-block:: bash 
+
+   pip install --upgrade MDAnalysis[analysis]
+
+
+conda
+-----
+
+First installation with conda_:	
 
 .. code-block:: bash 
 
    conda config --add channels conda-forge
    conda install mdanalysis
 
-and to upgrade
+which will automatically install a *full set of dependencies*.
+
+To upgrade later:
 
 .. code-block:: bash 
 
    conda update mdanalysis
+
+Tests
+-----
+
+If you want to `run the tests`_ or use example files to follow some of the
+examples in the documentation or the tutorials_, also install the
+``MDAnalysisTests`` package:
+
+.. code-block:: bash 
+
+   pip install --upgrade MDAnalysisTests    # with pip
+   conda install mdanalysistests            # with conda
 
 .. _install the latest release:
    http://www.mdanalysis.org/pages/installation_quick_start/
@@ -86,7 +118,9 @@ and to upgrade
    http://www.pip-installer.org/en/latest/index.html
 .. _conda:
    http://conda.pydata.org/docs/
-   
+.. _run the tests: http://wiki.mdanalysis.org/UnitTests   
+.. _tutorials: http://www.mdanalysis.org/pages/learning_MDAnalysis/
+
 
 Source Code
 ===========

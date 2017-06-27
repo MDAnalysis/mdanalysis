@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -100,6 +100,8 @@ import itertools
 import numbers
 import os
 import warnings
+
+from numpy.lib.utils import deprecate
 
 import MDAnalysis
 from .. import _ANCHOR_UNIVERSES
@@ -342,7 +344,7 @@ def _only_same_level(function):
 class GroupBase(_MutableBase):
     """Base class from which a Universe's Group class is built.
 
-	Instances of :class:`GroupBase` provide the following operations that
+    Instances of :class:`GroupBase` provide the following operations that
     conserve element repetitions and order:
 
     +-------------------------------+------------+----------------------------+
@@ -419,9 +421,12 @@ class GroupBase(_MutableBase):
             ix, u = args
 
         # indices for the objects I hold
-        self._ix = np.asarray(ix, dtype=np.int64)
+        self._ix = np.asarray(ix, dtype=np.intp)
         self._u = u
         self._cache = dict()
+
+    def __hash__(self):
+        return hash((self._u, self.__class__, tuple(self.ix.tolist())))
 
     def __len__(self):
         return len(self._ix)
@@ -986,7 +991,7 @@ class GroupBase(_MutableBase):
                              "Please use one of 'group' 'residues' 'segments'"
                              "or 'fragments'".format(compound))
 
-# TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE
+        # TODO: ADD TRY-EXCEPT FOR MASSES PRESENCE
         if center.lower() in ('com', 'centerofmass'):
             centers = np.vstack([o.atoms.center_of_mass() for o in objects])
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
@@ -1349,9 +1354,10 @@ class GroupBase(_MutableBase):
 class AtomGroup(GroupBase):
     """A group of atoms.
 
-    An AtomGroup is an ordered collection of atoms. Typically, an AtomGroup is
-    generated from a selection, or by indexing/slcing the AtomGroup of all
-    atoms in the Universe at :attr:`MDAnalysis.core.universe.Universe.atoms`.
+    An :class:`AtomGroup` is an ordered collection of atoms. Typically, an
+    :class:`AtomGroup` is generated from a selection, or by indexing/slicing
+    the :class:`AtomGroup` of all atoms in the :class:`Universe` at
+    :attr:`MDAnalysis.core.universe.Universe.atoms`.
 
     An AtomGroup can be indexed and sliced like a list::
 
@@ -1381,23 +1387,6 @@ class AtomGroup(GroupBase):
         produced by slicing. Thus slicing can be used when the order of
         atoms is crucial (for instance, in order to define angles or
         dihedrals).
-
-    Atoms can also be accessed in a Pythonic fashion by using the atom name as
-    an attribute. For instance, ::
-
-        ag.CA
-
-    will provide a :class:`AtomGroup` of all CA atoms in the
-    group. These *instant selector* attributes are auto-generated for
-    each atom name encountered in the group.
-
-    .. note::
-
-        The name-attribute instant selector access to atoms is mainly
-        meant for quick interactive work. Thus it either returns a
-        single :class:`Atom` if there is only one matching atom, *or* a
-        new :class:`AtomGroup` for multiple matches.  This makes it
-        difficult to use the feature consistently in scripts.
 
     AtomGroups can be compared and combined using group operators. For
     instance, AtomGroups can be concatenated using `+` or :meth:`concatenate`::
@@ -1484,12 +1473,44 @@ class AtomGroup(GroupBase):
     AtomGroup instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
+
+    .. rubric:: Deprecated functionality
+
+    *Instant selectors* will be removed in the 1.0 release.  See issue `#1377
+    <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more details.
+
+    Atoms can also be accessed in a Pythonic fashion by using the atom name as
+    an attribute. For instance, ::
+
+        ag.CA
+
+    will provide a :class:`AtomGroup` of all CA atoms in the
+    group. These *instant selector* attributes are auto-generated for
+    each atom name encountered in the group.
+
+    Notes
+    -----
+    The name-attribute instant selector access to atoms is mainly
+    meant for quick interactive work. Thus it either returns a
+    single :class:`Atom` if there is only one matching atom, *or* a
+    new :class:`AtomGroup` for multiple matches.  This makes it
+    difficult to use the feature consistently in scripts.
+
+
     See Also
     --------
     :class:`MDAnalysis.core.universe.Universe`
 
+
+    .. deprecated:: 0.16.2
+       *Instant selectors* of AtomGroup will be removed in the 1.0 release.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
+
     """
     def __getitem__(self, item):
+        # DEPRECATED in 0.16.2
+        # REMOVE in 1.0
+        #
         # u.atoms['HT1'] access, otherwise default
         if isinstance(item, string_types):
             try:
@@ -1499,6 +1520,9 @@ class AtomGroup(GroupBase):
         return super(AtomGroup, self).__getitem__(item)
 
     def __getattr__(self, attr):
+        # DEPRECATED in 0.16.2
+        # REMOVE in 1.0
+        #
         # is this a known attribute failure?
         if attr in ('fragments',):  # TODO: Generalise this to cover many attributes
             # eg:
@@ -2175,6 +2199,11 @@ class ResidueGroup(GroupBase):
 
     ResidueGroups can be compared and combined using group operators. See the
     list of these operators on :class:`GroupBase`.
+
+    .. deprecated:: 0.16.2
+       *Instant selectors* of Segments will be removed in the 1.0 release.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
+
     """
 
     @property
@@ -2289,6 +2318,11 @@ class SegmentGroup(GroupBase):
 
     SegmentGroups can be compared and combined using group operators. See the
     list of these operators on :class:`GroupBase`.
+
+    .. deprecated:: 0.16.2
+       *Instant selectors* of Segments will be removed in the 1.0 release.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
+
     """
 
     @property
@@ -2457,14 +2491,14 @@ class ComponentBase(_MutableBase):
     @property
     def ix_array(self):
         """Unique index of this component as an array.
-        
+
         This method gives a consistent API between components and groups.
 
         See Also
         --------
         ix
         """
-        return np.array([self.ix])
+        return np.array([self.ix], dtype=np.intp)
 
 
 class Atom(ComponentBase):
@@ -2634,6 +2668,10 @@ class Segment(ComponentBase):
     ComponentBase, so this class only includes ad-hoc methods specific to
     Segments.
 
+    .. deprecated:: 0.16.2
+       *Instant selectors* of Segments will be removed in the 1.0 release.
+       See :ref:`Instant selectors <instance-selectors>` for details and alternatives.
+
     """
     def __repr__(self):
         me = '<Segment'
@@ -2650,10 +2688,17 @@ class Segment(ComponentBase):
         return self.universe.residues[self.universe._topology.resindices[self][0]]
 
     def __getattr__(self, attr):
+        # DEPRECATED in 0.16.2
+        # REMOVE in 1.0
+        #
         # Segment.r1 access
         if attr.startswith('r') and attr[1:].isdigit():
             resnum = int(attr[1:])
-            return self.residues[resnum - 1]  # convert to 0 based
+            rg = self.residues[resnum - 1]  # convert to 0 based
+            warnings.warn("Instant selectors Segment.r<N> will be removed in 1.0. "
+                          "Use Segment.residues[N-1] instead.",
+                          DeprecationWarning)
+            return rg
         # Resname accesss
         if hasattr(self.residues, 'resnames'):
             try:
@@ -2736,7 +2781,7 @@ class UpdatingAtomGroup(AtomGroup):
             ix = sum([sel.apply(bg) for sel in sels[1:]],
                      sels[0].apply(bg)).ix
         else:
-            ix = np.array([], dtype=np.int)
+            ix = np.array([], dtype=np.intp)
         # Run back through AtomGroup init with this information to remake ourselves
         super(UpdatingAtomGroup, self).__init__(ix, self.universe)
         self.is_uptodate = True

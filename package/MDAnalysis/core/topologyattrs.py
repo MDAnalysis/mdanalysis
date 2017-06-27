@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -41,6 +41,9 @@ import functools
 import itertools
 import numbers
 import numpy as np
+import warnings
+
+from numpy.lib.utils import deprecate
 
 from . import flags
 from ..lib.util import cached, convert_aa_code, iterable
@@ -417,6 +420,14 @@ class Atomnames(AtomAttr):
         no atoms are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``AtomGroup.select_atoms('name <name>')`` instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
+
         """
         # There can be more than one atom with the same name
         atomlist = group.atoms.unique[group.atoms.unique.names == name]
@@ -425,10 +436,12 @@ class Atomnames(AtomAttr):
                 "No atoms with name '{0}'".format(name))
         elif len(atomlist) == 1:
             # XXX: keep this, makes more sense for names
-            return atomlist[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return atomlist
+            atomlist = atomlist[0]
+        warnings.warn("Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
+                      "is deprecated and will be removed in 1.0. "
+                      "Use AtomGroup.select_atoms('name <name>') instead.",
+                      DeprecationWarning)
+        return atomlist
 
     # AtomGroup already has a getattr
 #    transplants[AtomGroup].append(
@@ -1057,6 +1070,13 @@ class Resnames(ResidueAttr):
     # This transplant is hardcoded for now to allow for multiple getattr things
     #transplants[Segment].append(('__getattr__', getattr__))
 
+
+    @deprecate(message="Instant selector ResidueGroup.<name> "
+               "or Segment.<name> "
+               "is deprecated and will be removed in 1.0. "
+               "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
+               "or Segment.residues[Segment.residues == '<name>'] "
+               "instead.")
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
         or Segment.
@@ -1067,6 +1087,15 @@ class Resnames(ResidueAttr):
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``ResidueGroup[ResidueGroup.resnames == '<name>']``
+           or ``Segment.residues[Segment.residues == '<name>']``
+           instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
 
         """
         # There can be more than one residue with the same name
@@ -1244,6 +1273,10 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
 
+    @deprecate(message="Instant selector SegmentGroup.<name> "
+               "is deprecated and will be removed in 1.0. "
+               "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
+               "instead.")
     def _get_named_segment(group, segid):
         """Get all segments with name *segid* in the current SegmentGroup.
 
@@ -1253,6 +1286,13 @@ class Segids(SegmentAttr):
         If no residues are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
+
+        .. deprecated:: 0.16.2
+           *Instant selectors* will be removed in the 1.0 release.
+           Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead.
+           See issue `#1377
+           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
+           more details.
 
         """
         # Undo adding 's' if segid started with digit

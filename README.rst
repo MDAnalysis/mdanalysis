@@ -111,6 +111,6 @@ to find uncovered code.
     :alt: Coverage Status
     :target: https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop
 
-.. |anaconda| image:: https://anaconda.org/mdanalysis/mdanalysis/badges/version.svg
+.. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
     :alt: Anaconda
-    :target: https://anaconda.org/MDAnalysis/mdanalysis
+    :target: https://anaconda.org/conda-forge/mdanalysis

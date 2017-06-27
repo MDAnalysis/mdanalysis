@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -142,7 +142,6 @@ class TestHydrogenBondAutocorrel(object):
 
     # For `solve` the test trajectories aren't long enough
     # So spoof the results and check that solver finds solution
-    @dec.skipif(module_not_found('scipy'))
     def test_solve_continuous(self):
         hbond = HBAC(self.u,
                      hydrogens=self.H,
@@ -168,7 +167,6 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.75, 0.5, 0.1]),
         )
 
-    @dec.skipif(module_not_found('scipy'))
     def test_solve_intermittent(self):
         hbond = HBAC(self.u,
                      hydrogens=self.H,
@@ -248,7 +246,6 @@ class TestHydrogenBondAutocorrel(object):
                       sample_time=0.06,
         )
 
-    @dec.skipif(module_not_found('scipy'))
     def test_solve_before_run_VE(self):
         hbond = HBAC(self.u,
                      hydrogens=self.H,

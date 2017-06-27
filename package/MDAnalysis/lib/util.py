@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -1574,3 +1574,28 @@ class Namespace(dict):
         except AssertionError:
             return False
         return True
+
+
+def ltruncate_int(value, ndigits):
+    """Truncate an integer, retaining least significant digits
+
+    Parameters
+    ----------
+    value : int
+      value to truncate
+    ndigits : int
+      number of digits to keep
+
+    Returns
+    -------
+    truncated : int
+      only the `ndigits` least significant digits from `value`
+
+    Examples
+    --------
+    >>> ltruncate_int(123, 2)
+    23
+    >>> ltruncate_int(1234, 5)
+    1234
+    """
+    return int(str(value)[-ndigits:])

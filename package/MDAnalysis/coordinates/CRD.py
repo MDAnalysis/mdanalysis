@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -251,9 +251,9 @@ class CRDWriter(base.WriterBase):
                     current_resid += 1
 
                 # Truncate numbers
-                serial = int(str(i + 1)[-serial_len:])
-                resid = int(str(resid)[-resid_len:])
-                current_resid = int(str(current_resid)[-totres_len:])
+                serial = util.ltruncate_int(i + 1, serial_len)
+                resid = util.ltruncate_int(resid, resid_len)
+                current_resid = util.ltruncate_int(current_resid, totres_len)
 
                 crd.write(at_fmt.format(
                     serial=serial, totRes=current_resid, resname=resname,

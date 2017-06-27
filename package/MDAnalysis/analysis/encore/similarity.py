@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -172,21 +172,13 @@ Function reference
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
 
-import MDAnalysis as mda
-import numpy as np
 import warnings
 import logging
-try:
-    from scipy.stats import gaussian_kde
-except ImportError:
-    gaussian_kde = None
-    msg = "scipy.stats.gaussian_kde could not be imported. " \
-          "Dimensionality reduction ensemble comparisons will not " \
-          "be available."
-    warnings.warn(msg,
-                  category=ImportWarning)
-    logging.warn(msg)
-    del msg
+
+import numpy as np
+import scipy.stats
+
+import MDAnalysis as mda
 
 from ...coordinates.memory import MemoryReader
 from .confdistmatrix import get_distance_matrix
@@ -460,18 +452,11 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     embedded_ensembles = []
     resamples = []
 
-    if gaussian_kde is None:
-        # hack: if we are running with minimal dependencies then scipy was
-        # not imported and we have to bail here (see scipy import at top)
-        raise ImportError("For Kernel Density Estimation functionality you"
-                          "need to import scipy")
-
     for i in range(1, nensembles + 1):
         this_embedded = embedded_space.transpose()[
             np.where(np.array(ensemble_assignment) == i)].transpose()
         embedded_ensembles.append(this_embedded)
-        kdes.append(gaussian_kde(
-            this_embedded))
+        kdes.append(scipy.stats.gaussian_kde(this_embedded))
 
     # # Set number of samples
     # if not nsamples:
@@ -623,12 +608,6 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 
     """
 
-    if gaussian_kde is None:
-        # hack: if we are running with minimal dependencies then scipy was
-        # not imported and we have to bail here (see scipy import at top)
-        raise ImportError("For Kernel Density Estimation functionality you"
-                          "need to import scipy")
-
     kdes = []
     embedded_ensembles = []
     resamples = []
@@ -639,8 +618,7 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
             np.logical_and(ensemble_assignment >= ens_id_min,
                               ensemble_assignment <= i))].transpose()
         embedded_ensembles.append(this_embedded)
-        kdes.append(
-            gaussian_kde(this_embedded))
+        kdes.append(scipy.stats.gaussian_kde(this_embedded))
 
     # Resample according to probability distributions
     for this_kde in kdes:

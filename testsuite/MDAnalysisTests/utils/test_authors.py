@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.mdanalysis.org
-# Copyright (c) 2006-2016 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -20,14 +20,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+from numpy.testing import assert_
 
-import os
+import MDAnalysis
+
+def test_package_authors():
+    assert_(len(MDAnalysis.__authors__) > 0,
+            'Could not find the list of authors')
 
 
-def test_failure():
-    """Fail if the MDA_FAILURE_TEST environment variable is set.
-    """
-    # Have a file open to trigger an output from the open_files plugin.
-    f = open('./failure.txt', 'w')
-    if u'MDA_FAILURE_TEST' in os.environ:
-        assert False
+def test_testsuite_authors():
+    from MDAnalysisTests import __authors__
+    assert_(len(__authors__) > 0,
+            'Could not find the list of authors')
