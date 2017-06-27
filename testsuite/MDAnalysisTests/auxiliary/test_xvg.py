@@ -61,9 +61,13 @@ class TestXVGReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture()
     def reader(ref):
-        return ref.reader(ref.testdata, initial_time=ref.initial_time,
-                            dt=ref.dt, auxname=ref.name,
-                            time_selector=None, data_selector=None)
+        return ref.reader(
+            ref.testdata,
+            initial_time=ref.initial_time,
+            dt=ref.dt, auxname=ref.name,
+            time_selector=None,
+            data_selector=None
+        )
 
     def test_changing_n_col_raises_ValueError(self, ref, reader):
         # if number of columns in .xvg file is not consistent, a ValueError
@@ -102,9 +106,14 @@ class TestXVGFileReader(TestXVGReader):
     @staticmethod
     @pytest.fixture()
     def reader(ref):
-        return ref.reader(ref.testdata, initial_time=ref.initial_time,
-                            dt=ref.dt, auxname=ref.name,
-                            time_selector=None, data_selector=None)
+        return ref.reader(
+            ref.testdata,
+            initial_time=ref.initial_time,
+            dt=ref.dt,
+            auxname=ref.name,
+            time_selector=None,
+            data_selector=None
+        )
 
     def test_get_auxreader_for(self, ref, reader):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
