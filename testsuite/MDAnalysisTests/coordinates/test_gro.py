@@ -331,17 +331,22 @@ class GRONoConversionReference(GROReference):
 
 
 class TestGROReaderNoConversion(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GRONoConversionReference()
-        super(TestGROReaderNoConversion, self).__init__(reference)
-        self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
-        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
-                                  dt=self.ref.aux_lowf_dt,
-                                  initial_time=0, time_selector=None)
-        self.reader.add_auxiliary('highf', self.ref.aux_highf,
-                                  dt=self.ref.aux_highf_dt,
-                                  initial_time=0, time_selector=None)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GRONoConversionReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory, convert_units=False)
+        reader.add_auxiliary('lowf', ref.aux_lowf,
+                             dt=ref.aux_lowf_dt,
+                             initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf,
+                             dt=ref.aux_highf_dt,
+                             initial_time=0, time_selector=None)
+        return reader
 
 
 class TestGROWriterNoConversion(BaseWriterTest):
@@ -367,10 +372,18 @@ class GROReaderIncompleteVelocitiesReference(GROReference):
 
 
 class TestGROReaderIncompleteVelocities(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReaderIncompleteVelocitiesReference()
-        super(TestGROReaderIncompleteVelocities, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReaderIncompleteVelocitiesReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
 
 class TestGROWriterIncompleteVelocities(BaseWriterTest):
@@ -388,10 +401,18 @@ class GROBZReference(GROReference):
 
 
 class TestGROBZ2Reader(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROBZReference()
-        super(TestGROBZ2Reader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROBZReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
 
 class TestGROBZ2Writer(BaseWriterTest):
