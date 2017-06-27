@@ -51,23 +51,18 @@ class XVGReference(BaseAuxReference):
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
 
-@pytest.fixture()
-def ref():
-    return XVGReference()
-
-@pytest.fixture()
-def reader(ref):
-    x = ref.reader(ref.testdata, initial_time=ref.initial_time,
-                                      dt=ref.dt, auxname=ref.name,
-                                      time_selector=None, data_selector=None)
-
-    return x
-
-
 class TestXVGReader(BaseAuxReaderTest):
-    # def __init__(self):
-    #     reference = XVGReference()
-    #     super(TestXVGReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XVGReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.testdata, initial_time=ref.initial_time,
+                            dt=ref.dt, auxname=ref.name,
+                            time_selector=None, data_selector=None)
 
     def test_changing_n_col_raises_ValueError(self, ref, reader):
         # if number of columns in .xvg file is not consistent, a ValueError
@@ -96,27 +91,38 @@ class XVGFileReference(XVGReference):
         self.format = "XVG-F"
         self.description['format'] = self.format
 
-class TestXVGFileReader(TestXVGReader):
-    def __init__(self):
-        reference = XVGFileReference()
-        super(TestXVGReader, self).__init__(reference)
 
-    def test_get_auxreader_for(self):
+class TestXVGFileReader(TestXVGReader):
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XVGFileReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.testdata, initial_time=ref.initial_time,
+                            dt=ref.dt, auxname=ref.name,
+                            time_selector=None, data_selector=None)
+
+    def test_get_auxreader_for(self, ref, reader):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
         # so test specifying format 
-        reader = mda.auxiliary.core.get_auxreader_for(self.ref.testdata,
-                                                      format=self.ref.format)
-        assert_equal(reader, self.ref.reader)
+        reader = mda.auxiliary.core.get_auxreader_for(ref.testdata,
+                                                      format=ref.format)
+        assert_equal(reader, ref.reader)
 
-    def test_reopen(self):
-        self.reader._reopen()
+    def test_reopen(self, ref, reader):
+        reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
-        self.reader.next()
-        assert_equal(self.reader.step, 0)
+        reader.next()
+        assert_equal(reader.step, 0)
+
 
 def test_xvg_bz2():
     reader = mda.auxiliary.XVG.XVGReader(XVG_BZ2)
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
+
 
 def test_xvg_bz2():
     reader = mda.auxiliary.XVG.XVGFileReader(XVG_BZ2)
