@@ -47,6 +47,7 @@ from numpy.testing import (
     assert_equal,
     assert_raises
 )
+import pytest
 
 
 class TestGROReaderOld(TestCase, RefAdK):
@@ -187,23 +188,31 @@ class GROReference(BaseReference):
 
 
 class TestGROReader(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReference()
-        super(TestGROReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
     def test_flag_convert_lengths(self):
         assert_equal(mda.core.flags['convert_lengths'], True,
                      "MDAnalysis.core.flags['convert_lengths'] should be True "
                      "by default")
 
-    def test_time(self):
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_time(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
         assert_equal(u.trajectory.time, 0.0,
                      "wrong time of the frame")
 
-    def test_full_slice(self):
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_full_slice(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
         trj_iter = u.trajectory[:]
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(u.trajectory.n_frames))

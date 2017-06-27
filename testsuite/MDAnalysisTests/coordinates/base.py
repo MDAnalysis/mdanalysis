@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 import itertools
 import numpy as np
+import pytest
 from six.moves import zip, range
 from nose.plugins.attrib import attr
 from unittest import TestCase
@@ -202,143 +203,133 @@ class BaseReference(object):
 
 
 class BaseReaderTest(object):
-    def __init__(self, reference):
-        self.ref = reference
-        self.reader = self.ref.reader(self.ref.trajectory)
-        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
-                                  dt=self.ref.aux_lowf_dt,
-                                  initial_time=0, time_selector=None)
-        self.reader.add_auxiliary('highf', self.ref.aux_highf,
-                                  dt=self.ref.aux_highf_dt,
-                                  initial_time=0, time_selector=None)
+    def test_n_atoms(self, ref, reader):
+        assert_equal(reader.n_atoms, ref.n_atoms)
 
-    def test_n_atoms(self):
-        assert_equal(self.reader.n_atoms, self.ref.n_atoms)
+    def test_n_frames(self, ref, reader):
+        assert_equal(len(reader), ref.n_frames)
 
-    def test_n_frames(self):
-        assert_equal(len(self.reader), self.ref.n_frames)
+    def test_first_frame(self, ref, reader):
+        reader.rewind()
+        assert_timestep_almost_equal(reader.ts, ref.first_frame,
+                                     decimal=ref.prec)
 
-    def test_first_frame(self):
-        self.reader.rewind()
-        assert_timestep_almost_equal(self.reader.ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
+    def test_double_close(self, reader):
+        reader.close()
+        reader.close()
+        reader._reopen()
 
-    def test_double_close(self):
-        self.reader.close()
-        self.reader.close()
-        self.reader._reopen()
-
-    def test_get_writer_1(self):
+    def test_get_writer_1(self, ref, reader):
         with tempdir.in_tempdir():
-            self.outfile = 'test-writer' + self.ref.ext
-            with self.reader.Writer(self.outfile) as W:
-                assert_equal(isinstance(W, self.ref.writer), True)
-                assert_equal(W.n_atoms, self.reader.n_atoms)
+            outfile = 'test-writer' + ref.ext
+            with reader.Writer(outfile) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+                assert_equal(W.n_atoms, reader.n_atoms)
 
-    def test_get_writer_2(self):
+    def test_get_writer_2(self, ref, reader):
         with tempdir.in_tempdir():
-            self.outfile = 'test-writer' + self.ref.ext
-            with self.reader.Writer(self.outfile, n_atoms=100) as W:
-                assert_equal(isinstance(W, self.ref.writer), True)
+            outfile = 'test-writer' + ref.ext
+            with reader.Writer(outfile, n_atoms=100) as W:
+                assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)
 
-    def test_dt(self):
-        assert_almost_equal(self.reader.dt, self.ref.dt)
+    def test_dt(self, ref, reader):
+        assert_equal(reader.dt, ref.dt)
 
-    def test_ts_dt_matches_reader(self):
-        assert_equal(self.reader.ts.dt, self.reader.dt)
+    def test_ts_dt_matches_reader(self, reader):
+        assert_equal(reader.ts.dt, reader.dt)
 
-    def test_total_time(self):
-        assert_almost_equal(self.reader.totaltime, self.ref.totaltime, decimal=5)
+    def test_total_time(self, ref, reader):
+        assert_equal(reader.totaltime, ref.totaltime)
 
-    def test_first_dimensions(self):
-        self.reader.rewind()
-        assert_array_almost_equal(self.reader.ts.dimensions,
-                                  self.ref.dimensions,
-                                  decimal=self.ref.prec)
+    def test_first_dimensions(self, ref, reader):
+        reader.rewind()
+        assert_array_almost_equal(reader.ts.dimensions,
+                                  ref.dimensions,
+                                  decimal=ref.prec)
 
-    def test_changing_dimensions(self):
-        if self.ref.changing_dimensions:
-            self.reader.rewind()
-            assert_array_almost_equal(self.reader.ts.dimensions,
-                                      self.ref.dimensions,
-                                      decimal=self.ref.prec)
-            self.reader[1]
-            assert_array_almost_equal(self.reader.ts.dimensions,
-                                      self.ref.dimensions_second_frame,
-                                      decimal=self.ref.prec)
+    def test_changing_dimensions(self, ref, reader):
+        if ref.changing_dimensions:
+            reader.rewind()
+            assert_array_almost_equal(reader.ts.dimensions,
+                                      ref.dimensions,
+                                      decimal=ref.prec)
+            reader[1]
+            assert_array_almost_equal(reader.ts.dimensions,
+                                      ref.dimensions_second_frame,
+                                      decimal=ref.prec)
 
-    def test_volume(self):
-        self.reader.rewind()
-        vol = self.reader.ts.volume
+    def test_volume(self, ref, reader):
+        reader.rewind()
+        vol = reader.ts.volume
         # Here we can only be sure about the numbers upto the decimal point due
         # to floating point impressions.
-        assert_almost_equal(vol, self.ref.volume, 0)
+        assert_almost_equal(vol, ref.volume, 0)
 
-    def test_iter(self):
-        for i, ts in enumerate(self.reader):
-            assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
-                                         decimal=self.ref.prec)
+    def test_iter(self, ref, reader):
+        for i, ts in enumerate(reader):
+            assert_timestep_almost_equal(ts, ref.iter_ts(i),
+                                         decimal=ref.prec)
 
-    @raises(ValueError)
-    def test_add_same_auxname_raises_ValueError(self):
-        self.reader.add_auxiliary('lowf', self.ref.aux_lowf)
+    def test_add_same_auxname_raises_ValueError(self, ref, reader):
+        with pytest.raises(ValueError):
+            reader.add_auxiliary('lowf', ref.aux_lowf)
 
-    def test_remove_auxiliary(self):
-        self.reader.remove_auxiliary('lowf')
-        assert_raises(AttributeError, getattr, self.reader._auxs, 'lowf')
-        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
+    def test_remove_auxiliary(self, reader):
+        reader.remove_auxiliary('lowf')
+        assert_raises(AttributeError, getattr, reader._auxs, 'lowf')
+        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
 
-    @raises(ValueError)
-    def test_remove_nonexistant_auxiliary_raises_ValueError(self):
-        self.reader.remove_auxiliary('nonexistant')
+    def test_remove_nonexistant_auxiliary_raises_ValueError(self, reader):
+        with pytest.raises(ValueError):
+            reader.remove_auxiliary('nonexistant')
 
-    def test_iter_auxiliary(self):
+    def test_iter_auxiliary(self, ref, reader):
         # should go through all steps in 'highf'
-        for i, auxstep in enumerate(self.reader.iter_auxiliary('highf')):
-            assert_almost_equal(auxstep.data, self.ref.aux_highf_all_data[i],
+        for i, auxstep in enumerate(reader.iter_auxiliary('highf')):
+            assert_almost_equal(auxstep.data, ref.aux_highf_all_data[i],
                                 err_msg="Auxiliary data does not match for "
                                         "step {}".format(i))
 
-    def test_get_aux_attribute(self):
-        assert_equal(self.reader.get_aux_attribute('lowf', 'dt'),
-                     self.ref.aux_lowf_dt)
+    def test_get_aux_attribute(self, ref, reader):
+        assert_equal(reader.get_aux_attribute('lowf', 'dt'),
+                     ref.aux_lowf_dt)
 
-    def test_iter_as_aux_cutoff(self):
+    def test_iter_as_aux_cutoff(self, ref, reader):
         # load an auxiliary with the same dt but offset from trajectory, and a
         # cutoff of 0
-        self.reader.add_auxiliary('offset', self.ref.aux_lowf,
-                                  dt=self.ref.dt, time_selector=None,
-                                  initial_time=self.ref.aux_offset_by,
+        reader.add_auxiliary('offset', ref.aux_lowf,
+                                  dt=ref.dt, time_selector=None,
+                                  initial_time=ref.aux_offset_by,
                                   cutoff=0)
         # no auxiliary steps will fall within the cutoff for any frame, so
         # iterating using iter_as_aux should give us nothing
-        num_frames = len([i for i in self.reader.iter_as_aux('offset')])
+        num_frames = len([i for i in reader.iter_as_aux('offset')])
         assert_equal(num_frames, 0, "iter_as_aux should iterate over 0 frames,"
                                     " not {}".format(num_frames))
 
-    def test_reload_auxiliaries_from_description(self):
+    def test_reload_auxiliaries_from_description(self, ref, reader):
         # get auxiliary desscriptions form existing reader
-        descriptions = self.reader.get_aux_descriptions()
+        descriptions = reader.get_aux_descriptions()
         # load a new reader, without auxiliaries
-        reader = self.ref.reader(self.ref.trajectory)
+        reader = ref.reader(ref.trajectory)
         # load auxiliaries into new reader, using description...
         for aux in descriptions:
             reader.add_auxiliary(**aux)
         # should have the same number of auxiliaries
-        assert_equal(reader.aux_list, self.reader.aux_list,
+        assert_equal(reader.aux_list, reader.aux_list,
                      'Number of auxiliaries does not match')
         # each auxiliary should be the same
         for auxname in reader.aux_list:
-            assert_equal(reader._auxs[auxname], self.reader._auxs[auxname],
+            assert_equal(reader._auxs[auxname], reader._auxs[auxname],
                          'AuxReaders do not match')
 
-    def test_stop_iter(self):
+    def test_stop_iter(self, reader):
         # reset to 0
-        self.reader.rewind()
-        for ts in self.reader[:-1]:
+        reader.rewind()
+        for ts in reader[:-1]:
             pass
-        assert_equal(self.reader.frame, 0)
+        assert_equal(reader.frame, 0)
 
 
 class MultiframeReaderTest(BaseReaderTest):
