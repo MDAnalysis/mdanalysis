@@ -34,8 +34,8 @@ from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
 
 class XVGReference(BaseAuxReference):
 
-    def init(self):
-        super(XVGReference, self).setUp()
+    def __init__(self):
+        super(XVGReference, self).__init__()
         self.testdata = AUX_XVG
         self.reader = mda.auxiliary.XVG.XVGReader
 
@@ -57,6 +57,8 @@ class TestXVGReader(BaseAuxReaderTest):
     def setUp(self):
         reference = XVGReference()
         super(TestXVGReader, self).do_important_things(reference)
+
+    def do_important_things(self)
 
     @raises(ValueError)
     def test_changing_n_col_raises_ValueError(self): 
@@ -85,10 +87,11 @@ class XVGFileReference(XVGReference):
         self.format = "XVG-F"
         self.description['format'] = self.format
 
+
 class TestXVGFileReader(TestXVGReader):
-    def __init__(self):
+    def setUp(self):
         reference = XVGFileReference()
-        super(TestXVGReader, self).__init__(reference)
+        #super(TestXVGReader, self).do_important_things(reference)
 
     def test_get_auxreader_for(self):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
@@ -103,9 +106,11 @@ class TestXVGFileReader(TestXVGReader):
         self.reader.next()
         assert_equal(self.reader.step, 0)
 
+
 def test_xvg_bz2():
     reader = mda.auxiliary.XVG.XVGReader(XVG_BZ2)
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
+
 
 def test_xvg_bz2():
     reader = mda.auxiliary.XVG.XVGFileReader(XVG_BZ2)
