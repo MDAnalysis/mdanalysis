@@ -14,8 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/27/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
@@ -237,7 +236,6 @@ Deprecations (Issue #599)
     throughout the library (Issue #903)
   * MassWeight=True parameter in analysis.gnm.closeContactGNMAnalysis
     deprecated in favor of weights="size".
-
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle

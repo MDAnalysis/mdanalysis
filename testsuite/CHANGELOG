@@ -29,7 +29,7 @@ mm/dd/yy
 04/10/17 jbarnoud, orbeckst, fiona-naughton, manuel.nuno.melo, richardjgowers
          tyler.je.reddy, utkbansal, vedantrathore, kash1102
 
-  * 0.16
+  * 0.16.0
     - Added two unit tests for MDAnalysis.coordinates.memory.MemoryReader
     - Make knownfailure work even without parentheses.
     - added two unit tests for MDAnalysis.analysis.polymer
