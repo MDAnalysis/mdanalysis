@@ -350,11 +350,42 @@ class TestGROReaderNoConversion(BaseReaderTest):
 
 
 class TestGROWriterNoConversion(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GRONoConversionReference()
-        super(TestGROWriterNoConversion, self).__init__(reference)
-        self.writer = self.ref.writer(self.ref.trajectory, convert_units=False)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GRONoConversionReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def writer(ref):
+        return ref.writer(ref.trajectory, convert_units=False)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
 
 
 class GROReaderIncompleteVelocitiesReference(GROReference):
@@ -387,10 +418,37 @@ class TestGROReaderIncompleteVelocities(BaseReaderTest):
 
 
 class TestGROWriterIncompleteVelocities(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReaderIncompleteVelocitiesReference()
-        super(TestGROWriterIncompleteVelocities, self).__init__(reference)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReaderIncompleteVelocitiesReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
 
 
 class GROBZReference(GROReference):
@@ -416,10 +474,37 @@ class TestGROBZ2Reader(BaseReaderTest):
 
 
 class TestGROBZ2Writer(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROBZReference()
-        super(TestGROBZ2Writer, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROBZReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
+
 
 
 class GROLargeReference(GROReference):
@@ -430,24 +515,51 @@ class GROLargeReference(GROReference):
 
 
 class TestGROLargeWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROLargeReference()
-        super(TestGROLargeWriter, self).__init__(reference)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROLargeReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
 
     @dec.slow
     @attr('issue')
-    def test_writer_large(self):
+    def test_writer_large(self, ref, tmpdir):
         """
         Test that atom numbers are truncated for large
         GRO files (Issue 550).
         """
-        outfile = self.tmp_file('outfile1.gro')
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        outfile = self.tmp_file('outfile1.gro', ref, tmpdir)
+        u = mda.Universe(ref.topology, ref.trajectory)
         u.atoms.write(outfile)
 
         with open(outfile, 'rt') as mda_output:
-            with mda.lib.util.anyopen(self.ref.topology) as expected_output:
+            with mda.lib.util.anyopen(ref.topology, 'rt') as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,
@@ -457,13 +569,13 @@ class TestGROLargeWriter(BaseWriterTest):
 
     @dec.slow
     @attr('issue')
-    def test_writer_large_residue_count(self):
+    def test_writer_large_residue_count(self, ref, tmpdir):
         """
         Ensure large residue number truncation for
         GRO files (Issue 886).
         """
-        outfile = self.tmp_file('outfile2.gro')
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        outfile = self.tmp_file('outfile2.gro', ref, tmpdir)
+        u = mda.Universe(ref.topology, ref.trajectory)
         target_resname = u.residues[-1].resname
         resid_value = 9999999
         u.residues[-1].resid = resid_value
