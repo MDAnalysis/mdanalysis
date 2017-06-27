@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_equal, raises)
@@ -49,29 +51,42 @@ class XVGReference(BaseAuxReference):
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
 
-class TestXVGReader(BaseAuxReaderTest):
-    def __init__(self):
-        reference = XVGReference()
-        super(TestXVGReader, self).__init__(reference)
+@pytest.fixture('module')
+def ref():
+    return XVGReference()
 
-    @raises(ValueError)
-    def test_changing_n_col_raises_ValueError(self): 
+@pytest.fixture('module')
+def reader(ref):
+    reader = ref.reader(ref.testdata, initial_time=ref.initial_time,
+                                      dt=ref.dt, auxname=ref.name,
+                                      time_selector=None, data_selector=None)
+
+    return reader
+
+
+class TestXVGReader(BaseAuxReaderTest):
+    # def __init__(self):
+    #     reference = XVGReference()
+    #     super(TestXVGReader, self).__init__(reference)
+
+    def test_changing_n_col_raises_ValueError(self, ref, reader):
         # if number of columns in .xvg file is not consistent, a ValueError
         # should be raised
-        self.reader = self.ref.reader(XVG_BAD_NCOL)
-        next(self.reader)
+        with pytest.raises(ValueError):
+            reader = ref.reader(XVG_BAD_NCOL)
+            next(reader)
 
-    @raises(ValueError)
-    def test_time_selector_out_of_range_raises_ValueError(self):
+    def test_time_selector_out_of_range_raises_ValueError(self, ref, reader):
         # if time_selector is not a valid index of _data, a ValueError 
         # should be raised
-        self.reader.time_selector = len(self.reader.auxstep._data) 
+        with pytest.raises(ValueError):
+            reader.time_selector = len(reader.auxstep._data)
 
-    @raises(ValueError)
-    def test_data_selector_out_of_range_raises_ValueError(self):
+    def test_data_selector_out_of_range_raises_ValueError(self, ref, reader):
         # if data_selector is not a valid index of _data, a ValueError 
         # should be raised
-        self.reader.data_selector = [len(self.reader.auxstep._data)]
+        with pytest.raises(ValueError):
+            reader.data_selector = [len(reader.auxstep._data)]
 
 
 class XVGFileReference(XVGReference):
