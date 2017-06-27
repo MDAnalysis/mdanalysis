@@ -23,7 +23,7 @@ env:
     - PYTHON_VERSION=2.7
     - COVERALLS=false
     - NOSE_FLAGS="--processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
-    - NOSE_TEST_LIST="analysis auxiliary core"
+    - NOSE_TEST_LIST="analysis core"
     - PYTEST_FLAGS="--disable-pytest-warnings -n 2"
     - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats testsuite/MDAnalysisTests/coordinates testsuite/MDAnalysisTests/utils testsuite/MDAnalysisTests/topology testsuite/MDAnalysisTests/auxiliary"
     - NOSE_COVERAGE_FILE="nose_coverage"
