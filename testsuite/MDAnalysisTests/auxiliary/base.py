@@ -37,7 +37,7 @@ def test_get_bad_auxreader_format_raises_ValueError():
     # should raise a ValueError when no AuxReaders with match the specified format
     mda.auxiliary.core.get_auxreader_for(format='bad-format')
 
-class BaseAuxReference(TestCase):
+class BaseAuxReference(object):
     ## assumes the reference auxiliary data has 5 steps, with three values 
     ## for each step: i, 2*i and 2^i, where i is the step number.
     ## If a particular AuxReader is such that auxiliary data is read in a 
@@ -45,9 +45,7 @@ class BaseAuxReference(TestCase):
     ## overwritten tp return the appropriate format
 
 
-    __test__ = None
-
-    def setUp(self):
+    def init(self):
         self.n_steps = 5
         self.dt = 1
         self.initial_time = 0
@@ -136,7 +134,7 @@ class BaseAuxReaderTest(TestCase):
 
     __test__= None
 
-    def setUp(self, reference):
+    def do_important_things(self, reference):
         self.ref = reference
         self.reader = self.ref.reader(self.ref.testdata, initial_time=self.ref.initial_time,
                                       dt=self.ref.dt, auxname=self.ref.name,

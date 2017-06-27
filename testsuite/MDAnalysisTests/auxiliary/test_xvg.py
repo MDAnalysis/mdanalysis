@@ -34,9 +34,7 @@ from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
 
 class XVGReference(BaseAuxReference):
 
-    __test__ = False
-
-    def setUp(self):
+    def init(self):
         super(XVGReference, self).setUp()
         self.testdata = AUX_XVG
         self.reader = mda.auxiliary.XVG.XVGReader
@@ -56,9 +54,9 @@ class TestXVGReader(BaseAuxReaderTest):
 
     __test__ = True
 
-    def setUp(self, reference):
+    def setUp(self):
         reference = XVGReference()
-        super(TestXVGReader, self).setUp(reference)
+        super(TestXVGReader, self).do_important_things(reference)
 
     @raises(ValueError)
     def test_changing_n_col_raises_ValueError(self): 
