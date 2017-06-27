@@ -55,10 +55,11 @@ class TestXVGReader(BaseAuxReaderTest):
     __test__ = True
 
     def setUp(self):
+        self.do_important_things()
+
+    def do_important_things(self):
         reference = XVGReference()
         super(TestXVGReader, self).do_important_things(reference)
-
-    def do_important_things(self)
 
     @raises(ValueError)
     def test_changing_n_col_raises_ValueError(self): 
@@ -89,9 +90,10 @@ class XVGFileReference(XVGReference):
 
 
 class TestXVGFileReader(TestXVGReader):
-    def setUp(self):
+
+    def do_important_things(self):
         reference = XVGFileReference()
-        #super(TestXVGReader, self).do_important_things(reference)
+        super(TestXVGReader, self).do_important_things(reference)
 
     def test_get_auxreader_for(self):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
