@@ -389,96 +389,92 @@ class MultiframeReaderTest(BaseReaderTest):
 
 
 class BaseWriterTest(object):
-    def __init__(self, reference):
-        self.ref = reference
-        self.tmpdir = tempdir.TempDir()
-        self.reader = self.ref.reader(self.ref.trajectory)
+    def tmp_file(self, name, ref, tmpdir):
+        return tmpdir.name + name + '.' + ref.ext
 
-    def tmp_file(self, name):
-        return self.tmpdir.name + name + '.' + self.ref.ext
-
-    def test_write_trajectory_timestep(self):
-        outfile = self.tmp_file('write-timestep-test')
-        with self.ref.writer(outfile, self.reader.n_atoms) as W:
-            for ts in self.reader:
+    def test_write_trajectory_timestep(self,ref, reader, tmpdir):
+        outfile = self.tmp_file('write-timestep-test', ref, tmpdir)
+        with ref.writer(outfile, reader.n_atoms) as W:
+            for ts in reader:
                 W.write(ts)
-        self._check_copy(outfile)
+        self._check_copy(outfile, ref, reader)
 
-    def test_write_different_box(self):
-        if self.ref.changing_dimensions:
+    def test_write_different_box(self, ref, reader):
+        if ref.changing_dimensions:
             outfile = self.tmp_file('write-dimensions-test')
-            with self.ref.writer(outfile, self.reader.n_atoms) as W:
-                for ts in self.reader:
+            with ref.writer(outfile, reader.n_atoms) as W:
+                for ts in reader:
                     ts.dimensions[:3] += 1
                     W.write(ts)
 
-            written = self.ref.reader(outfile)
+            written = ref.reader(outfile)
 
-            for ts_ref, ts_w in zip(self.reader, written):
+            for ts_ref, ts_w in zip(reader, written):
                 ts_ref.dimensions[:3] += 1
                 assert_array_almost_equal(ts_ref.dimensions,
                                           ts_w.dimensions,
-                                          decimal=self.ref.prec)
+                                          decimal=ref.prec)
 
-    def test_write_trajectory_atomgroup(self):
-        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
-        outfile = self.tmp_file('write-atoms-test')
-        with self.ref.writer(outfile, uni.atoms.n_atoms) as w:
+    def test_write_trajectory_atomgroup(self, ref,reader, tmpdir):
+        uni = mda.Universe(ref.topology, ref.trajectory)
+        outfile = self.tmp_file('write-atoms-test', ref, tmpdir)
+        with ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni.atoms)
-        self._check_copy(outfile)
+        self._check_copy(outfile, ref, reader)
 
-    def test_write_trajectory_universe(self):
-        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
-        outfile = self.tmp_file('write-uni-test')
-        with self.ref.writer(outfile, uni.atoms.n_atoms) as w:
+    def test_write_trajectory_universe(self, ref, reader, tmpdir):
+        uni = mda.Universe(ref.topology, ref.trajectory)
+        outfile = self.tmp_file('write-uni-test', ref, tmpdir)
+        with ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni)
-        self._check_copy(outfile)
+        self._check_copy(outfile, ref, reader)
 
-    def test_write_selection(self):
-        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tmpdir):
+        uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'resid 1'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test')
+        outfile = self.tmp_file('write-selection-test', ref, tmpdir)
 
-        with self.ref.writer(outfile, sel.n_atoms) as W:
+        with ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
                 W.write(sel.atoms)
 
-        copy = self.ref.reader(outfile)
+        copy = ref.reader(outfile)
         for orig_ts, copy_ts in zip(uni.trajectory, copy):
             assert_array_almost_equal(
-                copy_ts._pos, sel.atoms.positions, self.ref.prec,
+                copy_ts._pos, sel.atoms.positions, ref.prec,
                 err_msg="coordinate mismatch between original and written "
                         "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
-    def _check_copy(self, fname):
-        copy = self.ref.reader(fname)
-        assert_equal(self.reader.n_frames, copy.n_frames)
-        for orig_ts, copy_ts in zip(self.reader, copy):
+    def _check_copy(self, fname, ref, reader):
+        copy = ref.reader(fname)
+        assert_equal(reader.n_frames, copy.n_frames)
+        for orig_ts, copy_ts in zip(reader, copy):
             assert_timestep_almost_equal(
-                copy_ts, orig_ts, decimal=self.ref.prec)
+                copy_ts, orig_ts, decimal=ref.prec)
 
     @raises(TypeError)
-    def test_write_none(self):
+    def test_write_none(self, ref):
         outfile = self.tmp_file('write-none')
-        with self.ref.writer(outfile, 42) as w:
-            w.write(None)
+        with pytest.raises(TypeError):
+            with ref.writer(outfile, 42) as w:
+                w.write(None)
 
-    def test_no_container(self):
+    def test_no_container(self, ref):
         with tempdir.in_tempdir():
-            if self.ref.container_format:
-                self.ref.writer('foo')
+            if ref.container_format:
+                ref.writer('foo')
             else:
-                assert_raises(TypeError, self.ref.writer, 'foo')
+                assert_raises(TypeError, ref.writer, 'foo')
 
-    def test_write_not_changing_ts(self):
-        outfile = self.tmp_file('write-not-changing-ts')
-        ts = self.reader.ts.copy()
+    def test_write_not_changing_ts(self, ref, reader, tmpdir):
+        outfile = self.tmp_file('write-not-changing-ts', ref, tmpdir)
+        ts = reader.ts.copy()
         copy_ts = ts.copy()
-        with self.ref.writer(outfile, n_atoms=5) as W:
+        with ref.writer(outfile, n_atoms=5) as W:
             W.write(ts)
             assert_timestep_almost_equal(copy_ts, ts)
 
