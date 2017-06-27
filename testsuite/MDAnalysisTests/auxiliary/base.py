@@ -21,8 +21,8 @@
 #
 from __future__ import absolute_import
 
-import pytest
 from six.moves import range
+import pytest
 import numpy as np
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            raises)
@@ -129,17 +129,7 @@ class BaseAuxReference(object):
         return np.array(data)
 
 
-
-
 class BaseAuxReaderTest(object):
-    # def __init__(self, reference):
-    #     self.ref = reference
-    #     self.reader = self.ref.reader(self.ref.testdata, initial_time=self.ref.initial_time,
-    #                                   dt=self.ref.dt, auxname=self.ref.name,
-    #                                   time_selector=None, data_selector=None)
-
-    def tearDown(self):
-        del self.reader
 
     def test_n_steps(self, ref, reader):
         assert_equal(len(reader), ref.n_steps,
@@ -191,7 +181,7 @@ class BaseAuxReaderTest(object):
         with pytest.raises(IndexError):
             reader[ref.n_steps]
 
-    def test_invalid_step_to_time_raises_ValueError(self, ref, reader):
+    def test_invalid_step_to_time_raises_ValueError(self, reader):
         # last step is number n_steps-1; if we try to run step_to_time on
         # step n_steps we should get a ValueError
         with pytest.raises(ValueError):
@@ -206,13 +196,12 @@ class BaseAuxReaderTest(object):
         for i, val in enumerate(reader[ref.iter_list]):
             assert_auxstep_equal(val, ref.iter_list_auxsteps[i])
 
-        
     def test_iter_slice(self, ref, reader):
         # test using __getitem__ with a slice
         for i, val in enumerate(reader[ref.iter_slice]):
             assert_auxstep_equal(val, ref.iter_slice_auxsteps[i])
 
-    def test_slice_start_after_stop_raises_IndexError(self, ref, reader):
+    def test_slice_start_after_stop_raises_IndexError(self, reader):
         #should raise IndexError if start frame after end frame
         with pytest.raises(IndexError):
             reader[2:1]
@@ -222,19 +211,18 @@ class BaseAuxReaderTest(object):
         with pytest.raises(IndexError):
             reader[ref.n_steps:]
 
-
-    def test_slice_non_int_raises_TypeError(self, ref, reader):
+    def test_slice_non_int_raises_TypeError(self, reader):
         # should raise TypeError if try pass in non-integer to slice
         with pytest.raises(TypeError):
             reader['a':]
 
-    def test_bad_represent_raises_ValueError(self, ref, reader):
+    def test_bad_represent_raises_ValueError(self, reader):
         # if we try to set represent_ts_as to something not listed as a
         # valid option, we should get a ValueError
         with pytest.raises(ValueError):
             reader.represent_ts_as = 'invalid-option'
 
-    def test_time_selector(self, ref, reader):
+    def test_time_selector(self, ref):
         # reload the reader, passing a time selector
         reader = ref.reader(ref.testdata,
                                       time_selector = ref.time_selector)
@@ -243,7 +231,7 @@ class BaseAuxReaderTest(object):
             assert_equal(val.time, ref.select_time_ref[i],
                          "time for step {} does not match".format(i))
 
-    def test_data_selector(self, ref, reader):
+    def test_data_selector(self, ref):
         # reload reader, passing in a data selector
         reader = ref.reader(ref.testdata,
                                       data_selector=ref.data_selector)
@@ -252,7 +240,7 @@ class BaseAuxReaderTest(object):
             assert_equal(val.data, ref.select_data_ref[i],
                          "data for step {0} does not match".format(i))
 
-    def test_no_constant_dt(self, ref, reader):
+    def test_no_constant_dt(self, ref):
         ## assume we can select time...
         # reload reader, without assuming constant dt
         reader = ref.reader(ref.testdata,
@@ -263,7 +251,7 @@ class BaseAuxReaderTest(object):
             assert_equal(val.time, ref.select_time_ref[i],
                          "data for step {} does not match".format(i))
 
-    def test_update_ts_without_auxname_raises_ValueError(self, ref, reader):
+    def test_update_ts_without_auxname_raises_ValueError(self, ref):
         # reload reader without auxname
         with pytest.raises(ValueError):
             reader = ref.reader(ref.testdata)
@@ -333,7 +321,7 @@ class BaseAuxReaderTest(object):
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata)
         assert_equal(reader, ref.reader)
 
-    def test_iterate_through_trajectory(self, ref, reader):
+    def test_iterate_through_trajectory(self, ref):
         # add to trajectory
         u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
         u.trajectory.add_auxiliary('test', ref.testdata)
@@ -346,7 +334,7 @@ class BaseAuxReaderTest(object):
                      "all trajectory timesteps")
         u.trajectory.close()
 
-    def test_iterate_as_auxiliary_from_trajectory(self, ref, reader):
+    def test_iterate_as_auxiliary_from_trajectory(self, ref):
         # add to trajectory
         u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
         u.trajectory.add_auxiliary('test', ref.testdata)
@@ -365,7 +353,7 @@ class BaseAuxReaderTest(object):
             assert_equal(description[attr], ref.description[attr],
                          "'Description' does not match for {}".format(attr))
 
-    def test_load_from_description(self, ref, reader):
+    def test_load_from_description(self, reader):
         description = reader.get_description()
         new = mda.auxiliary.core.auxreader(**description)
         assert_equal(new, reader,

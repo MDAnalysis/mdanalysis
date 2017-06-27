@@ -21,8 +21,8 @@
 #
 from __future__ import absolute_import
 
-import pytest
 from six.moves import range
+import pytest
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_equal, raises)
 import numpy as np
@@ -33,6 +33,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
+
 
 class XVGReference(BaseAuxReference):
     def __init__(self):
@@ -112,7 +113,7 @@ class TestXVGFileReader(TestXVGReader):
                                                       format=ref.format)
         assert_equal(reader, ref.reader)
 
-    def test_reopen(self, ref, reader):
+    def test_reopen(self, reader):
         reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
         reader.next()
