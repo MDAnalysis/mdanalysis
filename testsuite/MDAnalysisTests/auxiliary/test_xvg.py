@@ -51,17 +51,17 @@ class XVGReference(BaseAuxReference):
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
 
-@pytest.fixture('module')
+@pytest.fixture()
 def ref():
     return XVGReference()
 
-@pytest.fixture('module')
+@pytest.fixture()
 def reader(ref):
-    reader = ref.reader(ref.testdata, initial_time=ref.initial_time,
+    x = ref.reader(ref.testdata, initial_time=ref.initial_time,
                                       dt=ref.dt, auxname=ref.name,
                                       time_selector=None, data_selector=None)
 
-    return reader
+    return x
 
 
 class TestXVGReader(BaseAuxReaderTest):
