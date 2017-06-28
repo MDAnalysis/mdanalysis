@@ -25,6 +25,8 @@ from glob import glob
 import itertools
 import os
 from os import path
+from unittest import TestCase
+
 import numpy as np
 import warnings
 
@@ -140,7 +142,7 @@ class TestDeprecationWarnings(object):
         assert_equal(sg.segids, u.segments[:3].segids)
 
 
-class TestAtomGroupToTopology(object):
+class TestAtomGroupToTopology(TestCase):
     """Test the conversion of AtomGroup to TopologyObjects"""
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
@@ -180,7 +182,7 @@ class TestAtomGroupToTopology(object):
             yield self._check_VE, btype
 
 
-class TestAtomGroupWriting(object):
+class TestAtomGroupWriting(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -217,8 +219,11 @@ class TestAtomGroupWriting(object):
             with assert_raises(TypeError):
                 self.u.atoms.write('dummy.pdb', bogus="what?")
 
-class _WriteAtoms(object):
+class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
+
+    __test__ = False
+
     ext = None  # override to test various output writers
     precision = 3
 
@@ -313,11 +318,17 @@ class _WriteAtoms(object):
 
 
 class TestWritePDB(_WriteAtoms):
+
+    __test__ = True
+
     ext = "pdb"
     precision = 3
 
 
 class TestWriteGRO(_WriteAtoms):
+
+    __test__ = True
+
     ext = "gro"
     precision = 2
 
@@ -328,7 +339,7 @@ class TestWriteGRO(_WriteAtoms):
                      " in the testing suite.)")
 
 
-class TestAtomGroupTransformations(object):
+class TestAtomGroupTransformations(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -455,7 +466,7 @@ class TestAtomGroupTransformations(object):
                                                     np.sin(angle) + 1,
                                                     1])
 
-class TestCenter(object):
+class TestCenter(TestCase):
     def setUp(self):
         self.u = make_Universe(trajectory=True)
         self.ag = self.u.atoms[10:30]
@@ -487,7 +498,7 @@ class TestCenter(object):
         assert_raises(TypeError, self.ag.center, weights)
 
 
-class TestSplit(object):
+class TestSplit(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -535,7 +546,7 @@ class TestSplit(object):
         assert_raises(ValueError, ag.split, 'something')
 
 
-class TestWrap(object):
+class TestWrap(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
@@ -727,7 +738,7 @@ class TestCrossUniverse(object):
         assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
 
 
-class TestDihedralSelections(object):
+class TestDihedralSelections(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -799,7 +810,7 @@ class TestDihedralSelections(object):
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
 
-class TestPBCFlag(object):
+class TestPBCFlag(TestCase):
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
@@ -919,7 +930,7 @@ def test_instantselection_termini():
     del universe
 
 
-class TestAtomGroup(object):
+class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately.
 
     These are from before the big topology rework (aka #363) but are still valid.
@@ -1286,7 +1297,7 @@ class TestAtomGroup(object):
                      sorted(self.universe.atoms.indices))
 
 
-class TestAtomGroupTimestep(object):
+class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
     @dec.skipif(parser_not_found('TRZ'),
