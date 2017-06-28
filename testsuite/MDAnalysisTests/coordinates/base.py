@@ -333,59 +333,59 @@ class BaseReaderTest(object):
 
 
 class MultiframeReaderTest(BaseReaderTest):
-    def test_last_frame(self):
-        ts = self.reader[-1]
-        assert_timestep_almost_equal(ts, self.ref.last_frame,
-                                     decimal=self.ref.prec)
+    def test_last_frame(self, ref, reader):
+        ts = reader[-1]
+        assert_timestep_almost_equal(ts, ref.last_frame,
+                                     decimal=ref.prec)
 
-    @raises(IndexError)
-    def test_go_over_last_frame(self):
-        self.reader[self.ref.n_frames + 1]
+    def test_go_over_last_frame(self, ref, reader):
+        with pytest.raises(IndexError):
+            reader[ref.n_frames + 1]
 
-    def test_frame_jump(self):
-        ts = self.reader[self.ref.jump_to_frame.frame]
-        assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
-                                     decimal=self.ref.prec)
+    def test_frame_jump(self, ref, reader):
+        ts = reader[ref.jump_to_frame.frame]
+        assert_timestep_almost_equal(ts, ref.jump_to_frame,
+                                     decimal=ref.prec)
 
-    def test_next_gives_second_frame(self):
-        reader = self.ref.reader(self.ref.trajectory)
+    def test_next_gives_second_frame(self, ref, reader):
+        reader = ref.reader(ref.trajectory)
         ts = reader.next()
-        assert_timestep_almost_equal(ts, self.ref.second_frame,
-                                     decimal=self.ref.prec)
+        assert_timestep_almost_equal(ts, ref.second_frame,
+                                     decimal=ref.prec)
 
-    def test_reopen(self):
-        self.reader.close()
-        self.reader._reopen()
-        ts = self.reader.next()
-        assert_timestep_almost_equal(ts, self.ref.first_frame,
-                                     decimal=self.ref.prec)
+    def test_reopen(self, ref, reader):
+        reader.close()
+        reader._reopen()
+        ts = reader.next()
+        assert_timestep_almost_equal(ts, ref.first_frame,
+                                     decimal=ref.prec)
 
-    def test_rename_aux(self):
-        self.reader.rename_aux('lowf', 'lowf_renamed')
+    def test_rename_aux(self, ref, reader):
+        reader.rename_aux('lowf', 'lowf_renamed')
         # data should now be in aux namespace under new name
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[0])
+        assert_equal(reader.ts.aux.lowf_renamed,
+                    ref.aux_lowf_data[0])
         # old name should be removed
-        assert_raises(AttributeError, getattr, self.reader.ts.aux, 'lowf')
+        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
         # new name should be retained
-        next(self.reader)
-        assert_equal(self.reader.ts.aux.lowf_renamed,
-                     self.ref.aux_lowf_data[1])
+        next(reader)
+        assert_equal(reader.ts.aux.lowf_renamed,
+                     ref.aux_lowf_data[1])
 
-    def test_iter_as_aux_highf(self):
+    def test_iter_as_aux_highf(self, ref, reader):
         # auxiliary has a higher frequency, so iter_as_aux should behave the
         # same as regular iteration over the trjectory
-        for i, ts in enumerate(self.reader.iter_as_aux('highf')):
-            assert_timestep_almost_equal(ts, self.ref.iter_ts(i),
-                                         decimal=self.ref.prec)
+        for i, ts in enumerate(reader.iter_as_aux('highf')):
+            assert_timestep_almost_equal(ts, ref.iter_ts(i),
+                                         decimal=ref.prec)
 
-    def test_iter_as_aux_lowf(self):
+    def test_iter_as_aux_lowf(self, ref, reader):
         # auxiliary has a lower frequency, so iter_as_aux should iterate over
         # only frames where there is a corresponding auxiliary value
-        for i, ts in enumerate(self.reader.iter_as_aux('lowf')):
+        for i, ts in enumerate(reader.iter_as_aux('lowf')):
             assert_timestep_almost_equal(ts,
-                                         self.ref.iter_ts(self.ref.aux_lowf_frames_with_steps[i]),
-                                         decimal=self.ref.prec)
+                                         ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
+                                         decimal=ref.prec)
 
 
 class BaseWriterTest(object):

@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range, zip
 
 import MDAnalysis as mda
@@ -40,6 +42,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReferenc
 from MDAnalysisTests import tempdir, make_Universe
 from numpy.testing import TestCase
 
+
 class XYZReference(BaseReference):
     def __init__(self):
         super(XYZReference, self).__init__()
@@ -55,55 +58,88 @@ class XYZReference(BaseReference):
 
 
 class TestXYZReader(MultiframeReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XYZReference()
-        super(TestXYZReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZReference()
 
-    @raises
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
+
     def test_double_open(self):
-        self.reader.open_trajectory()
-        self.reader.open_trajectory()
+        with pytest.raises(Exception):
+            self.reader.open_trajectory()
+            self.reader.open_trajectory()
 
 
 class TestXYZWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XYZReference()
-        super(TestXYZWriter, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZReference()
 
-    def test_write_selection(self):
-        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
+
+    def test_write_selection(self, ref, reader, tmpdir):
+        uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test')
+        outfile = self.tmp_file('write-selection-test', ref, tmpdir)
 
-        with self.ref.writer(outfile, sel.n_atoms) as W:
+        with ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
                 W.write(sel.atoms)
 
-        copy = self.ref.reader(outfile)
+        copy = ref.reader(outfile)
         for orig_ts, copy_ts in zip(uni.trajectory, copy):
             assert_array_almost_equal(
-                copy_ts._pos, sel.atoms.positions, self.ref.prec,
+                copy_ts._pos, sel.atoms.positions, ref.prec,
                 err_msg="coordinate mismatch between original and written "
                 "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
-
-    @raises(ValueError)
-    def test_write_different_models_in_trajectory(self):
-        outfile = self.tmp_file('write-models-in-trajectory')
+    def test_write_different_models_in_trajectory(self, ref, reader, tmpdir):
+        outfile = self.tmp_file('write-models-in-trajectory', ref, tmpdir)
         # n_atoms should match for each TimeStep if it was specified
-        with self.ref.writer(outfile, n_atoms=4) as w:
-            w.write(self.reader.ts)
+        with ref.writer(outfile, n_atoms=4) as w:
+            with pytest.raises(ValueError):
+               w.write(reader.ts)
 
-    def test_no_conversion(self):
-        outfile = self.tmp_file('write-no-conversion')
-        with self.ref.writer(outfile, convert_units=False) as w:
-            for ts in self.reader:
+    def test_no_conversion(self, ref, reader, tmpdir):
+        outfile = self.tmp_file('write-no-conversion', ref, tmpdir)
+        with ref.writer(outfile, convert_units=False) as w:
+            for ts in reader:
                 w.write(ts)
-        self._check_copy(outfile)
+        self._check_copy(outfile, ref, reader)
 
 
 class XYZ_BZ_Reference(XYZReference):
@@ -114,13 +150,53 @@ class XYZ_BZ_Reference(XYZReference):
 
 
 class Test_XYZBZReader(TestXYZReader):
-    def __init__(self):
-        super(Test_XYZBZReader, self).__init__(XYZ_BZ_Reference())
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZ_BZ_Reference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
 
 class Test_XYZBZWriter(TestXYZWriter):
-    def __init__(self):
-        super(Test_XYZBZWriter, self).__init__(XYZ_BZ_Reference())
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZ_BZ_Reference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
 
 
 class TestXYZWriterNames(TestCase):
