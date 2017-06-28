@@ -63,19 +63,17 @@ from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 warnings.simplefilter('always')
 
 class TestDeprecationWarnings(object):
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_AtomGroupUniverse_usage_warning():
+    def test_AtomGroupUniverse_usage_warning(self):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             mda.core.AtomGroup.Universe(PSF, DCD)
         assert_equal(len(warn), 1)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_AtomGroup_init_warns():
+    def test_old_AtomGroup_init_warns(self):
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
         with warnings.catch_warnings(record=True) as warn:
@@ -83,10 +81,9 @@ class TestDeprecationWarnings(object):
             ag = mda.core.groups.AtomGroup(at_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_AtomGroup_init_works():
+    def test_old_AtomGroup_init_works(self):
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
         ag = mda.core.groups.AtomGroup(at_list)
@@ -95,10 +92,9 @@ class TestDeprecationWarnings(object):
         assert_(len(ag) == 10)
         assert_equal(ag.names, u.atoms[:10].names)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_ResidueGroup_init_warns():
+    def test_old_ResidueGroup_init_warns(self):
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
         with warnings.catch_warnings(record=True) as warn:
@@ -106,10 +102,9 @@ class TestDeprecationWarnings(object):
             rg = mda.core.groups.ResidueGroup(res_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_ResidueGroup_init_works():
+    def test_old_ResidueGroup_init_works(self):
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
         rg = mda.core.groups.ResidueGroup(res_list)
@@ -118,10 +113,9 @@ class TestDeprecationWarnings(object):
         assert_(len(rg) == 10)
         assert_equal(rg.resnames, u.residues[:10].resnames)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_SegmentGroup_init_warns():
+    def test_old_SegmentGroup_init_warns(self):
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
         with warnings.catch_warnings(record=True) as warn:
@@ -129,10 +123,9 @@ class TestDeprecationWarnings(object):
             sg = mda.core.groups.SegmentGroup(seg_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def test_old_SegmentGroup_init_works():
+    def test_old_SegmentGroup_init_works(self):
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
         sg = mda.core.groups.SegmentGroup(seg_list)
@@ -465,6 +458,7 @@ class TestAtomGroupTransformations(TestCase):
         assert_array_almost_equal(ag.positions[0], [np.cos(angle) + 1,
                                                     np.sin(angle) + 1,
                                                     1])
+
 
 class TestCenter(TestCase):
     def setUp(self):

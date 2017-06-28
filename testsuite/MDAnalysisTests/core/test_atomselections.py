@@ -810,8 +810,7 @@ class TestBondedSelection(TestCase):
 
         assert_(len(ag) == 3)
 
-    @staticmethod
-    def test_nobonds_warns():
+    def test_nobonds_warns(self):
         u = make_Universe(('names',))
 
         # empty bond topology attr
