@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -44,7 +46,7 @@ from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
 from MDAnalysisTests import parser_not_found
 
 
-class TestTopologyObjects(object):
+class TestTopologyObjects(TestCase):
     """Test the base TopologyObject funtionality
 
     init
@@ -166,7 +168,7 @@ class TestTopologyObjects(object):
         assert_almost_equal(imp.value(), -3.8370631, self.precision)
 
 
-class TestTopologyGroup(object):
+class TestTopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
 
     def setUp(self):
@@ -554,7 +556,7 @@ class TestTopologyGroup(object):
             assert_(atom == bond[3])
 
 
-class TestTopologyGroup_Cython(object):
+class TestTopologyGroup_Cython(TestCase):
     """
     Check that the shortcut to all cython functions:
      - work (return proper values)
