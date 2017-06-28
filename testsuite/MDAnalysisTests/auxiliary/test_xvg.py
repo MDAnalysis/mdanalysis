@@ -20,7 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
 from six.moves import range
+import pytest
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_equal, raises)
 import numpy as np
@@ -31,6 +33,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
+
 
 class XVGReference(BaseAuxReference):
     def __init__(self):
@@ -50,28 +53,40 @@ class XVGReference(BaseAuxReference):
 
 
 class TestXVGReader(BaseAuxReaderTest):
-    def __init__(self):
-        reference = XVGReference()
-        super(TestXVGReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XVGReference()
 
-    @raises(ValueError)
-    def test_changing_n_col_raises_ValueError(self): 
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(
+            ref.testdata,
+            initial_time=ref.initial_time,
+            dt=ref.dt, auxname=ref.name,
+            time_selector=None,
+            data_selector=None
+        )
+
+    def test_changing_n_col_raises_ValueError(self, ref, reader):
         # if number of columns in .xvg file is not consistent, a ValueError
         # should be raised
-        self.reader = self.ref.reader(XVG_BAD_NCOL)
-        next(self.reader)
+        with pytest.raises(ValueError):
+            reader = ref.reader(XVG_BAD_NCOL)
+            next(reader)
 
-    @raises(ValueError)
-    def test_time_selector_out_of_range_raises_ValueError(self):
+    def test_time_selector_out_of_range_raises_ValueError(self, ref, reader):
         # if time_selector is not a valid index of _data, a ValueError 
         # should be raised
-        self.reader.time_selector = len(self.reader.auxstep._data) 
+        with pytest.raises(ValueError):
+            reader.time_selector = len(reader.auxstep._data)
 
-    @raises(ValueError)
-    def test_data_selector_out_of_range_raises_ValueError(self):
+    def test_data_selector_out_of_range_raises_ValueError(self, ref, reader):
         # if data_selector is not a valid index of _data, a ValueError 
         # should be raised
-        self.reader.data_selector = [len(self.reader.auxstep._data)]
+        with pytest.raises(ValueError):
+            reader.data_selector = [len(reader.auxstep._data)]
 
 
 class XVGFileReference(XVGReference):
@@ -81,28 +96,44 @@ class XVGFileReference(XVGReference):
         self.format = "XVG-F"
         self.description['format'] = self.format
 
-class TestXVGFileReader(TestXVGReader):
-    def __init__(self):
-        reference = XVGFileReference()
-        super(TestXVGReader, self).__init__(reference)
 
-    def test_get_auxreader_for(self):
+class TestXVGFileReader(TestXVGReader):
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XVGFileReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(
+            ref.testdata,
+            initial_time=ref.initial_time,
+            dt=ref.dt,
+            auxname=ref.name,
+            time_selector=None,
+            data_selector=None
+        )
+
+    def test_get_auxreader_for(self, ref, reader):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
         # so test specifying format 
-        reader = mda.auxiliary.core.get_auxreader_for(self.ref.testdata,
-                                                      format=self.ref.format)
-        assert_equal(reader, self.ref.reader)
+        reader = mda.auxiliary.core.get_auxreader_for(ref.testdata,
+                                                      format=ref.format)
+        assert_equal(reader, ref.reader)
 
-    def test_reopen(self):
-        self.reader._reopen()
+    def test_reopen(self, reader):
+        reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
-        self.reader.next()
-        assert_equal(self.reader.step, 0)
+        reader.next()
+        assert_equal(reader.step, 0)
+
 
 def test_xvg_bz2():
     reader = mda.auxiliary.XVG.XVGReader(XVG_BZ2)
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
 
-def test_xvg_bz2():
+
+def test_xvg_file_bz2():
     reader = mda.auxiliary.XVG.XVGFileReader(XVG_BZ2)
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
