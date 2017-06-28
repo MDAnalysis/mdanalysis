@@ -4,6 +4,9 @@ Should convert between indices (*ix)
 Should work with both a single or an array of indices
 """
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 from six.moves import zip
 import itertools
 
@@ -28,7 +31,7 @@ from MDAnalysis import NoDataError
 import MDAnalysis
 
 
-class TestTransTable(object):
+class TestTransTable(TestCase):
     def setUp(self):
         # Reference data
         self.Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
@@ -155,7 +158,7 @@ class TestTransTable(object):
         assert_equal(len(tt.segments2residues_1d(1)), 1)
 
 
-class TestLevelMoves(object):
+class TestLevelMoves(TestCase):
     """Tests for moving atoms/residues between residues/segments
 
     
@@ -448,7 +451,7 @@ class TestLevelMoves(object):
                       setattr, self.u.residues[:3], 'segments', [1, 2, 3])
 
 
-class TestDownshiftArrays(object):
+class TestDownshiftArrays(TestCase):
     def setUp(self):
         # test for square and ragged shapes
         # square shapes sometimes simplify to 2d array
@@ -648,7 +651,7 @@ class TestAddingResidues(object):
         assert_(new_seg.segid == 'New')
 
 
-class TestTopologyGuessed(object):
+class TestTopologyGuessed(TestCase):
     def setUp(self):
         names = self.names = ta.Atomnames(np.array(['A', 'B', 'C'], dtype=object))
         types = self.types = ta.Atomtypes(np.array(['X', 'Y', 'Z'], dtype=object),
@@ -684,23 +687,20 @@ class TestTopologyGuessed(object):
 
 
 class TestTopologyCreation(object):
-    @staticmethod
-    def test_make_topology_no_attrs():
+    def test_make_topology_no_attrs(self):
         # should still make attrs list when attrs=None
         top = Topology()
 
         assert_(hasattr(top, 'attrs'))
         assert_(isinstance(top.attrs, list))
 
-    @staticmethod
-    def test_resindex_VE():
+    def test_resindex_VE(self):
         # wrong sized atom to residue array
         AR = np.arange(10)
         assert_raises(ValueError,
                       Topology, n_atoms=5, atom_resindex=AR)
 
-    @staticmethod
-    def test_segindex_VE():
+    def test_segindex_VE(self):
         # wrong sized residue to segment array
         AR = np.arange(5)
         RS = np.arange(10)
