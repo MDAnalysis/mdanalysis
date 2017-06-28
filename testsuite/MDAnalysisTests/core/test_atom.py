@@ -21,6 +21,9 @@
 #
 
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -40,7 +43,7 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysisTests import parser_not_found
 
 
-class TestAtom(object):
+class TestAtom(TestCase):
     # Legacy tests from before 363
     """Tests of Atom."""
 
@@ -127,7 +130,7 @@ class TestAtom(object):
         self.universe.atoms[0].occupancy
 
 
-class TestAtomNoForceNoVel(object):
+class TestAtomNoForceNoVel(TestCase):
     def setUp(self):
         self.u = mda.Universe(XYZ_mini)
         self.a = self.u.atoms[0]
