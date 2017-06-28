@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -37,7 +39,8 @@ from MDAnalysisTests import make_Universe
 import MDAnalysis
 import MDAnalysis as mda
 
-class TestUpdatingSelection(object):
+
+class TestUpdatingSelection(TestCase):
     def setUp(self):
         self.u = mda.Universe(GRO, XTC)
         self.ag = self.u.select_atoms(
@@ -102,7 +105,7 @@ class TestUpdatingSelection(object):
         assert_raises(TypeError, self.u.select_atoms, "group updating",
                       {"updating":True})
 
-class TestUpdatingSelectionNotraj(object):
+class TestUpdatingSelectionNotraj(TestCase):
     def setUp(self):
         self.u = mda.Universe(PSF)
         self.ag = self.u.select_atoms("name N*")
@@ -164,7 +167,7 @@ class UAGReader(mda.coordinates.base.ReaderBase):
         return self._read_next_frame
 
 
-class TestUAGCallCount(object):
+class TestUAGCallCount(TestCase):
     # make sure updates are only called when required!
     # 
     # these tests check that potentially expensive selection operations are only
@@ -201,7 +204,7 @@ class TestUAGCallCount(object):
             assert_(mock_update.call_count == 1)
 
 
-class TestDynamicUAG(object):
+class TestDynamicUAG(TestCase):
     def setUp(self):
         self.u = u = make_Universe(('names',))
         u.trajectory = UAGReader(125)
