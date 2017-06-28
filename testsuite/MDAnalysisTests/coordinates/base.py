@@ -399,9 +399,9 @@ class BaseWriterTest(object):
                 W.write(ts)
         self._check_copy(outfile, ref, reader)
 
-    def test_write_different_box(self, ref, reader):
+    def test_write_different_box(self, ref, reader, tmpdir):
         if ref.changing_dimensions:
-            outfile = self.tmp_file('write-dimensions-test')
+            outfile = self.tmp_file('write-dimensions-test', ref, tmpdir)
             with ref.writer(outfile, reader.n_atoms) as W:
                 for ts in reader:
                     ts.dimensions[:3] += 1

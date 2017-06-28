@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import division, absolute_import
+
+import pytest
 from six.moves import zip, range
 
 import errno
@@ -37,7 +39,7 @@ from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
 from unittest import TestCase
 
 
-from MDAnalysisTests import module_not_found
+from MDAnalysisTests import module_not_found, make_Universe
 
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
                                        TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF,
@@ -660,23 +662,57 @@ class XTCReference(BaseReference):
 
 
 class TestXTCReader_2(MultiframeReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XTCReference()
-        super(TestXTCReader_2, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XTCReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
 
 class TestXTCWriter_2(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XTCReference()
-        super(TestXTCWriter_2, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XTCReference()
 
-    def test_different_precision(self):
-        out = self.tmp_file('precision-test')
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
+
+    def test_different_precision(self, ref, tmpdir):
+        out = self.tmp_file('precision-test', ref, tmpdir)
         # store more then 9 atoms to enable compression
         n_atoms = 40
-        with self.ref.writer(out, n_atoms, precision=5) as w:
+        with ref.writer(out, n_atoms, precision=5) as w:
             ts = Timestep(n_atoms=n_atoms)
             ts.positions = np.random.random(size=(n_atoms, 3))
             w.write(ts)
@@ -720,27 +756,61 @@ class TRRReference(BaseReference):
 
 
 class TestTRRReader_2(MultiframeReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = TRRReference()
-        super(TestTRRReader_2, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return TRRReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
 
 
 class TestTRRWriter_2(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = TRRReference()
-        super(TestTRRWriter_2, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return TRRReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tmpdir():
+        return tempdir.TempDir()
 
     # tests writing and reading in one!
-    def test_lambda(self):
-        outfile = self.tmp_file('write-lambda-test')
-        with self.ref.writer(outfile, self.reader.n_atoms) as W:
-            for i, ts in enumerate(self.reader):
-                ts.data['lambda'] = i / float(self.reader.n_frames)
+    def test_lambda(self, ref, reader, tmpdir):
+        outfile = self.tmp_file('write-lambda-test', ref, tmpdir)
+        with ref.writer(outfile, reader.n_atoms) as W:
+            for i, ts in enumerate(reader):
+                ts.data['lambda'] = i / float(reader.n_frames)
                 W.write(ts)
 
-        reader = self.ref.reader(outfile)
+        reader = ref.reader(outfile)
         for i, ts in enumerate(reader):
             assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
