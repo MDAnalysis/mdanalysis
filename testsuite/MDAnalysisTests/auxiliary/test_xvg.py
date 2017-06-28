@@ -134,6 +134,6 @@ def test_xvg_bz2():
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
 
 
-def test_xvg_bz2():
+def test_xvg_file_bz2():
     reader = mda.auxiliary.XVG.XVGFileReader(XVG_BZ2)
     assert_array_equal(reader.read_all_times(), np.array([0., 50., 100.]))
