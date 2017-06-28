@@ -28,6 +28,8 @@ This dtype is important for platform independent indexing of other arrays.
 """
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -35,7 +37,7 @@ from numpy.testing import (
 from MDAnalysisTests import make_Universe
 
 
-class TestIndexDtype(object):
+class TestIndexDtype(TestCase):
     def setUp(self):
         self.u = make_Universe()
 
