@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 from numpy.testing import (
     dec,
     assert_,
@@ -34,7 +36,7 @@ from MDAnalysisTests import parser_not_found, make_Universe
 from MDAnalysis.tests.datafiles import PSF, DCD
 
 
-class TestSegment(object):
+class TestSegment(TestCase):
     def setUp(self):
         self.universe = make_Universe(('segids',))
         self.sB = self.universe.segments[1]
