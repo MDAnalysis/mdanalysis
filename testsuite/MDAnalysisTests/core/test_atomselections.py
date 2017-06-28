@@ -21,6 +21,8 @@
 #
 from __future__ import division, absolute_import
 
+from unittest import TestCase
+
 from six.moves import range
 
 import itertools
@@ -57,7 +59,7 @@ from MDAnalysis.tests.datafiles import (
 from MDAnalysisTests import parser_not_found, make_Universe
 
 
-class TestSelectionsCHARMM(object):
+class TestSelectionsCHARMM(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -317,7 +319,7 @@ class TestSelectionsCHARMM(object):
         assert_array_equal(ag2.indices, ag1.indices)
 
 
-class TestSelectionsAMBER(object):
+class TestSelectionsAMBER(TestCase):
     def setUp(self):
         """Set up AMBER system"""
         self.universe = MDAnalysis.Universe(PRMpbc, TRJpbc_bz2)
@@ -340,7 +342,7 @@ class TestSelectionsAMBER(object):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-class TestSelectionsNAMD(object):
+class TestSelectionsNAMD(TestCase):
     def setUp(self):
         """Set up NAMD system"""
         self.universe = MDAnalysis.Universe(PSF_NAMD, PDB_NAMD)
@@ -370,7 +372,7 @@ class TestSelectionsNAMD(object):
         assert_array_equal(sel.names, ['HN', 'HN', 'HN', 'HH', 'HN'])
 
 
-class TestSelectionsGRO(object):
+class TestSelectionsGRO(TestCase):
     def setUp(self):
         """Set up GRO system (implicit types, charges, masses, ...)"""
         self.universe = MDAnalysis.Universe(GRO)
@@ -415,7 +417,7 @@ class TestSelectionsGRO(object):
         assert_equal(len(sel), 1556)
 
 
-class TestSelectionsXTC(object):
+class TestSelectionsXTC(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
@@ -432,7 +434,7 @@ class TestSelectionsXTC(object):
             "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
 
 
-class TestSelectionsNucleicAcids(object):
+class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
 
@@ -467,7 +469,7 @@ class TestSelectionsNucleicAcids(object):
         assert_equal(rna.n_atoms, rna.n_residues * 5)
 
 
-class BaseDistanceSelection(object):
+class BaseDistanceSelection(TestCase):
     """Both KDTree and distmat selections on orthogonal system
 
     Selections to check:
@@ -478,6 +480,9 @@ class BaseDistanceSelection(object):
 
     Cylindrical methods don't use KDTree
     """
+
+    __test__ = False
+
     methods = [('kdtree', False),
                ('distmat', True),
                ('distmat', False)]
@@ -573,6 +578,9 @@ class BaseDistanceSelection(object):
 
 
 class TestOrthogonalDistanceSelections(BaseDistanceSelection):
+
+    __test__ = True
+
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
@@ -609,13 +617,16 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
+
+    __test__ = True
+
     def setUp(self):
         self.u = mda.Universe(GRO)
 
     def tearDown(self):
         del self.u
 
-class TestTriclinicSelections(object):
+class TestTriclinicSelections(TestCase):
     """Non-KDTree based selections
 
     This system has triclinic geometry so won't use KDTree based selections
@@ -785,7 +796,7 @@ class TestPropSelection(object):
                     yield self._check_flip, prop, ag, op
 
 
-class TestBondedSelection(object):
+class TestBondedSelection(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
@@ -811,7 +822,7 @@ class TestBondedSelection(object):
                      u.select_atoms, 'bonded name AAA')
 
 
-class TestSelectionErrors(object):
+class TestSelectionErrors(TestCase):
     def setUp(self):
         self.u = make_Universe(('names', 'masses',
                                 'resids', 'resnames', 'resnums'))
@@ -857,7 +868,7 @@ def test_segid_and_resid():
     assert_array_equal(ag.indices, ref.indices)
 
 
-class TestImplicitOr(object):
+class TestImplicitOr(TestCase):
     def setUp(self):
         self.u = make_Universe(('names', 'types',
                                 'resids', 'resnums',
@@ -904,7 +915,7 @@ class TestImplicitOr(object):
                        ref.format(typ=seltype),
                        sel.format(typ=seltype))
 
-class TestICodeSelection(object):
+class TestICodeSelection(TestCase):
     def setUp(self):
         self.u = mda.Universe(PDB_icodes)
 
