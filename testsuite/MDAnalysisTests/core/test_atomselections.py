@@ -58,6 +58,8 @@ from MDAnalysis.tests.datafiles import (
 )
 from MDAnalysisTests import parser_not_found, make_Universe
 
+import pytest
+
 
 class TestSelectionsCHARMM(TestCase):
     @dec.skipif(parser_not_found('DCD'),
@@ -519,9 +521,6 @@ class BaseDistanceSelection(TestCase):
         ref.difference_update(set(r1.indices))
         assert_(ref == set(result.indices))
 
-    def test_around(self):
-        for meth, periodic in self.methods:
-            yield self._check_around, meth, periodic
 
     def _check_spherical_layer(self, meth, periodic):
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
@@ -821,40 +820,62 @@ class TestBondedSelection(TestCase):
                      u.select_atoms, 'bonded name AAA')
 
 
-class TestSelectionErrors(TestCase):
-    def setUp(self):
-        self.u = make_Universe(('names', 'masses',
-                                'resids', 'resnames', 'resnums'))
+class TestSelectionErrors(object):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return make_Universe(('names', 'masses', 'resids', 'resnames', 'resnums'))
 
-    def tearDown(self):
-        del self.u
-
-    def selection_fail(self, selstr):
-        assert_raises(SelectionError, self.u.select_atoms,
+    def selection_fail(self, selstr, universe):
+        assert_raises(SelectionError, universe.select_atoms,
                       selstr)
 
-    def test_expected_errors(self):
-        for selstr in [
-                'name and H',  # string selection
-                'name )',
-                'resid abcd',  # resid arg parsing selection
-                'resnum 7a7',  # rangeselection arg parsing
-                'resid 1-',
-                'prop chicken == tasty',
-                'prop chicken <= 7.4',
-                'prop mass ^^ 12.0',
-                'same this as resid 1',  # same selection
-                'same resid resname mass 5.0',  # same / expect
-                'name H and',  # check all tokens used
-                'naem H',  # unkonwn (misplet) opertaor
-                'resid and name C',  # rangesel not finding vals
-                'resnum ',
-                'bynum or protein',
-                'prop mass < 4.0 hello',  # unused token
-                'prop mass > 10. and group this',  # missing group
-                'prop mass > 10. and fullgroup this',  # missing fullgroup
-        ]:
-            yield self.selection_fail, selstr
+
+    @pytest.mark.parametrize('selstr, universe', [
+        ('name and H', universe),  # string selection
+        ('name )', universe),
+        ('resid abcd', universe),  # resid arg parsing selection
+        ('resnum 7a7', universe),  # rangeselection arg parsing
+        ('resid 1-', universe),
+        ('prop chicken == tasty', universe),
+        ('prop chicken <= 7.4', universe),
+        ('prop mass ^^ 12.0', universe),
+        ('same this as resid 1', universe),  # same selection
+        ('same resid resname mass 5.0', universe),  # same / expect
+        ('name H and', universe),  # check all tokens used
+        ('naem H', universe),  # unkonwn (misplet) opertaor
+        ('resid and name C', universe),  # rangesel not finding vals
+        ('resnum ', universe),
+        ('bynum or protein', universe),
+        ('prop mass < 4.0 hello', universe),  # unused token
+        ('prop mass > 10. and group this', universe),  # missing group
+        ('prop mass > 10. and fullgroup this', universe),  # missing fullgroup
+    ], indirect=['universe'])
+    def test_expected_errors(self, selstr, universe):
+        self.selection_fail(selstr, universe)
+
+    # def test_expected_errors(self):
+    #     for selstr in [
+    #             'name and H',  # string selection
+    #             'name )',
+    #             'resid abcd',  # resid arg parsing selection
+    #             'resnum 7a7',  # rangeselection arg parsing
+    #             'resid 1-',
+    #             'prop chicken == tasty',
+    #             'prop chicken <= 7.4',
+    #             'prop mass ^^ 12.0',
+    #             'same this as resid 1',  # same selection
+    #             'same resid resname mass 5.0',  # same / expect
+    #             'name H and',  # check all tokens used
+    #             'naem H',  # unkonwn (misplet) opertaor
+    #             'resid and name C',  # rangesel not finding vals
+    #             'resnum ',
+    #             'bynum or protein',
+    #             'prop mass < 4.0 hello',  # unused token
+    #             'prop mass > 10. and group this',  # missing group
+    #             'prop mass > 10. and fullgroup this',  # missing fullgroup
+    #     ]:
+    #         yield self.selection_fail, selstr
 
 
 def test_segid_and_resid():
@@ -867,52 +888,41 @@ def test_segid_and_resid():
     assert_array_equal(ag.indices, ref.indices)
 
 
-class TestImplicitOr(TestCase):
-    def setUp(self):
-        self.u = make_Universe(('names', 'types',
-                                'resids', 'resnums',
-                                'resnames', 'segids'))
-                               
-    def tearDown(self):
-        del self.u
+class TestImplicitOr(object):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return make_Universe(('names', 'types','resids', 'resnums', 'resnames', 'segids'))
 
-    def _check_sels(self, ref, sel):
-        ref = self.u.select_atoms(ref)
-        sel = self.u.select_atoms(sel)
+    def _check_sels(self, ref, sel, universe):
+        ref = universe.select_atoms(ref)
+        sel = universe.select_atoms(sel)
 
         assert_array_equal(ref.indices, sel.indices)
 
-    def test_string_selections(self):
-        for ref, sel in (
-                ('name NameABA or name NameACA or name NameADA',
-                 'name NameABA NameACA NameADA'),
-                ('type TypeE or type TypeD or type TypeB',
-                 'type TypeE TypeD TypeB'),
-                ('resname RsC or resname RsY', 'resname RsC RsY'),
-                ('name NameAB* or name NameACC', 'name NameAB* NameACC'),
-                ('(name NameABC or name NameABB) and (resname RsD or resname RsF)',
-                 'name NameABC NameABB and resname RsD RsF'),
-                ('segid SegA or segid SegC', 'segid SegA SegC'),
-        ):
-            yield self._check_sels, ref, sel
+    @pytest.mark.parametrize('ref, sel, universe',[
+        ('name NameABA or name NameACA or name NameADA', 'name NameABA NameACA NameADA', universe),
+        ('type TypeE or type TypeD or type TypeB', 'type TypeE TypeD TypeB', universe),
+        ('resname RsC or resname RsY', 'resname RsC RsY', universe),
+        ('name NameAB* or name NameACC', 'name NameAB* NameACC', universe),
+        ('segid SegA or segid SegC', 'segid SegA SegC', universe),
+        ('(name NameABC or name NameABB) and (resname RsD or resname RsF)', 'name NameABC NameABB and resname RsD RsF', universe),
+    ], indirect=['universe'])
+    def test_string_selections(self, ref, sel, universe):
+        self._check_sels(ref, sel, universe)
 
-    def test_range_selections(self):
-        # All these selections just use numeric types,
-        # So loop over what type of selections,
-        # And apply the same numeric constraints to all
-        for seltype in ['resid', 'resnum', 'bynum']:
-            for ref, sel in (
-                    ('{typ} 1 or {typ} 2', '{typ} 1 2'),
-                    ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
-                    ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
-                    ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
-                    ('{typ} 1-5 or {typ} 7:10 or {typ} 12',
-                     '{typ} 1-5 7:10 12'),
-                    ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
-            ):
-                yield (self._check_sels,
-                       ref.format(typ=seltype),
-                       sel.format(typ=seltype))
+    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum'])
+    @pytest.mark.parametrize('ref, sel, universe', [
+        ('{typ} 1 or {typ} 2', '{typ} 1 2', universe),
+        ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22', universe),
+        ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30', universe),
+        ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7', universe),
+        ('{typ} 1-5 or {typ} 7:10 or {typ} 12', '{typ} 1-5 7:10 12', universe),
+        ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10', universe),
+    ], indirect=['universe'])
+    def test_range_selections(self, seltype, ref, sel, universe):
+        self._check_sels(ref.format(typ=seltype), sel.format(typ=seltype), universe)
+
 
 class TestICodeSelection(TestCase):
     def setUp(self):
