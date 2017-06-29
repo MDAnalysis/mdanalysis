@@ -58,6 +58,8 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 
+import pytest
+
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
 warnings.simplefilter('always')
@@ -135,44 +137,47 @@ class TestDeprecationWarnings(object):
         assert_equal(sg.segids, u.segments[:3].segids)
 
 
-class TestAtomGroupToTopology(TestCase):
+class TestAtomGroupToTopology(object):
     """Test the conversion of AtomGroup to TopologyObjects"""
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
-
-    def test_bond(self):
-        ag = self.u.atoms[:2]
+    def test_bond(self, u):
+        ag = u.atoms[:2]
         bond = ag.bond
         assert_(isinstance(bond, Bond))
 
-    def test_angle(self):
-        ag = self.u.atoms[:3]
+    def test_angle(self, u):
+        ag = u.atoms[:3]
         angle = ag.angle
         assert_(isinstance(angle, Angle))
 
-    def test_dihedral(self):
-        ag = self.u.atoms[:4]
+    def test_dihedral(self, u):
+        ag = u.atoms[:4]
         dih = ag.dihedral
         assert_(isinstance(dih, Dihedral))
 
-    def test_improper(self):
-        ag = self.u.atoms[:4]
+    def test_improper(self, u):
+        ag = u.atoms[:4]
         imp = ag.improper
         assert_(isinstance(imp, ImproperDihedral))
 
-    def _check_VE(self, btype):
-        ag = self.u.atoms[:10]
+    def _check_VE(self, btype, u):
+        ag = u.atoms[:10]
 
         assert_raises(ValueError, getattr, ag, btype)
 
-    def test_VEs(self):
-        for btype in ('bond', 'angle', 'dihedral', 'improper'):
-            yield self._check_VE, btype
+    @pytest.mark.parametrize('btype, u', [
+        ('bond', u),
+        ('angle', u),
+        ('dihedral', u),
+        ('improper', u)
+    ], indirect=['u'])
+    def test_VEs(self, btype, u):
+        self._check_VE(btype, u)
 
 
 class TestAtomGroupWriting(TestCase):
