@@ -145,6 +145,13 @@ from ..lib import util
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
+try:
+    from scipy.io import netcdf
+except ImportError:
+    logger.debug("scipy.io.netcdf is missing (needed for the AMBER ncdf Reader)")
+    logger.debug("Using the bundled lib.netcdf (from scipy 0.16.1) instead.")
+    from ..lib import netcdf
+
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
@@ -431,13 +438,6 @@ class NCDFReader(base.ReaderBase):
     _Timestep = Timestep
 
     def __init__(self, filename, n_atoms=None, **kwargs):
-        try:
-            from scipy.io import netcdf
-        except ImportError:
-            logger.fatal("scipy.io.netcdf must be installed for the AMBER ncdf Reader.")
-            raise ImportError("scipy.io.netcdf package missing but is required "
-                              "for the Amber Reader.")
-
         self._mmap = kwargs.pop('mmap', None)
 
         super(NCDFReader, self).__init__(filename, **kwargs)
@@ -717,13 +717,6 @@ class NCDFWriter(base.WriterBase):
         .. _`netcdf4storage.py`:
            https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
-        try:
-            from scipy.io import netcdf
-        except ImportError:
-            logger.fatal("scipy.io.netcdf must be installed for the AMBER ncdf Reader.")
-            raise ImportError("scipy.io.netcdf package missing but is required "
-                              "for the Amber Reader.")
-
         if not self._first_frame:
             raise IOError(
                 errno.EIO,

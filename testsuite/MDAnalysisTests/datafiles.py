@@ -92,7 +92,7 @@ __all__ = [
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
     "PQR",  # PQR v1
-    "PQR_icodes",  # PQR v2 with icodes 
+    "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
@@ -147,6 +147,7 @@ __all__ = [
     "MMTF", "MMTF_gz",
     "ALIGN_BOUND",  # two component bound system
     "ALIGN_UNBOUND", # two component unbound system
+    "NC_SCIPY_EXAMPLE",     # test for lib.netcdf == scipy.io.netcdf
 ]
 
 from pkg_resources import resource_filename
@@ -280,6 +281,7 @@ INPCRD = resource_filename(__name__, 'data/Amber/test.inpcrd')
 TRJ_bz2 = resource_filename(__name__, 'data/Amber/ache.mdcrd.bz2')
 PFncdf_Top = resource_filename(__name__, 'data/Amber/posfor.top')
 PFncdf_Trj = resource_filename(__name__, 'data/Amber/posfor.ncdf')
+NC_SCIPY_EXAMPLE = resource_filename(__name__, 'data/scipy/example_1.nc')
 
 PRMpbc = resource_filename(__name__, 'data/Amber/capped-ala.prmtop')
 TRJpbc_bz2 = resource_filename(__name__, 'data/Amber/capped-ala.mdcrd.bz2')
