@@ -522,6 +522,7 @@ if __name__ == '__main__':
           },
           test_suite="MDAnalysisTests",
           tests_require=[
+              'pytest>=3.1.2',
               'nose>=1.3.7',
               'MDAnalysisTests=={0}'.format(RELEASE),  # same as this release!
           ],
