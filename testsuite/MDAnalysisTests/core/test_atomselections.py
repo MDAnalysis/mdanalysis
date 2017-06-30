@@ -509,7 +509,12 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    def _check_around(self,u, meth, periodic):
+    @pytest.mark.parametrize('u, meth, periodic', [
+        (u, 'kdtree', False),
+        (u, 'distmat', True),
+        (u, 'distmat', False)
+    ], indirect=['u'])
+    def test_around(self,u, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)
