@@ -471,7 +471,7 @@ class TestSelectionsNucleicAcids(TestCase):
         assert_equal(rna.n_atoms, rna.n_residues * 5)
 
 
-class BaseDistanceSelection(TestCase):
+class BaseDistanceSelection(object):
     """Both KDTree and distmat selections on orthogonal system
 
     Selections to check:
@@ -484,6 +484,11 @@ class BaseDistanceSelection(TestCase):
     """
 
     __test__ = False
+
+    @pytest.fixture()
+    def u(self):
+        # TODO: This is dummy. Needs review!
+        return mda.Universe()
 
     methods = [('kdtree', False),
                ('distmat', True),
@@ -504,16 +509,16 @@ class BaseDistanceSelection(TestCase):
 
         return sel
 
-    def _check_around(self, meth, periodic):
-        sel = Parser.parse('around 5.0 resid 1', self.u.atoms)
+    def _check_around(self,u, meth, periodic):
+        sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, r1.positions,
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, r1.positions,
                            box=box)
         ref = set(np.where(d < 5.0)[0])
 
@@ -521,59 +526,63 @@ class BaseDistanceSelection(TestCase):
         ref.difference_update(set(r1.indices))
         assert_(ref == set(result.indices))
 
-
-    def _check_spherical_layer(self, meth, periodic):
-        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
+    @pytest.mark.parametrize('u, meth, periodic', [
+        (u, 'kdtree', False),
+        (u, 'distmat', True),
+        (u, 'distmat', False)
+    ], indirect=['u'])
+    def test_spherical_layer(self,u, meth, periodic):
+        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, cog, box=box)
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert_(ref == set(result.indices))
 
-    def test_spherical_layer(self):
-        for meth, periodic in self.methods:
-            yield self._check_spherical_layer, meth, periodic
 
-    def _check_spherical_zone(self, meth, periodic):
-        sel = Parser.parse('sphzone 5.0 resid 1', self.u.atoms)
+    @pytest.mark.parametrize('u, meth, periodic', [
+        (u, 'kdtree', False),
+        (u, 'distmat', True),
+        (u, 'distmat', False)
+    ], indirect=['u'])
+    def test_spherical_zone(self, u, meth, periodic):
+        sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, cog, box=box)
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
         assert_(ref == set(result.indices))
 
-    def test_spherical_zone(self):
-        for meth, periodic in self.methods:
-            yield self._check_spherical_zone, meth, periodic
 
-    def _check_point(self, meth, periodic):
-        sel = Parser.parse('point 5.0 5.0 5.0  3.0', self.u.atoms)
+    @pytest.mark.parametrize('u, meth, periodic', [
+        (u, 'kdtree', False),
+        (u, 'distmat', True),
+        (u, 'distmat', False)
+    ], indirect=['u'])
+    def test_point(self,u, meth, periodic):
+        sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        box = self.u.dimensions if periodic else None
+        box = u.dimensions if periodic else None
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
-                           self.u.atoms.positions,
+                           u.atoms.positions,
                            box=box)
         ref = set(np.where(d < 3.0)[1])
 
         assert_(ref == set(result.indices))
-
-    def test_point(self):
-        for meth, periodic in self.methods:
-            yield self._check_point, meth, periodic
 
 
 class TestOrthogonalDistanceSelections(BaseDistanceSelection):
@@ -582,23 +591,26 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
     @dec.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = mda.Universe(TRZ_psf, TRZ)
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def tearDown(self):
-        del self.u
 
-    def _check_cyzone(self, meth, periodic):
-        sel = Parser.parse('cyzone 5 4 -4 resid 2', self.u.atoms)
+    @pytest.mark.parametrize('u, meth, periodic', [
+        (u, 'distmat', True),
+        (u, 'distmat', False)
+    ], indirect=['u'])
+    def test_cyzone(self, u, meth, periodic):
+        sel = Parser.parse('cyzone 5 4 -4 resid 2', u.atoms)
         sel.periodic = periodic
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        other = self.u.select_atoms('resid 2')
+        other = u.select_atoms('resid 2')
         pos = other.center_of_geometry()
 
-        vecs = self.u.atoms.positions - pos
+        vecs = u.atoms.positions - pos
         if periodic:
-            box = self.u.dimensions[:3]
+            box = u.dimensions[:3]
             vecs -= box * np.rint(vecs / box)
 
         mask = (vecs[:,2] > -4) & (vecs[:,2] < 4)
@@ -606,24 +618,18 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         radii = vecs[:,0] ** 2 + vecs[:, 1] ** 2
         mask &= radii < 5**2
 
-        ref = set(self.u.atoms[mask].indices)
+        ref = set(u.atoms[mask].indices)
 
         assert_(ref == set(result.indices))
-
-    def test_cyzone(self):
-        for meth, periodic in self.methods[1:]:
-            yield self._check_cyzone, meth, periodic
 
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
 
     __test__ = True
 
-    def setUp(self):
-        self.u = mda.Universe(GRO)
-
-    def tearDown(self):
-        del self.u
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(GRO)
 
 class TestTriclinicSelections(TestCase):
     """Non-KDTree based selections
