@@ -23,6 +23,7 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 import mock
 import numpy as np
+import sys
 import os
 from six.moves import zip
 
@@ -32,6 +33,7 @@ except ImportError:
     # fall back (should ALWAYS work)
     from MDAnalysis.lib import netcdf
 
+import pytest
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_array_equal,
@@ -42,7 +44,7 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
-from MDAnalysisTests import module_not_found, tempdir, block_import, make_Universe
+from MDAnalysisTests import module_not_found, tempdir, make_Universe
 
 
 
@@ -173,7 +175,6 @@ class _NCDFWriterTest(TestCase):
         self.tmpdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tmpdir.name, 'ncdf-writer-1' + ext)
         self.outtop = os.path.join(self.tmpdir.name, 'ncdf-writer-top.pdb')
-        self.Writer = mda.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
         for f in self.outfile, self.outtop:
@@ -182,12 +183,15 @@ class _NCDFWriterTest(TestCase):
             except OSError:
                 pass
         del self.universe
-        del self.Writer
         del self.tmpdir
 
-    def test_write_trajectory(self):
+    def _test_write_trajectory(self):
+        # explicit import so that we can artifically remove netCDF4
+        # before calling
+        from MDAnalysis.coordinates import TRJ
+
         t = self.universe.trajectory
-        with self.Writer(self.outfile, t.n_atoms, dt=t.dt) as W:
+        with TRJ.NCDFWriter(self.outfile, t.n_atoms, dt=t.dt) as W:
             self._copy_traj(W)
         self._check_new_traj()
         #for issue #518 -- preserve float32 data in ncdf output
@@ -207,6 +211,23 @@ class _NCDFWriterTest(TestCase):
         assert_equal(time[:].dtype.name, np.dtype(np.float32).name,
                 err_msg='ncdf time output not float32 '
                         'but {}'.format(time[:].dtype))
+
+    def test_write_trajectory_netCDF4(self):
+        pytest.importorskip("netCDF4")
+        return self._test_write_trajectory()
+
+    def test_write_trajectory_netcdf(self):
+        import MDAnalysis.coordinates.TRJ
+        loaded_netCDF4 = sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4
+        try:
+            # cannot use @block_import('netCDF4') because TRJ was already imported
+            # during setup() and already sits in the global module list so we just
+            # set it to None because that is what TRJ does if it cannot find netCDF4
+            sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = None
+            assert MDAnalysis.coordinates.TRJ.netCDF4 is None   # should happen if netCDF4 not found
+            return self._test_write_trajectory()
+        finally:
+            sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = loaded_netCDF4
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
@@ -272,8 +293,8 @@ class _NCDFWriterTest(TestCase):
     @attr('slow')
     def test_TRR2NCDF(self):
         trr = mda.Universe(GRO, TRR)
-        with self.Writer(self.outfile, trr.trajectory.n_atoms,
-                         velocities=True) as W:
+        with mda.Writer(self.outfile, trr.trajectory.n_atoms,
+                        velocities=True, format="ncdf") as W:
             for ts in trr.trajectory:
                 W.write_next_timestep(ts)
 
@@ -306,7 +327,7 @@ class _NCDFWriterTest(TestCase):
         """test to write NCDF from AtomGroup (Issue 116)"""
         p = self.universe.select_atoms("not resname WAT")
         p.write(self.outtop)
-        with self.Writer(self.outfile, n_atoms=p.n_atoms) as W:
+        with mda.Writer(self.outfile, n_atoms=p.n_atoms, format="ncdf") as W:
             for ts in self.universe.trajectory:
                 W.write(p)
 

@@ -146,12 +146,17 @@ from ..lib import util
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 try:
-    from scipy.io import netcdf
+    import scipy.io.netcdf
 except ImportError:
     logger.debug("scipy.io.netcdf is missing (needed for the AMBER ncdf Reader)")
     logger.debug("Using the bundled lib.netcdf (from scipy 0.16.1) instead.")
     from ..lib import netcdf
 
+try:
+    import netCDF4
+except ImportError:
+    netCDF4 = None
+    logger.warn("netCDF4 is not available. Writing AMBER ncdf files will be slow")
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
@@ -442,7 +447,8 @@ class NCDFReader(base.ReaderBase):
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = netcdf.netcdf_file(self.filename, mmap=self._mmap)
+        self.trjfile = scipy.io.netcdf.netcdf_file(self.filename,
+                                                   mmap=self._mmap)
 
         if not ('AMBER' in self.trjfile.Conventions.split(',') or
                 'AMBER' in self.trjfile.Conventions.split()):
@@ -618,17 +624,84 @@ class NCDFWriter(base.WriterBase):
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
+
+    Parameters
+    ----------
+    filename : str
+        name of output file
+    n_atoms : int
+        number of atoms in trajectory file
+    start : int (optional)
+        starting timestep
+    step : int (optional)
+        skip between subsequent timesteps
+    dt : float (optional)
+        timestep
+    convert_units : bool (optional)
+        ``True``: units are converted to the AMBER base format; ``None``
+        selects the value of :data:`MDAnalysis.core.flags`
+        ['convert_lengths'] (see :ref:`flags-label`).
+    velocities : bool (optional)
+        Write velocities into the trajectory [``False``]
+    forces : bool (optional)
+        Write forces into the trajectory [``False``]
+
+
+    Note
+    ----
+    MDAnalysis uses :mod:`scipy.io.netcdf` to access Amber files, which are in
+    netcdf 3 format. Although :mod:`scipy.io.netcdf` is very fast at reading
+    these files, it is *very* slow when writing, and it becomes slower the
+    longer the files are. On the other hand, the netCDF4_ package (which
+    requires the compiled netcdf library to be installed) is fast at writing
+    but slow at reading. Therefore, we try to use :mod:`netCDF4` for writing if
+    available but otherwise fall back to the slower :mod:`scipy.io.netcdf`.
+
+    **Amber users** might have a hard time getting netCDF4 to work with a
+    conda-based installation (as discussed in `Issue #506`_) because of the way
+    that Amber itself handles netcdf: When the Amber environment is loaded, the
+    following can happen when trying to import netCDF4::
+
+      >>> import netCDF4
+      Traceback (most recent call last):
+        File "<string>", line 1, in <module>
+        File "/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py", line 3, in <module>
+          from ._netCDF4 import *
+      ImportError: /scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32
+
+    The reason for this (figured out via :program:`ldd`) is that Amber builds
+    its own NetCDF library that it now inserts into :envvar:`LD_LIBRARY_PATH`
+    *without the NetCDF4 API and HDF5 bindings*. Since the conda version of
+    :mod:`netCDF4` was built against the full NetCDF package, the one
+    :program:`ld` tries to link to at runtime (because Amber requires
+    :envvar:`LD_LIBRARY_PATH`) is missing some symbols. Removing Amber from the
+    environment fixes the import but is not really a convenient solution for
+    users of Amber.
+
+    At the moment there is no obvious solution if one wants to use
+    :mod:`netCDF4` and Amber in the same shell session. If you need the fast
+    writing capabilities of :mod:`netCDF4` then you need to unload your Amber
+    environment before importing MDAnalysis.
+
+
+    .. _netCDF4: https://unidata.github.io/netcdf4-python/
+    .. _`Issue #506`:
+       https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416
+
     See Also
     --------
     :class:`NCDFReader`
 
 
     .. versionadded: 0.7.6
-
     .. versionchanged:: 0.10.0
        Added ability to write velocities and forces
     .. versionchanged:: 0.11.0
        kwarg `delta` renamed to `dt`, for uniformity with other Readers
+    .. versionchanged:: 0.17.0
+       Use fast :mod:`netCDF4` for writing but fall back to slow
+       :mod:`scipy.io.netcdf` if :mod:`netCDF4` is not available.
+
     """
 
     format = 'NCDF'
@@ -647,36 +720,7 @@ class NCDFWriter(base.WriterBase):
                  dt=1.0,
                  remarks=None,
                  convert_units=None,
-                 zlib=False,
-                 cmplevel=1,
                  **kwargs):
-        """Create a new NCDFWriter
-
-        Parameters
-        ----------
-        filename : str
-            name of output file
-        n_atoms : int
-            number of atoms in trajectory file
-        start : int (optional)
-            starting timestep
-        step : int (optional)
-            skip between subsequent timesteps
-        dt : float (optional)
-            timestep
-        convert_units : bool (optional)
-            ``True``: units are converted to the AMBER base format; ``None``
-            selects the value of :data:`MDAnalysis.core.flags`
-            ['convert_lengths'] (see :ref:`flags-label`).
-        zlib : bool (optional)
-            compress data [``False``]
-        cmplevel : int (optional)
-            compression level (1-9) [1]
-        velocities : bool (optional)
-            Write velocities into the trajectory [``False``]
-        forces : bool (optional)
-            Write forces into the trajectory [``False``]
-        """
         self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
@@ -690,9 +734,6 @@ class NCDFWriter(base.WriterBase):
         self.step = step  # do we use those?
         self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
-
-        self.zlib = zlib
-        self.cmplevel = cmplevel
 
         self.ts = None  # when/why would this be assigned??
         self._first_frame = True  # signals to open trajectory
@@ -710,19 +751,32 @@ class NCDFWriter(base.WriterBase):
         output should contain periodicity information (i.e. the unit
         cell dimensions).
 
-        Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.
+        Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_ and uses
+        Jason Swail's hack from `ParmEd/ParmEd#722`_ to switch between
+        :mod:`scipy.io.netcdf` and :mod:`netCDF4`.
 
         .. _`Issue 109`:
            https://github.com/MDAnalysis/mdanalysis/issues/109
         .. _`netcdf4storage.py`:
            https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
+        .. _`ParmEd/ParmEd#722`: https://github.com/ParmEd/ParmEd/pull/722
+
         """
         if not self._first_frame:
             raise IOError(
                 errno.EIO,
                 "Attempt to write to closed file {0}".format(self.filename))
 
-        ncfile = netcdf.netcdf_file(self.filename, mode='w', version=2)
+        if netCDF4:
+            ncfile = netCDF4.Dataset(self.filename, 'w', format='NETCDF3_64BIT')
+        else:
+            ncfile = scipy.io.netcdf.netcdf_file(self.filename,
+                                                 mode='w', version=2,
+                                                 mmap=False)
+            wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
+                   "scipy.io.netcdf implementation for writing."
+            logger.warn(wmsg)
+            warnings.warn(wmsg)
 
         # Set global attributes.
         setattr(ncfile, 'program', 'MDAnalysis.coordinates.TRJ.NCDFWriter')
