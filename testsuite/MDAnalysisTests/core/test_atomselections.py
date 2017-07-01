@@ -485,12 +485,6 @@ class BaseDistanceSelection(object):
 
     __test__ = False
 
-    @staticmethod
-    @pytest.fixture()
-    def u(self):
-        # TODO: This is dummy. Needs review!
-        return mda.Universe()
-
     methods = [('kdtree', False),
                ('distmat', True),
                ('distmat', False)]
