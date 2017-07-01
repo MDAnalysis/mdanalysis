@@ -35,6 +35,7 @@ from numpy.testing import (
     assert_raises,
     assert_warns,
 )
+import pytest
 import operator
 import six
 
@@ -582,7 +583,7 @@ class TestGroupBy(TestCase):
 
 
 class TestReprs(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)

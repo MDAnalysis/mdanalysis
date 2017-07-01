@@ -32,6 +32,7 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
+import pytest
 
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
@@ -47,7 +48,7 @@ class TestAtom(TestCase):
     # Legacy tests from before 363
     """Tests of Atom."""
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""

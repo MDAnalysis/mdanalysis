@@ -26,6 +26,7 @@ from numpy.testing import (
     assert_,
     assert_equal,
 )
+import pytest
 from unittest import skip, TestCase
 
 import MDAnalysis as mda
@@ -36,7 +37,7 @@ from MDAnalysisTests import parser_not_found
 
 class TestSegmentGroup(TestCase):
     # Legacy tests from before 363
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""

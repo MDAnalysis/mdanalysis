@@ -32,6 +32,7 @@ from numpy.testing import (
     assert_,
     assert_raises,
 )
+import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
@@ -57,7 +58,7 @@ class TestTopologyObjects(TestCase):
     len
     """
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
@@ -562,7 +563,7 @@ class TestTopologyGroup_Cython(TestCase):
      - work (return proper values)
      - catch errors
     """
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)

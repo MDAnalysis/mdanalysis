@@ -36,6 +36,7 @@ from numpy.testing import (
     assert_raises,
 )
 from nose.tools import raises
+import pytest
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found, make_Universe
@@ -163,7 +164,7 @@ class TestAtomids(TestAtomAttr):
 
 
 class TestIndicesClasses(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -406,7 +407,7 @@ class TestSegmentAttr(TopologyAttrMixin):
 
 
 class TestAttr(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)

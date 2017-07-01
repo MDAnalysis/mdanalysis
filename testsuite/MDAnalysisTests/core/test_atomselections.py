@@ -62,7 +62,7 @@ import pytest
 
 
 class TestSelectionsCHARMM(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent.
@@ -485,6 +485,7 @@ class BaseDistanceSelection(object):
 
     __test__ = False
 
+    @staticmethod
     @pytest.fixture()
     def u(self):
         # TODO: This is dummy. Needs review!
@@ -509,11 +510,11 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    @pytest.mark.parametrize('u, meth, periodic', [
-        (u, 'kdtree', False),
-        (u, 'distmat', True),
-        (u, 'distmat', False)
-    ], indirect=['u'])
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
     def test_around(self,u, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -531,11 +532,11 @@ class BaseDistanceSelection(object):
         ref.difference_update(set(r1.indices))
         assert_(ref == set(result.indices))
 
-    @pytest.mark.parametrize('u, meth, periodic', [
-        (u, 'kdtree', False),
-        (u, 'distmat', True),
-        (u, 'distmat', False)
-    ], indirect=['u'])
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
     def test_spherical_layer(self,u, meth, periodic):
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -550,12 +551,11 @@ class BaseDistanceSelection(object):
 
         assert_(ref == set(result.indices))
 
-
-    @pytest.mark.parametrize('u, meth, periodic', [
-        (u, 'kdtree', False),
-        (u, 'distmat', True),
-        (u, 'distmat', False)
-    ], indirect=['u'])
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
     def test_spherical_zone(self, u, meth, periodic):
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -571,11 +571,11 @@ class BaseDistanceSelection(object):
         assert_(ref == set(result.indices))
 
 
-    @pytest.mark.parametrize('u, meth, periodic', [
-        (u, 'kdtree', False),
-        (u, 'distmat', True),
-        (u, 'distmat', False)
-    ], indirect=['u'])
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
     def test_point(self,u, meth, periodic):
         sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -594,17 +594,15 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
     __test__ = True
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('TRZ'), 'TRZ parser not available. Are you using python 3?')
     @pytest.fixture()
     def u(self):
         return mda.Universe(TRZ_psf, TRZ)
 
-
-    @pytest.mark.parametrize('u, meth, periodic', [
-        (u, 'distmat', True),
-        (u, 'distmat', False)
-    ], indirect=['u'])
+    @pytest.mark.parametrize('meth, periodic', [
+        ('distmat', True),
+        ('distmat', False)
+    ])
     def test_cyzone(self, u, meth, periodic):
         sel = Parser.parse('cyzone 5 4 -4 resid 2', u.atoms)
         sel.periodic = periodic
@@ -807,7 +805,7 @@ class TestPropSelection(object):
 
 
 class TestBondedSelection(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -841,27 +839,26 @@ class TestSelectionErrors(object):
         assert_raises(SelectionError, universe.select_atoms,
                       selstr)
 
-
-    @pytest.mark.parametrize('selstr, universe', [
-        ('name and H', universe),  # string selection
-        ('name )', universe),
-        ('resid abcd', universe),  # resid arg parsing selection
-        ('resnum 7a7', universe),  # rangeselection arg parsing
-        ('resid 1-', universe),
-        ('prop chicken == tasty', universe),
-        ('prop chicken <= 7.4', universe),
-        ('prop mass ^^ 12.0', universe),
-        ('same this as resid 1', universe),  # same selection
-        ('same resid resname mass 5.0', universe),  # same / expect
-        ('name H and', universe),  # check all tokens used
-        ('naem H', universe),  # unkonwn (misplet) opertaor
-        ('resid and name C', universe),  # rangesel not finding vals
-        ('resnum ', universe),
-        ('bynum or protein', universe),
-        ('prop mass < 4.0 hello', universe),  # unused token
-        ('prop mass > 10. and group this', universe),  # missing group
-        ('prop mass > 10. and fullgroup this', universe),  # missing fullgroup
-    ], indirect=['universe'])
+    @pytest.mark.parametrize('selstr', [
+        'name and H',  # string selection
+        'name )',
+        'resid abcd',  # resid arg parsing selection
+        'resnum 7a7',  # rangeselection arg parsing
+        'resid 1-',
+        'prop chicken == tasty',
+        'prop chicken <= 7.4',
+        'prop mass ^^ 12.0',
+        'same this as resid 1',  # same selection
+        'same resid resname mass 5.0',  # same / expect
+        'name H and',  # check all tokens used
+        'naem H',  # unkonwn (misplet) opertaor
+        'resid and name C',  # rangesel not finding vals
+        'resnum ',
+        'bynum or protein',
+        'prop mass < 4.0 hello',  # unused token
+        'prop mass > 10. and group this',  # missing group
+        'prop mass > 10. and fullgroup this',  # missing fullgroup
+    ])
     def test_expected_errors(self, selstr, universe):
         self.selection_fail(selstr, universe)
 
@@ -911,26 +908,26 @@ class TestImplicitOr(object):
 
         assert_array_equal(ref.indices, sel.indices)
 
-    @pytest.mark.parametrize('ref, sel, universe',[
-        ('name NameABA or name NameACA or name NameADA', 'name NameABA NameACA NameADA', universe),
-        ('type TypeE or type TypeD or type TypeB', 'type TypeE TypeD TypeB', universe),
-        ('resname RsC or resname RsY', 'resname RsC RsY', universe),
-        ('name NameAB* or name NameACC', 'name NameAB* NameACC', universe),
-        ('segid SegA or segid SegC', 'segid SegA SegC', universe),
-        ('(name NameABC or name NameABB) and (resname RsD or resname RsF)', 'name NameABC NameABB and resname RsD RsF', universe),
-    ], indirect=['universe'])
+    @pytest.mark.parametrize('ref, sel',[
+        ('name NameABA or name NameACA or name NameADA', 'name NameABA NameACA NameADA'),
+        ('type TypeE or type TypeD or type TypeB', 'type TypeE TypeD TypeB'),
+        ('resname RsC or resname RsY', 'resname RsC RsY'),
+        ('name NameAB* or name NameACC', 'name NameAB* NameACC'),
+        ('segid SegA or segid SegC', 'segid SegA SegC'),
+        ('(name NameABC or name NameABB) and (resname RsD or resname RsF)', 'name NameABC NameABB and resname RsD RsF'),
+    ])
     def test_string_selections(self, ref, sel, universe):
         self._check_sels(ref, sel, universe)
 
     @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum'])
-    @pytest.mark.parametrize('ref, sel, universe', [
-        ('{typ} 1 or {typ} 2', '{typ} 1 2', universe),
-        ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22', universe),
-        ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30', universe),
-        ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7', universe),
-        ('{typ} 1-5 or {typ} 7:10 or {typ} 12', '{typ} 1-5 7:10 12', universe),
-        ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10', universe),
-    ], indirect=['universe'])
+    @pytest.mark.parametrize('ref, sel', [
+        ('{typ} 1 or {typ} 2', '{typ} 1 2'),
+        ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
+        ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
+        ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
+        ('{typ} 1-5 or {typ} 7:10 or {typ} 12', '{typ} 1-5 7:10 12'),
+        ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
+    ])
     def test_range_selections(self, seltype, ref, sel, universe):
         self._check_sels(ref.format(typ=seltype), sel.format(typ=seltype), universe)
 
