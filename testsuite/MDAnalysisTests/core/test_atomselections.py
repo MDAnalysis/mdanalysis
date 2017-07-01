@@ -835,10 +835,6 @@ class TestSelectionErrors(object):
     def universe():
         return make_Universe(('names', 'masses', 'resids', 'resnames', 'resnums'))
 
-    def selection_fail(self, selstr, universe):
-        assert_raises(SelectionError, universe.select_atoms,
-                      selstr)
-
     @pytest.mark.parametrize('selstr', [
         'name and H',  # string selection
         'name )',
@@ -859,8 +855,9 @@ class TestSelectionErrors(object):
         'prop mass > 10. and group this',  # missing group
         'prop mass > 10. and fullgroup this',  # missing fullgroup
     ])
-    def test_expected_errors(self, selstr, universe):
-        self.selection_fail(selstr, universe)
+    def test_selection_fail(self, selstr, universe):
+        assert_raises(SelectionError, universe.select_atoms,
+                      selstr)
 
 def test_segid_and_resid():
     u = make_Universe(('segids', 'resids'))
