@@ -862,30 +862,6 @@ class TestSelectionErrors(object):
     def test_expected_errors(self, selstr, universe):
         self.selection_fail(selstr, universe)
 
-    # def test_expected_errors(self):
-    #     for selstr in [
-    #             'name and H',  # string selection
-    #             'name )',
-    #             'resid abcd',  # resid arg parsing selection
-    #             'resnum 7a7',  # rangeselection arg parsing
-    #             'resid 1-',
-    #             'prop chicken == tasty',
-    #             'prop chicken <= 7.4',
-    #             'prop mass ^^ 12.0',
-    #             'same this as resid 1',  # same selection
-    #             'same resid resname mass 5.0',  # same / expect
-    #             'name H and',  # check all tokens used
-    #             'naem H',  # unkonwn (misplet) opertaor
-    #             'resid and name C',  # rangesel not finding vals
-    #             'resnum ',
-    #             'bynum or protein',
-    #             'prop mass < 4.0 hello',  # unused token
-    #             'prop mass > 10. and group this',  # missing group
-    #             'prop mass > 10. and fullgroup this',  # missing fullgroup
-    #     ]:
-    #         yield self.selection_fail, selstr
-
-
 def test_segid_and_resid():
     u = make_Universe(('segids', 'resids'))
 
