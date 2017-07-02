@@ -43,8 +43,8 @@ from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
 warnings.simplefilter('always')
 
 
-class TestRotationMatrix(object):
-    def __init__(self):
+class TestRotationMatrix(TestCase):
+    def setUp(self):
         self.a = np.array([[0.1, 0.2, 0.3],
                            [1.1, 1.1, 1.1]])
         self.b = np.array([[0.1, 0.1, 0.1],
@@ -297,7 +297,7 @@ class TestAlign(TestCase):
 
 
 
-class TestAlignmentProcessing(object):
+class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
         self.tempdir = tempdir.TempDir()
