@@ -667,14 +667,6 @@ class TestXTCReader_2(MultiframeReaderTest):
     def ref():
         return XTCReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
-
 
 class TestXTCWriter_2(BaseWriterTest):
     @staticmethod
@@ -739,14 +731,6 @@ class TestTRRReader_2(MultiframeReaderTest):
     @pytest.fixture()
     def ref():
         return TRRReference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
 
 
 class TestTRRWriter_2(BaseWriterTest):

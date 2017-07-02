@@ -63,14 +63,6 @@ class TestXYZReader(MultiframeReaderTest):
     def ref():
         return XYZReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
-
     def test_double_open(self):
         with pytest.raises(Exception):
             self.reader.open_trajectory()
@@ -134,14 +126,6 @@ class Test_XYZBZReader(TestXYZReader):
     @pytest.fixture()
     def ref():
         return XYZ_BZ_Reference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
 
 
 class Test_XYZBZWriter(TestXYZWriter):

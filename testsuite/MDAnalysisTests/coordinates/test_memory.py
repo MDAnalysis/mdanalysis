@@ -87,14 +87,6 @@ class TestMemoryReader(MultiframeReaderTest):
     def ref():
         return MemoryReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
-
     def test_filename_transefer_to_memory(self):
         # MemoryReader should have a filename attribute set to the trajaectory filename
         universe = mda.Universe(PSF, DCD)

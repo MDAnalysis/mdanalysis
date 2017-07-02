@@ -193,14 +193,6 @@ class TestGROReader(BaseReaderTest):
     def ref():
         return GROReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
-
     def test_flag_convert_lengths(self):
         assert_equal(mda.core.flags['convert_lengths'], True,
                      "MDAnalysis.core.flags['convert_lengths'] should be True "
@@ -366,14 +358,6 @@ class TestGROReaderIncompleteVelocities(BaseReaderTest):
     def ref():
         return GROReaderIncompleteVelocitiesReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
-
 
 class TestGROWriterIncompleteVelocities(BaseWriterTest):
 
@@ -400,14 +384,6 @@ class TestGROBZ2Reader(BaseReaderTest):
     @pytest.fixture()
     def ref():
         return GROBZReference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader
 
 
 class TestGROBZ2Writer(BaseWriterTest):

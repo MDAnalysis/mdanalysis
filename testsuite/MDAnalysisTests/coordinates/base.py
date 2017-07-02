@@ -203,6 +203,14 @@ class BaseReference(object):
 
 
 class BaseReaderTest(object):
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
+
     def test_n_atoms(self, ref, reader):
         assert_equal(reader.n_atoms, ref.n_atoms)
 
