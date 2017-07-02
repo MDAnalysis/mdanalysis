@@ -21,6 +21,7 @@
 #
 from __future__ import division, absolute_import
 from six.moves import range
+from unittest import TestCase
 
 import numpy as np
 
@@ -60,7 +61,7 @@ class OldAPIAnalysis(base.AnalysisBase):
         pass
 
 
-class TestAnalysisBase(object):
+class TestAnalysisBase(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
