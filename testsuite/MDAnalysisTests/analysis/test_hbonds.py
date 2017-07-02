@@ -21,6 +21,8 @@
 #
 from __future__ import print_function, absolute_import
 
+from unittest import TestCase
+
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
 from MDAnalysis import SelectionError, SelectionWarning
@@ -46,7 +48,7 @@ def guess_types(names):
     return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
 
 
-class TestHydrogenBondAnalysis(object):
+class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.kwargs = {
@@ -239,7 +241,7 @@ class TestHydrogenBondAnalysisChecking(object):
             self._tearDown()
 
 
-class TestHydrogenBondAnalysisTIP3P(object):
+class TestHydrogenBondAnalysisTIP3P(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
