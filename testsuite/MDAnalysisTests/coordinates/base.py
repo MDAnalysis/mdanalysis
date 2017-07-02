@@ -479,7 +479,7 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(copy_ts, ts)
 
 
-class BaseTimestepTest(TestCase):
+class BaseTimestepTest(object):
     """Test all the base functionality of a Timestep
 
     All Timesteps must pass these tests!
@@ -505,138 +505,145 @@ class BaseTimestepTest(TestCase):
     ref_volume = 1320.  # what the volume is after setting newbox
     uni_args = None
 
-    def setUp(self):
-        self.ts = self.Timestep(self.size)
-        self.ts.frame += 1
-        self.ts.positions = self.refpos
+    # def setUp(self):
+    #     self.ts = self.Timestep(self.size)
+    #     self.ts.frame += 1
+    #     self.ts.positions = self.refpos
+    # 
+    # def tearDown(self):
+    #     del self.ts
+        
+    @pytest.fixture()
+    def ts(self):
+        ts = self.Timestep(self.size)
+        ts.frame += 1
+        ts.positions = self.refpos
+        return ts
+        
+    def test_getitem(self, ts):
+        assert_equal(ts[1], self.refpos[1])
 
-    def tearDown(self):
-        del self.ts
+    def test_getitem_neg(self, ts):
+        assert_equal(ts[-1], self.refpos[-1])
 
-    def test_getitem(self):
-        assert_equal(self.ts[1], self.refpos[1])
+    def test_getitem_neg_IE(self, ts):
+        assert_raises(IndexError, ts.__getitem__, -(self.size + 1))
 
-    def test_getitem_neg(self):
-        assert_equal(self.ts[-1], self.refpos[-1])
+    def test_getitem_pos_IE(self, ts):
+        assert_raises(IndexError, ts.__getitem__, (self.size + 1))
 
-    def test_getitem_neg_IE(self):
-        assert_raises(IndexError, self.ts.__getitem__, -(self.size + 1))
+    def test_getitem_slice(self, ts):
+        assert_equal(len(ts[:2]), len(self.refpos[:2]))
+        assert_allclose(ts[:2], self.refpos[:2])
 
-    def test_getitem_pos_IE(self):
-        assert_raises(IndexError, self.ts.__getitem__, (self.size + 1))
+    def test_getitem_slice2(self, ts):
+        assert_equal(len(ts[1::2]), len(self.refpos[1::2]))
+        assert_allclose(ts[1::2], self.refpos[1::2])
 
-    def test_getitem_slice(self):
-        assert_equal(len(self.ts[:2]), len(self.refpos[:2]))
-        assert_allclose(self.ts[:2], self.refpos[:2])
-
-    def test_getitem_slice2(self):
-        assert_equal(len(self.ts[1::2]), len(self.refpos[1::2]))
-        assert_allclose(self.ts[1::2], self.refpos[1::2])
-
-    def test_getitem_ndarray(self):
+    def test_getitem_ndarray(self, ts):
         sel = np.array([0, 1, 4])
-        assert_equal(len(self.ts[sel]), len(self.refpos[sel]))
-        assert_allclose(self.ts[sel], self.refpos[sel])
+        assert_equal(len(ts[sel]), len(self.refpos[sel]))
+        assert_allclose(ts[sel], self.refpos[sel])
 
-    def test_getitem_TE(self):
-        assert_raises(TypeError, self.ts.__getitem__, 'string')
+    def test_getitem_TE(self, ts):
+        assert_raises(TypeError, ts.__getitem__, 'string')
 
-    def test_len(self):
-        assert_equal(len(self.ts), self.size)
+    def test_len(self, ts):
+        assert_equal(len(ts), self.size)
 
-    def test_iter(self):
-        for a, b in zip(self.ts, self.refpos):
+    def test_iter(self, ts):
+        for a, b in zip(ts, self.refpos):
             assert_allclose(a, b)
-        assert_equal(len(list(self.ts)), self.size)
+        assert_equal(len(list(ts)), self.size)
 
-    def test_repr(self):
-        assert_equal(type(repr(self.ts)), str)
+    def test_repr(self, ts):
+        assert_equal(type(repr(ts)), str)
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions,
     # should raise NotImplementedError for .dimension and .volume
     # Timestep does do them, should return values properly
-    def test_dimensions(self):
+    def test_dimensions(self, ts):
         if self.has_box:
-            assert_allclose(self.ts.dimensions, np.zeros(6, dtype=np.float32))
+            assert_allclose(ts.dimensions, np.zeros(6, dtype=np.float32))
         else:
-            assert_raises(NotImplementedError, getattr, self.ts, "dimensions")
+            assert_raises(NotImplementedError, getattr, ts, "dimensions")
 
-    def test_dimensions_set_box(self):
+    def test_dimensions_set_box(self, ts):
         if self.set_box:
-            self.ts.dimensions = self.newbox
-            assert_allclose(self.ts._unitcell, self.unitcell)
-            assert_allclose(self.ts.dimensions, self.newbox)
+            ts.dimensions = self.newbox
+            assert_allclose(ts._unitcell, self.unitcell)
+            assert_allclose(ts.dimensions, self.newbox)
         else:
             pass
 
-    def test_volume(self):
+    def test_volume(self, ts):
         if self.has_box and self.set_box:
-            self.ts.dimensions = self.newbox
-            assert_equal(self.ts.volume, self.ref_volume)
+            ts.dimensions = self.newbox
+            assert_equal(ts.volume, self.ref_volume)
         elif self.has_box and not self.set_box:
             pass  # How to test volume of box when I don't set unitcell first?
         else:
             assert_raises(NotImplementedError, getattr, self.ts, "volume")
 
-    def test_triclinic_vectors(self):
-        assert_allclose(self.ts.triclinic_dimensions,
-                        triclinic_vectors(self.ts.dimensions))
+    def test_triclinic_vectors(self, ts):
+        assert_allclose(ts.triclinic_dimensions,
+                        triclinic_vectors(ts.dimensions))
 
-    def test_set_triclinic_vectors(self):
+    def test_set_triclinic_vectors(self, ts):
         ref_vec = triclinic_vectors(self.newbox)
-        self.ts.triclinic_dimensions = ref_vec
-        assert_equal(self.ts.dimensions, self.newbox)
-        assert_allclose(self.ts._unitcell, self.unitcell)
+        ts.triclinic_dimensions = ref_vec
+        assert_equal(ts.dimensions, self.newbox)
+        assert_allclose(ts._unitcell, self.unitcell)
 
     @attr('issue')
-    def test_coordinate_getter_shortcuts(self):
+    def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
-        assert_allclose(self.ts._x, self.ts._pos[:, 0])
-        assert_allclose(self.ts._y, self.ts._pos[:, 1])
-        assert_allclose(self.ts._z, self.ts._pos[:, 2])
+        assert_allclose(ts._x, ts._pos[:, 0])
+        assert_allclose(ts._y, ts._pos[:, 1])
+        assert_allclose(ts._z, ts._pos[:, 2])
 
-    def test_coordinate_setter_shortcuts(self):
+    def test_coordinate_setter_shortcuts(self, ts):
         # Check that _x _y and _z are read only
         for coordinate in ('_x', '_y', '_z'):
             random_positions = np.arange(self.size).astype(np.float32)
             assert_raises(AttributeError, setattr,
-                          self.ts, coordinate, random_positions)
+                          ts, coordinate, random_positions)
 
     # n_atoms should be a read only property
     # all Timesteps require this attribute
-    def test_n_atoms(self):
-        assert_equal(self.ts.n_atoms, self.ts._n_atoms)
+    def test_n_atoms(self, ts):
+        assert_equal(ts.n_atoms, ts._n_atoms)
 
-    def test_n_atoms_readonly(self):
-        assert_raises(AttributeError, self.ts.__setattr__, 'n_atoms', 20)
+    def test_n_atoms_readonly(self, ts):
+        assert_raises(AttributeError, ts.__setattr__, 'n_atoms', 20)
 
-    def test_n_atoms_presence(self):
-        assert_equal(hasattr(self.ts, '_n_atoms'), True)
+    def test_n_atoms_presence(self, ts):
+        assert_equal(hasattr(ts, '_n_atoms'), True)
 
-    def test_unitcell_presence(self):
-        assert_equal(hasattr(self.ts, '_unitcell'), True)
+    def test_unitcell_presence(self, ts):
+        assert_equal(hasattr(ts, '_unitcell'), True)
 
-    def test_data_presence(self):
-        assert_equal(hasattr(self.ts, 'data'), True)
-        assert_equal(isinstance(self.ts.data, dict), True)
+    def test_data_presence(self, ts):
+        assert_equal(hasattr(ts, 'data'), True)
+        assert_equal(isinstance(ts.data, dict), True)
 
-    def test_allocate_velocities(self):
-        assert_equal(self.ts.has_velocities, False)
-        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+    def test_allocate_velocities(self, ts):
+        assert_equal(ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
 
-        self.ts.has_velocities = True
-        assert_equal(self.ts.has_velocities, True)
-        assert_equal(self.ts.velocities.shape, (self.ts.n_atoms, 3))
+        ts.has_velocities = True
+        assert_equal(ts.has_velocities, True)
+        assert_equal(ts.velocities.shape, (ts.n_atoms, 3))
 
-    def test_allocate_forces(self):
-        assert_equal(self.ts.has_forces, False)
-        assert_raises(NoDataError, getattr, self.ts, 'forces')
+    def test_allocate_forces(self, ts):
+        assert_equal(ts.has_forces, False)
+        assert_raises(NoDataError, getattr, ts, 'forces')
 
-        self.ts.has_forces = True
-        assert_equal(self.ts.has_forces, True)
-        assert_equal(self.ts.forces.shape, (self.ts.n_atoms, 3))
+        ts.has_forces = True
+        assert_equal(ts.has_forces, True)
+        assert_equal(ts.forces.shape, (ts.n_atoms, 3))
 
     def test_velocities_remove(self):
         ts = self.Timestep(10, velocities=True)
@@ -879,17 +886,19 @@ class BaseTimestepTest(TestCase):
         if ts1.has_forces:
             assert_array_almost_equal(ts1.forces[sl], ts2.forces)
 
-    def test_copy(self):
+    @pytest.mark.parametrize('func', [
+        _check_copy,
+        _check_independent,
+        _check_copy_slice_indices,
+        _check_copy_slice_slice,
+        _check_npint_slice
+    ])
+    def test_copy(self, func, ts):
         if self.uni_args is None:
             return
         u = mda.Universe(*self.uni_args)
         ts = u.trajectory.ts
-        
-        yield self._check_copy, self.name, ts
-        yield self._check_independent, self.name, ts
-        yield self._check_copy_slice_indices, self.name, ts
-        yield self._check_copy_slice_slice, self.name, ts
-        yield self._check_npint_slice, self.name, ts
+        func(self, self.name, ts)
 
     def test_copy_slice(self):
         for p, v, f in itertools.product([True, False], repeat=3):

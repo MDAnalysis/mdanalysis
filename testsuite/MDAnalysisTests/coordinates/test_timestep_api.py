@@ -40,26 +40,25 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from numpy.testing import TestCase
+import pytest
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_other_timestep(self):
+    @pytest.mark.skipif(parser_not_found('DCD'), reason='DCD parser not available. Are you using python 3?')
+    @pytest.mark.parametrize('otherTS', [
+        mda.coordinates.DCD.Timestep,
+        mda.coordinates.TRJ.Timestep,
+        mda.coordinates.DMS.Timestep,
+        mda.coordinates.GRO.Timestep,
+        mda.coordinates.TRZ.Timestep,
+    ])
+    def test_other_timestep(self, otherTS):
         # use a subclass to base.Timestep to check it works
         ts1 = mda.coordinates.base.Timestep(10)
         ts1.positions = self._get_pos()
-
-        # can't do TRR Timestep here as it always has vels and forces
-        # so isn't actually equal to a position only timestep
-        for otherTS in [mda.coordinates.TRJ.Timestep,
-                        mda.coordinates.DMS.Timestep,
-                        mda.coordinates.GRO.Timestep,
-                        mda.coordinates.TRZ.Timestep,
-                        ]:
-            ts2 = otherTS(10)
-            ts2.positions = self._get_pos()
-            self._check_ts_equal( ts1, ts2, "Failed on {0}".format(otherTS))
+        ts2 = otherTS(10)
+        ts2.positions = self._get_pos()
+        self._check_ts_equal(ts1, ts2, "Failed on {0}".format(otherTS))
 
 
 # TODO: Merge this into generic Reader tests
