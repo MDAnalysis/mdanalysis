@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 from numpy.testing import (
     assert_,
     assert_almost_equal,
@@ -33,7 +35,7 @@ from MDAnalysis.analysis import nuclinfo
 from MDAnalysisTests.datafiles import NUCL
 
 
-class TestNuclinfo(object):
+class TestNuclinfo(TestCase):
     def setUp(self):
         self.u = mda.Universe(NUCL)
 
