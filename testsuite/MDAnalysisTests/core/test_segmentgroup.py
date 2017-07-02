@@ -27,7 +27,7 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
-from unittest import skip, TestCase
+from unittest import TestCase
 
 import MDAnalysis as mda
 

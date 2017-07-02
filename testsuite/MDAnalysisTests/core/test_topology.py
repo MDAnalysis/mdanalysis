@@ -5,11 +5,9 @@ Should work with both a single or an array of indices
 """
 from __future__ import absolute_import
 
-from unittest import TestCase
-
 from six.moves import zip
 import itertools
-
+from unittest import TestCase
 from numpy.testing import (
     assert_,
     assert_equal,

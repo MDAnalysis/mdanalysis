@@ -21,9 +21,8 @@
 #
 from __future__ import division, absolute_import
 
-from unittest import TestCase
-
 from six.moves import range
+from unittest import TestCase
 
 import itertools
 import numpy as np

@@ -21,11 +21,10 @@
 #
 from __future__ import absolute_import
 
-from unittest import TestCase
-
 from six.moves import range
 
 import itertools
+from unittest import TestCase
 import numpy as np
 from numpy.testing import (
     dec,
