@@ -21,6 +21,8 @@
 #
 from __future__ import division, absolute_import
 
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -274,7 +276,7 @@ class TestAtomGroupTrajAccess(object):
             yield self._check_atom_force_setting, u, force
 
 
-class TestAtom_ForceVelocity(object):
+class TestAtom_ForceVelocity(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(PDB_xvf, TRR_xvf)
         self.a = self.u.atoms[0]
@@ -328,7 +330,7 @@ class TestAtom_ForceVelocity(object):
         assert_array_equal(val, ref)
 
 
-class TestGROVelocities(object):
+class TestGROVelocities(TestCase):
     def setUp(self):
         #reference velocities for the full 6-atom test case:
         self.reference_velocities = np.array(
@@ -363,7 +365,7 @@ class TestGROVelocities(object):
                             err_msg="problem reading .gro file velocities")
 
 
-class TestTRRForces(object):
+class TestTRRForces(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PDB_xvf, TRR_xvf)
         # extracted protein forces with g_traj into cobrotoxin_protein_forces.xvg.bz2
@@ -396,7 +398,7 @@ class TestTRRForcesNativeUnits(TestTRRForces):
         self.reference_mean_protein_force = self.reference_mean_protein_force_native
 
 
-class TestAtomGroupVelocities(object):
+class TestAtomGroupVelocities(TestCase):
     """Tests of velocity-related functions in AtomGroup"""
     def setUp(self):
         self.universe = MDAnalysis.Universe(GRO, TRR)
@@ -430,7 +432,7 @@ class TestAtomGroupVelocities(object):
                             err_msg="messages were not set to new value")
 
 
-class TestAtomGroupForces(object):
+class TestAtomGroupForces(TestCase):
     """Tests of velocity-related functions in AtomGroup"""
     def setUp(self):
         self.universe = MDAnalysis.Universe(COORDINATES_XYZ, COORDINATES_TRR)

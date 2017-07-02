@@ -20,9 +20,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
+
+
 from six.moves import cPickle
 
 import os
+from unittest import TestCase
+
 try:
     from cStringIO import StringIO
 except:
@@ -39,6 +43,7 @@ from numpy.testing import (
     assert_raises,
 )
 from nose.plugins.attrib import attr
+import pytest
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -79,49 +84,41 @@ Single cholesterol molecule
 
 class TestUniverseCreation(object):
     # tests concerning Universe creation and errors encountered
-    @staticmethod
-    def test_load():
+    def test_load(self):
         # Universe(top, trj)
         u = mda.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-    @staticmethod
-    def test_load_topology_stringio():
+    def test_load_topology_stringio(self):
         u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
         assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
 
-    @staticmethod
-    def test_load_trajectory_stringio():
+    def test_load_trajectory_stringio(self):
         u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
-    @staticmethod
-    def test_make_universe_no_args():
+    def test_make_universe_no_args(self):
         # universe creation without args should work
         u = mda.Universe()
 
         assert_(isinstance(u, mda.Universe))
         assert_(u.atoms == None)
 
-    @staticmethod
-    def test_make_universe_stringio_no_format():
+    def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
         assert_raises(TypeError, mda.Universe, StringIO(CHOL_GRO))
 
-    @staticmethod
-    def test_Universe_no_trajectory_AE():
+    def test_Universe_no_trajectory_AE(self):
         # querying trajectory without a trajectory loaded (only topology)
         u = make_Universe()
 
         assert_raises(AttributeError, getattr, u, 'trajectory')
 
-    @staticmethod
-    def test_Universe_topology_unrecognizedformat_VE():
+    def test_Universe_topology_unrecognizedformat_VE(self):
         assert_raises(ValueError, mda.Universe, 'some.weird.not.pdb.but.converted.xtc')
 
-    @staticmethod
-    def test_Universe_topology_unrecognizedformat_VE_msg():
+    def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
             mda.Universe('some.weird.not.pdb.but.converted.xtc')
         except ValueError as e:
@@ -129,13 +126,11 @@ class TestUniverseCreation(object):
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_topology_IE():
+    def test_Universe_topology_IE(self):
         assert_raises(IOError,
                       mda.Universe, 'thisfile', topology_format=IOErrorParser)
 
-    @staticmethod
-    def test_Universe_topology_IE_msg():
+    def test_Universe_topology_IE_msg(self):
         # should get the original error, as well as Universe error
         try:
             mda.Universe('thisfile', topology_format=IOErrorParser)
@@ -145,8 +140,7 @@ class TestUniverseCreation(object):
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_filename_IE_msg():
+    def test_Universe_filename_IE_msg(self):
         # check for non existent file
         try:
             mda.Universe('thisfile.xml')
@@ -155,8 +149,7 @@ class TestUniverseCreation(object):
         else:
             raise AssertionError
 
-    @staticmethod
-    def test_Universe_invalidfile_IE_msg():
+    def test_Universe_invalidfile_IE_msg(self):
         # check for invalid file (something with the wrong content)
         temp_dir = TempDir()
         with open(os.path.join(temp_dir.name, 'invalid.file.tpr'), 'w') as temp_file:
@@ -170,8 +163,7 @@ class TestUniverseCreation(object):
         finally:
             temp_dir.dissolve()
 
-    @staticmethod
-    def test_Universe_invalidpermissionfile_IE_msg():
+    def test_Universe_invalidpermissionfile_IE_msg(self):
         # check for file with invalid permissions (eg. no read access)
         temp_dir = TempDir()
         temp_file = os.path.join(temp_dir.name, 'permission.denied.tpr')
@@ -187,15 +179,13 @@ class TestUniverseCreation(object):
         finally:
             temp_dir.dissolve()
 
-    @staticmethod
-    def test_load_new_VE():
+    def test_load_new_VE(self):
         u = mda.Universe()
 
         assert_raises(TypeError,
                       u.load_new, 'thisfile', format='soup')
 
-    @staticmethod
-    def test_universe_kwargs():
+    def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
@@ -208,8 +198,7 @@ class TestUniverseCreation(object):
         assert_(u2.kwargs['fake_kwarg'] is True)
         assert_equal(u.kwargs, u2.kwargs)
 
-    @staticmethod
-    def test_universe_topology_class_with_coords():
+    def test_universe_topology_class_with_coords(self):
         u = mda.Universe(PSF, PDB_small)
         u2 = mda.Universe(u._topology, PDB_small)
         assert_(isinstance(u2.trajectory, type(u.trajectory)))
@@ -219,8 +208,8 @@ class TestUniverseCreation(object):
 
 class TestUniverse(object):
     # older tests, still useful
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_load_bad_topology(self):
         # tests that Universe builds produce the right error message
         def bad_load():
@@ -229,15 +218,15 @@ class TestUniverse(object):
         assert_raises(ValueError, bad_load)
 
     @attr('issue')
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_load_new(self):
         u = mda.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = mda.Universe(PSF, DCD)
 
@@ -253,8 +242,8 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_almost_equal(u.atoms.positions, ref.atoms.positions)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_load_multiple_list(self):
         # Universe(top, [trj, trj, ...])
         ref = mda.Universe(PSF, DCD)
@@ -262,8 +251,8 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_load_multiple_args(self):
         # Universe(top, trj, trj, ...)
         ref = mda.Universe(PSF, DCD)
@@ -271,14 +260,14 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_pickle_raises_NotImplementedError(self):
         u = mda.Universe(PSF, DCD)
         assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
     def test_set_dimensions(self):
         u = mda.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90])
@@ -301,7 +290,7 @@ def test_chainid_quick_select():
     assert_(len(u.D.atoms) == 7)
 
 
-class TestGuessBonds(object):
+class TestGuessBonds(TestCase):
     """Test the AtomGroup methed guess_bonds
 
     This needs to be done both from Universe creation (via kwarg) and AtomGroup
@@ -395,54 +384,48 @@ class TestGuessBonds(object):
 
 
 class TestInMemoryUniverse(object):
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-               'DCD parser not available. Are you using python 3?')
-    def test_reader_w_timeseries():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+               reason='DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries(self):
         universe = mda.Universe(PSF, DCD, in_memory=True)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_reader_wo_timeseries():
+    def test_reader_wo_timeseries(self):
         universe = mda.Universe(GRO, TRR, in_memory=True)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (47681, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-               'DCD parser not available. Are you using python 3?')
-    def test_reader_w_timeseries_frame_interval():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+               reason='DCD parser not available. Are you using python 3?')
+    def test_reader_w_timeseries_frame_interval(self):
         universe = mda.Universe(PSF, DCD, in_memory=True,
                                        in_memory_step=10)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    def test_reader_wo_timeseries_frame_interval():
+    def test_reader_wo_timeseries_frame_interval(self):
         universe = mda.Universe(GRO, TRR, in_memory=True,
                                        in_memory_step=3)
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (47681, 4, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_existing_universe():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_existing_universe(self):
         universe = mda.Universe(PDB_small, DCD)
         universe.transfer_to_memory()
         assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
                      (3341, 98, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_frame_interval_convention():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_frame_interval_convention(self):
         universe1 = mda.Universe(PSF, DCD)
         array1 = universe1.trajectory.timeseries(skip=10)
         universe2 = mda.Universe(PSF, DCD, in_memory=True,
@@ -451,10 +434,9 @@ class TestInMemoryUniverse(object):
         assert_equal(array1, array2,
                      err_msg="Unexpected differences between arrays.")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_with_start_stop():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=20)
@@ -462,10 +444,9 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_without_start():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_without_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=10)
@@ -473,10 +454,9 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_without_stop():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_without_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10)
@@ -485,10 +465,9 @@ class TestInMemoryUniverse(object):
                      (3341, 88, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_step_without_start_stop():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_step_without_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(step=2)
@@ -497,10 +476,9 @@ class TestInMemoryUniverse(object):
                      (3341, 49, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_step_with_start_stop():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_step_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=30, step=2)
@@ -509,10 +487,9 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_step_dt():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_step_dt(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         times = [ts.time for ts in universe.trajectory]
         universe.transfer_to_memory(step=2)
@@ -521,10 +498,9 @@ class TestInMemoryUniverse(object):
                 err_msg="Unexpected in-memory timestep: "
                         + "dt not updated with step information")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_negative_start():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_negative_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=-10)
@@ -533,10 +509,9 @@ class TestInMemoryUniverse(object):
                      (3341, 10, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_slicing_negative_stop():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_slicing_negative_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=-20)
@@ -550,8 +525,8 @@ class TestCustomReaders(object):
     """
     Can pass a reader as kwarg on Universe creation
     """
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('TRZ'),
+                reason='TRZ parser not available. Are you using python 3?')
     def test_custom_reader(self):
         # check that reader passing works
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
@@ -572,15 +547,15 @@ class TestCustomReaders(object):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('TRZ'),
+                reason='TRZ parser not available. Are you using python 3?')
     def test_custom_parser(self):
         # topology reader passing works
         u = mda.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
+    @pytest.mark.skipif(parser_not_found('TRZ'),
+                reason='TRZ parser not available. Are you using python 3?')
     def test_custom_both(self):
         # use custom for both
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,

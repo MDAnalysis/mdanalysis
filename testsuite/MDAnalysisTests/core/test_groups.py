@@ -20,9 +20,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
 from six.moves import range
 
 import itertools
+from unittest import TestCase
 import numpy as np
 from numpy.testing import (
     dec,
@@ -32,6 +34,7 @@ from numpy.testing import (
     assert_raises,
     assert_warns,
 )
+import pytest
 import operator
 import six
 
@@ -44,7 +47,7 @@ from MDAnalysis.core.topologyattrs import Segids
 from MDAnalysis.topology.base import change_squash
 
 
-class TestGroupProperties(object):
+class TestGroupProperties(TestCase):
     """ Test attributes of all groups
     """
 
@@ -308,7 +311,7 @@ class TestGroupAddition(object):
         assert_(not group[2] in group2)
 
 
-class TestGroupLevelTransition(object):
+class TestGroupLevelTransition(TestCase):
     """Test moving between different hierarchy levels
 
     AtomGroup
@@ -527,8 +530,7 @@ class TestComponentComparisons(object):
 
 class TestMetaclassMagic(object):
     # tests for the weird voodoo we do with metaclasses
-    @staticmethod
-    def test_new_class():
+    def test_new_class(self):
         u = make_Universe(trajectory=True)
 
         # should be able to subclass AtomGroup as normal
@@ -544,7 +546,7 @@ class TestMetaclassMagic(object):
         assert_array_equal(ng.positions, ag.positions)
 
 
-class TestGroupBy(object):
+class TestGroupBy(TestCase):
     # tests for the method 'groupby'
     def setUp(self):
         self.u = make_Universe(('types', 'charges', 'resids'))
@@ -579,8 +581,8 @@ class TestGroupBy(object):
 
 
 
-class TestReprs(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestReprs(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -983,13 +985,12 @@ class TestGroupHash(object):
 
 class TestAtomGroup(object):
 
-    @staticmethod
-    def test_PDB_atom_repr():
+    def test_PDB_atom_repr(self):
         u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
 
 
-class TestInstantSelectorDeprecationWarnings(object):
+class TestInstantSelectorDeprecationWarnings(TestCase):
     def setUp(self):
         self.u = make_Universe(("resids", "resnames", "segids", "names"))
 

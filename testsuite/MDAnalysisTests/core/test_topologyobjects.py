@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -30,6 +32,7 @@ from numpy.testing import (
     assert_,
     assert_raises,
 )
+import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
@@ -44,7 +47,7 @@ from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
 from MDAnalysisTests import parser_not_found
 
 
-class TestTopologyObjects(object):
+class TestTopologyObjects(TestCase):
     """Test the base TopologyObject funtionality
 
     init
@@ -55,7 +58,7 @@ class TestTopologyObjects(object):
     len
     """
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
@@ -166,7 +169,7 @@ class TestTopologyObjects(object):
         assert_almost_equal(imp.value(), -3.8370631, self.precision)
 
 
-class TestTopologyGroup(object):
+class TestTopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
 
     def setUp(self):
@@ -554,13 +557,13 @@ class TestTopologyGroup(object):
             assert_(atom == bond[3])
 
 
-class TestTopologyGroup_Cython(object):
+class TestTopologyGroup_Cython(TestCase):
     """
     Check that the shortcut to all cython functions:
      - work (return proper values)
      - catch errors
     """
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)

@@ -20,11 +20,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 from numpy.testing import (
     dec,
     assert_,
     assert_equal,
 )
+import pytest
 
 import MDAnalysis as mda
 
@@ -32,9 +36,9 @@ from MDAnalysisTests import parser_not_found
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-class TestResidue(object):
+class TestResidue(TestCase):
     # Legacy tests from before 363
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)

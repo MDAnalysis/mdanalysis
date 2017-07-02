@@ -23,6 +23,9 @@
 
 """
 from __future__ import division, absolute_import
+
+from unittest import TestCase
+
 import numpy as np
 
 from numpy.testing import (
@@ -33,6 +36,7 @@ from numpy.testing import (
     assert_raises,
 )
 from nose.tools import raises
+import pytest
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found, make_Universe
@@ -60,7 +64,7 @@ class DummyGroup(object):
         return self._ix
 
 
-class TopologyAttrMixin(object):
+class TopologyAttrMixin(TestCase):
     """Mixin to test the common elements to all TopologyAttrs.
 
     10 atoms
@@ -68,6 +72,9 @@ class TopologyAttrMixin(object):
     2 segments
 
     """
+
+    __test__ = False
+
     # Reference data
     Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
     Sidx = np.array([0, 1, 1, 0])
@@ -90,11 +97,13 @@ class TestAtomAttr(TopologyAttrMixin):
     """Test atom-level TopologyAttrs.
 
     """
+
+    __test__ = True
+
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
     attrclass = tpattrs.AtomAttr
 
-    @staticmethod
-    def test_set_atom_VE():
+    def test_set_atom_VE(self):
         u = make_Universe(('names',))
         at = u.atoms[0]
 
@@ -148,11 +157,14 @@ class TestAtomAttr(TopologyAttrMixin):
 
 
 class TestAtomids(TestAtomAttr):
+
+    __test__ = True
+
     attrclass = tpattrs.Atomids
 
 
-class TestIndicesClasses(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestIndicesClasses(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -174,12 +186,18 @@ class TestIndicesClasses(object):
 
 
 class TestAtomnames(TestAtomAttr):
+
+    __test__ = True
+
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
                       dtype=np.object)
     attrclass = tpattrs.Atomnames
 
 
 class AggregationMixin(TestAtomAttr):
+
+    __test__ = False
+
     def test_get_residues(self):
         assert_array_equal(self.attr.get_residues(DummyGroup([2, 1])),
                            np.array([self.values[[2, 3, 9]].sum(),
@@ -195,10 +213,16 @@ class AggregationMixin(TestAtomAttr):
 
 
 class TestMasses(AggregationMixin):
+
+    __test__ = True
+
     attrclass = tpattrs.Masses
 
 
 class TestCharges(AggregationMixin):
+
+    __test__ = True
+
     values = np.array([+2, -1, 0, -1, +1, +2, 0, 0, 0, -1])
     attrclass = tpattrs.Charges
 
@@ -207,11 +231,13 @@ class TestResidueAttr(TopologyAttrMixin):
     """Test residue-level TopologyAttrs.
 
     """
+
+    __test__ = True
+
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
 
-    @staticmethod
-    def test_set_residue_VE():
+    def test_set_residue_VE(self):
         u = make_Universe(('resnames',))
         res = u.residues[0]
 
@@ -253,6 +279,9 @@ class TestResidueAttr(TopologyAttrMixin):
 
 
 class TestResids(TestResidueAttr):
+
+    __test__ = True
+
     values = np.array([10, 11, 18, 20])
     attrclass = tpattrs.Resids
 
@@ -279,6 +308,9 @@ class TestResids(TestResidueAttr):
 
 
 class TestResnames(TestResidueAttr):
+
+    __test__ = True
+
     values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
     attrclass = tpattrs.Resnames
 
@@ -331,11 +363,13 @@ class TestSegmentAttr(TopologyAttrMixin):
     """Test segment-level TopologyAttrs.
 
     """
+
+    __test__ = True
+
     values = np.array([-0.19, 500])
     attrclass = tpattrs.SegmentAttr
 
-    @staticmethod
-    def test_set_segment_VE():
+    def test_set_segment_VE(self):
         u = make_Universe(('segids',))
         seg = u.segments[0]
 
@@ -372,8 +406,8 @@ class TestSegmentAttr(TopologyAttrMixin):
         assert_raises(ValueError, self.attr.set_segments, dg, np.array([4, 5, 6, 7]))
 
 
-class TestAttr(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestAttr(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)

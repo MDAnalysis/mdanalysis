@@ -28,7 +28,8 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
-from unittest import skip
+import pytest
+from unittest import skip, TestCase
 
 import MDAnalysis as mda
 
@@ -36,7 +37,7 @@ from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found
 
 
-class TestSequence(object):
+class TestSequence(TestCase):
     # all tests are done with the AdK system (PSF and DCD) sequence:
     # http://www.uniprot.org/uniprot/P69441.fasta
     # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1
@@ -47,7 +48,7 @@ class TestSequence(object):
         "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
     )
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -96,9 +97,9 @@ class TestSequence(object):
         assert_raises(TypeError, self.u.residues.sequence, format='chicken')
 
 
-class TestResidueGroup(object):
+class TestResidueGroup(TestCase):
     # Legacy tests from before 363
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""

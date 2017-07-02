@@ -21,6 +21,9 @@
 #
 
 from __future__ import absolute_import
+
+from unittest import TestCase
+
 import numpy as np
 from numpy.testing import (
     dec,
@@ -29,6 +32,7 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
+import pytest
 
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
@@ -40,11 +44,11 @@ from MDAnalysisTests.datafiles import (
 from MDAnalysisTests import parser_not_found
 
 
-class TestAtom(object):
+class TestAtom(TestCase):
     # Legacy tests from before 363
     """Tests of Atom."""
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
@@ -127,7 +131,7 @@ class TestAtom(object):
         self.universe.atoms[0].occupancy
 
 
-class TestAtomNoForceNoVel(object):
+class TestAtomNoForceNoVel(TestCase):
     def setUp(self):
         self.u = mda.Universe(XYZ_mini)
         self.a = self.u.atoms[0]

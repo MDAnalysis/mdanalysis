@@ -22,6 +22,7 @@
 from __future__ import division, absolute_import
 
 from six.moves import range
+from unittest import TestCase
 
 import itertools
 import numpy as np
@@ -56,9 +57,11 @@ from MDAnalysis.tests.datafiles import (
 )
 from MDAnalysisTests import parser_not_found, make_Universe
 
+import pytest
 
-class TestSelectionsCHARMM(object):
-    @dec.skipif(parser_not_found('DCD'),
+
+class TestSelectionsCHARMM(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent.
@@ -317,7 +320,7 @@ class TestSelectionsCHARMM(object):
         assert_array_equal(ag2.indices, ag1.indices)
 
 
-class TestSelectionsAMBER(object):
+class TestSelectionsAMBER(TestCase):
     def setUp(self):
         """Set up AMBER system"""
         self.universe = MDAnalysis.Universe(PRMpbc, TRJpbc_bz2)
@@ -340,7 +343,7 @@ class TestSelectionsAMBER(object):
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
 
-class TestSelectionsNAMD(object):
+class TestSelectionsNAMD(TestCase):
     def setUp(self):
         """Set up NAMD system"""
         self.universe = MDAnalysis.Universe(PSF_NAMD, PDB_NAMD)
@@ -370,7 +373,7 @@ class TestSelectionsNAMD(object):
         assert_array_equal(sel.names, ['HN', 'HN', 'HN', 'HH', 'HN'])
 
 
-class TestSelectionsGRO(object):
+class TestSelectionsGRO(TestCase):
     def setUp(self):
         """Set up GRO system (implicit types, charges, masses, ...)"""
         self.universe = MDAnalysis.Universe(GRO)
@@ -415,7 +418,7 @@ class TestSelectionsGRO(object):
         assert_equal(len(sel), 1556)
 
 
-class TestSelectionsXTC(object):
+class TestSelectionsXTC(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
@@ -432,7 +435,7 @@ class TestSelectionsXTC(object):
             "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
 
 
-class TestSelectionsNucleicAcids(object):
+class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
 
@@ -478,6 +481,9 @@ class BaseDistanceSelection(object):
 
     Cylindrical methods don't use KDTree
     """
+
+    __test__ = False
+
     methods = [('kdtree', False),
                ('distmat', True),
                ('distmat', False)]
@@ -497,16 +503,21 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    def _check_around(self, meth, periodic):
-        sel = Parser.parse('around 5.0 resid 1', self.u.atoms)
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
+    def test_around(self,u, meth, periodic):
+        sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, r1.positions,
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, r1.positions,
                            box=box)
         ref = set(np.where(d < 5.0)[0])
 
@@ -514,84 +525,88 @@ class BaseDistanceSelection(object):
         ref.difference_update(set(r1.indices))
         assert_(ref == set(result.indices))
 
-    def test_around(self):
-        for meth, periodic in self.methods:
-            yield self._check_around, meth, periodic
-
-    def _check_spherical_layer(self, meth, periodic):
-        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
+    def test_spherical_layer(self,u, meth, periodic):
+        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, cog, box=box)
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert_(ref == set(result.indices))
 
-    def test_spherical_layer(self):
-        for meth, periodic in self.methods:
-            yield self._check_spherical_layer, meth, periodic
-
-    def _check_spherical_zone(self, meth, periodic):
-        sel = Parser.parse('sphzone 5.0 resid 1', self.u.atoms)
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
+    def test_spherical_zone(self, u, meth, periodic):
+        sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        r1 = self.u.select_atoms('resid 1')
+        r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        box = self.u.dimensions if periodic else None
-        d = distance_array(self.u.atoms.positions, cog, box=box)
+        box = u.dimensions if periodic else None
+        d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
         assert_(ref == set(result.indices))
 
-    def test_spherical_zone(self):
-        for meth, periodic in self.methods:
-            yield self._check_spherical_zone, meth, periodic
 
-    def _check_point(self, meth, periodic):
-        sel = Parser.parse('point 5.0 5.0 5.0  3.0', self.u.atoms)
+    @pytest.mark.parametrize('meth, periodic', [
+        ('kdtree', False),
+        ('distmat', True),
+        ('distmat', False)
+    ])
+    def test_point(self,u, meth, periodic):
+        sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        box = self.u.dimensions if periodic else None
+        box = u.dimensions if periodic else None
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
-                           self.u.atoms.positions,
+                           u.atoms.positions,
                            box=box)
         ref = set(np.where(d < 3.0)[1])
 
         assert_(ref == set(result.indices))
 
-    def test_point(self):
-        for meth, periodic in self.methods:
-            yield self._check_point, meth, periodic
-
 
 class TestOrthogonalDistanceSelections(BaseDistanceSelection):
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = mda.Universe(TRZ_psf, TRZ)
 
-    def tearDown(self):
-        del self.u
+    __test__ = True
 
-    def _check_cyzone(self, meth, periodic):
-        sel = Parser.parse('cyzone 5 4 -4 resid 2', self.u.atoms)
+    @pytest.mark.skipif(parser_not_found('TRZ'), 'TRZ parser not available. Are you using python 3?')
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(TRZ_psf, TRZ)
+
+    @pytest.mark.parametrize('meth, periodic', [
+        ('distmat', True),
+        ('distmat', False)
+    ])
+    def test_cyzone(self, u, meth, periodic):
+        sel = Parser.parse('cyzone 5 4 -4 resid 2', u.atoms)
         sel.periodic = periodic
-        result = sel.apply(self.u.atoms)
+        result = sel.apply(u.atoms)
 
-        other = self.u.select_atoms('resid 2')
+        other = u.select_atoms('resid 2')
         pos = other.center_of_geometry()
 
-        vecs = self.u.atoms.positions - pos
+        vecs = u.atoms.positions - pos
         if periodic:
-            box = self.u.dimensions[:3]
+            box = u.dimensions[:3]
             vecs -= box * np.rint(vecs / box)
 
         mask = (vecs[:,2] > -4) & (vecs[:,2] < 4)
@@ -599,23 +614,20 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         radii = vecs[:,0] ** 2 + vecs[:, 1] ** 2
         mask &= radii < 5**2
 
-        ref = set(self.u.atoms[mask].indices)
+        ref = set(u.atoms[mask].indices)
 
         assert_(ref == set(result.indices))
 
-    def test_cyzone(self):
-        for meth, periodic in self.methods[1:]:
-            yield self._check_cyzone, meth, periodic
-
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
-    def setUp(self):
-        self.u = mda.Universe(GRO)
 
-    def tearDown(self):
-        del self.u
+    __test__ = True
 
-class TestTriclinicSelections(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(GRO)
+
+class TestTriclinicSelections(TestCase):
     """Non-KDTree based selections
 
     This system has triclinic geometry so won't use KDTree based selections
@@ -785,8 +797,8 @@ class TestPropSelection(object):
                     yield self._check_flip, prop, ag, op
 
 
-class TestBondedSelection(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestBondedSelection(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -799,8 +811,7 @@ class TestBondedSelection(object):
 
         assert_(len(ag) == 3)
 
-    @staticmethod
-    def test_nobonds_warns():
+    def test_nobonds_warns(self):
         u = make_Universe(('names',))
 
         # empty bond topology attr
@@ -812,40 +823,34 @@ class TestBondedSelection(object):
 
 
 class TestSelectionErrors(object):
-    def setUp(self):
-        self.u = make_Universe(('names', 'masses',
-                                'resids', 'resnames', 'resnums'))
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return make_Universe(('names', 'masses', 'resids', 'resnames', 'resnums'))
 
-    def tearDown(self):
-        del self.u
-
-    def selection_fail(self, selstr):
-        assert_raises(SelectionError, self.u.select_atoms,
+    @pytest.mark.parametrize('selstr', [
+        'name and H',  # string selection
+        'name )',
+        'resid abcd',  # resid arg parsing selection
+        'resnum 7a7',  # rangeselection arg parsing
+        'resid 1-',
+        'prop chicken == tasty',
+        'prop chicken <= 7.4',
+        'prop mass ^^ 12.0',
+        'same this as resid 1',  # same selection
+        'same resid resname mass 5.0',  # same / expect
+        'name H and',  # check all tokens used
+        'naem H',  # unkonwn (misplet) opertaor
+        'resid and name C',  # rangesel not finding vals
+        'resnum ',
+        'bynum or protein',
+        'prop mass < 4.0 hello',  # unused token
+        'prop mass > 10. and group this',  # missing group
+        'prop mass > 10. and fullgroup this',  # missing fullgroup
+    ])
+    def test_selection_fail(self, selstr, universe):
+        assert_raises(SelectionError, universe.select_atoms,
                       selstr)
-
-    def test_expected_errors(self):
-        for selstr in [
-                'name and H',  # string selection
-                'name )',
-                'resid abcd',  # resid arg parsing selection
-                'resnum 7a7',  # rangeselection arg parsing
-                'resid 1-',
-                'prop chicken == tasty',
-                'prop chicken <= 7.4',
-                'prop mass ^^ 12.0',
-                'same this as resid 1',  # same selection
-                'same resid resname mass 5.0',  # same / expect
-                'name H and',  # check all tokens used
-                'naem H',  # unkonwn (misplet) opertaor
-                'resid and name C',  # rangesel not finding vals
-                'resnum ',
-                'bynum or protein',
-                'prop mass < 4.0 hello',  # unused token
-                'prop mass > 10. and group this',  # missing group
-                'prop mass > 10. and fullgroup this',  # missing fullgroup
-        ]:
-            yield self.selection_fail, selstr
-
 
 def test_segid_and_resid():
     u = make_Universe(('segids', 'resids'))
@@ -858,53 +863,42 @@ def test_segid_and_resid():
 
 
 class TestImplicitOr(object):
-    def setUp(self):
-        self.u = make_Universe(('names', 'types',
-                                'resids', 'resnums',
-                                'resnames', 'segids'))
-                               
-    def tearDown(self):
-        del self.u
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return make_Universe(('names', 'types','resids', 'resnums', 'resnames', 'segids'))
 
-    def _check_sels(self, ref, sel):
-        ref = self.u.select_atoms(ref)
-        sel = self.u.select_atoms(sel)
+    def _check_sels(self, ref, sel, universe):
+        ref = universe.select_atoms(ref)
+        sel = universe.select_atoms(sel)
 
         assert_array_equal(ref.indices, sel.indices)
 
-    def test_string_selections(self):
-        for ref, sel in (
-                ('name NameABA or name NameACA or name NameADA',
-                 'name NameABA NameACA NameADA'),
-                ('type TypeE or type TypeD or type TypeB',
-                 'type TypeE TypeD TypeB'),
-                ('resname RsC or resname RsY', 'resname RsC RsY'),
-                ('name NameAB* or name NameACC', 'name NameAB* NameACC'),
-                ('(name NameABC or name NameABB) and (resname RsD or resname RsF)',
-                 'name NameABC NameABB and resname RsD RsF'),
-                ('segid SegA or segid SegC', 'segid SegA SegC'),
-        ):
-            yield self._check_sels, ref, sel
+    @pytest.mark.parametrize('ref, sel',[
+        ('name NameABA or name NameACA or name NameADA', 'name NameABA NameACA NameADA'),
+        ('type TypeE or type TypeD or type TypeB', 'type TypeE TypeD TypeB'),
+        ('resname RsC or resname RsY', 'resname RsC RsY'),
+        ('name NameAB* or name NameACC', 'name NameAB* NameACC'),
+        ('segid SegA or segid SegC', 'segid SegA SegC'),
+        ('(name NameABC or name NameABB) and (resname RsD or resname RsF)', 'name NameABC NameABB and resname RsD RsF'),
+    ])
+    def test_string_selections(self, ref, sel, universe):
+        self._check_sels(ref, sel, universe)
 
-    def test_range_selections(self):
-        # All these selections just use numeric types,
-        # So loop over what type of selections,
-        # And apply the same numeric constraints to all
-        for seltype in ['resid', 'resnum', 'bynum']:
-            for ref, sel in (
-                    ('{typ} 1 or {typ} 2', '{typ} 1 2'),
-                    ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
-                    ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
-                    ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
-                    ('{typ} 1-5 or {typ} 7:10 or {typ} 12',
-                     '{typ} 1-5 7:10 12'),
-                    ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
-            ):
-                yield (self._check_sels,
-                       ref.format(typ=seltype),
-                       sel.format(typ=seltype))
+    @pytest.mark.parametrize("seltype", ['resid', 'resnum', 'bynum'])
+    @pytest.mark.parametrize('ref, sel', [
+        ('{typ} 1 or {typ} 2', '{typ} 1 2'),
+        ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
+        ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
+        ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
+        ('{typ} 1-5 or {typ} 7:10 or {typ} 12', '{typ} 1-5 7:10 12'),
+        ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
+    ])
+    def test_range_selections(self, seltype, ref, sel, universe):
+        self._check_sels(ref.format(typ=seltype), sel.format(typ=seltype), universe)
 
-class TestICodeSelection(object):
+
+class TestICodeSelection(TestCase):
     def setUp(self):
         self.u = mda.Universe(PDB_icodes)
 

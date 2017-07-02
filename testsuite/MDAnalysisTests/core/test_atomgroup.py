@@ -25,6 +25,8 @@ from glob import glob
 import itertools
 import os
 from os import path
+from unittest import TestCase
+
 import numpy as np
 import warnings
 
@@ -56,24 +58,23 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysisTests import parser_not_found, tempdir, make_Universe
 
+import pytest
+
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
 warnings.simplefilter('always')
 
 class TestDeprecationWarnings(object):
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_AtomGroupUniverse_usage_warning():
+    @pytest.mark.skipif(parser_not_found('DCD'), reason='DCD parser not available. Are you using python 3?')
+    def test_AtomGroupUniverse_usage_warning(self):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             mda.core.AtomGroup.Universe(PSF, DCD)
         assert_equal(len(warn), 1)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_AtomGroup_init_warns():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_AtomGroup_init_warns(self):
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
         with warnings.catch_warnings(record=True) as warn:
@@ -81,10 +82,9 @@ class TestDeprecationWarnings(object):
             ag = mda.core.groups.AtomGroup(at_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_AtomGroup_init_works():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_AtomGroup_init_works(self):
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
         ag = mda.core.groups.AtomGroup(at_list)
@@ -93,10 +93,9 @@ class TestDeprecationWarnings(object):
         assert_(len(ag) == 10)
         assert_equal(ag.names, u.atoms[:10].names)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_ResidueGroup_init_warns():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_ResidueGroup_init_warns(self):
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
         with warnings.catch_warnings(record=True) as warn:
@@ -104,10 +103,9 @@ class TestDeprecationWarnings(object):
             rg = mda.core.groups.ResidueGroup(res_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_ResidueGroup_init_works():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_ResidueGroup_init_works(self):
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
         rg = mda.core.groups.ResidueGroup(res_list)
@@ -116,10 +114,9 @@ class TestDeprecationWarnings(object):
         assert_(len(rg) == 10)
         assert_equal(rg.resnames, u.residues[:10].resnames)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_SegmentGroup_init_warns():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_SegmentGroup_init_warns(self):
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
         with warnings.catch_warnings(record=True) as warn:
@@ -127,10 +124,9 @@ class TestDeprecationWarnings(object):
             sg = mda.core.groups.SegmentGroup(seg_list)
         assert_equal(len(warn), 1)
 
-    @staticmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def test_old_SegmentGroup_init_works():
+    @pytest.mark.skipif(parser_not_found('DCD'),
+                reason='DCD parser not available. Are you using python 3?')
+    def test_old_SegmentGroup_init_works(self):
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
         sg = mda.core.groups.SegmentGroup(seg_list)
@@ -142,46 +138,45 @@ class TestDeprecationWarnings(object):
 
 class TestAtomGroupToTopology(object):
     """Test the conversion of AtomGroup to TopologyObjects"""
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+    @pytest.mark.skipif(parser_not_found('DCD'),'DCD parser not available. Are you using python 3?')
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
-
-    def test_bond(self):
-        ag = self.u.atoms[:2]
+    def test_bond(self, u):
+        ag = u.atoms[:2]
         bond = ag.bond
         assert_(isinstance(bond, Bond))
 
-    def test_angle(self):
-        ag = self.u.atoms[:3]
+    def test_angle(self, u):
+        ag = u.atoms[:3]
         angle = ag.angle
         assert_(isinstance(angle, Angle))
 
-    def test_dihedral(self):
-        ag = self.u.atoms[:4]
+    def test_dihedral(self, u):
+        ag = u.atoms[:4]
         dih = ag.dihedral
         assert_(isinstance(dih, Dihedral))
 
-    def test_improper(self):
-        ag = self.u.atoms[:4]
+    def test_improper(self, u):
+        ag = u.atoms[:4]
         imp = ag.improper
         assert_(isinstance(imp, ImproperDihedral))
 
-    def _check_VE(self, btype):
-        ag = self.u.atoms[:10]
+    @pytest.mark.parametrize('btype,', [
+        'bond',
+        'angle',
+        'dihedral',
+        'improper'
+    ])
+    def test_VE(self, btype, u):
+        ag = u.atoms[:10]
 
         assert_raises(ValueError, getattr, ag, btype)
 
-    def test_VEs(self):
-        for btype in ('bond', 'angle', 'dihedral', 'improper'):
-            yield self._check_VE, btype
 
-
-class TestAtomGroupWriting(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestAtomGroupWriting(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -217,12 +212,15 @@ class TestAtomGroupWriting(object):
             with assert_raises(TypeError):
                 self.u.atoms.write('dummy.pdb', bogus="what?")
 
-class _WriteAtoms(object):
+class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
+
+    __test__ = False
+
     ext = None  # override to test various output writers
     precision = 3
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
@@ -313,11 +311,17 @@ class _WriteAtoms(object):
 
 
 class TestWritePDB(_WriteAtoms):
+
+    __test__ = True
+
     ext = "pdb"
     precision = 3
 
 
 class TestWriteGRO(_WriteAtoms):
+
+    __test__ = True
+
     ext = "gro"
     precision = 2
 
@@ -328,8 +332,8 @@ class TestWriteGRO(_WriteAtoms):
                      " in the testing suite.)")
 
 
-class TestAtomGroupTransformations(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestAtomGroupTransformations(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
@@ -455,7 +459,8 @@ class TestAtomGroupTransformations(object):
                                                     np.sin(angle) + 1,
                                                     1])
 
-class TestCenter(object):
+
+class TestCenter(TestCase):
     def setUp(self):
         self.u = make_Universe(trajectory=True)
         self.ag = self.u.atoms[10:30]
@@ -487,8 +492,8 @@ class TestCenter(object):
         assert_raises(TypeError, self.ag.center, weights)
 
 
-class TestSplit(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestSplit(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
@@ -535,8 +540,8 @@ class TestSplit(object):
         assert_raises(ValueError, ag.split, 'something')
 
 
-class TestWrap(object):
-    @dec.skipif(parser_not_found('TRZ'),
+class TestWrap(TestCase):
+    @pytest.mark.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(TRZ_psf, TRZ)
@@ -638,7 +643,7 @@ class TestAtomGroupProperties(object):
         assert_equal(vals, other,
                      err_msg="Change to Atoms not reflected in AtomGroup for property: {0}".format(att))
 
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def test_attributes(self):
         u = make_Universe(('names', 'resids', 'segids', 'types', 'altLocs',
@@ -727,8 +732,8 @@ class TestCrossUniverse(object):
         assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
 
 
-class TestDihedralSelections(object):
-    @dec.skipif(parser_not_found('DCD'),
+class TestDihedralSelections(TestCase):
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
@@ -799,8 +804,8 @@ class TestDihedralSelections(object):
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
 
-class TestPBCFlag(object):
-    @dec.skipif(parser_not_found('TRZ'),
+class TestPBCFlag(TestCase):
+    @pytest.mark.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.prec = 3
@@ -910,8 +915,8 @@ class TestPBCFlag(object):
         mda.core.flags['use_pbc'] = False
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
+@pytest.mark.skipif(parser_not_found('DCD'),
+            reason='DCD parser not available. Are you using python 3?')
 def test_instantselection_termini():
     """Test that instant selections work, even for residues that are also termini (Issue 70)"""
     universe = mda.Universe(PSF, DCD)
@@ -919,13 +924,13 @@ def test_instantselection_termini():
     del universe
 
 
-class TestAtomGroup(object):
+class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately.
 
     These are from before the big topology rework (aka #363) but are still valid.
     There is likely lots of duplication between here and other tests.
     """
-    @dec.skipif(parser_not_found('DCD'),
+    @pytest.mark.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
@@ -1286,10 +1291,10 @@ class TestAtomGroup(object):
                      sorted(self.universe.atoms.indices))
 
 
-class TestAtomGroupTimestep(object):
+class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
-    @dec.skipif(parser_not_found('TRZ'),
+    @pytest.mark.skipif(parser_not_found('TRZ'),
                 'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
