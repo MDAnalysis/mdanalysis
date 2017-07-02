@@ -45,10 +45,10 @@ from MDAnalysisTests import tempdir, parser_not_found
 warnings.simplefilter('always')
 
 
-class Testrmsd(object):
+class Testrmsd(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
-    def __init__(self):
+    def setUp(self):
         shape = (5, 3)
         # vectors with length one
         ones = np.ones(shape) / np.sqrt(3)
@@ -61,7 +61,6 @@ class Testrmsd(object):
         self.p_first = self.u.select_atoms('protein')
         self.p_last = self.u2.select_atoms('protein')
 
-    def setUp(self):
         self.u.trajectory[2]
         self.u2.trajectory[-2]
         # reset coordinates
@@ -147,7 +146,7 @@ class Testrmsd(object):
         assert_almost_equal(rmsd, rmsd_superposition)
 
 
-class TestRMSD(object):
+class TestRMSD(TestCase):
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parser not available. Are you using python 3?')
     def setUp(self):
