@@ -185,6 +185,8 @@ class _BaseHausdorffDistance(TestCase):
     for various Hausdorff distance
     calculation properties.'''
 
+    __test__ = False
+
     def setUp(self):
         self.random_angles = np.random.random((100,)) * np.pi * 2
         self.random_columns = np.column_stack((self.random_angles,
@@ -233,6 +235,8 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for conventional and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
 
+    __test__ = True
+
     def setUp(self):
         super(TestHausdorffSymmetric, self).setUp()
         self.h = PSA.hausdorff
@@ -242,6 +246,8 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
 class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for weighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
+
+    __test__ = True
 
     def setUp(self):
         super(TestWeightedAvgHausdorffSymmetric, self).setUp()
@@ -264,6 +270,8 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
 class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for unweighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
+
+    __test__ = True
 
     def setUp(self):
         super(TestAvgHausdorffSymmetric, self).setUp()
