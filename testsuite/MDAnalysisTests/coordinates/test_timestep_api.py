@@ -59,8 +59,7 @@ class TestBaseTimestep(BaseTimestepTest):
                         ]:
             ts2 = otherTS(10)
             ts2.positions = self._get_pos()
-            yield (self._check_ts_equal, ts1, ts2,
-                   "Failed on {0}".format(otherTS))
+            self._check_ts_equal( ts1, ts2, "Failed on {0}".format(otherTS))
 
 
 # TODO: Merge this into generic Reader tests
