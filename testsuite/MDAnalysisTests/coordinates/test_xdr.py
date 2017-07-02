@@ -687,29 +687,8 @@ class TestXTCWriter_2(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
-    def test_different_precision(self, ref, tmpdir):
-        out = self.tmp_file('precision-test', ref, tmpdir)
+    def test_different_precision(self, ref, tempdir):
+        out = self.tmp_file('precision-test', ref, tempdir)
         # store more then 9 atoms to enable compression
         n_atoms = 40
         with ref.writer(out, n_atoms, precision=5) as w:
@@ -781,30 +760,9 @@ class TestTRRWriter_2(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
     # tests writing and reading in one!
-    def test_lambda(self, ref, reader, tmpdir):
-        outfile = self.tmp_file('write-lambda-test', ref, tmpdir)
+    def test_lambda(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-lambda-test', ref, tempdir)
         with ref.writer(outfile, reader.n_atoms) as W:
             for i, ts in enumerate(reader):
                 ts.data['lambda'] = i / float(reader.n_frames)

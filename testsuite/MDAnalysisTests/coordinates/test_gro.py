@@ -230,30 +230,9 @@ class TestGROWriter(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                                        trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
-    def test_write_velocities(self, ref, tmpdir):
+    def test_write_velocities(self, ref, tempdir):
         u = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-velocities-test', ref, tmpdir)
+        outfile = self.tmp_file('write-velocities-test', ref, tempdir)
         u.atoms.write(outfile)
 
         u2 = mda.Universe(outfile)
@@ -261,24 +240,24 @@ class TestGROWriter(BaseWriterTest):
                                   u2.atoms.velocities)
 
     @dec.slow
-    def test_write_no_resnames(self, u_no_resnames, ref, tmpdir):
-        outfile = self.tmp_file('write-no-resnames-test', ref, tmpdir)
+    def test_write_no_resnames(self, u_no_resnames, ref, tempdir):
+        outfile = self.tmp_file('write-no-resnames-test', ref, tempdir)
         u_no_resnames.atoms.write(outfile)
         u = mda.Universe(outfile)
         expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
     @dec.slow
-    def test_write_no_resids(self, u_no_resids, ref, tmpdir):
-        outfile = self.tmp_file('write-no-resids-test', ref, tmpdir)
+    def test_write_no_resids(self, u_no_resids, ref, tempdir):
+        outfile = self.tmp_file('write-no-resids-test', ref, tempdir)
         u_no_resids.atoms.write(outfile)
         u = mda.Universe(outfile)
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
-    def test_writer_no_atom_names(self, u_no_names, ref, tmpdir):
-        outfile = self.tmp_file('write-no-names-test', ref, tmpdir)
+    def test_writer_no_atom_names(self, u_no_names, ref, tempdir):
+        outfile = self.tmp_file('write-no-names-test', ref, tempdir)
         u_no_names.atoms.write(outfile)
         u = mda.Universe(outfile)
         expected = np.array(['X'] * u_no_names.atoms.n_atoms)
@@ -286,19 +265,19 @@ class TestGROWriter(BaseWriterTest):
 
     @dec.slow
     @attr('issue')
-    def test_check_coordinate_limits_min(self, ref, tmpdir):
+    def test_check_coordinate_limits_min(self, ref, tempdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
-        outfile = self.tmp_file('coordinate-limits-min-test', ref, tmpdir)
+        outfile = self.tmp_file('coordinate-limits-min-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
     @attr('issue')
-    def test_check_coordinate_limits_max(self, ref, tmpdir):
+    def test_check_coordinate_limits_max(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
@@ -306,18 +285,18 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
-        outfile = self.tmp_file('coordinate-limits-max-test', ref, tmpdir)
+        outfile = self.tmp_file('coordinate-limits-max-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
-    def test_check_coordinate_limits_max_noconversion(self, ref, tmpdir):
+    def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) also
         raises exception for convert_units=False"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
-        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref, tmpdir)
+        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile, convert_units=False)
 
 
@@ -366,27 +345,6 @@ class TestGROWriterNoConversion(BaseWriterTest):
     def writer(ref):
         return ref.writer(ref.trajectory, convert_units=False)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
 
 class GROReaderIncompleteVelocitiesReference(GROReference):
     def __init__(self):
@@ -429,27 +387,6 @@ class TestGROWriterIncompleteVelocities(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
 
 class GROBZReference(GROReference):
     def __init__(self):
@@ -484,27 +421,6 @@ class TestGROBZ2Writer(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
 
 
 class GROLargeReference(GROReference):
@@ -526,35 +442,14 @@ class TestGROLargeWriter(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
     @dec.slow
     @attr('issue')
-    def test_writer_large(self, ref, tmpdir):
+    def test_writer_large(self, ref, tempdir):
         """
         Test that atom numbers are truncated for large
         GRO files (Issue 550).
         """
-        outfile = self.tmp_file('outfile1.gro', ref, tmpdir)
+        outfile = self.tmp_file('outfile1.gro', ref, tempdir)
         u = mda.Universe(ref.topology, ref.trajectory)
         u.atoms.write(outfile)
 
@@ -569,12 +464,12 @@ class TestGROLargeWriter(BaseWriterTest):
 
     @dec.slow
     @attr('issue')
-    def test_writer_large_residue_count(self, ref, tmpdir):
+    def test_writer_large_residue_count(self, ref, tempdir):
         """
         Ensure large residue number truncation for
         GRO files (Issue 886).
         """
-        outfile = self.tmp_file('outfile2.gro', ref, tmpdir)
+        outfile = self.tmp_file('outfile2.gro', ref, tempdir)
         u = mda.Universe(ref.topology, ref.trajectory)
         target_resname = u.residues[-1].resname
         resid_value = 9999999

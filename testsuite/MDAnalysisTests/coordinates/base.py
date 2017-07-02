@@ -37,7 +37,7 @@ from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.datafiles import AUX_XVG_HIGHF, AUX_XVG_LOWF
-from MDAnalysisTests import tempdir
+from MDAnalysisTests import tempdir, make_Universe
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
@@ -389,19 +389,40 @@ class MultiframeReaderTest(BaseReaderTest):
 
 
 class BaseWriterTest(object):
-    def tmp_file(self, name, ref, tmpdir):
-        return tmpdir.name + name + '.' + ref.ext
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resnames():
+        return make_Universe(['names', 'resids'], trajectory=True)
 
-    def test_write_trajectory_timestep(self,ref, reader, tmpdir):
-        outfile = self.tmp_file('write-timestep-test', ref, tmpdir)
+    @staticmethod
+    @pytest.fixture()
+    def u_no_resids():
+        return make_Universe(['names', 'resnames'], trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def u_no_names():
+        return make_Universe(['resids', 'resnames'],
+                             trajectory=True)
+
+    @staticmethod
+    @pytest.fixture()
+    def tempdir():
+        return tempdir.TempDir()
+
+    def tmp_file(self, name, ref, tempdir):
+        return tempdir.name + name + '.' + ref.ext
+
+    def test_write_trajectory_timestep(self,ref, reader, tempdir):
+        outfile = self.tmp_file('write-timestep-test', ref, tempdir)
         with ref.writer(outfile, reader.n_atoms) as W:
             for ts in reader:
                 W.write(ts)
         self._check_copy(outfile, ref, reader)
 
-    def test_write_different_box(self, ref, reader, tmpdir):
+    def test_write_different_box(self, ref, reader, tempdir):
         if ref.changing_dimensions:
-            outfile = self.tmp_file('write-dimensions-test', ref, tmpdir)
+            outfile = self.tmp_file('write-dimensions-test', ref, tempdir)
             with ref.writer(outfile, reader.n_atoms) as W:
                 for ts in reader:
                     ts.dimensions[:3] += 1
@@ -415,27 +436,27 @@ class BaseWriterTest(object):
                                           ts_w.dimensions,
                                           decimal=ref.prec)
 
-    def test_write_trajectory_atomgroup(self, ref,reader, tmpdir):
+    def test_write_trajectory_atomgroup(self, ref,reader, tempdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-atoms-test', ref, tmpdir)
+        outfile = self.tmp_file('write-atoms-test', ref, tempdir)
         with ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni.atoms)
         self._check_copy(outfile, ref, reader)
 
-    def test_write_trajectory_universe(self, ref, reader, tmpdir):
+    def test_write_trajectory_universe(self, ref, reader, tempdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-uni-test', ref, tmpdir)
+        outfile = self.tmp_file('write-uni-test', ref, tempdir)
         with ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni)
         self._check_copy(outfile, ref, reader)
 
-    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tmpdir):
+    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tempdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'resid 1'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tmpdir)
+        outfile = self.tmp_file('write-selection-test', ref, tempdir)
 
         with ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
@@ -470,8 +491,8 @@ class BaseWriterTest(object):
             else:
                 assert_raises(TypeError, ref.writer, 'foo')
 
-    def test_write_not_changing_ts(self, ref, reader, tmpdir):
-        outfile = self.tmp_file('write-not-changing-ts', ref, tmpdir)
+    def test_write_not_changing_ts(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-not-changing-ts', ref, tempdir)
         ts = reader.ts.copy()
         copy_ts = ts.copy()
         with ref.writer(outfile, n_atoms=5) as W:

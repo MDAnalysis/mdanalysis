@@ -88,32 +88,11 @@ class TestXYZWriter(BaseWriterTest):
     def reader(ref):
         return ref.reader(ref.trajectory)
 
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
-
-    def test_write_selection(self, ref, reader, tmpdir):
+    def test_write_selection(self, ref, reader, tempdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tmpdir)
+        outfile = self.tmp_file('write-selection-test', ref, tempdir)
 
         with ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
@@ -127,15 +106,15 @@ class TestXYZWriter(BaseWriterTest):
                 "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
-    def test_write_different_models_in_trajectory(self, ref, reader, tmpdir):
-        outfile = self.tmp_file('write-models-in-trajectory', ref, tmpdir)
+    def test_write_different_models_in_trajectory(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-models-in-trajectory', ref, tempdir)
         # n_atoms should match for each TimeStep if it was specified
         with ref.writer(outfile, n_atoms=4) as w:
             with pytest.raises(ValueError):
                w.write(reader.ts)
 
-    def test_no_conversion(self, ref, reader, tmpdir):
-        outfile = self.tmp_file('write-no-conversion', ref, tmpdir)
+    def test_no_conversion(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-no-conversion', ref, tempdir)
         with ref.writer(outfile, convert_units=False) as w:
             for ts in reader:
                 w.write(ts)
@@ -176,27 +155,6 @@ class Test_XYZBZWriter(TestXYZWriter):
     @pytest.fixture()
     def reader(ref):
         return ref.reader(ref.trajectory)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resnames():
-        return make_Universe(['names', 'resids'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_resids():
-        return make_Universe(['names', 'resnames'], trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def u_no_names():
-        return make_Universe(['resids', 'resnames'],
-                             trajectory=True)
-
-    @staticmethod
-    @pytest.fixture()
-    def tmpdir():
-        return tempdir.TempDir()
 
 
 class TestXYZWriterNames(TestCase):
