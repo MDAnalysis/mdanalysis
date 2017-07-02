@@ -179,9 +179,9 @@ class TestMultiFrameReader(_Multi):
 
         assert_raises(ValueError, sl)
 
-    def test_slice_TE_1(self):
+    def test_slice_TE_1(self, reader):
         def sl():
-            return list(self.reader[1.2:2.5:0.1])
+            return list(reader[1.2:2.5:0.1])
 
         assert_raises(TypeError, sl)
 
@@ -211,15 +211,15 @@ class TestMultiFrameReader(_Multi):
 
         assert_equal(res, ref)
 
-    def test_list_TE(self):
+    def test_list_TE(self, reader):
         def sl():
-            return list(self.reader[[0, 'a', 5, 6]])
+            return list(reader[[0, 'a', 5, 6]])
 
         assert_raises(TypeError, sl)
 
-    def test_array_TE(self):
+    def test_array_TE(self, reader):
         def sl():
-            return list(self.reader[np.array([1.2, 3.4, 5.6])])
+            return list(reader[np.array([1.2, 3.4, 5.6])])
 
         assert_raises(TypeError, sl)
 
