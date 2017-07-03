@@ -92,7 +92,7 @@ __all__ = [
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PRMcs", # Amber (format, Issue 1331)
     "PQR",  # PQR v1
-    "PQR_icodes",  # PQR v2 with icodes 
+    "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113

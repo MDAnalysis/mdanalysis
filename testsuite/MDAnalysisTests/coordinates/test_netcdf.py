@@ -23,9 +23,13 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 import mock
 import numpy as np
+import sys
 import os
 from six.moves import zip
 
+from scipy.io import netcdf
+
+import pytest
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_array_equal,
@@ -36,14 +40,14 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
-from MDAnalysisTests import module_not_found, tempdir, block_import, make_Universe
+from MDAnalysisTests import module_not_found, tempdir, make_Universe
 
 
 
 class _NCDFReaderTest(_TRJReaderTest):
+
     __test__ = False
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
         self.prec = 3
@@ -65,7 +69,7 @@ class _NCDFReaderTest(_TRJReaderTest):
         assert_almost_equal(ref, self.universe.trajectory.ts.dt, self.prec)
 
     def test_get_writer(self):
-        with self.universe.trajectory.Writer('out.ncdf') as w: 
+        with self.universe.trajectory.Writer('out.ncdf') as w:
             assert_(w.n_atoms == len(self.universe.atoms))
             assert_(w.remarks.startswith('AMBER NetCDF format'))
 
@@ -96,7 +100,6 @@ class TestNCDFReader2(TestCase):
     Contributed by Albert Solernou
     """
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
         self.prec = 3
@@ -161,7 +164,6 @@ class _NCDFWriterTest(TestCase):
 
     __test__ = False
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
         self.prec = 5
@@ -169,7 +171,6 @@ class _NCDFWriterTest(TestCase):
         self.tmpdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tmpdir.name, 'ncdf-writer-1' + ext)
         self.outtop = os.path.join(self.tmpdir.name, 'ncdf-writer-top.pdb')
-        self.Writer = mda.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
         for f in self.outfile, self.outtop:
@@ -178,23 +179,51 @@ class _NCDFWriterTest(TestCase):
             except OSError:
                 pass
         del self.universe
-        del self.Writer
         del self.tmpdir
 
-    def test_write_trajectory(self):
+    def _test_write_trajectory(self):
+        # explicit import so that we can artifically remove netCDF4
+        # before calling
+        from MDAnalysis.coordinates import TRJ
+
         t = self.universe.trajectory
-        with self.Writer(self.outfile, t.n_atoms, dt=t.dt) as W:
+        with TRJ.NCDFWriter(self.outfile, t.n_atoms, dt=t.dt) as W:
             self._copy_traj(W)
         self._check_new_traj()
-        import netCDF4
         #for issue #518 -- preserve float32 data in ncdf output
-        dataset = netCDF4.Dataset(self.outfile, 'r', format='NETCDF3')
+        # NOTE: This originally failed with the dtype('>f4') instead
+        #       of dtype('<f4') == dtype('f') == np.float32, i.e. then
+        #       endianness is different. The current hack-ish solution
+        #       ignores endianness by comparing the name of the types,
+        #       which should be "float32".
+        #       See http://docs.scipy.org/doc/numpy-1.10.0/reference/arrays.dtypes.html
+        #       and https://github.com/MDAnalysis/mdanalysis/pull/503
+        dataset = netcdf.netcdf_file(self.outfile, 'r')
         coords = dataset.variables['coordinates']
         time = dataset.variables['time']
-        assert_equal(coords.dtype, np.float32,
-                     err_msg='ncdf coord output not float32')
-        assert_equal(time.dtype, np.float32,
-                     err_msg='ncdf time output not float32')
+        assert_equal(coords[:].dtype.name, np.dtype(np.float32).name,
+                     err_msg='ncdf coord output not float32 '
+                             'but {}'.format(coords[:].dtype))
+        assert_equal(time[:].dtype.name, np.dtype(np.float32).name,
+                err_msg='ncdf time output not float32 '
+                        'but {}'.format(time[:].dtype))
+
+    def test_write_trajectory_netCDF4(self):
+        pytest.importorskip("netCDF4")
+        return self._test_write_trajectory()
+
+    def test_write_trajectory_netcdf(self):
+        import MDAnalysis.coordinates.TRJ
+        loaded_netCDF4 = sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4
+        try:
+            # cannot use @block_import('netCDF4') because TRJ was already imported
+            # during setup() and already sits in the global module list so we just
+            # set it to None because that is what TRJ does if it cannot find netCDF4
+            sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = None
+            assert MDAnalysis.coordinates.TRJ.netCDF4 is None   # should happen if netCDF4 not found
+            return self._test_write_trajectory()
+        finally:
+            sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = loaded_netCDF4
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
@@ -229,38 +258,39 @@ class _NCDFWriterTest(TestCase):
         nc_orig = self.universe.trajectory.trjfile
         nc_copy = uw.trajectory.trjfile
 
+        # note that here 'dimensions' is a specific netcdf data structure and
+        # not the unit cell dimensions in MDAnalysis
         for k, dim in nc_orig.dimensions.items():
             try:
                 dim_new = nc_copy.dimensions[k]
             except KeyError:
                 raise AssertionError("NCDFWriter did not write "
-                                     "dimension '{}'".format(k))
+                                     "dimension '{0}'".format(k))
             else:
-                assert_equal(len(dim), len(dim_new),
+                assert_equal(dim, dim_new,
                              err_msg="Dimension '{0}' size mismatch".format(k))
-
 
         for k, v in nc_orig.variables.items():
             try:
                 v_new = nc_copy.variables[k]
             except KeyError:
                 raise AssertionError("NCDFWriter did not write "
-                                     "variable '{}'".format(k))
+                                     "variable '{0}'".format(k))
             else:
                 try:
                     assert_array_almost_equal(v[:], v_new[:], self.prec,
-                                              err_msg="Variable '{}' not "
+                                              err_msg="Variable '{0}' not "
                                               "written correctly".format(k))
                 except TypeError:
                     assert_array_equal(v[:], v_new[:],
-                                              err_msg="Variable {} not written "
+                                              err_msg="Variable {0} not written "
                                     "correctly".format(k))
 
     @attr('slow')
     def test_TRR2NCDF(self):
         trr = mda.Universe(GRO, TRR)
-        with self.Writer(self.outfile, trr.trajectory.n_atoms,
-                         velocities=True) as W:
+        with mda.Writer(self.outfile, trr.trajectory.n_atoms,
+                        velocities=True, format="ncdf") as W:
             for ts in trr.trajectory:
                 W.write_next_timestep(ts)
 
@@ -271,14 +301,14 @@ class _NCDFWriterTest(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
+                                      "frame {0} (orig) vs {1} (written)".format(
+                    orig_ts.frame, written_ts.frame))
             assert_array_almost_equal(written_ts._velocities,
                                       orig_ts._velocities, self.prec,
                                       err_msg="velocity mismatch between "
                                       "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
+                                      "frame {0} (orig) vs {1} (written)".format(
+                    orig_ts.frame, written_ts.frame))
             assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
                                 err_msg="Time for step {0} are not the "
                                 "same.".format(orig_ts.frame))
@@ -293,7 +323,7 @@ class _NCDFWriterTest(TestCase):
         """test to write NCDF from AtomGroup (Issue 116)"""
         p = self.universe.select_atoms("not resname WAT")
         p.write(self.outtop)
-        with self.Writer(self.outfile, n_atoms=p.n_atoms) as W:
+        with mda.Writer(self.outfile, n_atoms=p.n_atoms, format="ncdf") as W:
             for ts in self.universe.trajectory:
                 W.write(p)
 
@@ -324,10 +354,9 @@ class TestNCDFWriterTZ2(_NCDFWriterTest, RefTZ2):
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/ncdf-write-vels-force.ncdf'
+        self.outfile = os.path.join(self.tmpdir.name, 'ncdf-write-vels-force.ncdf')
         self.prec = 3
         self.top = XYZ_mini
         self.n_atoms = 3
@@ -405,47 +434,8 @@ class TestNCDFWriterVelsForces(TestCase):
     def test_pos_vel_force(self):
         self._write_ts(True, True, True)
 
-class TestNetCDFImport(object):
-    # test ImportErrors in netCDF format Reader & Writer
-    # `block_import` sniffs imports and blocks netCDF import calls
-
-    @block_import('netCDF4')
-    def test_import_netcdfreader(self):
-        # do it here because netcdf isn't required
-        from MDAnalysis.coordinates.TRJ import NCDFReader
-
-        # Check the error meessage that we're giving out
-        try:
-            rd = NCDFReader('myfile.ncdf', n_atoms=100)
-        except ImportError as e:
-            assert_('netCDF4 package missing' in e.args[0])
-            assert_('See installation instructions at' in e.args[0])
-        else:
-            # fail if we don't get importerror
-            raise AssertionError
-        finally:
-            try:
-                os.unlink('myfile.ncdf')
-            except OSError:
-                pass
-
-    @block_import('netCDF4')
-    def test_import_netcdfwriter(self):
-        # do it here because netcdf isn't required
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        with NCDFWriter('myfile.ncdf', 100) as wr:
-            try:
-                wr._init_netcdf()
-            except ImportError as e:
-                assert_('netCDF4 package missing' in e.args[0])
-                assert_('See installation instructions at' in e.args[0])
-            else:
-                raise AssertionError
-
 
 class TestNCDFWriterErrors(TestCase):
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tmpdir.name, 'out.ncdf')
