@@ -145,18 +145,13 @@ from ..lib import util
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
-try:
-    import scipy.io.netcdf
-except ImportError:
-    logger.debug("scipy.io.netcdf is missing (needed for the AMBER ncdf Reader)")
-    logger.debug("Using the bundled lib.netcdf (from scipy 0.16.1) instead.")
-    from ..lib import netcdf
+import scipy.io.netcdf
 
 try:
     import netCDF4
 except ImportError:
     netCDF4 = None
-    logger.warn("netCDF4 is not available. Writing AMBER ncdf files will be slow")
+    logger.warn("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.

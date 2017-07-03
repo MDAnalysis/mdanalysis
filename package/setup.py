@@ -512,7 +512,9 @@ if __name__ == '__main__':
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': 'netCDF4',
+              'AMBER': [
+                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
+              ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA

@@ -27,11 +27,7 @@ import sys
 import os
 from six.moves import zip
 
-try:
-    from scipy.io import netcdf
-except ImportError:
-    # fall back (should ALWAYS work)
-    from MDAnalysis.lib import netcdf
+from scipy.io import netcdf
 
 import pytest
 from nose.plugins.attrib import attr
