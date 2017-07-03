@@ -42,7 +42,17 @@ coordinates (where the coordinates are stored in `x` attribute of the
 
 
 Besides iteration one can also seek to arbitrary frames using the
-:meth:`~DCDFile.seek` method.
+:meth:`~DCDFile.seek` method. Note that instead of seeking to a byte-offset as
+for normal Python streams, the seek and tell method of DCDFile operate on
+complete trajectory frames.
+
+.. rubric:: Acknowledgements
+
+:mod:`libdcd` contains and is originally based on DCD reading and writing code
+from VMD's `molfile`_ plugin and `catdcd`_.
+
+.. _molfile: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/
+.. _catdcd: http://www.ks.uiuc.edu/Development/MDTools/catdcd/
 
 """
 from six.moves import range
@@ -129,11 +139,19 @@ cdef extern from 'include/readdcd.h':
 DCDFrame = namedtuple('DCDFrame', 'xyz unitcell')
 
 cdef class DCDFile:
-    """File like wrapper for DCD files
+    """DCDFile(fname, mode='r')
+
+    File like wrapper for DCD files
 
     This class can be similar to the normal file objects in python. The read()
     function will return a frame and all information in it instead of a single
     line. Additionally the context-manager protocol is supported as well.
+
+    DCDFile can read typical DCD files created by e.g., CHARMM, NAMD, or LAMMPS. It
+    reads raw data from the trajectory and hence interpretation of, for instance,
+    different unitcell conventions or time and length units, has to be handled in
+    higher level code. Reading and writing does not support fixed atoms or 4D
+    coordinates.
 
     Parameters
     ----------
@@ -152,18 +170,16 @@ cdef class DCDFile:
 
     Notes
     -----
-    This DCDFile reader can process files written by different MD simulation
-    programs. For files produced by CHARMM or other programs that follow the
-    same convention we are reading a special CHARMM bitfield that stores
-    different flags about additional information that is stored in the dcd.
-    This field cannot be written. The flags it might have are.
+    DCD is not a well defined format. One consequence of this is that different
+    programs like CHARMM and NAMD are using different convention to store the
+    unitcell information. The :class:`DCDFile` will read the unitcell information
+    as is when available. Post processing depending on the program this DCD file
+    was written with is necessary. Have a look at the MDAnalysis DCD reader for
+    possible post processing into a common unitcell data structure. You can also
+    find more information how different programs store unitcell information in DCD
+    on the `mdawiki`_ .
 
-    DCD_IS_CHARMM       = 0x01
-    DCD_HAS_4DIMS       = 0x02
-    DCD_HAS_EXTRA_BLOCK = 0x04
-
-    Here `DCD_HAS_EXTRA_BLOCK` means that unitcell information is stored.
-
+    .. _mdawiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
     """
     cdef fio_fd fp
     cdef readonly fname
@@ -231,12 +247,14 @@ cdef class DCDFile:
         """
         Returns
         -------
-        current frame
+        current frame (0-based)
         """
         return self.current_frame
 
     def open(self, mode='r'):
-        """Open a DCD file
+        """open(mode='r')
+
+        Open a DCD file
 
         If another DCD file is currently opened it will be closed
 
@@ -351,12 +369,14 @@ cdef class DCDFile:
         return nframessize / self._framesize + 1
 
     def seek(self, frame):
-        """Seek to Frame.
+        """seek(frame)
+
+        Seek to Frame.
 
         Parameters
         ----------
         frame : int
-            seek the file to given frame
+            seek the file to given frame (0-based)
 
         """
         if frame >= self.n_frames:
@@ -416,7 +436,8 @@ cdef class DCDFile:
         return self.charmm
 
     def write_header(self, remarks, natoms, istart, nsavc, delta, is_periodic):
-        """Write DCD header
+        """write_header(remarks, natoms, istart, nsavc, delta, is_periodic)
+        Write DCD header
 
         This function needs to be called before the first frame can be written.
 
@@ -442,7 +463,7 @@ cdef class DCDFile:
         if self.wrote_header:
             raise IOError("Header already written")
 
-        cdef int with_unitcell = is_periodic;
+        cdef int with_unitcell = is_periodic
         if is_periodic:
             self.charmm = DCD_HAS_EXTRA_BLOCK | DCD_IS_CHARMM
         self.natoms = natoms
@@ -461,7 +482,8 @@ cdef class DCDFile:
         self.wrote_header = True
 
     def write(self, xyz,  box=None):
-        """write one frame into DCD file.
+        """write(xyz, box=None)
+        write one frame into DCD file.
 
         Parameters
         ----------
@@ -550,7 +572,7 @@ cdef class DCDFile:
 
 
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
-        """
+        """readframes(start=None, stop=None, step=None, order='fac', indices=None)
         read multiple frames at once
 
         Parameters
@@ -574,9 +596,10 @@ cdef class DCDFile:
 
         Notes
         -----
-        unitcell is read as it from DCD. Post processing depending the program this
-        DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
-        for possible post processing into a common unitcell data structure.
+        unitcell is read as it from DCD. Post processing depending the program
+        this DCD file was written with is necessary. Have a look at the
+        MDAnalysis DCD reader for possible post processing into a common
+        unitcell data structure.
 
         """
         if self.reached_eof:

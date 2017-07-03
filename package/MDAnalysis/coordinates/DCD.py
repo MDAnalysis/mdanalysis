@@ -81,16 +81,37 @@ class DCDReader(base.ReaderBase):
     The DCD file format is not well defined. In particular, NAMD and CHARMM use
     it differently. Currently, MDAnalysis tries to guess the correct **format
     for the unitcell representation** but it can be wrong. **Check the unitcell
-    dimensions**, especially for triclinic unitcells (see `Issue 187`_ and
-    :attr:`DCDReader.dimensions`). DCD trajectories produced by CHARMM and
-    NAMD( >2.5) record time in AKMA units. If other units have been recorded
-    (e.g., ps) then employ the configurable
+    dimensions**, especially for triclinic unitcells (see `Issue 187`_). DCD
+    trajectories produced by CHARMM and NAMD( >2.5) record time in AKMA units.
+    If other units have been recorded (e.g., ps) then employ the configurable
     :class:MDAnalysis.coordinates.LAMMPS.DCDReader and set the time unit as a
     optional argument. You can find a list of units used in the DCD formats on
     the MDAnalysis `wiki`_.
 
-    .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
 
+    MDAnalysis always uses ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)`` to
+    represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis length
+    unit (Å), and angles are in degrees.
+
+    The ordering of the angles in the unitcell is the same as in recent
+    versions of VMD's DCDplugin_ (2013), namely the `X-PLOR DCD format`_: The
+    original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from the DCD
+    file. If any of these values are < 0 or if any of the angles are > 180
+    degrees then it is assumed it is a new-style CHARMM unitcell (at least
+    since c36b2) in which box vectors were recorded.
+
+    .. warning::
+        The DCD format is not well defined. Check your unit cell
+        dimensions carefully, especially when using triclinic boxes.
+        Different software packages implement different conventions and
+        MDAnalysis is currently implementing the newer NAMD/VMD convention
+        and tries to guess the new CHARMM one. Old CHARMM trajectories might
+        give wrong unitcell values. For more details see `Issue 187`_.
+
+    .. _`X-PLOR DCD format`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html
+    .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
+    .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
+    .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
     """
     format = 'DCD'
     flavor = 'CHARMM'
@@ -167,6 +188,7 @@ class DCDReader(base.ReaderBase):
             raise IOError('trying to go over trajectory limit')
         if ts is None:
             # use a copy to avoid that ts always points to the same reference
+            # removing this breaks lammps reader
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
@@ -191,7 +213,8 @@ class DCDReader(base.ReaderBase):
         ts.time = ts.frame * self.ts.dt
         ts.data['step'] = self._file.tell()
 
-        unitcell = frame.unitcell
+        unitcell = frame.unitcell.copy()
+
         pi_2 = np.pi / 2
         if (-1.0 <= unitcell[1] <= 1.0) and (-1.0 <= unitcell[3] <= 1.0) and (
                 -1.0 <= unitcell[4] <= 1.0):
@@ -238,35 +261,6 @@ class DCDReader(base.ReaderBase):
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-
-        The ordering of the angles in the unitcell is the same as in recent
-        versions of VMD's DCDplugin_ (2013), namely the `X-PLOR DCD format`_:
-        The original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from
-        the DCD file; If any of these values are < 0 or if any of the angles
-        are > 180 degrees then it is assumed it is a new-style CHARMM unitcell
-        (at least since c36b2) in which box vectors were recorded.
-
-
-        .. warning::
-           The DCD format is not well defined. Check your unit cell
-           dimensions carefully, especially when using triclinic boxes.
-           Different software packages implement different conventions and
-           MDAnalysis is currently implementing the newer NAMD/VMD convention
-           and tries to guess the new CHARMM one. Old CHARMM trajectories might
-           give wrong unitcell values. For more details see `Issue 187`_.
-
-        .. versionchanged:: 0.9.0
-           Unitcell is now interpreted in the newer NAMD DCD format as ``[A,
-           gamma, B, beta, alpha, C]`` instead of the old MDAnalysis/CHARMM
-           ordering ``[A, alpha, B, beta, gamma, C]``. We attempt to detect the
-           new CHARMM DCD unitcell format (see `Issue 187`_ for a discussion).
-
-        .. _`X-PLOR DCD format`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html
-        .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
-        .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
         """
         return self.ts.dimensions
 
@@ -408,8 +402,7 @@ class DCDWriter(base.WriterBase):
 
         See Also
         --------
-        <FormatWriter>.write(AtomGroup/Universe/TimeStep)
-        The normal write() method takes a more general input
+        :meth:`DCDWriter.write`  takes a more general input
         """
         xyz = ts.positions.copy()
         dimensions = ts.dimensions.copy()
