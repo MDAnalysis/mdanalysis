@@ -45,6 +45,7 @@ Besides iteration one can also seek to arbitrary frames using the
 :meth:`~DCDFile.seek` method.
 
 """
+from six.moves import range
 
 
 from os import path
@@ -150,11 +151,6 @@ cdef class DCDFile:
     >>>         print(frame.x)
 
 
-    Raises
-    ------
-    IOError, EOFError
-
-
     Notes
     -----
     This DCDFile reader can process files written by different MD simulation
@@ -249,9 +245,6 @@ cdef class DCDFile:
         mode : ('r', 'w')
             The mode in which to open the file, either 'r' read or 'w' write
 
-        Raises
-        ------
-        IOError
         """
         if self.is_open:
             self.close()
@@ -279,9 +272,6 @@ cdef class DCDFile:
     def close(self):
         """Close the open DCD file
 
-        Raises
-        ------
-        IOError
         """
         if self.is_open:
             # In case there are fixed atoms we should free the memory again.
@@ -362,7 +352,8 @@ cdef class DCDFile:
         """
         Returns
         -------
-        bool if periodic unitcell is available
+        bool
+            ``True`` if periodic unitcell is available
         """
         return bool((self.charmm & DCD_IS_CHARMM) and
                     (self.charmm & DCD_HAS_EXTRA_BLOCK))
@@ -375,11 +366,6 @@ cdef class DCDFile:
         frame : int
             seek the file to given frame
 
-        Raises
-        ------
-        IOError
-            If you seek for more frames than are available or if the
-            seek fails (the low-level system error is reported).
         """
         if frame >= self.n_frames:
             raise EOFError('Trying to seek over max number of frames')
@@ -393,7 +379,7 @@ cdef class DCDFile:
 
         ok = fio_fseek(self.fp, offset, _whence_vals["FIO_SEEK_SET"])
         if ok != 0:
-            raise IOError("DCD seek failed with system errno={}".format(DCD_ERRORS[ok]))
+            raise IOError("DCD seek failed with DCD error={}".format(DCD_ERRORS[ok]))
         self.current_frame = frame
 
     @property
@@ -437,10 +423,6 @@ cdef class DCDFile:
         charmm : bool
             write unitcell information. Also pretends that file was written by CHARMM 24
 
-
-        Raises
-        ------
-        IOError
         """
         if not self.is_open:
             raise IOError("No file open")
@@ -478,10 +460,6 @@ cdef class DCDFile:
         box : array_like, shape=(6)
             Box vectors for this frame
 
-        Raises
-        ------
-        IOError
-        ValueError
         """
         if not self.is_open:
             raise IOError("No file open")
@@ -526,13 +504,9 @@ cdef class DCDFile:
         DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
         for possible post processing into a common unitcell data structure.
 
-        Raises
-        ------
-        IOError
-        StopIteration
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in DCD, seek to 0')
+            raise EOFError('Reached last frame in DCD, seek to 0')
         if not self.is_open:
             raise IOError("No file open")
         if self.mode != 'r':
@@ -589,13 +563,9 @@ cdef class DCDFile:
         DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
         for possible post processing into a common unitcell data structure.
 
-        Raises
-        ------
-        IOError
-        ValueError
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in DCD, seek to 0')
+            raise EOFError('Reached last frame in DCD, seek to 0')
         if not self.is_open:
             raise IOError("No file open")
         if self.mode != 'r':

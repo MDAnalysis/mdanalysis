@@ -20,11 +20,12 @@ from collections import namedtuple
 import os
 import string
 
-import hypothesis.strategies as st
+import hypothesis.strategies as strategies
 from hypothesis import example, given
 import numpy as np
 
-from numpy.testing import (assert_array_almost_equal, assert_equal)
+from numpy.testing import (assert_array_almost_equal, assert_equal,
+                           assert_array_equal)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile
 
@@ -181,7 +182,7 @@ def test_read_coord_values(dcdfile, legacy_data, frames):
             dcd.seek(frame_num)
             actual_coords = dcd.read()[0]
             desired_coords = legacy[index]
-            assert_equal(actual_coords, desired_coords)
+            assert_array_equal(actual_coords, desired_coords)
 
 
 @pytest.mark.parametrize("dcdfile, legacy_data, frame_idx",
@@ -280,7 +281,7 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
             f_out.write(xyz=frame.xyz, box=frame.unitcell)
 
 
-@given(remarks=st.text(
+@given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
     max_size=240))  # handle the printable ASCII strings
 @example(remarks='')
