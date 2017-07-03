@@ -674,11 +674,6 @@ class TestXTCWriter_2(BaseWriterTest):
     def ref():
         return XTCReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
-
     def test_different_precision(self, ref, tempdir):
         out = self.tmp_file('precision-test', ref, tempdir)
         # store more then 9 atoms to enable compression
@@ -738,11 +733,6 @@ class TestTRRWriter_2(BaseWriterTest):
     @pytest.fixture()
     def ref():
         return TRRReference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
 
     # tests writing and reading in one!
     def test_lambda(self, ref, reader, tempdir):

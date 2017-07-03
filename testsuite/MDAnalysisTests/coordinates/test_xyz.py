@@ -75,11 +75,6 @@ class TestXYZWriter(BaseWriterTest):
     def ref():
         return XYZReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
-
     def test_write_selection(self, ref, reader, tempdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
@@ -134,11 +129,6 @@ class Test_XYZBZWriter(TestXYZWriter):
     @pytest.fixture()
     def ref():
         return XYZ_BZ_Reference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
 
 
 class TestXYZWriterNames(TestCase):

@@ -217,10 +217,6 @@ class TestGROWriter(BaseWriterTest):
     def ref():
         return GROReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
 
     def test_write_velocities(self, ref, tempdir):
         u = mda.Universe(ref.topology, ref.trajectory)
@@ -329,11 +325,6 @@ class TestGROWriterNoConversion(BaseWriterTest):
 
     @staticmethod
     @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
-
-    @staticmethod
-    @pytest.fixture()
     def writer(ref):
         return ref.writer(ref.trajectory, convert_units=False)
 
@@ -366,11 +357,6 @@ class TestGROWriterIncompleteVelocities(BaseWriterTest):
     def ref():
         return GROReaderIncompleteVelocitiesReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
-
 
 class GROBZReference(GROReference):
     def __init__(self):
@@ -392,12 +378,6 @@ class TestGROBZ2Writer(BaseWriterTest):
     def ref():
         return GROBZReference()
 
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
-
-
 
 class GROLargeReference(GROReference):
     def __init__(self):
@@ -412,11 +392,6 @@ class TestGROLargeWriter(BaseWriterTest):
     @pytest.fixture()
     def ref():
         return GROLargeReference()
-
-    @staticmethod
-    @pytest.fixture()
-    def reader(ref):
-        return ref.reader(ref.trajectory)
 
     @dec.slow
     @attr('issue')

@@ -141,7 +141,6 @@ class TestMultiFrameReader(_Multi):
 
     __test__ = True
 
-
     @pytest.mark.parametrize('start, stop, step', [
         (None, None, None),  # blank slice
         (None, 5, None),  # set end point

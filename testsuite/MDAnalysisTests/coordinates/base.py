@@ -399,6 +399,11 @@ class MultiframeReaderTest(BaseReaderTest):
 class BaseWriterTest(object):
     @staticmethod
     @pytest.fixture()
+    def reader(ref):
+        return ref.reader(ref.trajectory)
+
+    @staticmethod
+    @pytest.fixture()
     def u_no_resnames():
         return make_Universe(['names', 'resids'], trajectory=True)
 
@@ -533,14 +538,6 @@ class BaseTimestepTest(object):
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
     ref_volume = 1320.  # what the volume is after setting newbox
     uni_args = None
-
-    # def setUp(self):
-    #     self.ts = self.Timestep(self.size)
-    #     self.ts.frame += 1
-    #     self.ts.positions = self.refpos
-    # 
-    # def tearDown(self):
-    #     del self.ts
         
     @pytest.fixture()
     def ts(self):
