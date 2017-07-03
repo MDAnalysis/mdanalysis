@@ -138,7 +138,7 @@ def test_jump_last_frame(universe_dcd):
                                                (20, 5, -1)))
 def test_slice(universe_dcd, start, stop, step):
     frames = [ts.frame for ts in universe_dcd.trajectory[start:stop:step]]
-    assert frames == list(range(start, stop, step))
+    assert_array_equal(frames, np.arange(start, stop, step))
 
 
 @pytest.mark.parametrize("array_like", [list, np.array])
@@ -152,7 +152,7 @@ def test_array_like(universe_dcd, array_like):
                                      [0, 0, 1, 1, 2, 1, 1]))
 def test_list_indices(universe_dcd, indices):
     frames = [ts.frame for ts in universe_dcd.trajectory[indices]]
-    assert frames == indices
+    assert_array_equal(frames, indices)
 
 
 @pytest.mark.parametrize(

@@ -628,7 +628,7 @@ cdef class DCDFile:
             for i in range(n):
                 ok = self.c_readframes_helper(xyz_tmp[:, 0], xyz_tmp[:, 1], xyz_tmp[:, 2], box[i], i==0)
                 if ok != 0 and ok != -4:
-                    raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+                    raise IOError("Reading DCD frames failed: {}".format(DCD_ERRORS[ok]))
                 copy_in_order(xyz_tmp[c_indices], xyz, hash_order, i)
         else:
             counter = 0
@@ -636,7 +636,7 @@ cdef class DCDFile:
                 self.seek(i)
                 ok = self.c_readframes_helper(xyz_tmp[:, 0], xyz_tmp[:, 1], xyz_tmp[:, 2], box[counter], i==0)
                 if ok != 0 and ok != -4:
-                    raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
+                    raise IOError("Reading DCD frames failed: {}".format(DCD_ERRORS[ok]))
                 copy_in_order(xyz_tmp[c_indices], xyz, hash_order, counter)
                 counter += 1
 
