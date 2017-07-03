@@ -408,11 +408,11 @@ class DCDWriter(base.WriterBase):
         The normal write() method takes a more general input
         """
         xyz = ts.positions.copy()
-        dimensions = ts.dimensions
+        dimensions = ts.dimensions.copy()
 
         if self._convert_units:
-            xyz = self.convert_pos_to_native(xyz, inplace=False)
-            dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
+            xyz = self.convert_pos_to_native(xyz, inplace=True)
+            dimensions = self.convert_dimensions_to_unitcell(ts, inplace=True)
 
         # we only support writing charmm format unit cell info
         # The DCD unitcell is written as ``[A, gamma, B, beta, alpha, C]``
