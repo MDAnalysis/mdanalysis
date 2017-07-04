@@ -82,10 +82,14 @@ class DCDReader(base.ReaderBase):
     it differently. Currently, MDAnalysis tries to guess the correct **format
     for the unitcell representation** but it can be wrong. **Check the unitcell
     dimensions**, especially for triclinic unitcells (see `Issue 187`_ and
-    :attr:`DCDReader.dimensions`). A second potential issue are the units of
-    time which are AKMA for the :class:`DCDReader` (following CHARMM) but ps
-    for NAMD. As a workaround one can employ the configurable
-    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD trajectories.
+    :attr:`DCDReader.dimensions`). DCD trajectories produced by CHARMM and
+    NAMD( >2.5) record time in AKMA units. If other units have been recorded
+    (e.g., ps) then employ the configurable
+    :class:MDAnalysis.coordinates.LAMMPS.DCDReader and set the time unit as a
+    optional argument. You can find a list of units used in the DCD formats on
+    the MDAnalysis `wiki`_.
+
+    .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
 
     """
     format = 'DCD'
@@ -182,7 +186,7 @@ class DCDReader(base.ReaderBase):
             **kwargs)
 
     def _frame_to_ts(self, frame, ts):
-        """convert a dcd-frame to a mda TimeStep"""
+        """convert a dcd-frame to a :class:`TimeStep`"""
         ts.frame = self._frame
         ts.time = ts.frame * self.ts.dt
         ts.data['step'] = self._file.tell()
@@ -333,14 +337,14 @@ class DCDReader(base.ReaderBase):
 class DCDWriter(base.WriterBase):
     """DCD Writer class
 
-    The writer follows recent NAMD/VMD convention for the unitcell but still
-    writes AKMA time. The unitcell will be written as ``[A, gamma, B, beta,
-    alpha, C]``
+    The writer follows recent NAMD/VMD convention for the unitcell (box lengths
+    in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
+    and writes positions in Å and time in AKMA time units.
 
     """
     format = 'DCD'
     multiframe = True
-    flavor = 'CHARMM'
+    flavor = 'NAMD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self,
@@ -363,20 +367,19 @@ class DCDWriter(base.WriterBase):
         step : int (optional)
             number of steps between frames to be written
         dt : float (optional)
-            use this time step in DCD. If ``None`` guess from first written
-            TimeStep
+            time between two frames. If ``None`` guess from first written
+            :class:`TimeStep`
         remarks : str (optional)
             remarks to be stored in DCD. Shouldn't be more then 240 characters
         nsavc : int (optional)
-            DCD usually saves ``dt`` as the integrator timestep and the
-            frequency of writes in the nsavc variable separately. Unless you
-            know what you are doing you don't need to touch this value.
-            If you plan to use the written DCD with another tool that depends
-            on this behavior you can adjust it with this variable. The DCD
-            reader will then interpret the timestep between frames as ``dt *
-            nsavc``.
+            DCD files can also store the number of integrator time steps that
+            correspond to the interval between two frames as nsavc (i.e., every
+            how many MD steps is a frame saved to the DCD). By default, this
+            number is just set to one and this should be sufficient for almost
+            all cases but if required, nsavc can be changed.
         **kwargs : dict
             General writer arguments
+
         """
         self.filename = filename
         self._convert_units = convert_units
@@ -387,11 +390,12 @@ class DCDWriter(base.WriterBase):
         self.step = step
         self.dt = dt
         dt = mdaunits.convert(dt, 'ps', self.units['time'])
+        delta = float(dt) / nsavc
         self._file.write_header(
             remarks=remarks,
             natoms=self.n_atoms,
             nsavc=nsavc,
-            delta=float(dt),
+            delta=delta,
             is_periodic=1,
             istart=0)
 
