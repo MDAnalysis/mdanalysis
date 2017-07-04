@@ -392,7 +392,7 @@ class DCDWriter(base.WriterBase):
             natoms=self.n_atoms,
             nsavc=nsavc,
             delta=float(dt),
-            charmm=1,
+            is_periodic=1,
             istart=0)
 
     def write_next_timestep(self, ts):

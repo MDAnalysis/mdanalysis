@@ -82,10 +82,9 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
-cdef enum:
-    DCD_IS_CHARMM       = 0x01
-    DCD_HAS_4DIMS       = 0x02
-    DCD_HAS_EXTRA_BLOCK = 0x04
+DCD_IS_CHARMM       = 0x01
+DCD_HAS_4DIMS       = 0x02
+DCD_HAS_EXTRA_BLOCK = 0x04
 
 DCD_ERRORS = {
     0: 'Success',
@@ -120,12 +119,12 @@ cdef extern from 'include/readdcd.h':
                      double *unitcell, int num_fixed,
                      int first, int *indexes, float *fixedcoords,
                      int reverse_endian, int charmm)
-    int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
-                   int istart, int nsavc, double delta, int with_unitcell, 
+    int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
+                   int istart, int nsavc, double delta, int with_unitcell,
                    int charmm);
-    int write_dcdstep(fio_fd fd, int curframe, int curstep, 
-			 int natoms, const float *x, const float *y, const float *z,
-			 const double *unitcell, int charmm);
+    int write_dcdstep(fio_fd fd, int curframe, int curstep,
+             int natoms, const float *x, const float *y, const float *z,
+             const double *unitcell, int charmm);
 
 DCDFrame = namedtuple('DCDFrame', 'xyz unitcell')
 
@@ -177,6 +176,7 @@ cdef class DCDFile:
     cdef float *fixedcoords
     cdef int reverse_endian
     cdef int charmm
+    cdef readonly is_periodic
     cdef remarks
     cdef str mode
     cdef readonly int ndims
@@ -303,6 +303,9 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
+        self.is_periodic = bool((self.charmm & DCD_IS_CHARMM) and
+                                (self.charmm & DCD_HAS_EXTRA_BLOCK))
+
         if c_remarks != NULL:
             py_remarks = <bytes> c_remarks[:len_remarks]
             free(c_remarks)
@@ -347,17 +350,6 @@ cdef class DCDFile:
         nframessize = filesize - self._header_size - self._firstframesize
         return nframessize / self._framesize + 1
 
-    @property
-    def is_periodic(self):
-        """
-        Returns
-        -------
-        bool
-            ``True`` if periodic unitcell is available
-        """
-        return bool((self.charmm & DCD_IS_CHARMM) and
-                    (self.charmm & DCD_HAS_EXTRA_BLOCK))
-
     def seek(self, frame):
         """Seek to Frame.
 
@@ -401,12 +393,32 @@ cdef class DCDFile:
                 'istart': self.istart,
                 'nsavc': self.nsavc,
                 'delta': self.delta,
-                'charmm': self.charmm,
+                'is_periodic': self.is_periodic,
                 'remarks': self.remarks}
 
-    def write_header(self, remarks, natoms, istart, nsavc, delta, charmm):
-        """write DCD header. This function needs to be called before a frame can be
-        written.
+    @property
+    def charmm_bitfield(self):
+        """This DCDFile reader can process files written by different MD simulation
+        programs. For files produced by CHARMM or other programs that follow
+        the same convention we are reading a special CHARMM bitfield that
+        stores different flags about additional information that is stored in
+        the dcd. The bit flags are:
+
+        .. code::
+
+            DCD_IS_CHARMM       = 0x01
+            DCD_HAS_4DIMS       = 0x02
+            DCD_HAS_EXTRA_BLOCK = 0x04
+
+        Here `DCD_HAS_EXTRA_BLOCK` means that unitcell information is stored.
+
+        """
+        return self.charmm
+
+    def write_header(self, remarks, natoms, istart, nsavc, delta, is_periodic):
+        """Write DCD header
+
+        This function needs to be called before the first frame can be written.
 
         Parameters
         ----------
@@ -420,9 +432,8 @@ cdef class DCDFile:
             number of frames between saves
         delta : float
             integrator time step. The time for 1 frame is nsavc * delta
-        charmm : bool
+        is_periodic : bool
             write unitcell information. Also pretends that file was written by CHARMM 24
-
         """
         if not self.is_open:
             raise IOError("No file open")
@@ -431,8 +442,10 @@ cdef class DCDFile:
         if self.wrote_header:
             raise IOError("Header already written")
 
-        cdef int len_remarks = 0
-        cdef int with_unitcell = 1
+        cdef int with_unitcell = is_periodic;
+        if is_periodic:
+            self.charmm = DCD_HAS_EXTRA_BLOCK | DCD_IS_CHARMM
+        self.natoms = natoms
 
         if isinstance(remarks, six.string_types):
             try:
@@ -440,25 +453,22 @@ cdef class DCDFile:
             except UnicodeDecodeError:
                 remarks = bytearray(remarks)
 
-        ok = write_dcdheader(self.fp, remarks, natoms, istart,
+        ok = write_dcdheader(self.fp, remarks, self.natoms, istart,
                              nsavc, delta, with_unitcell,
-                             charmm)
+                             self.charmm)
         if ok != 0:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
-
-        self.charmm = charmm
-        self.natoms = natoms
         self.wrote_header = True
 
-    def write(self, xyz,  box):
+    def write(self, xyz,  box=None):
         """write one frame into DCD file.
 
         Parameters
         ----------
         xyz : array_like, shape=(natoms, 3)
             cartesion coordinates
-        box : array_like, shape=(6)
-            Box vectors for this frame
+        box : array_like, shape=(6) (optional)
+            Box vectors for this frame. Can be left to skip writing a unitcell
 
         """
         if not self.is_open:
@@ -466,8 +476,13 @@ cdef class DCDFile:
         if self.mode != 'w':
             raise IOError('File opened in mode: {}. Writing only allowed '
                           'in mode "w"'.format('self.mode'))
-        if len(box) != 6:
-            raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
+        if (self.charmm & DCD_HAS_EXTRA_BLOCK):
+            if len(box) != 6:
+                raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
+        else:
+            # use a dummy box. It won't be written anyway in readdcd.
+            box = np.zeros(6)
+
         if not self.wrote_header:
             raise IOError("write header first before frames can be written")
         xyz = np.asarray(xyz, order='F', dtype=FLOAT)

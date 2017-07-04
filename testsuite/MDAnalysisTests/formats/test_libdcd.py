@@ -27,7 +27,7 @@ import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_equal,
                            assert_array_equal)
 
-from MDAnalysis.lib.formats.libdcd import DCDFile
+from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
 
 from MDAnalysisTests.datafiles import (
     DCD, DCD_NAMD_TRICLINIC, legacy_DCD_ADK_coords, legacy_DCD_NAMD_coords,
@@ -211,14 +211,14 @@ def test_write_header(tmpdir):
                 istart=12,
                 nsavc=10,
                 delta=0.02,
-                charmm=1)
+                is_periodic=1)
 
         with DCDFile(testfile) as dcd:
             header = dcd.header
             assert header['remarks'] == 'Crazy!'
             assert header['natoms'] == 22
             assert header['istart'] == 12
-            assert header['charmm'] == 5
+            assert header['is_periodic'] == 1
             assert header['nsavc'] == 10
             assert np.allclose(header['delta'], .02)
 
@@ -240,7 +240,7 @@ def test_write_header_twice(tmpdir):
         "istart": 12,
         "nsavc": 10,
         "delta": 0.02,
-        "charmm": 1
+        "is_periodic": 1
     }
 
     with tmpdir.as_cwd():
@@ -261,7 +261,7 @@ def test_write_header_wrong_mode():
                 istart=12,
                 nsavc=10,
                 delta=0.02,
-                charmm=1)
+                is_periodic=1)
 
 
 def test_write_mode():
@@ -315,10 +315,7 @@ def written_dcd(tmpdir_factory):
 def test_written_header(written_dcd):
     header = written_dcd.header
     with DCDFile(written_dcd.testfile) as dcd:
-        # need to pop charmm header for now.
-        header.pop('charmm')
         dcdheader = dcd.header
-        dcdheader.pop('charmm')
         assert dcdheader == header
 
 
@@ -367,7 +364,7 @@ def test_write_all_dtypes(tmpdir, dtype):
             out.write_header(
                 remarks='test',
                 natoms=natoms,
-                charmm=1,
+                is_periodic=1,
                 delta=1,
                 nsavc=1,
                 istart=1)
@@ -384,7 +381,7 @@ def test_write_array_like(tmpdir, array_like):
             out.write_header(
                 remarks='test',
                 natoms=natoms,
-                charmm=1,
+                is_periodic=1,
                 delta=1,
                 nsavc=1,
                 istart=1)
@@ -400,7 +397,7 @@ def test_write_wrong_shape_xyz(tmpdir):
             out.write_header(
                 remarks='test',
                 natoms=natoms,
-                charmm=1,
+                is_periodic=1,
                 delta=1,
                 nsavc=1,
                 istart=1)
@@ -417,7 +414,7 @@ def test_write_wrong_shape_box(tmpdir):
             out.write_header(
                 remarks='test',
                 natoms=natoms,
-                charmm=1,
+                is_periodic=1,
                 delta=1,
                 nsavc=1,
                 istart=1)
@@ -511,7 +508,9 @@ def test_write_random_unitcell(tmpdir):
             high=80, size=(98, 6)).astype(np.float64)
 
         with DCDFile(DCD) as f_in, DCDFile(testname, 'w') as f_out:
-            f_out.write_header(**f_in.header)
+            header = f_in.header
+            header['is_periodic'] = True
+            f_out.write_header(**header)
             for index, frame in enumerate(f_in):
                 f_out.write(xyz=frame.xyz, box=random_unitcells[index])
 
