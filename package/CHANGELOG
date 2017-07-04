@@ -19,7 +19,7 @@ mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de
 
 Enhancements
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
-  * add Python 3 ready DCD reader (Issue #659)
+  * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
 
 Deprecations
 
