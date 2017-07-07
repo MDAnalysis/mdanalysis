@@ -90,23 +90,23 @@ class TestDCDWriter(BaseWriterTest):
 
 
 def test_write_random_unitcell(tmpdir):
-    with tmpdir.as_cwd():
-        testname = 'test.dcd'
-        rstate = np.random.RandomState(1178083)
-        random_unitcells = rstate.uniform(
-            high=80, size=(98, 6)).astype(np.float64)
+    testname = str(tmpdir.join('test.dcd'))
+    testname = 'test.dcd'
+    rstate = np.random.RandomState(1178083)
+    random_unitcells = rstate.uniform(
+        high=80, size=(98, 6)).astype(np.float64)
 
-        u = mda.Universe(PSF, DCD)
-        with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
-            for index, ts in enumerate(u.trajectory):
-                u.atoms.dimensions = random_unitcells[index]
-                w.write(u.atoms)
+    u = mda.Universe(PSF, DCD)
+    with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
+        for index, ts in enumerate(u.trajectory):
+            u.atoms.dimensions = random_unitcells[index]
+            w.write(u.atoms)
 
-        u2 = mda.Universe(PSF, testname)
-        for index, ts in enumerate(u2.trajectory):
-            assert_array_almost_equal(u2.trajectory.dimensions,
-                                      random_unitcells[index],
-                                      decimal=5)
+    u2 = mda.Universe(PSF, testname)
+    for index, ts in enumerate(u2.trajectory):
+        assert_array_almost_equal(u2.trajectory.dimensions,
+                                  random_unitcells[index],
+                                  decimal=5)
 
 
 ################
@@ -224,54 +224,51 @@ def test_writer_dt(tmpdir, ext, decimal):
     dt = 5.0  # set time step to 5 ps
     universe_dcd = mda.Universe(PSF, DCD, dt=dt)
     t = universe_dcd.trajectory
-    outfile = "test.{}".format(ext)
-    with tmpdir.as_cwd():
-        with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt) as W:
-            for ts in universe_dcd.trajectory:
-                W.write(universe_dcd.atoms)
+    outfile = str(tmpdir.join("test.{}".format(ext)))
+    with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt) as W:
+        for ts in universe_dcd.trajectory:
+            W.write(universe_dcd.atoms)
 
-        uw = mda.Universe(PSF, outfile)
-        assert_almost_equal(uw.trajectory.totaltime,
-                            (uw.trajectory.n_frames - 1) * dt, decimal)
-        times = np.array([uw.trajectory.time for ts in uw.trajectory])
-        frames = np.array([ts.frame for ts in uw.trajectory])
-        assert_array_almost_equal(times, frames * dt, decimal)
+    uw = mda.Universe(PSF, outfile)
+    assert_almost_equal(uw.trajectory.totaltime,
+                        (uw.trajectory.n_frames - 1) * dt, decimal)
+    times = np.array([uw.trajectory.time for ts in uw.trajectory])
+    frames = np.array([ts.frame for ts in uw.trajectory])
+    assert_array_almost_equal(times, frames * dt, decimal)
 
 
 @pytest.mark.parametrize("ext, decimal", (("dcd", 5),
                                           ("xtc", 2)))
 def test_other_writer(universe_dcd, tmpdir, ext, decimal):
     t = universe_dcd.trajectory
-    outfile = "test.{}".format(ext)
-    with tmpdir.as_cwd():
-        with t.OtherWriter(outfile) as W:
-            for ts in universe_dcd.trajectory:
-                W.write_next_timestep(ts)
+    outfile = str(tmpdir.join("test.{}".format(ext)))
+    with t.OtherWriter(outfile) as W:
+        for ts in universe_dcd.trajectory:
+            W.write_next_timestep(ts)
 
-        uw = mda.Universe(PSF, outfile)
-        # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in zip(universe_dcd.trajectory,
-                                       uw.trajectory):
-            assert_array_almost_equal(written_ts.positions, orig_ts.positions,
-                                      decimal,
-                                      err_msg="coordinate mismatch between "
-                                      "original and written trajectory at "
-                                      "frame {} (orig) vs {} (written)".format(
-                                          orig_ts.frame, written_ts.frame))
+    uw = mda.Universe(PSF, outfile)
+    # check that the coordinates are identical for each time step
+    for orig_ts, written_ts in zip(universe_dcd.trajectory,
+                                   uw.trajectory):
+        assert_array_almost_equal(written_ts.positions, orig_ts.positions,
+                                  decimal,
+                                  err_msg="coordinate mismatch between "
+                                  "original and written trajectory at "
+                                  "frame {} (orig) vs {} (written)".format(
+                                      orig_ts.frame, written_ts.frame))
 
 
 def test_single_frame(universe_dcd, tmpdir):
     u = universe_dcd
-    outfile = "test.dcd"
-    with tmpdir.as_cwd():
-        with mda.Writer(outfile, u.atoms.n_atoms) as W:
-            W.write(u.atoms)
-        w = mda.Universe(PSF, outfile)
-        assert w.trajectory.n_frames == 1
-        assert_almost_equal(w.atoms.positions,
-                            u.atoms.positions,
-                            3,
-                            err_msg="coordinates do not match")
+    outfile = str(tmpdir.join("test.dcd"))
+    with mda.Writer(outfile, u.atoms.n_atoms) as W:
+        W.write(u.atoms)
+    w = mda.Universe(PSF, outfile)
+    assert w.trajectory.n_frames == 1
+    assert_almost_equal(w.atoms.positions,
+                        u.atoms.positions,
+                        3,
+                        err_msg="coordinates do not match")
 
 
 def test_write_no_natoms():
