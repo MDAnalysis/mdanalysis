@@ -76,26 +76,29 @@ def test_seek_over_max():
             dcd.seek(102)
 
 
+@pytest.fixture
+def dcd():
+    with DCDFile(DCD) as dcd:
+        yield dcd
+
+
 @pytest.mark.parametrize("new_frame", (10, 42, 21))
-def test_seek_normal(new_frame):
+def test_seek_normal(new_frame, dcd):
     # frame seek within range is tested
-    with DCDFile(DCD) as dcd:
-        dcd.seek(new_frame)
-        assert dcd.tell() == new_frame
+    dcd.seek(new_frame)
+    assert dcd.tell() == new_frame
 
 
-def test_seek_negative():
-    with DCDFile(DCD) as dcd:
-        with pytest.raises(IOError):
-            dcd.seek(-78)
+def test_seek_negative(dcd):
+    with pytest.raises(IOError):
+        dcd.seek(-78)
 
 
-def test_iteration():
+def test_iteration(dcd):
     num_iters = 10
-    with DCDFile(DCD) as dcd:
-        for _ in range(num_iters):
-            dcd.__next__()
-        assert dcd.tell() == num_iters
+    for _ in range(num_iters):
+        dcd.__next__()
+    assert dcd.tell() == num_iters
 
 
 def test_open_wrong_mode():
@@ -108,9 +111,8 @@ def test_raise_not_existing():
         DCDFile('foo')
 
 
-def test_zero_based_frames_counting():
-    with DCDFile(DCD) as dcd:
-        assert dcd.tell() == 0
+def test_zero_based_frames_counting(dcd):
+    assert dcd.tell() == 0
 
 
 @pytest.mark.parametrize("dcdfile, natoms",
@@ -121,11 +123,10 @@ def test_natoms(dcdfile, natoms):
         assert dcd.header['natoms'] == natoms
 
 
-def test_read_closed():
-    with DCDFile(DCD) as dcd:
-        dcd.close()
-        with pytest.raises(IOError):
-            dcd.read()
+def test_read_closed(dcd):
+    dcd.close()
+    with pytest.raises(IOError):
+        dcd.read()
 
 
 @pytest.mark.parametrize("dcdfile, nframes",
@@ -137,20 +138,19 @@ def test_length_traj(dcdfile, nframes):
 
 
 def test_read_write_mode_file(tmpdir):
-    with tmpdir.as_cwd():
-        with DCDFile('foo', 'w') as f:
-            with pytest.raises(IOError):
-                f.read()
+    fname = str(tmpdir.join('foo'))
+    with DCDFile(fname, 'w') as f:
+        with pytest.raises(IOError):
+            f.read()
 
 
-def test_iterating_twice():
-    with DCDFile(DCD) as dcd:
-        with dcd as f:
-            for i, _ in enumerate(f):
-                assert_equal(i + 1, f.tell())
-            # second iteration should work from start again
-            for i, _ in enumerate(f):
-                assert_equal(i + 1, f.tell())
+def test_iterating_twice(dcd):
+    with dcd as f:
+        for i, _ in enumerate(f):
+            assert_equal(i + 1, f.tell())
+        # second iteration should work from start again
+        for i, _ in enumerate(f):
+            assert_equal(i + 1, f.tell())
 
 
 DCD_HEADER = '''* DIMS ADK SEQUENCE FOR PORE PROGRAM                                            * WRITTEN BY LIZ DENNING (6.2008)                                               *  DATE:     6/ 6/ 8     17:23:56      CREATED BY USER: denniej0                '''
@@ -202,32 +202,31 @@ def test_readframes(dcdfile, legacy_data, frame_idx):
 def test_write_header(tmpdir):
     # test that _write_header() can produce a very crude
     # header for a new / empty file
-    testfile = 'test.dcd'
-    with tmpdir.as_cwd():
-        with DCDFile(testfile, 'w') as dcd:
-            dcd.write_header(
-                remarks='Crazy!',
-                natoms=22,
-                istart=12,
-                nsavc=10,
-                delta=0.02,
-                is_periodic=1)
+    testfile = str(tmpdir.join('test.dcd'))
+    with DCDFile(testfile, 'w') as dcd:
+        dcd.write_header(
+            remarks='Crazy!',
+            natoms=22,
+            istart=12,
+            nsavc=10,
+            delta=0.02,
+            is_periodic=1)
 
-        with DCDFile(testfile) as dcd:
-            header = dcd.header
-            assert header['remarks'] == 'Crazy!'
-            assert header['natoms'] == 22
-            assert header['istart'] == 12
-            assert header['is_periodic'] == 1
-            assert header['nsavc'] == 10
-            assert np.allclose(header['delta'], .02)
+    with DCDFile(testfile) as dcd:
+        header = dcd.header
+        assert header['remarks'] == 'Crazy!'
+        assert header['natoms'] == 22
+        assert header['istart'] == 12
+        assert header['is_periodic'] == 1
+        assert header['nsavc'] == 10
+        assert np.allclose(header['delta'], .02)
 
 
 def test_write_no_header(tmpdir):
-    with tmpdir.as_cwd():
-        with DCDFile('test.dcd', 'w') as dcd:
-            with pytest.raises(IOError):
-                dcd.write(np.ones(3), np.ones(6))
+    fname = str(tmpdir.join('test.dcd'))
+    with DCDFile(fname, 'w') as dcd:
+        with pytest.raises(IOError):
+            dcd.write(np.ones(3), np.ones(6))
 
 
 def test_write_header_twice(tmpdir):
@@ -243,33 +242,31 @@ def test_write_header_twice(tmpdir):
         "is_periodic": 1
     }
 
-    with tmpdir.as_cwd():
-        with DCDFile('test.dcd', 'w') as dcd:
-            dcd.write_header(**header)
-            with pytest.raises(IOError):
-                dcd.write_header(**header)
-
-
-def test_write_header_wrong_mode():
-    # an exception should be raised on any attempt to use
-    # _write_header with a DCDFile object in 'r' mode
-    with DCDFile(DCD) as dcd:
+    fname = str(tmpdir.join('test.dcd'))
+    with DCDFile(fname, 'w') as dcd:
+        dcd.write_header(**header)
         with pytest.raises(IOError):
-            dcd.write_header(
-                remarks='Crazy!',
-                natoms=22,
-                istart=12,
-                nsavc=10,
-                delta=0.02,
-                is_periodic=1)
+            dcd.write_header(**header)
 
 
-def test_write_mode():
+def test_write_header_wrong_mode(dcd):
+    # an exception should be raised on any attempt to use
+    # write_header with a DCDFile object in 'r' mode
+    with pytest.raises(IOError):
+        dcd.write_header(
+            remarks='Crazy!',
+            natoms=22,
+            istart=12,
+            nsavc=10,
+            delta=0.02,
+            is_periodic=1)
+
+
+def test_write_mode(dcd):
     # ensure that writing of DCD files only occurs with properly
     # opened files
-    with DCDFile(DCD) as dcd:
-        with pytest.raises(IOError):
-            dcd.write(xyz=np.zeros((3, 3)), box=np.zeros(6, dtype=np.float64))
+    with pytest.raises(IOError):
+        dcd.write(xyz=np.zeros((3, 3)), box=np.zeros(6, dtype=np.float64))
 
 
 def write_dcd(in_name, out_name, remarks='testing', header=None):
@@ -285,19 +282,16 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
     alphabet=string.printable, min_size=0,
     max_size=240))  # handle the printable ASCII strings
 @example(remarks='')
-def test_written_remarks_property(remarks, tmpdir):
+def test_written_remarks_property(remarks, tmpdir, dcd):
     # property based testing for writing of a wide range of string
     # values to REMARKS field
-    testfile = 'test.dcd'
-    with DCDFile(DCD) as dcd:
-        header = dcd.header
-
-    with tmpdir.as_cwd():
-        header['remarks'] = remarks
-        write_dcd(DCD, testfile, header=header)
-        expected_remarks = remarks[:240]
-        with DCDFile(testfile) as f:
-            assert f.header['remarks'] == expected_remarks
+    testfile = str(tmpdir.join('test.dcd'))
+    header = dcd.header
+    header['remarks'] = remarks
+    write_dcd(DCD, testfile, header=header)
+    expected_remarks = remarks[:240]
+    with DCDFile(testfile) as f:
+        assert f.header['remarks'] == expected_remarks
 
 
 @pytest.fixture(scope='session')
@@ -356,70 +350,70 @@ def test_written_unit_cell(written_dcd):
 @pytest.mark.parametrize(
     "dtype", (np.int32, np.int64, np.float32, np.float64, int, float))
 def test_write_all_dtypes(tmpdir, dtype):
-    with tmpdir.as_cwd():
-        with DCDFile('foo.dcd', 'w') as out:
-            natoms = 10
-            xyz = np.ones((natoms, 3), dtype=dtype)
-            box = np.ones(6, dtype=dtype)
-            out.write_header(
-                remarks='test',
-                natoms=natoms,
-                is_periodic=1,
-                delta=1,
-                nsavc=1,
-                istart=1)
-            out.write(xyz=xyz, box=box)
+    fname = str(tmpdir.join('foo.dcd'))
+    with DCDFile(fname, 'w') as out:
+        natoms = 10
+        xyz = np.ones((natoms, 3), dtype=dtype)
+        box = np.ones(6, dtype=dtype)
+        out.write_header(
+            remarks='test',
+            natoms=natoms,
+            is_periodic=1,
+            delta=1,
+            nsavc=1,
+            istart=1)
+        out.write(xyz=xyz, box=box)
 
 
 @pytest.mark.parametrize("array_like", (np.array, list))
 def test_write_array_like(tmpdir, array_like):
-    with tmpdir.as_cwd():
-        with DCDFile('foo.dcd', 'w') as out:
-            natoms = 10
-            xyz = array_like([[1, 1, 1] for i in range(natoms)])
-            box = array_like([i for i in range(6)])
-            out.write_header(
-                remarks='test',
-                natoms=natoms,
-                is_periodic=1,
-                delta=1,
-                nsavc=1,
-                istart=1)
-            out.write(xyz=xyz, box=box)
+    fname = str(tmpdir.join('foo.dcd'))
+    with DCDFile(fname, 'w') as out:
+        natoms = 10
+        xyz = array_like([[1, 1, 1] for i in range(natoms)])
+        box = array_like([i for i in range(6)])
+        out.write_header(
+            remarks='test',
+            natoms=natoms,
+            is_periodic=1,
+            delta=1,
+            nsavc=1,
+            istart=1)
+        out.write(xyz=xyz, box=box)
 
 
 def test_write_wrong_shape_xyz(tmpdir):
-    with tmpdir.as_cwd():
-        with DCDFile("foo.dcd", 'w') as out:
-            natoms = 10
-            xyz = np.ones((natoms + 1, 3))
-            box = np.ones(6)
-            out.write_header(
-                remarks='test',
-                natoms=natoms,
-                is_periodic=1,
-                delta=1,
-                nsavc=1,
-                istart=1)
-            with pytest.raises(ValueError):
-                out.write(xyz=xyz, box=box)
+    fname = str(tmpdir.join('foo.dcd'))
+    with DCDFile(fname, 'w') as out:
+        natoms = 10
+        xyz = np.ones((natoms + 1, 3))
+        box = np.ones(6)
+        out.write_header(
+            remarks='test',
+            natoms=natoms,
+            is_periodic=1,
+            delta=1,
+            nsavc=1,
+            istart=1)
+        with pytest.raises(ValueError):
+            out.write(xyz=xyz, box=box)
 
 
 def test_write_wrong_shape_box(tmpdir):
-    with tmpdir.as_cwd():
-        with DCDFile("foo.dcd", 'w') as out:
-            natoms = 10
-            xyz = np.ones((natoms, 3))
-            box = np.ones(7)
-            out.write_header(
-                remarks='test',
-                natoms=natoms,
-                is_periodic=1,
-                delta=1,
-                nsavc=1,
-                istart=1)
-            with pytest.raises(ValueError):
-                out.write(xyz=xyz, box=box)
+    fname = str(tmpdir.join('foo.dcd'))
+    with DCDFile(fname, 'w') as out:
+        natoms = 10
+        xyz = np.ones((natoms, 3))
+        box = np.ones(7)
+        out.write_header(
+            remarks='test',
+            natoms=natoms,
+            is_periodic=1,
+            delta=1,
+            nsavc=1,
+            istart=1)
+        with pytest.raises(ValueError):
+            out.write(xyz=xyz, box=box)
 
 
 @pytest.mark.parametrize("dcdfile", (DCD, DCD_TRICLINIC, DCD_NAMD_TRICLINIC))
@@ -466,14 +460,13 @@ def test_nframessize_int(dcdfile):
      ([1, 2, 1], 1), ([1, 2, 2], 1), ([1, 4, 2], 2), ([1, 4, 4], 1),
      ([0, 5, 5], 1), ([3, 5, 1], 2), ([4, 0, -1], 4), ([5, 0, -2], 3),
      ([5, 0, -4], 2)])
-def test_readframes_slices(slice, length):
+def test_readframes_slices(slice, length, dcd):
     start, stop, step = slice
-    with DCDFile(DCD) as dcd:
-        allframes = dcd.readframes().xyz
-        frames = dcd.readframes(start=start, stop=stop, step=step)
-        xyz = frames.xyz
-        assert len(xyz) == length
-        assert_array_almost_equal(xyz, allframes[start:stop:step])
+    allframes = dcd.readframes().xyz
+    frames = dcd.readframes(start=start, stop=stop, step=step)
+    xyz = frames.xyz
+    assert len(xyz) == length
+    assert_array_almost_equal(xyz, allframes[start:stop:step])
 
 
 @pytest.mark.parametrize("order, shape", (
@@ -483,38 +476,36 @@ def test_readframes_slices(slice, length):
     ('acf', (3341, 3, 98)),
     ('caf', (3, 3341, 98)),
     ('cfa', (3, 98, 3341)), ))
-def test_readframes_order(order, shape):
-    with DCDFile(DCD) as dcd:
-        x = dcd.readframes(order=order).xyz
-        assert x.shape == shape
+def test_readframes_order(order, shape, dcd):
+    x = dcd.readframes(order=order).xyz
+    assert x.shape == shape
 
 
 @pytest.mark.parametrize("indices", [[1, 2, 3, 4], [5, 10, 15, 19],
                                      [9, 4, 2, 0, 50]])
-def test_readframes_atomindices(indices):
-    with DCDFile(DCD) as dcd:
-        allframes = dcd.readframes(order='afc').xyz
-        frames = dcd.readframes(indices=indices, order='afc')
-        xyz = frames.xyz
-        assert len(xyz) == len(indices)
-        assert_array_almost_equal(xyz, allframes[indices])
+def test_readframes_atomindices(indices, dcd):
+    allframes = dcd.readframes(order='afc').xyz
+    frames = dcd.readframes(indices=indices, order='afc')
+    xyz = frames.xyz
+    assert len(xyz) == len(indices)
+    assert_array_almost_equal(xyz, allframes[indices])
 
 
 def test_write_random_unitcell(tmpdir):
-    with tmpdir.as_cwd():
-        testname = 'test.dcd'
-        rstate = np.random.RandomState(1178083)
-        random_unitcells = rstate.uniform(
-            high=80, size=(98, 6)).astype(np.float64)
+    testname = str(tmpdir.join('test.dcd'))
+    testname = 'test.dcd'
+    rstate = np.random.RandomState(1178083)
+    random_unitcells = rstate.uniform(
+        high=80, size=(98, 6)).astype(np.float64)
 
-        with DCDFile(DCD) as f_in, DCDFile(testname, 'w') as f_out:
-            header = f_in.header
-            header['is_periodic'] = True
-            f_out.write_header(**header)
-            for index, frame in enumerate(f_in):
-                f_out.write(xyz=frame.xyz, box=random_unitcells[index])
+    with DCDFile(DCD) as f_in, DCDFile(testname, 'w') as f_out:
+        header = f_in.header
+        header['is_periodic'] = True
+        f_out.write_header(**header)
+        for index, frame in enumerate(f_in):
+            f_out.write(xyz=frame.xyz, box=random_unitcells[index])
 
-        with DCDFile(testname) as test:
-            for index, frame in enumerate(test):
-                assert_array_almost_equal(frame.unitcell,
-                                          random_unitcells[index])
+    with DCDFile(testname) as test:
+        for index, frame in enumerate(test):
+            assert_array_almost_equal(frame.unitcell,
+                                      random_unitcells[index])
