@@ -445,8 +445,8 @@ class NCDFReader(base.ReaderBase):
         self.trjfile = scipy.io.netcdf.netcdf_file(self.filename,
                                                    mmap=self._mmap)
 
-        if not ('AMBER' in self.trjfile.Conventions.split(',') or
-                'AMBER' in self.trjfile.Conventions.split()):
+        if not ('AMBER' in self.trjfile.Conventions.decode('utf-8').split(',') or
+                'AMBER' in self.trjfile.Conventions.decode('utf-8').split()):
             errmsg = ("NCDF trajectory {0} does not conform to AMBER "
                       "specifications, http://ambermd.org/netcdf/nctraj.html "
                       "('AMBER' must be one of the tokens in attribute "
@@ -482,12 +482,12 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        if self.trjfile.variables['time'].units != "picosecond":
+        if self.trjfile.variables['time'].units.decode('utf-8') != "picosecond":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written "
                 "with a time unit of picoseconds and not {0}.".format(
                     self.trjfile.variables['time'].units))
-        if self.trjfile.variables['coordinates'].units != "angstrom":
+        if self.trjfile.variables['coordinates'].units.decode('utf-8') != "angstrom":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written "
                 "with a length unit of Angstroem and not {0}.".format(
