@@ -30,6 +30,7 @@ import numpy as np
 import sys
 import warnings
 
+import pytest
 from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
                            assert_warns)
 
@@ -826,20 +827,22 @@ class TestEncoreConfDistMatrix(TestCase):
         dm = confdistmatrix.get_distance_matrix(u)
 
 class TestEncoreImportWarnings(object):
-    def setUp(self):
-        # clear cache of encore module
+    @block_import('sklearn')
+    def _check_sklearn_import_warns(self, package, recwarn):
         for mod in list(sys.modules):  # list as we're changing as we iterate
             if 'encore' in mod:
                 sys.modules.pop(mod, None)
-
-    @block_import('sklearn')
-    def _check_sklearn_import_warns(self, package):
         warnings.simplefilter('always')
-        assert_warns(ImportWarning, importlib.import_module, package)
+        # assert_warns(ImportWarning, importlib.import_module, package)
+        importlib.import_module(package)
+        assert recwarn.pop(ImportWarning)
 
-    def test_import_warnings(self):
+    def test_import_warnings(self, recwarn):
+        for mod in list(sys.modules):  # list as we're changing as we iterate
+            if 'encore' in mod:
+                sys.modules.pop(mod, None)
         for pkg in (
                 'MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod',
                 'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
         ):
-            yield self._check_sklearn_import_warns, pkg
+            self._check_sklearn_import_warns(pkg, recwarn)
