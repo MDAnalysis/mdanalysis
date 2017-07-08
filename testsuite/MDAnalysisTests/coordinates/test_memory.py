@@ -37,7 +37,7 @@ class MemoryReference(BaseReference):
                 'DCD parser not available. Are you using python 3?')
     def __init__(self):
         super(MemoryReference, self).__init__()
-        
+
         self.topology = PSF
         self.trajectory = DCD
         self.universe = mda.Universe(PSF, DCD)
@@ -103,7 +103,7 @@ class TestMemoryReader(MultiframeReaderTest):
         universe2 = mda.Universe(PSF, DCD, in_memory=True, order='fac')
         assert_equal(universe1.trajectory.get_array().shape,
                      universe2.trajectory.get_array().shape)
-        
+
     def test_iteration(self):
         frames = 0
         for i, frame in enumerate(self.reader):

@@ -52,8 +52,7 @@ class TestBaseTimestep(BaseTimestepTest):
 
         # can't do TRR Timestep here as it always has vels and forces
         # so isn't actually equal to a position only timestep
-        for otherTS in [mda.coordinates.DCD.Timestep,
-                        mda.coordinates.TRJ.Timestep,
+        for otherTS in [mda.coordinates.TRJ.Timestep,
                         mda.coordinates.DMS.Timestep,
                         mda.coordinates.GRO.Timestep,
                         mda.coordinates.TRZ.Timestep,

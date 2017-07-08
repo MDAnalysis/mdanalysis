@@ -31,8 +31,8 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS}"
     - SETUP_CMD=""
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
-    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib scipy griddataformats pytest-cov pytest-xdist"
-    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy griddataformats seaborn coveralls clustalw=2.1 pytest-cov pytest-xdist"
+    - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib scipy griddataformats pytest-cov pytest-xdist hypothesis"
+    - CONDA_ALL_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib netcdf4 scikit-learn scipy griddataformats seaborn coveralls clustalw=2.1 pytest-cov pytest-xdist hypothesis"
     # Install griddataformats from PIP so that scipy is only installed in the full build (#1147)
     - PIP_DEPENDENCIES='pytest-raises'
     - CONDA_CHANNELS='biobuilds conda-forge'

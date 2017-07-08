@@ -70,7 +70,7 @@ static int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart, int *
  *               unitcell holds unit cell data if present.
  */
 static int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z, 
-                        float *unitcell, int nfixed, int first, int *freeind, 
+                        double *unitcell, int nfixed, int first, int *freeind,
                         float *fixedcoords, int reverse, int charmm);
 
 /*
@@ -89,7 +89,7 @@ static int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z,
  * 							 unitcell holds unit cell data if present.
  */
 static int read_dcdsubset(fio_fd fd, int natoms, int lowerb, int upperb, float *x, float *y, float *z,
-			  float *unitcell, int nfixed, int first, int *freeind, 
+			  double *unitcell, int nfixed, int first, int *freeind,
 			  float *fixedcoords, int reverse, int charmm);
 
 /* 
@@ -136,7 +136,7 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
  * Output: 0 on success, negative error code on failure.
  * Side effects: coordinates are written to the dcd file.
  */
-static int write_dcdstep(fio_fd fd, int curstep, int curframe, 
+static int write_dcdstep(fio_fd fd, int curframe, int curstep, 
 			 int natoms, const float *x, const float *y, const float *z,
 			 const double *unitcell, int charmm);
 
@@ -357,7 +357,7 @@ static int read_dcdheader(fio_fd fd, int *N, int *NSET, int *ISTART,
 }
 
 static int read_charmm_extrablock(fio_fd fd, int charmm, int reverseEndian,
-                                  float *unitcell) {
+                                  double *unitcell) {
   int i, input_integer;
 
   if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_EXTRA_BLOCK)) {
@@ -370,7 +370,7 @@ static int read_charmm_extrablock(fio_fd fd, int charmm, int reverseEndian,
       if (fio_fread(tmp, 48, 1, fd) != 1) return DCD_BADREAD;
       if (reverseEndian) 
         swap8_aligned(tmp, 6);
-      for (i=0; i<6; i++) unitcell[i] = (float)tmp[i];
+      for (i=0; i<6; i++) unitcell[i] = tmp[i];
     } else {
       /* unrecognized block, just skip it */
       if (fio_fseek(fd, input_integer, FIO_SEEK_CUR)) return DCD_BADREAD;
@@ -426,7 +426,7 @@ static int read_charmm_4dim(fio_fd fd, int charmm, int reverseEndian) {
 
 /* XXX This is completely broken for fixed coordinates */
 static int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y, float *Z,
-			  float *unitcell, int num_fixed, int first, int *indexes, float *fixedcoords,
+			  double *unitcell, int num_fixed, int first, int *indexes, float *fixedcoords,
 			  int reverseEndian, int charmm) {
   //int ret_val;   /* Return value from read */
   fio_size_t seekpos;
@@ -496,11 +496,12 @@ static int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, fl
   } else {
     return DCD_BADFORMAT;
   }
+
   return DCD_SUCCESS;
 }
 
 static int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z, 
-                        float *unitcell, int num_fixed,
+                        double *unitcell, int num_fixed,
                         int first, int *indexes, float *fixedcoords, 
                         int reverseEndian, int charmm) {
   int ret_val;   /* Return value from read */
@@ -692,10 +693,9 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
 			   int charmm) {
   int out_integer;
   float out_float;
-  char title_string[200];
+  char title_string[241];
   time_t cur_time;
   struct tm *tmbuf;
-  char time_str[81];
 
   out_integer = 84;
   WRITE(fd, (char *) & out_integer, sizeof(int));
@@ -736,16 +736,10 @@ static int write_dcdheader(fio_fd fd, const char *remarks, int N,
   }
   fio_write_int32(fd, 84);
   fio_write_int32(fd, 164);
-  fio_write_int32(fd, 2);
+  fio_write_int32(fd, 3); /* the number of 80 character title strings */
 
-  strncpy(title_string, remarks, 80);
-  title_string[79] = '\0';
-  WRITE(fd, title_string, 80);
-
-  cur_time=time(NULL);
-  tmbuf=localtime(&cur_time);
-  strftime(time_str, 80, "REMARKS Created %d %B, %Y at %R", tmbuf);
-  WRITE(fd, time_str, 80);
+  strncpy(title_string, remarks, 240);
+  WRITE(fd, title_string, 240);
 
   fio_write_int32(fd, 164);
   fio_write_int32(fd, 4);

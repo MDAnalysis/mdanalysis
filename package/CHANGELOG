@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti
+mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de
 
   * 0.17.0
 
 Enhancements
+  * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
+  * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
 
 Deprecations
 
