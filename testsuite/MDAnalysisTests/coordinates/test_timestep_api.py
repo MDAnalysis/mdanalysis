@@ -46,7 +46,6 @@ import pytest
 class TestBaseTimestep(BaseTimestepTest):
     @pytest.mark.skipif(parser_not_found('DCD'), reason='DCD parser not available. Are you using python 3?')
     @pytest.mark.parametrize('otherTS', [
-        mda.coordinates.DCD.Timestep,
         mda.coordinates.TRJ.Timestep,
         mda.coordinates.DMS.Timestep,
         mda.coordinates.GRO.Timestep,
