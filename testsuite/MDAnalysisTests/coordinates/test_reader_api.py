@@ -184,25 +184,18 @@ class TestMultiFrameReader(_Multi):
 
         assert_raises(TypeError, sl)
 
+    @pytest.mark.parametrize('slice_cls', [list, np.array])
     @pytest.mark.parametrize('sl', [
         [0, 1, 4, 5],
-        np.array([0, 1, 4, 5]),
         [5, 1, 6, 2, 7, 3, 8],
-        np.array([5, 1, 6, 2, 7, 3, 8]),
         [0, 1, 1, 1, 0, 0, 2, 3, 4],
-        np.array([0, 1, 1, 1, 0, 0, 2, 3, 4]),
-
         [True, False, True, False, True, False, True, False, True, False],
         [True, True, False, False, True, True, False, True, False, True],
         [True, True, True, True, True, True, True, True, True, True],
         [False, False, False, False, False, False, False, False, False, False],
-
-        np.array([True, False, True, False, True, False, True, False, True, False],dtype=np.bool),
-        np.array([True, True, False, False, True, True, False, True, False, True], dtype=np.bool),
-        np.array([True, True, True, True, True, True, True, True, True, True], dtype=np.bool),
-        np.array([False, False, False, False, False, False, False, False, False, False], dtype=np.bool),
     ])
-    def test_getitem(self, sl, reader):
+    def test_getitem(self, slice_cls, sl, reader):
+        sl = slice_cls(sl)
         res = [ts.frame for ts in reader[sl]]
 
         sl = np.asarray(sl)
