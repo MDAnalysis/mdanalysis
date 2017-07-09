@@ -151,7 +151,7 @@ try:
     import netCDF4
 except ImportError:
     netCDF4 = None
-    logger.warn("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
+    logger.warning("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
@@ -445,20 +445,20 @@ class NCDFReader(base.ReaderBase):
         self.trjfile = scipy.io.netcdf.netcdf_file(self.filename,
                                                    mmap=self._mmap)
 
-        if not ('AMBER' in self.trjfile.Conventions.split(',') or
-                'AMBER' in self.trjfile.Conventions.split()):
+        if not ('AMBER' in self.trjfile.Conventions.decode('utf-8').split(',') or
+                'AMBER' in self.trjfile.Conventions.decode('utf-8').split()):
             errmsg = ("NCDF trajectory {0} does not conform to AMBER "
                       "specifications, http://ambermd.org/netcdf/nctraj.html "
                       "('AMBER' must be one of the tokens in attribute "
                       "Conventions)".format(self.filename))
             logger.fatal(errmsg)
             raise TypeError(errmsg)
-        if not self.trjfile.ConventionVersion == self.version:
+        if not self.trjfile.ConventionVersion.decode('utf-8') == self.version:
             wmsg = ("NCDF trajectory format is {0!s} but the reader "
                     "implements format {1!s}".format(
                         self.trjfile.ConventionVersion, self.version))
             warnings.warn(wmsg)
-            logger.warn(wmsg)
+            logger.warning(wmsg)
 
         self.n_atoms = self.trjfile.dimensions['atom']
         self.n_frames = self.trjfile.dimensions['frame']
@@ -482,12 +482,12 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        if self.trjfile.variables['time'].units != "picosecond":
+        if self.trjfile.variables['time'].units.decode('utf-8') != "picosecond":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written "
                 "with a time unit of picoseconds and not {0}.".format(
                     self.trjfile.variables['time'].units))
-        if self.trjfile.variables['coordinates'].units != "angstrom":
+        if self.trjfile.variables['coordinates'].units.decode('utf-8') != "angstrom":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written "
                 "with a length unit of Angstroem and not {0}.".format(
@@ -770,7 +770,7 @@ class NCDFWriter(base.WriterBase):
                                                  mmap=False)
             wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
                    "scipy.io.netcdf implementation for writing."
-            logger.warn(wmsg)
+            logger.warning(wmsg)
             warnings.warn(wmsg)
 
         # Set global attributes.
