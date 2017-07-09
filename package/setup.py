@@ -524,12 +524,7 @@ if __name__ == '__main__':
           },
           test_suite="MDAnalysisTests",
           tests_require=[
-              'nose>=1.3.7',
-              'pytest>=3.1.2',
-              'pytest-cov',
-              'pytest-xdist',
-              'hypothesis',
-              'MDAnalysisTests=={0}'.format(RELEASE),  # same as this release!
+              'MDAnalysisTests=={0!s}'.format(RELEASE),  # same as this release!
           ],
           zip_safe=False,  # as a zipped egg the *.so files are not found (at
                            # least in Ubuntu/Linux)
