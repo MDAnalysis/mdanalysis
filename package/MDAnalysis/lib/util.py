@@ -291,7 +291,7 @@ else:
     bz2_open = bz2.open
 
 
-def anyopen(datasource, mode='r', reset=True):
+def anyopen(datasource, mode='rt', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
     `datasource` can be a filename or a stream (see :func:`isstream`). By
