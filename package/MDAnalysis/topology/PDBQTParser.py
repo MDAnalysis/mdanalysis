@@ -119,7 +119,7 @@ class PDBQTParser(TopologyReaderBase):
         charges = []
         atomtypes = []
 
-        with util.openany(self.filename, 'r') as f:
+        with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()
                 if not line.startswith(('ATOM', 'HETATM')):

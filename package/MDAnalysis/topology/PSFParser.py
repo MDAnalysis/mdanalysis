@@ -102,7 +102,7 @@ class PSFParser(TopologyReaderBase):
         MDAnalysis *Topology* object
         """
         # Open and check psf validity
-        with openany(self.filename, 'r') as psffile:
+        with openany(self.filename) as psffile:
             header = next(psffile)
             if not header.startswith("PSF"):
                 err = ("{0} is not valid PSF file (header = {1})"

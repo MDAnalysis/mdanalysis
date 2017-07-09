@@ -146,7 +146,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
     def _read_first_frame(self):
         coords = []
         unitcell = np.zeros(6, dtype=np.float32)
-        with util.openany(self.filename, 'r') as pdbfile:
+        with util.openany(self.filename) as pdbfile:
             for line in pdbfile:
                 # Should only break at the 'END' of a model definition
                 # and prevent premature exit for a torsion termination

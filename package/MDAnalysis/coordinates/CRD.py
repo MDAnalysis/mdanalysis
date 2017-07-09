@@ -61,7 +61,7 @@ class CRDReader(base.SingleFrameReaderBase):
         #      (2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)
         #      iatom,ires,resn,typr,x,y,z,segid,orig_resid,wmain
         coords_list = []
-        with util.openany(self.filename, 'r') as crdfile:
+        with util.openany(self.filename) as crdfile:
             extended = False
             natoms = 0
             for linenum, line in enumerate(crdfile):

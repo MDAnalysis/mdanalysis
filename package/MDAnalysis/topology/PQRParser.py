@@ -109,7 +109,7 @@ class PQRParser(TopologyReaderBase):
         charges = []
         radii = []
 
-        with openany(self.filename, 'r') as f:
+        with openany(self.filename) as f:
             for line in f:
                 if line.startswith(("ATOM", "HETATM")):
                     fields = line.split()

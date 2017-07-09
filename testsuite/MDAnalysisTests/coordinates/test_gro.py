@@ -396,7 +396,7 @@ class TestGROLargeWriter(BaseWriterTest):
         u.atoms.write(outfile)
 
         with open(outfile, 'rt') as mda_output:
-            with mda.lib.util.anyopen(self.ref.topology, 'rt') as expected_output:
+            with mda.lib.util.anyopen(self.ref.topology) as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,

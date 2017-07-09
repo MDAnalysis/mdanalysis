@@ -83,7 +83,7 @@ class GROParser(TopologyReaderBase):
         """Return the *Topology* object for this file"""
         # Gro has the following columns
         # resid, resname, name, index, (x,y,z)
-        with openany(self.filename, 'rt') as inf:
+        with openany(self.filename) as inf:
             next(inf)
             n_atoms = int(next(inf))
 

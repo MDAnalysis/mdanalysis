@@ -150,7 +150,7 @@ class PDBParser(TopologyReaderBase):
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
-        with util.openany(self.filename, mode='rt') as f:
+        with util.openany(self.filename ) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -287,7 +287,7 @@ class PDBParser(TopologyReaderBase):
         mapping = dict((s, i) for i, s in enumerate(serials))
 
         bonds = set()
-        with util.openany(self.filename, "r") as f:
+        with util.openany(self.filename) as f:
             lines = (line for line in f if line[:6] == "CONECT")
             for line in lines:
                 atom, atoms = _parse_conect(line.strip())
