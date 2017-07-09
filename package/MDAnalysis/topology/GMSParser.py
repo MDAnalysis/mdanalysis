@@ -89,7 +89,7 @@ class GMSParser(TopologyReaderBase):
         names = []
         at_charges = []
 
-        with openany(self.filename, 'rt') as inf:
+        with openany(self.filename) as inf:
             while True:
                 line = inf.readline()
                 if not line:

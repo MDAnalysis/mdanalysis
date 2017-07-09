@@ -124,7 +124,7 @@ class PQRReader(base.SingleFrameReaderBase):
     def _read_first_frame(self):
         coords = []
         unitcell = np.zeros(6, dtype=np.float32)
-        with util.openany(self.filename, 'r') as pqrfile:
+        with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()

@@ -158,7 +158,7 @@ class DATAParser(TopologyReaderBase):
     format = 'DATA'
 
     def iterdata(self):
-        with openany(self.filename, 'r') as f:
+        with openany(self.filename) as f:
             for line in f:
                 line = line.partition('#')[0].strip()
                 if line:
@@ -561,7 +561,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
             self.title = "LAMMPS data file"
         else:
             # Open and check validity
-            with openany(filename, 'r') as file:
+            with openany(filename) as file:
                 file_iter = file.xreadlines()
                 self.title = file_iter.next()
                 # Parse headers
@@ -584,7 +584,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
 
             # Parse sections
             # XXX This is a crappy way to do it
-            with openany(filename, 'r') as file:
+            with openany(filename) as file:
                 file_iter = file.xreadlines()
                 # Create coordinate array
                 positions = np.zeros((headers['atoms'], 3), np.float64)

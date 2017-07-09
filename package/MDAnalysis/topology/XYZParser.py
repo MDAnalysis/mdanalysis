@@ -78,7 +78,7 @@ class XYZParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        with openany(self.filename, 'rt') as inf:
+        with openany(self.filename) as inf:
             natoms = int(inf.readline().strip())
             inf.readline()
 

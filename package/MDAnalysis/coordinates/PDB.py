@@ -272,7 +272,7 @@ class PDBReader(base.ReaderBase):
         models = []
         crysts = []
 
-        pdbfile = self._pdbfile = util.anyopen(filename, 'rt')
+        pdbfile = self._pdbfile = util.anyopen(filename)
 
         line = "magical"
         while line:
@@ -335,7 +335,7 @@ class PDBReader(base.ReaderBase):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
         self.close()
-        self._pdbfile = util.anyopen(self.filename, 'rt')
+        self._pdbfile = util.anyopen(self.filename)
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):

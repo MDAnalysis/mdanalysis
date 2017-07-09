@@ -222,7 +222,7 @@ def filename(name, ext=None, keep=False):
 
 
 @contextmanager
-def openany(datasource, mode='r', reset=True):
+def openany(datasource, mode='rt', reset=True):
     """Context manager for :func:`anyopen`.
 
     Open the `datasource` and close it when the context of the :keyword:`with`
