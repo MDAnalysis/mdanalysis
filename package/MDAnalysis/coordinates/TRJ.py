@@ -151,7 +151,7 @@ try:
     import netCDF4
 except ImportError:
     netCDF4 = None
-    logger.warn("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
+    logger.warning("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
@@ -453,12 +453,12 @@ class NCDFReader(base.ReaderBase):
                       "Conventions)".format(self.filename))
             logger.fatal(errmsg)
             raise TypeError(errmsg)
-        if not self.trjfile.ConventionVersion == self.version:
+        if not self.trjfile.ConventionVersion.decode('utf-8') == self.version:
             wmsg = ("NCDF trajectory format is {0!s} but the reader "
                     "implements format {1!s}".format(
                         self.trjfile.ConventionVersion, self.version))
             warnings.warn(wmsg)
-            logger.warn(wmsg)
+            logger.warning(wmsg)
 
         self.n_atoms = self.trjfile.dimensions['atom']
         self.n_frames = self.trjfile.dimensions['frame']
@@ -770,7 +770,7 @@ class NCDFWriter(base.WriterBase):
                                                  mmap=False)
             wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
                    "scipy.io.netcdf implementation for writing."
-            logger.warn(wmsg)
+            logger.warning(wmsg)
             warnings.warn(wmsg)
 
         # Set global attributes.
