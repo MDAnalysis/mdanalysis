@@ -218,6 +218,7 @@ For details see the report for `Issue 87`_.
               'pytest>=3.1.2',
               'pytest-cov',
               'pytest-xdist',
+              'pytest-raises',
               'hypothesis',
               'psutil>=4.0.2',
               'mock>=2.0.0',
