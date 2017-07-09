@@ -60,8 +60,8 @@ class _NCDFReaderTest(_TRJReaderTest):
 
     def test_metadata(self):
         data = self.universe.trajectory.trjfile
-        assert_equal(data.Conventions, 'AMBER')
-        assert_equal(data.ConventionVersion, '1.0')
+        assert_equal(data.Conventions.decode('utf-8'), 'AMBER')
+        assert_equal(data.ConventionVersion.decode('utf-8'), '1.0')
 
     def test_dt(self):
         ref = 0.0
