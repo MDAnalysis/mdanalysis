@@ -413,8 +413,10 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         # the frame being read): the current step should be assigned to a
         # previous frame, and the next step to either the frame being read or a
         # following frame. Move to right position if not.
-        if not (self.step_to_frame(self.step, ts) < ts.frame
-                and self.step_to_frame(self.step+1, ts) >= ts.frame):
+        frame_for_step = self.step_to_frame(self.step, ts)
+        frame_for_next_step = self.step_to_frame(self.step+1, ts)
+        if (self.step != -1
+                and not (frame_for_step < ts.frame <= frame_for_next_step)):
             self.move_to_ts(ts)
 
         self._reset_frame_data() # clear previous frame data

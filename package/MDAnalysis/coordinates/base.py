@@ -1559,7 +1559,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         aux = self._check_for_aux(auxname)
         ts = self.ts
         # catch up auxiliary if it starts earlier than trajectory
-        while aux.step_to_frame(aux.step + 1, ts) < 0:
+        while aux.step_to_frame(aux.step + 1, ts) is None:
             next(aux)
         # find the next frame that'll have a representative value
         next_frame = aux.next_nonempty_frame(ts)
@@ -1586,7 +1586,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         self._reopen()
         aux._restart()
         while True:
-            yield self.next_as_aux(auxname)
+            try:
+                yield self.next_as_aux(auxname)
+            except StopIteration:
+                return
 
     def iter_auxiliary(self, auxname, start=None, stop=None, step=None,
                        selected=None):
