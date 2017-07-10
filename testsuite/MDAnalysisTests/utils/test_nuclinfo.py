@@ -32,6 +32,7 @@ from __future__ import absolute_import
 
 import numpy as np
 import MDAnalysis
+import pytest
 
 from MDAnalysis.analysis import nuclinfo
 from MDAnalysis.tests.datafiles import NUCL
@@ -41,35 +42,35 @@ from numpy.testing import assert_almost_equal ,assert_array_almost_equal, TestCa
 from nose.plugins.attrib import attr
 
 
-class TestNuclinfo(TestCase):
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(NUCL)
-        self.prec = 4
+class TestNuclinfo(object):
+    prec = 4
+    
+    @staticmethod    
+    @pytest.fixture()
+    def universe():
+        return MDAnalysis.Universe(NUCL)
 
-    def tearDown(self):
-        del self.universe
-
-    def test_wc_pair(self):
-        seg1 = self.universe.residues[3].atoms.segids[0]
-        seg2 = self.universe.residues[19].atoms.segids[0]
-        wc = nuclinfo.wc_pair(self.universe, 4, 20, seg1, seg2)
+    def test_wc_pair(self, universe):
+        seg1 = universe.residues[3].atoms.segids[0]
+        seg2 = universe.residues[19].atoms.segids[0]
+        wc = nuclinfo.wc_pair(universe, 4, 20, seg1, seg2)
         assert_almost_equal(wc, 2.9810174, err_msg="Watson-Crick distance does not match expected value.")
 
-    def test_major_pair(self):
-        seg1 = self.universe.residues[3].atoms.segids[0]
-        seg2 = self.universe.residues[19].atoms.segids[0]
-        maj = nuclinfo.major_pair(self.universe, 4, 20, seg1, seg2)
+    def test_major_pair(self, universe):
+        seg1 = universe.residues[3].atoms.segids[0]
+        seg2 = universe.residues[19].atoms.segids[0]
+        maj = nuclinfo.major_pair(universe, 4, 20, seg1, seg2)
         assert_almost_equal(maj, 2.9400151, err_msg="Watson-Crick distance does not match expected value.")
 
-    def test_minor_pair(self):
-        seg1 = self.universe.residues[3].atoms.segids[0]
-        seg2 = self.universe.residues[19].atoms.segids[0]
+    def test_minor_pair(self, universe):
+        seg1 = universe.residues[3].atoms.segids[0]
+        seg2 = universe.residues[19].atoms.segids[0]
 
-        minor = nuclinfo.minor_pair(self.universe, 4, 20, seg1, seg2)
+        minor = nuclinfo.minor_pair(universe, 4, 20, seg1, seg2)
         assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
 
-    def test_torsions(self):
-        nucl_acid = np.array(nuclinfo.tors(self.universe, "RNAA", 4), dtype=np.float32)
+    def test_torsions(self, universe):
+        nucl_acid = np.array(nuclinfo.tors(universe, "RNAA", 4), dtype=np.float32)
         expected_nucl_acid = np.array(
             [296.45596313, 177.79353333, 48.67910767, 81.81109619, 205.58882141, 286.37353516, 198.09187317],
             dtype=np.float32)
@@ -77,9 +78,9 @@ class TestNuclinfo(TestCase):
                             err_msg="Backbone torsion does not have expected values for "
                                     "alpha, beta, gamma, epsilon, zeta, chi.")
 
-    def test_hydroxyl(self):
-        hydroxyls = np.array([nuclinfo.hydroxyl(self.universe,
-                                                   self.universe.atoms.segids[0], resid)
+    def test_hydroxyl(self, universe):
+        hydroxyls = np.array([nuclinfo.hydroxyl(universe,
+                                                   universe.atoms.segids[0], resid)
                                  for resid in (7, 10, 11, 22)])
         expected_hydroxyls = np.array(
             [ 122.73991394,  123.34986115,  123.20658112,  122.57156372],
@@ -87,11 +88,11 @@ class TestNuclinfo(TestCase):
         assert_array_almost_equal(hydroxyls, expected_hydroxyls, self.prec,
                                   err_msg="RNA hydroxyl dihedrals do not match")
 
-    def test_pseudo_dihe_baseflip(self):
-        seg1 = self.universe.residues[3].atoms.segids[0]
-        seg2 = self.universe.residues[19].atoms.segids[0]
+    def test_pseudo_dihe_baseflip(self, universe):
+        seg1 = universe.residues[3].atoms.segids[0]
+        seg2 = universe.residues[19].atoms.segids[0]
 
         # There is not really a baseflip, just testing the code...
-        flip = nuclinfo.pseudo_dihe_baseflip(self.universe, 4, 20, 5, seg1=seg1, seg2=seg2, seg3=seg1)
+        flip = nuclinfo.pseudo_dihe_baseflip(universe, 4, 20, 5, seg1=seg1, seg2=seg2, seg3=seg1)
         assert_almost_equal(flip, 322.0826, self.prec,
                             err_msg="pseudo_dihedral for resid 5 against 4--20 do not match")
