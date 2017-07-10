@@ -27,30 +27,31 @@ from numpy.testing import assert_equal
 from MDAnalysisTests.datafiles import PDB_full
 
 
-class TestAltloc(object):
-    @staticmethod
-    @pytest.fixture()
-    def u():
-        return Universe(PDB_full, guess_bonds=True)
+@pytest.fixture()
+def u():
+    return Universe(PDB_full, guess_bonds=True)
 
-    def test_atomgroups(self, u):
-        segidB0 = len(u.select_atoms("segid B and (not altloc B)"))
-        segidB1 = len(u.select_atoms("segid B and (not altloc A)"))
-        assert_equal(segidB0, segidB1)
-        altlocB0 = len(u.select_atoms("segid B and (altloc A)"))
-        altlocB1 = len(u.select_atoms("segid B and (altloc B)"))
-        assert_equal(altlocB0, altlocB1)
-        sum = len(u.select_atoms("segid B"))
-        assert_equal(sum, segidB0 + altlocB0)
 
-    def test_bonds(self, u):
-        # need to force topology to load before querying individual atom bonds
-        bonds0 = u.select_atoms("segid B and (altloc A)")[0].bonds
-        bonds1 = u.select_atoms("segid B and (altloc B)")[0].bonds
-        assert_equal(len(bonds0), len(bonds1))
+def test_atomgroups(u):
+    segidB0 = len(u.select_atoms("segid B and (not altloc B)"))
+    segidB1 = len(u.select_atoms("segid B and (not altloc A)"))
+    assert_equal(segidB0, segidB1)
+    altlocB0 = len(u.select_atoms("segid B and (altloc A)"))
+    altlocB1 = len(u.select_atoms("segid B and (altloc B)"))
+    assert_equal(altlocB0, altlocB1)
+    sum = len(u.select_atoms("segid B"))
+    assert_equal(sum, segidB0 + altlocB0)
 
-    def test_write_read(self, u, tmpdir):
-        outfile = str(tmpdir.join('test.pdb'))
-        u.select_atoms("all").write(outfile)
-        u2 = Universe(outfile)
-        assert len(u.atoms) == len(u2.atoms)
+
+def test_bonds(u):
+    # need to force topology to load before querying individual atom bonds
+    bonds0 = u.select_atoms("segid B and (altloc A)")[0].bonds
+    bonds1 = u.select_atoms("segid B and (altloc B)")[0].bonds
+    assert_equal(len(bonds0), len(bonds1))
+
+
+def test_write_read(u, tmpdir):
+    outfile = str(tmpdir.join('test.pdb'))
+    u.select_atoms("all").write(outfile)
+    u2 = Universe(outfile)
+    assert len(u.atoms) == len(u2.atoms)
