@@ -44,11 +44,6 @@ class _SelectionWriter(object):
     filename = None
     max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
 
-    # def setUp(self):
-    #     self.universe = MDAnalysis.Universe(PSF, DCD)
-    #     stream = StringIO()
-    #     self.namedfile = NamedStream(stream, self.filename)
-
     @staticmethod
     @pytest.fixture()
     def universe():
@@ -57,10 +52,6 @@ class _SelectionWriter(object):
     @pytest.fixture()
     def namedfile(self):
         return NamedStream(StringIO(), self.filename)
-
-    # def tearDown(self):
-    #     del self.universe
-    #     del self.namedfile
 
     def _selection(self, universe):
         return universe.select_atoms("protein and name CA and bynum 1-{0}".format(self.max_number))
