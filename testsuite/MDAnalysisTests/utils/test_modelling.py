@@ -22,6 +22,7 @@
 from __future__ import absolute_import, print_function
 
 import MDAnalysis
+import pytest
 from MDAnalysis.tests.datafiles import (
     PSF,
     DCD,
@@ -35,12 +36,9 @@ from MDAnalysis.tests.datafiles import (
 )
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysisTests import parser_not_found, tempdir
 
-from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
+from numpy.testing import (assert_equal, assert_raises, assert_,
                            assert_array_equal)
-
-import os
 
 from MDAnalysis import Merge
 from MDAnalysis.analysis.align import alignto
@@ -79,29 +77,21 @@ def capping(ref, ace, nma, output):
     return u
 
 
-class TestCapping(TestCase):
-    ext = "pdb"
+class TestCapping(object):
 
-    def setUp(self):
-        suffix = '.' + self.ext
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
-
-    def tearDown(self):
-        del self.tempdir
-
-    def test_capping_file(self):
+    def test_capping_file(self, tmpdir):
         peptide = MDAnalysis.Universe(capping_input)
         ref = MDAnalysis.Universe(capping_output)
         ace = MDAnalysis.Universe(capping_ace)
         nma = MDAnalysis.Universe(capping_nma)
 
-        u = capping(peptide, ace, nma, self.outfile)
+        outfile = str(tmpdir.join('test.pdb'))
+        u = capping(peptide, ace, nma, outfile)
 
         assert_equal(len(u.select_atoms("not name H*")),
                      len(ref.select_atoms("not name H*")))
 
-        u = MDAnalysis.Universe(self.outfile)
+        u = MDAnalysis.Universe(outfile)
 
         ace = u.select_atoms("resname ACE")
         nma = u.select_atoms("resname NMA")
@@ -113,13 +103,14 @@ class TestCapping(TestCase):
         assert_array_equal(peptide.trajectory.ts.dimensions,
                            u.trajectory.ts.dimensions)
 
-    def test_capping_inmemory(self):
+    def test_capping_inmemory(self, tmpdir):
         peptide = MDAnalysis.Universe(capping_input)
         ref = MDAnalysis.Universe(capping_output)
         ace = MDAnalysis.Universe(capping_ace)
         nma = MDAnalysis.Universe(capping_nma)
 
-        u = capping(peptide, ace, nma, self.outfile)
+        outfile = str(tmpdir.join('test.pdb'))
+        u = capping(peptide, ace, nma, outfile)
         assert_equal(len(u.select_atoms("not name H*")),
                      len(ref.select_atoms("not name H*")))
 
@@ -134,26 +125,31 @@ class TestCapping(TestCase):
                            u.trajectory.ts.dimensions)
 
 
-class TestMerge(TestCase):
-    ext = "pdb"
+class TestMerge(object):
+    # ext = "pdb"
+    
+    @staticmethod
+    @pytest.fixture()
+    def u1():
+        return MDAnalysis.Universe(merge_protein)
+    
+    @staticmethod
+    @pytest.fixture()
+    def u2():
+        return MDAnalysis.Universe(merge_ligand)
+    
+    @staticmethod
+    @pytest.fixture()
+    def u3():
+        return MDAnalysis.Universe(merge_water)
 
-    def setUp(self):
-        u1 = MDAnalysis.Universe(merge_protein)
-        u2 = MDAnalysis.Universe(merge_ligand)
-        u3 = MDAnalysis.Universe(merge_water)
-        self.universes = [u1, u2, u3]
+    @staticmethod
+    @pytest.fixture()
+    def universes(u1, u2, u3):
+        return [u1, u2, u3]
 
-        suffix = '.' + self.ext
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
-
-    def tearDown(self):
-        for u in self.universes:
-            del u
-        del self.tempdir
-
-    def test_merge(self):
-        u1, u2, u3 = self.universes
+    def test_merge(self, universes, tmpdir):
+        u1, u2, u3 = universes
         ids_before = [a.index for u in [u1, u2, u3] for a in u.atoms]
         # Do the merge
         u0 = MDAnalysis.Merge(u1.atoms, u2.atoms, u3.atoms)
@@ -184,27 +180,29 @@ class TestMerge(TestCase):
         ids_new = [a.index for a in u0.atoms]
         assert_equal(len(ids_new), len(ids_before))
 
-        u0.atoms.write(self.outfile)
-        u = MDAnalysis.Universe(self.outfile)
+        outfile = str(tmpdir.join('test.pdb'))
+
+        u0.atoms.write(outfile)
+        u = MDAnalysis.Universe(outfile)
         ids_new2 = [a.index for a in u.atoms]
         assert_equal(ids_new, ids_new2)
 
-    def test_merge_same_universe(self):
-        u1, _, _ = self.universes
+    def test_merge_same_universe(self, universes):
+        u1, _, _ = universes
 
         u0 = MDAnalysis.Merge(u1.atoms, u1.atoms, u1.atoms)
         assert_equal(len(u0.atoms), 3 * len(u1.atoms))
         assert_equal(len(u0.residues), 3 * len(u1.residues))
         assert_equal(len(u0.segments), 3 * len(u1.segments))
 
-    def test_residue_references(self):
-        u1, u2, u3 = self.universes
+    def test_residue_references(self, universes):
+        u1, u2, u3 = universes
         m = Merge(u1.atoms, u2.atoms)
         assert_equal(m.atoms.residues[0].universe, m,
                      "wrong universe reference for residues after Merge()")
 
-    def test_segment_references(self):
-        u1, u2, u3 = self.universes
+    def test_segment_references(self, universes):
+        u1, u2, u3 = universes
         m = Merge(u1.atoms, u2.atoms)
         assert_equal(m.atoms.segments[0].universe, m,
                      "wrong universe reference for segments after Merge()")
@@ -215,30 +213,30 @@ class TestMerge(TestCase):
     def test_nonsense_TypeError(self):
         assert_raises(TypeError, Merge, ['1', 2])
 
-    def test_emptyAG_ValueError(self):
-        u = self.universes[0]
+    def test_emptyAG_ValueError(self, universes):
+        u = universes[0]
         a = AtomGroup([], u)
         b = AtomGroup([], u)
 
         assert_raises(ValueError, Merge, a, b)
 
 
-class TestMergeTopology(TestCase):
+class TestMergeTopology(object):
     """Test that Merge correct does topology"""
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.u = MDAnalysis.Universe(PSF, DCD)
-        self.u2 = MDAnalysis.Universe(merge_protein)
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return MDAnalysis.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
-        del self.u2
+    @staticmethod
+    @pytest.fixture()
+    def u2():
+        return MDAnalysis.Universe(merge_protein)
 
-    def test_merge_with_topology(self):
-        ag1 = self.u.atoms[:20]
-        ag2 = self.u.atoms[100:110]
+    def test_merge_with_topology(self, u):
+        ag1 = u.atoms[:20]
+        ag2 = u.atoms[100:110]
 
         u2 = MDAnalysis.Merge(ag1, ag2)
 
@@ -253,8 +251,8 @@ class TestMergeTopology(TestCase):
         # One of these bonds isn't in the merged Universe
         assert_(len(ag2[0].bonds) - 1 == len(u2.atoms[20].bonds))
 
-    def test_merge_with_topology_from_different_universes(self):
-        u3 = MDAnalysis.Merge(self.u.atoms[:110], self.u2.atoms)
+    def test_merge_with_topology_from_different_universes(self, u, u2):
+        u3 = MDAnalysis.Merge(u.atoms[:110], u2.atoms)
 
         # merge_protein doesn't contain bond topology, so merged universe
         # shouldn't have one either
@@ -266,9 +264,9 @@ class TestMergeTopology(TestCase):
         assert_(not hasattr(u3.atoms, 'dihedrals') or len(u3.atoms.bonds) == 0)
         assert_(not hasattr(u3.atoms, 'impropers') or len(u3.atoms.bonds) == 0)
 
-    def test_merge_without_topology(self):
+    def test_merge_without_topology(self, u):
         # This shouldn't have topology as we merged single atoms
-        u2 = MDAnalysis.Merge(self.u.atoms[0:1], self.u.atoms[10:11])
+        u2 = MDAnalysis.Merge(u.atoms[0:1], u.atoms[10:11])
 
         assert_(len(u2.atoms) == 2)
         assert_(len(u2.atoms.bonds) == 0)
