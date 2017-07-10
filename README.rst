@@ -56,8 +56,7 @@ This is the top level of the master repository. It contains
 
 The directory ``maintainer`` contains scripts only needed for
 maintaining releases and are not generally useful for the user or the
-typical developer. The ``vm`` directory contains configurations for
-virtual machines.
+typical developer.
 
 (For more details on the directory layout see `Issue 87`_ on the
 MDAnalysis issue tracker.)
