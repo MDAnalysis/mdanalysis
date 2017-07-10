@@ -40,7 +40,7 @@ from MDAnalysisTests import tempdir
 import os
 
 
-class TestIsstream(TestCase):
+class TestIsstream(object):
     def test_hasmethod(self):
         obj = "random string"
         assert_equal(util.hasmethod(obj, "rfind"), True)
@@ -85,16 +85,15 @@ class TestIsstream(TestCase):
         obj.close()
 
 
-class TestNamedStream(TestCase):
-    def setUp(self):
-        self.filename = datafiles.PSF
-        self.numlines = 12326  # len(open(self.filename).readlines())
-        self.text = [
-            "The Jabberwock, with eyes of flame,\n",
-            "Came whiffling through the tulgey wood,\n",
-            "And burbled as it came!"]
-        self.textname = "jabberwock.txt"
-        self.numtextlines = len(self.text)
+class TestNamedStream(object):
+    filename = datafiles.PSF
+    numlines = 12326  # len(open(self.filename).readlines())
+    text = [
+        "The Jabberwock, with eyes of flame,\n",
+        "Came whiffling through the tulgey wood,\n",
+        "And burbled as it came!"
+    ]
+    textname = "jabberwock.txt"
 
     def test_closing(self):
         obj = cStringIO("".join(self.text))
@@ -117,9 +116,9 @@ class TestNamedStream(TestCase):
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
-        assert_equal(len(ns.readlines()), self.numtextlines)
+        assert_equal(len(ns.readlines()), len(self.text))
         ns.reset()
-        assert_equal(len(ns.readlines()), self.numtextlines)
+        assert_equal(len(ns.readlines()), len(self.text))
         ns.close(force=True)
 
     def test_File_read(self):
@@ -204,8 +203,6 @@ class TestNamedStream_filename_behavior(object):
             yield _test_func, func
         yield _test_join, "join"
 
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
         reference = ns
@@ -214,10 +211,6 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.expanduser() without '~' did not "
                               "return NamedStream --- weird!!"))
 
-    # expandvars(NamedStream) does not work interactively, so it is a knownfailure
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
-    @dec.skipif("HOME" not in os.environ)
     @pytest.mark.xfail
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
@@ -227,8 +220,6 @@ class TestNamedStream_filename_behavior(object):
         assert_equal(value, reference,
                      err_msg="os.path.expandvars() did not expand HOME")
 
-    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
-    @dec.skipif(True)
     def test_expandvars_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream() # no $VAR constructs
         reference = ns
@@ -336,7 +327,7 @@ del _StreamData
 
 
 # possibly add tests to individual readers instead?
-class TestStreamIO(TestCase, RefAdKSmall):
+class TestStreamIO(RefAdKSmall):
     def test_PrimitivePDBReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
