@@ -23,6 +23,7 @@
 # Test the selection exporters in MDAnalysis.selections
 from __future__ import absolute_import
 # use StringIO and NamedStream to write to memory instead to temp files
+import pytest
 from six.moves import StringIO
 
 import re
@@ -37,57 +38,64 @@ import MDAnalysis
 from MDAnalysis.lib.util import NamedStream
 
 
-class _SelectionWriter(TestCase):
-    __test__ = False
+class _SelectionWriter(object):
+    # __test__ = False
 
     filename = None
     max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
 
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, DCD)
-        stream = StringIO()
-        self.namedfile = NamedStream(stream, self.filename)
+    # def setUp(self):
+    #     self.universe = MDAnalysis.Universe(PSF, DCD)
+    #     stream = StringIO()
+    #     self.namedfile = NamedStream(stream, self.filename)
 
-    def tearDown(self):
-        del self.universe
-        del self.namedfile
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return MDAnalysis.Universe(PSF, DCD)
 
-    def _selection(self):
-        return self.universe.select_atoms("protein and name CA and bynum 1-{0}".format(self.max_number))
+    @pytest.fixture()
+    def namedfile(self):
+        return NamedStream(StringIO(), self.filename)
 
-    def _write(self, **kwargs):
-        g = self._selection()
-        g.write(self.namedfile, **kwargs)
+    # def tearDown(self):
+    #     del self.universe
+    #     del self.namedfile
+
+    def _selection(self, universe):
+        return universe.select_atoms("protein and name CA and bynum 1-{0}".format(self.max_number))
+
+    def _write(self, universe, namedfile, **kwargs):
+        g = self._selection(universe)
+        g.write(namedfile, **kwargs)
         return g
 
-    def _write_selection(self, **kwargs):
-        g = self._selection()
-        g.write(self.namedfile, **kwargs)
+    def _write_selection(self, universe, namedfile, **kwargs):
+        g = self._selection(universe)
+        g.write(namedfile, **kwargs)
         return g
 
-    def _write_with(self, **kwargs):
-        g = self._selection()
-        with self.writer(self.namedfile, **kwargs) as outfile:
+    def _write_with(self, universe, namedfile, **kwargs):
+        g = self._selection(universe)
+        with self.writer(namedfile, **kwargs) as outfile:
             outfile.write(g)
         return g
 
-    def test_write_bad_mode(self):
-        with self.assertRaises(ValueError):
-            self._write(name=self.ref_name, mode='a+')
+    def test_write_bad_mode(self, universe, namedfile,):
+        with pytest.raises(ValueError):
+            self._write(universe, namedfile, name=self.ref_name, mode='a+')
 
-    def test_write(self):
-        self._write(name=self.ref_name)
-        self._assert_selectionstring()
+    def test_write(self, universe, namedfile):
+        self._write(universe, namedfile, name=self.ref_name)
+        self._assert_selectionstring(namedfile)
 
-    def test_writeselection(self):
-        self._write_selection(name=self.ref_name)
-        self._assert_selectionstring()
+    def test_writeselection(self, universe, namedfile):
+        self._write_selection(universe, namedfile, name=self.ref_name)
+        self._assert_selectionstring(namedfile)
 
-    def test_write_with(self):
-        self._write_with(name=self.ref_name)
-        self._assert_selectionstring()
+    def test_write_with(self, universe, namedfile):
+        self._write_with(universe, namedfile, name=self.ref_name)
+        self._assert_selectionstring(namedfile)
 
 
 def ndx2array(lines):
@@ -112,11 +120,11 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
           ]
         )
 
-    def _assert_selectionstring(self):
-        header = self.namedfile.readline().strip()
+    def _assert_selectionstring(self, namedfile):
+        header = namedfile.readline().strip()
         assert_equal(header, "[ {0} ]".format(self.ref_name),
                      err_msg="NDX file has wrong selection name")
-        indices = ndx2array(self.namedfile.readlines())
+        indices = ndx2array(namedfile.readlines())
         assert_array_equal(indices, self.ref_indices,
                            err_msg="indices were not written correctly")
 
@@ -138,8 +146,8 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
            BYNUM 303 .or. BYNUM 320 .or. BYNUM 335 .or. BYNUM 357 END
         """])
 
-    def _assert_selectionstring(self):
-        selectionstring = lines2one(self.namedfile.readlines())
+    def _assert_selectionstring(self, namedfile):
+        selectionstring = lines2one(namedfile.readlines())
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="Charmm selection was not written correctly")
 
@@ -158,8 +166,8 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
            index 264 | index 284 | index 303 | index 320 | index 335 | index 357
         """])
 
-    def _assert_selectionstring(self):
-        selectionstring = lines2one(self.namedfile.readlines())
+    def _assert_selectionstring(self, namedfile):
+        selectionstring = lines2one(namedfile.readlines())
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="PyMOL selection was not written correctly")
 
@@ -176,8 +184,8 @@ class TestSelectionWriter_VMD(_SelectionWriter):
            236 246 263 283 302 319 334 356 }
         """])
 
-    def _assert_selectionstring(self):
-        selectionstring = lines2one(self.namedfile.readlines())
+    def _assert_selectionstring(self, namedfile):
+        selectionstring = lines2one(namedfile.readlines())
         assert_equal(selectionstring, self.ref_selectionstring,
                      err_msg="PyMOL selection was not written correctly")
 
@@ -189,7 +197,7 @@ def spt2array(line):
 
 
 class TestSelectionWriter_Jmol(_SelectionWriter):
-    __test__ = True
+    # __test__ = True
 
     writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
@@ -198,8 +206,8 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
           ' 246 263 283 302 319 334 356});')
         )
 
-    def _assert_selectionstring(self):
-        header, indices = spt2array(self.namedfile.readline())
+    def _assert_selectionstring(self, namedfile):
+        header, indices = spt2array(namedfile.readline())
         assert_equal(header, self.ref_name,
                      err_msg="SPT file has wrong selection name")
         assert_array_equal(indices, self.ref_indices,
