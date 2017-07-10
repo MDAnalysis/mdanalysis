@@ -24,22 +24,24 @@ from __future__ import absolute_import
 from numpy.testing import assert_array_equal
 
 
-class TestDatafiles(object):
-    def test_import(self):
-        try:
-            import MDAnalysis.tests.datafiles
-        except ImportError:
-            raise AssertionError("Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests")
-
-    def test_all_exports(self):
-        import MDAnalysisTests.datafiles
-        missing = [name for name in dir(MDAnalysisTests.datafiles)
-                   if not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'absolute_import']
-        assert_array_equal(missing, [], err_msg="Variables need to be added to __all__.")
-
-    def test_export_variables(self):
-        import MDAnalysisTests.datafiles
+def test_import():
+    try:
         import MDAnalysis.tests.datafiles
-        missing = [name for name in MDAnalysisTests.datafiles.__all__
-                   if name not in dir(MDAnalysis.tests.datafiles)]
-        assert_array_equal(missing, [], err_msg="Variables not exported to MDAnalysis.tests.datafiles")
+    except ImportError:
+        raise AssertionError("Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests")
+
+
+def test_all_exports():
+    import MDAnalysisTests.datafiles
+    missing = [name for name in dir(MDAnalysisTests.datafiles)
+               if
+               not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'absolute_import']
+    assert_array_equal(missing, [], err_msg="Variables need to be added to __all__.")
+
+
+def test_export_variables():
+    import MDAnalysisTests.datafiles
+    import MDAnalysis.tests.datafiles
+    missing = [name for name in MDAnalysisTests.datafiles.__all__
+               if name not in dir(MDAnalysis.tests.datafiles)]
+    assert_array_equal(missing, [], err_msg="Variables not exported to MDAnalysis.tests.datafiles")
