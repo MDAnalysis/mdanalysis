@@ -248,7 +248,7 @@ class BaseReaderTest(object):
         assert_equal(reader.ts.dt, reader.dt)
 
     def test_total_time(self, ref, reader):
-        assert_equal(reader.totaltime, ref.totaltime)
+        assert_almost_equal(reader.totaltime, ref.totaltime, decimal=ref.prec)
 
     def test_first_dimensions(self, ref, reader):
         reader.rewind()
@@ -801,13 +801,13 @@ class BaseTimestepTest(object):
 
         assert_equal(ts.time, reftime + ref_offset)
 
-    def test_dt(self):
+    def test_dt(self, ref):
         ref_dt = 45.0
         ts = self.Timestep(20, dt=ref_dt)
 
         for i in range(10):
             ts.frame = i
-            assert_equal(ts.time, i * ref_dt)
+            assert_almost_equal(ts.time, i * ref_dt, decimal=ref.prec)
 
     def test_change_dt(self):
         ref_dt = 45.0
