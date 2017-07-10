@@ -54,17 +54,15 @@ class DCDReference(BaseReference):
 
 
 class TestDCDReader(MultiframeReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = DCDReference()
-        super(TestDCDReader, self).__init__(reference)
-
     @staticmethod
-    def test_empty_dcd():
+    @pytest.fixture()
+    def ref():
+        return DCDReference()
+
+    def test_empty_dcd(self):
         assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
-    @staticmethod
-    def test_with_statement():
+    def test_with_statement(self):
 
         try:
             with DCDReader(DCD) as trj:
@@ -83,10 +81,10 @@ class TestDCDReader(MultiframeReaderTest):
 
 
 class TestDCDWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = DCDReference()
-        super(TestDCDWriter, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return DCDReference()
 
 
 def test_write_random_unitcell(tmpdir):
