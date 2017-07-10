@@ -20,24 +20,20 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from MDAnalysis import Universe
-import os
-from numpy.testing import TestCase, assert_equal
+from numpy.testing import assert_equal
 from MDAnalysisTests.datafiles import PDB_full
-from MDAnalysisTests import tempdir
 
 
-class TestAltloc(TestCase):
-    def setUp(self):
-        self.filename = PDB_full
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'test.pdb')
+class TestAltloc(object):
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return Universe(PDB_full, guess_bonds=True)
 
-    def tearDown(self):
-        del self.tempdir
-
-    def test_atomgroups(self):
-        u = Universe(self.filename)
+    def test_atomgroups(self, u):
         segidB0 = len(u.select_atoms("segid B and (not altloc B)"))
         segidB1 = len(u.select_atoms("segid B and (not altloc A)"))
         assert_equal(segidB0, segidB1)
@@ -47,15 +43,14 @@ class TestAltloc(TestCase):
         sum = len(u.select_atoms("segid B"))
         assert_equal(sum, segidB0 + altlocB0)
 
-    def test_bonds(self):
-        u = Universe(self.filename, guess_bonds=True)
+    def test_bonds(self, u):
         # need to force topology to load before querying individual atom bonds
         bonds0 = u.select_atoms("segid B and (altloc A)")[0].bonds
         bonds1 = u.select_atoms("segid B and (altloc B)")[0].bonds
         assert_equal(len(bonds0), len(bonds1))
 
-    def test_write_read(self):
-        u = Universe(self.filename)
-        u.select_atoms("all").write(self.outfile)
-        u2 = Universe(self.outfile)
-        assert_equal(len(u.atoms), len(u2.atoms))
+    def test_write_read(self, u, tmpdir):
+        outfile = str(tmpdir.join('test.pdb'))
+        u.select_atoms("all").write(outfile)
+        u2 = Universe(outfile)
+        assert len(u.atoms) == len(u2.atoms)
