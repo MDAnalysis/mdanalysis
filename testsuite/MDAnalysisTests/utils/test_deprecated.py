@@ -25,54 +25,59 @@
 #   will be removed in 1.0)
 from __future__ import absolute_import
 
-from numpy.testing import assert_raises
 
-class TestImports(object):
-    def test_core_units(self):
-        try:
-            import MDAnalysis.core.units
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.units not available")
+def test_core_units():
+    try:
+        import MDAnalysis.core.units
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.units not available")
 
-    def test_core_util(self):
-        try:
-            import MDAnalysis.core.util
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.util not available")
 
-    def test_core_log(self):
-        try:
-            import MDAnalysis.core.log
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.log not available")
+def test_core_util():
+    try:
+        import MDAnalysis.core.util
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.util not available")
 
-    def test_core_distances(self):
-        try:
-            import MDAnalysis.core.distances
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.distances not available")
 
-    def test_core_transformations(self):
-        try:
-            import MDAnalysis.core.transformations
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.transformations not available")
+def test_core_log():
+    try:
+        import MDAnalysis.core.log
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.log not available")
 
-    def test_core_qcprot(self):
-        try:
-            import MDAnalysis.core.qcprot
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.qcprot not available")
 
-    def test_KDTree(self):
-        try:
-            import MDAnalysis.KDTree
-        except ImportError:
-            raise AssertionError("MDAnalysis.KDTree not available")
+def test_core_distances():
+    try:
+        import MDAnalysis.core.distances
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.distances not available")
 
-    def test_analysis_x3dna(self):
-        try:
-            import MDAnalysis.analysis.x3dna
-            from MDAnalysis.analysis.x3dna import X3DNA
-        except ImportError:
-            raise AssertionError("MDAnalysis.analysis.x3dna not available")
+
+def test_core_transformations():
+    try:
+        import MDAnalysis.core.transformations
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.transformations not available")
+
+
+def test_core_qcprot():
+    try:
+        import MDAnalysis.core.qcprot
+    except ImportError:
+        raise AssertionError("MDAnalysis.core.qcprot not available")
+
+
+def test_KDTree():
+    try:
+        import MDAnalysis.KDTree
+    except ImportError:
+        raise AssertionError("MDAnalysis.KDTree not available")
+
+
+def test_analysis_x3dna():
+    try:
+        import MDAnalysis.analysis.x3dna
+        from MDAnalysis.analysis.x3dna import X3DNA
+    except ImportError:
+        raise AssertionError("MDAnalysis.analysis.x3dna not available")
