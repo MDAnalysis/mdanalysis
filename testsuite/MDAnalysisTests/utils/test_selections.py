@@ -39,7 +39,6 @@ from MDAnalysis.lib.util import NamedStream
 
 
 class _SelectionWriter(object):
-    # __test__ = False
 
     filename = None
     max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
@@ -100,7 +99,6 @@ def lines2one(lines):
 
 
 class TestSelectionWriter_Gromacs(_SelectionWriter):
-    __test__ = True
 
     writer = MDAnalysis.selections.gromacs.SelectionWriter
     filename = "CA.ndx"
@@ -121,7 +119,6 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
 
 
 class TestSelectionWriter_Charmm(_SelectionWriter):
-    __test__ = True
 
     writer = MDAnalysis.selections.charmm.SelectionWriter
     filename = "CA.str"
@@ -144,7 +141,6 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
 
 
 class TestSelectionWriter_PyMOL(_SelectionWriter):
-    __test__ = True
 
     writer = MDAnalysis.selections.pymol.SelectionWriter
     filename = "CA.pml"
@@ -164,7 +160,6 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
 
 
 class TestSelectionWriter_VMD(_SelectionWriter):
-    __test__ = True
 
     writer = MDAnalysis.selections.vmd.SelectionWriter
     filename = "CA.vmd"
@@ -188,7 +183,6 @@ def spt2array(line):
 
 
 class TestSelectionWriter_Jmol(_SelectionWriter):
-    # __test__ = True
 
     writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
