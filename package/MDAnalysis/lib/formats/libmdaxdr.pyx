@@ -227,7 +227,7 @@ cdef class _XDRFile:
             opening_mode = b'w'
         else:
             raise IOError('mode must be one of "r" or "w", you '
-                             'supplied {}'.format(mode))
+                          'supplied {}'.format(mode))
         self.mode = mode
 
         if self.mode == 'r':
@@ -293,9 +293,11 @@ cdef class _XDRFile:
         cdef int64_t offset
         if frame == 0:
             offset = 0
+        elif frame < 0:
+            raise IOError("Can't seek to negative frame")
         else:
             if frame >= self.offsets.size:
-                raise IOError('Trying to seek over max number of frames')
+                raise EOFError('Trying to seek over max number of frames')
             offset = self.offsets[frame]
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offset, SEEK_SET)
@@ -446,7 +448,7 @@ cdef class TRRFile(_XDRFile):
         IOError
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in TRR, seek to 0')
+            raise EOFError('Reached last frame in TRR, seek to 0')
         if not self.is_open:
             raise IOError('No file opened')
         if self.mode != 'r':
@@ -502,9 +504,13 @@ cdef class TRRFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(`n_atoms`, 3)
-            cartesion coordinates
-        box : ndarray, shape=(3, 3)
+        xyz : array_like, shape=(`n_atoms`, 3), optional
+            cartesion coordinates. Only written if not ``None``.
+        velocity : array_like, shape=(`n_atoms`, 3), optional
+            cartesion velocities. Only written if not ``None``.
+        forces : array_like, shape=(`n_atoms`, 3), optional
+            cartesion forces. Only written if not ``None``.
+        box : array_like, shape=(3, 3)
             Box vectors for this frame
         step : int
             current step number, 1 indexed
@@ -536,15 +542,19 @@ cdef class TRRFile(_XDRFile):
         cdef np.ndarray forces_helper
 
         if xyz is not None:
+            xyz = np.asarray(xyz)
             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
             xyz_ptr = <float*>xyz_helper.data
         if velocity is not None:
+            velocity = np.asarray(velocity)
             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
             velocity_ptr = <float*>velocity_helper.data
         if forces is not None:
+            forces = np.asarray(forces)
             forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
             forces_ptr = <float*>forces_helper.data
 
+        box = np.asarray(box)
         cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
@@ -651,7 +661,7 @@ cdef class XTCFile(_XDRFile):
         IOError
         """
         if self.reached_eof:
-            raise IOError('Reached last frame in XTC, seek to 0')
+            raise EOFError('Reached last frame in XTC, seek to 0')
         if not self.is_open:
             raise IOError('No file opened')
         if self.mode != 'r':
@@ -685,9 +695,9 @@ cdef class XTCFile(_XDRFile):
 
         Parameters
         ----------
-        xyz : ndarray, shape=(`n_atoms`, 3)
+        xyz : array_like, shape=(`n_atoms`, 3)
             cartesion coordinates
-        box : ndarray, shape=(3, 3)
+        box : array_like, shape=(3, 3)
             Box vectors for this frame
         step : int
             current step number, 1 indexed
@@ -711,6 +721,9 @@ cdef class XTCFile(_XDRFile):
         if self.mode != 'w':
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
+
+        xyz = np.asarray(xyz)
+        box = np.asarray(box)
 
         cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
