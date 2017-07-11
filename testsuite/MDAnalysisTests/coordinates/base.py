@@ -242,7 +242,7 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, 100)
 
     def test_dt(self, ref, reader):
-        assert_equal(reader.dt, ref.dt)
+        assert_almost_equal(reader.dt, ref.dt, decimal=ref.prec)
 
     def test_ts_dt_matches_reader(self, reader):
         assert_equal(reader.ts.dt, reader.dt)
@@ -801,13 +801,13 @@ class BaseTimestepTest(object):
 
         assert_equal(ts.time, reftime + ref_offset)
 
-    def test_dt(self, ref):
+    def test_dt(self):
         ref_dt = 45.0
         ts = self.Timestep(20, dt=ref_dt)
 
         for i in range(10):
             ts.frame = i
-            assert_almost_equal(ts.time, i * ref_dt, decimal=ref.prec)
+            assert_equal(ts.time, i * ref_dt)
 
     def test_change_dt(self):
         ref_dt = 45.0
