@@ -37,8 +37,7 @@ from MDAnalysis.tests.datafiles import (
 import MDAnalysis.core.groups
 from MDAnalysis.core.groups import AtomGroup
 
-from numpy.testing import (assert_equal, assert_raises, assert_,
-                           assert_array_equal)
+from numpy.testing import assert_equal, assert_array_equal
 
 from MDAnalysis import Merge
 from MDAnalysis.analysis.align import alignto
