@@ -21,6 +21,7 @@
 #
 from __future__ import absolute_import
 
+import pytest
 from numpy.testing import assert_array_equal
 
 
@@ -28,7 +29,7 @@ def test_import():
     try:
         import MDAnalysis.tests.datafiles
     except ImportError:
-        raise AssertionError("Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests")
+        pytest.fail("Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests")
 
 
 def test_all_exports():
