@@ -39,6 +39,9 @@ Changes
   * use fast scipy.io.netcdf pure python implementation for reading of Amber
     netcdf3 trajctories instead of netCDF4 but use netCDF4 for fast
     writing (if available) or fall back to netcdf (see also Issue #506)
+  * libmdaxdr classes now accept more argument types for a write (PR #1442)
+  * libmdaxdr classes now raise EOFError when accessing another frame after
+  the end of the file. Used to raise IOError.
 
 
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
