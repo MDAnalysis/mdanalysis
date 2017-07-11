@@ -103,9 +103,7 @@ __all__ = [
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
-    "XTC_single_frame",
     "XTC_multi_frame",
-    "TRR_single_frame",
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
@@ -235,13 +233,9 @@ TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
-XTC_single_frame = resource_filename(
-    __name__, 'data/xtc_test_only_single_frame_10_atoms.xtc')
 XTC_multi_frame = resource_filename(
     __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
 )
-TRR_single_frame = resource_filename(
-    __name__, 'data/trr_test_only_single_frame_10_atoms.trr')
 TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
