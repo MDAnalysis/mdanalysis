@@ -71,9 +71,8 @@ def buffer():
 
 
 def _assert_in(output, string):
-    assert_(string in output,
-            "Output '{0}' does not match required format '{1}'.".format(
-            output.replace('\r', '\\r'), string.replace('\r', '\\r')))
+    assert string in output
+
 
 def test_default_ProgressMeter(buffer, n=101, interval=10):
     format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
