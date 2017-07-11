@@ -30,7 +30,7 @@ import pytest
 
 path_to_testing_modules = MDAnalysisTests.__path__[0]
 # Exclusion path relative to MDAnalysisTests
-exclusions = ['/plugins']
+exclusions = ['/plugins', '/data']
 
 
 def is_excluded(path):
@@ -47,7 +47,6 @@ def get_file_paths():
             fpath = os.path.join(dirpath, f)
             if is_excluded(fpath):
                 continue
-            # yield self._run_test_relative_import, fpath
             paths.append(fpath)
     return paths
 
