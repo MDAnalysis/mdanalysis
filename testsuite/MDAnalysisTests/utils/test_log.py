@@ -74,56 +74,56 @@ def _assert_in(output, string):
 
 
 def test_default_ProgressMeter(buffer, n=101, interval=10):
-    format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
+    template = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
     with RedirectedStderr(buffer):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval)
         for frame in range(n):
             pm.echo(frame)
     buffer.seek(0)
     output = "".join(buffer.readlines())
-    _assert_in(output, ('\r' + format).format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
+    _assert_in(output, ('\r' + template).format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
     # last line always ends with \n!
     _assert_in(output,
-                    ('\r' + format + '\n').format(**{'step': n, 'numsteps': n,
+                    ('\r' + template + '\n').format(**{'step': n, 'numsteps': n,
                                               'percentage': 100.}))
 
 
 def test_custom_ProgressMeter(buffer, n=51, interval=7):
-    format = "RMSD {rmsd:5.2f} at {step:03d}/{numsteps:4d} [{percentage:5.1f}%]"
+    template = "RMSD {rmsd:5.2f} at {step:03d}/{numsteps:4d} [{percentage:5.1f}%]"
     with RedirectedStderr(buffer):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
-                                              format=format, offset=1)
+                                              format=template, offset=1)
         for frame in range(n):
             rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
             pm.echo(frame, rmsd=rmsd)
     buffer.seek(0)
     output = "".join(buffer.readlines())
     _assert_in(output,
-                    ('\r' + format).format(**{'rmsd': 0.0, 'step': 1,
+                    ('\r' + template).format(**{'rmsd': 0.0, 'step': 1,
                                      'numsteps': n, 'percentage': 100./n}))
     # last line always ends with \n!
     _assert_in(output,
-                    ('\r' + format + '\n').format(
+                    ('\r' + template + '\n').format(
                         **{'rmsd': 0.02*n, 'step': n,
                            'numsteps': n, 'percentage': 100.0}))
 
 
 def test_legacy_ProgressMeter(buffer, n=51, interval=7):
-    format = "RMSD %(rmsd)5.2f at %(step)03d/%(numsteps)4d [%(percentage)5.1f%%]"
+    template = "RMSD %(rmsd)5.2f at %(step)03d/%(numsteps)4d [%(percentage)5.1f%%]"
     with RedirectedStderr(buffer):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
-                                              format=format, offset=1)
+                                              format=template, offset=1)
         for frame in range(n):
             rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
             pm.echo(frame, rmsd=rmsd)
     buffer.seek(0)
     output = "".join(buffer.readlines())
     _assert_in(output,
-                    ('\r' + format) % {'rmsd': 0.0, 'step': 1,
+                    ('\r' + template) % {'rmsd': 0.0, 'step': 1,
                                        'numsteps': n, 'percentage': 100./n})
     # last line always ends with \n!
     _assert_in(output,
-                    ('\r' + format + '\n') % {'rmsd': 0.02*n, 'step': n,
+                    ('\r' + template + '\n') % {'rmsd': 0.02*n, 'step': n,
                                               'numsteps': n, 'percentage': 100.0})
 
 
@@ -132,7 +132,7 @@ def test_legacy_ProgressMeter(buffer, n=51, interval=7):
     (51, 100.)
 ])
 def test_not_dynamic_ProgressMeter(buffer, step, percentage, n=51, interval=10):
-    format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
+    template = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
     with RedirectedStderr(buffer):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
                                               dynamic=False)
@@ -140,7 +140,7 @@ def test_not_dynamic_ProgressMeter(buffer, step, percentage, n=51, interval=10):
             pm.echo(frame)
     buffer.seek(0)
     output = "".join(buffer.readlines())
-    _assert_in(output, (format + '\n').format(**{'step': step, 'numsteps': n, 'percentage': percentage}))
+    _assert_in(output, (template + '\n').format(**{'step': step, 'numsteps': n, 'percentage': percentage}))
 
 
 class TestSetVerbose(object):
