@@ -37,9 +37,7 @@ import pytest
 from MDAnalysis.analysis import nuclinfo
 from MDAnalysis.tests.datafiles import NUCL
 
-from numpy.testing import assert_almost_equal ,assert_array_almost_equal, TestCase
-
-from nose.plugins.attrib import attr
+from numpy.testing import assert_almost_equal ,assert_array_almost_equal
 
 
 class TestNuclinfo(object):
