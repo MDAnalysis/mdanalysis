@@ -30,7 +30,6 @@ import MDAnalysis
 import MDAnalysis.lib.log
 import pytest
 from MDAnalysis.lib.log import _set_verbose
-from numpy.testing import assert_, assert_equal, assert_raises
 
 
 def test_start_stop_logging():
@@ -128,7 +127,11 @@ def test_legacy_ProgressMeter(buffer, n=51, interval=7):
                                               'numsteps': n, 'percentage': 100.0})
 
 
-def test_not_dynamic_ProgressMeter(buffer, n=51, interval=10):
+@pytest.mark.parametrize('step, percentage', [
+    (1, 100./51),
+    (51, 100.)
+])
+def test_not_dynamic_ProgressMeter(buffer, step, percentage, n=51, interval=10):
     format = "Step {step:5d}/{numsteps} [{percentage:5.1f}%]"
     with RedirectedStderr(buffer):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
@@ -137,34 +140,36 @@ def test_not_dynamic_ProgressMeter(buffer, n=51, interval=10):
             pm.echo(frame)
     buffer.seek(0)
     output = "".join(buffer.readlines())
-    _assert_in(output, (format + '\n').format(**{'step': 1, 'numsteps': n, 'percentage': 100./n}))
-    _assert_in(output, (format + '\n').format(**{'step': n, 'numsteps': n, 'percentage': 100.}))
+    _assert_in(output, (format + '\n').format(**{'step': step, 'numsteps': n, 'percentage': percentage}))
 
 
-def test__set_verbose():
-    # Everything agrees verbose should be True
-    assert_equal(_set_verbose(verbose=True, quiet=False, default=True), True)
-    # Everything agrees verbose should be False
-    assert_equal(_set_verbose(verbose=False, quiet=True, default=False), False)
-    # Make sure the default does not overwrite the user choice
-    assert_equal(_set_verbose(verbose=True, quiet=False, default=False), True)
-    assert_equal(_set_verbose(verbose=False, quiet=True, default=True), False)
-    # Quiet is not provided
-    assert_equal(_set_verbose(verbose=True, quiet=None, default=False), True)
-    assert_equal(_set_verbose(verbose=False, quiet=None, default=False), False)
-    # Verbose is not provided
-    assert_equal(_set_verbose(verbose=None, quiet=True, default=False), False)
-    assert_equal(_set_verbose(verbose=None, quiet=False, default=False), True)
-    # Nothing is provided
-    assert_equal(_set_verbose(verbose=None, quiet=None, default=True), True)
-    assert_equal(_set_verbose(verbose=None, quiet=None, default=False), False)
-    # quiet and verbose contradict each other
-    assert_raises(ValueError, _set_verbose, verbose=True, quiet=True)
-    assert_raises(ValueError, _set_verbose, verbose=False, quiet=False)
-    # A deprecation warning is issued when quiet is set
+class TestSetVerbose(object):
 
+    @pytest.mark.parametrize('verbose, quiet, default, result', [
+        (True, False, True, True),  # Everything agrees verbose should be True
+        (False, True, False, False),  # Everything agrees verbose should be False
+        (True, False, False, True),  # Make sure the default does not overwrite the user choice
+        (False, True, True, False),  # Make sure the default does not overwrite the user choice
+        (True, None, False, True),  # Quiet is not provided
+        (False, None, False, False),  # Quiet is not provided
+        (None, True, False, False),  # Verbose is not provided
+        (None, False, False, True),  # Verbose is not provided
+        (None, None, True, True),  # Nothing is provided
+        (None, None, False, False),  # Nothing is provided
+        pytest.mark.raises((True, True, None, None), exception=ValueError),  # quiet and verbose contradict each other
+        pytest.mark.raises((False, False, None, None), exception=ValueError),  # quiet and verbose contradict each other
+    ])
+    def test__set_verbose(self, verbose, quiet, default, result):
+        assert _set_verbose(verbose=verbose, quiet=quiet, default=default) == result
+
+    # NOW THEY ALWAYS FAIL!
     # The following tests are commented out because they fail only when the file `test_log.py`
     # is run individually. Initially seen in #1370
+    # @pytest.mark.parametrize('verbose, quiet', [
+    #     (None, True),
+    #     (False, True)
+    # ])
+    # def test_warnings__set_verbose(self, verbose, quiet):
+    #     with pytest.warns(DeprecationWarning):
+    #         _set_verbose(verbose=verbose, quiet=quiet)
 
-    # assert_warns(DeprecationWarning, _set_verbose, verbose=None, quiet=True)
-    # assert_warns(DeprecationWarning, _set_verbose, verbose=False, quiet=True)
