@@ -21,15 +21,13 @@
 #
 from __future__ import absolute_import
 
-import pytest
 import six
 from six.moves import range, cStringIO, StringIO
 
+import pytest
 import numpy as np
-from numpy.testing import (TestCase, dec,
-                           assert_equal, assert_almost_equal,
-                           assert_array_almost_equal,
-                           )
+from numpy.testing import assert_equal, assert_almost_equal, assert_array_almost_equal
+
 
 import MDAnalysis
 import MDAnalysis.lib.util as util
@@ -173,35 +171,42 @@ class TestNamedStream_filename_behavior(object):
         obj = cStringIO()
         return util.NamedStream(obj, name)
 
-    def test_ospath_funcs(self):
-        ns = self.create_NamedStream()
-
+    @pytest.mark.parametrize('funcname', (
+            "abspath",
+            "basename",
+            "dirname",
+            "expanduser",
+            "normpath",
+            "relpath",
+            "split",
+            "splitext"
+    ))
+    def test_func(self, funcname):
         # - "expandvars" gave Segmentation fault (OS X 10.6, Python 2.7.11 -- orbeckst)
         # - "expanduser" will either return a string if it carried out interpolation
         #   or "will do nothing" and return the NamedStream (see extra test below).
         #   On systems without a user or HOME, it will also do nothing and the test
         #   below will fail.
-        funcs = ("abspath", "basename", "dirname", "expanduser",
-                 "normpath", "relpath", "split", "splitext")
-        def _test_func(funcname, fn=self.textname, ns=ns):
-            func = getattr(os.path, funcname)
-            reference = func(fn)
-            value = func(ns)
-            assert_equal(value, reference,
-                         err_msg=("os.path.{0}() does not work with "
-                                  "NamedStream").format(funcname))
+        ns = self.create_NamedStream()
+        fn = self.textname
+        func = getattr(os.path, funcname)
+        reference = func(fn)
+        value = func(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.{0}() does not work with "
+                              "NamedStream").format(funcname))
+
+    def test_join(self, funcname="join", path="/tmp/MDAnalysisTests"):
         # join not included because of different call signature
         # but added first argument for the sake of it showing up in the verbose
         # nose output
-        def _test_join(funcname="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
-            reference = os.path.join(path, fn)
-            value = os.path.join(path, ns)
-            assert_equal(value, reference,
-                         err_msg=("os.path.{0}() does not work with "
-                                  "NamedStream").format(funcname))
-        for func in funcs:
-            yield _test_func, func
-        yield _test_join, "join"
+        ns = self.create_NamedStream()
+        fn = self.textname
+        reference = os.path.join(path, fn)
+        value = os.path.join(path, ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.{0}() does not work with "
+                              "NamedStream").format(funcname))
 
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
@@ -233,7 +238,7 @@ class TestNamedStream_filename_behavior(object):
         try:
             assert_equal(ns + "foo", self.textname + "foo")
         except TypeError:
-            raise AssertionError("NamedStream does not support  "
+            raise pytest.fail("NamedStream does not support  "
                                  "string concatenation, NamedStream + str")
 
     def test_radd(self):
@@ -241,7 +246,7 @@ class TestNamedStream_filename_behavior(object):
         try:
             assert_equal("foo" + ns, "foo" + self.textname)
         except TypeError:
-            raise AssertionError("NamedStream does not support right "
+            raise pytest.fail("NamedStream does not support right "
                                  "string concatenation, str + NamedStream")
 
 
@@ -337,7 +342,7 @@ class TestStreamIO(RefAdKSmall):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
-            raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
+            raise pytest.fail("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_CRDReader(self):
