@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range, zip
 
 import MDAnalysis as mda
@@ -40,6 +42,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReferenc
 from MDAnalysisTests import tempdir, make_Universe
 from numpy.testing import TestCase
 
+
 class XYZReference(BaseReference):
     def __init__(self):
         super(XYZReference, self).__init__()
@@ -55,55 +58,54 @@ class XYZReference(BaseReference):
 
 
 class TestXYZReader(MultiframeReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XYZReference()
-        super(TestXYZReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZReference()
 
-    @raises
     def test_double_open(self):
-        self.reader.open_trajectory()
-        self.reader.open_trajectory()
+        with pytest.raises(Exception):
+            self.reader.open_trajectory()
+            self.reader.open_trajectory()
 
 
 class TestXYZWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = XYZReference()
-        super(TestXYZWriter, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZReference()
 
-    def test_write_selection(self):
-        uni = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_write_selection(self, ref, reader, tempdir):
+        uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test')
+        outfile = self.tmp_file('write-selection-test', ref, tempdir)
 
-        with self.ref.writer(outfile, sel.n_atoms) as W:
+        with ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
                 W.write(sel.atoms)
 
-        copy = self.ref.reader(outfile)
+        copy = ref.reader(outfile)
         for orig_ts, copy_ts in zip(uni.trajectory, copy):
             assert_array_almost_equal(
-                copy_ts._pos, sel.atoms.positions, self.ref.prec,
+                copy_ts._pos, sel.atoms.positions, ref.prec,
                 err_msg="coordinate mismatch between original and written "
                 "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
-
-    @raises(ValueError)
-    def test_write_different_models_in_trajectory(self):
-        outfile = self.tmp_file('write-models-in-trajectory')
+    def test_write_different_models_in_trajectory(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-models-in-trajectory', ref, tempdir)
         # n_atoms should match for each TimeStep if it was specified
-        with self.ref.writer(outfile, n_atoms=4) as w:
-            w.write(self.reader.ts)
+        with ref.writer(outfile, n_atoms=4) as w:
+            with pytest.raises(ValueError):
+               w.write(reader.ts)
 
-    def test_no_conversion(self):
-        outfile = self.tmp_file('write-no-conversion')
-        with self.ref.writer(outfile, convert_units=False) as w:
-            for ts in self.reader:
+    def test_no_conversion(self, ref, reader, tempdir):
+        outfile = self.tmp_file('write-no-conversion', ref, tempdir)
+        with ref.writer(outfile, convert_units=False) as w:
+            for ts in reader:
                 w.write(ts)
-        self._check_copy(outfile)
+        self._check_copy(outfile, ref, reader)
 
 
 class XYZ_BZ_Reference(XYZReference):
@@ -114,13 +116,19 @@ class XYZ_BZ_Reference(XYZReference):
 
 
 class Test_XYZBZReader(TestXYZReader):
-    def __init__(self):
-        super(Test_XYZBZReader, self).__init__(XYZ_BZ_Reference())
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZ_BZ_Reference()
 
 
 class Test_XYZBZWriter(TestXYZWriter):
-    def __init__(self):
-        super(Test_XYZBZWriter, self).__init__(XYZ_BZ_Reference())
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return XYZ_BZ_Reference()
 
 
 class TestXYZWriterNames(TestCase):

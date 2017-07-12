@@ -47,6 +47,7 @@ from numpy.testing import (
     assert_equal,
     assert_raises
 )
+import pytest
 
 
 class TestGROReaderOld(TestCase, RefAdK):
@@ -187,43 +188,39 @@ class GROReference(BaseReference):
 
 
 class TestGROReader(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReference()
-        super(TestGROReader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReference()
 
     def test_flag_convert_lengths(self):
         assert_equal(mda.core.flags['convert_lengths'], True,
                      "MDAnalysis.core.flags['convert_lengths'] should be True "
                      "by default")
 
-    def test_time(self):
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_time(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
         assert_equal(u.trajectory.time, 0.0,
                      "wrong time of the frame")
 
-    def test_full_slice(self):
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+    def test_full_slice(self, ref, reader):
+        u = mda.Universe(ref.topology, ref.trajectory)
         trj_iter = u.trajectory[:]
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(u.trajectory.n_frames))
 
 
 class TestGROWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReference()
-        super(TestGROWriter, self).__init__(reference)
-        self.u_no_resnames = make_Universe(['names', 'resids'],
-                                           trajectory=True)
-        self.u_no_resids = make_Universe(['names', 'resnames'],
-                                         trajectory=True)
-        self.u_no_names = make_Universe(['resids', 'resnames'],
-                                        trajectory=True)
 
-    def test_write_velocities(self):
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
-        outfile = self.tmp_file('write-velocities-test')
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReference()
+
+
+    def test_write_velocities(self, ref, tempdir):
+        u = mda.Universe(ref.topology, ref.trajectory)
+        outfile = self.tmp_file('write-velocities-test', ref, tempdir)
         u.atoms.write(outfile)
 
         u2 = mda.Universe(outfile)
@@ -231,44 +228,44 @@ class TestGROWriter(BaseWriterTest):
                                   u2.atoms.velocities)
 
     @dec.slow
-    def test_write_no_resnames(self):
-        outfile = self.tmp_file('write-no-resnames-test')
-        self.u_no_resnames.atoms.write(outfile)
+    def test_write_no_resnames(self, u_no_resnames, ref, tempdir):
+        outfile = self.tmp_file('write-no-resnames-test', ref, tempdir)
+        u_no_resnames.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
+        expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
     @dec.slow
-    def test_write_no_resids(self):
-        outfile = self.tmp_file('write-no-resids-test')
-        self.u_no_resids.atoms.write(outfile)
+    def test_write_no_resids(self, u_no_resids, ref, tempdir):
+        outfile = self.tmp_file('write-no-resids-test', ref, tempdir)
+        u_no_resids.atoms.write(outfile)
         u = mda.Universe(outfile)
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
     @dec.slow
-    def test_writer_no_atom_names(self):
-        outfile = self.tmp_file('write-no-names-test')
-        self.u_no_names.atoms.write(outfile)
+    def test_writer_no_atom_names(self, u_no_names, ref, tempdir):
+        outfile = self.tmp_file('write-no-names-test', ref, tempdir)
+        u_no_names.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
+        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
     @dec.slow
     @attr('issue')
-    def test_check_coordinate_limits_min(self):
+    def test_check_coordinate_limits_min(self, ref, tempdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
-        outfile = self.tmp_file('coordinate-limits-min-test')
+        outfile = self.tmp_file('coordinate-limits-min-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
     @attr('issue')
-    def test_check_coordinate_limits_max(self):
+    def test_check_coordinate_limits_max(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
@@ -276,18 +273,18 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
-        outfile = self.tmp_file('coordinate-limits-max-test')
+        outfile = self.tmp_file('coordinate-limits-max-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
-    def test_check_coordinate_limits_max_noconversion(self):
+    def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) also
         raises exception for convert_units=False"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
-        outfile = self.tmp_file('coordinate-limits-max-noconversion-test')
+        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref, tempdir)
         assert_raises(ValueError, u.atoms.write, outfile, convert_units=False)
 
 
@@ -301,25 +298,35 @@ class GRONoConversionReference(GROReference):
 
 
 class TestGROReaderNoConversion(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GRONoConversionReference()
-        super(TestGROReaderNoConversion, self).__init__(reference)
-        self.reader = self.ref.reader(self.ref.trajectory, convert_units=False)
-        self.reader.add_auxiliary('lowf', self.ref.aux_lowf,
-                                  dt=self.ref.aux_lowf_dt,
-                                  initial_time=0, time_selector=None)
-        self.reader.add_auxiliary('highf', self.ref.aux_highf,
-                                  dt=self.ref.aux_highf_dt,
-                                  initial_time=0, time_selector=None)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GRONoConversionReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def reader(ref):
+        reader = ref.reader(ref.trajectory, convert_units=False)
+        reader.add_auxiliary('lowf', ref.aux_lowf,
+                             dt=ref.aux_lowf_dt,
+                             initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf,
+                             dt=ref.aux_highf_dt,
+                             initial_time=0, time_selector=None)
+        return reader
 
 
 class TestGROWriterNoConversion(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GRONoConversionReference()
-        super(TestGROWriterNoConversion, self).__init__(reference)
-        self.writer = self.ref.writer(self.ref.trajectory, convert_units=False)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GRONoConversionReference()
+
+    @staticmethod
+    @pytest.fixture()
+    def writer(ref):
+        return ref.writer(ref.trajectory, convert_units=False)
 
 
 class GROReaderIncompleteVelocitiesReference(GROReference):
@@ -337,17 +344,18 @@ class GROReaderIncompleteVelocitiesReference(GROReference):
 
 
 class TestGROReaderIncompleteVelocities(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReaderIncompleteVelocitiesReference()
-        super(TestGROReaderIncompleteVelocities, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReaderIncompleteVelocitiesReference()
 
 
 class TestGROWriterIncompleteVelocities(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROReaderIncompleteVelocitiesReference()
-        super(TestGROWriterIncompleteVelocities, self).__init__(reference)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROReaderIncompleteVelocitiesReference()
 
 
 class GROBZReference(GROReference):
@@ -358,17 +366,17 @@ class GROBZReference(GROReference):
 
 
 class TestGROBZ2Reader(BaseReaderTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROBZReference()
-        super(TestGROBZ2Reader, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROBZReference()
 
 
 class TestGROBZ2Writer(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROBZReference()
-        super(TestGROBZ2Writer, self).__init__(reference)
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROBZReference()
 
 
 class GROLargeReference(GROReference):
@@ -379,24 +387,25 @@ class GROLargeReference(GROReference):
 
 
 class TestGROLargeWriter(BaseWriterTest):
-    def __init__(self, reference=None):
-        if reference is None:
-            reference = GROLargeReference()
-        super(TestGROLargeWriter, self).__init__(reference)
+
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return GROLargeReference()
 
     @dec.slow
     @attr('issue')
-    def test_writer_large(self):
+    def test_writer_large(self, ref, tempdir):
         """
         Test that atom numbers are truncated for large
         GRO files (Issue 550).
         """
-        outfile = self.tmp_file('outfile1.gro')
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        outfile = self.tmp_file('outfile1.gro', ref, tempdir)
+        u = mda.Universe(ref.topology, ref.trajectory)
         u.atoms.write(outfile)
 
         with open(outfile, 'rt') as mda_output:
-            with mda.lib.util.anyopen(self.ref.topology) as expected_output:
+            with mda.lib.util.anyopen(ref.topology, 'rt') as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,
@@ -406,13 +415,13 @@ class TestGROLargeWriter(BaseWriterTest):
 
     @dec.slow
     @attr('issue')
-    def test_writer_large_residue_count(self):
+    def test_writer_large_residue_count(self, ref, tempdir):
         """
         Ensure large residue number truncation for
         GRO files (Issue 886).
         """
-        outfile = self.tmp_file('outfile2.gro')
-        u = mda.Universe(self.ref.topology, self.ref.trajectory)
+        outfile = self.tmp_file('outfile2.gro', ref, tempdir)
+        u = mda.Universe(ref.topology, ref.trajectory)
         target_resname = u.residues[-1].resname
         resid_value = 9999999
         u.residues[-1].resid = resid_value
@@ -452,7 +461,7 @@ class TestGROTimestep(BaseTimestepTest):
                          0., 0., 0.])
     uni_args = (GRO,)
 
-    def test_unitcell_set2(self):
+    def test_unitcell_set2(self, ts):
         box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
                        dtype=np.float32)
 
@@ -460,5 +469,5 @@ class TestGROTimestep(BaseTimestepTest):
                         0., 0.,  # v1y v1z
                         0., 0.,  # v2x v2y
                         40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
-        self.ts.dimensions = box
-        assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
+        ts.dimensions = box
+        assert_array_almost_equal(ts._unitcell, ref, decimal=2)

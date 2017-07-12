@@ -93,13 +93,13 @@ class TestDMSTimestep(BaseTimestepTest):
                 'z':np.array([0, 0, 12.])}
     uni_args = (DMS,)
 
-    def test_dimensions_set_box(self):
-        self.ts.dimensions = self.newbox
-        assert_equal(self.ts.dimensions, self.newbox)
-        assert_equal(self.ts._unitcell, self.unitcell)
+    def test_dimensions_set_box(self, ts):
+        ts.dimensions = self.newbox
+        assert_equal(ts.dimensions, self.newbox)
+        assert_equal(ts._unitcell, self.unitcell)
 
-    def test_set_triclinic_vectors(self):
+    def test_set_triclinic_vectors(self, ts):
         ref_vec = triclinic_vectors(self.newbox)
-        self.ts.triclinic_dimensions = ref_vec
-        assert_equal(self.ts.dimensions, self.newbox)
-        assert_equal(self.ts._unitcell, self.unitcell)
+        ts.triclinic_dimensions = ref_vec
+        assert_equal(ts.dimensions, self.newbox)
+        assert_equal(ts._unitcell, self.unitcell)
