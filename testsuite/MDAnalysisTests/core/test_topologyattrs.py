@@ -25,6 +25,7 @@
 from __future__ import division, absolute_import
 
 from unittest import TestCase
+import warnings
 
 import numpy as np
 
@@ -494,3 +495,45 @@ class TestCrossLevelAttributeSetting(object):
                     # but will fail to be set
                     continue
                 yield self._check_crosslevel_fail, component, singular_attr
+
+
+class TestInstantSelectorDeprecation(object):
+    """Test the deprecation warnings for instant selectors
+
+    Instant selectors are deprecated since version 0.16.2. PR #1403 introduced
+    deprecation warnings for these selectors.
+    """
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return mda.Universe(PSF, DCD)
+
+    @pytest.mark.parametrize('instruction', (
+        'universe.atoms.CA',
+        'universe.residues.LYS',
+        'universe.segments.s4AKE',
+        pytest.param('universe.s4AKE',
+                     marks=pytest.mark.xfail(reason="Issue #1478")),
+    ))
+    def test_deprecation(self, universe, instruction):
+        """Test that the warnings are issued when required.
+        """
+        with pytest.deprecated_call():
+            exec(instruction)
+
+    @pytest.mark.parametrize('instruction', (
+        'universe.atoms',
+        'universe.residues',
+        'universe.segments',
+    ))
+    def test_no_deprecation(self, universe, instruction):
+        """Test that the warnings are not issued when they should not.
+
+        See issue #1476.
+        """
+        with pytest.warns(None) as record:
+            warnings.simplefilter('always')
+            exec(instruction)
+        for warning in record:
+            assert not 'Instant selector' in str(warning.message)
+            
