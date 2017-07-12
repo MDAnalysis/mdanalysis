@@ -222,38 +222,38 @@ class TestMergeTopology(object):
         ag1 = u.atoms[:20]
         ag2 = u.atoms[100:110]
 
-        u2 = MDAnalysis.Merge(ag1, ag2)
+        u_merge = MDAnalysis.Merge(ag1, ag2)
 
-        assert(len(u2.atoms) == 30)
-        assert(len(u2.atoms.bonds) == 28)
-        assert(len(u2.atoms.angles) == 47)
-        assert(len(u2.atoms.dihedrals) == 53)
-        assert(len(u2.atoms.impropers) == 1)
+        assert(len(u_merge.atoms) == 30)
+        assert(len(u_merge.atoms.bonds) == 28)
+        assert(len(u_merge.atoms.angles) == 47)
+        assert(len(u_merge.atoms.dihedrals) == 53)
+        assert(len(u_merge.atoms.impropers) == 1)
 
         # All these bonds are in the merged Universe
-        assert(len(ag1[0].bonds) == len(u2.atoms[0].bonds))
+        assert(len(ag1[0].bonds) == len(u_merge.atoms[0].bonds))
         # One of these bonds isn't in the merged Universe
-        assert(len(ag2[0].bonds) - 1 == len(u2.atoms[20].bonds))
+        assert(len(ag2[0].bonds) - 1 == len(u_merge.atoms[20].bonds))
 
     def test_merge_with_topology_from_different_universes(self, u, u_ligand):
-        u3 = MDAnalysis.Merge(u.atoms[:110], u_ligand.atoms)
+        u_merge = MDAnalysis.Merge(u.atoms[:110], u_ligand.atoms)
 
         # merge_protein doesn't contain bond topology, so merged universe
         # shouldn't have one either
-        print(u3.atoms.bonds)
+        print(u_merge.atoms.bonds)
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
-        # assert(not hasattr(u3.atoms, 'bonds') or len(u3.atoms.bonds) == 0)
-        assert(not hasattr(u3.atoms, 'angles') or len(u3.atoms.bonds) == 0)
-        assert(not hasattr(u3.atoms, 'dihedrals') or len(u3.atoms.bonds) == 0)
-        assert(not hasattr(u3.atoms, 'impropers') or len(u3.atoms.bonds) == 0)
+        # assert(not hasattr(u_merge.atoms, 'bonds') or len(u_merge.atoms.bonds) == 0)
+        assert(not hasattr(u_merge.atoms, 'angles') or len(u_merge.atoms.bonds) == 0)
+        assert(not hasattr(u_merge.atoms, 'dihedrals') or len(u_merge.atoms.bonds) == 0)
+        assert(not hasattr(u_merge.atoms, 'impropers') or len(u_merge.atoms.bonds) == 0)
 
     def test_merge_without_topology(self, u):
         # This shouldn't have topology as we merged single atoms
-        u2 = MDAnalysis.Merge(u.atoms[0:1], u.atoms[10:11])
+        u_merge = MDAnalysis.Merge(u.atoms[0:1], u.atoms[10:11])
 
-        assert(len(u2.atoms) == 2)
-        assert(len(u2.atoms.bonds) == 0)
-        assert(len(u2.atoms.angles) == 0)
-        assert(len(u2.atoms.dihedrals) == 0)
-        assert(len(u2.atoms.impropers) == 0)
+        assert(len(u_merge.atoms) == 2)
+        assert(len(u_merge.atoms.bonds) == 0)
+        assert(len(u_merge.atoms.angles) == 0)
+        assert(len(u_merge.atoms.dihedrals) == 0)
+        assert(len(u_merge.atoms.impropers) == 0)
