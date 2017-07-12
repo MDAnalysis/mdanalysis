@@ -73,30 +73,6 @@ class TestAtomGroupPickle(object):
     def pickle_str_n(ag_n):
         return cPickle.dumps(ag_n, protocol=cPickle.HIGHEST_PROTOCOL)
 
-    
-
-    # def setUp(self):
-    #     
-    #     self.universe = mda.Universe(PDB_small, PDB_small, PDB_small)
-    #     self.universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
-    #                                    anchor_name="test1")
-    #     self.ag = self.universe.atoms[:20]  # prototypical AtomGroup
-    #     self.ag_n = self.universe_n.atoms[:10]
-    #     self.pickle_str = cPickle.dumps(self.ag,
-    #                                     protocol=cPickle.HIGHEST_PROTOCOL)
-    #     self.pickle_str_n = cPickle.dumps(self.ag_n,
-    #                                       protocol=cPickle.HIGHEST_PROTOCOL)
-
-    # def tearDown(self):
-    #     # Some tests might delete attributes.
-    #     try:
-    #         del self.universe
-    #         del self.universe_n
-    #         del self.ag
-    #         del self.ag_n
-    #     except AttributeError:
-    #         pass
-
     def test_unpickle(self, pickle_str, ag, universe):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = cPickle.loads(pickle_str)
@@ -113,7 +89,13 @@ class TestAtomGroupPickle(object):
         assert_(newag.universe is universe_n,
                 "Unpickled AtomGroup on wrong Universe.")
 
-    def test_unpickle_missing(self, pickle_str_n, ag_n, universe_n):
+    def test_unpickle_missing(self):
+        universe = mda.Universe(PDB_small, PDB_small, PDB_small)
+        universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
+                                       anchor_name="test1")
+        ag = universe.atoms[:20]  # prototypical AtomGroup
+        ag_n = universe_n.atoms[:10]
+        pickle_str_n = cPickle.dumps(ag_n, protocol=cPickle.HIGHEST_PROTOCOL)
         # Kill AtomGroup and Universe
         del ag_n
         del universe_n
@@ -173,23 +155,23 @@ class TestAtomGroupPickle(object):
         assert_equal(len(newag), 0)
 
 
-class TestPicklingUpdatingAtomGroups(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(PDB_small)
+class TestPicklingUpdatingAtomGroups(object):
 
-    def tearDown(self):
-        del self.u
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return mda.Universe(PDB_small)
 
-    def test_pickling_uag(self):
-        ag = self.u.atoms[:100]
+    def test_pickling_uag(self, u):
+        ag = u.atoms[:100]
         uag = ag.select_atoms('name C', updating=True)
         pickle_str = cPickle.dumps(uag, protocol=cPickle.HIGHEST_PROTOCOL)
         new_uag = cPickle.loads(pickle_str)
 
         assert_array_equal(uag.indices, new_uag.indices)
 
-    def test_pickling_uag_of_uag(self):
-        uag1 = self.u.select_atoms('name C or name H', updating=True)
+    def test_pickling_uag_of_uag(self, u):
+        uag1 = u.select_atoms('name C or name H', updating=True)
         uag2 = uag1.select_atoms('name C', updating=True)
         pickle_str = cPickle.dumps(uag2, protocol=cPickle.HIGHEST_PROTOCOL)
         new_uag2 = cPickle.loads(pickle_str)
