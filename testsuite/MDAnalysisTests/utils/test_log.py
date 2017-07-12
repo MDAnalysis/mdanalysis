@@ -161,15 +161,11 @@ class TestSetVerbose(object):
     ])
     def test__set_verbose(self, verbose, quiet, default, result):
         assert _set_verbose(verbose=verbose, quiet=quiet, default=default) == result
-
-    # NOW THEY ALWAYS FAIL!
-    # The following tests are commented out because they fail only when the file `test_log.py`
-    # is run individually. Initially seen in #1370
-    # @pytest.mark.parametrize('verbose, quiet', [
-    #     (None, True),
-    #     (False, True)
-    # ])
-    # def test_warnings__set_verbose(self, verbose, quiet):
-    #     with pytest.warns(DeprecationWarning):
-    #         _set_verbose(verbose=verbose, quiet=quiet)
+        
+    @pytest.mark.parametrize('verbose, quiet', [
+        (None, True),
+        (False, True)
+    ])
+    def test_warnings__set_verbose(self, verbose, quiet):
+        pytest.deprecated_call(_set_verbose, verbose=verbose, quiet=quiet)
 
