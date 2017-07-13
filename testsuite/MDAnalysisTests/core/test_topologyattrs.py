@@ -519,7 +519,7 @@ class TestInstantSelectorDeprecation(object):
         """Test that the warnings are issued when required.
         """
         with pytest.deprecated_call():
-            exec(instruction)
+            exec(instruction)  #pylint: disable=W0122
 
     @pytest.mark.parametrize('instruction', (
         'universe.atoms',
@@ -533,7 +533,7 @@ class TestInstantSelectorDeprecation(object):
         """
         with pytest.warns(None) as record:
             warnings.simplefilter('always')
-            exec(instruction)
+            exec(instruction)  #pylint: disable=W0122
         for warning in record:
             assert not 'Instant selector' in str(warning.message)
             
