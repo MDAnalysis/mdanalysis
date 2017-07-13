@@ -846,3 +846,4 @@ class TestEncoreImportWarnings(object):
                 'MDAnalysis.analysis.encore.clustering.ClusteringMethod',
         ):
             self._check_sklearn_import_warns(pkg, recwarn)
+            # This is a quickfix! Convert this to a parametrize call in future.
