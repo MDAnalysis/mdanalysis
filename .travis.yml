@@ -91,13 +91,11 @@ matrix:
       env: NAME='full-py3.6'
            PYTHON_VERSION=3.6
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
-           COVERALLS='true'
   allow_failures:
     - os: linux
       env: NAME='full-py3.6'
            PYTHON_VERSION=3.6
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
-           COVERALLS='true'
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
