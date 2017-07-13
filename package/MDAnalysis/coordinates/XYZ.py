@@ -302,7 +302,11 @@ class XYZReader(base.ReaderBase):
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by
         # coordinates::core.py so the last file extension will tell us if it is
         # bzipped or not
-        root, ext = os.path.splitext(self.filename)
+        if util.isstream(self.filename):
+            root = str(self.filename)
+            ext = 'xyz'
+        else:
+            root, ext = os.path.splitext(self.filename)
         self.xyzfile = util.anyopen(self.filename)
         self.compression = ext[1:] if ext[1:] != "xyz" else None
         self._cache = dict()
