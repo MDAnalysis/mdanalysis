@@ -1070,13 +1070,6 @@ class Resnames(ResidueAttr):
     # This transplant is hardcoded for now to allow for multiple getattr things
     #transplants[Segment].append(('__getattr__', getattr__))
 
-
-    @deprecate(message="Instant selector ResidueGroup.<name> "
-               "or Segment.<name> "
-               "is deprecated and will be removed in 1.0. "
-               "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
-               "or Segment.residues[Segment.residues == '<name>'] "
-               "instead.")
     def _get_named_residue(group, resname):
         """Get all residues with name *resname* in the current ResidueGroup
         or Segment.
@@ -1104,7 +1097,14 @@ class Resnames(ResidueAttr):
         if len(residues) == 0:
             raise selection.SelectionError(
                 "No residues with resname '{0}'".format(resname))
-        elif len(residues) == 1:
+        warnings.warn("Instant selector ResidueGroup.<name> "
+                      "or Segment.<name> "
+                      "is deprecated and will be removed in 1.0. "
+                      "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
+                      "or Segment.residues[Segment.residues == '<name>'] "
+                      "instead.",
+                      DeprecationWarning)
+        if len(residues) == 1:
             # XXX: keep this, makes more sense for names
             return residues[0]
         else:
@@ -1273,10 +1273,6 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('__getattr__', getattr__))
 
-    @deprecate(message="Instant selector SegmentGroup.<name> "
-               "is deprecated and will be removed in 1.0. "
-               "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
-               "instead.")
     def _get_named_segment(group, segid):
         """Get all segments with name *segid* in the current SegmentGroup.
 
@@ -1305,7 +1301,12 @@ class Segids(SegmentAttr):
         if len(segments) == 0:
             raise selection.SelectionError(
                 "No segments with segid '{0}'".format(segid))
-        elif len(segments) == 1:
+        warnings.warn("Instant selector SegmentGroup.<name> "
+                      "is deprecated and will be removed in 1.0. "
+                      "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
+                      "instead.",
+                      DeprecationWarning)
+        if len(segments) == 1:
             # XXX: keep this, makes more sense for names
             return segments[0]
         else:
