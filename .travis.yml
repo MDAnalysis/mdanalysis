@@ -46,7 +46,6 @@ matrix:
   include:
     - os : linux
       env: NAME='minimal'
-           PYTHON_VERSION=2.7
            MEMLEAK='--with-memleak'
            MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${MEMLEAK}'
 
@@ -87,6 +86,16 @@ matrix:
            NUMPY_VERSION=dev
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            EVENT_TYPE='cron'
+
+    - os: linux
+      env: NAME='full-py3.6'
+           PYTHON_VERSION=3.6
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+  allow_failures:
+    - os: linux
+      env: NAME='full-py3.6'
+           PYTHON_VERSION=3.6
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
 install:
   - git clone git://github.com/astropy/ci-helpers.git
