@@ -209,7 +209,8 @@ def filename(name, ext=None, keep=False):
        Also permits :class:`NamedStream` to pass through.
     """
     # save casting of NamedStream to a string. Python3 doesn't like the class
-    name = str(name)
+    if isstream(name):
+        return name
     if ext is not None:
         if not ext.startswith(os.path.extsep):
             ext = os.path.extsep + ext
@@ -220,7 +221,7 @@ def filename(name, ext=None, keep=False):
                 name.name = newname
             else:
                 name = newname
-    return name if isstream(name) else str(name)
+    return str(name)
 
 
 @contextmanager
