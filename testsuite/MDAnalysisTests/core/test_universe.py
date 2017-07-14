@@ -42,7 +42,6 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
-from nose.plugins.attrib import attr
 import pytest
 
 from MDAnalysisTests import make_Universe
@@ -217,7 +216,6 @@ class TestUniverse(object):
 
         assert_raises(ValueError, bad_load)
 
-    @attr('issue')
     @pytest.mark.skipif(parser_not_found('DCD'),
                 reason='DCD parser not available. Are you using python 3?')
     def test_load_new(self):

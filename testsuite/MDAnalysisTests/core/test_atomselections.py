@@ -35,7 +35,6 @@ from numpy.testing import(
     assert_warns,
     assert_raises,
 )
-from nose.plugins.attrib import attr
 import warnings
 
 import MDAnalysis

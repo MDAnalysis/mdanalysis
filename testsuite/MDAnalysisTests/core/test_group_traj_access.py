@@ -32,7 +32,6 @@ from numpy.testing import (
     assert_equal,
     assert_raises,
 )
-from nose.plugins.attrib import attr
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -380,7 +379,6 @@ class TestTRRForces(TestCase):
     def tearDown(self):
         del self.universe
 
-    @attr('slow')
     def testForces(self):
         protein = self.universe.select_atoms("protein")
         assert_equal(len(protein), 918)
@@ -408,12 +406,10 @@ class TestAtomGroupVelocities(TestCase):
         del self.ag
         del self.universe
 
-    @attr('slow')
     def test_get_velocities(self):
         v = self.ag.velocities
         assert_(np.any(np.abs(v) > 1e-6), "velocities should be non-zero")
 
-    @attr('slow')
     def test_velocities(self):
         ag = self.universe.atoms[42:45]
         ref_v = np.array([
@@ -423,7 +419,6 @@ class TestAtomGroupVelocities(TestCase):
         v = ag.velocities
         assert_almost_equal(v, ref_v, err_msg="velocities were not read correctly")
 
-    @attr('slow')
     def test_set_velocities(self):
         ag = self.ag
         v = ag.velocities - 2.7271
@@ -441,19 +436,16 @@ class TestAtomGroupForces(TestCase):
     def tearDown(self):
         del self.universe
 
-    @attr('slow')
     def test_get_forces(self):
         v = self.ag.forces
         assert_(np.any(np.abs(v) > 1e-6), "forces should be non-zero")
 
-    @attr('slow')
     def test_forces(self):
         ag = self.universe.atoms[1:4]
         ref_v = np.arange(9).reshape(3, 3) * .01 + .03
         v = ag.forces
         assert_almost_equal(v, ref_v, err_msg="forces were not read correctly")
 
-    @attr('slow')
     def test_set_forces(self):
         ag = self.ag
         v = ag.forces - 2.7271

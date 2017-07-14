@@ -36,7 +36,6 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
-from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, dec,
                            assert_array_almost_equal,
                            assert_almost_equal, assert_raises, assert_)
@@ -243,7 +242,6 @@ class TestPDBWriter(TestCase):
         expected = np.zeros(self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.tempfactors, expected)
 
-    @attr('issue')
     def test_write_single_frame_Writer(self):
         """Test writing a single frame from a DCD trajectory to a PDB using
         MDAnalysis.Writer (Issue 105)"""
@@ -257,7 +255,6 @@ class TestPDBWriter(TestCase):
                      1,
                      err_msg="The number of frames should be 1.")
 
-    @attr('issue')
     def test_write_single_frame_AtomGroup(self):
         """Test writing a single frame from a DCD trajectory to a PDB using
         AtomGroup.write() (Issue 105)"""
@@ -273,7 +270,6 @@ class TestPDBWriter(TestCase):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
-    @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
         with ValueError (Issue 57)"""
@@ -283,7 +279,6 @@ class TestPDBWriter(TestCase):
         u.atoms[2000].position = [0, -999.9995, 22.8]
         assert_raises(ValueError, u.atoms.write, self.outfile)
 
-    @attr('issue')
     def test_check_coordinate_limits_max(self):
         """Test that illegal PDB coordinates (x > 9999.9995 A) are caught
         with ValueError (Issue 57)"""
@@ -295,7 +290,6 @@ class TestPDBWriter(TestCase):
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
-    @attr('issue')
     def test_check_header_title_multiframe(self):
         """Check whether HEADER and TITLE are written just once in a multi-
         frame PDB file (Issue 741)"""
@@ -328,12 +322,10 @@ class TestMultiPDBReader(TestCase):
         del self.multiverse
         del self.conect
 
-    @attr('slow')
     def test_n_frames(self):
         assert_equal(self.multiverse.trajectory.n_frames, 24,
                      "Wrong number of frames read from PDB muliple model file")
 
-    @attr('slow')
     def test_n_atoms_frame(self):
         u = self.multiverse
         desired = 392
@@ -343,7 +335,6 @@ class TestMultiPDBReader(TestCase):
                                                         "of atoms in the test case (%d) at frame %d" % (
                                                             len(u.atoms), desired, u.trajectory.frame))
 
-    @attr('slow')
     def test_rewind(self):
         u = self.multiverse
         u.trajectory[11]
@@ -353,7 +344,6 @@ class TestMultiPDBReader(TestCase):
         assert_equal(u.trajectory.ts.frame, 0,
                      "Failed to rewind to 0th frame (frame index 0)")
 
-    @attr('slow')
     def test_iteration(self):
         u = self.multiverse
         frames = []
@@ -369,7 +359,6 @@ class TestMultiPDBReader(TestCase):
             "trajectory iterator fails to rewind" %
             (len(frames), u.trajectory.n_frames))
 
-    @attr('slow')
     def test_slice_iteration(self):
         u = self.multiverse
         frames = []
@@ -379,7 +368,6 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.n_frames)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
-    @attr('slow')
     def test_conect_bonds_conect(self):
         conect = self.conect
         assert_equal(len(conect.atoms), 1890)
@@ -395,7 +383,6 @@ class TestMultiPDBReader(TestCase):
             assert_equal(len(u1.atoms), 1890)
             assert_equal(len(u1.bonds), 1922)
 
-    @attr('slow')
     def test_conect_bonds_all(self):
         conect = self.conect
         assert_equal(len(conect.atoms), 1890)
@@ -413,7 +400,6 @@ class TestMultiPDBReader(TestCase):
 
             # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
-    @attr('slow')
     def test_numconnections(self):
         u = self.multiverse
 
@@ -501,7 +487,6 @@ class TestMultiPDBWriter(TestCase):
         del self.universe, self.multiverse, self.universe2
         del self.tmpdir
 
-    @attr('slow')
     def test_write_atomselection(self):
         """Test if multiframe writer can write selected frames for an
         atomselection."""
@@ -524,7 +509,6 @@ class TestMultiPDBWriter(TestCase):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
-    @attr('slow')
     def test_write_all_timesteps(self):
         """
         Test write_all_timesteps() of the  multiframe writer (selected frames
@@ -548,7 +532,6 @@ class TestMultiPDBWriter(TestCase):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
-    @attr('slow')
     def test_write_atoms(self):
         u = self.universe2
         W = mda.Writer(self.outfile, multiframe=True)
@@ -632,7 +615,6 @@ class TestPDBReaderBig(TestCase, RefAdK):
                      "Atom selection of last atoms in file")
 
     @dec.slow
-    @attr('issue')
     def test_unitcell(self):
         assert_array_almost_equal(
             self.universe.coord.dimensions,

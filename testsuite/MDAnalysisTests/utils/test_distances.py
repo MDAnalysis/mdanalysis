@@ -28,8 +28,6 @@ import pytest
 from numpy.testing import (TestCase, dec, raises, assert_,
                            assert_almost_equal, assert_equal, assert_raises,)
 
-from nose.plugins.attrib import attr
-
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
 from MDAnalysisTests import parser_not_found
@@ -111,7 +109,6 @@ class TestDistanceArrayDCD(object):
     #   DESIRED: 52.470257062419059
     prec = 5
 
-    @attr('issue')
     def test_simple(self, DCD_Universe, backend):
         U, trajectory = DCD_Universe
         trajectory.rewind()

@@ -33,7 +33,6 @@ from numpy.testing import (TestCase, dec,
                            assert_array_equal, assert_array_almost_equal,
                            assert_)
 import numpy as np
-from nose.plugins.attrib import attr
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
@@ -262,7 +261,6 @@ class TestAlign(TestCase):
                             err_msg="frame {0:d} of fit does not have "
                             "expected RMSD".format(frame))
 
-    @attr('issue')
     def test_alignto_checks_selections(self):
         """Testing that alignto() fails if selections do not
         match (Issue 143)"""
@@ -307,7 +305,6 @@ class TestAlignmentProcessing(TestCase):
     def tearDown(self):
         del self.tempdir
 
-    @attr('issue')
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
@@ -317,7 +314,6 @@ class TestAlignmentProcessing(TestCase):
         assert_equal(len(sel['mobile']), 30623,
                      err_msg="selection string has unexpected length")
 
-    @attr('issue')
     @dec.skipif(executable_not_found("clustalw2"),
                 msg="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self):

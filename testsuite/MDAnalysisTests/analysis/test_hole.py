@@ -35,8 +35,6 @@ import numpy as np
 import matplotlib
 import mpl_toolkits.mplot3d
 
-import nose
-from nose.plugins.attrib import attr
 
 import os
 import errno
@@ -74,7 +72,6 @@ class TestHOLE(TestCase):
         del self.H
         del self.tempdir
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_HOLE(self):
         profiles = self.H.profiles.values()
@@ -90,7 +87,6 @@ class TestHOLE(TestCase):
         assert_almost_equal(p.radius.min(), 1.19707,
                             err_msg="wrong min HOLE radius")
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_vmd_surface(self):
         with in_dir(self.tempdir.name):
@@ -127,7 +123,6 @@ class TestHOLEtraj(TestCase):
         del cls.universe
 
     # This is VERY slow on 11 frames so we just take 2
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_HOLEtraj(self):
         assert_array_equal(sorted(self.H.profiles.keys()), self.frames,
@@ -143,7 +138,6 @@ class TestHOLEtraj(TestCase):
         assert_array_almost_equal(data[2], [1.19819, 1.29628],
                                   err_msg="wrong minimum radius")
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_min_radius(self):
         assert_array_almost_equal(self.H.min_radius(),
@@ -151,21 +145,18 @@ class TestHOLEtraj(TestCase):
                                             [ 6.     ,  1.29628]]),
                                   err_msg="min_radius() array not correct")
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_plot(self):
         ax = self.H.plot(label=True)
         assert_(isinstance(ax, matplotlib.axes.Axes),
                 msg="H.plot() did not produce an Axes instance")
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_plot3D(self):
         ax = self.H.plot3D()
         assert_(isinstance(ax, mpl_toolkits.mplot3d.Axes3D),
                 msg="H.plot3D() did not produce an Axes3D instance")
 
-    @attr('slow')
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_plot3D_rmax(self):
         ax = self.H.plot3D(rmax=2.5)
@@ -184,8 +175,6 @@ class TestHoleModule(TestCase):
         except ImportError:
             pass
 
-    @attr('slow')
-    @attr('issue')
     @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_hole_module_fd_closure(self):

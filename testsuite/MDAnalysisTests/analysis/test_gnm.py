@@ -32,6 +32,7 @@ import pytest
 
 from MDAnalysisTests.datafiles import GRO, XTC
 
+
 class TestGNM(object):
     @staticmethod
     @pytest.fixture()
@@ -81,6 +82,7 @@ class TestGNM(object):
 
     def test_closeContactGNMAnalysis(self, universe):
         gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(universe, weights="size")
+
         gnm.run()
 
         result = gnm.results
@@ -111,6 +113,7 @@ class TestGNM(object):
 
     def test_closeContactGNMAnalysis_weights_None(self, universe):
         gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(universe, weights=None)
+
         gnm.run()
 
         result = gnm.results
