@@ -213,7 +213,7 @@ For details see the report for `Issue 87`_.
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'nose>=1.3.7',
+              'numpy>=1.10.4',
               'pytest>=3.1.2',
               'hypothesis',
               'psutil>=4.0.2',

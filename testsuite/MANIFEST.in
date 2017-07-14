@@ -1,7 +1,6 @@
 graft scripts
 include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
 include setup.py
-include MDAnalysisTests/mda_nosetests
 include MDAnalysisTests/data/*/*
 global-exclude *~
 global-exclude *.pkl

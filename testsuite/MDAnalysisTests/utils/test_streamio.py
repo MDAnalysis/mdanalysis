@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 import six
 from six.moves import range, cStringIO, StringIO
 
@@ -33,7 +35,6 @@ import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import tempdir
 
 import os
@@ -217,7 +218,7 @@ class TestNamedStream_filename_behavior(object):
     # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
     @dec.skipif(True)
     @dec.skipif("HOME" not in os.environ)
-    @knownfailure
+    @pytest.mark.xfail
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)

@@ -114,6 +114,9 @@ excluded.
 """
 from __future__ import absolute_import
 import logging
+
+import pytest
+
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 __version__ = "0.17.0-dev"  # keep in sync with RELEASE in setup.py
@@ -130,9 +133,6 @@ except ImportError:
 
 import os
 import sys
-
-# We get our nose from the plugins so that version-checking needs only be done there.
-from MDAnalysisTests.plugins import nose, loaded_plugins
 
 # Any tests that plot with matplotlib need to run with the simple agg backend because
 # on Travis there is no DISPLAY set
@@ -152,26 +152,6 @@ from MDAnalysisTests.util import (
 )
 from MDAnalysisTests.core.util import make_Universe
 
+
 def run(*args, **kwargs):
-    """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
-    try:
-        kwargs['argv'] = sys.argv + kwargs['argv'] #sys.argv takes precedence
-    except KeyError:
-        kwargs['argv'] = sys.argv
-    # We emulate numpy's treament of the 'fast' label.
-    if 'label' in kwargs:
-        label = kwargs.pop('label')
-        if label == 'fast':
-            kwargs['argv'].extend(['-A','not slow'])
-    # We keep accepting numpy's 'extra_argv'
-    if 'extra_argv' in kwargs:
-        kwargs['argv'].extend(kwargs.pop('extra_argv'))
-    try:
-        kwargs['addplugins'].extend(loaded_plugins.values())
-    except KeyError:
-        kwargs['addplugins'] = loaded_plugins.values()
-    # By default, test our testsuite
-    kwargs['defaultTest'] = os.path.dirname(__file__)
-    return nose.run_exit(*args, **kwargs)
-
-
+    pytest.main()
