@@ -21,6 +21,8 @@
 #
 from __future__ import print_function, division, absolute_import
 
+from unittest import TestCase
+
 import MDAnalysis as mda
 from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
@@ -151,11 +153,11 @@ def soft_cut(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
     return np.asarray(results)
 
 
-class TestContacts(object):
+class TestContacts(TestCase):
     @dec.skipif(
         parser_not_found('DCD'),
         'DCD parser not available. Are you using python 3?')
-    def __init__(self):
+    def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
 

@@ -23,12 +23,12 @@ env:
     - PYTHON_VERSION=2.7
     - COVERALLS=false
     - NOSE_FLAGS="--processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
-    - NOSE_TEST_LIST="analysis"
+    - NOSE_TEST_LIST=""
     - PYTEST_FLAGS="--disable-pytest-warnings -n 2"
-    - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats testsuite/MDAnalysisTests/coordinates testsuite/MDAnalysisTests/utils testsuite/MDAnalysisTests/topology testsuite/MDAnalysisTests/auxiliary testsuite/MDAnalysisTests/core"
+    - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats testsuite/MDAnalysisTests/coordinates testsuite/MDAnalysisTests/utils testsuite/MDAnalysisTests/topology testsuite/MDAnalysisTests/auxiliary testsuite/MDAnalysisTests/core testsuite/MDAnalysisTests/analysis"
     - NOSE_COVERAGE_FILE="nose_coverage"
     - PYTEST_COVERAGE_FILE="pytest_coverage"
-    - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS}"
+    - MAIN_CMD="pytest ${PYTEST_LIST} ${PYTEST_FLAGS}"
     - SETUP_CMD=""
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
     - CONDA_DEPENDENCIES="mmtf-python nose=1.3.7 mock six biopython networkx cython joblib nose-timer matplotlib scipy griddataformats pytest-cov pytest-xdist hypothesis"
@@ -47,7 +47,7 @@ matrix:
     - os : linux
       env: NAME='minimal'
            MEMLEAK='--with-memleak'
-           MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS}; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${MEMLEAK}'
+           MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS}'
 
     - os: linux
       env: NAME="Doc"
@@ -68,7 +68,7 @@ matrix:
       env: NAME='full'
            NOSE_COVERAGE='--with-coverage --cover-package MDAnalysis'
            PYTEST_COVERAGE='--cov=MDAnalysis'
-           MAIN_CMD='export COVERAGE_FILE=$PYTEST_COVERAGE_FILE; pytest ${PYTEST_LIST} ${PYTEST_FLAGS} ${PYTEST_COVERAGE}; export COVERAGE_FILE=$NOSE_COVERAGE_FILE; python ./testsuite/MDAnalysisTests/mda_nosetests ${NOSE_TEST_LIST} ${NOSE_FLAGS} ${NOSE_COVERAGE}'
+           MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS} ${PYTEST_COVERAGE}'
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
@@ -119,7 +119,6 @@ script:
 after_success:
   - |
     if [[ $COVERALLS == 'true' ]]; then \
-      coverage combine $NOSE_COVERAGE_FILE $PYTEST_COVERAGE_FILE; \
       coveralls; \
     fi
   # can't use test here since this leads to travis fails even though the build passes

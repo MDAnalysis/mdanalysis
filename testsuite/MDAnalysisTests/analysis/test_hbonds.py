@@ -21,20 +21,21 @@
 #
 from __future__ import print_function, absolute_import
 
+from unittest import TestCase
+
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
+import itertools
+import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 
 from numpy.testing import (assert_, assert_equal, assert_array_equal,
-                           assert_almost_equal, assert_array_almost_equal,
-                           assert_raises, dec)
+                           assert_almost_equal, assert_array_almost_equal)
 import numpy as np
 
-import itertools
 import warnings
 from six import StringIO
 
-from MDAnalysisTests import parser_not_found
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, waterPSF, waterDCD
 
 # For type guessing:
@@ -46,7 +47,7 @@ def guess_types(names):
     return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
 
 
-class TestHydrogenBondAnalysis(object):
+class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.kwargs = {
@@ -174,7 +175,7 @@ class TestHydrogenBondAnalysisChecking(object):
         del self.universe
 
     def _run(self, **kwargs):
-        kw = self.kwargs.copy()
+        kw = kwargs.copy()
         kw.update(kwargs)
         with warnings.catch_warnings():
             # ignore SelectionWarning
@@ -183,65 +184,74 @@ class TestHydrogenBondAnalysisChecking(object):
             h.run(verbose=False)
         return h
 
-    def test_check_static_selections(self):
-        self._setUp()
+    def run_HBA_no_update(self, s1, s2, s1type):
+        """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
+        # no donors/acceptors; only raises error if no updates
+        return self._run(
+            selection1=s1,
+            selection2=s2,
+            update_selection1=False,
+            update_selection2=False,
+            selection1_type=s1type,
+        )
+
+    def runOK(self, s1, s2, s1type):
+        """test that HydrogenBondAnalysis() works for protein/protein"""
         try:
-            def run_HBA(s1, s2, s1type):
-                """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
-                # no donors/acceptors; only raises error if no updates
-                return self._run(selection1=s1, selection2=s2,
-                                 update_selection1=False, update_selection2=False,
-                                 selection1_type=s1type,
-                )
-            protein = "protein"
-            nothing = "resname ALA and not backbone"
-            for s1, s2, s1type in itertools.product((protein, nothing),
-                                                    (protein, nothing),
-                                                    ("donor", "acceptor", "both")):
-                if s1 == s2 == protein:
-                    def runOK():
-                        """test that HydrogenBondAnalysis() works for protein/protein"""
-                        try:
-                            h = run_HBA(s1, s2, s1type)
-                        except:
-                            raise AssertionError("HydrogenBondAnalysis protein/protein failed")
-                        else:
-                            return True
-                    yield runOK
-                else:
-                    yield assert_raises, SelectionError, run_HBA, s1, s2, s1type
-        finally:
-            self._tearDown()
+            h = self.run_HBA_no_update(s1, s2, s1type)
+        except:
+            raise pytest.fail("HydrogenBondAnalysis protein/protein failed")
+        else:
+            return True
 
-    def test_run_empty_selections(self):
+    @pytest.mark.parametrize('s1, s2, s1type', itertools.product(
+        ("protein", "resname ALA and not backbone"),
+        ("protein", "resname ALA and not backbone"),
+        ("donor", "acceptor", "both")
+    ))
+    def test_check_static_selections_pt(self, s1, s2, s1type):
         self._setUp()
+        protein = "protein"
+
+        if s1 == s2 == protein:
+            self.runOK(s1, s2, s1type)
+        else:
+            with pytest.raises(SelectionError):
+                self.run_HBA_no_update(s1, s2, s1type)
+
+        self._tearDown()
+
+    def run_HBA_update(self, s1, s2, s1type):
+        # no donors/acceptors; should not raise error because updates=True
+        return self._run(
+            selection1=s1,
+            selection2=s2,
+            update_selection1=True,
+            update_selection2=True,
+            selection1_type=s1type,
+        )
+
+    def run_HBA_dynamic_selections(self, *args):
         try:
-            def run_HBA(s1, s2, s1type):
-                # no donors/acceptors; should not raise error because updates=True
-                return self._run(selection1=s1, selection2=s2,
-                                 update_selection1=True, update_selection2=True,
-                                 selection1_type=s1type,
-                )
-            protein = "protein"
-            nothing = "resname ALA and not backbone"
-            for s1, s2, s1type in itertools.product((protein, nothing),
-                                                    (protein, nothing),
-                                                    ("donor", "acceptor", "both")):
-                def run_HBA_dynamic_selections(*args):
-                    try:
-                        h = run_HBA(*args)
-                    except:
-                        raise AssertionError("HydrogenBondAnalysis with update=True failed")
-                    else:
-                        return True
-                yield run_HBA_dynamic_selections, s1, s2, s1type
-        finally:
-            self._tearDown()
+            h = self.run_HBA_update(*args)
+        except:
+            raise pytest.fail("HydrogenBondAnalysis with update=True failed")
+        else:
+            return True
+
+    @pytest.mark.parametrize('s1, s2, s1type', itertools.product(
+        ("protein", "resname ALA and not backbone"),
+        ("protein", "resname ALA and not backbone"),
+        ("donor", "acceptor", "both")
+    ))
+    def test_run_empty_selections_pt(self, s1, s2, s1type):
+        self._setUp()
+
+        self.run_HBA_dynamic_selections(s1, s2, s1type)
+        self._tearDown()
 
 
-class TestHydrogenBondAnalysisTIP3P(object):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
+class TestHydrogenBondAnalysisTIP3P(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(waterPSF, waterDCD)
         self.kwargs = {

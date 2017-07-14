@@ -21,6 +21,8 @@
 #
 from __future__ import print_function, division, absolute_import
 
+from unittest import TestCase
+
 import MDAnalysis
 from MDAnalysis.analysis import polymer
 from MDAnalysis.exceptions import NoDataError
@@ -39,7 +41,7 @@ from MDAnalysisTests.datafiles import Plength
 from MDAnalysisTests import module_not_found
 
 
-class TestPersistenceLength(object):
+class TestPersistenceLength(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(Plength)
 
@@ -89,7 +91,7 @@ class TestPersistenceLength(object):
         p = self._make_p()
         assert_raises(NoDataError, p.perform_fit)
 
-class TestFitExponential(object):
+class TestFitExponential(TestCase):
     def setUp(self):
         self.x = np.linspace(0, 250, 251)
         self.a_ref = 20.0

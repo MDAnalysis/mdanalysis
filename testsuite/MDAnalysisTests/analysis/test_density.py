@@ -196,7 +196,7 @@ class TestGridImport(TestCase):
                              an ImportError if gridData is available.''')
 
 
-class TestNotWithin(object):
+class TestNotWithin(TestCase):
     # tests notwithin_coordinates_factory
     # only checks that KDTree and distance_array give same results
     def setUp(self):

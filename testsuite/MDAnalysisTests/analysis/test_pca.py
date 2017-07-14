@@ -20,6 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function, absolute_import
+
+from unittest import TestCase
+
 import numpy as np
 import MDAnalysis
 import MDAnalysis.analysis.pca as pca
@@ -32,7 +35,7 @@ from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
 from MDAnalysisTests import module_not_found
 
 
-class TestPCA(object):
+class TestPCA(TestCase):
     """ Test the PCA class """
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)

@@ -22,6 +22,8 @@
 from __future__ import division, absolute_import
 import six
 from six.moves import zip, range
+
+from unittest import TestCase
 from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
 from MDAnalysisTests import module_not_found, tempdir
 from numpy.testing import assert_, assert_array_almost_equal, assert_raises, assert_, dec
@@ -32,7 +34,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
-class TestHydrogenBondAutocorrel(object):
+class TestHydrogenBondAutocorrel(TestCase):
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.H = u.atoms.select_atoms('name Hn')

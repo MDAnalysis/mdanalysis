@@ -22,6 +22,8 @@
 from __future__ import absolute_import
 from six.moves import zip
 
+from unittest import TestCase
+
 from numpy.testing import assert_
 
 import MDAnalysis as mda
@@ -30,7 +32,7 @@ from MDAnalysis.analysis.rdf import InterRDF
 from MDAnalysisTests.datafiles import two_water_gro
 
 
-class TestInterRDF(object):
+class TestInterRDF(TestCase):
     def setUp(self):
         self.u = mda.Universe(two_water_gro)
 
