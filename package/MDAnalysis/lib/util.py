@@ -204,24 +204,28 @@ def filename(name, ext=None, keep=False):
         - ``False``: replace existing extension with `ext`;
         - ``True``: keep old extension if one existed
 
+    Returns
+    -------
+    name : str or NamedStream
+        new filename with replaced extension if ``keep=True``.
+
 
     .. versionchanged:: 0.9.0
        Also permits :class:`NamedStream` to pass through.
     """
-    # save casting of NamedStream to a string. Python3 doesn't like the class
-    if isstream(name):
-        return name
     if ext is not None:
         if not ext.startswith(os.path.extsep):
             ext = os.path.extsep + ext
-        root, origext = os.path.splitext(name)
+        # save casting of NamedStream to a string. Python3 doesn't like the
+        # class because os.path function do type checking
+        root, origext = os.path.splitext(str(name))
         if not keep or len(origext) == 0:
             newname = root + ext
             if isstream(name):
                 name.name = newname
             else:
                 name = newname
-    return str(name)
+    return name
 
 
 @contextmanager
