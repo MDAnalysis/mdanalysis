@@ -30,11 +30,9 @@ import warnings
 import numpy as np
 
 from numpy.testing import (
-    dec,
     assert_,
     assert_array_equal,
     assert_array_almost_equal,
-    assert_raises,
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD

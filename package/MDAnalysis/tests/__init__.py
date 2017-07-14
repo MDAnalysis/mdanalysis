@@ -39,33 +39,6 @@ Run all the tests with
    >>> import MDAnalysis.tests
    >>> MDAnalysis.tests.test()
 
-Some tests can take a few seconds; in order to skip the slow tests run
-
-   >>> MDAnalysis.tests.test(label='fast')
-
-Additional information is displayed at a higher verbosity level (the default is
-1):
-
-   >>> MDAnalysis.tests.test(label='fast', argv=['--verbosity=3'])
-
-Note that if no tests are being run then one might have to run the
-tests with the ``--exe`` flag
-
-   >>> MDAnalysis.tests.test(label='fast', argv=['--exe'])
-
-(This happens when python files are installed with the executable bit set. By
-default the nose_ testing framework refuses to use those files and must be
-encouraged to do so with the ``--exe`` switch.)
-
-See `nose commandline options`_ for additional options that can be used.
-
-For the particular case of code coverage MDAnalysis mustn't be imported prior
-to testing, and testing must be invoked directly from `:meth:MDAnalysisTests.run`:
-
-  >>> import MDAnalysisTests
-  >>> MDAnalysisTests.run(argv=['--exe', '--with-coverage', '--cover-package=MDAnalysis'])
-
-
 Data
 ====
 
@@ -92,16 +65,14 @@ The simulation data used in some tests are from [Beckstein2009]_ (``adk.psf``,
 Writing test cases
 ==================
 
-The unittests use the :mod:`unittest` module together with nose_. See the
+The unittests use the :mod:`pytest_` module. See the
 examples provided alongside the ``MDAnalysisTests`` module.
 
 The `SciPy testing guidelines`_ are also a good howto for writing test cases.
 
 
-.. _nose:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
-.. _nose commandline options:
-   http://somethingaboutorange.com/mrl/projects/nose/0.11.3/usage.html#extended-usage
+.. _pytest:
+   https://docs.pytest.org/en/latest/
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
