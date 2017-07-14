@@ -21,78 +21,99 @@
 #
 from __future__ import print_function, absolute_import
 
-from unittest import TestCase
-
 import numpy as np
-import MDAnalysis
-import MDAnalysis.analysis.pca as pca
+import MDAnalysis as mda
+from MDAnalysis.analysis.pca import PCA, cosine_content
 
-from numpy.testing import (assert_almost_equal, assert_equal, dec,
-                           assert_array_almost_equal, raises)
+from numpy.testing import (assert_almost_equal, assert_equal,
+                           assert_array_almost_equal)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
-from MDAnalysisTests import module_not_found
+import pytest
+
+SELECTION = 'backbone and name CA and resid 1-10'
 
 
-class TestPCA(TestCase):
-    """ Test the PCA class """
-    def setUp(self):
-        self.u = MDAnalysis.Universe(PSF, DCD)
-        self.u.transfer_to_memory()
-        self.pca = pca.PCA(self.u, select='backbone and name CA',
-                           align=False)
-        self.pca.run()
-        self.n_atoms = self.u.select_atoms('backbone and name CA').n_atoms
+@pytest.fixture(scope='module')
+def u():
+    return mda.Universe(PSF, DCD)
 
-    def test_cov(self):
-        atoms = self.u.select_atoms('backbone and name CA')
-        xyz = np.zeros((self.pca.n_frames, self.pca._n_atoms*3))
-        for i, ts in enumerate(self.u.trajectory):
-            xyz[i] = atoms.positions.ravel()
 
-        cov = np.cov(xyz, rowvar=0)
-        assert_array_almost_equal(self.pca.cov, cov, 4)
+@pytest.fixture(scope='module')
+def pca(u):
+    u.transfer_to_memory()
+    return PCA(u, select=SELECTION).run()
 
-    def test_cum_var(self):
-        assert_almost_equal(self.pca.cumulated_variance[-1], 1)
-        l = self.pca.cumulated_variance
-        l = np.sort(l)
-        assert_almost_equal(self.pca.cumulated_variance, l, 5)
 
-    def test_pcs(self):
-        assert_equal(self.pca.p_components.shape,
-                     (self.n_atoms*3, self.n_atoms*3))
+def test_cov(pca, u):
+    atoms = u.select_atoms(SELECTION)
+    xyz = np.zeros((pca.n_frames, atoms.n_atoms * 3))
+    for i, ts in enumerate(u.trajectory):
+        xyz[i] = atoms.positions.ravel()
+    cov = np.cov(xyz, rowvar=0)
+    assert_array_almost_equal(pca.cov, cov, 4)
 
-    def test_different_steps(self):
-        dot = self.pca.transform(self.u.select_atoms('backbone and name CA'),
-                                 start=5, stop=7, step=1)
-        assert_equal(dot.shape, (2, self.n_atoms*3))
 
-    def test_transform(self):
-        ag = self.u.select_atoms('backbone and name CA')
-        pca_space = self.pca.transform(ag, n_components=1)
-        assert_equal(pca_space.shape,
-                     (self.u.trajectory.n_frames, 1))
+def test_cum_var(pca):
+    assert_almost_equal(pca.cumulated_variance[-1], 1)
+    l = pca.cumulated_variance
+    l = np.sort(l)
+    assert_almost_equal(pca.cumulated_variance, l, 5)
 
-    # Accepts universe as input, but shapes are not aligned due to n_atoms
-    @raises(ValueError)
-    def test_transform_mismatch(self):
-        pca_space = self.pca.transform(self.u, n_components=1)
-        assert_equal(pca_space.shape,
-                     (self.u.trajectory.n_frames, 1))
 
-    @staticmethod
-    def test_transform_universe():
-        u1 = MDAnalysis.Universe(waterPSF, waterDCD)
-        u2 = MDAnalysis.Universe(waterPSF, waterDCD)
-        pca_test = pca.PCA(u1).run()
-        pca_test.transform(u2)
+def test_pcs(pca):
+    assert_equal(pca.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3))
 
-    @staticmethod
-    def test_cosine_content():
-        rand = MDAnalysis.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
-        pca_random = pca.PCA(rand).run()
-        dot = pca_random.transform(rand.atoms)
-        content = pca.cosine_content(dot, 0)
-        assert_almost_equal(content, .99, 1)
+
+def test_different_steps(pca, u):
+    atoms = u.select_atoms(SELECTION)
+    dot = pca.transform(atoms, start=5, stop=7, step=1)
+    assert_equal(dot.shape, (2, atoms.n_atoms * 3))
+
+
+def test_transform_different_atoms(pca, u):
+    atoms = u.select_atoms('backbone and name N and resid 1-10')
+    with pytest.warns(UserWarning):
+        pca.transform(atoms, start=5, stop=7, step=1)
+
+
+def test_transform_rerun(u):
+    atoms = u.select_atoms('bynum 1-10')
+    u.transfer_to_memory()
+    pca = PCA(u, select='bynum 1-10', stop=5)
+    dot = pca.transform(atoms)
+    assert_equal(dot.shape, (98, atoms.n_atoms * 3))
+
+
+def test_no_frames(u):
+    atoms = u.select_atoms(SELECTION)
+    u.transfer_to_memory()
+    with pytest.raises(ValueError):
+        PCA(u, select=SELECTION, stop=1).run()
+
+
+def test_transform(pca, u):
+    ag = u.select_atoms(SELECTION)
+    pca_space = pca.transform(ag, n_components=1)
+    assert_equal(pca_space.shape, (u.trajectory.n_frames, 1))
+
+
+def test_transform_mismatch(pca, u):
+    with pytest.raises(ValueError):
+        pca.transform(u, n_components=1)
+
+
+def test_transform_universe():
+    u1 = mda.Universe(waterPSF, waterDCD)
+    u2 = mda.Universe(waterPSF, waterDCD)
+    pca_test = PCA(u1).run()
+    pca_test.transform(u2)
+
+
+def test_cosine_content():
+    rand = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+    pca_random = PCA(rand).run()
+    dot = pca_random.transform(rand.atoms)
+    content = cosine_content(dot, 0)
+    assert_almost_equal(content, .99, 1)
