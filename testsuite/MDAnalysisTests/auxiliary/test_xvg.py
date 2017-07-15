@@ -23,8 +23,7 @@ from __future__ import absolute_import
 
 from six.moves import range
 import pytest
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           assert_array_equal, raises)
+from numpy.testing import assert_array_equal
 import numpy as np
 
 import os
@@ -120,13 +119,13 @@ class TestXVGFileReader(TestXVGReader):
         # so test specifying format 
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata,
                                                       format=ref.format)
-        assert_equal(reader, ref.reader)
+        assert reader == ref.reader
 
     def test_reopen(self, reader):
         reader._reopen()
         # should start us back at before step 0, so next takes us to step 0
         reader.next()
-        assert_equal(reader.step, 0)
+        assert reader.step == 0
 
 
 def test_xvg_bz2():
