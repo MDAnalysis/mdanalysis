@@ -209,7 +209,7 @@ class TestGeometryFunctions(object):
     #     # add more non-trivial tests
 
     def test_stp(self):
-        assert_equal(mdamath.stp(self.e1, self.e2, self.e3), 1.0)
+        assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
         # add more non-trivial tests
 
     def test_dihedral(self):
@@ -218,7 +218,8 @@ class TestGeometryFunctions(object):
         cd = bc + self.e3
         assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
-class TestMakeWhole(TestCase):
+
+class TestMakeWhole(object):
     """Set up a simple system:
 
     +-----------+
@@ -231,138 +232,144 @@ class TestMakeWhole(TestCase):
     |           |
     +-----------+
     """
-    def setUp(self):
-        self.u = mda.Universe(Make_Whole)
-        self.ag = self.u.residues[0].atoms
 
-    def tearDown(self):
-        del self.u
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return mda.Universe(Make_Whole)
 
-    def test_no_bonds(self):
+    @staticmethod
+    @pytest.fixture()
+    def ag(universe):
+        return universe.residues[0].atoms
+
+    def test_no_bonds(self, ag):
         # NoData caused by no bonds
-        assert_raises(NoDataError, mdamath.make_whole, self.ag)
+        assert_raises(NoDataError, mdamath.make_whole, ag)
 
-    def test_not_orthogonal(self):
+    def test_not_orthogonal(self, universe, ag):
         # Not an orthogonal unit cell
-        self._load_bonds()
+        self._load_bonds(universe)
 
-        self.u.dimensions = [10., 10., 10., 80., 80., 80]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
+        universe.dimensions = [10., 10., 10., 80., 80., 80]
+        assert_raises(ValueError, mdamath.make_whole, ag)
 
-    def test_zero_box_size(self):
-        self._load_bonds()
+    def test_zero_box_size(self, universe, ag):
+        self._load_bonds(universe)
 
-        self.u.dimensions = [0., 0., 0., 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
+        universe.dimensions = [0., 0., 0., 90., 90., 90.]
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
-    def test_too_small_box_size(self):
-        self._load_bonds()
+    def test_too_small_box_size(self, universe, ag):
+        self._load_bonds(universe)
 
         # Set the z dimensions to 0.5, which is small compared to the
         # bonds (1-2)
-        self.u.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
+        universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
-    def _load_bonds(self):
+    def _load_bonds(self, universe):
         # Load some bonds into Universe, not required for all tests
         bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
-        self.u.add_TopologyAttr(Bonds(bondlist))
+        universe.add_TopologyAttr(Bonds(bondlist))
 
-    def test_wrong_reference_atom(self):
+    def test_wrong_reference_atom(self, universe, ag):
         # Reference atom not in atomgroup
-        self._load_bonds()
-        assert_raises(ValueError, mdamath.make_whole, self.ag,
-                      reference_atom=self.u.atoms[-1])
+        self._load_bonds(universe)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag, reference_atom=universe.atoms[-1])
 
-    def test_impossible_solve(self):
+    def test_impossible_solve(self, universe):
         # check that the algorithm sees the bad walk
-        self._load_bonds()
-        assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
+        self._load_bonds(universe)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(universe.atoms)
 
-    def test_walk_1(self):
-        self._load_bonds()
+    def test_walk_1(self, universe, ag):
+        self._load_bonds(universe)
         # self.ag is contiguous
         assert_(mdamath._is_contiguous(
-            self.ag, self.u.residues[0].atoms[0]))
+            ag, universe.residues[0].atoms[0]))
 
-    def test_walk_2(self):
-        self._load_bonds()
+    def test_walk_2(self, universe):
+        self._load_bonds(universe)
         # u.atoms isnt all contiguous
-        assert_(not mdamath._is_contiguous(
-            self.u.atoms, self.u.residues[0].atoms[0]))
+        assert_(not mdamath._is_contiguous(universe.atoms, universe.residues[0].atoms[0]))
 
-    def test_solve_1(self):
+    def test_solve_1(self, universe, ag):
         # regular usage of function
-        self._load_bonds()
+        self._load_bonds(universe)
 
-        refpos = self.u.atoms[:4].positions.copy()
+        refpos = universe.atoms[:4].positions.copy()
 
-        mdamath.make_whole(self.ag)
+        mdamath.make_whole(ag)
 
-        assert_array_almost_equal(self.u.atoms[:4].positions, refpos)
-        assert_array_almost_equal(self.u.atoms[4].position,
+        assert_array_almost_equal(universe.atoms[:4].positions, refpos)
+        assert_array_almost_equal(universe.atoms[4].position,
                                   np.array([110.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[5].position,
+        assert_array_almost_equal(universe.atoms[5].position,
                                   np.array([110.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[6].position,
+        assert_array_almost_equal(universe.atoms[6].position,
                                   np.array([110.0, 40.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[7].position,
+        assert_array_almost_equal(universe.atoms[7].position,
                                   np.array([120.0, 50.0, 0.0]))
 
-    def test_solve_2(self):
+    def test_solve_2(self, universe, ag):
         # use but specify the center atom
-        self._load_bonds()
+        self._load_bonds(universe)
 
-        refpos = self.u.atoms[4:8].positions.copy()
+        refpos = universe.atoms[4:8].positions.copy()
 
-        mdamath.make_whole(self.ag,
-                           reference_atom=self.u.residues[0].atoms[4])
+        mdamath.make_whole(ag, reference_atom=universe.residues[0].atoms[4])
 
-        assert_array_almost_equal(self.u.atoms[4:8].positions, refpos)
-        assert_array_almost_equal(self.u.atoms[0].position,
+        assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
+        assert_array_almost_equal(universe.atoms[0].position,
                                   np.array([-20.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[1].position,
+        assert_array_almost_equal(universe.atoms[1].position,
                                   np.array([-10.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[2].position,
+        assert_array_almost_equal(universe.atoms[2].position,
                                   np.array([-10.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[3].position,
+        assert_array_almost_equal(universe.atoms[3].position,
                                   np.array([-10.0, 40.0, 0.0]))
 
-    def test_solve_3(self):
+    def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
-        self._load_bonds()
+        self._load_bonds(universe)
 
-        refpos = self.u.atoms[:1].positions.copy()
+        refpos = universe.atoms[:1].positions.copy()
 
-        mdamath.make_whole(self.u.atoms[:1])
+        mdamath.make_whole(universe.atoms[:1])
 
-        assert_array_almost_equal(self.u.atoms[:1].positions, refpos)
+        assert_array_almost_equal(universe.atoms[:1].positions, refpos)
 
-    def test_solve_4(self):
+    def test_solve_4(self, universe):
         # Put in only some of a fragment,
         # check that not everything gets moved
-        self._load_bonds()
+        self._load_bonds(universe)
 
-        chunk = self.u.atoms[:7]
-        refpos = self.u.atoms[7].position.copy()
+        chunk = universe.atoms[:7]
+        refpos = universe.atoms[7].position.copy()
 
         mdamath.make_whole(chunk)
 
-        assert_array_almost_equal(self.u.atoms[7].position, refpos)
-        assert_array_almost_equal(self.u.atoms[4].position,
+        assert_array_almost_equal(universe.atoms[7].position, refpos)
+        assert_array_almost_equal(universe.atoms[4].position,
                                   np.array([110.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[5].position,
+        assert_array_almost_equal(universe.atoms[5].position,
                                   np.array([110.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[6].position,
+        assert_array_almost_equal(universe.atoms[6].position,
                                   np.array([110.0, 40.0, 0.0]))
 
-    def test_double_frag_short_bonds(self):
+    def test_double_frag_short_bonds(self, universe, ag):
         # previous bug where if two fragments are given
         # but all bonds were short, the algorithm didn't
         # complain
-        self._load_bonds()
-        mdamath.make_whole(self.ag)
-        assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
+        self._load_bonds(universe)
+        mdamath.make_whole(ag)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(universe.atoms)
 
 
 class Class_with_Caches(object):
