@@ -117,17 +117,14 @@ class TestConversion(object):
     def test_force(self, quantity, unit1, unit2, ref):
         self._assert_almost_equal_convert(quantity, unit1, unit2, ref)
 
-    @pytest.mark.parametrize('quantity, unit1, unit2, ref', (
-        pytest.mark.raises((nm, 'Stone', 'nm', None), exception=ValueError),
-        pytest.mark.raises((nm, 'nm', 'Stone', None), exception=ValueError),
-    ))
-    def test_unit_unknown(self, quantity, unit1, unit2, ref):
-        val = units.convert(quantity, unit1, unit2)
-        assert_almost_equal(val, ref,
-                            err_msg="Conversion {0} --> {1} failed".format(unit1, unit2))
+    @pytest.mark.parametrize('quantity, unit1, unit2', ((nm, 'Stone', 'nm'),
+                                                        (nm, 'nm', 'Stone')))
+    def test_unit_unknown(self, quantity, unit1, unit2):
+        with pytest.raises(ValueError):
+            units.convert(quantity, unit1, unit2)
 
     def test_unit_unconvertable(self):
         nm = 12.34567
         A = nm * 10.
-        assert_raises(ValueError, units.convert, A, 'A', 'ps')
-
+        with pytest.raises(ValueError):
+            units.convert(A, 'A', 'ps')
