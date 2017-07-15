@@ -437,86 +437,84 @@ class Class_with_Caches(object):
         self._cache[name] = value
 
 
-class TestCachedDecorator(TestCase):
-    def setUp(self):
-        self.obj = Class_with_Caches()
+class TestCachedDecorator(object):
+    @pytest.fixture()
+    def obj(self):
+        return Class_with_Caches()
 
-    def tearDown(self):
-        del self.obj
+    def test_val1_lookup(self, obj):
+        obj._clear_caches()
+        assert ('val1' in obj._cache) == False
+        assert obj.val1() == obj.ref1
+        ret = obj.val1()
+        assert ('val1' in obj._cache) == True
+        assert obj._cache['val1'] == ret
+        assert obj.val1() is obj._cache['val1'] == True
 
-    def test_val1_lookup(self):
-        self.obj._clear_caches()
-        assert_equal('val1' in self.obj._cache, False)
-        assert_equal(self.obj.val1(), self.obj.ref1)
-        ret = self.obj.val1()
-        assert_equal('val1' in self.obj._cache, True)
-        assert_equal(self.obj._cache['val1'], ret)
-        assert_equal(self.obj.val1() is self.obj._cache['val1'], True)
-
-    def test_val1_inject(self):
+    def test_val1_inject(self, obj):
         # Put something else into the cache and check it gets returned
         # this tests that the cache is blindly being used
-        self.obj._clear_caches()
-        ret = self.obj.val1()
-        assert_equal('val1' in self.obj._cache, True)
-        assert_equal(ret, self.obj.ref1)
+        obj._clear_caches()
+        ret = obj.val1()
+        assert ('val1' in obj._cache) == True
+        assert ret == obj.ref1
         new = 77.0
-        self.obj._fill_cache('val1', new)
-        assert_equal(self.obj.val1(), new)
+        obj._fill_cache('val1', new)
+        assert obj.val1() == new
 
     # Managed property
-    def test_val2_lookup(self):
-        self.obj._clear_caches()
-        assert_equal('val2' in self.obj._cache, False)
-        assert_equal(self.obj.val2, self.obj.ref2)
-        ret = self.obj.val2
-        assert_equal('val2' in self.obj._cache, True)
-        assert_equal(self.obj._cache['val2'], ret)
+    def test_val2_lookup(self, obj):
+        obj._clear_caches()
+        assert ('val2' in obj._cache) == False
+        assert obj.val2 == obj.ref2
+        ret = obj.val2
+        assert ('val2' in obj._cache) == True
+        assert obj._cache['val2'] == ret
 
-    def test_val2_inject(self):
-        self.obj._clear_caches()
-        ret = self.obj.val2
-        assert_equal('val2' in self.obj._cache, True)
-        assert_equal(ret, self.obj.ref2)
+    def test_val2_inject(self, obj):
+        obj._clear_caches()
+        ret = obj.val2
+        assert ('val2' in obj._cache) == True
+        assert ret == obj.ref2
         new = 77.0
-        self.obj._fill_cache('val2', new)
-        assert_equal(self.obj.val2, new)
+        obj._fill_cache('val2', new)
+        assert obj.val2 == new
 
         # Setter on cached attribute
 
-    def test_val3_set(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val3, self.obj.ref3)
+    def test_val3_set(self, obj):
+        obj._clear_caches()
+        assert obj.val3 == obj.ref3
         new = 99.0
-        self.obj.val3 = new
-        assert_equal(self.obj.val3, new)
-        assert_equal(self.obj._cache['val3'], new)
+        obj.val3 = new
+        assert obj.val3 == new
+        assert obj._cache['val3'] == new
 
-    def test_val3_del(self):
+    def test_val3_del(self, obj):
         # Check that deleting the property removes it from cache,
-        self.obj._clear_caches()
-        assert_equal(self.obj.val3, self.obj.ref3)
-        assert_equal('val3' in self.obj._cache, True)
-        del self.obj.val3
-        assert_equal('val3' in self.obj._cache, False)
+        obj._clear_caches()
+        assert obj.val3 == obj.ref3
+        assert ('val3' in obj._cache) == True
+        del obj.val3
+        assert ('val3' in obj._cache) == False
         # But allows it to work as usual afterwards
-        assert_equal(self.obj.val3, self.obj.ref3)
-        assert_equal('val3' in self.obj._cache, True)
+        assert obj.val3 == obj.ref3
+        assert ('val3' in obj._cache) == True
 
     # Pass args
-    def test_val4_args(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val4(1, 2), 1 + 2 + self.obj.ref4)
+    def test_val4_args(self, obj):
+        obj._clear_caches()
+        assert obj.val4(1, 2) == 1 + 2 + obj.ref4
         # Further calls should yield the old result
         # this arguably shouldn't be cached...
-        assert_equal(self.obj.val4(3, 4), 1 + 2 + self.obj.ref4)
+        assert obj.val4(3, 4) == 1 + 2 + obj.ref4
 
     # Pass args and kwargs
-    def test_val5_kwargs(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val5(5, s='abc'), 5 * 'abc')
+    def test_val5_kwargs(self, obj):
+        obj._clear_caches()
+        assert obj.val5(5, s='abc') == 5 * 'abc'
 
-        assert_equal(self.obj.val5(5, s='!!!'), 5 * 'abc')
+        assert obj.val5(5, s='!!!') == 5 * 'abc'
 
 
 class TestConvFloat(object):
