@@ -156,12 +156,17 @@ class TestSetVerbose(object):
         (None, False, False, True),  # Verbose is not provided
         (None, None, True, True),  # Nothing is provided
         (None, None, False, False),  # Nothing is provided
-        pytest.mark.raises((True, True, None, None), exception=ValueError),  # quiet and verbose contradict each other
-        pytest.mark.raises((False, False, None, None), exception=ValueError),  # quiet and verbose contradict each other
     ])
     def test__set_verbose(self, verbose, quiet, default, result):
         assert _set_verbose(verbose=verbose, quiet=quiet, default=default) == result
-        
+
+    @pytest.mark.parametrize('verbose', (True, False))
+    def test__set_verbose_invalid_args(self, verbose):
+        with pytest.raises(ValueError):
+            # setting quiet==verbose is a contradiction
+            _set_verbose(verbose=verbose, quiet=verbose, default=None)
+
+
     @pytest.mark.parametrize('verbose, quiet', [
         (None, True),
         (False, True)

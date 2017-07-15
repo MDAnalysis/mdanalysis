@@ -701,7 +701,6 @@ class TestDistanceBackendSelection(object):
     @pytest.mark.parametrize('backend', [
         "serial", "Serial", "SeRiAL", "SERIAL",
         "openmp", "OpenMP", "oPENmP", "OPENMP",
-        pytest.mark.raises('not_implemented_stuff', exception=ValueError),
     ])
     def test_case_insensitivity(self, backend, backend_selection_pos):
         positions, result = backend_selection_pos
@@ -710,8 +709,14 @@ class TestDistanceBackendSelection(object):
                                           args=(positions, result),
                                           backend=backend)
         except RuntimeError:
-            raise AssertionError("Failed to understand backend {0}".format(backend))
+            pytest.fail("Failed to understand backend {0}".format(backend))
 
+    def test_wront_backend(self, backend_selection_pos):
+        positions, result = backend_selection_pos
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances._run("calc_self_distance_array",
+                                          args=(positions, result),
+                                          backend="not implemented stuff")
 
 def test_used_openmpflag():
     assert_(isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool))
