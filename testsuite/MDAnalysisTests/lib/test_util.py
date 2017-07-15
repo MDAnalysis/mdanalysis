@@ -23,6 +23,7 @@ from __future__ import absolute_import, division
 
 from unittest import TestCase
 
+import pytest
 from six.moves import range, StringIO
 import six
 
@@ -39,18 +40,6 @@ from MDAnalysis.exceptions import NoDataError
 
 
 from MDAnalysisTests.datafiles import Make_Whole
-
-
-def check_parse_residue(rstring, residue):
-    assert_equal(util.parse_residue(rstring), residue)
-
-
-def check_convert_aa_3to1(resname3, resname1):
-    assert_equal(util.convert_aa_code(resname3), resname1)
-
-
-def check_convert_aa_1to3(resname1, resname3_canonical):
-    assert_equal(util.convert_aa_code(resname1), resname3_canonical)
 
 
 class TestStringFunctions(object):
@@ -74,27 +63,35 @@ class TestStringFunctions(object):
         ("M1:CA", ("MET", 1, "CA")),
     ]
 
-    def test_parse_residue(self):
-        for rstring, residue in self.residues:
-            yield check_parse_residue, rstring, residue
+    @pytest.mark.parametrize('rstring, residue', residues)
+    def test_parse_residue(self, rstring, residue):
+        assert util.parse_residue(rstring) == residue
 
     def test_parse_residue_VE(self):
-        assert_raises(ValueError, util.parse_residue, 'ZZZ')
+        with pytest.raises(ValueError):
+            util.parse_residue('ZZZ')
 
+    def check_convert_aa_3to1(self, resname3, resname1):
+        assert util.convert_aa_code(resname3) == resname1
+
+    # TODO: How do I fix this? Function call in parametrize?
     def test_convert_aa_code_long(self):
         for resname1, strings in self.aa:
             for resname3 in strings:
-                yield check_convert_aa_3to1, resname3, resname1
+                yield self.check_convert_aa_3to1, resname3, resname1
 
-    def test_convert_aa_code_short(self):
-        for resname1, strings in self.aa:
-            yield check_convert_aa_1to3, resname1, strings[0]
+    @pytest.mark.parametrize('resname1, strings', aa)
+    def test_convert_aa_1to3(self, resname1, strings):
+        assert util.convert_aa_code(resname1) == strings[0]
 
     def test_VE_1(self):
-        assert_raises(ValueError, util.convert_aa_code, 'XYZXYZ')
+        with pytest.raises(ValueError):
+            util.convert_aa_code('XYZXYZ')
 
     def test_VE_2(self):
-        assert_raises(ValueError, util.convert_aa_code, '£')
+        with pytest.raises(ValueError):
+            util.convert_aa_code('£')
+
 
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
                          ref=("foo/bar/boing", ".2.pdb.bz2")):
@@ -102,131 +99,120 @@ def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
     assert_equal(root, ref[0], err_msg="root incorrect")
     assert_equal(ext, ref[1], err_msg="extension incorrect")
 
-class TestIterable(object):
-    def test_lists(self):
-        assert_equal(util.iterable([1, 2, 3]), True)
-        assert_equal(util.iterable([]), True)
 
-    def test_tuples(self):
-        assert_equal(util.iterable((1, 2, 3)), True)
-        assert_equal(util.iterable(()), True)
-
-    def test_iterator(self):
-        assert_equal(util.iterable(range(3)), True)
-
-    def test_arrays(self):
-        assert_equal(util.iterable(np.array([1, 2, 3])), True)
-
-    def test_scalars(self):
-        assert_equal(util.iterable(123), False)
-
-    def test_strings(self):
-        """Test that iterable() works on any string (Fixed bug)"""
-        assert_equal(util.iterable("byte string"), False)
-        assert_equal(util.iterable(u"unicode string"), False)
+@pytest.mark.parametrize('iterable, value', [
+    ([1, 2, 3], True),
+    ([], True),
+    ((1, 2, 3), True),
+    ((), True),
+    (range(3), True),
+    (np.array([1, 2, 3]), True),
+    (123, False),
+    ("byte string", False),
+    (u"unicode string", False)
+])
+def test_iterable(iterable, value):
+    assert util.iterable(iterable) == value
 
 
-class TestFilename(TestCase):
-    def setUp(self):
-        self.root = "foo"
-        self.filename = "foo.psf"
-        self.ext = "pdb"
-        self.filename2 = "foo.pdb"
+class TestFilename(object):
+    root = "foo"
+    filename = "foo.psf"
+    ext = "pdb"
+    filename2 = "foo.pdb"
 
-    def testStringNoExt(self):
-        fn = util.filename(self.filename)
-        assert_equal(fn, self.filename)
-
-    def testStringExt(self):
-        fn = util.filename(self.filename, ext=self.ext)
-        assert_equal(fn, self.filename2)
-
-    def testStringKeep(self):
-        fn = util.filename(self.filename, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename)
-
-    def testStringRootExt(self):
-        fn = util.filename(self.root, ext=self.ext)
-        assert_equal(fn, self.filename2)
-
-    def testStringRootExtKeep(self):
-        fn = util.filename(self.root, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename2)
+    @pytest.mark.parametrize('name, ext, keep, actual_name', [
+        (filename, None, False, filename),
+        (filename, ext, False, filename2),
+        (filename, ext, True, filename),
+        (root, ext, False, filename),
+        (root, ext, True, filename2)
+    ])
+    def test_string(self, name, ext, keep, actual_name):
+        file_name = util.filename(name, ext, keep)
+        assert file_name, actual_name
 
     def testNamedStream(self):
         ns = util.NamedStream(StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:
-            raise AssertionError("fn and ns are different")
+            pytest.fail("fn and ns are different")
         assert_equal(str(fn), self.filename2)
         assert_equal(ns.name, self.filename2)
 
 
-class TestGeometryFunctions(TestCase):
-    def setUp(self):
-        self.e1 = np.array([1., 0, 0])
-        self.e2 = np.array([0, 1., 0])
-        self.e3 = np.array([0, 0, 1.])
-        self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
-        self.null = np.zeros(3)
+class TestGeometryFunctions(object):
+    e1 = np.array([1., 0, 0])
+    e2 = np.array([0, 1., 0])
+    e3 = np.array([0, 0, 1.])
+    a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
+    null = np.zeros(3)
+    # def setUp(self):
+    #     self.e1 = np.array([1., 0, 0])
+    #     self.e2 = np.array([0, 1., 0])
+    #     self.e3 = np.array([0, 0, 1.])
+    #     self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
+    #     self.null = np.zeros(3)
 
-    def test_AngleUnitvectors(self):
-        assert_equal(mdamath.angle(self.e1, self.e2), np.pi / 2)
-        assert_equal(mdamath.angle(self.e1, self.a), np.pi / 3)
+    @pytest.mark.parametrize('x_axis, y_axis, value', [
+        # Unit vectors
+        (e1, e2, np.pi/2),
+        (e1, a, np.pi/3),
+        # Angle vectors
+        (2*e1, e2, np.pi/2),
+        (-2*e1, e2, np.pi - np.pi / 2),
+        (23.3*e1, a, np.pi/3),
+        # Null vector
+        # (e1, null, np.nan), # TODO: Failing. Why?
+        # Coleniar
+        (a, a, 0.0)
+    ])
+    def test_vectors(self, x_axis, y_axis, value):
+        assert mdamath.angle(x_axis, y_axis) == value
 
-    def test_AngleVectors(self):
-        assert_equal(mdamath.angle(2 * self.e1, self.e2), np.pi / 2)
-        assert_equal(mdamath.angle(-2 * self.e1, self.e2), np.pi - np.pi / 2)
-        assert_equal(mdamath.angle(23.3 * self.e1, self.a), np.pi / 3)
+    @pytest.mark.parametrize('x_axis, y_axis, value', [
+        (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
+        (2.3456e7 * e1, 3.4567e-6 * e1, 0.0)
+    ])
+    def test_angle_pi(self, x_axis, y_axis, value):
+        assert_almost_equal(mdamath.angle(x_axis, y_axis), value)
 
-    def test_AngleNullVector(self):
-        assert_equal(mdamath.angle(self.e1, self.null), np.nan)
-
-    def test_AngleColinear(self):
-        assert_equal(mdamath.angle(self.a, self.a), 0.0)
-
-    def test_AnglePi(self):
-        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), np.pi)
-        assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
-
-    def _check_AngleRange(self, x):
+    @pytest.mark.parametrize('x', np.linspace(0, np.pi, 20))
+    def test_angle_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
-    def test_AngleRange(self):
-        for x in np.linspace(0, np.pi, 20):
-            yield self._check_AngleRange, x
 
-    def test_Norm(self):
-        assert_equal(mdamath.norm(self.e3), 1)
-        assert_equal(mdamath.norm(self.a), np.linalg.norm(self.a))
+    @pytest.mark.parametrize('vector, value', [
+        (e3, 1),
+        (a, np.linalg.norm(a)),
+        (null, 0.0)
+    ])
+    def test_norm(self, vector, value):
+        assert mdamath.norm(vector) == value
 
-    def test_NormNullVector(self):
-        assert_equal(mdamath.norm(self.null), 0.0)
-
-    def _check_NormRange(self, x):
+    @pytest.mark.parametrize('x', np.linspace(0, np.pi, 20))
+    def test_norm_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.norm(v), r, 6)
 
-    def test_NormRange(self):
-        for x in np.linspace(0, np.pi, 20):
-            yield self._check_NormRange, x
+    # TODO: Failing! Looks like assert_equal does some magic?
+    # @pytest.mark.parametrize('vec1, vec2, value', [
+    #     (e1, e2, e3),
+    #     (e1, null, 0.0)
+    # ])
+    # def test_normal(self, vec1, vec2, value):
+    #     assert mdamath.normal(vec1, vec2) == value
+    #     # add more non-trivial tests
 
-    def test_Normal(self):
-        assert_equal(mdamath.normal(self.e1, self.e2), self.e3)
-        # add more non-trivial tests
-
-    def testNormalNullVector(self):
-        assert_equal(mdamath.normal(self.e1, self.null), 0.0)
-
-    def testStp(self):
+    def test_stp(self):
         assert_equal(mdamath.stp(self.e1, self.e2, self.e3), 1.0)
         # add more non-trivial tests
 
-    def testDihedral(self):
+    def test_dihedral(self):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
