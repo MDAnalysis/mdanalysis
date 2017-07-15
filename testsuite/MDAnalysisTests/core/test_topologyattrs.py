@@ -512,8 +512,7 @@ class TestInstantSelectorDeprecation(object):
         'universe.atoms.CA',
         'universe.residues.LYS',
         'universe.segments.s4AKE',
-        pytest.param('universe.s4AKE',
-                     marks=pytest.mark.xfail(reason="Issue #1478")),
+        'universe.s4AKE',
     ))
     def test_deprecation(self, universe, instruction):
         """Test that the warnings are issued when required.

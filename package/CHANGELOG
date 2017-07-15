@@ -31,6 +31,8 @@ Fixes
   ENCORE analysis package (issue #1390)
   * Fix extra deprecation warnings for instant segment and residue selectors
     (Issue #1476)
+  * Accessing segments from a universe with an instant selector now issues a
+    deprecation warning as expected (Issue #1478)
 
 Changes
   * remove deprecated TimeSeriesCollection

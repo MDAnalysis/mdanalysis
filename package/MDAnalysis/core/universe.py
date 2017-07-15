@@ -88,6 +88,7 @@ import numpy as np
 import logging
 import copy
 import uuid
+import warnings
 
 import MDAnalysis
 import sys
@@ -205,6 +206,10 @@ class Universe(object):
     """
 
     def __init__(self, *args, **kwargs):
+        # Store the segments for the deprecated instant selector feature.
+        # This attribute has to be defined early to avoid recursion in
+        # __getattr__.
+        self._instant_selectors = {}
         # hold on to copy of kwargs; used by external libraries that
         # reinitialize universes
         self._kwargs = copy.deepcopy(kwargs)
@@ -342,7 +347,26 @@ class Universe(object):
                 # if len 1 SegmentGroup, convert to Segment
                 if len(segment) == 1:
                     segment = segment[0]
-                self.__dict__[name] = segment
+                self._instant_selectors[name] = segment
+
+    def __getattr__(self, key):
+        # This implements the instant selector of segments from a Universe.
+        # It is implemented as __getattr__ so a deprecation warning can be
+        # issued when the feature is used. Instant selectors are deprecated
+        # since version 0.16.2 and are tareted to be deleted in version 1.0.
+        # self._instant_selectors is populated in self._process_attr and
+        # created at the beginning of __init__.
+        try:
+            segment = self._instant_selectors[key]
+        except KeyError:
+            raise AttributeError('No attribute "{}".'.format(key))
+        else:
+            warnings.warn("Instant selector Universe.<segid> "
+                          "is deprecated and will be removed in 1.0. "
+                          "Use SegmentGroup[SegmentGroup.segids == '<segid>'] "
+                          "instead.",
+                          DeprecationWarning)
+            return segment
 
     @property
     def universe(self):
