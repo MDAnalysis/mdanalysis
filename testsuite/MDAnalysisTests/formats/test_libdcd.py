@@ -296,7 +296,6 @@ def test_written_remarks_property(remarks, tmpdir, dcd):
 
 @pytest.fixture(scope='session')
 def written_dcd(tmpdir_factory):
-    testfile = 'test.dcd'
     with DCDFile(DCD) as dcd:
         header = dcd.header
     testfile = tmpdir_factory.mktemp('dcd').join('test.dcd')
@@ -493,7 +492,6 @@ def test_readframes_atomindices(indices, dcd):
 
 def test_write_random_unitcell(tmpdir):
     testname = str(tmpdir.join('test.dcd'))
-    testname = 'test.dcd'
     rstate = np.random.RandomState(1178083)
     random_unitcells = rstate.uniform(
         high=80, size=(98, 6)).astype(np.float64)
