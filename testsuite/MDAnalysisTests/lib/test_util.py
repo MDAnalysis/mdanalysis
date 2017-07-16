@@ -760,83 +760,64 @@ class TestUniqueRows(object):
 
 class TestGetWriterFor(object):
     def test_no_filename_argument(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for)
         # Does ``get_writer_for`` fails as expected when provided no
         # filename arguments
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for()
 
     def test_precedence(self):
         writer = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
-        assert_equal(writer, mda.coordinates.GRO.GROWriter)
+        assert writer == mda.coordinates.GRO.GROWriter
         # Make sure ``get_writer_for`` uses *format* if provided
 
     def test_missing_extension(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename='test', format=None)
         # Make sure ``get_writer_for`` behave as expected if *filename*
         # has no extension
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename = 'test', format=None)
 
     def test_wrong_format(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK')
         # Make sure ``get_writer_for`` fails if the format is unknown
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK')
 
     def test_compressed_extension(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
-            writter = mda.coordinates.core.get_writer_for(filename=fn)
-            assert_equal(writter, mda.coordinates.GRO.GROWriter)
+            writer = mda.coordinates.core.get_writer_for(filename=fn)
+            assert writer == mda.coordinates.GRO.GROWriter
         # Make sure ``get_writer_for`` works with compressed file file names
 
     def test_compressed_extension_fail(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.unk' + ext
-            assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                          filename=fn)
-        # Make sure ``get_writer_for`` fails if an unknown format is compressed
+            # Make sure ``get_writer_for`` fails if an unknown format is compressed
+            with pytest.raises(TypeError):
+                mda.coordinates.core.get_writer_for(filename = fn)
 
     def test_non_string_filename(self):
-        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
-                      filename=StringIO(), format=None)
         # Does ``get_writer_for`` fails with non string filename, no format
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_writer_for(filename = StringIO(), format = None)
 
     def test_multiframe_failure(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK', multiframe=True)
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK', multiframe=False)
         # does ``get_writer_for`` fail with invalid format and multiframe not None
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK', multiframe = True)
+            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK', multiframe = False)
 
     def test_multiframe_nonsense(self):
-        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
-                      filename='this.gro', multiframe='sandwich')
-
-    @staticmethod
-    def _check_singleframe(fmt, cls):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=False),
-                     cls)
-
-    @staticmethod
-    def _check_singleframe_fails(fmt):
-        assert_raises(TypeError,
-                      mda.coordinates.core.get_writer_for,
-                      'this', format=fmt, multiframe=False)
-
-    @staticmethod
-    def _check_multiframe(fmt, cls):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=True),
-                     cls)
-
-    @staticmethod
-    def _check_multiframe_fails(fmt):
-        assert_raises(TypeError,
-                      mda.coordinates.core.get_writer_for,
-                      'this', format=fmt, multiframe=True)
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_writer_for(filename = 'this.gro', multiframe = 'sandwich')
 
     formats = [
         # format name, related class, singleframe, multiframe
         ('CRD', mda.coordinates.CRD.CRDWriter, True, False),
+        ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
+        ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
         #('ENT', mda.coordinates.PDB.PDBWriter, True, False),
         ('GRO', mda.coordinates.GRO.GROWriter, True, False),
+        ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
         ('MOL2', mda.coordinates.MOL2.MOL2Writer, True, True),
         ('NCDF', mda.coordinates.TRJ.NCDFWriter, True, True),
         ('NULL', mda.coordinates.null.NullWriter, True, True),
@@ -849,32 +830,35 @@ class TestGetWriterFor(object):
     ]
     if six.PY2:
         formats += [
-        ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
-        ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
-        ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
-        ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
-    ]
-    def test_get_writer_for(self):
-        for fmt, cls, singleframe, multiframe in self.formats:
-            for f in [fmt.upper(), fmt.lower()]:
-                if singleframe:
-                    yield self._check_singleframe, f, cls
-                else:
-                    yield self._check_singleframe_fails, f
-                if multiframe:
-                    yield self._check_multiframe, f, cls
-                else:
-                    yield self._check_multiframe_fails, f
+            ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
+        ]
+
+    @pytest.mark.parametrize('format, writer', map(lambda format: (format[0], format[1]), filter((lambda format: format[2]), formats)))
+    def test_singleframe(self, format, writer):
+        assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=False) == writer
+
+    @pytest.mark.parametrize('format', map(lambda format: format[0], filter((lambda format: format[2] is False), formats)))
+    def test_singleframe_fails(self, format):
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for('this', format = format, multiframe = False)
+
+    @pytest.mark.parametrize('format, writer',
+                             map(lambda format: (format[0], format[1]), filter((lambda format: format[3]), formats)))
+    def test_multiframe(self, format, writer):
+        assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=True) == writer
+
+    @pytest.mark.parametrize('format',
+                             map(lambda format: (format[0]), filter((lambda format: format[3] is False), formats)))
+    def test_multiframe_fails(self, format):
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for('this', format = format, multiframe = True)
 
     def test_get_writer_for_pdb(self):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False),
-                     mda.coordinates.PDB.PDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True),
-                     mda.coordinates.PDB.MultiPDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=False),
-                     mda.coordinates.PDB.PDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=True),
-                     mda.coordinates.PDB.MultiPDBWriter)
+        assert mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+
 
 class TestBlocksOf(object):
     def test_blocks_of_1(self):
