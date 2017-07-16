@@ -172,7 +172,7 @@ class BaseAuxReaderTest(object):
         reader[-1]
         # if we try to move to next step from here, should raise StopIteration
         with pytest.raises(StopIteration):
-            reader.next
+            reader.next()
 
     def test_move_to_invalid_step_raises_IndexError(self, ref, reader):
         # last step is number n_steps -1 ; if we try move to step number
