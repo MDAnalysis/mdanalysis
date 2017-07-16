@@ -21,8 +21,6 @@
 #
 from __future__ import absolute_import, division
 
-from unittest import TestCase
-
 import pytest
 from six.moves import range, StringIO
 import six
@@ -993,16 +991,12 @@ class TestNamespace(object):
 
 
 class TestTruncateInteger(object):
-    @staticmethod
-    def _check_vals(a, b):
-        assert_(util.ltruncate_int(*a) == b)
-
-    def test_ltruncate_int(self):
-        for vals, exp in (
-                ((1234, 1), 4),
-                ((1234, 2), 34),
-                ((1234, 3), 234),
-                ((1234, 4), 1234),
-                ((1234, 5), 1234),
-        ):
-            yield self._check_vals, vals, exp
+    @pytest.mark.parametrize('a, b', [
+        ((1234, 1), 4),
+        ((1234, 2), 34),
+        ((1234, 3), 234),
+        ((1234, 4), 1234),
+        ((1234, 5), 1234),
+    ])
+    def test_ltruncate_int(self, a, b):
+        assert util.ltruncate_int(*a) == b
