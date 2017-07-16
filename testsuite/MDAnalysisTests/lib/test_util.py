@@ -539,24 +539,23 @@ class TestFixedwidthBins(object):
     def test_keys(self):
         ret = util.fixedwidth_bins(0.5, 1.0, 2.0)
         for k in ['Nbins', 'delta', 'min', 'max']:
-            assert_(k in ret)
+            assert k in ret
 
     def test_VE(self):
-        assert_raises(ValueError, util.fixedwidth_bins, 0.1, 5.0, 4.0)
+        with pytest.raises(ValueError):
+            util.fixedwidth_bins(0.1, 5.0, 4.0)
 
-    def test_usage_1(self):
-        ret = util.fixedwidth_bins(0.1, 4.0, 5.0)
-        assert_equal(ret['Nbins'], 10)
-        assert_equal(ret['delta'], 0.1)
-        assert_equal(ret['min'], 4.0)
-        assert_equal(ret['max'], 5.0)
+    @pytest.mark.parametrize('delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max', [
+        (0.1, 4.0, 5.0, 10, 0.1, 4.0, 5.0),
+        (0.4, 4.0, 5.0, 3, 0.4, 3.9, 5.1)
+    ])
+    def test_usage(self, delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max):
+        ret = util.fixedwidth_bins(delta, xmin, xmax)
+        assert_equal(ret['Nbins'], output_Nbins)
+        assert_equal(ret['delta'], output_delta)
+        assert_equal(ret['min'], output_min)
+        assert_equal(ret['max'], output_max)
 
-    def test_usage_2(self):
-        ret = util.fixedwidth_bins(0.4, 4.0, 5.0)
-        assert_equal(ret['Nbins'], 3)
-        assert_equal(ret['delta'], 0.4)
-        assert_almost_equal(ret['min'], 3.9)
-        assert_almost_equal(ret['max'], 5.1)
 
 class TestGuessFormat(object):
     """Test guessing of format from filenames
@@ -570,11 +569,14 @@ class TestGuessFormat(object):
         ('CHAIN', None, mda.coordinates.chain.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
+        ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
+        ('DCD', None, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
         ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
+        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
         ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
         ('MMTF', mda.topology.MMTFParser.MMTFParser, mda.coordinates.MMTF.MMTFReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
@@ -596,12 +598,8 @@ class TestGuessFormat(object):
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
     ]
     if six.PY2:
-        # DCD, LAMMPS, and TRZ are not supported on Python 3 yet
+        # TRZ is not supported on Python 3 yet
         formats += [
-            ('DATA', mda.topology.LAMMPSParser.DATAParser,
-             mda.coordinates.LAMMPS.DATAReader),
-            ('DCD', None, mda.coordinates.DCD.DCDReader),
-            ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
             ('TRZ', None, mda.coordinates.TRZ.TRZReader),
         ]
     # list of possible compressed extensions
@@ -642,40 +640,48 @@ class TestGuessFormat(object):
     def _check_get_reader_invalid(self, fn):
         assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
 
-    def test_formats(self):
-        # f - format extension
-        # P - parser class or None
-        # R - reader class or None
-        for form, P, R in self.formats:
-            # should work with either lower or upper case extension
-            for f in [form.upper(), form.lower()]:
-                fn = 'file.{0}'.format(f)
-                # check f doesn't trip up get_ext or guess_format
-                yield self._check_get_ext, f, fn
-                yield self._check_guess_format, f, fn
+    @pytest.mark.parametrize('ext_upper, ext_lower', map(lambda ext: (ext.upper(), ext.lower()), map(lambda format: format[0], formats)))
+    def test_get_extention(self, ext_upper, ext_lower):
+        file_name = 'file.{0}'.format(ext_upper)
+        self._check_get_ext(ext_upper, file_name)
 
-                # check adding extension to f
-                # also checks f without extension
-                yield self._check_compressed, f, fn
+        file_name = 'file.{0}'.format(ext_lower)
+        self._check_get_ext(ext_lower, file_name)
+
+    def test_formats(self):
+        # extention - format extension
+        # parser - parser class or None
+        # reader - reader class or None
+        for format, parser, reader in self.formats:
+            # should work with either lower or upper case extension
+            for extention in [format.upper(), format.lower()]:
+                file_name = 'file.{0}'.format(extention)
+                # check extention doesn't trip up get_ext or guess_format
+                yield self._check_get_ext, extention, file_name
+                yield self._check_guess_format, extention, file_name
+
+                # check adding extension to extention
+                # also checks extention without extension
+                yield self._check_compressed, extention, file_name
                 for e in self.compressed_extensions:
-                    yield self._check_compressed, f, fn + e
-                    yield self._check_guess_format, f, fn + e
+                    yield self._check_compressed, extention, file_name + e
+                    yield self._check_guess_format, extention, file_name + e
 
             # Check that expected parser is returned
-            if P is not None:
-                yield self._check_get_parser, fn, P
+            if parser is not None:
+                yield self._check_get_parser, file_name, parser
                 for e in self.compressed_extensions:
-                    yield self._check_get_parser, fn + e, P
+                    yield self._check_get_parser, file_name + e, parser
             else:
-                yield self._check_get_parser_invalid, fn
+                yield self._check_get_parser_invalid, file_name
 
             # Check that expected reader is returned
-            if R is not None:
-                yield self._check_get_reader, fn, R
+            if reader is not None:
+                yield self._check_get_reader, file_name, reader
                 for e in self.compressed_extensions:
-                    yield self._check_get_reader, fn + e, R
+                    yield self._check_get_reader, file_name + e, reader
             else:
-                yield self._check_get_reader_invalid, fn
+                yield self._check_get_reader_invalid, file_name
 
     def test_check_compressed_format_TE(self):
         assert_raises(TypeError, util.check_compressed_format, 1234, 'bz2')
