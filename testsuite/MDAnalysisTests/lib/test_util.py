@@ -640,10 +640,10 @@ class TestGuessFormat(object):
     def _check_get_reader_invalid(self, fn):
         assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
 
-    @pytest.mark.parametrize('ext', map(lambda ext: ext.upper(),
-                                        map(lambda format: format[0], formats)) +
-                                        map(lambda ext: ext.lower(), map(lambda format: format[0], formats)
-    ))
+    @pytest.mark.parametrize('ext',
+        map(lambda format: format[0].upper(), formats) +
+        map(lambda format: format[0].lower(), formats)
+    )
     def test_get_extention(self, ext):
         file_name = 'file.{0}'.format(ext)
         self._check_get_ext(ext, file_name)
