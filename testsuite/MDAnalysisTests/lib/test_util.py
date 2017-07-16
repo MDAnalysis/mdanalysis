@@ -518,22 +518,22 @@ class TestCachedDecorator(object):
 
 
 class TestConvFloat(object):
-    def test_float_1(self):
-        assert_equal(util.conv_float('0.45'), 0.45)
+    @pytest.mark.parametrize('s, output', [
+        ('0.45', 0.45),
+        ('.45', 0.45),
+        ('a.b', 'a.b')
+    ])
+    def test_float(self, s, output):
+        assert util.conv_float(s) == output
 
-    def test_float_2(self):
-        assert_equal(util.conv_float('.45'), 0.45)
+    @pytest.mark.parametrize('input, output', [
+        (('0.45', '0.56', '6.7'), [0.45, 0.56, 6.7]),
+        (('0.45', 'a.b', '!!'), [0.45, 'a.b', '!!'])
+    ])
+    def test_map(self, input, output):
+        ret = [util.conv_float(el) for el in input]
+        assert ret == output
 
-    def test_str(self):
-        assert_equal(util.conv_float('a.b'), 'a.b')
-
-    def test_map_1(self):
-        ret = [util.conv_float(el) for el in ('0.45', '0.56', '6.7')]
-        assert_equal(ret, [0.45, 0.56, 6.7])
-
-    def test_map_2(self):
-        ret = [util.conv_float(el) for el in ('0.45', 'a.b', '!!')]
-        assert_equal(ret, [0.45, 'a.b', '!!'])
 
 class TestFixedwidthBins(object):
     def test_keys(self):
