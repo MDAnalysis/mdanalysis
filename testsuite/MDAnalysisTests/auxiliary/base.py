@@ -32,10 +32,10 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
 
 
-@pytest.mark.raises(exception=ValueError)
 def test_get_bad_auxreader_format_raises_ValueError():
     # should raise a ValueError when no AuxReaders with match the specified format
-    mda.auxiliary.core.get_auxreader_for(format='bad-format')
+    with pytest.raises(ValueError):
+        mda.auxiliary.core.get_auxreader_for(format='bad-format')
 
 
 class BaseAuxReference(object):
