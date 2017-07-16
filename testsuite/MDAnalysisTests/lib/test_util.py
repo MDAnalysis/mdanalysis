@@ -606,99 +606,134 @@ class TestGuessFormat(object):
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
-    def _check_get_ext(self, f, fn):
-        """Check that get_ext works"""
-        a, b = util.get_ext(fn)
-
-        assert_equal(a, 'file')
-        assert_equal(b, f.lower())
-
-    def _check_compressed(self, f, fn):
-        """Check that format suffixed by compressed extension works"""
-        a = util.format_from_filename_extension(fn)
-        # expect answer to always be uppercase
-        assert_equal(a, f.upper())
-
-    def _check_guess_format(self, f, fn):
-        a = util.guess_format(fn)
-        # expect answer to always be uppercase
-        assert_equal(a, f.upper())
-
-    def _check_get_parser(self, fn, P):
-        a = mda.topology.core.get_parser_for(fn)
-
-        assert_equal(a, P)
-
-    def _check_get_parser_invalid(self, fn):
-        assert_raises(ValueError, mda.topology.core.get_parser_for, fn)
-
-    def _check_get_reader(self, fn, R):
-        a = mda.coordinates.core.get_reader_for(fn)
-
-        assert_equal(a, R)
-
-    def _check_get_reader_invalid(self, fn):
-        assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
-
-    @pytest.mark.parametrize('ext',
+    @pytest.mark.parametrize('extention',
         map(lambda format: format[0].upper(), formats) +
         map(lambda format: format[0].lower(), formats)
     )
-    def test_get_extention(self, ext):
-        file_name = 'file.{0}'.format(ext)
-        self._check_get_ext(ext, file_name)
+    def test_get_extention(self, extention):
+        """Check that get_ext works"""
+        file_name = 'file.{0}'.format(extention)
+        a, b = util.get_ext(file_name)
 
-    def test_formats(self):
-        # extention - format extension
-        # parser - parser class or None
-        # reader - reader class or None
-        for format, parser, reader in self.formats:
-            # should work with either lower or upper case extension
-            for extention in [format.upper(), format.lower()]:
-                file_name = 'file.{0}'.format(extention)
-                # check extention doesn't trip up get_ext or guess_format
-                yield self._check_get_ext, extention, file_name
-                yield self._check_guess_format, extention, file_name
+        assert a == 'file'
+        assert b == extention.lower()
 
-                # check adding extension to extention
-                # also checks extention without extension
-                yield self._check_compressed, extention, file_name
-                for e in self.compressed_extensions:
-                    yield self._check_compressed, extention, file_name + e
-                    yield self._check_guess_format, extention, file_name + e
+    @pytest.mark.parametrize('extention',
+        map(lambda format: format[0].upper(), formats) +
+        map(lambda format: format[0].lower(), formats)
+    )
+    def test_compressed_without_compression_extention(self, extention):
+        """Check that format suffixed by compressed extension works"""
+        file_name = 'file.{0}'.format(extention)
+        a = util.format_from_filename_extension(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
 
-            # Check that expected parser is returned
-            if parser is not None:
-                yield self._check_get_parser, file_name, parser
-                for e in self.compressed_extensions:
-                    yield self._check_get_parser, file_name + e, parser
-            else:
-                yield self._check_get_parser_invalid, file_name
+    @pytest.mark.parametrize('extention',
+        map(lambda format: format[0].upper(), formats) +
+        map(lambda format: format[0].lower(), formats)
+    )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_compressed(self, extention, compression_extention):
+        """Check that format suffixed by compressed extension works"""
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = util.format_from_filename_extension(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
 
-            # Check that expected reader is returned
-            if reader is not None:
-                yield self._check_get_reader, file_name, reader
-                for e in self.compressed_extensions:
-                    yield self._check_get_reader, file_name + e, reader
-            else:
-                yield self._check_get_reader_invalid, file_name
+    @pytest.mark.parametrize('extention',
+        map(lambda format: format[0].upper(), formats) +
+        map(lambda format: format[0].lower(), formats)
+    )
+    def test_guess_format(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        a = util.guess_format(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
+
+    @pytest.mark.parametrize('extention',
+        map(lambda format: format[0].upper(), formats) +
+        map(lambda format: format[0].lower(), formats)
+    )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_guess_format_compressed(self, extention, compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = util.guess_format(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
+
+    @pytest.mark.parametrize('extention, parser',
+        map(lambda format: (format[0], format[1]), filter((lambda format: format[1]), formats))
+    )
+    def test_get_parser(self, extention, parser):
+        file_name = 'file.{0}'.format(extention)
+        a = mda.topology.core.get_parser_for(file_name)
+
+        assert a == parser
+
+    @pytest.mark.parametrize('extention, parser',
+        map(lambda format: (format[0], format[1]), filter((lambda format: format[1]), formats))
+    )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_get_parser_compressed(self, extention, parser, compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = mda.topology.core.get_parser_for(file_name)
+
+        assert a == parser
+
+    @pytest.mark.parametrize('extention',
+        map(lambda format: format[0], filter((lambda format: format[1] is None), formats))
+    )
+    def test_get_parser_invalid(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        with pytest.raises(ValueError):
+            mda.topology.core.get_parser_for(file_name)
+
+    @pytest.mark.parametrize('extention, reader',
+        map(lambda format: (format[0], format[2]), filter((lambda format: format[2]), formats))
+    )
+    def test_get_reader(self, extention, reader):
+        file_name = 'file.{0}'.format(extention)
+        a = mda.coordinates.core.get_reader_for(file_name)
+
+        assert a == reader
+
+    @pytest.mark.parametrize('extention, reader',
+        map(lambda format: (format[0], format[2]), filter((lambda format: format[2]), formats))
+    )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_get_reader_compressed(self, extention, reader, compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = mda.coordinates.core.get_reader_for(file_name)
+
+        assert a == reader
+
+    @pytest.mark.parametrize('extention',
+        map(lambda format: (format[0]), filter((lambda format: format[2] is None), formats))
+    )
+    def test_get_reader_invalid(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_reader_for(file_name)
 
     def test_check_compressed_format_TE(self):
-        assert_raises(TypeError, util.check_compressed_format, 1234, 'bz2')
+        with pytest.raises(TypeError):
+            util.check_compressed_format(1234, 'bz2')
 
     def test_format_from_filename_TE(self):
-        assert_raises(TypeError, util.format_from_filename_extension, 1234)
+        with pytest.raises(TypeError):
+            util.format_from_filename_extension(1234)
 
     def test_guess_format_stream_VE(self):
         # This stream has no name, so can't guess format
         s = StringIO('this is a very fun file')
-
-        assert_raises(ValueError, util.guess_format, s)
+        with pytest.raises(ValueError):
+            util.guess_format(s)
 
     def test_from_ndarray(self):
         fn = np.zeros((3, 3))
         rd = mda.coordinates.core.get_reader_for(fn)
-        assert_equal(rd, mda.coordinates.memory.MemoryReader)
+        assert rd == mda.coordinates.memory.MemoryReader
 
 
 class TestUniqueRows(object):
