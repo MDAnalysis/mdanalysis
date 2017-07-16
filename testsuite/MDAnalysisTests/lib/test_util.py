@@ -905,89 +905,91 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 2, 1)
 
-        assert_(view.shape == (4, 2, 1))
+        assert view.shape == (4, 2, 1)
 
     def test_blocks_of_VE(self):
         arr = np.arange(16).reshape(4, 4)
+        with pytest.raises(ValueError):
+            util.blocks_of(arr, 2, 1)
 
-        assert_raises(ValueError, util.blocks_of, arr, 2, 1)
 
+class TestNamespace(object):
+    @staticmethod
+    @pytest.fixture()
+    def ns():
+        return util.Namespace()
 
-class TestNamespace(TestCase):
-    def setUp(self):
-        self.ns = util.Namespace()
+    def test_getitem(self, ns):
+        ns.this = 42
+        assert ns['this'] == 42
 
-    def tearDown(self):
-        del self.ns
+    def test_getitem_KE(self, ns):
+        with pytest.raises(KeyError):
+            dict.__getitem__(ns, 'this')
 
-    def test_getitem(self):
-        self.ns.this = 42
+    def test_setitem(self, ns):
+        ns['this'] = 42
 
-        assert_(self.ns['this'] == 42)
+        assert ns['this'] == 42
 
-    def test_getitem_KE(self):
-        assert_raises(KeyError, dict.__getitem__, self.ns, 'this')
+    def test_delitem(self, ns):
+        ns['this'] = 42
+        assert 'this' in ns
+        del ns['this']
+        assert not ('this' in ns)
 
-    def test_setitem(self):
-        self.ns['this'] = 42
-
-        assert_(self.ns['this'] == 42)
-
-    def test_delitem(self):
-        self.ns['this'] = 42
-        assert_('this' in self.ns)
-        del self.ns['this']
-        assert_(not ('this' in self.ns))
-
-    def test_delitem_AE(self):
+    def test_delitem_AE(self, ns):
         def deller():
-            del self.ns.this
-        assert_raises(AttributeError, deller)
+            del ns.this
 
-    def test_setattr(self):
-        self.ns.this = 42
+        with pytest.raises(AttributeError):
+            deller()
 
-        assert_(self.ns.this == 42)
+    def test_setattr(self, ns):
+        ns.this = 42
 
-    def test_getattr(self):
-        self.ns['this'] = 42
+        assert ns.this == 42
 
-        assert_(self.ns.this == 42)
+    def test_getattr(self, ns):
+        ns['this'] = 42
 
-    def test_getattr_AE(self):
-        assert_raises(AttributeError, getattr, self.ns, 'this')
+        assert ns.this == 42
 
-    def test_delattr(self):
-        self.ns['this'] = 42
+    def test_getattr_AE(self, ns):
+        with pytest.raises(AttributeError):
+            getattr(ns, 'this')
 
-        assert_('this' in self.ns)
-        del self.ns.this
-        assert_(not ('this' in self.ns))
+    def test_delattr(self, ns):
+        ns['this'] = 42
 
-    def test_eq(self):
-        self.ns['this'] = 42
+        assert 'this' in ns
+        del ns.this
+        assert not ('this' in ns)
+
+    def test_eq(self, ns):
+        ns['this'] = 42
 
         ns2 = util.Namespace()
         ns2['this'] = 42
 
-        assert_(self.ns == ns2)
+        assert ns == ns2
 
-    def test_len(self):
-        assert_(len(self.ns) == 0)
-        self.ns['this'] = 1
-        self.ns['that'] = 2
-        assert_(len(self.ns) == 2)
+    def test_len(self, ns):
+        assert_(len(ns) == 0)
+        ns['this'] = 1
+        ns['that'] = 2
+        assert len(ns) == 2
 
-    def test_iter(self):
-        self.ns['this'] = 12
-        self.ns['that'] = 24
-        self.ns['other'] = 48
+    def test_iter(self, ns):
+        ns['this'] = 12
+        ns['that'] = 24
+        ns['other'] = 48
 
         seen = []
-        for val in self.ns:
+        for val in ns:
             seen.append(val)
         for val in ['this', 'that', 'other']:
-            assert_(val in seen)
+            assert val in seen
 
 
 class TestTruncateInteger(object):
