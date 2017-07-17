@@ -254,6 +254,10 @@ def get_path_metric_func(name):
     except KeyError as key:
         print("Path metric {0} not found. Valid selections: ".format(key))
         for name in path_metrics.keys(): print("  \"{0}\"".format(name))
+    # except KeyError as key:
+    #     err_str = "Path metric {0} not found. Valid selections: ".format(key)
+    #     err_str += "  ".join(["\"{0}\"".format(name) for name in path_metrics.keys()])
+    #     raise KeyError(err_str)
 
 
 def sqnorm(v, axis=None):

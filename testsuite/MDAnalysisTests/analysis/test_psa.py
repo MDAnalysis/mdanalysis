@@ -119,7 +119,7 @@ class TestPSAExceptions(TestCase):
         get_path_metric_func().'''
 
         try:
-           PSA.get_path_metric_func('123456')
+            PSA.get_path_metric_func('123456')
         except KeyError:
             self.fail('KeyError should be caught')
 
@@ -257,7 +257,7 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         self.expected = (np.mean(np.amin(self.distance_matrix, axis=0)) +
                          np.mean(np.amin(self.distance_matrix, axis = 1))) / 2.
 
-    def test_asymmetric_weight(self):
+    def test_asymmetric_wavg_weight(self):
         '''Test to ensure that increasing N points in one of the paths
         does NOT increase the weight of its contributions.'''
         inflated_path_1 = np.concatenate((self.path_1, self.path_1))
@@ -281,7 +281,7 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         self.expected = np.mean(np.append(np.amin(self.distance_matrix, axis=0),
                                 np.amin(self.distance_matrix, axis = 1)))
 
-    def test_asymmetric_weight(self):
+    def test_asymmetric_avg_weight(self):
         '''Test to ensure that increasing N points in one of the paths
         increases the weight of its contributions.'''
         inflated_path_1 = np.concatenate((self.path_1, self.path_1))
@@ -323,5 +323,3 @@ class DiscreteFrechetDistance(TestCase):
         actual = PSA.discrete_frechet(self.path_1,
                                       self.path_2)
         assert_almost_equal(actual, expected)
-
-
