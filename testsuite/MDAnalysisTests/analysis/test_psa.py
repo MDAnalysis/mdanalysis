@@ -58,8 +58,11 @@ class TestPSAnalysis(TestCase):
         self.hausd_matrix = self.psa.get_pairwise_distances()
         self.psa.run(metric='discrete_frechet')
         self.frech_matrix = self.psa.get_pairwise_distances()
+        self.psa.run(metric=self.psa.hausdorff)
+        self.hausd_matrix_explicit = self.psa.get_pairwise_distances()
         self.hausd_dists = self.hausd_matrix[self.iu1]
         self.frech_dists = self.frech_matrix[self.iu1]
+        self.hausd_explicit_dists = = self.hausd_matrix_explicit[self.iu1]
 
     def _plot(self):
         self.plot_data = self.psa.plot()
@@ -75,6 +78,11 @@ class TestPSAnalysis(TestCase):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
                 + "Hausdorff distances"
         assert_array_less(self.hausd_dists, self.frech_dists, err_msg)
+
+    def test_explicit_metric(self):
+        err_msg = "Specifying Python function for Hausdoff gives different "    \
+                + "distances than specifying Hausdorff with string name"
+        assert_array_less(self.hausd_dists, self.hausd_explicit_dists, err_msg)
 
     def test_reversal_hausdorff(self):
         err_msg = "Hausdorff distances changed after path reversal"
