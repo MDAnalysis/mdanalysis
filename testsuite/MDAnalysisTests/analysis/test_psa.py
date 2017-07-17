@@ -30,6 +30,7 @@ from numpy.testing import (TestCase, dec, assert_array_less,
 import numpy as np
 import scipy
 import scipy.spatial
+import pytest
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 from MDAnalysisTests import parser_not_found, tempdir, module_not_found
@@ -173,8 +174,9 @@ class TestPSAExceptions(TestCase):
         """Test that ValueError is raised when i or j are
         not Integers"""
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError) as err:
             PSA.dist_mat_to_vec(5, '6', '7')
+        assert 'all must be of type int' in str(err.value)
 
         with self.assertRaises(ValueError):
             PSA.dist_mat_to_vec(5, float(6), 7)
