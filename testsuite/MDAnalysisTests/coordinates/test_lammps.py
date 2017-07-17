@@ -161,7 +161,7 @@ class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
         N_kept = 5
         u = mda.Universe(filename)
         ext = os.path.splitext(filename)[1]
-        outfile = tmpdir.join('lammps-data-writer-test' + ext)
+        outfile = str(tmpdir.join('lammps-data-writer-test' + ext))
 
         with mda.Writer(outfile, n_atoms=N_kept) as w:
             w.write(u.atoms[:N_kept])
@@ -319,6 +319,7 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
                             self.u.trajectory[0].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
 
+
 class TestLAMMPSDCDWriterClass(TestCase):
     flavor = 'LAMMPS'
 
@@ -340,82 +341,64 @@ class TestLAMMPSDCDWriterClass(TestCase):
             assert_(W.flavor, self.flavor)
 
     def test_open(self):
-        def open_dcd():
-            try:
-                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10):
-                    pass
-            except Exception:
-                return False
-            else:
-                return True
-        assert_(open_dcd(), True)
+        try:
+            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10):
+                pass
+        except Exception:
+            pytest.fail()
 
     def test_wrong_time_unit(self):
-        def wrong_load(unit="nm"):
-                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
-                                                      timeunit=unit):
-                    pass
-        assert_raises(TypeError, wrong_load)
+        with pytest.raises(TypeError):
+            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+                                                  timeunit='nm'):
+                pass
 
     def test_wrong_unit(self):
-        def wrong_load(unit="GARBAGE"):
-                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
-                                                      timeunit=unit):
-                    pass
-        assert_raises(ValueError, wrong_load)
+        with pytest.raises(ValueError):
+            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+                                                  timeunit='GARBAGE'):
+                pass
 
 
-class TestLammpsDataTriclinic(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(LAMMPScnt)
+def test_triclinicness():
+    u = mda.Universe(LAMMPScnt)
 
-    def tearDown(self):
-        del self.u
+    assert u.dimensions[3] == 90.
+    assert u.dimensions[4] == 90.
+    assert u.dimensions[5] == 120.
 
-    def test_triclinicness(self):
-        assert_(self.u.dimensions[3] == 90.)
-        assert_(self.u.dimensions[4] == 90.)
-        assert_(self.u.dimensions[5] == 120.)
 
-class TestDataWriterErrors(TestCase):
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tmpdir.name, 'out.data')
+@pytest.fixture
+def tmpout(tmpdir):
+    return str(tmpdir.join('out.data'))
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.tmpdir
-        del self.outfile
-
-    def test_write_no_masses(self):
+class TestDataWriterErrors(object):
+    def test_write_no_masses(self, tmpout):
         u = make_Universe(('types',), trajectory=True)
 
         try:
-            u.atoms.write(self.outfile)
+            u.atoms.write(tmpout)
         except NoDataError as e:
             assert_('masses' in e.args[0])
         else:
-            raise AssertionError
+            pytest.fail()
 
-    def test_write_no_types(self):
+    def test_write_no_types(self, tmpout):
         u = make_Universe(('masses',), trajectory=True)
 
         try:
-            u.atoms.write(self.outfile)
+            u.atoms.write(tmpout)
         except NoDataError as e:
             assert_('types' in e.args[0])
         else:
-            raise AssertionError
+            pytest.fail()
 
-    def test_write_non_numerical_types(self):
+    def test_write_non_numerical_types(self, tmpout):
         u = make_Universe(('types', 'masses'), trajectory=True)
 
         try:
-            u.atoms.write(self.outfile)
+            u.atoms.write(tmpout)
         except ValueError as e:
             assert_('must be convertible to integers' in e.args[0])
         else:
-            raise AssertionError
+            raise pytest.fail()
