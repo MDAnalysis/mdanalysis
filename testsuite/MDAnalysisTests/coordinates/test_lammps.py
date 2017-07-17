@@ -319,7 +319,6 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
                             self.u.trajectory[0].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
 
-
 class TestLAMMPSDCDWriterClass(TestCase):
     flavor = 'LAMMPS'
 
