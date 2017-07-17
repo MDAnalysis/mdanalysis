@@ -498,6 +498,7 @@ class Universe(object):
         verbose = _set_verbose(verbose, quiet, default=False)
 
         if not isinstance(self.trajectory, MemoryReader):
+            dimensions = []
             # Try to extract coordinates using Timeseries object
             # This is significantly faster, but only implemented for certain
             # trajectory file formats
@@ -516,8 +517,22 @@ class Universe(object):
                 coordinates = []  # TODO: use pre-allocated array
                 for i, ts in enumerate(self.trajectory[start:stop:step]):
                     coordinates.append(np.copy(ts.positions))
+                    dimensions.append(np.copy(ts.dimensions))
                     pm.echo(i, frame=ts.frame)
                 coordinates = np.array(coordinates)
+            # If we extrated the coordinates using Timeseries, we still need
+            # to go through the trajectory to extract the dimensions.
+            else:
+                n_frames = len(range(
+                    *self.trajectory.check_slice_indices(start, stop, step)
+                ))
+                pm_format = ('{step}/{numsteps} frame dimensions '
+                             'copied to memory (frame {frame})')
+                pm = ProgressMeter(n_frames, interval=1,
+                                   verbose=verbose, format=pm_format)
+                for i, ts in enumerate(self.trajectory[start:stop:step]):
+                    dimensions.append(np.copy(ts.dimensions))
+            dimensions = np.array(dimensions)
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
@@ -526,7 +541,7 @@ class Universe(object):
                 step = 1
             self.trajectory = MemoryReader(
                 coordinates,
-                dimensions=self.trajectory.ts.dimensions,
+                dimensions=dimensions,
                 dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename)
 

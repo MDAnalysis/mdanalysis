@@ -279,10 +279,9 @@ class MemoryReader(base.ProtoReader):
                                  "array ({})"
                                  .format(provided_n_atoms, self.n_atoms))
 
+        self.dimensions = dimensions
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
-        if dimensions is not None:
-            self.ts.dimensions = dimensions
         self.ts.frame = -1
         self.ts.time = -1
         self._read_next_timestep()
@@ -407,6 +406,11 @@ class MemoryReader(base.ProtoReader):
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
         ts.positions = self.coordinate_array[basic_slice]
+        if self.dimensions is not None:
+            if len(self.dimensions) == 1:
+                ts.dimensions = self.dimensions
+            else:
+                ts.dimensions = self.dimensions[self.ts.frame]
 
         ts.time = self.ts.frame*self.dt
         return ts
