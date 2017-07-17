@@ -461,9 +461,8 @@ class Contacts(AnalysisBase):
             file to save contacts
 
         """
-        with open(outfile, "w") as f:
-            f.write("# q1 analysis\n")
-            np.savetxt(f, self.timeseries)
+        np.savetxt(outfile, self.timeseries,
+                   header="# q1 analysis\n", comments='')
 
 
 def _new_selections(u_orig, selections, frame):
