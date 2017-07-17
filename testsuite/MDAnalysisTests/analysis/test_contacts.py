@@ -295,6 +295,9 @@ class TestContacts(TestCase):
             ca.save('testfile.npy')
             saved = np.genfromtxt('testfile.npy')
             assert_array_almost_equal(ca.timeseries, saved)
+            # check the header was written correctly
+            with open('testfile.npy', 'r') as fin:
+                assert fin.readline().strip() == '# q1 analysis'
 
 
 @dec.skipif(parser_not_found('DCD'),
