@@ -661,6 +661,9 @@ class NamedStream(io.IOBase):
         #    super(NamedStream, self).__exit__(*args)
         self.close()
 
+    def __fspath__(self):
+        return self.name
+
     # override more IOBase methods, as these are provided by IOBase and are not
     # caught with __getattr__ (ugly...)
     def close(self, force=False):
