@@ -26,8 +26,8 @@ from six.moves import range, StringIO
 import six
 
 import numpy as np
-from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_, assert_array_equal)
+from numpy.testing import (assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_array_equal)
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
@@ -39,6 +39,25 @@ from MDAnalysis.exceptions import NoDataError
 
 from MDAnalysisTests.datafiles import Make_Whole
 
+
+def test_convert_aa_code_long_data():
+    # TODO: Find a clean solution for this.
+    aa = [
+        ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+        ('K', ('LYS', 'LYSH', 'LYN')),
+        ('A', ('ALA',)),
+        ('D', ('ASP', 'ASPH', 'ASH')),
+        ('E', ('GLU', 'GLUH', 'GLH')),
+        ('N', ('ASN',)),
+        ('Q', ('GLN',)),
+        ('C', ('CYS', 'CYSH', 'CYS1', 'CYS2')),
+    ]
+    data = []
+    for resname1, strings in aa:
+        for resname3 in strings:
+            data.append((resname3, resname1))
+
+    return data
 
 class TestStringFunctions(object):
     # (1-letter, (canonical 3 letter, other 3/4 letter, ....))
@@ -69,14 +88,9 @@ class TestStringFunctions(object):
         with pytest.raises(ValueError):
             util.parse_residue('ZZZ')
 
-    def check_convert_aa_3to1(self, resname3, resname1):
+    @pytest.mark.parametrize('resname3, resname1', test_convert_aa_code_long_data())
+    def test_convert_aa_3to1(self, resname3, resname1):
         assert util.convert_aa_code(resname3) == resname1
-
-    # TODO: How do I fix this? Function call in parametrize?
-    def test_convert_aa_code_long(self):
-        for resname1, strings in self.aa:
-            for resname3 in strings:
-                yield self.check_convert_aa_3to1, resname3, resname1
 
     @pytest.mark.parametrize('resname1, strings', aa)
     def test_convert_aa_1to3(self, resname1, strings):
@@ -94,8 +108,8 @@ class TestStringFunctions(object):
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
                          ref=("foo/bar/boing", ".2.pdb.bz2")):
     root, ext = util.greedy_splitext(inp)
-    assert_equal(root, ref[0], err_msg="root incorrect")
-    assert_equal(ext, ref[1], err_msg="extension incorrect")
+    assert root == ref[0], "root incorrect"
+    assert ext == ref[1], "extension incorrect"
 
 
 @pytest.mark.parametrize('iterable, value', [
@@ -128,30 +142,22 @@ class TestFilename(object):
     ])
     def test_string(self, name, ext, keep, actual_name):
         file_name = util.filename(name, ext, keep)
-        assert file_name, actual_name
+        assert file_name, actual_name #TODO: why is a comma here?
 
-    def testNamedStream(self):
+    def test_named_stream(self):
         ns = util.NamedStream(StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:
             pytest.fail("fn and ns are different")
-        assert_equal(str(fn), self.filename2)
-        assert_equal(ns.name, self.filename2)
+        assert str(fn) == self.filename2
+        assert ns.name == self.filename2
 
 
 class TestGeometryFunctions(object):
-    e1 = np.array([1., 0, 0])
-    e2 = np.array([0, 1., 0])
-    e3 = np.array([0, 0, 1.])
+    e1, e2, e3 = np.eye(3)
     a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
     null = np.zeros(3)
-    # def setUp(self):
-    #     self.e1 = np.array([1., 0, 0])
-    #     self.e2 = np.array([0, 1., 0])
-    #     self.e3 = np.array([0, 0, 1.])
-    #     self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
-    #     self.null = np.zeros(3)
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         # Unit vectors
@@ -162,12 +168,12 @@ class TestGeometryFunctions(object):
         (-2*e1, e2, np.pi - np.pi / 2),
         (23.3*e1, a, np.pi/3),
         # Null vector
-        # (e1, null, np.nan), # TODO: Failing. Why?
+        (e1, null, np.nan),
         # Coleniar
         (a, a, 0.0)
     ])
     def test_vectors(self, x_axis, y_axis, value):
-        assert mdamath.angle(x_axis, y_axis) == value
+        assert_equal(mdamath.angle(x_axis, y_axis), value)
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
@@ -197,14 +203,13 @@ class TestGeometryFunctions(object):
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.norm(v), r, 6)
 
-    # TODO: Failing! Looks like assert_equal does some magic?
-    # @pytest.mark.parametrize('vec1, vec2, value', [
-    #     (e1, e2, e3),
-    #     (e1, null, 0.0)
-    # ])
-    # def test_normal(self, vec1, vec2, value):
-    #     assert mdamath.normal(vec1, vec2) == value
-    #     # add more non-trivial tests
+    @pytest.mark.parametrize('vec1, vec2, value', [
+        (e1, e2, e3),
+        (e1, null, 0.0)
+    ])
+    def test_normal(self, vec1, vec2, value):
+        assert_equal(mdamath.normal(vec1, vec2), value)
+        # add more non-trivial tests
 
     def test_stp(self):
         assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
@@ -243,14 +248,16 @@ class TestMakeWhole(object):
 
     def test_no_bonds(self, ag):
         # NoData caused by no bonds
-        assert_raises(NoDataError, mdamath.make_whole, ag)
+        with pytest.raises(NoDataError):
+            mdamath.make_whole(ag)
 
     def test_not_orthogonal(self, universe, ag):
         # Not an orthogonal unit cell
         self._load_bonds(universe)
 
         universe.dimensions = [10., 10., 10., 80., 80., 80]
-        assert_raises(ValueError, mdamath.make_whole, ag)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
     def test_zero_box_size(self, universe, ag):
         self._load_bonds(universe)
@@ -288,13 +295,12 @@ class TestMakeWhole(object):
     def test_walk_1(self, universe, ag):
         self._load_bonds(universe)
         # self.ag is contiguous
-        assert_(mdamath._is_contiguous(
-            ag, universe.residues[0].atoms[0]))
+        assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
 
     def test_walk_2(self, universe):
         self._load_bonds(universe)
         # u.atoms isnt all contiguous
-        assert_(not mdamath._is_contiguous(universe.atoms, universe.residues[0].atoms[0]))
+        assert not mdamath._is_contiguous(universe.atoms, universe.residues[0].atoms[0])
 
     def test_solve_1(self, universe, ag):
         # regular usage of function
@@ -442,19 +448,19 @@ class TestCachedDecorator(object):
 
     def test_val1_lookup(self, obj):
         obj._clear_caches()
-        assert ('val1' in obj._cache) == False
+        assert 'val1' not in obj._cache
         assert obj.val1() == obj.ref1
         ret = obj.val1()
-        assert ('val1' in obj._cache) == True
+        assert 'val1' in obj._cache
         assert obj._cache['val1'] == ret
-        assert obj.val1() is obj._cache['val1'] == True
+        assert obj.val1() is obj._cache['val1']
 
     def test_val1_inject(self, obj):
         # Put something else into the cache and check it gets returned
         # this tests that the cache is blindly being used
         obj._clear_caches()
         ret = obj.val1()
-        assert ('val1' in obj._cache) == True
+        assert 'val1' in obj._cache
         assert ret == obj.ref1
         new = 77.0
         obj._fill_cache('val1', new)
@@ -463,16 +469,16 @@ class TestCachedDecorator(object):
     # Managed property
     def test_val2_lookup(self, obj):
         obj._clear_caches()
-        assert ('val2' in obj._cache) == False
+        assert 'val2' not in obj._cache
         assert obj.val2 == obj.ref2
         ret = obj.val2
-        assert ('val2' in obj._cache) == True
+        assert 'val2' in obj._cache
         assert obj._cache['val2'] == ret
 
     def test_val2_inject(self, obj):
         obj._clear_caches()
         ret = obj.val2
-        assert ('val2' in obj._cache) == True
+        assert 'val2' in obj._cache
         assert ret == obj.ref2
         new = 77.0
         obj._fill_cache('val2', new)
@@ -492,12 +498,12 @@ class TestCachedDecorator(object):
         # Check that deleting the property removes it from cache,
         obj._clear_caches()
         assert obj.val3 == obj.ref3
-        assert ('val3' in obj._cache) == True
+        assert 'val3' in obj._cache
         del obj.val3
-        assert ('val3' in obj._cache) == False
+        assert 'val3' not in obj._cache
         # But allows it to work as usual afterwards
         assert obj.val3 == obj.ref3
-        assert ('val3' in obj._cache) == True
+        assert 'val3' in obj._cache
 
     # Pass args
     def test_val4_args(self, obj):
@@ -549,10 +555,10 @@ class TestFixedwidthBins(object):
     ])
     def test_usage(self, delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max):
         ret = util.fixedwidth_bins(delta, xmin, xmax)
-        assert_equal(ret['Nbins'], output_Nbins)
-        assert_equal(ret['delta'], output_delta)
-        assert_equal(ret['min'], output_min)
-        assert_equal(ret['max'], output_max)
+        assert ret['Nbins'] == output_Nbins
+        assert ret['delta'] == output_delta
+        assert ret['min'], output_min
+        assert ret['max'], output_max
 
 
 class TestGuessFormat(object):
@@ -866,7 +872,7 @@ class TestBlocksOf(object):
 
         # should return a (4, 1, 1) view
         # ie 4 lots of 1x1
-        assert_(view.shape == (4, 1, 1))
+        assert view.shape == (4, 1, 1)
         assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
 
         # Change my view, check changes are reflected in arr
@@ -884,7 +890,7 @@ class TestBlocksOf(object):
         view = util.blocks_of(arr, 2, 2)
 
         # should return (2, 2, 2)
-        assert_(view.shape == (2, 2, 2))
+        assert view.shape == (2, 2, 2)
         assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
                                                   [[10, 11], [14, 15]]]))
 
@@ -934,7 +940,7 @@ class TestNamespace(object):
         ns['this'] = 42
         assert 'this' in ns
         del ns['this']
-        assert not ('this' in ns)
+        assert 'this' not in ns
 
     def test_delitem_AE(self, ns):
         def deller():
@@ -962,7 +968,7 @@ class TestNamespace(object):
 
         assert 'this' in ns
         del ns.this
-        assert not ('this' in ns)
+        assert 'this' not in ns
 
     def test_eq(self, ns):
         ns['this'] = 42
@@ -973,7 +979,7 @@ class TestNamespace(object):
         assert ns == ns2
 
     def test_len(self, ns):
-        assert_(len(ns) == 0)
+        assert len(ns) == 0
         ns['this'] = 1
         ns['that'] = 2
         assert len(ns) == 2
