@@ -236,38 +236,38 @@ class TestMakeWhole(object):
     +-----------+
     """
 
-    @staticmethod
     @pytest.fixture()
-    def universe():
-        return mda.Universe(Make_Whole)
+    def universe(self):
+        universe = mda.Universe(Make_Whole)
+        self._load_bonds(universe)
+        return universe
 
     @staticmethod
     @pytest.fixture()
     def ag(universe):
         return universe.residues[0].atoms
 
-    def test_no_bonds(self, ag):
+    def test_no_bonds(self):
         # NoData caused by no bonds
+        universe = mda.Universe(Make_Whole)
+        ag = universe.residues[0].atoms
         with pytest.raises(NoDataError):
             mdamath.make_whole(ag)
 
     def test_not_orthogonal(self, universe, ag):
         # Not an orthogonal unit cell
-        self._load_bonds(universe)
 
         universe.dimensions = [10., 10., 10., 80., 80., 80]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
 
     def test_zero_box_size(self, universe, ag):
-        self._load_bonds(universe)
 
         universe.dimensions = [0., 0., 0., 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
 
     def test_too_small_box_size(self, universe, ag):
-        self._load_bonds(universe)
 
         # Set the z dimensions to 0.5, which is small compared to the
         # bonds (1-2)
@@ -282,29 +282,24 @@ class TestMakeWhole(object):
 
     def test_wrong_reference_atom(self, universe, ag):
         # Reference atom not in atomgroup
-        self._load_bonds(universe)
         with pytest.raises(ValueError):
             mdamath.make_whole(ag, reference_atom=universe.atoms[-1])
 
     def test_impossible_solve(self, universe):
         # check that the algorithm sees the bad walk
-        self._load_bonds(universe)
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
 
     def test_walk_1(self, universe, ag):
-        self._load_bonds(universe)
         # self.ag is contiguous
         assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
 
     def test_walk_2(self, universe):
-        self._load_bonds(universe)
         # u.atoms isnt all contiguous
         assert not mdamath._is_contiguous(universe.atoms, universe.residues[0].atoms[0])
 
     def test_solve_1(self, universe, ag):
         # regular usage of function
-        self._load_bonds(universe)
 
         refpos = universe.atoms[:4].positions.copy()
 
@@ -322,7 +317,6 @@ class TestMakeWhole(object):
 
     def test_solve_2(self, universe, ag):
         # use but specify the center atom
-        self._load_bonds(universe)
 
         refpos = universe.atoms[4:8].positions.copy()
 
@@ -340,7 +334,6 @@ class TestMakeWhole(object):
 
     def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
-        self._load_bonds(universe)
 
         refpos = universe.atoms[:1].positions.copy()
 
@@ -351,7 +344,6 @@ class TestMakeWhole(object):
     def test_solve_4(self, universe):
         # Put in only some of a fragment,
         # check that not everything gets moved
-        self._load_bonds(universe)
 
         chunk = universe.atoms[:7]
         refpos = universe.atoms[7].position.copy()
@@ -370,7 +362,6 @@ class TestMakeWhole(object):
         # previous bug where if two fragments are given
         # but all bonds were short, the algorithm didn't
         # complain
-        self._load_bonds(universe)
         mdamath.make_whole(ag)
         with pytest.raises(ValueError):
             mdamath.make_whole(universe.atoms)
