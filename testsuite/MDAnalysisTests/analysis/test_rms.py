@@ -41,7 +41,7 @@ import numpy as np
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-from MDAnalysisTests import tempdir, parser_not_found
+from MDAnalysisTests import tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
@@ -49,8 +49,6 @@ warnings.simplefilter('always')
 
 
 class Testrmsd(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         shape = (5, 3)
         # vectors with length one

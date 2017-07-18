@@ -27,12 +27,9 @@ from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
-from MDAnalysisTests import parser_not_found
 
 
 class TestWaterdynamics(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(waterPSF, waterDCD)
         self.selection1 = "byres name OH2"

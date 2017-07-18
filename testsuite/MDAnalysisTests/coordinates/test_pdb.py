@@ -27,7 +27,7 @@ from unittest import TestCase
 
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysisTests import parser_not_found, tempdir, make_Universe
+from MDAnalysisTests import tempdir, make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
                                                    RefAdK)
@@ -150,8 +150,6 @@ class TestExtendedPDBReader(_SingleFrameReader):
 
 
 class TestPDBWriter(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
         self.universe2 = mda.Universe(PSF, DCD)
@@ -461,8 +459,6 @@ class TestMultiPDBReader(TestCase):
 
 
 class TestMultiPDBWriter(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
         self.multiverse = mda.Universe(PDB_multiframe)

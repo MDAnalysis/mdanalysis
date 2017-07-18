@@ -33,12 +33,10 @@ import scipy.spatial
 import pytest
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
-from MDAnalysisTests import parser_not_found, tempdir, module_not_found
+from MDAnalysisTests import tempdir, module_not_found
 
 
 class TestPSAnalysis(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.iu1 = np.triu_indices(3, k=1)

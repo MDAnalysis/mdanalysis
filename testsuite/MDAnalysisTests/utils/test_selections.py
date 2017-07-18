@@ -32,7 +32,6 @@ import numpy as np
 from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
 
 from MDAnalysis.tests.datafiles import PSF, DCD
-from MDAnalysisTests import parser_not_found
 
 import MDAnalysis
 from MDAnalysis.lib.util import NamedStream

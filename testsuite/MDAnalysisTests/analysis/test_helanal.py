@@ -33,7 +33,7 @@ import MDAnalysis.analysis.helanal
 from MDAnalysis import FinishTimeException
 from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX)
-from MDAnalysisTests import parser_not_found, tempdir
+from MDAnalysisTests import tempdir
 
 # reference data from a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
@@ -111,8 +111,6 @@ def read_bending_matrix(fn):
     return data
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_helanal_trajectory(reference=HELANAL_BENDING_MATRIX,
                             outfile="helanal_bending_matrix.dat"):
     u = mda.Universe(PSF, DCD)

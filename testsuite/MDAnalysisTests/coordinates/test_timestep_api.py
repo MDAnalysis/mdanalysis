@@ -28,7 +28,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 from __future__ import absolute_import
 
 from numpy.testing import assert_equal, dec
-from MDAnalysisTests import module_not_found, parser_not_found
+from MDAnalysisTests import module_not_found
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
@@ -44,7 +44,6 @@ import pytest
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
-    @pytest.mark.skipif(parser_not_found('DCD'), reason='DCD parser not available. Are you using python 3?')
     @pytest.mark.parametrize('otherTS', [
         mda.coordinates.TRJ.Timestep,
         mda.coordinates.DMS.Timestep,
@@ -95,8 +94,6 @@ class TestCRD(BaseTimestepInterfaceTest):
 
 class TestDCD(BaseTimestepInterfaceTest):
     __test__ = True
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(PSF, DCD)
         self.ts = u.trajectory.ts
@@ -148,8 +145,6 @@ class TestINPCRD(BaseTimestepInterfaceTest):
 class TestLAMMPS(BaseTimestepInterfaceTest):
     __test__ = True
 
-    @dec.skipif(parser_not_found('LAMMPS'),
-                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata)
         self.ts = u.trajectory.ts
@@ -158,8 +153,6 @@ class TestLAMMPS(BaseTimestepInterfaceTest):
 class TestLAMMPSDCD(BaseTimestepInterfaceTest):
     __test__ = True
 
-    @dec.skipif(parser_not_found('LAMMPS'),
-                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata2, LAMMPSdcd2,
                                   format='LAMMPS', topology_format='DATA',
@@ -228,8 +221,6 @@ class TestTRR(BaseTimestepInterfaceTest):
 class TestTRZ(BaseTimestepInterfaceTest):
     __test__ = True
 
-    @dec.skipif(parser_not_found('TRZ'),
-                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.ts = u.trajectory.ts

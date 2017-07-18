@@ -35,7 +35,7 @@ from numpy.testing import (TestCase, dec,
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
-from MDAnalysisTests import executable_not_found, parser_not_found, tempdir
+from MDAnalysisTests import executable_not_found, tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
@@ -90,8 +90,6 @@ class TestRotationMatrix(TestCase):
 
 
 class TestAlign(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.reference = mda.Universe(PSF, DCD)

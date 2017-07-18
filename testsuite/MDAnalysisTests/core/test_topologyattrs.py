@@ -36,7 +36,7 @@ from numpy.testing import (
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import parser_not_found, make_Universe
+from MDAnalysisTests import make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
@@ -163,8 +163,6 @@ class TestAtomids(TestAtomAttr):
 
 
 class TestIndicesClasses(TestCase):
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -410,8 +408,6 @@ class TestSegmentAttr(TopologyAttrMixin):
 
 
 class TestAttr(TestCase):
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.ag = self.universe.atoms  # prototypical AtomGroup

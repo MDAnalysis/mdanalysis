@@ -32,14 +32,11 @@ import pytest
 
 import MDAnalysis as mda
 
-from MDAnalysisTests import parser_not_found
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
 class TestResidue(TestCase):
     # Legacy tests from before 363
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.res = self.universe.residues[100]

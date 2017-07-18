@@ -54,14 +54,12 @@ from MDAnalysis.tests.datafiles import (
     PDB_full,
     PDB_icodes,
 )
-from MDAnalysisTests import parser_not_found, make_Universe
+from MDAnalysisTests import make_Universe
 
 import pytest
 
 
 class TestSelectionsCHARMM(TestCase):
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent.
 
@@ -586,7 +584,6 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
     __test__ = True
 
-    @pytest.mark.skipif(parser_not_found('TRZ'), 'TRZ parser not available. Are you using python 3?')
     @pytest.fixture()
     def u(self):
         return mda.Universe(TRZ_psf, TRZ)
@@ -797,8 +794,6 @@ class TestPropSelection(object):
 
 
 class TestBondedSelection(TestCase):
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 

@@ -34,7 +34,6 @@ from unittest import skip, TestCase
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import parser_not_found
 
 
 class TestSequence(TestCase):
@@ -48,8 +47,6 @@ class TestSequence(TestCase):
         "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
     )
 
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 
@@ -99,8 +96,6 @@ class TestSequence(TestCase):
 
 class TestResidueGroup(TestCase):
     # Legacy tests from before 363
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = mda.Universe(PSF, DCD)

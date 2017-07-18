@@ -114,7 +114,6 @@ from MDAnalysisTests.util import (
     block_import,
     executable_not_found,
     module_not_found,
-    parser_not_found,
     in_dir,
     assert_nowarns,
 )

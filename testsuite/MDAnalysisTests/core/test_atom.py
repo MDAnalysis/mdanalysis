@@ -41,15 +41,12 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     XYZ_mini,
 )
-from MDAnalysisTests import parser_not_found
 
 
 class TestAtom(TestCase):
     # Legacy tests from before 363
     """Tests of Atom."""
 
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = mda.Universe(PSF, DCD)
