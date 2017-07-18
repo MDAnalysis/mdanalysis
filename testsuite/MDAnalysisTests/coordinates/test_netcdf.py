@@ -30,7 +30,6 @@ from six.moves import zip
 from scipy.io import netcdf
 
 import pytest
-from nose.plugins.attrib import attr
 from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_array_equal,
                            assert_almost_equal, assert_raises, dec)
@@ -286,7 +285,6 @@ class _NCDFWriterTest(TestCase):
                                               err_msg="Variable {0} not written "
                                     "correctly".format(k))
 
-    @attr('slow')
     def test_TRR2NCDF(self):
         trr = mda.Universe(GRO, TRR)
         with mda.Writer(self.outfile, trr.trajectory.n_atoms,
@@ -318,7 +316,6 @@ class _NCDFWriterTest(TestCase):
                                       err_msg="unitcells are not identical")
         del trr
 
-    @attr('issue')
     def test_write_AtomGroup(self):
         """test to write NCDF from AtomGroup (Issue 116)"""
         p = self.universe.select_atoms("not resname WAT")

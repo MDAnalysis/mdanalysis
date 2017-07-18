@@ -32,7 +32,6 @@ import os
 import shutil
 import warnings
 
-from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
                            assert_almost_equal, assert_raises,
                            assert_array_equal)
@@ -187,7 +186,6 @@ class _GromacsReader(TestCase):
                                   "match for frame 3")
 
     @dec.slow
-    @attr('issue')
     def test_unitcell(self):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
@@ -404,7 +402,6 @@ class _GromacsWriter(TestCase):
         del self.tmpdir
 
     @dec.slow
-    @attr('issue')
     def test_write_trajectory(self):
         """Test writing Gromacs trajectories (Issue 38)"""
         t = self.universe.trajectory
@@ -543,16 +540,13 @@ class _GromacsWriterIssue101(TestCase):
         del self.tmpdir
 
     @dec.slow
-    @attr('issue')
     def test_single_frame_GRO(self):
         self._single_frame(GRO)
 
     @dec.slow
-    @attr('issue')
     def test_single_frame_PDB(self):
         self._single_frame(PDB)
 
-    @attr('issue')
     def test_single_frame_CRD(self):
         self._single_frame(CRD)
 
@@ -603,7 +597,6 @@ class _GromacsWriterIssue117(TestCase):
         del self.universe
         del self.Writer
 
-    @attr('issue')
     def test_write_trajectory(self):
         """Test writing Gromacs trajectories from AMBER NCDF (Issue 117)"""
         self.universe.trajectory
@@ -635,7 +628,6 @@ class TestTRRWriterIssue117(_GromacsWriterIssue117):
     ext = ".trr"
 
 
-@attr('issue')
 def test_triclinic_box():
     """Test coordinates.core.triclinic_box() (Issue 61)"""
     unitcell = np.array([80.017, 55, 100.11, 60.00, 30.50, 90.00])

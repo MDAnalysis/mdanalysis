@@ -24,7 +24,6 @@ import itertools
 import numpy as np
 import pytest
 from six.moves import zip, range
-from nose.plugins.attrib import attr
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
@@ -622,7 +621,6 @@ class BaseTimestepTest(object):
         assert_equal(ts.dimensions, self.newbox)
         assert_allclose(ts._unitcell, self.unitcell)
 
-    @attr('issue')
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""

@@ -20,7 +20,7 @@ examples/output.txt
 .eggs
 # ignore Vagrant virtual machines
 .vagrant
-# ignore nosetest/coverage files
+# ignore coverage files
 .coverage
 .noseids
 # ignore trajectory offset caches

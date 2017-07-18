@@ -38,7 +38,6 @@ from MDAnalysisTests.datafiles import (
     GRO,
     GRO_large,
 )
-from nose.plugins.attrib import attr
 from numpy.testing import (
     assert_,
     assert_almost_equal,
@@ -252,7 +251,6 @@ class TestGROWriter(BaseWriterTest):
         assert_equal(u.atoms.names, expected)
 
     @dec.slow
-    @attr('issue')
     def test_check_coordinate_limits_min(self, ref, tempdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -264,7 +262,6 @@ class TestGROWriter(BaseWriterTest):
         assert_raises(ValueError, u.atoms.write, outfile)
 
     @dec.slow
-    @attr('issue')
     def test_check_coordinate_limits_max(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -394,7 +391,6 @@ class TestGROLargeWriter(BaseWriterTest):
         return GROLargeReference()
 
     @dec.slow
-    @attr('issue')
     def test_writer_large(self, ref, tempdir):
         """
         Test that atom numbers are truncated for large
@@ -414,7 +410,6 @@ class TestGROLargeWriter(BaseWriterTest):
                                      "coords does not truncate properly.")
 
     @dec.slow
-    @attr('issue')
     def test_writer_large_residue_count(self, ref, tempdir):
         """
         Ensure large residue number truncation for

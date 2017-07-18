@@ -30,15 +30,11 @@ import warnings
 import numpy as np
 
 from numpy.testing import (
-    dec,
     assert_,
     assert_array_equal,
     assert_array_almost_equal,
-    assert_raises,
 )
-from nose.tools import raises
 import pytest
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import parser_not_found, make_Universe
 
@@ -108,7 +104,8 @@ class TestAtomAttr(TopologyAttrMixin):
         u = make_Universe(('names',))
         at = u.atoms[0]
 
-        assert_raises(ValueError, setattr, at, 'name', ['oopsy', 'daisies'])
+        with pytest.raises(ValueError):
+            setattr(at, 'name', ['oopsy', 'daisies'])
 
     def test_get_atoms(self):
         result = self.attr.get_atoms(DummyGroup([2, 1]))
@@ -132,7 +129,8 @@ class TestAtomAttr(TopologyAttrMixin):
     def test_set_atoms_VE(self):
         # set len 2 Group to wrong length values
         dg = DummyGroup([3, 7])
-        assert_raises(ValueError, self.attr.set_atoms, dg, np.array([6, 7, 8, 9]))
+        with pytest.raises(ValueError):
+            self.attr.set_atoms(dg, np.array([6, 7, 8, 9]))
 
     def test_get_residues(self):
         """Unless overriden by child class, this should yield values for all
@@ -173,17 +171,17 @@ class TestIndicesClasses(TestCase):
     def tearDown(self):
         del self.u
 
-    @raises(AttributeError)
     def test_cant_set_atom_indices(self):
-        self.u.atoms.indices = 1
+        with pytest.raises(AttributeError):
+            self.u.atoms.indices = 1
 
-    @raises(AttributeError)
     def test_cant_set_residue_indices(self):
-        self.u.atoms.residues.resindices = 1
+        with pytest.raises(AttributeError):
+            self.u.atoms.residues.resindices = 1
 
-    @raises(AttributeError)
     def test_cant_set_segment_indices(self):
-        self.u.atoms.segments.segindices = 1
+        with pytest.raises(AttributeError):
+            self.u.atoms.segments.segindices = 1
 
 
 class TestAtomnames(TestAtomAttr):
@@ -241,8 +239,8 @@ class TestResidueAttr(TopologyAttrMixin):
     def test_set_residue_VE(self):
         u = make_Universe(('resnames',))
         res = u.residues[0]
-
-        assert_raises(ValueError, setattr, res, 'resname', ['wrong', 'length'])
+        with pytest.raises(ValueError):
+            setattr(res, 'resname', ['wrong', 'length'])
 
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([7, 3, 9])),
@@ -268,7 +266,8 @@ class TestResidueAttr(TopologyAttrMixin):
     def test_set_residues_VE(self):
         dg = DummyGroup([3, 0, 1])
 
-        assert_raises(ValueError, self.attr.set_residues, dg, np.array([4.5, 5.2]))
+        with pytest.raises(ValueError):
+            self.attr.set_residues(dg, np.array([4.5, 5.2]))
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
@@ -286,7 +285,7 @@ class TestResids(TestResidueAttr):
     values = np.array([10, 11, 18, 20])
     attrclass = tpattrs.Resids
 
-    @knownfailure
+    @pytest.mark.xfail
     def test_set_atoms(self):
         """Setting the resids of atoms changes their residue membership.
 
@@ -299,7 +298,8 @@ class TestResids(TestResidueAttr):
         assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])), np.array([11, 20]))
 
         # set to resid that no residue has (should raise exception)
-        assert_raises(NoDataError, self.attr.set_atoms, DummyGroup([3, 7]), np.array([11, 21]))
+        with pytest.raises(NoDataError):
+            self.attr.set_atoms(DummyGroup([3, 7]), np.array([11, 21]))
 
     def test_set_residues(self):
         self.attr.set_residues(DummyGroup([3, 0, 1]),
@@ -334,8 +334,9 @@ class TestResnames(TestResidueAttr):
 
     def test_residuegroup_getattr_AE(self):
         u = make_Universe(('resnames',))
+        with pytest.raises(AttributeError):
+            getattr(u.residues, 'foo')
 
-        assert_raises(AttributeError, getattr, u.residues, 'foo')
 
     def test_segment_getattr_singular(self):
         u = make_Universe(('resnames',))
@@ -356,8 +357,8 @@ class TestResnames(TestResidueAttr):
 
     def test_segment_getattr_AE(self):
         u = make_Universe(('resnames',))
-
-        assert_raises(AttributeError, getattr, u.segments[0], 'foo')
+        with pytest.raises(AttributeError):
+            getattr(u.segments[0], 'foo')
 
 
 class TestSegmentAttr(TopologyAttrMixin):
@@ -373,8 +374,8 @@ class TestSegmentAttr(TopologyAttrMixin):
     def test_set_segment_VE(self):
         u = make_Universe(('segids',))
         seg = u.segments[0]
-
-        assert_raises(ValueError, setattr, seg, 'segid', [1, 2, 3])
+        with pytest.raises(ValueError):
+            setattr(seg, 'segid', [1, 2, 3])
 
     def test_get_atoms(self):
         assert_array_equal(self.attr.get_atoms(DummyGroup([2, 4, 1])),
@@ -404,7 +405,8 @@ class TestSegmentAttr(TopologyAttrMixin):
 
     def test_set_segments_VE(self):
         dg = DummyGroup([0, 1])
-        assert_raises(ValueError, self.attr.set_segments, dg, np.array([4, 5, 6, 7]))
+        with pytest.raises(ValueError):
+            self.attr.set_segments(dg, np.array([4, 5, 6, 7]))
 
 
 class TestAttr(TestCase):
@@ -456,7 +458,8 @@ class TestCrossLevelAttributeSetting(object):
     """
     @staticmethod
     def _check_crosslevel_fail(item, attr):
-        assert_raises(NotImplementedError, setattr, item, attr, 1.0)
+        with pytest.raises(NotImplementedError):
+            setattr(item, attr, 1.0)
 
     def test_set_crosslevel(self):
         u = make_Universe(('names', 'resids', 'segids'))
@@ -535,4 +538,3 @@ class TestInstantSelectorDeprecation(object):
             exec(instruction)  #pylint: disable=W0122
         for warning in record:
             assert not 'Instant selector' in str(warning.message)
-            

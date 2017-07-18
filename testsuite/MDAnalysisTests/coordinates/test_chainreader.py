@@ -25,7 +25,6 @@ import numpy as np
 import os
 from six.moves import zip
 
-from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal,
                            assert_almost_equal, dec)
 from unittest import TestCase
@@ -156,14 +155,12 @@ class TestChainReaderFormats(TestCase):
     """Test of ChainReader with explicit formats (Issue 76)."""
 
     @staticmethod
-    @attr('issue')
     def test_set_all_format_tuples():
         universe = mda.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
                                       (TRR, 'trr')])
         assert_equal(universe.trajectory.n_frames, 21)
 
     @staticmethod
-    @attr('issue')
     @dec.skipif(parser_not_found('DCD'),
                 'DCD parset not available. Are you using python 3?')
     def test_set_one_format_tuple():
@@ -171,7 +168,6 @@ class TestChainReaderFormats(TestCase):
         assert_equal(universe.trajectory.n_frames, 99)
 
     @staticmethod
-    @attr('issue')
     def test_set_all_formats():
         universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
         assert_equal(universe.trajectory.n_frames, 2)

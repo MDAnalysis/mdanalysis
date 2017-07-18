@@ -37,31 +37,8 @@ installed for the tests to run at all.
 
 Run all the tests with
 
-   >>> import MDAnalysisTests.tests
-   >>> MDAnalysisTests.tests.test(label='full')
-
-Some tests can take a few seconds; in order to skip the slow tests run
-
-   >>> MDAnalysisTests.tests.test(label='fast')
-
-Additional information is displayed at a higher verbosity level (the default is
-1):
-
-   >>> MDAnalysisTests.tests.test(label='fast', verbose=3)
-
-Note that if no tests are being run then one might have to run the
-tests with the ``--exe`` flag
-
-   >>> MDAnalysisTests.tests.test(label='fast', extra_argv=['--exe'])
-
-(This happens when python files are installed with the executable bit set. By
-default the nose_ testing framework refuses to use those files and must be
-encouraged to do so with the ``--exe`` switch.)
-
-See `nose commandline options`_ for additional options that can be used; for
-instance, code coverage can also be checked:
-
-  >>> MDAnalysisTests.tests.test(label='full', extra_argv=['--exe', '--with-coverage'])
+   >>> from MDAnalysisTests import run
+   >>> run()
 
 
 Data
@@ -90,22 +67,13 @@ The simulation data used in some tests are from [Beckstein2009]_ (``adk.psf``,
 Writing test cases
 ==================
 
-The unittests use the :mod:`unittest` module together with nose_. See the
+The unittests use the :mod:`pytest <https://docs.pytest.org/en/latest/>`_ module. See the
 examples in the ``MDAnalysisTests`` directory.
 
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
-A number of plugins external to nose are automatically loaded. The `knownfailure`
-plugin provides the `@knownfailure()` decorator, which can be used to mark tests
-that are expected to fail. If used with default arguments the parentheses can be
-excluded.
-
 .. _NumPy: http://www.numpy.org/
-.. _nose:
-   http://nose.readthedocs.org/en/latest/
-.. _nose commandline options:
-  http://nose.readthedocs.org/en/latest/man.html?highlight=command%20line
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
@@ -114,6 +82,9 @@ excluded.
 """
 from __future__ import absolute_import
 import logging
+
+import pytest
+
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 __version__ = "0.17.0-dev"  # keep in sync with RELEASE in setup.py
@@ -130,9 +101,6 @@ except ImportError:
 
 import os
 import sys
-
-# We get our nose from the plugins so that version-checking needs only be done there.
-from MDAnalysisTests.plugins import nose, loaded_plugins
 
 # Any tests that plot with matplotlib need to run with the simple agg backend because
 # on Travis there is no DISPLAY set
@@ -152,26 +120,6 @@ from MDAnalysisTests.util import (
 )
 from MDAnalysisTests.core.util import make_Universe
 
+
 def run(*args, **kwargs):
-    """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
-    try:
-        kwargs['argv'] = sys.argv + kwargs['argv'] #sys.argv takes precedence
-    except KeyError:
-        kwargs['argv'] = sys.argv
-    # We emulate numpy's treament of the 'fast' label.
-    if 'label' in kwargs:
-        label = kwargs.pop('label')
-        if label == 'fast':
-            kwargs['argv'].extend(['-A','not slow'])
-    # We keep accepting numpy's 'extra_argv'
-    if 'extra_argv' in kwargs:
-        kwargs['argv'].extend(kwargs.pop('extra_argv'))
-    try:
-        kwargs['addplugins'].extend(loaded_plugins.values())
-    except KeyError:
-        kwargs['addplugins'] = loaded_plugins.values()
-    # By default, test our testsuite
-    kwargs['defaultTest'] = os.path.dirname(__file__)
-    return nose.run_exit(*args, **kwargs)
-
-
+    pytest.main()

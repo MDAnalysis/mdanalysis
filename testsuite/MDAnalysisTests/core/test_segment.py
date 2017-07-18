@@ -28,7 +28,6 @@ from numpy.testing import (
     assert_,
     assert_equal,
 )
-from nose.plugins.attrib import attr
 import pytest
 
 import MDAnalysis as mda
@@ -65,7 +64,6 @@ class TestSegment(TestCase):
         assert_equal(self.universe.segments[0].atoms.indices,
                      sorted(self.universe.segments[0].atoms.indices))
 
-@attr("issue")
 @pytest.mark.skipif(parser_not_found('DCD'),
             reason='DCD parser not available. Are you using python 3?')
 def test_generated_residueselection():

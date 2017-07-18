@@ -63,8 +63,7 @@ class TPRBase(TPRAttrs):
     expected_n_segments = 2
 
 
-# All these classes should be generated in a loop. Yet, nose test generation
-# seems to work only with functions, and not with classes.
+# All these classes should be generated in a loop.
 class TestTPR400(TPRBase):
 
     __test__ = True

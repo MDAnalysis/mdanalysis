@@ -40,7 +40,6 @@ from numpy.testing import (
     assert_array_almost_equal,
     raises
 )
-from nose.plugins.attrib import attr
 
 import MDAnalysis as mda
 from MDAnalysis.lib import transformations
@@ -1280,7 +1279,6 @@ class TestAtomGroup(TestCase):
         for a, b in zip(ag, names):
             assert_equal(a.name, b)
 
-    @attr("issue")
     def test_nonexistent_instantselector_raises_AttributeError(self):
         def access_nonexistent_instantselector():
             self.universe.atoms.NO_SUCH_ATOM
