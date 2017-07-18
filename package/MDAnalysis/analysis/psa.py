@@ -739,13 +739,13 @@ def dist_mat_to_vec(N, i, j):
                 + " N = {0:d}".format(N)
         raise ValueError(err_str)
     if j > i:
-        return int( (N*i) + j - (i+2)*(i+1)/2 )
+        return (N*i) + j - (i+2)*(i+1)//2  # old-style division for int output
     elif j < i:
         warn_str = "Column index entered (j = {:d} is smaller than row index"   \
                  + " (i = {:d}). Using symmetric element in upper triangle of"  \
                  + " distance matrix instead: i --> j, j --> i"
         warnings.warn(warn_str.format(j, i))
-        return int( (N*j) + i - (j+2)*(j+1)/2 )
+        return (N*j) + i - (j+2)*(j+1)//2  # old-style division for int output
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\
                 + " less than integer N = {0:d} such that j >= i+1.".format(N)
