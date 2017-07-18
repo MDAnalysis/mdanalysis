@@ -74,7 +74,7 @@ class TestIsstream(TestCase):
 
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = StringIO(f)
+            obj = StringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
 
