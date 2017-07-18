@@ -21,15 +21,12 @@
 #
 from __future__ import absolute_import
 
-from six.moves import range
-import pytest
-import numpy as np
-from numpy.testing import assert_almost_equal
-
-
 import MDAnalysis as mda
-
+import numpy as np
+import pytest
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
+from numpy.testing import assert_almost_equal, assert_equal
+from six.moves import range
 
 
 def test_get_bad_auxreader_format_raises_ValueError():
@@ -235,7 +232,7 @@ class BaseAuxReaderTest(object):
                                       data_selector=ref.data_selector)
         # data should match reference data for each step
         for i, val in enumerate(reader):
-            assert val.data == ref.select_data_ref[i], "data for step {0} does not match".format(i)
+            assert_equal(val.data, ref.select_data_ref[i], "data for step {0} does not match".format(i))
 
     def test_no_constant_dt(self, ref):
         ## assume we can select time...
@@ -325,8 +322,8 @@ class BaseAuxReaderTest(object):
         # trajectory here has same dt, offset; so there's a direct correspondence
         # between frames and steps
         for i, ts in enumerate(u.trajectory):
-            assert ts.aux.test == ref.auxsteps[i].data, "representative value does not match when iterating through "\
-                     "all trajectory timesteps"
+            assert_equal(ts.aux.test, ref.auxsteps[i].data,
+                         "representative value does not match when iterating through all trajectory timesteps")
         u.trajectory.close()
 
     def test_iterate_as_auxiliary_from_trajectory(self, ref):
@@ -337,8 +334,8 @@ class BaseAuxReaderTest(object):
         # trahectory here has same dt, offset, so there's a direct correspondence
         # between frames and steps, and iter_as_aux will run through all frames
         for i, ts in enumerate(u.trajectory.iter_as_aux('test')):
-            assert ts.aux.test == ref.auxsteps[i].data, "representative value does not match when iterating through "\
-                     "all trajectory timesteps"
+            assert_equal(ts.aux.test, ref.auxsteps[i].data,
+                         "representative value does not match when iterating through all trajectory timesteps")
         u.trajectory.close()
 
     def test_get_description(self, ref, reader):
