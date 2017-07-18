@@ -94,7 +94,8 @@ def test_custom_ProgressMeter(buffer, n=51, interval=7):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
                                               format=template, offset=1)
         for frame in range(n):
-            rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
+            # n+1/n correction for 0-based frame vs 1-based counting
+            rmsd = 0.02 * frame * (n+1)/ n
             pm.echo(frame, rmsd=rmsd)
     buffer.seek(0)
     output = "".join(buffer.readlines())
@@ -114,7 +115,8 @@ def test_legacy_ProgressMeter(buffer, n=51, interval=7):
         pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
                                               format=template, offset=1)
         for frame in range(n):
-            rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
+            # n+1/n correction for 0-based frame vs 1-based counting
+            rmsd = 0.02 * frame * (n+1)/ n
             pm.echo(frame, rmsd=rmsd)
     buffer.seek(0)
     output = "".join(buffer.readlines())
