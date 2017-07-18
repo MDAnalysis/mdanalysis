@@ -721,8 +721,8 @@ def dist_mat_to_vec(N, i, j):
 
     """
 
-    if not (isinstance(N, numbers.Integral) or isinstance(i, numbers.Integral)
-            or isinstance(j, numbers.Integral)):
+    if not (isinstance(N, numbers.Integral) and isinstance(i, numbers.Integral)
+            and isinstance(j, numbers.Integral)):
         err_str = "N, i, j all must be of type int"
         raise ValueError(err_str)
 
