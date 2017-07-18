@@ -739,13 +739,13 @@ def dist_mat_to_vec(N, i, j):
                 + " N = {0:d}".format(N)
         raise ValueError(err_str)
     if j > i:
-        return (N*i) + j - (i+2)*(i+1)/2
+        return int( (N*i) + j - (i+2)*(i+1)/2 )
     elif j < i:
         warn_str = "Column index entered (j = {:d} is smaller than row index"   \
                  + " (i = {:d}). Using symmetric element in upper triangle of"  \
                  + " distance matrix instead: i --> j, j --> i"
         warnings.warn(warn_str.format(j, i))
-        return (N*j) + i - (j+2)*(j+1)/2
+        return int( (N*j) + i - (j+2)*(j+1)/2 )
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\
                 + " less than integer N = {0:d} such that j >= i+1.".format(N)
@@ -1520,8 +1520,11 @@ class PSAnalysis(object):
                 D[j,i] = D[i,j]
         self.D = D
         if store:
-            filename = kwargs.pop('filename', str(metric))
-            self.save_result(filename=filename)
+            filename = kwargs.pop('filename', metric)
+            if type(metric) is str:
+                self.save_result(filename=filename)
+            else:
+                filename = kwargs.pop('filename', 'custom_metric')
 
 
     def run_pairs_analysis(self, **kwargs):
@@ -1559,6 +1562,7 @@ class PSAnalysis(object):
         hausdorff_pairs = kwargs.pop('hausdorff_pairs', False)
 
         numpaths = self.npaths
+        D = np.zeros((numpaths,numpaths))
         self._NN = [] # list of nearest neighbors pairs
         self._HP = [] # list of Hausdorff pairs
         self._psa_pairs = [] # list of PSAPairs
@@ -1570,11 +1574,14 @@ class PSAnalysis(object):
                 Q = self.paths[j][start:stop:step]
                 pp.compute_nearest_neighbors(P, Q, self.natoms)
                 pp.find_hausdorff_pair()
+                D[i,j] = pp.hausdorff_pair['distance']
+                D[j,i] = D[i,j]
                 self._psa_pairs.append(pp)
                 if neighbors:
                     self._NN.append(pp.get_nearest_neighbors())
                 if hausdorff_pairs:
                     self._HP.append(pp.get_hausdorff_pair())
+        self.D = D
 
 
     def save_result(self, filename=None):
