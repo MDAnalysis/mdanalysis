@@ -306,13 +306,21 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     ------
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
     """
-    base_argspec = inspect.getargspec(AnalysisBase.__init__)
+    try:
+        base_argspec = inspect.getfullargspec(AnalysisBase.__init__)
+    except AttributeError:
+        base_argspec = inspect.getargspec(AnalysisBase.__init__)
+
     n_base_defaults = len(base_argspec.defaults)
     base_kwargs = {name: val
                    for name, val in zip(base_argspec.args[-n_base_defaults:],
                                         base_argspec.defaults)}
 
-    argspec = inspect.getargspec(function)
+    try:
+        argspec = inspect.getfullargspec(function)
+    except AttributeError:
+        argspec = inspect.getargspec(function)
+
     for base_kw in six.iterkeys(base_kwargs):
         if base_kw in argspec.args:
             raise ValueError(
