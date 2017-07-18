@@ -44,7 +44,6 @@ from MDAnalysis.core.topologyobjects import (
 
 
 from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
-from MDAnalysisTests import parser_not_found
 
 
 class TestTopologyObjects(TestCase):
@@ -58,8 +57,6 @@ class TestTopologyObjects(TestCase):
     len
     """
 
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
         self.u = mda.Universe(PSF, DCD)
@@ -563,8 +560,6 @@ class TestTopologyGroup_Cython(TestCase):
      - work (return proper values)
      - catch errors
     """
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
         # topologygroups for testing

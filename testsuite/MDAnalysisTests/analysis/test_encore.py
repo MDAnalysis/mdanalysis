@@ -35,7 +35,7 @@ from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
                            assert_warns)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
-from MDAnalysisTests import parser_not_found, module_not_found, block_import
+from MDAnalysisTests import module_not_found, block_import
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
@@ -43,9 +43,6 @@ import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 
 class TestEncore(TestCase):
-
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
@@ -63,8 +60,6 @@ class TestEncore(TestCase):
         del self.ens2
 
     @classmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUpClass(cls):
         # To speed up tests, we read in trajectories from file only once,
         # and then recreate them from their coordinate array for each test
@@ -409,8 +404,6 @@ inconsistent results")
 
 
 class TestEncoreClustering(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
@@ -428,8 +421,6 @@ class TestEncoreClustering(TestCase):
         del self.ens2
 
     @classmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUpClass(cls):
         # To speed up tests, we read in trajectories from file only once,
         # and then recreate them from their coordinate array for each test
@@ -682,8 +673,6 @@ class TestEncoreClusteringSklearn(TestCase):
 
 
 class TestEncoreDimensionalityReduction(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         # Create universe from templates defined in setUpClass
         self.ens1 = mda.Universe(
@@ -701,8 +690,6 @@ class TestEncoreDimensionalityReduction(TestCase):
         del self.ens2
 
     @classmethod
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUpClass(cls):
         # To speed up tests, we read in trajectories from file only once,
         # and then recreate them from their coordinate array for each test

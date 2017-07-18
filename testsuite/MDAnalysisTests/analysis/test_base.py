@@ -33,7 +33,6 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import parser_not_found
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -62,8 +61,6 @@ class OldAPIAnalysis(base.AnalysisBase):
 
 
 class TestAnalysisBase(TestCase):
-    @dec.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         # has 98 frames
         self.u = mda.Universe(PSF, DCD)
@@ -138,8 +135,6 @@ def simple_function(mobile):
     return mobile.center_of_geometry()
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_AnalysisFromFunction():
     u = mda.Universe(PSF, DCD)
     step = 2
@@ -159,8 +154,6 @@ def test_AnalysisFromFunction():
         assert_array_equal(results, ana.results)
 
 
-@dec.skipif(parser_not_found('DCD'),
-            'DCD parser not available. Are you using python 3?')
 def test_analysis_class():
     ana_class = base.analysis_class(simple_function)
     assert_(issubclass(ana_class, base.AnalysisBase))

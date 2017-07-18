@@ -30,7 +30,6 @@ from numpy.testing import (TestCase, dec, raises, assert_,
 
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
-from MDAnalysisTests import parser_not_found
 
 
 @pytest.fixture()
@@ -97,8 +96,6 @@ def DCD_Universe():
 
     return universe, trajectory
 
-@pytest.mark.skipif(parser_not_found('DCD'),
-                    reason='DCD parser not available. Are you using python 3?')
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArrayDCD(object):
     # reasonable precision so that tests succeed on 32 and 64 bit machines
@@ -154,8 +151,6 @@ class TestDistanceArrayDCD(object):
 
 
 
-@pytest.mark.skipif(parser_not_found('DCD'),
-                    reason='DCD parser not available. Are you using python 3?')
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestSelfDistanceArrayDCD(object):
     prec = 5
@@ -577,8 +572,6 @@ class TestCythonFunctions(object):
 class Test_apply_PBC(object):
     prec = 6
 
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                        reason='DCD parser not available. Are you using python 3?')
     def test_ortho_PBC(self, backend):
         from MDAnalysis.lib.distances import apply_PBC
 

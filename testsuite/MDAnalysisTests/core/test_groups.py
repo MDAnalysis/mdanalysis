@@ -39,7 +39,7 @@ import operator
 import six
 
 import MDAnalysis as mda
-from MDAnalysisTests import make_Universe, parser_not_found, assert_nowarns
+from MDAnalysisTests import make_Universe, assert_nowarns
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 from MDAnalysis.core.topology import Topology
@@ -582,8 +582,6 @@ class TestGroupBy(TestCase):
 
 
 class TestReprs(TestCase):
-    @pytest.mark.skipif(parser_not_found('DCD'),
-                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = mda.Universe(PSF, DCD)
 

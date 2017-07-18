@@ -702,11 +702,13 @@ from . import base
 from .core import reader, writer
 from . import chain
 from . import CRD
+from . import DCD
 from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
 from . import INPCRD
+from . import LAMMPS
 from . import MOL2
 from . import PDB
 from . import PDBQT
@@ -719,13 +721,3 @@ from . import XYZ
 from . import memory
 from . import MMTF
 from . import null
-
-
-try:
-    from . import DCD
-    from . import LAMMPS
-except ImportError as e:
-    # The import is expected to fail under Python 3.
-    # It should not fail on Python 2, however.
-    if six.PY2:
-        raise e

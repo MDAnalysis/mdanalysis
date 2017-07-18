@@ -30,7 +30,6 @@ import numpy as np
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests import parser_not_found
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysis.tests.datafiles import (
     LAMMPSdata,
@@ -191,8 +190,6 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
         assert_equal(u.atoms.ids,
                      [1, 10, 1002, 2003, 2004, 2005, 2006, 2007, 2008, 2009])
 
-    @pytest.mark.skipif(parser_not_found('LAMMPS'),
-                        reason='LAMMPS parser not available. Are you using python 3?')
     def test_traj(self):
         u = mda.Universe(self.filename)
 

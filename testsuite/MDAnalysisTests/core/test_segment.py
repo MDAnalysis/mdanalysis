@@ -32,7 +32,7 @@ import pytest
 
 import MDAnalysis as mda
 
-from MDAnalysisTests import parser_not_found, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysis.tests.datafiles import PSF, DCD
 
 
@@ -64,8 +64,6 @@ class TestSegment(TestCase):
         assert_equal(self.universe.segments[0].atoms.indices,
                      sorted(self.universe.segments[0].atoms.indices))
 
-@pytest.mark.skipif(parser_not_found('DCD'),
-            reason='DCD parser not available. Are you using python 3?')
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)
     unless there is a single residue (Issue 363 change)"""
