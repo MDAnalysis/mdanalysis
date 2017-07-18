@@ -161,14 +161,14 @@ class GMSReader(base.ReaderBase):
 
     def _read_out_n_frames(self):
         if self.runtyp == 'optimize':
-            trigger = re.compile(r'^.NSERCH=.*')
+            trigger = re.compile(b'^.NSERCH=.*')
         elif self.runtyp == 'surface':
-            trigger = re.compile(r'^.COORD 1=.*')
+            trigger = re.compile(b'^.COORD 1=.*')
 
         self._offsets = offsets = []
-        with util.openany(self.filename) as out:
+        with util.openany(self.filename, 'rb') as out:
             line = True
-            while not line == '':  # while not EOF
+            while not line == b'':  # while not EOF
                 line = out.readline()
                 if re.match(trigger, line):
                     offsets.append(out.tell() - len(line))
