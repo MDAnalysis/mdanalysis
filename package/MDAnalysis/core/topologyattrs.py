@@ -474,8 +474,10 @@ class Atomnames(AtomAttr):
         # the additions later
         sel_str = "segid {} and resid {} and name C".format(
             residue.segment.segid, residue.resid - 1)
-        sel = residue.universe.select_atoms(sel_str) + \
-            residue['N'] + residue['CA'] + residue['C']
+        sel = (residue.universe.select_atoms(sel_str) +
+               residue.atoms.select_atoms('name N') +
+               residue.atoms.select_atoms('name CA') +
+               residue.atoms.select_atoms('name C'))
 
         # select_atoms doesnt raise errors if nothing found, so check size
         if len(sel) == 4:
@@ -498,8 +500,10 @@ class Atomnames(AtomAttr):
         sel_str = "segid {} and resid {} and name N".format(
             residue.segment.segid, residue.resid + 1)
 
-        sel = residue['N'] + residue['CA'] + residue['C'] + \
-            residue.universe.select_atoms(sel_str)
+        sel = (residue.atoms.select_atoms('name N') +
+               residue.atoms.select_atoms('name CA') +
+               residue.atoms.select_atoms('name C') +
+               residue.universe.select_atoms(sel_str))
 
         if len(sel) == 4:
             return sel
@@ -525,10 +529,11 @@ class Atomnames(AtomAttr):
         """
         nextres = residue.resid + 1
         segid = residue.segment.segid
-        sel = residue['CA'] + residue['C'] + \
-              residue.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (segid, nextres),
-                  'segid %s and resid %d and name CA' % (segid, nextres))
+        sel = (residue.atoms.select_atoms('name CA') +
+               residue.atoms.select_atoms('name C') +
+               residue.universe.select_atoms(
+                   'segid %s and resid %d and name N' % (segid, nextres),
+                   'segid %s and resid %d and name CA' % (segid, nextres)))
         if len(sel) == 4:
             return sel
         else:
@@ -547,9 +552,13 @@ class Atomnames(AtomAttr):
 
         .. versionadded:: 0.7.5
         """
-        try:
-            return residue['N'] + residue['CA'] + residue['CB'] + residue['CG']
-        except AttributeError:
+        ag = (residue.atoms.select_atoms('name N') +
+              residue.atoms.select_atoms('name CA') +
+              residue.atoms.select_atoms('name CB') +
+              residue.atoms.select_atoms('name CG'))
+        if len(ag) == 4:
+            return ag
+        else:
             return None
 
     transplants[Residue].append(('chi1_selection', chi1_selection))
