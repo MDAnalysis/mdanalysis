@@ -6,10 +6,6 @@ branches:
     - master
     - develop
 
-os:
-  - linux
-
-env:
   global:
     - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
     - GH_DOC_BRANCH=develop
@@ -20,7 +16,6 @@ env:
     - MDA_OPTPACKAGES=opt/packages
     # Set default python version to avoid repetition later
     - BUILD_DOCS=false
-    - PYTHON_VERSION=2.7
     - COVERALLS=false
     - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats testsuite/MDAnalysisTests/coordinates testsuite/MDAnalysisTests/utils testsuite/MDAnalysisTests/topology testsuite/MDAnalysisTests/auxiliary testsuite/MDAnalysisTests/core testsuite/MDAnalysisTests/analysis"
@@ -41,14 +36,16 @@ env:
 
 matrix:
   fast_finish: true
+
   include:
     - os : linux
       env: NAME='minimal'
-           MEMLEAK='--with-memleak'
+           PYTHON_VERSION=3.6
            MAIN_CMD='pytest ${PYTEST_LIST} ${PYTEST_FLAGS}'
 
     - os: linux
       env: NAME="Doc"
+           PYTHON_VERSION=3.6
            MAIN_CMD="cd package && python setup.py"
            SETUP_CMD="build_sphinx"
            BUILD_DOCS=true
@@ -57,6 +54,7 @@ matrix:
 
     - os: linux
       env: NAME="Lint"
+           PYTHON_VERSION=3.6
            MAIN_CMD="pylint --rcfile=package/.pylintrc package/MDAnalysis && pylint --rcfile=package/.pylintrc testsuite/MDAnalysisTests"
            SETUP_CMD=''
            BUILD_CMD=""
@@ -65,23 +63,22 @@ matrix:
 
     - os: linux
       env: NAME='full'
+           PYTHON_VERSION=3.6
            NOSE_COVERAGE='--with-coverage --cover-package MDAnalysis'
            PYTEST_COVERAGE='--cov=MDAnalysis'
            SETUP_CMD="${PYTEST_FLAGS} ${PYTEST_COVERAGE}"
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            COVERALLS='true'
 
-    - os: osx
-      env: NAME='osx'
-           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
-
     - os: linux
       env: NAME='old numpy'
+           PYTHON_VERSION=3.6
            NUMPY_VERSION=1.10.4
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
     - os: linux
       env: NAME='numpy dev'
+           PYTHON_VERSION=3.6
            NUMPY_VERSION=dev
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
            EVENT_TYPE='cron'
@@ -97,7 +94,17 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
     - os: linux
-      env: NAME='full-py3.6'
+      env: NAME='full-py2.7'
+           PYTHON_VERSION=2.7
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+
+    - os: osx
+      env: NAME='osx-py2.7'
+           PYTHON_VERSION=2.7
+           CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
+
+    - os: osx
+      env: NAME='osx-py3.6'
            PYTHON_VERSION=3.6
            CONDA_DEPENDENCIES=${CONDA_ALL_DEPENDENCIES}
 
