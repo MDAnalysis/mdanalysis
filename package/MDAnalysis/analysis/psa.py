@@ -1541,6 +1541,8 @@ class PSAnalysis(object):
         of Hausdorff pairs analysis that is available for each pair of path,
         including nearest neighbors lists and the Hausdorff pairs.
 
+        The pairwise distances are stored as the array :attr:`PSAnalysis.D`.
+
         Parameters
         ----------
         start : int
