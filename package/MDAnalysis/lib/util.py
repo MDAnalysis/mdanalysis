@@ -188,6 +188,13 @@ except NameError:
     def callable(obj):
         return isinstance(obj, collections.Callable)
 
+try:
+    from os import PathLike
+except ImportError:
+   class PathLike(object):
+       pass
+
+
 
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -529,7 +536,7 @@ def which(program):
 
 
 @functools.total_ordering
-class NamedStream(io.IOBase):
+class NamedStream(io.IOBase, PathLike):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream `stream` in this class, it can be passed to
@@ -660,6 +667,9 @@ class NamedStream(io.IOBase):
         #except AttributeError:
         #    super(NamedStream, self).__exit__(*args)
         self.close()
+
+    def __fspath__(self):
+        return self.name
 
     # override more IOBase methods, as these are provided by IOBase and are not
     # caught with __getattr__ (ugly...)
