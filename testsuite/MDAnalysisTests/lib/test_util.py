@@ -239,7 +239,8 @@ class TestMakeWhole(object):
     @pytest.fixture()
     def universe(self):
         universe = mda.Universe(Make_Whole)
-        self._load_bonds(universe)
+        bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
+        universe.add_TopologyAttr(Bonds(bondlist))
         return universe
 
     @staticmethod
@@ -274,11 +275,6 @@ class TestMakeWhole(object):
         universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
-
-    def _load_bonds(self, universe):
-        # Load some bonds into Universe, not required for all tests
-        bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
-        universe.add_TopologyAttr(Bonds(bondlist))
 
     def test_wrong_reference_atom(self, universe, ag):
         # Reference atom not in atomgroup
