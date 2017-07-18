@@ -188,6 +188,13 @@ except NameError:
     def callable(obj):
         return isinstance(obj, collections.Callable)
 
+try:
+    from os import PathLike
+except ImportError:
+   class PathLike(object):
+       pass
+
+
 
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -529,7 +536,7 @@ def which(program):
 
 
 @functools.total_ordering
-class NamedStream(io.IOBase):
+class NamedStream(io.IOBase, PathLike):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream `stream` in this class, it can be passed to
