@@ -21,20 +21,18 @@
 #
 from __future__ import absolute_import
 
-from six.moves import range
-import pytest
-import numpy as np
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           raises)
-
 import MDAnalysis as mda
-
+import numpy as np
+import pytest
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
+from numpy.testing import assert_almost_equal, assert_equal
+from six.moves import range
 
-@raises(ValueError)
+
 def test_get_bad_auxreader_format_raises_ValueError():
     # should raise a ValueError when no AuxReaders with match the specified format
-    mda.auxiliary.core.get_auxreader_for(format='bad-format')
+    with pytest.raises(ValueError):
+        mda.auxiliary.core.get_auxreader_for(format='bad-format')
 
 
 class BaseAuxReference(object):
@@ -132,16 +130,13 @@ class BaseAuxReference(object):
 class BaseAuxReaderTest(object):
 
     def test_n_steps(self, ref, reader):
-        assert_equal(len(reader), ref.n_steps,
-                     "number of steps does not match")
+        assert len(reader) == ref.n_steps, "number of steps does not match"
 
     def test_dt(self, ref, reader):
-        assert_equal(reader.dt, ref.dt,
-                     "dt does not match")
+        assert reader.dt == ref.dt, "dt does not match"
 
     def test_initial_time(self, ref, reader):
-        assert_equal(reader.initial_time, ref.initial_time,
-                     "initial time does not match")
+        assert reader.initial_time == ref.initial_time, "initial time does not match"
 
     def test_first_step(self, ref, reader):
         # on first loading we should start at step 0
@@ -173,7 +168,8 @@ class BaseAuxReaderTest(object):
         # should take us to the last step
         reader[-1]
         # if we try to move to next step from here, should raise StopIteration
-        assert_raises(StopIteration, reader.next)
+        with pytest.raises(StopIteration):
+            reader.next()
 
     def test_move_to_invalid_step_raises_IndexError(self, ref, reader):
         # last step is number n_steps -1 ; if we try move to step number
@@ -228,8 +224,7 @@ class BaseAuxReaderTest(object):
                                       time_selector = ref.time_selector)
         # time should still match reference time for each step
         for i, val in enumerate(reader):
-            assert_equal(val.time, ref.select_time_ref[i],
-                         "time for step {} does not match".format(i))
+            assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
 
     def test_data_selector(self, ref):
         # reload reader, passing in a data selector
@@ -237,8 +232,7 @@ class BaseAuxReaderTest(object):
                                       data_selector=ref.data_selector)
         # data should match reference data for each step
         for i, val in enumerate(reader):
-            assert_equal(val.data, ref.select_data_ref[i],
-                         "data for step {0} does not match".format(i))
+            assert_equal(val.data, ref.select_data_ref[i], "data for step {0} does not match".format(i))
 
     def test_no_constant_dt(self, ref):
         ## assume we can select time...
@@ -248,8 +242,7 @@ class BaseAuxReaderTest(object):
                                       constant_dt=False)
         # time should match reference for selecting time, for each step
         for i, val in enumerate(reader):
-            assert_equal(val.time, ref.select_time_ref[i],
-                         "data for step {} does not match".format(i))
+            assert val.time == ref.select_time_ref[i], "data for step {} does not match".format(i)
 
     def test_update_ts_without_auxname_raises_ValueError(self, ref):
         # reload reader without auxname
@@ -319,7 +312,7 @@ class BaseAuxReaderTest(object):
     def test_get_auxreader_for(self, ref, reader):
         # check guesser gives us right reader
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata)
-        assert_equal(reader, ref.reader)
+        assert reader == ref.reader
 
     def test_iterate_through_trajectory(self, ref):
         # add to trajectory
@@ -330,8 +323,7 @@ class BaseAuxReaderTest(object):
         # between frames and steps
         for i, ts in enumerate(u.trajectory):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                     "representative value does not match when iterating through "
-                     "all trajectory timesteps")
+                         "representative value does not match when iterating through all trajectory timesteps")
         u.trajectory.close()
 
     def test_iterate_as_auxiliary_from_trajectory(self, ref):
@@ -343,21 +335,18 @@ class BaseAuxReaderTest(object):
         # between frames and steps, and iter_as_aux will run through all frames
         for i, ts in enumerate(u.trajectory.iter_as_aux('test')):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                     "representative value does not match when iterating through "
-                     "all trajectory timesteps")
+                         "representative value does not match when iterating through all trajectory timesteps")
         u.trajectory.close()
 
     def test_get_description(self, ref, reader):
         description = reader.get_description()
         for attr in ref.description:
-            assert_equal(description[attr], ref.description[attr],
-                         "'Description' does not match for {}".format(attr))
+            assert description[attr] == ref.description[attr], "'Description' does not match for {}".format(attr)
 
     def test_load_from_description(self, reader):
         description = reader.get_description()
         new = mda.auxiliary.core.auxreader(**description)
-        assert_equal(new, reader,
-                     "AuxReader reloaded from description does not match")
+        assert new == reader, "AuxReader reloaded from description does not match"
 
 
 def assert_auxstep_equal(A, B):
