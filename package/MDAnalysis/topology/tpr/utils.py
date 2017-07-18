@@ -223,7 +223,8 @@ def do_mtop(data, fver):
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        segid = "seg_{0}_{1}".format(i, mtop.moltypes[mb.molb_type].name)
+        molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
+        segid = "seg_{0}_{1}".format(i, molblock)
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
