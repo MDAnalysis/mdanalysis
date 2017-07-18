@@ -163,9 +163,11 @@ def get_writer_for(filename, format=None, multiframe=None):
     elif format is None:
         try:
             root, ext = util.get_ext(filename)
-        except AttributeError:
+        except (TypeError, AttributeError):
             # An AttributeError is raised if filename cannot
             # be manipulated as a string.
+            # A TypeError is raised in py3.6
+            # "TypeError: expected str, bytes or os.PathLike object"
             raise ValueError('File format could not be guessed from "{0}"'
                              .format(filename))
         else:
