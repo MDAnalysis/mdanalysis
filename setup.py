@@ -122,7 +122,7 @@ class Config(object):
 
     """
 
-    def __init__(self, fname='setup.cfg'):
+    def __init__(self, fname='./package/setup.cfg'):
         if os.path.exists(fname):
             self.config = configparser.SafeConfigParser()
             self.config.read(fname)
@@ -296,60 +296,60 @@ def extensions(config):
     include_dirs = [get_numpy_include]
 
     libdcd = MDAExtension('lib.formats.libdcd',
-                          ['MDAnalysis/lib/formats/libdcd' + source_suffix],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
+                          ['package/MDAnalysis/lib/formats/libdcd' + source_suffix],
+                          include_dirs=include_dirs + ['package/MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
     distances = MDAExtension('lib.c_distances',
-                             ['MDAnalysis/lib/c_distances' + source_suffix],
-                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                             ['package/MDAnalysis/lib/c_distances' + source_suffix],
+                             include_dirs=include_dirs + ['package/MDAnalysis/lib/include'],
                              libraries=['m'],
                              define_macros=define_macros,
                              extra_compile_args=extra_compile_args)
     distances_omp = MDAExtension('lib.c_distances_openmp',
-                                 ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
-                                 include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                                 ['package/MDAnalysis/lib/c_distances_openmp' + source_suffix],
+                                 include_dirs=include_dirs + ['package/MDAnalysis/lib/include'],
                                  libraries=['m'] + parallel_libraries,
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args,
                                  extra_link_args=parallel_args)
     qcprot = MDAExtension('lib.qcprot',
-                          ['MDAnalysis/lib/qcprot' + source_suffix],
+                          ['package/MDAnalysis/lib/qcprot' + source_suffix],
                           include_dirs=include_dirs,
                           extra_compile_args=["-O3", "-ffast-math"])
     transformation = MDAExtension('lib._transformations',
-                                  ['MDAnalysis/lib/src/transformations/transformations.c'],
+                                  ['package/MDAnalysis/lib/src/transformations/transformations.c'],
                                   libraries=['m'],
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
     libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
-                          sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
-                                   'MDAnalysis/lib/formats/src/xdrfile.c',
-                                   'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
-                                   'MDAnalysis/lib/formats/src/xdrfile_trr.c',
-                                   'MDAnalysis/lib/formats/src/trr_seek.c',
-                                   'MDAnalysis/lib/formats/src/xtc_seek.c',
+                          sources=['package/MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
+                                   'package/MDAnalysis/lib/formats/src/xdrfile.c',
+                                   'package/MDAnalysis/lib/formats/src/xdrfile_xtc.c',
+                                   'package/MDAnalysis/lib/formats/src/xdrfile_trr.c',
+                                   'package/MDAnalysis/lib/formats/src/trr_seek.c',
+                                   'package/MDAnalysis/lib/formats/src/xtc_seek.c',
                                    ],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
-                                                       'MDAnalysis/lib/formats'],
+                          include_dirs=include_dirs + ['package/MDAnalysis/lib/formats/include',
+                                                       'package/MDAnalysis/lib/formats'],
                           define_macros=largefile_macros)
     util = MDAExtension('lib.formats.cython_util',
-                        sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
+                        sources=['package/MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
 
     encore_utils = MDAExtension('analysis.encore.cutils',
-                            sources = ['MDAnalysis/analysis/encore/cutils' + source_suffix],
+                            sources = ['package/MDAnalysis/analysis/encore/cutils' + source_suffix],
                             include_dirs = include_dirs,
                             extra_compile_args = ["-O3", "-ffast-math"])
     ap_clustering = MDAExtension('analysis.encore.clustering.affinityprop',
-                            sources = ['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'MDAnalysis/analysis/encore/clustering/src/ap.c'],
-                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
+                            sources = ['package/MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix, 'package/MDAnalysis/analysis/encore/clustering/src/ap.c'],
+                            include_dirs = include_dirs+['package/MDAnalysis/analysis/encore/clustering/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
     spe_dimred = MDAExtension('analysis.encore.dimensionality_reduction.stochasticproxembed',
-                            sources = ['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
-                            include_dirs = include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
+                            sources = ['package/MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix, 'package/MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
+                            include_dirs = include_dirs+['package/MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                             libraries=["m"],
                             extra_compile_args=["-O3", "-ffast-math","-std=c99"])
     pre_exts = [libdcd, distances, distances_omp, qcprot,
@@ -388,7 +388,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with codecs.open('AUTHORS', encoding='utf-8') as infile:
+    with codecs.open('package/AUTHORS', encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -427,7 +427,7 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    out_path = 'MDAnalysis/authors.py'
+    out_path = 'package/MDAnalysis/authors.py'
     with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
@@ -451,7 +451,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open("SUMMARY.txt") as summary:
+    with open("./package/SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
         'Development Status :: 4 - Beta',
@@ -483,8 +483,8 @@ if __name__ == '__main__':
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
           provides=['MDAnalysis'],
           license='GPL 2',
-          packages=find_packages(),
-          package_dir={'MDAnalysis': 'MDAnalysis'},
+          packages=find_packages('package'),
+          package_dir={'MDAnalysis': 'package/MDAnalysis'},
           ext_package='MDAnalysis',
           ext_modules=exts,
           classifiers=CLASSIFIERS,
