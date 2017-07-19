@@ -24,7 +24,7 @@ env:
     - COVERALLS=false
     - NOSE_FLAGS="--processes=2 --process-timeout=400 --no-open-files --with-timer --timer-top-n 50"
     - NOSE_TEST_LIST=""
-    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+    - PYTEST_FLAGS="--disable-pytest-warnings --processes=2 --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests/lib testsuite/MDAnalysisTests/formats testsuite/MDAnalysisTests/coordinates testsuite/MDAnalysisTests/utils testsuite/MDAnalysisTests/topology testsuite/MDAnalysisTests/auxiliary testsuite/MDAnalysisTests/core testsuite/MDAnalysisTests/analysis"
     - NOSE_COVERAGE_FILE="nose_coverage"
     - PYTEST_COVERAGE_FILE="pytest_coverage"
