@@ -226,6 +226,11 @@ class TransTable(object):
                 raise ValueError("residue_segindex must be len n_residues")
         self._SR = make_downshift_arrays(self._RS, n_segments)
 
+    def copy(self):
+        """Return a deepcopy of this Transtable"""
+        return self.__class__(self.n_atoms, self.n_residues, self.n_segments,
+                              atom_resindex=self._AR, residue_segindex=self._RS)
+
     @property
     def size(self):
         """The shape of the table, (n_atoms, n_residues, n_segments)"""
