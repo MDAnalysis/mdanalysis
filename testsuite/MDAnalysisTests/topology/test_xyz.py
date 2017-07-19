@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysisTests.topology.test_base import ParserBase
 from MDAnalysisTests.datafiles import (
     XYZ,
     XYZ_bz2,
