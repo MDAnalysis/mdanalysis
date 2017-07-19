@@ -51,13 +51,13 @@ class TestGROParser(ParserBase):
     expected_n_residues = 11302
     expected_n_segments = 1
 
-    def test_attr_size(self):
+    def test_attr_size(self, top):
         for attr in ['ids', 'names']:
-            assert_(len(self.top.ids) == self.top.n_atoms)
-            assert_(len(self.top.names) == self.top.n_atoms)
+            assert_(len(top.ids) == top.n_atoms)
+            assert_(len(top.names) == top.n_atoms)
         for attr in ['resids', 'resnames']:
-            assert_(len(self.top.resids) == self.top.n_residues)
-            assert_(len(self.top.resnames) == self.top.n_residues)
+            assert_(len(top.resids) == top.n_residues)
+            assert_(len(top.resnames) == top.n_residues)
 
 
 class TestGROWideBox(object):

@@ -47,14 +47,14 @@ class TestPQRParser(ParserBase):
     expected_n_residues = 214
     expected_n_segments = 1
 
-    def test_attr_size(self):
-        assert_(len(self.top.ids) == self.top.n_atoms)
-        assert_(len(self.top.names) == self.top.n_atoms)
-        assert_(len(self.top.charges) == self.top.n_atoms)
-        assert_(len(self.top.radii) == self.top.n_atoms)
-        assert_(len(self.top.resids) == self.top.n_residues)
-        assert_(len(self.top.resnames) == self.top.n_residues)
-        assert_(len(self.top.segids) == self.top.n_segments)
+    def test_attr_size(self, top):
+        assert_(len(top.ids) == top.n_atoms)
+        assert_(len(top.names) == top.n_atoms)
+        assert_(len(top.charges) == top.n_atoms)
+        assert_(len(top.radii) == top.n_atoms)
+        assert_(len(top.resids) == top.n_residues)
+        assert_(len(top.resnames) == top.n_residues)
+        assert_(len(top.segids) == top.n_segments)
 
 class TestPQRParser2(TestPQRParser):
 

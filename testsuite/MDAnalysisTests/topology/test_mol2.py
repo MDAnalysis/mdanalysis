@@ -46,17 +46,17 @@ class MOL2Base(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    def test_attr_size(self):
-        assert_(len(self.top.ids) == self.top.n_atoms)
-        assert_(len(self.top.names) == self.top.n_atoms)
-        assert_(len(self.top.types) == self.top.n_atoms)
-        assert_(len(self.top.charges) == self.top.n_atoms)
-        assert_(len(self.top.resids) == self.top.n_residues)
-        assert_(len(self.top.resnames) == self.top.n_residues)
+    def test_attr_size(self, top):
+        assert_(len(top.ids) == top.n_atoms)
+        assert_(len(top.names) == top.n_atoms)
+        assert_(len(top.types) == top.n_atoms)
+        assert_(len(top.charges) == top.n_atoms)
+        assert_(len(top.resids) == top.n_residues)
+        assert_(len(top.resnames) == top.n_residues)
 
-    def test_bonds(self):
-        assert_(len(self.top.bonds) == 49)  # bonds for 49 atoms
-        assert_(len(self.top.bonds.values) == 51)  # this many bonds
+    def test_bonds(self, top):
+        assert_(len(top.bonds) == 49)  # bonds for 49 atoms
+        assert_(len(top.bonds.values) == 51)  # this many bonds
 
     
 class TestMOL2Parser(MOL2Base):

@@ -48,52 +48,52 @@ class LammpsBase(ParserBase):
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges']
 
-    def test_n_atom_types(self):
-        assert_equal(len(set(self.top.types.values)), self.expected_n_atom_types)
+    def test_n_atom_types(self, top):
+        assert_equal(len(set(top.types.values)), self.expected_n_atom_types)
 
-    def test_n_bonds(self):
+    def test_n_bonds(self, top):
         if self.ref_n_bonds:
-            assert_equal(len(self.top.bonds.values),
+            assert_equal(len(top.bonds.values),
                          self.ref_n_bonds)
         else:
-            assert_(not hasattr(self.top, 'bonds'))
+            assert_(not hasattr(top, 'bonds'))
 
-    def test_bond_member(self):
+    def test_bond_member(self, top):
         if self.ref_n_bonds:
-            assert_(self.ref_bond in self.top.bonds.values)
+            assert_(self.ref_bond in top.bonds.values)
 
-    def test_n_angles(self):
+    def test_n_angles(self, top):
         if self.ref_n_angles:
-            assert_equal(len(self.top.angles.values),
+            assert_equal(len(top.angles.values),
                          self.ref_n_angles)
         else:
             assert_(not hasattr(self.top, 'angles'))
 
-    def test_angle_member(self):
+    def test_angle_member(self, top):
         if self.ref_n_angles:
-            assert_(self.ref_angle in self.top.angles.values)
+            assert_(self.ref_angle in top.angles.values)
 
-    def test_n_dihedrals(self):
+    def test_n_dihedrals(self, top):
         if self.ref_n_dihedrals:
-            assert_equal(len(self.top.dihedrals.values),
+            assert_equal(len(top.dihedrals.values),
                          self.ref_n_dihedrals)
         else:
             assert_(not hasattr(self.top, 'dihedrals'))
 
-    def test_dihedral_member(self):
+    def test_dihedral_member(self, top):
         if self.ref_n_dihedrals:
-            assert_(self.ref_dihedral in self.top.dihedrals.values)
+            assert_(self.ref_dihedral in top.dihedrals.values)
 
-    def test_n_impropers(self):
+    def test_n_impropers(self, top):
         if self.ref_n_impropers:
-            assert_equal(len(self.top.impropers.values),
+            assert_equal(len(top.impropers.values),
                          self.ref_n_impropers)
         else:
             assert_(not hasattr(self.top, 'impropers'))
 
-    def test_improper_member(self):
+    def test_improper_member(self, top):
         if self.ref_n_impropers:
-            assert_(self.ref_improper in self.top.impropers.values)
+            assert_(self.ref_improper in top.impropers.values)
 
     def test_creates_universe(self):
         u = mda.Universe(self.filename, format='DATA')

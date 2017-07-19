@@ -46,8 +46,8 @@ class TestDMSParser(ParserBase):
     expected_n_residues = 214
     expected_n_segments = 1
 
-    def test_number_of_bonds(self):
-        assert_(len(self.top.bonds.values) == 3365)
+    def test_number_of_bonds(self, top):
+        assert_(len(top.bonds.values) == 3365)
 
     def test_atomsels(self):
         # Desired value taken from VMD atomsel

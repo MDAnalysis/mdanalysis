@@ -54,41 +54,41 @@ class TestPSFParser(ParserBase):
     expected_n_residues = 214
     expected_n_segments = 1
 
-    def test_bonds_total_counts(self):
-        assert_(len(self.top.bonds.values) == 3365)
+    def test_bonds_total_counts(self, top):
+        assert_(len(top.bonds.values) == 3365)
 
     def test_bonds_atom_counts(self):
         u = mda.Universe(self.filename)
         assert_(len(u.atoms[[0]].bonds) == 4)
         assert_(len(u.atoms[[42]].bonds) == 1)
 
-    def test_bonds_identity(self):
-        vals = self.top.bonds.values
+    def test_bonds_identity(self, top):
+        vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (0, 4)):
             assert_((b in vals) or (b[::-1] in vals))
 
-    def test_angles_total_counts(self):
-        assert_(len(self.top.angles.values) == 6123)
+    def test_angles_total_counts(self, top):
+        assert_(len(top.angles.values) == 6123)
 
     def test_angles_atom_counts(self):
         u = mda.Universe(self.filename)
         assert_(len(u.atoms[[0]].angles), 9)
         assert_(len(u.atoms[[42]].angles), 2)
 
-    def test_angles_identity(self):
-        vals = self.top.angles.values
+    def test_angles_identity(self, top):
+        vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (1, 0, 4)):
             assert_((b in vals) or (b[::-1] in vals))
 
-    def test_dihedrals_total_counts(self):
-        assert_(len(self.top.dihedrals.values) == 8921)
+    def test_dihedrals_total_counts(self, top):
+        assert_(len(top.dihedrals.values) == 8921)
 
     def test_dihedrals_atom_counts(self):
         u = mda.Universe(self.filename)
         assert_(len(u.atoms[[0]].dihedrals) == 14)
 
-    def test_dihedrals_identity(self):
-        vals = self.top.dihedrals.values
+    def test_dihedrals_identity(self, top):
+        vals = top.dihedrals.values
         for b in ((0, 4, 6, 7), (0, 4, 6, 8),
                   (0, 4, 6, 9), (0, 4, 17, 18)):
             assert_((b in vals) or (b[::-1] in vals))
