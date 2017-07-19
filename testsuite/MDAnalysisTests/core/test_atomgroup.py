@@ -55,7 +55,7 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
 )
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import tempdir, make_Universe, no_deprecated_call
 
 import pytest
 
@@ -768,6 +768,22 @@ class TestDihedralSelections(object):
     def test_dihedral_chi1(self, PSFDCD):
         sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
+
+    def test_phi_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            phisel = PSFDCD.segments[0].residues[9].phi_selection()
+
+    def test_psi_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            psisel = PSFDCD.segments[0].residues[9].psi_selection()
+
+    def test_omega_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            osel = PSFDCD.segments[0].residues[7].omega_selection()
+
+    def test_chi1_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
 class TestPBCFlag(TestCase):
