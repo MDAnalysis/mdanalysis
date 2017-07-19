@@ -99,3 +99,68 @@ class TestParserBase(object):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
+
+
+# TODO: Get rid of this class once all formats have been ported
+class ParserBase(object):
+    """Base class for testing Topology parsers.
+
+    All Parsers must subclass this class!
+    """
+
+    expected_attrs = []
+    guessed_attrs = []
+
+    @pytest.fixture()
+    def top(self):
+        with self.parser(self.filename) as p:
+            yield p.parse()
+
+    def test_output(self):
+        """Testing the call signature"""
+        with self.parser(self.filename) as p:
+            top = p.parse()
+
+        assert isinstance(top, Topology)
+
+    def test_mandatory_attributes(self, top):
+        # attributes required as part of the API
+        # ALL parsers must provide these
+        mandatory_attrs = ['ids', 'masses', 'types',
+                           'resids', 'resnums', 'segids']
+
+        for attr in mandatory_attrs:
+            assert hasattr(top, attr), 'Missing required attribute: {}'.format(attr)
+
+    def test_expected_attributes(self, top):
+        # Extra attributes as declared in specific implementations
+        for attr in self.expected_attrs:
+            assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
+
+    def test_guessed_attributes(self, top):
+        # guessed attributes must be declared as guessed
+        for attr in top.attrs:
+            val = attr.is_guessed
+            if not val in (True, False):  # only for simple yes/no cases
+                continue
+            assert val == (attr.attrname in self.guessed_attrs), 'Attr "{}" guessed= {}'.format(attr, val)
+
+    def test_size(self, top):
+        """Check that the Topology is correctly sized"""
+        assert top.n_atoms == self.expected_n_atoms, '{} atoms read, {} expected in {}'.format(
+            top.n_atoms, self.expected_n_atoms, self.__class__.__name__)
+
+        assert top.n_residues == self.expected_n_residues, '{} residues read, {} expected in {}'.format(
+            top.n_residues, self.expected_n_residues, self.__class__.__name__)
+
+        assert top.n_segments == self.expected_n_segments, '{} segment read, {} expected in {}'.format(
+            top.n_segments, self.expected_n_segments, self.__class__.__name__)
+
+    def test_tt_size(self, top):
+        """Check that the transtable is appropriately sized"""
+        assert top.tt.size == (self.expected_n_atoms, self.expected_n_residues, self.expected_n_segments)
+
+    def test_creates_universe(self):
+        """Check that Universe works with this Parser"""
+        u = mda.Universe(self.filename)
+        assert isinstance(u, mda.Universe)
