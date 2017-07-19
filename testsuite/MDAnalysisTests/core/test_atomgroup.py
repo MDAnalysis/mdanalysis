@@ -55,7 +55,7 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
 )
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import tempdir, make_Universe, no_deprecated_call
 
 import pytest
 
@@ -705,74 +705,85 @@ class TestCrossUniverse(object):
         assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
 
 
-class TestDihedralSelections(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.dih_prec = 2
+class TestDihedralSelections(object):
+    dih_prec = 2
 
-    def tearDown(self):
-        del self.universe
-        del self.dih_prec
+    @staticmethod
+    @pytest.fixture(scope='module')
+    def PSFDCD():
+        return mda.Universe(PSF, DCD)
 
-    def test_phi_selection(self):
-        phisel = self.universe.s4AKE.r10.phi_selection()
+    def test_phi_selection(self, PSFDCD):
+        phisel = PSFDCD.segments[0].residues[9].phi_selection()
         assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
         assert_equal(phisel.residues.resids, [9, 10])
         assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
 
-    def test_psi_selection(self):
-        psisel = self.universe.s4AKE.r10.psi_selection()
+    def test_psi_selection(self, PSFDCD):
+        psisel = PSFDCD.segments[0].residues[9].psi_selection()
         assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
         assert_equal(psisel.residues.resids, [10, 11])
         assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
 
-    def test_omega_selection(self):
-        osel = self.universe.s4AKE.r8.omega_selection()
+    def test_omega_selection(self, PSFDCD):
+        osel = PSFDCD.segments[0].residues[7].omega_selection()
         assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
         assert_equal(osel.residues.resids, [8, 9])
         assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
 
-    def test_chi1_selection(self):
-        sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
+    def test_chi1_selection(self, PSFDCD):
+        sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
         assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
         assert_equal(sel.residues.resids, [13])
         assert_equal(sel.residues.resnames, ['LYS'])
 
-    def test_phi_sel_fail(self):
-        sel = self.universe.residues[0].phi_selection()
+    def test_phi_sel_fail(self, PSFDCD):
+        sel = PSFDCD.residues[0].phi_selection()
         assert_equal(sel, None)
 
-    def test_psi_sel_fail(self):
-        sel = self.universe.residues[-1].psi_selection()
+    def test_psi_sel_fail(self, PSFDCD):
+        sel = PSFDCD.residues[-1].psi_selection()
         assert_equal(sel, None)
 
-    def test_omega_sel_fail(self):
-        sel = self.universe.residues[-1].omega_selection()
+    def test_omega_sel_fail(self, PSFDCD):
+        sel = PSFDCD.residues[-1].omega_selection()
         assert_equal(sel, None)
 
-    def test_ch1_sel_fail(self):
-        sel = self.universe.s4AKE.r8.chi1_selection()
+    def test_ch1_sel_fail(self, PSFDCD):
+        sel = PSFDCD.segments[0].residues[7].chi1_selection()
         assert_equal(sel, None)  # ALA
 
-    def test_dihedral_phi(self):
-        u = self.universe
-        phisel = u.s4AKE.r10.phi_selection()
+    def test_dihedral_phi(self, PSFDCD):
+        phisel = PSFDCD.segments[0].residues[9].phi_selection()
         assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
 
-    def test_dihedral_psi(self):
-        u = self.universe
-        psisel = u.s4AKE.r10.psi_selection()
+    def test_dihedral_psi(self, PSFDCD):
+        psisel = PSFDCD.segments[0].residues[9].psi_selection()
         assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
 
-    def test_dihedral_omega(self):
-        u = self.universe
-        osel = u.s4AKE.r8.omega_selection()
+    def test_dihedral_omega(self, PSFDCD):
+        osel = PSFDCD.segments[0].residues[7].omega_selection()
         assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
 
-    def test_dihedral_chi1(self):
-        u = self.universe
-        sel = u.s4AKE.r13.chi1_selection()  # LYS
+    def test_dihedral_chi1(self, PSFDCD):
+        sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
+
+    def test_phi_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            phisel = PSFDCD.segments[0].residues[9].phi_selection()
+
+    def test_psi_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            psisel = PSFDCD.segments[0].residues[9].psi_selection()
+
+    def test_omega_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            osel = PSFDCD.segments[0].residues[7].omega_selection()
+
+    def test_chi1_nodep(self, PSFDCD):
+        with no_deprecated_call():
+            sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
 class TestPBCFlag(TestCase):
