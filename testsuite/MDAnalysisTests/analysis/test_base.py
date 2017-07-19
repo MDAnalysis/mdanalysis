@@ -33,6 +33,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.util import no_deprecated_call
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -171,3 +172,17 @@ def test_analysis_class():
     assert_array_equal(results, ana.results)
 
     assert_raises(ValueError, ana_class, 2)
+
+def test_analysis_class_decorator():
+    # Issue #1511
+    # analysis_class should not raise
+    # a DeprecationWarning
+    u = mda.Universe(PSF, DCD)
+
+    def distance(a, b):
+        return np.linalg.norm((a.centroid() - b.centroid()))
+
+    Distances = base.analysis_class(distance)
+
+    with no_deprecated_call():
+        d = Distances(u.atoms[:10], u.atoms[10:20]).run()

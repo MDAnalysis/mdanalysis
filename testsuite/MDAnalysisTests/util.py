@@ -39,6 +39,7 @@ from functools import wraps
 import importlib
 import mock
 import os
+import warnings
 
 from numpy.testing import assert_warns
 
@@ -176,3 +177,44 @@ def assert_nowarns(warning_class, *args, **kwargs):
         # There was a warning even though we do not want to see one.
         raise AssertionError("function {0} raises warning of class {1}".format(
             func.__name__, warning_class.__name__))
+
+class _NoDeprecatedCallContext(object):
+	# modified version of similar pytest class object that checks for
+	# raised DeprecationWarning
+
+    def __enter__(self):
+        self._captured_categories = []
+        self._old_warn = warnings.warn
+        self._old_warn_explicit = warnings.warn_explicit
+        warnings.warn_explicit = self._warn_explicit
+        warnings.warn = self._warn
+
+    def _warn_explicit(self, message, category, *args, **kwargs):
+        self._captured_categories.append(category)
+
+    def _warn(self, message, category=None, *args, **kwargs):
+        if isinstance(message, Warning):
+            self._captured_categories.append(message.__class__)
+        else:
+            self._captured_categories.append(category)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        warnings.warn_explicit = self._old_warn_explicit
+        warnings.warn = self._old_warn
+
+        if exc_type is None:
+            deprecation_categories = (DeprecationWarning, PendingDeprecationWarning)
+            if any(issubclass(c, deprecation_categories) for c in self._captured_categories):
+                __tracebackhide__ = True
+                msg = "Produced DeprecationWarning or PendingDeprecationWarning"
+                raise AssertionError(msg)
+
+def no_deprecated_call(func=None, *args, **kwargs):
+	# modified version of similar pytest function
+	# check that DeprecationWarning is NOT raised
+    if not func:
+        return _NoDeprecatedCallContext()
+    else:
+        __tracebackhide__ = True
+        with _NoDeprecatedCallContext():
+            return func(*args, **kwargs)
