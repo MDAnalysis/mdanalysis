@@ -2005,6 +2005,8 @@ class PSAnalysis(object):
 
         Parameters
         ----------
+        dist_mat : numpy.ndarray
+            user-specified distance matrix to be clustered [``None``]
         method : str
             name of linkage criterion for clustering [``'ward'``]
         no_plot : bool
