@@ -43,6 +43,7 @@ from MDAnalysis.tests.datafiles import (
 ['name',
  'resname',
  'type',
+ 'segid',
 ]
 )
 # topology formats curated from values available in
