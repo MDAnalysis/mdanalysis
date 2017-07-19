@@ -177,10 +177,12 @@ def test_analysis_class_decorator():
     # Issue #1511
     # analysis_class should not raise
     # a DeprecationWarning
-    with no_deprecated_call():
-        u = mda.Universe(PSF, DCD)
-        def distance(a, b):
-            return np.linalg.norm((a.centroid() - b.centroid()))
+    u = mda.Universe(PSF, DCD)
 
-        Distances = base.analysis_class(distance)
+    def distance(a, b):
+        return np.linalg.norm((a.centroid() - b.centroid()))
+
+    Distances = base.analysis_class(distance)
+
+    with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
