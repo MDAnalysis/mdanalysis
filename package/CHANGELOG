@@ -19,6 +19,7 @@ mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
   * 0.17.0
 
 Enhancements
+  * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
 
