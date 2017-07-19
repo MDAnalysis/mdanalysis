@@ -19,7 +19,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, absolute_import
+from __future__ import division, absolute_import, print_function
+
+import pytest
+from six.moves import range
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.psa as PSA
@@ -30,7 +33,6 @@ from numpy.testing import (TestCase, dec, assert_array_less,
 import numpy as np
 import scipy
 import scipy.spatial
-import pytest
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 from MDAnalysisTests import tempdir, module_not_found
@@ -53,6 +55,7 @@ class TestPSAnalysis(TestCase):
         self.npairs = int( self.psa.npaths*(self.psa.npaths-1)/2 )
         self._run()
         self._plot()
+        self._run_pairs_analysis()
 
     def _run(self):
         self.psa.run(metric='hausdorff')
@@ -66,12 +69,13 @@ class TestPSAnalysis(TestCase):
         self.hausd_matrix_explicit = self.psa.get_pairwise_distances()
         self.hausd_explicit_dists = self.hausd_matrix_explicit[self.iu1]
 
+    def _run_pairs_analysis(self):
         self.psa.run_pairs_analysis(neighbors=True, hausdorff_pairs=True)
         self.hausd_pairs_matrix = self.psa.get_pairwise_distances()
         self.hausd_pairs_dists = self.hausd_pairs_matrix[self.iu1]
         self.hausd_pairs = self.psa.hausdorff_pairs
         self.hausd_neighbors = self.psa.nearest_neighbors
-        self.hausd_pairs_dists2 = np.array([self.hausd_pairs[i]['distance'] for i in xrange(self.npairs)])
+        self.hausd_pairs_dists2 = np.array([self.hausd_pairs[i]['distance'] for i in range(self.npairs)])
 
     def _plot(self):
         self.plot_data = self.psa.plot()

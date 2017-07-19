@@ -1717,8 +1717,7 @@ class PSAnalysis(object):
         ax_hmap = fig.add_axes(hmap_loc)
         ax_dgram = fig.add_axes(dgram_loc)
 
-        Z, dgram = self.cluster(dist_matrix,                                    \
-                                method=linkage,                                 \
+        Z, dgram = self.cluster(method=linkage,                                 \
                                 count_sort=count_sort,                          \
                                 distance_sort=distance_sort)
         rowidx = colidx = dgram['leaves'] # get row-wise ordering from clustering
@@ -1847,8 +1846,7 @@ class PSAnalysis(object):
             raise ValueError(err_str)
         dist_matrix = self.D
 
-        Z, dgram = self.cluster(dist_matrix,                                    \
-                                method=linkage,                                 \
+        Z, dgram = self.cluster(method=linkage,                                 \
                                 count_sort=count_sort,                          \
                                 distance_sort=distance_sort,                    \
                                 no_plot=True)
@@ -1991,10 +1989,19 @@ class PSAnalysis(object):
         return ax
 
 
-    def cluster(self, distArray, method='ward', count_sort=False,               \
+    def cluster(self, dist_mat=None, method='ward', count_sort=False,           \
                 distance_sort=False, no_plot=False, no_labels=True,             \
                 color_threshold=4):
         """Cluster trajectories and optionally plot the dendrogram.
+
+        This method is used by :meth:`PSAnalysis.plot` to generate a heatmap-
+        dendrogram combination plot. By default, the distance matrix,
+        :attr:`PSAnalysis.D`, is assumed to exist, converted to
+        distance-vector form, and inputted to :func:`cluster.hierarchy.linkage`
+        to generate a clustering. For convenience in plotting arbitrary
+        distance matrices, one can also be specify `dist_mat`, which will be
+        checked for proper distance matrix form by
+        :func:`spatial.distance.squareform`
 
         Parameters
         ----------
@@ -2029,7 +2036,13 @@ class PSAnalysis(object):
         orig_linewidth = matplotlib.rcParams['lines.linewidth']
         matplotlib.rcParams['lines.linewidth'] = 0.5
         try:
-            Z = cluster.hierarchy.linkage(distArray, method=method)
+            if dist_mat:
+                dist_vec = spatial.distance.squareform(dist_mat,
+                                                       force='tovector',
+                                                       checks=True)
+            else:
+                dist_vec = self.get_pairwise_distances(vectorform=True)
+            Z = cluster.hierarchy.linkage(dist_vec, method=method)
             dgram = cluster.hierarchy.dendrogram(
                 Z, no_labels=no_labels, orientation='left',
                 count_sort=count_sort, distance_sort=distance_sort,
@@ -2073,7 +2086,7 @@ class PSAnalysis(object):
         Returns
         -------
         int
-            the number of atoms
+            the number of atoms in any path
 
         Note
         ----
@@ -2123,7 +2136,7 @@ class PSAnalysis(object):
         return self.paths
 
 
-    def get_pairwise_distances(self, vectorform=False):
+    def get_pairwise_distances(self, vectorform=False, checks=False):
         """Return the distance matrix (or vector) of pairwise path distances.
 
         .. note::
@@ -2134,6 +2147,9 @@ class PSAnalysis(object):
         ----------
         vectorform : bool
              if ``True``, return the distance vector instead [``False``]
+        checks : bool
+             if ``True``, check that :attr:`PSAnalysis.D` is a proper distance
+             matrix [``False``]
 
         Returns
         -------
@@ -2145,7 +2161,8 @@ class PSAnalysis(object):
             err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
         if vectorform:
-            return spatial.distance.squareform(self.D)
+            return spatial.distance.squareform(self.D, force='tovector',
+                                               checks=checks)
         else:
             return self.D
 
