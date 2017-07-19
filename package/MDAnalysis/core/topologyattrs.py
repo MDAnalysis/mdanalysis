@@ -475,9 +475,7 @@ class Atomnames(AtomAttr):
         sel_str = "segid {} and resid {} and name C".format(
             residue.segment.segid, residue.resid - 1)
         sel = (residue.universe.select_atoms(sel_str) +
-               residue.atoms.select_atoms('name N') +
-               residue.atoms.select_atoms('name CA') +
-               residue.atoms.select_atoms('name C'))
+               residue.atoms.select_atoms('name N', 'name CA', 'name C'))
 
         # select_atoms doesnt raise errors if nothing found, so check size
         if len(sel) == 4:
@@ -500,9 +498,7 @@ class Atomnames(AtomAttr):
         sel_str = "segid {} and resid {} and name N".format(
             residue.segment.segid, residue.resid + 1)
 
-        sel = (residue.atoms.select_atoms('name N') +
-               residue.atoms.select_atoms('name CA') +
-               residue.atoms.select_atoms('name C') +
+        sel = (residue.atoms.select_atoms('name N', 'name CA', 'name C') +
                residue.universe.select_atoms(sel_str))
 
         if len(sel) == 4:
@@ -529,11 +525,10 @@ class Atomnames(AtomAttr):
         """
         nextres = residue.resid + 1
         segid = residue.segment.segid
-        sel = (residue.atoms.select_atoms('name CA') +
-               residue.atoms.select_atoms('name C') +
+        sel = (residue.atoms.select_atoms('name CA', 'name C') +
                residue.universe.select_atoms(
-                   'segid %s and resid %d and name N' % (segid, nextres),
-                   'segid %s and resid %d and name CA' % (segid, nextres)))
+                   'segid {} and resid {} and name N'.format(segid, nextres),
+                   'segid {} and resid {} and name CA'.format(segid, nextres)))
         if len(sel) == 4:
             return sel
         else:
@@ -552,10 +547,8 @@ class Atomnames(AtomAttr):
 
         .. versionadded:: 0.7.5
         """
-        ag = (residue.atoms.select_atoms('name N') +
-              residue.atoms.select_atoms('name CA') +
-              residue.atoms.select_atoms('name CB') +
-              residue.atoms.select_atoms('name CG'))
+        ag = residue.atoms.select_atoms('name N', 'name CA',
+                                        'name CB', 'name CG')
         if len(ag) == 4:
             return ag
         else:
