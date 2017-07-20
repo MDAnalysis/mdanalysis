@@ -21,6 +21,8 @@
 #
 from __future__ import absolute_import
 
+from os.path import abspath, basename, dirname, expanduser, normpath, relpath, split, splitext
+
 import six
 from six.moves import range, cStringIO, StringIO
 
@@ -171,17 +173,17 @@ class TestNamedStream_filename_behavior(object):
         obj = cStringIO()
         return util.NamedStream(obj, name)
 
-    @pytest.mark.parametrize('funcname', (
-            "abspath",
-            "basename",
-            "dirname",
-            "expanduser",
-            "normpath",
-            "relpath",
-            "split",
-            "splitext"
+    @pytest.mark.parametrize('func', (
+            abspath,
+            basename,
+            dirname,
+            expanduser,
+            normpath,
+            relpath,
+            split,
+            splitext
     ))
-    def test_func(self, funcname):
+    def test_func(self, func):
         # - "expandvars" gave Segmentation fault (OS X 10.6, Python 2.7.11 -- orbeckst)
         # - "expanduser" will either return a string if it carried out interpolation
         #   or "will do nothing" and return the NamedStream (see extra test below).
@@ -189,12 +191,11 @@ class TestNamedStream_filename_behavior(object):
         #   below will fail.
         ns = self.create_NamedStream()
         fn = self.textname
-        func = getattr(os.path, funcname)
         reference = func(fn)
         value = func(ns)
         assert_equal(value, reference,
                      err_msg=("os.path.{0}() does not work with "
-                              "NamedStream").format(funcname))
+                              "NamedStream").format(func.__name__))
 
     def test_join(self, tmpdir, funcname="join"):
         # join not included because of different call signature
