@@ -21,23 +21,19 @@
 #
 from __future__ import absolute_import, division
 
-import pytest
-from six.moves import range, StringIO
-import six
-
-import numpy as np
-from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_array_equal)
-
 import MDAnalysis as mda
-import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
-from MDAnalysis.lib.util import cached
+import MDAnalysis.lib.util as util
+import numpy as np
+import pytest
+import six
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError
-
-
+from MDAnalysis.lib.util import cached
 from MDAnalysisTests.datafiles import Make_Whole
+from numpy.testing import (assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_array_equal)
+from six.moves import range, StringIO
 
 
 def test_convert_aa_code_long_data():
@@ -597,10 +593,8 @@ class TestGuessFormat(object):
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
-    @pytest.mark.parametrize('extention',
-        map(lambda format: format[0].upper(), formats) +
-        map(lambda format: format[0].lower(), formats)
-    )
+    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
+        [format[0].lower() for format in formats]))
     def test_get_extention(self, extention):
         """Check that get_ext works"""
         file_name = 'file.{0}'.format(extention)
@@ -609,10 +603,8 @@ class TestGuessFormat(object):
         assert a == 'file'
         assert b == extention.lower()
 
-    @pytest.mark.parametrize('extention',
-        map(lambda format: format[0].upper(), formats) +
-        map(lambda format: format[0].lower(), formats)
-    )
+    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
+        [format[0].lower() for format in formats]))
     def test_compressed_without_compression_extention(self, extention):
         """Check that format suffixed by compressed extension works"""
         file_name = 'file.{0}'.format(extention)
@@ -620,10 +612,8 @@ class TestGuessFormat(object):
         # expect answer to always be uppercase
         assert a == extention.upper()
 
-    @pytest.mark.parametrize('extention',
-        map(lambda format: format[0].upper(), formats) +
-        map(lambda format: format[0].lower(), formats)
-    )
+    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
+        [format[0].lower() for format in formats]))
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_compressed(self, extention, compression_extention):
         """Check that format suffixed by compressed extension works"""
@@ -633,9 +623,7 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-        map(lambda format: format[0].upper(), formats) +
-        map(lambda format: format[0].lower(), formats)
-    )
+                             list([format[0].upper() for format in formats]) + list([format[0].lower() for format in formats]))
     def test_guess_format(self, extention):
         file_name = 'file.{0}'.format(extention)
         a = util.guess_format(file_name)
@@ -643,9 +631,7 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-        map(lambda format: format[0].upper(), formats) +
-        map(lambda format: format[0].lower(), formats)
-    )
+                             list([format[0].upper() for format in formats]) + list([format[0].lower() for format in formats]))
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_guess_format_compressed(self, extention, compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
@@ -654,8 +640,8 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention, parser',
-        map(lambda format: (format[0], format[1]), filter((lambda format: format[1]), formats))
-    )
+                             list([(format[0], format[1]) for format in formats if format[1] is not None])
+                             )
     def test_get_parser(self, extention, parser):
         file_name = 'file.{0}'.format(extention)
         a = mda.topology.core.get_parser_for(file_name)
@@ -663,8 +649,8 @@ class TestGuessFormat(object):
         assert a == parser
 
     @pytest.mark.parametrize('extention, parser',
-        map(lambda format: (format[0], format[1]), filter((lambda format: format[1]), formats))
-    )
+                             list([(format[0], format[1]) for format in formats if format[1] is not None])
+                             )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_get_parser_compressed(self, extention, parser, compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
@@ -673,16 +659,16 @@ class TestGuessFormat(object):
         assert a == parser
 
     @pytest.mark.parametrize('extention',
-        map(lambda format: format[0], filter((lambda format: format[1] is None), formats))
-    )
+                             list([(format[0], format[1]) for format in formats if format[1] is None])
+                             )
     def test_get_parser_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
         with pytest.raises(ValueError):
             mda.topology.core.get_parser_for(file_name)
 
     @pytest.mark.parametrize('extention, reader',
-        map(lambda format: (format[0], format[2]), filter((lambda format: format[2]), formats))
-    )
+                             list([(format[0], format[2]) for format in formats if format[2] is not None])
+                             )
     def test_get_reader(self, extention, reader):
         file_name = 'file.{0}'.format(extention)
         a = mda.coordinates.core.get_reader_for(file_name)
@@ -690,8 +676,8 @@ class TestGuessFormat(object):
         assert a == reader
 
     @pytest.mark.parametrize('extention, reader',
-        map(lambda format: (format[0], format[2]), filter((lambda format: format[2]), formats))
-    )
+                             list([(format[0], format[2]) for format in formats if format[2] is not None])
+                             )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_get_reader_compressed(self, extention, reader, compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
@@ -700,8 +686,8 @@ class TestGuessFormat(object):
         assert a == reader
 
     @pytest.mark.parametrize('extention',
-        map(lambda format: (format[0]), filter((lambda format: format[2] is None), formats))
-    )
+                             list([(format[0], format[2]) for format in formats if format[2] is None])
+                             )
     def test_get_reader_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
         with pytest.raises(ValueError):

@@ -199,6 +199,7 @@ enable=abstract-class-instantiated,
        print-statement,
        xrange-builtin,
        zip-builtin-not-iterating,
+       map-builtin-not-iterating,
        range-builtin-not-iterating,
 
 # Things we'd like to try.
