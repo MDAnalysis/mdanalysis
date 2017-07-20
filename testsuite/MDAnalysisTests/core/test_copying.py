@@ -28,7 +28,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import TransTable
-
+from MDAnalysis.core import topologyattrs as ta
 
 
 @pytest.fixture()
@@ -82,3 +82,45 @@ class TestTransTableCopy(object):
         refTT.move_residue(1, 2)
         assert refTT.residues2segments(1) == 2
         assert new.residues2segments(1) == 1
+
+
+@pytest.fixture(params=[
+    (ta.Atomids, int),
+    (ta.Atomnames, object),
+    (ta.Atomtypes, object),
+    (ta.Elements, object),
+    (ta.Radii, float),
+    (ta.ChainIDs, object),
+    (ta.Tempfactors, float),
+    (ta.Masses, float),
+    (ta.Charges, float),
+    (ta.Bfactors, float),
+    (ta.Occupancies, float),
+    (ta.AltLocs, object),
+    (ta.Resids, int),
+    (ta.Resnames, object),
+    (ta.Resnums, int),
+    (ta.ICodes, object),
+    (ta.Segids, object),
+    (ta.Bonds, 'bond'),
+    (ta.Angles, 'angles'),
+    (ta.Dihedrals, 'dihe'),
+    (ta.Impropers, 'dihe'),
+])
+def refTA(request):
+    filler = {
+        object: np.array(['dave', 'steve', 'hugo'], dtype=object),
+        int: np.array([5, 4, 6]),
+        float: np.array([15.4, 5.7, 22.2]),
+        'bond': [(0, 1), (1, 2), (5, 6)],
+        'angles': [(0, 1, 2), (1, 2, 3), (4, 5, 6)],
+        'dihe': [(0, 1, 2, 3), (1, 2, 3, 4), (5, 6, 7, 8)],
+    }
+    cls, dt = request.param
+    return cls(filler[dt])
+
+
+def test_copy_attr(refTA):
+    new = refTA.copy()
+
+    assert new.values is not refTA.values

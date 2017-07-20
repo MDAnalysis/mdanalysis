@@ -38,6 +38,7 @@ import Bio.Seq
 import Bio.SeqRecord
 import Bio.Alphabet
 from collections import defaultdict
+import copy
 import functools
 import itertools
 import numbers
@@ -244,6 +245,10 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         if values is None:
             values = cls._gen_initial_values(n_atoms, n_residues, n_segments)
         return cls(values)
+
+    def copy(self):
+        """Return a deepcopy of this attribute"""
+        return self.__class__(self.values.copy(), guessed=self._guessed)
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -1499,6 +1504,13 @@ class _Connection(AtomAttr):
             order = [None] * len(values)
         self.order = order
         self._cache = dict()
+
+    def copy(self):
+        """Return a deepcopy of this attribute"""
+        return self.__class__(copy.copy(self.values),
+                              copy.copy(self.types),
+                              copy.copy(self._guessed),
+                              copy.copy(self.order))
 
     def __len__(self):
         return len(self._bondDict)
