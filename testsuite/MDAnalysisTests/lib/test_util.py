@@ -593,8 +593,8 @@ class TestGuessFormat(object):
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
-    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
-        [format[0].lower() for format in formats]))
+    @pytest.mark.parametrize('extention', [format[0].upper() for format in formats] +
+                             [format[0].lower() for format in formats])
     def test_get_extention(self, extention):
         """Check that get_ext works"""
         file_name = 'file.{0}'.format(extention)
@@ -603,8 +603,8 @@ class TestGuessFormat(object):
         assert a == 'file'
         assert b == extention.lower()
 
-    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
-        [format[0].lower() for format in formats]))
+    @pytest.mark.parametrize('extention', [format[0].upper() for format in formats] +
+                             [format[0].lower() for format in formats])
     def test_compressed_without_compression_extention(self, extention):
         """Check that format suffixed by compressed extension works"""
         file_name = 'file.{0}'.format(extention)
@@ -612,8 +612,8 @@ class TestGuessFormat(object):
         # expect answer to always be uppercase
         assert a == extention.upper()
 
-    @pytest.mark.parametrize('extention', list([format[0].upper() for format in formats]) + list(
-        [format[0].lower() for format in formats]))
+    @pytest.mark.parametrize('extention', [format[0].upper() for format in formats] +
+                             [format[0].lower() for format in formats])
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_compressed(self, extention, compression_extention):
         """Check that format suffixed by compressed extension works"""
@@ -623,7 +623,7 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-                             list([format[0].upper() for format in formats]) + list([format[0].lower() for format in formats]))
+                             [format[0].upper() for format in formats] + [format[0].lower() for format in formats])
     def test_guess_format(self, extention):
         file_name = 'file.{0}'.format(extention)
         a = util.guess_format(file_name)
@@ -631,7 +631,7 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-                             list([format[0].upper() for format in formats]) + list([format[0].lower() for format in formats]))
+                             [format[0].upper() for format in formats] + [format[0].lower() for format in formats])
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_guess_format_compressed(self, extention, compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
@@ -640,7 +640,7 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention, parser',
-                             list([(format[0], format[1]) for format in formats if format[1] is not None])
+                             [(format[0], format[1]) for format in formats if format[1] is not None]
                              )
     def test_get_parser(self, extention, parser):
         file_name = 'file.{0}'.format(extention)
@@ -649,7 +649,7 @@ class TestGuessFormat(object):
         assert a == parser
 
     @pytest.mark.parametrize('extention, parser',
-                             list([(format[0], format[1]) for format in formats if format[1] is not None])
+                             [(format[0], format[1]) for format in formats if format[1] is not None]
                              )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_get_parser_compressed(self, extention, parser, compression_extention):
@@ -659,7 +659,7 @@ class TestGuessFormat(object):
         assert a == parser
 
     @pytest.mark.parametrize('extention',
-                             list([(format[0], format[1]) for format in formats if format[1] is None])
+                             [(format[0], format[1]) for format in formats if format[1] is None]
                              )
     def test_get_parser_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
@@ -667,7 +667,7 @@ class TestGuessFormat(object):
             mda.topology.core.get_parser_for(file_name)
 
     @pytest.mark.parametrize('extention, reader',
-                             list([(format[0], format[2]) for format in formats if format[2] is not None])
+                             [(format[0], format[2]) for format in formats if format[2] is not None]
                              )
     def test_get_reader(self, extention, reader):
         file_name = 'file.{0}'.format(extention)
@@ -676,7 +676,7 @@ class TestGuessFormat(object):
         assert a == reader
 
     @pytest.mark.parametrize('extention, reader',
-                             list([(format[0], format[2]) for format in formats if format[2] is not None])
+                             [(format[0], format[2]) for format in formats if format[2] is not None]
                              )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_get_reader_compressed(self, extention, reader, compression_extention):
@@ -686,7 +686,7 @@ class TestGuessFormat(object):
         assert a == reader
 
     @pytest.mark.parametrize('extention',
-                             list([(format[0], format[2]) for format in formats if format[2] is None])
+                             [(format[0], format[2]) for format in formats if format[2] is None]
                              )
     def test_get_reader_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
@@ -810,25 +810,25 @@ class TestGetWriterFor(object):
             ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
         ]
 
-    @pytest.mark.parametrize('format, writer', map(lambda format: (format[0], format[1]), filter((lambda format: format[2]), formats)))
+    @pytest.mark.parametrize('format, writer', [(format[0], format[1]) for format in formats if format[2] is True])
     def test_singleframe(self, format, writer):
         assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=False) == writer
 
-    @pytest.mark.parametrize('format', map(lambda format: format[0], filter((lambda format: format[2] is False), formats)))
+    @pytest.mark.parametrize('format', [(format[0], format[1]) for format in formats if format[2] is False])
     def test_singleframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for('this', format = format, multiframe = False)
+            mda.coordinates.core.get_writer_for('this', format=format, multiframe=False)
 
     @pytest.mark.parametrize('format, writer',
-                             map(lambda format: (format[0], format[1]), filter((lambda format: format[3]), formats)))
+                             [(format[0], format[1]) for format in formats if format[3] is True])
     def test_multiframe(self, format, writer):
         assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=True) == writer
 
     @pytest.mark.parametrize('format',
-                             map(lambda format: (format[0]), filter((lambda format: format[3] is False), formats)))
+                             [format[0] for format in formats if format[3] is False])
     def test_multiframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for('this', format = format, multiframe = True)
+            mda.coordinates.core.get_writer_for('this', format=format, multiframe=True)
 
     def test_get_writer_for_pdb(self):
         assert mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False) == mda.coordinates.PDB.PDBWriter
