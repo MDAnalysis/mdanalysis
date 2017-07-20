@@ -209,7 +209,7 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.{0}() does not work with "
                               "NamedStream").format(funcname))
 
-    @pytest.mark.skipif(True, reason='Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]')
+    @pytest.mark.skipif(True, reason='See #1534]')
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
         reference = ns
@@ -218,7 +218,7 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.expanduser() without '~' did not "
                               "return NamedStream --- weird!!"))
 
-    @pytest.mark.skipif(True, reason='Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]')
+    @pytest.mark.skipif(True, reason='See #1534')
     @pytest.mark.skipif("HOME" not in os.environ, reason='It is needed')
     @pytest.mark.xfail
     def test_expandvars(self):
@@ -229,7 +229,7 @@ class TestNamedStream_filename_behavior(object):
         assert_equal(value, reference,
                      err_msg="os.path.expandvars() did not expand HOME")
 
-    @pytest.mark.skipif(True, reason='Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]')
+    @pytest.mark.skipif(True, reason='See #1534')
     def test_expandvars_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream() # no $VAR constructs
         reference = ns
