@@ -27,15 +27,17 @@ from numpy.testing import assert_equal
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.core.topology import TransTable
+from MDAnalysis.core import topology
 from MDAnalysis.core import topologyattrs as ta
 
 
 @pytest.fixture()
 def refTT():
-    ref = TransTable(9, 6, 3,
-                     atom_resindex=np.array([0, 0, 1, 1, 2, 2, 3, 4, 5]),
-                     residue_segindex=np.array([0, 1, 2, 0, 1, 1]))
+    ref = topology.TransTable(
+        9, 6, 3,
+        atom_resindex=np.array([0, 0, 1, 1, 2, 2, 3, 4, 5]),
+        residue_segindex=np.array([0, 1, 2, 0, 1, 1])
+    )
     return ref
 
 
@@ -84,6 +86,15 @@ class TestTransTableCopy(object):
         assert new.residues2segments(1) == 1
 
 
+TA_FILLER = {
+    object: np.array(['dave', 'steve', 'hugo'], dtype=object),
+    int: np.array([5, 4, 6]),
+    float: np.array([15.4, 5.7, 22.2]),
+    'bond': [(0, 1), (1, 2), (5, 6)],
+    'angles': [(0, 1, 2), (1, 2, 3), (4, 5, 6)],
+    'dihe': [(0, 1, 2, 3), (1, 2, 3, 4), (5, 6, 7, 8)],
+}
+
 @pytest.fixture(params=[
     (ta.Atomids, int),
     (ta.Atomnames, object),
@@ -108,19 +119,41 @@ class TestTransTableCopy(object):
     (ta.Impropers, 'dihe'),
 ])
 def refTA(request):
-    filler = {
-        object: np.array(['dave', 'steve', 'hugo'], dtype=object),
-        int: np.array([5, 4, 6]),
-        float: np.array([15.4, 5.7, 22.2]),
-        'bond': [(0, 1), (1, 2), (5, 6)],
-        'angles': [(0, 1, 2), (1, 2, 3), (4, 5, 6)],
-        'dihe': [(0, 1, 2, 3), (1, 2, 3, 4), (5, 6, 7, 8)],
-    }
     cls, dt = request.param
-    return cls(filler[dt])
+    return cls(TA_FILLER[dt])
 
 
 def test_copy_attr(refTA):
     new = refTA.copy()
 
     assert new.values is not refTA.values
+
+
+@pytest.fixture()
+def refTop():
+    return topology.Topology(
+        3, 2, 2,
+        attrs = [
+            ta.Atomnames(TA_FILLER[object]),
+            ta.Masses(TA_FILLER[float]),
+            ta.Resids(TA_FILLER[int]),
+            ta.Bonds(TA_FILLER['bond']),
+        ],
+        atom_resindex=np.array([0, 0, 1]),
+        residue_segindex=np.array([0, 1])
+    )
+
+def test_topology_copy_n_attrs(refTop):
+    new = refTop.copy()
+    assert len(new.attrs) == 7  # 4 + 3 indices
+
+@pytest.mark.parametrize('attr', [
+    'names',
+    'masses',
+    'resids',
+    'bonds',
+    'tt',
+])
+def test_topology_copy_unique_attrs(refTop, attr):
+    new = refTop.copy()
+    assert getattr(refTop, attr) is not getattr(new, attr)
