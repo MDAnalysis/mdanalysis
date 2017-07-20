@@ -478,6 +478,18 @@ class Topology(object):
         for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
 
+    def copy(self):
+        """Return a deepcopy of this Topology"""
+        new = self.__class__(1, 1, 1)
+        # copy the tt
+        new.tt = self.tt.copy()
+        # remove indices
+        for attr in self.attrs:
+            if isinstance(attr, (Atomindices, Resindices, Segindices)):
+                continue
+            new.add_TopologyAttr(attr.copy())
+        return new
+
     @property
     def n_atoms(self):
         return self.tt.n_atoms
