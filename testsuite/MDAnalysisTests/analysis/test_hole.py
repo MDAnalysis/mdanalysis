@@ -74,11 +74,11 @@ class TestHOLE(TestCase):
 
     @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_HOLE(self):
-        profiles = self.H.profiles.values()
-        assert_equal(len(profiles), 1,
+        profiles_values = list(self.H.profiles.values())
+        assert_equal(len(profiles_values), 1,
                      err_msg="HOLE.profile should contain exactly 1 profile")
 
-        p = profiles[0]
+        p = profiles_values[0]
 
         assert_equal(len(p), 425,
                      err_msg="wrong number of points in HOLE profile")
