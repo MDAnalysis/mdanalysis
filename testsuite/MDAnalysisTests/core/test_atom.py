@@ -39,8 +39,6 @@ class TestAtom(object):
 
     """Set up the standard AdK system in implicit solvent."""
 
-    known_pos = np.array([3.94543672, -12.4060812, -7.26820087], dtype=np.float32)
-
     @staticmethod
     @pytest.fixture()
     def universe():
@@ -74,9 +72,10 @@ class TestAtom(object):
         assert atom.charge == 6
 
     def test_attributes_positions(self, atom):
+        known_pos = np.array([3.94543672, -12.4060812, -7.26820087], dtype=np.float32)
         a = atom
         # new position property (mutable)
-        assert_almost_equal(a.position, self.known_pos)
+        assert_almost_equal(a.position, known_pos)
         pos = a.position + 3.14
         a.position = pos
         assert_almost_equal(a.position, pos)
