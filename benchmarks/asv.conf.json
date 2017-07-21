@@ -13,7 +13,7 @@
     // benchmarked
     "repo": "..",
     "dvcs": "git",
-    "branches": ["asv_bench"],
+    "branches": ["develop"],
 
     // The base URL to "how a commit for the project.
     //"show_commit_url": "http://github.com/scipy/scipy/commit/",
