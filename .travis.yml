@@ -64,19 +64,16 @@ matrix:
 
     - os: osx
       env: PYTHON_VERSION=3.6
-           INSTALL_HOLE="false"
 
     - os: osx
       env: PYTHON_VERSION=2.7
-           INSTALL_HOLE="false"
 
     - env: NAME='minimal'
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
 
 install:
-  - git clone git://github.com/astropy/ci-helpers.git
-  - source ci-helpers/travis/setup_conda.sh
+  # download hole first to use system curl
   # additional external tools (Issue #898) -- HOLE
   - |
     if [[ $INSTALL_HOLE == 'true' ]]; then \
@@ -84,6 +81,8 @@ install:
         HOLE_BINDIR="${HOME}/hole2/exe"; \
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
+  - git clone git://github.com/astropy/ci-helpers.git
+  - source ci-helpers/travis/setup_conda.sh
   - eval $BUILD_CMD
 
 script:
