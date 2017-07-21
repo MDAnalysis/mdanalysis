@@ -64,9 +64,11 @@ matrix:
 
     - os: osx
       env: PYTHON_VERSION=3.6
+           INSTALL_HOLE="false"
 
     - os: osx
       env: PYTHON_VERSION=2.7
+           INSTALL_HOLE="false"
 
     - env: NAME='minimal'
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
