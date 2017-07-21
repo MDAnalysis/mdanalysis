@@ -28,7 +28,7 @@ env:
     - BUILD_CMD="pip install -v package/ && pip install testsuite/"
     # we need nose for assert_raises and stuff
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis nose"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn clustalw=2.1 netcdf4 scikit-learn"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn clustalw=2.1 netcdf4 scikit-learn coveralls"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
