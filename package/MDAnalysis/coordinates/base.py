@@ -1171,6 +1171,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         # subclasses should now call super
         self._auxs = {}
 
+    def copy(self):
+        return self.__class__(self.filename,
+                              n_atoms=self.n_atoms)
+
     def __len__(self):
         return self.n_frames
 
