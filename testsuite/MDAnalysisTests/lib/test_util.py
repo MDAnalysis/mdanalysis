@@ -36,7 +36,7 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 from six.moves import range, StringIO
 
 
-def test_convert_aa_code_long_data():
+def convert_aa_code_long_data():
     # TODO: Find a clean solution for this.
     aa = [
         ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
@@ -84,7 +84,7 @@ class TestStringFunctions(object):
         with pytest.raises(ValueError):
             util.parse_residue('ZZZ')
 
-    @pytest.mark.parametrize('resname3, resname1', test_convert_aa_code_long_data())
+    @pytest.mark.parametrize('resname3, resname1', convert_aa_code_long_data())
     def test_convert_aa_3to1(self, resname3, resname1):
         assert util.convert_aa_code(resname3) == resname1
 
