@@ -91,11 +91,8 @@ class TestAtom(object):
         assert a.residue == u.residues[66]
 
     def test_bad_add(self, atom):
-        def bad_add():
-            return atom + 1
-
         with pytest.raises(TypeError):
-            bad_add()
+            atom + 1
 
     def test_add_AG(self, universe, atom):
         ag = universe.atoms[:2]
@@ -106,11 +103,8 @@ class TestAtom(object):
             assert at in ag2
 
     def test_no_velo(self, atom):
-        def lookup_velo():
-            return atom.velocity
-
         with pytest.raises(NoDataError):
-            lookup_velo()
+            atom.velocity
 
     def test_bonded_atoms(self, universe):
         at = universe.atoms[0]
