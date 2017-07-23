@@ -21,27 +21,29 @@
 #
 from __future__ import  absolute_import
 import MDAnalysis
-from MDAnalysisTests import module_not_found
+import pytest
 
-from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
+from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
 
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 
-class TestLeafletFinder(TestCase):
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(Martini_membrane_gro, Martini_membrane_gro)
-        self.lipid_heads = self.universe.select_atoms("name PO4")
-        self.lipid_head_string = "name PO4"
 
-    def tearDown(self):
-        del self.universe
-        del self.lipid_heads
-        del self.lipid_head_string
+class TestLeafletFinder(object):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return MDAnalysis.Universe(Martini_membrane_gro, Martini_membrane_gro)
 
-    def test_leaflet_finder(self):
+    @pytest.fixture()
+    def lipid_heads(self, universe):
+        return universe.select_atoms("name PO4")
+
+    lipid_head_string = "name PO4"
+
+    def test_leaflet_finder(self, universe, lipid_heads):
         from MDAnalysis.analysis.leaflet import LeafletFinder
-        lfls = LeafletFinder(self.universe, self.lipid_heads, pbc=True)
+        lfls = LeafletFinder(universe, lipid_heads, pbc=True)
         top_heads, bottom_heads = lfls.groups()
         # Make top be... on top.
         if top_heads.center_of_geometry()[2] < bottom_heads.center_of_geometry()[2]:
@@ -49,19 +51,18 @@ class TestLeafletFinder(TestCase):
         assert_equal(top_heads.indices, np.arange(1,2150,12), err_msg="Found wrong leaflet lipids")
         assert_equal(bottom_heads.indices, np.arange(2521,4670,12), err_msg="Found wrong leaflet lipids")
 
-
-    def test_string_vs_atomgroup_proper(self):
+    def test_string_vs_atomgroup_proper(self, universe, lipid_heads):
         from MDAnalysis.analysis.leaflet import LeafletFinder
-        lfls_ag = LeafletFinder(self.universe, self.lipid_heads, pbc=True)
-        lfls_string = LeafletFinder(self.universe, self.lipid_head_string, pbc=True)
+        lfls_ag = LeafletFinder(universe, lipid_heads, pbc=True)
+        lfls_string = LeafletFinder(universe, self.lipid_head_string, pbc=True)
         groups_ag = lfls_ag.groups()
         groups_string = lfls_string.groups()
         assert_equal(groups_string[0].indices, groups_ag[0].indices)
         assert_equal(groups_string[1].indices, groups_ag[1].indices)
 
-    def test_optimize_cutoff(self):
+    def test_optimize_cutoff(self, universe, lipid_heads):
         from MDAnalysis.analysis.leaflet import optimize_cutoff
-        cutoff, N = optimize_cutoff(self.universe, self.lipid_heads, pbc=True)
-        assert_equal(N, 2)
+        cutoff, N = optimize_cutoff(universe, lipid_heads, pbc=True)
+        assert N == 2
         assert_almost_equal(cutoff, 10.5, decimal=4)
 
