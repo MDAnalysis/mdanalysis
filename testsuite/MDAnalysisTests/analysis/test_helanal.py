@@ -20,19 +20,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-import os
 import re
 
 import numpy as np
-from numpy.testing import (dec, assert_raises, assert_,
-                           assert_equal, assert_array_almost_equal)
-from six.moves import zip
+from numpy.testing import assert_raises,assert_equal, assert_array_almost_equal
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal
 from MDAnalysis import FinishTimeException
-from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
-                                       HELANAL_BENDING_MATRIX)
+from MDAnalysisTests.datafiles import GRO, XTC, PSF, DCD, PDB_small, HELANAL_BENDING_MATRIX
 from MDAnalysisTests import tempdir
 
 # reference data from a single PDB file:
@@ -116,8 +112,7 @@ def test_helanal_trajectory(reference=HELANAL_BENDING_MATRIX,
     u = mda.Universe(PSF, DCD)
     with tempdir.in_tempdir():
         # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
-        MDAnalysis.analysis.helanal.helanal_trajectory(u,
-                                                       selection="name CA and resnum 161-187")
+        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection="name CA and resnum 161-187")
         bendingmatrix = read_bending_matrix(outfile)
         ref = read_bending_matrix(reference)
         assert_equal(sorted(bendingmatrix.keys()), sorted(ref.keys()),
