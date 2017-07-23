@@ -26,7 +26,7 @@ import os
 import MDAnalysis
 import MDAnalysis.analysis.gnm
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import assert_almost_equal
 import numpy as np
 import pytest
 
@@ -44,7 +44,7 @@ class TestGNM(object):
         gnm = MDAnalysis.analysis.gnm.GNMAnalysis(universe, ReportVector=output)
         gnm.run()
         result = gnm.results
-        assert_equal(len(result), 10)
+        assert len(result) == 10
         time, eigenvalues, eigenvectors = zip(*result)
         assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
@@ -56,7 +56,7 @@ class TestGNM(object):
         gnm = MDAnalysis.analysis.gnm.GNMAnalysis(universe)
         gnm.run(step=3)
         result = gnm.results
-        assert_equal(len(result), 4)
+        assert len(result) == 4
         time, eigenvalues, eigenvectors = zip(*result)
         assert_almost_equal(time, np.arange(0, 1200, 300), decimal=4)
         assert_almost_equal(eigenvalues,
@@ -86,7 +86,7 @@ class TestGNM(object):
         gnm.run()
 
         result = gnm.results
-        assert_equal(len(result), 10)
+        assert len(result) == 10
         time, eigenvalues, eigenvectors = zip(*result)
         assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
@@ -117,7 +117,7 @@ class TestGNM(object):
         gnm.run()
 
         result = gnm.results
-        assert_equal(len(result), 10)
+        assert len(result) == 10
         time, eigenvalues, eigenvectors = zip(*result)
         assert_almost_equal(time, np.arange(0, 1000, 100), decimal=4)
         assert_almost_equal(eigenvalues,
@@ -140,12 +140,12 @@ class TestGNM(object):
 
     def test_closeContactGNMAnalysis_default_weights_is_size(self, universe):
         gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(universe)
-        assert_equal(gnm.weights, "size")
+        assert gnm.weights == "size"
 
     def test_closeContactGNMAnalysis_deprecated_MassWeight_False(self, universe):
         gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(universe, MassWeight=False)
-        assert_equal(gnm.weights, None)
+        assert gnm.weights is None
 
     def test_closeContactGNMAnalysis_deprecated_MassWeight_True(self, universe):
         gnm = MDAnalysis.analysis.gnm.closeContactGNMAnalysis(universe, MassWeight=True)
-        assert_equal(gnm.weights, "size")
+        assert gnm.weights == "size"
