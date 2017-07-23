@@ -25,22 +25,21 @@ import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
-from numpy.testing import TestCase, assert_allclose
+from numpy.testing import lassert_allclose
 
 
-class TestLinearDensity(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(waterPSF, waterDCD)
-        self.sel_string = 'all'
-        self.selection = self.universe.select_atoms(self.sel_string)
-
-        self.xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
-                              0., 0., 0., 0.])
-
+class TestLinearDensity(object):
     def test_serial(self):
-        ld = LinearDensity(self.selection, binsize=5).run()
-        assert_allclose(self.xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
+        universe = mda.Universe(waterPSF, waterDCD)
+        sel_string = 'all'
+        selection = universe.select_atoms(sel_string)
 
+        xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
+                              0., 0., 0., 0.])
+        ld = LinearDensity(selection, binsize=5).run()
+        assert_allclose(xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
+
+# TODO: Remove this?!
 #    def test_parallel(self):
 #        ld = LinearDensity(self.universe, self.selection, binsize=5)
 #        ld.run(parallel=True)
