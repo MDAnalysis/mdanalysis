@@ -25,7 +25,7 @@ import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
-from numpy.testing import lassert_allclose
+from numpy.testing import assert_allclose
 
 
 class TestLinearDensity(object):
