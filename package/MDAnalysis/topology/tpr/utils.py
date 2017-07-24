@@ -62,6 +62,7 @@ from ...core.topologyattrs import (
     Charges,
     Resids,
     Resnames,
+    Moltypes,
     Segids,
     Bonds,
     Angles,
@@ -213,6 +214,7 @@ def do_mtop(data, fver):
     resnames = []
     atomnames = []
     atomtypes = []
+    moltypes = []
     charges = []
     masses = []
 
@@ -234,6 +236,7 @@ def do_mtop(data, fver):
                 resnames.append(atomkind.resname.decode())
                 atomnames.append(atomkind.name.decode())
                 atomtypes.append(atomkind.type.decode())
+                moltypes.append(molblock)
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
 
@@ -261,13 +264,18 @@ def do_mtop(data, fver):
     charges = Charges(np.array(charges, dtype=np.float32))
     masses = Masses(np.array(masses, dtype=np.float32))
 
+    moltypes = np.array(moltypes, dtype=object)
     segids = np.array(segids, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
-     (new_resnames, perres_segids)) = squash_by(resids, resnames, segids)
+     (new_resnames, new_moltypes, perres_segids)) = squash_by(resids,
+                                                              resnames,
+                                                              moltypes,
+                                                              segids)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
+    residue_moltypes = Moltypes(new_moltypes)
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
@@ -275,7 +283,7 @@ def do_mtop(data, fver):
     top = Topology(len(atomids), len(new_resids), len(perseg_segids),
                    attrs=[atomids, atomnames, atomtypes,
                           charges, masses,
-                          residueids, residuenames,
+                          residueids, residuenames, residue_moltypes,
                           segids],
                    atom_resindex=residx,
                    residue_segindex=segidx)
