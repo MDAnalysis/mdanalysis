@@ -611,6 +611,12 @@ class ResidueNameSelection(StringSelection):
     field = 'resnames'
 
 
+class MoleculeTypeSelection(StringSelection):
+    """Select atoms based on 'moltypes' attribute"""
+    token = 'moltype'
+    field = 'moltypes'
+
+
 class SegmentNameSelection(StringSelection):
     """Select atoms based on 'segids' attribute"""
     token = 'segid'
