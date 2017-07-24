@@ -34,6 +34,8 @@ Fixes
     (Issue #1476)
   * Accessing segments from a universe with an instant selector now issues a
     deprecation warning as expected (Issue #1478)
+  * Fixed Angle.angle method return NaN values when angle was very close
+    to 180 degrees (Issue #1556)
 
 Changes
   * remove deprecated TimeSeriesCollection

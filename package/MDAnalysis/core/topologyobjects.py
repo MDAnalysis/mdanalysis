@@ -34,8 +34,7 @@ import numbers
 import numpy as np
 import functools
 
-from ..lib.mdamath import norm, dihedral
-from ..lib.mdamath import angle as slowang
+from ..lib import mdamath
 from ..lib.util import cached
 from ..lib import util
 from ..lib import distances
@@ -203,7 +202,7 @@ class Bond(TopologyObject):
                 np.array([self[0].position, self[1].position]),
                 box=box)[0]
         else:
-            return norm(self[0].position - self[1].position)
+            return mdamath.norm(self[0].position - self[1].position)
 
     value = length
 
@@ -236,11 +235,12 @@ class Angle(TopologyObject):
         4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.17.0
+           Fixed angles close to 180 giving NaN
         """
         a = self[0].position - self[1].position
         b = self[2].position - self[1].position
-        return np.rad2deg(
-            np.arccos(np.dot(a, b) / (norm(a) * norm(b))))
+        return np.rad2deg(mdamath.angle(a, b))
 
     value = angle
 
@@ -288,7 +288,7 @@ class Dihedral(TopologyObject):
         ab = A.position - B.position
         bc = B.position - C.position
         cd = C.position - D.position
-        return np.rad2deg(dihedral(ab, bc, cd))
+        return np.rad2deg(mdamath.dihedral(ab, bc, cd))
 
     value = dihedral
 
@@ -861,7 +861,7 @@ class TopologyGroup(object):
                 else:
                     raise ValueError("Only orthogonal boxes supported")
 
-            return np.array([norm(a) for a in bond_dist])
+            return np.array([mdamath.norm(a) for a in bond_dist])
 
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
@@ -898,7 +898,7 @@ class TopologyGroup(object):
         vec1 = self._ags[0].positions - self._ags[1].positions
         vec2 = self._ags[2].positions - self._ags[1].positions
 
-        angles = np.array([slowang(a, b) for a, b in zip(vec1, vec2)])
+        angles = np.array([mdamath.angle(a, b) for a, b in zip(vec1, vec2)])
         return angles
 
     def angles(self, result=None, pbc=False):
@@ -949,7 +949,7 @@ class TopologyGroup(object):
         vec2 = self._ags[2].positions - self._ags[1].positions
         vec3 = self._ags[3].positions - self._ags[2].positions
 
-        return np.array([dihedral(a, b, c)
+        return np.array([mdamath.dihedral(a, b, c)
                          for a, b, c in zip(vec1, vec2, vec3)])
 
     def dihedrals(self, result=None, pbc=False):
