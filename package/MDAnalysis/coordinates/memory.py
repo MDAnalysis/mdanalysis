@@ -280,6 +280,24 @@ class MemoryReader(base.ProtoReader):
                                  .format(provided_n_atoms, self.n_atoms))
 
         self._dimensions_array = np.asanyarray(dimensions)
+        if self._dimensions_array is not None:
+            if (len(self._dimensions_array.shape) == 1
+                    and self._dimensions_array.shape[0] != 6):
+                raise ValueError('The *dimensions* array must be formated as '
+                                 '[A B C alpha beta gamma] but your dimensions '
+                                 'have {} elements.'
+                                 .format(self._dimensions_array.shape[0]))
+            if len(self._dimensions_array.shape) > 1:
+                if self._dimensions_array.shape[0] != self.n_frames):
+                    raise ValueError('The *dimensions* array does not have '
+                                     'the same number of frames as the '
+                                     'positions: {} dimensions frame but '
+                                     '{} positions frame.'
+                                     .format(self._dimensions_array.shape[0],
+                                             self.n_frames))
+                if self._dimensions_array.shape[1] != 6:
+                    raise ValueError('The dimensions for each frame must be '
+                                     'of the form [A B C alpha beta gamma].')
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
         self.ts.frame = -1
