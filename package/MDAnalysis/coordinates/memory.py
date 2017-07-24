@@ -244,20 +244,15 @@ class MemoryReader(base.ProtoReader):
         dimensions: [A, B, C, alpha, beta, gamma] (optional)
             unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
             lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-            angles are in degrees.
+            angles are in degrees. If the unit cell dimensions vary with time,
+            then they can be provided as a 2D array whith each row
+            corresponding to one frame.
         dt: float (optional)
             The time difference between frames (ps).  If :attr:`time`
             is set, then `dt` will be ignored.
         filename: string (optional)
             The name of the file from which this instance is created. Set to ``None``
             when created from an array
-
-        Note
-        ----
-        At the moment, only a fixed `dimension` is supported, i.e., the same
-        unit cell for all frames in `coordinate_array`. See issue `#1041`_.
-
-        .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041
 
         """
 
