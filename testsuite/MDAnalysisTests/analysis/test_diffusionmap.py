@@ -29,61 +29,55 @@ from MDAnalysisTests.datafiles import PDB, XTC
 from numpy.testing import assert_array_almost_equal
 
 
-class TestDiffusionmap(object):
-    @staticmethod
-    @pytest.fixture()
-    def u():
-        return MDAnalysis.Universe(PDB, XTC)
+@pytest.fixture()
+def u():
+    return MDAnalysis.Universe(PDB, XTC)
 
-    @staticmethod
-    @pytest.fixture()
-    def dist(u):
-        return diffusionmap.DistanceMatrix(u, select='backbone')
 
-    @staticmethod
-    @pytest.fixture()
-    def dmap(dist):
-        d_map = diffusionmap.DiffusionMap(dist)
-        d_map.run()
-        return d_map
+@pytest.fixture()
+def dist(u):
+    return diffusionmap.DistanceMatrix(u, select='backbone')
 
-    @staticmethod
-    @pytest.fixture()
-    def eigvals(dmap):
-        return dmap.eigenvalues
 
-    @staticmethod
-    @pytest.fixture()
-    def eigvects(dmap):
-        return dmap._eigenvectors
+@pytest.fixture()
+def dmap(dist):
+    d_map = diffusionmap.DiffusionMap(dist)
+    d_map.run()
+    return d_map
 
-    def test_eg(self, eigvals, dist):
-        # number of frames is trajectory is now 10 vs. 98
-        assert eigvals.shape == (dist.n_frames,)
-        # makes no sense to test values here, no physical meaning
 
-    def test_dist_weights(self, u):
-        backbone = u.select_atoms('backbone')
-        weights_atoms = np.ones(len(backbone.atoms))
-        dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms, step=3)
-        dist.run()
-        dmap = diffusionmap.DiffusionMap(dist)
-        dmap.run()
-        assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
-        assert_array_almost_equal(dmap._eigenvectors,
-                                  ([[0, 0, 1, 0],
-                                    [0, 0, 0, 1],
-                                    [-.707, -.707, 0, 0],
-                                    [.707, -.707, 0, 0]]), 2)
+def test_eg(dist, dmap):
+    eigvals = dmap.eigenvalues
+    # number of frames is trajectory is now 10 vs. 98
+    assert eigvals.shape == (dist.n_frames,)
+    # makes no sense to test values here, no physical meaning
 
-    def test_different_steps(self, u):
-        dmap = diffusionmap.DiffusionMap(u, select='backbone', step=3)
-        dmap.run()
-        assert dmap._eigenvectors.shape == (4, 4)
 
-    def test_transform(self, u, eigvects):
-        n_eigenvectors = 4
-        dmap = diffusionmap.DiffusionMap(u)
-        dmap.run()
-        diffusion_space = dmap.transform(n_eigenvectors, 1)
-        assert diffusion_space.shape == (eigvects.shape[0], n_eigenvectors)
+def test_dist_weights(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms, step=3)
+    dist.run()
+    dmap = diffusionmap.DiffusionMap(dist)
+    dmap.run()
+    assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
+    assert_array_almost_equal(dmap._eigenvectors,
+                              ([[0, 0, 1, 0],
+                                [0, 0, 0, 1],
+                                [-.707, -.707, 0, 0],
+                                [.707, -.707, 0, 0]]), 2)
+
+
+def test_different_steps(u):
+    dmap = diffusionmap.DiffusionMap(u, select='backbone', step=3)
+    dmap.run()
+    assert dmap._eigenvectors.shape == (4, 4)
+
+
+def test_transform(u, dmap):
+    eigvects = dmap._eigenvectors
+    n_eigenvectors = 4
+    dmap = diffusionmap.DiffusionMap(u)
+    dmap.run()
+    diffusion_space = dmap.transform(n_eigenvectors, 1)
+    assert diffusion_space.shape == (eigvects.shape[0], n_eigenvectors)
