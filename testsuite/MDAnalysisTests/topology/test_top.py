@@ -44,13 +44,13 @@ class TOPBase(ParserBase):
                       "resnames"]
     expected_n_segments = 1
 
-    def test_attr_size(self):
-        assert_(len(self.top.names) == self.expected_n_atoms)
-        assert_(len(self.top.types) == self.expected_n_atoms)
-        assert_(len(self.top.type_indices) == self.expected_n_atoms)
-        assert_(len(self.top.charges) == self.expected_n_atoms)
-        assert_(len(self.top.masses) == self.expected_n_atoms)
-        assert_(len(self.top.resnames) == self.expected_n_residues)
+    def test_attr_size(self, top):
+        assert_(len(top.names) == self.expected_n_atoms)
+        assert_(len(top.types) == self.expected_n_atoms)
+        assert_(len(top.type_indices) == self.expected_n_atoms)
+        assert_(len(top.charges) == self.expected_n_atoms)
+        assert_(len(top.masses) == self.expected_n_atoms)
+        assert_(len(top.resnames) == self.expected_n_residues)
 
 
 class TestPRMParser(TOPBase):

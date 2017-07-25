@@ -53,12 +53,12 @@ class TestGMSASYMOPT(GMSBase):
     filename = GMS_ASYMOPT
     expected_n_atoms = 6
 
-    def test_names(self):
-        assert_array_equal(self.top.names.values,
+    def test_names(self, top):
+        assert_array_equal(top.names.values,
                            ['O', 'H', 'H', 'O', 'H', 'H'])
 
-    def test_types(self):
-        assert_array_equal(self.top.atomiccharges.values,
+    def test_types(self, top):
+        assert_array_equal(top.atomiccharges.values,
                            [8, 1, 1, 8, 1, 1])
 
 
@@ -69,12 +69,12 @@ class TestGMSSYMOPT(GMSBase):
     filename = GMS_SYMOPT
     expected_n_atoms = 4
 
-    def test_names(self):
-        assert_array_equal(self.top.names.values,
+    def test_names(self, top):
+        assert_array_equal(top.names.values,
                            ['CARBON', 'CARBON', 'HYDROGEN', 'HYDROGEN'])
 
-    def test_types(self):
-        assert_array_equal(self.top.atomiccharges.values,
+    def test_types(self, top):
+        assert_array_equal(top.atomiccharges.values,
                            [6, 6, 1, 1])
 
 class TestGMSASYMSURF(TestGMSASYMOPT):

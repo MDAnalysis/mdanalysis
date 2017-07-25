@@ -56,9 +56,9 @@ class DLPBase2(DLPUniverse):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    def test_names(self):
-        assert_(self.top.names.values[0] == 'K+')
-        assert_(self.top.names.values[4] == 'Cl-')
+    def test_names(self, top):
+        assert_(top.names.values[0] == 'K+')
+        assert_(top.names.values[4] == 'Cl-')
 
 
 class TestDLPHistoryParser(DLPBase2):
@@ -89,8 +89,8 @@ class DLPBase(DLPUniverse):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    def test_dlp_names(self):
-        assert_array_equal(self.top.names.values,
+    def test_dlp_names(self, top):
+        assert_array_equal(top.names.values,
                            ['C', 'B', 'A'])
 
 

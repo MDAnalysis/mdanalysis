@@ -44,16 +44,16 @@ class TestHoomdXMLParser(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    def test_attr_size(self):
-        assert_(len(self.top.types) == self.top.n_atoms)
-        assert_(len(self.top.charges) == self.top.n_atoms)
-        assert_(len(self.top.masses) == self.top.n_atoms)
+    def test_attr_size(self, top):
+        assert_(len(top.types) == top.n_atoms)
+        assert_(len(top.charges) == top.n_atoms)
+        assert_(len(top.masses) == top.n_atoms)
 
-    def test_bonds(self):
-        assert_(len(self.top.bonds.values) == 704)
+    def test_bonds(self, top):
+        assert_(len(top.bonds.values) == 704)
 
-    def test_angles(self):
-        assert_(len(self.top.angles.values) == 640)
+    def test_angles(self, top):
+        assert_(len(top.angles.values) == 640)
 
-    def test_dihedrals(self):
-        assert_(len(self.top.dihedrals.values) == 576)
+    def test_dihedrals(self, top):
+        assert_(len(top.dihedrals.values) == 576)
