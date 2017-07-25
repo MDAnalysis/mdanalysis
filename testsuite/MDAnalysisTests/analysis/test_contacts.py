@@ -26,10 +26,20 @@ import pytest
 from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
 
-from numpy.testing import assert_almost_equal, assert_array_equal, assert_array_almost_equal
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal
+)
 import numpy as np
 
-from MDAnalysisTests.datafiles import PSF, DCD, contacts_villin_folded, contacts_villin_unfolded, contacts_file
+from MDAnalysisTests.datafiles import (
+    PSF,
+    DCD,
+    contacts_villin_folded,
+    contacts_villin_unfolded,
+    contacts_file
+)
 
 from MDAnalysisTests import tempdir
 
@@ -77,20 +87,28 @@ def test_soft_cut_q_unfolded():
     assert_almost_equal(Q.mean(), 0.0, decimal=1)
 
 
-def test_hard_cut_q():
+@pytest.mark.parametrize('r, cutoff, expected_value', [
+    ([1], 2, 1),
+    ([2], 1, 0),
+    ([2, 0.5], 1, 0.5),
+    ([2, 3], [3, 4], 1),
+    ([4, 5], [3, 4], 0)
+
+])
+def test_hard_cut_q(r, cutoff, expected_value):
     # just check some extremal points
-    assert contacts.hard_cut_q([1], 2) == 1
-    assert contacts.hard_cut_q([2], 1) == 0
-    assert contacts.hard_cut_q([2, 0.5], 1) == 0.5
-    assert contacts.hard_cut_q([2, 3], [3, 4]) == 1
-    assert contacts.hard_cut_q([4, 5], [3, 4]) == 0
+    assert contacts.hard_cut_q(r, cutoff) == expected_value
 
 
-def test_radius_cut_q():
+@pytest.mark.parametrize('r, r0, radius, expected_value', [
+    ([1], None, 2, 1),
+    ([2], None, 1, 0),
+    ([2, 0.5], None, 1, 0.5)
+
+])
+def test_radius_cut_q(r, r0, radius, expected_value):
     # check some extremal points
-    assert contacts.radius_cut_q([1], None, 2) == 1
-    assert contacts.radius_cut_q([2], None, 1) == 0
-    assert contacts.radius_cut_q([2, 0.5], None, 1) == 0.5
+    assert contacts.radius_cut_q(r, r0, radius) == expected_value
 
 
 def test_contact_matrix():
@@ -151,11 +169,6 @@ class TestContacts(object):
     @pytest.fixture()
     def universe():
         return mda.Universe(PSF, DCD)
-
-    @staticmethod
-    @pytest.fixture()
-    def trajectory(universe):
-        return universe.trajectory
 
     def _run_Contacts(self, universe, **kwargs):
         acidic = universe.select_atoms(self.sel_acidic)
