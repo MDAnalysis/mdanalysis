@@ -21,21 +21,26 @@
 #
 from __future__ import print_function, absolute_import
 
-import errno
+from six.moves import range
+import pytest
 
 import MDAnalysis
 import MDAnalysis.analysis.hole
+from MDAnalysis.analysis.hole import HOLEtraj, HOLE
+
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal
+)
+import numpy as np
 import matplotlib
 import mpl_toolkits.mplot3d
-import numpy as np
-import pytest
-from MDAnalysis.analysis.hole import HOLEtraj, HOLE
-from MDAnalysisTests import (executable_not_found, tempdir, in_dir)
+
+import errno
+
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal,
-                           assert_array_equal,
-                           assert_array_almost_equal, assert_)
-from six.moves import range
+from MDAnalysisTests import executable_not_found
 
 
 def rlimits_missing():
@@ -51,20 +56,20 @@ def rlimits_missing():
 
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
-class TestHOLE(TestCase):
+class TestHOLE(object):
     filename = PDB_HOLE
-
-    def setUp(self):
+    
+    @pytest.fixture()
+    def H(self, tmpdir):
         # keep tempdir around for the whole lifetime of the class
-        self.tempdir = tempdir.TempDir()
-        with in_dir(self.tempdir.name):
+        with tmpdir.as_cwd():
             H = HOLE(self.filename, raseed=31415)
             H.run()
             H.collect()
-        self.H = H
+        return H
 
-    def test_HOLE(self):
-        profiles_values = list(self.H.profiles.values())
+    def test_HOLE(self, H):
+        profiles_values = list(H.profiles.values())
         assert len(profiles_values) == 1, "HOLE.profile should contain exactly 1 profile"
 
         p = profiles_values[0]
@@ -73,9 +78,9 @@ class TestHOLE(TestCase):
         assert_almost_equal(p.rxncoord.mean(), -1.41225, err_msg="wrong mean HOLE rxncoord")
         assert_almost_equal(p.radius.min(), 1.19707, err_msg="wrong min HOLE radius")
 
-    def test_vmd_surface(self):
-        with in_dir(self.tempdir.name):
-            filename = self.H.create_vmd_surface(filename="hole.vmd")
+    def test_vmd_surface(self, tmpdir, H):
+        with tmpdir.as_cwd():
+            filename = H.create_vmd_surface(filename="hole.vmd")
             assert len(open(filename).readlines()) == 6504, "HOLE VMD surface file is incomplete"
 
 
@@ -93,8 +98,8 @@ class TestHOLEtraj(object):
         return MDAnalysis.Universe(self.filename)
 
     @pytest.fixture()
-    def H(self, universe):
-        with tempdir.in_tempdir():
+    def H(self, universe, tmpdir):
+        with tmpdir.as_cwd():
             H = HOLEtraj(universe, start=self.start, stop=self.stop, raseed=31415)
             H.run()
         return H
@@ -137,7 +142,7 @@ class TestHOLEtraj(object):
 
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
-class TestHoleModule(TestCase):
+class TestHoleModule(object):
     try:
         # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
         import resource
@@ -151,7 +156,7 @@ class TestHoleModule(TestCase):
         return MDAnalysis.Universe(MULTIPDB_HOLE)
 
     @pytest.mark.skipif(rlimits_missing, reason="Test skipped because platform does not allow setting rlimits")
-    def test_hole_module_fd_closure(self, universe):
+    def test_hole_module_fd_closure(self, universe, tmpdir):
         """test open file descriptors are closed (MDAnalysisTests.analysis.test_hole.TestHoleModule): Issue 129"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
         # the system, and cause many other tests to fail as well.
@@ -179,7 +184,7 @@ class TestHoleModule(TestCase):
         resource.setrlimit(resource.RLIMIT_NOFILE,
                            (max_open_files, self.hard_max_open_files))
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             try:
                 H = HOLEtraj(universe, cvect=[0, 1, 0], sample=20.0)
             finally:
