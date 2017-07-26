@@ -21,17 +21,14 @@
 #
 from __future__ import absolute_import
 
-
+import MDAnalysis as mda
 import pytest
+from MDAnalysis.analysis import nuclinfo
+from MDAnalysisTests.datafiles import NUCL
 from numpy.testing import (
     assert_almost_equal,
     assert_allclose,
 )
-
-import MDAnalysis as mda
-from MDAnalysis.analysis import nuclinfo
-
-from MDAnalysisTests.datafiles import NUCL
 
 
 @pytest.fixture(scope='module')
@@ -39,157 +36,138 @@ def u():
     return mda.Universe(NUCL)
 
 
-def test_wc_pair_1(u):
-    val = nuclinfo.wc_pair(u, 1, 2, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 4.449, decimal=3)
+@pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
+        (1, 2, 'RNAA', 'RNAA', 4.449),
+        (22, 23, 'RNAA', 'RNAA', 4.601)
+))
+def test_wc_pair(u, i, bp, seg1, seg2, expected_value):
+    val = nuclinfo.wc_pair(u, i, bp, seg1=seg1, seg2=seg2)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_wc_pair_2(u):
-    val = nuclinfo.wc_pair(u, 22, 23, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 4.601, decimal=3)
+@pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
+        (3, 17, 'RNAA', 'RNAA', 16.649),
+        (20, 5, 'RNAA', 'RNAA', 4.356)
+))
+def test_minor_pair(u, i, bp, seg1, seg2, expected_value):
+    val = nuclinfo.minor_pair(u, i, bp, seg1=seg1, seg2=seg2)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_minor_pair_1(u):
-    val = nuclinfo.minor_pair(u, 3, 17, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 16.649, decimal=3)
+@pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
+        (2, 12, 'RNAA', 'RNAA', 30.001),
+        (5, 9, 'RNAA', 'RNAA', 12.581)
+))
+def test_major_pair(u, i, bp, seg1, seg2, expected_value):
+    val = nuclinfo.major_pair(u, i, bp, seg1=seg1, seg2=seg2)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_minor_pair_2(u):
-    val = nuclinfo.minor_pair(u, 20, 5, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 4.356, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 9, 14.846),
+        ('RNAA', 21, 16.199)
+))
+def test_phase_cp(u, seg, i, expected_value):
+    val = nuclinfo.phase_cp(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_major_pair_1(u):
-    val = nuclinfo.major_pair(u, 2, 12, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 30.001, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 1, 8.565),
+        ('RNAA', 11, 151.397)
+))
+def test_phase_as(u, seg, i, expected_value):
+    val = nuclinfo.phase_as(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_major_pair_2(u):
-    val = nuclinfo.major_pair(u, 5, 9, seg1='RNAA', seg2='RNAA')
-    assert_almost_equal(val, 12.581, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 5, [296.103016, 179.084427, 47.712818, 81.49588, 205.350479,
+                     284.046562, 198.58165]),
+        ('RNAA', 21, [300.047634, 172.476593, 50.744877, 82.144211, 206.106445,
+                      286.208565, 195.652176])
+))
+def test_tors(u, seg, i, expected_value):
+    val = nuclinfo.tors(u, seg=seg, i=i)
+    assert_allclose(val, expected_value, rtol=1e-03)
 
 
-def test_phase_cp_1(u):
-    val = nuclinfo.phase_cp(u, seg='RNAA', i=9)
-    assert_almost_equal(val, 14.846, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 6, 299.278),
+        ('RNAA', 18, 304.093)
+))
+def test_tors_alpha(u, seg, i, expected_value):
+    val = nuclinfo.tors_alpha(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_phase_cp_2(u):
-    val = nuclinfo.phase_cp(u, seg='RNAA', i=21)
-    assert_almost_equal(val, 16.199, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 7, 177.041),
+        ('RNAA', 15, 162.441)
+))
+def test_tors_beta(u, seg, i, expected_value):
+    val = nuclinfo.tors_beta(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_phase_as_1(u):
-    val = nuclinfo.phase_as(u, seg='RNAA', i=1)
-    assert_almost_equal(val, 8.565, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 7, 47.201),
+        ('RNAA', 15, 64.276)
+))
+def test_tors_gamma(u, seg, i, expected_value):
+    val = nuclinfo.tors_gamma(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_phase_as_2(u):
-    val = nuclinfo.phase_as(u, seg='RNAA', i=11)
-    assert_almost_equal(val, 151.397, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 7, 80.223),
+        ('RNAA', 15, 81.553)
+))
+def test_tors_delta(u, seg, i, expected_value):
+    val = nuclinfo.tors_delta(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_tors_1(u):
-    val = nuclinfo.tors(u, seg='RNAA', i=5)
-    assert_allclose(val, [296.103016, 179.084427,
-                          47.712818, 81.49588, 205.350479,
-                          284.046562, 198.58165], rtol=1e-03)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 7, 207.476),
+        ('RNAA', 15, 202.352)
+))
+def test_tors_eps(u, seg, i, expected_value):
+    val = nuclinfo.tors_eps(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_tors_2(u):
-    val = nuclinfo.tors(u, seg='RNAA', i=21)
-    assert_allclose(val, [300.047634, 172.476593,
-                          50.744877, 82.144211, 206.106445,
-                          286.208565, 195.652176], rtol=1e-03)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 7, 289.429),
+        ('RNAA', 15, 289.318)
+))
+def test_tors_zeta(u, seg, i, expected_value):
+    val = nuclinfo.tors_zeta(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_tors_alpha_1(u):
-    val = nuclinfo.tors_alpha(u, seg='RNAA', i=6)
-    assert_almost_equal(val, 299.278, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 1, 198.601),
+        ('RNAA', 2, 198.932)
+))
+def test_tors_chi(u, seg, i, expected_value):
+    val = nuclinfo.tors_chi(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_tors_alpha_2(u):
-    val = nuclinfo.tors_alpha(u, seg='RNAA', i=18)
-    assert_almost_equal(val, 304.093, decimal=3)
+@pytest.mark.parametrize('seg, i, expected_value', (
+        ('RNAA', 20, 122.689),
+        ('RNAA', 5, 122.965)
+))
+def test_hydroxyl(u, seg, i, expected_value):
+    val = nuclinfo.hydroxyl(u, seg=seg, i=i)
+    assert_almost_equal(val, expected_value, decimal=3)
 
 
-def test_tors_beta_1(u):
-    val = nuclinfo.tors_beta(u, seg='RNAA', i=7)
-    assert_almost_equal(val, 177.041, decimal=3)
-
-
-def test_tors_beta_2(u):
-    val = nuclinfo.tors_beta(u, seg='RNAA', i=15)
-    assert_almost_equal(val, 162.441, decimal=3)
-
-
-def test_tors_gamma_1(u):
-    val = nuclinfo.tors_gamma(u, seg='RNAA', i=7)
-    assert_almost_equal(val, 47.201, decimal=3)
-
-
-def test_tors_gamma_2(u):
-    val = nuclinfo.tors_gamma(u, seg='RNAA', i=15)
-    assert_almost_equal(val, 64.276, decimal=3)
-
-
-def test_tors_delta_1(u):
-    val = nuclinfo.tors_delta(u, seg='RNAA', i=7)
-    assert_almost_equal(val, 80.223, decimal=3)
-
-
-def test_tors_delta_2(u):
-    val = nuclinfo.tors_delta(u, seg='RNAA', i=15)
-    assert_almost_equal(val, 81.553, decimal=3)
-
-
-def test_tors_eps_1(u):
-    val = nuclinfo.tors_eps(u, seg='RNAA', i=7)
-    assert_almost_equal(val, 207.476, decimal=3)
-
-
-def test_tors_eps_2(u):
-    val = nuclinfo.tors_eps(u, seg='RNAA', i=15)
-    assert_almost_equal(val, 202.352, decimal=3)
-
-
-def test_tors_zeta_1(u):
-    val = nuclinfo.tors_zeta(u, seg='RNAA', i=7)
-    assert_almost_equal(val, 289.429, decimal=3)
-
-
-def test_tors_zeta_2(u):
-    val = nuclinfo.tors_zeta(u, seg='RNAA', i=15)
-    assert_almost_equal(val, 289.318, decimal=3)
-
-
-def test_tors_chi_1(u):
-    val = nuclinfo.tors_chi(u, seg='RNAA', i=1)
-    assert_almost_equal(val, 198.601, decimal=3)
-
-
-def test_tors_chi_2(u):
-    val = nuclinfo.tors_chi(u, seg='RNAA', i=2)
-    assert_almost_equal(val, 198.932, decimal=3)
-
-
-def test_hydroxyl_1(u):
-    val = nuclinfo.hydroxyl(u, seg='RNAA', i=20)
-    assert_almost_equal(val, 122.689, decimal=3)
-
-
-def test_hydroxyl_2(u):
-    val = nuclinfo.hydroxyl(u, seg='RNAA', i=5)
-    assert_almost_equal(val, 122.965, decimal=3)
-
-
-def test_pseudo_dihe_baseflip_1(u):
-    val = nuclinfo.pseudo_dihe_baseflip(u, 16, 2, 3, seg1='RNAA', seg2='RNAA',
-                                        seg3='RNAA')
-    assert_almost_equal(val, 308.244, decimal=3)
-
-
-def test_pseudo_dihe_baseflip_2(u):
-    val = nuclinfo.pseudo_dihe_baseflip(u, 8, 9, 10, seg1='RNAA', seg2='RNAA',
-                                        seg3='RNAA')
-    assert_almost_equal(val, 25.224, decimal=3)
+@pytest.mark.parametrize('bp1, bp2, i, seg1, seg2, seg3, expected_value', (
+        (16, 2, 3, 'RNAA', 'RNAA', 'RNAA', 308.244),
+        (8, 9, 10, 'RNAA', 'RNAA', 'RNAA', 25.224),
+))
+def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
+    val = nuclinfo.pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3)
+    assert_almost_equal(val, expected_value, decimal=3)
