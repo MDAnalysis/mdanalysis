@@ -57,13 +57,13 @@ def rlimits_missing():
 
 @pytest.mark.skipif(executable_not_found("hole"), reason="Test skipped because HOLE not found")
 class TestHOLE(object):
-    filename = PDB_HOLE
-    
+    @staticmethod
     @pytest.fixture()
-    def H(self, tmpdir):
+    def H(tmpdir):
         # keep tempdir around for the whole lifetime of the class
         with tmpdir.as_cwd():
-            H = HOLE(self.filename, raseed=31415)
+            filename = PDB_HOLE
+            H = HOLE(filename, raseed=31415)
             H.run()
             H.collect()
         return H
