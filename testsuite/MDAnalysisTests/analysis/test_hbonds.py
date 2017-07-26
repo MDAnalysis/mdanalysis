@@ -47,12 +47,12 @@ def guess_types(names):
 
 class TestHydrogenBondAnalysis(object):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe():
         return MDAnalysis.Universe(PDB_helix)
 
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def values(universe):
         return {
             'num_bb_hbonds': universe.atoms.n_residues - universe.select_atoms('resname PRO').n_residues - 4,
@@ -68,20 +68,21 @@ class TestHydrogenBondAnalysis(object):
         'angle': 150.0,
     }
 
-    def _run(self, universe, **kwargs):
+    @pytest.fixture(scope='class')
+    def h(self, universe):
         kw = self.kwargs.copy()
-        kw.update(kwargs)
+        # kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **kw)
         h.run(verbose=False)
         return h
 
-    def test_helix_backbone(self, universe, values):
-        h = self._run(universe)
+    def test_helix_backbone(self, values, h):
+
         assert len(h.timeseries[0]) == values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds"
         assert h.timesteps, [0.0]
 
-    def test_generate_table(self, universe, values):
-        h = self._run(universe)
+    def test_generate_table(self, values, h):
+
         h.generate_table()
         assert len(h.table) == values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds in table"
         assert isinstance(h.table, np.core.records.recarray)
@@ -118,19 +119,19 @@ ATOM      2  OW  SOL     2       3.024   4.456   4.147  1.00  0.00      SYST H 0
         h.run()
         assert len(h.timeseries) == 10
 
-    def test_count_by_time(self, universe, values):
-        h = self._run(universe)
+    def test_count_by_time(self, values, h):
+
         c = h.count_by_time()
         assert c.tolist(), [(0.0, values['num_bb_hbonds'])]
 
-    def test_count_by_type(self, universe, values):
-        h = self._run(universe)
+    def test_count_by_type(self, values, h):
+
         c = h.count_by_type()
         assert_equal(c.frequency, values['num_bb_hbonds'] * [1.0])
 
     # TODO: Rename
-    def test_count_by_type2(self, universe, values):
-        h = self._run(universe)
+    def test_count_by_type2(self, values, h):
+
         t = h.timesteps_by_type()
         assert_equal(t.time, values['num_bb_hbonds'] * [0.0])
 
