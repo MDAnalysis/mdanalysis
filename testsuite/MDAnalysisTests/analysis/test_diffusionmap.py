@@ -29,17 +29,17 @@ from MDAnalysisTests.datafiles import PDB, XTC
 from numpy.testing import assert_array_almost_equal
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def u():
     return MDAnalysis.Universe(PDB, XTC)
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def dist(u):
     return diffusionmap.DistanceMatrix(u, select='backbone')
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def dmap(dist):
     d_map = diffusionmap.DiffusionMap(dist)
     d_map.run()
