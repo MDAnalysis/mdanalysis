@@ -28,16 +28,15 @@ from MDAnalysis.analysis.lineardensity import LinearDensity
 from numpy.testing import assert_allclose
 
 
-class TestLinearDensity(object):
-    def test_serial(self):
-        universe = mda.Universe(waterPSF, waterDCD)
-        sel_string = 'all'
-        selection = universe.select_atoms(sel_string)
+def test_serial():
+    universe = mda.Universe(waterPSF, waterDCD)
+    sel_string = 'all'
+    selection = universe.select_atoms(sel_string)
 
-        xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
-                              0., 0., 0., 0.])
-        ld = LinearDensity(selection, binsize=5).run()
-        assert_allclose(xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
+    xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
+                          0., 0., 0., 0.])
+    ld = LinearDensity(selection, binsize=5).run()
+    assert_allclose(xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
 
 # TODO: Remove this?!
 #    def test_parallel(self):
