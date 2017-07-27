@@ -24,7 +24,7 @@ import re
 
 import numpy as np
 import pytest
-from numpy.testing import assert_equal, assert_array_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal
@@ -121,7 +121,7 @@ def test_helanal_trajectory(tmpdir, reference=HELANAL_BENDING_MATRIX,
         assert_equal(sorted(bendingmatrix.keys()), sorted(ref.keys()),
                      err_msg="different contents in bending matrix data file")
         for label in ref.keys():
-            assert_array_almost_equal(
+            assert_almost_equal(
                 bendingmatrix[label], ref[label], err_msg="bending matrix "
                 "stats for {0} mismatch".format(label))
 
@@ -135,7 +135,7 @@ def test_helanal_main(reference=HELANAL_SINGLE_DATA):
     assert_equal(sorted(data.keys()), sorted(ref.keys()),
                      err_msg="different contents in data dict")
     for label in ref.keys():
-        assert_array_almost_equal(data[label], ref[label], decimal=4,
+        assert_almost_equal(data[label], ref[label], decimal=4,
                                   err_msg="data[{0}] mismatch".format(label))
 
 
