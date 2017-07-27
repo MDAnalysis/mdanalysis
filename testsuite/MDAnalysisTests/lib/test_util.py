@@ -23,7 +23,6 @@ from __future__ import absolute_import, division
 
 
 from six.moves import range, StringIO
-import six
 import pytest
 
 import numpy as np
@@ -42,7 +41,6 @@ from MDAnalysisTests.datafiles import Make_Whole
 
 
 def convert_aa_code_long_data():
-    # TODO: Find a clean solution for this.
     aa = [
         ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
         ('K', ('LYS', 'LYSH', 'LYN')),
@@ -53,12 +51,10 @@ def convert_aa_code_long_data():
         ('Q', ('GLN',)),
         ('C', ('CYS', 'CYSH', 'CYS1', 'CYS2')),
     ]
-    data = []
     for resname1, strings in aa:
         for resname3 in strings:
-            data.append((resname3, resname1))
+            yield (resname3, resname1)
 
-    return data
 
 
 class TestStringFunctions(object):
@@ -589,12 +585,8 @@ class TestGuessFormat(object):
         ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
         ('XTC', None, mda.coordinates.XTC.XTCReader),
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
+        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
     ]
-    if six.PY2:
-        # TRZ is not supported on Python 3 yet
-        formats += [
-            ('TRZ', None, mda.coordinates.TRZ.TRZReader),
-        ]
     # list of possible compressed extensions
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
@@ -816,11 +808,8 @@ class TestGetWriterFor(object):
         ('TRR', mda.coordinates.TRR.TRRWriter, True, True),
         ('XTC', mda.coordinates.XTC.XTCWriter, True, True),
         ('XYZ', mda.coordinates.XYZ.XYZWriter, True, True),
+        ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
     ]
-    if six.PY2:
-        formats += [
-            ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
-        ]
 
     @pytest.mark.parametrize('format, writer', [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
                                                 format_tuple[2] is True])
