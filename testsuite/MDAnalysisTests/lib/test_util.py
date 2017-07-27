@@ -21,19 +21,24 @@
 #
 from __future__ import absolute_import, division
 
-import MDAnalysis as mda
-import MDAnalysis.lib.mdamath as mdamath
-import MDAnalysis.lib.util as util
-import numpy as np
-import pytest
+
+from six.moves import range, StringIO
 import six
-from MDAnalysis.core.topologyattrs import Bonds
-from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.lib.util import cached
-from MDAnalysisTests.datafiles import Make_Whole
+import pytest
+
+import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_array_equal)
-from six.moves import range, StringIO
+
+import MDAnalysis as mda
+import MDAnalysis.lib.util as util
+import MDAnalysis.lib.mdamath as mdamath
+from MDAnalysis.lib.util import cached
+from MDAnalysis.core.topologyattrs import Bonds
+from MDAnalysis.exceptions import NoDataError
+
+
+from MDAnalysisTests.datafiles import Make_Whole
 
 
 def convert_aa_code_long_data():
@@ -54,6 +59,7 @@ def convert_aa_code_long_data():
             data.append((resname3, resname1))
 
     return data
+
 
 class TestStringFunctions(object):
     # (1-letter, (canonical 3 letter, other 3/4 letter, ....))
@@ -92,13 +98,13 @@ class TestStringFunctions(object):
     def test_convert_aa_1to3(self, resname1, strings):
         assert util.convert_aa_code(resname1) == strings[0]
 
-    def test_VE_1(self):
+    @pytest.mark.parametrize('x', (
+        'XYZXYZ',
+        '£'
+    ))
+    def test_ValueError(self, x):
         with pytest.raises(ValueError):
-            util.convert_aa_code('XYZXYZ')
-
-    def test_VE_2(self):
-        with pytest.raises(ValueError):
-            util.convert_aa_code('£')
+            util.convert_aa_code(x)
 
 
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
@@ -133,12 +139,12 @@ class TestFilename(object):
         (filename, None, False, filename),
         (filename, ext, False, filename2),
         (filename, ext, True, filename),
-        (root, ext, False, filename),
+        (root, ext, False, filename2),
         (root, ext, True, filename2)
     ])
     def test_string(self, name, ext, keep, actual_name):
         file_name = util.filename(name, ext, keep)
-        assert file_name, actual_name #TODO: why is a comma here?
+        assert file_name == actual_name
 
     def test_named_stream(self):
         ns = util.NamedStream(StringIO(), self.filename)
