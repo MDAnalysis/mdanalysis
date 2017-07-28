@@ -415,7 +415,7 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 1556)
 
 
-class TestSelectionsXTC(TestCase):
+class TestSelectionsTPR(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
@@ -430,6 +430,11 @@ class TestSelectionsXTC(TestCase):
         assert_array_equal(
             sel.indices, self.universe.atoms[0].fragment.indices,
             "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
+
+    def test_moltype(self):
+        sel = self.universe.select_atoms("moltype NA+")
+        ref = np.array([47677, 47678, 47679, 47680], dtype=np.int32)
+        assert_array_equal(sel.ids, ref)
 
 
 class TestSelectionsNucleicAcids(TestCase):

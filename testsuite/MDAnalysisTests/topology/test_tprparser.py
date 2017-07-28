@@ -20,8 +20,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import assert_
+from numpy.testing import assert_, assert_array_equal
 import functools
+
+import numpy as np
 
 from MDAnalysis.tests.datafiles import (
     TPR,
@@ -36,8 +38,14 @@ import MDAnalysis.topology.TPRParser
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'moltypes']
     guessed_attrs = ['elements']
+
+    def test_moltypes(self):
+        moltypes = self.top.moltypes.values
+        assert_array_equal(moltypes, self.ref_moltypes)
+
+
 
 
 class TestTPR(TPRAttrs):
@@ -51,6 +59,8 @@ class TestTPR(TPRAttrs):
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 3
+    ref_moltypes = np.array(['AKeco'] * 214 + ['SOL'] * 11084 + ['NA+'] * 4,
+                            dtype=object)
 
 
 # The follow test the same system grompped by different version of gromacs
@@ -61,6 +71,7 @@ class TPRBase(TPRAttrs):
     expected_n_atoms = 2263
     expected_n_residues = 230
     expected_n_segments = 2
+    ref_moltypes = np.array(['Protein_A'] * 129 + ['SOL'] * 101, dtype=object)
 
 
 # All these classes should be generated in a loop.
@@ -146,6 +157,10 @@ class TPRDouble(TPRAttrs):
     expected_n_atoms = 21692
     expected_n_residues = 4352
     expected_n_segments = 7
+    ref_moltypes = np.array(['DOPC'] * 21 + ['DPPC'] * 10 + ['CHOL'] * 3
+                            + ['DOPC'] * 21 + ['DPPC'] * 10 + ['CHOL'] * 3
+                            + ['SOL'] * 4284,
+                            dtype=object)
 
 class TestTPR455Double(TPRDouble):
 
@@ -158,6 +173,11 @@ class TPR46xBase(TPRAttrs):
     expected_n_atoms = 44052
     expected_n_residues = 10712
     expected_n_segments = 8
+    ref_moltypes = np.array(['Protein_A'] * 27 + ['Protein_B'] * 27
+                            + ['Protein_C'] * 27 + ['Protein_D'] * 27
+                            + ['Protein_E'] * 27
+                            + ['SOL'] * 10530 + ['NA+'] * 26 + ['CL-'] * 21,
+                            dtype=object)
 
 
 class TestTPR460(TPR46xBase):

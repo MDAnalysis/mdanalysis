@@ -1225,6 +1225,16 @@ class ICodes(ResidueAttr):
     singular = 'icode'
 
 
+class Moltypes(ResidueAttr):
+    """Name of the molecule type
+
+    Two molecules that share a molecule type share a common template topology.
+    """
+    attrname = 'moltypes'
+    singular = 'moltype'
+    target_classes = [Atom, Residue]
+
+
 # segment attributes
 
 class SegmentAttr(TopologyAttr):

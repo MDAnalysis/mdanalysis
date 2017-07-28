@@ -1826,6 +1826,9 @@ class AtomGroup(GroupBase):
                 which is often the case with high-resolution crystal structures
                 e.g. `resid 4 and resname ALA and altloc B` selects only the
                 atoms of ALA-4 that have an altloc B record.
+            moltype *molecule-type*
+                select by molecule type, e.g. ``moltype Protein_A``. At the
+                moment, only the TPR format defines the molecule type.
 
         **Boolean**
 
@@ -1944,6 +1947,8 @@ class AtomGroup(GroupBase):
            Resid selection now takes icodes into account where present.
         .. versionadded:: 0.16.0
            Updating selections now possible by setting the ``updating`` argument.
+        .. versionadded:: 0.17.0
+           Added *moltype* selection.
 
         """
         updating = selgroups.pop('updating', False)
