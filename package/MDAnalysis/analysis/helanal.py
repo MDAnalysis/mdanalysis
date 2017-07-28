@@ -731,7 +731,7 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
             logger.debug("Big Screw Up: screw_angle=%g degrees", np.rad2deg(screw_angle))
 
     if mdamath.norm(updown) == 0:
-        logger.warn("PROBLEM (vector is at 0 or 180)")
+        logger.warning("PROBLEM (vector is at 0 or 180)")
 
     helix_dot_rehelix = mdamath.angle(updown, helix_vector)
 

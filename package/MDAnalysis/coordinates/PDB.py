@@ -578,8 +578,8 @@ class PDBWriter(base.WriterBase):
             if not self.has_END:
                 self.END()
             else:
-                logger.warn("END record has already been written"
-                            " before the final closing of the file")
+                logger.warning("END record has already been written"
+                               " before the final closing of the file")
             self.pdbfile.close()
         self.pdbfile = None
 

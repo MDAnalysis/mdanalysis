@@ -363,7 +363,7 @@ class Density(Grid):
 
         if self.parameters['isDensity']:
             msg = "Running make_density() makes no sense: Grid is already a density. Nothing done."
-            logger.warn(msg)
+            logger.warning(msg)
             warnings.warn(msg)
             return
 
@@ -931,7 +931,7 @@ class BfactorDensityCreator(object):
             # with the appropriate B-factor
             if np.any(group.bfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
-                logger.warn(wmsg)
+                logger.warning(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
             rmsf = Bfactor2RMSF(group.bfactors)
             grid *= 0.0  # reset grid
