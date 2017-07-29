@@ -40,6 +40,7 @@ from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, waterPSF, waterDCD
 from MDAnalysis.topology.core import guess_atom_type
 from MDAnalysis.core.topologyattrs import Atomtypes
 
+
 def guess_types(names):
     """GRO doesn't supply types, this returns an Attr"""
     return Atomtypes(np.array([guess_atom_type(name) for name in names], dtype=object))
@@ -286,7 +287,12 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
     @pytest.fixture()
     def normalized_timeseries(self, h):
-        return self._normalize_timeseries(h)
+        # timeseries in normalized form: (t, d_indx1, a_indx1, d_index0, a_index0, donor, acceptor, dist, angle)
+        #                   array index:  0     1        2        3         4        5      6        7      8
+        timeseries = [[t] + item
+                      for t, hframe in zip(h.timesteps, h.timeseries)
+                      for item in hframe]
+        return timeseries
 
     # keys are the names in the h.table
     reference = {
@@ -317,14 +323,6 @@ class TestHydrogenBondAnalysisTIP3P(object):
         'mean': np.mean,
         'std': np.std,
     }
-
-    def _normalize_timeseries(self, h):
-        # timeseries in normalized form: (t, d_indx1, a_indx1, d_index0, a_index0, donor, acceptor, dist, angle)
-        #                   array index:  0     1        2        3         4        5      6        7      8
-        timeseries = [[t] + item
-                      for t, hframe in zip(h.timesteps, h.timeseries)
-                      for item in hframe]
-        return timeseries
 
     def test_timeseries(self, h, normalized_timeseries):
         h = h
