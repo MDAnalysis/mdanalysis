@@ -21,155 +21,185 @@
 #
 from __future__ import print_function, absolute_import
 
+import pytest
 import scipy
 import scipy.spatial
 
 import MDAnalysis
-from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import GRO
-from MDAnalysisTests.util import block_import
 
 import MDAnalysis.analysis.distances
 
-from numpy.testing import TestCase, assert_equal, dec
+from numpy.testing import assert_equal
 import numpy as np
 
-import warnings
-import sys
 
+class TestContactMatrix(object):
+    @staticmethod
+    @pytest.fixture()
+    def coord():
+        return np.array([[1, 1, 1],
+                      [5, 5, 5],
+                      [1.1, 1.1, 1.1],
+                      [11, 11, 11],  # neighboring image with pbc
+                      [21, 21, 21]],  # non neighboring image with pbc
+                     dtype=np.float32)
+    
+    @staticmethod
+    @pytest.fixture()
+    def box():
+        return np.array([10, 10, 10], dtype=np.float32)
+    
+    @staticmethod
+    @pytest.fixture()
+    def shape():
+        return 5, 5
+    
+    @staticmethod
+    @pytest.fixture()
+    def res_no_pbc():
+        return np.array([[1, 0, 1, 0, 0],
+                           [0, 1, 0, 0, 0],
+                           [1, 0, 1, 0, 0],
+                           [0, 0, 0, 1, 0],
+                           [0, 0, 0, 0, 1]], dtype=np.bool)
+    
+    @staticmethod
+    @pytest.fixture()
+    def res_pbc():
+        return np.array([[1, 0, 1, 1, 1],
+                        [0, 1, 0, 0, 0],
+                        [1, 0, 1, 1, 1],
+                        [1, 0, 1, 1, 1],
+                        [1, 0, 1, 1, 1]], dtype=np.bool)
 
-class TestContactMatrix(TestCase):
-
-    def setUp(self):
-        import MDAnalysis.analysis.distances
-        self.coord = np.array([[1, 1, 1],
-                                  [5, 5, 5],
-                                  [1.1, 1.1, 1.1],
-                                  [11, 11, 11],  # neighboring image with pbc
-                                  [21, 21, 21]],  # non neighboring image with pbc
-                                 dtype=np.float32)
-        self.box = np.array([10, 10, 10], dtype=np.float32)
-        self.shape = (5, 5)
-        self.res_no_pbc = np.array([[1, 0, 1, 0, 0],
-                                       [0, 1, 0, 0, 0],
-                                       [1, 0, 1, 0, 0],
-                                       [0, 0, 0, 1, 0],
-                                       [0, 0, 0, 0, 1]], dtype=np.bool)
-        self.res_pbc = np.array([[1, 0, 1, 1, 1],
-                                    [0, 1, 0, 0, 0],
-                                    [1, 0, 1, 1, 1],
-                                    [1, 0, 1, 1, 1],
-                                    [1, 0, 1, 1, 1]], dtype=np.bool)
-
-    def test_np(self):
+    def test_np(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
-            self.coord, cutoff=1, returntype="numpy")
-        assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {0})".format(self.shape))
-        assert_equal(contacts, self.res_no_pbc)
+            coord, cutoff=1, returntype="numpy"
+        )
+        assert contacts.shape == shape, \
+            "wrong shape (should be {0})".format(shape)
+        assert_equal(contacts, res_no_pbc)
 
-    def test_sparse(self):
+    def test_sparse(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
-            self.coord, cutoff=1.5, returntype="sparse")
-        assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {0})".format(self.shape))
-        assert_equal(contacts.toarray(), self.res_no_pbc)
+            coord, cutoff=1.5, returntype="sparse"
+        )
+        assert contacts.shape == shape, \
+            "wrong shape (should be {0})".format(shape)
+        assert_equal(contacts.toarray(), res_no_pbc)
 
-    def test_box_numpy(self):
+    def test_box_numpy(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
-            self.coord, box=self.box, cutoff=1)
-        assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {0})".format(self.shape))
-        assert_equal(contacts, self.res_pbc)
+            coord, box=box, cutoff=1
+        )
+        assert contacts.shape == shape, \
+            "wrong shape (should be {0})".format(shape)
+        assert_equal(contacts, res_pbc)
 
-    def test_box_sparse(self):
+    def test_box_sparse(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
-            self.coord, box=self.box, cutoff=1, returntype='sparse')
-        assert_equal(contacts.shape, self.shape,
-                     "wrong shape (should be {0})".format(self.shape))
-        assert_equal(contacts.toarray(), self.res_pbc)
+            coord, box=box, cutoff=1, returntype='sparse'
+        )
+        assert contacts.shape == shape, \
+            "wrong shape (should be {0})".format(shape)
+        assert_equal(contacts.toarray(), res_pbc)
 
-class TestDist(TestCase):
-    def setUp(self):
-        self.u = MDAnalysis.Universe(GRO)
-        self.ag = self.u.atoms[:20]
-        self.u2 = MDAnalysis.Universe(GRO)
-        self.ag2 = self.u2.atoms[:20]
-        self.ag2.positions = np.random.shuffle(self.ag2.positions)
-        self.expected = np.diag(scipy.spatial.distance.cdist(
-                                                self.ag.positions,
-                                                self.ag2.positions))
 
-    def tearDown(self):
-        del self.u
-        del self.ag
-        del self.u2
-        del self.ag2
-        del self.expected
+class TestDist(object):
 
-    def test_pairwise_dist(self):
+    @staticmethod
+    @pytest.fixture()
+    def ag():
+        u = MDAnalysis.Universe(GRO)
+        return u.atoms[:20]
+
+    # TODO: How are ag and ag2 different?!
+    @staticmethod
+    @pytest.fixture()
+    def ag2():
+        u2 = MDAnalysis.Universe(GRO)
+        return u2.atoms[:20]
+
+    @staticmethod
+    @pytest.fixture()
+    def expected(ag, ag2):
+        np.random.shuffle(ag2.positions)
+        return np.diag(scipy.spatial.distance.cdist(
+            ag.positions, ag2.positions)
+        )
+
+    def test_pairwise_dist(self, ag, ag2, expected):
         '''Ensure that pairwise distances between atoms are
         correctly calculated.'''
-        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2)[2]
-        assert_equal(actual, self.expected)
+        actual = MDAnalysis.analysis.distances.dist(ag, ag2)[2]
+        assert_equal(actual, expected)
 
-    def test_pairwise_dist_offset_effect(self):
+    def test_pairwise_dist_offset_effect(self, ag, ag2, expected):
         '''Test that feeding in offsets to dist() doesn't alter
         pairwise distance matrix.'''
-        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2,
-                                                    offset=229)[2]
-        assert_equal(actual, self.expected)
+        actual = MDAnalysis.analysis.distances.dist(
+            ag, ag2, offset=229)[2]
+        assert_equal(actual, expected)
 
 
-    def test_offset_calculation(self):
+    def test_offset_calculation(self, ag, ag2):
         '''Test that offsets fed to dist() are correctly calculated.'''
-        actual = MDAnalysis.analysis.distances.dist(self.ag, self.ag2,
-                offset=33)[:2]
-        assert_equal(actual, np.array([self.ag.atoms.resids + 33,
-                                       self.ag2.atoms.resids + 33]))
+        actual = MDAnalysis.analysis.distances.dist(ag, ag2,
+                                                    offset=33)[:2]
+        assert_equal(actual, np.array([ag.atoms.resids + 33,
+                                       ag2.atoms.resids + 33]))
 
-    def test_mismatch_exception(self):
+    def test_mismatch_exception(self, ag, ag2, expected):
         '''A ValueError should be raised if the two atomgroups
         don't have the same number of atoms.'''
-        with self.assertRaises(ValueError):
-            MDAnalysis.analysis.distances.dist(self.ag[:19], self.ag2)
+        with pytest.raises(ValueError):
+            MDAnalysis.analysis.distances.dist(ag[:19], ag2)
 
-class TestBetween(TestCase):
-    def setUp(self):
-        self.u = MDAnalysis.Universe(GRO)
-        self.ag = self.u.atoms[:10]
-        self.ag2 = self.u.atoms[12:33]
-        self.group = self.u.atoms[40:]
-        self.distance = 5.9
-        self.distance_matrix_1 = scipy.spatial.distance.cdist(self.group.positions,
-                                                              self.ag.positions)
-        self.mask_1 = np.unique(np.where(self.distance_matrix_1 <= self.distance)[0])
-        self.group_filtered = self.group[self.mask_1]
-        self.distance_matrix_2 = scipy.spatial.distance.cdist(self.group_filtered.positions,
-                                                              self.ag2.positions)
-        self.mask_2 = np.unique(np.where(self.distance_matrix_2 <= self.distance)[0])
-        self.expected = self.group_filtered[self.mask_2].indices
 
-    def tearDown(self):
-        del self.u
-        del self.ag
-        del self.ag2
-        del self.group
-        del self.distance
-        del self.distance_matrix_1
-        del self.distance_matrix_2
-        del self.mask_1
-        del self.mask_2
-        del self.group_filtered
-        del self.expected
+class TestBetween(object):
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return MDAnalysis.Universe(GRO)
 
-    def test_between_simple_case_indices_only(self):
+    @staticmethod
+    @pytest.fixture()
+    def ag(u):
+        return u.atoms[:10]
+
+    @staticmethod
+    @pytest.fixture()
+    def ag2(u):
+        return u.atoms[12:33]
+
+    @staticmethod
+    @pytest.fixture()
+    def group(u):
+        return u.atoms[40:]
+
+    distance = 5.9
+
+    @pytest.fixture()
+    def expected(self, group, ag, ag2):
+        distance_matrix_1 = scipy.spatial.distance.cdist(group.positions,
+                                                         ag.positions)
+        mask_1 = np.unique(np.where(distance_matrix_1 <= self.distance)[0])
+        group_filtered = group[mask_1]
+        distance_matrix_2 = scipy.spatial.distance.cdist(group_filtered.positions,
+                                                         ag2.positions)
+        mask_2 = np.unique(np.where(distance_matrix_2 <= self.distance)[0])
+        return group_filtered[mask_2].indices
+
+    def test_between_simple_case_indices_only(self, group, ag, ag2, expected):
         '''Test MDAnalysis.analysis.distances.between() for
         a simple input case. Checks the sorted atom indices
         of returned AtomGroup against sorted expected index
         values.'''
-        actual = sorted(MDAnalysis.analysis.distances.between(self.group,
-                                                              self.ag,
-                                                              self.ag2,
-                                                              self.distance).indices)
-        assert_equal(actual, self.expected)
+        actual = sorted(MDAnalysis.analysis.distances.between(
+            group,
+            ag,
+            ag2,
+            self.distance
+        ).indices)
+        assert_equal(actual, expected)
