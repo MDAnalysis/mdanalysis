@@ -20,57 +20,64 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function, absolute_import
-from unittest import TestCase
-import numpy as np
+
 import MDAnalysis
 import MDAnalysis.analysis.diffusionmap as diffusionmap
-from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal,raises)
-
-
+import numpy as np
+import pytest
 from MDAnalysisTests.datafiles import PDB, XTC
+from numpy.testing import assert_array_almost_equal
 
 
-class TestDiffusionmap(TestCase):
-    def setUp(self):
-        self.u = MDAnalysis.Universe(PDB, XTC)
-        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone')
-        self.dmap = diffusionmap.DiffusionMap(self.dist)
-        self.dmap.run()
-        self.eigvals = self.dmap.eigenvalues
-        self.eigvects = self.dmap._eigenvectors
+@pytest.fixture(scope='module')
+def u():
+    return MDAnalysis.Universe(PDB, XTC)
 
-    def test_eg(self):
-        # number of frames is trajectory is now 10 vs. 98
-        assert_equal(self.eigvals.shape, (self.dist.n_frames, ))
-        # makes no sense to test values here, no physical meaning
 
-    def test_dist_weights(self):
-        backbone = self.u.select_atoms('backbone')
-        weights_atoms = np.ones(len(backbone.atoms))
-        self.dist = diffusionmap.DistanceMatrix(self.u, select='backbone',
-                                                weights=weights_atoms,
-                                                step=3)
-        self.dist.run()
-        self.dmap = diffusionmap.DiffusionMap(self.dist)
-        self.dmap.run()
-        assert_array_almost_equal(self.dmap.eigenvalues, [1,1,1,1], 4)
-        assert_array_almost_equal(self.dmap._eigenvectors,
-                                  ([[ 0, 0, 1, 0],
-                                    [ 0, 0, 0, 1],
-                                    [ -.707,-.707, 0, 0],
-                                    [  .707,-.707, 0, 0]]) ,2)
+@pytest.fixture(scope='module')
+def dist(u):
+    return diffusionmap.DistanceMatrix(u, select='backbone')
 
-    def test_different_steps(self):
-        self.dmap = diffusionmap.DiffusionMap(self.u, select='backbone', step=3)
-        self.dmap.run()
-        assert_equal(self.dmap._eigenvectors.shape, (4,4))
 
-    def test_transform(self):
-        self.n_eigenvectors = 4
-        self.dmap = diffusionmap.DiffusionMap(self.u)
-        self.dmap.run()
-        diffusion_space = self.dmap.transform(self.n_eigenvectors,1)
-        assert_equal(diffusion_space.shape,
-                     (self.eigvects.shape[0],
-                      self.n_eigenvectors))
+@pytest.fixture(scope='module')
+def dmap(dist):
+    d_map = diffusionmap.DiffusionMap(dist)
+    d_map.run()
+    return d_map
+
+
+def test_eg(dist, dmap):
+    eigvals = dmap.eigenvalues
+    # number of frames is trajectory is now 10 vs. 98
+    assert eigvals.shape == (dist.n_frames,)
+    # makes no sense to test values here, no physical meaning
+
+
+def test_dist_weights(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms, step=3)
+    dist.run()
+    dmap = diffusionmap.DiffusionMap(dist)
+    dmap.run()
+    assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
+    assert_array_almost_equal(dmap._eigenvectors,
+                              ([[0, 0, 1, 0],
+                                [0, 0, 0, 1],
+                                [-.707, -.707, 0, 0],
+                                [.707, -.707, 0, 0]]), 2)
+
+
+def test_different_steps(u):
+    dmap = diffusionmap.DiffusionMap(u, select='backbone', step=3)
+    dmap.run()
+    assert dmap._eigenvectors.shape == (4, 4)
+
+
+def test_transform(u, dmap):
+    eigvects = dmap._eigenvectors
+    n_eigenvectors = 4
+    dmap = diffusionmap.DiffusionMap(u)
+    dmap.run()
+    diffusion_space = dmap.transform(n_eigenvectors, 1)
+    assert diffusion_space.shape == (eigvects.shape[0], n_eigenvectors)
