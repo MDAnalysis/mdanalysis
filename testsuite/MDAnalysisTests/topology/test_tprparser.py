@@ -41,8 +41,8 @@ class TPRAttrs(ParserBase):
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'moltypes']
     guessed_attrs = ['elements']
 
-    def test_moltypes(self):
-        moltypes = self.top.moltypes.values
+    def test_moltypes(self, top):
+        moltypes = top.moltypes.values
         assert_array_equal(moltypes, self.ref_moltypes)
 
 
