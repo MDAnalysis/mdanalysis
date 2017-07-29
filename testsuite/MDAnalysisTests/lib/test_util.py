@@ -42,7 +42,8 @@ from MDAnalysisTests.datafiles import Make_Whole
 
 def convert_aa_code_long_data():
     aa = [
-        ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+        ('H',
+         ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
         ('K', ('LYS', 'LYSH', 'LYN')),
         ('A', ('ALA',)),
         ('D', ('ASP', 'ASPH', 'ASH')),
@@ -56,11 +57,11 @@ def convert_aa_code_long_data():
             yield (resname3, resname1)
 
 
-
 class TestStringFunctions(object):
     # (1-letter, (canonical 3 letter, other 3/4 letter, ....))
     aa = [
-        ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+        ('H',
+         ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
         ('K', ('LYS', 'LYSH', 'LYN')),
         ('A', ('ALA',)),
         ('D', ('ASP', 'ASPH', 'ASH')),
@@ -82,7 +83,7 @@ class TestStringFunctions(object):
     def test_parse_residue(self, rstring, residue):
         assert util.parse_residue(rstring) == residue
 
-    def test_parse_residue_VE(self):
+    def test_parse_residue_ValueError(self):
         with pytest.raises(ValueError):
             util.parse_residue('ZZZ')
 
@@ -95,8 +96,8 @@ class TestStringFunctions(object):
         assert util.convert_aa_code(resname1) == strings[0]
 
     @pytest.mark.parametrize('x', (
-        'XYZXYZ',
-        '£'
+            'XYZXYZ',
+            '£'
     ))
     def test_ValueError(self, x):
         with pytest.raises(ValueError):
@@ -159,12 +160,12 @@ class TestGeometryFunctions(object):
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         # Unit vectors
-        (e1, e2, np.pi/2),
-        (e1, a, np.pi/3),
+        (e1, e2, np.pi / 2),
+        (e1, a, np.pi / 3),
         # Angle vectors
-        (2*e1, e2, np.pi/2),
-        (-2*e1, e2, np.pi - np.pi / 2),
-        (23.3*e1, a, np.pi/3),
+        (2 * e1, e2, np.pi / 2),
+        (-2 * e1, e2, np.pi - np.pi / 2),
+        (23.3 * e1, a, np.pi / 3),
         # Null vector
         (e1, null, np.nan),
         # Coleniar
@@ -185,7 +186,6 @@ class TestGeometryFunctions(object):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
-
 
     @pytest.mark.parametrize('vector, value', [
         (e3, 1),
@@ -261,13 +261,11 @@ class TestMakeWhole(object):
             mdamath.make_whole(ag)
 
     def test_zero_box_size(self, universe, ag):
-
         universe.dimensions = [0., 0., 0., 90., 90., 90.]
         with pytest.raises(ValueError):
             mdamath.make_whole(ag)
 
     def test_too_small_box_size(self, universe, ag):
-
         # Set the z dimensions to 0.5, which is small compared to the
         # bonds (1-2)
         universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
@@ -290,7 +288,8 @@ class TestMakeWhole(object):
 
     def test_walk_2(self, universe):
         # u.atoms isnt all contiguous
-        assert not mdamath._is_contiguous(universe.atoms, universe.residues[0].atoms[0])
+        assert not mdamath._is_contiguous(universe.atoms,
+                                          universe.residues[0].atoms[0])
 
     def test_solve_1(self, universe, ag):
         # regular usage of function
@@ -530,15 +529,18 @@ class TestFixedwidthBins(object):
         for k in ['Nbins', 'delta', 'min', 'max']:
             assert k in ret
 
-    def test_VE(self):
+    def test_ValueError(self):
         with pytest.raises(ValueError):
             util.fixedwidth_bins(0.1, 5.0, 4.0)
 
-    @pytest.mark.parametrize('delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max', [
-        (0.1, 4.0, 5.0, 10, 0.1, 4.0, 5.0),
-        (0.4, 4.0, 5.0, 3, 0.4, 3.9, 5.1)
-    ])
-    def test_usage(self, delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max):
+    @pytest.mark.parametrize(
+        'delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max',
+        [
+            (0.1, 4.0, 5.0, 10, 0.1, 4.0, 5.0),
+            (0.4, 4.0, 5.0, 3, 0.4, 3.9, 5.1)
+        ])
+    def test_usage(self, delta, xmin, xmax, output_Nbins, output_delta,
+                   output_min, output_max):
         ret = util.fixedwidth_bins(delta, xmin, xmax)
         assert ret['Nbins'] == output_Nbins
         assert ret['delta'] == output_delta
@@ -591,8 +593,11 @@ class TestGuessFormat(object):
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
-    @pytest.mark.parametrize('extention', [format_tuple[0].upper() for format_tuple in formats] +
-                             [format_tuple[0].lower() for format_tuple in formats])
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
     def test_get_extention(self, extention):
         """Check that get_ext works"""
         file_name = 'file.{0}'.format(extention)
@@ -601,8 +606,11 @@ class TestGuessFormat(object):
         assert a == 'file'
         assert b == extention.lower()
 
-    @pytest.mark.parametrize('extention', [format_tuple[0].upper() for format_tuple in formats] +
-                             [format_tuple[0].lower() for format_tuple in formats])
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
     def test_compressed_without_compression_extention(self, extention):
         """Check that format suffixed by compressed extension works"""
         file_name = 'file.{0}'.format(extention)
@@ -610,8 +618,11 @@ class TestGuessFormat(object):
         # expect answer to always be uppercase
         assert a == extention.upper()
 
-    @pytest.mark.parametrize('extention', [format_tuple[0].upper() for format_tuple in formats] +
-                             [format_tuple[0].lower() for format_tuple in formats])
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_compressed(self, extention, compression_extention):
         """Check that format suffixed by compressed extension works"""
@@ -621,8 +632,9 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-                             [format_tuple[0].upper() for format_tuple in formats] + [format_tuple[0].lower() for
-                                                                                      format_tuple in formats])
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] + [format_tuple[0].lower() for
+                                          format_tuple in formats])
     def test_guess_format(self, extention):
         file_name = 'file.{0}'.format(extention)
         a = util.guess_format(file_name)
@@ -630,8 +642,9 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention',
-                             [format_tuple[0].upper() for format_tuple in formats] + [format_tuple[0].lower() for
-                                                                                      format_tuple in formats])
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] + [format_tuple[0].lower() for
+                                          format_tuple in formats])
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
     def test_guess_format_compressed(self, extention, compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
@@ -640,7 +653,8 @@ class TestGuessFormat(object):
         assert a == extention.upper()
 
     @pytest.mark.parametrize('extention, parser',
-                             [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
                               format_tuple[1] is not None]
                              )
     def test_get_parser(self, extention, parser):
@@ -650,18 +664,22 @@ class TestGuessFormat(object):
         assert a == parser
 
     @pytest.mark.parametrize('extention, parser',
-                             [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
                               format_tuple[1] is not None]
                              )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
-    def test_get_parser_compressed(self, extention, parser, compression_extention):
+    def test_get_parser_compressed(self, extention, parser,
+                                   compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
         a = mda.topology.core.get_parser_for(file_name)
 
         assert a == parser
 
     @pytest.mark.parametrize('extention',
-                             [(format_tuple[0], format_tuple[1]) for format_tuple in formats if format_tuple[1] is None]
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[1] is None]
                              )
     def test_get_parser_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
@@ -669,7 +687,8 @@ class TestGuessFormat(object):
             mda.topology.core.get_parser_for(file_name)
 
     @pytest.mark.parametrize('extention, reader',
-                             [(format_tuple[0], format_tuple[2]) for format_tuple in formats if
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
                               format_tuple[2] is not None]
                              )
     def test_get_reader(self, extention, reader):
@@ -679,33 +698,37 @@ class TestGuessFormat(object):
         assert a == reader
 
     @pytest.mark.parametrize('extention, reader',
-                             [(format_tuple[0], format_tuple[2]) for format_tuple in formats if
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
                               format_tuple[2] is not None]
                              )
     @pytest.mark.parametrize('compression_extention', compressed_extensions)
-    def test_get_reader_compressed(self, extention, reader, compression_extention):
+    def test_get_reader_compressed(self, extention, reader,
+                                   compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
         a = mda.coordinates.core.get_reader_for(file_name)
 
         assert a == reader
 
     @pytest.mark.parametrize('extention',
-                             [(format_tuple[0], format_tuple[2]) for format_tuple in formats if format_tuple[2] is None]
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
+                              format_tuple[2] is None]
                              )
     def test_get_reader_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
         with pytest.raises(ValueError):
             mda.coordinates.core.get_reader_for(file_name)
 
-    def test_check_compressed_format_TE(self):
+    def test_check_compressed_format_TypeError(self):
         with pytest.raises(TypeError):
             util.check_compressed_format(1234, 'bz2')
 
-    def test_format_from_filename_TE(self):
+    def test_format_from_filename_TypeError(self):
         with pytest.raises(TypeError):
             util.format_from_filename_extension(1234)
 
-    def test_guess_format_stream_VE(self):
+    def test_guess_format_stream_ValueError(self):
         # This stream has no name, so can't guess format
         s = StringIO('this is a very fun file')
         with pytest.raises(ValueError):
@@ -755,48 +778,53 @@ class TestGetWriterFor(object):
         # Make sure ``get_writer_for`` behave as expected if *filename*
         # has no extension
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(filename = 'test', format=None)
+            mda.coordinates.core.get_writer_for(filename='test', format=None)
 
     def test_wrong_format(self):
         # Make sure ``get_writer_for`` fails if the format is unknown
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK')
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK')
 
     def test_compressed_extension(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
             writer = mda.coordinates.core.get_writer_for(filename=fn)
             assert writer == mda.coordinates.GRO.GROWriter
-        # Make sure ``get_writer_for`` works with compressed file file names
+            # Make sure ``get_writer_for`` works with compressed file file names
 
     def test_compressed_extension_fail(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.unk' + ext
             # Make sure ``get_writer_for`` fails if an unknown format is compressed
             with pytest.raises(TypeError):
-                mda.coordinates.core.get_writer_for(filename = fn)
+                mda.coordinates.core.get_writer_for(filename=fn)
 
     def test_non_string_filename(self):
         # Does ``get_writer_for`` fails with non string filename, no format
         with pytest.raises(ValueError):
-            mda.coordinates.core.get_writer_for(filename = StringIO(), format = None)
+            mda.coordinates.core.get_writer_for(filename=StringIO(),
+                                                format=None)
 
     def test_multiframe_failure(self):
         # does ``get_writer_for`` fail with invalid format and multiframe not None
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK', multiframe = True)
-            mda.coordinates.core.get_writer_for(filename = "fail_me", format = 'UNK', multiframe = False)
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK', multiframe=True)
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK', multiframe=False)
 
     def test_multiframe_nonsense(self):
         with pytest.raises(ValueError):
-            mda.coordinates.core.get_writer_for(filename = 'this.gro', multiframe = 'sandwich')
+            mda.coordinates.core.get_writer_for(filename='this.gro',
+                                                multiframe='sandwich')
 
     formats = [
         # format name, related class, singleframe, multiframe
         ('CRD', mda.coordinates.CRD.CRDWriter, True, False),
         ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
         ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
-        #('ENT', mda.coordinates.PDB.PDBWriter, True, False),
+        # ('ENT', mda.coordinates.PDB.PDBWriter, True, False),
         ('GRO', mda.coordinates.GRO.GROWriter, True, False),
         ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
         ('MOL2', mda.coordinates.MOL2.MOL2Writer, True, True),
@@ -811,34 +839,47 @@ class TestGetWriterFor(object):
         ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
     ]
 
-    @pytest.mark.parametrize('format, writer', [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
-                                                format_tuple[2] is True])
+    @pytest.mark.parametrize('format, writer',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[2] is True])
     def test_singleframe(self, format, writer):
-        assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=False) == writer
+        assert mda.coordinates.core.get_writer_for('this', format=format,
+                                                   multiframe=False) == writer
 
-    @pytest.mark.parametrize('format', [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
+    @pytest.mark.parametrize('format', [(format_tuple[0], format_tuple[1]) for
+                                        format_tuple in formats if
                                         format_tuple[2] is False])
     def test_singleframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for('this', format=format, multiframe=False)
+            mda.coordinates.core.get_writer_for('this', format=format,
+                                                multiframe=False)
 
     @pytest.mark.parametrize('format, writer',
-                             [(format_tuple[0], format_tuple[1]) for format_tuple in formats if
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
                               format_tuple[3] is True])
     def test_multiframe(self, format, writer):
-        assert mda.coordinates.core.get_writer_for('this', format=format, multiframe=True) == writer
+        assert mda.coordinates.core.get_writer_for('this', format=format,
+                                                   multiframe=True) == writer
 
     @pytest.mark.parametrize('format',
-                             [format_tuple[0] for format_tuple in formats if format_tuple[3] is False])
+                             [format_tuple[0] for format_tuple in formats if
+                              format_tuple[3] is False])
     def test_multiframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for('this', format=format, multiframe=True)
+            mda.coordinates.core.get_writer_for('this', format=format,
+                                                multiframe=True)
 
     def test_get_writer_for_pdb(self):
-        assert mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False) == mda.coordinates.PDB.PDBWriter
-        assert mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
-        assert mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=False) == mda.coordinates.PDB.PDBWriter
-        assert mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='PDB',
+                                                   multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='PDB',
+                                                   multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT',
+                                                   multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT',
+                                                   multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
 
 
 class TestBlocksOf(object):
@@ -850,7 +891,8 @@ class TestBlocksOf(object):
         # should return a (4, 1, 1) view
         # ie 4 lots of 1x1
         assert view.shape == (4, 1, 1)
-        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
+        assert_array_almost_equal(view,
+                                  np.array([[[0]], [[5]], [[10]], [[15]]]))
 
         # Change my view, check changes are reflected in arr
         view[:] = 1001
@@ -888,7 +930,7 @@ class TestBlocksOf(object):
 
         assert view.shape == (4, 2, 1)
 
-    def test_blocks_of_VE(self):
+    def test_blocks_of_ValueError(self):
         arr = np.arange(16).reshape(4, 4)
         with pytest.raises(ValueError):
             util.blocks_of(arr, 2, 1)
@@ -904,7 +946,7 @@ class TestNamespace(object):
         ns.this = 42
         assert ns['this'] == 42
 
-    def test_getitem_KE(self, ns):
+    def test_getitem_KeyError(self, ns):
         with pytest.raises(KeyError):
             dict.__getitem__(ns, 'this')
 
@@ -919,12 +961,9 @@ class TestNamespace(object):
         del ns['this']
         assert 'this' not in ns
 
-    def test_delitem_AE(self, ns):
-        def deller():
-            del ns.this
-
+    def test_delitem_AttributeError(self, ns):
         with pytest.raises(AttributeError):
-            deller()
+            del ns.this
 
     def test_setattr(self, ns):
         ns.this = 42
@@ -936,7 +975,7 @@ class TestNamespace(object):
 
         assert ns.this == 42
 
-    def test_getattr_AE(self, ns):
+    def test_getattr_AttributeError(self, ns):
         with pytest.raises(AttributeError):
             getattr(ns, 'this')
 
