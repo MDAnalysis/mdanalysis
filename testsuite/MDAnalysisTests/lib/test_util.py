@@ -21,14 +21,13 @@
 #
 from __future__ import absolute_import, division
 
-from unittest import TestCase
 
 from six.moves import range, StringIO
-import six
+import pytest
 
 import numpy as np
-from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_, assert_array_equal)
+from numpy.testing import (assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_array_equal)
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
@@ -41,22 +40,28 @@ from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests.datafiles import Make_Whole
 
 
-def check_parse_residue(rstring, residue):
-    assert_equal(util.parse_residue(rstring), residue)
-
-
-def check_convert_aa_3to1(resname3, resname1):
-    assert_equal(util.convert_aa_code(resname3), resname1)
-
-
-def check_convert_aa_1to3(resname1, resname3_canonical):
-    assert_equal(util.convert_aa_code(resname1), resname3_canonical)
+def convert_aa_code_long_data():
+    aa = [
+        ('H',
+         ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+        ('K', ('LYS', 'LYSH', 'LYN')),
+        ('A', ('ALA',)),
+        ('D', ('ASP', 'ASPH', 'ASH')),
+        ('E', ('GLU', 'GLUH', 'GLH')),
+        ('N', ('ASN',)),
+        ('Q', ('GLN',)),
+        ('C', ('CYS', 'CYSH', 'CYS1', 'CYS2')),
+    ]
+    for resname1, strings in aa:
+        for resname3 in strings:
+            yield (resname3, resname1)
 
 
 class TestStringFunctions(object):
     # (1-letter, (canonical 3 letter, other 3/4 letter, ....))
     aa = [
-        ('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+        ('H',
+         ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
         ('K', ('LYS', 'LYSH', 'LYN')),
         ('A', ('ALA',)),
         ('D', ('ASP', 'ASPH', 'ASH')),
@@ -74,165 +79,148 @@ class TestStringFunctions(object):
         ("M1:CA", ("MET", 1, "CA")),
     ]
 
-    def test_parse_residue(self):
-        for rstring, residue in self.residues:
-            yield check_parse_residue, rstring, residue
+    @pytest.mark.parametrize('rstring, residue', residues)
+    def test_parse_residue(self, rstring, residue):
+        assert util.parse_residue(rstring) == residue
 
-    def test_parse_residue_VE(self):
-        assert_raises(ValueError, util.parse_residue, 'ZZZ')
+    def test_parse_residue_ValueError(self):
+        with pytest.raises(ValueError):
+            util.parse_residue('ZZZ')
 
-    def test_convert_aa_code_long(self):
-        for resname1, strings in self.aa:
-            for resname3 in strings:
-                yield check_convert_aa_3to1, resname3, resname1
+    @pytest.mark.parametrize('resname3, resname1', convert_aa_code_long_data())
+    def test_convert_aa_3to1(self, resname3, resname1):
+        assert util.convert_aa_code(resname3) == resname1
 
-    def test_convert_aa_code_short(self):
-        for resname1, strings in self.aa:
-            yield check_convert_aa_1to3, resname1, strings[0]
+    @pytest.mark.parametrize('resname1, strings', aa)
+    def test_convert_aa_1to3(self, resname1, strings):
+        assert util.convert_aa_code(resname1) == strings[0]
 
-    def test_VE_1(self):
-        assert_raises(ValueError, util.convert_aa_code, 'XYZXYZ')
+    @pytest.mark.parametrize('x', (
+            'XYZXYZ',
+            '£'
+    ))
+    def test_ValueError(self, x):
+        with pytest.raises(ValueError):
+            util.convert_aa_code(x)
 
-    def test_VE_2(self):
-        assert_raises(ValueError, util.convert_aa_code, '£')
 
 def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
                          ref=("foo/bar/boing", ".2.pdb.bz2")):
     root, ext = util.greedy_splitext(inp)
-    assert_equal(root, ref[0], err_msg="root incorrect")
-    assert_equal(ext, ref[1], err_msg="extension incorrect")
-
-class TestIterable(object):
-    def test_lists(self):
-        assert_equal(util.iterable([1, 2, 3]), True)
-        assert_equal(util.iterable([]), True)
-
-    def test_tuples(self):
-        assert_equal(util.iterable((1, 2, 3)), True)
-        assert_equal(util.iterable(()), True)
-
-    def test_iterator(self):
-        assert_equal(util.iterable(range(3)), True)
-
-    def test_arrays(self):
-        assert_equal(util.iterable(np.array([1, 2, 3])), True)
-
-    def test_scalars(self):
-        assert_equal(util.iterable(123), False)
-
-    def test_strings(self):
-        """Test that iterable() works on any string (Fixed bug)"""
-        assert_equal(util.iterable("byte string"), False)
-        assert_equal(util.iterable(u"unicode string"), False)
+    assert root == ref[0], "root incorrect"
+    assert ext == ref[1], "extension incorrect"
 
 
-class TestFilename(TestCase):
-    def setUp(self):
-        self.root = "foo"
-        self.filename = "foo.psf"
-        self.ext = "pdb"
-        self.filename2 = "foo.pdb"
+@pytest.mark.parametrize('iterable, value', [
+    ([1, 2, 3], True),
+    ([], True),
+    ((1, 2, 3), True),
+    ((), True),
+    (range(3), True),
+    (np.array([1, 2, 3]), True),
+    (123, False),
+    ("byte string", False),
+    (u"unicode string", False)
+])
+def test_iterable(iterable, value):
+    assert util.iterable(iterable) == value
 
-    def testStringNoExt(self):
-        fn = util.filename(self.filename)
-        assert_equal(fn, self.filename)
 
-    def testStringExt(self):
-        fn = util.filename(self.filename, ext=self.ext)
-        assert_equal(fn, self.filename2)
+class TestFilename(object):
+    root = "foo"
+    filename = "foo.psf"
+    ext = "pdb"
+    filename2 = "foo.pdb"
 
-    def testStringKeep(self):
-        fn = util.filename(self.filename, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename)
+    @pytest.mark.parametrize('name, ext, keep, actual_name', [
+        (filename, None, False, filename),
+        (filename, ext, False, filename2),
+        (filename, ext, True, filename),
+        (root, ext, False, filename2),
+        (root, ext, True, filename2)
+    ])
+    def test_string(self, name, ext, keep, actual_name):
+        file_name = util.filename(name, ext, keep)
+        assert file_name == actual_name
 
-    def testStringRootExt(self):
-        fn = util.filename(self.root, ext=self.ext)
-        assert_equal(fn, self.filename2)
-
-    def testStringRootExtKeep(self):
-        fn = util.filename(self.root, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename2)
-
-    def testNamedStream(self):
+    def test_named_stream(self):
         ns = util.NamedStream(StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:
-            raise AssertionError("fn and ns are different")
-        assert_equal(str(fn), self.filename2)
-        assert_equal(ns.name, self.filename2)
+            pytest.fail("fn and ns are different")
+        assert str(fn) == self.filename2
+        assert ns.name == self.filename2
 
 
-class TestGeometryFunctions(TestCase):
-    def setUp(self):
-        self.e1 = np.array([1., 0, 0])
-        self.e2 = np.array([0, 1., 0])
-        self.e3 = np.array([0, 0, 1.])
-        self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
-        self.null = np.zeros(3)
+class TestGeometryFunctions(object):
+    e1, e2, e3 = np.eye(3)
+    a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
+    null = np.zeros(3)
 
-    def test_AngleUnitvectors(self):
-        assert_equal(mdamath.angle(self.e1, self.e2), np.pi / 2)
-        assert_equal(mdamath.angle(self.e1, self.a), np.pi / 3)
+    @pytest.mark.parametrize('x_axis, y_axis, value', [
+        # Unit vectors
+        (e1, e2, np.pi / 2),
+        (e1, a, np.pi / 3),
+        # Angle vectors
+        (2 * e1, e2, np.pi / 2),
+        (-2 * e1, e2, np.pi - np.pi / 2),
+        (23.3 * e1, a, np.pi / 3),
+        # Null vector
+        (e1, null, np.nan),
+        # Coleniar
+        (a, a, 0.0)
+    ])
+    def test_vectors(self, x_axis, y_axis, value):
+        assert_equal(mdamath.angle(x_axis, y_axis), value)
 
-    def test_AngleVectors(self):
-        assert_equal(mdamath.angle(2 * self.e1, self.e2), np.pi / 2)
-        assert_equal(mdamath.angle(-2 * self.e1, self.e2), np.pi - np.pi / 2)
-        assert_equal(mdamath.angle(23.3 * self.e1, self.a), np.pi / 3)
+    @pytest.mark.parametrize('x_axis, y_axis, value', [
+        (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
+        (2.3456e7 * e1, 3.4567e-6 * e1, 0.0)
+    ])
+    def test_angle_pi(self, x_axis, y_axis, value):
+        assert_almost_equal(mdamath.angle(x_axis, y_axis), value)
 
-    def test_AngleNullVector(self):
-        assert_equal(mdamath.angle(self.e1, self.null), np.nan)
-
-    def test_AngleColinear(self):
-        assert_equal(mdamath.angle(self.a, self.a), 0.0)
-
-    def test_AnglePi(self):
-        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), np.pi)
-        assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
-
-    def _check_AngleRange(self, x):
+    @pytest.mark.parametrize('x', np.linspace(0, np.pi, 20))
+    def test_angle_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
-    def test_AngleRange(self):
-        for x in np.linspace(0, np.pi, 20):
-            yield self._check_AngleRange, x
+    @pytest.mark.parametrize('vector, value', [
+        (e3, 1),
+        (a, np.linalg.norm(a)),
+        (null, 0.0)
+    ])
+    def test_norm(self, vector, value):
+        assert mdamath.norm(vector) == value
 
-    def test_Norm(self):
-        assert_equal(mdamath.norm(self.e3), 1)
-        assert_equal(mdamath.norm(self.a), np.linalg.norm(self.a))
-
-    def test_NormNullVector(self):
-        assert_equal(mdamath.norm(self.null), 0.0)
-
-    def _check_NormRange(self, x):
+    @pytest.mark.parametrize('x', np.linspace(0, np.pi, 20))
+    def test_norm_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.norm(v), r, 6)
 
-    def test_NormRange(self):
-        for x in np.linspace(0, np.pi, 20):
-            yield self._check_NormRange, x
-
-    def test_Normal(self):
-        assert_equal(mdamath.normal(self.e1, self.e2), self.e3)
+    @pytest.mark.parametrize('vec1, vec2, value', [
+        (e1, e2, e3),
+        (e1, null, 0.0)
+    ])
+    def test_normal(self, vec1, vec2, value):
+        assert_equal(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
-    def testNormalNullVector(self):
-        assert_equal(mdamath.normal(self.e1, self.null), 0.0)
-
-    def testStp(self):
-        assert_equal(mdamath.stp(self.e1, self.e2, self.e3), 1.0)
+    def test_stp(self):
+        assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
         # add more non-trivial tests
 
-    def testDihedral(self):
+    def test_dihedral(self):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
         assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
-class TestMakeWhole(TestCase):
+
+class TestMakeWhole(object):
     """Set up a simple system:
 
     +-----------+
@@ -245,138 +233,131 @@ class TestMakeWhole(TestCase):
     |           |
     +-----------+
     """
-    def setUp(self):
-        self.u = mda.Universe(Make_Whole)
-        self.ag = self.u.residues[0].atoms
 
-    def tearDown(self):
-        del self.u
+    @pytest.fixture()
+    def universe(self):
+        universe = mda.Universe(Make_Whole)
+        bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
+        universe.add_TopologyAttr(Bonds(bondlist))
+        return universe
+
+    @staticmethod
+    @pytest.fixture()
+    def ag(universe):
+        return universe.residues[0].atoms
 
     def test_no_bonds(self):
         # NoData caused by no bonds
-        assert_raises(NoDataError, mdamath.make_whole, self.ag)
+        universe = mda.Universe(Make_Whole)
+        ag = universe.residues[0].atoms
+        with pytest.raises(NoDataError):
+            mdamath.make_whole(ag)
 
-    def test_not_orthogonal(self):
+    def test_not_orthogonal(self, universe, ag):
         # Not an orthogonal unit cell
-        self._load_bonds()
 
-        self.u.dimensions = [10., 10., 10., 80., 80., 80]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
+        universe.dimensions = [10., 10., 10., 80., 80., 80]
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
-    def test_zero_box_size(self):
-        self._load_bonds()
+    def test_zero_box_size(self, universe, ag):
+        universe.dimensions = [0., 0., 0., 90., 90., 90.]
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
-        self.u.dimensions = [0., 0., 0., 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
-
-    def test_too_small_box_size(self):
-        self._load_bonds()
-
+    def test_too_small_box_size(self, universe, ag):
         # Set the z dimensions to 0.5, which is small compared to the
         # bonds (1-2)
-        self.u.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
-        assert_raises(ValueError, mdamath.make_whole, self.ag)
+        universe.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag)
 
-    def _load_bonds(self):
-        # Load some bonds into Universe, not required for all tests
-        bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
-        self.u.add_TopologyAttr(Bonds(bondlist))
-
-    def test_wrong_reference_atom(self):
+    def test_wrong_reference_atom(self, universe, ag):
         # Reference atom not in atomgroup
-        self._load_bonds()
-        assert_raises(ValueError, mdamath.make_whole, self.ag,
-                      reference_atom=self.u.atoms[-1])
+        with pytest.raises(ValueError):
+            mdamath.make_whole(ag, reference_atom=universe.atoms[-1])
 
-    def test_impossible_solve(self):
+    def test_impossible_solve(self, universe):
         # check that the algorithm sees the bad walk
-        self._load_bonds()
-        assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(universe.atoms)
 
-    def test_walk_1(self):
-        self._load_bonds()
+    def test_walk_1(self, universe, ag):
         # self.ag is contiguous
-        assert_(mdamath._is_contiguous(
-            self.ag, self.u.residues[0].atoms[0]))
+        assert mdamath._is_contiguous(ag, universe.residues[0].atoms[0])
 
-    def test_walk_2(self):
-        self._load_bonds()
+    def test_walk_2(self, universe):
         # u.atoms isnt all contiguous
-        assert_(not mdamath._is_contiguous(
-            self.u.atoms, self.u.residues[0].atoms[0]))
+        assert not mdamath._is_contiguous(universe.atoms,
+                                          universe.residues[0].atoms[0])
 
-    def test_solve_1(self):
+    def test_solve_1(self, universe, ag):
         # regular usage of function
-        self._load_bonds()
 
-        refpos = self.u.atoms[:4].positions.copy()
+        refpos = universe.atoms[:4].positions.copy()
 
-        mdamath.make_whole(self.ag)
+        mdamath.make_whole(ag)
 
-        assert_array_almost_equal(self.u.atoms[:4].positions, refpos)
-        assert_array_almost_equal(self.u.atoms[4].position,
+        assert_array_almost_equal(universe.atoms[:4].positions, refpos)
+        assert_array_almost_equal(universe.atoms[4].position,
                                   np.array([110.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[5].position,
+        assert_array_almost_equal(universe.atoms[5].position,
                                   np.array([110.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[6].position,
+        assert_array_almost_equal(universe.atoms[6].position,
                                   np.array([110.0, 40.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[7].position,
+        assert_array_almost_equal(universe.atoms[7].position,
                                   np.array([120.0, 50.0, 0.0]))
 
-    def test_solve_2(self):
+    def test_solve_2(self, universe, ag):
         # use but specify the center atom
-        self._load_bonds()
 
-        refpos = self.u.atoms[4:8].positions.copy()
+        refpos = universe.atoms[4:8].positions.copy()
 
-        mdamath.make_whole(self.ag,
-                           reference_atom=self.u.residues[0].atoms[4])
+        mdamath.make_whole(ag, reference_atom=universe.residues[0].atoms[4])
 
-        assert_array_almost_equal(self.u.atoms[4:8].positions, refpos)
-        assert_array_almost_equal(self.u.atoms[0].position,
+        assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
+        assert_array_almost_equal(universe.atoms[0].position,
                                   np.array([-20.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[1].position,
+        assert_array_almost_equal(universe.atoms[1].position,
                                   np.array([-10.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[2].position,
+        assert_array_almost_equal(universe.atoms[2].position,
                                   np.array([-10.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[3].position,
+        assert_array_almost_equal(universe.atoms[3].position,
                                   np.array([-10.0, 40.0, 0.0]))
 
-    def test_solve_3(self):
+    def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
-        self._load_bonds()
 
-        refpos = self.u.atoms[:1].positions.copy()
+        refpos = universe.atoms[:1].positions.copy()
 
-        mdamath.make_whole(self.u.atoms[:1])
+        mdamath.make_whole(universe.atoms[:1])
 
-        assert_array_almost_equal(self.u.atoms[:1].positions, refpos)
+        assert_array_almost_equal(universe.atoms[:1].positions, refpos)
 
-    def test_solve_4(self):
+    def test_solve_4(self, universe):
         # Put in only some of a fragment,
         # check that not everything gets moved
-        self._load_bonds()
 
-        chunk = self.u.atoms[:7]
-        refpos = self.u.atoms[7].position.copy()
+        chunk = universe.atoms[:7]
+        refpos = universe.atoms[7].position.copy()
 
         mdamath.make_whole(chunk)
 
-        assert_array_almost_equal(self.u.atoms[7].position, refpos)
-        assert_array_almost_equal(self.u.atoms[4].position,
+        assert_array_almost_equal(universe.atoms[7].position, refpos)
+        assert_array_almost_equal(universe.atoms[4].position,
                                   np.array([110.0, 50.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[5].position,
+        assert_array_almost_equal(universe.atoms[5].position,
                                   np.array([110.0, 60.0, 0.0]))
-        assert_array_almost_equal(self.u.atoms[6].position,
+        assert_array_almost_equal(universe.atoms[6].position,
                                   np.array([110.0, 40.0, 0.0]))
 
-    def test_double_frag_short_bonds(self):
+    def test_double_frag_short_bonds(self, universe, ag):
         # previous bug where if two fragments are given
         # but all bonds were short, the algorithm didn't
         # complain
-        self._load_bonds()
-        mdamath.make_whole(self.ag)
-        assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
+        mdamath.make_whole(ag)
+        with pytest.raises(ValueError):
+            mdamath.make_whole(universe.atoms)
 
 
 class Class_with_Caches(object):
@@ -444,128 +425,128 @@ class Class_with_Caches(object):
         self._cache[name] = value
 
 
-class TestCachedDecorator(TestCase):
-    def setUp(self):
-        self.obj = Class_with_Caches()
+class TestCachedDecorator(object):
+    @pytest.fixture()
+    def obj(self):
+        return Class_with_Caches()
 
-    def tearDown(self):
-        del self.obj
+    def test_val1_lookup(self, obj):
+        obj._clear_caches()
+        assert 'val1' not in obj._cache
+        assert obj.val1() == obj.ref1
+        ret = obj.val1()
+        assert 'val1' in obj._cache
+        assert obj._cache['val1'] == ret
+        assert obj.val1() is obj._cache['val1']
 
-    def test_val1_lookup(self):
-        self.obj._clear_caches()
-        assert_equal('val1' in self.obj._cache, False)
-        assert_equal(self.obj.val1(), self.obj.ref1)
-        ret = self.obj.val1()
-        assert_equal('val1' in self.obj._cache, True)
-        assert_equal(self.obj._cache['val1'], ret)
-        assert_equal(self.obj.val1() is self.obj._cache['val1'], True)
-
-    def test_val1_inject(self):
+    def test_val1_inject(self, obj):
         # Put something else into the cache and check it gets returned
         # this tests that the cache is blindly being used
-        self.obj._clear_caches()
-        ret = self.obj.val1()
-        assert_equal('val1' in self.obj._cache, True)
-        assert_equal(ret, self.obj.ref1)
+        obj._clear_caches()
+        ret = obj.val1()
+        assert 'val1' in obj._cache
+        assert ret == obj.ref1
         new = 77.0
-        self.obj._fill_cache('val1', new)
-        assert_equal(self.obj.val1(), new)
+        obj._fill_cache('val1', new)
+        assert obj.val1() == new
 
     # Managed property
-    def test_val2_lookup(self):
-        self.obj._clear_caches()
-        assert_equal('val2' in self.obj._cache, False)
-        assert_equal(self.obj.val2, self.obj.ref2)
-        ret = self.obj.val2
-        assert_equal('val2' in self.obj._cache, True)
-        assert_equal(self.obj._cache['val2'], ret)
+    def test_val2_lookup(self, obj):
+        obj._clear_caches()
+        assert 'val2' not in obj._cache
+        assert obj.val2 == obj.ref2
+        ret = obj.val2
+        assert 'val2' in obj._cache
+        assert obj._cache['val2'] == ret
 
-    def test_val2_inject(self):
-        self.obj._clear_caches()
-        ret = self.obj.val2
-        assert_equal('val2' in self.obj._cache, True)
-        assert_equal(ret, self.obj.ref2)
+    def test_val2_inject(self, obj):
+        obj._clear_caches()
+        ret = obj.val2
+        assert 'val2' in obj._cache
+        assert ret == obj.ref2
         new = 77.0
-        self.obj._fill_cache('val2', new)
-        assert_equal(self.obj.val2, new)
+        obj._fill_cache('val2', new)
+        assert obj.val2 == new
 
         # Setter on cached attribute
 
-    def test_val3_set(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val3, self.obj.ref3)
+    def test_val3_set(self, obj):
+        obj._clear_caches()
+        assert obj.val3 == obj.ref3
         new = 99.0
-        self.obj.val3 = new
-        assert_equal(self.obj.val3, new)
-        assert_equal(self.obj._cache['val3'], new)
+        obj.val3 = new
+        assert obj.val3 == new
+        assert obj._cache['val3'] == new
 
-    def test_val3_del(self):
+    def test_val3_del(self, obj):
         # Check that deleting the property removes it from cache,
-        self.obj._clear_caches()
-        assert_equal(self.obj.val3, self.obj.ref3)
-        assert_equal('val3' in self.obj._cache, True)
-        del self.obj.val3
-        assert_equal('val3' in self.obj._cache, False)
+        obj._clear_caches()
+        assert obj.val3 == obj.ref3
+        assert 'val3' in obj._cache
+        del obj.val3
+        assert 'val3' not in obj._cache
         # But allows it to work as usual afterwards
-        assert_equal(self.obj.val3, self.obj.ref3)
-        assert_equal('val3' in self.obj._cache, True)
+        assert obj.val3 == obj.ref3
+        assert 'val3' in obj._cache
 
     # Pass args
-    def test_val4_args(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val4(1, 2), 1 + 2 + self.obj.ref4)
+    def test_val4_args(self, obj):
+        obj._clear_caches()
+        assert obj.val4(1, 2) == 1 + 2 + obj.ref4
         # Further calls should yield the old result
         # this arguably shouldn't be cached...
-        assert_equal(self.obj.val4(3, 4), 1 + 2 + self.obj.ref4)
+        assert obj.val4(3, 4) == 1 + 2 + obj.ref4
 
     # Pass args and kwargs
-    def test_val5_kwargs(self):
-        self.obj._clear_caches()
-        assert_equal(self.obj.val5(5, s='abc'), 5 * 'abc')
+    def test_val5_kwargs(self, obj):
+        obj._clear_caches()
+        assert obj.val5(5, s='abc') == 5 * 'abc'
 
-        assert_equal(self.obj.val5(5, s='!!!'), 5 * 'abc')
+        assert obj.val5(5, s='!!!') == 5 * 'abc'
 
 
 class TestConvFloat(object):
-    def test_float_1(self):
-        assert_equal(util.conv_float('0.45'), 0.45)
+    @pytest.mark.parametrize('s, output', [
+        ('0.45', 0.45),
+        ('.45', 0.45),
+        ('a.b', 'a.b')
+    ])
+    def test_float(self, s, output):
+        assert util.conv_float(s) == output
 
-    def test_float_2(self):
-        assert_equal(util.conv_float('.45'), 0.45)
+    @pytest.mark.parametrize('input, output', [
+        (('0.45', '0.56', '6.7'), [0.45, 0.56, 6.7]),
+        (('0.45', 'a.b', '!!'), [0.45, 'a.b', '!!'])
+    ])
+    def test_map(self, input, output):
+        ret = [util.conv_float(el) for el in input]
+        assert ret == output
 
-    def test_str(self):
-        assert_equal(util.conv_float('a.b'), 'a.b')
-
-    def test_map_1(self):
-        ret = [util.conv_float(el) for el in ('0.45', '0.56', '6.7')]
-        assert_equal(ret, [0.45, 0.56, 6.7])
-
-    def test_map_2(self):
-        ret = [util.conv_float(el) for el in ('0.45', 'a.b', '!!')]
-        assert_equal(ret, [0.45, 'a.b', '!!'])
 
 class TestFixedwidthBins(object):
     def test_keys(self):
         ret = util.fixedwidth_bins(0.5, 1.0, 2.0)
         for k in ['Nbins', 'delta', 'min', 'max']:
-            assert_(k in ret)
+            assert k in ret
 
-    def test_VE(self):
-        assert_raises(ValueError, util.fixedwidth_bins, 0.1, 5.0, 4.0)
+    def test_ValueError(self):
+        with pytest.raises(ValueError):
+            util.fixedwidth_bins(0.1, 5.0, 4.0)
 
-    def test_usage_1(self):
-        ret = util.fixedwidth_bins(0.1, 4.0, 5.0)
-        assert_equal(ret['Nbins'], 10)
-        assert_equal(ret['delta'], 0.1)
-        assert_equal(ret['min'], 4.0)
-        assert_equal(ret['max'], 5.0)
+    @pytest.mark.parametrize(
+        'delta, xmin, xmax, output_Nbins, output_delta, output_min, output_max',
+        [
+            (0.1, 4.0, 5.0, 10, 0.1, 4.0, 5.0),
+            (0.4, 4.0, 5.0, 3, 0.4, 3.9, 5.1)
+        ])
+    def test_usage(self, delta, xmin, xmax, output_Nbins, output_delta,
+                   output_min, output_max):
+        ret = util.fixedwidth_bins(delta, xmin, xmax)
+        assert ret['Nbins'] == output_Nbins
+        assert ret['delta'] == output_delta
+        assert ret['min'], output_min
+        assert ret['max'], output_max
 
-    def test_usage_2(self):
-        ret = util.fixedwidth_bins(0.4, 4.0, 5.0)
-        assert_equal(ret['Nbins'], 3)
-        assert_equal(ret['delta'], 0.4)
-        assert_almost_equal(ret['min'], 3.9)
-        assert_almost_equal(ret['max'], 5.1)
 
 class TestGuessFormat(object):
     """Test guessing of format from filenames
@@ -579,11 +560,14 @@ class TestGuessFormat(object):
         ('CHAIN', None, mda.coordinates.chain.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
+        ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
+        ('DCD', None, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
         ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
+        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
         ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
         ('MMTF', mda.topology.MMTFParser.MMTFParser, mda.coordinates.MMTF.MMTFReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
@@ -603,105 +587,157 @@ class TestGuessFormat(object):
         ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
         ('XTC', None, mda.coordinates.XTC.XTCReader),
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
+        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
     ]
-    if six.PY2:
-        # DCD, LAMMPS, and TRZ are not supported on Python 3 yet
-        formats += [
-            ('DATA', mda.topology.LAMMPSParser.DATAParser,
-             mda.coordinates.LAMMPS.DATAReader),
-            ('DCD', None, mda.coordinates.DCD.DCDReader),
-            ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
-            ('TRZ', None, mda.coordinates.TRZ.TRZReader),
-        ]
     # list of possible compressed extensions
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
 
-    def _check_get_ext(self, f, fn):
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
+    def test_get_extention(self, extention):
         """Check that get_ext works"""
-        a, b = util.get_ext(fn)
+        file_name = 'file.{0}'.format(extention)
+        a, b = util.get_ext(file_name)
 
-        assert_equal(a, 'file')
-        assert_equal(b, f.lower())
+        assert a == 'file'
+        assert b == extention.lower()
 
-    def _check_compressed(self, f, fn):
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
+    def test_compressed_without_compression_extention(self, extention):
         """Check that format suffixed by compressed extension works"""
-        a = util.format_from_filename_extension(fn)
+        file_name = 'file.{0}'.format(extention)
+        a = util.format_from_filename_extension(file_name)
         # expect answer to always be uppercase
-        assert_equal(a, f.upper())
+        assert a == extention.upper()
 
-    def _check_guess_format(self, f, fn):
-        a = util.guess_format(fn)
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] +
+                             [format_tuple[0].lower() for format_tuple in
+                              formats])
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_compressed(self, extention, compression_extention):
+        """Check that format suffixed by compressed extension works"""
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = util.format_from_filename_extension(file_name)
         # expect answer to always be uppercase
-        assert_equal(a, f.upper())
+        assert a == extention.upper()
 
-    def _check_get_parser(self, fn, P):
-        a = mda.topology.core.get_parser_for(fn)
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] + [format_tuple[0].lower() for
+                                          format_tuple in formats])
+    def test_guess_format(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        a = util.guess_format(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
 
-        assert_equal(a, P)
+    @pytest.mark.parametrize('extention',
+                             [format_tuple[0].upper() for format_tuple in
+                              formats] + [format_tuple[0].lower() for
+                                          format_tuple in formats])
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_guess_format_compressed(self, extention, compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = util.guess_format(file_name)
+        # expect answer to always be uppercase
+        assert a == extention.upper()
 
-    def _check_get_parser_invalid(self, fn):
-        assert_raises(ValueError, mda.topology.core.get_parser_for, fn)
+    @pytest.mark.parametrize('extention, parser',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[1] is not None]
+                             )
+    def test_get_parser(self, extention, parser):
+        file_name = 'file.{0}'.format(extention)
+        a = mda.topology.core.get_parser_for(file_name)
 
-    def _check_get_reader(self, fn, R):
-        a = mda.coordinates.core.get_reader_for(fn)
+        assert a == parser
 
-        assert_equal(a, R)
+    @pytest.mark.parametrize('extention, parser',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[1] is not None]
+                             )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_get_parser_compressed(self, extention, parser,
+                                   compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = mda.topology.core.get_parser_for(file_name)
 
-    def _check_get_reader_invalid(self, fn):
-        assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
+        assert a == parser
 
-    def test_formats(self):
-        # f - format extension
-        # P - parser class or None
-        # R - reader class or None
-        for form, P, R in self.formats:
-            # should work with either lower or upper case extension
-            for f in [form.upper(), form.lower()]:
-                fn = 'file.{0}'.format(f)
-                # check f doesn't trip up get_ext or guess_format
-                yield self._check_get_ext, f, fn
-                yield self._check_guess_format, f, fn
+    @pytest.mark.parametrize('extention',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[1] is None]
+                             )
+    def test_get_parser_invalid(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        with pytest.raises(ValueError):
+            mda.topology.core.get_parser_for(file_name)
 
-                # check adding extension to f
-                # also checks f without extension
-                yield self._check_compressed, f, fn
-                for e in self.compressed_extensions:
-                    yield self._check_compressed, f, fn + e
-                    yield self._check_guess_format, f, fn + e
+    @pytest.mark.parametrize('extention, reader',
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
+                              format_tuple[2] is not None]
+                             )
+    def test_get_reader(self, extention, reader):
+        file_name = 'file.{0}'.format(extention)
+        a = mda.coordinates.core.get_reader_for(file_name)
 
-            # Check that expected parser is returned
-            if P is not None:
-                yield self._check_get_parser, fn, P
-                for e in self.compressed_extensions:
-                    yield self._check_get_parser, fn + e, P
-            else:
-                yield self._check_get_parser_invalid, fn
+        assert a == reader
 
-            # Check that expected reader is returned
-            if R is not None:
-                yield self._check_get_reader, fn, R
-                for e in self.compressed_extensions:
-                    yield self._check_get_reader, fn + e, R
-            else:
-                yield self._check_get_reader_invalid, fn
+    @pytest.mark.parametrize('extention, reader',
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
+                              format_tuple[2] is not None]
+                             )
+    @pytest.mark.parametrize('compression_extention', compressed_extensions)
+    def test_get_reader_compressed(self, extention, reader,
+                                   compression_extention):
+        file_name = 'file.{0}{1}'.format(extention, compression_extention)
+        a = mda.coordinates.core.get_reader_for(file_name)
 
-    def test_check_compressed_format_TE(self):
-        assert_raises(TypeError, util.check_compressed_format, 1234, 'bz2')
+        assert a == reader
 
-    def test_format_from_filename_TE(self):
-        assert_raises(TypeError, util.format_from_filename_extension, 1234)
+    @pytest.mark.parametrize('extention',
+                             [(format_tuple[0], format_tuple[2]) for
+                              format_tuple in formats if
+                              format_tuple[2] is None]
+                             )
+    def test_get_reader_invalid(self, extention):
+        file_name = 'file.{0}'.format(extention)
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_reader_for(file_name)
 
-    def test_guess_format_stream_VE(self):
+    def test_check_compressed_format_TypeError(self):
+        with pytest.raises(TypeError):
+            util.check_compressed_format(1234, 'bz2')
+
+    def test_format_from_filename_TypeError(self):
+        with pytest.raises(TypeError):
+            util.format_from_filename_extension(1234)
+
+    def test_guess_format_stream_ValueError(self):
         # This stream has no name, so can't guess format
         s = StringIO('this is a very fun file')
-
-        assert_raises(ValueError, util.guess_format, s)
+        with pytest.raises(ValueError):
+            util.guess_format(s)
 
     def test_from_ndarray(self):
         fn = np.zeros((3, 3))
         rd = mda.coordinates.core.get_reader_for(fn)
-        assert_equal(rd, mda.coordinates.memory.MemoryReader)
+        assert rd == mda.coordinates.memory.MemoryReader
 
 
 class TestUniqueRows(object):
@@ -728,83 +764,69 @@ class TestUniqueRows(object):
 
 class TestGetWriterFor(object):
     def test_no_filename_argument(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for)
         # Does ``get_writer_for`` fails as expected when provided no
         # filename arguments
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for()
 
     def test_precedence(self):
         writer = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
-        assert_equal(writer, mda.coordinates.GRO.GROWriter)
+        assert writer == mda.coordinates.GRO.GROWriter
         # Make sure ``get_writer_for`` uses *format* if provided
 
     def test_missing_extension(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename='test', format=None)
         # Make sure ``get_writer_for`` behave as expected if *filename*
         # has no extension
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename='test', format=None)
 
     def test_wrong_format(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK')
         # Make sure ``get_writer_for`` fails if the format is unknown
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK')
 
     def test_compressed_extension(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
-            writter = mda.coordinates.core.get_writer_for(filename=fn)
-            assert_equal(writter, mda.coordinates.GRO.GROWriter)
-        # Make sure ``get_writer_for`` works with compressed file file names
+            writer = mda.coordinates.core.get_writer_for(filename=fn)
+            assert writer == mda.coordinates.GRO.GROWriter
+            # Make sure ``get_writer_for`` works with compressed file file names
 
     def test_compressed_extension_fail(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.unk' + ext
-            assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                          filename=fn)
-        # Make sure ``get_writer_for`` fails if an unknown format is compressed
+            # Make sure ``get_writer_for`` fails if an unknown format is compressed
+            with pytest.raises(TypeError):
+                mda.coordinates.core.get_writer_for(filename=fn)
 
     def test_non_string_filename(self):
-        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
-                      filename=StringIO(), format=None)
         # Does ``get_writer_for`` fails with non string filename, no format
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_writer_for(filename=StringIO(),
+                                                format=None)
 
     def test_multiframe_failure(self):
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK', multiframe=True)
-        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
-                      filename="fail_me", format='UNK', multiframe=False)
         # does ``get_writer_for`` fail with invalid format and multiframe not None
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK', multiframe=True)
+            mda.coordinates.core.get_writer_for(filename="fail_me",
+                                                format='UNK', multiframe=False)
 
     def test_multiframe_nonsense(self):
-        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
-                      filename='this.gro', multiframe='sandwich')
-
-    @staticmethod
-    def _check_singleframe(fmt, cls):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=False),
-                     cls)
-
-    @staticmethod
-    def _check_singleframe_fails(fmt):
-        assert_raises(TypeError,
-                      mda.coordinates.core.get_writer_for,
-                      'this', format=fmt, multiframe=False)
-
-    @staticmethod
-    def _check_multiframe(fmt, cls):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format=fmt, multiframe=True),
-                     cls)
-
-    @staticmethod
-    def _check_multiframe_fails(fmt):
-        assert_raises(TypeError,
-                      mda.coordinates.core.get_writer_for,
-                      'this', format=fmt, multiframe=True)
+        with pytest.raises(ValueError):
+            mda.coordinates.core.get_writer_for(filename='this.gro',
+                                                multiframe='sandwich')
 
     formats = [
         # format name, related class, singleframe, multiframe
         ('CRD', mda.coordinates.CRD.CRDWriter, True, False),
-        #('ENT', mda.coordinates.PDB.PDBWriter, True, False),
+        ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
+        ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
+        # ('ENT', mda.coordinates.PDB.PDBWriter, True, False),
         ('GRO', mda.coordinates.GRO.GROWriter, True, False),
+        ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
         ('MOL2', mda.coordinates.MOL2.MOL2Writer, True, True),
         ('NCDF', mda.coordinates.TRJ.NCDFWriter, True, True),
         ('NULL', mda.coordinates.null.NullWriter, True, True),
@@ -814,35 +836,51 @@ class TestGetWriterFor(object):
         ('TRR', mda.coordinates.TRR.TRRWriter, True, True),
         ('XTC', mda.coordinates.XTC.XTCWriter, True, True),
         ('XYZ', mda.coordinates.XYZ.XYZWriter, True, True),
-    ]
-    if six.PY2:
-        formats += [
-        ('DATA', mda.coordinates.LAMMPS.DATAWriter, True, False),
-        ('DCD', mda.coordinates.DCD.DCDWriter, True, True),
-        ('LAMMPS', mda.coordinates.LAMMPS.DCDWriter, True, True),
         ('TRZ', mda.coordinates.TRZ.TRZWriter, True, True),
     ]
-    def test_get_writer_for(self):
-        for fmt, cls, singleframe, multiframe in self.formats:
-            for f in [fmt.upper(), fmt.lower()]:
-                if singleframe:
-                    yield self._check_singleframe, f, cls
-                else:
-                    yield self._check_singleframe_fails, f
-                if multiframe:
-                    yield self._check_multiframe, f, cls
-                else:
-                    yield self._check_multiframe_fails, f
+
+    @pytest.mark.parametrize('format, writer',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[2] is True])
+    def test_singleframe(self, format, writer):
+        assert mda.coordinates.core.get_writer_for('this', format=format,
+                                                   multiframe=False) == writer
+
+    @pytest.mark.parametrize('format', [(format_tuple[0], format_tuple[1]) for
+                                        format_tuple in formats if
+                                        format_tuple[2] is False])
+    def test_singleframe_fails(self, format):
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for('this', format=format,
+                                                multiframe=False)
+
+    @pytest.mark.parametrize('format, writer',
+                             [(format_tuple[0], format_tuple[1]) for
+                              format_tuple in formats if
+                              format_tuple[3] is True])
+    def test_multiframe(self, format, writer):
+        assert mda.coordinates.core.get_writer_for('this', format=format,
+                                                   multiframe=True) == writer
+
+    @pytest.mark.parametrize('format',
+                             [format_tuple[0] for format_tuple in formats if
+                              format_tuple[3] is False])
+    def test_multiframe_fails(self, format):
+        with pytest.raises(TypeError):
+            mda.coordinates.core.get_writer_for('this', format=format,
+                                                multiframe=True)
 
     def test_get_writer_for_pdb(self):
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=False),
-                     mda.coordinates.PDB.PDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='PDB', multiframe=True),
-                     mda.coordinates.PDB.MultiPDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=False),
-                     mda.coordinates.PDB.PDBWriter)
-        assert_equal(mda.coordinates.core.get_writer_for('this', format='ENT', multiframe=True),
-                     mda.coordinates.PDB.MultiPDBWriter)
+        assert mda.coordinates.core.get_writer_for('this', format='PDB',
+                                                   multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='PDB',
+                                                   multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT',
+                                                   multiframe=False) == mda.coordinates.PDB.PDBWriter
+        assert mda.coordinates.core.get_writer_for('this', format='ENT',
+                                                   multiframe=True) == mda.coordinates.PDB.MultiPDBWriter
+
 
 class TestBlocksOf(object):
     def test_blocks_of_1(self):
@@ -852,8 +890,9 @@ class TestBlocksOf(object):
 
         # should return a (4, 1, 1) view
         # ie 4 lots of 1x1
-        assert_(view.shape == (4, 1, 1))
-        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
+        assert view.shape == (4, 1, 1)
+        assert_array_almost_equal(view,
+                                  np.array([[[0]], [[5]], [[10]], [[15]]]))
 
         # Change my view, check changes are reflected in arr
         view[:] = 1001
@@ -870,7 +909,7 @@ class TestBlocksOf(object):
         view = util.blocks_of(arr, 2, 2)
 
         # should return (2, 2, 2)
-        assert_(view.shape == (2, 2, 2))
+        assert view.shape == (2, 2, 2)
         assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
                                                   [[10, 11], [14, 15]]]))
 
@@ -889,102 +928,97 @@ class TestBlocksOf(object):
 
         view = util.blocks_of(arr, 2, 1)
 
-        assert_(view.shape == (4, 2, 1))
+        assert view.shape == (4, 2, 1)
 
-    def test_blocks_of_VE(self):
+    def test_blocks_of_ValueError(self):
         arr = np.arange(16).reshape(4, 4)
+        with pytest.raises(ValueError):
+            util.blocks_of(arr, 2, 1)
 
-        assert_raises(ValueError, util.blocks_of, arr, 2, 1)
 
+class TestNamespace(object):
+    @staticmethod
+    @pytest.fixture()
+    def ns():
+        return util.Namespace()
 
-class TestNamespace(TestCase):
-    def setUp(self):
-        self.ns = util.Namespace()
+    def test_getitem(self, ns):
+        ns.this = 42
+        assert ns['this'] == 42
 
-    def tearDown(self):
-        del self.ns
+    def test_getitem_KeyError(self, ns):
+        with pytest.raises(KeyError):
+            dict.__getitem__(ns, 'this')
 
-    def test_getitem(self):
-        self.ns.this = 42
+    def test_setitem(self, ns):
+        ns['this'] = 42
 
-        assert_(self.ns['this'] == 42)
+        assert ns['this'] == 42
 
-    def test_getitem_KE(self):
-        assert_raises(KeyError, dict.__getitem__, self.ns, 'this')
+    def test_delitem(self, ns):
+        ns['this'] = 42
+        assert 'this' in ns
+        del ns['this']
+        assert 'this' not in ns
 
-    def test_setitem(self):
-        self.ns['this'] = 42
+    def test_delitem_AttributeError(self, ns):
+        with pytest.raises(AttributeError):
+            del ns.this
 
-        assert_(self.ns['this'] == 42)
+    def test_setattr(self, ns):
+        ns.this = 42
 
-    def test_delitem(self):
-        self.ns['this'] = 42
-        assert_('this' in self.ns)
-        del self.ns['this']
-        assert_(not ('this' in self.ns))
+        assert ns.this == 42
 
-    def test_delitem_AE(self):
-        def deller():
-            del self.ns.this
-        assert_raises(AttributeError, deller)
+    def test_getattr(self, ns):
+        ns['this'] = 42
 
-    def test_setattr(self):
-        self.ns.this = 42
+        assert ns.this == 42
 
-        assert_(self.ns.this == 42)
+    def test_getattr_AttributeError(self, ns):
+        with pytest.raises(AttributeError):
+            getattr(ns, 'this')
 
-    def test_getattr(self):
-        self.ns['this'] = 42
+    def test_delattr(self, ns):
+        ns['this'] = 42
 
-        assert_(self.ns.this == 42)
+        assert 'this' in ns
+        del ns.this
+        assert 'this' not in ns
 
-    def test_getattr_AE(self):
-        assert_raises(AttributeError, getattr, self.ns, 'this')
-
-    def test_delattr(self):
-        self.ns['this'] = 42
-
-        assert_('this' in self.ns)
-        del self.ns.this
-        assert_(not ('this' in self.ns))
-
-    def test_eq(self):
-        self.ns['this'] = 42
+    def test_eq(self, ns):
+        ns['this'] = 42
 
         ns2 = util.Namespace()
         ns2['this'] = 42
 
-        assert_(self.ns == ns2)
+        assert ns == ns2
 
-    def test_len(self):
-        assert_(len(self.ns) == 0)
-        self.ns['this'] = 1
-        self.ns['that'] = 2
-        assert_(len(self.ns) == 2)
+    def test_len(self, ns):
+        assert len(ns) == 0
+        ns['this'] = 1
+        ns['that'] = 2
+        assert len(ns) == 2
 
-    def test_iter(self):
-        self.ns['this'] = 12
-        self.ns['that'] = 24
-        self.ns['other'] = 48
+    def test_iter(self, ns):
+        ns['this'] = 12
+        ns['that'] = 24
+        ns['other'] = 48
 
         seen = []
-        for val in self.ns:
+        for val in ns:
             seen.append(val)
         for val in ['this', 'that', 'other']:
-            assert_(val in seen)
+            assert val in seen
 
 
 class TestTruncateInteger(object):
-    @staticmethod
-    def _check_vals(a, b):
-        assert_(util.ltruncate_int(*a) == b)
-
-    def test_ltruncate_int(self):
-        for vals, exp in (
-                ((1234, 1), 4),
-                ((1234, 2), 34),
-                ((1234, 3), 234),
-                ((1234, 4), 1234),
-                ((1234, 5), 1234),
-        ):
-            yield self._check_vals, vals, exp
+    @pytest.mark.parametrize('a, b', [
+        ((1234, 1), 4),
+        ((1234, 2), 34),
+        ((1234, 3), 234),
+        ((1234, 4), 1234),
+        ((1234, 5), 1234),
+    ])
+    def test_ltruncate_int(self, a, b):
+        assert util.ltruncate_int(*a) == b
