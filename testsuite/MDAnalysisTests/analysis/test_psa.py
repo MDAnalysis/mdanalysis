@@ -24,8 +24,8 @@ from __future__ import print_function, absolute_import
 import MDAnalysis as mda
 import MDAnalysis.analysis.psa as PSA
 
-from numpy.testing import (TestCase, dec, assert_array_less,
-                           assert_array_almost_equal, assert_,
+from numpy.testing import (assert_array_less,
+                           assert_array_almost_equal,
                            assert_almost_equal, assert_equal)
 import numpy as np
 import scipy
@@ -33,62 +33,80 @@ import scipy.spatial
 import pytest
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
-from MDAnalysisTests import tempdir, module_not_found
 
 
-class TestPSAnalysis(TestCase):
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.iu1 = np.triu_indices(3, k=1)
-        self.universe1 = mda.Universe(PSF, DCD)
-        self.universe2 = mda.Universe(PSF, DCD2)
-        self.universe_rev = mda.Universe(PSF, DCD)
-        self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = PSA.PSAnalysis(self.universes,
+class TestPSAnalysis(object):
+    iu1 = np.triu_indices(3, k=1)
+
+    @staticmethod
+    @pytest.fixture()
+    def universe1():
+        return mda.Universe(PSF, DCD)
+
+    @staticmethod
+    @pytest.fixture()
+    def universe2():
+        return mda.Universe(PSF, DCD2)
+
+    @staticmethod
+    @pytest.fixture()
+    def universe_rev():
+        return mda.Universe(PSF, DCD)
+
+
+    @pytest.fixture()
+    def psa(self, universe1, universe2, universe_rev, tmpdir):
+        psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
                                   path_select='name CA',
-                                  targetdir=self.tmpdir.name)
+                                  targetdir=str(tmpdir))
 
-        self.psa.generate_paths(align=True)
-        self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
-        self._run()
-        self._plot()
+        psa.generate_paths(align=True)
+        psa.paths[-1] = psa.paths[-1][::-1, :, :]  # reverse third path
+        return psa
 
-    def _run(self):
-        self.psa.run(metric='hausdorff')
-        self.hausd_matrix = self.psa.get_pairwise_distances()
-        self.psa.run(metric='discrete_frechet')
-        self.frech_matrix = self.psa.get_pairwise_distances()
-        self.hausd_dists = self.hausd_matrix[self.iu1]
-        self.frech_dists = self.frech_matrix[self.iu1]
+    @pytest.fixture()
+    def hausd_matrix(self, psa):
+        psa.run(metric='hausdorff')
+        return psa.get_pairwise_distances()
 
-    def _plot(self):
-        self.plot_data = self.psa.plot()
+    @pytest.fixture()
+    def hausd_dists(self, hausd_matrix):
+        return hausd_matrix[self.iu1]
 
-    def tearDown(self):
-        del self.universe1
-        del self.universe2
-        del self.universe_rev
-        del self.psa
-        del self.tmpdir
+    @pytest.fixture()
+    def frech_matrix(self, psa):
+        psa.run(metric='discrete_frechet')
+        return psa.get_pairwise_distances()
 
-    def test_hausdorff_bound(self):
+    @pytest.fixture()
+    def frech_dists(self, frech_matrix):
+        return frech_matrix[self.iu1]
+
+    @pytest.fixture()
+    def plot_data(self, psa):
+        # TODO: Which one is needed? Passes with any one!
+        psa.run(metric='hausdorff')
+        psa.run(metric='discrete_frechet')
+        return psa.plot()
+
+    def test_hausdorff_bound(self, hausd_dists, frech_dists):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
                 + "Hausdorff distances"
-        assert_array_less(self.hausd_dists, self.frech_dists, err_msg)
+        assert_array_less(hausd_dists, frech_dists, err_msg)
 
-    def test_reversal_hausdorff(self):
+    def test_reversal_hausdorff(self, hausd_matrix):
         err_msg = "Hausdorff distances changed after path reversal"
-        assert_array_almost_equal(self.hausd_matrix[1,2],
-                                  self.hausd_matrix[0,1],
+        assert_array_almost_equal(hausd_matrix[1,2],
+                                  hausd_matrix[0,1],
                                   decimal=3, err_msg=err_msg)
 
-    def test_reversal_frechet(self):
+    def test_reversal_frechet(self, frech_matrix):
         err_msg = "Frechet distances did not increase after path reversal"
-        assert_(self.frech_matrix[1,2] >= self.frech_matrix[0,1], err_msg)
+        assert frech_matrix[1,2] >= frech_matrix[0,1], err_msg
 
-    def test_dendrogram_produced(self):
+    def test_dendrogram_produced(self, plot_data):
         err_msg = "Dendrogram dictionary object was not produced"
-        assert_(type(self.plot_data[1]) is dict, err_msg)
+        assert type(plot_data[1]) is dict, err_msg
 
     def test_dist_mat_to_vec_i_less_j(self):
         """Test the index of corresponding distance vector is correct if i < j"""
@@ -110,7 +128,8 @@ class TestPSAnalysis(TestCase):
         err_msg = "dist_mat_to_vec function returning wrong values"
         assert_equal(PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), np.int16(9), err_msg)
 
-class TestPSAExceptions(TestCase):
+
+class TestPSAExceptions(object):
     '''Tests for exceptions that should be raised
     or caught by code in the psa module.'''
 
@@ -121,14 +140,14 @@ class TestPSAExceptions(TestCase):
         try:
            PSA.get_path_metric_func('123456')
         except KeyError:
-            self.fail('KeyError should be caught')
+            pytest.fail('KeyError should be caught')
 
     def test_get_coord_axes_bad_dims(self):
         """Test that ValueError is raised when
         numpy array with incorrect dimensions
         is fed to get_coord_axes()."""
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
     def test_dist_mat_to_vec_func_out_of_bounds(self):
@@ -136,36 +155,36 @@ class TestPSAExceptions(TestCase):
         out of bounds of N"""
 
         # Check if i is out of bounds of N
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, 6, 4)
 
         # Check if j is out of bounds of N
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, 4, 6)
 
         # Check if both i and j are out of bounds of N
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, 6, 7)
 
         # Check if i is negative
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, -1, 2)
 
         # Check if j is negative
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, 1, -2)
 
         # Check if N is less than 2
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(1, 0, 0)
 
     def test_dist_mat_to_vec_func_i_equals_j(self):
         """Test that ValueError is raised when i == j or i,j == N"""
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, 4, 4)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(4, 6, 4)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
@@ -176,143 +195,157 @@ class TestPSAExceptions(TestCase):
             PSA.dist_mat_to_vec(5, '6', '7')
         assert 'all must be of type int' in str(err.value)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             PSA.dist_mat_to_vec(5, float(6), 7)
 
 
-class _BaseHausdorffDistance(TestCase):
+class _BaseHausdorffDistance(object):
     '''Base Class setup and unit tests
     for various Hausdorff distance
     calculation properties.'''
 
-    __test__ = False
+    @pytest.fixture()
+    def random_angles(self):
+        return np.random.random((100,)) * np.pi * 2
 
-    def setUp(self):
-        self.random_angles = np.random.random((100,)) * np.pi * 2
-        self.random_columns = np.column_stack((self.random_angles,
-                                               self.random_angles,
-                                               np.zeros((100,))))
-        self.random_columns[...,0] = np.cos(self.random_columns[...,0])
-        self.random_columns[...,1] = np.sin(self.random_columns[...,1])
-        self.random_columns_2 = np.column_stack((self.random_angles,
-                                                 self.random_angles,
-                                                 np.zeros((100,))))
-        self.random_columns_2[1:,0] = np.cos(self.random_columns_2[1:,0]) * 2.0
-        self.random_columns_2[1:,1] = np.sin(self.random_columns_2[1:,1]) * 2.0
+    @staticmethod
+    @pytest.fixture()
+    def path_1(random_angles):
+        random_columns = np.column_stack((random_angles,
+                                          random_angles,
+                                          np.zeros((100,))))
+        random_columns[..., 0] = np.cos(random_columns[..., 0])
+        random_columns[..., 1] = np.sin(random_columns[..., 1])
+
+        return random_columns
+
+    @staticmethod
+    @pytest.fixture()
+    def path_2(random_angles):
+        random_columns_2 = np.column_stack((random_angles,
+                                            random_angles,
+                                            np.zeros((100,))))
+        random_columns_2[1:, 0] = np.cos(random_columns_2[1:, 0]) * 2.0
+        random_columns_2[1:, 1] = np.sin(random_columns_2[1:, 1]) * 2.0
         # move one point farther out so we don't have two perfect circles
-        self.random_columns_2[0,0] = np.cos(self.random_columns_2[0,0]) * 3.3
-        self.random_columns_2[0,1] = np.sin(self.random_columns_2[0,1]) * 3.3
-        self.path_1 = self.random_columns
-        self.path_2 = self.random_columns_2
+        random_columns_2[0, 0] = np.cos(random_columns_2[0, 0]) * 3.3
+        random_columns_2[0, 1] = np.sin(random_columns_2[0, 1]) * 3.3
+        return random_columns_2
 
-    def tearDown(self):
-        del self.random_angles
-        del self.random_columns
-        del self.random_columns_2
-        del self.path_1
-        del self.path_2
-
-    def test_symmetry(self):
+    def test_symmetry(self, path_1, path_2, h):
         '''Ensure that the undirected (symmetric)
         Hausdorff distance is actually symmetric
         for a given Hausdorff metric, h.'''
-        forward = self.h(self.path_1, self.path_2)
-        reverse = self.h(self.path_2, self.path_1)
+        forward = h(path_1, path_2)
+        reverse = h(path_2, path_1)
         # lower precision on 32bit
         assert_almost_equal(forward, reverse, decimal=15)
 
-    def test_hausdorff_value(self):
+    def test_hausdorff_value(self, path_1, path_2, h, expected):
         '''Test that the undirected Hausdorff
         distance matches expected value for
         the simple case here.'''
-        actual = self.h(self.path_1, self.path_2)
+        actual = h(path_1, path_2)
         # unless I pin down the random generator
         # seems unstable to use decimal > 2
-        assert_almost_equal(actual, self.expected,
-                            decimal=2)
+        assert_almost_equal(actual, expected, decimal=2)
+
 
 class TestHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for conventional and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
 
-    __test__ = True
+    # expected = 2.3
 
-    def setUp(self):
-        super(TestHausdorffSymmetric, self).setUp()
-        self.h = PSA.hausdorff
-        # radii differ by ~ 2.3 for outlier
-        self.expected = 2.3
+    @pytest.fixture()
+    def expected(self):
+        return 2.3
+
+    # TODO: Fix this hack! without the fixture the test says I passed 3
+    # params instead of 2 (I think it sends self as a parameter too.)
+    @pytest.fixture()
+    def h(self):
+        return PSA.hausdorff
+
 
 class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for weighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
 
-    __test__ = True
+    @pytest.fixture()
+    def expected(self, path_1, path_2):
+        distance_matrix = scipy.spatial.distance.cdist(path_1, path_2)
+        return (np.mean(np.amin(distance_matrix, axis=0)) +
+                np.mean(np.amin(distance_matrix, axis=1))) / 2.0
 
-    def setUp(self):
-        super(TestWeightedAvgHausdorffSymmetric, self).setUp()
-        self.h = PSA.hausdorff_wavg
-        self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
-                                                            self.path_2)
-        self.expected = (np.mean(np.amin(self.distance_matrix, axis=0)) +
-                         np.mean(np.amin(self.distance_matrix, axis = 1))) / 2.
+    # TODO: Fix this hack! without the fixture the test says I passed 3
+    # params instead of 2 (I think it sends self as a parameter too.)
+    @pytest.fixture()
+    def h(self):
+        return PSA.hausdorff_wavg
 
-    def test_asymmetric_weight(self):
+    def test_asymmetric_weight(self, path_1, path_2, h):
         '''Test to ensure that increasing N points in one of the paths
         does NOT increase the weight of its contributions.'''
-        inflated_path_1 = np.concatenate((self.path_1, self.path_1))
-        inflated_path_2 = np.concatenate((self.path_2, self.path_2))
-        d_inner_inflation = self.h(inflated_path_1, self.path_2)
-        d_outer_inflation = self.h(self.path_1, inflated_path_2)
-        assert_almost_equal(d_inner_inflation,
-                            d_outer_inflation)
+        inflated_path_1 = np.concatenate((path_1, path_1))
+        inflated_path_2 = np.concatenate((path_2, path_2))
+        d_inner_inflation = h(inflated_path_1, path_2)
+        d_outer_inflation = h(path_1, inflated_path_2)
+        assert_almost_equal(d_inner_inflation, d_outer_inflation)
+
 
 class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
     '''Tests for unweighted average and symmetric (undirected)
     Hausdorff distance between point sets in 3D.'''
 
-    __test__ = True
+    @pytest.fixture()
+    def expected(self, path_1, path_2):
+        distance_matrix = scipy.spatial.distance.cdist(path_1, path_2)
+        return np.mean(np.append(np.amin(distance_matrix, axis=0),
+                                 np.amin(distance_matrix, axis=1)))
 
-    def setUp(self):
-        super(TestAvgHausdorffSymmetric, self).setUp()
-        self.h = PSA.hausdorff_avg
-        self.distance_matrix = scipy.spatial.distance.cdist(self.path_1,
-                                                            self.path_2)
-        self.expected = np.mean(np.append(np.amin(self.distance_matrix, axis=0),
-                                np.amin(self.distance_matrix, axis = 1)))
+    # TODO: Fix this hack! without the fixture the test says I passed 3
+    # params instead of 2 (I think it sends self as a parameter too.)
+    @pytest.fixture()
+    def h(self):
+        return PSA.hausdorff_avg
 
-    def test_asymmetric_weight(self):
+    def test_asymmetric_weight(self, path_1, path_2, h):
         '''Test to ensure that increasing N points in one of the paths
         increases the weight of its contributions.'''
-        inflated_path_1 = np.concatenate((self.path_1, self.path_1))
-        inflated_path_2 = np.concatenate((self.path_2, self.path_2))
-        d_inner_inflation = self.h(inflated_path_1, self.path_2)
-        d_outer_inflation = self.h(self.path_1, inflated_path_2)
+        inflated_path_1 = np.concatenate((path_1, path_1))
+        inflated_path_2 = np.concatenate((path_2, path_2))
+        d_inner_inflation = h(inflated_path_1, path_2)
+        d_outer_inflation = h(path_1, inflated_path_2)
         assert_array_less(d_inner_inflation,
                           d_outer_inflation)
 
-class DiscreteFrechetDistance(TestCase):
-    # unit tests for the discrete Frechet distance
 
-    def setUp(self):
-        np.random.seed(50)
-        random_angles = np.random.random((100,)) * np.pi * 2
+class DiscreteFrechetDistance(object):
+    @staticmethod
+    @pytest.fixture()
+    def random_angles():
+        return np.random.random((100,)) * np.pi * 2
+
+    @staticmethod
+    @pytest.fixture()
+    def path_1(random_angles):
         random_columns = np.column_stack((random_angles, random_angles,
                                           np.zeros((100,))))
-        random_columns[...,0] = np.cos(random_columns[...,0])
-        random_columns[...,1] = np.sin(random_columns[...,1])
+        random_columns[..., 0] = np.cos(random_columns[..., 0])
+        random_columns[..., 1] = np.sin(random_columns[..., 1])
+        return random_columns
+
+    @staticmethod
+    @pytest.fixture()
+    def path_2(random_angles):
         random_columns_2 = np.column_stack((random_angles, random_angles,
                                             np.zeros((100,))))
-        random_columns_2[...,0] = np.cos(random_columns_2[...,0]) * 5.5
-        random_columns_2[...,1] = np.sin(random_columns_2[...,1]) * 5.5
-        self.path_1 = random_columns
-        self.path_2 = random_columns_2
+        random_columns_2[..., 0] = np.cos(random_columns_2[..., 0]) * 5.5
+        random_columns_2[..., 1] = np.sin(random_columns_2[..., 1]) * 5.5
+        return random_columns_2
 
-    def tearDown(self):
-        del self.path_1
-        del self.path_2
-
-    def test_discrete_Frechet_concentric_circles(self):
+    def test_discrete_Frechet_concentric_circles(self, path_1, path_2):
         # test for the simple case of the discrete Frechet distance
         # between concentric circular paths, which for a sufficiently
         # high random discrete point density around each circle
@@ -320,8 +353,7 @@ class DiscreteFrechetDistance(TestCase):
         # radii
 
         expected = 4.5
-        actual = PSA.discrete_frechet(self.path_1,
-                                      self.path_2)
+        actual = PSA.discrete_frechet(path_1, path_2)
         assert_almost_equal(actual, expected)
 
 
