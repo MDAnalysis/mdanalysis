@@ -38,24 +38,13 @@ from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 class TestPSAnalysis(object):
     iu1 = np.triu_indices(3, k=1)
 
-    @staticmethod
     @pytest.fixture()
-    def universe1():
-        return mda.Universe(PSF, DCD)
-
-    @staticmethod
-    @pytest.fixture()
-    def universe2():
-        return mda.Universe(PSF, DCD2)
-
-    @staticmethod
-    @pytest.fixture()
-    def universe_rev():
-        return mda.Universe(PSF, DCD)
+    def psa(self, tmpdir):
+        universe1 = mda.Universe(PSF, DCD)
+        universe2 = mda.Universe(PSF, DCD2)
+        universe_rev = mda.Universe(PSF, DCD)
 
 
-    @pytest.fixture()
-    def psa(self, universe1, universe2, universe_rev, tmpdir):
         psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
                                   path_select='name CA',
                                   targetdir=str(tmpdir))
@@ -150,42 +139,32 @@ class TestPSAExceptions(object):
         with pytest.raises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
-    def test_dist_mat_to_vec_func_out_of_bounds(self):
+    @pytest.mark.parametrize('N, i, j', (
+        (5, 6, 4),
+        (5, 4, 6),
+        (5, 6, 7),
+        (5, -1, 2),
+        (5, 1, -2),
+        (1, 0, 0)
+
+    ))
+    def test_dist_mat_to_vec_func_out_of_bounds(self, N, i, j):
         """Test that ValueError is raised when i or j or both are
         out of bounds of N"""
 
         # Check if i is out of bounds of N
         with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, 6, 4)
+            PSA.dist_mat_to_vec(N, i, j)
 
-        # Check if j is out of bounds of N
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, 4, 6)
-
-        # Check if both i and j are out of bounds of N
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, 6, 7)
-
-        # Check if i is negative
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, -1, 2)
-
-        # Check if j is negative
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, 1, -2)
-
-        # Check if N is less than 2
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(1, 0, 0)
-
-    def test_dist_mat_to_vec_func_i_equals_j(self):
+    @pytest.mark.parametrize('N, i, j', (
+        (5, 4, 4),
+        (4, 6, 4)
+    ))
+    def test_dist_mat_to_vec_func_i_equals_j(self, N, i, j):
         """Test that ValueError is raised when i == j or i,j == N"""
 
         with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(5, 4, 4)
-
-        with pytest.raises(ValueError):
-            PSA.dist_mat_to_vec(4, 6, 4)
+            PSA.dist_mat_to_vec(N, i, j)
 
     def test_dist_mat_to_vec_func_bad_integers(self):
         """Test that ValueError is raised when i or j are
@@ -355,5 +334,3 @@ class DiscreteFrechetDistance(object):
         expected = 4.5
         actual = PSA.discrete_frechet(path_1, path_2)
         assert_almost_equal(actual, expected)
-
-
