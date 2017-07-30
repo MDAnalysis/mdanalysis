@@ -73,7 +73,6 @@ class TestPSAnalysis(object):
 
     @pytest.fixture()
     def plot_data(self, psa):
-        # TODO: Which one is needed? Passes with any one!
         psa.run(metric='hausdorff')
         psa.run(metric='discrete_frechet')
         return psa.plot()
@@ -95,7 +94,7 @@ class TestPSAnalysis(object):
 
     def test_dendrogram_produced(self, plot_data):
         err_msg = "Dendrogram dictionary object was not produced"
-        assert type(plot_data[1]) is dict, err_msg
+        assert isinstance(plot_data[1], dict), err_msg
 
     def test_dist_mat_to_vec_i_less_j(self):
         """Test the index of corresponding distance vector is correct if i < j"""
@@ -240,8 +239,6 @@ class TestHausdorffSymmetric(_BaseHausdorffDistance):
     def expected(self):
         return 2.3
 
-    # TODO: Fix this hack! without the fixture the test says I passed 3
-    # params instead of 2 (I think it sends self as a parameter too.)
     @pytest.fixture()
     def h(self):
         return PSA.hausdorff
@@ -257,7 +254,6 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         return (np.mean(np.amin(distance_matrix, axis=0)) +
                 np.mean(np.amin(distance_matrix, axis=1))) / 2.0
 
-    # TODO: Fix this hack! without the fixture the test says I passed 3
     # params instead of 2 (I think it sends self as a parameter too.)
     @pytest.fixture()
     def h(self):
@@ -283,7 +279,6 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         return np.mean(np.append(np.amin(distance_matrix, axis=0),
                                  np.amin(distance_matrix, axis=1)))
 
-    # TODO: Fix this hack! without the fixture the test says I passed 3
     # params instead of 2 (I think it sends self as a parameter too.)
     @pytest.fixture()
     def h(self):
