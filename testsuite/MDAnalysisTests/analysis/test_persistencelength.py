@@ -21,7 +21,7 @@
 #
 from __future__ import print_function, division, absolute_import
 
-from unittest import TestCase
+import pytest
 
 import MDAnalysis
 from MDAnalysis.analysis import polymer
@@ -30,81 +30,69 @@ from MDAnalysis.exceptions import NoDataError
 import numpy as np
 import matplotlib
 
-from numpy.testing import (
-    assert_,
-    assert_almost_equal,
-    assert_raises,
-    dec
-)
+from numpy.testing import assert_almost_equal
 
 from MDAnalysisTests.datafiles import Plength
-from MDAnalysisTests import module_not_found
 
 
-class TestPersistenceLength(TestCase):
-    def setUp(self):
-        self.u = MDAnalysis.Universe(Plength)
+class TestPersistenceLength(object):
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return MDAnalysis.Universe(Plength)
 
-    def tearDown(self):
-        del self.u
-
-    def test_ag_VE(self):
-        ags = [self.u.atoms[:10], self.u.atoms[10:110]]
-        assert_raises(ValueError, polymer.PersistenceLength, ags)
-
-    def _make_p(self):
+    @staticmethod
+    @pytest.fixture()
+    def p(u):
         ags = [r.atoms.select_atoms('name C* N*')
-               for r in self.u.residues]
+               for r in u.residues]
 
         p = polymer.PersistenceLength(ags)
         return p
 
-    def test_run(self):
-        p = self._make_p()
+    def test_ag_ValueError(self, u):
+        ags = [u.atoms[:10], u.atoms[10:110]]
+        with pytest.raises(ValueError):
+            polymer.PersistenceLength(ags)
+
+    def test_run(self, p):
         p.run()
 
-        assert_(len(p.results) == 280)
+        assert len(p.results) == 280
         assert_almost_equal(p.lb, 1.485, 3)
 
-    def test_fit(self):
-        p = self._make_p()
+    def test_fit(self, p):
         p.run()
         p.perform_fit()
 
         assert_almost_equal(p.lp, 6.504, 3)
-        assert_(len(p.fit) == len(p.results))
+        assert len(p.fit) == len(p.results)
 
-    def test_plot_ax_return(self):
+    def test_plot_ax_return(self, p):
         '''Ensure that a matplotlib axis object is
         returned when plot() is called.'''
-        p = self._make_p()
         p.run()
         p.perform_fit()
         actual = p.plot()
         expected = matplotlib.axes.Axes
-        assert_(isinstance(actual, expected))
+        assert isinstance(actual, expected)
 
-    def test_raise_NoDataError(self):
+    def test_raise_NoDataError(self, p):
         '''Ensure that a NoDataError is raised if
         perform_fit() is called before the run()
         method of AnalysisBase.'''
-        p = self._make_p()
-        assert_raises(NoDataError, p.perform_fit)
+        with pytest.raises(NoDataError):
+            p.perform_fit()
 
-class TestFitExponential(TestCase):
-    def setUp(self):
-        self.x = np.linspace(0, 250, 251)
-        self.a_ref = 20.0
-        self.y = np.exp(-self.x / self.a_ref)
 
-    def tearDown(self):
-        del self.x
-        del self.a_ref
-        del self.y
+class TestFitExponential(object):
+    x = np.linspace(0, 250, 251)
+    a_ref = 20.0
+    y = np.exp(-x / a_ref)
 
     def test_fit_simple(self):
         a = polymer.fit_exponential_decay(self.x, self.y)
-        assert_(a == self.a_ref)
+        assert a == self.a_ref
 
     def test_fit_noisy(self):
         noise = np.sin(self.x) * 0.01
@@ -113,4 +101,4 @@ class TestFitExponential(TestCase):
         a = polymer.fit_exponential_decay(self.x, y2)
 
         assert_almost_equal(a, self.a_ref, decimal=3)
-        #assert_(np.rint(a) == self.a_ref)
+        # assert_(np.rint(a) == self.a_ref)
