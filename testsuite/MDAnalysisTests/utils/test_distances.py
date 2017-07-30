@@ -553,9 +553,9 @@ class TestCythonFunctions(object):
         vec1 = a - b
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
-        ab = b - a
-        bc = c - b
-        cd = d - c
+        ab = a - b
+        bc = b - c
+        cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
 
         assert_almost_equal(bonds, bonds_numpy, self.prec,

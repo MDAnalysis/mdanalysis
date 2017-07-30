@@ -535,7 +535,7 @@ static double _calc_dihedral_angle(double* va, double* vb, double* vc)
 {
   // Returns atan2 from vectors va, vb, vc
   double n1[3], n2[3];
-  double xp[3];
+  double xp[3], vb_norm;
   double x, y, angle;
 
   //n1 is normal vector to -va, vb
@@ -551,14 +551,16 @@ static double _calc_dihedral_angle(double* va, double* vb, double* vc)
   // x = dot(n1,n2) = cos theta
   x = (n1[0]*n2[0] + n1[1]*n2[1] + n1[2]*n2[2]);
 
+  // xp = cross(n1,n2)
   xp[0] = n1[1]*n2[2] - n1[2]*n2[1];
   xp[1] =-n1[0]*n2[2] + n1[2]*n2[0];
   xp[2] = n1[0]*n2[1] - n1[1]*n2[0];
 
-  y = (xp[0]*vb[0] + xp[1]*vb[1] + xp[2]*vb[2]) / \
-      sqrt(vb[0]*vb[0] + vb[1]*vb[1] + vb[2]*vb[2]);
+  vb_norm = sqrt(vb[0]*vb[0] + vb[1]*vb[1] + vb[2]*vb[2]);
 
-  angle = -atan2(y, x);
+  y = (xp[0]*vb[0] + xp[1]*vb[1] + xp[2]*vb[2]) / vb_norm;
+
+  angle = -atan2(y, x); //atan2 is better conditioned than acos
   return angle;
 }
 
@@ -586,7 +588,7 @@ static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
     vc[1] = atom3[i][1] - atom4[i][1];
     vc[2] = atom3[i][2] - atom4[i][2];
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc); //atan2 is better conditioned than acos
+    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
   }
 }
 
@@ -622,7 +624,7 @@ static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
     vc[2] = atom3[i][2] - atom4[i][2];
     minimum_image(vc, box, inverse_box);
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc); //atan2 is better conditioned than acos
+    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
   }
 }
 
@@ -667,7 +669,7 @@ static void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2,
     vc[2] = atom3[i][2] - atom4[i][2];
     minimum_image_triclinic(vc, box, box_half);
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc); //atan2 is better conditioned than acos
+    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
   }
 }
 #endif
