@@ -25,11 +25,10 @@ import MDAnalysis.analysis.waterdynamics
 import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
-
+from numpy.testing import assert_almost_equal
 
 SELECTION1 = "byres name OH2"
-SELECTION2 = SELECTION1
-SELECTION3 = "byres name P1"
+SELECTION2 = "byres name P1"
 
 
 @pytest.fixture()
@@ -40,10 +39,10 @@ def universe():
 def test_HydrogenBondLifetimes(universe):
     hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(universe,
                                                                   SELECTION1,
-                                                                  SELECTION2,
+                                                                  SELECTION1,
                                                                   0, 5, 3)
     hbl.run(verbose=False)
-    assert round(hbl.timeseries[2][1], 5) == 0.75
+    assert_almost_equal(hbl.timeseries[2][1], 0.75, 5)
 
 
 def test_WaterOrientationalRelaxation(universe):
@@ -57,7 +56,7 @@ def test_WaterOrientationalRelaxation(universe):
 def test_WaterOrientationalRelaxation_zeroMolecules(universe):
     wor_zero = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(
         universe,
-        SELECTION3, 0, 5, 2)
+        SELECTION2, 0, 5, 2)
     wor_zero.run(verbose=False)
     assert wor_zero.timeseries[1] == (0.0, 0.0, 0.0)
 
@@ -81,7 +80,7 @@ def test_MeanSquareDisplacement(universe):
 def test_MeanSquareDisplacement_zeroMolecules(universe):
     msd_zero = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(
         universe,
-        SELECTION3, 0, 10, 2)
+        SELECTION2, 0, 10, 2)
     msd_zero.run(verbose=False)
     assert msd_zero.timeseries[1] == 0.0
 
@@ -96,7 +95,7 @@ def test_SurvivalProbability(universe):
 
 def test_SurvivalProbability_zeroMolecules(universe):
     sp_zero = MDAnalysis.analysis.waterdynamics.SurvivalProbability(universe,
-                                                                    SELECTION3,
+                                                                    SELECTION2,
                                                                     0, 6, 3)
     sp_zero.run(verbose=False)
     assert sp_zero.timeseries[1] == 0.0
