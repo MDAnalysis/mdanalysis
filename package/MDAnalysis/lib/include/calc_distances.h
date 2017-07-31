@@ -558,6 +558,9 @@ static double _calc_dihedral_angle(double* va, double* vb, double* vc)
 
   vb_norm = sqrt(vb[0]*vb[0] + vb[1]*vb[1] + vb[2]*vb[2]);
 
+  if ( abs(x) == 0.0 && abs(y) == 0.0 ) // numpy consistency
+    return NAN;
+
   y = (xp[0]*vb[0] + xp[1]*vb[1] + xp[2]*vb[2]) / vb_norm;
 
   angle = -atan2(y, x); //atan2 is better conditioned than acos
