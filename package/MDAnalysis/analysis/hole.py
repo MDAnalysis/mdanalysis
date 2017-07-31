@@ -858,8 +858,8 @@ class HOLE(BaseHOLE):
 
         # sanity checks
         if self.shorto > 2:
-            logger.warn("SHORTO (%d) needs to be < 3 in order to extract a HOLE profile!",
-                        self.shorto)
+            logger.warning("SHORTO (%d) needs to be < 3 in order to extract a HOLE profile!",
+                           self.shorto)
         for program, path in self.exe.items():
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
@@ -1130,7 +1130,8 @@ class HOLE(BaseHOLE):
         if len(self.profiles) == length:
             logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
-            logger.warn("Missing data: Found %d HOLE profiles from %d frames.", len(self.profiles), length)
+            logger.warning("Missing data: Found %d HOLE profiles from %d frames.",
+                           len(self.profiles), length)
 
     def __del__(self):
         for f in self.tempfiles:

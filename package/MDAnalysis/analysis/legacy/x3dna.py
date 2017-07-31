@@ -706,7 +706,7 @@ class X3DNA(BaseX3DNA):
         if len(self.profiles) == length:
             logger.info("Collected X3DNA profiles for %d frames", len(self.profiles))
         else:
-            logger.warn("Missing data: Found %d X3DNA profiles from %d frames.", len(self.profiles), length)
+            logger.warning("Missing data: Found %d X3DNA profiles from %d frames.", len(self.profiles), length)
 
     def __del__(self):
         for f in self.tempfiles:

@@ -1103,14 +1103,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             # note: ag[arange(len(ag))[boolean]] is ~2x faster than
             # ag[where[boolean]]
             mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
-            logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
-                mismatch_mask.sum()))
-            logger.debug(
-                "Removed residue ids: group 1: {0}".format(
-                    ag1.resids[mismatch_resindex]))
-            logger.debug(
-                "Removed residue ids: group 2: {0}".format(
-                    ag2.resids[mismatch_resindex]))
+            logger.warning("Removed {0} residues with non-matching numbers of atoms"
+                           .format(mismatch_mask.sum()))
+            logger.debug("Removed residue ids: group 1: {0}"
+                         .format(ag1.resids[mismatch_resindex]))
+            logger.debug("Removed residue ids: group 2: {0}"
+                         .format(ag2.resids[mismatch_resindex]))
             # replace after logging (still need old ag1 and ag2 for
             # diagnostics)
             ag1 = _ag1

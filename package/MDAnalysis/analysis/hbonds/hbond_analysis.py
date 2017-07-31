@@ -661,7 +661,7 @@ class HydrogenBondAnalysis(object):
             else:
                 errmsg += " Selection will update so continuing with fingers crossed."
                 warnings.warn(errmsg, category=SelectionWarning)
-                logger.warn(errmsg)
+                logger.warning(errmsg)
 
     def _log_parameters(self):
         """Log important parameters to the logfile."""
@@ -807,7 +807,8 @@ class HydrogenBondAnalysis(object):
         self._s1 = self.u.select_atoms(self.selection1)
         self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
         if not self._s1:
-            logger.warn("Selection 1 '{0}' did not select any atoms.".format(str(self.selection1)[:80]))
+            logger.warning("Selection 1 '{0}' did not select any atoms."
+                           .format(str(self.selection1)[:80]))
         self._s1_donors = {}
         self._s1_donors_h = {}
         self._s1_acceptors = {}
@@ -835,8 +836,8 @@ class HydrogenBondAnalysis(object):
             self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
-            logger.warn('Selection 2 "{0}" did not select any atoms.'.format(
-                str(self.selection2)[:80]))
+            logger.warning('Selection 2 "{0}" did not select any atoms.'
+                           .format(str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
@@ -913,7 +914,7 @@ class HydrogenBondAnalysis(object):
 
         remove_duplicates = kwargs.pop('remove_duplicates', True)  # False: old behaviour
         if not remove_duplicates:
-            logger.warn("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
+            logger.warning("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
 
         debug = kwargs.pop('debug', None)
         if debug is not None and debug != self.debug:
@@ -948,7 +949,7 @@ class HydrogenBondAnalysis(object):
             # chained reader or xyz(?) cannot do time yet
             def _get_timestep():
                 return self.u.trajectory.frame
-            logger.warn("HBond analysis is recording frame number instead of time step")
+            logger.warning("HBond analysis is recording frame number instead of time step")
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     (self.traj_slice.start or 0),
@@ -1142,7 +1143,7 @@ class HydrogenBondAnalysis(object):
         if self._timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
-            logger.warn(msg)
+            logger.warning(msg)
             return
 
         num_records = np.sum([len(hframe) for hframe in self._timeseries])
@@ -1197,7 +1198,7 @@ class HydrogenBondAnalysis(object):
         if not has_timeseries:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
-            logger.warn(msg)
+            logger.warning(msg)
         return has_timeseries
 
     def count_by_time(self):

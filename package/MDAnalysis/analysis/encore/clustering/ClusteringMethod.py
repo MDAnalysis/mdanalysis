@@ -49,7 +49,7 @@ except ImportError:
     msg = "sklearn.cluster could not be imported: some functionality will " \
           "not be available in encore.fit_clusters()"
     warnings.warn(msg, category=ImportWarning)
-    logging.warn(msg)
+    logging.warning(msg)
     del msg
 
 
