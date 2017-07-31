@@ -28,6 +28,7 @@ Enhancements
 Deprecations
 
 Fixes
+  * Fixed nuclinfo.tors() not converting delta (Issue #1572)
   * Changed _calc_dihedral and Dihedrals.dihedrals() vectors calculation to
     match IUPAC convention (Issue #1565)
   * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
