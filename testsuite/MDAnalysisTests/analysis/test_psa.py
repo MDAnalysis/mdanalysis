@@ -171,17 +171,13 @@ class TestPSAExceptions(TestCase):
     def test_get_path_metric_func_bad_key(self):
         '''Test that KeyError is caught by
         get_path_metric_func().'''
-
-        try:
+        with self.assertRaises(KeyError):
             PSA.get_path_metric_func('123456')
-        except KeyError:
-            self.fail('KeyError should be caught')
 
     def test_get_coord_axes_bad_dims(self):
         """Test that ValueError is raised when
         numpy array with incorrect dimensions
         is fed to get_coord_axes()."""
-
         with self.assertRaises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
