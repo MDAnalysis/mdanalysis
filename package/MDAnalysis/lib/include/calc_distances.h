@@ -531,12 +531,12 @@ static void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2,
   }
 }
 
-static double _calc_dihedral_angle(double* va, double* vb, double* vc)
+static void _calc_dihedral_angle(double* va, double* vb, double* vc, double* result)
 {
   // Returns atan2 from vectors va, vb, vc
   double n1[3], n2[3];
   double xp[3], vb_norm;
-  double x, y, angle;
+  double x, y;
 
   //n1 is normal vector to -va, vb
   //n2 is normal vector to -vb, vc
@@ -558,13 +558,15 @@ static double _calc_dihedral_angle(double* va, double* vb, double* vc)
 
   vb_norm = sqrt(vb[0]*vb[0] + vb[1]*vb[1] + vb[2]*vb[2]);
 
-  if ( abs(x) == 0.0 && abs(y) == 0.0 ) // numpy consistency
-    return NAN;
-
   y = (xp[0]*vb[0] + xp[1]*vb[1] + xp[2]*vb[2]) / vb_norm;
 
-  angle = -atan2(y, x); //atan2 is better conditioned than acos
-  return angle;
+  if ( (fabs(x) == 0.0) && (fabs(y) == 0.0) ) // numpy consistency
+  {
+    *result = NAN;
+    return;
+  }
+
+  *result = atan2(y, x); //atan2 is better conditioned than acos
 }
 
 static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
@@ -579,19 +581,19 @@ static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
 #endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
-    va[0] = atom1[i][0] - atom2[i][0];
-    va[1] = atom1[i][1] - atom2[i][1];
-    va[2] = atom1[i][2] - atom2[i][2];
+    va[0] = atom2[i][0] - atom1[i][0];
+    va[1] = atom2[i][1] - atom1[i][1];
+    va[2] = atom2[i][2] - atom1[i][2];
 
-    vb[0] = atom2[i][0] - atom3[i][0];
-    vb[1] = atom2[i][1] - atom3[i][1];
-    vb[2] = atom2[i][2] - atom3[i][2];
+    vb[0] = atom3[i][0] - atom2[i][0];
+    vb[1] = atom3[i][1] - atom2[i][1];
+    vb[2] = atom3[i][2] - atom2[i][2];
 
-    vc[0] = atom3[i][0] - atom4[i][0];
-    vc[1] = atom3[i][1] - atom4[i][1];
-    vc[2] = atom3[i][2] - atom4[i][2];
+    vc[0] = atom4[i][0] - atom3[i][0];
+    vc[1] = atom4[i][1] - atom3[i][1];
+    vc[2] = atom4[i][2] - atom3[i][2];
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
+    _calc_dihedral_angle(va, vb, vc, angles + i);
   }
 }
 
@@ -612,22 +614,22 @@ static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
 #endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
-    va[0] = atom1[i][0] - atom2[i][0];
-    va[1] = atom1[i][1] - atom2[i][1];
-    va[2] = atom1[i][2] - atom2[i][2];
+    va[0] = atom2[i][0] - atom1[i][0];
+    va[1] = atom2[i][1] - atom1[i][1];
+    va[2] = atom2[i][2] - atom1[i][2];
     minimum_image(va, box, inverse_box);
 
-    vb[0] = atom2[i][0] - atom3[i][0];
-    vb[1] = atom2[i][1] - atom3[i][1];
-    vb[2] = atom2[i][2] - atom3[i][2];
+    vb[0] = atom3[i][0] - atom2[i][0];
+    vb[1] = atom3[i][1] - atom2[i][1];
+    vb[2] = atom3[i][2] - atom2[i][2];
     minimum_image(vb, box, inverse_box);
 
-    vc[0] = atom3[i][0] - atom4[i][0];
-    vc[1] = atom3[i][1] - atom4[i][1];
-    vc[2] = atom3[i][2] - atom4[i][2];
+    vc[0] = atom4[i][0] - atom3[i][0];
+    vc[1] = atom4[i][1] - atom3[i][1];
+    vc[2] = atom4[i][2] - atom3[i][2];
     minimum_image(vc, box, inverse_box);
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
+    _calc_dihedral_angle(va, vb, vc, angles + i);
   }
 }
 
@@ -657,22 +659,22 @@ static void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2,
 #endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
-    va[0] = atom1[i][0] - atom2[i][0];
-    va[1] = atom1[i][1] - atom2[i][1];
-    va[2] = atom1[i][2] - atom2[i][2];
+    va[0] = atom2[i][0] - atom1[i][0];
+    va[1] = atom2[i][1] - atom1[i][1];
+    va[2] = atom2[i][2] - atom1[i][2];
     minimum_image_triclinic(va, box, box_half);
 
-    vb[0] = atom2[i][0] - atom3[i][0];
-    vb[1] = atom2[i][1] - atom3[i][1];
-    vb[2] = atom2[i][2] - atom3[i][2];
+    vb[0] = atom3[i][0] - atom2[i][0];
+    vb[1] = atom3[i][1] - atom2[i][1];
+    vb[2] = atom3[i][2] - atom2[i][2];
     minimum_image_triclinic(vb, box, box_half);
 
-    vc[0] = atom3[i][0] - atom4[i][0];
-    vc[1] = atom3[i][1] - atom4[i][1];
-    vc[2] = atom3[i][2] - atom4[i][2];
+    vc[0] = atom4[i][0] - atom3[i][0];
+    vc[1] = atom4[i][1] - atom3[i][1];
+    vc[2] = atom4[i][2] - atom3[i][2];
     minimum_image_triclinic(vc, box, box_half);
 
-    *(angles + i) = _calc_dihedral_angle(va, vb, vc);
+    _calc_dihedral_angle(va, vb, vc, angles + i);
   }
 }
 #endif

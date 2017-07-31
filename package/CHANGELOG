@@ -29,8 +29,8 @@ Deprecations
 
 Fixes
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
-  * Changed _calc_dihedral and Dihedrals.dihedrals() vectors calculation to
-    match IUPAC convention (Issue #1565)
+  * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
+    (Issue #1565)
   * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
