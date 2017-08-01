@@ -50,30 +50,32 @@ class TestPersistenceLength(object):
         p = polymer.PersistenceLength(ags)
         return p
 
+    @staticmethod
+    @pytest.fixture()
+    def p_run(p):
+        return p.run()
+
     def test_ag_ValueError(self, u):
         ags = [u.atoms[:10], u.atoms[10:110]]
         with pytest.raises(ValueError):
             polymer.PersistenceLength(ags)
 
-    def test_run(self, p):
-        p.run()
+    def test_run(self, p_run):
 
-        assert len(p.results) == 280
-        assert_almost_equal(p.lb, 1.485, 3)
+        assert len(p_run.results) == 280
+        assert_almost_equal(p_run.lb, 1.485, 3)
 
-    def test_fit(self, p):
-        p.run()
-        p.perform_fit()
+    def test_fit(self, p_run):
+        p_run.perform_fit()
 
-        assert_almost_equal(p.lp, 6.504, 3)
-        assert len(p.fit) == len(p.results)
+        assert_almost_equal(p_run.lp, 6.504, 3)
+        assert len(p_run.fit) == len(p_run.results)
 
-    def test_plot_ax_return(self, p):
+    def test_plot_ax_return(self, p_run):
         '''Ensure that a matplotlib axis object is
         returned when plot() is called.'''
-        p.run()
-        p.perform_fit()
-        actual = p.plot()
+        p_run.perform_fit()
+        actual = p_run.plot()
         expected = matplotlib.axes.Axes
         assert isinstance(actual, expected)
 
