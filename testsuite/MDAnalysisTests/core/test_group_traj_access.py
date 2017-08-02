@@ -24,13 +24,13 @@ from __future__ import division, absolute_import
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import (
     assert_,
     assert_almost_equal,
     assert_array_equal,
     assert_array_almost_equal,
     assert_equal,
-    assert_raises,
 )
 
 from MDAnalysisTests import make_Universe
@@ -99,7 +99,8 @@ class TestAtomGroupTrajAccess(object):
             assert_not_view(ag_vel)
             assert_array_equal(ag_vel, u.trajectory.ts.velocities[10:20])
         else:
-            assert_raises(NoDataError, getattr, ag, 'velocities')
+            with pytest.raises(NoDataError):
+                getattr(ag, 'velocities')
             assert_correct_errormessage((getattr, ag, 'velocities'), 'velocities')
 
     @staticmethod
@@ -114,7 +115,8 @@ class TestAtomGroupTrajAccess(object):
             assert_not_view(ag_for)
             assert_array_equal(ag_for, u.trajectory.ts.forces[10:20])
         else:
-            assert_raises(NoDataError, getattr, ag, 'forces')
+            with pytest.raises(NoDataError):
+                getattr(ag, 'forces')
             assert_correct_errormessage((getattr, ag, 'forces'), 'forces')
 
     @staticmethod
@@ -140,7 +142,8 @@ class TestAtomGroupTrajAccess(object):
             assert_not_view(at_vel)
             assert_array_equal(at_vel, u.trajectory.ts.velocities[55])
         else:
-            assert_raises(NoDataError, getattr, at, 'velocity')
+            with pytest.raises(NoDataError):
+                getattr(at, 'velocity')
             assert_correct_errormessage((getattr, at, 'velocity'), 'velocities')
 
     @staticmethod
@@ -155,7 +158,8 @@ class TestAtomGroupTrajAccess(object):
             assert_not_view(at_for)
             assert_array_equal(at_for, u.trajectory.ts.forces[55])
         else:
-            assert_raises(NoDataError, getattr, at, 'force')
+            with pytest.raises(NoDataError):
+                getattr(at, 'force')
             assert_correct_errormessage((getattr, at, 'force'), 'forces')
 
     @staticmethod
@@ -185,7 +189,8 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(ag.velocities, new, decimal=5)
             assert_array_almost_equal(u.trajectory.ts.velocities[[101, 107, 109]], new, decimal=5)
         else:
-            assert_raises(NoDataError, setattr, ag, 'velocities', new)
+            with pytest.raises(NoDataError):
+                setattr(ag, 'velocities', new)
             assert_correct_errormessage((setattr, ag, 'velocities', new), 'velocities')
 
     @staticmethod
@@ -202,7 +207,8 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(ag.forces, new, decimal=5)
             assert_array_almost_equal(u.trajectory.ts.forces[[101, 107, 109]], new, decimal=5)
         else:
-            assert_raises(NoDataError, setattr, ag, 'forces', new)
+            with pytest.raises(NoDataError):
+                setattr(ag, 'forces', new)
             assert_correct_errormessage((setattr, ag, 'forces', new), 'forces')
 
     @staticmethod
@@ -228,7 +234,8 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(at.velocity, new, decimal=5)
             assert_array_almost_equal(u.trajectory.ts.velocities[94], new, decimal=5)
         else:
-            assert_raises(NoDataError, setattr, at, 'velocity', new)
+            with pytest.raises(NoDataError):
+                setattr(at, 'velocity', new)
             assert_correct_errormessage((setattr, at, 'velocity', new), 'velocities')
 
     @staticmethod
@@ -243,7 +250,8 @@ class TestAtomGroupTrajAccess(object):
             assert_array_almost_equal(at.force, new, decimal=5)
             assert_array_almost_equal(u.trajectory.ts.forces[94], new, decimal=5)
         else:
-            assert_raises(NoDataError, setattr, at, 'force', new)
+            with pytest.raises(NoDataError):
+                setattr(at, 'force', new)
             assert_correct_errormessage((setattr, at, 'force', new), 'forces')
 
     def test_all(self):

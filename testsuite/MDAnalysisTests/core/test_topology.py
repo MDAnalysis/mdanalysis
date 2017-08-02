@@ -12,8 +12,8 @@ from numpy.testing import (
     assert_,
     assert_equal,
     assert_array_equal,
-    assert_raises,
 )
+import pytest
 import numpy as np
 
 from MDAnalysisTests import make_Universe
@@ -277,47 +277,52 @@ class TestLevelMoves(TestCase):
 
     # Wrong size argument for these operations
     def test_move_atom_residuegroup_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.atoms[0], 'residue', self.u.atoms[1:3])
+        with pytest.raises(TypeError):
+            setattr(self.u.atoms[0], 'residue', self.u.atoms[1:3])
 
     def test_move_atom_residue_list_TE(self):
         dest = [self.u.residues[1], self.u.residues[3]]
-        assert_raises(TypeError,
-                      setattr, self.u.atoms[0], 'residue', dest)
+        with pytest.raises(TypeError):
+            setattr(self.u.atoms[0], 'residue', dest)
         
     def test_move_atomgroup_residuegroup_VE(self):
         ag = self.u.atoms[:2]
         dest = self.u.residues[5:10]
 
-        assert_raises(ValueError, setattr, ag, 'residues', dest)
+        with pytest.raises(ValueError):
+            setattr(ag, 'residues', dest)
+
 
     def test_move_atomgroup_residue_list_VE(self):
         ag = self.u.atoms[:2]
         dest = [self.u.residues[0], self.u.residues[10], self.u.residues[15]]
 
-        assert_raises(ValueError, setattr, ag, 'residues', dest)
+        with pytest.raises(ValueError):
+            setattr(ag, 'residues', dest)
+
 
     # Setting to non-Residue/ResidueGroup raises TE
     def test_move_atom_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.atoms[0], 'residue', 14)
+        with pytest.raises(TypeError):
+            setattr(self.u.atoms[0], 'residue', 14)
 
     def test_move_atomgroup_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.atoms[:5], 'residues', 15)
+        with pytest.raises(TypeError):
+            setattr(self.u.atoms[:5], 'residues', 15)
 
     def test_move_atomgroup_list_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.atoms[:5], 'residues', [14, 12])
+        with pytest.raises(TypeError):
+            setattr(self.u.atoms[:5], 'residues', [14, 12])
+
         
     # Test illegal moves - Atom.segment can't be changed
     def test_move_atom_segment_NIE(self):
-        assert_raises(NotImplementedError,
-                      setattr, self.u.atoms[0], 'segment', self.u.segments[1])
+        with pytest.raises(NotImplementedError):
+            setattr(self.u.atoms[0], 'segment', self.u.segments[1])
 
     def test_move_atomgroup_segment_NIE(self):
-        assert_raises(NotImplementedError,
-                      setattr, self.u.atoms[:3], 'segments', self.u.segments[1])
+        with pytest.raises(NotImplementedError):
+            setattr(self.u.atoms[:3], 'segments', self.u.segments[1])
 
     @staticmethod
     def assert_residue_matches_segment(res, seg):
@@ -416,37 +421,41 @@ class TestLevelMoves(TestCase):
         assert_equal(len(dest[1].residues), 6)
 
     def test_move_residue_segmentgroup_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.residues[0], 'segment', self.u.segments[:4])
+        with pytest.raises(TypeError):
+            setattr(self.u.residues[0], 'segment', self.u.segments[:4])
 
     def test_move_residue_list_TE(self):
         dest = [self.u.segments[3], self.u.segments[4]]
-        assert_raises(TypeError,
-                      setattr, self.u.residues[0], 'segment', dest)
+        with pytest.raises(TypeError):
+            setattr(self.u.residues[0], 'segment', dest)
 
     def test_move_residuegroup_segmentgroup_VE(self):
         rg = self.u.residues[:3]
         sg = self.u.segments[1:]
 
-        assert_raises(ValueError, setattr, rg, 'segments', sg)
+        with pytest.raises(ValueError):
+            setattr(rg, 'segments', sg)
+
 
     def test_move_residuegroup_list_VE(self):
         rg = self.u.residues[:2]
         sg = [self.u.segments[1], self.u.segments[2], self.u.segments[3]]
 
-        assert_raises(ValueError, setattr, rg, 'segments', sg)
+        with pytest.raises(ValueError):
+            setattr(rg, 'segments', sg)
+
 
     def test_move_residue_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.residues[0], 'segment', 1)
+        with pytest.raises(TypeError):
+            setattr(self.u.residues[0], 'segment', 1)
 
     def test_move_residuegroup_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.residues[:3], 'segments', 4)
+        with pytest.raises(TypeError):
+            setattr(self.u.residues[:3], 'segments', 4)
 
     def test_move_residuegroup_list_TE(self):
-        assert_raises(TypeError,
-                      setattr, self.u.residues[:3], 'segments', [1, 2, 3])
+        with pytest.raises(TypeError):
+            setattr(self.u.residues[:3], 'segments', [1, 2, 3])
 
 
 class TestDownshiftArrays(TestCase):
@@ -588,12 +597,14 @@ class TestAddingResidues(object):
     def test_add_Residue_ambiguous_segment_NDE(self):
         u = make_Universe()
 
-        assert_raises(NoDataError, u.add_Residue)
+        with pytest.raises(NoDataError):
+            u.add_Residue()
     
     def test_add_Residue_missing_attr_NDE(self):
         u = make_Universe(('resids',))
 
-        assert_raises(NoDataError, u.add_Residue, segment=u.segments[0])
+        with pytest.raises(NoDataError):
+            u.add_Residue(segment=u.segments[0])
 
     def test_add_Residue_NDE_message(self):
         # check error message asks for missing attr
@@ -628,8 +639,8 @@ class TestAddingResidues(object):
 
     def test_missing_attr_NDE_Segment(self):
         u = make_Universe(('segids',))
-
-        assert_raises(NoDataError, u.add_Segment)
+        with pytest.raises(NoDataError):
+            u.add_Segment()
 
     def test_add_Segment_NDE_message(self):
         u = make_Universe(('segids',))
@@ -695,12 +706,13 @@ class TestTopologyCreation(object):
     def test_resindex_VE(self):
         # wrong sized atom to residue array
         AR = np.arange(10)
-        assert_raises(ValueError,
-                      Topology, n_atoms=5, atom_resindex=AR)
+        with pytest.raises(ValueError):
+            Topology(n_atoms=5, atom_resindex=AR)
 
     def test_segindex_VE(self):
         # wrong sized residue to segment array
         AR = np.arange(5)
         RS = np.arange(10)
-        assert_raises(ValueError,
-                      Topology, n_atoms=5, n_res=5, atom_resindex=AR, residue_segindex=RS)
+        with pytest.raises(ValueError):
+            Topology(n_atoms=5, n_res=5, atom_resindex=AR,
+                     residue_segindex=RS)

@@ -27,7 +27,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
+from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_, assert_array_almost_equal)
 
 from MDAnalysisTests import tempdir, make_Universe
@@ -42,7 +42,8 @@ from unittest import TestCase
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
-    assert_raises(ValueError, DATAReader, 'filename')
+    with pytest.raises(ValueError):
+        DATAReader('filename')
 
 
 class _TestLammpsData_Coords(TestCase):
@@ -72,10 +73,12 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.dimensions, self.dimensions)
 
     def test_singleframe(self):
-        assert_raises(StopIteration, self.u.trajectory.next)
+        with pytest.raises(StopIteration):
+            self.u.trajectory.next()
 
     def test_seek(self):
-        assert_raises(IndexError, self.u.trajectory.__getitem__, 1)
+        with pytest.raises(IndexError):
+            self.u.trajectory.__getitem__(1)
 
     def test_seek_2(self):
         ts = self.u.trajectory[0]
@@ -248,13 +251,15 @@ class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
         def wrong_load(unit="nm"):
             return mda.Universe(self.topology, self.trajectory, format=self.format,
                                 timeunit=unit)
-        assert_raises(TypeError, wrong_load)
+        with pytest.raises(TypeError):
+            wrong_load()
 
     def test_wrong_unit(self):
         def wrong_load(unit="GARBAGE"):
             return mda.Universe(self.topology, self.trajectory, format=self.format,
                                 timeunit=unit)
-        assert_raises(ValueError, wrong_load)
+        with pytest.raises(ValueError):
+            wrong_load()
 
 
 class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):

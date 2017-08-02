@@ -22,9 +22,10 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
+import pytest
 from six.moves import zip
 
-from numpy.testing import (assert_equal, assert_raises, assert_allclose)
+from numpy.testing import (assert_equal, assert_allclose)
 
 from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
                                        DLP_CONFIG_order, DLP_HISTORY,
@@ -84,10 +85,12 @@ class TestConfigMinimal(_DLPConfig):
         pass
 
     def test_velocities(self):
-        assert_raises(AttributeError, getattr, self.ts, "_velocities")
+        with pytest.raises(AttributeError):
+            getattr(self.ts, "_velocities")
 
     def test_forces(self):
-        assert_raises(AttributeError, getattr, self.ts, "_forces")
+        with pytest.raises(AttributeError):
+            getattr(self.ts, "_forces")
 
 
 class _DLPConfig2(TestCase):
@@ -216,10 +219,12 @@ class TestDLPolyHistoryMinimal(_DLHistory):
     f = DLP_HISTORY_minimal
 
     def test_velocity(self):
-        assert_raises(mda.NoDataError, getattr, self.u.atoms[0], 'velocity')
+        with pytest.raises(mda.NoDataError):
+            getattr(self.u.atoms[0], 'velocity')
 
     def test_force(self):
-        assert_raises(mda.NoDataError, getattr, self.u.atoms[0], 'force')
+        with pytest.raises(mda.NoDataError):
+            getattr(self.u.atoms[0], 'force')
 
     def test_unitcell(self):
         pass

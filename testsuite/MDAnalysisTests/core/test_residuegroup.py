@@ -23,10 +23,8 @@ from __future__ import absolute_import
 
 import numpy as np
 from numpy.testing import (
-    dec,
     assert_,
     assert_equal,
-    assert_raises,
 )
 import pytest
 from unittest import skip, TestCase
@@ -88,10 +86,13 @@ class TestSequence(TestCase):
         def wrong_res():
             self.u.residues.sequence()
 
-        assert_raises(ValueError, wrong_res)
+        with pytest.raises(ValueError):
+            wrong_res()
+
 
     def test_format_TE(self):
-        assert_raises(TypeError, self.u.residues.sequence, format='chicken')
+        with pytest.raises(TypeError):
+            self.u.residues.sequence(format = 'chicken')
 
 
 class TestResidueGroup(TestCase):
@@ -187,8 +188,8 @@ class TestResidueGroup(TestCase):
     def test_set_resnum_ValueError(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24, 25]
-
-        assert_raises(ValueError, setattr, rg, 'resnums', new)
+        with pytest.raises(ValueError):
+            setattr(rg, 'resnums', new)
 
     # INVALID: no `set_resnames` method; use `resnames` property directly
     @skip
@@ -218,7 +219,9 @@ class TestResidueGroup(TestCase):
         rg = self.universe.residues[:3]
         new = ['a', 'b', 'c', 'd']
 
-        assert_raises(ValueError, rg.set_resnames, new)
+        with pytest.raises(ValueError):
+            rg.set_resnames(new)
+
 
     # INVALID: no `set_resids` method; also, residues are not mergeable
     # by setting resids; resids are not necessarily unique; atoms must

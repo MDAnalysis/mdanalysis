@@ -27,11 +27,9 @@ import itertools
 from unittest import TestCase
 import numpy as np
 from numpy.testing import (
-    dec,
     assert_,
     assert_array_equal,
     assert_equal,
-    assert_raises,
     assert_warns,
 )
 import pytest
@@ -167,7 +165,8 @@ class TestGroupSlicing(object):
                 assert_(val not in result)
 
     def _check_indexerror(self, group, idx):
-        assert_raises(IndexError, group.__getitem__, idx)
+        with pytest.raises(IndexError):
+            group.__getitem__(idx)
 
     def _check_slice(self, group, other, sl):
         """Check that slicing a np array is identical"""
@@ -294,12 +293,14 @@ class TestGroupAddition(object):
     @staticmethod
     def _check_bad_sum(a, b, c):
         # sum with bad first argument
-        assert_raises(TypeError, sum, [10, a, b, c])
+        with pytest.raises(TypeError):
+            sum([10, a, b, c])
 
     def _check_crosslevel(self, a, b):
         def add(x, y):
             return x + y
-        assert_raises(TypeError, add, a, b)
+        with pytest.raises(TypeError):
+            add(a, b)
 
     def _check_contains(self, group):
         assert_(group[2] in group)
@@ -502,15 +503,23 @@ class TestComponentComparisons(object):
 
     @staticmethod
     def _check_crosslevel_cmp(a, b):
-        assert_raises(TypeError, operator.lt, a, b)
-        assert_raises(TypeError, operator.le, a, b)
-        assert_raises(TypeError, operator.gt, a, b)
-        assert_raises(TypeError, operator.ge, a, b)
+
+        with pytest.raises(TypeError):
+            operator.lt(a, b)
+        with pytest.raises(TypeError):
+            operator.le(a, b)
+        with pytest.raises(TypeError):
+            operator.gt(a, b)
+        with pytest.raises(TypeError):
+            operator.ge(a, b)
 
     @staticmethod
     def _check_crosslevel_eq(a, b):
-        assert_raises(TypeError, operator.eq, a, b)
-        assert_raises(TypeError, operator.ne, a, b)
+        with pytest.raises(TypeError):
+            operator.eq(a, b)
+
+        with pytest.raises(TypeError):
+            operator.ne(a, b)
 
     def test_comparions(self):
         u = make_Universe()
@@ -841,7 +850,8 @@ class TestGroupBaseOperators(object):
             return True
 
         def failing_pairs(left, right):
-            assert_raises(TypeError, _only_same_level(dummy), left, right)
+            with pytest.raises(TypeError):
+                _only_same_level(dummy)(left, right)
 
         def succeeding_pairs(left, right):
             assert_(_only_same_level(dummy)(left, right))
@@ -896,7 +906,9 @@ class TestGroupBaseOperators(object):
         u = make_Universe()
         u2 = make_Universe()
         _only_same_level = mda.core.groups._only_same_level
-        assert_raises(ValueError, _only_same_level(dummy), u.atoms, u2.atoms)
+        with pytest.raises(ValueError):
+            _only_same_level(dummy)(u.atoms, u2.atoms)
+
 
     def test_shortcut_overriding(self):
         def check_operator(op, method, level):

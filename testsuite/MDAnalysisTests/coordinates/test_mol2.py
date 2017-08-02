@@ -20,11 +20,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import range
 
 import os
 from numpy.testing import (
-    assert_equal,assert_raises, assert_array_equal,
+    assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
     assert_,
 )
@@ -85,7 +87,8 @@ class TestMol2(TestCase):
         assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_broken_molecule(self):
-        assert_raises(ValueError, Universe, mol2_broken_molecule)
+        with pytest.raises(ValueError):
+            Universe(mol2_broken_molecule)
 
         # This doesn't work with 2.6
         # Checks the text of the error message, so it low priority
@@ -167,5 +170,5 @@ def test_mol2_write_NIE():
     mytempdir = tempdir.TempDir()
     outfile = os.path.join(mytempdir.name, 'test.mol2')
     u = make_Universe(trajectory=True)
-
-    assert_raises(NotImplementedError, u.atoms.write, outfile)
+    with pytest.raises(NotImplementedError):
+        u.atoms.write(outfile)

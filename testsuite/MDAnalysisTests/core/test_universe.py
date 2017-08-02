@@ -35,12 +35,10 @@ from MDAnalysisTests.tempdir import TempDir
 
 import numpy as np
 from numpy.testing import (
-    dec,
     assert_,
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_raises,
 )
 import pytest
 
@@ -105,16 +103,19 @@ class TestUniverseCreation(object):
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
-        assert_raises(TypeError, mda.Universe, StringIO(CHOL_GRO))
+        with pytest.raises(TypeError):
+            mda.Universe(StringIO(CHOL_GRO))
 
     def test_Universe_no_trajectory_AE(self):
         # querying trajectory without a trajectory loaded (only topology)
         u = make_Universe()
+        with pytest.raises(AttributeError):
+            getattr(u, 'trajectory')
 
-        assert_raises(AttributeError, getattr, u, 'trajectory')
 
     def test_Universe_topology_unrecognizedformat_VE(self):
-        assert_raises(ValueError, mda.Universe, 'some.weird.not.pdb.but.converted.xtc')
+        with pytest.raises(ValueError):
+            mda.Universe('some.weird.not.pdb.but.converted.xtc')
 
     def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
@@ -125,8 +126,8 @@ class TestUniverseCreation(object):
             raise AssertionError
 
     def test_Universe_topology_IE(self):
-        assert_raises(IOError,
-                      mda.Universe, 'thisfile', topology_format=IOErrorParser)
+        with pytest.raises(IOError):
+            mda.Universe('thisfile', topology_format = IOErrorParser)
 
     def test_Universe_topology_IE_msg(self):
         # should get the original error, as well as Universe error
@@ -180,8 +181,8 @@ class TestUniverseCreation(object):
     def test_load_new_VE(self):
         u = mda.Universe()
 
-        assert_raises(TypeError,
-                      u.load_new, 'thisfile', format='soup')
+        with pytest.raises(TypeError):
+            u.load_new('thisfile', format = 'soup')
 
     def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
@@ -211,7 +212,8 @@ class TestUniverse(object):
         def bad_load():
             return mda.Universe(PSF_BAD, DCD)
 
-        assert_raises(ValueError, bad_load)
+        with pytest.raises(ValueError):
+            bad_load()
 
     def test_load_new(self):
         u = mda.Universe(PSF, DCD)
@@ -224,7 +226,8 @@ class TestUniverse(object):
         def bad_load(uni):
             return uni.load_new('filename.notarealextension')
 
-        assert_raises(TypeError, bad_load, u)
+        with pytest.raises(TypeError):
+            bad_load(u)
 
     def test_load_structure(self):
         # Universe(struct)
@@ -249,7 +252,8 @@ class TestUniverse(object):
 
     def test_pickle_raises_NotImplementedError(self):
         u = mda.Universe(PSF, DCD)
-        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
+        with pytest.raises(NotImplementedError):
+            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
     def test_set_dimensions(self):
         u = mda.Universe(PSF, DCD)
@@ -310,7 +314,8 @@ class TestGuessBonds(TestCase):
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
-        assert_raises(ValueError, mda.Universe, two_water_gro_nonames, guess_bonds=True)
+        with pytest.raises(ValueError):
+            mda.Universe(two_water_gro_nonames, guess_bonds = True)
 
     def test_universe_guess_bonds_with_vdwradii(self):
         """Unknown atom types, but with vdw radii here to save the day"""
@@ -356,7 +361,8 @@ class TestGuessBonds(TestCase):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        assert_raises(ValueError, ag.guess_bonds)
+        with pytest.raises(ValueError):
+            ag.guess_bonds()
 
     def test_atomgroup_guess_bonds_with_vdwradii(self):
         u = mda.Universe(two_water_gro_nonames)

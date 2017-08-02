@@ -31,11 +31,9 @@ import numpy as np
 import warnings
 
 from numpy.testing import (
-    dec,
     assert_,
     assert_array_equal,
     assert_almost_equal,
-    assert_raises,
     assert_equal,
     assert_array_almost_equal,
     raises
@@ -156,8 +154,8 @@ class TestAtomGroupToTopology(object):
     ])
     def test_VE(self, btype, u):
         ag = u.atoms[:10]
-
-        assert_raises(ValueError, getattr, ag, btype)
+        with pytest.raises(ValueError):
+            getattr(ag, btype)
 
 
 class TestAtomGroupWriting(TestCase):
@@ -192,7 +190,7 @@ class TestAtomGroupWriting(TestCase):
     def test_bogus_kwarg_pdb(self):
         # test for resolution of Issue 877
         with tempdir.in_tempdir():
-            with assert_raises(TypeError):
+            with pytest.raises(TypeError):
                 self.u.atoms.write('dummy.pdb', bogus="what?")
 
 class _WriteAtoms(TestCase):
@@ -227,7 +225,8 @@ class _WriteAtoms(TestCase):
 
     def test_write_empty_atomgroup(self):
         sel = self.universe.select_atoms('name doesntexist')
-        assert_raises(IndexError, sel.write, self.outfile)
+        with pytest.raises(IndexError):
+            sel.write(self.outfile)
 
     def test_write_selection(self):
         CA = self.universe.select_atoms('name CA')
@@ -462,13 +461,15 @@ class TestCenter(TestCase):
 
     def test_center_wrong_length(self):
         weights = np.ones(self.ag.n_atoms + 4)
-
-        assert_raises(ValueError, self.ag.center, weights)
+        with pytest.raises(ValueError):
+            self.ag.center(weights)
 
     def test_center_wrong_shape(self):
         weights = np.ones((self.ag.n_atoms, 2))
 
-        assert_raises(TypeError, self.ag.center, weights)
+        with pytest.raises(TypeError):
+            self.ag.center(weights)
+
 
 
 class TestSplit(TestCase):
@@ -514,7 +515,8 @@ class TestSplit(TestCase):
     def test_split_VE(self):
         ag = self.universe.atoms[:40]
 
-        assert_raises(ValueError, ag.split, 'something')
+        with pytest.raises(ValueError):
+            ag.split('something')
 
 
 class TestWrap(TestCase):
@@ -527,13 +529,16 @@ class TestWrap(TestCase):
         del self.ag
 
     def test_wrap_comp_fail(self):
-        assert_raises(ValueError, self.ag.wrap, compound='strawberries')
+        with pytest.raises(ValueError):
+            self.ag.wrap(compound = 'strawberries')
 
     def test_wrap_cent_fail(self):
-        assert_raises(ValueError, self.ag.wrap, compound='residues', center='avacado')
+        with pytest.raises(ValueError):
+            self.ag.wrap(compound = 'residues', center = 'avacado')
 
     def test_wrap_box_fail(self):
-        assert_raises(ValueError, self.ag.wrap, box=np.array([0, 1]))
+        with pytest.raises(ValueError):
+            self.ag.wrap(box = np.array([0, 1]))
 
     def _in_box(self, coords):
         """Check that a set of coordinates are 0.0 <= r <= box"""
@@ -681,7 +686,8 @@ class TestCrossUniverse(object):
     def _check_badadd(self, a, b):
         def add(x, y):
             return x + y
-        assert_raises(ValueError, add, a, b)
+        with pytest.raises(ValueError):
+            add(a, b)
 
     def test_add_mixed_universes(self):
         # Issue #532
@@ -933,10 +939,12 @@ class TestAtomGroup(TestCase):
 
     def test_getitem_IE(self):
         d = {'A': 1}
-        assert_raises(IndexError, self.universe.atoms.__getitem__, d)
+        with pytest.raises(IndexError):
+            self.universe.atoms.__getitem__(d)
 
     def test_bad_make(self):
-        assert_raises(TypeError, mda.core.groups.AtomGroup, ['these', 'are', 'not', 'atoms'])
+        with pytest.raises(TypeError):
+            mda.core.groups.AtomGroup(['these', 'are', 'not', 'atoms'])
 
     def test_n_atoms(self):
         assert_equal(self.ag.n_atoms, 3341)
@@ -1048,7 +1056,8 @@ class TestAtomGroup(TestCase):
     def test_bad_add_AG(self):
         def bad_add():
             return self.ag + [1, 2, 3]
-        assert_raises(TypeError, bad_add)
+        with pytest.raises(TypeError):
+            bad_add()
 
     def test_bool_false(self):
         # Issue #304
@@ -1082,11 +1091,13 @@ class TestAtomGroup(TestCase):
     def test_packintobox_badshape(self):
         ag = self.universe.atoms[:10]
         box = np.zeros(9, dtype=np.float32).reshape(3, 3)
-        assert_raises(ValueError, ag.pack_into_box, box=box)
+        with pytest.raises(ValueError):
+            ag.pack_into_box(box = box)
 
     def test_packintobox_noshape(self):
         ag = self.universe.atoms[:10]
-        assert_raises(ValueError, ag.pack_into_box)
+        with pytest.raises(ValueError):
+            ag.pack_into_box()
 
     def test_packintobox(self):
         """test AtomGroup.pack_into_box(): Tests application of periodic boundary
@@ -1177,9 +1188,12 @@ class TestAtomGroup(TestCase):
         """test that AtomGroup.dihedral() raises ValueError if not exactly
         4 atoms given"""
         nodih = self.universe.select_atoms("resid 3:10")
-        assert_raises(ValueError, getattr, nodih, 'dihedral')
+        with pytest.raises(ValueError):
+            getattr(nodih, 'dihedral')
+
         nodih = self.universe.select_atoms("resid 3:5")
-        assert_raises(ValueError, getattr, nodih, 'dihedral')
+        with pytest.raises(ValueError):
+            getattr(nodih, 'dihedral')
 
     def test_improper(self):
         u = self.universe
@@ -1213,7 +1227,8 @@ class TestAtomGroup(TestCase):
 
     def test_bond_ValueError(self):
         ag = self.universe.atoms[:4]
-        assert_raises(ValueError, getattr, ag, 'bond')
+        with pytest.raises(ValueError):
+            getattr(ag, 'bond')
 
     def test_angle(self):
         self.universe.trajectory.rewind()  # just to make sure...
@@ -1224,7 +1239,8 @@ class TestAtomGroup(TestCase):
 
     def test_angle_ValueError(self):
         ag = self.universe.atoms[:2]
-        assert_raises(ValueError, getattr, ag, 'angle')
+        with pytest.raises(ValueError):
+            getattr(ag, 'angle')
 
     def test_shape_parameter(self):
         s = self.universe.s4AKE.atoms.shape_parameter()
@@ -1247,7 +1263,8 @@ class TestAtomGroup(TestCase):
             # create wrong size array
             badarr = np.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
             ag.positions = badarr
-        assert_raises(ValueError, set_badarr)
+        with pytest.raises(ValueError):
+            set_badarr()
 
     def test_set_names(self):
         ag = self.universe.atoms[:2]
@@ -1259,7 +1276,8 @@ class TestAtomGroup(TestCase):
     def test_nonexistent_instantselector_raises_AttributeError(self):
         def access_nonexistent_instantselector():
             self.universe.atoms.NO_SUCH_ATOM
-        assert_raises(AttributeError, access_nonexistent_instantselector)
+        with pytest.raises(AttributeError):
+            access_nonexistent_instantselector()
 
     def test_atom_order(self):
         assert_equal(self.universe.atoms.indices,

@@ -20,11 +20,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from numpy.testing import (
     assert_,
     assert_array_equal,
     assert_equal,
-    assert_raises,
     assert_warns,
 )
 import MDAnalysis as mda
@@ -98,9 +99,9 @@ class TestPDBConect(object):
                 assert_equal(bond, res_bond)
 
     def test_conect_parser_runtime(self):
-        assert_raises(RuntimeError,
-                      mda.topology.PDBParser._parse_conect,
-                      'CONECT12337 7718 84081234012344123')
+        with pytest.raises(RuntimeError):
+            mda.topology.PDBParser._parse_conect('CONECT12337 7718 '
+                                                 '84081234012344123')
 
     def test_conect_topo_parser(self):
         """Check that the parser works as intended,

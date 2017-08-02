@@ -20,12 +20,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six.moves import zip
 import MDAnalysis as mda
 import os
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_almost_equal, assert_raises)
+                           assert_almost_equal)
 import numpy as np
 
 from unittest import TestCase
@@ -202,8 +204,8 @@ class TestTRZWriter(TestCase, RefTRZ):
 
     def test_long_title(self):
         title = '*' * 81
-        assert_raises(ValueError,
-                      self.Writer, self.outfile, self.ref_n_atoms, title=title)
+        with pytest.raises(ValueError):
+            self.Writer(self.outfile, self.ref_n_atoms, title = title)
 
 
 class TestTRZWriter2(TestCase):
