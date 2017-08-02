@@ -24,3 +24,22 @@ class TrajReaderBench(object):
         from our standard test files.
         """
         self.traj_reader(self.traj_file)
+
+class TrajReaderStriding(object):
+    """Benchmarks for trajectory file format striding."""
+    params = (['XTC', 'TRR', 'DCD'])
+    param_names = ['traj_format']
+
+    def setup(self, traj_format):
+        self.traj_dict = {'XTC': [XTC, XTCReader],
+                          'TRR': [TRR, TRRReader],
+                          'DCD': [DCD, DCDReader]}
+        self.traj_file, self.traj_reader = self.traj_dict[traj_format]
+        self.reader_object = self.traj_reader(self.traj_file)
+
+    def time_strides(self, traj_format):
+        """Benchmark striding over full trajectory
+        test files for each format.
+        """
+        for ts in self.reader_object:
+            pass
