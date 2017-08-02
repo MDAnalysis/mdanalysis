@@ -26,8 +26,8 @@ Use the tests from the [git source repository](Source), which are located in the
 cd testsuite/MDAnalysisTests
 pytest  --disable-pytest-warnings
 ```
-Running the tests serially can take some time (>20min) depending on the performance of your computer.
-You can also run the tests in parallel. To do so you will need `pytest-xdist` installed
+
+Running the tests serially can take some time (>20min) depending on the performance of your computer. You can also run the tests in parallel. To do so you will need `pytest-xdist` installed
 ```
 pip install pytest-xdist
 pytest  --disable-pytest-warnings --numprocesses 4
@@ -70,9 +70,9 @@ For example, a successful test might look like the following
 ```
 
 ### Coverage ###
-We test code coverage of the unit tests with the  [coverage](http://nedbatchelder.com/code/modules/rees-coverage.html) plugin of nose. Currently, this is done automatically as part of the Travis job and is viewable on **[coveralls](https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop)**.
+We test code coverage of the unit tests with the  [coverage](http://nedbatchelder.com/code/modules/rees-coverage.html) plugin of pytest. Currently, this is done automatically as part of the Travis job and is viewable on **[coveralls](https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop)**.
 
-If you want to generate a coverage report manually, you will need pytest-cov installed.
+If you want to generate a coverage report manually, you will need `pytest-cov` installed.
 `pip install pytest-cov`
 
 Then you can run -
@@ -125,16 +125,6 @@ where we are testing the class `TestCompressedXYZReader` which can be found in t
 
 ### Running tests with setuptools ###
 
-Setuptools can also use [nose](http://somethingaboutorange.com/mrl/projects/nose) directly (and it takes care of having all the libraries in place):
-```
-python setup.py nosetests
-```
-
-If you have the [coverage](http://nedbatchelder.com/code/modules/rees-coverage.html) package installed, you can also check code coverage of the tests:
-```
-python setup.py nosetests --with-coverage --cover-package=MDAnalysis --cover-erase --cover-tests
-```
-
 # TODO: Fix further
 
 ## Data ##
@@ -168,7 +158,7 @@ Conventions for MDAnalysis
     * Add the file name of test data files to [MDAnalysisTests/datafiles.py](https://github.com/MDAnalysis/mdanalysis/blob/develop/testsuite/MDAnalysisTests/datafiles.py) (see the code for details).
     * Add the file(s) or a glob pattern to the `package_data` in [setup.py](https://github.com/MDAnalysis/mdanalysis/blob/develop/testsuite/setup.py); otherwise the file will not be included in the python package.
     * If you use data from a published paper then add a reference to _this wiki page_ and the doc string in [MDAnalysisTests/\_\_init\_\_.py](https://github.com/MDAnalysis/mdanalysis/blob/develop/testsuite/MDAnalysisTests/__init__.py).
-  * Tests are currently organized by top-level module. Each file containing tests must start with `test_` by convention (this is how nose/unittest works). Tests itself also have to follow the appropriate naming conventions. See the docs above or the source.
+  * Tests are currently organized by top-level module. Each file containing tests must start with `test_` by convention (unittest works). Tests itself also have to follow the appropriate naming conventions. See the docs above or the source.
   * Add a test for
     * new functionality
     * fixed issues (typically named `test_IssueXX` or referencing the issue in the doc string (to avoid regression)
