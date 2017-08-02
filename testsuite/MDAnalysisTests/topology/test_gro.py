@@ -20,9 +20,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from numpy.testing import (
     assert_,
-    assert_raises,
 )
 
 import MDAnalysis as mda
@@ -72,14 +73,15 @@ class TestGROWideBox(object):
 def test_parse_empty_atom_IOerror():
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_empty_atom) as p:
-      assert_raises(IOError, p.parse)
+        with pytest.raises(IOError):
+            p.parse()
 
 
 def test_parse_missing_atomname_IOerror():
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_missing_atomname) as p:
-      assert_raises(IOError, p.parse)
-
+        with pytest.raises(IOError):
+            p.parse()
 
 class TestGroResidWrapping(object):
     # resid is 5 digit field, so is limited to 100k

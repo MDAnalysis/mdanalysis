@@ -20,13 +20,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import division, absolute_import
+
+import pytest
 import six
 from six.moves import zip, range
 
 from unittest import TestCase
 from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
 from MDAnalysisTests import module_not_found, tempdir
-from numpy.testing import assert_, assert_array_almost_equal, assert_raises, assert_, dec
+from numpy.testing import assert_array_almost_equal, assert_
 import numpy as np
 import mock
 
@@ -215,37 +217,37 @@ class TestHydrogenBondAutocorrel(TestCase):
 
     # setup errors
     def test_wronglength_DA(self):
-        assert_raises(ValueError,
-                      HBAC, self.u,
-                      hydrogens=self.H[:-1],
-                      acceptors=self.O,
-                      donors=self.N,
-                      bond_type='intermittent',
-                      exclusions=self.excl_list,
-                      sample_time=0.06,
+        with pytest.raises(ValueError):
+            HBAC(self.u,
+                 hydrogens=self.H[:-1],
+                 acceptors=self.O,
+                 donors=self.N,
+                 bond_type='intermittent',
+                 exclusions=self.excl_list,
+                 sample_time=0.06,
         )
 
     def test_exclusions(self):
         excl_list2 = self.excl_list[0], self.excl_list[1][:-1]
-        assert_raises(ValueError,
-                      HBAC, self.u,
-                      hydrogens=self.H,
-                      acceptors=self.O,
-                      donors=self.N,
-                      bond_type='intermittent',
-                      exclusions=excl_list2,
-                      sample_time=0.06,
+        with pytest.raises(ValueError):
+            HBAC(self.u,
+                 hydrogens=self.H,
+                 acceptors=self.O,
+                 donors=self.N,
+                 bond_type='intermittent',
+                 exclusions=excl_list2,
+                 sample_time=0.06,
         )
 
     def test_bond_type_VE(self):
-        assert_raises(ValueError,
-                      HBAC, self.u,
-                      hydrogens=self.H,
-                      acceptors=self.O,
-                      donors=self.N,
-                      bond_type='marzipan',
-                      exclusions=self.excl_list,
-                      sample_time=0.06,
+        with pytest.raises(ValueError):
+            HBAC(self.u,
+                 hydrogens=self.H,
+                 acceptors=self.O,
+                 donors=self.N,
+                 bond_type='marzipan',
+                 exclusions=self.excl_list,
+                 sample_time=0.06,
         )
 
     def test_solve_before_run_VE(self):
@@ -256,19 +258,21 @@ class TestHydrogenBondAutocorrel(TestCase):
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        assert_raises(ValueError, hbond.solve)
+        with pytest.raises(ValueError):
+            hbond.solve()
 
     @mock.patch('MDAnalysis.coordinates.TRZ.TRZReader._read_frame')
     def test_unslicable_traj_VE(self, mock_read):
         mock_read.side_effect = TypeError
 
-        assert_raises(ValueError, HBAC,
-                      self.u,
-                      hydrogens=self.H,
-                      acceptors=self.O,
-                      donors=self.N,
-                      bond_type='continuous',
-                      sample_time=0.06
+        with pytest.raises(ValueError):
+            HBAC(
+                self.u,
+                hydrogens=self.H,
+                acceptors=self.O,
+                donors=self.N,
+                bond_type='continuous',
+                sample_time=0.06
         )
 
     def test_save_without_run_VE(self):
@@ -279,7 +283,8 @@ class TestHydrogenBondAutocorrel(TestCase):
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        assert_raises(ValueError, hbond.save_results)
+        with pytest.raises(ValueError):
+            hbond.save_results()
 
     def test_repr(self):
         hbond = HBAC(self.u,

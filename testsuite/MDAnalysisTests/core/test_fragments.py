@@ -25,9 +25,9 @@ from six.moves import range
 import numpy as np
 from numpy.testing import (
     assert_,
-    assert_raises,
     assert_array_equal,
 )
+import pytest
 
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.core import groups
@@ -160,11 +160,12 @@ class TestFragments(object):
     def test_atomgroup_fragments_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
+        with pytest.raises(NoDataError):
+            getattr(u.atoms[:10], 'fragments')
 
-        assert_raises(NoDataError, getattr, u.atoms[:10], 'fragments')
 
     def test_atom_fragment_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
-
-        assert_raises(NoDataError, getattr, u.atoms[10], 'fragment')
+        with pytest.raises(NoDataError):
+            getattr(u.atoms[10], 'fragment')

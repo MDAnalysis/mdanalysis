@@ -20,11 +20,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from numpy.testing import (
     assert_,
     assert_array_equal,
     assert_equal,
-    assert_raises,
     assert_warns,
 )
 import numpy as np
@@ -89,7 +90,9 @@ def test_guess_charge():
 
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
-    assert_raises(ValueError, guessers.guess_bonds, u.atoms[:4], u.atoms.positions[:5])
+    with pytest.raises(ValueError):
+        guessers.guess_bonds( u.atoms[:4],
+                u.atoms.positions[:5])
     
 def test_guess_impropers():
     u = make_starshape()

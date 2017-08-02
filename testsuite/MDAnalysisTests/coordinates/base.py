@@ -25,9 +25,9 @@ import numpy as np
 import pytest
 from six.moves import zip, range
 from unittest import TestCase
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
+from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, raises, assert_allclose,
-                           assert_, dec)
+                           assert_)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -83,8 +83,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_frame_index_1_raises_IndexError(self):
         def go_to_2(traj=self.universe.trajectory):
             traj[1]
-
-        assert_raises(IndexError, go_to_2)
+        with pytest.raises(IndexError):
+            go_to_2()
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt gives 1.0
@@ -284,8 +284,10 @@ class BaseReaderTest(object):
 
     def test_remove_auxiliary(self, reader):
         reader.remove_auxiliary('lowf')
-        assert_raises(AttributeError, getattr, reader._auxs, 'lowf')
-        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader._auxs, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader.ts.aux, 'lowf')
 
     def test_remove_nonexistant_auxiliary_raises_ValueError(self, reader):
         with pytest.raises(ValueError):
@@ -373,7 +375,8 @@ class MultiframeReaderTest(BaseReaderTest):
         assert_equal(reader.ts.aux.lowf_renamed,
                     ref.aux_lowf_data[0])
         # old name should be removed
-        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader.ts.aux, 'lowf')
         # new name should be retained
         next(reader)
         assert_equal(reader.ts.aux.lowf_renamed,
@@ -501,7 +504,8 @@ class BaseWriterTest(object):
             if ref.container_format:
                 ref.writer('foo')
             else:
-                assert_raises(TypeError, ref.writer, 'foo')
+                with pytest.raises(TypeError):
+                    ref.writer('foo')
 
     def test_write_not_changing_ts(self, ref, reader, tempdir):
         outfile = self.tmp_file('write-not-changing-ts', ref, tempdir)
@@ -552,10 +556,13 @@ class BaseTimestepTest(object):
         assert_equal(ts[-1], self.refpos[-1])
 
     def test_getitem_neg_IE(self, ts):
-        assert_raises(IndexError, ts.__getitem__, -(self.size + 1))
+        with pytest.raises(IndexError):
+            ts.__getitem__(-(self.size + 1))
+
 
     def test_getitem_pos_IE(self, ts):
-        assert_raises(IndexError, ts.__getitem__, (self.size + 1))
+        with pytest.raises(IndexError):
+            ts.__getitem__((self.size + 1))
 
     def test_getitem_slice(self, ts):
         assert_equal(len(ts[:2]), len(self.refpos[:2]))
@@ -571,7 +578,8 @@ class BaseTimestepTest(object):
         assert_allclose(ts[sel], self.refpos[sel])
 
     def test_getitem_TE(self, ts):
-        assert_raises(TypeError, ts.__getitem__, 'string')
+        with pytest.raises(TypeError):
+            ts.__getitem__('string')
 
     def test_len(self, ts):
         assert_equal(len(ts), self.size)
@@ -592,7 +600,8 @@ class BaseTimestepTest(object):
         if self.has_box:
             assert_allclose(ts.dimensions, np.zeros(6, dtype=np.float32))
         else:
-            assert_raises(NotImplementedError, getattr, ts, "dimensions")
+            with pytest.raises(NotImplementedError):
+                getattr(ts, "dimensions")
 
     def test_dimensions_set_box(self, ts):
         if self.set_box:
@@ -609,7 +618,8 @@ class BaseTimestepTest(object):
         elif self.has_box and not self.set_box:
             pass  # How to test volume of box when I don't set unitcell first?
         else:
-            assert_raises(NotImplementedError, getattr, self.ts, "volume")
+            with pytest.raises(NotImplementedError):
+                getattr(self.ts, "volume")
 
     def test_triclinic_vectors(self, ts):
         assert_allclose(ts.triclinic_dimensions,
@@ -632,8 +642,8 @@ class BaseTimestepTest(object):
         # Check that _x _y and _z are read only
         for coordinate in ('_x', '_y', '_z'):
             random_positions = np.arange(self.size).astype(np.float32)
-            assert_raises(AttributeError, setattr,
-                          ts, coordinate, random_positions)
+            with pytest.raises(AttributeError):
+                setattr(ts, coordinate, random_positions)
 
     # n_atoms should be a read only property
     # all Timesteps require this attribute
@@ -641,7 +651,8 @@ class BaseTimestepTest(object):
         assert_equal(ts.n_atoms, ts._n_atoms)
 
     def test_n_atoms_readonly(self, ts):
-        assert_raises(AttributeError, ts.__setattr__, 'n_atoms', 20)
+        with pytest.raises(AttributeError):
+            ts.__setattr__('n_atoms', 20)
 
     def test_n_atoms_presence(self, ts):
         assert_equal(hasattr(ts, '_n_atoms'), True)
@@ -655,7 +666,8 @@ class BaseTimestepTest(object):
 
     def test_allocate_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'velocities')
 
         ts.has_velocities = True
         assert_equal(ts.has_velocities, True)
@@ -663,7 +675,8 @@ class BaseTimestepTest(object):
 
     def test_allocate_forces(self, ts):
         assert_equal(ts.has_forces, False)
-        assert_raises(NoDataError, getattr, ts, 'forces')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'forces')
 
         ts.has_forces = True
         assert_equal(ts.has_forces, True)
@@ -676,7 +689,8 @@ class BaseTimestepTest(object):
 
         ts.has_velocities = False
         assert_equal(ts.has_velocities, False)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'velocities')
 
     def test_forces_remove(self):
         ts = self.Timestep(10, forces=True)
@@ -685,11 +699,12 @@ class BaseTimestepTest(object):
 
         ts.has_forces = False
         assert_equal(ts.has_forces, False)
-        assert_raises(NoDataError, getattr, ts, 'forces')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'forces')
 
     def _empty_ts(self):
-        assert_raises(ValueError, self.Timestep.from_coordinates,
-                      None, None, None)
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates(None, None, None)
 
     def _from_coords(self, p, v, f):
         posi = self.refpos if p else None
@@ -706,15 +721,18 @@ class BaseTimestepTest(object):
         if p:
             assert_array_almost_equal(ts.positions, self.refpos)
         else:
-            assert_raises(NoDataError, getattr, ts, 'positions')
+            with pytest.raises(NoDataError):
+                getattr(ts, 'positions')
         if v:
             assert_array_almost_equal(ts.velocities, self.refvel)
         else:
-            assert_raises(NoDataError, getattr, ts, 'velocities')
+            with pytest.raises(NoDataError):
+                getattr(ts, 'velocities')
         if f:
             assert_array_almost_equal(ts.forces, self.reffor)
         else:
-            assert_raises(NoDataError, getattr, ts, 'forces')
+            with pytest.raises(NoDataError):
+                getattr(ts, 'forces')
 
     def test_from_coordinates(self):
         # Check all combinations of creating a Timestep from data
@@ -728,11 +746,12 @@ class BaseTimestepTest(object):
     def test_from_coordinates_mismatch(self):
         velo = self.refvel[:2]
 
-        assert_raises(ValueError, self.Timestep.from_coordinates,
-                      self.refpos, velo)
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates(self.refpos, velo)
 
     def test_from_coordinates_nodata(self):
-        assert_raises(ValueError, self.Timestep.from_coordinates)
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates()
 
     def _check_from_timestep(self, p, v, f):
         ts = self._from_coords(p, v, f)
@@ -937,7 +956,8 @@ class BaseTimestepTest(object):
     def _check_bad_slice(self, p, v, f):
         ts = self._from_coords(p, v, f)
         sl = ['this', 'is', 'silly']
-        assert_raises(TypeError, ts.copy_slice, sl)
+        with pytest.raises(TypeError):
+            ts.copy_slice(sl)
 
     def test_bad_copy_slice(self):
         for p, v, f in itertools.product([True, False], repeat=3):

@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from six import StringIO
 from six.moves import zip
 import os
@@ -38,7 +40,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from numpy.testing import (assert_equal, dec,
                            assert_array_almost_equal,
-                           assert_almost_equal, assert_raises, assert_)
+                           assert_almost_equal, assert_)
 
 
 class TestPDBReader(_SingleFrameReader):
@@ -275,7 +277,8 @@ class TestPDBWriter(TestCase):
         # parallel tests
         u = mda.Universe(PSF, PDB_small)
         u.atoms[2000].position = [0, -999.9995, 22.8]
-        assert_raises(ValueError, u.atoms.write, self.outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(self.outfile)
 
     def test_check_coordinate_limits_max(self):
         """Test that illegal PDB coordinates (x > 9999.9995 A) are caught
@@ -285,7 +288,8 @@ class TestPDBWriter(TestCase):
         u = mda.Universe(PSF, PDB_small)
         # OB: 9999.99951 is not caught by '<=' ?!?
         u.atoms[1000].position = [90.889, 9999.9996, 12.2]
-        assert_raises(ValueError, u.atoms.write, self.outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(self.outfile)
         del u
 
     def test_check_header_title_multiframe(self):
@@ -884,4 +888,5 @@ def test_write_pdb_zero_atoms():
         ag = u.atoms[:0]  # empty ag
 
         with mda.Writer(outfile, ag.n_atoms) as w:
-            assert_raises(IndexError, w.write, ag)
+            with pytest.raises(IndexError):
+                w.write(ag)

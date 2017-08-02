@@ -25,9 +25,8 @@ from six.moves import zip
 import numpy as np
 import os
 import sys
-
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal, dec,
-                           assert_raises)
+import pytest
+from numpy.testing import TestCase, assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 
@@ -86,16 +85,20 @@ class TestDensity(TestCase):
 
     def test_check_set_unit_keyerror(self):
         units = {'weight': 'A'}
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            self.D._check_set_unit(units)
+
 
     def test_check_set_unit_attributeError(self):
         units = []
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            self.D._check_set_unit(units)
 
     def test_check_set_unit_nolength(self):
         del self.D.units['length']
         units = {'density': 'A^{-3}'}
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            self.D._check_set_unit(units)
 
 
 class Test_density_from_Universe(TestCase):
@@ -178,7 +181,7 @@ class TestGridImport(TestCase):
     def test_absence_griddata(self):
         # if gridData package is missing an ImportError should be raised
         # at the module level of MDAnalysis.analysis.density
-        with assert_raises(ImportError):
+        with pytest.raises(ImportError):
             import MDAnalysis.analysis.density
 
     def test_presence_griddata(self):

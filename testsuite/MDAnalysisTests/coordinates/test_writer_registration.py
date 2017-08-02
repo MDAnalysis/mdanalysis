@@ -20,7 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import assert_, assert_raises
+
+import pytest
+from numpy.testing import assert_
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import WriterBase
@@ -56,5 +58,5 @@ class TestWriterCreation(object):
 
     def test_singleframe_magic2(self):
         # this should fail, there isn't a singleframe writer for magic2
-        assert_raises(TypeError, 
-                      mda.Writer, 'that.magic2', multiframe=False)
+        with pytest.raises(TypeError):
+            mda.Writer('that.magic2', multiframe=False)

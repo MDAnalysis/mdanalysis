@@ -22,8 +22,9 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
+import pytest
 
-from numpy.testing import (assert_equal, assert_array_equal, assert_raises)
+from numpy.testing import (assert_equal, assert_array_equal)
 from unittest import TestCase
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -81,7 +82,8 @@ class TestDMSReader(TestCase):
         def go_to_2(traj=self.universe.trajectory):
             traj[1]
 
-        assert_raises(IndexError, go_to_2)
+        with pytest.raises(IndexError):
+            go_to_2()
 
 
 class TestDMSTimestep(BaseTimestepTest):

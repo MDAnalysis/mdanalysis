@@ -5,9 +5,9 @@ from __future__ import absolute_import
 import numpy as np
 from numpy.testing import (
     assert_,
-    assert_raises,
 )
 
+import  pytest
 from MDAnalysis.core.groups import requires
 from MDAnalysis import NoDataError
 
@@ -21,8 +21,9 @@ class TestRequires(object):
             return (ag1.masses + ag2.masses) * scalar
 
         u = make_Universe(('charges',))
+        with pytest.raises(NoDataError):
+            mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
-        assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
 
     def test_requires_failure_multiple(self):
         @requires('masses', 'charges')
@@ -31,8 +32,8 @@ class TestRequires(object):
         
 
         u = make_Universe(('masses', 'types'))
-
-        assert_raises(NoDataError, mass_multiplier, u.atoms[:10], u.atoms[20:30], 4.0)
+        with pytest.raises(NoDataError):
+            mass_multiplier(u.atoms[:10], u.atoms[20:30], 4.0)
 
     def test_requires_success(self):
         @requires('masses')

@@ -29,7 +29,6 @@ from numpy.testing import (
     TestCase,
     assert_array_equal,
     assert_,
-    assert_raises,
     assert_equal
 )
 
@@ -135,7 +134,8 @@ class TestAtomGroupPickle(object):
         universe_n.anchor_name = "test2"
         # shouldn't unpickle if no name matches, even if there's a compatible
         # universe in the unnamed anchor list.
-        assert_raises(RuntimeError, cPickle.loads, pickle_str_n)
+        with pytest.raises(RuntimeError):
+            cPickle.loads(pickle_str_n)
 
     def test_unpickle_rename(self, universe_n, universe, pickle_str_n, ag_n):
         # we change universe_n's anchor_name

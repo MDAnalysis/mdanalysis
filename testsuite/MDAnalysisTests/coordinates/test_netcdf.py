@@ -32,7 +32,7 @@ from scipy.io import netcdf
 import pytest
 from numpy.testing import (assert_, assert_equal, assert_array_almost_equal,
                            assert_array_equal,
-                           assert_almost_equal, assert_raises, dec)
+                           assert_almost_equal)
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
@@ -78,12 +78,14 @@ class _NCDFReaderTest(_TRJReaderTest):
             assert_(w.remarks == 'Hi!')
 
     def test_wrong_natoms(self):
-        assert_raises(ValueError, mda.coordinates.TRJ.NCDFReader, self.filename, n_atoms=2)
+        with pytest.raises(ValueError):
+            mda.coordinates.TRJ.NCDFReader(self.filename, n_atoms = 2)
 
     def test_read_on_closed(self):
         self.universe.trajectory.close()
 
-        assert_raises(IOError, self.universe.trajectory.__getitem__, 2)
+        with pytest.raises(IOError):
+            self.universe.trajectory.__getitem__(2)
 
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
@@ -406,16 +408,19 @@ class TestNCDFWriterVelsForces(TestCase):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
-                assert_raises(mda.NoDataError, getattr, ts, 'positions')
+                with pytest.raises(mda.NoDataError):
+                    getattr(ts, 'positions')
             if vel:
                 assert_almost_equal(ts._velocities, ref_ts._velocities,
                                     self.prec)
             else:
-                assert_raises(mda.NoDataError, getattr, ts, 'velocities')
+                with pytest.raises(mda.NoDataError):
+                    getattr(ts, 'velocities')
             if force:
                 assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
             else:
-                assert_raises(mda.NoDataError, getattr, ts, 'forces')
+                with pytest.raises(mda.NoDataError):
+                    getattr(ts, 'forces')
 
         u.trajectory.close()
 
@@ -448,18 +453,21 @@ class TestNCDFWriterErrors(TestCase):
     def test_zero_atoms_VE(self):
         from MDAnalysis.coordinates.TRJ import NCDFWriter
 
-        assert_raises(ValueError, NCDFWriter, self.outfile, 0)
+        with pytest.raises(ValueError):
+            NCDFWriter(self.outfile, 0)
 
     def test_wrong_n_atoms(self):
         from MDAnalysis.coordinates.TRJ import NCDFWriter
 
         with NCDFWriter(self.outfile, 100) as w:
             u = make_Universe(trajectory=True)
-            assert_raises(IOError, w.write, u.trajectory.ts)
+            with pytest.raises(IOError):
+                w.write(u.trajectory.ts)
 
     def test_no_ts(self):
         # no ts supplied at any point
         from MDAnalysis.coordinates.TRJ import NCDFWriter
 
         with NCDFWriter(self.outfile, 100) as w:
-            assert_raises(IOError, w.write_next_timestep)
+            with pytest.raises(IOError):
+                w.write_next_timestep()

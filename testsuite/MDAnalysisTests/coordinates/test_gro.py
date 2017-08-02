@@ -44,7 +44,6 @@ from numpy.testing import (
     assert_array_almost_equal,
     dec,
     assert_equal,
-    assert_raises
 )
 import pytest
 
@@ -259,7 +258,8 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
         outfile = self.tmp_file('coordinate-limits-min-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile)
 
     @dec.slow
     def test_check_coordinate_limits_max(self, ref, tempdir):
@@ -271,7 +271,8 @@ class TestGROWriter(BaseWriterTest):
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
         outfile = self.tmp_file('coordinate-limits-max-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile)
 
     @dec.slow
     def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
@@ -282,7 +283,8 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
         outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile, convert_units=False)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile, convert_units=False)
 
 
 class GRONoConversionReference(GROReference):

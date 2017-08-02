@@ -24,7 +24,7 @@ import six
 import pytest
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_raises
+from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis import units
 from MDAnalysis.core import flags

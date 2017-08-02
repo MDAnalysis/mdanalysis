@@ -27,9 +27,8 @@ from MDAnalysis.coordinates.base import (
     SingleFrameReaderBase,
     ReaderBase
 )
-from numpy.testing import assert_equal, assert_raises
+from numpy.testing import assert_equal
 
-from numpy.testing import TestCase
 import pytest
 """
 Isolate the API definitions of Readers independent of implementations
@@ -126,8 +125,8 @@ class _TestReader(object):
 
     def test_raises_StopIteration(self, reader):
         reader[-1]
-
-        assert_raises(StopIteration, next, reader)
+        with pytest.raises(StopIteration):
+            next(reader)
 
 
 class _Multi(_TestReader):
@@ -176,13 +175,16 @@ class TestMultiFrameReader(_Multi):
         def sl():
             return list(reader[::0])
 
-        assert_raises(ValueError, sl)
+        with pytest.raises(ValueError):
+            sl()
 
     def test_slice_TE_1(self, reader):
         def sl():
             return list(reader[1.2:2.5:0.1])
 
-        assert_raises(TypeError, sl)
+        with pytest.raises(TypeError):
+            sl()
+
 
     @pytest.mark.parametrize('slice_cls', [list, np.array])
     @pytest.mark.parametrize('sl', [
@@ -207,13 +209,16 @@ class TestMultiFrameReader(_Multi):
         def sl():
             return list(reader[[0, 'a', 5, 6]])
 
-        assert_raises(TypeError, sl)
+        with pytest.raises(TypeError):
+            sl()
+
 
     def test_array_TE(self, reader):
         def sl():
             return list(reader[np.array([1.2, 3.4, 5.6])])
 
-        assert_raises(TypeError, sl)
+        with pytest.raises(TypeError):
+            sl()
 
 
 class _Single(_TestReader):
@@ -225,7 +230,8 @@ class _Single(_TestReader):
 class TestSingleFrameReader(_Single):
     __test__ = True
     def test_next(self, reader):
-        assert_raises(StopIteration, reader.next)
+        with pytest.raises(StopIteration):
+            reader.next()
 
     # Getitem tests
     # only 0 & -1 should work
@@ -245,10 +251,12 @@ class TestSingleFrameReader(_Single):
         self._check_get_results(fr, ts)
 
     def test_getitem_IE(self, reader):
-        assert_raises(IndexError, reader.__getitem__, 1)
+        with pytest.raises(IndexError):
+            reader.__getitem__(1)
 
     def test_getitem_IE_2(self, reader):
-        assert_raises(IndexError, reader.__getitem__, -2)
+        with pytest.raises(IndexError):
+            reader.__getitem__(-2)
 
     # Slicing should still work!
     def test_slice_1(self, reader, ts):
@@ -268,4 +276,5 @@ class TestSingleFrameReader(_Single):
         assert_equal(ts.frame, 0)
 
     def test_read_frame(self, reader):
-        assert_raises(IndexError, reader._read_frame, 1)
+        with pytest.raises(IndexError):
+            reader._read_frame(1)

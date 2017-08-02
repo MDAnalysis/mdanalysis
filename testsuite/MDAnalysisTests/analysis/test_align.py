@@ -72,7 +72,6 @@ class TestRotationMatrix(object):
              [2, 2, 2]]
         b = [[0.1, 0.1, 0.1],
              [1.1, 1.1, 1.1]]
-
         with pytest.raises(ValueError):
             align.rotation_matrix(a, b)
 
@@ -256,15 +255,21 @@ class TestAlign(object):
         match (Issue 143)"""
         u = universe
 
-        with pytest.raises(SelectionError):
+        def different_size():
             a = u.atoms[10:100]
             b = u.atoms[10:101]
-            align.alignto(a, b)
+            return align.alignto(a, b)
 
         with pytest.raises(SelectionError):
+            different_size()
+
+        def different_atoms():
             a = u.atoms[10:20]
             b = u.atoms[10:17] + u.atoms[18:21]
-            align.alignto(a, b)
+            return align.alignto(a, b)
+
+        with pytest.raises(SelectionError):
+            different_atoms()
 
     def test_alignto_partial_universe(self, universe, reference):
         u_bound = mda.Universe(ALIGN_BOUND)

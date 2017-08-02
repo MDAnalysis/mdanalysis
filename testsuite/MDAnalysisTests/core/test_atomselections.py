@@ -33,7 +33,6 @@ from numpy.testing import(
     assert_,
     assert_array_equal,
     assert_warns,
-    assert_raises,
 )
 import warnings
 
@@ -848,8 +847,8 @@ class TestSelectionErrors(object):
         'prop mass > 10. and fullgroup this',  # missing fullgroup
     ])
     def test_selection_fail(self, selstr, universe):
-        assert_raises(SelectionError, universe.select_atoms,
-                      selstr)
+        with pytest.raises(SelectionError):
+            universe.select_atoms(selstr)
 
 def test_segid_and_resid():
     u = make_Universe(('segids', 'resids'))
@@ -1008,10 +1007,11 @@ class TestICodeSelection(TestCase):
     def test_missing_icodes_VE(self):
         # trying a selection with icodes in a Universe without raises VA
         u = make_Universe(('resids',))
+        with pytest.raises(ValueError):
+            u.select_atoms('resid 10A')
 
-        assert_raises(ValueError, u.select_atoms, 'resid 10A')
 
     def test_missing_icodes_range_VE(self):
         u = make_Universe(('resids',))
-
-        assert_raises(ValueError, u.select_atoms, 'resid 10A-12')
+        with pytest.raises(ValueError):
+            u.select_atoms('resid 10A-12')

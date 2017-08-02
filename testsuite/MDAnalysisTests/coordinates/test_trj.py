@@ -22,9 +22,10 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
+import pytest
 
 from numpy.testing import (assert_equal, assert_,
-                           assert_almost_equal, assert_raises)
+                           assert_almost_equal)
 
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
@@ -151,5 +152,6 @@ class TestTRJTimestep(BaseTimestepTest):
     uni_args = (PRM, TRJ)
 
 def test_trj_no_natoms():
-    assert_raises(ValueError, mda.coordinates.TRJ.TRJReader, 'somefile.txt')
+    with pytest.raises(ValueError):
+        mda.coordinates.TRJ.TRJReader('somefile.txt')
 

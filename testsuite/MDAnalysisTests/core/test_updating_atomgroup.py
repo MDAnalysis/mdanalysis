@@ -24,11 +24,11 @@ from __future__ import absolute_import
 from unittest import TestCase
 
 import numpy as np
+import pytest
 from numpy.testing import (
     assert_,
     assert_array_equal,
     assert_equal,
-    assert_raises,
 )
 import mock
 
@@ -102,8 +102,9 @@ class TestUpdatingSelection(TestCase):
         assert_array_equal(ag_static2.indices, self.ag.indices)
 
     def test_kwarg_check(self):
-        assert_raises(TypeError, self.u.select_atoms, "group updating",
-                      {"updating":True})
+        with pytest.raises(TypeError):
+            self.u.select_atoms("group updating", {"updating": True})
+
 
 class TestUpdatingSelectionNotraj(TestCase):
     def setUp(self):

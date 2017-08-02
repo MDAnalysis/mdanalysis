@@ -33,8 +33,7 @@ import shutil
 import warnings
 
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
-                           assert_almost_equal, assert_raises,
-                           assert_array_equal)
+                           assert_almost_equal, assert_array_equal)
 from unittest import TestCase
 
 
@@ -79,7 +78,8 @@ class _XDRReader_Sub(TestCase):
         def load_new_without_sub():
             self.udry.load_new(self.XDR_SUB_SOL)
 
-        assert_raises(ValueError, load_new_without_sub)
+        with pytest.raises(ValueError):
+            load_new_without_sub()
 
     def test_sub_coordinates(self):
         """
@@ -265,7 +265,8 @@ class _GromacsReader(TestCase):
             self.universe.trajectory[-1]
             self.universe.trajectory.next()
 
-        assert_raises(StopIteration, go_beyond_EOF)
+        with pytest.raises(StopIteration):
+            go_beyond_EOF()
 
 
 
@@ -501,8 +502,8 @@ class TestTRRWriter(_GromacsWriter):
                                           "vs {} (written)".format(
                                               orig_ts.frame, written_ts.frame))
             else:
-                assert_raises(mda.NoDataError, getattr, written_ts,
-                              'positions')
+                with pytest.raises(mda.NoDataError):
+                    getattr(written_ts, 'positions')
 
             if ts.frame % 2 != 0:
                 assert_array_almost_equal(written_ts.velocities,
@@ -513,8 +514,8 @@ class TestTRRWriter(_GromacsWriter):
                                           "vs {} (written)".format(
                                               orig_ts.frame, written_ts.frame))
             else:
-                assert_raises(mda.NoDataError, getattr, written_ts,
-                              'velocities')
+                with pytest.raises(mda.NoDataError):
+                    getattr(written_ts, 'velocities')
 
 
 class _GromacsWriterIssue101(TestCase):
