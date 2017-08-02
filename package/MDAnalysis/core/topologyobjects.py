@@ -945,12 +945,12 @@ class TopologyGroup(object):
             raise TypeError("TopologyGroup is not of type 'dihedral' or "
                             "'improper'")
 
-        vec1 = self._ags[1].positions - self._ags[0].positions
-        vec2 = self._ags[2].positions - self._ags[1].positions
-        vec3 = self._ags[3].positions - self._ags[2].positions
+        ab = self._ags[0].positions - self._ags[1].positions
+        bc = self._ags[1].positions - self._ags[2].positions
+        cd = self._ags[2].positions - self._ags[3].positions
 
         return np.array([mdamath.dihedral(a, b, c)
-                         for a, b, c in zip(vec1, vec2, vec3)])
+                         for a, b, c in zip(ab, bc, cd)])
 
     def dihedrals(self, result=None, pbc=False):
         """Calculate the dihedralal angle in radians for this topology

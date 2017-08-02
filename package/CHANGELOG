@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud
+         jbarnoud, nestorwendt
 
   * 0.17.0
 
@@ -28,6 +28,10 @@ Enhancements
 Deprecations
 
 Fixes
+  * Fixed nuclinfo.tors() not converting delta (Issue #1572)
+  * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
+    (Issue #1565)
+  * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
   * Fixed type matching and inclusion compilation warnings for the

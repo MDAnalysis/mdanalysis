@@ -44,7 +44,7 @@ def ref_system():
     conf = points[1:]
 
     return box, points, ref, conf
-    
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
@@ -493,10 +493,10 @@ class TestCythonFunctions(object):
                                                             backend=backend)
         # Check calculated values
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
-        #        assert_almost_equal(dihedrals[0], 0.0, self.prec, err_msg="Zero length dihedral failed")
-        #        assert_almost_equal(dihedrals[1], 0.0, self.prec, err_msg="Straight line dihedral failed")
+        assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
+        assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
         assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
-        assert_almost_equal(dihedrals[3], 0.50714064, self.prec,
+        assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
     # Check data type checks
@@ -553,9 +553,9 @@ class TestCythonFunctions(object):
         vec1 = a - b
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
-        ab = b - a
-        bc = c - b
-        cd = d - c
+        ab = a - b
+        bc = b - c
+        cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
 
         assert_almost_equal(bonds, bonds_numpy, self.prec,
@@ -563,8 +563,7 @@ class TestCythonFunctions(object):
         # numpy 0 angle returns NaN rather than 0
         assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
                             err_msg="Cython angles didn't match numpy calcuations")
-        # same issue with first two dihedrals
-        assert_almost_equal(dihedrals[2:], dihedrals_numpy[2:], self.prec,
+        assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
 
