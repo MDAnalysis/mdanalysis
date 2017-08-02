@@ -3,9 +3,15 @@ The unit tests and the test data are bundled together in the package **MDAnalyis
 The tests also rely on the `pytest` and `numpy` packages, and require both to run.
 
 # Users
-Install [MDAnalysisTests](MDAnalysisTests) via
+Install [MDAnalysisTests](MDAnalysisTests) via **pip**
 ```
 pip install --upgrade MDAnalysisTests
+```
+
+or via **conda**
+```
+conda config --add channels conda-forge
+conda install MDAnalysisTests
 ```
 or download the tar file, unpack, and run `python setup.py install`.
 
@@ -18,114 +24,52 @@ All tests should pass (i.e. no **FAIL**, **ERROR**); *SKIPPED* or *XFAIL* are ok
 
 # Developers #
 
-All tests should pass (i.e. no **FAIL**, **ERROR**); *SKIPPED* or *XFAIL* are ok. For anything that fails or gives an error **fix your code** (or *raise an issue*).
+We are borrowing some of NumPy's testing frame work; thus, numpy **must** be installed for the tests to run at all.
 
-## Recommended ##
-Use the tests from the [git source repository](Source), which are located in the [testsuite/MDAnalysisTests](https://github.com/MDAnalysis/mdanalysis/tree/develop/testsuite) directory:
+
+It is recommended that you run the tests from the [git source repository](Source), which are located in the [testsuite/MDAnalysisTests](https://github.com/MDAnalysis/mdanalysis/tree/develop/testsuite) directory:
 ```
 cd testsuite/MDAnalysisTests
 pytest  --disable-pytest-warnings
 ```
 
-Running the tests serially can take some time (>20min) depending on the performance of your computer. You can also run the tests in parallel. To do so you will need `pytest-xdist` installed
-```
-pip install pytest-xdist
-pytest  --disable-pytest-warnings --numprocesses 4
-```
-
-(Try increasing the number of processes; with 24 processes on 12 cores (+hyperthreading) this took ~40 seconds; in serial it takes ~30 min).
+Running the tests serially can take some time, depending on the performance of your computer.
 
 To run specific tests just specify the path to the test file:
 ```
-pytest path_to/MDAnalysisTests/analysis/test_align.py::TestAlign::test_rmsd
+pytest path_to/MDAnalysisTests/analysis/test_align.py
 ```
 Note: You have to replace `path_to` with the actual path to where the code is.
 
 Specific test classes inside test files, and even specific test methods, can also be specified:
 ```
 # Test the entire TestContactMatrix class
-pytest test_analysis.py::TestContactMatrix
+pytest path_to/MDAnalysisTests/analysis/test_analysis.py::TestContactMatrix
+
+
 # Test only test_sparse in the TestContactMatrix class
-pytest test_analysis.py::TestContactMatrix::test_sparse
+pytest path_to/MDAnalysisTests/analysis/test_analysis.py::TestContactMatrix::test_sparse
 ```
+This is very useful when you add a new test and want to check if it passes.
 
-## Alternatives
-You can install `MDAnalysisTests` and then run the tests anywhere.
-You can run all tests in serial from the python interpreter like this:
-```python
-python -c 'from MDAnalysisTests import run; run()'
-```
+### Plugins
 
-Fore more details see below.
+* **pytest-xdist** - This can be used to run the tests in parallel.
+    ```
+    pip install pytest-xdist
+    pytest --disable-pytest-warnings --numprocesses 4
+    ```
+    You can try increasing the number of processes to speed up the test run depending on you machine.
 
-## Examples ##
-Examples for output in various modes. For debugging, verbose mode is more useful as one can identify failing tests while they are running.
+* **pytest-cov** This can be used to generate the coverage report locally.
+    ```
+    pip install pytest-cov
+    pytest --cov=MDAnalysis --cov-report html
+    ```
+    Note: You can use the `--numprocesses` flag with the above command too.
 
-### Serial testing ###
-For example, a successful test might look like the following
-```
->>> MDAnalysis.tests.test()
-......S...S............................................................................................................................................................K.KK...........................................................................................................................................................................K...............................................................................................................................................................................................................K..............................................................K............................................................................................................................................................................................................................................................................................................................................................................K......K....................K.....................K...................K....................K...........................K...................K...................K.............................................................K...................K........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
-============ 5497 passed, 31 skipped, 1 xfailed in 1056.77 seconds =============
-```
+    This will create a `htmlcov` folder (in the directory you run the command from) and there will be an `index.html` file in this folder, Open this file in your browser and you will be able to see the coverage.
 
-### Coverage ###
-We test code coverage of the unit tests with the  [coverage](http://nedbatchelder.com/code/modules/rees-coverage.html) plugin of pytest. Currently, this is done automatically as part of the Travis job and is viewable on **[coveralls](https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop)**.
-
-If you want to generate a coverage report manually, you will need `pytest-cov` installed.
-`pip install pytest-cov`
-
-Then you can run -
-```
-cd testsuite
-pytest --numprocesses 4 --cov=MDAnalysis --cov-report html
-```
-
-# Details #
-We are borrowing some of NumPy's testing frame work; thus, numpy **must** be installed for the tests to run at all.
-
-## Running tests from within python ##
-Run all the tests with
-```
-python -c 'from MDAnalysisTests import run; run()'
-```
-
-## Running tests from the command line ##
-Instead of running tests from within python, one can also run them via the command line.
-Go into the tests directory (or the package root)
-```
-cd /testsuite/MDAnalysisTests
-```
-and invoke pytest directly to run **all tests** on four processors in parallel ("`%`" is the shell prompt and should _not_ be typed):
-```
-% pytest --numprocesses 4
-```
-Again, to run the tests in parallel (use `--numprocesses 4`) you need to install `pytest-xdist` via `pip install pytest-xdist`
-
-When you have written a **new unit test** it is helpful to check that it passes without running the entire suite. For example, in order to test everything in, say, `test\_selections.py` run
-```
-% pytest test_selections
-..............
-----------------------------------------------------------------------
-Ran 14 tests in 3.421s
-
-OK
-```
-One can also test individual test classes. For instance, after working on the XYZReader one can check just the TestCompressedXYZReader tests with
-```
-% pytest test_coordinates::TestCompressedXYZReader
-....
-----------------------------------------------------------------------
-Ran 4 tests in 0.486s
-
-OK
-```
-where we are testing the class `TestCompressedXYZReader` which can be found in the module (file) `test\_coordinates.py`.
-
-
-### Running tests with setuptools ###
-
-# TODO: Fix further
 
 ## Data ##
 The simulation data used in tests are all released under the same license as MDAnalysis or are in the Public Domain (such as PDBs from the Protein Databank). An incomplete list of sources:
