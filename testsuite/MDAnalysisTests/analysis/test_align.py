@@ -53,7 +53,7 @@ class TestRotationMatrix(object):
             (a, b, w),
             (a.astype(np.int), b.astype(np.int), w.astype(np.float32))
     ))
-    def test_rotation_matrix_input(self, a, b, weights):  # TODO: Fix the name
+    def test_rotation_matrix_input(self, a, b, weights):
         rot, rmsd = align.rotation_matrix(a, b, weights)
         assert_equal(rot, np.eye(3))
         assert rmsd is None
