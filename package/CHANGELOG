@@ -26,8 +26,6 @@ Enhancements
   * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
-  * The TPR parser populate the `moltypes` topology attribute and
-    the `moltype` selection keyword is added (Issue #1555)
   * about 20% speed improvements for GNM analysis. (PR #1579)
   * added support for Tinker TXYZ and ARC files
   * libmdaxdr and libdcd classes can now be pickled (PR #1680)
@@ -35,6 +33,9 @@ Enhancements
   * introduce the water bridge analysis module (PR #1722)
   * Universe.add_TopologyAttr now accepts strings to add a given attribute
     to the Universe (Issue #1092, PR #1186)
+  * The TPR parser populate the `moltypes` and `molnums` topology attributes;
+    the `moltype` and `molnum` selection keyword are added
+    (Issue #1555, PR #1578)
 
 Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0

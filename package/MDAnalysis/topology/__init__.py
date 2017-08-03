@@ -105,7 +105,8 @@ the attributes they provide.
    TPR [#b]_         tpr       names, types,     Gromacs portable run input reader (limited
                                resids, resnames, experimental support for some of the more recent
                                charges, bonds,   versions of the file format);
-                               masses, moltypes  :mod:`MDAnalysis.topology.TPRParser`
+                               masses, moltypes, :mod:`MDAnalysis.topology.TPRParser`
+                               molnums
 
    MOL2 [#a]_        mol2      ids, names,       Tripos MOL2 molecular structure format;
                                types, resids,    :mod:`MDAnalysis.topology.MOL2Parser`

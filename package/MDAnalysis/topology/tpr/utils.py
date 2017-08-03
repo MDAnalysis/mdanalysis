@@ -63,6 +63,7 @@ from ...core.topologyattrs import (
     Resids,
     Resnames,
     Moltypes,
+    Molnums,
     Segids,
     Bonds,
     Angles,
@@ -215,11 +216,13 @@ def do_mtop(data, fver):
     atomnames = []
     atomtypes = []
     moltypes = []
+    molnums = []
     charges = []
     masses = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
+    molnum = 0
     for i in range(mtop.nmolblock):
         # molb_type is just an index for moltypes/molecule_types
         mb = do_molblock(data)
@@ -237,8 +240,10 @@ def do_mtop(data, fver):
                 atomnames.append(atomkind.name.decode())
                 atomtypes.append(atomkind.type.decode())
                 moltypes.append(molblock)
+                molnums.append(molnum)
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
+            molnum += 1
 
             # remap_ method returns [blah, blah, ..] or []
             bonds.extend(mt.remap_bonds(atom_start_ndx))
@@ -265,17 +270,25 @@ def do_mtop(data, fver):
     masses = Masses(np.array(masses, dtype=np.float32))
 
     moltypes = np.array(moltypes, dtype=object)
+    molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
-     (new_resnames, new_moltypes, perres_segids)) = squash_by(resids,
-                                                              resnames,
-                                                              moltypes,
-                                                              segids)
+     (new_resnames,
+      new_moltypes,
+      new_molnums,
+      perres_segids
+      )
+     ) = squash_by(resids,
+                   resnames,
+                   moltypes,
+                   molnums,
+                   segids)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
     residue_moltypes = Moltypes(new_moltypes)
+    residue_molnums = Molnums(new_molnums)
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
@@ -283,7 +296,8 @@ def do_mtop(data, fver):
     top = Topology(len(atomids), len(new_resids), len(perseg_segids),
                    attrs=[atomids, atomnames, atomtypes,
                           charges, masses,
-                          residueids, residuenames, residue_moltypes,
+                          residueids, residuenames,
+                          residue_moltypes, residue_molnums,
                           segids],
                    atom_resindex=residx,
                    residue_segindex=segidx)

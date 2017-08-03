@@ -1342,6 +1342,16 @@ class Moltypes(ResidueAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
 
+class Molnums(ResidueAttr):
+    """Name of the molecule type
+
+    Two molecules that share a molecule type share a common template topology.
+    """
+    attrname = 'molnums'
+    singular = 'molnum'
+    target_classes = [Atom, Residue]
+
+
 # segment attributes
 
 class SegmentAttr(TopologyAttr):

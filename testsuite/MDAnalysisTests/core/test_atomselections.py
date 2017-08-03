@@ -408,9 +408,10 @@ class TestSelectionsGRO(object):
 
 
 class TestSelectionsTPR(object):
-    @pytest.fixture()
-    def universe(self):
-        return MDAnalysis.Universe(TPR, XTC)
+    @staticmethod
+    @pytest.fixture
+    def universe():
+        return MDAnalysis.Universe(TPR,XTC)
 
     def test_same_fragment(self, universe):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -428,6 +429,17 @@ class TestSelectionsTPR(object):
         sel = universe.select_atoms("moltype NA+")
         ref = np.array([47677, 47678, 47679, 47680], dtype=np.int32)
         assert_equal(sel.ids, ref)
+
+    @pytest.mark.parametrize(
+        'selection_string,reference',
+        (('molnum 1', [3341, 3342, 3343, 3344]),
+         ('molnum 2:4', [3345, 3346, 3347, 3348, 3349, 3350,
+                         3351, 3352, 3353, 3354, 3355, 3356]),
+         )
+    )
+    def test_molnum(self, universe, selection_string, reference):
+        sel = universe.select_atoms(selection_string)
+        assert_equal(sel.ids, np.array(reference, dtype=np.int32))
 
 
 class TestSelectionsNucleicAcids(object):
