@@ -32,7 +32,7 @@ import os
 import shutil
 import warnings
 
-from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
+from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_array_equal)
 from unittest import TestCase
 
@@ -128,45 +128,45 @@ class _GromacsReader(TestCase):
         del self.universe
         del self.tmpdir
 
-    @dec.slow
+
     def test_flag_convert_lengths(self):
         assert_equal(mda.core.flags['convert_lengths'], True,
                      "MDAnalysis.core.flags['convert_lengths'] should be "
                      "True by default")
 
-    @dec.slow
+
     def test_rewind_xdrtrj(self):
         self.trajectory.rewind()
         assert_equal(self.ts.frame, 0, "rewinding to frame 1")
 
-    @dec.slow
+
     def test_next_xdrtrj(self):
         self.trajectory.rewind()
         self.trajectory.next()
         assert_equal(self.ts.frame, 1, "loading frame 1")
 
-    @dec.slow
+
     def test_jump_xdrtrj(self):
         self.trajectory[4]  # index is 0-based and frames are 0-based
         assert_equal(self.ts.frame, 4, "jumping to frame 4")
 
-    @dec.slow
+
     def test_jump_lastframe_xdrtrj(self):
         self.trajectory[-1]
         assert_equal(self.ts.frame, 9,
                      "indexing last frame with trajectory[-1]")
 
-    @dec.slow
+
     def test_slice_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[2:9:3]]
         assert_equal(frames, [2, 5, 8], "slicing xdrtrj [2:9:3]")
 
-    @dec.slow
+
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
         assert_equal(frames, list(range(9, -1, -1)), "slicing xdrtrj [::-1]")
 
-    @dec.slow
+
     def test_coordinates(self):
         ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]],
                          dtype=np.float32)
@@ -185,7 +185,7 @@ class _GromacsReader(TestCase):
                                   err_msg="coords of Ca of resid 122 do not "
                                   "match for frame 3")
 
-    @dec.slow
+
     def test_unitcell(self):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
@@ -196,7 +196,7 @@ class _GromacsReader(TestCase):
             self.prec,
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
-    @dec.slow
+
     def test_volume(self):
         # need to reduce precision for test (nm**3 <--> A**3)
         self.universe.trajectory.rewind()
@@ -207,14 +207,14 @@ class _GromacsReader(TestCase):
             0,
             err_msg="unit cell volume (rhombic dodecahedron)")
 
-    @dec.slow
+
     def test_dt(self):
         assert_almost_equal(self.universe.trajectory.dt,
                             100.0,
                             4,
                             err_msg="wrong timestep dt")
 
-    @dec.slow
+
     def test_totaltime(self):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
@@ -224,12 +224,12 @@ class _GromacsReader(TestCase):
                             3,
                             err_msg="wrong total length of trajectory")
 
-    @dec.slow
+
     def test_frame(self):
         self.trajectory[4]  # index is 0-based and frames are 0-based
         assert_equal(self.universe.trajectory.frame, 4, "wrong frame number")
 
-    @dec.slow
+
     def test_time(self):
         self.trajectory[4]
         assert_almost_equal(self.universe.trajectory.time,
@@ -237,14 +237,14 @@ class _GromacsReader(TestCase):
                             3,
                             err_msg="wrong time of frame")
 
-    @dec.slow
+
     def test_get_Writer(self):
         W = self.universe.trajectory.Writer(self.outfile)
         assert_equal(self.universe.trajectory.format, W.format)
         assert_equal(self.universe.atoms.n_atoms, W.n_atoms)
         W.close()
 
-    @dec.slow
+
     def test_Writer(self):
         W = self.universe.trajectory.Writer(self.outfile)
         W.write(self.universe.atoms)
@@ -259,7 +259,7 @@ class _GromacsReader(TestCase):
         assert_almost_equal(u.atoms.positions,
                             self.universe.atoms.positions, self.prec)
 
-    @dec.slow
+
     def test_EOFraisesStopIteration(self):
         def go_beyond_EOF():
             self.universe.trajectory[-1]
@@ -299,7 +299,7 @@ class TestTRRReader(_GromacsReader):
     __test__ = True
     filename = TRR
 
-    @dec.slow
+
     def test_velocities(self):
         # frame 0, v in nm/ps
         # from gmxdump -f MDAnalysisTests/data/adk_oplsaa.trr
@@ -348,7 +348,7 @@ class _XDRNoConversion(TestCase):
         del self.universe
         del self.ts
 
-    @dec.slow
+
     def test_coordinates(self):
         # note: these are the native coordinates in nm
         ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]],
@@ -402,7 +402,7 @@ class _GromacsWriter(TestCase):
         del self.Writer
         del self.tmpdir
 
-    @dec.slow
+
     def test_write_trajectory(self):
         """Test writing Gromacs trajectories (Issue 38)"""
         t = self.universe.trajectory
@@ -422,7 +422,7 @@ class _GromacsWriter(TestCase):
                                       "frame %d (orig) vs %d (written)" % (
                                            orig_ts.frame, written_ts.frame))
 
-    @dec.slow
+
     def test_timestep_not_modified_by_writer(self):
         trj = self.universe.trajectory
         ts = trj.ts
@@ -540,11 +540,11 @@ class _GromacsWriterIssue101(TestCase):
         del self.Writer
         del self.tmpdir
 
-    @dec.slow
+
     def test_single_frame_GRO(self):
         self._single_frame(GRO)
 
-    @dec.slow
+
     def test_single_frame_PDB(self):
         self._single_frame(PDB)
 
@@ -582,7 +582,8 @@ class _GromacsWriterIssue117(TestCase):
     ext = None
     prec = 5
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
+    @pytest.mark.skipif(module_not_found("netCDF4"),
+                        reason="Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.tmpdir = tempdir.TempDir()
@@ -769,7 +770,7 @@ class _GromacsReader_offsets(TestCase):
         del self.tmpdir
         del self.trajectory
 
-    @dec.slow
+
     def test_offsets(self):
         self.trajectory._read_offsets(store=True)
         assert_array_almost_equal(self.trajectory._xdr.offsets,
@@ -796,7 +797,7 @@ class _GromacsReader_offsets(TestCase):
     def test_reload_offsets(self):
         self._reader(self.traj, refresh_offsets=True)
 
-    @dec.slow
+
     def test_persistent_offsets_size_mismatch(self):
         # check that stored offsets are not loaded when trajectory
         # size differs from stored size
@@ -812,7 +813,7 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(warn[0].message.args,
                      ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
-    @dec.slow
+
     def test_persistent_offsets_ctime_mismatch(self):
         # check that stored offsets are not loaded when trajectory
         # ctime differs from stored ctime
@@ -828,7 +829,7 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(warn[0].message.args,
                      ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
-    @dec.slow
+
     def test_persistent_offsets_natoms_mismatch(self):
         # check that stored offsets are not loaded when trajectory
         # ctime differs from stored ctime
@@ -843,7 +844,7 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(warn[0].message.args,
                      ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
-    @dec.slow
+
     def test_persistent_offsets_last_frame_wrong(self):
         fname = XDR.offsets_filename(self.traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
@@ -860,7 +861,7 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(warn[0].message.args[0],
                      'seek failed, recalculating offsets and retrying')
 
-    @dec.slow
+
     def test_unsupported_format(self):
         fname = XDR.offsets_filename(self.traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
@@ -873,7 +874,7 @@ class _GromacsReader_offsets(TestCase):
         reader = self._reader(self.traj)
         reader[idx_frame]
 
-    @dec.slow
+
     def test_persistent_offsets_readonly(self):
         os.remove(XDR.offsets_filename(self.traj))
         assert_equal(os.path.exists(

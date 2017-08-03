@@ -26,7 +26,7 @@ import pytest
 from six.moves import zip, range
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, raises, assert_allclose,
+                           assert_array_almost_equal, assert_allclose,
                            assert_)
 
 import MDAnalysis as mda
@@ -492,9 +492,8 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(
                 copy_ts, orig_ts, decimal=ref.prec)
 
-    @raises(TypeError)
-    def test_write_none(self, ref):
-        outfile = self.tmp_file('write-none')
+    def test_write_none(self, ref, tempdir):
+        outfile = self.tmp_file('write-none', ref, tempdir)
         with pytest.raises(TypeError):
             with ref.writer(outfile, 42) as w:
                 w.write(None)

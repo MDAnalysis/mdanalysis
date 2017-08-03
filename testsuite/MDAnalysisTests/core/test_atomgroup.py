@@ -36,7 +36,6 @@ from numpy.testing import (
     assert_almost_equal,
     assert_equal,
     assert_array_almost_equal,
-    raises
 )
 
 import MDAnalysis as mda
@@ -174,10 +173,11 @@ class TestAtomGroupWriting(TestCase):
             name = path.splitext(path.basename(DCD))[0]
             assert_equal(files[0], "{}_0.pdb".format(name))
 
-    @raises(ValueError)
+
     def test_raises(self):
         with tempdir.in_tempdir():
-            self.u.atoms.write('useless.format123')
+            with pytest.raises(ValueError):
+                self.u.atoms.write('useless.format123')
 
     def test_write_coordinates(self):
         with tempdir.in_tempdir():

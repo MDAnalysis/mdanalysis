@@ -22,7 +22,6 @@
 from __future__ import absolute_import
 
 from numpy.testing import (
-    dec,
     assert_,
     assert_equal,
 )

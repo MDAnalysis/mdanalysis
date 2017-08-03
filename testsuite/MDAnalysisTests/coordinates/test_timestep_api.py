@@ -27,7 +27,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 from __future__ import absolute_import
 
-from numpy.testing import assert_equal, dec
+from numpy.testing import assert_equal
 from MDAnalysisTests import module_not_found
 
 import MDAnalysis as mda
@@ -203,8 +203,8 @@ class TestTRJ(BaseTimestepInterfaceTest):
 class TestNCDF(BaseTimestepInterfaceTest):
     __test__ = True
 
-    @dec.skipif(module_not_found("netCDF4"),
-                "Test skipped because netCDF is not available.")
+    @pytest.mark.skipif(module_not_found("netCDF4"),
+                reason="Test skipped because netCDF is not available.")
     def setUp(self):
         u = self.u = mda.Universe(PRMncdf, NCDF)
         self.ts = u.trajectory.ts
