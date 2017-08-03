@@ -8,7 +8,8 @@ try:
 except ImportError:
     pass
 
-class TrajReaderBench(object):
+
+class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
     params = (['XTC', 'TRR', 'DCD'])
     param_names = ['traj_format']
@@ -25,7 +26,8 @@ class TrajReaderBench(object):
         """
         self.traj_reader(self.traj_file)
 
-class TrajReaderStriding(object):
+
+class TrajReaderIteration(object):
     """Benchmarks for trajectory file format striding."""
     params = (['XTC', 'TRR', 'DCD'])
     param_names = ['traj_format']
