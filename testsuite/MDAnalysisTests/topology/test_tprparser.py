@@ -40,12 +40,18 @@ import MDAnalysis.topology.TPRParser
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'moltypes']
+    expected_attrs = ['ids', 'names',
+                      'resids', 'resnames',
+                      'moltypes', 'molnums']
     guessed_attrs = ['elements']
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
         assert_equal(moltypes, self.ref_moltypes)
+
+    def test_molnums(self, top):
+        molnums = top.molnums.values
+        assert_equal(molnums, self.ref_molnums)
 
 
 class TestTPR(TPRAttrs):
@@ -57,6 +63,7 @@ class TestTPR(TPRAttrs):
     expected_n_segments = 3
     ref_moltypes = np.array(['AKeco'] * 214 + ['SOL'] * 11084 + ['NA+'] * 4,
                             dtype=object)
+    ref_molnums = np.array([0] * 214 + list(range(1, 1 + 11084 + 4)))
 
     @pytest.fixture()
     def filename(self):
@@ -71,6 +78,7 @@ class TestTPRGromacsVersions(TPRAttrs):
     expected_n_residues = 230
     expected_n_segments = 2
     ref_moltypes = np.array(['Protein_A'] * 129 + ['SOL'] * 101, dtype=object)
+    ref_molnums = np.array([0] * 129 + list(range(1, 1 + 101)))
 
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
@@ -87,6 +95,7 @@ class TestTPRDouble(TPRAttrs):
                             + ['DOPC'] * 21 + ['DPPC'] * 10 + ['CHOL'] * 3
                             + ['SOL'] * 4284,
                             dtype=object)
+    ref_molnums = np.arange(4352)
 
     @pytest.fixture()
     def filename(self):
@@ -102,6 +111,8 @@ class TestTPR46x(TPRAttrs):
                             + ['Protein_E'] * 27
                             + ['SOL'] * 10530 + ['NA+'] * 26 + ['CL-'] * 21,
                             dtype=object)
+    ref_molnums = np.array([0] * 27 + [1] * 27 + [2] * 27 + [3] * 27 + [4] * 27
+                           + list(range(5, 5 + 10530 + 26 + 21)))
 
     @pytest.fixture(params=[TPR460, TPR461])
     def filename(self, request):

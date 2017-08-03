@@ -1989,7 +1989,7 @@ class AtomGroup(GroupBase):
         .. versionadded:: 0.16.0
            Updating selections now possible by setting the ``updating`` argument.
         .. versionadded:: 0.17.0
-           Added *moltype* selection.
+           Added *moltype* and *molnum* selections.
 
         """
         updating = selgroups.pop('updating', False)
@@ -2009,13 +2009,16 @@ class AtomGroup(GroupBase):
 
         Parameters
         ----------
-        level : {'atom', 'residue', 'segment'}
+        level : {'atom', 'residue', 'molecule', 'segment'}
 
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.17.0
+           Added the 'molecule' level.
         """
         accessors = {'segment': 'segindices',
-                     'residue': 'resindices'}
+                     'residue': 'resindices',
+                     'molecule': 'molnums'}
 
         if level == "atom":
             return [self.universe.atoms[[a.ix]] for a in self]
@@ -2023,6 +2026,10 @@ class AtomGroup(GroupBase):
         # higher level groupings
         try:
             levelindices = getattr(self, accessors[level])
+        except AttributeError:
+            raise ValueError('This universe does not have {} '
+                             'information. Maybe it is not provided in the '
+                             'topology format in use.'.format(level))
         except KeyError:
             raise ValueError("level = '{0}' not supported, "
                              "must be one of {1}".format(level,
