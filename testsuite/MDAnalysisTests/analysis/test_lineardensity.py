@@ -37,9 +37,3 @@ def test_serial():
                           0., 0., 0., 0.])
     ld = LinearDensity(selection, binsize=5).run()
     assert_allclose(xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
-
-# TODO: Remove this?!
-#    def test_parallel(self):
-#        ld = LinearDensity(self.universe, self.selection, binsize=5)
-#        ld.run(parallel=True)
-#        assert_equal(self.xpos, ld.results['x']['pos'])
