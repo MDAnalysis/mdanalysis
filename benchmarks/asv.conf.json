@@ -22,6 +22,7 @@
     // package (in PyPI) and the values are version numbers.  An empty
     // list indicates to just test against the default (latest)
     // version.
+    "conda_channels": ["conda-forge"],
     "matrix": {
         "Cython": [],
         "numpy": [],
@@ -31,6 +32,7 @@
 	    "nose": [],
 	    "psutil": [],
 	    "mock": [],
+        "MDAnalysisTests": [],
     },
     // The directory (relative to the current directory) that benchmarks are
     // stored in.  If not provided, defaults to "benchmarks"
