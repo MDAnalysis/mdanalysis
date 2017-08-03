@@ -32,8 +32,9 @@ It is recommended that you run the tests from the [git source repository](Source
 cd testsuite/MDAnalysisTests
 pytest  --disable-pytest-warnings
 ```
+Note: We use the `--disable-pytest-warnings` flag to currently suppress warnings about `yeild` based tests. Work in being done to fix this and you shouldn't need the flag if you are running a singe file/test.
 
-Running the tests serially can take some time, depending on the performance of your computer.
+Running the tests serially can take some time, depending on the performance of your computer. (You can speed this up by running tests in parallel using pytest-xdist - explained in the plugin section)
 
 To run specific tests just specify the path to the test file:
 ```
@@ -112,7 +113,7 @@ Conventions for MDAnalysis
 # Changes with releases #
 
 The way we organized the unit tests changed between releases. The procedure for the current release is detailed at the very top of the page. The following list is for historical reference and in case you ever want to go back to a previous release.
-
+  1. release **0.16.2**: the testsuite was overhauled to remove dependency from nose and move to pytest. See issue [#884](https://github.com/MDAnalysis/mdanalysis/issues/884) for more details. `pytest` is the way to run the tests and `mda_nosetests` has been removed.
   1. since **0.11.0**: the testing subsystem was overhauled to allow the use of plugins external to nose. We also no longer use numpy's `test()` wrapper. `mda_nosetests` is now the preferred way to run the tests from the command-line in a mostly backward-compatible way with the usage of `nosetests`. Most numpy-specific arguments to `test()` are now deprecated in favor of nose flags.
   1. since **0.7.5**: tests _and_ data are together in package **MDAnalysisTests**. See [Issue 87](http://issues.mdanalysis.org/87) for details.
   1. release **0.7.4**: tests are in **MDAnalysis** and data is in **MDAnalysisTestData** (for MDAnalysis == 0.7.4). To install [MDAnalysisTestData](MDAnalysisTestData) download the `MDAnalysisTestData-0.7.4.tar.gz` from the [Download](http://code.google.com/p/mdanalysis/downloads/list) section or try ```easy_install http://mdanalysis.googlecode.com/files/MDAnalysisTestData-0.7.4.tar.gz```
