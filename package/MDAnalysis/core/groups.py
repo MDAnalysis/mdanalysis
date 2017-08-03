@@ -2027,7 +2027,7 @@ class AtomGroup(GroupBase):
         try:
             levelindices = getattr(self, accessors[level])
         except AttributeError:
-            raise ValueError('This universe does not have {} '
+            raise AttributeError('This universe does not have {} '
                              'information. Maybe it is not provided in the '
                              'topology format in use.'.format(level))
         except KeyError:
