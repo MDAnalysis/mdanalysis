@@ -4,20 +4,22 @@ try:
     from MDAnalysis.coordinates.DCD import DCDReader
     from MDAnalysis.coordinates.XTC import XTCReader
     from MDAnalysis.coordinates.TRR import TRRReader
-    from MDAnalysisTests.datafiles import XTC, TRR, DCD
+    from MDAnalysis.coordinates.TRJ import NCDFReader
+    from MDAnalysisTests.datafiles import XTC, TRR, DCD, NCDF
 except ImportError:
     pass
 
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
-    params = (['XTC', 'TRR', 'DCD'])
+    params = (['XTC', 'TRR', 'DCD', 'NCDF'])
     param_names = ['traj_format']
 
     def setup(self, traj_format):
         self.traj_dict = {'XTC': [XTC, XTCReader],
                           'TRR': [TRR, TRRReader],
-                          'DCD': [DCD, DCDReader]}
+                          'DCD': [DCD, DCDReader],
+                          'NCDF': [NCDF, NCDFReader]}
         self.traj_file, self.traj_reader = self.traj_dict[traj_format]
 
     def time_reads(self, traj_format):
@@ -29,13 +31,14 @@ class TrajReaderCreation(object):
 
 class TrajReaderIteration(object):
     """Benchmarks for trajectory file format striding."""
-    params = (['XTC', 'TRR', 'DCD'])
+    params = (['XTC', 'TRR', 'DCD', 'NCDF'])
     param_names = ['traj_format']
 
     def setup(self, traj_format):
         self.traj_dict = {'XTC': [XTC, XTCReader],
                           'TRR': [TRR, TRRReader],
-                          'DCD': [DCD, DCDReader]}
+                          'DCD': [DCD, DCDReader],
+                          'NCDF': [NCDF, NCDFReader]}
         self.traj_file, self.traj_reader = self.traj_dict[traj_format]
         self.reader_object = self.traj_reader(self.traj_file)
 
