@@ -110,7 +110,7 @@ class TestChainReader(TestCase):
                             5,
                             err_msg="Wrong time of frame")
 
-    @dec.slow
+
     def test_write_dcd(self):
         """test that ChainReader written dcd (containing crds) is correct
         (Issue 81)"""

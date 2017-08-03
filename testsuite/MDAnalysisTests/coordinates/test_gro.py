@@ -42,7 +42,6 @@ from numpy.testing import (
     assert_,
     assert_almost_equal,
     assert_array_almost_equal,
-    dec,
     assert_equal,
 )
 import pytest
@@ -225,7 +224,7 @@ class TestGROWriter(BaseWriterTest):
         assert_array_almost_equal(u.atoms.velocities,
                                   u2.atoms.velocities)
 
-    @dec.slow
+
     def test_write_no_resnames(self, u_no_resnames, ref, tempdir):
         outfile = self.tmp_file('write-no-resnames-test', ref, tempdir)
         u_no_resnames.atoms.write(outfile)
@@ -233,7 +232,7 @@ class TestGROWriter(BaseWriterTest):
         expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
-    @dec.slow
+
     def test_write_no_resids(self, u_no_resids, ref, tempdir):
         outfile = self.tmp_file('write-no-resids-test', ref, tempdir)
         u_no_resids.atoms.write(outfile)
@@ -241,7 +240,7 @@ class TestGROWriter(BaseWriterTest):
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
-    @dec.slow
+
     def test_writer_no_atom_names(self, u_no_names, ref, tempdir):
         outfile = self.tmp_file('write-no-names-test', ref, tempdir)
         u_no_names.atoms.write(outfile)
@@ -249,7 +248,7 @@ class TestGROWriter(BaseWriterTest):
         expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
-    @dec.slow
+
     def test_check_coordinate_limits_min(self, ref, tempdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -261,7 +260,7 @@ class TestGROWriter(BaseWriterTest):
         with pytest.raises(ValueError):
             u.atoms.write(outfile)
 
-    @dec.slow
+
     def test_check_coordinate_limits_max(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -274,7 +273,7 @@ class TestGROWriter(BaseWriterTest):
         with pytest.raises(ValueError):
             u.atoms.write(outfile)
 
-    @dec.slow
+
     def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) also
         raises exception for convert_units=False"""
@@ -392,7 +391,7 @@ class TestGROLargeWriter(BaseWriterTest):
     def ref():
         return GROLargeReference()
 
-    @dec.slow
+
     def test_writer_large(self, ref, tempdir):
         """
         Test that atom numbers are truncated for large
@@ -411,7 +410,7 @@ class TestGROLargeWriter(BaseWriterTest):
                              err_msg="Writing GRO file with > 100 000 "
                                      "coords does not truncate properly.")
 
-    @dec.slow
+
     def test_writer_large_residue_count(self, ref, tempdir):
         """
         Ensure large residue number truncation for

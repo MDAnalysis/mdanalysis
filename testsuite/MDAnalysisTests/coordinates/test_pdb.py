@@ -38,7 +38,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
-from numpy.testing import (assert_equal, dec,
+from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal, assert_)
 
@@ -186,56 +186,56 @@ class TestPDBWriter(TestCase):
                             err_msg="Writing PDB file with PDBWriter "
                                     "does not reproduce original coordinates")
 
-    @dec.slow
+
     def test_writer_no_resnames(self):
         self.u_no_resnames.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array(['UNK'] * self.u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
-    @dec.slow
+
     def test_writer_no_resids(self):
         self.u_no_resids.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
-    @dec.slow
+
     def test_writer_no_atom_names(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array(['X'] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
-    @dec.slow
+
     def test_writer_no_altlocs(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array([''] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.altLocs, expected)
 
-    @dec.slow
+
     def test_writer_no_icodes(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array([''] * self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.icodes, expected)
 
-    @dec.slow
+
     def test_writer_no_segids(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.array(['SYSTEM'] * self.u_no_names.atoms.n_atoms)
         assert_equal([atom.segid for atom in u.atoms], expected)
 
-    @dec.slow
+
     def test_writer_no_occupancies(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         expected = np.ones(self.u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.occupancies, expected)
 
-    @dec.slow
+
     def test_writer_no_tempfactors(self):
         self.u_no_names.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
@@ -553,7 +553,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def tearDown(self):
         del self.universe
 
-    @dec.slow
+
     def test_load_pdb(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
@@ -561,38 +561,38 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
-    @dec.slow
+
     def test_selection(self):
         na = self.universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size,
                      "Atom selection of last atoms in file")
 
-    @dec.slow
+
     def test_n_atoms(self):
         assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
                      "wrong number of atoms")
 
-    @dec.slow
+
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 1,
                      "wrong number of frames")
 
-    @dec.slow
+
     def test_time(self):
         assert_equal(self.universe.trajectory.time, 0.0,
                      "wrong time of the frame")
 
-    @dec.slow
+
     def test_frame(self):
         assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
 
-    @dec.slow
+
     def test_dt(self):
         """testing that accessing universe.trajectory.dt returns the default
         of 1.0 ps"""
         assert_equal(self.universe.trajectory.dt, 1.0)
 
-    @dec.slow
+
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
         assert_almost_equal(A10CA.position,
@@ -600,7 +600,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
 
-    @dec.slow
+
     def test_distances(self):
         NTERM = self.universe.atoms.N[0]
         CTERM = self.universe.atoms.C[-1]
@@ -608,13 +608,13 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
 
-    @dec.slow
+
     def test_selection(self):
         na = self.universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size,
                      "Atom selection of last atoms in file")
 
-    @dec.slow
+
     def test_unitcell(self):
         assert_array_almost_equal(
             self.universe.coord.dimensions,
@@ -622,7 +622,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
             self.prec,
             err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
 
-    @dec.slow
+
     def test_volume(self):
         assert_almost_equal(
             self.universe.coord.volume,

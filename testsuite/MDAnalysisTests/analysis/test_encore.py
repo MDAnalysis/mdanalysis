@@ -31,7 +31,7 @@ import sys
 import warnings
 
 import pytest
-from numpy.testing import (TestCase, dec, assert_equal, assert_almost_equal,
+from numpy.testing import (TestCase, assert_equal, assert_almost_equal,
                            assert_warns)
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
@@ -334,7 +334,6 @@ inconsistent results")
         assert_almost_equal(results[:,0], expected_values, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
 
-    @dec.slow
     def test_hes_error_estimation(self):
         expected_average = 10
         expected_stdev = 12
@@ -347,7 +346,6 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=-2,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
-    @dec.slow
     def test_ces_error_estimation(self):
         expected_average = 0.03
         expected_stdev = 0.31
@@ -364,9 +362,7 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=0,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
-    @dec.slow
+    @pytest.mark.skipif(module_not_found('sklearn'), reason="Test skipped because sklearn is not available.")
     def test_ces_error_estimation_ensemble_bootstrap(self):
         # Error estimation using a method that does not take a distance
         # matrix as input, and therefore relies on bootstrapping the ensembles
@@ -386,7 +382,6 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=1,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    @dec.slow
     def test_dres_error_estimation(self):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
@@ -446,28 +441,28 @@ class TestEncoreClustering(TestCase):
         del cls.ens1_template
         del cls.ens2_template
 
-    @dec.slow
+    
     def test_clustering_one_ensemble(self):
         cluster_collection = encore.cluster(self.ens1)
         expected_value = 7
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
-    @dec.slow
+    
     def test_clustering_two_ensembles(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2])
         expected_value = 14
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
-    @dec.slow
+    
     def test_clustering_three_ensembles_two_identical(self):
         cluster_collection = encore.cluster([self.ens1, self.ens2, self.ens1])
         expected_value = 40
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    @dec.slow
+    
     def test_clustering_two_methods(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -476,7 +471,7 @@ class TestEncoreClustering(TestCase):
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    @dec.slow
+    
     def test_clustering_AffinityPropagationNative_direct(self):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(self.ens1)
@@ -486,9 +481,9 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_AffinityPropagation_direct(self):
         method = encore.AffinityPropagation()
         distance_matrix = encore.get_distance_matrix(self.ens1)
@@ -498,9 +493,9 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_KMeans_direct(self):
         clusters = 10
         method = encore.KMeans(clusters)
@@ -512,9 +507,9 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_DBSCAN_direct(self):
         method = encore.DBSCAN(eps=0.5, min_samples=2)
         distance_matrix = encore.get_distance_matrix(self.ens1)
@@ -524,9 +519,9 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_two_different_methods(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -537,9 +532,9 @@ class TestEncoreClustering(TestCase):
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_method_w_no_distance_matrix(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -548,9 +543,9 @@ class TestEncoreClustering(TestCase):
         assert_equal(len(cluster_collection), 10,
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_clustering_two_methods_one_w_no_distance_matrix(self):
         cluster_collection = encore.cluster(
             [self.ens1],
@@ -560,9 +555,9 @@ class TestEncoreClustering(TestCase):
         assert_equal(len(cluster_collection[0]), len(cluster_collection[0]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_sklearn_affinity_propagation(self):
         cc1 = encore.cluster([self.ens1])
         cc2 = encore.cluster([self.ens1],
@@ -715,7 +710,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         del cls.ens1_template
         del cls.ens2_template
 
-    @dec.slow
+    
     def test_dimensionality_reduction_one_ensemble(self):
         dimension = 2
         coordinates, details = encore.reduce_dimensionality(self.ens1)
@@ -723,7 +718,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
-    @dec.slow
+    
     def test_dimensionality_reduction_two_ensembles(self):
         dimension = 2
         coordinates, details = \
@@ -731,7 +726,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
-    @dec.slow
+    
     def test_dimensionality_reduction_three_ensembles_two_identical(self):
         coordinates, details = \
             encore.reduce_dimensionality([self.ens1, self.ens2, self.ens1])
@@ -740,7 +735,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_almost_equal(coordinates_ens1, coordinates_ens3, decimal=0,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
-    @dec.slow
+    
     def test_dimensionality_reduction_specified_dimension(self):
         dimension = 3
         coordinates, details = encore.reduce_dimensionality(
@@ -749,7 +744,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
-    @dec.slow
+    
     def test_dimensionality_reduction_SPENative_direct(self):
         dimension = 2
         method = encore.StochasticProximityEmbeddingNative(dimension=dimension)
@@ -759,9 +754,9 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(
                      coordinates))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_PCA_direct(self):
         dimension = 2
         method = encore.PrincipalComponentAnalysis(dimension=dimension)
@@ -773,9 +768,9 @@ class TestEncoreDimensionalityReduction(TestCase):
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(
                      coordinates))
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_different_method(self):
         dimension = 3
         coordinates, details = \
@@ -785,7 +780,7 @@ class TestEncoreDimensionalityReduction(TestCase):
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
-    @dec.slow
+    
     def test_dimensionality_reduction_two_methods(self):
         dims = [2,3]
         coordinates, details = \
@@ -795,9 +790,9 @@ class TestEncoreDimensionalityReduction(TestCase):
                         encore.StochasticProximityEmbeddingNative(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
-    @dec.slow
-    @dec.skipif(module_not_found('sklearn'),
-                "Test skipped because sklearn is not available.")
+    
+    @pytest.mark.skipif(module_not_found('sklearn'),
+                reason="Test skipped because sklearn is not available.")
     def test_dimensionality_reduction_two_different_methods(self):
         dims = [2,3]
         coordinates, details = \

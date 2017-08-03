@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
-from numpy.testing import assert_equal, dec
+from numpy.testing import assert_equal
 
 
 class MemoryReference(BaseReference):

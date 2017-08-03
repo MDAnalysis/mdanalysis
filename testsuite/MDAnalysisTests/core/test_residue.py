@@ -24,7 +24,6 @@ from __future__ import absolute_import
 from unittest import TestCase
 
 from numpy.testing import (
-    dec,
     assert_,
     assert_equal,
 )

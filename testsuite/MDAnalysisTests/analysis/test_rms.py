@@ -22,7 +22,6 @@
 from __future__ import print_function, division, absolute_import
 
 import pytest
-from _pytest.capture import capsys
 from six.moves import range
 
 import warnings
@@ -33,8 +32,8 @@ import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import (TestCase, dec, assert_equal,
-                           assert_almost_equal, raises, assert_,
+from numpy.testing import (TestCase, assert_equal,
+                           assert_almost_equal, assert_,
                            assert_array_almost_equal)
 
 import numpy as np
@@ -118,16 +117,16 @@ class Testrmsd(TestCase):
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
     @staticmethod
-    @raises(ValueError)
     def test_unequal_shape():
         a = np.ones((4, 3))
         b = np.ones((5, 3))
-        rms.rmsd(a, b)
+        with pytest.raises(ValueError):
+            rms.rmsd(a, b)
 
-    @raises(ValueError)
     def test_wrong_weights(self):
         w = np.ones(2)
-        rms.rmsd(self.a, self.b, w)
+        with pytest.raises(ValueError):
+            rms.rmsd(self.a, self.b, w)
 
     def test_with_superposition_smaller(self):
         A = self.p_first.positions

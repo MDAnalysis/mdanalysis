@@ -27,7 +27,6 @@ from unittest import TestCase
 import itertools
 import numpy as np
 from numpy.testing import(
-    dec,
     assert_equal,
     assert_array_almost_equal,
     assert_,
@@ -374,23 +373,23 @@ class TestSelectionsGRO(TestCase):
         """Set up GRO system (implicit types, charges, masses, ...)"""
         self.universe = MDAnalysis.Universe(GRO)
 
-    @dec.slow
+    
     def test_protein(self):
         sel = self.universe.select_atoms('protein')
         assert_equal(sel.n_atoms, 3341, "failed to select protein")
 
-    @dec.slow
+    
     def test_backbone(self):
         sel = self.universe.select_atoms('backbone')
         assert_equal(sel.n_atoms, 855)
 
-    @dec.slow
+    
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 100')
         assert_equal(sel.n_atoms, 7)
         assert_equal(sel.residues.resnames, ['GLY'])
 
-    @dec.slow
+    
     def test_same_coordinate(self):
         """Test the 'same ... as' construct (Issue 217)"""
         sel = self.universe.select_atoms("same x as bynum 1 or bynum 10")
