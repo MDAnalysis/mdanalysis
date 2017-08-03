@@ -25,7 +25,7 @@ import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
-from numpy.testing import assert_allclose
+from numpy.testing import assert_almost_equal
 
 
 def test_serial():
@@ -36,4 +36,4 @@ def test_serial():
     xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
                           0., 0., 0., 0.])
     ld = LinearDensity(selection, binsize=5).run()
-    assert_allclose(xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
+    assert_almost_equal(xpos, ld.results['x']['pos'], 6)
