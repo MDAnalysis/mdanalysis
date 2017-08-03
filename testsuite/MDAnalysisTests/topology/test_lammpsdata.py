@@ -30,7 +30,7 @@ import numpy as np
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.topology.test_base import ParserBase
+from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysis.tests.datafiles import (
     LAMMPSdata,
     LAMMPScnt, LAMMPScnt2,

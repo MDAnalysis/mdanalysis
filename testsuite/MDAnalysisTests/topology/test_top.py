@@ -26,7 +26,7 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.topology.test_base import ParserBase
+from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PRM,  # ache.prmtop
     PRM12,  # anti.top

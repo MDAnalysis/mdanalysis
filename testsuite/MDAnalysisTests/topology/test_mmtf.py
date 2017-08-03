@@ -9,7 +9,7 @@ import mock
 import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup
 
-from MDAnalysisTests.topology.test_base import ParserBase
+from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
 from unittest import TestCase

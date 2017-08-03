@@ -32,7 +32,7 @@ from MDAnalysis.tests.datafiles import (
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
     TPR2016, TPR2016_bonded,
 )
-from MDAnalysisTests.topology.test_base import ParserBase
+from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
 
 

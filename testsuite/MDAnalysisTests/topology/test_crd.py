@@ -20,24 +20,23 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
-    XPDB_small,
+    CRD,
 )
 
 
-class TestXPDBParser(ParserBase):
+class TestCRDParser(ParserBase):
 
-    __test__ = True
-
-    parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
-    filename = XPDB_small
-    expected_attrs = ['ids', 'names',
-                      'resids', 'resnames',
+    parser = mda.topology.CRDParser.CRDParser
+    filename = CRD
+    expected_attrs = ['ids', 'names', 'tempfactors',
+                      'resids', 'resnames', 'resnums',
                       'segids']
     guessed_attrs = ['masses', 'types']
-    expected_n_atoms = 5
-    expected_n_residues = 5
+    expected_n_atoms = 3341
+    expected_n_residues = 214
     expected_n_segments = 1

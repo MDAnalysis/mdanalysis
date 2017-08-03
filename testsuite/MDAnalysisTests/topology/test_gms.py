@@ -27,7 +27,7 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.topology.test_base import ParserBase
+from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     GMS_ASYMOPT,  # c1opt.gms.gz
     GMS_SYMOPT,  # symopt.gms
