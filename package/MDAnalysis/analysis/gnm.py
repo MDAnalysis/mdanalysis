@@ -98,7 +98,9 @@ logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
 
 def _dsq(a, b):
-    return ((a - b)**2).sum()
+    diff = (a - b)
+    return np.dot(diff, diff)
+
 
 def generate_grid(positions, cutoff):
     """Simple grid search.
