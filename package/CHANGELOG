@@ -24,6 +24,7 @@ Enhancements
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
   * The TPR parser populate the `moltypes` topology attribute and
     the `moltype` selection keyword is added (Issue #1555)
+  * about 20% speed improvements for GNM analysis. (PR #1579)
 
 Deprecations
 

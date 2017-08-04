@@ -89,6 +89,8 @@ directly needed to perform the analysis.
 from __future__ import print_function, division, absolute_import
 from six.moves import range
 
+import itertools
+
 import numpy as np
 
 import warnings
@@ -98,7 +100,9 @@ logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
 
 def _dsq(a, b):
-    return ((a - b)**2).sum()
+    diff = (a - b)
+    return np.dot(diff, diff)
+
 
 def generate_grid(positions, cutoff):
     """Simple grid search.
@@ -128,19 +132,56 @@ def generate_grid(positions, cutoff):
     low_x = x.min()
     low_y = y.min()
     low_z = z.min()
-    natoms = len(positions)
     #Ok now generate a list with 3 dimensions representing boxes in x, y and z
     grid = [[[
         [] for i in range(int((high_z - low_z) / cutoff) + 1)] for j in range(int((high_y - low_y) / cutoff) + 1)]
         for k in range(int((high_x - low_x) / cutoff) + 1)]
-    res_positions = []
-    for i in range(natoms):
-        x_pos = int((positions[i][0] - low_x) / cutoff)
-        y_pos = int((positions[i][1] - low_y) / cutoff)
-        z_pos = int((positions[i][2] - low_z) / cutoff)
+    for i, pos in enumerate(positions):
+        x_pos = int((pos[0] - low_x) / cutoff)
+        y_pos = int((pos[1] - low_y) / cutoff)
+        z_pos = int((pos[2] - low_z) / cutoff)
         grid[x_pos][y_pos][z_pos].append(i)
-        res_positions.append([x_pos, y_pos, z_pos])
-    return (res_positions, grid, low_x, low_y, low_z)
+    return grid
+
+
+def neighbour_generator(positions, cutoff):
+    """
+    return atom pairs that are in neighboring regions of space from a verlet-grid
+
+    Parameters
+    ----------
+    positions : ndarray
+        atom positions
+    cutoff : float
+        size of grid box
+
+    Yields
+    ------
+    i_atom, j_atom
+        indices of close atom pairs
+    """
+    grid = generate_grid(positions, cutoff)
+    n_x = len(grid)
+    n_y = len(grid[0])
+    n_z = len(grid[0][0])
+    for cell_x, cell_y, cell_z in itertools.product(range(n_x), range(n_y), range(n_z)):
+        atoms = grid[cell_x][cell_y][cell_z]
+        # collect all atoms in own cell and neighboring cell
+        all_atoms = []
+        for x in (-1, 0, 1):
+            gx = cell_x + x
+            if 0 <= gx < n_x:
+                for y in (-1, 0, 1):
+                    gy = cell_y + y
+                    if 0 <= gy < n_y:
+                        for z in (-1, 0, 1):
+                            gz = cell_z + z
+                            if 0 <= gz < n_z:
+                                all_atoms += grid[gx][gy][gz]
+        # return all possible atom pairs in current cell
+        for i_atom in atoms:
+            for j_atom in all_atoms:
+                yield i_atom, j_atom
 
 
 def order_list(w):
@@ -234,46 +275,27 @@ class GNMAnalysis(object):
         Returns
         -------
         array
-             the resulting Kirchhoff matrix
+                the resulting Kirchhoff matrix
         """
         positions = self.ca.positions
-
-        natoms = len(positions)
 
         #add the com from each bonus group to the ca_positions list
         for item in self.Bonus_groups:
             #bonus = self.u.select_atoms(item)
             positions = np.vstack((positions, item.center_of_mass()))
-            natoms += 1
 
-        matrix = np.zeros((natoms, natoms), "float")
-        res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
-        icounter = 0
+        natoms = len(positions)
+        matrix = np.zeros((natoms, natoms), np.float64)
 
         cutoffsq = self.cutoff ** 2
 
-        for icounter in range(natoms):
-            #find neighbours from the grid
-            neighbour_atoms = []
-            for x in (-1, 0, 1):
-                #print icounter, natoms, len(positions), len(res_positions)
-                gx = res_positions[icounter][0] + x
-                if 0 <= gx < len(grid):
-                    for y in (-1, 0, 1):
-                        gy = res_positions[icounter][1] + y
-                        if 0 <= gy < len(grid[0]):
-                            for z in (-1, 0, 1):
-                                gz = res_positions[icounter][2] + z
-                                if 0 <= gz < len(grid[0][0]):
-                                    neighbour_atoms += grid[gx][gy][gz]
+        for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
+            if j_atom > i_atom and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq:
+                matrix[i_atom][j_atom] = -1.0
+                matrix[j_atom][i_atom] = -1.0
+                matrix[i_atom][i_atom] = matrix[i_atom][i_atom] + 1
+                matrix[j_atom][j_atom] = matrix[j_atom][j_atom] + 1
 
-            #for jcounter in range(icounter+1,natoms):
-            for jcounter in neighbour_atoms:
-                if jcounter > icounter and _dsq(positions[icounter], positions[jcounter]) < cutoffsq:
-                    matrix[icounter][jcounter] = -1.0
-                    matrix[jcounter][icounter] = -1.0
-                    matrix[icounter][icounter] = matrix[icounter][icounter] + 1
-                    matrix[jcounter][jcounter] = matrix[jcounter][jcounter] + 1
         return matrix
 
     def run(self, start=None, stop=None, step=None):
@@ -379,39 +401,27 @@ class closeContactGNMAnalysis(GNMAnalysis):
                           category=DeprecationWarning)
             self.weights = "size" if MassWeight else None
 
-
     def generate_kirchoff(self):
         natoms = self.ca.n_atoms
         nresidues = self.ca.n_residues
         positions = self.ca.positions
-        res_positions, grid, low_x, low_y, low_z = generate_grid(positions, self.cutoff)
         residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue.atoms]
-        matrix = np.zeros((nresidues, nresidues), dtype=np.float_)
+        matrix = np.zeros((nresidues, nresidues), dtype=np.float64)
         cutoffsq = self.cutoff ** 2
 
         # cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])
-        sqrt_res_sizes = np.sqrt([r.atoms.n_atoms for r in  self.ca.residues]) \
-                         if self.weights == "size" else None
+        inv_sqrt_res_sizes = np.ones(len(self.ca.residues))
+        if self.weights == 'size':
+            inv_sqrt_res_sizes = 1 / np.sqrt([r.atoms.n_atoms for r in  self.ca.residues])
 
-        for icounter in range(natoms):
-            neighbour_atoms = []
-            for x in (-1, 0, 1):
-                gx = res_positions[icounter][0] + x
-                if 0 <= gx < len(grid):
-                    for y in (-1, 0, 1):
-                        gy = res_positions[icounter][1] + y
-                        if 0 <= gy < len(grid[0]):
-                            for z in (-1, 0, 1):
-                                gz = res_positions[icounter][2] + z
-                                if 0 <= gz < len(grid[0][0]):
-                                    neighbour_atoms += grid[gx][gy][gz]
-            for jcounter in neighbour_atoms:
-                if jcounter > icounter and _dsq(positions[icounter], positions[jcounter]) <= cutoffsq:
-                    iresidue, jresidue = residue_index_map[icounter], residue_index_map[jcounter]
-                    contact = 1.0 / (sqrt_res_sizes[iresidue] * sqrt_res_sizes[jresidue]) \
-                              if self.weights == "size" else 1.0
-                    matrix[iresidue][jresidue] -= contact
-                    matrix[jresidue][iresidue] -= contact
-                    matrix[iresidue][iresidue] += contact
-                    matrix[jresidue][jresidue] += contact
+        for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
+            if j_atom > i_atom and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq:
+                iresidue = residue_index_map[i_atom]
+                jresidue = residue_index_map[j_atom]
+                contact = (inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue])
+                matrix[iresidue][jresidue] -= contact
+                matrix[jresidue][iresidue] -= contact
+                matrix[iresidue][iresidue] += contact
+                matrix[jresidue][jresidue] += contact
+
         return matrix
