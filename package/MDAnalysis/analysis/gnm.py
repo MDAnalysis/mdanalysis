@@ -132,19 +132,16 @@ def generate_grid(positions, cutoff):
     low_x = x.min()
     low_y = y.min()
     low_z = z.min()
-    natoms = len(positions)
     #Ok now generate a list with 3 dimensions representing boxes in x, y and z
     grid = [[[
         [] for i in range(int((high_z - low_z) / cutoff) + 1)] for j in range(int((high_y - low_y) / cutoff) + 1)]
         for k in range(int((high_x - low_x) / cutoff) + 1)]
-    res_positions = []
-    for i in range(natoms):
-        x_pos = int((positions[i][0] - low_x) / cutoff)
-        y_pos = int((positions[i][1] - low_y) / cutoff)
-        z_pos = int((positions[i][2] - low_z) / cutoff)
+    for i, pos in enumerate(positions):
+        x_pos = int((pos[0] - low_x) / cutoff)
+        y_pos = int((pos[1] - low_y) / cutoff)
+        z_pos = int((pos[2] - low_z) / cutoff)
         grid[x_pos][y_pos][z_pos].append(i)
-        res_positions.append([x_pos, y_pos, z_pos])
-    return (res_positions, grid, low_x, low_y, low_z)
+    return grid
 
 
 def neighbour_generator(positions, cutoff):
@@ -163,7 +160,7 @@ def neighbour_generator(positions, cutoff):
     i_atom, j_atom
         indices of close atom pairs
     """
-    res_positions, grid, low_x, low_y, low_z = generate_grid(positions, cutoff)
+    grid = generate_grid(positions, cutoff)
     n_x = len(grid)
     n_y = len(grid[0])
     n_z = len(grid[0][0])
