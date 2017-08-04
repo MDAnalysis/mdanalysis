@@ -166,8 +166,13 @@ class TestRMSD(object):
     @pytest.fixture()
     def correct_values_group(self):
         return [[0, 0, 0, 0, 0],
-                 [49, 49, 4.7857, 4.7004,
-                  4.68981]]
+                 [49, 49, 4.7857, 4.7004, 4.68981]]
+
+    @pytest.fixture()
+    def correct_values_backbone_group(self):
+        return [[0, 0, 0, 0, 0],
+                [49,   49,   4.6997, 1.03620, 1.2650]]
+
 
     def test_progress_meter(self, capsys, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, verbose=True)
@@ -231,6 +236,20 @@ class TestRMSD(object):
         assert_array_almost_equal(RMSD.rmsd, correct_values_group, 4,
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
+
+    def test_rmsd_backbone_and_group_selection(self, universe,
+                                               correct_values_backbone_group):
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            universe,
+            reference=universe,
+            select="backbone",
+            groupselections=['backbone and resid 1:10',
+                             'backbone and resid 10:20'],
+            step=49).run()
+        assert_array_almost_equal(
+            RMSD.rmsd, correct_values_backbone_group, 4,
+            err_msg="error: rmsd profile should match test values")
+
 
     def test_ref_length_unequal_len(self, universe):
         reference = MDAnalysis.Universe(PSF, DCD)
