@@ -168,16 +168,13 @@ def neighbour_generator(positions, cutoff):
         atoms = grid[cell_x][cell_y][cell_z]
         # collect all atoms in own cell and neighboring cell
         all_atoms = []
-        for x in (-1, 0, 1):
+        nei_cells = (-1, 0, 1)
+        for x, y, z in itertools.product(nei_cells, nei_cells, nei_cells):
             gx = cell_x + x
-            if 0 <= gx < n_x:
-                for y in (-1, 0, 1):
-                    gy = cell_y + y
-                    if 0 <= gy < n_y:
-                        for z in (-1, 0, 1):
-                            gz = cell_z + z
-                            if 0 <= gz < n_z:
-                                all_atoms += grid[gx][gy][gz]
+            gy = cell_y + y
+            gz = cell_z + z
+            if 0 <= gx < n_x and 0 <= gy < n_y and 0 <= gz < n_z:
+                all_atoms += grid[gx][gy][gz]
         # return all possible atom pairs in current cell
         for i_atom in atoms:
             for j_atom in all_atoms:
