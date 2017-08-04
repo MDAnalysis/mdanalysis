@@ -23,7 +23,6 @@
 #Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)
 #Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame
 #Copyright 2011; Consider under GPL v2 or later
-
 r"""
 Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 ==============================================================================
@@ -133,9 +132,9 @@ def generate_grid(positions, cutoff):
     low_y = y.min()
     low_z = z.min()
     #Ok now generate a list with 3 dimensions representing boxes in x, y and z
-    grid = [[[
-        [] for i in range(int((high_z - low_z) / cutoff) + 1)] for j in range(int((high_y - low_y) / cutoff) + 1)]
-        for k in range(int((high_x - low_x) / cutoff) + 1)]
+    grid = [[[[] for i in range(int((high_z - low_z) / cutoff) + 1)]
+             for j in range(int((high_y - low_y) / cutoff) + 1)]
+            for k in range(int((high_x - low_x) / cutoff) + 1)]
     for i, pos in enumerate(positions):
         x_pos = int((pos[0] - low_x) / cutoff)
         y_pos = int((pos[1] - low_y) / cutoff)
@@ -164,7 +163,8 @@ def neighbour_generator(positions, cutoff):
     n_x = len(grid)
     n_y = len(grid[0])
     n_z = len(grid[0][0])
-    for cell_x, cell_y, cell_z in itertools.product(range(n_x), range(n_y), range(n_z)):
+    for cell_x, cell_y, cell_z in itertools.product(
+            range(n_x), range(n_y), range(n_z)):
         atoms = grid[cell_x][cell_y][cell_z]
         # collect all atoms in own cell and neighboring cell
         all_atoms = []
@@ -230,8 +230,12 @@ class GNMAnalysis(object):
 
     """
 
-    def __init__(self, universe, selection='protein and name CA', cutoff=7.0,
-                 ReportVector=None, Bonus_groups=None):
+    def __init__(self,
+                 universe,
+                 selection='protein and name CA',
+                 cutoff=7.0,
+                 ReportVector=None,
+                 Bonus_groups=None):
         self.u = universe
         self.selection = selection
         self.cutoff = cutoff
@@ -242,8 +246,8 @@ class GNMAnalysis(object):
                             if Bonus_groups else []
         self.ca = self.u.select_atoms(self.selection)
 
-    def _generate_output(self, w, v, outputobject, time, matrix, nmodes=2,
-                         ReportVector=None, counter=0):
+    def _generate_output(self, w, v, outputobject, time, matrix,
+                         nmodes=2, ReportVector=None, counter=0):
         """Appends eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
@@ -256,11 +260,17 @@ class GNMAnalysis(object):
         if ReportVector:
             with open(ReportVector, "a") as oup:
                 for item in enumerate(v[list_map[1]]):
-                    print("", counter, time, item[0] + 1,
-                          w[list_map[1]], item[1], file=oup)
+                    print(
+                        "",
+                        counter,
+                        time,
+                        item[0] + 1,
+                        w[list_map[1]],
+                        item[1],
+                        file=oup)
         outputobject.append((time, w[list_map[1]], v[list_map[1]]))
-        #outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ], [ v[list_map[i]] for i in range(
-        # nmodes) ] ))
+        # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
+        # [ v[list_map[i]] for i in range( nmodes) ] ))
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
@@ -284,10 +294,11 @@ class GNMAnalysis(object):
         natoms = len(positions)
         matrix = np.zeros((natoms, natoms), np.float64)
 
-        cutoffsq = self.cutoff ** 2
+        cutoffsq = self.cutoff**2
 
         for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if j_atom > i_atom and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq:
+            if j_atom > i_atom and _dsq(positions[i_atom],
+                                        positions[j_atom]) < cutoffsq:
                 matrix[i_atom][j_atom] = -1.0
                 matrix[j_atom][i_atom] = -1.0
                 matrix[i_atom][i_atom] = matrix[i_atom][i_atom] + 1
@@ -330,8 +341,14 @@ class GNMAnalysis(object):
                       "(SVD failed to converge). Cutoff", self.cutoff)
                 continue
             #Save the results somewhere useful in some useful format. Usefully.
-            self._generate_output(w, v, self.results, ts.time, matrix, ReportVector=self.ReportVector,
-                                  counter=ts.frame)
+            self._generate_output(
+                w,
+                v,
+                self.results,
+                ts.time,
+                matrix,
+                ReportVector=self.ReportVector,
+                counter=ts.frame)
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
@@ -380,8 +397,13 @@ class closeContactGNMAnalysis(GNMAnalysis):
        Instead of ``MassWeight=True`` use ``weights="size"``.
     """
 
-    def __init__(self, universe, selection='protein', cutoff=4.5, ReportVector=None,
-                 weights="size", MassWeight=None):
+    def __init__(self,
+                 universe,
+                 selection='protein',
+                 cutoff=4.5,
+                 ReportVector=None,
+                 weights="size",
+                 MassWeight=None):
         self.u = universe
         self.selection = selection
         self.cutoff = cutoff
@@ -393,29 +415,37 @@ class closeContactGNMAnalysis(GNMAnalysis):
         self.weights = weights
         # remove MassWeight in 0.17.0
         if MassWeight is not None:
-            warnings.warn("MassWeight=True|False is deprecated in favor of weights='size'|None "
-                          "and will be removed in 0.17.0",
-                          category=DeprecationWarning)
+            warnings.warn(
+                "MassWeight=True|False is deprecated in favor of weights='size'|None "
+                "and will be removed in 0.17.0",
+                category=DeprecationWarning)
             self.weights = "size" if MassWeight else None
 
     def generate_kirchoff(self):
         natoms = self.ca.n_atoms
         nresidues = self.ca.n_residues
         positions = self.ca.positions
-        residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue.atoms]
+        residue_index_map = [
+            resnum
+            for [resnum, residue] in enumerate(self.ca.residues)
+            for atom in residue.atoms
+        ]
         matrix = np.zeros((nresidues, nresidues), dtype=np.float64)
-        cutoffsq = self.cutoff ** 2
+        cutoffsq = self.cutoff**2
 
         # cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])
         inv_sqrt_res_sizes = np.ones(len(self.ca.residues))
         if self.weights == 'size':
-            inv_sqrt_res_sizes = 1 / np.sqrt([r.atoms.n_atoms for r in  self.ca.residues])
+            inv_sqrt_res_sizes = 1 / np.sqrt(
+                [r.atoms.n_atoms for r in self.ca.residues])
 
         for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if j_atom > i_atom and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq:
+            if j_atom > i_atom and _dsq(positions[i_atom],
+                                        positions[j_atom]) < cutoffsq:
                 iresidue = residue_index_map[i_atom]
                 jresidue = residue_index_map[j_atom]
-                contact = (inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue])
+                contact = (inv_sqrt_res_sizes[iresidue] *
+                           inv_sqrt_res_sizes[jresidue])
                 matrix[iresidue][jresidue] -= contact
                 matrix[jresidue][iresidue] -= contact
                 matrix[iresidue][iresidue] += contact
