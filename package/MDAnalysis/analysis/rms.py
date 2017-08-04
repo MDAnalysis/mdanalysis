@@ -528,8 +528,7 @@ class RMSD(AnalysisBase):
             self._ts.positions[:] -= mobile_com
 
             # R acts to the left & is broadcasted N times.
-            self._ts.positions[:,:] = (self._mobile_coordinates64[:] *
-                                       self._R)
+            self._ts.positions[:, :] = self._ts.positions * self._R
             self._ts.positions[:] += self._ref_com
 
             # 2) calculate secondary RMSDs
