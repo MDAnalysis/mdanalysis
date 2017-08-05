@@ -20,21 +20,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-)
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import (
-    DMS,
-)
+from MDAnalysisTests.datafiles import DMS
 
 
 class TestDMSParser(ParserBase):
-
-    __test__ = True
 
     parser = mda.topology.DMSParser.DMSParser
     filename = DMS
@@ -47,21 +40,21 @@ class TestDMSParser(ParserBase):
     expected_n_segments = 1
 
     def test_number_of_bonds(self, top):
-        assert_(len(top.bonds.values) == 3365)
+        assert len(top.bonds.values) == 3365
 
     def test_atomsels(self):
         # Desired value taken from VMD atomsel
         u = mda.Universe(self.filename)
 
         s0 = u.select_atoms("name CA")
-        assert_(len(s0) == 214)
+        assert len(s0) == 214
 
         s1 = u.select_atoms("resid 33")
-        assert_(len(s1) == 12)
+        assert len(s1) == 12
 
         s2 = u.select_atoms("segid 4AKE")
-        assert_(len(s2) == 3341)
+        assert len(s2) == 3341
 
         s3 = u.select_atoms("resname ALA")
-        assert_(len(s3) == 190)
+        assert len(s3) == 190
 
