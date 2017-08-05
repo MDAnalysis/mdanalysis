@@ -33,7 +33,6 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO
-from MDAnalysisTests import tempdir
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
@@ -129,10 +128,11 @@ class Test_density_from_Universe(object):
     def universe(self):
         return mda.Universe(self.topology, self.trajectory)
 
-    def check_density_from_Universe(self, atomselection, ref_meandensity, universe, **kwargs):
+    def check_density_from_Universe(self, atomselection, ref_meandensity,
+                                    universe, tmpdir, **kwargs):
         import MDAnalysis.analysis.density
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             D = MDAnalysis.analysis.density.density_from_Universe(
                 universe, atomselection=atomselection,
                 delta=self.delta, **kwargs)
@@ -146,36 +146,40 @@ class Test_density_from_Universe(object):
                                 err_msg="DX export failed: different grid sizes")
 
 
-    def test_density_from_Universe(self, universe):
+    def test_density_from_Universe(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static']['meandensity'],
             universe=universe,
+            tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_sliced(self, universe):
+    def test_density_from_Universe_sliced(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_sliced']['meandensity'],
             start=1, stop=-1, step=2,
             universe=universe,
+            tmpdir=tmpdir
             )
 
-    def test_density_from_Universe_update_selection(self, universe):
+    def test_density_from_Universe_update_selection(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
             update_selection=True,
             universe=universe,
+            tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_notwithin(self, universe):
+    def test_density_from_Universe_notwithin(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['notwithin']['meandensity'],
             soluteselection=self.selections['solute'],
             cutoff=self.cutoffs['notwithin'],
             universe=universe,
+            tmpdir=tmpdir
         )
 
 
