@@ -93,15 +93,6 @@ def executable_not_found(*args):
     return True
 
 
-def module_not_found(module):
-    try:
-        importlib.import_module(module)
-    except ImportError:
-        return True
-    else:
-        return False
-
-
 @contextmanager
 def in_dir(dirname):
     """Context manager for safely changing directories.

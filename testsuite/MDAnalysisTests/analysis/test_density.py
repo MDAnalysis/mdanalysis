@@ -31,7 +31,7 @@ from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO
-from MDAnalysisTests import module_not_found, tempdir
+from MDAnalysisTests import tempdir
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 

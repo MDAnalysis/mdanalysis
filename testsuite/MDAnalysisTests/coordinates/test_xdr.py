@@ -37,7 +37,7 @@ from numpy.testing import (assert_equal, assert_array_almost_equal,
 from unittest import TestCase
 
 
-from MDAnalysisTests import module_not_found, make_Universe
+from MDAnalysisTests import make_Universe
 
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
                                        TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF,
@@ -582,9 +582,8 @@ class _GromacsWriterIssue117(TestCase):
     ext = None
     prec = 5
 
-    @pytest.mark.skipif(module_not_found("netCDF4"),
-                        reason="Test skipped because netCDF is not available.")
     def setUp(self):
+        pytest.importorskip('netCDF4')
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/xdr-writer-issue117' + self.ext
