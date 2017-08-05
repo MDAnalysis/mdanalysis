@@ -22,9 +22,6 @@
 from __future__ import absolute_import
 
 import pytest
-from numpy.testing import (
-    assert_,
-)
 
 import MDAnalysis as mda
 
@@ -41,9 +38,6 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestGROParser(ParserBase):
-
-    __test__ = True
-
     parser = mda.topology.GROParser.GROParser
     filename = GRO
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
@@ -54,11 +48,11 @@ class TestGROParser(ParserBase):
 
     def test_attr_size(self, top):
         for attr in ['ids', 'names']:
-            assert_(len(top.ids) == top.n_atoms)
-            assert_(len(top.names) == top.n_atoms)
+            assert len(top.ids) == top.n_atoms
+            assert len(top.names) == top.n_atoms
         for attr in ['resids', 'resnames']:
-            assert_(len(top.resids) == top.n_residues)
-            assert_(len(top.resnames) == top.n_residues)
+            assert len(top.resids) == top.n_residues
+            assert len(top.resnames) == top.n_residues
 
 
 class TestGROWideBox(object):
@@ -67,7 +61,7 @@ class TestGROWideBox(object):
         parser = mda.topology.GROParser.GROParser
         with parser(two_water_gro_widebox) as p:
             s = p.parse()
-        assert_(s.n_atoms == 6)
+        assert s.n_atoms == 6
 
 
 def test_parse_empty_atom_IOerror():
@@ -90,38 +84,36 @@ class TestGroResidWrapping(object):
     lengths = [19, 24, 19, 19, 19, 19, 7]
     parser = mda.topology.GROParser.GROParser
 
+    @pytest.mark.parametrize('parser, resids', (
+        (GRO_residwrap, [1, 99999, 100000, 100001, 199999, 200000, 200001]),
+        (GRO_residwrap_0base, [0, 99999, 100000, 100001, 199999, 200000,
+                               200001])
 
-    def test_wrapping_resids(self):
-        parser = mda.topology.GROParser.GROParser
-        with self.parser(GRO_residwrap) as p:
+    ))
+    def test_wrapping_resids(self, parser, resids):
+        with self.parser(parser) as p:
             top = p.parse()
 
-        resids = [1, 99999, 100000, 100001, 199999, 200000, 200001]
-
-        assert_(top.tt.size == (126, 7, 1))
+        assert top.tt.size == (126, 7, 1)
         for i, (r, n, l) in enumerate(zip(resids, self.names, self.lengths)):
-            assert_(top.resids.values[i] == r)
-            assert_(top.resnames.values[i] == n)
-            assert_(len(top.tt.residues2atoms_1d([i])) == l)
+            assert top.resids.values[i] == r
+            assert top.resnames.values[i] == n
+            assert len(top.tt.residues2atoms_1d([i])) == l
 
-    def test_wrapping_resids_0base(self):
-        with self.parser(GRO_residwrap_0base) as p:
-            top = p.parse()
 
-        resids = [0, 99999, 100000, 100001, 199999, 200000, 200001]
+RESIDS = [9, 9]
+RESNAMES = ['GLN', 'POPC']
 
-        assert_(top.tt.size == (126, 7, 1))
-        for i, (r, n, l) in enumerate(zip(resids, self.names, self.lengths)):
-            assert_(top.resids.values[i] == r)
-            assert_(top.resnames.values[i] == n)
-            assert_(len(top.tt.residues2atoms_1d([i])) == l)
-
-def test_sameresid_diffresname():
+@pytest.mark.parametrize(
+    'args',
+    [(i, (resid, res)) for i, (resid, res) in enumerate(zip(RESIDS, RESNAMES))]
+)
+def test_sameresid_diffresname(args):
+    i = args[0]
+    resid = args[1][0]
+    resname = args[1][1]
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_sameresid_diffresname) as p:
         top = p.parse()
-    resids = [9, 9]
-    resnames = ['GLN', 'POPC']
-    for i, (resid, resname) in enumerate(zip(resids, resnames)):
-        assert_(top.resids.values[i] == resid)
-        assert_(top.resnames.values[i] == resname)
+    assert top.resids.values[i] == resid
+    assert top.resnames.values[i] == resname
