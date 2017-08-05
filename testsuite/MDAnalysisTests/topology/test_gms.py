@@ -47,11 +47,11 @@ class TestGMSASYMOPT(GMSBase):
 
     def test_names(self, top):
         assert_equal(top.names.values,
-                           ['O', 'H', 'H', 'O', 'H', 'H'])
+                     ['O', 'H', 'H', 'O', 'H', 'H'])
 
     def test_types(self, top):
         assert_equal(top.atomiccharges.values,
-                           [8, 1, 1, 8, 1, 1])
+                     [8, 1, 1, 8, 1, 1])
 
 
 class TestGMSSYMOPT(GMSBase):
@@ -60,11 +60,12 @@ class TestGMSSYMOPT(GMSBase):
 
     def test_names(self, top):
         assert_equal(top.names.values,
-                           ['CARBON', 'CARBON', 'HYDROGEN', 'HYDROGEN'])
+                     ['CARBON', 'CARBON', 'HYDROGEN', 'HYDROGEN'])
 
     def test_types(self, top):
         assert_equal(top.atomiccharges.values,
-                           [6, 6, 1, 1])
+                     [6, 6, 1, 1])
+
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
     filename = GMS_ASYMSURF
