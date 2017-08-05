@@ -20,10 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_array_equal,
-)
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
@@ -39,17 +36,12 @@ from MDAnalysisTests.datafiles import (
 
 
 class DLPUniverse(ParserBase):
-
-    __test__ = False
-
     def test_creates_universe(self):
         u = mda.Universe(self.filename, topology_format=self.format)
-        assert_(isinstance(u, mda.Universe))
+        assert isinstance(u, mda.Universe)
+
 
 class DLPBase2(DLPUniverse):
-
-    __test__ = False
-
     expected_attrs = ['ids', 'names']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 216
@@ -57,32 +49,23 @@ class DLPBase2(DLPUniverse):
     expected_n_segments = 1
 
     def test_names(self, top):
-        assert_(top.names.values[0] == 'K+')
-        assert_(top.names.values[4] == 'Cl-')
+        assert top.names.values[0] == 'K+'
+        assert top.names.values[4] == 'Cl-'
 
 
 class TestDLPHistoryParser(DLPBase2):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY
-    format='HISTORY'
+    format = 'HISTORY'
 
 
 class TestDLPConfigParser(DLPBase2):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG
-    format='CONFIG'
+    format = 'CONFIG'
 
 
 class DLPBase(DLPUniverse):
-
-    __test__ = False
-
     expected_attrs = ['ids', 'names']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3
@@ -90,41 +73,29 @@ class DLPBase(DLPUniverse):
     expected_n_segments = 1
 
     def test_dlp_names(self, top):
-        assert_array_equal(top.names.values,
-                           ['C', 'B', 'A'])
+        assert_equal(top.names.values,
+                     ['C', 'B', 'A'])
 
 
 class TestDLPConfigMinimal(DLPBase):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG_minimal
-    format='CONFIG'
+    format = 'CONFIG'
 
 
 class TestDLPConfigOrder(DLPBase):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG_order
-    format='CONFIG'
+    format = 'CONFIG'
 
 
 class TestDLPHistoryMinimal(DLPBase):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY_minimal
-    format='HISTORY'
+    format = 'HISTORY'
 
 
 class TestDLPHistoryOrder(DLPBase):
-
-    __test__ = True
-
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY_order
-    format='HISTORY'
+    format = 'HISTORY'
