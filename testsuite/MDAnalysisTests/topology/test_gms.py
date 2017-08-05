@@ -20,10 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_array_equal,
-)
+from numpy.testing import assert_equal
+
 
 import MDAnalysis as mda
 
@@ -36,9 +34,6 @@ from MDAnalysisTests.datafiles import (
 
 
 class GMSBase(ParserBase):
-
-    __test__ = False
-
     parser = mda.topology.GMSParser.GMSParser
     expected_attrs = ['names', 'atomiccharges']
     guessed_attrs = ['masses', 'types']
@@ -47,38 +42,29 @@ class GMSBase(ParserBase):
 
 
 class TestGMSASYMOPT(GMSBase):
-
-    __test__ = True
-
     filename = GMS_ASYMOPT
     expected_n_atoms = 6
 
     def test_names(self, top):
-        assert_array_equal(top.names.values,
+        assert_equal(top.names.values,
                            ['O', 'H', 'H', 'O', 'H', 'H'])
 
     def test_types(self, top):
-        assert_array_equal(top.atomiccharges.values,
+        assert_equal(top.atomiccharges.values,
                            [8, 1, 1, 8, 1, 1])
 
 
 class TestGMSSYMOPT(GMSBase):
-
-    __test__ = True
-
     filename = GMS_SYMOPT
     expected_n_atoms = 4
 
     def test_names(self, top):
-        assert_array_equal(top.names.values,
+        assert_equal(top.names.values,
                            ['CARBON', 'CARBON', 'HYDROGEN', 'HYDROGEN'])
 
     def test_types(self, top):
-        assert_array_equal(top.atomiccharges.values,
+        assert_equal(top.atomiccharges.values,
                            [6, 6, 1, 1])
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
-
-    __test__ = True
-
     filename = GMS_ASYMSURF
