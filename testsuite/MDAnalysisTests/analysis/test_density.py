@@ -42,24 +42,34 @@ class TestDensity(object):
     nbins = 3, 4, 5
     counts = 100
     Lmax = 10.
-    bins = [np.linspace(0, Lmax, n + 1) for n in nbins]
-    h, edges = np.histogramdd(Lmax * np.sin(np.linspace(0, 1, counts * 3)).reshape(counts, 3), bins=bins)
+
+    @pytest.fixture(scope='class')
+    def bins(self):
+        return [np.linspace(0, self.Lmax, n + 1) for n in self.nbins]
+
+    @pytest.fixture()
+    def h_and_edges(self, bins):
+        return np.histogramdd(
+            self.Lmax * np.sin(
+                np.linspace(0, 1,self.counts *3)).reshape(self.counts, 3),
+            bins=bins)
     
     @pytest.fixture()
-    def D(self):
-        d = density.Density(self.h, self.edges, parameters={'isDensity': False}, units={'length': 'A'})
+    def D(self, h_and_edges):
+        h, edges = h_and_edges
+        d = density.Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
         d.make_density()
         return d
 
     def test_shape(self, D):
         assert D.grid.shape == self.nbins
 
-    def test_edges(self, D):
-        for dim, (edges, fixture) in enumerate(zip(D.edges, self.bins)):
+    def test_edges(self, bins, D):
+        for dim, (edges, fixture) in enumerate(zip(D.edges, bins)):
             assert_almost_equal(edges, fixture, err_msg="edges[{0}] mismatch".format(dim))
 
-    def test_midpoints(self, D):
-        midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
+    def test_midpoints(self, bins, D):
+        midpoints = [0.5*(b[:-1] + b[1:]) for b in bins]
         for dim, (mp, fixture) in enumerate(zip(D.midpoints, midpoints)):
             assert_almost_equal(mp, fixture, err_msg="midpoints[{0}] mismatch".format(dim))
 
@@ -67,14 +77,13 @@ class TestDensity(object):
         deltas = np.array([self.Lmax])/np.array(self.nbins)
         assert_almost_equal(D.delta, deltas)
 
-    # TODO: Why is this failing?
     def test_grid(self, D):
         dV = D.delta.prod()  # orthorhombic grids only!
         # counts = (rho[0] * dV[0] + rho[1] * dV[1] ...) = sum_i rho[i] * dV
         assert_almost_equal(D.grid.sum() * dV, self.counts)
 
-    def test_origin(self, D):
-        midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
+    def test_origin(self, bins, D):
+        midpoints = [0.5*(b[:-1] + b[1:]) for b in bins]
         origin = [m[0] for m in midpoints]
         assert_almost_equal(D.origin, origin)
 
