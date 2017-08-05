@@ -216,7 +216,7 @@ For details see the report for `Issue 87`_.
               'pytest>=3.1.2',
               'hypothesis',
               'psutil>=4.0.2',
-              'mock>=2.0.0',
+              'mock>=2.0.0',  # replace with unittest.mock in python 3 only version
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
