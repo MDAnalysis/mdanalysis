@@ -113,7 +113,6 @@ except ImportError:
 from MDAnalysisTests.util import (
     block_import,
     executable_not_found,
-    module_not_found,
     no_deprecated_call,
     in_dir,
     assert_nowarns,

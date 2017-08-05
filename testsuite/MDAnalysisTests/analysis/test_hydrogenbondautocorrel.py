@@ -27,7 +27,7 @@ from six.moves import zip, range
 
 from unittest import TestCase
 from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
-from MDAnalysisTests import module_not_found, tempdir
+from MDAnalysisTests import tempdir
 from numpy.testing import assert_array_almost_equal, assert_
 import numpy as np
 import mock
