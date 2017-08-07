@@ -20,40 +20,33 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-)
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import (
-    HoomdXMLdata,
-)
+from MDAnalysisTests.datafiles import HoomdXMLdata
 
 
 class TestHoomdXMLParser(ParserBase):
-
-    __test__ = True
-
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
     filename = HoomdXMLdata
-    expected_attrs = ['types', 'masses', 'charges', 'radii',
-                      'bonds', 'angles', 'dihedrals']
+    expected_attrs = [
+        'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals'
+    ]
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1
 
     def test_attr_size(self, top):
-        assert_(len(top.types) == top.n_atoms)
-        assert_(len(top.charges) == top.n_atoms)
-        assert_(len(top.masses) == top.n_atoms)
+        assert len(top.types) == top.n_atoms
+        assert len(top.charges) == top.n_atoms
+        assert len(top.masses) == top.n_atoms
 
     def test_bonds(self, top):
-        assert_(len(top.bonds.values) == 704)
+        assert len(top.bonds.values) == 704
 
     def test_angles(self, top):
-        assert_(len(top.angles.values) == 640)
+        assert len(top.angles.values) == 640
 
     def test_dihedrals(self, top):
-        assert_(len(top.dihedrals.values) == 576)
+        assert len(top.dihedrals.values) == 576
