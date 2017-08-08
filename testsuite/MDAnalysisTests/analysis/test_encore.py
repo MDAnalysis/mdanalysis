@@ -78,7 +78,7 @@ class TestEncore(object):
             ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
-    def test_triangular_matrix(self, ens1_template, ens2_template, ens1, ens2):
+    def test_triangular_matrix(self):
         scalar = 2
         size = 3
         expected_value = 1.984
@@ -140,7 +140,7 @@ inconsistent results")
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-    def test_rmsd_matrix_with_superimposition(self, ens1_template, ens2_template, ens1, ens2):
+    def test_rmsd_matrix_with_superimposition(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
@@ -156,7 +156,7 @@ inconsistent results")
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
 
-    def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1_template, ens2_template, ens1, ens2):
+    def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
@@ -176,7 +176,7 @@ inconsistent results")
         for i in range(conf_dist_matrix_custom.size):
             assert_almost_equal(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
 
-    def test_rmsd_matrix_without_superimposition(self, ens1_template, ens2_template, ens1, ens2):
+    def test_rmsd_matrix_without_superimposition(self, ens1):
         selection_string = "name CA"
         selection = ens1.select_atoms(selection_string)
         reference_rmsd = []
@@ -196,8 +196,7 @@ inconsistent results")
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
-    @staticmethod
-    def test_ensemble_superimposition():
+    def test_ensemble_superimposition(self):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
@@ -217,8 +216,7 @@ inconsistent results")
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
                              "than ensemble aligned on only CAs.")
 
-    @staticmethod
-    def test_ensemble_superimposition_to_reference_non_weighted():
+    def test_ensemble_superimposition_to_reference_non_weighted(self):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
@@ -238,21 +236,21 @@ inconsistent results")
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
                              "than ensemble aligned on only CAs.")
 
-    def test_hes_to_self(self, ens1_template, ens2_template, ens1, ens2):
+    def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_hes(self, ens1_template, ens2_template, ens1, ens2):
+    def test_hes(self, ens1, ens2):
         results, details = encore.hes([ens1, ens2], weights='mass')
         result_value = results[0, 1]
         min_bound = 1E5
         assert result_value >= min_bound, "Unexpected value for Harmonic " \
                                           "Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound)
 
-    def test_hes_custom_weights(self, ens1_template, ens2_template, ens1, ens2):
+    def test_hes_custom_weights(self, ens1, ens2):
         results, details = encore.hes([ens1, ens2], weights='mass')
         results_custom, details_custom = encore.hes([ens1, ens2],
                                                     weights=(ens1.atoms.CA.masses, ens2.atoms.CA.masses))
@@ -260,7 +258,7 @@ inconsistent results")
         result_value_custom = results_custom[0, 1]
         assert_almost_equal(result_value, result_value_custom)
 
-    def test_hes_align(self, ens1_template, ens2_template, ens1, ens2):
+    def test_hes_align(self, ens1, ens2):
         # This test is massively sensitive!
         # Get 5260 when masses were float32?
         results, details = encore.hes([ens1, ens2], align=True)
@@ -269,7 +267,7 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=-3,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_ces_to_self(self, ens1_template, ens2_template, ens1, ens2):
+    def test_ces_to_self(self, ens1):
         results, details = \
             encore.ces([ens1, ens1],
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
@@ -278,28 +276,28 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_ces(self, ens1_template, ens2_template, ens1, ens2):
+    def test_ces(self, ens1, ens2):
         results, details = encore.ces([ens1, ens2])
         result_value = results[0,1]
         expected_value = 0.51
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_dres_to_self(self, ens1_template, ens2_template, ens1, ens2):
+    def test_dres_to_self(self, ens1):
         results, details = encore.dres([ens1, ens1])
         result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_dres(self, ens1_template, ens2_template, ens1, ens2):
+    def test_dres(self, ens1, ens2):
         results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
         assert result_value <= upper_bound, "Unexpected value for Dim. " \
                                             "reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound)
 
-    def test_dres_without_superimposition(self, ens1_template, ens2_template, ens1, ens2):
+    def test_dres_without_superimposition(self, ens1, ens2):
         distance_matrix = encore.get_distance_matrix(
             encore.merge_universes([ens1, ens2]),
             superimpose=False)
@@ -310,20 +308,20 @@ inconsistent results")
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_ces_convergence(self, ens1_template, ens2_template, ens1, ens2):
+    def test_ces_convergence(self, ens1):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
         results = encore.ces_convergence(ens1, 5)
         for i,ev in enumerate(expected_values):
             assert_almost_equal(ev, results[i], decimal=2,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
 
-    def test_dres_convergence(self, ens1_template, ens2_template, ens1, ens2):
+    def test_dres_convergence(self, ens1):
         expected_values = [ 0.3, 0.]
         results = encore.dres_convergence(ens1, 10)
         assert_almost_equal(results[:,0], expected_values, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
 
-    def test_hes_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
+    def test_hes_error_estimation(self, ens1):
         expected_average = 10
         expected_stdev = 12
         averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
@@ -335,7 +333,7 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=-2,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
-    def test_ces_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
+    def test_ces_error_estimation(self, ens1):
         expected_average = 0.03
         expected_stdev = 0.31
         averages, stdevs = encore.ces([ens1, ens1],
@@ -351,7 +349,7 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=0,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    def test_ces_error_estimation_ensemble_bootstrap(self, ens1_template, ens2_template, ens1, ens2):
+    def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
         # Error estimation using a method that does not take a distance
         # matrix as input, and therefore relies on bootstrapping the ensembles
         # instead
@@ -373,7 +371,7 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=1,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    def test_dres_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
+    def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
@@ -388,105 +386,95 @@ inconsistent results")
                                            " bootstrapped samples in Dim. reduction Ensemble imilarity"
 
 
+class TestEncoreClustering(object):
+    @pytest.fixture()
+    def ens1_template(self):
+        template = mda.Universe(PSF, DCD)
+        template.transfer_to_memory()
+        template = mda.Universe(
+            template.filename,
+            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
+                    format=mda.coordinates.memory.MemoryReader)
+        return template
 
-class TestEncoreClustering(TestCase):
-    def setUp(self):
-        # Create universe from templates defined in setUpClass
-        self.ens1 = mda.Universe(
-            self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(format='fac'),
+    @pytest.fixture()
+    def ens2_template(self):
+        template = mda.Universe(PSF, DCD2)
+        template.transfer_to_memory()
+        template = mda.Universe(
+            template.filename,
+            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
+                    format=mda.coordinates.memory.MemoryReader)
+        return template
+
+    @pytest.fixture()
+    def ens1(self, ens1_template):
+        return mda.Universe(
+                ens1_template.filename,
+                ens1_template.trajectory.timeseries(format='fac'),
+                format=mda.coordinates.memory.MemoryReader)
+
+    @pytest.fixture()
+    def ens2(self, ens2_template):
+        return mda.Universe(
+            ens2_template.filename,
+            ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
-
-        self.ens2 = mda.Universe(
-            self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(format='fac'),
-            format=mda.coordinates.memory.MemoryReader)
-
-    def tearDownClass(self):
-        del self.ens1
-        del self.ens2
-
-    @classmethod
-    def setUpClass(cls):
-        # To speed up tests, we read in trajectories from file only once,
-        # and then recreate them from their coordinate array for each test
-        super(TestEncoreClustering, cls).setUpClass()
-        cls.ens1_template = mda.Universe(PSF, DCD)
-        cls.ens2_template = mda.Universe(PSF, DCD2)
-
-        cls.ens1_template.transfer_to_memory()
-        cls.ens2_template.transfer_to_memory()
-
-        # Filter ensembles to only include every 5th frame
-        cls.ens1_template = mda.Universe(
-            cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-        cls.ens2_template = mda.Universe(
-            cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.ens1_template
-        del cls.ens2_template
-
     
-    def test_clustering_one_ensemble(self):
-        cluster_collection = encore.cluster(self.ens1)
+    def test_clustering_one_ensemble(self, ens1):
+        cluster_collection = encore.cluster(ens1)
         expected_value = 7
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
     
-    def test_clustering_two_ensembles(self):
-        cluster_collection = encore.cluster([self.ens1, self.ens2])
+    def test_clustering_two_ensembles(self, ens1, ens2):
+        cluster_collection = encore.cluster([ens1, ens2])
         expected_value = 14
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected results: {0}".format(cluster_collection))
 
     
-    def test_clustering_three_ensembles_two_identical(self):
-        cluster_collection = encore.cluster([self.ens1, self.ens2, self.ens1])
+    def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
+        cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
         assert_equal(len(cluster_collection), expected_value,
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
     
-    def test_clustering_two_methods(self):
+    def test_clustering_two_methods(self, ens1):
         cluster_collection = encore.cluster(
-            [self.ens1],
+            [ens1],
             method=[encore.AffinityPropagationNative(),
                     encore.AffinityPropagationNative()])
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
     
-    def test_clustering_AffinityPropagationNative_direct(self):
+    def test_clustering_AffinityPropagationNative_direct(self, ens1):
         method = encore.AffinityPropagationNative()
-        distance_matrix = encore.get_distance_matrix(self.ens1)
+        distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 7
         assert_equal(len(set(cluster_assignment)), expected_value,
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    def test_clustering_AffinityPropagation_direct(self):
+    def test_clustering_AffinityPropagation_direct(self, ens1):
         pytest.importorskip('sklearn')
         method = encore.AffinityPropagation()
-        distance_matrix = encore.get_distance_matrix(self.ens1)
+        distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 7
         assert_equal(len(set(cluster_assignment)), expected_value,
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    def test_clustering_KMeans_direct(self):
+    def test_clustering_KMeans_direct(self, ens1):
         pytest.importorskip('sklearn')
         clusters = 10
         method = encore.KMeans(clusters)
-        coordinates = self.ens1.trajectory.timeseries(format='fac')
+        coordinates = ens1.trajectory.timeseries(format='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
         cluster_assignment, details = method(coordinates)
@@ -494,50 +482,46 @@ class TestEncoreClustering(TestCase):
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    def test_clustering_DBSCAN_direct(self):
+    def test_clustering_DBSCAN_direct(self, ens1):
         pytest.importorskip('sklearn')
         method = encore.DBSCAN(eps=0.5, min_samples=2)
-        distance_matrix = encore.get_distance_matrix(self.ens1)
+        distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 2
         assert_equal(len(set(cluster_assignment)), expected_value,
                      err_msg="Unexpected result: {0}".format(
                      cluster_assignment))
 
-    def test_clustering_two_different_methods(self):
+    def test_clustering_two_different_methods(self, ens1):
         pytest.importorskip('sklearn')
         cluster_collection = encore.cluster(
-            [self.ens1],
+            [ens1],
             method=[encore.AffinityPropagation(preference=-7.5),
                     encore.DBSCAN(min_samples=2)])
-        print(cluster_collection)
-        print (cluster_collection)
         assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    def test_clustering_method_w_no_distance_matrix(self):
+    def test_clustering_method_w_no_distance_matrix(self, ens1):
         pytest.importorskip('sklearn')
         cluster_collection = encore.cluster(
-            [self.ens1],
+            [ens1],
             method=encore.KMeans(10))
-        print(cluster_collection)
         assert_equal(len(cluster_collection), 10,
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    def test_clustering_two_methods_one_w_no_distance_matrix(self):
+    def test_clustering_two_methods_one_w_no_distance_matrix(self, ens1):
         pytest.importorskip('sklearn')
         cluster_collection = encore.cluster(
-            [self.ens1],
+            [ens1],
             method=[encore.KMeans(17),
                     encore.AffinityPropagationNative()])
-        print(cluster_collection)
         assert_equal(len(cluster_collection[0]), len(cluster_collection[0]),
                      err_msg="Unexpected result: {0}".format(cluster_collection))
 
-    def test_sklearn_affinity_propagation(self):
+    def test_sklearn_affinity_propagation(self, ens1):
         pytest.importorskip('sklearn')
-        cc1 = encore.cluster([self.ens1])
-        cc2 = encore.cluster([self.ens1],
+        cc1 = encore.cluster([ens1])
+        cc2 = encore.cluster([ens1],
                              method=encore.AffinityPropagation())
         assert_equal(len(cc1), len(cc2),
                      err_msg="Native and sklearn implementations of affinity "
