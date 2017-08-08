@@ -20,10 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
@@ -32,7 +29,8 @@ from MDAnalysisTests.datafiles import (
     PSF,
     PSF_nosegid,
     PSF_NAMD,
-    XYZ_psf, XYZ,
+    XYZ_psf,
+    XYZ,
 )
 
 
@@ -40,58 +38,53 @@ class TestPSFParser(ParserBase):
     """
     Based on small PDB with AdK (:data:`PDB_small`).
     """
-
-    __test__ = True
-
     parser = mda.topology.PSFParser.PSFParser
     filename = PSF
-    expected_attrs = ['ids', 'names', 'types', 'masses',
-                      'charges',
-                      'resids', 'resnames',
-                      'segids',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
+        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
+    ]
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
 
     def test_bonds_total_counts(self, top):
-        assert_(len(top.bonds.values) == 3365)
+        assert len(top.bonds.values) == 3365
 
     def test_bonds_atom_counts(self):
         u = mda.Universe(self.filename)
-        assert_(len(u.atoms[[0]].bonds) == 4)
-        assert_(len(u.atoms[[42]].bonds) == 1)
+        assert len(u.atoms[[0]].bonds) == 4
+        assert len(u.atoms[[42]].bonds) == 1
 
     def test_bonds_identity(self, top):
         vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (0, 4)):
-            assert_((b in vals) or (b[::-1] in vals))
+            assert (b in vals) or (b[::-1] in vals)
 
     def test_angles_total_counts(self, top):
-        assert_(len(top.angles.values) == 6123)
+        assert len(top.angles.values) == 6123
 
     def test_angles_atom_counts(self):
         u = mda.Universe(self.filename)
-        assert_(len(u.atoms[[0]].angles), 9)
-        assert_(len(u.atoms[[42]].angles), 2)
+        assert len(u.atoms[[0]].angles), 9
+        assert len(u.atoms[[42]].angles), 2
 
     def test_angles_identity(self, top):
         vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (1, 0, 4)):
-            assert_((b in vals) or (b[::-1] in vals))
+            assert (b in vals) or (b[::-1] in vals)
 
     def test_dihedrals_total_counts(self, top):
-        assert_(len(top.dihedrals.values) == 8921)
+        assert len(top.dihedrals.values) == 8921
 
     def test_dihedrals_atom_counts(self):
         u = mda.Universe(self.filename)
-        assert_(len(u.atoms[[0]].dihedrals) == 14)
+        assert len(u.atoms[[0]].dihedrals) == 14
 
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values
-        for b in ((0, 4, 6, 7), (0, 4, 6, 8),
-                  (0, 4, 6, 9), (0, 4, 17, 18)):
-            assert_((b in vals) or (b[::-1] in vals))
+        for b in ((0, 4, 6, 7), (0, 4, 6, 8), (0, 4, 6, 9), (0, 4, 17, 18)):
+            assert (b in vals) or (b[::-1] in vals)
 
 
 class TestNAMDPSFParser(ParserBase):
@@ -101,16 +94,12 @@ class TestNAMDPSFParser(ParserBase):
 
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
-
-    __test__ = True
-
     parser = mda.topology.PSFParser.PSFParser
     filename = PSF_NAMD
-    expected_attrs = ['ids', 'names', 'types', 'masses',
-                      'charges',
-                      'resids', 'resnames',
-                      'segids',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
+        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
+    ]
     guessed_attrs = ['elements']
     expected_n_atoms = 130
     expected_n_residues = 6
@@ -118,16 +107,12 @@ class TestNAMDPSFParser(ParserBase):
 
 
 class TestPSFParser2(ParserBase):
-
-    __test__ = True
-
     parser = mda.topology.PSFParser.PSFParser
     filename = XYZ_psf
-    expected_attrs = ['ids', 'names', 'types', 'masses',
-                      'charges',
-                      'resids', 'resnames',
-                      'segids',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
+        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
+    ]
     expected_n_atoms = 1284
     expected_n_residues = 152
     expected_n_segments = 4
@@ -138,14 +123,12 @@ class TestPSFParser2(ParserBase):
         # each segment has [380, 381, 382, 383] as the first
         # 4 residues
         for seg in u.segments:
-            assert_equal(seg.residues.resids[:4],
-                         [380, 381, 382, 383])
+            assert_equal(seg.residues.resids[:4], [380, 381, 382, 383])
 
 
 def test_psf_nosegid():
     """Issue #121"""
     u = mda.Universe(PSF_nosegid)
-    assert_(isinstance(u, mda.Universe))
-    assert_equal(u.atoms.n_atoms, 98)
+    assert isinstance(u, mda.Universe)
+    assert u.atoms.n_atoms == 98
     assert_equal(u.segments.segids, ["SYSTEM"])
-
