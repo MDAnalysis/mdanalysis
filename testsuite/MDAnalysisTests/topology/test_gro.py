@@ -47,12 +47,10 @@ class TestGROParser(ParserBase):
     expected_n_segments = 1
 
     def test_attr_size(self, top):
-        for attr in ['ids', 'names']:
-            assert len(top.ids) == top.n_atoms
-            assert len(top.names) == top.n_atoms
-        for attr in ['resids', 'resnames']:
-            assert len(top.resids) == top.n_residues
-            assert len(top.resnames) == top.n_residues
+        assert len(top.ids) == top.n_atoms
+        assert len(top.names) == top.n_atoms
+        assert len(top.resids) == top.n_residues
+        assert len(top.resnames) == top.n_residues
 
 
 class TestGROWideBox(object):
@@ -101,19 +99,12 @@ class TestGroResidWrapping(object):
             assert len(top.tt.residues2atoms_1d([i])) == l
 
 
-RESIDS = [9, 9]
-RESNAMES = ['GLN', 'POPC']
-
-@pytest.mark.parametrize(
-    'args',
-    [(i, (resid, res)) for i, (resid, res) in enumerate(zip(RESIDS, RESNAMES))]
-)
-def test_sameresid_diffresname(args):
-    i = args[0]
-    resid = args[1][0]
-    resname = args[1][1]
+def test_sameresid_diffresname():
     parser = mda.topology.GROParser.GROParser
     with parser(GRO_sameresid_diffresname) as p:
         top = p.parse()
-    assert top.resids.values[i] == resid
-    assert top.resnames.values[i] == resname
+    resids = [9, 9]
+    resnames = ['GLN', 'POPC']
+    for i, (resid, resname) in enumerate(zip(resids, resnames)):
+        assert top.resids.values[i] == resid
+        assert top.resnames.values[i] == resname
