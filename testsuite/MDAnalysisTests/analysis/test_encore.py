@@ -387,7 +387,7 @@ inconsistent results")
 
 
 class TestEncoreClustering(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
         template.transfer_to_memory()
@@ -397,7 +397,7 @@ class TestEncoreClustering(object):
                     format=mda.coordinates.memory.MemoryReader)
         return template
 
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ens2_template(self):
         template = mda.Universe(PSF, DCD2)
         template.transfer_to_memory()
@@ -620,103 +620,93 @@ class TestEncoreClusteringSklearn(object):
         ccs = encore.cluster(None,
                              distance_matrix=distance_matrix,
                              method=clustering_method)
-        assert_equal(self.n_clusters, len(ccs),
-                     err_msg="Basic clustering test failed to give the right"
-                             "number of clusters: {0} vs {1}".format(self.n_clusters, len(ccs)))
+        assert self.n_clusters == len(ccs), \
+                     "Basic clustering test failed to give the right"\
+                    "number of clusters: {0} vs {1}".format(self.n_clusters, len(ccs))
 
 
-class TestEncoreDimensionalityReduction(TestCase):
-    def setUp(self):
-        # Create universe from templates defined in setUpClass
-        self.ens1 = mda.Universe(
-            self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(format='fac'),
+class TestEncoreDimensionalityReduction(object):
+    @pytest.fixture(scope='class')
+    def ens1_template(self):
+        template = mda.Universe(PSF, DCD)
+        template.transfer_to_memory()
+        template = mda.Universe(
+            template.filename,
+            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
+                    format=mda.coordinates.memory.MemoryReader)
+        return template
+
+    @pytest.fixture(scope='class')
+    def ens2_template(self):
+        template = mda.Universe(PSF, DCD2)
+        template.transfer_to_memory()
+        template = mda.Universe(template.filename,
+            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
+                    format=mda.coordinates.memory.MemoryReader)
+        return template
+
+    @pytest.fixture()
+    def ens1(self, ens1_template):
+        return mda.Universe(
+            ens1_template.filename,
+            ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
-        self.ens2 = mda.Universe(
-            self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(format='fac'),
+    @pytest.fixture()
+    def ens2(self, ens2_template):
+        return mda.Universe(
+            ens2_template.filename,
+            ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
-
-    def tearDownClass(self):
-        del self.ens1
-        del self.ens2
-
-    @classmethod
-    def setUpClass(cls):
-        # To speed up tests, we read in trajectories from file only once,
-        # and then recreate them from their coordinate array for each test
-        super(TestEncoreDimensionalityReduction, cls).setUpClass()
-        cls.ens1_template = mda.Universe(PSF, DCD)
-        cls.ens2_template = mda.Universe(PSF, DCD2)
-
-        cls.ens1_template.transfer_to_memory()
-        cls.ens2_template.transfer_to_memory()
-
-        # Filter ensembles to only include every 5th frame
-        cls.ens1_template = mda.Universe(
-            cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-        cls.ens2_template = mda.Universe(
-            cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.ens1_template
-        del cls.ens2_template
-
     
-    def test_dimensionality_reduction_one_ensemble(self):
+    def test_dimensionality_reduction_one_ensemble(self, ens1):
         dimension = 2
-        coordinates, details = encore.reduce_dimensionality(self.ens1)
-        print (coordinates)
+        coordinates, details = encore.reduce_dimensionality(ens1)
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     
-    def test_dimensionality_reduction_two_ensembles(self):
+    def test_dimensionality_reduction_two_ensembles(self, ens1, ens2):
         dimension = 2
         coordinates, details = \
-            encore.reduce_dimensionality([self.ens1, self.ens2])
+            encore.reduce_dimensionality([ens1, ens2])
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     
-    def test_dimensionality_reduction_three_ensembles_two_identical(self):
+    def test_dimensionality_reduction_three_ensembles_two_identical(self,
+                                                                    ens1, ens2):
         coordinates, details = \
-            encore.reduce_dimensionality([self.ens1, self.ens2, self.ens1])
+            encore.reduce_dimensionality([ens1, ens2, ens1])
         coordinates_ens1 = coordinates[:,np.where(details["ensemble_membership"]==1)]
         coordinates_ens3 = coordinates[:,np.where(details["ensemble_membership"]==3)]
         assert_almost_equal(coordinates_ens1, coordinates_ens3, decimal=0,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     
-    def test_dimensionality_reduction_specified_dimension(self):
+    def test_dimensionality_reduction_specified_dimension(self, ens1, ens2):
         dimension = 3
         coordinates, details = encore.reduce_dimensionality(
-            [self.ens1, self.ens2],
+            [ens1, ens2],
             method=encore.StochasticProximityEmbeddingNative(dimension=dimension))
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     
-    def test_dimensionality_reduction_SPENative_direct(self):
+    def test_dimensionality_reduction_SPENative_direct(self, ens1):
         dimension = 2
         method = encore.StochasticProximityEmbeddingNative(dimension=dimension)
-        distance_matrix = encore.get_distance_matrix(self.ens1)
+        distance_matrix = encore.get_distance_matrix(ens1)
         coordinates, details = method(distance_matrix)
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(
                      coordinates))
 
-    def test_dimensionality_reduction_PCA_direct(self):
+    def test_dimensionality_reduction_PCA_direct(self, ens1):
         pytest.importorskip('sklearn')
         dimension = 2
         method = encore.PrincipalComponentAnalysis(dimension=dimension)
-        coordinates = self.ens1.trajectory.timeseries(format='fac')
+        coordinates = ens1.trajectory.timeseries(format='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
         coordinates, details = method(coordinates)
@@ -725,37 +715,38 @@ class TestEncoreDimensionalityReduction(TestCase):
                      coordinates))
 
 
-    def test_dimensionality_reduction_different_method(self):
+    def test_dimensionality_reduction_different_method(self, ens1, ens2):
         pytest.importorskip('sklearn')
         dimension = 3
         coordinates, details = \
             encore.reduce_dimensionality(
-                [self.ens1, self.ens2],
+                [ens1, ens2],
                 method=encore.PrincipalComponentAnalysis(dimension=dimension))
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
     
-    def test_dimensionality_reduction_two_methods(self):
+    def test_dimensionality_reduction_two_methods(self, ens1, ens2):
         dims = [2,3]
         coordinates, details = \
             encore.reduce_dimensionality(
-                [self.ens1, self.ens2],
+                [ens1, ens2],
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
                         encore.StochasticProximityEmbeddingNative(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
-    def test_dimensionality_reduction_two_different_methods(self):
+    def test_dimensionality_reduction_two_different_methods(self, ens1, ens2):
         pytest.importorskip('sklearn')
         dims = [2,3]
         coordinates, details = \
             encore.reduce_dimensionality(
-                [self.ens1, self.ens2],
+                [ens1, ens2],
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
-class TestEncoreConfDistMatrix(TestCase):
+
+class TestEncoreConfDistMatrix(object):
     def test_get_distance_matrix(self):
         # Issue #1324
         u = mda.Universe(TPR,XTC)
