@@ -31,8 +31,7 @@ import sys
 import warnings
 
 import pytest
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal,
-                           )
+from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import block_import
@@ -212,9 +211,8 @@ inconsistent results")
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
 
-        assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
-                     err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
-                             "than ensemble aligned on only CAs.")
+        assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf),"Ensemble aligned on all " \
+                                                   "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
 
     def test_ensemble_superimposition_to_reference_non_weighted(self):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
@@ -232,9 +230,8 @@ inconsistent results")
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
 
-        assert_equal(sum(rmsfs1.rmsf)>sum(rmsfs2.rmsf), True,
-                     err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
-                             "than ensemble aligned on only CAs.")
+        assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf), "Ensemble aligned on all " \
+                                                    "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
 
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
@@ -424,22 +421,22 @@ class TestEncoreClustering(object):
     def test_clustering_one_ensemble(self, ens1):
         cluster_collection = encore.cluster(ens1)
         expected_value = 7
-        assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Unexpected results: {0}".format(cluster_collection))
+        assert len(cluster_collection) == expected_value, "Unexpected " \
+                                                          "results: {0}".format(cluster_collection)
 
     
     def test_clustering_two_ensembles(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2])
         expected_value = 14
-        assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Unexpected results: {0}".format(cluster_collection))
+        assert len(cluster_collection) == expected_value, "Unexpected " \
+                                                          "results: {0}".format(cluster_collection)
 
     
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
-        assert_equal(len(cluster_collection), expected_value,
-                     err_msg="Unexpected result: {0}".format(cluster_collection))
+        assert len(cluster_collection) == expected_value, "Unexpected result:" \
+                                                          " {0}".format(cluster_collection)
 
     
     def test_clustering_two_methods(self, ens1):
@@ -447,8 +444,8 @@ class TestEncoreClustering(object):
             [ens1],
             method=[encore.AffinityPropagationNative(),
                     encore.AffinityPropagationNative()])
-        assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
-                     err_msg="Unexpected result: {0}".format(cluster_collection))
+        assert len(cluster_collection[0]) == len(cluster_collection[1]), \
+                     "Unexpected result: {0}".format(cluster_collection)
 
     
     def test_clustering_AffinityPropagationNative_direct(self, ens1):
@@ -456,9 +453,8 @@ class TestEncoreClustering(object):
         distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 7
-        assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Unexpected result: {0}".format(
-                     cluster_assignment))
+        assert len(set(cluster_assignment)) == expected_value, \
+                     "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_AffinityPropagation_direct(self, ens1):
         pytest.importorskip('sklearn')
@@ -466,9 +462,8 @@ class TestEncoreClustering(object):
         distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 7
-        assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Unexpected result: {0}".format(
-                     cluster_assignment))
+        assert len(set(cluster_assignment)) == expected_value, \
+                     "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_KMeans_direct(self, ens1):
         pytest.importorskip('sklearn')
@@ -478,9 +473,8 @@ class TestEncoreClustering(object):
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
         cluster_assignment, details = method(coordinates)
-        assert_equal(len(set(cluster_assignment)), clusters,
-                     err_msg="Unexpected result: {0}".format(
-                     cluster_assignment))
+        assert len(set(cluster_assignment)) == clusters, \
+                     "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_DBSCAN_direct(self, ens1):
         pytest.importorskip('sklearn')
@@ -488,9 +482,8 @@ class TestEncoreClustering(object):
         distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 2
-        assert_equal(len(set(cluster_assignment)), expected_value,
-                     err_msg="Unexpected result: {0}".format(
-                     cluster_assignment))
+        assert len(set(cluster_assignment)) == expected_value, \
+                     "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_two_different_methods(self, ens1):
         pytest.importorskip('sklearn')
@@ -498,16 +491,16 @@ class TestEncoreClustering(object):
             [ens1],
             method=[encore.AffinityPropagation(preference=-7.5),
                     encore.DBSCAN(min_samples=2)])
-        assert_equal(len(cluster_collection[0]), len(cluster_collection[1]),
-                     err_msg="Unexpected result: {0}".format(cluster_collection))
+        assert len(cluster_collection[0]) == len(cluster_collection[1]), \
+                     "Unexpected result: {0}".format(cluster_collection)
 
     def test_clustering_method_w_no_distance_matrix(self, ens1):
         pytest.importorskip('sklearn')
         cluster_collection = encore.cluster(
             [ens1],
             method=encore.KMeans(10))
-        assert_equal(len(cluster_collection), 10,
-                     err_msg="Unexpected result: {0}".format(cluster_collection))
+        assert len(cluster_collection) == 10, \
+                     "Unexpected result: {0}".format(cluster_collection)
 
     def test_clustering_two_methods_one_w_no_distance_matrix(self, ens1):
         pytest.importorskip('sklearn')
@@ -515,18 +508,18 @@ class TestEncoreClustering(object):
             [ens1],
             method=[encore.KMeans(17),
                     encore.AffinityPropagationNative()])
-        assert_equal(len(cluster_collection[0]), len(cluster_collection[0]),
-                     err_msg="Unexpected result: {0}".format(cluster_collection))
+        assert len(cluster_collection[0]) == len(cluster_collection[0]), \
+                     "Unexpected result: {0}".format(cluster_collection)
 
     def test_sklearn_affinity_propagation(self, ens1):
         pytest.importorskip('sklearn')
         cc1 = encore.cluster([ens1])
         cc2 = encore.cluster([ens1],
                              method=encore.AffinityPropagation())
-        assert_equal(len(cc1), len(cc2),
-                     err_msg="Native and sklearn implementations of affinity "
-                              "propagation don't agree: mismatch in number of "
-                              "clusters: {0} {1}".format(len(cc1), len(cc2)))
+        assert len(cc1) == len(cc2), \
+                     "Native and sklearn implementations of affinity "\
+                              "propagation don't agree: mismatch in number of "\
+                              "clusters: {0} {1}".format(len(cc1), len(cc2))
 
 
 class TestEncoreClusteringSklearn(object):
