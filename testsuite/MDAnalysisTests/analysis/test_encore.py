@@ -32,7 +32,7 @@ import warnings
 
 import pytest
 from numpy.testing import (TestCase, assert_equal, assert_almost_equal,
-                           assert_warns)
+                           )
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import block_import
@@ -42,51 +42,43 @@ import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 
-class TestEncore(TestCase):
-    def setUp(self):
-        # Create universe from templates defined in setUpClass
-        self.ens1 = mda.Universe(
-            self.ens1_template.filename,
-            self.ens1_template.trajectory.timeseries(format='fac'),
+class TestEncore(object):
+    @pytest.fixture(scope='class')
+    def ens1_template(self):
+        template = mda.Universe(PSF, DCD)
+        template.transfer_to_memory()
+        template = mda.Universe(
+            template.filename, np.copy(template.trajectory.timeseries(
+                format='fac')[::5, :, :]),
+                format=mda.coordinates.memory.MemoryReader)
+        return template
+
+    @pytest.fixture(scope='class')
+    def ens2_template(self):
+        template = mda.Universe(PSF, DCD2)
+        template.transfer_to_memory()
+        template = mda.Universe(
+            template.filename,
+            np.copy(
+                template.trajectory.timeseries(format='fac')[::5, :, :]),
+                format=mda.coordinates.memory.MemoryReader)
+        return template
+
+    @pytest.fixture()
+    def ens1(self, ens1_template):
+        return mda.Universe(
+            ens1_template.filename,
+            ens1_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
-        self.ens2 = mda.Universe(
-            self.ens2_template.filename,
-            self.ens2_template.trajectory.timeseries(format='fac'),
+    @pytest.fixture()
+    def ens2(self, ens2_template):
+        return mda.Universe(
+            ens2_template.filename,
+            ens2_template.trajectory.timeseries(format='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
-    def tearDown(self):
-        del self.ens1
-        del self.ens2
-
-    @classmethod
-    def setUpClass(cls):
-        # To speed up tests, we read in trajectories from file only once,
-        # and then recreate them from their coordinate array for each test
-        super(TestEncore, cls).setUpClass()
-        cls.ens1_template = mda.Universe(PSF, DCD)
-        cls.ens2_template = mda.Universe(PSF, DCD2)
-
-        cls.ens1_template.transfer_to_memory()
-        cls.ens2_template.transfer_to_memory()
-
-        # Filter ensembles to only include every 5th frame
-        cls.ens1_template = mda.Universe(
-            cls.ens1_template.filename,
-            np.copy(cls.ens1_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-        cls.ens2_template = mda.Universe(
-            cls.ens2_template.filename,
-            np.copy(cls.ens2_template.trajectory.timeseries(format='fac')[::5, :, :]),
-            format=mda.coordinates.memory.MemoryReader)
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.ens1_template
-        del cls.ens2_template
-
-    @staticmethod
-    def test_triangular_matrix():
+    def test_triangular_matrix(self, ens1_template, ens2_template, ens1, ens2):
         scalar = 2
         size = 3
         expected_value = 1.984
@@ -132,9 +124,7 @@ class TestEncore(TestCase):
                         err_msg="Error in TriangularMatrix: multiplication by scalar gave\
 inconsistent results")
 
-
-    @staticmethod
-    def test_parallel_calculation():
+    def test_parallel_calculation(self):
 
         def function(x):
             return x**2
@@ -150,25 +140,25 @@ inconsistent results")
             assert_equal(r[1], arguments[i][0]**2,
                 err_msg="Unexpeted results from ParallelCalculation")
 
-    def test_rmsd_matrix_with_superimposition(self):
+    def test_rmsd_matrix_with_superimposition(self, ens1_template, ens2_template, ens1, ens2):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
-            self.ens1,
+            ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
 
-        reference = rms.RMSD(self.ens1, select = "name CA")
+        reference = rms.RMSD(ens1, select = "name CA")
         reference.run()
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
                                 err_msg = "calculated RMSD values differ from the reference implementation")
 
-    def test_rmsd_matrix_with_superimposition_custom_weights(self):
+    def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1_template, ens2_template, ens1, ens2):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
-            self.ens1,
+            ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
@@ -176,26 +166,26 @@ inconsistent results")
             n_jobs=1)
 
         conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
-            self.ens1,
+            ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection="name CA",
             pairwise_align=True,
-            weights=(self.ens1.atoms.CA.masses, self.ens1.atoms.CA.masses),
+            weights=(ens1.atoms.CA.masses, ens1.atoms.CA.masses),
             n_jobs=1)
 
         for i in range(conf_dist_matrix_custom.size):
             assert_almost_equal(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
 
-    def test_rmsd_matrix_without_superimposition(self):
+    def test_rmsd_matrix_without_superimposition(self, ens1_template, ens2_template, ens1, ens2):
         selection_string = "name CA"
-        selection = self.ens1.select_atoms(selection_string)
+        selection = ens1.select_atoms(selection_string)
         reference_rmsd = []
-        coordinates = self.ens1.trajectory.timeseries(selection, format='fac')
+        coordinates = ens1.trajectory.timeseries(selection, format='fac')
         for coord in coordinates:
             reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
 
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
-            self.ens1,
+            ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
             selection=selection_string,
             pairwise_align=False,
@@ -248,96 +238,95 @@ inconsistent results")
                      err_msg="Ensemble aligned on all atoms should have lower full-atom RMSF "
                              "than ensemble aligned on only CAs.")
 
-    def test_hes_to_self(self):
-        results, details = encore.hes([self.ens1, self.ens1])
+    def test_hes_to_self(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_hes(self):
-        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
+    def test_hes(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.hes([ens1, ens2], weights='mass')
         result_value = results[0, 1]
         min_bound = 1E5
-        self.assertGreater(result_value, min_bound,
-                           msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound))
+        assert result_value >= min_bound, "Unexpected value for Harmonic " \
+                                          "Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, min_bound)
 
-    def test_hes_custom_weights(self):
-        results, details = encore.hes([self.ens1, self.ens2], weights='mass')
-        results_custom, details_custom = encore.hes([self.ens1, self.ens2],
-                                                    weights=(self.ens1.atoms.CA.masses, self.ens2.atoms.CA.masses))
+    def test_hes_custom_weights(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.hes([ens1, ens2], weights='mass')
+        results_custom, details_custom = encore.hes([ens1, ens2],
+                                                    weights=(ens1.atoms.CA.masses, ens2.atoms.CA.masses))
         result_value = results[0, 1]
         result_value_custom = results_custom[0, 1]
         assert_almost_equal(result_value, result_value_custom)
 
-    def test_hes_align(self):
+    def test_hes_align(self, ens1_template, ens2_template, ens1, ens2):
         # This test is massively sensitive!
         # Get 5260 when masses were float32?
-        results, details = encore.hes([self.ens1, self.ens2], align=True)
+        results, details = encore.hes([ens1, ens2], align=True)
         result_value = results[0,1]
         expected_value = 2047.05
         assert_almost_equal(result_value, expected_value, decimal=-3,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_ces_to_self(self):
+    def test_ces_to_self(self, ens1_template, ens2_template, ens1, ens2):
         results, details = \
-            encore.ces([self.ens1, self.ens1],
+            encore.ces([ens1, ens1],
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_ces(self):
-        results, details = encore.ces([self.ens1, self.ens2])
+    def test_ces(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.ces([ens1, ens2])
         result_value = results[0,1]
         expected_value = 0.51
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_dres_to_self(self):
-        results, details = encore.dres([self.ens1, self.ens1])
+    def test_dres_to_self(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.dres([ens1, ens1])
         result_value = results[0,1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value, decimal=2,
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
-    def test_dres(self):
-        results, details = encore.dres([self.ens1, self.ens2], selection="name CA and resnum 1-10")
+    def test_dres(self, ens1_template, ens2_template, ens1, ens2):
+        results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
-        self.assertLess(result_value, upper_bound,
-                        msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound))
+        assert result_value <= upper_bound, "Unexpected value for Dim. " \
+                                            "reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, upper_bound)
 
-    def test_dres_without_superimposition(self):
+    def test_dres_without_superimposition(self, ens1_template, ens2_template, ens1, ens2):
         distance_matrix = encore.get_distance_matrix(
-            encore.merge_universes([self.ens1, self.ens2]),
+            encore.merge_universes([ens1, ens2]),
             superimpose=False)
-        results, details = encore.dres([self.ens1, self.ens2],
+        results, details = encore.dres([ens1, ens2],
                                        distance_matrix = distance_matrix)
         result_value = results[0,1]
         expected_value = 0.68
         assert_almost_equal(result_value, expected_value, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_ces_convergence(self):
+    def test_ces_convergence(self, ens1_template, ens2_template, ens1, ens2):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
-        results = encore.ces_convergence(self.ens1, 5)
-        print (results)
+        results = encore.ces_convergence(ens1, 5)
         for i,ev in enumerate(expected_values):
             assert_almost_equal(ev, results[i], decimal=2,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
 
-    def test_dres_convergence(self):
+    def test_dres_convergence(self, ens1_template, ens2_template, ens1, ens2):
         expected_values = [ 0.3, 0.]
-        results = encore.dres_convergence(self.ens1, 10)
+        results = encore.dres_convergence(ens1, 10)
         assert_almost_equal(results[:,0], expected_values, decimal=1,
                             err_msg="Unexpected value for Dim. reduction Ensemble similarity in convergence estimation")
 
-    def test_hes_error_estimation(self):
+    def test_hes_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
         expected_average = 10
         expected_stdev = 12
-        averages, stdevs = encore.hes([self.ens1, self.ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
+        averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -346,10 +335,10 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=-2,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
 
-    def test_ces_error_estimation(self):
+    def test_ces_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
         expected_average = 0.03
         expected_stdev = 0.31
-        averages, stdevs = encore.ces([self.ens1, self.ens1],
+        averages, stdevs = encore.ces([ens1, ens1],
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.AffinityPropagationNative(preference=-2.0),
@@ -362,7 +351,7 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=0,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    def test_ces_error_estimation_ensemble_bootstrap(self):
+    def test_ces_error_estimation_ensemble_bootstrap(self, ens1_template, ens2_template, ens1, ens2):
         # Error estimation using a method that does not take a distance
         # matrix as input, and therefore relies on bootstrapping the ensembles
         # instead
@@ -371,7 +360,7 @@ inconsistent results")
 
         expected_average = 0.03
         expected_stdev = 0.02
-        averages, stdevs = encore.ces([self.ens1, self.ens1],
+        averages, stdevs = encore.ces([ens1, ens1],
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
@@ -384,19 +373,19 @@ inconsistent results")
         assert_almost_equal(stdev, expected_stdev, decimal=1,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
-    def test_dres_error_estimation(self):
+    def test_dres_error_estimation(self, ens1_template, ens2_template, ens1, ens2):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
-        averages, stdevs = encore.dres([self.ens1, self.ens1], estimate_error = True,
+        averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
                                        bootstrapping_samples=10,
                                        selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        self.assertLess(average, average_upper_bound,
-                            msg="Unexpected average value for bootstrapped samples in Dim. reduction Ensemble similarity")
-        self.assertLess(stdev, stdev_upper_bound,
-                            msg="Unexpected standard deviation for bootstrapped samples in Dim. reduction Ensemble imilarity")
+        assert average <= average_upper_bound, "Unexpected average value for " \
+                                               "bootstrapped samples in Dim. reduction Ensemble similarity"
+        assert stdev <= stdev_upper_bound, "Unexpected standard deviation for" \
+                                           " bootstrapped samples in Dim. reduction Ensemble imilarity"
 
 
 
