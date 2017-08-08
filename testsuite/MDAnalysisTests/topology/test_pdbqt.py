@@ -30,14 +30,12 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestPDBQT(ParserBase):
-
-    __test__ = True
-
     parser = mda.topology.PDBQTParser.PDBQTParser
     filename = PDBQT_input
-    expected_attrs = ['ids', 'names', 'charges', 'types', 'altLocs',
-                      'resids', 'resnames',
-                      'segids']
+    expected_attrs = [
+        'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
+        'segids'
+    ]
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
