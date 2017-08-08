@@ -23,12 +23,11 @@ from __future__ import division, absolute_import
 
 import pytest
 import six
-from six.moves import zip, range
+from six.moves import range
 
-from unittest import TestCase
-from MDAnalysisTests.datafiles import TRZ, TRZ_psf, PRM, TRJ
+from MDAnalysisTests.datafiles import TRZ, TRZ_psf
 from MDAnalysisTests import tempdir
-from numpy.testing import assert_array_almost_equal, assert_
+from numpy.testing import assert_almost_equal
 import numpy as np
 import mock
 
@@ -36,34 +35,69 @@ import MDAnalysis as mda
 from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
-class TestHydrogenBondAutocorrel(TestCase):
-    def setUp(self):
-        u = self.u = mda.Universe(TRZ_psf, TRZ)
-        self.H = u.atoms.select_atoms('name Hn')
-        self.N = u.atoms.select_atoms('name N')
-        self.O = u.atoms.select_atoms('name O')
-        self.excl_list = (np.array(range(len(self.H))),
-                          np.array(range(len(self.O))))
+class TestHydrogenBondAutocorrel(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def tearDown(self):
-        del self.H
-        del self.N
-        del self.O
-        del self.u
-        del self.excl_list
+    @pytest.fixture()
+    def H(self, u):
+        return u.atoms.select_atoms('name Hn')
+
+    @pytest.fixture()
+    def N(self, u):
+        return u.atoms.select_atoms('name N')
+
+    @pytest.fixture()
+    def O(self, u):
+        return u.atoms.select_atoms('name O')
+
+    # def setUp(self):
+    #     u = self.u = mda.Universe(TRZ_psf, TRZ)
+    #     self.H = u.atoms.select_atoms('name Hn')
+    #     self.N = u.atoms.select_atoms('name N')
+    #     self.O = u.atoms.select_atoms('name O')
+    #     self.excl_list = (np.array(range(len(self.H))),
+    #                       np.array(range(len(self.O))))
+    #
+    # def tearDown(self):
+    #     del self.H
+    #     del self.N
+    #     del self.O
+    #     del self.u
+    #     del self.excl_list
 
     # regression tests for different conditions
-    def test_continuous(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_continuous(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
         hbond.run()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
+            hbond.solution['results'],
+            np.array([ 1.        ,  0.92668623,  0.83137828,
+                       0.74486804,  0.67741936,  0.60263932],
+                     dtype=np.float32)
+        )
+
+    def test_continuous_excl(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
+                     bond_type='continuous',
+                     exclusions=(np.array(range(len(H))), np.array(
+                         range(len(O)))),
+                     sample_time=0.06,
+        )
+        hbond.run()
+
+        assert_almost_equal(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.83137828,
                        0.74486804,  0.67741936,  0.60263932],
@@ -71,36 +105,17 @@ class TestHydrogenBondAutocorrel(TestCase):
         )
 
 
-    def test_continuous_excl(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
-                     bond_type='continuous',
-                     exclusions=self.excl_list,
-                     sample_time=0.06,
-        )
-        hbond.run()
-
-        assert_array_almost_equal(
-            hbond.solution['results'],
-            np.array([ 1.        ,  0.92668623,  0.83137828,
-                       0.74486804,  0.67741936,  0.60263932],
-                     dtype=np.float32)
-        )
-
-
-    def test_intermittent(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_intermittent(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='intermittent',
                      sample_time=0.06,
         )
         hbond.run()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.84310848,
                        0.79325515,  0.76392961,  0.72287393],
@@ -108,36 +123,37 @@ class TestHydrogenBondAutocorrel(TestCase):
         )
 
 
-    def test_intermittent_timecut(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_intermittent_timecut(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='intermittent',
                      time_cut=0.01,  # time cut at traj.dt == continuous
                      sample_time=0.06,
         )
         hbond.run()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.83137828,
                        0.74486804,  0.67741936,  0.60263932],
                      dtype=np.float32)
         )
 
-    def test_intermittent_excl(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_intermittent_excl(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='intermittent',
-                     exclusions=self.excl_list,
+                     exclusions=(np.array(range(len(H))), np.array(
+                         range(len(O)))),
                      sample_time=0.06,
         )
         hbond.run()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.84310848,
                        0.79325515,  0.76392961,  0.72287393],
@@ -146,11 +162,11 @@ class TestHydrogenBondAutocorrel(TestCase):
 
     # For `solve` the test trajectories aren't long enough
     # So spoof the results and check that solver finds solution
-    def test_solve_continuous(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_solve_continuous(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
@@ -166,16 +182,16 @@ class TestHydrogenBondAutocorrel(TestCase):
 
         hbond.solve()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
             hbond.solution['fit'],
             np.array([0.75, 0.5, 0.1]),
         )
 
-    def test_solve_intermittent(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_solve_intermittent(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='intermittent',
                      sample_time=0.06,
         )
@@ -193,16 +209,16 @@ class TestHydrogenBondAutocorrel(TestCase):
 
         hbond.solve()
 
-        assert_array_almost_equal(
+        assert_almost_equal(
             hbond.solution['fit'],
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
-    def test_save(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_save(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
@@ -212,49 +228,52 @@ class TestHydrogenBondAutocorrel(TestCase):
             hbond.save_results('hbondout.npz')
 
             loaded = np.load('hbondout.npz')
-            assert_('time' in loaded)
-            assert_('results' in loaded)
+            assert 'time' in loaded
+            assert 'results' in loaded
 
     # setup errors
-    def test_wronglength_DA(self):
+    def test_wronglength_DA(self, u, H, O, N):
         with pytest.raises(ValueError):
-            HBAC(self.u,
-                 hydrogens=self.H[:-1],
-                 acceptors=self.O,
-                 donors=self.N,
+            HBAC(u,
+                 hydrogens=H[:-1],
+                 acceptors=O,
+                 donors=N,
                  bond_type='intermittent',
-                 exclusions=self.excl_list,
+                 exclusions=(np.array(range(len(H))), np.array(
+                         range(len(O)))),
                  sample_time=0.06,
         )
 
-    def test_exclusions(self):
-        excl_list2 = self.excl_list[0], self.excl_list[1][:-1]
+    def test_exclusions(self, u, H, O, N):
+        excl_list = (np.array(range(len(H))), np.array(
+                         range(len(O))))
+        excl_list2 = excl_list[0], excl_list[1][:-1]
         with pytest.raises(ValueError):
-            HBAC(self.u,
-                 hydrogens=self.H,
-                 acceptors=self.O,
-                 donors=self.N,
+            HBAC(u,
+                 hydrogens=H,
+                 acceptors=O,
+                 donors=N,
                  bond_type='intermittent',
                  exclusions=excl_list2,
                  sample_time=0.06,
         )
 
-    def test_bond_type_VE(self):
+    def test_bond_type_VE(self, u, H, O, N):
         with pytest.raises(ValueError):
-            HBAC(self.u,
-                 hydrogens=self.H,
-                 acceptors=self.O,
-                 donors=self.N,
+            HBAC(u,
+                 hydrogens=H,
+                 acceptors=O,
+                 donors=N,
                  bond_type='marzipan',
-                 exclusions=self.excl_list,
+                 exclusions=(np.array(range(len(H))), np.array(range(len(O)))),
                  sample_time=0.06,
         )
 
-    def test_solve_before_run_VE(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_solve_before_run_VE(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
@@ -262,36 +281,36 @@ class TestHydrogenBondAutocorrel(TestCase):
             hbond.solve()
 
     @mock.patch('MDAnalysis.coordinates.TRZ.TRZReader._read_frame')
-    def test_unslicable_traj_VE(self, mock_read):
+    def test_unslicable_traj_VE(self, mock_read, u, H, O, N):
         mock_read.side_effect = TypeError
 
         with pytest.raises(ValueError):
             HBAC(
-                self.u,
-                hydrogens=self.H,
-                acceptors=self.O,
-                donors=self.N,
+                u,
+                hydrogens=H,
+                acceptors=O,
+                donors=N,
                 bond_type='continuous',
                 sample_time=0.06
         )
 
-    def test_save_without_run_VE(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_save_without_run_VE(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
         with pytest.raises(ValueError):
             hbond.save_results()
 
-    def test_repr(self):
-        hbond = HBAC(self.u,
-                     hydrogens=self.H,
-                     acceptors=self.O,
-                     donors=self.N,
+    def test_repr(self, u, H, O, N):
+        hbond = HBAC(u,
+                     hydrogens=H,
+                     acceptors=O,
+                     donors=N,
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        assert_(isinstance(repr(hbond), six.string_types))
+        assert isinstance(repr(hbond), six.string_types)
