@@ -21,29 +21,22 @@
 #
 from __future__ import absolute_import
 
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 import numpy as np
-
-import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysis.tests.datafiles import (
     LAMMPSdata,
-    LAMMPScnt, LAMMPScnt2,
-    LAMMPShyd, LAMMPShyd2,
+    LAMMPScnt,
+    LAMMPScnt2,
+    LAMMPShyd,
+    LAMMPShyd2,
     LAMMPSdata_deletedatoms,
 )
 
 
-
 class LammpsBase(ParserBase):
-
-    __test__ = False
-
     parser = mda.topology.LAMMPSParser.DATAParser
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges']
@@ -53,47 +46,43 @@ class LammpsBase(ParserBase):
 
     def test_n_bonds(self, top):
         if self.ref_n_bonds:
-            assert_equal(len(top.bonds.values),
-                         self.ref_n_bonds)
+            assert_equal(len(top.bonds.values), self.ref_n_bonds)
         else:
-            assert_(not hasattr(top, 'bonds'))
+            assert not hasattr(top, 'bonds')
 
     def test_bond_member(self, top):
         if self.ref_n_bonds:
-            assert_(self.ref_bond in top.bonds.values)
+            assert self.ref_bond in top.bonds.values
 
     def test_n_angles(self, top):
         if self.ref_n_angles:
-            assert_equal(len(top.angles.values),
-                         self.ref_n_angles)
+            assert_equal(len(top.angles.values), self.ref_n_angles)
         else:
-            assert_(not hasattr(self.top, 'angles'))
+            assert not hasattr(self.top, 'angles')
 
     def test_angle_member(self, top):
         if self.ref_n_angles:
-            assert_(self.ref_angle in top.angles.values)
+            assert self.ref_angle in top.angles.values
 
     def test_n_dihedrals(self, top):
         if self.ref_n_dihedrals:
-            assert_equal(len(top.dihedrals.values),
-                         self.ref_n_dihedrals)
+            assert_equal(len(top.dihedrals.values), self.ref_n_dihedrals)
         else:
-            assert_(not hasattr(self.top, 'dihedrals'))
+            assert not hasattr(self.top, 'dihedrals')
 
     def test_dihedral_member(self, top):
         if self.ref_n_dihedrals:
-            assert_(self.ref_dihedral in top.dihedrals.values)
+            assert self.ref_dihedral in top.dihedrals.values
 
     def test_n_impropers(self, top):
         if self.ref_n_impropers:
-            assert_equal(len(top.impropers.values),
-                         self.ref_n_impropers)
+            assert_equal(len(top.impropers.values), self.ref_n_impropers)
         else:
-            assert_(not hasattr(self.top, 'impropers'))
+            assert not hasattr(self.top, 'impropers')
 
     def test_improper_member(self, top):
         if self.ref_n_impropers:
-            assert_(self.ref_improper in top.impropers.values)
+            assert self.ref_improper in top.impropers.values
 
     def test_creates_universe(self):
         u = mda.Universe(self.filename, format='DATA')
@@ -105,9 +94,6 @@ class TestLammpsData(LammpsBase):
     The reading of coords and velocities is done separately in
     test_coordinates
     """
-
-    __test__ = True
-
     filename = LAMMPSdata
     expected_n_atoms = 18364
     expected_n_atom_types = 10
@@ -122,9 +108,6 @@ class TestLammpsData(LammpsBase):
 
 
 class TestLAMMPSCNT(LammpsBase):
-
-    __test__ = True
-
     filename = LAMMPScnt
     expected_n_atoms = 604
     expected_n_atom_types = 1
@@ -140,16 +123,10 @@ class TestLAMMPSCNT(LammpsBase):
 
 
 class TestLAMMPSCNT2(TestLAMMPSCNT):
-
-    __test__ = True
-
     filename = LAMMPScnt2
 
 
 class TestLAMMPSHYD(LammpsBase):
-
-    __test__ = True
-
     filename = LAMMPShyd
     expected_n_atoms = 2
     expected_n_atom_types = 1
@@ -162,16 +139,10 @@ class TestLAMMPSHYD(LammpsBase):
 
 
 class TestLAMMPSHYD2(TestLAMMPSHYD):
-
-    __test__ = True
-
     filename = LAMMPShyd2
 
 
 class TestLAMMPSDeletedAtoms(LammpsBase):
-
-    __test__ = True
-
     filename = LAMMPSdata_deletedatoms
 
     expected_n_atoms = 10
@@ -205,4 +176,3 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
                                [12.9834518433, 51.1562423706, 18.9713554382],
                                [12.6588821411, 51.4160842896, 20.5548400879]],
                               dtype=np.float32))
-
