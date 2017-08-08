@@ -20,10 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-)
-
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -36,27 +32,22 @@ from MDAnalysisTests.datafiles import (
 
 
 class TOPBase(ParserBase):
-
-    __test__ = False
-
     parser = mda.topology.TOPParser.TOPParser
-    expected_attrs = ["names", "types", "type_indices", "charges", "masses",
-                      "resnames"]
+    expected_attrs = [
+        "names", "types", "type_indices", "charges", "masses", "resnames"
+    ]
     expected_n_segments = 1
 
     def test_attr_size(self, top):
-        assert_(len(top.names) == self.expected_n_atoms)
-        assert_(len(top.types) == self.expected_n_atoms)
-        assert_(len(top.type_indices) == self.expected_n_atoms)
-        assert_(len(top.charges) == self.expected_n_atoms)
-        assert_(len(top.masses) == self.expected_n_atoms)
-        assert_(len(top.resnames) == self.expected_n_residues)
+        assert len(top.names) == self.expected_n_atoms
+        assert len(top.types) == self.expected_n_atoms
+        assert len(top.type_indices) == self.expected_n_atoms
+        assert len(top.charges) == self.expected_n_atoms
+        assert len(top.masses) == self.expected_n_atoms
+        assert len(top.resnames) == self.expected_n_residues
 
 
 class TestPRMParser(TOPBase):
-
-    __test__ = True
-
     filename = PRM
     expected_n_atoms = 252
     expected_n_residues = 14
@@ -64,11 +55,9 @@ class TestPRMParser(TOPBase):
 
 
 class TestPRM12Parser(TOPBase):
-
-    __test__ = True
-
-    expected_attrs = ["names", "types", "type_indices", "charges", "masses",
-                      "resnames"]
+    expected_attrs = [
+        "names", "types", "type_indices", "charges", "masses", "resnames"
+    ]
     filename = PRM12
     expected_n_atoms = 8923
     expected_n_residues = 2861
@@ -76,9 +65,6 @@ class TestPRM12Parser(TOPBase):
 
 
 class TestParm7Parser(TOPBase):
-
-    __test__ = True
-
     filename = PRM7
     expected_n_atoms = 5827
     expected_n_residues = 1882
@@ -86,9 +72,6 @@ class TestParm7Parser(TOPBase):
 
 
 class TestPRM2(TOPBase):
-
-    __test__ = True
-
     filename = PRMpbc
     expected_n_atoms = 5071
     expected_n_residues = 1686
