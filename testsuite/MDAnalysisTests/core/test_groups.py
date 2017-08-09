@@ -881,6 +881,7 @@ class TestGroupBaseOperators(object):
         # Do succeeding pair actually succeed
         for level in ('atoms', 'residues', 'segments'):
             # Groups
+            # pylint: disable=unsubscriptable-object
             left = getattr(u, level)[0:2]
             right = getattr(u, level)[1:3]
             yield succeeding_pairs, left, right
