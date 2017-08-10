@@ -511,7 +511,7 @@ class RMSD(AnalysisBase):
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
-                self._groupselections_ref_coords_64 = [(self.reference.
+                self._groupselections_ref_coords64 = [(self.reference.
                     select_atoms(*s['reference']).
                     positions.astype(np.float64)) for s in
                     self.groupselections]
@@ -519,7 +519,7 @@ class RMSD(AnalysisBase):
             # Move back to the original frame
             self.reference.trajectory[current_frame]
 
-        self._ref_coordinates_64 = self._ref_coordinates.astype(np.float64)
+        self._ref_coordinates64 = self._ref_coordinates.astype(np.float64)
 
         if self._groupselections_atoms:
             # Only carry out a rotation if we want to calculate secondary
@@ -554,7 +554,7 @@ class RMSD(AnalysisBase):
             # expensive numpy transposition.
 
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
-                self._ref_coordinates_64, self._mobile_coordinates64,
+                self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, self._rot, self.weights)
 
             self._R[:, :] = self._rot.reshape(3, 3)
@@ -564,12 +564,12 @@ class RMSD(AnalysisBase):
             self._ts.positions[:] -= mobile_com
 
             # R acts to the left & is broadcasted N times.
-            self._ts.positions[:, :] = self._ts.positions * self._R
-            self._ts.positions[:] += self._ref_com
+            self._ts.positions[:] = self._ts.positions * self._R
+            self._ts.positions += self._ref_com
 
             # 2) calculate secondary RMSDs
             for igroup, (refpos, atoms) in enumerate(
-                    zip(self._groupselections_ref_coords_64,
+                    zip(self._groupselections_ref_coords64,
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
                     refpos, atoms['mobile'].positions.astype(np.float64),
@@ -578,7 +578,7 @@ class RMSD(AnalysisBase):
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
-                self._ref_coordinates_64, self._mobile_coordinates64,
+                self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, None, self.weights)
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
