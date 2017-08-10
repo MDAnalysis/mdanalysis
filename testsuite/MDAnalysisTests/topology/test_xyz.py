@@ -40,24 +40,15 @@ class XYZBase(ParserBase):
 
 
 class TestXYZMini(XYZBase):
-
-    __test__ = True
-
     filename = XYZ_mini
     expected_n_atoms = 3
 
 
 class TestXYZParser(XYZBase):
-
-    __test__ = True
-
     filename = XYZ
     expected_n_atoms = 1284
 
 
 class TestXYZParserBz2(TestXYZParser):
-
-    __test__ = True
-
     filename = XYZ_bz2
 
