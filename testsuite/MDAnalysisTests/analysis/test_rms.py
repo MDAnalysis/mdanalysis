@@ -166,12 +166,12 @@ class TestRMSD(object):
     @pytest.fixture()
     def correct_values_group(self):
         return [[0, 0, 0, 0, 0],
-                 [49, 49, 4.7857, 4.7004, 4.68981]]
+                 [49, 49, 4.7857, 4.7048, 4.6924]]
 
     @pytest.fixture()
     def correct_values_backbone_group(self):
         return [[0, 0, 0, 0, 0],
-                [49,   49,   4.6997, 1.03620, 1.2650]]
+                [49,   49,   4.6997, 1.9154, 2.7139]]
 
 
     def test_progress_meter(self, capsys, universe):
@@ -227,6 +227,12 @@ class TestRMSD(object):
         assert_array_almost_equal(RMSD.rmsd, saved, 4,
                                   err_msg="error: rmsd profile should match " +
                                           "test values")
+
+    def test_rmsd_group_selections_wrong_weights(self, universe):
+        with pytest.raises(ValueError):
+            RMSD = MDAnalysis.analysis.rms.RMSD(
+                universe, groupselections=['backbone', 'name CA'],
+                weights=universe.atoms.masses)
 
     def test_rmsd_group_selections(self, universe, correct_values_group):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
