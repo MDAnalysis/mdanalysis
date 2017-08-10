@@ -488,6 +488,13 @@ class RMSD(AnalysisBase):
                     "N_ref={3}, N_traj={4}".format(
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
+        # cannot use arbitrary weight array (for superposition) with
+        # groupselections because arrays will not match
+        if len(self.groupselections) > 0 and self.weights not in ("mass", None):
+            raise ValueError("groupselections can only be combined with "
+                             "weights=None or weights='mass', not a weight "
+                             "array.")
+
         # initialized to note for testing the save function
         self.rmsd = None
 
@@ -567,13 +574,15 @@ class RMSD(AnalysisBase):
             self._ts.positions[:] = self._ts.positions * self._R
             self._ts.positions += self._ref_com
 
-            # 2) calculate secondary RMSDs
+            # 2) calculate secondary RMSDs (without any further
+            #    superposition)
             for igroup, (refpos, atoms) in enumerate(
                     zip(self._groupselections_ref_coords64,
                         self._groupselections_atoms), 3):
-                self.rmsd[self._frame_index, igroup] = qcp.CalcRMSDRotationalMatrix(
-                    refpos, atoms['mobile'].positions.astype(np.float64),
-                    atoms['mobile'].n_atoms, None, self.weights)
+                self.rmsd[self._frame_index, igroup] = rmsd(
+                    refpos, atoms['mobile'].positions,
+                    weights=self.weights,
+                    center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)

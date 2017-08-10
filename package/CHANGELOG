@@ -44,6 +44,9 @@ Fixes
     deprecation warning as expected (Issue #1478)
   * Fixed Angle.angle method return NaN values when angle was very close
     to 180 degrees (Issue #1556)
+  * Fixed analysis.rms.RMSD failure with select != "all" (Issue #1487)
+  * Fixed analysis.rms.RMSD: group RMSD calculation does not
+    superimpose groupselections anymore (issue #720)
 
 Changes
   * remove deprecated TimeSeriesCollection
@@ -60,7 +63,6 @@ Changes
     the end of the file. Used to raise IOError.
   * Universe.load_new() now returns the universe itself instead of
     tuple (filename_or_array, trajectory_type) (Issue #1613)
-  
 
 
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
