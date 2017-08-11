@@ -76,7 +76,7 @@ class TestHydrogenBondAutocorrel(object):
                      acceptors=oxygens,
                      donors=nitrogens,
                      bond_type='continuous',
-                     exclusions=(np.array(range(len(hydrogens))), np.array(
+                     exclusions=(np.arange(len(hydrogens)), np.array(
                          range(len(oxygens)))),
                      sample_time=0.06,
         )
@@ -132,7 +132,7 @@ class TestHydrogenBondAutocorrel(object):
                      acceptors=oxygens,
                      donors=nitrogens,
                      bond_type='intermittent',
-                     exclusions=(np.array(range(len(hydrogens))), np.array(
+                     exclusions=(np.arange(len(hydrogens)), np.array(
                          range(len(oxygens)))),
                      sample_time=0.06,
         )
@@ -224,7 +224,7 @@ class TestHydrogenBondAutocorrel(object):
                  acceptors=oxygens,
                  donors=nitrogens,
                  bond_type='intermittent',
-                 exclusions=(np.array(range(len(hydrogens))), np.array(
+                 exclusions=(np.arange(len(hydrogens)), np.array(
                          range(len(oxygens)))),
                  sample_time=0.06,
         )
@@ -250,7 +250,7 @@ class TestHydrogenBondAutocorrel(object):
                  acceptors=oxygens,
                  donors=nitrogens,
                  bond_type='marzipan',
-                 exclusions=(np.array(range(len(hydrogens))), np.array(range(
+                 exclusions=(np.arange(len(hydrogens)), np.array(range(
                      len(oxygens)))),
                  sample_time=0.06,
         )
