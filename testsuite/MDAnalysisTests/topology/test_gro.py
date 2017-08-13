@@ -35,6 +35,7 @@ from MDAnalysisTests.datafiles import (
     GRO_residwrap_0base,
     GRO_sameresid_diffresname,
 )
+from numpy.testing import assert_equal
 
 
 class TestGROParser(ParserBase):
@@ -93,9 +94,10 @@ class TestGroResidWrapping(object):
             top = p.parse()
 
         assert top.tt.size == (126, 7, 1)
-        for i, (r, n, l) in enumerate(zip(resids, self.names, self.lengths)):
-            assert top.resids.values[i] == r
-            assert top.resnames.values[i] == n
+        assert_equal(top.resids.values, resids)
+        assert_equal(top.resids.values, resids)
+        assert_equal(top.resnames.values, self.names)
+        for i, l in enumerate(self.lengths):
             assert len(top.tt.residues2atoms_1d([i])) == l
 
 
