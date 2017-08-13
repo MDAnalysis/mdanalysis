@@ -43,23 +43,29 @@ _PDBPARSER = mda.topology.PDBParser.PDBParser
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
-    filename = PDB
     expected_attrs = ['ids', 'names', 'resids', 'resnames']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
 
+    @pytest.fixture()
+    def filename(self):
+        return PDB
+
 
 class TestPDBParserSegids(ParserBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
-    filename = PDB_small
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'segids']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    @pytest.fixture()
+    def filename(self):
+        return PDB_small
 
 
 class TestPDBConect(object):

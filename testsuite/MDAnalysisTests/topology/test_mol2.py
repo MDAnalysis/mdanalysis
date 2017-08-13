@@ -21,6 +21,12 @@
 #
 from __future__ import absolute_import
 
+import pytest
+from numpy.testing import (
+    assert_,
+    assert_equal,
+)
+
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -55,11 +61,15 @@ class MOL2Base(ParserBase):
 
 
 class TestMOL2Parser(MOL2Base):
-    filename = mol2_molecule
+    @pytest.fixture()
+    def filename(self):
+        return mol2_molecule
 
 
 class TestMOL2Parser2(MOL2Base):
-    filename = mol2_molecules
+    @pytest.fixture()
+    def filename(self):
+        return mol2_molecules
 
 
 def test_bond_orders():

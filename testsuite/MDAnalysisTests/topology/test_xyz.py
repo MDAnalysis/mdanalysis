@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -40,15 +41,23 @@ class XYZBase(ParserBase):
 
 
 class TestXYZMini(XYZBase):
-    filename = XYZ_mini
     expected_n_atoms = 3
+
+    @pytest.fixture()
+    def filename(self):
+        return XYZ_mini
 
 
 class TestXYZParser(XYZBase):
-    filename = XYZ
     expected_n_atoms = 1284
+
+    @pytest.fixture()
+    def filename(self):
+        return XYZ
 
 
 class TestXYZParserBz2(TestXYZParser):
-    filename = XYZ_bz2
 
+    @pytest.fixture()
+    def filename(self):
+        return XYZ_bz2

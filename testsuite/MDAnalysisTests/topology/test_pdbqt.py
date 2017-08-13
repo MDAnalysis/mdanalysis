@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -31,7 +32,6 @@ from MDAnalysisTests.datafiles import (
 
 class TestPDBQT(ParserBase):
     parser = mda.topology.PDBQTParser.PDBQTParser
-    filename = PDBQT_input
     expected_attrs = [
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
         'segids'
@@ -40,3 +40,7 @@ class TestPDBQT(ParserBase):
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
     expected_n_segments = 2  # res2-102 are A, 2-99 are B
+
+    @pytest.fixture()
+    def filename(self):
+        return PDBQT_input

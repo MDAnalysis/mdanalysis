@@ -52,12 +52,15 @@ class TestTPR(TPRAttrs):
     """
     this test the data/adk_oplsaa.tpr which is of tpx version 58
     """
-    filename = TPR
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 3
     ref_moltypes = np.array(['AKeco'] * 214 + ['SOL'] * 11084 + ['NA+'] * 4,
                             dtype=object)
+
+    @pytest.fixture()
+    def filename(self):
+        return TPR
 
 
 # The follow test the same system grompped by different version of gromacs
@@ -73,55 +76,81 @@ class TPRBase(TPRAttrs):
 
 # All these classes should be generated in a loop.
 class TestTPR400(TPRBase):
-    filename = TPR400
+    @pytest.fixture()
+    def filename(self):
+        return TPR400
 
 
 class TestTPR402(TPRBase):
-    filename = TPR402
+    @pytest.fixture()
+    def filename(self):
+        return TPR400
 
 
 class TestTPR403(TPRBase):
-    filename = TPR403
+    @pytest.fixture()
+    def filename(self):
+        return TPR403
 
 
 class TestTPR404(TPRBase):
-    filename = TPR404
+    @pytest.fixture()
+    def filename(self):
+        return TPR404
 
 
 class TestTPR405(TPRBase):
-    filename = TPR405
+    @pytest.fixture()
+    def filename(self):
+        return TPR405
 
 
 class TestTPR406(TPRBase):
-    filename = TPR406
+    @pytest.fixture()
+    def filename(self):
+        return TPR406
 
 
 class TestTPR407(TPRBase):
-    filename = TPR407
+    @pytest.fixture()
+    def filename(self):
+        return TPR407
 
 
 class TestTPR450(TPRBase):
-    filename = TPR450
+    @pytest.fixture()
+    def filename(self):
+        return TPR450
 
 
 class TestTPR451(TPRBase):
-    filename = TPR451
+    @pytest.fixture()
+    def filename(self):
+        return TPR451
 
 
 class TestTPR452(TPRBase):
-    filename = TPR452
+    @pytest.fixture()
+    def filename(self):
+        return TPR452
 
 
 class TestTPR453(TPRBase):
-    filename = TPR453
+    @pytest.fixture()
+    def filename(self):
+        return TPR453
 
 
 class TestTPR454(TPRBase):
-    filename = TPR454
+    @pytest.fixture()
+    def filename(self):
+        return TPR454
 
 
 class TestTPR455(TPRBase):
-    filename = TPR455
+    @pytest.fixture()
+    def filename(self):
+        return TPR455
 
 
 class TPRDouble(TPRAttrs):
@@ -135,7 +164,9 @@ class TPRDouble(TPRAttrs):
 
 
 class TestTPR455Double(TPRDouble):
-    filename = TPR455Double
+    @pytest.fixture()
+    def filename(self):
+        return TPR455Double
 
 
 class TPR46xBase(TPRAttrs):
@@ -150,31 +181,45 @@ class TPR46xBase(TPRAttrs):
 
 
 class TestTPR460(TPR46xBase):
-    filename = TPR460
+    @pytest.fixture()
+    def filename(self):
+        return TPR460
 
 
 class TestTPR461(TPR46xBase):
-    filename = TPR461
+    @pytest.fixture()
+    def filename(self):
+        return TPR461
 
 
 class TestTPR502(TPRBase):
-    filename = TPR502
+    @pytest.fixture()
+    def filename(self):
+        return TPR502
 
 
 class TestTPR504(TPRBase):
-    filename = TPR504
+    @pytest.fixture()
+    def filename(self):
+        return TPR504
 
 
 class TestTPR505(TPRBase):
-    filename = TPR505
+    @pytest.fixture()
+    def filename(self):
+        return TPR505
 
 
 class TestTPR510(TPRBase):
-    filename = TPR510
+    @pytest.fixture()
+    def filename(self):
+        return TPR510
 
 
 class TestTPR2016(TPRBase):
-    filename = TPR2016
+    @pytest.fixture()
+    def filename(self):
+        return TPR2016
 
 
 def _test_is_in_topology(name, elements, topology_path, topology_section):

@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import HoomdXMLdata
@@ -29,13 +30,16 @@ from MDAnalysisTests.datafiles import HoomdXMLdata
 
 class TestHoomdXMLParser(ParserBase):
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
-    filename = HoomdXMLdata
     expected_attrs = [
         'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals'
     ]
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1
+
+    @pytest.fixture()
+    def filename(self):
+        return HoomdXMLdata
 
     def test_attr_size(self, top):
         assert len(top.types) == top.n_atoms

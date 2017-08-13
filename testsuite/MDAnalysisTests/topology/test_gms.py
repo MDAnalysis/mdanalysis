@@ -20,6 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+
+import pytest
 from numpy.testing import assert_equal
 
 
@@ -42,8 +44,11 @@ class GMSBase(ParserBase):
 
 
 class TestGMSASYMOPT(GMSBase):
-    filename = GMS_ASYMOPT
     expected_n_atoms = 6
+
+    @pytest.fixture()
+    def filename(self):
+        return GMS_ASYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -55,8 +60,11 @@ class TestGMSASYMOPT(GMSBase):
 
 
 class TestGMSSYMOPT(GMSBase):
-    filename = GMS_SYMOPT
     expected_n_atoms = 4
+
+    @pytest.fixture()
+    def filename(self):
+        return GMS_SYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -68,4 +76,6 @@ class TestGMSSYMOPT(GMSBase):
 
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
-    filename = GMS_ASYMSURF
+    @pytest.fixture()
+    def filename(self):
+        return GMS_ASYMSURF

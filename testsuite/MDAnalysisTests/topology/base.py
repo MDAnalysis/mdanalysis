@@ -37,13 +37,13 @@ class ParserBase(object):
     guessed_attrs = []
 
     @pytest.fixture()
-    def top(self):
-        with self.parser(self.filename) as p:
+    def top(self, filename):
+        with self.parser(filename) as p:
             yield p.parse()
 
-    def test_output(self):
+    def test_output(self, filename):
         """Testing the call signature"""
-        with self.parser(self.filename) as p:
+        with self.parser(filename) as p:
             top = p.parse()
 
         assert isinstance(top, Topology)
@@ -85,7 +85,7 @@ class ParserBase(object):
         """Check that the transtable is appropriately sized"""
         assert top.tt.size == (self.expected_n_atoms, self.expected_n_residues, self.expected_n_segments)
 
-    def test_creates_universe(self):
+    def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
-        u = mda.Universe(self.filename)
+        u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)

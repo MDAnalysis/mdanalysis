@@ -40,12 +40,15 @@ from numpy.testing import assert_equal
 
 class TestGROParser(ParserBase):
     parser = mda.topology.GROParser.GROParser
-    filename = GRO
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
+
+    @pytest.fixture()
+    def filename(self):
+        return GRO
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms

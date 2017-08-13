@@ -21,6 +21,7 @@
 #
 from __future__ import absolute_import
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -48,32 +49,44 @@ class TOPBase(ParserBase):
 
 
 class TestPRMParser(TOPBase):
-    filename = PRM
     expected_n_atoms = 252
     expected_n_residues = 14
     guessed_attrs = ['elements']
+
+    @pytest.fixture()
+    def filename(self):
+        return PRM
 
 
 class TestPRM12Parser(TOPBase):
     expected_attrs = [
         "names", "types", "type_indices", "charges", "masses", "resnames"
     ]
-    filename = PRM12
     expected_n_atoms = 8923
     expected_n_residues = 2861
     ref_proteinatoms = 0
 
+    @pytest.fixture()
+    def filename(self):
+        return PRM12
+
 
 class TestParm7Parser(TOPBase):
-    filename = PRM7
     expected_n_atoms = 5827
     expected_n_residues = 1882
     guessed_attrs = ['elements']
 
+    @pytest.fixture()
+    def filename(self):
+        return PRM7
+
 
 class TestPRM2(TOPBase):
-    filename = PRMpbc
     expected_n_atoms = 5071
     expected_n_residues = 1686
     ref_proteinatoms = 22
     guessed_attrs = ['elements']
+
+    @pytest.fixture()
+    def filename(self):
+        return PRMpbc
