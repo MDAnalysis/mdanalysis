@@ -60,29 +60,14 @@ class Testrmsd(object):
     @pytest.fixture()
     def u(self):
         u = mda.Universe(PSF, DCD)
-        u.trajectory[2]
-        u.trajectory[0]
         return u
 
     @pytest.fixture()
-    def u2(self):
-        u = mda.Universe(PSF, DCD)
-        u.trajectory[-2]
-        u.trajectory[-1]
-        return u
-
-    @pytest.fixture()
-    def u2(self):
-        return mda.Universe(PSF, DCD)
-
-    @pytest.fixture()
-    def p_first(self):
-        u = mda.Universe(PSF, DCD)
+    def p_first(self, u):
         return u.select_atoms('protein')
 
     @pytest.fixture()
-    def p_last(self):
-        u = mda.Universe(PSF, DCD)
+    def p_last(self, u):
         return u.select_atoms('protein')
 
     def test_no_center(self, a, b):
