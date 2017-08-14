@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt
+         jbarnoud, nestorwendt, mmattaNU
 
   * 0.17.0
 
@@ -25,6 +25,7 @@ Enhancements
   * The TPR parser populate the `moltypes` topology attribute and
     the `moltype` selection keyword is added (Issue #1555)
   * about 20% speed improvements for GNM analysis. (PR #1579)
+  * added support for Tinker TXYZ and ARC files
 
 Deprecations
 
