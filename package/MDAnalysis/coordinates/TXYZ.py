@@ -36,6 +36,7 @@ Tinker: https://dasher.wustl.edu/tinker/
 """
 import numpy as np
 import os
+from __future__ import (absolute_import, division)
 import MDAnalysis as mda
 from MDAnalysis.lib import util
 from MDAnalysis.topology.base import TopologyReaderBase
