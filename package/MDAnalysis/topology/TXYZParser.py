@@ -28,6 +28,7 @@ Atom types are read from column 6, while bond connectivity is read from column 7
 see ../coordinates/TXYZ.py for further documentation about the Tinker format.
 
 """
+from __future__ import absolute_import
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.topology.base import TopologyReaderBase
