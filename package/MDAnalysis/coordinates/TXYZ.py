@@ -23,6 +23,15 @@
 TXYZ file format --- :mod:`MDAnalysis.coordinates.TXYZ`
 =======================================================
 
+Coordinate reader for Tinker xyz files .txyz and trajectory .arc files
+Differences between Tinker format and normal xyz files: 
+ - there is only one header line containing both the number of atoms and a comment
+ - column 1 contains atom numbers (starting from 1)
+ - column 6 contains atoms types 
+ - the following columns indicate connectivity (atoms to which that particular atom is bonded, according to numbering in column 1)
+
+Tinker format: http://chembytes.wikidot.com/tnk-tut00#toc2
+Tinker: https://dasher.wustl.edu/tinker/
 
 """
 import numpy as np
