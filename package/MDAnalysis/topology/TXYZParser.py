@@ -23,6 +23,10 @@
 TXYZ topology parser
 ====================
 
+Tinker topology parser: reads information from .txyz and .arc files.
+Atom types are read from column 6, while bond connectivity is read from column 7 onwards.
+see ../coordinates/TXYZ.py for further documentation about the Tinker format.
+
 """
 import numpy as np
 import MDAnalysis as mda
