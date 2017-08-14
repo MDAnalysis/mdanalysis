@@ -283,6 +283,7 @@ from . import TPRParser
 from . import MOL2Parser
 from . import LAMMPSParser
 from . import XYZParser
+from . import TXYZParser
 from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
