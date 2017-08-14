@@ -23,7 +23,7 @@ class TXYZParser(TopologyReaderBase):
      - Atomtypes
     .. versionadded:: 0.17.0
     """
-    format = 'TXYZ'
+    format = ['TXYZ', 'ARC']
 
     def parse(self):
         """Read the file and return the structure.
