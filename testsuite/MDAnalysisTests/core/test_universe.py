@@ -112,7 +112,6 @@ class TestUniverseCreation(object):
         with pytest.raises(AttributeError):
             getattr(u, 'trajectory')
 
-
     def test_Universe_topology_unrecognizedformat_VE(self):
         with pytest.raises(ValueError):
             mda.Universe('some.weird.not.pdb.but.converted.xtc')
@@ -219,6 +218,16 @@ class TestUniverse(object):
         u = mda.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
+
+    def test_load_new_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(PDB_small)
+        assert result is u
+
+    def test_load_new_None_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(None)
+        assert result is u
 
     def test_load_new_TypeError(self):
         u = mda.Universe(PSF, DCD)
