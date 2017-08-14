@@ -30,12 +30,12 @@ see ../coordinates/TXYZ.py for further documentation about the Tinker format.
 """
 from __future__ import absolute_import
 import numpy as np
-import MDAnalysis as mda
-from MDAnalysis.topology.base import TopologyReaderBase
-from MDAnalysis.topology import guessers
-from MDAnalysis.lib.util import openany
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import (
+
+from . import guessers
+from ..lib.util import openany
+from .base import TopologyReaderBase
+from ..core.topology import Topology
+from ..core.topologyattrs import (
     Atomnames,
     Atomids,
     Atomtypes,
