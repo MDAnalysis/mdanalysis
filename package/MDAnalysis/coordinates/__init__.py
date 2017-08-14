@@ -718,6 +718,7 @@ from . import TRR
 from . import TRZ
 from . import XTC
 from . import XYZ
+from . import TXYZ
 from . import memory
 from . import MMTF
 from . import null
