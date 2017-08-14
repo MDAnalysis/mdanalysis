@@ -37,14 +37,13 @@ Tinker: https://dasher.wustl.edu/tinker/
 import numpy as np
 import os
 from __future__ import (absolute_import, division)
-import MDAnalysis as mda
-from MDAnalysis.lib import util
-from MDAnalysis.topology.base import TopologyReaderBase
-from MDAnalysis.topology import guessers
-from MDAnalysis.lib.util import openany
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.coordinates import base
-from MDAnalysis.lib.util import cached
+from ..lib import util
+from . import base
+from  .base import TopologyReaderBase
+from ..topology import guessers
+from ..lib.util import openany
+from ..core.topology import Topology
+from ..lib.util import cached
 
 
 class TXYZReader(base.ReaderBase):
