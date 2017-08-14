@@ -411,8 +411,7 @@ class Universe(object):
 
         Returns
         -------
-        filename : str or list
-        trajectory_format : str
+        universe : Universe
 
         Raises
         ------
@@ -429,17 +428,13 @@ class Universe(object):
            features than the
            :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
+        .. versionchanged:: 0.17.0
+           Now returns a :class:`Universe` instead of the tuple of file/array
+           and detected file type.
         """
-        # the following was in the doc string:
-        # TODO
-        # ----
-        # - check what happens if filename is ``None``
-        # - look up raises doc formating
-        #
-        #
-        # TODO: is this really sensible? Why not require a filename arg?
+        # filename==None happens when only a topology is provided
         if filename is None:
-            return
+            return self
 
         if len(util.asiterable(filename)) == 1:
             # make sure a single filename is not handed to the ChainReader
@@ -470,7 +465,7 @@ class Universe(object):
         if in_memory:
             self.transfer_to_memory(step=kwargs.get("in_memory_step", 1))
 
-        return filename, self.trajectory.format
+        return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
                            verbose=None, quiet=None):
