@@ -216,18 +216,6 @@ class TestRMSD(object):
                                   err_msg="error: rmsd profile should match " +
                                           "test values")
 
-    def test_mass_weighted_and_save_deprecated(self, universe, outfile):
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
-            RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
-                                                step=49, mass_weighted=True).run()
-        assert_equal(len(warn), 1)
-        RMSD.save(outfile)
-        saved = np.loadtxt(outfile)
-        assert_array_almost_equal(RMSD.rmsd, saved, 4,
-                                  err_msg="error: rmsd profile should match " +
-                                          "test values")
-
     def test_rmsd_group_selections_wrong_weights(self, universe):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
