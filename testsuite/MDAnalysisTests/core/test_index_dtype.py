@@ -28,67 +28,75 @@ This dtype is important for platform independent indexing of other arrays.
 """
 from __future__ import absolute_import
 
-from unittest import TestCase
-
 import numpy as np
-from numpy.testing import (
-    assert_,
-)
+import pytest
 from MDAnalysisTests import make_Universe
 
 
-class TestIndexDtype(TestCase):
-    def setUp(self):
-        self.u = make_Universe()
+@pytest.fixture()
+def u():
+    return make_Universe()
 
-    def tearDown(self):
-        del self.u
 
-    def test_ag_ix(self):
-        assert_(self.u.atoms.ix.dtype == np.intp)
+def test_ag_ix(u):
+    assert u.atoms.ix.dtype == np.intp
 
-    def test_rg_ix(self):
-        assert_(self.u.residues.ix.dtype == np.intp)
 
-    def test_sg_ix(self):
-        assert_(self.u.segments.ix.dtype == np.intp)
+def test_rg_ix(u):
+    assert u.residues.ix.dtype == np.intp
 
-    def test_atom_ix_array(self):
-        assert_(self.u.atoms[0].ix_array.dtype == np.intp)
 
-    def test_residue_ix_array(self):
-        assert_(self.u.residues[0].ix_array.dtype == np.intp)
+def test_sg_ix(u):
+    assert u.segments.ix.dtype == np.intp
 
-    def test_segment_ix_array(self):
-        assert_(self.u.segments[0].ix_array.dtype == np.intp)
 
-    def test_atomgroup_indices(self):
-        assert_(self.u.atoms.indices.dtype == np.intp)
+def test_atom_ix_array(u):
+    assert u.atoms[0].ix_array.dtype == np.intp
 
-    def test_atomgroup_residue_upshift(self):
-        assert_(self.u.atoms.resindices.dtype == np.intp)
 
-    def test_atomgroup_segment_upshift(self):
-        assert_(self.u.atoms.segindices.dtype == np.intp)
+def test_residue_ix_array(u):
+    assert u.residues[0].ix_array.dtype == np.intp
 
-    def test_residuegroup_atom_downshift(self):
-        # downshift arrays are a list (one for each residue)
-        assert_(all((arr.dtype == np.intp)
-                    for arr in self.u.residues.indices))
 
-    def test_residuegroup_resindices(self):
-        assert_(self.u.residues.resindices.dtype == np.intp)
+def test_segment_ix_array(u):
+    assert u.segments[0].ix_array.dtype == np.intp
 
-    def test_residuegroup_segment_upshift(self):
-        assert_(self.u.residues.segindices.dtype == np.intp)
 
-    def test_segmentgroup_atom_downshift(self):
-        assert_(all((arr.dtype == np.intp)
-                    for arr in self.u.segments.indices))
+def test_atomgroup_indices(u):
+    assert u.atoms.indices.dtype == np.intp
 
-    def test_segmentgroup_residue_downshift(self):
-        assert_(all((arr.dtype == np.intp)
-                    for arr in self.u.segments.resindices))
 
-    def test_segmentgroup_segindices(self):
-        assert_(self.u.segments.segindices.dtype == np.intp)
+def test_atomgroup_residue_upshift(u):
+    assert u.atoms.resindices.dtype == np.intp
+
+
+def test_atomgroup_segment_upshift(u):
+    assert u.atoms.segindices.dtype == np.intp
+
+
+def test_residuegroup_atom_downshift(u):
+    # downshift arrays are a list (one for each residue)
+    assert all((arr.dtype == np.intp)
+               for arr in u.residues.indices)
+
+
+def test_residuegroup_resindices(u):
+    assert u.residues.resindices.dtype == np.intp
+
+
+def test_residuegroup_segment_upshift(u):
+    assert u.residues.segindices.dtype == np.intp
+
+
+def test_segmentgroup_atom_downshift(u):
+    assert all((arr.dtype == np.intp)
+               for arr in u.segments.indices)
+
+
+def test_segmentgroup_residue_downshift(u):
+    assert all((arr.dtype == np.intp)
+               for arr in u.segments.resindices)
+
+
+def test_segmentgroup_segindices(u):
+    assert u.segments.segindices.dtype == np.intp
