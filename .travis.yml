@@ -52,7 +52,6 @@ matrix:
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
 
-    # todo update to default 3.6 (aka removing the line with PYTHON_VERSION here)
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
            MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
