@@ -24,7 +24,6 @@ from __future__ import absolute_import
 from six.moves import range
 
 import itertools
-from unittest import TestCase
 import numpy as np
 from numpy.testing import (
     assert_,
@@ -40,31 +39,30 @@ import MDAnalysis as mda
 from MDAnalysisTests import make_Universe, assert_nowarns
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import Segids
-from MDAnalysis.topology.base import change_squash
 
 
-class TestGroupProperties(TestCase):
+class TestGroupProperties(object):
     """ Test attributes of all groups
     """
+    @pytest.fixture()
+    def u(self):
+        return make_Universe(trajectory=True)
 
-    def setUp(self):
-        self.u = make_Universe(trajectory=True)
-        self.group_dict = {
-            'atom': self.u.atoms,
-            'residue': self.u.residues,
-            'segment': self.u.segments
+    @pytest.fixture()
+    def group_dict(self, u):
+        return {
+            'atom': u.atoms,
+            'residue': u.residues,
+            'segment': u.segments
         }
 
-    def test_dimensions(self):
+    def test_dimensions(self, u, group_dict):
         dimensions = np.arange(6)
 
-        for group in six.itervalues(self.group_dict):
+        for group in six.itervalues(group_dict):
             group.dimensions = dimensions.copy()
             assert_array_equal(group.dimensions, dimensions)
-            assert_equal(self.u.dimensions, group.dimensions)
-
+            assert_equal(u.dimensions, group.dimensions)
 
 
 class TestGroupSlicing(object):
@@ -312,7 +310,7 @@ class TestGroupAddition(object):
         assert_(not group[2] in group2)
 
 
-class TestGroupLevelTransition(TestCase):
+class TestGroupLevelTransition(object):
     """Test moving between different hierarchy levels
 
     AtomGroup
@@ -328,130 +326,129 @@ class TestGroupLevelTransition(TestCase):
     _listcomp tests check that Downshifts INCLUDE repeated elements
     _unique tests the unique method (performs set operation on self)
     """
-    def setUp(self):
-        self.u = make_Universe()
+        
+    @pytest.fixture()
+    def u(self):
+        return make_Universe()
 
-    def tearDown(self):
-        del self.u
-
-    def test_atomgroup_to_atomgroup(self):
-        atm = self.u.atoms.atoms
+    def test_atomgroup_to_atomgroup(self, u):
+        atm = u.atoms.atoms
         assert_(len(atm) == 125)
         assert_(isinstance(atm, groups.AtomGroup))
 
-    def test_atomgroup_to_residuegroup(self):
-        res = self.u.atoms.residues
+    def test_atomgroup_to_residuegroup(self, u):
+        res = u.atoms.residues
         assert_(len(res) == 25)
         assert_(isinstance(res, groups.ResidueGroup))
 
-    def test_atomgroup_to_segmentgroup(self):
-        seg = self.u.atoms.segments
+    def test_atomgroup_to_segmentgroup(self, u):
+        seg = u.atoms.segments
         assert_(len(seg) == 5)
         assert_(isinstance(seg, groups.SegmentGroup))
 
-    def test_residuegroup_to_atomgroup(self):
-        atm = self.u.residues.atoms
+    def test_residuegroup_to_atomgroup(self, u):
+        atm = u.residues.atoms
         assert_(len(atm) == 125)
         assert_(isinstance(atm, groups.AtomGroup))
 
-    def test_residuegroup_to_residuegroup(self):
-        res = self.u.residues.residues
+    def test_residuegroup_to_residuegroup(self, u):
+        res = u.residues.residues
         assert_(len(res) == 25)
         assert_(isinstance(res, groups.ResidueGroup))
 
-    def test_residuegroup_to_segmentgroup(self):
-        seg = self.u.residues.segments
+    def test_residuegroup_to_segmentgroup(self, u):
+        seg = u.residues.segments
         assert_(len(seg) == 5)
         assert_(isinstance(seg, groups.SegmentGroup))
 
-    def test_segmentgroup_to_atomgroup(self):
-        atm = self.u.segments.atoms
+    def test_segmentgroup_to_atomgroup(self, u):
+        atm = u.segments.atoms
         assert_(len(atm) == 125)
         assert_(isinstance(atm, groups.AtomGroup))
 
-    def test_segmentgroup_to_residuegroup(self):
-        res = self.u.segments.residues
+    def test_segmentgroup_to_residuegroup(self, u):
+        res = u.segments.residues
         assert_(len(res) == 25)
         assert_(isinstance(res, groups.ResidueGroup))
 
-    def test_segmentgroup_to_segmentgroup(self):
-        seg = self.u.segments.segments
+    def test_segmentgroup_to_segmentgroup(self, u):
+        seg = u.segments.segments
         assert_(len(seg) == 5)
         assert_(isinstance(seg, groups.SegmentGroup))
 
-    def test_atom_to_residue(self):
-        res = self.u.atoms[0].residue
+    def test_atom_to_residue(self, u):
+        res = u.atoms[0].residue
         assert_(isinstance(res, groups.Residue))
 
-    def test_atom_to_segment(self):
-        seg = self.u.atoms[0].segment
+    def test_atom_to_segment(self, u):
+        seg = u.atoms[0].segment
         assert_(isinstance(seg, groups.Segment))
 
-    def test_residue_to_atomgroup(self):
-        ag = self.u.residues[0].atoms
+    def test_residue_to_atomgroup(self, u):
+        ag = u.residues[0].atoms
         assert_(isinstance(ag, groups.AtomGroup))
         assert_(len(ag) == 5)
 
-    def test_residue_to_segment(self):
-        seg = self.u.residues[0].segment
+    def test_residue_to_segment(self, u):
+        seg = u.residues[0].segment
         assert_(isinstance(seg, groups.Segment))
 
-    def test_segment_to_atomgroup(self):
-        ag = self.u.segments[0].atoms
+    def test_segment_to_atomgroup(self, u):
+        ag = u.segments[0].atoms
         assert_(isinstance(ag, groups.AtomGroup))
         assert_(len(ag) == 25)
 
-    def test_segment_to_residuegroup(self):
-        rg = self.u.segments[0].residues
+    def test_segment_to_residuegroup(self, u):
+        rg = u.segments[0].residues
         assert_(isinstance(rg, groups.ResidueGroup))
         assert_(len(rg) == 5)
 
-    def test_atomgroup_to_residuegroup_unique(self):
-        ag = self.u.atoms[:5] + self.u.atoms[10:15] + self.u.atoms[:5]
+    def test_atomgroup_to_residuegroup_unique(self, u):
+        ag = u.atoms[:5] + u.atoms[10:15] + u.atoms[:5]
 
         assert_(len(ag.residues) == 2)
 
-    def test_atomgroup_to_segmentgroup_unique(self):
-        ag = self.u.atoms[0] + self.u.atoms[-1] + self.u.atoms[0]
+    def test_atomgroup_to_segmentgroup_unique(self, u):
+        ag = u.atoms[0] + u.atoms[-1] + u.atoms[0]
 
         assert_(len(ag.segments) == 2)
 
-    def test_residuegroup_to_segmentgroup_unique(self):
-        rg = self.u.residues[0] + self.u.residues[6] + self.u.residues[1]
+    def test_residuegroup_to_segmentgroup_unique(self, u):
+        rg = u.residues[0] + u.residues[6] + u.residues[1]
 
         assert_(len(rg.segments) == 2)
 
-    def test_residuegroup_to_atomgroup_listcomp(self):
-        rg = self.u.residues[0] + self.u.residues[0] + self.u.residues[4]
+    def test_residuegroup_to_atomgroup_listcomp(self, u):
+        rg = u.residues[0] + u.residues[0] + u.residues[4]
 
         assert_(len(rg.atoms) == 15)
 
-    def test_segmentgroup_to_residuegroup_listcomp(self):
-        sg = self.u.segments[0] + self.u.segments[0] + self.u.segments[1]
+    def test_segmentgroup_to_residuegroup_listcomp(self, u):
+        sg = u.segments[0] + u.segments[0] + u.segments[1]
 
         assert_(len(sg.residues) == 15)
 
-    def test_segmentgroup_to_atomgroup_listcomp(self):
-        sg = self.u.segments[0] + self.u.segments[0] + self.u.segments[1]
+    def test_segmentgroup_to_atomgroup_listcomp(self, u):
+        sg = u.segments[0] + u.segments[0] + u.segments[1]
 
         assert_(len(sg.atoms) == 75)
 
-    def test_atomgroup_unique(self):
-        ag = self.u.atoms[:10] + self.u.atoms[:10]
+    def test_atomgroup_unique(self, u):
+        ag = u.atoms[:10] + u.atoms[:10]
 
         assert_(len(ag) == 20)
         assert_(len(ag.unique) == 10)
         assert_(isinstance(ag.unique, groups.AtomGroup))
 
-    def test_residuegroup_unique(self):
-        rg = self.u.residues[:5] + self.u.residues[:5]
+    def test_residuegroup_unique(self, u):
+        rg = u.residues[:5] + u.residues[:5]
 
         assert_(len(rg) == 10)
         assert_(len(rg.unique) == 5)
         assert_(isinstance(rg.unique, groups.ResidueGroup))
 
-    def test_segmentgroup_unique(self):
-        sg = self.u.segments[0] + self.u.segments[1] + self.u.segments[0]
+    def test_segmentgroup_unique(self, u):
+        sg = u.segments[0] + u.segments[1] + u.segments[0]
 
         assert_(len(sg) == 3)
         assert_(len(sg.unique) == 2)
@@ -537,6 +534,7 @@ class TestComponentComparisons(object):
             yield self._check_crosslevel_cmp, a, b
             yield self._check_crosslevel_eq, a, b
 
+
 class TestMetaclassMagic(object):
     # tests for the weird voodoo we do with metaclasses
     def test_new_class(self):
@@ -555,16 +553,14 @@ class TestMetaclassMagic(object):
         assert_array_equal(ng.positions, ag.positions)
 
 
-class TestGroupBy(TestCase):
+class TestGroupBy(object):
     # tests for the method 'groupby'
-    def setUp(self):
-        self.u = make_Universe(('types', 'charges', 'resids'))
+    @pytest.fixture()
+    def u(self):
+        return make_Universe(('types', 'charges', 'resids'))
 
-    def tearDown(self):
-        del self.u
-
-    def test_groupby_float(self):
-        gb = self.u.atoms.groupby('charges')
+    def test_groupby_float(self, u):
+        gb = u.atoms.groupby('charges')
 
         for ref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
             assert_(ref in gb)
@@ -572,8 +568,8 @@ class TestGroupBy(TestCase):
             assert_(all(g.charges == ref))
             assert_(len(g) == 25)
 
-    def test_groupby_string(self):
-        gb = self.u.atoms.groupby('types')
+    def test_groupby_string(self, u):
+        gb = u.atoms.groupby('types')
 
         assert_(len(gb) == 5)
         for ref in ['TypeA', 'TypeB', 'TypeC', 'TypeD', 'TypeE']:
@@ -582,67 +578,64 @@ class TestGroupBy(TestCase):
             assert_(all(g.types == ref))
             assert_(len(g) == 25)
 
-    def test_groupby_int(self):
-        gb = self.u.atoms.groupby('resids')
+    def test_groupby_int(self, u):
+        gb = u.atoms.groupby('resids')
 
         for g in gb.values():
             assert_(len(g) == 5)
 
 
+class TestReprs(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
 
-class TestReprs(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
-
-    def tearDown(self):
-        del self.u
-
-    def test_atom_repr(self):
-        at = self.u.atoms[0]
+    def test_atom_repr(self, u):
+        at = u.atoms[0]
         assert_(repr(at) == '<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>')
 
-    def test_residue_repr(self):
-        res = self.u.residues[0]
+    def test_residue_repr(self, u):
+        res = u.residues[0]
         assert_(repr(res) == '<Residue MET, 1>')
 
-    def test_segment_repr(self):
-        seg = self.u.segments[0]
+    def test_segment_repr(self, u):
+        seg = u.segments[0]
         assert_(repr(seg) == '<Segment 4AKE>')
 
-    def test_atomgroup_repr(self):
-        ag = self.u.atoms[:10]
+    def test_atomgroup_repr(self, u):
+        ag = u.atoms[:10]
         assert_(repr(ag) == '<AtomGroup with 10 atoms>')
 
-    def test_atomgroup_str_short(self):
-        ag = self.u.atoms[:2]
+    def test_atomgroup_str_short(self, u):
+        ag = u.atoms[:2]
         assert_(str(ag) == '<AtomGroup [<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>, <Atom 2: HT1 of type 2 of resname MET, resid 1 and segid 4AKE>]>')
 
-    def test_atomgroup_str_long(self):
-        ag = self.u.atoms[:11]
+    def test_atomgroup_str_long(self, u):
+        ag = u.atoms[:11]
         assert_(str(ag).startswith('<AtomGroup [<Atom 1: N of type 56 of resname MET,'))
         assert_('...' in str(ag))
         assert_(str(ag).endswith(', resid 1 and segid 4AKE>]>'))
 
-    def test_residuegroup_repr(self):
-        rg = self.u.residues[:10]
+    def test_residuegroup_repr(self, u):
+        rg = u.residues[:10]
         assert_(repr(rg) == '<ResidueGroup with 10 residues>')
 
-    def test_residuegroup_str_short(self):
-        rg = self.u.residues[:2]
+    def test_residuegroup_str_short(self, u):
+        rg = u.residues[:2]
         assert_(str(rg) == '<ResidueGroup [<Residue MET, 1>, <Residue ARG, 2>]>')
 
-    def test_residuegroup_str_long(self):
-        rg = self.u.residues[:11]
+    def test_residuegroup_str_long(self, u):
+        rg = u.residues[:11]
         assert_(str(rg).startswith('<ResidueGroup [<Residue MET, 1>,'))
         assert_('...' in str(rg))
         assert_(str(rg).endswith(', <Residue ALA, 11>]>'))
 
-    def test_segmentgroup_repr(self):
-        sg = self.u.segments[:10]
+    def test_segmentgroup_repr(self, u):
+        sg = u.segments[:10]
         assert_(repr(sg) == '<SegmentGroup with 1 segment>')
 
-    def test_segmentgroup_str(self):
-        sg = self.u.segments[:10]
+    def test_segmentgroup_str(self, u):
+        sg = u.segments[:10]
         assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
 
 
@@ -1001,39 +994,40 @@ class TestAtomGroup(object):
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
 
 
-class TestInstantSelectorDeprecationWarnings(TestCase):
-    def setUp(self):
-        self.u = make_Universe(("resids", "resnames", "segids", "names"))
+class TestInstantSelectorDeprecationWarnings(object):
+    @pytest.fixture()
+    def u(self):
+        return make_Universe(("resids", "resnames", "segids", "names"))
 
-    def test_AtomGroup_warn_getitem(self):
-        name = self.u.atoms[0].name
-        assert_warns(DeprecationWarning, lambda x: self.u.atoms[x], name)
+    def test_AtomGroup_warn_getitem(self, u):
+        name = u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: u.atoms[x], name)
 
-    def test_AtomGroup_nowarn_getitem_index(self):
-        assert_nowarns(DeprecationWarning, lambda x: self.u.atoms[x], 0)
+    def test_AtomGroup_nowarn_getitem_index(self, u):
+        assert_nowarns(DeprecationWarning, lambda x: u.atoms[x], 0)
 
-    def test_AtomGroup_nowarn_segids_attribute(self):
-        assert_nowarns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), "segids")
+    def test_AtomGroup_nowarn_segids_attribute(self, u):
+        assert_nowarns(DeprecationWarning, lambda x: getattr(u.atoms, x), "segids")
 
-    def test_AtomGroup_warn_getattr(self):
-        name = self.u.atoms[0].name
-        assert_warns(DeprecationWarning, lambda x: getattr(self.u.atoms, x), name)
+    def test_AtomGroup_warn_getattr(self, u):
+        name = u.atoms[0].name
+        assert_warns(DeprecationWarning, lambda x: getattr(u.atoms, x), name)
 
-    def test_ResidueGroup_warn_getattr_resname(self):
-        name = self.u.residues[0].resname
-        assert_warns(DeprecationWarning, lambda x: getattr(self.u.residues, x), name)
+    def test_ResidueGroup_warn_getattr_resname(self, u):
+        name = u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(u.residues, x), name)
 
-    def test_Segment_warn_getattr_resname(self):
-        name = self.u.residues[0].resname
-        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), name)
+    def test_Segment_warn_getattr_resname(self, u):
+        name = u.residues[0].resname
+        assert_warns(DeprecationWarning, lambda x: getattr(u.segments[0], x), name)
 
-    def test_Segment_warn_getattr_rRESNUM(self):
-        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments[0], x), 'r1')
+    def test_Segment_warn_getattr_rRESNUM(self, u):
+        assert_warns(DeprecationWarning, lambda x: getattr(u.segments[0], x), 'r1')
 
-    def test_SegmentGroup_warn_getattr(self):
-        name = self.u.segments[0].segid
-        assert_warns(DeprecationWarning, lambda x: getattr(self.u.segments, x), name)
+    def test_SegmentGroup_warn_getattr(self, u):
+        name = u.segments[0].segid
+        assert_warns(DeprecationWarning, lambda x: getattr(u.segments, x), name)
 
-    def test_SegmentGroup_nowarn_getitem(self):
-        assert_nowarns(DeprecationWarning, lambda x: self.u.segments[x], 0)
+    def test_SegmentGroup_nowarn_getitem(self, u):
+        assert_nowarns(DeprecationWarning, lambda x: u.segments[x], 0)
 
