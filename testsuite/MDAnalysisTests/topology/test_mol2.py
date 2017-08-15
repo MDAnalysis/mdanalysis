@@ -20,10 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
 
 import MDAnalysis as mda
 
@@ -32,44 +28,37 @@ from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
 )
+from numpy.testing import assert_equal
 
 
 class MOL2Base(ParserBase):
-
-    __test__ = False
-
     parser = mda.topology.MOL2Parser.MOL2Parser
-    expected_attrs = ['ids', 'names', 'types', 'charges',
-                      'resids', 'resnames', 'bonds']
+    expected_attrs = [
+        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds'
+    ]
     guessed_attrs = ['elements', 'masses']
     expected_n_atoms = 49
     expected_n_residues = 1
     expected_n_segments = 1
 
     def test_attr_size(self, top):
-        assert_(len(top.ids) == top.n_atoms)
-        assert_(len(top.names) == top.n_atoms)
-        assert_(len(top.types) == top.n_atoms)
-        assert_(len(top.charges) == top.n_atoms)
-        assert_(len(top.resids) == top.n_residues)
-        assert_(len(top.resnames) == top.n_residues)
+        assert len(top.ids) == top.n_atoms
+        assert len(top.names) == top.n_atoms
+        assert len(top.types) == top.n_atoms
+        assert len(top.charges) == top.n_atoms
+        assert len(top.resids) == top.n_residues
+        assert len(top.resnames) == top.n_residues
 
     def test_bonds(self, top):
-        assert_(len(top.bonds) == 49)  # bonds for 49 atoms
-        assert_(len(top.bonds.values) == 51)  # this many bonds
+        assert len(top.bonds) == 49  # bonds for 49 atoms
+        assert len(top.bonds.values) == 51  # this many bonds
 
-    
+
 class TestMOL2Parser(MOL2Base):
-
-    __test__ = True
-
     filename = mol2_molecule
 
 
 class TestMOL2Parser2(MOL2Base):
-
-    __test__ = True
-
     filename = mol2_molecules
 
 
