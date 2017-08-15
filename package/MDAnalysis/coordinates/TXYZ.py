@@ -34,16 +34,16 @@ Tinker format: http://chembytes.wikidot.com/tnk-tut00#toc2
 Tinker: https://dasher.wustl.edu/tinker/
 
 """
+from __future__ import absolute_import, division
+from six.moves import range
+
 import numpy as np
 import os
-from __future__ import (absolute_import, division)
+import errno 
+
 from ..lib import util
 from . import base
-from  .base import TopologyReaderBase
-from ..topology import guessers
-from ..lib.util import openany
-from ..core.topology import Topology
-from ..lib.util import cached
+from ..lib.util import openany, cached
 
 
 class TXYZReader(base.ReaderBase):
