@@ -170,7 +170,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     a : array_like
         coordinates to align to `b`
     b : array_like
-        coordinates to align (matching `a`)
+        coordinates to align to (same shape as `a`)
     weights : array_like (optional)
         1D array with weights, use to compute weighted average
     center : bool (optional)
@@ -233,7 +233,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
 
     if weights is not None:
         if len(weights) != len(a):
-            raise ValueError('weights must have same length as a/b')
+            raise ValueError('weights must have same length as a and b')
         # weights are constructed as relative to the mean
         weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
@@ -344,9 +344,10 @@ class RMSD(AnalysisBase):
 
     groupselections : list (optional)
         A list of selections as described for `select`. Each selection
-        describes additional RMSDs to be computed *after the structures
-        have been superpositioned* according to `select`. The output contains
-        one additional column for each selection. [``None``]
+        describes additional RMSDs to be computed *after the
+        structures have been superimposed* according to `select`. No
+        additional fitting is performed.The output contains one
+        additional column for each selection.
 
         .. Note:: Experimental feature. Only limited error checking
                   implemented.
@@ -361,12 +362,11 @@ class RMSD(AnalysisBase):
         step between frames, default ``None`` becomes 1.
     filename : str (optional)
         write RMSD into file with :meth:`RMSD.save`
-    mass_weighted : bool (deprecated)
-         do a mass-weighted RMSD fit
-    weights : {"mass", None} or array_like (optional)
+    weights : {"mass", ``None``} or array_like (optional)
          choose weights. With ``"mass"`` uses masses as weights; with ``None``
          weigh each atom equally. If a float array of the same length as
-         `atomgroup` is provided, use each number as weight.
+         `atomgroup` is provided, use each element of the `array_like` as a
+         weight for the corresponding atom in `atomgroup`.
     tol_mass : float (optional)
          Reject match if the atomic masses for matched atoms differ by more
          than `tol_mass`.
@@ -404,14 +404,16 @@ class RMSD(AnalysisBase):
     .. versionchanged:: 0.16.0
        Flexible weighting scheme with new `weights` keyword.
     .. deprecated:: 0.16.0
-       Instead of ``mass_weighted=True`` use new ``weights='mass'``;
-       refactored to fit with AnalysisBase API
+       Instead of ``mass_weighted=True`` (removal in 0.17.0) use new
+       ``weights='mass'``; refactored to fit with AnalysisBase API
+    .. versionchanged:: 0.17.0
+       removed deprecated `mass_weighted` keyword; `groupselections`
+       are *not* rotationally superimposed any more.
 
     """
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, filename="rmsd.dat",
-                 mass_weighted=None,
                  weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
@@ -421,12 +423,6 @@ class RMSD(AnalysisBase):
         select = process_selection(select)
         self.groupselections = ([process_selection(s) for s in groupselections]
                                 if groupselections is not None else [])
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
@@ -502,7 +498,7 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        if not isinstance(self.weights, (list, tuple, np.ndarray)) and self.weights == 'mass':
+        if self.weights == 'mass':
             self.weights = self.ref_atoms.masses
         if self.weights is not None:
             self.weights = (self.weights / self.weights.mean()).astype(np.float64)
