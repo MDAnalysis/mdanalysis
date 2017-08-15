@@ -21,15 +21,9 @@
 #
 from __future__ import absolute_import
 
-from unittest import TestCase
-
 import numpy as np
 import pytest
-from numpy.testing import (
-    assert_,
-    assert_array_equal,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 import mock
 
 
@@ -69,51 +63,51 @@ class TestUpdatingSelection(object):
         return ag_updating.select_atoms("all", updating=True)
 
     def test_update(self, u, ag, ag_updating):
-        assert_array_equal(ag_updating.indices, ag.indices)
+        assert_equal(ag_updating.indices, ag.indices)
         target_idxs = np.array([ 4469,  4470,  4472,  6289,  6290,  6291,
                                 6292, 31313, 31314, 31315, 31316, 34661,
                                 34663, 34664])
         u.trajectory.next()
         assert_equal(ag_updating._lastupdate, 0)
-        assert_(not ag_updating.is_uptodate)
-        assert_array_equal(ag_updating.indices, target_idxs)
-        assert_(ag_updating.is_uptodate)
+        assert ag_updating.is_uptodate is False
+        assert_equal(ag_updating.indices, target_idxs)
+        assert ag_updating.is_uptodate
         ag_updating.is_uptodate = False
-        assert_(ag_updating._lastupdate is None)
+        assert ag_updating._lastupdate is None
 
     def test_compounded_update(self, u, ag_updating_compounded):
         target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
                                  40360, 41414])
         target_idxs1 = np.array([ 3650,  8146, 23469, 23472, 31426,
                                  31689, 31692, 34326, 41414])
-        assert_array_equal(ag_updating_compounded.indices,
+        assert_equal(ag_updating_compounded.indices,
                            target_idxs0)
         u.trajectory.next()
-        assert_array_equal(ag_updating_compounded.indices,
+        assert_equal(ag_updating_compounded.indices,
                            target_idxs1)
 
     def test_chained_update(self, u, ag_updating_chained, ag_updating_compounded):
         target_idxs = np.array([ 4471,  7406, 11973, 11975, 34662, 44042])
-        assert_array_equal(ag_updating_chained.indices,
+        assert_equal(ag_updating_chained.indices,
                            ag_updating_compounded.indices)
         u.trajectory.next()
-        assert_array_equal(ag_updating_chained.indices, target_idxs)
+        assert_equal(ag_updating_chained.indices, target_idxs)
 
     def test_chained_update2(self, u, ag_updating, ag_updating_chained2):
-        assert_array_equal(ag_updating_chained2.indices,
+        assert_equal(ag_updating_chained2.indices,
                            ag_updating.indices)
         u.trajectory.next()
-        assert_array_equal(ag_updating_chained2.indices,
+        assert_equal(ag_updating_chained2.indices,
                            ag_updating.indices)
 
     def test_slice_is_static(self, u, ag, ag_updating):
         ag_static1 = ag_updating[:]
         ag_static2 = ag_updating.select_atoms("all")
-        assert_array_equal(ag_static1.indices, ag.indices)
-        assert_array_equal(ag_static2.indices, ag.indices)
+        assert_equal(ag_static1.indices, ag.indices)
+        assert_equal(ag_static2.indices, ag.indices)
         u.trajectory.next()
-        assert_array_equal(ag_static1.indices, ag.indices)
-        assert_array_equal(ag_static2.indices, ag.indices)
+        assert_equal(ag_static1.indices, ag.indices)
+        assert_equal(ag_static2.indices, ag.indices)
 
     def test_kwarg_check(self, u):
         with pytest.raises(TypeError):
@@ -134,11 +128,11 @@ class TestUpdatingSelectionNotraj(object):
         return u.select_atoms("name N*", updating=True)
 
     def test_update(self, ag, ag_updating):
-        assert_(ag_updating.is_uptodate)
-        assert_array_equal(ag_updating.indices, ag.indices)
+        assert ag_updating.is_uptodate
+        assert_equal(ag_updating.indices, ag.indices)
         assert_equal(ag_updating._lastupdate, -1)
         ag_updating.is_uptodate = False
-        assert_(ag_updating._lastupdate is None)
+        assert ag_updating._lastupdate is None
 
 
 class UAGReader(mda.coordinates.base.ReaderBase):
@@ -207,7 +201,7 @@ class TestUAGCallCount(object):
     def test_updated_when_creating(self, mock_update_selection, u):
         uag = u.select_atoms('name XYZ', updating=True)
 
-        assert_(mock_update_selection.call_count == 1)
+        assert mock_update_selection.call_count == 1
 
     def test_updated_when_next(self, u):
         uag = u.select_atoms('name XYZ', updating=True)
@@ -217,13 +211,13 @@ class TestUAGCallCount(object):
         with mock.patch.object(uag, 'update_selection',
                                wraps=uag.update_selection) as mock_update:
             u.trajectory.next()
-            assert_(mock_update.call_count == 0)
+            assert mock_update.call_count == 0
 
             # Access many attributes..
             pos = uag.positions
             names = uag.names
             # But check we only got updated once
-            assert_(mock_update.call_count == 1)
+            assert mock_update.call_count == 1
 
 
 class TestDynamicUAG(object):
@@ -276,10 +270,11 @@ def test_representations():
     assert "selections 'bynum 1' + 'bynum 2'" in rep
     assert "another AtomGroup" in rep
 
+
 def test_empty_UAG():
     u = make_Universe()
 
     # technically possible to make a UAG without any selections..
     uag = mda.core.groups.UpdatingAtomGroup(u.atoms, (), '')
 
-    assert_(isinstance(uag, mda.core.groups.UpdatingAtomGroup))
+    assert isinstance(uag, mda.core.groups.UpdatingAtomGroup)
