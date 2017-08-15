@@ -189,34 +189,34 @@ class UAGReader(mda.coordinates.base.ReaderBase):
         return self._read_next_frame
 
 
-class TestUAGCallCount(TestCase):
+class TestUAGCallCount(object):
     # make sure updates are only called when required!
     # 
     # these tests check that potentially expensive selection operations are only
     # done when necessary
-    def setUp(self):
-        self.u = u = make_Universe(('names',))
+    @pytest.fixture()
+    def u(self):
+        u = make_Universe(('names',))
         u.trajectory = UAGReader(125)
+        return u
 
-    def tearDown(self):
-        del self.u
 
     @mock.patch.object(MDAnalysis.core.groups.UpdatingAtomGroup, 'update_selection',
                        autospec=True, # required to make it get self when called
                        )
-    def test_updated_when_creating(self, mock_update_selection):
-        uag = self.u.select_atoms('name XYZ', updating=True)
+    def test_updated_when_creating(self, mock_update_selection, u):
+        uag = u.select_atoms('name XYZ', updating=True)
 
         assert_(mock_update_selection.call_count == 1)
 
-    def test_updated_when_next(self):
-        uag = self.u.select_atoms('name XYZ', updating=True)
+    def test_updated_when_next(self, u):
+        uag = u.select_atoms('name XYZ', updating=True)
 
         # Use mock.patch.object to start inspecting the uag update selection method
         # wraps= keyword makes it still function as normal, just we're spying on it now
         with mock.patch.object(uag, 'update_selection',
                                wraps=uag.update_selection) as mock_update:
-            self.u.trajectory.next()
+            u.trajectory.next()
             assert_(mock_update.call_count == 0)
 
             # Access many attributes..
@@ -226,31 +226,30 @@ class TestUAGCallCount(TestCase):
             assert_(mock_update.call_count == 1)
 
 
-class TestDynamicUAG(TestCase):
-    def setUp(self):
-        self.u = u = make_Universe(('names',))
+class TestDynamicUAG(object):
+    @pytest.fixture()
+    def u(self):
+        u = make_Universe(('names',))
         u.trajectory = UAGReader(125)
+        return u
 
-    def tearDown(self):
-        del self.u
+    def test_nested_uags(self, u):
+        bg = u.atoms[[3, 4]]
 
-    def test_nested_uags(self):
-        bg = self.u.atoms[[3, 4]]
+        uag1 = u.select_atoms('around 1.5 group bg', bg=bg, updating=True)
 
-        uag1 = self.u.select_atoms('around 1.5 group bg', bg=bg, updating=True)
+        uag2 = u.select_atoms('around 1.5 group uag', uag=uag1, updating=True)
 
-        uag2 = self.u.select_atoms('around 1.5 group uag', uag=uag1, updating=True)
-
-        for ts in self.u.trajectory:
+        for ts in u.trajectory:
             assert_equal(len(bg), 2)
             assert_equal(len(uag1), 2)  # around doesn't include bg, so 2
             assert_equal(len(uag2), 4)  # doesn't include uag1
 
-    def test_driveby(self):
-        uag = self.u.select_atoms('prop x < 5.5', updating=True)
+    def test_driveby(self, u):
+        uag = u.select_atoms('prop x < 5.5', updating=True)
 
         n_init = 6
-        for i, ts in enumerate(self.u.trajectory):
+        for i, ts in enumerate(u.trajectory):
             # should initially be 6 atoms with x < 5.5
             n_expected = max(n_init - i, 0)  # floors at 0
 
