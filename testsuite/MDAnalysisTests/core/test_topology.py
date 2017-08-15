@@ -29,7 +29,7 @@ import MDAnalysis
 class TestTransTable(object):
     Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
     Sidx = np.array([0, 1, 1, 0])
-        
+
     @pytest.fixture()
     def tt(self):
         return TransTable(10, 4, 2, self.Ridx, self.Sidx)
@@ -84,7 +84,7 @@ class TestTransTable(object):
                 [[0, 3, 1, 2],
                  [1, 2, 0, 3],
                  [1, 2, 1, 2]]
-                ):
+        ):
             assert_equal(tt.segments2residues_1d(sidx), rix)
 
     def test_s2r_2d(self, tt):
@@ -162,9 +162,10 @@ class TestLevelMoves(object):
 
     
     """
+
     @pytest.fixture()
     def u(self):
-        return  make_Universe(('resids', 'resnames', 'segids'))
+        return make_Universe(('resids', 'resnames', 'segids'))
 
     @staticmethod
     def assert_atoms_match_residue(atom, residue):
@@ -277,7 +278,7 @@ class TestLevelMoves(object):
         dest = [u.residues[1], u.residues[3]]
         with pytest.raises(TypeError):
             setattr(u.atoms[0], 'residue', dest)
-        
+
     def test_move_atomgroup_residuegroup_VE(self, u):
         ag = u.atoms[:2]
         dest = u.residues[5:10]
@@ -285,14 +286,12 @@ class TestLevelMoves(object):
         with pytest.raises(ValueError):
             setattr(ag, 'residues', dest)
 
-
     def test_move_atomgroup_residue_list_VE(self, u):
         ag = u.atoms[:2]
         dest = [u.residues[0], u.residues[10], u.residues[15]]
 
         with pytest.raises(ValueError):
             setattr(ag, 'residues', dest)
-
 
     # Setting to non-Residue/ResidueGroup raises TE
     def test_move_atom_TE(self, u):
@@ -307,7 +306,6 @@ class TestLevelMoves(object):
         with pytest.raises(TypeError):
             setattr(u.atoms[:5], 'residues', [14, 12])
 
-        
     # Test illegal moves - Atom.segment can't be changed
     def test_move_atom_segment_NIE(self, u):
         with pytest.raises(NotImplementedError):
@@ -429,14 +427,12 @@ class TestLevelMoves(object):
         with pytest.raises(ValueError):
             setattr(rg, 'segments', sg)
 
-
     def test_move_residuegroup_list_VE(self, u):
         rg = u.residues[:2]
         sg = [u.segments[1], u.segments[2], u.segments[3]]
 
         with pytest.raises(ValueError):
             setattr(rg, 'segments', sg)
-
 
     def test_move_residue_TE(self, u):
         with pytest.raises(TypeError):
@@ -455,23 +451,23 @@ class TestDownshiftArrays(object):
     @pytest.fixture()
     def square(self):
         return np.array([0, 1, 2, 0, 1, 2, 0, 1, 2])
-    
+
     @pytest.fixture()
     def square_size(self):
         return 3
-    
+
     @pytest.fixture()
     def square_result(self):
         return np.array([[0, 3, 6], [1, 4, 7], [2, 5, 8]])
-    
+
     @pytest.fixture()
     def ragged(self):
         return np.array([0, 1, 2, 2, 0, 1, 2, 0, 1, 2])
-    
+
     @pytest.fixture()
     def ragged_size(self):
         return 3
-    
+
     @pytest.fixture()
     def ragged_result(self):
         return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]])
@@ -480,7 +476,7 @@ class TestDownshiftArrays(object):
     def assert_rows_match(a, b):
         for row_a, row_b in zip(a, b):
             assert_equal(row_a, row_b)
-        
+
     # The array as a whole must be dtype object
     # While the subarrays must be integers
     def test_downshift_dtype_square(self, square, square_size):
@@ -567,6 +563,7 @@ class TestAddingResidues(object):
     Adding Residue and moving atoms to it
     Adding Segment and moving residues to it
     """
+
     def test_add_segment_no_attrs(self):
         u = make_Universe()
 
@@ -599,7 +596,7 @@ class TestAddingResidues(object):
 
         with pytest.raises(NoDataError):
             u.add_Residue()
-    
+
     def test_add_Residue_missing_attr_NDE(self):
         u = make_Universe(('resids',))
 
@@ -661,30 +658,29 @@ class TestAddingResidues(object):
 
 
 class TestTopologyGuessed(object):
-
     @pytest.fixture()
     def names(self):
         return ta.Atomnames(np.array(['A', 'B', 'C'], dtype=object))
-    
+
     @pytest.fixture()
     def types(self):
         return ta.Atomtypes(np.array(['X', 'Y', 'Z'], dtype=object),
-                                          guessed=True)
-    
+                            guessed=True)
+
     @pytest.fixture()
     def resids(self):
         return ta.Resids(np.array([1]))
-    
+
     @pytest.fixture()
     def resnames(self):
         return ta.Resnames(np.array(['ABC'], dtype=object),
-                                               guessed=True)
-    
+                           guessed=True)
+
     @pytest.fixture()
     def top(self, names, types, resids, resnames):
         return Topology(n_atoms=3, n_res=1,
-                            attrs=[names, types, resids, resnames])
-    
+                        attrs=[names, types, resids, resnames])
+
     def test_guessed(self, names, types, resids, resnames, top):
         guessed = top.guessed_attributes
 
