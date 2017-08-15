@@ -145,7 +145,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
-from MDAnalysis.lib.util import asiterable
+from MDAnalysis.lib.util import asiterable, iterable
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -373,6 +373,17 @@ class RMSD(AnalysisBase):
     ref_frame : int (optional)
          frame index to select frame from `reference`
 
+    Raises
+    ------
+    SelectionError
+         If the selections from `atomgroup` and `reference` do not match.
+    TypeError
+         If `weights` is not of the appropriate type.
+    ValueError
+         If `weights` are not compatible with `groupselections`: only equal
+         weights (``weights=None``) or mass-weighted (``weights="mass"``)
+         is supported.
+
     Notes
     -----
     The root mean square deviation of a group of :math:`N` atoms relative to a
@@ -484,6 +495,15 @@ class RMSD(AnalysisBase):
                     "N_ref={3}, N_traj={4}".format(
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
+        # check weights
+        if not (iterable(self.weights) or self.weights in ("mass", None)):
+            raise TypeError("weights must be {'mass', None} or an iterable of the "
+                            "same size as the atomgroup.")
+        elif iterable(self.weights) and \
+             len(self.weights) != self.mobile_atoms.n_atoms:
+            raise TypeError("weights (length {0}) must be of same length as "
+                            "the mobile selection ({1})".format(
+                                len(self.weights), self.mobile_atoms.n_atoms))
         # cannot use arbitrary weight array (for superposition) with
         # groupselections because arrays will not match
         if len(self.groupselections) > 0 and self.weights not in ("mass", None):
@@ -501,7 +521,7 @@ class RMSD(AnalysisBase):
         if self.weights == 'mass':
             self.weights = self.ref_atoms.masses
         if self.weights is not None:
-            self.weights = (self.weights / self.weights.mean()).astype(np.float64)
+            self.weights = np.asarray(self.weights, dtype=np.float64) / np.mean(self.weights)
 
         current_frame = self.reference.trajectory.ts.frame
 
@@ -630,9 +650,6 @@ class RMSF(AnalysisBase):
         which means that the trajectory would be read until the end.
     step : int (optional)
         step between frames, default None becomes 1.
-    weights : {"mass", None} or array_like (optional)
-        used weights. If ``'mass'`` use masses of atomgroup, if ``None``
-        use uniform weights, if array use each float as the weight.
     verbose : bool (optional)
         if ``False``, suppress all output
 
@@ -646,6 +663,8 @@ class RMSF(AnalysisBase):
 
       \rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}
 
+    No mass weighting is performed.
+
     This method implements an algorithm for computing sums of squares while
     avoiding overflows and underflows [Welford1962]_.
 
@@ -657,19 +676,16 @@ class RMSF(AnalysisBase):
 
     .. versionadded:: 0.11.0
     .. versionchanged:: 0.16.0
-       Flexible weighting scheme with new `weights` keyword.
+       refactored to fit with AnalysisBase API
     .. deprecated:: 0.16.0
-       Instead of ``mass_weighted=True`` use new ``weights='mass'``;
-       refactored to fit with AnalysisBase API;
        the keyword argument `quiet` is deprecated in favor of `verbose`.
+    .. versionchanged:: 0.17.0
+       removed unused keyword `weights`
 
     """
-    def __init__(self, atomgroup, weights=None, **kwargs):
+    def __init__(self, atomgroup, **kwargs):
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
-        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-            weights = self.atomgroup.masses
-        self.weights = weights
 
     def run(self, start=None, stop=None, step=None, progout=None,
             verbose=None, quiet=None):
