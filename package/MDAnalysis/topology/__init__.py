@@ -121,6 +121,10 @@ the attributes they provide.
                                                  and constructs minimal topology data.
                                                  :mod:`MDAnalysis.topology.XYZParser`
 
+   TXYZ [#a]_        txyz,     names, atomids,   Tinker XYZ File Parser. Reads atom labels, numbers
+                     arc       masses, types,    and connectivity; masses are guessed from atoms names.                
+                               bonds             :mod:`MDAnalysis.topology.TXYZParser`
+
    GAMESS [#a]_      gms,      names,            GAMESS output parser. Read only atoms of assembly
                      log       atomic charges,   section (atom, elems and coords) and construct
                                                  topology.
