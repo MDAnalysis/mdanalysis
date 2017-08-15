@@ -178,6 +178,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | TXYZ [#a]_    |  txyz,    |  r    | Tinker XYZ format.                                   |
+   |               |  arc      |       |                                                      |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.XYZ`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | GAMESS        |  gms,     |  r    | Generic semi-formatted GAMESS output log; can be     |
    |               |  log,     |       | compressed (gzip or bzip2). Module                   |
    |               |  out      |       | :mod:`MDAnalysis.coordinates.GMS`                    |
