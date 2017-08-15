@@ -24,11 +24,10 @@ from __future__ import absolute_import
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import TXYZ
+from MDAnalysisTests.datafiles import TXYZ, ARC
 
 
 class TestTXYZParser(ParserBase):
-
     parser = mda.topology.TXYZParser.TXYZParser
     filename = TXYZ
     guessed_attrs = [ 'masses']
@@ -37,11 +36,10 @@ class TestTXYZParser(ParserBase):
     expected_n_atoms = 9
     expected_n_segments = 1
 
-
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 8
 
 
-
-
+class TestARCParser(TestTXYZParser):
+     filename = ARC
 
