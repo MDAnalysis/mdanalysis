@@ -55,7 +55,8 @@ Changes
   * remove deprecated analysis.contacts.ContactAnalysis1
   * remove deprecated analysis.hbonds.hbond_analysis 1-indexing
   * remove deprecated analysis.rms `target` keyword from functions
-  * remove deprecated analysis.rms.RMSD `mass_weighted` keyword 
+  * remove deprecated analysis.rms.RMSD `mass_weighted` keyword
+  * remove deprecated analysis.align `mass_weighted` keyword from classes
   * use fast scipy.io.netcdf pure python implementation for reading of Amber
     netcdf3 trajctories instead of netCDF4 but use netCDF4 for fast
     writing (if available) or fall back to netcdf (see also Issue #506)

@@ -113,18 +113,6 @@ class TestAlign(object):
                                    superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
-    def test_rmsd_deprecated(self, universe, reference):
-        last_atoms_weight = universe.atoms.masses
-        A = universe.trajectory[0]
-        B = reference.trajectory[-1]
-        with pytest.warns(DeprecationWarning) as warn:
-            warnings.simplefilter('always')
-            rmsd = align.alignto(universe, reference, mass_weighted=True)
-        assert len(warn) == 1
-        rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
-                                   superposition=True)
-        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
-
     def test_rmsd_custom_mass_weights(self, universe, reference):
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -198,22 +186,6 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference,
                             filename=outfile,
                             weights=reference.atoms.masses).run()
-        fitted = mda.Universe(PSF, outfile)
-        assert_almost_equal(x.rmsd[0], 0, decimal=3)
-        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
-
-        self._assert_rmsd(reference, fitted, 0, 0.0,
-                          weights=universe.atoms.masses)
-        self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
-                          weights=universe.atoms.masses)
-
-    def test_AlignTraj_weights_deprecated(self, universe, reference, tmpdir):
-        outfile = str(tmpdir.join('align_test.dcd'))
-        with pytest.warns(DeprecationWarning) as warn:
-            warnings.simplefilter('always')
-            x = align.AlignTraj(universe, reference,
-                                filename=outfile, mass_weighted=True).run()
-        assert len(warn) == 1
         fitted = mda.Universe(PSF, outfile)
         assert_almost_equal(x.rmsd[0], 0, decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
