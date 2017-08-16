@@ -171,7 +171,7 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
         except IOError as e:
-            assert_('Permission denied' in e.strerror)
+            assert 'Permission denied' in str(e.strerror)
         else:
             raise AssertionError
         finally:

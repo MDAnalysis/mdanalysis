@@ -307,8 +307,10 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
     """
     try:
+        # pylint: disable=deprecated-method
         base_argspec = inspect.getfullargspec(AnalysisBase.__init__)
     except AttributeError:
+        # pylint: disable=deprecated-method
         base_argspec = inspect.getargspec(AnalysisBase.__init__)
 
     n_base_defaults = len(base_argspec.defaults)
@@ -317,8 +319,10 @@ def _filter_baseanalysis_kwargs(function, kwargs):
                                         base_argspec.defaults)}
 
     try:
+        # pylint: disable=deprecated-method
         argspec = inspect.getfullargspec(function)
     except AttributeError:
+        # pylint: disable=deprecated-method
         argspec = inspect.getargspec(function)
 
     for base_kw in six.iterkeys(base_kwargs):
