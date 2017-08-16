@@ -35,6 +35,10 @@ Differences between Tinker format_ and normal xyz files:
 .. _format: http://chembytes.wikidot.com/tnk-tut00#toc2
 .. _Tinker: https://dasher.wustl.edu/tinker/
 
+
+Classes
+-------
+
 """
 from __future__ import absolute_import, division
 from six.moves import range

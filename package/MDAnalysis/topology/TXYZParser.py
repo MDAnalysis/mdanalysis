@@ -24,8 +24,9 @@ TXYZ topology parser
 ====================
 
 Tinker_ topology parser: reads information from .txyz and .arc files.
-Atom types are read from column 6, while bond connectivity is read from column 7 onwards.
-see :mod:`MDAnalysis.coordinates.TXYZ` for further documentation about the Tinker format.
+Atom types are read from column 6, while bond connectivity is read from column 7
+onwards.  See :mod:`MDAnalysis.coordinates.TXYZ` for further documentation about
+the Tinker format.
 
 .. _Tinker: https://dasher.wustl.edu/tinker/
 """
@@ -50,15 +51,19 @@ from ..core.topologyattrs import (
 
 class TXYZParser(TopologyReaderBase):
     """Parse a list of atoms from a Tinker XYZ file.
+
     Creates the following attributes:
-     - Atomnames
-     - Atomtypes
+
+    - Atomnames
+    - Atomtypes
+
     .. versionadded:: 0.17.0
     """
     format = ['TXYZ', 'ARC']
 
     def parse(self):
         """Read the file and return the structure.
+
         Returns
         -------
         MDAnalysis Topology object
@@ -82,7 +87,6 @@ class TXYZParser(TopologyReaderBase):
                     other_atom = int(other_atom) - 1
                     if i < other_atom: 
                          bonds.append((i, other_atom))
-                    
 
         # Guessing time
         masses = guessers.guess_masses(names)
@@ -101,5 +105,3 @@ class TXYZParser(TopologyReaderBase):
                        attrs=attrs)
 
         return top
-
-        
