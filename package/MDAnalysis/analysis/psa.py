@@ -814,7 +814,7 @@ class Path(object):
 
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
-                         mass_weighted=None, weights=None, tol_mass=0.1):
+                         weights=None, tol_mass=0.1):
         """Align each trajectory frame to the reference structure
 
         Parameters
@@ -822,15 +822,17 @@ class Path(object):
         filename : str (optional)
              file name for the RMS-fitted trajectory or pdb; defaults to the
              original trajectory filename (from :attr:`Path.u_original`) with
-             *prefix* prepended
+             `prefix` prepended
         prefix : str (optional)
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass` [0.1]
@@ -848,13 +850,10 @@ class Path(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         head, tail = os.path.split(self.trj_name)
         oldname, ext = os.path.splitext(tail)
         filename = filename or oldname
@@ -926,7 +925,7 @@ class Path(object):
 
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
-            targetdir=os.path.curdir, mass_weighted=None, weights=None, tol_mass=0.1,
+            targetdir=os.path.curdir, weights=None, tol_mass=0.1,
             flat=False):
         r"""Generate a path from a trajectory and reference structure.
 
@@ -960,10 +959,12 @@ class Path(object):
              prefix for auto-generating the new output filename
         rmsdfile : str (optional)
              file name for writing the RMSD time series [``None``]
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
@@ -981,13 +982,10 @@ class Path(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         if align:
             self.u_fitted = self.fit_to_reference(
                                 filename=filename, postfix=postfix,
@@ -1384,7 +1382,7 @@ class PSAnalysis(object):
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
-    def generate_paths(self, align=False, filename='fitted', infix='', mass_weighted=None, weights=None,
+    def generate_paths(self, align=False, filename='fitted', infix='', weights=None,
                        tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
         """Generate paths, aligning each to reference structure if necessary.
 
@@ -1399,10 +1397,12 @@ class PSAnalysis(object):
         infix : str
              additional tag string that is inserted into the output filename of
              the fitted trajectory files ['']
-        mass_weighted : bool (deprecated)
-            do a mass-weighted RMSD fit
-        weights : str/array_like (optional)
-            choose weights. If 'str' uses masses as weights
+        weights : {"mass", ``None``} or array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights; with
+             ``None`` weigh each atom equally. If a float array of the same
+             length as the selected AtomGroup is provided, use each element of
+             the `array_like` as a weight for the corresponding atom in the
+             AtomGroup.
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass*
@@ -1434,13 +1434,10 @@ class PSAnalysis(object):
         .. deprecated:: 0.16.1
            Instead of ``mass_weighted=True`` use new ``weights='mass'``;
            refactored to fit with AnalysisBase API
+
+        .. versionchanged:: 0.17.0
+           Deprecated keyword `mass_weighted` was removed.
         """
-        if mass_weighted is not None:
-            warnings.warn("mass weighted is deprecated argument. Please use "
-                          " 'weights=\"mass\" instead. Will be removed in 0.17.0",
-                          category=DeprecationWarning)
-            if mass_weighted:
-                weights = 'mass'
         if ref_frame is None:
             ref_frame = self.ref_frame
 
