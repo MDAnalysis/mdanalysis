@@ -145,7 +145,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter, _set_verbose
-from MDAnalysis.lib.util import asiterable, iterable
+from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -378,7 +378,8 @@ class RMSD(AnalysisBase):
     SelectionError
          If the selections from `atomgroup` and `reference` do not match.
     TypeError
-         If `weights` is not of the appropriate type.
+         If `weights` is not of the appropriate type; see
+         :func:`MDAnalysis.lib.util.get_weights`
     ValueError
          If `weights` are not compatible with `groupselections`: only equal
          weights (``weights=None``) or mass-weighted (``weights="mass"``)
@@ -495,15 +496,13 @@ class RMSD(AnalysisBase):
                     "N_ref={3}, N_traj={4}".format(
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
-        # check weights
-        if not (iterable(self.weights) or self.weights in ("mass", None)):
-            raise TypeError("weights must be {'mass', None} or an iterable of the "
-                            "same size as the atomgroup.")
-        elif iterable(self.weights) and \
-             len(self.weights) != self.mobile_atoms.n_atoms:
-            raise TypeError("weights (length {0}) must be of same length as "
-                            "the mobile selection ({1})".format(
-                                len(self.weights), self.mobile_atoms.n_atoms))
+
+        # Explicitly check for "mass" because this option CAN
+        # be used with groupselection. (get_weights() returns the mass array
+        # for "mass")
+        if self.weights != "mass":
+            self.weights = get_weights(self.mobile_atoms, self.weights)
+
         # cannot use arbitrary weight array (for superposition) with
         # groupselections because arrays will not match
         if len(self.groupselections) > 0 and self.weights not in ("mass", None):

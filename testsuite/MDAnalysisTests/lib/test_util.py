@@ -547,6 +547,35 @@ class TestFixedwidthBins(object):
         assert ret['min'], output_min
         assert ret['max'], output_max
 
+@pytest.fixture
+def atoms():
+    from MDAnalysisTests import make_Universe
+    u = make_Universe(extras=("masses",), size=(3,1,1))
+    return u.atoms
+
+@pytest.mark.parametrize('weights,result',
+                          [
+                              (None, None),
+                              ("mass", np.array([5.1, 4.2, 3.3])),
+                              (np.array([12.0, 1.0, 12.0]), np.array([12.0, 1.0, 12.0])),
+                              ([12.0, 1.0, 12.0], np.array([12.0, 1.0, 12.0])),
+                              (range(3), np.arange(3, dtype=int)),
+                          ])
+def test_check_weights_True(atoms, weights, result):
+    assert_array_equal(util.get_weights(atoms, weights), result)
+
+@pytest.mark.parametrize('weights',
+                          [42, "geometry",
+                           np.array(1.0),
+                           np.array([12.0, 1.0, 12.0, 1.0]),
+                           [12.0, 1.0],
+                           np.array([[12.0, 1.0, 12.0]]),
+                           np.array([[12.0, 1.0, 12.0], [12.0, 1.0, 12.0]]),
+                          ])
+def test_check_weights_raises_TypeError(atoms, weights):
+    with pytest.raises(TypeError):
+        util.get_weights(atoms, weights)
+
 
 class TestGuessFormat(object):
     """Test guessing of format from filenames

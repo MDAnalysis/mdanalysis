@@ -203,6 +203,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
+from MDAnalysis.lib.util import get_weights
 
 from .base import AnalysisBase
 
@@ -479,8 +480,7 @@ def alignto(mobile, reference, select="all", weights=None,
                                                  tol_mass=tol_mass,
                                                  strict=strict)
 
-    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-        weights = ref_atoms.masses
+    weights = get_weights(ref_atoms, weights)
 
     mobile_com = mobile_atoms.center(weights)
     ref_com = ref_atoms.center(weights)
@@ -642,9 +642,7 @@ class AlignTraj(AnalysisBase):
         # retained
         self._writer = mda.Writer(self.filename, natoms)
 
-        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-            weights = self.ref_atoms.masses
-        self._weights = weights
+        self._weights = get_weights(self.ref_atoms, weights)
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
