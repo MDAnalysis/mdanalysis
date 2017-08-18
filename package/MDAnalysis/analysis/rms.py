@@ -385,12 +385,16 @@ class RMSD(AnalysisBase):
         SelectionError
              If the selections from `atomgroup` and `reference` do not match.
         TypeError
-             If `weights` is not of the appropriate type; see
+             If `weights` is not of the appropriate type; see also
              :func:`MDAnalysis.lib.util.get_weights`
         ValueError
+             If `weights` are not compatible with `atomgroup` (not the same
+             length) or if it is not a 1D array (see
+             :func:`MDAnalysis.lib.util.get_weights`).
+
              If `weights` are not compatible with `groupselections`: only equal
              weights (``weights=None``) or mass-weighted (``weights="mass"``)
-             is supported.
+             are supported for additional `groupselections`.
 
         Notes
         -----
