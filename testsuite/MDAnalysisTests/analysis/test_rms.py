@@ -253,8 +253,8 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 
-    def test_rmsd_mismatched_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+    def test_rmsd_mismatched_weights_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=universe.atoms.masses[:-1])
 

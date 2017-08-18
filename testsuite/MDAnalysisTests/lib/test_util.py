@@ -561,19 +561,27 @@ def atoms():
                               ([12.0, 1.0, 12.0], np.array([12.0, 1.0, 12.0])),
                               (range(3), np.arange(3, dtype=int)),
                           ])
-def test_check_weights_True(atoms, weights, result):
+def test_check_weights_ok(atoms, weights, result):
     assert_array_equal(util.get_weights(atoms, weights), result)
 
 @pytest.mark.parametrize('weights',
-                          [42, "geometry",
+                          [42,
+                           "geometry",
                            np.array(1.0),
+                          ])
+def test_check_weights_raises_TypeError(atoms, weights):
+    with pytest.raises(TypeError):
+        util.get_weights(atoms, weights)
+
+@pytest.mark.parametrize('weights',
+                          [
                            np.array([12.0, 1.0, 12.0, 1.0]),
                            [12.0, 1.0],
                            np.array([[12.0, 1.0, 12.0]]),
                            np.array([[12.0, 1.0, 12.0], [12.0, 1.0, 12.0]]),
                           ])
-def test_check_weights_raises_TypeError(atoms, weights):
-    with pytest.raises(TypeError):
+def test_check_weights_raises_ValueError(atoms, weights):
+    with pytest.raises(ValueError):
         util.get_weights(atoms, weights)
 
 

@@ -1291,9 +1291,13 @@ def get_weights(atoms, weights):
     Raises
     ------
     TypeError
-        If `weights` is not one of the allowed values or if it is not a 1D
-        array with the same length as `atoms`, then the exception is raised.
-        :exc:`TypeError` is also raised if ``atoms.masses`` is not defined.
+        If `weights` is not one of the allowed values or if "mass" is
+        selected but ``atoms.masses`` is not available.
+    ValueError
+        If `weights` is not a 1D array with the same length as
+        `atoms`, then the exception is raised.  :exc:`TypeError` is
+        also raised if ``atoms.masses`` is not defined.
+
     """
     if weights == "mass":
         try:
@@ -1302,13 +1306,13 @@ def get_weights(atoms, weights):
             raise TypeError("weights='mass' selected but atoms.masses is missing")
 
     if iterable(weights):
-        if len(weights) != len(atoms):
-            raise TypeError("weights (length {0}) must be of same length as "
+        if len(np.asarray(weights).shape) != 1:
+            raise ValueError("weights must be a 1D array, not with shape "
+                            "{0}".format(np.asarray(weights).shape))
+        elif len(weights) != len(atoms):
+            raise ValueError("weights (length {0}) must be of same length as "
                             "the atoms ({1})".format(
                                 len(weights), len(atoms)))
-        elif len(np.asarray(weights).shape) != 1:
-            raise TypeError("weights must be a 1D array, not with shape "
-                            "{0}".format(np.asarray(weights).shape))
     elif weights is not None:
         raise TypeError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
