@@ -303,8 +303,11 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
         array of xyz coordinate of mobile center of mass
     ref_com: ndarray
         array of xyz coordinate of reference center of mass
-    weights : ndarray (optional)
-        Array to be used for weighted rmsd
+    weights : array_like (optional)
+       choose weights. With ``None`` weigh each atom equally. If a float array
+       of the same length as `mobile_coordinates` is provided, use each element
+       of the `array_like` as a weight for the corresponding atom in
+       `mobile_coordinates`.
 
     Returns
     -------
@@ -331,6 +334,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
            X' = \mathsf{R}(X - \bar{X}) + \bar{X}_{\text{ref}}
 
        where :math:`\bar{X}` is the center.
+
     """
     R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates,
                                   weights=weights)
@@ -514,87 +518,11 @@ def alignto(mobile, reference, select="all", weights=None,
 class AlignTraj(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection.
 
-    Both reference *ref* and trajectory `mobile` must be
-    :class:`MDAnalysis.Universe` instances. If they contain a
-    trajectory then it is used. The output file format is determined
-    by the file extension of *filename*. One can also use the same
-    universe if one wants to fit to the current frame.
-
-    Parameters
-    ----------
-    mobile : Universe
-        Universe containing trajectory to be fitted to reference
-    reference : Universe
-        Universe containing trajectory frame to be used as reference
-    select : str (optional)
-        Set as default to all, is used for Universe.select_atoms to choose
-        subdomain to be fitted against
-    filename : str (optional)
-        Provide a filename for results to be written to
-    prefix : str (optional)
-        Provide a string to prepend to filename for results to be written
-        to
-    weights : {"mass", ``None``} or array_like (optional)
-        choose weights. With ``"mass"`` uses masses of `reference` as
-        weights; with ``None`` weigh each atom equally. If a float array of
-        the same length as the selection is provided, use each element of the
-        `array_like` as a weight for the corresponding atom in the selection.
-    tol_mass : float (optional)
-        Tolerance given to `get_matching_atoms` to find appropriate atoms
-    strict : bool (optional)
-        Force `get_matching_atoms` to fail if atoms can't be found using
-        exact methods
-    force : bool (optional)
-        Force overwrite of filename for rmsd-fitting
-    verbose : bool (optional)
-        Set logger to show more information
-    start : int (optional)
-        First frame of trajectory to analyse, Default: 0
-    stop : int (optional)
-        Last frame of trajectory to analyse, Default: -1
-    step : int (optional)
-        Step between frames to analyse, Default: 1
-    in_memory : bool (optional)
-        *Permanently* switch `mobile` to an in-memory trajectory
-        so that alignment can be done in-place, which can improve
-        performance substantially in some cases. In this case, no file
-        is written out (`filename` and `prefix` are ignored) and only
-        the coordinates of `mobile` are *changed in memory*.
-
-    Attributes
-    ----------
-    reference_atoms : AtomGroup
-        Atoms of the reference structure to be aligned against
-    mobile_atoms : AtomGroup
-        Atoms inside each trajectory frame to be rmsd_aligned
-    rmsd : Array
-        Array of the rmsd values of the least rmsd between the mobile_atoms
-        and reference_atoms after superposition and minimimization of rmsd
-    filename : str
-        String reflecting the filename of the file where mobile_atoms positions
-        will be written to upon running RMSD alignment
-
-
-    Notes
-    -----
-    - If set to ``verbose=False``, it is recommended to wrap the statement in a
-      ``try ...  finally`` to guarantee restoring of the log level in the
-      case of an exception.
-    - The ``in_memory`` option changes the `mobile` universe to an
-      in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
-      for the remainder of the Python session. If ``mobile.trajectory`` is
-      already a :class:`MemoryReader` then it is *always* treated as if
-      ``in_memory`` had been set to ``True``.
-
-
-    .. versionchanged:: 0.16.0
-       new general ``weights`` kwarg replace ``mass_weights``
-
-    .. deprecated:: 0.16.0
-       Instead of ``mass_weighted=True`` use new ``weights='mass'``
-
-    .. versionchanged:: 0.17.0
-       removed deprecated `mass_weighted` keyword
+    Both the reference `reference` and the trajectory `mobile` must be
+    :class:`MDAnalysis.Universe` instances. If they contain a trajectory then
+    it is used. The output file format is determined by the file extension of
+    `filename`. One can also use the same universe if one wants to fit to the
+    current frame.
 
     """
 
@@ -602,6 +530,84 @@ class AlignTraj(AnalysisBase):
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, strict=False, force=True, in_memory=False,
                  **kwargs):
+        """Parameters
+        ----------
+        mobile : Universe
+            Universe containing trajectory to be fitted to reference
+        reference : Universe
+            Universe containing trajectory frame to be used as reference
+        select : str (optional)
+            Set as default to all, is used for Universe.select_atoms to choose
+            subdomain to be fitted against
+        filename : str (optional)
+            Provide a filename for results to be written to
+        prefix : str (optional)
+            Provide a string to prepend to filename for results to be written
+            to
+        weights : {"mass", ``None``} or array_like (optional)
+            choose weights. With ``"mass"`` uses masses of `reference` as
+            weights; with ``None`` weigh each atom equally. If a float array of
+            the same length as the selection is provided, use each element of
+            the `array_like` as a weight for the corresponding atom in the
+            selection.
+        tol_mass : float (optional)
+            Tolerance given to `get_matching_atoms` to find appropriate atoms
+        strict : bool (optional)
+            Force `get_matching_atoms` to fail if atoms can't be found using
+            exact methods
+        force : bool (optional)
+            Force overwrite of filename for rmsd-fitting
+        verbose : bool (optional)
+            Set logger to show more information
+        start : int (optional)
+            First frame of trajectory to analyse, Default: 0
+        stop : int (optional)
+            Last frame of trajectory to analyse, Default: -1
+        step : int (optional)
+            Step between frames to analyse, Default: 1
+        in_memory : bool (optional)
+            *Permanently* switch `mobile` to an in-memory trajectory
+            so that alignment can be done in-place, which can improve
+            performance substantially in some cases. In this case, no file
+            is written out (`filename` and `prefix` are ignored) and only
+            the coordinates of `mobile` are *changed in memory*.
+
+        Attributes
+        ----------
+        reference_atoms : AtomGroup
+            Atoms of the reference structure to be aligned against
+        mobile_atoms : AtomGroup
+            Atoms inside each trajectory frame to be rmsd_aligned
+        rmsd : Array
+            Array of the rmsd values of the least rmsd between the mobile_atoms
+            and reference_atoms after superposition and minimimization of rmsd
+        filename : str
+            String reflecting the filename of the file where mobile_atoms
+            positions will be written to upon running RMSD alignment
+
+
+        Notes
+        -----
+        - If set to ``verbose=False``, it is recommended to wrap the statement
+          in a ``try ...  finally`` to guarantee restoring of the log level in
+          the case of an exception.
+        - The ``in_memory`` option changes the `mobile` universe to an
+          in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)
+          for the remainder of the Python session. If ``mobile.trajectory`` is
+          already a :class:`MemoryReader` then it is *always* treated as if
+          ``in_memory`` had been set to ``True``.
+
+
+        .. versionchanged:: 0.16.0
+           new general ``weights`` kwarg replace ``mass_weights``
+
+        .. deprecated:: 0.16.0
+           Instead of ``mass_weighted=True`` use new ``weights='mass'``
+
+        .. versionchanged:: 0.17.0
+           removed deprecated `mass_weighted` keyword
+
+        """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
         self.mobile_atoms = mobile.select_atoms(*select['mobile'])
