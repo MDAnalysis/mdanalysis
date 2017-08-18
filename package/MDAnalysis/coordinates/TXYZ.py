@@ -23,17 +23,25 @@
 TXYZ file format --- :mod:`MDAnalysis.coordinates.TXYZ`
 =======================================================
 
-Coordinate reader for Tinker_ xyz files .txyz and trajectory .arc files
-Differences between Tinker format_ and normal xyz files: 
+Coordinate reader for Tinker_ xyz files .txyz and trajectory .arc files.
+Differences between Tinker format_ and normal xyz files:
 
 - there is only one header line containing both the number of atoms and a comment
 - column 1 contains atom numbers (starting from 1)
-- column 6 contains atoms types 
+- column 6 contains atoms types
 - the following columns indicate connectivity (atoms to which that particular atom is
   bonded, according to numbering in column 1)
 
 .. _format: http://chembytes.wikidot.com/tnk-tut00#toc2
 .. _Tinker: https://dasher.wustl.edu/tinker/
+
+
+Classes
+-------
+
+.. autoclass:: TXYZReader
+   :members:
+   :inherited-members:
 
 """
 from __future__ import absolute_import, division
@@ -41,7 +49,7 @@ from six.moves import range
 
 import numpy as np
 import os
-import errno 
+import errno
 
 from ..lib import util
 from . import base
@@ -152,7 +160,7 @@ class TXYZReader(base.ReaderBase):
         ts.frame = -1
 
         return self.xyzfile
-    
+
     def close(self):
         """Close arc trajectory file if it was open."""
         if self.xyzfile is None:

@@ -19,16 +19,29 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-TXYZ topology parser
+"""TXYZ topology parser
 ====================
 
 Tinker_ topology parser: reads information from .txyz and .arc files.
-Atom types are read from column 6, while bond connectivity is read from column 7 onwards.
-see :mod:`MDAnalysis.coordinates.TXYZ` for further documentation about the Tinker format.
+Atom types are read from column 6, while bond connectivity is read from column 7
+onwards.
 
 .. _Tinker: https://dasher.wustl.edu/tinker/
+
+See Also
+--------
+MDAnalysis.coordinates.TXYZ : further documentation on the Tinker format
+
+
+Classes
+-------
+
+.. autoclass:: TXYZParser
+   :members:
+   :inherited-members:
+
 """
+
 from __future__ import absolute_import
 import numpy as np
 
@@ -50,15 +63,19 @@ from ..core.topologyattrs import (
 
 class TXYZParser(TopologyReaderBase):
     """Parse a list of atoms from a Tinker XYZ file.
+
     Creates the following attributes:
-     - Atomnames
-     - Atomtypes
+
+    - Atomnames
+    - Atomtypes
+
     .. versionadded:: 0.17.0
     """
     format = ['TXYZ', 'ARC']
 
     def parse(self):
         """Read the file and return the structure.
+
         Returns
         -------
         MDAnalysis Topology object
@@ -80,9 +97,8 @@ class TXYZParser(TopologyReaderBase):
                 bonded_atoms = line[6:]
                 for other_atom in bonded_atoms:
                     other_atom = int(other_atom) - 1
-                    if i < other_atom: 
+                    if i < other_atom:
                          bonds.append((i, other_atom))
-                    
 
         # Guessing time
         masses = guessers.guess_masses(names)
@@ -101,5 +117,3 @@ class TXYZParser(TopologyReaderBase):
                        attrs=attrs)
 
         return top
-
-        
