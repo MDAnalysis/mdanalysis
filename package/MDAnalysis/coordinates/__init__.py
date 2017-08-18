@@ -37,6 +37,8 @@ underlying coordinate data. This abstraction of coordinate access through an
 object-oriented interface is one of the key capabilities of MDAnalysis.
 
 
+.. _Readers:
+
 Readers
 -------
 
@@ -81,6 +83,9 @@ alongside a trajectory using
 the :ref:`Auxiliary API`.
 
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
+
+
+.. _writing-trajectories:
 
 Writers
 -------
