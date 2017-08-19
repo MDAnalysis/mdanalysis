@@ -526,88 +526,85 @@ class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation
     tests in scikit-learn"""
 
-
     n_clusters = 3
-    X = np.array([[8.73101582, 8.85617874],
-                  [11.61311169, 11.58774351],
-                  [10.86083514, 11.06253959],
-                  [9.45576027, 8.50606967],
-                  [11.30441509, 11.04867001],
-                  [8.63708065, 9.02077816],
-                  [8.34792066, 9.1851129],
-                  [11.06197897, 11.15126501],
-                  [11.24563175, 9.36888267],
-                  [10.83455241, 8.70101808],
-                  [11.49211627, 11.48095194],
-                  [10.6448857, 10.20768141],
-                  [10.491806, 9.38775868],
-                  [11.08330999, 9.39065561],
-                  [10.83872922, 9.48897803],
-                  [11.37890079, 8.93799596],
-                  [11.70562094, 11.16006288],
-                  [10.95871246, 11.1642394],
-                  [11.59763163, 10.91793669],
-                  [11.05761743, 11.5817094],
-                  [8.35444086, 8.91490389],
-                  [8.79613913, 8.82477028],
-                  [11.00420001, 9.7143482],
-                  [11.90790185, 10.41825373],
-                  [11.39149519, 11.89635728],
-                  [8.31749192, 9.78031016],
-                  [11.59530088, 9.75835567],
-                  [11.17754529, 11.13346973],
-                  [11.01830341, 10.92512646],
-                  [11.75326028, 8.46089638],
-                  [11.74702358, 9.36241786],
-                  [10.53075064, 9.77744847],
-                  [8.67474149, 8.30948696],
-                  [11.05076484, 9.16079575],
-                  [8.79567794, 8.52774713],
-                  [11.18626498, 8.38550253],
-                  [10.57169895, 9.42178069],
-                  [8.65168114, 8.76846013],
-                  [11.12522708, 10.6583617],
-                  [8.87537899, 9.02246614],
-                  [9.29163622, 9.05159316],
-                  [11.38003537, 10.93945712],
-                  [8.74627116, 8.85490353],
-                  [10.65550973, 9.76402598],
-                  [8.49888186, 9.31099614],
-                  [8.64181338, 9.154761],
-                  [10.84506927, 10.8790789],
-                  [8.98872711, 9.17133275],
-                  [11.7470232, 10.60908885],
-                  [10.89279865, 9.32098256],
-                  [11.14254656, 9.28262927],
-                  [9.02660689, 9.12098876],
-                  [9.16093666, 8.72607596],
-                  [11.47151183, 8.92803007],
-                  [11.76917681, 9.59220592],
-                  [9.97880407, 11.26144744],
-                  [8.58057881, 8.43199283],
-                  [10.53394006, 9.36033059],
-                  [11.34577448, 10.70313399],
-                  [9.07097046, 8.83928763]])
-
-    XX = np.einsum('ij,ij->i', X, X)[:, np.newaxis]
-    YY = XX.T
-    distances = np.dot(X, X.T)
-    distances *= -2
-    distances += XX
-    distances += YY
-    np.maximum(distances, 0, out=distances)
-    distances.flat[::distances.shape[0] + 1] = 0.0
 
     @pytest.fixture()
-    def dimension(self):
-        return len(self.distances)
+    def distance_matrix(self):
+        X = np.array([[8.73101582, 8.85617874],
+                      [11.61311169, 11.58774351],
+                      [10.86083514, 11.06253959],
+                      [9.45576027, 8.50606967],
+                      [11.30441509, 11.04867001],
+                      [8.63708065, 9.02077816],
+                      [8.34792066, 9.1851129],
+                      [11.06197897, 11.15126501],
+                      [11.24563175, 9.36888267],
+                      [10.83455241, 8.70101808],
+                      [11.49211627, 11.48095194],
+                      [10.6448857, 10.20768141],
+                      [10.491806, 9.38775868],
+                      [11.08330999, 9.39065561],
+                      [10.83872922, 9.48897803],
+                      [11.37890079, 8.93799596],
+                      [11.70562094, 11.16006288],
+                      [10.95871246, 11.1642394],
+                      [11.59763163, 10.91793669],
+                      [11.05761743, 11.5817094],
+                      [8.35444086, 8.91490389],
+                      [8.79613913, 8.82477028],
+                      [11.00420001, 9.7143482],
+                      [11.90790185, 10.41825373],
+                      [11.39149519, 11.89635728],
+                      [8.31749192, 9.78031016],
+                      [11.59530088, 9.75835567],
+                      [11.17754529, 11.13346973],
+                      [11.01830341, 10.92512646],
+                      [11.75326028, 8.46089638],
+                      [11.74702358, 9.36241786],
+                      [10.53075064, 9.77744847],
+                      [8.67474149, 8.30948696],
+                      [11.05076484, 9.16079575],
+                      [8.79567794, 8.52774713],
+                      [11.18626498, 8.38550253],
+                      [10.57169895, 9.42178069],
+                      [8.65168114, 8.76846013],
+                      [11.12522708, 10.6583617],
+                      [8.87537899, 9.02246614],
+                      [9.29163622, 9.05159316],
+                      [11.38003537, 10.93945712],
+                      [8.74627116, 8.85490353],
+                      [10.65550973, 9.76402598],
+                      [8.49888186, 9.31099614],
+                      [8.64181338, 9.154761],
+                      [10.84506927, 10.8790789],
+                      [8.98872711, 9.17133275],
+                      [11.7470232, 10.60908885],
+                      [10.89279865, 9.32098256],
+                      [11.14254656, 9.28262927],
+                      [9.02660689, 9.12098876],
+                      [9.16093666, 8.72607596],
+                      [11.47151183, 8.92803007],
+                      [11.76917681, 9.59220592],
+                      [9.97880407, 11.26144744],
+                      [8.58057881, 8.43199283],
+                      [10.53394006, 9.36033059],
+                      [11.34577448, 10.70313399],
+                      [9.07097046, 8.83928763]])
 
-    @pytest.fixture()
-    def distance_matrix(self, dimension):
-        distance_matrix = encore.utils.TriangularMatrix(len(self.distances))
+        XX = np.einsum('ij,ij->i', X, X)[:, np.newaxis]
+        YY = XX.T
+        distances = np.dot(X, X.T)
+        distances *= -2
+        distances += XX
+        distances += YY
+        np.maximum(distances, 0, out=distances)
+        distances.flat[::distances.shape[0] + 1] = 0.0
+        dimension = len(distances)
+
+        distance_matrix = encore.utils.TriangularMatrix(len(distances))
         for i in range(dimension):
             for j in range(i, dimension):
-                distance_matrix[i, j] = self.distances[i, j]
+                distance_matrix[i, j] = distances[i, j]
         return distance_matrix
 
     def test_one(self, distance_matrix):
@@ -625,20 +622,21 @@ class TestEncoreDimensionalityReduction(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
-        template.transfer_to_memory()
+        template.transfer_to_memory(step=5)
         template = mda.Universe(
             template.filename,
-            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
-                    format=mda.coordinates.memory.MemoryReader)
+            np.copy(template.trajectory.timeseries(format='fac')),
+            format=mda.coordinates.memory.MemoryReader)
         return template
 
     @pytest.fixture(scope='class')
     def ens2_template(self):
         template = mda.Universe(PSF, DCD2)
-        template.transfer_to_memory()
+        template.transfer_to_memory(step=5)
         template = mda.Universe(template.filename,
-            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
-                    format=mda.coordinates.memory.MemoryReader)
+                                np.copy(template.trajectory.timeseries(
+                                    format='fac')),
+                                format=mda.coordinates.memory.MemoryReader)
         return template
 
     @pytest.fixture()
