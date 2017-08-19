@@ -27,12 +27,11 @@ import MDAnalysis
 
 
 class TestTransTable(object):
-    Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
-    Sidx = np.array([0, 1, 1, 0])
-
     @pytest.fixture()
     def tt(self):
-        return TransTable(10, 4, 2, self.Ridx, self.Sidx)
+        Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
+        Sidx = np.array([0, 1, 1, 0])
+        return TransTable(10, 4, 2, Ridx, Sidx)
 
     def test_a2r(self, tt):
         for aix, rix in zip(
