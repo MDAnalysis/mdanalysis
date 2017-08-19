@@ -61,4 +61,4 @@ class TestRequires(object):
             assert 'dogs' in message
             assert 'frogs' in message
         else:
-            raise pytest.fail(msg="Should raise NoDataError")
+            pytest.fail(msg="Should raise NoDataError")
