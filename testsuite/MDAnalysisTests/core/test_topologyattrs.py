@@ -24,15 +24,14 @@
 """
 from __future__ import division, absolute_import
 
-from unittest import TestCase
 import warnings
 
 import numpy as np
 
 from numpy.testing import (
     assert_,
-    assert_array_equal,
-    assert_array_almost_equal,
+    assert_equal,
+    assert_almost_equal,
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD
@@ -61,7 +60,7 @@ class DummyGroup(object):
         return self._ix
 
 
-class TopologyAttrMixin(TestCase):
+class TopologyAttrMixin(object):
     """Mixin to test the common elements to all TopologyAttrs.
 
     10 atoms
@@ -69,34 +68,30 @@ class TopologyAttrMixin(TestCase):
     2 segments
 
     """
-
-    __test__ = False
-
     # Reference data
-    Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
-    Sidx = np.array([0, 1, 1, 0])
 
-    def setUp(self):
-        self.top = Topology(10, 4, 2,
-                            attrs=[self.attrclass(self.values.copy())],
-                            atom_resindex=self.Ridx,
-                            residue_segindex=self.Sidx)
-        self.attr = getattr(self.top, self.attrclass.attrname)
 
-    def tearDown(self):
-        del self.top
+    @pytest.fixture()
+    def top(self):
+        Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
+        Sidx = np.array([0, 1, 1, 0])
+        return Topology(10, 4, 2,
+                        attrs=[self.attrclass(self.values.copy())],
+                        atom_resindex=Ridx,
+                        residue_segindex=Sidx)
 
-    def test_len(self):
-        assert len(self.attr) == len(self.attr.values)
+    @pytest.fixture()
+    def attr(self, top):
+        return getattr(top, self.attrclass.attrname)
+
+    def test_len(self, attr):
+        assert len(attr) == len(attr.values)
 
 
 class TestAtomAttr(TopologyAttrMixin):
     """Test atom-level TopologyAttrs.
 
     """
-
-    __test__ = True
-
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
     attrclass = tpattrs.AtomAttr
 
@@ -107,119 +102,102 @@ class TestAtomAttr(TopologyAttrMixin):
         with pytest.raises(ValueError):
             setattr(at, 'name', ['oopsy', 'daisies'])
 
-    def test_get_atoms(self):
-        result = self.attr.get_atoms(DummyGroup([2, 1]))
+    def test_get_atoms(self, attr):
+        result = attr.get_atoms(DummyGroup([2, 1]))
 
         assert_(len(result) == 2)
-        assert_array_equal(result,
+        assert_equal(result,
                            self.values[[2, 1]])
 
-    def test_set_atoms_singular(self):
+    def test_set_atoms_singular(self, attr):
         # set len 2 Group to len 1 value
         dg = DummyGroup([3, 7])
-        self.attr.set_atoms(dg, 567)
-        assert_array_equal(self.attr.get_atoms(dg), np.array([567, 567]))
+        attr.set_atoms(dg, 567)
+        assert_equal(attr.get_atoms(dg), np.array([567, 567]))
 
-    def test_set_atoms_plural(self):
+    def test_set_atoms_plural(self, attr):
         # set len 2 Group to len 2 values
         dg = DummyGroup([3, 7])
-        self.attr.set_atoms(dg, np.array([23, 504]))
-        assert_array_equal(self.attr.get_atoms(dg), np.array([23, 504]))
+        attr.set_atoms(dg, np.array([23, 504]))
+        assert_equal(attr.get_atoms(dg), np.array([23, 504]))
 
-    def test_set_atoms_VE(self):
+    def test_set_atoms_VE(self, attr):
         # set len 2 Group to wrong length values
         dg = DummyGroup([3, 7])
         with pytest.raises(ValueError):
-            self.attr.set_atoms(dg, np.array([6, 7, 8, 9]))
+            attr.set_atoms(dg, np.array([6, 7, 8, 9]))
 
-    def test_get_residues(self):
+    def test_get_residues(self, attr):
         """Unless overriden by child class, this should yield values for all
         atoms in residues.
 
         """
-        result = self.attr.get_residues(DummyGroup([2, 1]))
+        result = attr.get_residues(DummyGroup([2, 1]))
 
         assert_(len(result) == 2)
-        assert_array_equal(result,
+        assert_equal(result,
                            [self.values[[2, 3, 9]], self.values[[4, 5, 8]]])
 
-    def test_get_segments(self):
+    def test_get_segments(self, attr):
         """Unless overriden by child class, this should yield values for all
         atoms in segments.
 
         """
-        result = self.attr.get_segments(DummyGroup([1]))
+        result = attr.get_segments(DummyGroup([1]))
 
         assert_(len(result) == 1)
-        assert_array_equal(result,
+        assert_equal(result,
                            [self.values[[4, 5, 8, 2, 3, 9]]])
 
 
 class TestAtomids(TestAtomAttr):
-
-    __test__ = True
-
     attrclass = tpattrs.Atomids
 
 
-class TestIndicesClasses(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+class TestIndicesClasses(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
-
-    def test_cant_set_atom_indices(self):
+    def test_cant_set_atom_indices(self, u):
         with pytest.raises(AttributeError):
-            self.u.atoms.indices = 1
+            u.atoms.indices = 1
 
-    def test_cant_set_residue_indices(self):
+    def test_cant_set_residue_indices(self, u):
         with pytest.raises(AttributeError):
-            self.u.atoms.residues.resindices = 1
+            u.atoms.residues.resindices = 1
 
-    def test_cant_set_segment_indices(self):
+    def test_cant_set_segment_indices(self, u):
         with pytest.raises(AttributeError):
-            self.u.atoms.segments.segindices = 1
+            u.atoms.segments.segindices = 1
 
 
 class TestAtomnames(TestAtomAttr):
-
-    __test__ = True
-
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
                       dtype=np.object)
     attrclass = tpattrs.Atomnames
 
 
 class AggregationMixin(TestAtomAttr):
-
-    __test__ = False
-
-    def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyGroup([2, 1])),
+    def test_get_residues(self, attr):
+        assert_equal(attr.get_residues(DummyGroup([2, 1])),
                            np.array([self.values[[2, 3, 9]].sum(),
                                      self.values[[4, 5, 8]].sum()]))
 
-    def test_get_segments(self):
-        assert_array_equal(self.attr.get_segments(DummyGroup([1])),
+    def test_get_segments(self, attr):
+        assert_equal(attr.get_segments(DummyGroup([1])),
                            np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
 
-    def test_get_segment(self):
-        assert_array_equal(self.attr.get_segments(DummyGroup(1)),
+    def test_get_segment(self, attr):
+        assert_equal(attr.get_segments(DummyGroup(1)),
                            np.sum(self.values[[4, 5, 8, 2, 3, 9]]))
 
 
 class TestMasses(AggregationMixin):
-
-    __test__ = True
-
     attrclass = tpattrs.Masses
 
 
 class TestCharges(AggregationMixin):
-
-    __test__ = True
-
     values = np.array([+2, -1, 0, -1, +1, +2, 0, 0, 0, -1])
     attrclass = tpattrs.Charges
 
@@ -228,9 +206,6 @@ class TestResidueAttr(TopologyAttrMixin):
     """Test residue-level TopologyAttrs.
 
     """
-
-    __test__ = True
-
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
 
@@ -240,51 +215,48 @@ class TestResidueAttr(TopologyAttrMixin):
         with pytest.raises(ValueError):
             setattr(res, 'resname', ['wrong', 'length'])
 
-    def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms(DummyGroup([7, 3, 9])),
+    def test_get_atoms(self, attr):
+        assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])),
                            self.values[[3, 2, 2]])
 
-    def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])),
+    def test_get_residues(self, attr):
+        assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
                            self.values[[1, 2, 1, 3]])
 
-    def test_set_residues_singular(self):
+    def test_set_residues_singular(self, attr):
         dg = DummyGroup([3, 0, 1])
-        self.attr.set_residues(dg, 2)
+        attr.set_residues(dg, 2)
 
-        assert_array_almost_equal(self.attr.get_residues(dg),
+        assert_almost_equal(attr.get_residues(dg),
                                   np.array([2, 2, 2]))
 
-    def test_set_residues_plural(self):
-        self.attr.set_residues(DummyGroup([3, 0, 1]),
+    def test_set_residues_plural(self, attr):
+        attr.set_residues(DummyGroup([3, 0, 1]),
                                np.array([23, 504, 2]))
-        assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
+        assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 2]))
 
-    def test_set_residues_VE(self):
+    def test_set_residues_VE(self, attr):
         dg = DummyGroup([3, 0, 1])
 
         with pytest.raises(ValueError):
-            self.attr.set_residues(dg, np.array([4.5, 5.2]))
+            attr.set_residues(dg, np.array([4.5, 5.2]))
 
-    def test_get_segments(self):
+    def test_get_segments(self, attr):
         """Unless overriden by child class, this should yield values for all
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyGroup([0, 1, 1])),
+        assert_equal(attr.get_segments(DummyGroup([0, 1, 1])),
                            [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
 
 
 class TestResids(TestResidueAttr):
-
-    __test__ = True
-
     values = np.array([10, 11, 18, 20])
     attrclass = tpattrs.Resids
 
     @pytest.mark.xfail
-    def test_set_atoms(self):
+    def test_set_atoms(self, attr):
         """Setting the resids of atoms changes their residue membership.
 
         """
@@ -292,24 +264,21 @@ class TestResids(TestResidueAttr):
         assert_(1 == 2)
 
         # set with array
-        self.attr.set_atoms(DummyGroup([3, 7]), np.array([11, 20]))
-        assert_array_equal(self.attr.get_atoms(DummyGroup([3, 7])), np.array([11, 20]))
+        attr.set_atoms(DummyGroup([3, 7]), np.array([11, 20]))
+        assert_equal(attr.get_atoms(DummyGroup([3, 7])), np.array([11, 20]))
 
         # set to resid that no residue has (should raise exception)
         with pytest.raises(NoDataError):
-            self.attr.set_atoms(DummyGroup([3, 7]), np.array([11, 21]))
+            attr.set_atoms(DummyGroup([3, 7]), np.array([11, 21]))
 
-    def test_set_residues(self):
-        self.attr.set_residues(DummyGroup([3, 0, 1]),
+    def test_set_residues(self, attr):
+        attr.set_residues(DummyGroup([3, 0, 1]),
                                np.array([23, 504, 27]))
-        assert_array_almost_equal(self.attr.get_residues(DummyGroup([3, 0, 1])),
+        assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 27]))
 
 
 class TestResnames(TestResidueAttr):
-
-    __test__ = True
-
     values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
     attrclass = tpattrs.Resnames
 
@@ -363,9 +332,6 @@ class TestSegmentAttr(TopologyAttrMixin):
     """Test segment-level TopologyAttrs.
 
     """
-
-    __test__ = True
-
     values = np.array([-0.19, 500])
     attrclass = tpattrs.SegmentAttr
 
@@ -375,68 +341,65 @@ class TestSegmentAttr(TopologyAttrMixin):
         with pytest.raises(ValueError):
             setattr(seg, 'segid', [1, 2, 3])
 
-    def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms(DummyGroup([2, 4, 1])),
+    def test_get_atoms(self, attr):
+        assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])),
                            self.values[[1, 1, 0]])
 
-    def test_get_residues(self):
-        assert_array_equal(self.attr.get_residues(DummyGroup([1, 2, 1, 3])),
+    def test_get_residues(self, attr):
+        assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
                            self.values[[1, 1, 1, 0]])
 
-    def test_get_segments(self):
+    def test_get_segments(self, attr):
         """Unless overriden by child class, this should yield values for all
         atoms in segments.
 
         """
-        assert_array_equal(self.attr.get_segments(DummyGroup([1, 0, 0])),
+        assert_equal(attr.get_segments(DummyGroup([1, 0, 0])),
                            self.values[[1, 0, 0]])
 
-    def test_set_segments_singular(self):
+    def test_set_segments_singular(self, attr):
         dg = DummyGroup([0, 1])
-        self.attr.set_segments(dg, 0.45)
-        assert_array_equal(self.attr.get_segments(dg), np.array([0.45, 0.45]))
+        attr.set_segments(dg, 0.45)
+        assert_equal(attr.get_segments(dg), np.array([0.45, 0.45]))
 
-    def test_set_segments_plural(self):
+    def test_set_segments_plural(self, attr):
         dg = DummyGroup([0, 1])
-        self.attr.set_segments(dg, np.array([23, -0.0002]))
-        assert_array_equal(self.attr.get_segments(dg), np.array([23, -0.0002]))
+        attr.set_segments(dg, np.array([23, -0.0002]))
+        assert_equal(attr.get_segments(dg), np.array([23, -0.0002]))
 
-    def test_set_segments_VE(self):
+    def test_set_segments_VE(self, attr):
         dg = DummyGroup([0, 1])
         with pytest.raises(ValueError):
-            self.attr.set_segments(dg, np.array([4, 5, 6, 7]))
+            attr.set_segments(dg, np.array([4, 5, 6, 7]))
 
 
-class TestAttr(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.ag = self.universe.atoms  # prototypical AtomGroup
+class TestAttr(object):
+    @pytest.fixture()
+    def ag(self):
+        universe = mda.Universe(PSF, DCD)
+        return universe.atoms  # prototypical AtomGroup
 
-    def tearDown(self):
-        del self.universe
-        del self.ag
-
-    def test_principal_axes(self):
-        assert_array_almost_equal(
-            self.ag.principal_axes(),
+    def test_principal_axes(self, ag):
+        assert_almost_equal(
+            ag.principal_axes(),
             np.array([
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04]]))
 
-    def test_align_principal_axes_with_self(self):
-        pa = self.ag.principal_axes()
-        self.ag.align_principal_axis(0, pa[0])
+    def test_align_principal_axes_with_self(self, ag):
+        pa = ag.principal_axes()
+        ag.align_principal_axis(0, pa[0])
 
 
-        assert_array_almost_equal(self.ag.principal_axes(), pa)
+        assert_almost_equal(ag.principal_axes(), pa)
 
-    def test_align_principal_axes_with_x(self):
-        self.ag.align_principal_axis(0, [1, 0, 0])
+    def test_align_principal_axes_with_x(self, ag):
+        ag.align_principal_axis(0, [1, 0, 0])
         # This is a very loose check that the difference is not more then 0.5.
         # This is OK here because the rounding error in the calculation really
         # is that big.
-        assert_(np.allclose(np.abs(self.ag.principal_axes()), np.eye(3),
+        assert_(np.allclose(np.abs(ag.principal_axes()), np.eye(3),
                             rtol=0, atol=0.1))
 
 
