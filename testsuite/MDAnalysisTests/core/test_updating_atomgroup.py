@@ -51,7 +51,7 @@ class TestUpdatingSelection(object):
     @pytest.fixture()
     def ag_updating_compounded(self, u, ag):
         return u.select_atoms("around 2 group sele",
-                                   sele=ag, updating=True)
+                              sele=ag, updating=True)
 
     @pytest.fixture()
     def ag_updating_chained(self, u, ag_updating):
@@ -64,7 +64,7 @@ class TestUpdatingSelection(object):
 
     def test_update(self, u, ag, ag_updating):
         assert_equal(ag_updating.indices, ag.indices)
-        target_idxs = np.array([ 4469,  4470,  4472,  6289,  6290,  6291,
+        target_idxs = np.array([4469, 4470, 4472, 6289, 6290, 6291,
                                 6292, 31313, 31314, 31315, 31316, 34661,
                                 34663, 34664])
         u.trajectory.next()
@@ -76,29 +76,30 @@ class TestUpdatingSelection(object):
         assert ag_updating._lastupdate is None
 
     def test_compounded_update(self, u, ag_updating_compounded):
-        target_idxs0 = np.array([ 3650,  7406, 22703, 31426, 40357,
+        target_idxs0 = np.array([3650, 7406, 22703, 31426, 40357,
                                  40360, 41414])
-        target_idxs1 = np.array([ 3650,  8146, 23469, 23472, 31426,
+        target_idxs1 = np.array([3650, 8146, 23469, 23472, 31426,
                                  31689, 31692, 34326, 41414])
         assert_equal(ag_updating_compounded.indices,
-                           target_idxs0)
+                     target_idxs0)
         u.trajectory.next()
         assert_equal(ag_updating_compounded.indices,
-                           target_idxs1)
+                     target_idxs1)
 
-    def test_chained_update(self, u, ag_updating_chained, ag_updating_compounded):
-        target_idxs = np.array([ 4471,  7406, 11973, 11975, 34662, 44042])
+    def test_chained_update(self, u, ag_updating_chained,
+                            ag_updating_compounded):
+        target_idxs = np.array([4471, 7406, 11973, 11975, 34662, 44042])
         assert_equal(ag_updating_chained.indices,
-                           ag_updating_compounded.indices)
+                     ag_updating_compounded.indices)
         u.trajectory.next()
         assert_equal(ag_updating_chained.indices, target_idxs)
 
     def test_chained_update2(self, u, ag_updating, ag_updating_chained2):
         assert_equal(ag_updating_chained2.indices,
-                           ag_updating.indices)
+                     ag_updating.indices)
         u.trajectory.next()
         assert_equal(ag_updating_chained2.indices,
-                           ag_updating.indices)
+                     ag_updating.indices)
 
     def test_slice_is_static(self, u, ag, ag_updating):
         ag_static1 = ag_updating[:]
@@ -154,6 +155,7 @@ class UAGReader(mda.coordinates.base.ReaderBase):
     Whilst quite possible not the best data for molecular simulation,
     it does make for easy to write tests.
     """
+
     def __init__(self, n_atoms):
         super(UAGReader, self).__init__('UAGReader')
         self._auxs = {}
@@ -194,9 +196,10 @@ class TestUAGCallCount(object):
         u.trajectory = UAGReader(125)
         return u
 
-
-    @mock.patch.object(MDAnalysis.core.groups.UpdatingAtomGroup, 'update_selection',
-                       autospec=True, # required to make it get self when called
+    @mock.patch.object(MDAnalysis.core.groups.UpdatingAtomGroup,
+                       'update_selection',
+                       autospec=True,
+                       # required to make it get self when called
                        )
     def test_updated_when_creating(self, mock_update_selection, u):
         uag = u.select_atoms('name XYZ', updating=True)
