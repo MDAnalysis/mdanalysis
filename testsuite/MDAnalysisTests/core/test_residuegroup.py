@@ -94,11 +94,6 @@ class TestSequence(object):
 
 class TestResidueGroup(object):
     # Legacy tests from before 363
-    # def setUp(self):
-    #     """Set up the standard AdK system in implicit solvent."""
-    #     self.universe = mda.Universe(PSF, DCD)
-    #     self.rg = self.universe.residues
-
     @pytest.fixture()
     def universe(self):
         return mda.Universe(PSF, DCD)
