@@ -69,15 +69,16 @@ class TopologyAttrMixin(object):
 
     """
     # Reference data
-    Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
-    Sidx = np.array([0, 1, 1, 0])
+
 
     @pytest.fixture()
     def top(self):
+        Ridx = np.array([0, 0, 2, 2, 1, 1, 3, 3, 1, 2])
+        Sidx = np.array([0, 1, 1, 0])
         return Topology(10, 4, 2,
                         attrs=[self.attrclass(self.values.copy())],
-                        atom_resindex=self.Ridx,
-                        residue_segindex=self.Sidx)
+                        atom_resindex=Ridx,
+                        residue_segindex=Sidx)
 
     @pytest.fixture()
     def attr(self, top):
