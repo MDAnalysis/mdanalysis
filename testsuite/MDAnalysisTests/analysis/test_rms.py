@@ -145,7 +145,7 @@ class Testrmsd(object):
         B = p_last.positions
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
-        assert_almost_equal(rmsd, rmsd_superposition)
+        assert_almost_equal(rmsd, rmsd_superposition, decimal=6)
 
 
 class TestRMSD(object):
