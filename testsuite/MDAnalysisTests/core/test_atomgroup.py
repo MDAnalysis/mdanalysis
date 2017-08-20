@@ -23,19 +23,16 @@ from __future__ import division, absolute_import
 
 from glob import glob
 import itertools
-import os
 from os import path
-from unittest import TestCase
 
 import numpy as np
 import warnings
 
 from numpy.testing import (
-    assert_,
-    assert_array_equal,
     assert_almost_equal,
     assert_equal,
-    assert_array_almost_equal,
+    assert_array_equal,
+    assert_array_almost_equal
 )
 
 import MDAnalysis as mda
@@ -52,7 +49,7 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
 )
-from MDAnalysisTests import tempdir, make_Universe, no_deprecated_call
+from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import pytest
 
@@ -80,8 +77,8 @@ class TestDeprecationWarnings(object):
         at_list = list(u.atoms[:10])
         ag = mda.core.groups.AtomGroup(at_list)
 
-        assert_(isinstance(ag, mda.core.groups.AtomGroup))
-        assert_(len(ag) == 10)
+        assert isinstance(ag, mda.core.groups.AtomGroup)
+        assert len(ag) == 10
         assert_equal(ag.names, u.atoms[:10].names)
 
     def test_old_ResidueGroup_init_warns(self):
@@ -97,8 +94,8 @@ class TestDeprecationWarnings(object):
         res_list = list(u.residues[:10])
         rg = mda.core.groups.ResidueGroup(res_list)
 
-        assert_(isinstance(rg, mda.core.groups.ResidueGroup))
-        assert_(len(rg) == 10)
+        assert isinstance(rg, mda.core.groups.ResidueGroup)
+        assert len(rg) == 10
         assert_equal(rg.resnames, u.residues[:10].resnames)
 
     def test_old_SegmentGroup_init_warns(self):
@@ -114,8 +111,8 @@ class TestDeprecationWarnings(object):
         seg_list = list(u.segments[:3])
         sg = mda.core.groups.SegmentGroup(seg_list)
 
-        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
-        assert_(len(sg) == 3)
+        assert isinstance(sg, mda.core.groups.SegmentGroup)
+        assert len(sg) == 3
         assert_equal(sg.segids, u.segments[:3].segids)
 
 
@@ -128,22 +125,22 @@ class TestAtomGroupToTopology(object):
     def test_bond(self, u):
         ag = u.atoms[:2]
         bond = ag.bond
-        assert_(isinstance(bond, Bond))
+        assert isinstance(bond, Bond)
 
     def test_angle(self, u):
         ag = u.atoms[:3]
         angle = ag.angle
-        assert_(isinstance(angle, Angle))
+        assert isinstance(angle, Angle)
 
     def test_dihedral(self, u):
         ag = u.atoms[:4]
         dih = ag.dihedral
-        assert_(isinstance(dih, Dihedral))
+        assert isinstance(dih, Dihedral)
 
     def test_improper(self, u):
         ag = u.atoms[:4]
         imp = ag.improper
-        assert_(isinstance(imp, ImproperDihedral))
+        assert isinstance(imp, ImproperDihedral)
 
     @pytest.mark.parametrize('btype,', [
         'bond',
@@ -157,16 +154,15 @@ class TestAtomGroupToTopology(object):
             getattr(ag, btype)
 
 
-class TestAtomGroupWriting(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
+class TestAtomGroupWriting(object):
+        
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.u
-
-    def test_write_no_args(self):
-        with tempdir.in_tempdir():
-            self.u.atoms.write()
+    def test_write_no_args(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            u.atoms.write()
             files = glob('*')
             assert_equal(len(files), 1)
 
@@ -174,64 +170,62 @@ class TestAtomGroupWriting(TestCase):
             assert_equal(files[0], "{}_0.pdb".format(name))
 
 
-    def test_raises(self):
-        with tempdir.in_tempdir():
+    def test_raises(self, u, tmpdir):
+        with tmpdir.as_cwd():
             with pytest.raises(ValueError):
-                self.u.atoms.write('useless.format123')
+                u.atoms.write('useless.format123')
 
-    def test_write_coordinates(self):
-        with tempdir.in_tempdir():
-            self.u.atoms.write("test.xtc")
+    def test_write_coordinates(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            u.atoms.write("test.xtc")
 
-    def test_write_selection(self):
-        with tempdir.in_tempdir():
-            self.u.atoms.write("test.vmd")
+    def test_write_selection(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            u.atoms.write("test.vmd")
 
-    def test_bogus_kwarg_pdb(self):
+    def test_bogus_kwarg_pdb(self, u, tmpdir):
         # test for resolution of Issue 877
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             with pytest.raises(TypeError):
-                self.u.atoms.write('dummy.pdb', bogus="what?")
+                u.atoms.write('dummy.pdb', bogus="what?")
 
-class _WriteAtoms(TestCase):
+
+class _WriteAtoms(object):
     """Set up the standard AdK system in implicit solvent."""
-
-    __test__ = False
 
     ext = None  # override to test various output writers
     precision = 3
 
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        suffix = '.' + self.ext
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
+        
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF, DCD)
+    
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir) + "writeatoms." + self.ext
 
-    def tearDown(self):
-        del self.universe
-        del self.tempdir
+    def universe_from_tmp(self, outfile):
+        return mda.Universe(outfile, convert_units=True)
 
-    def universe_from_tmp(self):
-        return mda.Universe(self.outfile, convert_units=True)
-
-    def test_write_atoms(self):
-        self.universe.atoms.write(self.outfile)
-        u2 = self.universe_from_tmp()
-        assert_array_almost_equal(
-            self.universe.atoms.positions, u2.atoms.positions,
+    def test_write_atoms(self, universe, outfile):
+        universe.atoms.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
+        assert_almost_equal(
+            universe.atoms.positions, u2.atoms.positions,
             self.precision,
             err_msg=("atom coordinate mismatch between original and {0!s} file"
                      "".format(self.ext)))
 
-    def test_write_empty_atomgroup(self):
-        sel = self.universe.select_atoms('name doesntexist')
+    def test_write_empty_atomgroup(self, universe, outfile):
+        sel = universe.select_atoms('name doesntexist')
         with pytest.raises(IndexError):
-            sel.write(self.outfile)
+            sel.write(outfile)
 
-    def test_write_selection(self):
-        CA = self.universe.select_atoms('name CA')
-        CA.write(self.outfile)
-        u2 = self.universe_from_tmp()
+    def test_write_selection(self, universe, outfile):
+        CA = universe.select_atoms('name CA')
+        CA.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         CA2 = u2.atoms
         assert_equal(len(u2.atoms), len(CA.atoms),
@@ -240,10 +234,10 @@ class _WriteAtoms(TestCase):
             CA2.positions, CA.positions, self.precision,
             err_msg="CA coordinates do not agree with original")
 
-    def test_write_Residue(self):
-        G = self.universe.s4AKE.ARG[-2].atoms  # 2nd but last Arg
-        G.write(self.outfile)
-        u2 = self.universe_from_tmp()
+    def test_write_Residue(self, universe, outfile):
+        G = universe.s4AKE.ARG[-2].atoms  # 2nd but last Arg
+        G.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         G2 = u2.atoms
         assert_equal(
@@ -253,10 +247,10 @@ class _WriteAtoms(TestCase):
             G2.positions, G.positions, self.precision,
             err_msg="Residue R206 coordinates do not agree with original")
 
-    def test_write_ResidueGroup(self):
-        G = self.universe.s4AKE.LEU.atoms
-        G.write(self.outfile)
-        u2 = self.universe_from_tmp()
+    def test_write_ResidueGroup(self, universe, outfile):
+        G = universe.s4AKE.LEU.atoms
+        G.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
         assert_equal(
             len(u2.atoms), len(G.atoms),
@@ -265,10 +259,10 @@ class _WriteAtoms(TestCase):
             G2.positions, G.positions, self.precision,
             err_msg="ResidueGroup LEU coordinates do not agree with original")
 
-    def test_write_Segment(self):
-        G = self.universe.s4AKE.atoms
-        G.write(self.outfile)
-        u2 = self.universe_from_tmp()
+    def test_write_Segment(self, universe, outfile):
+        G = universe.s4AKE.atoms
+        G.write(outfile)
+        u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
         assert_equal(len(u2.atoms), len(G.atoms),
                      "written s4AKE segment does not match original segment")
@@ -276,11 +270,11 @@ class _WriteAtoms(TestCase):
             G2.positions, G.positions, self.precision,
             err_msg="segment s4AKE coordinates do not agree with original")
 
-    def test_write_Universe(self):
-        U = self.universe
-        with mda.Writer(self.outfile) as W:
+    def test_write_Universe(self, universe, outfile):
+        U = universe
+        with mda.Writer(outfile) as W:
             W.write(U)
-        u2 = self.universe_from_tmp()
+        u2 = self.universe_from_tmp(outfile)
         assert_equal(
             len(u2.atoms), len(U.atoms),
             "written 4AKE universe does not match original universe in size")
@@ -312,40 +306,45 @@ class TestWriteGRO(_WriteAtoms):
                      " in the testing suite.)")
 
 
-class TestAtomGroupTransformations(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(PSF, DCD)
-        self.coords = self.u.atoms.positions.copy()
-        self.cog = self.u.atoms.center_of_geometry()
+class TestAtomGroupTransformations(object):
+        
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
+    
+    @pytest.fixture()
+    def coords(self, u):
+        return u.atoms.positions.copy()
+    
+    @pytest.fixture()
+    def center_of_geometry(self, u):
+        return u.atoms.center_of_geometry()
 
-    def tearDown(self):
-        del self.u
-
-    def test_translate(self):
+    def test_translate(self, u, center_of_geometry):
         disp = np.ones(3)
-        ag = self.u.atoms.translate(disp)
-        assert_equal(ag, self.u.atoms)
+        ag = u.atoms.translate(disp)
+        assert_equal(ag, u.atoms)
 
-        cog = self.u.atoms.center_of_geometry()
-        diff = cog - self.cog
-        assert_array_almost_equal(diff, disp, decimal=5)
+        cog = u.atoms.center_of_geometry()
+        diff = cog - center_of_geometry
+        assert_almost_equal(diff, disp, decimal=5)
 
-    def test_rotate(self):
+    def test_rotate(self, u, coords):
         # ensure that selection isn't centered at 0, 0, 0
-        self.u.atoms.translate((1, 1, 1))
-        self.coords += 1
+        u.atoms.translate((1, 1, 1))
+        coords += 1
 
         # check identify does nothing
         R = np.eye(3)
-        self.u.atoms.rotate(R)
-        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+        u.atoms.rotate(R)
+        assert_almost_equal(u.atoms.positions, coords)
 
         # check default rotation center is at 0, 0, 0. Changing this center
         # will break an unpredictable amount of old code.
-        ag = self.u.atoms[:2]
+        ag = u.atoms[:2]
         ag.positions = np.array([[1, 0, 0], [-1, 0, 0]])
         ag.rotate(transformations.rotation_matrix(1, [0, 0, 1])[:3, :3])
-        assert_array_almost_equal(ag.positions[0], [np.cos(1), np.sin(1), 0])
+        assert_almost_equal(ag.positions[0], [np.cos(1), np.sin(1), 0])
 
         # check general rotation cases
         vec = np.array([[1, 0, 0], [-1, 0, 0]])
@@ -355,26 +354,26 @@ class TestAtomGroupTransformations(TestCase):
             ag.positions = vec.copy()
             res_ag = ag.rotate(R[:3, :3])
             assert_equal(ag, res_ag)
-            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+            assert_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
                                                         0])
 
             ag.positions = vec.copy()
             ag.rotate(R[:3, :3], vec[0])
-            assert_array_almost_equal(ag.positions[0], vec[0])
+            assert_almost_equal(ag.positions[0], vec[0])
             assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
                                                         - 2 * np.sin(angle),
                                                         0])
 
-    def test_rotateby(self):
+    def test_rotateby(self, u, coords):
         R = np.eye(3)
-        self.u.atoms.rotate(R)
-        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+        u.atoms.rotate(R)
+        assert_almost_equal(u.atoms.positions, coords)
 
         vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
 
-        ag = self.u.atoms[:2]
+        ag = u.atoms[:2]
         ag.positions = vec
 
         for angle in np.linspace(0, np.pi):
@@ -382,105 +381,100 @@ class TestAtomGroupTransformations(TestCase):
             # needs to be rotated about origin
             res_ag = ag.rotateby(np.rad2deg(angle), axis)
             assert_equal(res_ag, ag)
-            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+            assert_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
                                                         0])
 
             ag.positions = vec.copy()
             ag.rotateby(np.rad2deg(angle), axis, point=vec[0])
-            assert_array_almost_equal(ag.positions[0], vec[0])
-            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
+            assert_almost_equal(ag.positions[0], vec[0])
+            assert_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
                                                         - 2 * np.sin(angle),
                                                         0])
 
-    def test_transform_rotation_only(self):
+    def test_transform_rotation_only(self, u, coords):
         R = np.eye(3)
-        self.u.atoms.rotate(R)
-        assert_array_almost_equal(self.u.atoms.positions, self.coords)
+        u.atoms.rotate(R)
+        assert_almost_equal(u.atoms.positions, coords)
 
         vec = np.array([[1, 0, 0], [-1, 0, 0]])
         axis = np.array([0, 0, 1])
 
-        ag = self.u.atoms[:2]
+        ag = u.atoms[:2]
         ag.positions = vec
 
         for angle in np.linspace(0, np.pi):
             R = transformations.rotation_matrix(angle, axis)
             ag.positions = vec.copy()
             ag.transform(R)
-            assert_array_almost_equal(ag.positions[0], [np.cos(angle),
+            assert_almost_equal(ag.positions[0], [np.cos(angle),
                                                         np.sin(angle),
                                                         0])
 
-    def test_transform_translation_only(self):
+    def test_transform_translation_only(self, u, center_of_geometry):
         disp = np.ones(3)
         T = np.eye(4)
         T[:3, 3] = disp
-        ag = self.u.atoms.transform(T)
-        assert_equal(ag, self.u.atoms)
-        cog = self.u.atoms.center_of_geometry()
-        diff = cog - self.cog
-        assert_array_almost_equal(diff, disp, decimal=5)
+        ag = u.atoms.transform(T)
+        assert_equal(ag, u.atoms)
+        cog = u.atoms.center_of_geometry()
+        diff = cog - center_of_geometry
+        assert_almost_equal(diff, disp, decimal=5)
 
-    def test_transform_translation_and_rotation(self):
+    def test_transform_translation_and_rotation(self, u):
         angle = np.pi / 4
         axis = [0, 0, 1]
         disp = np.ones(3)
         T = transformations.rotation_matrix(angle, axis)
         T[:3, 3] = disp
 
-        ag = self.u.atoms[:2]
+        ag = u.atoms[:2]
         ag.positions = [[1, 0, 0], [-1, 0, 0]]
         ag.transform(T)
 
-        assert_array_almost_equal(ag.positions[0], [np.cos(angle) + 1,
+        assert_almost_equal(ag.positions[0], [np.cos(angle) + 1,
                                                     np.sin(angle) + 1,
                                                     1])
 
 
-class TestCenter(TestCase):
-    def setUp(self):
-        self.u = make_Universe(trajectory=True)
-        self.ag = self.u.atoms[10:30]
+class TestCenter(object):
+    
+    @pytest.fixture()
+    def ag(self):
+        u = make_Universe(trajectory=True)
+        return u.atoms[10:30]
 
-    def tearDown(self):
-        del self.u
-        del self.ag
-
-    def test_center_1(self):
-        weights = np.zeros(self.ag.n_atoms)
+    def test_center_1(self, ag):
+        weights = np.zeros(ag.n_atoms)
         weights[0] = 1
-        assert_array_almost_equal(self.ag.center(weights),
-                                  self.ag.positions[0])
+        assert_almost_equal(ag.center(weights),
+                                  ag.positions[0])
 
-    def test_center_2(self):
-        weights = np.zeros(self.ag.n_atoms)
+    def test_center_2(self, ag):
+        weights = np.zeros(ag.n_atoms)
         weights[:4] = 1. / 4.
-        assert_array_almost_equal(self.ag.center(weights),
-                                  self.ag.positions[:4].mean(axis=0))
+        assert_almost_equal(ag.center(weights),
+                                  ag.positions[:4].mean(axis=0))
 
-    def test_center_wrong_length(self):
-        weights = np.ones(self.ag.n_atoms + 4)
+    def test_center_wrong_length(self, ag):
+        weights = np.ones(ag.n_atoms + 4)
         with pytest.raises(ValueError):
-            self.ag.center(weights)
+            ag.center(weights)
 
-    def test_center_wrong_shape(self):
-        weights = np.ones((self.ag.n_atoms, 2))
+    def test_center_wrong_shape(self, ag):
+        weights = np.ones((ag.n_atoms, 2))
 
         with pytest.raises(TypeError):
-            self.ag.center(weights)
+            ag.center(weights)
 
 
-
-class TestSplit(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-
-    def tearDown(self):
-        del self.universe
+class TestSplit(object):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF, DCD)
     
-    def test_split_atoms(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+    def test_split_atoms(self, universe):
+        ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("atom")
         assert_equal(len(sg), len(ag))
@@ -490,8 +484,8 @@ class TestSplit(TestCase):
             assert_equal(atom.name, ref_atom.name)
             assert_equal(atom.resid, ref_atom.resid)
 
-    def test_split_residues(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+    def test_split_residues(self, universe):
+        ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("residue")
         assert_equal(len(sg), len(ag.residues.resids))
@@ -503,8 +497,8 @@ class TestSplit(TestCase):
             for atom in g:
                 assert_equal(atom.resname, ref_resname)
 
-    def test_split_segments(self):
-        ag = self.universe.select_atoms("resid 1:50 and not resname LYS and "
+    def test_split_segments(self, universe):
+        ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("segment")
         assert_equal(len(sg), len(ag.segments.segids))
@@ -512,77 +506,78 @@ class TestSplit(TestCase):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)    
 
-    def test_split_VE(self):
-        ag = self.universe.atoms[:40]
+    def test_split_VE(self, universe):
+        ag = universe.atoms[:40]
 
         with pytest.raises(ValueError):
             ag.split('something')
 
 
-class TestWrap(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(TRZ_psf, TRZ)
-        self.ag = self.u.atoms[:100]
+class TestWrap(object):
+        
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(TRZ_psf, TRZ)
+    
+    @pytest.fixture()
+    def ag(self, u):
+        return u.atoms[:100]
 
-    def tearDown(self):
-        del self.u
-        del self.ag
-
-    def test_wrap_comp_fail(self):
+    def test_wrap_comp_fail(self, ag):
         with pytest.raises(ValueError):
-            self.ag.wrap(compound = 'strawberries')
+            ag.wrap(compound = 'strawberries')
 
-    def test_wrap_cent_fail(self):
+    def test_wrap_cent_fail(self, ag):
         with pytest.raises(ValueError):
-            self.ag.wrap(compound = 'residues', center = 'avacado')
+            ag.wrap(compound = 'residues', center = 'avacado')
 
-    def test_wrap_box_fail(self):
+    def test_wrap_box_fail(self, ag):
         with pytest.raises(ValueError):
-            self.ag.wrap(box = np.array([0, 1]))
+            ag.wrap(box = np.array([0, 1]))
 
-    def _in_box(self, coords):
+    def _in_box(self, coords, u):
         """Check that a set of coordinates are 0.0 <= r <= box"""
-        box = self.u.dimensions[:3]
+        box = u.dimensions[:3]
 
         return (coords >= 0.0).all() and (coords <= box).all()
 
-    def test_wrap_atoms(self):
-        ag = self.u.atoms[100:200]
+    def test_wrap_atoms(self, u):
+        ag = u.atoms[100:200]
         ag.wrap(compound='atoms')
 
-        assert_equal(self._in_box(ag.positions), True)
+        assert_equal(self._in_box(ag.positions, u), True)
 
-    def test_wrap_group(self):
-        ag = self.u.atoms[:100]
+    def test_wrap_group(self, u):
+        ag = u.atoms[:100]
         ag.wrap(compound='group')
 
         cen = ag.center_of_mass()
 
-        assert_equal(self._in_box(cen), True)
+        assert_equal(self._in_box(cen, u), True)
 
-    def test_wrap_residues(self):
-        ag = self.u.atoms[300:400]
+    def test_wrap_residues(self, u):
+        ag = u.atoms[300:400]
         ag.wrap(compound='residues')
 
         cen = np.vstack([r.atoms.center_of_mass() for r in ag.residues])
 
-        assert_equal(self._in_box(cen), True)
+        assert_equal(self._in_box(cen, u), True)
 
-    def test_wrap_segments(self):
-        ag = self.u.atoms[1000:1200]
+    def test_wrap_segments(self, u):
+        ag = u.atoms[1000:1200]
         ag.wrap(compound='segments')
 
         cen = np.vstack([s.atoms.center_of_mass() for s in ag.segments])
 
-        assert_equal(self._in_box(cen), True)
+        assert_equal(self._in_box(cen, u), True)
 
-    def test_wrap_fragments(self):
-        ag = self.u.atoms[:250]
+    def test_wrap_fragments(self, u):
+        ag = u.atoms[:250]
         ag.wrap(compound='fragments')
 
         cen = np.vstack([f.center_of_mass() for f in ag.fragments])
 
-        assert_equal(self._in_box(cen), True)
+        assert_equal(self._in_box(cen, u), True)
 
 
 class TestAtomGroupProperties(object):
@@ -663,9 +658,9 @@ class TestOrphans(object):
 
         atom = getter()
 
-        assert_(atom is not u.atoms[1])
-        assert_(len(atom.universe.atoms) == len(u.atoms))
-        assert_array_almost_equal(atom.position, u.atoms[1].position)
+        assert atom is not u.atoms[1]
+        assert len(atom.universe.atoms) == len(u.atoms)
+        assert_almost_equal(atom.position, u.atoms[1].position)
 
     def test_atomgroup(self):
         u = mda.Universe(two_water_gro)
@@ -676,9 +671,9 @@ class TestOrphans(object):
 
         ag = getter()
         ag2 = u.atoms[:4]
-        assert_(ag is not ag2)
-        assert_(len(ag.universe.atoms) == len(u.atoms))
-        assert_array_almost_equal(ag.positions, ag2.positions)
+        assert ag is not ag2
+        assert len(ag.universe.atoms) == len(u.atoms)
+        assert_almost_equal(ag.positions, ag2.positions)
 
 
 class TestCrossUniverse(object):
@@ -707,8 +702,8 @@ class TestCrossUniverse(object):
         # Check that empty AtomGroups don't trip up on the Universe check
         u = mda.Universe(two_water_gro)
 
-        assert_(len(u.atoms[[]] + u.atoms[:3]) == 3)
-        assert_(len(u.atoms[:3] + u.atoms[[]]) == 3)
+        assert len(u.atoms[[]] + u.atoms[:3]) == 3
+        assert len(u.atoms[:3] + u.atoms[[]]) == 3
 
 
 class TestDihedralSelections(object):
@@ -792,11 +787,12 @@ class TestDihedralSelections(object):
             sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
-class TestPBCFlag(TestCase):
-    def setUp(self):
-        self.prec = 3
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.ref_noPBC = {
+class TestPBCFlag(object):
+    prec = 3
+        
+    @pytest.fixture()
+    def ref_noPBC(self):
+        return {
             'COG': np.array([4.23789883, 0.62429816, 2.43123484], dtype=np.float32),
             'COM': np.array([4.1673783, 0.70507009, 2.21175832]),
             'ROG': 119.30368949900134, 'Shape': 0.6690026954813445,
@@ -813,7 +809,10 @@ class TestPBCFlag(TestCase):
                 [0.40611024, 0.45112859, 0.7947059],
                 [0.46294889, -0.85135849, 0.24671249]])
         }
-        self.ref_PBC = {
+    
+    @pytest.fixture()
+    def ref_PBC(self):
+        return {
             'COG': np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32),
             'COM': np.array([26.67781143, 31.2104336, 31.19796289]),
             'ROG': 27.713008969174918, 'Shape': 0.0017390512580463542,
@@ -831,73 +830,71 @@ class TestPBCFlag(TestCase):
                 [-0.07520116, -0.96394227, 0.25526473],
                 [-0.50622389, -0.18364489, -0.84262206]])
         }
-        self.ag = self.universe.residues[0:3]
-
-    def tearDown(self):
-        mda.core.flags['use_pbc'] = False
-        del self.universe
-        del self.ref_noPBC
-        del self.ref_PBC
-        del self.ag
-
+    
+    @pytest.fixture()
+    def ag(self):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        return universe.residues[0:3]
+    
+    
     def test_flag(self):
         # Test default setting of flag
         assert_equal(mda.core.flags['use_pbc'], False)
 
-    def test_default(self):
+    def test_default(self, ag, ref_noPBC):
         # Test regular behaviour
-        assert_almost_equal(self.ag.center_of_geometry(), self.ref_noPBC['COG'], self.prec)
-        assert_almost_equal(self.ag.center_of_mass(), self.ref_noPBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radius_of_gyration(), self.ref_noPBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shape_parameter(), self.ref_noPBC['Shape'], self.prec)
-        assert_almost_equal(self.ag.asphericity(), self.ref_noPBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.moment_of_inertia(), self.ref_noPBC['MOI'], self.prec)
-        assert_almost_equal(self.ag.bbox(), self.ref_noPBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere()[0], self.ref_noPBC['BSph'][0], self.prec)
-        assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principal_axes(), self.ref_noPBC['PAxes'], self.prec)
+        assert_almost_equal(ag.center_of_geometry(), ref_noPBC['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(), ref_noPBC['COM'], self.prec)
+        assert_almost_equal(ag.radius_of_gyration(), ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(ag.shape_parameter(), ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(ag.asphericity(), ref_noPBC['Asph'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(), ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(ag.bbox(), ref_noPBC['BBox'], self.prec)
+        assert_almost_equal(ag.bsphere()[0], ref_noPBC['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere()[1], ref_noPBC['BSph'][1], self.prec)
+        assert_almost_equal(ag.principal_axes(), ref_noPBC['PAxes'], self.prec)
 
-    def test_pbcflag(self):
+    def test_pbcflag(self, ag, ref_PBC):
         # Test using ag method flag
-        assert_almost_equal(self.ag.center_of_geometry(pbc=True), self.ref_PBC['COG'], self.prec)
-        assert_almost_equal(self.ag.center_of_mass(pbc=True), self.ref_PBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radius_of_gyration(pbc=True), self.ref_PBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shape_parameter(pbc=True), self.ref_PBC['Shape'], self.prec)
-        assert_almost_equal(self.ag.asphericity(pbc=True), self.ref_PBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.moment_of_inertia(pbc=True), self.ref_PBC['MOI'], self.prec)
-        assert_almost_equal(self.ag.bbox(pbc=True), self.ref_PBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere(pbc=True)[0], self.ref_PBC['BSph'][0], self.prec)
-        assert_almost_equal(self.ag.bsphere(pbc=True)[1], self.ref_PBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principal_axes(pbc=True), self.ref_PBC['PAxes'], self.prec)
+        assert_almost_equal(ag.center_of_geometry(pbc=True), ref_PBC['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(pbc=True), ref_PBC['COM'], self.prec)
+        assert_almost_equal(ag.radius_of_gyration(pbc=True), ref_PBC['ROG'], self.prec)
+        assert_almost_equal(ag.shape_parameter(pbc=True), ref_PBC['Shape'], self.prec)
+        assert_almost_equal(ag.asphericity(pbc=True), ref_PBC['Asph'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(pbc=True), ref_PBC['MOI'], self.prec)
+        assert_almost_equal(ag.bbox(pbc=True), ref_PBC['BBox'], self.prec)
+        assert_almost_equal(ag.bsphere(pbc=True)[0], ref_PBC['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere(pbc=True)[1], ref_PBC['BSph'][1], self.prec)
+        assert_almost_equal(ag.principal_axes(pbc=True), ref_PBC['PAxes'], self.prec)
 
-    def test_usepbc_flag(self):
+    def test_usepbc_flag(self, ag, ref_PBC):
         # Test using the core.flags flag
         mda.core.flags['use_pbc'] = True
-        assert_almost_equal(self.ag.center_of_geometry(), self.ref_PBC['COG'], self.prec)
-        assert_almost_equal(self.ag.center_of_mass(), self.ref_PBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radius_of_gyration(), self.ref_PBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shape_parameter(), self.ref_PBC['Shape'], self.prec)
-        assert_almost_equal(self.ag.asphericity(), self.ref_PBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.moment_of_inertia(), self.ref_PBC['MOI'], self.prec)
-        assert_almost_equal(self.ag.bbox(), self.ref_PBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere()[0], self.ref_PBC['BSph'][0], self.prec)
-        assert_almost_equal(self.ag.bsphere()[1], self.ref_PBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principal_axes(), self.ref_PBC['PAxes'], self.prec)
+        assert_almost_equal(ag.center_of_geometry(), ref_PBC['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(), ref_PBC['COM'], self.prec)
+        assert_almost_equal(ag.radius_of_gyration(), ref_PBC['ROG'], self.prec)
+        assert_almost_equal(ag.shape_parameter(), ref_PBC['Shape'], self.prec)
+        assert_almost_equal(ag.asphericity(), ref_PBC['Asph'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(), ref_PBC['MOI'], self.prec)
+        assert_almost_equal(ag.bbox(), ref_PBC['BBox'], self.prec)
+        assert_almost_equal(ag.bsphere()[0], ref_PBC['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere()[1], ref_PBC['BSph'][1], self.prec)
+        assert_almost_equal(ag.principal_axes(), ref_PBC['PAxes'], self.prec)
         mda.core.flags['use_pbc'] = False
 
-    def test_override_flag(self):
+    def test_override_flag(self, ag, ref_noPBC):
         # Test using the core.flags flag, then overriding
         mda.core.flags['use_pbc'] = True
-        assert_almost_equal(self.ag.center_of_geometry(pbc=False), self.ref_noPBC['COG'], self.prec)
-        assert_almost_equal(self.ag.center_of_mass(pbc=False), self.ref_noPBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radius_of_gyration(pbc=False), self.ref_noPBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shape_parameter(pbc=False), self.ref_noPBC['Shape'], self.prec)
-        assert_almost_equal(self.ag.asphericity(pbc=False), self.ref_noPBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.moment_of_inertia(pbc=False), self.ref_noPBC['MOI'], self.prec)
-        assert_almost_equal(self.ag.bbox(pbc=False), self.ref_noPBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere(pbc=False)[0], self.ref_noPBC['BSph'][0], self.prec)
-        assert_almost_equal(self.ag.bsphere(pbc=False)[1], self.ref_noPBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principal_axes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
+        assert_almost_equal(ag.center_of_geometry(pbc=False), ref_noPBC['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(pbc=False), ref_noPBC['COM'], self.prec)
+        assert_almost_equal(ag.radius_of_gyration(pbc=False), ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(ag.shape_parameter(pbc=False), ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(ag.asphericity(pbc=False), ref_noPBC['Asph'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(pbc=False), ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(ag.bbox(pbc=False), ref_noPBC['BBox'], self.prec)
+        assert_almost_equal(ag.bsphere(pbc=False)[0], ref_noPBC['BSph'][0], self.prec)
+        assert_almost_equal(ag.bsphere(pbc=False)[1], ref_noPBC['BSph'][1], self.prec)
+        assert_almost_equal(ag.principal_axes(pbc=False), ref_noPBC['PAxes'], self.prec)
         mda.core.flags['use_pbc'] = False
 
 
@@ -908,77 +905,86 @@ def test_instantselection_termini():
     del universe
 
 
-class TestAtomGroup(TestCase):
+class TestAtomGroup(object):
     """Tests of AtomGroup; selections are tested separately.
 
     These are from before the big topology rework (aka #363) but are still valid.
     There is likely lots of duplication between here and other tests.
     """
-    def setUp(self):
-        """Set up the standard AdK system in implicit solvent."""
-        self.universe = mda.Universe(PSF, DCD)
-        self.ag = self.universe.atoms  # prototypical AtomGroup
-        self.dih_prec = 2
+    dih_prec = 2
+    # def setUp(self):
+    #     """Set up the standard AdK system in implicit solvent."""
+    #     self.universe = mda.Universe(PSF, DCD)
+    #     self.ag = self.universe.atoms  # prototypical AtomGroup
+    #     self.dih_prec = 2
+        
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF, DCD)
+    
+    @pytest.fixture()
+    def ag(self, universe):
+        return universe.atoms
+        
+    def test_getitem_int(self, universe):
+        assert_equal(universe.atoms[0].ix, universe.atoms.ix[0])
 
-    def test_getitem_int(self):
-        assert_equal(self.universe.atoms[0].ix, self.universe.atoms.ix[0])
+    def test_getitem_slice(self, universe):
+        assert_equal(universe.atoms[0:4].ix,
+                           universe.atoms.ix[:4])
 
-    def test_getitem_slice(self):
-        assert_array_equal(self.universe.atoms[0:4].ix,
-                           self.universe.atoms.ix[:4])
+    def test_getitem_slice2(self, universe):
+        assert_equal(universe.atoms[0:8:2].ix,
+                     universe.atoms.ix[0:8:2])
 
-    def test_getitem_slice2(self):
-        assert_equal(self.universe.atoms[0:8:2].ix,
-                     self.universe.atoms.ix[0:8:2])
-
-    def test_getitem_str(self):
-        ag1 = self.universe.atoms['HT1']
+    def test_getitem_str(self, universe):
+        ag1 = universe.atoms['HT1']
         # select_atoms always returns an AtomGroup even if single result
-        ag2 = self.universe.select_atoms('name HT1')[0]
+        ag2 = universe.select_atoms('name HT1')[0]
         assert_equal(ag1, ag2)
 
-    def test_getitem_IE(self):
+    def test_getitem_IE(self, universe):
         d = {'A': 1}
         with pytest.raises(IndexError):
-            self.universe.atoms.__getitem__(d)
+            universe.atoms.__getitem__(d)
 
     def test_bad_make(self):
         with pytest.raises(TypeError):
             mda.core.groups.AtomGroup(['these', 'are', 'not', 'atoms'])
 
-    def test_n_atoms(self):
-        assert_equal(self.ag.n_atoms, 3341)
+    def test_n_atoms(self, ag):
+        assert_equal(ag.n_atoms, 3341)
 
-    def test_n_residues(self):
-        assert_equal(self.ag.n_residues, 214)
+    def test_n_residues(self, ag):
+        assert_equal(ag.n_residues, 214)
 
-    def test_n_segments(self):
-        assert_equal(self.ag.n_segments, 1)
+    def test_n_segments(self, ag):
+        assert_equal(ag.n_segments, 1)
 
-    def test_resids_dim(self):
-        assert_equal(len(self.ag.resids), len(self.ag))
+    def test_resids_dim(self, ag):
+        assert_equal(len(ag.resids), len(ag))
 
-    def test_resnums_dim(self):
-        assert_equal(len(self.ag.resnums), len(self.ag))
+    def test_resnums_dim(self, ag):
+        assert_equal(len(ag.resnums), len(ag))
 
-    def test_segids_dim(self):
-        assert_equal(len(self.ag.segids), len(self.ag))
+    def test_segids_dim(self, ag):
+        assert_equal(len(ag.segids), len(ag))
 
-    def test_len(self):
+    def test_len(self, ag):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
-        assert_equal(len(self.ag), self.ag.n_atoms, "len and n_atoms disagree")
+        assert_equal(len(ag), ag.n_atoms, "len and n_atoms disagree")
 
-    def test_center_of_geometry(self):
-        assert_array_almost_equal(self.ag.center_of_geometry(),
+    def test_center_of_geometry(self, ag):
+        assert_almost_equal(ag.center_of_geometry(),
                                   np.array([-0.04223963, 0.0141824, -0.03505163], dtype=np.float32))
 
-    def test_center_of_mass(self):
-        assert_array_almost_equal(self.ag.center_of_mass(),
+    def test_center_of_mass(self, ag):
+        assert_almost_equal(ag.center_of_mass(),
                                   np.array([-0.01094035, 0.05727601, -0.12885778]))
 
-    def test_coordinates(self):
-        assert_array_almost_equal(
-            self.ag.positions[1000:2000:200],
+    def test_coordinates(self, ag):
+        assert_almost_equal(
+            ag.positions[1000:2000:200],
             np.array([[3.94543672, -12.4060812, -7.26820087],
                       [13.21632767, 5.879035, -14.67914867],
                       [12.07735443, -9.00604534, 4.09301519],
@@ -986,120 +992,120 @@ class TestAtomGroup(TestCase):
                       [-13.26763439, 4.90658951, 10.6880455]],
                      dtype=np.float32))
 
-    def test_principal_axes(self):
-        assert_array_almost_equal(
-            self.ag.principal_axes(),
+    def test_principal_axes(self, ag):
+        assert_almost_equal(
+            ag.principal_axes(),
             np.array([[1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],]))
 
-    def test_total_charge(self):
-        assert_almost_equal(self.ag.total_charge(), -4.0, decimal=4)
+    def test_total_charge(self, ag):
+        assert_almost_equal(ag.total_charge(), -4.0, decimal=4)
 
-    def test_total_mass(self):
-        assert_almost_equal(self.ag.total_mass(), 23582.043)
+    def test_total_mass(self, ag):
+        assert_almost_equal(ag.total_mass(), 23582.043)
 
-    def test_indices_ndarray(self):
-        assert_equal(isinstance(self.ag.indices, np.ndarray), True)
+    def test_indices_ndarray(self, ag):
+        assert_equal(isinstance(ag.indices, np.ndarray), True)
 
-    def test_indices(self):
+    def test_indices(self, ag):
         # pylint: disable=unsubscriptable-object
-        assert_array_equal(self.ag.indices[:5], np.array([0, 1, 2, 3, 4]))
+        assert_equal(ag.indices[:5], np.array([0, 1, 2, 3, 4]))
 
-    def test_resids_ndarray(self):
-        assert_equal(isinstance(self.ag.resids, np.ndarray), True)
+    def test_resids_ndarray(self, ag):
+        assert_equal(isinstance(ag.resids, np.ndarray), True)
 
-    def test_resids(self):
-        assert_array_equal(self.ag.residues.resids, np.arange(1, 215))
+    def test_resids(self, ag):
+        assert_equal(ag.residues.resids, np.arange(1, 215))
 
-    def test_resnums_ndarray(self):
-        assert_equal(isinstance(self.ag.residues.resnums, np.ndarray), True)
+    def test_resnums_ndarray(self, ag):
+        assert_equal(isinstance(ag.residues.resnums, np.ndarray), True)
 
-    def test_resnums(self):
-        assert_array_equal(self.ag.residues.resnums, np.arange(1, 215))
+    def test_resnums(self, ag):
+        assert_equal(ag.residues.resnums, np.arange(1, 215))
 
-    def test_resnames_ndarray(self):
-        assert_equal(isinstance(self.ag.residues.resnames, np.ndarray), True)
+    def test_resnames_ndarray(self, ag):
+        assert_equal(isinstance(ag.residues.resnames, np.ndarray), True)
 
-    def test_resnames(self):
-        resnames = self.ag.residues.resnames
-        assert_array_equal(resnames[0:3], np.array(["MET", "ARG", "ILE"]))
+    def test_resnames(self, ag):
+        resnames = ag.residues.resnames
+        assert_equal(resnames[0:3], np.array(["MET", "ARG", "ILE"]))
 
-    def test_names_ndarray(self):
-        assert_equal(isinstance(self.ag.names, np.ndarray), True)
+    def test_names_ndarray(self, ag):
+        assert_equal(isinstance(ag.names, np.ndarray), True)
 
-    def test_names(self):
-        names = self.ag.names
-        assert_array_equal(names[0:3], np.array(["N", "HT1", "HT2"]))
+    def test_names(self, ag):
+        names = ag.names
+        assert_equal(names[0:3], np.array(["N", "HT1", "HT2"]))
 
-    def test_segids_ndarray(self):
-        assert_equal(isinstance(self.ag.segids, np.ndarray), True)
+    def test_segids_ndarray(self, ag):
+        assert_equal(isinstance(ag.segids, np.ndarray), True)
 
-    def test_segids(self):
-        segids = self.ag.segids
-        assert_array_equal(segids[0], np.array(["4AKE"]))
+    def test_segids(self, ag):
+        segids = ag.segids
+        assert_equal(segids[0], np.array(["4AKE"]))
 
-    def test_masses_ndarray(self):
-        assert_equal(isinstance(self.ag.masses, np.ndarray), True)
+    def test_masses_ndarray(self, ag):
+        assert_equal(isinstance(ag.masses, np.ndarray), True)
 
-    def test_masses(self):
-        masses = self.ag.masses
-        assert_array_equal(masses[0:3], np.array([14.007, 1.008, 1.008]))
+    def test_masses(self, ag):
+        masses = ag.masses
+        assert_equal(masses[0:3], np.array([14.007, 1.008, 1.008]))
 
-    def test_charges_ndarray(self):
-        assert_equal(isinstance(self.ag.charges, np.ndarray), True)
+    def test_charges_ndarray(self, ag):
+        assert_equal(isinstance(ag.charges, np.ndarray), True)
 
-    def test_charges(self):
-        assert_array_almost_equal(self.ag.charges[1000:2000:200],
+    def test_charges(self, ag):
+        assert_almost_equal(ag.charges[1000:2000:200],
                                   np.array([-0.09, 0.09, -0.47, 0.51, 0.09]))
 
-    def test_bad_add_AG(self):
+    def test_bad_add_AG(self, ag):
         def bad_add():
-            return self.ag + [1, 2, 3]
+            return ag + [1, 2, 3]
         with pytest.raises(TypeError):
             bad_add()
 
-    def test_bool_false(self):
+    def test_bool_false(self, universe):
         # Issue #304
-        ag = self.universe.atoms[[]]
+        ag = universe.atoms[[]]
         assert_equal(bool(ag), False)
 
-    def test_bool_true(self):
+    def test_bool_true(self, universe):
         # Issue #304
-        ag = self.universe.atoms[:3]
+        ag = universe.atoms[:3]
         assert_equal(bool(ag), True)
 
-    def test_repr(self):
+    def test_repr(self, ag):
         # Should make sure that the user facing info stays as expected
-        assert_equal(repr(self.ag), "<AtomGroup with 3341 atoms>")
+        assert_equal(repr(ag), "<AtomGroup with 3341 atoms>")
 
-    def test_set_resnum_single(self):
-        ag = self.universe.atoms[:3]
+    def test_set_resnum_single(self, universe):
+        ag = universe.atoms[:3]
         ag.residues.resnums = 5
         for at in ag:
             assert_equal(at.resnum, 5)
         assert_equal(all(ag.resnums == 5), True)
 
-    def test_set_resname_single(self):
-        ag = self.universe.atoms[:3]
+    def test_set_resname_single(self, universe):
+        ag = universe.atoms[:3]
         new = 'abc'
         ag.residues.resnames = new
         for at in ag:
             assert_equal(at.resname, new)
         assert_equal(all(ag.resnames == new), True)
 
-    def test_packintobox_badshape(self):
-        ag = self.universe.atoms[:10]
+    def test_packintobox_badshape(self, universe):
+        ag = universe.atoms[:10]
         box = np.zeros(9, dtype=np.float32).reshape(3, 3)
         with pytest.raises(ValueError):
             ag.pack_into_box(box = box)
 
-    def test_packintobox_noshape(self):
-        ag = self.universe.atoms[:10]
+    def test_packintobox_noshape(self, universe):
+        ag = universe.atoms[:10]
         with pytest.raises(ValueError):
             ag.pack_into_box()
 
-    def test_packintobox(self):
+    def test_packintobox(self, universe):
         """test AtomGroup.pack_into_box(): Tests application of periodic boundary
         conditions on coordinates
 
@@ -1107,12 +1113,12 @@ class TestAtomGroup(TestCase):
         imposed on the system
 
         """
-        u = self.universe
+        u = universe
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
         # Provide arbitrary box
         ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))
-        assert_array_almost_equal(
+        assert_almost_equal(
             ag.positions,
             np.array([[3.94543672, 2.5939188, 2.73179913],
                       [3.21632767, 0.879035, 0.32085133],
@@ -1120,83 +1126,82 @@ class TestAtomGroup(TestCase):
                       [1.35541916, 2.0690732, 4.67488003],
                       [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
 
-    def test_residues(self):
-        u = self.universe
+    def test_residues(self, universe):
+        u = universe
         assert_equal(u.residues[100].atoms.ix,
                      u.select_atoms('resname ILE and resid 101').atoms.ix,
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
-    def test_segments(self):
-        u = self.universe
+    def test_segments(self, universe):
+        u = universe
         assert_equal(len(u.segments.s4AKE.atoms),
                      len(u.select_atoms('segid 4AKE').atoms),
                      "Direct selection of segment 4AKE from segments failed.")
 
-    def test_index_integer(self):
-        u = self.universe
+    def test_index_integer(self, universe):
+        u = universe
         a = u.atoms[100]
-        assert_(isinstance(a, mda.core.groups.Atom), "integer index did not return Atom")
+        assert isinstance(a, mda.core.groups.Atom), "integer index did not return Atom"
 
-    def test_index_slice(self):
-        u = self.universe
+    def test_index_slice(self, universe):
+        u = universe
         a = u.atoms[100:200:10]
-        assert_(isinstance(a, mda.core.groups.AtomGroup),
-                "slice index did not return AtomGroup")
+        assert isinstance(a, mda.core.groups.AtomGroup), "slice index did not return AtomGroup"
 
-    def test_index_slice_empty(self):
-        u = self.universe
+    def test_index_slice_empty(self, universe):
+        u = universe
         assert_array_equal(u.atoms[0:0], [],
                            "making an empty AtomGroup failed")
 
-    def test_index_advancedslice(self):
-        u = self.universe
+    def test_index_advancedslice(self, universe):
+        u = universe
         aslice = [0, 10, 20, -1, 10]
         ag = u.atoms[aslice]
-        assert_(isinstance(ag, mda.core.groups.AtomGroup),
-                "advanced slicing does not produce a AtomGroup")
+        assert isinstance(ag, mda.core.groups.AtomGroup), "advanced slicing " \
+                                                          "does not produce a AtomGroup"
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
 
-    def test_boolean_indexing(self):
+    def test_boolean_indexing(self, universe):
         # index an array with a sequence of bools
         # issue #282
         sel = np.array([True, False, True])
-        ag = self.universe.atoms[10:13]
+        ag = universe.atoms[10:13]
         ag2 = ag[sel]
         assert_equal(len(ag2), 2)
         for at in [ag[0], ag[2]]:
             assert_equal(at in ag2, True)
 
-    def test_boolean_indexing_2(self):
+    def test_boolean_indexing_2(self, universe):
         # index an array with a sequence of bools
         # issue #282
         sel = [True, False, True]
-        ag = self.universe.atoms[10:13]
+        ag = universe.atoms[10:13]
         ag2 = ag[sel]
         assert_equal(len(ag2), 2)
         for at in [ag[0], ag[2]]:
             assert_equal(at in ag2, True)
 
-    def test_bool_IE(self):
+    def test_bool_IE(self, universe):
         # indexing with empty list doesn't run foul of bool check
         sel = []
-        ag = self.universe.atoms[10:30]
+        ag = universe.atoms[10:30]
         ag2 = ag[sel]
         assert_equal(len(ag2), 0)
 
-    def test_dihedral_ValueError(self):
+    def test_dihedral_ValueError(self, universe):
         """test that AtomGroup.dihedral() raises ValueError if not exactly
         4 atoms given"""
-        nodih = self.universe.select_atoms("resid 3:10")
+        nodih = universe.select_atoms("resid 3:10")
         with pytest.raises(ValueError):
             getattr(nodih, 'dihedral')
 
-        nodih = self.universe.select_atoms("resid 3:5")
+        nodih = universe.select_atoms("resid 3:5")
         with pytest.raises(ValueError):
             getattr(nodih, 'dihedral')
 
-    def test_improper(self):
-        u = self.universe
+    def test_improper(self, universe):
+        u = universe
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                   "atom 4AKE 21 N", "atom 4AKE 21 HN")
@@ -1205,53 +1210,53 @@ class TestAtomGroup(TestCase):
                             "Peptide bond improper dihedral for M21 "
                             "calculated wrongly.")
 
-    def test_dihedral_equals_improper(self):
-        u = self.universe
+    def test_dihedral_equals_improper(self, universe):
+        u = universe
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                   "atom 4AKE 21 N", "atom 4AKE 21 HN")
         assert_equal(peptbond.improper.value(), peptbond.dihedral.value(),
                      "improper() and proper dihedral() give different results")
 
-    def test_bond(self):
-        self.universe.trajectory.rewind()  # just to make sure...
-        sel2 = self.universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
+    def test_bond(self, universe):
+        universe.trajectory.rewind()  # just to make sure...
+        sel2 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
-    def test_bond_pbc(self):
-        self.universe.trajectory.rewind()
-        sel2 = self.universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
+    def test_bond_pbc(self, universe):
+        universe.trajectory.rewind()
+        sel2 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
-    def test_bond_ValueError(self):
-        ag = self.universe.atoms[:4]
+    def test_bond_ValueError(self, universe):
+        ag = universe.atoms[:4]
         with pytest.raises(ValueError):
             getattr(ag, 'bond')
 
-    def test_angle(self):
-        self.universe.trajectory.rewind()  # just to make sure...
-        sel3 = self.universe.s4AKE.r98.atoms.select_atoms("name OE1", "name CD",
+    def test_angle(self, universe):
+        universe.trajectory.rewind()  # just to make sure...
+        sel3 = universe.s4AKE.r98.atoms.select_atoms("name OE1", "name CD",
                                                           "name OE2")
         assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
-    def test_angle_ValueError(self):
-        ag = self.universe.atoms[:2]
+    def test_angle_ValueError(self, universe):
+        ag = universe.atoms[:2]
         with pytest.raises(ValueError):
             getattr(ag, 'angle')
 
-    def test_shape_parameter(self):
-        s = self.universe.s4AKE.atoms.shape_parameter()
+    def test_shape_parameter(self, universe):
+        s = universe.s4AKE.atoms.shape_parameter()
         assert_almost_equal(s, 0.00240753939086033, 6)
 
-    def test_asphericity(self):
-        a = self.universe.s4AKE.atoms.asphericity()
+    def test_asphericity(self, universe):
+        a = universe.s4AKE.atoms.asphericity()
         assert_almost_equal(a, 0.020227504542775828, 6)
 
-    def test_positions(self):
-        ag = self.universe.select_atoms("bynum 12:42")
+    def test_positions(self, universe):
+        ag = universe.select_atoms("bynum 12:42")
         pos = ag.positions + 3.14
         ag.positions = pos
         # should work
@@ -1266,43 +1271,41 @@ class TestAtomGroup(TestCase):
         with pytest.raises(ValueError):
             set_badarr()
 
-    def test_set_names(self):
-        ag = self.universe.atoms[:2]
+    def test_set_names(self, universe):
+        ag = universe.atoms[:2]
         names = ['One', 'Two']
         ag.names = names
         for a, b in zip(ag, names):
             assert_equal(a.name, b)
 
-    def test_nonexistent_instantselector_raises_AttributeError(self):
+    def test_nonexistent_instantselector_raises_AttributeError(self, universe):
         def access_nonexistent_instantselector():
-            self.universe.atoms.NO_SUCH_ATOM
+            universe.atoms.NO_SUCH_ATOM
         with pytest.raises(AttributeError):
             access_nonexistent_instantselector()
 
-    def test_atom_order(self):
-        assert_equal(self.universe.atoms.indices,
-                     sorted(self.universe.atoms.indices))
+    def test_atom_order(self, universe):
+        assert_equal(universe.atoms.indices,
+                     sorted(universe.atoms.indices))
 
 
-class TestAtomGroupTimestep(TestCase):
+class TestAtomGroupTimestep(object):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.prec = 6
+    prec = 6
 
-    def tearDown(self):
-        del self.universe
-        del self.prec
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(TRZ_psf, TRZ)
 
-    def test_partial_timestep(self):
-        ag = self.universe.select_atoms('name Ca')
+    def test_partial_timestep(self, universe):
+        ag = universe.select_atoms('name Ca')
         idx = ag.indices
 
         assert_equal(len(ag.ts._pos), len(ag))
 
-        for ts in self.universe.trajectory[0:20:5]:
-            assert_array_almost_equal(ts.positions[idx], ag.ts.positions, self.prec,
+        for ts in universe.trajectory[0:20:5]:
+            assert_almost_equal(ts.positions[idx], ag.ts.positions, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
-            assert_array_almost_equal(ts.velocities[idx], ag.ts.velocities, self.prec,
+            assert_almost_equal(ts.velocities[idx], ag.ts.velocities, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
