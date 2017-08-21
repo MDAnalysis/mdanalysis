@@ -37,7 +37,6 @@ import pytest
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-from MDAnalysisTests import tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
@@ -166,12 +165,8 @@ class TestRMSD(object):
         return MDAnalysis.Universe(PSF, DCD)
 
     @pytest.fixture()
-    def tempdir(self):
-        return tempdir.TempDir()
-
-    @pytest.fixture()
-    def outfile(self, tempdir):
-        return os.path.join(tempdir.name, 'rmsd.txt')
+    def outfile(self, tmpdir):
+        return os.path.join(str(tmpdir), 'rmsd.txt')
 
     @pytest.fixture()
     def correct_values(self):
