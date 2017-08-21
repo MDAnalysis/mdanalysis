@@ -63,12 +63,25 @@ class Testrmsd(object):
         return u
 
     @pytest.fixture()
+    def u2(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    @pytest.fixture()
     def p_first(self, u):
+        u.trajectory[0]
         return u.select_atoms('protein')
 
     @pytest.fixture()
-    def p_last(self, u):
-        return u.select_atoms('protein')
+    def p_last(self, u2):
+        u2.trajectory[-1]
+        return u2.select_atoms('protein')
+
+    # internal test
+    def test_p_frames(self, p_first, p_last):
+        # check that these fixtures are really different
+        assert p_first.universe.trajectory.ts.frame != p_last.universe.trajectory.ts.frame
+        assert not np.allclose(p_first.positions, p_last.positions)
 
     def test_no_center(self, a, b):
         rmsd = rms.rmsd(a, b, center=False)
