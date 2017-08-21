@@ -701,7 +701,7 @@ class BaseTimestepTest(object):
         with pytest.raises(NoDataError):
             getattr(ts, 'forces')
 
-    def _empty_ts(self):
+    def check_ts(self):
         with pytest.raises(ValueError):
             self.Timestep.from_coordinates(None, None, None)
 
@@ -714,7 +714,12 @@ class BaseTimestepTest(object):
 
         return ts
 
-    def _check_from_coordinates(self, p, v, f):
+    @pytest.mark.parametrize('p, v, f',
+                             [(p, v, f) for (p, v, f) in
+                              itertools.product([True, False], repeat=3)
+                              if any([p, v, f])]
+    )
+    def test_from_coordinates(self, p, v, f):
         ts = self._from_coords(p, v, f)
 
         if p:
@@ -733,15 +738,6 @@ class BaseTimestepTest(object):
             with pytest.raises(NoDataError):
                 getattr(ts, 'forces')
 
-    def test_from_coordinates(self):
-        # Check all combinations of creating a Timestep from data
-        # 8 possibilites of with and without 3 data categories
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                yield self._empty_ts
-            else:
-                yield self._check_from_coordinates, p, v, f
-
     def test_from_coordinates_mismatch(self):
         velo = self.refvel[:2]
 
@@ -752,17 +748,16 @@ class BaseTimestepTest(object):
         with pytest.raises(ValueError):
             self.Timestep.from_coordinates()
 
-    def _check_from_timestep(self, p, v, f):
+    @pytest.mark.parametrize('p, v, f',
+        [(p, v, f) for (p, v, f) in
+        itertools.product([True, False], repeat=3)
+        if any([p, v, f])]
+    )
+    def test_from_timestep(self, p, v, f):
         ts = self._from_coords(p, v, f)
         ts2 = self.Timestep.from_timestep(ts)
 
         assert_timestep_almost_equal(ts, ts2)
-
-    def test_from_timestep(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            yield self._check_from_timestep, p, v, f
 
     # Time related tests
     def test_supply_dt(self):
@@ -952,17 +947,14 @@ class BaseTimestepTest(object):
             yield self._check_copy_slice_indices, self.name, ts
             yield self._check_copy_slice_slice, self.name, ts
 
-    def _check_bad_slice(self, p, v, f):
+    @pytest.mark.parametrize('p, v, f', [(p, v, f) for (p, v, f) in itertools.product([True, False], repeat=3)
+       if any([p, v, f])])
+    def test_bad_slice(self, p, v, f):
         ts = self._from_coords(p, v, f)
         sl = ['this', 'is', 'silly']
         with pytest.raises(TypeError):
             ts.copy_slice(sl)
 
-    def test_bad_copy_slice(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            yield self._check_bad_slice, p, v, f
 
     def _get_pos(self):
         # Get generic reference positions
