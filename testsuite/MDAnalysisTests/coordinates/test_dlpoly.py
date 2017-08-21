@@ -33,106 +33,97 @@ from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from unittest import TestCase
 
-class _DLPConfig(TestCase):
-    __test__ = False
-    def setUp(self):
-        self.r = mda.coordinates.DLPoly.ConfigReader
-        rd = self.rd = self.r(self.f)
-        self.ts = rd.ts
+class _DLPConfig(object):
+    @pytest.fixture()
+    def r(self):
+        return mda.coordinates.DLPoly.ConfigReader
 
-    def tearDown(self):
-        del self.r
-        del self.rd
-        del self.ts
+    @pytest.fixture()
+    def rd(self, r):
+        return r(self.f)
 
-    def test_read_unitcell(self):
+    @pytest.fixture()
+    def ts(self, rd):
+        return rd.ts
+
+    def test_read_unitcell(self, ts):
         ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000
                          ], [0.0000000000, 18.6960000000, 0.0000000000],
                         [0.0000000000, 0.0000000000, 18.6960000000]])
-        assert_allclose(self.ts._unitcell, ref)
+        assert_allclose(ts._unitcell, ref)
 
-    def test_positions(self):
+    def test_positions(self, ts):
         ref = np.array([-7.608595309, -7.897790000, -7.892053559])
-        assert_allclose(self.ts._pos[0], ref)
+        assert_allclose(ts._pos[0], ref)
 
-    def test_velocities(self):
+    def test_velocities(self, ts):
         ref = np.array([1.056610291, -1.218664448, 3.345828610])
-        assert_allclose(self.ts._velocities[0], ref)
+        assert_allclose(ts._velocities[0], ref)
 
-    def test_forces(self):
+    def test_forces(self, ts):
         ref = np.array([-1979.558687, 739.7961625, 1027.996603])
-        assert_allclose(self.ts._forces[0], ref)
+        assert_allclose(ts._forces[0], ref)
 
 
 class TestConfigReader(_DLPConfig):
-    __test__ = True
     f = DLP_CONFIG
 
-    def test_read(self):
-        assert_equal(self.rd.title, "DL_POLY: Potassium Chloride Test Case")
+    def test_read(self, rd):
+        assert_equal(rd.title, "DL_POLY: Potassium Chloride Test Case")
 
 
 class TestConfigOrder(_DLPConfig):
-    __test__ = True
     f = DLP_CONFIG_order
 
 
 class TestConfigMinimal(_DLPConfig):
-    __test__ = True
     f = DLP_CONFIG_minimal
 
     def test_read_unitcell(self):
         pass
 
-    def test_velocities(self):
+    def test_velocities(self, ts):
         with pytest.raises(AttributeError):
-            getattr(self.ts, "_velocities")
+            getattr(ts, "_velocities")
 
-    def test_forces(self):
+    def test_forces(self, ts):
         with pytest.raises(AttributeError):
-            getattr(self.ts, "_forces")
+            getattr(ts, "_forces")
 
 
-class _DLPConfig2(TestCase):
+class _DLPConfig2(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(self.f, format='CONFIG')
 
-    __test__ = False
-
-    def setUp(self):
-        self.u = mda.Universe(self.f, format='CONFIG')
-
-    def tearDown(self):
-        del self.u
-
-    def test_names(self):
+    def test_names(self, u):
         ref = ['C', 'B', 'A']
-        assert_equal([a.name for a in self.u.atoms], ref)
+        assert_equal([a.name for a in u.atoms], ref)
 
-    def test_pos(self):
+    def test_pos(self, u):
         ref = np.array([-7.821414265, -4.635443539, -4.732164540])
-        assert_allclose(self.u.atoms[2].position, ref)
+        assert_allclose(u.atoms[2].position, ref)
 
-    def test_vel(self):
+    def test_vel(self, u):
         ref = np.array([2.637614561, 0.5778767520E-01, -1.704765568])
-        assert_allclose(self.u.atoms[2].velocity, ref)
+        assert_allclose(u.atoms[2].velocity, ref)
 
-    def test_for(self):
+    def test_for(self, u):
         ref = np.array([150.3309776, -812.6932914, 1429.413120])
-        assert_allclose(self.u.atoms[2].force, ref)
+        assert_allclose(u.atoms[2].force, ref)
 
-    def test_number(self):
+    def test_number(self, u):
         ref = [0, 1, 2]
-        assert_equal([a.index for a in self.u.atoms], ref)
+        assert_equal([a.index for a in u.atoms], ref)
 
 
 class TestConfigReader2(_DLPConfig2):
 
-    __test__ = True
     f = DLP_CONFIG_order
 
 
 class TestConfigReaderMinimal2(_DLPConfig2):
 
-    __test__ = True
     f = DLP_CONFIG_minimal
 
     def test_vel(self):
@@ -142,55 +133,50 @@ class TestConfigReaderMinimal2(_DLPConfig2):
         pass
 
 
-class _DLHistory(TestCase):
+class _DLHistory(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(self.f, format='HISTORY')
 
-    __test__ = False
 
-    def setUp(self):
-        self.u = mda.Universe(self.f, format='HISTORY')
+    def test_len(self, u):
+        assert_equal(len(u.trajectory), 3)
+        assert_equal([ts.frame for ts in u.trajectory], [0, 1, 2])
 
-    def tearDown(self):
-        self.u.trajectory.close()
-        del self.u
-
-    def test_len(self):
-        assert_equal(len(self.u.trajectory), 3)
-        assert_equal([ts.frame for ts in self.u.trajectory], [0, 1, 2])
-
-    def test_getting(self):
-        ts = self.u.trajectory[1]
+    def test_getting(self, u):
+        ts = u.trajectory[1]
         assert_equal(ts.frame, 1)
 
-    def test_slicing(self):
-        nums = [ts.frame for ts in self.u.trajectory[::2]]
+    def test_slicing(self, u):
+        nums = [ts.frame for ts in u.trajectory[::2]]
         assert_equal(nums, [0, 2])
 
-    def test_slicing_2(self):
-        nums = [ts.frame for ts in self.u.trajectory[1::-2]]
+    def test_slicing_2(self, u):
+        nums = [ts.frame for ts in u.trajectory[1::-2]]
         assert_equal(nums, [1])
 
-    def test_position(self):
+    def test_position(self, u):
         ref = np.array([[-7.595541651, -7.898808509, -7.861763110
                          ], [-7.019565641, -7.264933320, -7.045213551],
                         [-6.787470785, -6.912685099, -6.922156843]])
-        for ts, r in zip(self.u.trajectory, ref):
-            assert_allclose(self.u.atoms[0].position, r)
+        for ts, r in zip(u.trajectory, ref):
+            assert_allclose(u.atoms[0].position, r)
 
-    def test_velocity(self):
+    def test_velocity(self, u):
         ref = np.array([[1.109901682, -1.500264697, 4.752251711
                          ], [-1.398479696, 2.091141311, 1.957430003],
                         [0.2570827995, -0.7146878577, -3.547444215]])
-        for ts, r in zip(self.u.trajectory, ref):
-            assert_allclose(self.u.atoms[0].velocity, r)
+        for ts, r in zip(u.trajectory, ref):
+            assert_allclose(u.atoms[0].velocity, r)
 
-    def test_force(self):
+    def test_force(self, u):
         ref = np.array([[-2621.386432, 1579.334443, 1041.103241
                          ], [-1472.262341, 2450.379615, -8149.916193],
                         [2471.802059, -3828.467296, 3596.679326]])
-        for ts, r in zip(self.u.trajectory, ref):
-            assert_allclose(self.u.atoms[0].force, r)
+        for ts, r in zip(u.trajectory, ref):
+            assert_allclose(u.atoms[0].force, r)
 
-    def test_unitcell(self):
+    def test_unitcell(self, u):
         ref1 = np.array([[18.6796195135, 0.0000058913, -0.0000139999
                           ], [0.0000058913, 18.6794658887, -0.0000016255],
                          [-0.0000139999, -0.0000016255, 18.6797229304]])
@@ -200,31 +186,28 @@ class _DLHistory(TestCase):
         ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464
                           ], [-0.0108333201, 16.5270298891, 0.0011094612],
                          [0.0014948739, 0.0011058349, 16.5725517831]])
-        for ts, r in zip(self.u.trajectory, [ref1, ref2, ref3]):
+        for ts, r in zip(u.trajectory, [ref1, ref2, ref3]):
             assert_allclose(ts._unitcell, r)
 
 
 class TestDLPolyHistory(_DLHistory):
-    __test__ = True
     f = DLP_HISTORY
 
 
 class TestDLPolyHistoryOrder(_DLHistory):
-    __test__ = True
     f = DLP_HISTORY_order
 
 
 class TestDLPolyHistoryMinimal(_DLHistory):
-    __test__ = True
     f = DLP_HISTORY_minimal
 
-    def test_velocity(self):
+    def test_velocity(self, u):
         with pytest.raises(mda.NoDataError):
-            getattr(self.u.atoms[0], 'velocity')
+            getattr(u.atoms[0], 'velocity')
 
-    def test_force(self):
+    def test_force(self, u):
         with pytest.raises(mda.NoDataError):
-            getattr(self.u.atoms[0], 'force')
+            getattr(u.atoms[0], 'force')
 
     def test_unitcell(self):
         pass
