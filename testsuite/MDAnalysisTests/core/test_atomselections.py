@@ -50,11 +50,15 @@ import pytest
 
 
 class TestSelectionsCHARMM(object):
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def universe(self):
         """Set up the standard AdK system in implicit solvent.
         Geometry here is orthogonal
         """
+        return MDAnalysis.Universe(PSF, DCD)
+
+    @pytest.fixture()
+    def universe_copy(self, universe):
         return MDAnalysis.Universe(PSF, DCD)
 
     def test_segid(self, universe):
@@ -228,19 +232,19 @@ class TestSelectionsCHARMM(object):
                      ("Found wrong residues with same resname as "
                       "resids 10 or 11"))
 
-    def test_same_segment(self, universe):
+    def test_same_segment(self, universe_copy):
         """Test the 'same ... as' construct (Issue 217)"""
 
-        SNew_A = universe.add_Segment(segid='A')
-        SNew_B = universe.add_Segment(segid='B')
-        SNew_C = universe.add_Segment(segid='C')
+        SNew_A = universe_copy.add_Segment(segid='A')
+        SNew_B = universe_copy.add_Segment(segid='B')
+        SNew_C = universe_copy.add_Segment(segid='C')
 
-        universe.residues[:100].segments = SNew_A
-        universe.residues[100:150].segments = SNew_B
-        universe.residues[150:].segments = SNew_C
+        universe_copy.residues[:100].segments = SNew_A
+        universe_copy.residues[100:150].segments = SNew_B
+        universe_copy.residues[150:].segments = SNew_C
 
         target_resids = np.arange(100) + 1
-        sel = universe.select_atoms("same segment as resid 10")
+        sel = universe_copy.select_atoms("same segment as resid 10")
         assert_equal(len(sel), 1520,
                      "Found a wrong number of atoms in the same segment of resid 10")
         assert_equal(sel.residues.resids,
@@ -248,14 +252,14 @@ class TestSelectionsCHARMM(object):
                      "Found wrong residues in the same segment of resid 10")
 
         target_resids = np.arange(100, 150) + 1
-        sel = universe.select_atoms("same segment as resid 110")
+        sel = universe_copy.select_atoms("same segment as resid 110")
         assert_equal(len(sel), 797,
                      "Found a wrong number of atoms in the same segment of resid 110")
         assert_equal(sel.residues.resids, target_resids,
                      "Found wrong residues in the same segment of resid 110")
 
-        target_resids = np.arange(150, universe.atoms.n_residues) + 1
-        sel = universe.select_atoms("same segment as resid 160")
+        target_resids = np.arange(150, universe_copy.atoms.n_residues) + 1
+        sel = universe_copy.select_atoms("same segment as resid 160")
         assert_equal(len(sel), 1024,
                      "Found a wrong number of atoms in the same segment of resid 160")
         assert_equal(sel.residues.resids, target_resids,
