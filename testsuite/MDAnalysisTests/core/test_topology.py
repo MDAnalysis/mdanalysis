@@ -124,7 +124,6 @@ class TestTransTable(object):
                 assert_equal(a1, a2)
 
     def test_move_atom_simple(self, tt):
-        tt = tt
         assert_equal(tt.atoms2residues(1), 0)
         assert_equal(len(tt.residues2atoms_1d(0)), 2)
         assert_equal(len(tt.residues2atoms_1d(3)), 2)
@@ -137,7 +136,6 @@ class TestTransTable(object):
         assert_equal(len(tt.residues2atoms_1d(3)), 3)  # 1 more here
 
     def test_move_residue_simple(self, tt):
-        tt = tt
         assert_equal(tt.residues2segments(1), 1)
         assert_equal(len(tt.segments2residues_1d(0)), 2)
         assert_equal(len(tt.segments2residues_1d(1)), 2)
