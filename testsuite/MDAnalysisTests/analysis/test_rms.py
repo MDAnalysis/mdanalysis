@@ -148,7 +148,6 @@ class Testrmsd(object):
         B = p_last.positions
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
-        print(rmsd, rmsd_superposition)
         # by design the super positioned rmsd is smaller
         assert rmsd > rmsd_superposition
 
