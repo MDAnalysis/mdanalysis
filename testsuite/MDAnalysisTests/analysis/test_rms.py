@@ -21,128 +21,142 @@
 #
 from __future__ import print_function, division, absolute_import
 
-import pytest
 from six.moves import range
 
 import warnings
 import os
-import sys
 
 import MDAnalysis
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms, align
 
-from numpy.testing import (TestCase, assert_equal,
-                           assert_almost_equal)
+from numpy.testing import assert_equal, assert_almost_equal
 
 import numpy as np
+import pytest
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-from MDAnalysisTests import tempdir
 
 # I want to catch all warnings in the tests. If this is not set at the start it
 # could cause test that check for warnings to fail.
 warnings.simplefilter('always')
 
 
-class Testrmsd(TestCase):
-    def setUp(self):
-        shape = (5, 3)
-        # vectors with length one
-        ones = np.ones(shape) / np.sqrt(3)
-        self.a = ones * np.arange(1, 6)[:, np.newaxis]
-        self.b = self.a + ones
+class Testrmsd(object):
+    shape = (5, 3)
+    # vectors with length one
+    ones = np.ones(shape) / np.sqrt(3)
 
-        self.u = mda.Universe(PSF, DCD)
-        self.u2 = mda.Universe(PSF, DCD)
+    @pytest.fixture()
+    def a(self):
+        return self.ones * np.arange(1, 6)[:, np.newaxis]
 
-        self.p_first = self.u.select_atoms('protein')
-        self.p_last = self.u2.select_atoms('protein')
+    @pytest.fixture()
+    def b(self, a):
+        return a + self.ones
 
-        self.u.trajectory[2]
-        self.u2.trajectory[-2]
-        # reset coordinates
-        self.u.trajectory[0]
-        self.u2.trajectory[-1]
+    @pytest.fixture()
+    def u(self):
+        u = mda.Universe(PSF, DCD)
+        return u
 
-    def test_no_center(self):
-        rmsd = rms.rmsd(self.a, self.b, center=False)
+    @pytest.fixture()
+    def u2(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    @pytest.fixture()
+    def p_first(self, u):
+        u.trajectory[0]
+        return u.select_atoms('protein')
+
+    @pytest.fixture()
+    def p_last(self, u2):
+        u2.trajectory[-1]
+        return u2.select_atoms('protein')
+
+    # internal test
+    def test_p_frames(self, p_first, p_last):
+        # check that these fixtures are really different
+        assert p_first.universe.trajectory.ts.frame != p_last.universe.trajectory.ts.frame
+        assert not np.allclose(p_first.positions, p_last.positions)
+
+    def test_no_center(self, a, b):
+        rmsd = rms.rmsd(a, b, center=False)
         assert_almost_equal(rmsd, 1.0)
 
-    def test_center(self):
-        rmsd = rms.rmsd(self.a, self.b, center=True)
+    def test_center(self, a, b):
+        rmsd = rms.rmsd(a, b, center=True)
         assert_almost_equal(rmsd, 0.0)
 
-    def test_list(self):
-        rmsd = rms.rmsd(self.a.tolist(),
-                        self.b.tolist(),
+    def test_list(self, a, b):
+        rmsd = rms.rmsd(a.tolist(),
+                        b.tolist(),
                         center=False)
         assert_almost_equal(rmsd, 1.0)
 
-    def test_superposition(self):
-        bb = self.u.atoms.select_atoms('backbone')
+    def test_superposition(self, a, b, u):
+        bb = u.atoms.select_atoms('backbone')
         a = bb.positions.copy()
-        self.u.trajectory[-1]
+        u.trajectory[-1]
         b = bb.positions.copy()
         rmsd = rms.rmsd(a, b, superposition=True)
         assert_almost_equal(rmsd, 6.820321761927005)
 
-    def test_weights(self):
-        weights = np.zeros(len(self.a))
+    def test_weights(self, a, b):
+        weights = np.zeros(len(a))
         weights[0] = 1
         weights[1] = 1
-        weighted = rms.rmsd(self.a, self.b, weights=weights)
-        firstCoords = rms.rmsd(self.a[:2], self.b[:2])
+        weighted = rms.rmsd(a, b, weights=weights)
+        firstCoords = rms.rmsd(a[:2], b[:2])
         assert_almost_equal(weighted, firstCoords)
 
-    def test_weights_and_superposition_1(self):
-        weights = np.ones(len(self.u.trajectory[0]))
-        weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
+    def test_weights_and_superposition_1(self, u):
+        weights = np.ones(len(u.trajectory[0]))
+        weighted = rms.rmsd(u.trajectory[0], u.trajectory[1],
                             weights=weights, superposition=True)
-        firstCoords = rms.rmsd(self.u.trajectory[0], self.u.trajectory[1],
+        firstCoords = rms.rmsd(u.trajectory[0], u.trajectory[1],
                                superposition=True)
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
-    def test_weights_and_superposition_2(self):
-        weights = np.zeros(len(self.u.trajectory[0]))
+    def test_weights_and_superposition_2(self, u):
+        weights = np.zeros(len(u.trajectory[0]))
         weights[:100] = 1
-        weighted = rms.rmsd(self.u.trajectory[0], self.u.trajectory[-1],
+        weighted = rms.rmsd(u.trajectory[0], u.trajectory[-1],
                             weights=weights, superposition=True)
-        firstCoords = rms.rmsd(self.u.trajectory[0][:100],
-                               self.u.trajectory[-1][:100],
+        firstCoords = rms.rmsd(u.trajectory[0][:100],
+                               u.trajectory[-1][:100],
                                superposition=True)
         # very close to zero, change significant decimal places to 5
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
-    @staticmethod
-    def test_unequal_shape():
+    def test_unequal_shape(self):
         a = np.ones((4, 3))
         b = np.ones((5, 3))
         with pytest.raises(ValueError):
             rms.rmsd(a, b)
 
-    def test_wrong_weights(self):
+    def test_wrong_weights(self, a, b):
         w = np.ones(2)
         with pytest.raises(ValueError):
-            rms.rmsd(self.a, self.b, w)
+            rms.rmsd(a, b, w)
 
-    def test_with_superposition_smaller(self):
-        A = self.p_first.positions
-        B = self.p_last.positions
+    def test_with_superposition_smaller(self, p_first, p_last):
+        A = p_first.positions
+        B = p_last.positions
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
-        print(rmsd, rmsd_superposition)
         # by design the super positioned rmsd is smaller
         assert rmsd > rmsd_superposition
 
-    def test_with_superposition_equal(self):
-        align.alignto(self.p_first, self.p_last)
-        A = self.p_first.positions
-        B = self.p_last.positions
+    def test_with_superposition_equal(self, p_first, p_last):
+        align.alignto(p_first, p_last)
+        A = p_first.positions
+        B = p_last.positions
         rmsd = rms.rmsd(A, B)
         rmsd_superposition = rms.rmsd(A, B, center=True, superposition=True)
-        assert_almost_equal(rmsd, rmsd_superposition)
+        assert_almost_equal(rmsd, rmsd_superposition, decimal=6)
 
 
 class TestRMSD(object):
@@ -151,12 +165,8 @@ class TestRMSD(object):
         return MDAnalysis.Universe(PSF, DCD)
 
     @pytest.fixture()
-    def tempdir(self):
-        return tempdir.TempDir()
-
-    @pytest.fixture()
-    def outfile(self, tempdir):
-        return os.path.join(tempdir.name, 'rmsd.txt')
+    def outfile(self, tmpdir):
+        return os.path.join(str(tmpdir), 'rmsd.txt')
 
     @pytest.fixture()
     def correct_values(self):
@@ -190,16 +200,16 @@ class TestRMSD(object):
                                             step=49)
         RMSD.run()
         assert_almost_equal(RMSD.rmsd, correct_values, 4,
-                            err_msg="error: rmsd profile should match"
-                            "test values")
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
 
     def test_rmsd_single_frame(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             start=5, stop=6).run()
         single_frame = [[5, 5, 0.91544906]]
         assert_almost_equal(RMSD.rmsd, single_frame, 4,
-                            err_msg="error: rmsd profile should match"
-                            "test values")
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
 
     def test_mass_weighted_and_save(self, universe, outfile, correct_values):
         # mass weighting the CA should give the same answer as weighing
@@ -316,18 +326,13 @@ class TestRMSD(object):
             RMSD.save('blah')
 
 
-class TestRMSF(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(GRO, XTC)
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'rmsf.xtc')
+class TestRMSF(object):
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(GRO, XTC)
 
-    def tearDown(self):
-        del self.universe
-        del self.tempdir
-
-    def test_rmsf(self):
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+    def test_rmsf(self, universe):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA'))
         rmsfs.run()
         test_rmsfs = np.load(rmsfArray)
 
@@ -335,26 +340,29 @@ class TestRMSF(TestCase):
                             err_msg="error: rmsf profile should match test "
                             "values")
 
-    def test_rmsf_single_frame(self):
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'), start=5, stop=6).run()
+    def test_rmsf_single_frame(self, universe):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA'), start=5, stop=6).run()
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
-    def test_rmsf_old_run(self):
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA')).run(start=5, stop=6)
+    def test_rmsf_old_run(self, universe):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(start=5, stop=6)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
-    def test_rmsf_identical_frames(self):
+    def test_rmsf_identical_frames(self, universe, tmpdir):
+
+        outfile = os.path.join(str(tmpdir), 'rmsf.xtc')
+
         # write a dummy trajectory of all the same frame
-        with mda.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
-            for _ in range(self.universe.trajectory.n_frames):
-                W.write(self.universe)
+        with mda.Writer(outfile, universe.atoms.n_atoms) as W:
+            for _ in range(universe.trajectory.n_frames):
+                W.write(universe)
 
-        self.universe = mda.Universe(GRO, self.outfile)
-        rmsfs = rms.RMSF(self.universe.select_atoms('name CA'))
+        universe = mda.Universe(GRO, outfile)
+        rmsfs = rms.RMSF(universe.select_atoms('name CA'))
         rmsfs.run()
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
