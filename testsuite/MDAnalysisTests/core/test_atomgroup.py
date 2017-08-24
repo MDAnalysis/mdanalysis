@@ -62,7 +62,7 @@ class TestDeprecationWarnings(object):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             mda.core.AtomGroup.Universe(PSF, DCD)
-        assert_equal(len(warn), 1)
+        assert len(warn) == 1
 
     def test_old_AtomGroup_init_warns(self):
         u = make_Universe(('names',))
@@ -70,7 +70,7 @@ class TestDeprecationWarnings(object):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             ag = mda.core.groups.AtomGroup(at_list)
-        assert_equal(len(warn), 1)
+        assert len(warn) == 1
 
     def test_old_AtomGroup_init_works(self):
         u = make_Universe(('names',))
@@ -87,7 +87,7 @@ class TestDeprecationWarnings(object):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             rg = mda.core.groups.ResidueGroup(res_list)
-        assert_equal(len(warn), 1)
+        assert len(warn) == 1
 
     def test_old_ResidueGroup_init_works(self):
         u = make_Universe(('resnames',))
@@ -104,7 +104,7 @@ class TestDeprecationWarnings(object):
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
             sg = mda.core.groups.SegmentGroup(seg_list)
-        assert_equal(len(warn), 1)
+        assert len(warn) == 1
 
     def test_old_SegmentGroup_init_works(self):
         u = make_Universe(('segids',))
@@ -164,7 +164,7 @@ class TestAtomGroupWriting(object):
         with tmpdir.as_cwd():
             u.atoms.write()
             files = glob('*')
-            assert_equal(len(files), 1)
+            assert len(files) == 1
 
             name = path.splitext(path.basename(DCD))[0]
             assert_equal(files[0], "{}_0.pdb".format(name))
@@ -228,8 +228,8 @@ class _WriteAtoms(object):
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         CA2 = u2.atoms
-        assert_equal(len(u2.atoms), len(CA.atoms),
-                     "written CA selection does not match original selection")
+        assert len(u2.atoms) == len(CA.atoms), "written CA selection does " \
+                                               "not match original selection"
         assert_almost_equal(
             CA2.positions, CA.positions, self.precision,
             err_msg="CA coordinates do not agree with original")
@@ -240,9 +240,8 @@ class _WriteAtoms(object):
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         G2 = u2.atoms
-        assert_equal(
-            len(u2.atoms), len(G.atoms),
-            "written R206 Residue does not match original ResidueGroup")
+        assert len(u2.atoms) == len(G.atoms), "written R206 Residue does not " \
+                                              "match original ResidueGroup"
         assert_almost_equal(
             G2.positions, G.positions, self.precision,
             err_msg="Residue R206 coordinates do not agree with original")
@@ -252,9 +251,8 @@ class _WriteAtoms(object):
         G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
-        assert_equal(
-            len(u2.atoms), len(G.atoms),
-            "written LEU ResidueGroup does not match original ResidueGroup")
+        assert len(u2.atoms) == len(G.atoms), "written LEU ResidueGroup does " \
+                                              "not match original ResidueGroup"
         assert_almost_equal(
             G2.positions, G.positions, self.precision,
             err_msg="ResidueGroup LEU coordinates do not agree with original")
@@ -264,8 +262,8 @@ class _WriteAtoms(object):
         G.write(outfile)
         u2 = self.universe_from_tmp(outfile)
         G2 = u2.atoms
-        assert_equal(len(u2.atoms), len(G.atoms),
-                     "written s4AKE segment does not match original segment")
+        assert len(u2.atoms) == len(G.atoms), "written s4AKE segment does not" \
+                                              " match original segment"
         assert_almost_equal(
             G2.positions, G.positions, self.precision,
             err_msg="segment s4AKE coordinates do not agree with original")
@@ -275,9 +273,8 @@ class _WriteAtoms(object):
         with mda.Writer(outfile) as W:
             W.write(U)
         u2 = self.universe_from_tmp(outfile)
-        assert_equal(
-            len(u2.atoms), len(U.atoms),
-            "written 4AKE universe does not match original universe in size")
+        assert len(u2.atoms) == len(U.atoms), "written 4AKE universe does not" \
+                                              " match original universe in size"
         assert_almost_equal(
             u2.atoms.positions, U.atoms.positions, self.precision,
             err_msg=("written universe 4AKE coordinates do not"
@@ -285,25 +282,19 @@ class _WriteAtoms(object):
 
 
 class TestWritePDB(_WriteAtoms):
-
-    __test__ = True
-
     ext = "pdb"
     precision = 3
 
 
 class TestWriteGRO(_WriteAtoms):
-
-    __test__ = True
-
     ext = "gro"
     precision = 2
 
     def test_flag_convert_length(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "The flag convert_lengths SHOULD be True by default! "
-                     "(If it is not then this might indicate a race condition"
-                     " in the testing suite.)")
+        assert mda.core.flags['convert_lengths'] is True, \
+                     "The flag convert_lengths SHOULD be True by default! "\
+                     "(If it is not then this might indicate a race condition"\
+                     " in the testing suite.)"
 
 
 class TestAtomGroupTransformations(object):
@@ -477,10 +468,10 @@ class TestSplit(object):
         ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("atom")
-        assert_equal(len(sg), len(ag))
+        assert len(sg) == len(ag)
         for g, ref_atom in zip(sg, ag):
             atom = g[0]
-            assert_equal(len(g), 1)
+            assert len(g) == 1
             assert_equal(atom.name, ref_atom.name)
             assert_equal(atom.resid, ref_atom.resid)
 
@@ -488,12 +479,12 @@ class TestSplit(object):
         ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("residue")
-        assert_equal(len(sg), len(ag.residues.resids))
+        assert len(sg) == len(ag.residues.resids)
         for g, ref_resname in zip(sg, ag.residues.resnames):
             if ref_resname == "GLY":
-                assert_equal(len(g), 1)
+                assert len(g) == 1
             else:
-                assert_equal(len(g), 2)
+                assert len(g) == 2
             for atom in g:
                 assert_equal(atom.resname, ref_resname)
 
@@ -501,7 +492,7 @@ class TestSplit(object):
         ag = universe.select_atoms("resid 1:50 and not resname LYS and "
                                         "(name CA or name CB)")
         sg = ag.split("segment")
-        assert_equal(len(sg), len(ag.segments.segids))
+        assert len(sg) == len(ag.segments.segids)
         for g, ref_segname in zip(sg, ag.segments.segids):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)    
@@ -545,7 +536,7 @@ class TestWrap(object):
         ag = u.atoms[100:200]
         ag.wrap(compound='atoms')
 
-        assert_equal(self._in_box(ag.positions, u), True)
+        assert self._in_box(ag.positions, u)
 
     def test_wrap_group(self, u):
         ag = u.atoms[:100]
@@ -553,7 +544,7 @@ class TestWrap(object):
 
         cen = ag.center_of_mass()
 
-        assert_equal(self._in_box(cen, u), True)
+        assert self._in_box(cen, u)
 
     def test_wrap_residues(self, u):
         ag = u.atoms[300:400]
@@ -561,7 +552,7 @@ class TestWrap(object):
 
         cen = np.vstack([r.atoms.center_of_mass() for r in ag.residues])
 
-        assert_equal(self._in_box(cen, u), True)
+        assert self._in_box(cen, u)
 
     def test_wrap_segments(self, u):
         ag = u.atoms[1000:1200]
@@ -569,7 +560,7 @@ class TestWrap(object):
 
         cen = np.vstack([s.atoms.center_of_mass() for s in ag.segments])
 
-        assert_equal(self._in_box(cen, u), True)
+        assert self._in_box(cen, u)
 
     def test_wrap_fragments(self, u):
         ag = u.atoms[:250]
@@ -577,7 +568,7 @@ class TestWrap(object):
 
         cen = np.vstack([f.center_of_mass() for f in ag.fragments])
 
-        assert_equal(self._in_box(cen, u), True)
+        assert self._in_box(cen, u)
 
 
 class TestAtomGroupProperties(object):
@@ -740,19 +731,19 @@ class TestDihedralSelections(object):
 
     def test_phi_sel_fail(self, PSFDCD):
         sel = PSFDCD.residues[0].phi_selection()
-        assert_equal(sel, None)
+        assert sel is None
 
     def test_psi_sel_fail(self, PSFDCD):
         sel = PSFDCD.residues[-1].psi_selection()
-        assert_equal(sel, None)
+        assert sel is None
 
     def test_omega_sel_fail(self, PSFDCD):
         sel = PSFDCD.residues[-1].omega_selection()
-        assert_equal(sel, None)
+        assert sel is None
 
     def test_ch1_sel_fail(self, PSFDCD):
         sel = PSFDCD.segments[0].residues[7].chi1_selection()
-        assert_equal(sel, None)  # ALA
+        assert sel is None  # ALA
 
     def test_dihedral_phi(self, PSFDCD):
         phisel = PSFDCD.segments[0].residues[9].phi_selection()
@@ -839,7 +830,7 @@ class TestPBCFlag(object):
     
     def test_flag(self):
         # Test default setting of flag
-        assert_equal(mda.core.flags['use_pbc'], False)
+        assert mda.core.flags['use_pbc'] is False
 
     def test_default(self, ag, ref_noPBC):
         # Test regular behaviour
@@ -912,11 +903,6 @@ class TestAtomGroup(object):
     There is likely lots of duplication between here and other tests.
     """
     dih_prec = 2
-    # def setUp(self):
-    #     """Set up the standard AdK system in implicit solvent."""
-    #     self.universe = mda.Universe(PSF, DCD)
-    #     self.ag = self.universe.atoms  # prototypical AtomGroup
-    #     self.dih_prec = 2
         
     @pytest.fixture()
     def universe(self):
@@ -953,26 +939,26 @@ class TestAtomGroup(object):
             mda.core.groups.AtomGroup(['these', 'are', 'not', 'atoms'])
 
     def test_n_atoms(self, ag):
-        assert_equal(ag.n_atoms, 3341)
+        assert ag.n_atoms == 3341
 
     def test_n_residues(self, ag):
-        assert_equal(ag.n_residues, 214)
+        assert ag.n_residues == 214
 
     def test_n_segments(self, ag):
-        assert_equal(ag.n_segments, 1)
+        assert ag.n_segments == 1
 
     def test_resids_dim(self, ag):
-        assert_equal(len(ag.resids), len(ag))
+        assert len(ag.resids) == len(ag)
 
     def test_resnums_dim(self, ag):
-        assert_equal(len(ag.resnums), len(ag))
+        assert len(ag.resnums) == len(ag)
 
     def test_segids_dim(self, ag):
-        assert_equal(len(ag.segids), len(ag))
+        assert len(ag.segids) == len(ag)
 
     def test_len(self, ag):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
-        assert_equal(len(ag), ag.n_atoms, "len and n_atoms disagree")
+        assert len(ag) == ag.n_atoms, "len and n_atoms disagree"
 
     def test_center_of_geometry(self, ag):
         assert_almost_equal(ag.center_of_geometry(),
@@ -1006,54 +992,54 @@ class TestAtomGroup(object):
         assert_almost_equal(ag.total_mass(), 23582.043)
 
     def test_indices_ndarray(self, ag):
-        assert_equal(isinstance(ag.indices, np.ndarray), True)
+        assert isinstance(ag.indices, np.ndarray)
 
     def test_indices(self, ag):
         # pylint: disable=unsubscriptable-object
         assert_equal(ag.indices[:5], np.array([0, 1, 2, 3, 4]))
 
     def test_resids_ndarray(self, ag):
-        assert_equal(isinstance(ag.resids, np.ndarray), True)
+        assert isinstance(ag.resids, np.ndarray)
 
     def test_resids(self, ag):
         assert_equal(ag.residues.resids, np.arange(1, 215))
 
     def test_resnums_ndarray(self, ag):
-        assert_equal(isinstance(ag.residues.resnums, np.ndarray), True)
+        assert isinstance(ag.residues.resnums, np.ndarray)
 
     def test_resnums(self, ag):
         assert_equal(ag.residues.resnums, np.arange(1, 215))
 
     def test_resnames_ndarray(self, ag):
-        assert_equal(isinstance(ag.residues.resnames, np.ndarray), True)
+        assert isinstance(ag.residues.resnames, np.ndarray)
 
     def test_resnames(self, ag):
         resnames = ag.residues.resnames
         assert_equal(resnames[0:3], np.array(["MET", "ARG", "ILE"]))
 
     def test_names_ndarray(self, ag):
-        assert_equal(isinstance(ag.names, np.ndarray), True)
+        assert isinstance(ag.names, np.ndarray)
 
     def test_names(self, ag):
         names = ag.names
         assert_equal(names[0:3], np.array(["N", "HT1", "HT2"]))
 
     def test_segids_ndarray(self, ag):
-        assert_equal(isinstance(ag.segids, np.ndarray), True)
+        assert isinstance(ag.segids, np.ndarray)
 
     def test_segids(self, ag):
         segids = ag.segids
         assert_equal(segids[0], np.array(["4AKE"]))
 
     def test_masses_ndarray(self, ag):
-        assert_equal(isinstance(ag.masses, np.ndarray), True)
+        assert isinstance(ag.masses, np.ndarray)
 
     def test_masses(self, ag):
         masses = ag.masses
         assert_equal(masses[0:3], np.array([14.007, 1.008, 1.008]))
 
     def test_charges_ndarray(self, ag):
-        assert_equal(isinstance(ag.charges, np.ndarray), True)
+        assert isinstance(ag.charges, np.ndarray)
 
     def test_charges(self, ag):
         assert_almost_equal(ag.charges[1000:2000:200],
@@ -1068,23 +1054,23 @@ class TestAtomGroup(object):
     def test_bool_false(self, universe):
         # Issue #304
         ag = universe.atoms[[]]
-        assert_equal(bool(ag), False)
+        assert bool(ag) is False
 
     def test_bool_true(self, universe):
         # Issue #304
         ag = universe.atoms[:3]
-        assert_equal(bool(ag), True)
+        assert bool(ag) is True
 
     def test_repr(self, ag):
         # Should make sure that the user facing info stays as expected
-        assert_equal(repr(ag), "<AtomGroup with 3341 atoms>")
+        assert repr(ag) == "<AtomGroup with 3341 atoms>"
 
     def test_set_resnum_single(self, universe):
         ag = universe.atoms[:3]
         ag.residues.resnums = 5
         for at in ag:
             assert_equal(at.resnum, 5)
-        assert_equal(all(ag.resnums == 5), True)
+        assert all(ag.resnums == 5)
 
     def test_set_resname_single(self, universe):
         ag = universe.atoms[:3]
@@ -1092,7 +1078,7 @@ class TestAtomGroup(object):
         ag.residues.resnames = new
         for at in ag:
             assert_equal(at.resname, new)
-        assert_equal(all(ag.resnames == new), True)
+        assert all(ag.resnames == new)
 
     def test_packintobox_badshape(self, universe):
         ag = universe.atoms[:10]
@@ -1135,9 +1121,8 @@ class TestAtomGroup(object):
 
     def test_segments(self, universe):
         u = universe
-        assert_equal(len(u.segments.s4AKE.atoms),
-                     len(u.select_atoms('segid 4AKE').atoms),
-                     "Direct selection of segment 4AKE from segments failed.")
+        assert len(u.segments.s4AKE.atoms) == len(u.select_atoms(
+            'segid 4AKE').atoms), "Direct selection of segment 4AKE from segments failed."
 
     def test_index_integer(self, universe):
         u = universe
@@ -1168,9 +1153,9 @@ class TestAtomGroup(object):
         sel = np.array([True, False, True])
         ag = universe.atoms[10:13]
         ag2 = ag[sel]
-        assert_equal(len(ag2), 2)
+        assert len(ag2) == 2
         for at in [ag[0], ag[2]]:
-            assert_equal(at in ag2, True)
+            assert at in ag2
 
     def test_boolean_indexing_2(self, universe):
         # index an array with a sequence of bools
@@ -1178,16 +1163,16 @@ class TestAtomGroup(object):
         sel = [True, False, True]
         ag = universe.atoms[10:13]
         ag2 = ag[sel]
-        assert_equal(len(ag2), 2)
+        assert len(ag2) == 2
         for at in [ag[0], ag[2]]:
-            assert_equal(at in ag2, True)
+            assert at in ag2
 
     def test_bool_IE(self, universe):
         # indexing with empty list doesn't run foul of bool check
         sel = []
         ag = universe.atoms[10:30]
         ag2 = ag[sel]
-        assert_equal(len(ag2), 0)
+        assert len(ag2) == 0
 
     def test_dihedral_ValueError(self, universe):
         """test that AtomGroup.dihedral() raises ValueError if not exactly
@@ -1302,7 +1287,7 @@ class TestAtomGroupTimestep(object):
         ag = universe.select_atoms('name Ca')
         idx = ag.indices
 
-        assert_equal(len(ag.ts._pos), len(ag))
+        assert len(ag.ts._pos) == len(ag)
 
         for ts in universe.trajectory[0:20:5]:
             assert_almost_equal(ts.positions[idx], ag.ts.positions, self.prec,
