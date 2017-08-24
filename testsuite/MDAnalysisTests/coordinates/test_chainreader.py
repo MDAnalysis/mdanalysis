@@ -42,14 +42,10 @@ class TestChainReader(object):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
 
-    @pytest.fixture()
-    def trajectory(self, universe):
-        return universe.trajectory
-
-    def test_next_trajectory(self, trajectory):
-        trajectory.rewind()
-        trajectory.next()
-        assert_equal(trajectory.ts.frame, 1, "loading frame 2")
+    def test_next_trajectory(self, universe):
+        universe.trajectory.rewind()
+        universe.trajectory.next()
+        assert_equal(universe.trajectory.ts.frame, 1, "loading frame 2")
 
     def test_n_atoms(self, universe):
         assert_equal(universe.trajectory.n_atoms, 3341,
@@ -59,21 +55,21 @@ class TestChainReader(object):
         assert_equal(universe.trajectory.n_frames, 3 * 98 + 4,
                      "wrong number of frames in chained dcd")
 
-    def test_iteration(self, trajectory):
-        for ts in trajectory:
+    def test_iteration(self, universe):
+        for ts in universe.trajectory:
             pass  # just forward to last frame
         assert_equal(
-            trajectory.n_frames - 1, ts.frame,
+            universe.trajectory.n_frames - 1, ts.frame,
             "iteration yielded wrong number of frames ({0:d}), "
-            "should be {1:d}".format(ts.frame, trajectory.n_frames))
+            "should be {1:d}".format(ts.frame, universe.trajectory.n_frames))
 
-    def test_jump_lastframe_trajectory(self, trajectory):
-        trajectory[-1]
-        assert_equal(trajectory.ts.frame + 1, trajectory.n_frames,
+    def test_jump_lastframe_trajectory(self, universe):
+        universe.trajectory[-1]
+        assert_equal(universe.trajectory.ts.frame + 1, universe.trajectory.n_frames,
                      "indexing last frame with trajectory[-1]")
 
-    def test_slice_trajectory(self, trajectory):
-        frames = [ts.frame for ts in trajectory[5:17:3]]
+    def test_slice_trajectory(self, universe):
+        frames = [ts.frame for ts in universe.trajectory[5:17:3]]
         assert_equal(frames, [5, 8, 11, 14], "slicing dcd [5:17:3]")
 
     def test_full_slice(self, universe):
@@ -81,22 +77,22 @@ class TestChainReader(object):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(universe.trajectory.n_frames))
 
-    def test_frame_numbering(self, universe, trajectory):
-        trajectory[98]  # index is 0-based and frames are 0-based
+    def test_frame_numbering(self, universe):
+        universe.trajectory[98]  # index is 0-based and frames are 0-based
         assert_equal(universe.trajectory.frame, 98, "wrong frame number")
 
-    def test_frame(self, universe, trajectory):
-        trajectory[0]
+    def test_frame(self, universe):
+        universe.trajectory[0]
         coord0 = universe.atoms.positions.copy()
         # forward to frame where we repeat original dcd again:
         # dcd:0..97 crd:98 dcd:99..196
-        trajectory[99]
+        universe.trajectory[99]
         assert_equal(
             universe.atoms.positions, coord0,
             "coordinates at frame 1 and 100 should be the same!")
 
-    def test_time(self, universe, trajectory):
-        trajectory[30]  # index and frames 0-based
+    def test_time(self, universe):
+        universe.trajectory[30]  # index and frames 0-based
         assert_almost_equal(universe.trajectory.time,
                             30.0,
                             5,
@@ -131,14 +127,6 @@ class TestChainReaderCommonDt(object):
                                 [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
                                 dt=self.common_dt)
         return universe.trajectory
-
-    def setUp(self):
-        self.common_dt = 100.0
-        self.universe = mda.Universe(PSF,
-                                     [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
-                                     dt=self.common_dt)
-        self.trajectory = self.universe.trajectory
-        self.prec = 3
 
     def test_time(self, trajectory):
         # We test this for the beginning, middle and end of the trajectory.
