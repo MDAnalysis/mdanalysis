@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 from six.moves import zip
+from collections import OrderedDict
 
 import pytest
 from numpy.testing import (
@@ -76,11 +77,12 @@ class TestCRDWriter(object):
 
 class TestCRDWriterMissingAttrs(object):
     # All required attributes with the default value
-    req_attrs = {'resnames': 'UNK',
-                 'resids': 1,
-                 'names': 'X',
-                 'tempfactors': 0.0,
-                 }
+    req_attrs = OrderedDict([
+        ('resnames', 'UNK'),
+        ('resids', 1),
+        ('names', 'X'),
+        ('tempfactors', 0.0),
+    ])
 
     @pytest.mark.parametrize('missing_attr', req_attrs)
     def test_warns(self, missing_attr, tmpdir):
