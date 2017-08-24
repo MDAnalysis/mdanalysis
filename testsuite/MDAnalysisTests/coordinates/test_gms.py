@@ -33,6 +33,10 @@ from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
 
 
 class _GMSBase(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(self.filename)
+
     def test_n_frames(self, u):
         assert_equal(u.trajectory.n_frames,
                      self.n_frames,
@@ -90,27 +94,18 @@ class TestGMSReader(_GMSBase):
     n_frames = 21
     flavour = "GAMESS C1 optimization"
     step5d = -0.0484664
-
-    @pytest.fixture()
-    def u(self):
-        return mda.Universe(GMS_ASYMOPT)
+    filename = GMS_ASYMOPT
 
 
 class TestGMSReaderSO(_GMSBase):
     n_frames = 8
     flavour = "GAMESS D4H optimization"
     step5d = 0.227637
-
-    @pytest.fixture()
-    def u(self):
-        return mda.Universe(GMS_SYMOPT)
+    filename = GMS_SYMOPT
 
 
 class TestGMSReaderASS(_GMSBase):
     n_frames = 10
     flavour = "GAMESS C1 surface"
     step5d = -0.499996
-
-    @pytest.fixture()
-    def u(self):
-        return mda.Universe(GMS_ASYMSURF)
+    filename = GMS_ASYMSURF
