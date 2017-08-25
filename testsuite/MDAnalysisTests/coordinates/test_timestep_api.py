@@ -38,7 +38,6 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-from numpy.testing import TestCase
 import pytest
 
 # Can add in custom tests for a given Timestep here!
@@ -61,7 +60,29 @@ class TestBaseTimestep(BaseTimestepTest):
 # TODO: Merge this into generic Reader tests
 # These tests are all included in BaseReaderTest
 # Once Readers use that TestClass, delete this one
-class BaseTimestepInterfaceTest(TestCase):
+
+@pytest.mark.parametrize("topology, trajectory, trajectory_format, topology_format", (
+    (XYZ_five, INPCRD, None, None),
+    (PSF, DCD, None, None),
+    (DLP_CONFIG, None, 'CONFIG', None),
+    (DLP_HISTORY, None,'HISTORY', None),
+    (DMS, None, None, None),
+    (GRO, None, None, None),
+    (XYZ_five, INPCRD, None, None),
+    (LAMMPSdata, None, None, None),
+    (mol2_molecules, None, None, None),
+    (PDB_small, None, None, None),
+    (PQR, None, None, None),
+    (PDBQT_input, None, None, None),
+    (PRM, TRJ, None, None),
+    (GRO, XTC, None, None),
+    (TRZ_psf, TRZ, None, None),
+    (GRO, TRR, None, None),
+    (GMS_ASYMOPT, GMS_ASYMOPT, 'GMS', 'GMS'),
+    (LAMMPSdata2, LAMMPSdcd2,'LAMMPS','DATA'),
+    (PRMncdf, NCDF, None, None)
+))
+class TestBaseTimestepInterface(object):
     """Test the Timesteps created by Readers
 
     This checks that Readers are creating correct Timestep objects,
@@ -71,162 +92,34 @@ class BaseTimestepInterfaceTest(TestCase):
 
     See Issue #250 for discussion
     """
-    __test__ = False
+    @pytest.fixture()
+    def universe(self, topology, trajectory, trajectory_format, topology_format):
+        if trajectory_format is not None and topology_format is not None:
+            return mda.Universe(topology, trajectory, format=trajectory_format,
+                                topology_format=topology_format)
 
-    def tearDown(self):
-        del self.ts
-        del self.u
+        if trajectory is not None:
+            return mda.Universe(topology, trajectory)
+        else:
+            return mda.Universe(topology, format=trajectory_format)
 
-    def test_frame(self):
-        assert_equal(self.ts.frame, 0)
+    def test_frame(self, universe):
+        assert_equal(universe.trajectory.ts.frame, 0)
 
-    def test_dt(self):
-        assert_equal(self.u.trajectory.dt, self.ts.dt)
-
-
-class TestCRD(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(XYZ_five, INPCRD)
-        self.ts = u.trajectory.ts
+    def test_dt(self, universe):
+        assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
 
 
-class TestDCD(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(PSF, DCD)
-        self.ts = u.trajectory.ts
+class TestNCDFBaseTimestepInterface(object):
 
-
-class TestDLPConfig(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(DLP_CONFIG, format='CONFIG')
-        self.ts = u.trajectory.ts
-
-
-class TestDLPHistory(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(DLP_HISTORY, format='HISTORY')
-        self.ts = u.trajectory.ts
-
-
-class TestDMS(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(DMS)
-        self.ts = u.trajectory.ts
-
-
-class TestGMS(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT,
-                                  format='GMS', topology_format='GMS')
-        self.ts = u.trajectory.ts
-
-
-class TestGRO(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(GRO)
-        self.ts = u.trajectory.ts
-
-
-class TestINPCRD(BaseTimestepInterfaceTest):
-    __test__ = True
-    def setUp(self):
-        u = self.u = mda.Universe(XYZ_five, INPCRD)
-        self.ts = u.trajectory.ts
-
-
-class TestLAMMPS(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(LAMMPSdata)
-        self.ts = u.trajectory.ts
-
-
-class TestLAMMPSDCD(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(LAMMPSdata2, LAMMPSdcd2,
-                                  format='LAMMPS', topology_format='DATA',
-                                  timeunit='fs')
-        self.ts = u.trajectory.ts
-
-
-class TestMOL2(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(mol2_molecules)
-        self.ts = u.trajectory.ts
-
-
-class TestPDB(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(PDB_small)
-        self.ts = u.trajectory.ts
-
-
-class TestPDBQT(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(PDBQT_input)
-        self.ts = u.trajectory.ts
-
-
-class TestPQR(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(PQR)
-        self.ts = u.trajectory.ts
-
-
-class TestTRJ(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(PRM, TRJ)
-        self.ts = u.trajectory.ts
-
-
-class TestNCDF(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
+    @pytest.fixture()
+    def universe(self):
         pytest.importorskip('netCDF4')
-        u = self.u = mda.Universe(PRMncdf, NCDF)
-        self.ts = u.trajectory.ts
+        return mda.Universe(PRMncdf, NCDF)
 
+    def test_frame(self, universe):
+        assert_equal(universe.trajectory.ts.frame, 0)
 
-class TestTRR(BaseTimestepInterfaceTest):
-    __test__ = True
+    def test_dt(self, universe):
+        assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
 
-    def setUp(self):
-        u = self.u = mda.Universe(GRO, TRR)
-        self.ts = u.trajectory.ts
-
-
-class TestTRZ(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(TRZ_psf, TRZ)
-        self.ts = u.trajectory.ts
-
-
-class TestXTC(BaseTimestepInterfaceTest):
-    __test__ = True
-
-    def setUp(self):
-        u = self.u = mda.Universe(GRO, XTC)
-        self.ts = u.trajectory.ts
