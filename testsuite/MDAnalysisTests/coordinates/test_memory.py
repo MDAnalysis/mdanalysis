@@ -80,7 +80,7 @@ class MemoryReference(BaseReference):
 
 class TestMemoryReader(MultiframeReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return MemoryReference()
 
@@ -95,7 +95,7 @@ class TestMemoryReader(MultiframeReaderTest):
         universe = mda.Universe(PSF, DCD)
         coordinates = universe.trajectory.timeseries(universe.atoms)
         universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
-        assert_equal(universe2.trajectory.filename, None)
+        assert universe2.trajectory.filename is None
 
     def test_default_memory_layout(self):
         universe1 = mda.Universe(PSF, DCD, in_memory=True)
@@ -108,7 +108,7 @@ class TestMemoryReader(MultiframeReaderTest):
         frames = 0
         for i, frame in enumerate(reader):
             frames += 1
-        assert_equal(frames, ref.n_frames)
+        assert frames == ref.n_frames
 
     def test_extract_array_afc(self,reader):
         assert_equal(reader.timeseries(format='afc').shape, (3341, 98, 3))
@@ -140,27 +140,20 @@ class TestMemoryReader(MultiframeReaderTest):
 
     def test_timeseries_view(self, reader):
         # timeseries() is expected to provide a view of the underlying array
-        assert_equal(reader.timeseries().base is reader.get_array(),
-                     True)
+        assert reader.timeseries().base is reader.get_array()
 
     def test_timeseries_subarray_view(self, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the case where we slice the array using the start, stop and
         # step options.
-        assert_equal(
-            reader.timeseries(start=5,
-                                   stop=15,
-                                   step=2,
-                                   format='fac').base is reader.get_array(),
-                     True)
+        assert reader.timeseries(start=5,stop=15,step=2,format='fac').base is\
+               reader.get_array()
 
     def test_timeseries_view_from_universe_atoms(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when asel=universe.atoms.
         selection = ref.universe.atoms
-        assert_equal(reader.timeseries(
-            asel=selection).base is reader.get_array(),
-            True)
+        assert reader.timeseries(asel=selection).base is reader.get_array()
 
     def test_timeseries_view_from_select_all(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
@@ -174,9 +167,7 @@ class TestMemoryReader(MultiframeReaderTest):
         # timeseries() is expected NOT to provide a view of the underlying array
         # for any other selection than "all".
         selection = ref.universe.select_atoms("name CA")
-        assert_equal(reader.timeseries(
-            asel=selection).base is reader.get_array(),
-            False)
+        assert reader.timeseries(asel=selection).base is not reader.get_array()
 
     def test_repr(self, reader):
         str_rep = str(reader)
