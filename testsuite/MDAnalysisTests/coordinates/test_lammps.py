@@ -27,10 +27,9 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_, assert_array_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal)
 
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
 )
@@ -38,7 +37,6 @@ from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini
 )
 
-from unittest import TestCase
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
@@ -46,58 +44,54 @@ def test_datareader_ValueError():
         DATAReader('filename')
 
 
-class _TestLammpsData_Coords(TestCase):
+class _TestLammpsData_Coords(object):
     """Tests using a .data file for loading single frame.
 
     All topology loading from MDAnalysisTests.data is done in test_topology
     """
 
-    __test__ = False
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(self.filename)
 
-    def setUp(self):
-        self.u = mda.Universe(self.filename)
+    def test_n_atoms(self, u):
+        assert_equal(u.atoms.n_atoms, self.n_atoms)
 
-    def tearDown(self):
-        del self.u
+    def test_coords(self, u):
+        assert_equal(u.atoms[0].position, self.pos_atom1)
 
-    def test_n_atoms(self):
-        assert_equal(self.u.atoms.n_atoms, self.n_atoms)
+    def test_velos(self, u):
+        assert_almost_equal(u.atoms[0].velocity, self.vel_atom1)
 
-    def test_coords(self):
-        assert_equal(self.u.atoms[0].position, self.pos_atom1)
+    def test_dimensions(self, u):
+        assert_equal(u.dimensions, self.dimensions)
 
-    def test_velos(self):
-        assert_almost_equal(self.u.atoms[0].velocity, self.vel_atom1)
-
-    def test_dimensions(self):
-        assert_equal(self.u.dimensions, self.dimensions)
-
-    def test_singleframe(self):
+    def test_singleframe(self, u):
         with pytest.raises(StopIteration):
-            self.u.trajectory.next()
+            u.trajectory.next()
 
-    def test_seek(self):
+    def test_seek(self, u):
         with pytest.raises(IndexError):
-            self.u.trajectory.__getitem__(1)
+            u.trajectory.__getitem__(1)
 
-    def test_seek_2(self):
-        ts = self.u.trajectory[0]
+    def test_seek_2(self, u):
+        ts = u.trajectory[0]
         assert_equal(type(ts), mda.coordinates.base.Timestep)
 
-    def test_iter(self):
+    def test_iter(self, u):
         # Check that iterating works, but only gives a single frame
-        assert_equal(len(list(iter(self.u.trajectory))), 1)
+        assert len(list(iter(u.trajectory))) == 1
 
 
 class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
-    __test__ = True
+    pass
 
 
 class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
-    __test__ = True
+    pass
 
 
-@pytest.fixture(params = [
+@pytest.fixture(params=[
     LAMMPSdata,
     LAMMPSdata_mini,
     LAMMPScnt,
@@ -121,8 +115,8 @@ class TestLAMMPSDATAWriter(object):
     def test_Writer_dimensions(self, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
         assert_almost_equal(u_ref.dimensions, u_new.dimensions,
-                         err_msg="attributes different after writing",
-                         decimal=6)
+                            err_msg="attributes different after writing",
+                            decimal=6)
 
     @pytest.mark.parametrize('attr', [
         'types', 'bonds', 'angles', 'dihedrals', 'impropers'
@@ -149,7 +143,7 @@ class TestLAMMPSDATAWriter(object):
                 getattr(u_new, attr)
         else:
             assert_almost_equal(refvals,
-                                getattr(u_new.atoms,attr),
+                                getattr(u_new.atoms, attr),
                                 err_msg="attributes different after writing",
                                 decimal=6)
 
@@ -189,124 +183,123 @@ class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
 
     def test_n_bonds(self, LAMMPSDATA_partial):
         u_ref, u_new = LAMMPSDATA_partial
-        assert_equal(len(u_new.atoms.bonds), 4)
+        assert len(u_new.atoms.bonds) == 4
 
     def test_n_angles(self, LAMMPSDATA_partial):
         u_ref, u_new = LAMMPSDATA_partial
-        assert_equal(len(u_new.atoms.angles), 4)
+        assert len(u_new.atoms.angles) == 4
 
 
 # need more tests of the LAMMPS DCDReader
 
-class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
+class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
-    def setUp(self):
-        self.u = mda.Universe(self.topology, self.trajectory,
-                              format=self.format)
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(self.topology, self.trajectory,
+                            format=self.format)
 
-    def tearDown(self):
-        del self.u
+    def test_Reader_is_LAMMPS(self, u):
+        assert u.trajectory.flavor, self.flavor
 
-    def test_Reader_is_LAMMPS(self):
-        assert_(self.u.trajectory.flavor, self.flavor)
-
-    def get_frame_from_end(self, offset):
-        iframe = self.u.trajectory.n_frames - 1 - offset
+    def get_frame_from_end(self, offset, u):
+        iframe = u.trajectory.n_frames - 1 - offset
         iframe = iframe if iframe > 0 else 0
         return iframe
 
-    def test_n_atoms(self):
-        assert_equal(self.u.atoms.n_atoms, self.n_atoms)
+    def test_n_atoms(self, u):
+        assert_equal(u.atoms.n_atoms, self.n_atoms)
 
-    def test_n_frames(self):
-        assert_equal(self.u.trajectory.n_frames, self.n_frames)
+    def test_n_frames(self, u):
+        assert_equal(u.trajectory.n_frames, self.n_frames)
 
-    def test_dimensions(self):
-        mean_dimensions = np.mean([ts.dimensions for ts in self.u.trajectory],
+    def test_dimensions(self, u):
+        mean_dimensions = np.mean([ts.dimensions for ts in u.trajectory],
                                   axis=0)
         assert_almost_equal(mean_dimensions, self.mean_dimensions)
 
-    def test_dt(self):
-        assert_almost_equal(self.u.trajectory.dt, self.dt,
+    def test_dt(self, u):
+        assert_almost_equal(u.trajectory.dt, self.dt,
                             err_msg="Time between frames dt is wrong.")
 
-    def test_Timestep_time(self):
-        iframe = self.get_frame_from_end(1)
-        assert_almost_equal(self.u.trajectory[iframe].time,
+    def test_Timestep_time(self, u):
+        iframe = self.get_frame_from_end(1, u)
+        assert_almost_equal(u.trajectory[iframe].time,
                             iframe * self.dt,
                             err_msg="Time for frame {0} (dt={1}) is wrong.".format(
-                iframe, self.dt))
+                                iframe, self.dt))
 
-    def test_LAMMPSDCDReader_set_dt(self, dt=1500.):
+    def test_LAMMPSDCDReader_set_dt(self, u, dt=1500.):
         u = mda.Universe(self.topology, self.trajectory, format=self.format,
                          dt=dt)
-        iframe = self.get_frame_from_end(1)
-        assert_almost_equal(u.trajectory[iframe].time, iframe*dt,
+        iframe = self.get_frame_from_end(1, u)
+        assert_almost_equal(u.trajectory[iframe].time, iframe * dt,
                             err_msg="setting time step dt={0} failed: "
-                            "actually used dt={1}".format(
-                dt, u.trajectory._ts_kwargs['dt']))
+                                    "actually used dt={1}".format(
+                                dt, u.trajectory._ts_kwargs['dt']))
 
     def test_wrong_time_unit(self):
         def wrong_load(unit="nm"):
-            return mda.Universe(self.topology, self.trajectory, format=self.format,
+            return mda.Universe(self.topology, self.trajectory,
+                                format=self.format,
                                 timeunit=unit)
+
         with pytest.raises(TypeError):
             wrong_load()
 
     def test_wrong_unit(self):
         def wrong_load(unit="GARBAGE"):
-            return mda.Universe(self.topology, self.trajectory, format=self.format,
+            return mda.Universe(self.topology, self.trajectory,
+                                format=self.format,
                                 timeunit=unit)
+
         with pytest.raises(ValueError):
             wrong_load()
 
 
-class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
+class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
     flavor = 'LAMMPS'
 
-    def setUp(self):
-        self.u = mda.Universe(self.topology, self.trajectory,
-                              format=self.format)
-        # dummy output file
-        ext = os.path.splitext(self.trajectory)[1]
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tmpdir.name,  'lammps-writer-test' + ext)
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(self.topology, self.trajectory, format=self.format)
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.u
-        del self.tmpdir
+    def test_Writer_is_LAMMPS(self, u, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test' + \
+                  os.path.splitext(self.trajectory)[1]
+        with mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
+                        format=self.format) as W:
+            assert W.flavor, self.flavor
 
-    def test_Writer_is_LAMMPS(self):
-        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms,
-                       format=self.format) as W:
-            assert_(W.flavor, self.flavor)
-
-    def test_Writer(self, n_frames=3):
-        W = mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms,
+    def test_Writer(self, u, tmpdir, n_frames=3):
+        outfile = str(tmpdir) + 'lammps-writer-test' + \
+                  os.path.splitext(self.trajectory)[1]
+        W = mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
                        format=self.format)
-        with self.u.trajectory.OtherWriter(self.outfile) as w:
-            for ts in self.u.trajectory[:n_frames]:
+        with u.trajectory.OtherWriter(outfile) as w:
+            for ts in u.trajectory[:n_frames]:
                 w.write(ts)
-        short = mda.Universe(self.topology, self.outfile)
+        short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
                      err_msg="number of frames mismatch")
         assert_almost_equal(short.trajectory[n_frames - 1].positions,
-                            self.u.trajectory[n_frames - 1].positions,
-                            6, err_msg="coordinate mismatch between corresponding frames")
+                            u.trajectory[n_frames - 1].positions,
+                            6,
+                            err_msg="coordinate mismatch between corresponding frames")
 
-    def test_OtherWriter_is_LAMMPS(self):
-        with self.u.trajectory.OtherWriter(self.outfile) as W:
-            assert_(W.flavor, self.flavor)
+    def test_OtherWriter_is_LAMMPS(self, u, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test' + \
+                  os.path.splitext(self.trajectory)[1]
+        with u.trajectory.OtherWriter(outfile) as W:
+            assert W.flavor, self.flavor
 
-    def test_OtherWriter(self):
+    def test_OtherWriter(self, u, tmpdir):
         times = []
-        with self.u.trajectory.OtherWriter(self.outfile) as w:
-            for ts in self.u.trajectory[::-1]:
+        outfile = str(tmpdir) + 'lammps-writer-test' + \
+                  os.path.splitext(self.trajectory)[1]
+        with u.trajectory.OtherWriter(outfile) as w:
+            for ts in u.trajectory[::-1]:
                 times.append(ts.time)
                 w.write(ts)
         # note: the reversed trajectory records times in increasing
@@ -314,52 +307,45 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
         #       attached to their frames. This could be considered a bug
         #       but DCD has no way to store timestamps. Right now, we'll simply
         #       test that this is the case and pass.
-        reversed = mda.Universe(self.topology, self.outfile)
-        assert_equal(reversed.trajectory.n_frames, self.u.trajectory.n_frames,
+        reversed = mda.Universe(self.topology, outfile)
+        assert_equal(reversed.trajectory.n_frames, u.trajectory.n_frames,
                      err_msg="number of frames mismatch")
         rev_times = [ts.time for ts in reversed.trajectory]
         assert_almost_equal(rev_times, times[::-1], 6,
                             err_msg="time steps of written DCD mismatch")
         assert_almost_equal(reversed.trajectory[-1].positions,
-                            self.u.trajectory[0].positions,
-                            6, err_msg="coordinate mismatch between corresponding frames")
+                            u.trajectory[0].positions,
+                            6,
+                            err_msg="coordinate mismatch between corresponding frames")
 
-class TestLAMMPSDCDWriterClass(TestCase):
+
+class TestLAMMPSDCDWriterClass(object):
     flavor = 'LAMMPS'
 
-    def setUp(self):
-        # dummy output file
-        ext = ".dcd"
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tmpdir.name,  'lammps-writer-test' + ext)
+    def test_Writer_is_LAMMPS(self, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
+        with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10) as W:
+            assert W.flavor, self.flavor
 
-    def tearDown(self):
+    def test_open(self, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
         try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.tmpdir
-
-    def test_Writer_is_LAMMPS(self):
-        with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10) as W:
-            assert_(W.flavor, self.flavor)
-
-    def test_open(self):
-        try:
-            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10):
+            with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10):
                 pass
         except Exception:
             pytest.fail()
 
-    def test_wrong_time_unit(self):
+    def test_wrong_time_unit(self, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
         with pytest.raises(TypeError):
-            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+            with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10,
                                                   timeunit='nm'):
                 pass
 
-    def test_wrong_unit(self):
+    def test_wrong_unit(self, tmpdir):
+        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
         with pytest.raises(ValueError):
-            with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+            with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10,
                                                   timeunit='GARBAGE'):
                 pass
 
@@ -376,6 +362,7 @@ def test_triclinicness():
 def tmpout(tmpdir):
     return str(tmpdir.join('out.data'))
 
+
 class TestDataWriterErrors(object):
     def test_write_no_masses(self, tmpout):
         u = make_Universe(('types',), trajectory=True)
@@ -383,7 +370,7 @@ class TestDataWriterErrors(object):
         try:
             u.atoms.write(tmpout)
         except NoDataError as e:
-            assert_('masses' in e.args[0])
+            assert 'masses' in e.args[0]
         else:
             pytest.fail()
 
@@ -393,7 +380,7 @@ class TestDataWriterErrors(object):
         try:
             u.atoms.write(tmpout)
         except NoDataError as e:
-            assert_('types' in e.args[0])
+            assert 'types' in e.args[0]
         else:
             pytest.fail()
 
@@ -403,6 +390,6 @@ class TestDataWriterErrors(object):
         try:
             u.atoms.write(tmpout)
         except ValueError as e:
-            assert_('must be convertible to integers' in e.args[0])
+            assert 'must be convertible to integers' in e.args[0]
         else:
             raise pytest.fail()
