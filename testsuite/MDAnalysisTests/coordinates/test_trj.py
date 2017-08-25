@@ -33,8 +33,6 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class _TRJReaderTest(object):
-    # use as a base class (override setUp()) and mixin a reference
-
     def test_load_prm(self, universe):
         assert_equal(len(universe.atoms), self.ref_n_atoms,
                      "load Universe from PRM and TRJ")
