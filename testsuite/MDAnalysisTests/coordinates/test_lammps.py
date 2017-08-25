@@ -72,7 +72,7 @@ class _TestLammpsData_Coords(object):
 
     def test_seek(self, u):
         with pytest.raises(IndexError):
-            u.trajectory.__getitem__(1)
+            u.trajectory[1]
 
     def test_seek_2(self, u):
         ts = u.trajectory[0]
@@ -266,15 +266,15 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
         return mda.Universe(self.topology, self.trajectory, format=self.format)
 
     def test_Writer_is_LAMMPS(self, u, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test' + \
-                  os.path.splitext(self.trajectory)[1]
+        ext = os.path.splitext(self.trajectory)[1]
+        outfile = str(tmpdir.join('lammps-writer-test' + ext))
         with mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
                         format=self.format) as W:
             assert W.flavor, self.flavor
 
     def test_Writer(self, u, tmpdir, n_frames=3):
-        outfile = str(tmpdir) + 'lammps-writer-test' + \
-                  os.path.splitext(self.trajectory)[1]
+        ext = os.path.splitext(self.trajectory)[1]
+        outfile = str(tmpdir.join('lammps-writer-test' + ext))
         W = mda.Writer(outfile, n_atoms=u.atoms.n_atoms,
                        format=self.format)
         with u.trajectory.OtherWriter(outfile) as w:
@@ -289,15 +289,15 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
                             err_msg="coordinate mismatch between corresponding frames")
 
     def test_OtherWriter_is_LAMMPS(self, u, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test' + \
-                  os.path.splitext(self.trajectory)[1]
+        ext = os.path.splitext(self.trajectory)[1]
+        outfile = str(tmpdir.join('lammps-writer-test' + ext))
         with u.trajectory.OtherWriter(outfile) as W:
             assert W.flavor, self.flavor
 
     def test_OtherWriter(self, u, tmpdir):
         times = []
-        outfile = str(tmpdir) + 'lammps-writer-test' + \
-                  os.path.splitext(self.trajectory)[1]
+        ext = os.path.splitext(self.trajectory)[1]
+        outfile = str(tmpdir.join('lammps-writer-test' + ext))
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory[::-1]:
                 times.append(ts.time)
@@ -323,12 +323,12 @@ class TestLAMMPSDCDWriterClass(object):
     flavor = 'LAMMPS'
 
     def test_Writer_is_LAMMPS(self, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
+        outfile = str(tmpdir.join('lammps-writer-test.dcd'))
         with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10) as W:
             assert W.flavor, self.flavor
 
     def test_open(self, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
+        outfile = str(tmpdir.join('lammps-writer-test.dcd'))
         try:
             with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10):
                 pass
@@ -336,14 +336,14 @@ class TestLAMMPSDCDWriterClass(object):
             pytest.fail()
 
     def test_wrong_time_unit(self, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
+        outfile = str(tmpdir.join('lammps-writer-test.dcd'))
         with pytest.raises(TypeError):
             with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10,
                                                   timeunit='nm'):
                 pass
 
     def test_wrong_unit(self, tmpdir):
-        outfile = str(tmpdir) + 'lammps-writer-test.dcd'
+        outfile = str(tmpdir.join('lammps-writer-test.dcd'))
         with pytest.raises(ValueError):
             with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10,
                                                   timeunit='GARBAGE'):
