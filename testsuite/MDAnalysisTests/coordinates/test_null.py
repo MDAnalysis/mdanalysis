@@ -22,18 +22,17 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.datafiles import (TPR, XTC)
-from numpy.testing import TestCase
 
-class TestNullWriter(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(TPR, XTC)
 
-    def tearDown(self):
-        del self.universe
+@pytest.fixture()
+def universe():
+    return mda.Universe(TPR, XTC)
 
-    def test_NullWriter(self):
-        with mda.Writer(None, n_atoms=self.universe.atoms.n_atoms) as W:
-            for ts in self.universe.trajectory:
-                W.write(ts)
+
+def test_NullWriter(universe):
+    with mda.Writer(None, n_atoms=universe.atoms.n_atoms) as W:
+        for ts in universe.trajectory:
+            W.write(ts)
