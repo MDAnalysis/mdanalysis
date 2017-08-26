@@ -33,20 +33,28 @@ import MDAnalysis as mda
 def TXYZ_U():
     return mda.Universe(TXYZ)
 
+
 @pytest.fixture
 def ARC_U():
     return mda.Universe(ARC)
 
+
 def test_txyz_positions(TXYZ_U):
-    assert_almost_equal(TXYZ_U.atoms.positions[0], [-6.553398, -1.854369,  0.000000])
+    assert_almost_equal(TXYZ_U.atoms.positions[0],
+                        [-6.553398, -1.854369, 0.000000])
 
 
 def test_arc_positions(ARC_U):
-    assert_almost_equal(ARC_U.atoms.positions[0], [-6.553398, -1.854369,  0.000000]) 
+    assert_almost_equal(ARC_U.atoms.positions[0],
+                        [-6.553398, -1.854369, 0.000000])
+
+
 def test_arc_positions_frame_2(ARC_U):
     ARC_U.trajectory[1]
 
-    assert_almost_equal(ARC_U.atoms.positions[0], [ -0.231579, -0.350841, -0.037475])
+    assert_almost_equal(ARC_U.atoms.positions[0],
+                        [-0.231579, -0.350841, -0.037475])
+
 
 def test_arc_traj_legnth(ARC_U):
     assert len(ARC_U.trajectory) == 2
