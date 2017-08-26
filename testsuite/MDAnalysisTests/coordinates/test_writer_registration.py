@@ -22,11 +22,9 @@
 from __future__ import absolute_import
 
 import pytest
-from numpy.testing import assert_
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import WriterBase
-
 
 
 class TestWriterCreation(object):
@@ -46,15 +44,15 @@ class TestWriterCreation(object):
         singleframe = False
 
     def test_default_multiframe(self):
-        assert_(isinstance(mda.Writer('this.magic'), self.MultiMagicWriter))
+        assert isinstance(mda.Writer('this.magic'), self.MultiMagicWriter)
 
     def test_singleframe(self):
         # check that singleframe=False has been respected
-        assert_(isinstance(mda.Writer('this.magic', multiframe=False), self.MagicWriter))
+        assert isinstance(mda.Writer('this.magic', multiframe=False), self.MagicWriter)
 
     def test_multiframe_magic2(self):
         # this will work as we go for multiframe
-        assert_(isinstance(mda.Writer('that.magic2'), self.MultiMagicWriter))
+        assert isinstance(mda.Writer('that.magic2'), self.MultiMagicWriter)
 
     def test_singleframe_magic2(self):
         # this should fail, there isn't a singleframe writer for magic2
