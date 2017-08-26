@@ -80,7 +80,7 @@ class TestBaseTimestep(BaseTimestepTest):
     (GRO, TRR, None, None),
     (GMS_ASYMOPT, GMS_ASYMOPT, 'GMS', 'GMS'),
     (LAMMPSdata2, LAMMPSdcd2,'LAMMPS','DATA'),
-    (PRMncdf, NCDF, None, None)
+    (PRMncdf, NCDF, None, None),
 ))
 class TestBaseTimestepInterface(object):
     """Test the Timesteps created by Readers
@@ -108,18 +108,3 @@ class TestBaseTimestepInterface(object):
 
     def test_dt(self, universe):
         assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
-
-
-class TestNCDFBaseTimestepInterface(object):
-
-    @pytest.fixture()
-    def universe(self):
-        pytest.importorskip('netCDF4')
-        return mda.Universe(PRMncdf, NCDF)
-
-    def test_frame(self, universe):
-        assert_equal(universe.trajectory.ts.frame, 0)
-
-    def test_dt(self, universe):
-        assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
-
