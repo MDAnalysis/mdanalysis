@@ -22,16 +22,12 @@
 from __future__ import absolute_import
 
 import pytest
-from six.moves import range, zip
+from six.moves import zip
 
 import MDAnalysis as mda
 import numpy as np
-import os
 from numpy.testing import (
-    assert_array_almost_equal,
-    raises,
-    assert_array_equal,
-    assert_,
+    assert_almost_equal,
 )
 
 from MDAnalysis.coordinates.XYZ import XYZWriter
@@ -39,8 +35,7 @@ from MDAnalysis.coordinates.XYZ import XYZWriter
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReference,
                                               BaseWriterTest)
-from MDAnalysisTests import tempdir, make_Universe
-from numpy.testing import TestCase
+from MDAnalysisTests import make_Universe
 
 
 class XYZReference(BaseReference):
@@ -87,10 +82,10 @@ class TestXYZWriter(BaseWriterTest):
 
         copy = ref.reader(outfile)
         for orig_ts, copy_ts in zip(uni.trajectory, copy):
-            assert_array_almost_equal(
+            assert_almost_equal(
                 copy_ts._pos, sel.atoms.positions, ref.prec,
                 err_msg="coordinate mismatch between original and written "
-                "trajectory at frame {} (orig) vs {} (copy)".format(
+                        "trajectory at frame {} (orig) vs {} (copy)".format(
                     orig_ts.frame, copy_ts.frame))
 
     def test_write_different_models_in_trajectory(self, ref, reader, tempdir):
@@ -98,7 +93,7 @@ class TestXYZWriter(BaseWriterTest):
         # n_atoms should match for each TimeStep if it was specified
         with ref.writer(outfile, n_atoms=4) as w:
             with pytest.raises(ValueError):
-               w.write(reader.ts)
+                w.write(reader.ts)
 
     def test_no_conversion(self, ref, reader, tempdir):
         outfile = self.tmp_file('write-no-conversion', ref, tempdir)
@@ -116,7 +111,6 @@ class XYZ_BZ_Reference(XYZReference):
 
 
 class Test_XYZBZReader(TestXYZReader):
-
     @staticmethod
     @pytest.fixture()
     def ref():
@@ -124,54 +118,45 @@ class Test_XYZBZReader(TestXYZReader):
 
 
 class Test_XYZBZWriter(TestXYZWriter):
-
     @staticmethod
     @pytest.fixture()
     def ref():
         return XYZ_BZ_Reference()
 
 
-class TestXYZWriterNames(TestCase):
-    def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/outfile.xyz'
+class TestXYZWriterNames(object):
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir.join('/outfile.xyz'))
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-        del self.outfile
-        del self.tmpdir
-
-    def test_no_names(self):
+    def test_no_names(self, outfile):
         u = make_Universe(trajectory=True)
 
-        w = XYZWriter(self.outfile)
+        w = XYZWriter(outfile)
         w.write(u.trajectory.ts)
         w.close()
 
-        u2 = mda.Universe(self.outfile)
-        assert_(all(u2.atoms.names == 'X'))
+        u2 = mda.Universe(outfile)
+        assert all(u2.atoms.names == 'X')
 
-    def test_single_name(self):
+    def test_single_name(self, outfile):
         u = make_Universe(trajectory=True)
 
-        w = XYZWriter(self.outfile, atoms='ABC')
+        w = XYZWriter(outfile, atoms='ABC')
         w.write(u.trajectory.ts)
         w.close()
 
-        u2 = mda.Universe(self.outfile)
-        assert_(all(u2.atoms.names == 'ABC'))
+        u2 = mda.Universe(outfile)
+        assert all(u2.atoms.names == 'ABC')
 
-    def test_list_names(self):
+    def test_list_names(self, outfile):
         u = make_Universe(trajectory=True)
 
         names = ['A', 'B', 'C', 'D', 'E'] * 25
 
-        w = XYZWriter(self.outfile, atoms=names)
+        w = XYZWriter(outfile, atoms=names)
         w.write(u.trajectory.ts)
         w.close()
 
-        u2 = mda.Universe(self.outfile)
-        assert_(all(u2.atoms.names == names))
+        u2 = mda.Universe(outfile)
+        assert all(u2.atoms.names == names)
