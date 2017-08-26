@@ -40,8 +40,7 @@ class _TRJReaderTest(object):
         return mda.Universe(self.topology_file, self.trajectory_file)
 
     def test_load_prm(self, universe):
-        U = universe
-        assert_equal(len(U.atoms), self.ref_n_atoms,
+        assert_equal(len(universe.atoms), self.ref_n_atoms,
                      "load Universe from PRM and TRJ")
 
     def test_n_atoms(self, universe):
