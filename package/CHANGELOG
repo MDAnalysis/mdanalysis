@@ -52,6 +52,8 @@ Fixes
   * XDR files now avoid offset recalculation on a rewind (PR #1667)
   * Universe creation doesn't Matryoshka NamedStream anymore (PR #1669)
   * Fixed triclinic unit cell distances for box edges (Issue #1475)
+  * Fixed analysis.rms.RMSD: selections are now applied to atomgroup, not to
+    atomgroup.universe
 
 Changes
   * remove deprecated TimeSeriesCollection
