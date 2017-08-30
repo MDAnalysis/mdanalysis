@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|build| |cov| [*]_
+|build| |cov| [*]_ |numfocus|
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda|
 
@@ -113,3 +113,7 @@ to find uncovered code.
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
     :alt: Anaconda
     :target: https://anaconda.org/conda-forge/mdanalysis
+
+.. |numfocus| image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
+    :target: http://numfocus.org
+    :alt: Powered by NumFOCUS
