@@ -45,22 +45,13 @@ class TestEncore(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
-        template.transfer_to_memory()
-        template = mda.Universe(
-            template.filename, np.copy(template.trajectory.timeseries(
-                format='fac')[::5, :, :]),
-                format=mda.coordinates.memory.MemoryReader)
+        template.transfer_to_memory(step=5)
         return template
 
     @pytest.fixture(scope='class')
     def ens2_template(self):
         template = mda.Universe(PSF, DCD2)
-        template.transfer_to_memory()
-        template = mda.Universe(
-            template.filename,
-            np.copy(
-                template.trajectory.timeseries(format='fac')[::5, :, :]),
-                format=mda.coordinates.memory.MemoryReader)
+        template.transfer_to_memory(step=5)
         return template
 
     @pytest.fixture()
@@ -387,21 +378,13 @@ class TestEncoreClustering(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
-        template.transfer_to_memory()
-        template = mda.Universe(
-            template.filename,
-            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
-                    format=mda.coordinates.memory.MemoryReader)
+        template.transfer_to_memory(step=5)
         return template
 
     @pytest.fixture(scope='class')
     def ens2_template(self):
         template = mda.Universe(PSF, DCD2)
-        template.transfer_to_memory()
-        template = mda.Universe(
-            template.filename,
-            np.copy(template.trajectory.timeseries(format='fac')[::5, :, :]),
-                    format=mda.coordinates.memory.MemoryReader)
+        template.transfer_to_memory(step=5)
         return template
 
     @pytest.fixture()
@@ -623,20 +606,12 @@ class TestEncoreDimensionalityReduction(object):
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
         template.transfer_to_memory(step=5)
-        template = mda.Universe(
-            template.filename,
-            np.copy(template.trajectory.timeseries(format='fac')),
-            format=mda.coordinates.memory.MemoryReader)
         return template
 
     @pytest.fixture(scope='class')
     def ens2_template(self):
         template = mda.Universe(PSF, DCD2)
         template.transfer_to_memory(step=5)
-        template = mda.Universe(template.filename,
-                                np.copy(template.trajectory.timeseries(
-                                    format='fac')),
-                                format=mda.coordinates.memory.MemoryReader)
         return template
 
     @pytest.fixture()
