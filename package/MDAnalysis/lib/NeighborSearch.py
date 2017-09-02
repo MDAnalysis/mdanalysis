@@ -31,6 +31,7 @@ from __future__ import absolute_import
 
 import numpy as np
 from Bio.KDTree import KDTree
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 
 from MDAnalysis.core.groups import AtomGroup, Atom
 
@@ -43,13 +44,18 @@ class AtomNeighborSearch(object):
     yourself that the trajectory has been corrected for PBC artifacts.
     """
 
-    def __init__(self, atom_group, bucket_size=10):
+    def __init__(self, atom_group, box=None, bucket_size=10):
         """
 
         Parameters
         ----------
         atom_list : AtomGroup
           list of atoms
+        box : array-like or ``None``, optional, default ``None``
+          Simulation cell dimensions in the form of
+          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          periodic boundary conditions should be taken into account for
+          the calculation of contacts.
         bucket_size : int
           Number of entries in leafs of the KDTree. If you suffer poor
           performance you can play around with this number. Increasing the
@@ -58,7 +64,10 @@ class AtomNeighborSearch(object):
         """
         self.atom_group = atom_group
         self._u = atom_group.universe
-        self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        if box is None:
+            self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        else:
+            self.kdtree = PeriodicKDTree(box, bucket_size=bucket_size)
         self.kdtree.set_coords(atom_group.positions)
 
     def search(self, atoms, radius, level='A'):
