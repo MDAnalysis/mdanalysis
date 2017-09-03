@@ -21,10 +21,10 @@
 #
 
 """
-Periodic KDTree --- :mod:`MDAnalysis.lib.pkdtree`
+PeriodicKDTree --- :mod:`MDAnalysis.lib.pkdtree`
 ===============================================================================
 
-This module contains class to allow searches on a KDTree involving periodic
+This module contains a class to allow searches on a KDTree involving periodic
 boundary conditions.
 """
 
@@ -38,17 +38,19 @@ __all__ = ['PeriodicKDTree', ]
 
 class PeriodicKDTree(object):
     """
-    Wrapper around Bio.KDTree._CKDTree to enable search with periodic boundary conditions.
-    
-    A tree is first constructed with the coordinates wrapped onto the central cell.
-    
-    A query for neighbors around a center point is performed first by wrapping the center
-    point coordinates to the central cell, then generating images of this wrapped
-    center point and also searching for neighbors around the images.
-    
-    Only the necessary number of center point images is generated for each case. For
-    instance, if the wrapped center point lies well within the cell and far away
-    from the cell boundaries, there may be no need to generate any center point image.
+    Wrapper around Bio.KDTree._CKDTree to enable search with periodic boundary
+     conditions.
+
+    A tree is first constructed with the coordinates wrapped onto the central
+    cell. A query for neighbors around a center point is performed first by
+    wrapping the center point coordinates to the central cell, then generating
+    images of this wrapped center point and finally searching for neighbors
+    close to the images.
+
+    Only the necessary number of center point images is generated for each
+    case. For instance, if the wrapped center point lies well within the cell
+    and far away from the cell boundaries, there may be no need to generate
+    any center point image.
     """
 
     def __init__(self, box, bucket_size=10):
@@ -99,15 +101,15 @@ class PeriodicKDTree(object):
         self.kdt.set_data(wrapped_data)
         self.built = 1
 
-    def find_centers(self, center, radius):
+    def find_centers(self, center_point, radius):
         """
         Find relevant images of a center point.
-        
+
         Parameters
         ----------
-        center: NumPy.array
+        center_point: NumPy.array
           Coordinates of the query center point
-        radius: float 
+        radius: float
           Maximum distance from center in search for neighbors
 
         Returns
@@ -115,36 +117,37 @@ class PeriodicKDTree(object):
         :class:`List`
           center point and its relevant images
         """
-        wrapped_center = (center - np.where(self.box > 0.0,
-                                            np.floor(center / self.box) * self.box, 0.0))
-        centers = [wrapped_center, ]
+        wrapped_c = (center_point - np.where(self.box > 0.0,
+                     np.floor(center_point / self.box) * self.box, 0.0))
+        centers = [wrapped_c, ]
         extents = self.box/2.0
         extents = np.where(extents > radius, radius, extents)
-        # displacements are vectors that we add to wrapped_center to generate images
-        # "up" or "down" the central cell along the axis that we happen to be looking.
+        # displacements are vectors that we add to wrapped_c to
+        # generate images "up" or "down" the central cell along
+        # the axis that we happen to be looking.
         displacements = list()
         for i in range(self.dim):
             displacement = np.zeros(self.dim)
             extent = extents[i]
             if extent > 0.0:
-                if self.box[i] - wrapped_center[i] < extent:
-                    displacement[i] = -self.box[i]  # displacement generates "lower" image
+                if self.box[i] - wrapped_c[i] < extent:
+                    displacement[i] = -self.box[i]  # "lower" image
                     displacements.append(displacement)
-                elif wrapped_center[i] < extent:
-                    displacement[i] = self.box[i]  # displacement generates "upper" image
+                elif wrapped_c[i] < extent:
+                    displacement[i] = self.box[i]  # "upper" image
                     displacements.append(displacement)
         # If we have displacements along more than one axis, we have
         # to combine them. This happens when wrapped_center is close
         # to any edge or vertex of the central cell.
         # face, n_displacements==1; no combination
         # edge, n_displacements==2; combinations produce one extra displacement
-        # vertex, n_displacements==3; combinations produce five extra displacements
+        # vertex, n_displacements==3; five extra displacements
         n_displacements = len(displacements)
         if n_displacements > 1:
             for start in range(n_displacements - 1, -1, -1):
                 for i in range(start+1, len(displacements)):
                     displacements.append(displacements[start]+displacements[i])
-        centers.extend([wrapped_center + d for d in displacements])
+        centers.extend([wrapped_c + d for d in displacements])
         return centers
 
     def search(self, center, radius):
@@ -157,15 +160,14 @@ class PeriodicKDTree(object):
         center: NumPy.array
           origin around which to search for neighbors
         radius: float
-          maximum distance around which to search for neighbors. The search radius
-          is set to half the smallest periodicity if radius exceeds this value.
+          maximum distance around which to search for neighbors. The search
+          radius is half the smallest periodicity if radius exceeds this value
         """
         if not self.built:
             raise Exception('No point set specified')
         if center.shape != (self.dim,):
             raise Exception('Expected a ({},) NumPy array'.format(self.dim))
         self._indices = None  # clear previous search
-        # Search neighbors for all relevant images of center point
         for c in self.find_centers(center, radius):
             self.kdt.search_center_radius(c, radius)
             if self._indices is None:
@@ -177,33 +179,3 @@ class PeriodicKDTree(object):
 
     def get_indices(self):
         return self._indices
-
-
-if __name__ == "__main__" :
-    box = np.array([10, 10, 10], dtype=np.float32)
-    coords = np.array([[2, 2, 2],
-                       [5, 5, 5],
-                       [1.1, 1.1, 1.1],
-                       [11, -11, 11],  # wrapped to [1, 9, 1]
-                       [21, 21, 3]],  # wrapped to [1, 1, 3]
-                      dtype=np.float32)
-    tree = PeriodicKDTree(box)
-    tree.set_coords(coords)
-
-    center = np.array([11, 2, 2], dtype=np.float32)
-    wrapped_center = center - np.where(tree.box > 0.0, np.floor(center / tree.box) * tree.box, 0.0)
-    tree.search(center, 1.5)
-    for i in tree.get_indices():
-        neighbor = coords[i]
-        wrapped_neighbor = (neighbor - np.where(tree.box > 0.0, np.floor(neighbor / tree.box) * tree.box, 0.0))
-        distance = np.sqrt(np.sum((wrapped_center-wrapped_neighbor)**2))
-
-    center = np.array([21, -31, 1], dtype=np.float32)
-    wrapped_center = center - np.where(tree.box > 0.0, np.floor(center / tree.box) * tree.box, 0.0)
-    tree.search(center, 1.5)
-    for i in tree.get_indices():
-        neighbor = coords[i]
-        wrapped_neighbor = (neighbor - np.where(tree.box > 0.0, np.floor(neighbor / tree.box) * tree.box, 0.0))
-        distance = np.sqrt(np.sum((wrapped_center-wrapped_neighbor)**2))
-
-    print('hello')
