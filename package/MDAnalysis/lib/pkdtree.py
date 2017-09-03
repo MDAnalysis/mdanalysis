@@ -71,10 +71,10 @@ class PeriodicKDTree(object):
         self.built = 0
         if len(box) != self.dim:
             raise Exception('Expected array of length {}'.format(self.dim))
-        self.box = np.asarray(box)
-        # zero indicates no periodic boundary conditions along the corresponding axis
-        self.box = np.where(box == np.inf, 0.0, box)  # zero in place of infinite values
-        self.box = np.where(box > 0.0, box, 0.0)  # zero in place of negative values
+        self.box = np.copy(np.asarray(box))
+        # zero is the flag for no periodic boundary conditions
+        self.box = np.where(self.box == np.inf, 0.0, self.box)
+        self.box = np.where(self.box > 0.0, self.box, 0.0)
         if not self.box.any():
             raise Exception('No periodic axis found')
         self._indices = list()
@@ -90,6 +90,7 @@ class PeriodicKDTree(object):
           Positions of points, shape=(N, 3) for N atoms.
         """
         if coords.min() <= -1e6 or coords.max() >= 1e6:
+            # Same exception class as in Bio.KDTree.KDTree.set_coords
             raise Exception('Points should lie between -1e6 and 1e6')
         if len(coords.shape) != 2 or coords.shape[1] != self.dim:
             raise Exception('Expected a (N, {}) NumPy array'.format(self.dim))
@@ -187,14 +188,6 @@ if __name__ == "__main__" :
                       dtype=np.float32)
     tree = PeriodicKDTree(box)
     tree.set_coords(coords)
-    centers = tree.find_centers(np.array([5, 5, 5], dtype=np.float32), 1.5)  # box center
-    centers = tree.find_centers(np.array([1, 5, 5], dtype=np.float32), 1.5)  # box face
-    centers = tree.find_centers(np.array([1, 1, 5], dtype=np.float32), 1.5)  # box edge
-    centers = tree.find_centers(np.array([1, 1, 1], dtype=np.float32), 1.5)  # box vertex
-    centers = tree.find_centers(np.array([5, -1, 5], dtype=np.float32), 1.5)  # box face
-    centers = tree.find_centers(np.array([5, -1, 11], dtype=np.float32), 1.5)  # box edge
-    centers = tree.find_centers(np.array([1, -1, 11], dtype=np.float32), 1.5)  # box vertex
-    centers = tree.find_centers(np.array([21, -31, 1], dtype=np.float32), 1.5)  # box vertex
 
     center = np.array([11, 2, 2], dtype=np.float32)
     wrapped_center = center - np.where(tree.box > 0.0, np.floor(center / tree.box) * tree.box, 0.0)
