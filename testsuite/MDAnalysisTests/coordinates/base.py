@@ -701,7 +701,7 @@ class BaseTimestepTest(object):
         with pytest.raises(NoDataError):
             getattr(ts, 'forces')
 
-    def check_ts(self):
+    def test_check_ts(self):
         with pytest.raises(ValueError):
             self.Timestep.from_coordinates(None, None, None)
 
@@ -714,11 +714,9 @@ class BaseTimestepTest(object):
 
         return ts
 
-    @pytest.mark.parametrize('p, v, f',
-                             [(p, v, f) for (p, v, f) in
-                              itertools.product([True, False], repeat=3)
-                              if any([p, v, f])]
-    )
+    @pytest.mark.parametrize('p, v, f', filter(any,
+                                               itertools.product([True, False],
+                                                                 repeat=3)))
     def test_from_coordinates(self, p, v, f):
         ts = self._from_coords(p, v, f)
 
@@ -747,17 +745,6 @@ class BaseTimestepTest(object):
     def test_from_coordinates_nodata(self):
         with pytest.raises(ValueError):
             self.Timestep.from_coordinates()
-
-    @pytest.mark.parametrize('p, v, f',
-        [(p, v, f) for (p, v, f) in
-        itertools.product([True, False], repeat=3)
-        if any([p, v, f])]
-    )
-    def test_from_timestep(self, p, v, f):
-        ts = self._from_coords(p, v, f)
-        ts2 = self.Timestep.from_timestep(ts)
-
-        assert_timestep_almost_equal(ts, ts2)
 
     # Time related tests
     def test_supply_dt(self):
@@ -937,58 +924,64 @@ class BaseTimestepTest(object):
         ts = u.trajectory.ts
         func(self, self.name, ts)
 
-    def test_copy_slice(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            ts = self._from_coords(p, v, f)
-            yield self._check_copy, self.name, ts
-            yield self._check_independent, self.name, ts
-            yield self._check_copy_slice_indices, self.name, ts
-            yield self._check_copy_slice_slice, self.name, ts
+    @pytest.fixture(params=filter(any,
+                                  itertools.product([True, False], repeat=3)))
+    def some_ts(self, request):
+        p, v, f = request.param
+        return self._from_coords(p, v, f)
 
-    @pytest.mark.parametrize('p, v, f', [(p, v, f) for (p, v, f) in itertools.product([True, False], repeat=3)
-       if any([p, v, f])])
-    def test_bad_slice(self, p, v, f):
-        ts = self._from_coords(p, v, f)
+    @pytest.mark.parametrize('func', [
+        _check_copy,
+        _check_independent,
+        _check_copy_slice_indices,
+        _check_copy_slice_slice,
+        _check_npint_slice
+    ])
+    def test_copy_slice(self, func, some_ts):
+        func(self, self.name, some_ts)
+
+    def test_bad_slice(self, some_ts):
         sl = ['this', 'is', 'silly']
         with pytest.raises(TypeError):
-            ts.copy_slice(sl)
+            some_ts.copy_slice(sl)
 
+    def test_from_timestep(self, some_ts):
+        ts = some_ts
+        ts2 = self.Timestep.from_timestep(ts)
+
+        assert_timestep_almost_equal(ts, ts2)
 
     def _get_pos(self):
         # Get generic reference positions
         return np.arange(30).reshape(10, 3) * 1.234
 
     def _check_ts_equal(self, a, b, err_msg):
-        assert_(a == b, err_msg)
-        assert_(b == a, err_msg)
+        assert a == b, err_msg
+        assert b == a, err_msg
 
-    def test_check_equal(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
+    @pytest.mark.parametrize('p, v, f', filter(any,
+                                               itertools.product([True, False],
+                                                                 repeat=3)))
+    def test_check_equal(self, p, v, f):
+        ts1 = self.Timestep(self.size,
+                            positions=p,
+                            velocities=v,
+                            forces=f)
+        ts2 = self.Timestep(self.size,
+                            positions=p,
+                            velocities=v,
+                            forces=f)
+        if p:
+            ts1.positions = self.refpos.copy()
+            ts2.positions = self.refpos.copy()
+        if v:
+            ts1.velocities = self.refvel.copy()
+            ts2.velocities = self.refvel.copy()
+        if f:
+            ts1.forces = self.reffor.copy()
+            ts2.forces = self.reffor.copy()
 
-            ts1 = self.Timestep(self.size,
-                                positions=p,
-                                velocities=v,
-                                forces=f)
-            ts2 = self.Timestep(self.size,
-                                positions=p,
-                                velocities=v,
-                                forces=f)
-            if p:
-                ts1.positions = self.refpos.copy()
-                ts2.positions = self.refpos.copy()
-            if v:
-                ts1.velocities = self.refvel.copy()
-                ts2.velocities = self.refvel.copy()
-            if f:
-                ts1.forces = self.reffor.copy()
-                ts2.forces = self.reffor.copy()
-
-            yield (self._check_ts_equal, ts1, ts2,
-                   'Failed on {0}'.format(self.name))
+        self._check_ts_equal(ts1, ts2, '')
 
     def test_wrong_class_equality(self):
         ts1 = self.Timestep(self.size)
