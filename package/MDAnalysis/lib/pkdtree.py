@@ -29,6 +29,7 @@ boundary conditions.
 """
 
 from __future__ import absolute_import
+from six.moves import range
 
 import numpy as np
 from Bio.KDTree import _CKDTree
