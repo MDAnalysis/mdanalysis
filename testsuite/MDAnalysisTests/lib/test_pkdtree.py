@@ -31,13 +31,14 @@ from MDAnalysis.lib.pkdtree import PeriodicKDTree
 
 class TestPeriodicKDTree(TestCase):
     def setUp(self):
+        self.radius = 1.5
         self.box = np.array([10, 10, 10], dtype=np.float32)
         self.coords = np.array([[2, 2, 2],
                                 [5, 5, 5],
                                 [1.1, 1.1, 1.1],
                                 [11, -11, 11],  # wrapped to [1, 9, 1]
                                 [21, 21, 3]],  # wrapped to [1, 1, 3]
-                                dtype=np.float32)
+                               dtype=np.float32)
 
     def test_init(self):
         box = np.array([10, np.inf, -3], dtype=np.float32)
@@ -54,7 +55,6 @@ class TestPeriodicKDTree(TestCase):
             assert_equal(e.message, 'Expected a (N, 3) NumPy array')
 
     def test_find_centers(self):
-        radius = 1.5
         tree = PeriodicKDTree(self.box)
         tree.set_coords(self.coords)
         queries = ([5, 5, 5],  # case box center
@@ -77,16 +77,35 @@ class TestPeriodicKDTree(TestCase):
                     [1, -1, 11], [11, -1, 1], [11, 9, 11], [11, -1, 11]),
                    ([1, 9, 1], [11, 9, 1], [1, -1, 1], [1, 9, 11],
                     [1, -1, 11], [11, -1, 1], [11, 9, 11], [11, -1, 11])
-                  )
-        for (q, cs) in zip(queries, centers):
+                   )
+        for q, cs in zip(queries, centers):
             q = np.array(q, dtype=np.float32)
             cs = [np.array(c, dtype=np.float32) for c in cs]
-            junk=tree.find_centers(q, radius)
-            assert_equal(tree.find_centers(q, radius), cs)
+            assert_equal(tree.find_centers(q, self.radius), cs)
 
     def test_search(self):
-        pass
-
-if __name__ == "__main__" :
-    import sys
-    np.testing.run_module_suite(argv=sys.argv)
+        tree = PeriodicKDTree(self.box)
+        tree.set_coords(self.coords)
+        queries = ([5, 5, 5],  # case box center
+                   [-8.5, 11.5, 2.2],  # wrapped to [1.5, 1.5, 2.2]
+                   [0, 100, 0.7],  # box face
+                   [1, 1, 5],  # box edge
+                   [1, 1, 1],  # box vertex
+                   [-19, 42, 2],  # box vertex
+                   [21, -31, 1]  # box vertex
+                   )
+        neighbors = (([5, 5, 5], ),
+                     ([2, 2, 2], [1.1, 1.1, 1.1], [21, 21, 3]),
+                     ([11, -11, 11], ),
+                     (),
+                     ([1.1, 1.1, 1.1], ),
+                     ([2, 2, 2], [1.1, 1.1, 1.1], [21, 21, 3]),
+                     ([11, -11, 11], )
+                     )
+        for (q, ns) in zip(queries, neighbors):
+            tree.search(np.array(q, dtype=np.float32), self.radius)
+            indices = tree.get_indices()
+            found_neighbors = list() if indices is None \
+                else [self.coords[i] for i in indices]
+            ns = [np.array(n, dtype=np.float32) for n in ns]
+            assert_equal(found_neighbors, ns)

@@ -172,7 +172,8 @@ class PeriodicKDTree(object):
                 self._indices = self.kdt.get_indices()
             else:
                 np.append(self._indices, np.arange(2))
-        self._indices = np.sort(np.unique(self._indices)) # sort and remove duplicates
+        if self._indices is not None:  # sort and remove duplicates
+            self._indices = np.sort(np.unique(self._indices))
 
     def get_indices(self):
         return self._indices
