@@ -67,7 +67,7 @@ class TestUpdatingSelection(object):
         target_idxs = np.array([4469, 4470, 4472, 6289, 6290, 6291,
                                 6292, 31313, 31314, 31315, 31316, 34661,
                                 34663, 34664])
-        u.trajectory.next()
+        next(u.trajectory)
         assert_equal(ag_updating._lastupdate, 0)
         assert ag_updating.is_uptodate is False
         assert_equal(ag_updating.indices, target_idxs)
@@ -82,7 +82,7 @@ class TestUpdatingSelection(object):
                                  31689, 31692, 34326, 41414])
         assert_equal(ag_updating_compounded.indices,
                      target_idxs0)
-        u.trajectory.next()
+        next(u.trajectory)
         assert_equal(ag_updating_compounded.indices,
                      target_idxs1)
 
@@ -91,13 +91,13 @@ class TestUpdatingSelection(object):
         target_idxs = np.array([4471, 7406, 11973, 11975, 34662, 44042])
         assert_equal(ag_updating_chained.indices,
                      ag_updating_compounded.indices)
-        u.trajectory.next()
+        next(u.trajectory)
         assert_equal(ag_updating_chained.indices, target_idxs)
 
     def test_chained_update2(self, u, ag_updating, ag_updating_chained2):
         assert_equal(ag_updating_chained2.indices,
                      ag_updating.indices)
-        u.trajectory.next()
+        next(u.trajectory)
         assert_equal(ag_updating_chained2.indices,
                      ag_updating.indices)
 
@@ -106,7 +106,7 @@ class TestUpdatingSelection(object):
         ag_static2 = ag_updating.select_atoms("all")
         assert_equal(ag_static1.indices, ag.indices)
         assert_equal(ag_static2.indices, ag.indices)
-        u.trajectory.next()
+        next(u.trajectory)
         assert_equal(ag_static1.indices, ag.indices)
         assert_equal(ag_static2.indices, ag.indices)
 
@@ -213,7 +213,7 @@ class TestUAGCallCount(object):
         # wraps= keyword makes it still function as normal, just we're spying on it now
         with mock.patch.object(uag, 'update_selection',
                                wraps=uag.update_selection) as mock_update:
-            u.trajectory.next()
+            next(u.trajectory)
             assert mock_update.call_count == 0
 
             # Access many attributes..
