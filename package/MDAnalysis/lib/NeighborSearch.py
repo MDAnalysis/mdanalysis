@@ -36,12 +36,11 @@ from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.core.groups import AtomGroup, Atom
 
 class AtomNeighborSearch(object):
-    """This class can be used to find all atoms/residues/segements within the
+    """This class can be used to find all atoms/residues/segments within the
     radius of a given query position.
 
-    This class is using the BioPython KDTree for the neighborsearch. This class
-    also does not apply PBC to the distance calculattions. So you have to ensure
-    yourself that the trajectory has been corrected for PBC artifacts.
+    For the neighbor search, this class uses the BioPython KDTree and its
+    wrapper PeriodicKDTree for non-periodic and periodic systems, respectively.
     """
 
     def __init__(self, atom_group, box=None, bucket_size=10):
