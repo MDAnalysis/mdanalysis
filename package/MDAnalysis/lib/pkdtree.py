@@ -157,7 +157,7 @@ class PeriodicKDTree(object):
         if not self.built:
             raise RuntimeError('Unbuilt tree. Run tree.set_coords first')
         if center.shape != (self.dim,):
-            raise Exception('Expected a ({},) NumPy array'.format(self.dim))
+            raise ValueError('Expected a ({},) NumPy array'.format(self.dim))
         self._indices = None  # clear previous search
         for c in self.find_centers(center, radius):
             self.kdt.search_center_radius(c, radius)
