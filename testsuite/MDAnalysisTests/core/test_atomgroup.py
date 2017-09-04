@@ -31,8 +31,6 @@ import warnings
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
-    assert_array_equal,
-    assert_array_almost_equal
 )
 
 import MDAnalysis as mda
@@ -352,9 +350,9 @@ class TestAtomGroupTransformations(object):
             ag.positions = vec.copy()
             ag.rotate(R[:3, :3], vec[0])
             assert_almost_equal(ag.positions[0], vec[0])
-            assert_array_almost_equal(ag.positions[1], [- 2 * np.cos(angle) + 1,
-                                                        - 2 * np.sin(angle),
-                                                        0])
+            assert_almost_equal(ag.positions[1],
+                                [- 2 * np.cos(angle) + 1, - 2 * np.sin(angle), 0],
+                                decimal=6)
 
     def test_rotateby(self, u, coords):
         R = np.eye(3)
@@ -1136,8 +1134,7 @@ class TestAtomGroup(object):
 
     def test_index_slice_empty(self, universe):
         u = universe
-        assert_array_equal(u.atoms[0:0], [],
-                           "making an empty AtomGroup failed")
+        assert len(u.atoms[0:0]) == 0
 
     def test_index_advancedslice(self, universe):
         u = universe
