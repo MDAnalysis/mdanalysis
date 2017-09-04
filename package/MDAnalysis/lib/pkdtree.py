@@ -155,7 +155,7 @@ class PeriodicKDTree(object):
           radius is half the smallest periodicity if radius exceeds this value
         """
         if not self.built:
-            raise Exception('Unbuilt tree. Run tree.set_coords first')
+            raise RuntimeError('Unbuilt tree. Run tree.set_coords first')
         if center.shape != (self.dim,):
             raise Exception('Expected a ({},) NumPy array'.format(self.dim))
         self._indices = None  # clear previous search
