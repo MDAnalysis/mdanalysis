@@ -34,7 +34,7 @@ from six.moves import range
 import numpy as np
 from Bio.KDTree import _CKDTree
 
-from MDAnalysis.lib.distances import _check_array, apply_PBC
+from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
 
 __all__ = ['PeriodicKDTree', ]
 
@@ -71,6 +71,7 @@ class PeriodicKDTree(object):
           `bucket_size` will speed up the construction of the KDTree but
           slow down the search.
         """
+        self.box_type = _box_check(box)  # ortho,tri_vecs,tri_vecs_bad,tri_box
         self.dim = 3  # 3D systems
         self.kdt = _CKDTree.KDTree(self.dim, bucket_size)
         self.box = box
