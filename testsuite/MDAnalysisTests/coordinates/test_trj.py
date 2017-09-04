@@ -24,8 +24,10 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 
-from numpy.testing import (assert_equal,
-                           assert_almost_equal)
+from numpy.testing import (
+    assert_equal,
+    assert_almost_equal
+)
 
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
@@ -33,6 +35,10 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class _TRJReaderTest(object):
+    @pytest.fixture(scope='class')
+    def universe(self):
+        return mda.Universe(self.topology_file, self.trajectory_file)
+
     def test_load_prm(self, universe):
         assert_equal(len(universe.atoms), self.ref_n_atoms,
                      "load Universe from PRM and TRJ")
@@ -104,35 +110,28 @@ class _TRJReaderTest(object):
 
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
+    topology_file = PRM
+    trajectory_file = TRJ
     prec = 3
-
-    @pytest.fixture()
-    def universe(self):
-        return mda.Universe(PRM, TRJ)
 
     def test_read_frame_reopens(self, universe):
         # should automatically reopen
-        universe.trajectory.close()
-
-        universe.trajectory[2]
-
-        assert universe.trajectory.ts.frame == 2
+        u = universe
+        u.trajectory.close()
+        u.trajectory[2]
+        assert u.trajectory.ts.frame == 2
 
 
 class TestBzippedTRJReader(TestTRJReader):
+    topology_file = PRM
+    trajectory_file = TRJ_bz2
     prec = 3
-
-    @pytest.fixture()
-    def universe(self):
-        return mda.Universe(PRM, TRJ_bz2)
 
 
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
+    topology_file = PRMpbc
+    trajectory_file = TRJpbc_bz2
     prec = 3
-
-    @pytest.fixture()
-    def universe(self):
-        return mda.Universe(PRMpbc, TRJpbc_bz2)
 
 
 class TestTRJTimestep(BaseTimestepTest):
