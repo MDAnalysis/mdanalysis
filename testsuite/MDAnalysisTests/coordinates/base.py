@@ -955,10 +955,6 @@ class BaseTimestepTest(object):
         # Get generic reference positions
         return np.arange(30).reshape(10, 3) * 1.234
 
-    def _check_ts_equal(self, a, b, err_msg):
-        assert a == b, err_msg
-        assert b == a, err_msg
-
     @pytest.mark.parametrize('p, v, f', filter(any,
                                                itertools.product([True, False],
                                                                  repeat=3)))
@@ -981,7 +977,7 @@ class BaseTimestepTest(object):
             ts1.forces = self.reffor.copy()
             ts2.forces = self.reffor.copy()
 
-        self._check_ts_equal(ts1, ts2, '')
+        assert_timestep_equal(ts1, ts2)
 
     def test_wrong_class_equality(self):
         ts1 = self.Timestep(self.size)
@@ -1079,6 +1075,13 @@ class BaseTimestepTest(object):
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
+
+
+def assert_timestep_equal(A, B, msg=''):
+    """ assert that two timesteps are exactly equal and commutative
+    """
+    assert A == B, msg
+    assert B == A, msg
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):

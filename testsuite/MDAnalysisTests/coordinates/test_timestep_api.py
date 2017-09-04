@@ -37,7 +37,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        PDBQT_input, PQR, PRM, TRJ, PRMncdf,
                                        NCDF, TRZ_psf, TRZ)
 
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests.coordinates.base import BaseTimestepTest, assert_timestep_equal
 import pytest
 
 # Can add in custom tests for a given Timestep here!
@@ -54,7 +54,7 @@ class TestBaseTimestep(BaseTimestepTest):
         ts1.positions = self._get_pos()
         ts2 = otherTS(10)
         ts2.positions = self._get_pos()
-        self._check_ts_equal(ts1, ts2, "Failed on {0}".format(otherTS))
+        assert_timestep_equal(ts1, ts2, "Failed on {0}".format(otherTS))
 
 
 # TODO: Merge this into generic Reader tests
