@@ -160,10 +160,10 @@ class PeriodicKDTree(object):
         self._indices = None  # clear previous search
         for c in self.find_centers(center, radius):
             self.kdt.search_center_radius(c, radius)
-            if self._indices is None:
-                self._indices = self.kdt.get_indices()
-            else:
-                np.append(self._indices, np.arange(2))
+            new_indices = self.kdt.get_indices()
+            if new_indices is not None:
+                self._indices = new_indices.copy('C') if self._indices is None\
+                    else np.append(self._indices, new_indices)
         if self._indices is not None:  # sort and remove duplicates
             self._indices = np.sort(np.unique(self._indices))
 
