@@ -23,6 +23,7 @@
 from __future__ import print_function, absolute_import
 from six.moves import zip
 
+import pytest
 import numpy as np
 from numpy.testing import TestCase, assert_array_equal, assert_equal
 
@@ -30,6 +31,7 @@ from MDAnalysis.lib.pkdtree import PeriodicKDTree
 
 
 class TestPeriodicKDTree(TestCase):
+
     def setUp(self):
         self.radius = 1.5
         self.box = np.array([10, 10, 10], dtype=np.float32)
@@ -40,19 +42,13 @@ class TestPeriodicKDTree(TestCase):
                                 [21, 21, 3]],  # wrapped to [1, 1, 3]
                                dtype=np.float32)
 
-    def test_init(self):
-        box = np.array([10, np.inf, -3], dtype=np.float32)
-        tree = PeriodicKDTree(box)
-        assert_array_equal(tree.box,
-                           np.array([10, 0, 0], dtype=np.float32))
-
     def test_set_coords(self):
-        xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)
         tree = PeriodicKDTree(self.box)
-        try:
+        with pytest.raises(ValueError) as excinfo:
+            xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)
             tree.set_coords(xy)
-        except Exception as e:
-            assert_equal(e.message, 'Expected a (N, 3) NumPy array')
+        assert_equal(str(excinfo.value),
+                     'coords must be a sequence of 3 dimensional coordinates')
 
     def test_find_centers(self):
         tree = PeriodicKDTree(self.box)

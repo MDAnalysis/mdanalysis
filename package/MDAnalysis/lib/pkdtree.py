@@ -34,6 +34,8 @@ from six.moves import range
 import numpy as np
 from Bio.KDTree import _CKDTree
 
+from MDAnalysis.lib.distances import _check_array, apply_PBC
+
 __all__ = ['PeriodicKDTree', ]
 
 
@@ -69,17 +71,9 @@ class PeriodicKDTree(object):
           `bucket_size` will speed up the construction of the KDTree but
           slow down the search.
         """
-        self.dim = 3  # Strict implementation for 3D
+        self.dim = 3  # 3D systems
         self.kdt = _CKDTree.KDTree(self.dim, bucket_size)
-        self.built = 0
-        if len(box) != self.dim:
-            raise Exception('Expected array of length {}'.format(self.dim))
-        self.box = np.copy(np.asarray(box))
-        # zero is the flag for no periodic boundary conditions
-        self.box = np.where(self.box == np.inf, 0.0, self.box)
-        self.box = np.where(self.box > 0.0, self.box, 0.0)
-        if not self.box.any():
-            raise Exception('No periodic axis found')
+        self.box = box
         self._indices = list()
 
     def set_coords(self, coords):
@@ -92,13 +86,8 @@ class PeriodicKDTree(object):
         coords: NumPy.array
           Positions of points, shape=(N, 3) for N atoms.
         """
-        if coords.min() <= -1e6 or coords.max() >= 1e6:
-            # Same exception class as in Bio.KDTree.KDTree.set_coords
-            raise Exception('Points should lie between -1e6 and 1e6')
-        if len(coords.shape) != 2 or coords.shape[1] != self.dim:
-            raise Exception('Expected a (N, {}) NumPy array'.format(self.dim))
-        wrapped_data = (coords - np.where(self.box > 0.0,
-                                          np.floor(coords / self.box) * self.box, 0.0))
+        _check_array(coords, 'coords')
+        wrapped_data = apply_PBC(coords, self.box)
         self.kdt.set_data(wrapped_data)
         self.built = 1
 
@@ -116,16 +105,17 @@ class PeriodicKDTree(object):
         Returns
         ------
         :class:`List`
-          center point and its relevant images
+          wrapped center point and its relevant images
         """
-        wrapped_c = (center_point - np.where(self.box > 0.0,
-                     np.floor(center_point / self.box) * self.box, 0.0))
-        centers = [wrapped_c, ]
+        wrapped_c = apply_PBC(center_point.reshape(1, 3), self.box)[0]
         extents = self.box/2.0
         extents = np.where(extents > radius, radius, extents)
         # displacements are vectors that we add to wrapped_c to
         # generate images "up" or "down" the central cell along
         # the axis that we happen to be looking.
+        #
+        # TO-DO: extend to a triclinic box by finding distance from wrapped_c
+        # to each of the planes enclosing the central cell.
         displacements = list()
         for i in range(self.dim):
             displacement = np.zeros(self.dim)
@@ -148,8 +138,7 @@ class PeriodicKDTree(object):
             for start in range(n_displacements - 1, -1, -1):
                 for i in range(start+1, len(displacements)):
                     displacements.append(displacements[start]+displacements[i])
-        centers.extend([wrapped_c + d for d in displacements])
-        return centers
+        return [wrapped_c, ] + [wrapped_c + d for d in displacements]
 
     def search(self, center, radius):
         """Search all points within radius of center and its periodic images.
@@ -165,7 +154,7 @@ class PeriodicKDTree(object):
           radius is half the smallest periodicity if radius exceeds this value
         """
         if not self.built:
-            raise Exception('No point set specified')
+            raise Exception('Unbuilt tree. Run tree.set_coords first')
         if center.shape != (self.dim,):
             raise Exception('Expected a ({},) NumPy array'.format(self.dim))
         self._indices = None  # clear previous search
