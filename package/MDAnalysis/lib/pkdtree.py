@@ -158,15 +158,13 @@ class PeriodicKDTree(object):
             raise RuntimeError('Unbuilt tree. Run tree.set_coords first')
         if center.shape != (self.dim,):
             raise ValueError('Expected a ({},) NumPy array'.format(self.dim))
-        self._indices = None  # clear previous search
+        self._indices = set()  # clear previous search
         for c in self.find_centers(center, radius):
             self.kdt.search_center_radius(c, radius)
-            new_indices = self.kdt.get_indices()
+            new_indices = self.kdt.get_indices()  # returns None or np.array
             if new_indices is not None:
-                self._indices = new_indices.copy('C') if self._indices is None\
-                    else np.append(self._indices, new_indices)
-        if self._indices is not None:  # sort and remove duplicates
-            self._indices = np.sort(np.unique(self._indices))
+                self._indices.update(new_indices)
+        self._indices = list(self._indices)
 
     def get_indices(self):
         return self._indices
