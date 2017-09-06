@@ -639,62 +639,107 @@ class TestReprs(object):
         assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
 
 
-
 class TestGroupBaseOperators(object):
-    @staticmethod
-    def _test_len(a, b, c, d, e):
+
+    @pytest.fixture(params=('atoms', 'residues', 'segments'))
+    def groups_simple(self, request):
+        level = request.param
+        n_segments = 10
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+        #   0123456789
+        # a  ****
+        # b    *****
+        # c    **
+        # e      ***
+        # d empty
+        #
+        # None of the group start at 0, nor ends at the end. Each group
+        # has a different size. The end of a slice is not the last element.
+        # This increase the odds of catching errors.
+        a = getattr(u, level)[1:5]
+        b = getattr(u, level)[3:8]
+        c = getattr(u, level)[3:5]
+        d = getattr(u, level)[0:0]
+        e = getattr(u, level)[5:8]
+        return a, b, c, d, e
+
+    @pytest.fixture(params=('atoms', 'residues', 'segments'))
+    def groups_duplicated_and_scrambled(self, request):
+        level = request.param
+        # The content of the groups is the same as for make_groups, but the
+        # elements can appear several times and their order is scrambled.
+        n_segments = 10
+        n_residues = n_segments * 5
+        n_atoms = n_residues * 5
+        u = make_Universe(size=(n_atoms, n_residues, n_segments))
+        a = getattr(u, level)[[1, 3, 2, 1, 2, 4, 4]]
+        b = getattr(u, level)[[7, 4, 4, 6, 5, 3, 7, 6]]
+        c = getattr(u, level)[[4, 4, 3, 4, 3, 3]]
+        d = getattr(u, level)[0:0]
+        e = getattr(u, level)[[6, 5, 7, 7, 6]]
+        return a, b, c, d, e
+
+    @pytest.fixture(params=('simple', 'scrambled'))
+    def groups(self, request, groups_simple, groups_duplicated_and_scrambled):
+        return {'simple': groups_simple,
+                'scrambled': groups_duplicated_and_scrambled}[request.param]
+
+    def test_len(self, groups_simple):
+        a, b, c, d, e = groups_simple
         assert_equal(len(a), 4)
         assert_equal(len(b), 5)
         assert_equal(len(c), 2)
         assert_equal(len(d), 0)
         assert_equal(len(e), 3)
 
-    @staticmethod
-    def _test_len_duplicated_and_scrambled(a, b, c, d, e):
+    def test_len_duplicated_and_scrambled(self, groups_duplicated_and_scrambled):
+        a, b, c, d, e = groups_duplicated_and_scrambled
         assert_equal(len(a), 7)
         assert_equal(len(b), 8)
         assert_equal(len(c), 6)
         assert_equal(len(d), 0)
         assert_equal(len(e), 5)
 
-    @staticmethod
-    def _test_equal(a, b, c, d, e):
+    def test_equal(self, groups):
+        a, b, c, d, e = groups
         assert_(a == a)
         assert_(a != b)
         assert_(not a == b)
         assert_(not a[0:1] == a[0],
                 'Element should not equal single element group.')
 
-    @staticmethod
-    def _test_issubset(a, b, c, d, e):
+    def test_issubset(self, groups):
+        a, b, c, d, e = groups
         assert_(c.issubset(a))
         assert_(not c.issubset(e))
         assert_(not a.issubset(c))
         assert_(d.issubset(a))
         assert_(not a.issubset(d))
 
-    @staticmethod
-    def _test_is_strict_subset(a, b, c, d, e):
+    def test_is_strict_subset(self, groups):
+        a, b, c, d, e = groups
         assert_(c.is_strict_subset(a))
         assert_(not c.is_strict_subset(e))
         assert_(not a.is_strict_subset(a))
 
-    @staticmethod
-    def _test_issuperset(a, b, c, d, e):
+    def test_issuperset(self, groups):
+        a, b, c, d, e = groups
         assert_(a.issuperset(c))
         assert_(not e.issuperset(c))
         assert_(not c.issuperset(a))
         assert_(a.issuperset(d))
         assert_(not d.issuperset(a))
 
-    @staticmethod
-    def _test_is_strict_superset(a, b, c, d, e):
+    def test_is_strict_superset(self, groups):
+        a, b, c, d, e = groups
         assert_(a.is_strict_superset(c))
         assert_(not c.is_strict_superset(e))
         assert_(not a.is_strict_superset(a))
 
-    @staticmethod
-    def _test_concatenate(a, b, c, d, e):
+    def test_concatenate(self, groups):
+        a, b, c, d, e = groups
         cat_ab = a.concatenate(b)
         assert_(cat_ab[:len(a)] == a)
         assert_(cat_ab[len(a):] == b)
@@ -713,8 +758,8 @@ class TestGroupBaseOperators(object):
         cat_da = d.concatenate(a)
         assert_(cat_da == a)
 
-    @staticmethod
-    def _test_union(a, b, c, d, e):
+    def test_union(self, groups):
+        a, b, c, d, e = groups
         union_ab = a.union(b)
         assert_(union_ab.ix.tolist() == sorted(union_ab.ix))
         assert_(list(sorted(set(union_ab.ix))) == list(sorted(union_ab.ix)))
@@ -723,15 +768,16 @@ class TestGroupBaseOperators(object):
         assert_array_equal(a.union(a).ix, np.arange(1, 5))
         assert_(a.union(d), np.arange(1, 5))
 
-    @staticmethod
-    def _test_intersection(a, b, c, d, e):
+    def test_intersection(self, groups):
+        a, b, c, d, e = groups
         intersect_ab = a.intersection(b)
         assert_array_equal(intersect_ab.ix, np.arange(3, 5))
         assert_(a.intersection(b) == b.intersection(a))
         assert_equal(len(a.intersection(d)), 0)
 
-    @staticmethod
-    def _test_subtract(a, b, c, d, e):
+    @pytest.mark.xfail
+    def test_subtract(self, groups):
+        a, b, c, d, e = groups
         subtract_ab = a.subtract(b)
         assert_array_equal(subtract_ab.ix, np.array([1, 2, 1, 2]))
         subtract_ba = b.subtract(a)
@@ -741,8 +787,8 @@ class TestGroupBaseOperators(object):
         subtract_ae = a.subtract(e)
         assert_equal(subtract_ae, a)
 
-    @staticmethod
-    def _test_difference(a, b, c, d, e):
+    def test_difference(self, groups):
+        a, b, c, d, e = groups
         difference_ab = a.difference(b)
         assert_array_equal(difference_ab.ix, np.arange(1, 3))
 
@@ -752,91 +798,21 @@ class TestGroupBaseOperators(object):
         assert_array_equal(a.difference(d).ix, np.arange(1, 5))
         assert_array_equal(a.difference(e).ix, np.arange(1, 5))
 
-    @staticmethod
-    def _test_symmetric_difference(a, b, c, d, e):
+    def test_symmetric_difference(self, groups):
+        a, b, c, d, e = groups
         symdiff_ab = a.symmetric_difference(b)
         assert_array_equal(symdiff_ab.ix, np.array(list(range(1, 3)) +
                                                    list(range(5, 8))))
         assert_(a.symmetric_difference(b) == b.symmetric_difference(a))
         assert_array_equal(a.symmetric_difference(e).ix, np.arange(1, 8))
 
-    @staticmethod
-    def _test_isdisjoint(a, b, c, d, e):
+    def test_isdisjoint(self, groups):
+        a, b, c, d, e = groups
         assert_(a.isdisjoint(e))
         assert_(e.isdisjoint(a))
         assert_(a.isdisjoint(d))
         assert_(d.isdisjoint(a))
         assert_(not a.isdisjoint(b))
-
-    @staticmethod
-    def make_groups(u, level):
-        #   0123456789
-        # a  ****
-        # b    *****
-        # c    **
-        # e      ***
-        # d empty
-        #
-        # None of the group start at 0, nor ends at the end. Each group
-        # has a different size. The end of a slice is not the last element.
-        # This increase the odds of catching errors.
-        a = getattr(u, level)[1:5]
-        b = getattr(u, level)[3:8]
-        c = getattr(u, level)[3:5]
-        d = getattr(u, level)[0:0]
-        e = getattr(u, level)[5:8]
-        return a, b, c, d, e
-
-    @staticmethod
-    def make_groups_duplicated_and_scrambled(u, level):
-        # The content of the groups is the same as for make_groups, but the
-        # elements can appear several times and their order is scrambled.
-        a = getattr(u, level)[[1, 3, 2, 1, 2, 4, 4]]
-        b = getattr(u, level)[[7, 4, 4, 6, 5, 3, 7, 6]]
-        c = getattr(u, level)[[4, 4, 3, 4, 3, 3]]
-        d = getattr(u, level)[0:0]
-        e = getattr(u, level)[[6, 5, 7, 7, 6]]
-        return a, b, c, d, e
-
-    def test_groupbase_operators(self):
-        n_segments = 10
-        n_residues = n_segments * 5
-        n_atoms = n_residues * 5
-        u = make_Universe(size=(n_atoms, n_residues, n_segments))
-        for level in ('atoms', 'residues', 'segments'):
-            a, b, c, d, e = self.make_groups(u, level)
-            yield self._test_len, a, b, c, d, e
-            yield self._test_equal, a, b, c, d, e
-            yield self._test_concatenate, a, b, c, d, e
-            yield self._test_union, a, b, c, d, e
-            yield self._test_intersection, a, b, c, d, e
-            yield self._test_difference, a, b, c, d, e
-            yield self._test_symmetric_difference, a, b, c, d, e
-            yield self._test_issubset, a, b, c, d, e
-            yield self._test_is_strict_subset, a, b, c, d, e
-            yield self._test_issuperset, a, b, c, d, e
-            yield self._test_is_strict_superset, a, b, c, d, e
-            yield self._test_isdisjoint, a, b, c, d, e
-
-    def test_groupbase_operators_duplicated_and_scrambled(self):
-        n_segments = 10
-        n_residues = n_segments * 5
-        n_atoms = n_residues * 5
-        u = make_Universe(size=(n_atoms, n_residues, n_segments))
-        for level in ('atoms', 'residues', 'segments'):
-            a, b, c, d, e = self.make_groups_duplicated_and_scrambled(u, level)
-            yield self._test_len_duplicated_and_scrambled, a, b, c, d, e
-            yield self._test_equal, a, b, c, d, e
-            yield self._test_concatenate, a, b, c, d, e
-            yield self._test_union, a, b, c, d, e
-            yield self._test_intersection, a, b, c, d, e
-            yield self._test_difference, a, b, c, d, e
-            yield self._test_symmetric_difference, a, b, c, d, e
-            yield self._test_issubset, a, b, c, d, e
-            yield self._test_is_strict_subset, a, b, c, d, e
-            yield self._test_issuperset, a, b, c, d, e
-            yield self._test_is_strict_superset, a, b, c, d, e
-            yield self._test_isdisjoint, a, b, c, d, e
 
     def test_only_same_level(self):
         def dummy(self, other):
