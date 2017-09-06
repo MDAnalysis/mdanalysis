@@ -787,28 +787,24 @@ class TestWriterAlignments(object):
         assert_equal(self.writtenstuff[3], result_line)
 
 
-def test_deduce_PDB_atom_name():
+@pytest.mark.parametrize('atom, refname', ((mda.coordinates.PDB.Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
+                                           (mda.coordinates.PDB.Pair('GLU', 'OE1'), ' OE1'),
+                                           (mda.coordinates.PDB.Pair('MSE', 'SE'), 'SE  '),  # Selenium like in 4D3L
+                                           (mda.coordinates.PDB.Pair('CA', 'CA'), 'CA  '),  # Calcium like in 4D3L
+                                           (mda.coordinates.PDB.Pair('HDD', 'FE'), 'FE  '),  # Iron from a heme like in 1GGE
+                                           (mda.coordinates.PDB.Pair('PLC', 'P'), ' P  '),  # Lipid phosphorus (1EIN)
+))
+def test_deduce_PDB_atom_name(atom, refname):
     # The Pair named tuple is used to mock atoms as we only need them to have a
     # ``resname`` and a ``name`` attribute.
-    Pair = mda.coordinates.PDB.Pair
-
-    def _test_PDB_atom_name(atom, ref_atom_name):
-        dummy_file = StringIO()
-        name = (mda.coordinates.PDB.PDBWriter(dummy_file, n_atoms=1)
-                ._deduce_PDB_atom_name(atom.name, atom.resname))
-        assert_equal(name, ref_atom_name)
-
-    test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
-                  (Pair('GLU', 'OE1'), ' OE1'),
-                  (Pair('MSE', 'SE'), 'SE  '),  # Selenium like in 4D3L
-                  (Pair('CA', 'CA'), 'CA  '),  # Calcium like in 4D3L
-                  (Pair('HDD', 'FE'), 'FE  '),  # Iron from a heme like in 1GGE
-                  (Pair('PLC', 'P'), ' P  '),  # Lipid phosphorus (1EIN)
-                  )
-    for atom, ref_name in test_cases:
-        yield _test_PDB_atom_name, atom, ref_name
+    dummy_file = StringIO()
+    name = (mda.coordinates.PDB.PDBWriter(dummy_file, n_atoms=1)
+            ._deduce_PDB_atom_name(atom.name, atom.resname))
+    assert_equal(name, refname)
 
 
+@pytest.mark.parametrize('pdbfile', [PDB_cm, PDB_cm_bz2, PDB_cm_gz,
+                                     PDB_mc, PDB_mc_bz2, PDB_mc_gz])
 class TestCrystModelOrder(object):
     """Check offset based reading of pdb files
 
@@ -834,19 +830,11 @@ class TestCrystModelOrder(object):
     boxsize = [80, 70, 60]
     position = [10, 20, 30]
 
-    def test_order(self):
-        for pdbfile in [PDB_cm, PDB_cm_bz2, PDB_cm_gz,
-                        PDB_mc, PDB_mc_bz2, PDB_mc_gz]:
-            yield self._check_order, pdbfile
-            yield self._check_seekaround, pdbfile
-            yield self._check_rewind, pdbfile
-
-    @staticmethod
-    def _check_len(pdbfile):
+    def test_len(self, pdbfile):
         u = mda.Universe(pdbfile)
         assert_(len(u.trajectory) == 3)
 
-    def _check_order(self, pdbfile):
+    def test_order(self, pdbfile):
         u = mda.Universe(pdbfile)
 
         for ts, refbox, refpos in zip(
@@ -854,7 +842,7 @@ class TestCrystModelOrder(object):
             assert_almost_equal(u.dimensions[0], refbox)
             assert_almost_equal(u.atoms[0].position[0], refpos)
 
-    def _check_seekaround(self, pdbfile):
+    def test_seekaround(self, pdbfile):
         u = mda.Universe(pdbfile)
 
         for frame in [2, 0, 2, 1]:
@@ -862,7 +850,7 @@ class TestCrystModelOrder(object):
             assert_almost_equal(u.dimensions[0], self.boxsize[frame])
             assert_almost_equal(u.atoms[0].position[0], self.position[frame])
 
-    def _check_rewind(self, pdbfile):
+    def test_rewind(self, pdbfile):
         u = mda.Universe(pdbfile)
 
         u.trajectory[2]
