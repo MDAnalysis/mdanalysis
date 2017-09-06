@@ -640,10 +640,12 @@ class TestReprs(object):
 
 
 class TestGroupBaseOperators(object):
-
     @pytest.fixture(params=('atoms', 'residues', 'segments'))
-    def groups_simple(self, request):
-        level = request.param
+    def level(self, request):
+        return request.param
+
+    @pytest.fixture
+    def groups_simple(self, level):
         n_segments = 10
         n_residues = n_segments * 5
         n_atoms = n_residues * 5
@@ -665,9 +667,8 @@ class TestGroupBaseOperators(object):
         e = getattr(u, level)[5:8]
         return a, b, c, d, e
 
-    @pytest.fixture(params=('atoms', 'residues', 'segments'))
-    def groups_duplicated_and_scrambled(self, request):
-        level = request.param
+    @pytest.fixture
+    def groups_duplicated_and_scrambled(self, level):
         # The content of the groups is the same as for make_groups, but the
         # elements can appear several times and their order is scrambled.
         n_segments = 10
@@ -879,30 +880,23 @@ class TestGroupBaseOperators(object):
         with pytest.raises(ValueError):
             _only_same_level(dummy)(u.atoms, u2.atoms)
 
-
-    def test_shortcut_overriding(self):
+    @pytest.mark.parametrize('op, method', ((operator.add, 'concatenate'),
+                                            (operator.sub, 'difference'),
+                                            (operator.and_, 'intersection'),
+                                            (operator.or_, 'union'),
+                                            (operator.xor, 'symmetric_difference')))
+    def test_shortcut_overriding(self, op, method, level):
         def check_operator(op, method, level):
             left = getattr(u, level)[1:3]
             right = getattr(u, level)[2:4]
             assert_equal(op(left, right), getattr(left, method)(right))
-
-        operators = (
-            (operator.add, 'concatenate'),
-            (operator.sub, 'difference'),
-            (operator.and_, 'intersection'),
-            (operator.or_, 'union'),
-            (operator.xor, 'symmetric_difference'),
-        )
-        levels = ('atoms', 'residues', 'segments')
 
         n_segments = 5
         n_residues = n_segments * 3
         n_atoms = n_residues * 3
         u = make_Universe(size=(n_atoms, n_residues, n_segments))
 
-        for op, method in operators:
-            for level in levels:
-                yield check_operator, op, method, level
+        check_operator(op, method, level)
 
 
 class TestGroupHash(object):
