@@ -43,7 +43,6 @@ def ptree():
     t.set_coords(coords)
     return {'coords': coords, 'tree': t, 'box': b, 'radius': 1.5}
 
-
 def test_set_coords(ptree):
     with pytest.raises(ValueError) as excinfo:
         xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)

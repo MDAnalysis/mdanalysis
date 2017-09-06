@@ -35,6 +35,7 @@ import numpy as np
 from Bio.KDTree import _CKDTree
 
 from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
+from MDAnalysis.lib.mdamath import norm, triclinic_vectors, triclinic_box
 
 __all__ = ['PeriodicKDTree', ]
 
@@ -71,11 +72,61 @@ class PeriodicKDTree(object):
           `bucket_size` will speed up the construction of the KDTree but
           slow down the search.
         """
-        self.box_type = _box_check(box)  # ortho,tri_vecs,tri_vecs_bad,tri_box
         self.dim = 3  # 3D systems
+        self.box = None
+        self._dm = None  # matrix of central-cell vectors
+        self._rm = None  # matrix of normalized reciprocal vectors
+        self.initialize_bm(box)
         self.kdt = _CKDTree.KDTree(self.dim, bucket_size)
-        self.box = box
         self._indices = list()
+
+    def initialize_bm(self, box):
+        """
+        Store box information and define direct and reciprocal box matrices.
+        Rows of the direct matrix are the components of the central cell
+        vectors. Rows of the reciprocal matrix are the components of the
+        normalized reciprocal lattice vectors. Each represents the vector
+        normal to the unit cell face associated to each axis.
+        For instance, in an orthorhombic cell the YZ-plane is associated to
+        the X-axis and its normal vector is (1, 0, 0). In a triclinic cell,
+        the plane associated to vector ``\vec{a}`` is perpendicular to the
+        normalized cross product of ``\vec{b}`` and ``\vec{c}``.
+
+        Parameters
+        ----------
+        box : array-like or ``None``, optional, default ``None``
+          Simulation cell dimensions in the form of
+          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          periodic boundary conditions should be taken into account for
+          the calculation of contacts.
+        """
+        box_type = _box_check(box)
+        if box_type == 'ortho':
+            a, b, c = box[:3]
+            dm = np.array([[a, 0, 0],
+                           [0, b, 0],
+                           [0, 0, c]], dtype=np.float32)
+            rm = np.array([[1, 0, 0],
+                           [0, 1, 0],
+                           [0, 0, 1]], dtype=np.float32)
+        elif box_type in 'tri_box tri_vecs tri_vecs_bad':
+            if box_type == 'tri_box':
+                dm = box.copy('C')
+            elif box_type == 'tri_box':
+                dm = triclinic_vectors(box)
+            else:  # case 'tri_vecs_bad'
+                dm = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+            rm = np.zeros(9, dtype=np.float32).reshape(3, 3)
+            rm[0] = np.cross(dm[1], dm[2])
+            rm[1] = np.cross(dm[2], dm[0])
+            rm[2] = np.cross(dm[0], dm[1])
+            for i in range(self.dim):
+                rm[i] /= norm(rm[i])  # normalize
+        else:
+            raise ValueError('Failed to initialize direct/reciprocal matrices')
+        self.box = box
+        self._dm = dm
+        self._rm = rm
 
     def set_coords(self, coords):
         """
@@ -109,25 +160,18 @@ class PeriodicKDTree(object):
           wrapped center point and its relevant images
         """
         wrapped_c = apply_PBC(center_point.reshape(1, 3), self.box)[0]
-        extents = self.box/2.0
-        extents = np.where(extents > radius, radius, extents)
+        # extents marks the max distance to plane just to consider an image
+        extents = np.array([norm(self._dm[i])/2.0 for i in range(self.dim)])
+        extents = np.where(extents < radius, extents, radius)
         # displacements are vectors that we add to wrapped_c to
         # generate images "up" or "down" the central cell along
         # the axis that we happen to be looking.
-        #
-        # TO-DO: extend to a triclinic box by finding distance from wrapped_c
-        # to each of the planes enclosing the central cell.
         displacements = list()
         for i in range(self.dim):
-            displacement = np.zeros(self.dim)
-            extent = extents[i]
-            if extent > 0.0:
-                if self.box[i] - wrapped_c[i] < extent:
-                    displacement[i] = -self.box[i]  # "lower" image
-                    displacements.append(displacement)
-                elif wrapped_c[i] < extent:
-                    displacement[i] = self.box[i]  # "upper" image
-                    displacements.append(displacement)
+            if np.dot(wrapped_c, self._rm[i]) < extents[i]:
+                displacements.append(self._dm[i])  # "upper" image
+            elif np.dot(self._dm[i] - wrapped_c, self._rm[i]) < extents[i]:
+                displacements.append(-self._dm[i])  # "lower" image
         # If we have displacements along more than one axis, we have
         # to combine them. This happens when wrapped_center is close
         # to any edge or vertex of the central cell.
