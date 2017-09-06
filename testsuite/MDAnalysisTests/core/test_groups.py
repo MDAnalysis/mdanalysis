@@ -776,7 +776,6 @@ class TestGroupBaseOperators(object):
         assert_(a.intersection(b) == b.intersection(a))
         assert_equal(len(a.intersection(d)), 0)
 
-    #@pytest.mark.xfail
     def test_subtract(self, groups):
         a, b, c, d, e = groups
         subtract_ab = a.subtract(b)

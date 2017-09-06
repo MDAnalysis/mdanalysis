@@ -597,16 +597,16 @@ class TestAtomGroupProperties(object):
         idx = [0, 1, 4, 7, 11, 14]
         return master[idx]
 
-    stuff = (('name', 'names', 'string'),
-             ('type', 'types', 'string'),
-             ('altLoc', 'altLocs', 'string'),
-             ('charge', 'charges', 'float'),
-             ('mass', 'masses', 'float'),
-             ('radius', 'radii', 'float'),
-             ('bfactor', 'bfactors', 'float'),
-             ('occupancy', 'occupancies', 'float'))
+    attributes = (('name', 'names', 'string'),
+                  ('type', 'types', 'string'),
+                  ('altLoc', 'altLocs', 'string'),
+                  ('charge', 'charges', 'float'),
+                  ('mass', 'masses', 'float'),
+                  ('radius', 'radii', 'float'),
+                  ('bfactor', 'bfactors', 'float'),
+                  ('occupancy', 'occupancies', 'float'))
 
-    @pytest.mark.parametrize('att, atts, att_type', stuff)
+    @pytest.mark.parametrize('att, atts, att_type', attributes)
     def test_ag_matches_atom(self, att, atts, ag, att_type):
         """Checking Atomgroup property matches Atoms"""
         # Check that accessing via AtomGroup is identical to doing
@@ -615,7 +615,7 @@ class TestAtomGroupProperties(object):
         assert_equal(ref, getattr(ag, atts),
                      err_msg="AtomGroup doesn't match Atoms for property: {0}".format(att))
 
-    @pytest.mark.parametrize('att, atts, att_type', stuff)
+    @pytest.mark.parametrize('att, atts, att_type', attributes)
     def test_atom_check_ag(self, att, atts, ag, att_type):
         """Changing Atom, checking AtomGroup matches this"""
         vals = self.get_new(att_type)
