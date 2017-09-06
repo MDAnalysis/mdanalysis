@@ -21,11 +21,6 @@
 #
 from __future__ import absolute_import
 
-import pytest
-from numpy.testing import (
-    assert_,
-)
-
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -37,6 +32,7 @@ from MDAnalysisTests.datafiles import (
 
 class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
+    ref_filename = PQR
     expected_attrs = ['ids', 'names', 'charges', 'radii',
                       'resids', 'resnames', 'icodes',
                       'segids']
@@ -44,10 +40,6 @@ class TestPQRParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
-
-    @pytest.fixture()
-    def filename(self):
-        return PQR
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
@@ -58,10 +50,8 @@ class TestPQRParser(ParserBase):
         assert len(top.resnames) == top.n_residues
         assert len(top.segids) == top.n_segments
 
+
 class TestPQRParser2(TestPQRParser):
+    ref_filename = PQR_icodes
     expected_n_atoms = 5313
     expected_n_residues = 474
-
-    @pytest.fixture()
-    def filename(self):
-        return PQR_icodes

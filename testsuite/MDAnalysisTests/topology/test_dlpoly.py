@@ -20,8 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-
-import pytest
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
@@ -57,20 +55,14 @@ class DLPBase2(DLPUniverse):
 
 class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
+    ref_filename = DLP_HISTORY
     format = 'HISTORY'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_HISTORY
 
 
 class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
+    ref_filename = DLP_CONFIG
     format = 'CONFIG'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_CONFIG
 
 
 class DLPBase(DLPUniverse):
@@ -87,35 +79,23 @@ class DLPBase(DLPUniverse):
 
 class TestDLPConfigMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
+    ref_filename = DLP_CONFIG_minimal
     format = 'CONFIG'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_CONFIG_minimal
 
 
 class TestDLPConfigOrder(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
+    ref_filename = DLP_CONFIG_order
     format = 'CONFIG'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_CONFIG_order
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
+    ref_filename = DLP_HISTORY_minimal
     format = 'HISTORY'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_HISTORY_minimal
 
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
+    ref_filename = DLP_HISTORY_order
     format = 'HISTORY'
-
-    @pytest.fixture()
-    def filename(self):
-        return DLP_HISTORY_order

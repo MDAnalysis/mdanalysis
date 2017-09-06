@@ -36,6 +36,10 @@ class ParserBase(object):
     expected_attrs = []
     guessed_attrs = []
 
+    @pytest.fixture
+    def filename(self):
+        return self.ref_filename
+
     @pytest.fixture()
     def top(self, filename):
         with self.parser(filename) as p:

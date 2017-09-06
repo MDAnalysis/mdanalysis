@@ -22,7 +22,6 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
-import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -31,8 +30,8 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestCRDParser(ParserBase):
-
     parser = mda.topology.CRDParser.CRDParser
+    ref_filename = CRD
     expected_attrs = ['ids', 'names', 'tempfactors',
                       'resids', 'resnames', 'resnums',
                       'segids']
@@ -40,7 +39,3 @@ class TestCRDParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
-
-    @pytest.fixture()
-    def filename(self):
-        return CRD

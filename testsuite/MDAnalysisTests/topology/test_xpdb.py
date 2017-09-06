@@ -21,7 +21,6 @@
 #
 from __future__ import absolute_import
 import MDAnalysis as mda
-import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -31,6 +30,7 @@ from MDAnalysisTests.datafiles import (
 
 class TestXPDBParser(ParserBase):
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
+    ref_filename = XPDB_small
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames',
                       'segids']
@@ -38,7 +38,3 @@ class TestXPDBParser(ParserBase):
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1
-
-    @pytest.fixture()
-    def filename(self):
-        return XPDB_small

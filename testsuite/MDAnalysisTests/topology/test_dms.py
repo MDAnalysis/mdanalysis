@@ -22,7 +22,6 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
-import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import DMS
@@ -30,6 +29,7 @@ from MDAnalysisTests.datafiles import DMS
 
 class TestDMSParser(ParserBase):
     parser = mda.topology.DMSParser.DMSParser
+    ref_filename = DMS
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
@@ -37,10 +37,6 @@ class TestDMSParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
-
-    @pytest.fixture()
-    def filename(self):
-        return DMS
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365

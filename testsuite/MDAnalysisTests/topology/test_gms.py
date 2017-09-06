@@ -21,9 +21,7 @@
 #
 from __future__ import absolute_import
 
-import pytest
 from numpy.testing import assert_equal
-
 
 import MDAnalysis as mda
 
@@ -45,10 +43,7 @@ class GMSBase(ParserBase):
 
 class TestGMSASYMOPT(GMSBase):
     expected_n_atoms = 6
-
-    @pytest.fixture()
-    def filename(self):
-        return GMS_ASYMOPT
+    ref_filename = GMS_ASYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -61,10 +56,7 @@ class TestGMSASYMOPT(GMSBase):
 
 class TestGMSSYMOPT(GMSBase):
     expected_n_atoms = 4
-
-    @pytest.fixture()
-    def filename(self):
-        return GMS_SYMOPT
+    ref_filename = GMS_SYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -76,6 +68,4 @@ class TestGMSSYMOPT(GMSBase):
 
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
-    @pytest.fixture()
-    def filename(self):
-        return GMS_ASYMSURF
+    ref_filename = GMS_ASYMSURF

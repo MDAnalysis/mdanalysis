@@ -95,6 +95,7 @@ class TestLammpsData(LammpsBase):
     The reading of coords and velocities is done separately in
     test_coordinates
     """
+    ref_filename = LAMMPSdata
     expected_n_atoms = 18364
     expected_n_atom_types = 10
     expected_n_residues = 25
@@ -105,10 +106,6 @@ class TestLammpsData(LammpsBase):
     ref_n_dihedrals = 5712
     ref_dihedral = (82, 85, 88, 89)
     ref_n_impropers = 0
-
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPSdata
 
 
 class TestLAMMPSCNT(LammpsBase):
@@ -124,15 +121,9 @@ class TestLAMMPSCNT(LammpsBase):
     ref_n_impropers = 604
     ref_improper = (210, 159, 212, 566)
 
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPScnt
-
-
-class TestLAMMPSCNT2(TestLAMMPSCNT):
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPScnt2
+    @pytest.fixture(params=[LAMMPScnt, LAMMPScnt2])
+    def filename(self, request):
+        return request.param
 
 
 class TestLAMMPSHYD(LammpsBase):
@@ -145,19 +136,13 @@ class TestLAMMPSHYD(LammpsBase):
     ref_n_dihedrals = 0
     ref_n_impropers = 0
 
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPShyd
-
-
-class TestLAMMPSHYD2(TestLAMMPSHYD):
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPShyd2
+    @pytest.fixture(params=[LAMMPShyd, LAMMPShyd2])
+    def filename(self, request):
+        return request.param
 
 
 class TestLAMMPSDeletedAtoms(LammpsBase):
-
+    ref_filename = LAMMPSdata_deletedatoms
     expected_n_atoms = 10
     expected_n_atom_types = 2
     expected_n_residues = 1
@@ -167,10 +152,6 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
     ref_n_angles = 0
     ref_n_dihedrals = 0
     ref_n_impropers = 0
-
-    @pytest.fixture()
-    def filename(self):
-        return LAMMPSdata_deletedatoms
 
     def test_atom_ids(self, filename):
         u = mda.Universe(filename)

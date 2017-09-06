@@ -37,7 +37,7 @@ from MDAnalysisTests.datafiles import (
 from numpy.testing import assert_equal
 
 
-class MOL2Base(ParserBase):
+class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
     expected_attrs = [
         'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds'
@@ -59,17 +59,9 @@ class MOL2Base(ParserBase):
         assert len(top.bonds) == 49  # bonds for 49 atoms
         assert len(top.bonds.values) == 51  # this many bonds
 
-
-class TestMOL2Parser(MOL2Base):
-    @pytest.fixture()
-    def filename(self):
-        return mol2_molecule
-
-
-class TestMOL2Parser2(MOL2Base):
-    @pytest.fixture()
-    def filename(self):
-        return mol2_molecules
+    @pytest.fixture(params=[mol2_molecule, mol2_molecules])
+    def filename(self, request):
+        return request.param
 
 
 def test_bond_orders():

@@ -66,7 +66,7 @@ class TestTPR(TPRAttrs):
 # The follow test the same system grompped by different version of gromacs
 # FORMAT: TPRABC, where numbers ABC indicates the version of gromacs that
 # generates the corresponding tpr file
-class TestTPRBase(TPRAttrs):
+class TestTPRGromacsVersions(TPRAttrs):
     expected_n_atoms = 2263
     expected_n_residues = 230
     expected_n_segments = 2

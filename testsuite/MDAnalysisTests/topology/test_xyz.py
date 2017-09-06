@@ -41,23 +41,13 @@ class XYZBase(ParserBase):
 
 
 class TestXYZMini(XYZBase):
+    ref_filename = XYZ_mini
     expected_n_atoms = 3
-
-    @pytest.fixture()
-    def filename(self):
-        return XYZ_mini
 
 
 class TestXYZParser(XYZBase):
     expected_n_atoms = 1284
 
-    @pytest.fixture()
-    def filename(self):
-        return XYZ
-
-
-class TestXYZParserBz2(TestXYZParser):
-
-    @pytest.fixture()
-    def filename(self):
-        return XYZ_bz2
+    @pytest.fixture(params=[XYZ, XYZ_bz2])
+    def filename(self, request):
+        return request.param

@@ -20,12 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-
-import pytest
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
@@ -44,6 +39,7 @@ class TestPSFParser(ParserBase):
     Based on small PDB with AdK (:data:`PDB_small`).
     """
     parser = mda.topology.PSFParser.PSFParser
+    ref_filename = PSF
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges',
                       'resids', 'resnames',
@@ -52,10 +48,6 @@ class TestPSFParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
-
-    @pytest.fixture()
-    def filename(self):
-        return PSF
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == 3365
@@ -104,6 +96,7 @@ class TestNAMDPSFParser(ParserBase):
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
     parser = mda.topology.PSFParser.PSFParser
+    ref_filename = PSF_NAMD
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges',
                       'resids', 'resnames',
@@ -114,13 +107,10 @@ class TestNAMDPSFParser(ParserBase):
     expected_n_residues = 6
     expected_n_segments = 1
 
-    @pytest.fixture()
-    def filename(self):
-        return PSF_NAMD
-
 
 class TestPSFParser2(ParserBase):
     parser = mda.topology.PSFParser.PSFParser
+    ref_filename = XYZ_psf
     expected_attrs = [
         'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
         'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
@@ -136,10 +126,6 @@ class TestPSFParser2(ParserBase):
         # 4 residues
         for seg in u.segments:
             assert_equal(seg.residues.resids[:4], [380, 381, 382, 383])
-
-    @pytest.fixture()
-    def filename(self):
-        return XYZ_psf
 
 
 def test_psf_nosegid():

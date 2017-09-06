@@ -14,6 +14,7 @@ from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
 class TestMMTFParser(ParserBase):
     parser = mda.topology.MMTFParser.MMTFParser
+    ref_filename = MMTF
     expected_attrs = [
         'ids', 'names', 'types', 'altLocs', 'bfactors', 'occupancies',
         'charges', 'names', 'resnames', 'resids', 'resnums', 'icodes',
@@ -24,25 +25,19 @@ class TestMMTFParser(ParserBase):
     expected_n_residues = 124
     expected_n_segments = 8
 
-    @pytest.fixture()
-    def filename(self):
-        return MMTF
-
 
 class TestMMTFParser_gz(TestMMTFParser):
+    ref_filename = MMTF_gz
     expected_n_atoms = 1140
     expected_n_residues = 36
     expected_n_segments = 4
 
-    @pytest.fixture()
-    def filename(self):
-        return MMTF_gz
 
 class TestMMTFUniverse(object):
     @pytest.fixture()
     def u(self):
         return mda.Universe(MMTF)
-    
+
     def test_bonds(self, u):
         assert len(u.bonds) == 458
 

@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import TXYZ, ARC
@@ -29,7 +30,6 @@ from MDAnalysisTests.datafiles import TXYZ, ARC
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    filename = TXYZ
     guessed_attrs = [ 'masses']
     expected_attrs = ['ids', 'names', 'bonds', 'types' ] 
     expected_n_residues = 1
@@ -39,7 +39,6 @@ class TestTXYZParser(ParserBase):
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 8
 
-
-class TestARCParser(TestTXYZParser):
-     filename = ARC
-
+    @pytest.fixture(params=(TXYZ, ARC))
+    def filename(self, request):
+        return request.param
