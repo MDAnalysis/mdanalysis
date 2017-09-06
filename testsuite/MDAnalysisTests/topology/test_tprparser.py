@@ -66,91 +66,17 @@ class TestTPR(TPRAttrs):
 # The follow test the same system grompped by different version of gromacs
 # FORMAT: TPRABC, where numbers ABC indicates the version of gromacs that
 # generates the corresponding tpr file
-
-class TPRBase(TPRAttrs):
+class TestTPRBase(TPRAttrs):
     expected_n_atoms = 2263
     expected_n_residues = 230
     expected_n_segments = 2
     ref_moltypes = np.array(['Protein_A'] * 129 + ['SOL'] * 101, dtype=object)
 
-
-# All these classes should be generated in a loop.
-class TestTPR400(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR400
-
-
-class TestTPR402(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR400
-
-
-class TestTPR403(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR403
-
-
-class TestTPR404(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR404
-
-
-class TestTPR405(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR405
-
-
-class TestTPR406(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR406
-
-
-class TestTPR407(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR407
-
-
-class TestTPR450(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR450
-
-
-class TestTPR451(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR451
-
-
-class TestTPR452(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR452
-
-
-class TestTPR453(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR453
-
-
-class TestTPR454(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR454
-
-
-class TestTPR455(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR455
+    @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
+                            TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
+                            TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016])
+    def filename(self, request):
+        return request.param
 
 
 class TPRDouble(TPRAttrs):
@@ -162,8 +88,6 @@ class TPRDouble(TPRAttrs):
                             + ['SOL'] * 4284,
                             dtype=object)
 
-
-class TestTPR455Double(TPRDouble):
     @pytest.fixture()
     def filename(self):
         return TPR455Double
@@ -179,54 +103,15 @@ class TPR46xBase(TPRAttrs):
                             + ['SOL'] * 10530 + ['NA+'] * 26 + ['CL-'] * 21,
                             dtype=object)
 
-
-class TestTPR460(TPR46xBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR460
-
-
-class TestTPR461(TPR46xBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR461
-
-
-class TestTPR502(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR502
-
-
-class TestTPR504(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR504
-
-
-class TestTPR505(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR505
-
-
-class TestTPR510(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR510
-
-
-class TestTPR2016(TPRBase):
-    @pytest.fixture()
-    def filename(self):
-        return TPR2016
+    @pytest.fixture(params=[TPR460, TPR461])
+    def filename(self, request):
+        return request.param
 
 
 def _test_is_in_topology(name, elements, topology_path, topology_section):
     """
     Test if an interaction appears as expected in the topology
     """
-    universe = MDAnalysis.Universe(topology_path)
     parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
     top = parser.parse()
     for element in elements:
