@@ -905,56 +905,42 @@ class TestGroupHash(object):
 
     See issue #1397
     """
-    def test_hash_exists(self):
-        def _hash_type(group):
-            assert_(isinstance(hash(group), int))
+    levels = ('atoms', 'residues', 'segments')
 
-        u = make_Universe(size=(3, 3, 3))
-        for level in ('atoms', 'residues', 'segments'):
-            group = getattr(u, level)
-            yield _hash_type, group
+    @pytest.fixture(params=levels)
+    def level(self, request):
+        return request.param
 
-    def test_hash_equality(self):
-        def _hash_equal(a, b):
-            assert_equal(hash(a), hash(b))
+    @pytest.fixture(scope='class')
+    def u(self):
+        return make_Universe(size=(3, 3, 3))
 
-        u = make_Universe(size=(3, 3, 3))
-        for level in ('atoms', 'residues', 'segments'):
-            a = getattr(u, level)[0:-1]
-            b = getattr(u, level)[0:-1]
-            yield _hash_equal, a, b
+    def test_hash_exists(self, u, level):
+        group = getattr(u, level)
+        assert isinstance(hash(group), int)
 
-    def test_hash_difference(self):
-        def _hash_not_equal(a, b):
-            assert_(hash(a) != hash(b))
+    def test_hash_equality(self, u, level):
+        a = getattr(u, level)[0:-1]
+        b = getattr(u, level)[0:-1]
+        assert hash(a) == hash(b)
 
-        u = make_Universe(size=(3, 3, 3))
-        for level in ('atoms', 'residues', 'segments'):
-            a = getattr(u, level)[:-1]
-            b = getattr(u, level)[1:]
-            yield _hash_not_equal, a, b
+    def test_hash_difference(self, u, level):
+        a = getattr(u, level)[:-1]
+        b = getattr(u, level)[1:]
+        assert hash(a) != hash(b)
 
-    def test_hash_difference_cross(self):
-        def _hash_not_equal(a, b):
-            assert_(hash(a) != hash(b))
+    @pytest.mark.parametrize('level_a, level_b',
+                             itertools.permutations(levels, 2))
+    def test_hash_difference_cross(self, u, level_a, level_b):
+        a = getattr(u, level_a)[0:-1]
+        b = getattr(u, level_b)[0:-1]
+        assert hash(a) != hash(b)
 
-        u = make_Universe(size=(3, 3, 3))
-        levels = ('atoms', 'residues', 'segments')
-        for level_a, level_b in itertools.permutations(levels, 2):
-            a = getattr(u, level_a)[0:-1]
-            b = getattr(u, level_b)[0:-1]
-            yield _hash_not_equal, a, b
-
-    def test_hash_diff_cross_universe(self):
-        def _hash_not_equal(a, b):
-            assert_(hash(a) != hash(b))
-
-        u = make_Universe(size=(3, 3, 3))
+    def test_hash_diff_cross_universe(self, level, u):
         u2 = make_Universe(size=(3, 3, 3))
-        for level in ('atoms', 'residues', 'segments'):
-            a = getattr(u, level)
-            b = getattr(u2, level)
-            yield _hash_not_equal, a, b
+        a = getattr(u, level)
+        b = getattr(u2, level)
+        assert hash(a) != hash(b)
 
 
 class TestAtomGroup(object):
