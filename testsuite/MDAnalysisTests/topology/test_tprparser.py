@@ -79,7 +79,7 @@ class TestTPRGromacsVersions(TPRAttrs):
         return request.param
 
 
-class TPRDouble(TPRAttrs):
+class TestTPRDouble(TPRAttrs):
     expected_n_atoms = 21692
     expected_n_residues = 4352
     expected_n_segments = 7
@@ -93,7 +93,7 @@ class TPRDouble(TPRAttrs):
         return TPR455Double
 
 
-class TPR46xBase(TPRAttrs):
+class TestTPR46x(TPRAttrs):
     expected_n_atoms = 44052
     expected_n_residues = 10712
     expected_n_segments = 8
