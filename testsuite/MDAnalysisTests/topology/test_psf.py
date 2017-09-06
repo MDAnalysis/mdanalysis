@@ -39,11 +39,12 @@ class TestPSFParser(ParserBase):
     Based on small PDB with AdK (:data:`PDB_small`).
     """
     parser = mda.topology.PSFParser.PSFParser
-    filename = PSF
-    expected_attrs = [
-        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
-        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
-    ]
+    ref_filename = PSF
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges',
+                      'resids', 'resnames',
+                      'segids',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
@@ -51,8 +52,8 @@ class TestPSFParser(ParserBase):
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == 3365
 
-    def test_bonds_atom_counts(self):
-        u = mda.Universe(self.filename)
+    def test_bonds_atom_counts(self, filename):
+        u = mda.Universe(filename)
         assert len(u.atoms[[0]].bonds) == 4
         assert len(u.atoms[[42]].bonds) == 1
 
@@ -64,8 +65,8 @@ class TestPSFParser(ParserBase):
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == 6123
 
-    def test_angles_atom_counts(self):
-        u = mda.Universe(self.filename)
+    def test_angles_atom_counts(self, filename):
+        u = mda.Universe(filename)
         assert len(u.atoms[[0]].angles), 9
         assert len(u.atoms[[42]].angles), 2
 
@@ -77,8 +78,8 @@ class TestPSFParser(ParserBase):
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 8921
 
-    def test_dihedrals_atom_counts(self):
-        u = mda.Universe(self.filename)
+    def test_dihedrals_atom_counts(self, filename):
+        u = mda.Universe(filename)
         assert len(u.atoms[[0]].dihedrals) == 14
 
     def test_dihedrals_identity(self, top):
@@ -95,11 +96,12 @@ class TestNAMDPSFParser(ParserBase):
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
     parser = mda.topology.PSFParser.PSFParser
-    filename = PSF_NAMD
-    expected_attrs = [
-        'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
-        'segids', 'bonds', 'angles', 'dihedrals', 'impropers'
-    ]
+    ref_filename = PSF_NAMD
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges',
+                      'resids', 'resnames',
+                      'segids',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
     guessed_attrs = ['elements']
     expected_n_atoms = 130
     expected_n_residues = 6
@@ -108,7 +110,7 @@ class TestNAMDPSFParser(ParserBase):
 
 class TestPSFParser2(ParserBase):
     parser = mda.topology.PSFParser.PSFParser
-    filename = XYZ_psf
+    ref_filename = XYZ_psf
     expected_attrs = [
         'ids', 'names', 'types', 'masses', 'charges', 'resids', 'resnames',
         'segids', 'bonds', 'angles', 'dihedrals', 'impropers'

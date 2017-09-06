@@ -48,31 +48,31 @@ class TOPBase(ParserBase):
 
 
 class TestPRMParser(TOPBase):
-    filename = PRM
+    ref_filename = PRM
     expected_n_atoms = 252
     expected_n_residues = 14
     guessed_attrs = ['elements']
 
 
 class TestPRM12Parser(TOPBase):
+    ref_filename = PRM12
     expected_attrs = [
         "names", "types", "type_indices", "charges", "masses", "resnames"
     ]
-    filename = PRM12
     expected_n_atoms = 8923
     expected_n_residues = 2861
     ref_proteinatoms = 0
 
 
 class TestParm7Parser(TOPBase):
-    filename = PRM7
+    ref_filename = PRM7
     expected_n_atoms = 5827
     expected_n_residues = 1882
     guessed_attrs = ['elements']
 
 
 class TestPRM2(TOPBase):
-    filename = PRMpbc
+    ref_filename = PRMpbc
     expected_n_atoms = 5071
     expected_n_residues = 1686
     ref_proteinatoms = 22

@@ -30,9 +30,8 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestCRDParser(ParserBase):
-
     parser = mda.topology.CRDParser.CRDParser
-    filename = CRD
+    ref_filename = CRD
     expected_attrs = ['ids', 'names', 'tempfactors',
                       'resids', 'resnames', 'resnums',
                       'segids']

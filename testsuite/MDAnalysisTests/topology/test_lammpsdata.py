@@ -21,6 +21,7 @@
 #
 from __future__ import absolute_import
 
+import pytest
 from numpy.testing import assert_equal
 import numpy as np
 
@@ -84,8 +85,8 @@ class LammpsBase(ParserBase):
         if self.ref_n_impropers:
             assert self.ref_improper in top.impropers.values
 
-    def test_creates_universe(self):
-        u = mda.Universe(self.filename, format='DATA')
+    def test_creates_universe(self, filename):
+        u = mda.Universe(filename, format='DATA')
 
 
 class TestLammpsData(LammpsBase):
@@ -94,7 +95,7 @@ class TestLammpsData(LammpsBase):
     The reading of coords and velocities is done separately in
     test_coordinates
     """
-    filename = LAMMPSdata
+    ref_filename = LAMMPSdata
     expected_n_atoms = 18364
     expected_n_atom_types = 10
     expected_n_residues = 25
@@ -108,7 +109,6 @@ class TestLammpsData(LammpsBase):
 
 
 class TestLAMMPSCNT(LammpsBase):
-    filename = LAMMPScnt
     expected_n_atoms = 604
     expected_n_atom_types = 1
     expected_n_residues = 1
@@ -121,13 +121,12 @@ class TestLAMMPSCNT(LammpsBase):
     ref_n_impropers = 604
     ref_improper = (210, 159, 212, 566)
 
-
-class TestLAMMPSCNT2(TestLAMMPSCNT):
-    filename = LAMMPScnt2
+    @pytest.fixture(params=[LAMMPScnt, LAMMPScnt2])
+    def filename(self, request):
+        return request.param
 
 
 class TestLAMMPSHYD(LammpsBase):
-    filename = LAMMPShyd
     expected_n_atoms = 2
     expected_n_atom_types = 1
     expected_n_residues = 1
@@ -137,14 +136,13 @@ class TestLAMMPSHYD(LammpsBase):
     ref_n_dihedrals = 0
     ref_n_impropers = 0
 
-
-class TestLAMMPSHYD2(TestLAMMPSHYD):
-    filename = LAMMPShyd2
+    @pytest.fixture(params=[LAMMPShyd, LAMMPShyd2])
+    def filename(self, request):
+        return request.param
 
 
 class TestLAMMPSDeletedAtoms(LammpsBase):
-    filename = LAMMPSdata_deletedatoms
-
+    ref_filename = LAMMPSdata_deletedatoms
     expected_n_atoms = 10
     expected_n_atom_types = 2
     expected_n_residues = 1
@@ -155,14 +153,14 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
     ref_n_dihedrals = 0
     ref_n_impropers = 0
 
-    def test_atom_ids(self):
-        u = mda.Universe(self.filename)
+    def test_atom_ids(self, filename):
+        u = mda.Universe(filename)
 
         assert_equal(u.atoms.ids,
                      [1, 10, 1002, 2003, 2004, 2005, 2006, 2007, 2008, 2009])
 
-    def test_traj(self):
-        u = mda.Universe(self.filename)
+    def test_traj(self, filename):
+        u = mda.Universe(filename)
 
         assert_equal(u.atoms.positions,
                      np.array([[11.8998565674, 48.4455718994, 19.0971984863],

@@ -31,7 +31,7 @@ from MDAnalysisTests.datafiles import (
 
 class TestPDBQT(ParserBase):
     parser = mda.topology.PDBQTParser.PDBQTParser
-    filename = PDBQT_input
+    ref_filename = PDBQT_input
     expected_attrs = [
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
         'segids'

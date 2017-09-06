@@ -40,7 +40,7 @@ from numpy.testing import assert_equal
 
 class TestGROParser(ParserBase):
     parser = mda.topology.GROParser.GROParser
-    filename = GRO
+    ref_filename = GRO
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 47681

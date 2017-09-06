@@ -43,7 +43,7 @@ _PDBPARSER = mda.topology.PDBParser.PDBParser
 class TestPDBParser(ParserBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
-    filename = PDB
+    ref_filename = PDB
     expected_attrs = ['ids', 'names', 'resids', 'resnames']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
@@ -54,7 +54,7 @@ class TestPDBParser(ParserBase):
 class TestPDBParserSegids(ParserBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
-    filename = PDB_small
+    ref_filename = PDB_small
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'segids']
     guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341

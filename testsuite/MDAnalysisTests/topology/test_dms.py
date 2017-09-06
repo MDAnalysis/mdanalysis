@@ -28,9 +28,8 @@ from MDAnalysisTests.datafiles import DMS
 
 
 class TestDMSParser(ParserBase):
-
     parser = mda.topology.DMSParser.DMSParser
-    filename = DMS
+    ref_filename = DMS
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
@@ -42,9 +41,9 @@ class TestDMSParser(ParserBase):
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365
 
-    def test_atomsels(self):
+    def test_atomsels(self, filename):
         # Desired value taken from VMD atomsel
-        u = mda.Universe(self.filename)
+        u = mda.Universe(filename)
 
         s0 = u.select_atoms("name CA")
         assert len(s0) == 214

@@ -36,8 +36,8 @@ from MDAnalysisTests.datafiles import (
 
 
 class DLPUniverse(ParserBase):
-    def test_creates_universe(self):
-        u = mda.Universe(self.filename, topology_format=self.format)
+    def test_creates_universe(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
         assert isinstance(u, mda.Universe)
 
 
@@ -55,13 +55,13 @@ class DLPBase2(DLPUniverse):
 
 class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
-    filename = DLP_HISTORY
+    ref_filename = DLP_HISTORY
     format = 'HISTORY'
 
 
 class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
-    filename = DLP_CONFIG
+    ref_filename = DLP_CONFIG
     format = 'CONFIG'
 
 
@@ -79,23 +79,23 @@ class DLPBase(DLPUniverse):
 
 class TestDLPConfigMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
-    filename = DLP_CONFIG_minimal
+    ref_filename = DLP_CONFIG_minimal
     format = 'CONFIG'
 
 
 class TestDLPConfigOrder(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
-    filename = DLP_CONFIG_order
+    ref_filename = DLP_CONFIG_order
     format = 'CONFIG'
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
-    filename = DLP_HISTORY_minimal
+    ref_filename = DLP_HISTORY_minimal
     format = 'HISTORY'
 
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
-    filename = DLP_HISTORY_order
+    ref_filename = DLP_HISTORY_order
     format = 'HISTORY'

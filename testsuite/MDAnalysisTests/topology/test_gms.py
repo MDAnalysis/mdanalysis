@@ -20,8 +20,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import assert_equal
 
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 
@@ -42,8 +42,8 @@ class GMSBase(ParserBase):
 
 
 class TestGMSASYMOPT(GMSBase):
-    filename = GMS_ASYMOPT
     expected_n_atoms = 6
+    ref_filename = GMS_ASYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -55,8 +55,8 @@ class TestGMSASYMOPT(GMSBase):
 
 
 class TestGMSSYMOPT(GMSBase):
-    filename = GMS_SYMOPT
     expected_n_atoms = 4
+    ref_filename = GMS_SYMOPT
 
     def test_names(self, top):
         assert_equal(top.names.values,
@@ -68,4 +68,4 @@ class TestGMSSYMOPT(GMSBase):
 
 
 class TestGMSASYMSURF(TestGMSASYMOPT):
-    filename = GMS_ASYMSURF
+    ref_filename = GMS_ASYMSURF

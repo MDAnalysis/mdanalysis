@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import HoomdXMLdata
 
 class TestHoomdXMLParser(ParserBase):
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
-    filename = HoomdXMLdata
+    ref_filename = HoomdXMLdata
     expected_attrs = [
         'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals'
     ]
