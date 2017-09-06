@@ -150,14 +150,14 @@ def test_all_bonds(topology, bond):
     TPR2016_bonded
 ))
 @pytest.mark.parametrize('angle', (
-    ('ANGLES',[(0, 1, 2)]),
-    ('G96ANGLES',[(1, 2, 3)]),
-    ('CROSS_BOND_BOND',[(2, 3, 4)]),
-    ('CROSS_BOND_ANGLE',[(3, 4, 5)]),
-    ('UREY_BRADLEY',[(4, 5, 6)]),
-    ('QANGLES',[(5, 6, 7)]),
-    ('RESTRANGLES',[(6, 7, 8)]),
-    ('TABANGLES',[(7, 8, 9)]),
+    ('ANGLES', [(0, 1, 2)]),
+    ('G96ANGLES', [(1, 2, 3)]),
+    ('CROSS_BOND_BOND', [(2, 3, 4)]),
+    ('CROSS_BOND_ANGLE', [(3, 4, 5)]),
+    ('UREY_BRADLEY', [(4, 5, 6)]),
+    ('QANGLES', [(5, 6, 7)]),
+    ('RESTRANGLES', [(6, 7, 8)]),
+    ('TABANGLES', [(7, 8, 9)]),
 ))
 def test_all_angles(topology, angle):
     angle_type_in_topology = functools.partial(_test_is_in_topology,
@@ -171,12 +171,12 @@ def test_all_angles(topology, angle):
     TPR2016_bonded
 ))
 @pytest.mark.parametrize('dih', (
-        ('PDIHS',[(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)]),
-        ('RBDIHS',[(4, 5, 6, 7)]),
-        ('RESTRDIHS',[(8, 9, 10, 11)]),
-        ('CBTDIHS',[(9, 10, 11, 12)]),
-        ('FOURDIHS',[(6, 7, 8, 9)]),
-        ('TABDIHS',[(10, 11, 12, 13)]),
+        ('PDIHS', [(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)]),
+        ('RBDIHS', [(4, 5, 6, 7)]),
+        ('RESTRDIHS', [(8, 9, 10, 11)]),
+        ('CBTDIHS', [(9, 10, 11, 12)]),
+        ('FOURDIHS', [(6, 7, 8, 9)]),
+        ('TABDIHS', [(10, 11, 12, 13)]),
 ))
 def test_all_dihedrals(topology, dih):
     dih_type_in_topology = functools.partial(_test_is_in_topology,
