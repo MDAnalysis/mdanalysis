@@ -25,13 +25,42 @@ from six.moves import zip
 
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
+from MDAnalysis.lib.mdamath import triclinic_vectors, triclinic_box
+
+
+boxes = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
+         np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
+         triclinic_vectors(  # tri_vecs
+             np.array([1, 2, 3, 90, 90, 45], dtype=np.float32)),
+         np.array([[0.5, 0.9, 1.9],  # tri_vecs_bad
+                   [2.0, 0.4, 0.1],
+                   [0.0, 0.6, 0.5]], dtype=np.float32)
+         )
+rec_m = (np.array([[1, 0, 0],
+                   [0, 1, 0],
+                   [0, 0, 1]], dtype=np.float32),
+         np.array([[0.67044002, -0.38707867, -0.6329931],
+                   [0, 0.54741204, -0.83686334],
+                   [0, 0, 1]], dtype=np.float32),
+         np.array([[0.707106829, -0.707106829, 0],
+                   [0, 1, 0],
+                   [0, 0, 1]], dtype=np.float32),
+         np.array([[0.42783618, -0.16049984, -0.88949198],
+                   [-0, 0.95654362, 0.29158944],
+                   [0, 0, 1]], dtype=np.float32),
+         )
+
+
+@pytest.mark.parametrize('box, rm', zip(boxes, rec_m))
+def test_initialize_bm(box, rm):
+    assert_almost_equal(PeriodicKDTree(box)._rm, rm, decimal=7)
 
 
 @pytest.fixture
-def ptree():
+def ptree_ortho():
     b = np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
     coords = np.array([[2, 2, 2],
                        [5, 5, 5],
@@ -43,10 +72,11 @@ def ptree():
     t.set_coords(coords)
     return {'coords': coords, 'tree': t, 'box': b, 'radius': 1.5}
 
-def test_set_coords(ptree):
+
+def test_set_coords(ptree_ortho):
     with pytest.raises(ValueError) as excinfo:
         xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)
-        tree = PeriodicKDTree(ptree['box'])
+        tree = PeriodicKDTree(ptree_ortho['box'])
         tree.set_coords(xy)
     assert_equal(str(excinfo.value),
                  'coords must be a sequence of 3 dimensional coordinates')
@@ -76,10 +106,11 @@ centers = (([5, 5, 5], ),
 
 
 @pytest.mark.parametrize('q, cs', zip(queries, centers))
-def test_find_centers(ptree, q, cs):
+def test_find_centers(ptree_ortho, q, cs):
     q = np.array(q, dtype=np.float32)
     cs = [np.array(c, dtype=np.float32) for c in cs]
-    assert_equal(ptree['tree'].find_centers(q, ptree['radius']), cs)
+    assert_equal(ptree_ortho['tree'].find_centers(q,
+                                                  ptree_ortho['radius']), cs)
 
 
 queries = ([5, 5, 5],  # case box center
@@ -101,10 +132,11 @@ neighbors = (([5, 5, 5], ),
 
 
 @pytest.mark.parametrize('q, ns', zip(queries, neighbors))
-def test_search(ptree, q, ns):
-    ptree['tree'].search(np.array(q, dtype=np.float32), ptree['radius'])
-    indices = ptree['tree'].get_indices()
+def test_search(ptree_ortho, q, ns):
+    ptree_ortho['tree'].search(np.array(q, dtype=np.float32),
+                               ptree_ortho['radius'])
+    indices = ptree_ortho['tree'].get_indices()
     found_neighbors = list() if indices is None \
-        else [ptree['coords'][i] for i in indices]
+        else [ptree_ortho['coords'][i] for i in indices]
     ns = [np.array(n, dtype=np.float32) for n in ns]
     assert_equal(found_neighbors, ns)

@@ -810,9 +810,9 @@ def apply_PBC(incoords, box, backend="serial"):
     # determine boxtype
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-    if (boxtype == 'tri_box'):
+    if boxtype == 'tri_box':
         box = triclinic_vectors(box)
-    if (boxtype == 'tri_vecs_bad'):
+    if boxtype == 'tri_vecs_bad':
         box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
     box_inv = np.zeros((3), dtype=np.float32)

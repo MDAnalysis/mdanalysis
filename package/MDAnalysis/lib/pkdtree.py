@@ -111,9 +111,9 @@ class PeriodicKDTree(object):
                            [0, 0, 1]], dtype=np.float32)
         elif box_type in 'tri_box tri_vecs tri_vecs_bad':
             if box_type == 'tri_box':
-                dm = box.copy('C')
-            elif box_type == 'tri_box':
                 dm = triclinic_vectors(box)
+            elif box_type == 'tri_vecs':
+                dm = box.copy('C')
             else:  # case 'tri_vecs_bad'
                 dm = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
             rm = np.zeros(9, dtype=np.float32).reshape(3, 3)
@@ -168,8 +168,10 @@ class PeriodicKDTree(object):
         # the axis that we happen to be looking.
         displacements = list()
         for i in range(self.dim):
+            # distance to the plane containing the origin
             if np.dot(wrapped_c, self._rm[i]) < extents[i]:
                 displacements.append(self._dm[i])  # "upper" image
+            # distance to the plane containing point self._dm[i]
             elif np.dot(self._dm[i] - wrapped_c, self._rm[i]) < extents[i]:
                 displacements.append(-self._dm[i])  # "lower" image
         # If we have displacements along more than one axis, we have
