@@ -26,8 +26,7 @@ import pytest
 from six.moves import zip, range
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_allclose,
-                           assert_)
+                           assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -851,19 +850,19 @@ class BaseTimestepTest(object):
         # - frame
         # - n_atoms
         # - positions, vels and forces
-        assert_(ref_ts == ts2)
+        assert ref_ts == ts2
 
         assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
                                   decimal=4)
 
         # Check things not covered by eq
         for d in ref_ts.data:
-            assert_(d in ts2.data)
+            assert d in ts2.data
             if isinstance(ref_ts.data[d], np.ndarray):
                 assert_array_almost_equal(
                     ref_ts.data[d], ts2.data[d])
             else:
-                assert_(ref_ts.data[d] == ts2.data[d])
+                assert ref_ts.data[d] == ts2.data[d]
 
     def _check_independent(self, name, ts):
         """Check that copies made are independent"""
@@ -985,8 +984,8 @@ class BaseTimestepTest(object):
 
         b = tuple([0, 1, 2, 3])
 
-        assert_(ts1 != b)
-        assert_(b != ts1)
+        assert ts1 != b
+        assert b != ts1
 
     def test_wrong_frame_equality(self):
         ts1 = self.Timestep(self.size)
@@ -996,8 +995,8 @@ class BaseTimestepTest(object):
         ts2.positions = self._get_pos()
         ts2.frame = 987
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_wrong_n_atoms_equality(self):
         ts1 = self.Timestep(self.size)
@@ -1005,8 +1004,8 @@ class BaseTimestepTest(object):
 
         ts3 = self.Timestep(self.size * 2)
 
-        assert_(ts1 != ts3)
-        assert_(ts3 != ts1)
+        assert ts1 != ts3
+        assert ts3 != ts1
 
     def test_wrong_pos_equality(self):
         ts1 = self.Timestep(self.size)
@@ -1015,8 +1014,8 @@ class BaseTimestepTest(object):
         ts2 = self.Timestep(self.size)
         ts2.positions = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1025,8 +1024,8 @@ class BaseTimestepTest(object):
         ts1.velocities = self._get_pos()
         ts2.velocities = self._get_pos()
 
-        assert_(ts1 == ts2)
-        assert_(ts2 == ts1)
+        assert ts1 == ts2
+        assert ts2 == ts1
 
     def test_check_mismatched_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1034,8 +1033,8 @@ class BaseTimestepTest(object):
 
         ts1.velocities = self._get_pos()
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_wrong_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1044,8 +1043,8 @@ class BaseTimestepTest(object):
         ts1.velocities = self._get_pos()
         ts2.velocities = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1054,8 +1053,8 @@ class BaseTimestepTest(object):
         ts1.forces = self._get_pos()
         ts2.forces = self._get_pos()
 
-        assert_(ts1 == ts2)
-        assert_(ts2 == ts1)
+        assert ts1 == ts2
+        assert ts2 == ts1
 
     def test_check_mismatched_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1063,8 +1062,8 @@ class BaseTimestepTest(object):
 
         ts1.forces = self._get_pos()
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_wrong_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1073,8 +1072,8 @@ class BaseTimestepTest(object):
         ts1.forces = self._get_pos()
         ts2.forces = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
 
 def assert_timestep_equal(A, B, msg=''):

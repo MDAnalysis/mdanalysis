@@ -22,10 +22,7 @@
 from __future__ import absolute_import
 
 import pytest
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 

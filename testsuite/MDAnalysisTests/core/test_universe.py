@@ -35,7 +35,6 @@ from MDAnalysisTests.tempdir import TempDir
 
 import numpy as np
 from numpy.testing import (
-    assert_,
     assert_allclose,
     assert_almost_equal,
     assert_equal,
@@ -98,8 +97,8 @@ class TestUniverseCreation(object):
         # universe creation without args should work
         u = mda.Universe()
 
-        assert_(isinstance(u, mda.Universe))
-        assert_(u.atoms == None)
+        assert isinstance(u, mda.Universe)
+        assert u.atoms is None
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
@@ -120,7 +119,7 @@ class TestUniverseCreation(object):
         try:
             mda.Universe('some.weird.not.pdb.but.converted.xtc')
         except ValueError as e:
-            assert_('isn\'t a valid topology format' in e.args[0])
+            assert 'isn\'t a valid topology format' in e.args[0]
         else:
             raise AssertionError
 
@@ -133,8 +132,8 @@ class TestUniverseCreation(object):
         try:
             mda.Universe('thisfile', topology_format=IOErrorParser)
         except IOError as e:
-            assert_('Failed to load from the topology file' in e.args[0])
-            assert_('Useful information' in e.args[0])
+            assert 'Failed to load from the topology file' in e.args[0]
+            assert 'Useful information' in e.args[0]
         else:
             raise AssertionError
 
@@ -155,7 +154,7 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'invalid.file.tpr'))
         except IOError as e:
-            assert_('file or cannot be recognized' in e.args[0])
+            assert 'file or cannot be recognized' in e.args[0]
         else:
             raise AssertionError
         finally:
@@ -187,21 +186,21 @@ class TestUniverseCreation(object):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-        assert_(u.kwargs['fake_kwarg'] is True)
+        assert u.kwargs['fake_kwarg']
 
         # initialize new universe from pieces of existing one
         u2 = mda.Universe(u.filename, u.trajectory.filename,
                           **u.kwargs)
 
-        assert_(u2.kwargs['fake_kwarg'] is True)
+        assert u2.kwargs['fake_kwarg']
         assert_equal(u.kwargs, u2.kwargs)
 
     def test_universe_topology_class_with_coords(self):
         u = mda.Universe(PSF, PDB_small)
         u2 = mda.Universe(u._topology, PDB_small)
-        assert_(isinstance(u2.trajectory, type(u.trajectory)))
+        assert isinstance(u2.trajectory, type(u.trajectory))
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
-        assert_(u2._topology is u._topology)
+        assert u2._topology is u._topology
 
 
 class TestUniverse(object):
@@ -277,13 +276,13 @@ def test_chainid_quick_select():
     u = mda.Universe(PDB_chainidrepeat)
 
     for sg in (u.A, u.B):
-        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
+        assert isinstance(sg, mda.core.groups.SegmentGroup)
     for seg in (u.C, u.D):
-        assert_(isinstance(seg, mda.core.groups.Segment))
-    assert_(len(u.A.atoms) == 10)
-    assert_(len(u.B.atoms) == 10)
-    assert_(len(u.C.atoms) == 5)
-    assert_(len(u.D.atoms) == 7)
+        assert isinstance(seg, mda.core.groups.Segment)
+    assert len(u.A.atoms) == 10
+    assert len(u.B.atoms) == 10
+    assert len(u.C.atoms) == 5
+    assert len(u.D.atoms) == 7
 
 
 class TestGuessBonds(TestCase):
@@ -313,13 +312,13 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
-        assert_('guess_bonds' in u.kwargs)
+        assert 'guess_bonds' in u.kwargs
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = mda.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
+        assert u.kwargs['guess_bonds']
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
@@ -331,15 +330,15 @@ class TestGuessBonds(TestCase):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
                                 vdwradii=self.vdw)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
+        assert u.kwargs['guess_bonds']
         assert_equal(self.vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
 
         for attr in ('bonds', 'angles', 'dihedrals'):
-            assert_(not hasattr(u, attr))
-        assert_(u.kwargs['guess_bonds'] is False)
+            assert not hasattr(u, attr)
+        assert not u.kwargs['guess_bonds']
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,

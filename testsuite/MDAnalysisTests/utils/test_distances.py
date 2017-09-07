@@ -25,8 +25,7 @@ import MDAnalysis.lib.distances
 
 import numpy as np
 import pytest
-from numpy.testing import (assert_,
-                           assert_almost_equal, assert_equal,)
+from numpy.testing import assert_almost_equal, assert_equal
 
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
@@ -748,4 +747,4 @@ class TestDistanceBackendSelection(object):
                                           backend="not implemented stuff")
 
 def test_used_openmpflag():
-    assert_(isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool))
+    assert isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool)

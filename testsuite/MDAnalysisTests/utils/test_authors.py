@@ -25,11 +25,9 @@ from numpy.testing import assert_
 import MDAnalysis
 
 def test_package_authors():
-    assert_(len(MDAnalysis.__authors__) > 0,
-            'Could not find the list of authors')
+    assert len(MDAnalysis.__authors__) > 0, 'Could not find the list of authors'
 
 
 def test_testsuite_authors():
     from MDAnalysisTests import __authors__
-    assert_(len(__authors__) > 0,
-            'Could not find the list of authors')
+    assert len(__authors__) > 0, 'Could not find the list of authors'

@@ -103,4 +103,4 @@ class TestFitExponential(object):
         a = polymer.fit_exponential_decay(self.x, y2)
 
         assert_almost_equal(a, self.a_ref, decimal=3)
-        # assert_(np.rint(a) == self.a_ref)
+        # assert np.rint(a) == self.a_ref
