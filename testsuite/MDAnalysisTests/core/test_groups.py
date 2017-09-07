@@ -776,13 +776,23 @@ class TestGroupBaseOperators(object):
         assert_(a.intersection(b) == b.intersection(a))
         assert_equal(len(a.intersection(d)), 0)
 
-    @pytest.mark.xfail
+    #@pytest.mark.xfail
     def test_subtract(self, groups):
         a, b, c, d, e = groups
         subtract_ab = a.subtract(b)
-        assert_array_equal(subtract_ab.ix, np.array([1, 2, 1, 2]))
+        reference = np.array([1, 2, 1, 2])
+        # The groups can be "simple" or "scrambled", if they are simple they
+        # do not contain repetitions and they are ordered. The reference for
+        # the simple groups should follow the same patern and should be ordered
+        # and without repetitions.
+        if len(a) == len(np.unique(a)):
+            reference = np.unique(reference)
+        assert_array_equal(subtract_ab.ix, reference)
         subtract_ba = b.subtract(a)
-        assert_array_equal(subtract_ba, np.array([7, 6, 5, 7]))
+        reference = np.array([7, 6, 5, 7, 6])
+        if len(a) == len(np.unique(a)):
+            reference = np.unique(reference)
+        assert_array_equal(subtract_ba.ix, reference)
         subtract_ad = a.subtract(d)
         assert_equal(subtract_ad, a)
         subtract_ae = a.subtract(e)
