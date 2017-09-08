@@ -116,16 +116,13 @@ class TestGroupSlicing(object):
     def singular(self, level):
         return self.singulars[level]
 
-    @staticmethod
-    def test_n_atoms(group):
+    def test_n_atoms(self, group):
         assert_(len(group.atoms) == group.n_atoms)
 
-    @staticmethod
-    def test_n_residues(group):
+    def test_n_residues(self, group):
         assert_(len(group.residues) == group.n_residues)
 
-    @staticmethod
-    def test_n_segments(group):
+    def test_n_segments(self, group):
         assert_(len(group.segments) == group.n_segments)
 
     def test_len(self, group, level):
@@ -181,6 +178,12 @@ class TestGroupSlicing(object):
         assert_(isinstance(a, singular))
 
 
+def _yield_groups(group_dict, singles, levels, groupclasses, repeat):
+    for level in levels:
+        for groups in itertools.product([group_dict[level], singles[level]],
+                                        repeat=repeat):
+            yield  list(groups) + [groupclasses[level]]
+
 class TestGroupAddition(object):
     """Tests for combining Group objects
 
@@ -196,60 +199,51 @@ class TestGroupAddition(object):
     Sum() should work on an iterable of many same level Components/Groups
     Groups contain items "x in y"
     """
-    def test_addition(self):
-        u = make_Universe()
+    u = make_Universe()
 
-        levels = ['atom', 'residue', 'segment']
-        group_dict = {
-            'atom': u.atoms[:5],
-            'residue': u.residues[:5],
-            'segment': u.segments[:5],
-        }
-        singles = {
-            'atom': u.atoms[0],
-            'residue': u.residues[0],
-            'segment': u.segments[0],
-        }
+    levels = ['atom', 'residue', 'segment']
+    group_dict = {
+        'atom': u.atoms[:5],
+        'residue': u.residues[:5],
+        'segment': u.segments[:5],
+    }
+    singles = {
+        'atom': u.atoms[0],
+        'residue': u.residues[0],
+        'segment': u.segments[0],
+    }
 
-        groupclasses = {
-            'atom': groups.AtomGroup,
-            'residue': groups.ResidueGroup,
-            'segment': groups.SegmentGroup,
-        }
-        # TODO: actually use this
-        singleclasses = {
-            'atom': groups.Atom,
-            'residue': groups.Residue,
-            'segment': groups.Segment
-        }
+    groupclasses = {
+        'atom': groups.AtomGroup,
+        'residue': groups.ResidueGroup,
+        'segment': groups.SegmentGroup,
+    }
+    # TODO: actually use this
+    singleclasses = {
+        'atom': groups.Atom,
+        'residue': groups.Residue,
+        'segment': groups.Segment
+    }
 
-        for level in levels:
-            group = group_dict[level]
-            single = singles[level]
-            # check that all combinations of group and singular work
-            for x, y in itertools.product([group, single], repeat=2):
-                yield self._check_addition, x, y, groupclasses[level]
+    @pytest.fixture(params=levels)
+    def level(self, request):
+        return request.param
 
-            for x, y, z in itertools.product([group, single], repeat=3):
-                yield self._check_sum, x, y, z, groupclasses[level]
-                yield self._check_bad_sum, x, y, z
+    @pytest.fixture
+    def group(self, level):
+        return self.group_dict[level]
 
-            yield self._check_contains, group
-            yield self._check_contains_false, group
-            for olevel in levels:
-                if level == olevel:
-                    continue
-                yield self._check_contains_wronglevel, group, group_dict[olevel]
+    @pytest.fixture
+    def single(self, level):
+        return self.singles[level]
 
-        # Check that you can't add anything together cross-level
-        for alevel, blevel in itertools.permutations(levels, 2):
-            for typeA, typeB in itertools.product([singles, group_dict], repeat=2):
-                yield self._check_crosslevel, typeA[alevel], typeB[blevel]
-            ### A AG R RG
-            # A R
-            # A RG
-            # AG R
-            # AG RG
+    @pytest.fixture
+    def two_groups(self, group, single):
+        return itertools.product([group, single], repeat=2)
+
+    @pytest.fixture
+    def three_groups(self, group, single):
+        return itertools.product([group, single], repeat=3)
 
     @staticmethod
     def itr(x):
@@ -261,7 +255,11 @@ class TestGroupAddition(object):
         else:
             return x
 
-    def _check_addition(self, a, b, refclass):
+    @pytest.mark.parametrize(
+        'a, b, refclass',
+        _yield_groups(group_dict, singles, levels, groupclasses, repeat=2)
+    )
+    def test_addition(self, a, b, refclass):
         """Combine a and b, check length, returned type and ordering"""
         newgroup = a + b
         reflen = len(self.itr(a)) + len(self.itr(b))
@@ -271,7 +269,11 @@ class TestGroupAddition(object):
         for x, y in zip(newgroup, itertools.chain(self.itr(a), self.itr(b))):
             assert_(x == y)
 
-    def _check_sum(self, a, b, c, refclass):
+    @pytest.mark.parametrize(
+        'a, b, c, refclass',
+        _yield_groups(group_dict, singles, levels, groupclasses, repeat=3)
+    )
+    def test_sum(self, a, b, c, refclass):
         # weird hack in radd allows this
         summed = sum([a, b, c])
 
@@ -282,26 +284,49 @@ class TestGroupAddition(object):
                         itertools.chain(self.itr(a), self.itr(b), self.itr(c))):
             assert_(x == y)
 
-    @staticmethod
-    def _check_bad_sum(a, b, c):
+    @pytest.mark.parametrize(
+        'a, b, c, refclass',
+        _yield_groups(group_dict, singles, levels, groupclasses, repeat=3)
+    )
+    def test_bad_sum(self, a, b, c, refclass):
         # sum with bad first argument
         with pytest.raises(TypeError):
             sum([10, a, b, c])
 
-    def _check_crosslevel(self, a, b):
-        def add(x, y):
-            return x + y
-        with pytest.raises(TypeError):
-            add(a, b)
-
-    def _check_contains(self, group):
+    def test_contains(self, group):
         assert_(group[2] in group)
 
-    def _check_contains_false(self, group):
+    def test_contains_false(self, group):
         assert_(not group[3] in group[:2])
 
-    def _check_contains_wronglevel(self, group, group2):
+    @pytest.mark.parametrize(
+        'one_level, other_level',
+        [
+            (l1, l2)
+            for l1, l2
+            in itertools.product(levels, repeat=2)
+            if l1 != l2
+        ]
+    )
+    def test_contains_wronglevel(self, one_level, other_level):
+        group = self.group_dict[one_level]
+        group2 = self.group_dict[other_level]
         assert_(not group[2] in group2)
+
+    @pytest.mark.parametrize(
+        'a, b',
+        [
+            (typeA[alevel], typeB[blevel])
+            for (typeA, typeB), (alevel, blevel)
+            in itertools.product(
+                itertools.product([singles, group_dict], repeat=2),
+                itertools.permutations(levels, 2)
+            )
+        ]
+    )
+    def test_crosslevel(self, a, b):
+        with pytest.raises(TypeError):
+            a + b
 
 
 class TestGroupLevelTransition(object):
@@ -451,82 +476,84 @@ class TestGroupLevelTransition(object):
 
 class TestComponentComparisons(object):
     """Use of operators (< > == != <= >=) with Atom, Residue, and Segment"""
-    @staticmethod
-    def _check_lt(a, b, c):
+    u = make_Universe()
+    levels = [u.atoms, u.residues, u.segments]
+
+    @pytest.fixture(params=levels)
+    def abc(self, request):
+        level = request.param
+        return level[0], level[1], level[2]
+
+    @pytest.fixture
+    def a(self, abc):
+        return abc[0]
+
+    @pytest.fixture
+    def b (self, abc):
+        return abc[1]
+
+    @pytest.fixture
+    def c(self, abc):
+        return abc[2]
+
+    def test_lt(self, a, b, c):
         assert_(a < b)
         assert_(a < c)
         assert_(not b < a)
         assert_(not a < a)
 
-    @staticmethod
-    def _check_gt(a, b, c):
+    def test_gt(self, a, b, c):
         assert_(b > a)
         assert_(c > a)
         assert_(not a > c)
         assert_(not a > a)
 
-    @staticmethod
-    def _check_ge(a, b, c):
+    def test_ge(self, a, b, c):
         assert_(b >= a)
         assert_(c >= a)
         assert_(b >= b)
         assert_(not b >= c)
 
-    @staticmethod
-    def _check_le(a, b, c):
+    def test_le(self, a, b, c):
         assert_(b <= c)
         assert_(b <= b)
         assert_(not b <= a)
 
-    @staticmethod
-    def _check_neq(a, b, c):
+    def test_neq(self, a, b, c):
         assert_(a != b)
         assert_(not a != a)
 
-    @staticmethod
-    def _check_eq(a, b, c):
+    def test_eq(self, a, b, c):
         assert_(a == a)
         assert_(not a == b)
 
-    @staticmethod
-    def _check_sorting(a, b, c):
+    def test_sorting(self, a, b, c):
         assert_(sorted([b, a, c]) == [a, b, c])
 
-    @staticmethod
-    def _check_crosslevel_cmp(a, b):
+    @pytest.mark.parametrize(
+        'x, y',
+        itertools.permutations((u.atoms[0], u.residues[0], u.segments[0]), 2)
+    )
+    def test_crosslevel_cmp(self, x, y):
+        with pytest.raises(TypeError):
+            operator.lt(x, y)
+        with pytest.raises(TypeError):
+            operator.le(x, y)
+        with pytest.raises(TypeError):
+            operator.gt(x, y)
+        with pytest.raises(TypeError):
+            operator.ge(x, y)
+
+    @pytest.mark.parametrize(
+        'x, y',
+        itertools.permutations((u.atoms[0], u.residues[0], u.segments[0]), 2)
+    )
+    def test_crosslevel_eq(self, x, y):
+        with pytest.raises(TypeError):
+            operator.eq(x, y)
 
         with pytest.raises(TypeError):
-            operator.lt(a, b)
-        with pytest.raises(TypeError):
-            operator.le(a, b)
-        with pytest.raises(TypeError):
-            operator.gt(a, b)
-        with pytest.raises(TypeError):
-            operator.ge(a, b)
-
-    @staticmethod
-    def _check_crosslevel_eq(a, b):
-        with pytest.raises(TypeError):
-            operator.eq(a, b)
-
-        with pytest.raises(TypeError):
-            operator.ne(a, b)
-
-    def test_comparions(self):
-        u = make_Universe()
-        for level in [u.atoms, u.residues, u.segments]:
-            a, b, c = level[0], level[1], level[2]
-            yield self._check_lt, a, b, c
-            yield self._check_gt, a, b, c
-            yield self._check_ge, a, b, c
-            yield self._check_le, a, b, c
-            yield self._check_neq, a, b, c
-            yield self._check_eq, a, b, c
-            yield self._check_sorting, a, b, c
-        # Comparing Atoms To Residues etc
-        for a, b in itertools.permutations((u.atoms[0], u.residues[0], u.segments[0]), 2):
-            yield self._check_crosslevel_cmp, a, b
-            yield self._check_crosslevel_eq, a, b
+            operator.ne(x, y)
 
 
 class TestMetaclassMagic(object):
@@ -633,7 +660,22 @@ class TestReprs(object):
         assert_(str(sg) == '<SegmentGroup [<Segment 4AKE>]>')
 
 
+def _yield_mix(groups, components):
+    indices = list(range(len(components)))
+    for left, right in itertools.permutations(indices, 2):
+        yield (groups[left], components[right])
+        yield (components[left], groups[right])
+
+def _yield_sliced_groups(u, slice_left, slice_right):
+    for level in ('atoms', 'residues', 'segments'):
+        yield (getattr(u, level)[slice_left], getattr(u, level)[slice_right])
+
 class TestGroupBaseOperators(object):
+    u = make_Universe()
+
+    components = (u.atoms[0], u.residues[0], u.segments[0])
+    component_groups = (u.atoms, u.residues, u.segments)
+
     @pytest.fixture(params=('atoms', 'residues', 'segments'))
     def level(self, request):
         return request.param
@@ -818,60 +860,37 @@ class TestGroupBaseOperators(object):
         assert_(d.isdisjoint(a))
         assert_(not a.isdisjoint(b))
 
-    def test_only_same_level(self):
+    @pytest.mark.parametrize('left, right', itertools.chain(
+        # Do inter-levels pairs of groups fail as expected?
+        itertools.permutations(component_groups, 2),
+        # Do inter-levels pairs of components
+        itertools.permutations(components, 2),
+        # Do inter-levels pairs of components/groups fail as expected?
+        _yield_mix(component_groups, components),
+        # Does the function fail with inputs that are not components or groups
+        ((u.atoms, 'invalid'), ),
+    ))
+    def test_failing_pairs(self, left, right):
         def dummy(self, other):
             return True
 
-        def failing_pairs(left, right):
-            with pytest.raises(TypeError):
-                _only_same_level(dummy)(left, right)
+        with pytest.raises(TypeError):
+            mda.core.groups._only_same_level(dummy)(left, right)
 
-        def succeeding_pairs(left, right):
-            assert_(_only_same_level(dummy)(left, right))
+    @pytest.mark.parametrize('left, right', itertools.chain(
+        # Groups
+        _yield_sliced_groups(u, slice(0, 2), slice(1, 3)),
+        # Components
+        _yield_sliced_groups(u, 0, 1),
+        # Mixed
+        _yield_sliced_groups(u, slice(0, 2), 1),
+        _yield_sliced_groups(u, 1, slice(0, 2)),
+    ))
+    def test_succeeding_pairs(self, left, right):
+        def dummy(self, other):
+            return True
 
-        _only_same_level = mda.core.groups._only_same_level
-        u = make_Universe()
-
-        components = (u.atoms[0], u.residues[0], u.segments[0])
-        groups = (u.atoms, u.residues, u.segments)
-
-        # Do inter-levels pairs of groups fail as expected?
-        for left, right in itertools.permutations(groups, 2):
-            yield failing_pairs, left, right
-
-        # Do inter-levels pairs of components
-        for left, right in itertools.permutations(components, 2):
-            yield failing_pairs, left, right
-
-        # Do inter-levels pairs of components/groups fail as expected?
-        indexes = range(len(groups))
-        for idx_left, idx_right in itertools.permutations(indexes, 2):
-            left = groups[idx_left]
-            right = groups[idx_right]
-            yield failing_pairs, left, right
-            yield failing_pairs, right, left
-
-        # Do succeeding pair actually succeed
-        for level in ('atoms', 'residues', 'segments'):
-            # Groups
-            # pylint: disable=unsubscriptable-object
-            left = getattr(u, level)[0:2]
-            right = getattr(u, level)[1:3]
-            yield succeeding_pairs, left, right
-
-            # Components
-            left = getattr(u, level)[0]
-            right = getattr(u, level)[1]
-            yield succeeding_pairs, left, right
-
-            # Mixed
-            left = getattr(u, level)[0:2]
-            right = getattr(u, level)[1]
-            yield succeeding_pairs, left, right
-            yield succeeding_pairs, right, left
-
-        # Does the function fail with inputs that are not components or groups
-        yield failing_pairs, u.atoms, 'invalid'
+        assert_(mda.core.groups._only_same_level(dummy)(left, right))
 
     def test_only_same_level_different_universes(self):
         def dummy(self, other):
