@@ -72,85 +72,68 @@ class TestGroupSlicing(object):
     ----
     TopologyGroup is technically called group, add this in too!
     """
-    def test_groups(self):
-        u = make_Universe()
+    u = make_Universe()
 
-        levels = ['atom', 'residue', 'segment']
+    # test universe is 5:1 mapping 3 times
+    group_dict = {
+        'atom': u.atoms,
+        'residue': u.residues,
+        'segment': u.segments
+    }
+    singulars = {
+        'atom': groups.Atom,
+        'residue': groups.Residue,
+        'segment': groups.Segment
+    }
+    slices = (
+        slice(0, 10),
+        slice(0, 2),
+        slice(1, 3),
+        slice(0, 2, 2),
+        slice(0, -1),
+        slice(5, 1, -1),
+        slice(10, 0, -2),
+    )
+    length = {'atom': 125,
+              'residue': 25,
+              'segment': 5}
 
-        # test Universe is 5:1 mapping 3 times
-        length = {'atom': 125,
-                  'residue': 25,
-                  'segment': 5}
+    levels = ('atom', 'residue', 'segment')
 
-        nparrays = {
-            level: np.arange(length[level])
-            for level in levels
-        }
-        group_dict = {
-            'atom': u.atoms,
-            'residue': u.residues,
-            'segment': u.segments
-        }
-        singulars = {
-            'atom': groups.Atom,
-            'residue': groups.Residue,
-            'segment': groups.Segment
-        }
+    @pytest.fixture(params=levels)
+    def level(self, request):
+        return request.param
 
-        for level in levels:
-            group = group_dict[level]
-            yield self._check_len, group, length[level]
-            for func in [list, np.array]:
-                yield self._check_boolean_slicing, group, func
-            yield self._check_indexerror, group, length[level]
-            yield self._check_n_atoms, group
-            yield self._check_n_residues, group
-            yield self._check_n_segments, group
+    @pytest.fixture
+    def group(self, level):
+        return self.group_dict[level]
 
-            # Check slicing using slice objects
-            for sl in (
-                    slice(0, 10),
-                    slice(0, 2),
-                    slice(1, 3),
-                    slice(0, 2, 2),
-                    slice(0, -1),
-                    slice(5, 1, -1),
-                    slice(10, 0, -2),
-            ):
-                yield self._check_slice, group_dict[level], nparrays[level], sl
+    @pytest.fixture
+    def nparray(self, level):
+        return np.arange(self.length[level])
 
-            # Check slicing using lists and arrays of integers
-            for func in [list, lambda x: np.array(x, dtype=np.int64)]:
-                for idx in (
-                        [0, 1],
-                        [0, 0, 0, 1],
-                        [3, 2, 1],
-                        [-1, -2, -3],
-                        [],
-                ):
-                    yield self._check_slice, group, nparrays[level], func(idx)
-
-            # Check integer getitem access
-            for idx in [0, 1, -1, -2]:
-                yield (self._check_integer_getitem, group_dict[level],
-                       nparrays[level], idx, singulars[level])
+    @pytest.fixture
+    def singular(self, level):
+        return self.singulars[level]
 
     @staticmethod
-    def _check_n_atoms(group):
+    def test_n_atoms(group):
         assert_(len(group.atoms) == group.n_atoms)
 
     @staticmethod
-    def _check_n_residues(group):
+    def test_n_residues(group):
         assert_(len(group.residues) == group.n_residues)
 
     @staticmethod
-    def _check_n_segments(group):
+    def test_n_segments(group):
         assert_(len(group.segments) == group.n_segments)
 
-    def _check_len(self, group, ref):
+    def test_len(self, group, level):
+        ref = self.length[level]
         assert_(len(group) == ref)
 
-    def _check_boolean_slicing(self, group, func):
+    @pytest.mark.parametrize('func', [list, np.array])
+    def test_boolean_slicing(self, group, func):
         # func is the container type that will be used to slice
         group = group[:5]
         sli = func([True, False, False, True, True])
@@ -162,24 +145,35 @@ class TestGroupSlicing(object):
             else:
                 assert_(val not in result)
 
-    def _check_indexerror(self, group, idx):
+    def test_indexerror(self, group, level):
+        idx = self.length[level]
         with pytest.raises(IndexError):
             group.__getitem__(idx)
 
-    def _check_slice(self, group, other, sl):
+    @pytest.mark.parametrize('sl,func', itertools.product((
+        slice(0, 10),
+        slice(0, 2),
+        slice(1, 3),
+        slice(0, 2, 2),
+        slice(0, -1),
+        slice(5, 1, -1),
+        slice(10, 0, -2),
+    ), [list, lambda x: np.array(x, dtype=np.int64)]))
+    def test_slice(self, group, nparray, sl, func):
         """Check that slicing a np array is identical"""
         g2 = group[sl]
-        o2 = other[sl]
+        o2 = nparray[sl]
 
         assert_(len(g2) == len(o2))
         # Check identity of items in the sliced result
         for o, g in zip(o2, g2):
-            if o in other:
+            if o in nparray:
                 assert_(g in g2)
             else:
                 assert_(g not in g2)
 
-    def _check_integer_getitem(self, group, nparray, idx, singular):
+    @pytest.mark.parametrize('idx', [0, 1, -1, -2])
+    def test_integer_getitem(self, group, nparray, idx, singular):
         a = group[idx]
         ref = nparray[idx]
 
