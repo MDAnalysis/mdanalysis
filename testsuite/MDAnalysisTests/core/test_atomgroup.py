@@ -665,28 +665,27 @@ class TestOrphans(object):
 
 class TestCrossUniverse(object):
     """Test behaviour when we mix Universes"""
-    def _check_badadd(self, a, b):
-        def add(x, y):
-            return x + y
-        with pytest.raises(ValueError):
-            add(a, b)
-
-    def test_add_mixed_universes(self):
-        # Issue #532
-        # Checks that adding objects from different universes
-        # doesn't proceed quietly.
+    @pytest.mark.parametrize(
+        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
+        'index_u1, index_u2',
+        itertools.product([0, 1], repeat=2)
+    )
+    def test_add_mixed_universes(self, index_u1, index_u2):
+        """ Issue #532
+        Checks that adding objects from different universes
+        doesn't proceed quietly.
+        """
         u1 = mda.Universe(two_water_gro)
         u2 = mda.Universe(two_water_gro)
 
         A = [u1.atoms[:2], u1.atoms[3]]
         B = [u2.atoms[:3], u2.atoms[0]]
 
-        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
-        for x, y in itertools.product(A, B):
-            yield self._check_badadd, x, y
+        with pytest.raises(ValueError):
+            A[index_u1] + B[index_u2]
 
     def test_adding_empty_ags(self):
-        # Check that empty AtomGroups don't trip up on the Universe check
+        """ Check that empty AtomGroups don't trip up on the Universe check """
         u = mda.Universe(two_water_gro)
 
         assert len(u.atoms[[]] + u.atoms[:3]) == 3
