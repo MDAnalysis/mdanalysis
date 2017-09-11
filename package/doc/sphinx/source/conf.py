@@ -332,6 +332,6 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://docs.scipy.org/doc/numpy/': None,
                        'https://docs.scipy.org/doc/scipy/reference/': None,
                        'http://matplotlib.org': None,
-                       'https://networkx.readthedocs.io/en/stable/': None,
+                       'https://networkx.github.io/documentation/stable/': None,
                        'https://gridDataFormats.readthedocs.io/en/stable/': None,
                        }
