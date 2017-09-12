@@ -587,17 +587,38 @@ class TestAtomGroupProperties(object):
         elif att_type == 'int':
             return [4, 6, 8, 1, 5, 4]
 
-    def _check_ag_matches_atom(self, att, atts, ag):
+    @pytest.fixture
+    def ag(self):
+        u = make_Universe(('names', 'resids', 'segids', 'types', 'altLocs',
+                           'charges', 'masses', 'radii', 'bfactors',
+                           'occupancies'))
+        u.atoms.occupancies = 1.0
+        master = u.atoms
+        idx = [0, 1, 4, 7, 11, 14]
+        return master[idx]
+
+    attributes = (('name', 'names', 'string'),
+                  ('type', 'types', 'string'),
+                  ('altLoc', 'altLocs', 'string'),
+                  ('charge', 'charges', 'float'),
+                  ('mass', 'masses', 'float'),
+                  ('radius', 'radii', 'float'),
+                  ('bfactor', 'bfactors', 'float'),
+                  ('occupancy', 'occupancies', 'float'))
+
+    @pytest.mark.parametrize('att, atts, att_type', attributes)
+    def test_ag_matches_atom(self, att, atts, ag, att_type):
         """Checking Atomgroup property matches Atoms"""
         # Check that accessing via AtomGroup is identical to doing
         # a list comprehension over AG
         ref = [getattr(atom, att) for atom in ag]
-
         assert_equal(ref, getattr(ag, atts),
                      err_msg="AtomGroup doesn't match Atoms for property: {0}".format(att))
 
-    def _change_atom_check_ag(self, att, atts, vals, ag):
+    @pytest.mark.parametrize('att, atts, att_type', attributes)
+    def test_atom_check_ag(self, att, atts, ag, att_type):
         """Changing Atom, checking AtomGroup matches this"""
+        vals = self.get_new(att_type)
         # Set attributes via Atoms
         for atom, val in zip(ag, vals):
             setattr(atom, att, val)
@@ -606,29 +627,6 @@ class TestAtomGroupProperties(object):
 
         assert_equal(vals, other,
                      err_msg="Change to Atoms not reflected in AtomGroup for property: {0}".format(att))
-
-    def test_attributes(self):
-        u = make_Universe(('names', 'resids', 'segids', 'types', 'altLocs',
-                           'charges', 'masses', 'radii', 'bfactors',
-                           'occupancies'))
-        u.atoms.occupancies = 1.0
-        master = u.atoms
-        idx = [0, 1, 4, 7, 11, 14]
-        ag = master[idx]
-
-        for att, atts, att_type in (
-                ('name', 'names', 'string'),
-                ('type', 'types', 'string'),
-                ('altLoc', 'altLocs', 'string'),
-                ('charge', 'charges', 'float'),
-                ('mass', 'masses', 'float'),
-                ('radius', 'radii', 'float'),
-                ('bfactor', 'bfactors', 'float'),
-                ('occupancy', 'occupancies', 'float')
-        ):
-            vals = self.get_new(att_type)
-            yield self._check_ag_matches_atom, att, atts, ag
-            yield self._change_atom_check_ag, att, atts, vals, ag
 
 
 class TestOrphans(object):
@@ -667,28 +665,27 @@ class TestOrphans(object):
 
 class TestCrossUniverse(object):
     """Test behaviour when we mix Universes"""
-    def _check_badadd(self, a, b):
-        def add(x, y):
-            return x + y
-        with pytest.raises(ValueError):
-            add(a, b)
-
-    def test_add_mixed_universes(self):
-        # Issue #532
-        # Checks that adding objects from different universes
-        # doesn't proceed quietly.
+    @pytest.mark.parametrize(
+        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
+        'index_u1, index_u2',
+        itertools.product([0, 1], repeat=2)
+    )
+    def test_add_mixed_universes(self, index_u1, index_u2):
+        """ Issue #532
+        Checks that adding objects from different universes
+        doesn't proceed quietly.
+        """
         u1 = mda.Universe(two_water_gro)
         u2 = mda.Universe(two_water_gro)
 
         A = [u1.atoms[:2], u1.atoms[3]]
         B = [u2.atoms[:3], u2.atoms[0]]
 
-        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
-        for x, y in itertools.product(A, B):
-            yield self._check_badadd, x, y
+        with pytest.raises(ValueError):
+            A[index_u1] + B[index_u2]
 
     def test_adding_empty_ags(self):
-        # Check that empty AtomGroups don't trip up on the Universe check
+        """ Check that empty AtomGroups don't trip up on the Universe check """
         u = mda.Universe(two_water_gro)
 
         assert len(u.atoms[[]] + u.atoms[:3]) == 3

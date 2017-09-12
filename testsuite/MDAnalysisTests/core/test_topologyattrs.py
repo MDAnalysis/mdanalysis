@@ -415,48 +415,47 @@ class TestCrossLevelAttributeSetting(object):
 
     Atom.resid = 4  should fail because resid belongs to Residue not Atom
     """
+
+    u = make_Universe(('names', 'resids', 'segids'))
+
+    # component and group in each level
+    atomlevel = (u.atoms[0], u.atoms[:10])
+    residuelevel = (u.residues[0], u.residues[:5])
+    segmentlevel = (u.segments[0], u.segments[:2])
+    levels = {0: atomlevel, 1: residuelevel, 2: segmentlevel}
+
+    atomattr = 'names'
+    residueattr = 'resids'
+    segmentattr = 'segids'
+    attrs = {0: atomattr, 1: residueattr, 2: segmentattr}
+
+    @pytest.mark.parametrize('level_idx, level', levels.items())
+    @pytest.mark.parametrize('attr_idx, attr', attrs.items())
+    def test_set_crosslevel(self, level_idx, level, attr_idx, attr):
+        if level_idx == attr_idx:
+            # if we're on the same level, then this should work
+            # ie Atom.mass = 12.0 is OK!
+            return
+        component, group = level
+        # eg 'name', 'names' = 'names', 'names'[:-1]
+        singular_attr, plural_attr = attr[:-1], attr
+
+        # eg check ResidueGroup.names = 'newvalue' raises NIE
+        # or ResidueGroup.segids = 'newvalue' raises NIE
+        self._check_crosslevel_fail(group, plural_attr)
+
+        if attr_idx < level_idx:
+            # Segment.resid doesn't even exist as an attribute
+            # so we don't have to check that setting fails
+            # Atom.segid does exist as attribute,
+            # but will fail to be set
+            return
+        self._check_crosslevel_fail(component, singular_attr)
+
     @staticmethod
     def _check_crosslevel_fail(item, attr):
         with pytest.raises(NotImplementedError):
             setattr(item, attr, 1.0)
-
-    def test_set_crosslevel(self):
-        u = make_Universe(('names', 'resids', 'segids'))
-
-        # component and group in each level
-        atomlevel = (u.atoms[0], u.atoms[:10])
-        residuelevel = (u.residues[0], u.residues[:5])
-        segmentlevel = (u.segments[0], u.segments[:2])
-        levels = {0:atomlevel, 1:residuelevel, 2:segmentlevel}
-
-        atomattr = 'names'
-        residueattr = 'resids'
-        segmentattr = 'segids'
-        attrs = {0:atomattr, 1:residueattr, 2:segmentattr}
-
-        # loop over Atom, Residue, Segment level
-        for level_idx, level in levels.items():
-            # loop over an Attribute native to each level
-            for attr_idx, attr in attrs.items():
-                if level_idx == attr_idx:
-                    # if we're on the same level, then this should work
-                    # ie Atom.mass = 12.0 is OK!
-                    continue
-                component, group = level
-                # eg 'name', 'names' = 'names', 'names'[:-1]
-                singular_attr, plural_attr = attr[:-1], attr
-
-                # eg check ResidueGroup.names = 'newvalue' raises NIE
-                # or ResidueGroup.segids = 'newvalue' raises NIE
-                yield self._check_crosslevel_fail, group, plural_attr
-
-                if attr_idx < level_idx:
-                    # Segment.resid doesn't even exist as an attribute
-                    # so we don't have to check that setting fails
-                    # Atom.segid does exist as attribute,
-                    # but will fail to be set
-                    continue
-                yield self._check_crosslevel_fail, component, singular_attr
 
 
 class TestInstantSelectorDeprecation(object):

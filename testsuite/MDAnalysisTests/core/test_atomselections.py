@@ -673,6 +673,21 @@ class TestTriclinicSelections(object):
         assert_equal(set(ag2.indices), set(idx))
 
 
+def gen_sel_strings(prop, oper):
+    """Generate all possible combinations of spaces in selection strings
+
+    ie:
+      'prop x < 1.5'
+      'prop x< 1.5'
+      'prop x <1.5'
+      'prop x<1.5'
+
+    """
+    for x, y in itertools.product([' ', ''], [' ', '']):
+        yield 'prop {prop}{spc1}{oper}{spc2}1.5'.format(
+            prop=prop, spc1=x, oper=oper, spc2=y)
+
+
 class TestPropSelection(object):
     plurals = {'mass': 'masses',
                'charge': 'charges'}
@@ -690,62 +705,83 @@ class TestPropSelection(object):
         '<': '>=', '>=': '<',
     }
 
-    @staticmethod
-    def gen_sel_strings(prop, oper):
-        """Generate all possible combinations of spaces in selection strings
+    @pytest.fixture(params=[slice(None, None), slice(None, 100)])
+    def ag(self, request):
+        u = make_Universe(('masses', 'charges'))
+        u.atoms[::2].masses = 1.5
+        u.atoms[::2].charges = 1.5
+        return u.atoms[request.param]
 
-        ie:
-          'prop x < 1.5'
-          'prop x< 1.5'
-          'prop x <1.5'
-          'prop x<1.5'
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '<')
+    ])
+    def test_lt(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) < 1.5].indices))
 
-        """
-        for x, y in itertools.product([' ', ''], [' ', '']):
-            yield 'prop {prop}{spc1}{oper}{spc2}1.5'.format(
-                prop=prop, spc1=x, oper=oper, spc2=y)
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '<=')
+    ])
+    def test_le(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag,
+                                    self.plurals[prop]) <= 1.5].indices))
 
-    def _check_lt(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '<'):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag, self.plurals[prop]) < 1.5].indices))
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '>')
+    ])
+    def test_gt(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) > 1.5].indices))
 
-    def _check_le(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '<='):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag,
-                                        self.plurals[prop]) <= 1.5].indices))
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '>=')
+    ])
+    def test_ge(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag,
+                                    self.plurals[prop]) >= 1.5].indices))
 
-    def _check_gt(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '>'):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag, self.plurals[prop]) > 1.5].indices))
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '==')
+    ])
+    def test_eq(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag,
+                                    self.plurals[prop]) == 1.5].indices))
 
-    def _check_ge(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '>='):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag,
-                                        self.plurals[prop]) >= 1.5].indices))
+    @pytest.mark.parametrize('prop, selstr', [
+        (prop, sel)
+        for prop in ['mass', 'charge']
+        for sel in gen_sel_strings(prop, '!=')
+    ])
+    def test_ne(self, prop, selstr, ag):
+        sel = ag.select_atoms(selstr)
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag,
+                                    self.plurals[prop]) != 1.5].indices))
 
-    def _check_eq(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '=='):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag,
-                                        self.plurals[prop]) == 1.5].indices))
-
-    def _check_ne(self, prop, ag):
-        for selstr in self.gen_sel_strings(prop, '!='):
-            sel = ag.select_atoms(selstr)
-            assert_equal(set(sel.indices),
-                         set(ag[getattr(ag,
-                                        self.plurals[prop]) != 1.5].indices))
-
-    def _check_flip(self, prop, ag, op):
+    @pytest.mark.parametrize('prop, op', [
+        (prop, op)
+        for prop in ['mass', 'charge']
+        for op in ('<', '>', '<=', '>=', '==', '!=')
+    ])
+    def test_flip(self, prop, ag, op):
         func = self.op_funcs[op]
 
         # reference group, doing things forwards
@@ -756,23 +792,6 @@ class TestPropSelection(object):
         sel = ag.select_atoms(selstr)
 
         assert_equal(set(ref.indices), set(sel.indices))
-
-    def test_props(self):
-        u = make_Universe(('masses', 'charges'))
-        u.atoms[::2].masses = 1.5
-        u.atoms[::2].charges = 1.5
-
-        for prop in ['mass', 'charge']:
-            for ag in [u.atoms, u.atoms[:100]]:
-                yield self._check_lt, prop, ag
-                yield self._check_le, prop, ag
-                yield self._check_gt, prop, ag
-                yield self._check_ge, prop, ag
-                yield self._check_eq, prop, ag
-                yield self._check_ne, prop, ag
-                # check flipping operators
-                for op in ('<', '>', '<=', '>=', '==', '!='):
-                    yield self._check_flip, prop, ag, op
 
 
 class TestBondedSelection(object):
