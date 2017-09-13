@@ -24,8 +24,6 @@
 """
 from __future__ import division, absolute_import
 
-import warnings
-
 import numpy as np
 
 from numpy.testing import (
@@ -34,7 +32,7 @@ from numpy.testing import (
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import make_Universe
+from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
@@ -488,8 +486,5 @@ class TestInstantSelectorDeprecation(object):
 
         See issue #1476.
         """
-        with pytest.warns(None) as record:
-            warnings.simplefilter('always')
+        with no_deprecated_call():
             exec(instruction)  #pylint: disable=W0122
-        for warning in record:
-            assert not 'Instant selector' in str(warning.message)

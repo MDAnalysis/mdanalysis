@@ -21,8 +21,6 @@
 #
 from __future__ import absolute_import, print_function
 
-import warnings
-
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.rms as rms
@@ -37,10 +35,6 @@ from numpy.testing import (
     assert_array_equal,
     assert_array_almost_equal,
 )
-
-# I want to catch all warnings in the tests. If this is not set at the start it
-# could cause test that check for warnings to fail.
-warnings.simplefilter('always')
 
 
 class TestRotationMatrix(object):

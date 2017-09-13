@@ -22,11 +22,11 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import os
+import pytest
 
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
-    assert_warns,
 )
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -151,17 +151,13 @@ class TestPQRWriterMissingAttrs(TestCase):
         del self.outfile
         del self.reqd_attributes
 
-    @staticmethod
-    def assert_writing_warns(u, outfile):
-        # write the test universe, and check warning is raised
-        assert_warns(UserWarning, u.atoms.write, outfile)
-
     def test_no_names_writing(self):
         attrs = self.reqd_attributes
         attrs.remove('names')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
@@ -172,7 +168,8 @@ class TestPQRWriterMissingAttrs(TestCase):
         attrs.remove('resnames')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
@@ -183,7 +180,8 @@ class TestPQRWriterMissingAttrs(TestCase):
         attrs.remove('radii')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
@@ -194,7 +192,8 @@ class TestPQRWriterMissingAttrs(TestCase):
         attrs.remove('charges')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 

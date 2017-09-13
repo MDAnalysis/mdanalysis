@@ -26,7 +26,6 @@ import itertools
 from os import path
 
 import numpy as np
-import warnings
 
 from numpy.testing import (
     assert_almost_equal,
@@ -51,24 +50,17 @@ from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import pytest
 
-# I want to catch all warnings in the tests. If this is not set at the start it
-# could cause test that check for warnings to fail.
-warnings.simplefilter('always')
 
 class TestDeprecationWarnings(object):
     def test_AtomGroupUniverse_usage_warning(self):
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.deprecated_call():
             mda.core.AtomGroup.Universe(PSF, DCD)
-        assert len(warn) == 1
 
     def test_old_AtomGroup_init_warns(self):
         u = make_Universe(('names',))
         at_list = list(u.atoms[:10])
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.deprecated_call():
             ag = mda.core.groups.AtomGroup(at_list)
-        assert len(warn) == 1
 
     def test_old_AtomGroup_init_works(self):
         u = make_Universe(('names',))
@@ -82,10 +74,8 @@ class TestDeprecationWarnings(object):
     def test_old_ResidueGroup_init_warns(self):
         u = make_Universe(('resnames',))
         res_list = list(u.residues[:10])
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.deprecated_call():
             rg = mda.core.groups.ResidueGroup(res_list)
-        assert len(warn) == 1
 
     def test_old_ResidueGroup_init_works(self):
         u = make_Universe(('resnames',))
@@ -99,10 +89,8 @@ class TestDeprecationWarnings(object):
     def test_old_SegmentGroup_init_warns(self):
         u = make_Universe(('segids',))
         seg_list = list(u.segments[:3])
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.deprecated_call():
             sg = mda.core.groups.SegmentGroup(seg_list)
-        assert len(warn) == 1
 
     def test_old_SegmentGroup_init_works(self):
         u = make_Universe(('segids',))

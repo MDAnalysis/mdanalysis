@@ -31,7 +31,6 @@ from MDAnalysis import SelectionError
 from numpy.testing import assert_equal, assert_array_equal, assert_almost_equal, assert_array_almost_equal
 import numpy as np
 
-import warnings
 from six import StringIO
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, waterPSF, waterDCD
@@ -190,14 +189,13 @@ class TestHydrogenBondAnalysisChecking(object):
             'angle': 150.0,
         }
 
+    # ignore SelectionWarning
+    @pytest.mark.filterwarnings('ignore')
     def _run(self, **kwargs):
         kw = kwargs.copy()
         kw.update(kwargs)
-        with warnings.catch_warnings():
-            # ignore SelectionWarning
-            warnings.simplefilter("ignore")
-            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-            h.run(verbose=False)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
+        h.run(verbose=False)
         return h
 
     def run_HBA_no_update(self, s1, s2, s1type):
