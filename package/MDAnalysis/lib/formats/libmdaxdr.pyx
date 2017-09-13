@@ -170,7 +170,7 @@ cdef class _XDRFile:
     cdef str mode
     cdef np.ndarray box
     cdef np.ndarray _offsets
-    cdef int _has_offsets
+    cdef readonly int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')

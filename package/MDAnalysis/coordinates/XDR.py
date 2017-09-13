@@ -214,8 +214,12 @@ class XDRBaseReader(base.ReaderBase):
         """reopen trajectory"""
         self.ts.frame = 0
         self._frame = -1
+        offsets = self._xdr.offsets.copy()
         self._xdr.close()
         self._xdr.open(self.filename.encode('utf-8'), 'r')
+        # only restore in case we actually had offsets
+        if len(offsets) != 0:
+            self._xdr.set_offsets(offsets)
 
     def _read_frame(self, i):
         """read frame i"""
