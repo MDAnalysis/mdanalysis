@@ -27,8 +27,6 @@ from six.moves import cPickle
 import MDAnalysis as mda
 from numpy.testing import (
     TestCase,
-    assert_array_equal,
-    assert_,
     assert_equal
 )
 
@@ -46,27 +44,27 @@ class TestAtomGroupPickle(object):
     @pytest.fixture()
     def universe():
         return mda.Universe(PDB_small, PDB_small, PDB_small)
-    
+
     @staticmethod
     @pytest.fixture()
     def universe_n():
         return mda.Universe(PDB_small, PDB_small, PDB_small, anchor_name="test1")
-    
+
     @staticmethod
     @pytest.fixture()
     def ag(universe):
         return universe.atoms[:20]
-    
+
     @staticmethod
     @pytest.fixture()
     def ag_n(universe_n):
         return universe_n.atoms[:10]
-    
+
     @staticmethod
     @pytest.fixture()
     def pickle_str(ag):
         return cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
-    
+
     @staticmethod
     @pytest.fixture()
     def pickle_str_n(ag_n):
@@ -76,22 +74,20 @@ class TestAtomGroupPickle(object):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = cPickle.loads(pickle_str)
         # Can unpickle
-        assert_array_equal(ag.indices, newag.indices)
-        assert_(newag.universe is universe,
-                "Unpickled AtomGroup on wrong Universe.")
+        assert_equal(ag.indices, newag.indices)
+        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
 
     def test_unpickle_named(self, pickle_str_n, ag_n, universe_n):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = cPickle.loads(pickle_str_n)
         # Can unpickle
-        assert_array_equal(ag_n.indices, newag.indices)
-        assert_(newag.universe is universe_n,
-                "Unpickled AtomGroup on wrong Universe.")
+        assert_equal(ag_n.indices, newag.indices)
+        assert newag.universe is universe_n, "Unpickled AtomGroup on wrong Universe."
 
     def test_unpickle_missing(self):
         universe = mda.Universe(PDB_small, PDB_small, PDB_small)
         universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
-                                       anchor_name="test1")
+                                  anchor_name="test1")
         ag = universe.atoms[:20]  # prototypical AtomGroup
         ag_n = universe_n.atoms[:10]
         pickle_str_n = cPickle.dumps(ag_n, protocol=cPickle.HIGHEST_PROTOCOL)
@@ -125,9 +121,8 @@ class TestAtomGroupPickle(object):
         # now it goes back into the anchor list again
         universe.make_anchor()
         newag = cPickle.loads(pickle_str)
-        assert_array_equal(ag.indices, newag.indices)
-        assert_(newag.universe is universe,
-                "Unpickled AtomGroup on wrong Universe.")
+        assert_equal(ag.indices, newag.indices)
+        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
 
     def test_unpickle_wrongname(self, universe_n, pickle_str_n):
         # we change the universe's anchor_name
@@ -143,16 +138,15 @@ class TestAtomGroupPickle(object):
         # and make universe a named anchor
         universe.anchor_name = "test1"
         newag = cPickle.loads(pickle_str_n)
-        assert_array_equal(ag_n.indices, newag.indices)
-        assert_(newag.universe is universe,
-                "Unpickled AtomGroup on wrong Universe.")
+        assert_equal(ag_n.indices, newag.indices)
+        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
 
     def test_pickle_unpickle_empty(self, universe):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
         ag = universe.atoms[[]]
         pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
         newag = cPickle.loads(pickle_str)
-        assert_equal(len(newag), 0)
+        assert len(newag) == 0
 
 
 class TestPicklingUpdatingAtomGroups(object):
@@ -168,7 +162,7 @@ class TestPicklingUpdatingAtomGroups(object):
         pickle_str = cPickle.dumps(uag, protocol=cPickle.HIGHEST_PROTOCOL)
         new_uag = cPickle.loads(pickle_str)
 
-        assert_array_equal(uag.indices, new_uag.indices)
+        assert_equal(uag.indices, new_uag.indices)
 
     def test_pickling_uag_of_uag(self, u):
         uag1 = u.select_atoms('name C or name H', updating=True)
@@ -176,4 +170,4 @@ class TestPicklingUpdatingAtomGroups(object):
         pickle_str = cPickle.dumps(uag2, protocol=cPickle.HIGHEST_PROTOCOL)
         new_uag2 = cPickle.loads(pickle_str)
 
-        assert_array_equal(uag2.indices, new_uag2.indices)
+        assert_equal(uag2.indices, new_uag2.indices)

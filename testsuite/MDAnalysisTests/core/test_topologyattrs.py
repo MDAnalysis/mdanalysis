@@ -29,7 +29,6 @@ import warnings
 import numpy as np
 
 from numpy.testing import (
-    assert_,
     assert_equal,
     assert_almost_equal,
 )
@@ -105,7 +104,7 @@ class TestAtomAttr(TopologyAttrMixin):
     def test_get_atoms(self, attr):
         result = attr.get_atoms(DummyGroup([2, 1]))
 
-        assert_(len(result) == 2)
+        assert len(result) == 2
         assert_equal(result,
                            self.values[[2, 1]])
 
@@ -134,7 +133,7 @@ class TestAtomAttr(TopologyAttrMixin):
         """
         result = attr.get_residues(DummyGroup([2, 1]))
 
-        assert_(len(result) == 2)
+        assert len(result) == 2
         assert_equal(result,
                            [self.values[[2, 3, 9]], self.values[[4, 5, 8]]])
 
@@ -145,7 +144,7 @@ class TestAtomAttr(TopologyAttrMixin):
         """
         result = attr.get_segments(DummyGroup([1]))
 
-        assert_(len(result) == 1)
+        assert len(result) == 1
         assert_equal(result,
                            [self.values[[4, 5, 8, 2, 3, 9]]])
 
@@ -261,7 +260,7 @@ class TestResids(TestResidueAttr):
 
         """
         # moving resids doesn't currently work!
-        assert_(1 == 2)
+        assert 1 == 2
 
         # set with array
         attr.set_atoms(DummyGroup([3, 7]), np.array([11, 20]))
@@ -287,8 +286,8 @@ class TestResnames(TestResidueAttr):
 
         res = u.residues.RsB
 
-        assert_(isinstance(res, groups.Residue))
-        assert_(res == u.residues[1])
+        assert isinstance(res, groups.Residue)
+        assert res == u.residues[1]
 
     def test_residuegroup_getattr_multiple(self):
         u = make_Universe(('resnames',))
@@ -296,8 +295,8 @@ class TestResnames(TestResidueAttr):
 
         rg = u.residues.ABC
 
-        assert_(isinstance(rg, groups.ResidueGroup))
-        assert_(len(rg) == 10)
+        assert isinstance(rg, groups.ResidueGroup)
+        assert len(rg) == 10
 
     def test_residuegroup_getattr_AE(self):
         u = make_Universe(('resnames',))
@@ -310,8 +309,8 @@ class TestResnames(TestResidueAttr):
 
         res = u.segments[0].RsB
 
-        assert_(isinstance(res, groups.Residue))
-        assert_(res == u.residues[1])
+        assert isinstance(res, groups.Residue)
+        assert res == u.residues[1]
 
     def test_segment_getattr_multiple(self):
         u = make_Universe(('resnames',))
@@ -319,8 +318,8 @@ class TestResnames(TestResidueAttr):
 
         rg = u.segments[0].bar
 
-        assert_(isinstance(rg, groups.ResidueGroup))
-        assert_(len(rg) == 3)
+        assert isinstance(rg, groups.ResidueGroup)
+        assert len(rg) == 3
 
     def test_segment_getattr_AE(self):
         u = make_Universe(('resnames',))
@@ -391,7 +390,6 @@ class TestAttr(object):
         pa = ag.principal_axes()
         ag.align_principal_axis(0, pa[0])
 
-
         assert_almost_equal(ag.principal_axes(), pa)
 
     def test_align_principal_axes_with_x(self, ag):
@@ -399,8 +397,7 @@ class TestAttr(object):
         # This is a very loose check that the difference is not more then 0.5.
         # This is OK here because the rounding error in the calculation really
         # is that big.
-        assert_(np.allclose(np.abs(ag.principal_axes()), np.eye(3),
-                            rtol=0, atol=0.1))
+        assert_almost_equal(np.abs(ag.principal_axes()), np.eye(3), decimal=1)
 
 
 class TestCrossLevelAttributeSetting(object):

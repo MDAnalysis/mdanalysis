@@ -24,7 +24,6 @@ import MDAnalysis as mda
 import os
 
 from numpy.testing import (
-    assert_,
     assert_almost_equal,
     assert_equal,
     assert_warns,
@@ -166,7 +165,7 @@ class TestPQRWriterMissingAttrs(TestCase):
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.names == 'X'))
+        assert all(u2.atoms.names == 'X')
 
     def test_no_resnames_writing(self):
         attrs = self.reqd_attributes
@@ -177,7 +176,7 @@ class TestPQRWriterMissingAttrs(TestCase):
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.residues.resnames == 'UNK'))
+        assert all(u2.residues.resnames == 'UNK')
 
     def test_no_radii_writing(self):
         attrs = self.reqd_attributes
@@ -188,7 +187,7 @@ class TestPQRWriterMissingAttrs(TestCase):
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.radii == 1.0))
+        assert all(u2.atoms.radii == 1.0)
 
     def test_no_charges_writing(self):
         attrs = self.reqd_attributes
@@ -199,4 +198,4 @@ class TestPQRWriterMissingAttrs(TestCase):
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.charges == 0.0))
+        assert all(u2.atoms.charges == 0.0)

@@ -40,7 +40,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
-                           assert_almost_equal, assert_)
+                           assert_almost_equal)
 
 
 class TestPDBReader(_SingleFrameReader):
@@ -55,8 +55,7 @@ class TestPDBReader(_SingleFrameReader):
     def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
-        assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose PDBReader")
+        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
     def test_dimensions(self):
         assert_almost_equal(
@@ -67,8 +66,7 @@ class TestPDBReader(_SingleFrameReader):
     def test_ENT(self):
         from MDAnalysis.coordinates.PDB import PDBReader
         self.universe = mda.Universe(ENT)
-        assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose PDBReader")
+        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
 
 class _PDBMetadata(TestCase, Ref4e43):
@@ -308,10 +306,10 @@ class TestPDBWriter(TestCase):
             for line in f:
                 if line.startswith('HEADER'):
                     got_header += 1
-                    assert_(got_header <= 1, "There should be only one HEADER.")
+                    assert got_header <= 1, "There should be only one HEADER."
                 elif line.startswith('TITLE'):
                     got_title += 1
-                    assert_(got_title <= 1, "There should be only one TITLE.")
+                    assert got_title <= 1, "There should be only one TITLE."
 
 
 class TestMultiPDBReader(TestCase):
@@ -632,12 +630,12 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     def test_n_residues(self):
         # Should have first 10000 residues, then another 1302
-        assert_(len(self.universe.residues) == 10000 + 1302)
+        assert len(self.universe.residues) == 10000 + 1302
 
     def test_first_residue(self):
         # First residue is a MET, shouldn't be smushed together
         # with a water
-        assert_(len(self.universe.residues[0].atoms) == 19)
+        assert len(self.universe.residues[0].atoms) == 19
 
 
 class TestIncompletePDB(TestCase):
@@ -672,16 +670,16 @@ class TestIncompletePDB(TestCase):
                                            dtype=np.float32))
 
     def test_names(self):
-        assert_(all(self.u.atoms.names == 'CA'))
+        assert all(self.u.atoms.names == 'CA')
 
     def test_residues(self):
         assert_equal(len(self.u.residues), 3)
 
     def test_resnames(self):
         assert_equal(len(self.u.atoms.resnames), 3)
-        assert_('VAL' in self.u.atoms.resnames)
-        assert_('LYS' in self.u.atoms.resnames)
-        assert_('PHE' in self.u.atoms.resnames)
+        assert 'VAL' in self.u.atoms.resnames
+        assert 'LYS' in self.u.atoms.resnames
+        assert 'PHE' in self.u.atoms.resnames
 
     def test_reading_trajectory(self):
         for ts in self.u.trajectory:
@@ -699,14 +697,14 @@ class TestPDBXLSerial(TestCase):
 
     def test_load(self):
         # Check that universe loads ok, should be 4 atoms
-        assert_(len(self.u.atoms) == 4)
+        assert len(self.u.atoms) == 4
 
     def test_serials(self):
         # These should be none
-        assert_(self.u.atoms[0].id == 99998)
-        assert_(self.u.atoms[1].id == 99999)
-        assert_(self.u.atoms[2].id == 100000)
-        assert_(self.u.atoms[3].id == 100001)
+        assert self.u.atoms[0].id == 99998
+        assert self.u.atoms[1].id == 99999
+        assert self.u.atoms[2].id == 100000
+        assert self.u.atoms[3].id == 100001
 
 
 # Does not implement Reader.remarks, Reader.header, Reader.title,
@@ -731,8 +729,7 @@ class TestPSF_PDBReader(TestPDBReader):
     def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
-        assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose PDBReader")
+        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
 
 class TestPDBWriterOccupancies(TestCase):
@@ -760,7 +757,7 @@ class TestPDBWriterOccupancies(TestCase):
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.occupancies == 0.12))
+        assert all(u2.atoms.occupancies == 0.12)
 
 
 class TestWriterAlignments(object):
@@ -832,7 +829,7 @@ class TestCrystModelOrder(object):
 
     def test_len(self, pdbfile):
         u = mda.Universe(pdbfile)
-        assert_(len(u.trajectory) == 3)
+        assert len(u.trajectory) == 3
 
     def test_order(self, pdbfile):
         u = mda.Universe(pdbfile)
@@ -863,7 +860,7 @@ def test_standalone_pdb():
     # check that PDBReader works without n_atoms kwarg
     r = mda.coordinates.PDB.PDBReader(PDB_cm)
 
-    assert_(r.n_atoms == 4)
+    assert r.n_atoms == 4
 
 
 def test_write_pdb_zero_atoms():

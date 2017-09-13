@@ -22,12 +22,8 @@
 from __future__ import absolute_import
 
 import numpy as np
-from numpy.testing import (
-    assert_,
-    assert_equal,
-)
+from numpy.testing import assert_equal
 import pytest
-from unittest import skip, TestCase
 
 import MDAnalysis as mda
 

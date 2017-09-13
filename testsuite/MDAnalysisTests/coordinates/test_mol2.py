@@ -28,7 +28,6 @@ import os
 from numpy.testing import (
     assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
-    assert_,
 )
 
 from MDAnalysisTests.datafiles import (
@@ -147,11 +146,11 @@ class TestMOL2NoSubstructure(object):
 
     def test_load(self):
         r = mda.coordinates.MOL2.MOL2Reader(mol2_zinc, n_atoms=self.n_atoms)
-        assert_(r.n_atoms == 45)
+        assert r.n_atoms == 45
 
     def test_universe(self):
         u = mda.Universe(mol2_zinc)
-        assert_(len(u.atoms) == self.n_atoms)
+        assert len(u.atoms) == self.n_atoms
 
     def test_write_nostructure(self):
         mytempdir = tempdir.TempDir()
@@ -163,7 +162,7 @@ class TestMOL2NoSubstructure(object):
 
         u2 = mda.Universe(outfile)
 
-        assert_(len(u.atoms) == len(u2.atoms))
+        assert len(u.atoms) == len(u2.atoms)
 
 
 def test_mol2_write_NIE():

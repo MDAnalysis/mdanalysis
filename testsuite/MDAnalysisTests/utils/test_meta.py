@@ -24,7 +24,6 @@ from __future__ import absolute_import
 import re
 
 import MDAnalysisTests
-from numpy.testing import assert_
 
 def test_import():
     try:
@@ -36,9 +35,9 @@ def test_import():
 
 def test_matching_versions():
     import MDAnalysis.version
-    assert_(MDAnalysis.version.__version__ == MDAnalysisTests.__version__,
-            "MDAnalysis release {0} must be installed to have meaningful tests, not {1}".format(
-            MDAnalysisTests.__version__, MDAnalysis.__version__))
+    assert MDAnalysis.version.__version__ == MDAnalysisTests.__version__, \
+        "MDAnalysis release {0} must be installed to have meaningful tests, not {1}".format(
+            MDAnalysisTests.__version__, MDAnalysis.__version__)
 
 
 def test_version_format(version=None):
@@ -48,7 +47,7 @@ def test_version_format(version=None):
     # see http://wiki.mdanalysis.org/SemanticVersioning for format definition
     m = re.match('(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
                  version)
-    assert_(m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version))
+    assert m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version)
 
 
 def test_version_at_packagelevel():
