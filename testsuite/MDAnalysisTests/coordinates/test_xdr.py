@@ -102,6 +102,7 @@ class _GromacsReader(object):
     def test_rewind_xdrtrj(self, universe):
         universe.trajectory.rewind()
         assert_equal(universe.coord.frame, 0, "rewinding to frame 1")
+        assert universe.trajectory._xdr._has_offsets == 1
 
     def test_next_xdrtrj(self, universe):
         universe.trajectory.rewind()

@@ -47,6 +47,7 @@ Fixes
   * Fixed analysis.rms.RMSD failure with select != "all" (Issue #1487)
   * Fixed analysis.rms.RMSD: group RMSD calculation does not
     superimpose groupselections anymore (issue #720)
+  * XDR files now avoid offset recalculation on a rewind (PR #1667)
 
 Changes
   * remove deprecated TimeSeriesCollection
