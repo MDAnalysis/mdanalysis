@@ -161,6 +161,14 @@ class TestNamedStream(object):
                 ns.close()
                 obj.close()
 
+    def test_matryoshka(self):
+        obj = cStringIO()
+        ns = util.NamedStream(obj, 'r')
+        with pytest.warns(RuntimeWarning):
+            ns2 = util.NamedStream(ns, 'f')
+        assert not isinstance(ns2.stream, util.NamedStream)
+        assert ns2.name == 'f'
+
 
 class TestNamedStream_filename_behavior(object):
     textname = "~/stories/jabberwock.txt"  # with tilde ~ to test regular expanduser()
