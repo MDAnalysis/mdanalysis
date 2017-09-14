@@ -237,7 +237,9 @@ class Universe(object):
                 self._topology = args[0]
                 self.filename = None
             else:
-                if isstream(args[0]):
+                if isinstance(args[0], NamedStream):
+                    self.filename = args[0]
+                elif isstream(args[0]):
                     filename = None
                     if hasattr(args[0], 'name'):
                         filename = args[0].name
