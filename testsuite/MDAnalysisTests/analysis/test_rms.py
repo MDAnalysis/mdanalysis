@@ -23,7 +23,6 @@ from __future__ import print_function, division, absolute_import
 
 from six.moves import range
 
-import warnings
 import os
 
 import MDAnalysis
@@ -37,10 +36,6 @@ import pytest
 
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
-
-# I want to catch all warnings in the tests. If this is not set at the start it
-# could cause test that check for warnings to fail.
-warnings.simplefilter('always')
 
 
 class Testrmsd(object):

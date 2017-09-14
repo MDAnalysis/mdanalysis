@@ -28,7 +28,6 @@ import errno
 import numpy as np
 import os
 import shutil
-import warnings
 
 from numpy.testing import (assert_equal, assert_almost_equal)
 
@@ -43,10 +42,6 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
-
-# I want to catch all warnings in the tests. If this is not set at the start it
-# could cause test that check for warnings to fail.
-warnings.simplefilter('always')
 
 
 class _XDRReader_Sub(object):
@@ -720,12 +715,8 @@ class _GromacsReader_offsets(object):
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
 
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.warns(UserWarning, match="Reload offsets"):
             self._reader(traj)
-        assert_equal(warn[0].message.args, (
-            'Reload offsets from trajectory\n ctime or size or n_atoms did not match',
-        ))
 
     def test_persistent_offsets_ctime_mismatch(self, traj):
         # check that stored offsets are not loaded when trajectory
@@ -736,12 +727,8 @@ class _GromacsReader_offsets(object):
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
 
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.warns(UserWarning, match="Reload offsets"):
             self._reader(traj)
-        assert_equal(warn[0].message.args, (
-            'Reload offsets from trajectory\n ctime or size or n_atoms did not match',
-        ))
 
     def test_persistent_offsets_natoms_mismatch(self, traj):
         # check that stored offsets are not loaded when trajectory
@@ -751,12 +738,8 @@ class _GromacsReader_offsets(object):
         saved_offsets['n_atoms'] += 1
         np.savez(fname, **saved_offsets)
 
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.warns(UserWarning, match="Reload offsets"):
             self._reader(traj)
-        assert_equal(warn[0].message.args, (
-            'Reload offsets from trajectory\n ctime or size or n_atoms did not match',
-        ))
 
     def test_persistent_offsets_last_frame_wrong(self, traj):
         fname = XDR.offsets_filename(traj)
@@ -766,13 +749,9 @@ class _GromacsReader_offsets(object):
         saved_offsets['offsets'][idx_frame] += 42
         np.savez(fname, **saved_offsets)
 
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
+        with pytest.warns(UserWarning, match="seek failed"):
             reader = self._reader(traj)
             reader[idx_frame]
-
-        assert_equal(warn[0].message.args[0],
-                     'seek failed, recalculating offsets and retrying')
 
     def test_unsupported_format(self, traj):
         fname = XDR.offsets_filename(traj)

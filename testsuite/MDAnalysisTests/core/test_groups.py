@@ -28,14 +28,13 @@ import numpy as np
 from numpy.testing import (
     assert_array_equal,
     assert_equal,
-    assert_warns,
 )
 import pytest
 import operator
 import six
 
 import MDAnalysis as mda
-from MDAnalysisTests import make_Universe, assert_nowarns
+from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
 
@@ -979,33 +978,41 @@ class TestInstantSelectorDeprecationWarnings(object):
 
     def test_AtomGroup_warn_getitem(self, u):
         name = u.atoms[0].name
-        assert_warns(DeprecationWarning, lambda x: u.atoms[x], name)
+        with pytest.deprecated_call():
+            u.atoms[name]
 
     def test_AtomGroup_nowarn_getitem_index(self, u):
-        assert_nowarns(DeprecationWarning, lambda x: u.atoms[x], 0)
+        with no_deprecated_call():
+            u.atoms[0]
 
     def test_AtomGroup_nowarn_segids_attribute(self, u):
-        assert_nowarns(DeprecationWarning, lambda x: getattr(u.atoms, x), "segids")
+        with no_deprecated_call():
+            getattr(u.atoms, 'segids')
 
     def test_AtomGroup_warn_getattr(self, u):
         name = u.atoms[0].name
-        assert_warns(DeprecationWarning, lambda x: getattr(u.atoms, x), name)
+        with pytest.deprecated_call():
+            getattr(u.atoms, name)
 
     def test_ResidueGroup_warn_getattr_resname(self, u):
         name = u.residues[0].resname
-        assert_warns(DeprecationWarning, lambda x: getattr(u.residues, x), name)
+        with pytest.deprecated_call():
+            getattr(u.residues, name)
 
     def test_Segment_warn_getattr_resname(self, u):
         name = u.residues[0].resname
-        assert_warns(DeprecationWarning, lambda x: getattr(u.segments[0], x), name)
+        with pytest.deprecated_call():
+            getattr(u.segments[0], name)
 
     def test_Segment_warn_getattr_rRESNUM(self, u):
-        assert_warns(DeprecationWarning, lambda x: getattr(u.segments[0], x), 'r1')
+        with pytest.deprecated_call():
+            getattr(u.segments[0], 'r1')
 
     def test_SegmentGroup_warn_getattr(self, u):
         name = u.segments[0].segid
-        assert_warns(DeprecationWarning, lambda x: getattr(u.segments, x), name)
+        with pytest.deprecated_call():
+            getattr(u.segments, name)
 
     def test_SegmentGroup_nowarn_getitem(self, u):
-        assert_nowarns(DeprecationWarning, lambda x: u.segments[x], 0)
-
+        with no_deprecated_call():
+            u.segments[0]
