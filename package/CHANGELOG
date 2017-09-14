@@ -48,6 +48,7 @@ Fixes
   * Fixed analysis.rms.RMSD: group RMSD calculation does not
     superimpose groupselections anymore (issue #720)
   * XDR files now avoid offset recalculation on a rewind (PR #1667)
+  * Universe creation doesn't Matryoshka NamedStream anymore (PR #1669)
 
 Changes
   * remove deprecated TimeSeriesCollection
