@@ -22,6 +22,7 @@
 
 from __future__ import print_function, absolute_import
 from six.moves import zip
+from itertools import product
 
 import pytest
 import numpy as np
@@ -29,9 +30,12 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.mdamath import triclinic_vectors, triclinic_box
+from MDAnalysis.lib.distances import _box_check, transform_RtoS, transform_StoR
 
-
-boxes = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
+#
+# Testing initialization with different boxes
+#
+boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
          np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
          triclinic_vectors(  # tri_vecs
              np.array([1, 2, 3, 90, 90, 45], dtype=np.float32)),
@@ -54,89 +58,145 @@ rec_m = (np.array([[1, 0, 0],
          )
 
 
-@pytest.mark.parametrize('box, rm', zip(boxes, rec_m))
+@pytest.mark.parametrize('box, rm', zip(boxes_1, rec_m))
 def test_initialize_bm(box, rm):
+    """
+    Assert the construction of the recripocal box matrix
+    """
     assert_almost_equal(PeriodicKDTree(box)._rm, rm, decimal=7)
 
 
-@pytest.fixture
-def ptree_ortho():
-    b = np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
-    coords = np.array([[2, 2, 2],
-                       [5, 5, 5],
-                       [1.1, 1.1, 1.1],
-                       [11, -11, 11],  # wrapped to [1, 9, 1]
-                       [21, 21, 3]],  # wrapped to [1, 1, 3]
-                      dtype=np.float32)
-    t = PeriodicKDTree(b)
-    t.set_coords(coords)
-    return {'coords': coords, 'tree': t, 'box': b, 'radius': 1.5}
-
-
-def test_set_coords(ptree_ortho):
+def test_set_coords():
     with pytest.raises(ValueError) as excinfo:
         xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)
-        tree = PeriodicKDTree(ptree_ortho['box'])
+
+        tree = PeriodicKDTree(boxes_1[0])
         tree.set_coords(xy)
     assert_equal(str(excinfo.value),
                  'coords must be a sequence of 3 dimensional coordinates')
 
+#
+# Testing for correct images generation for a given query point
+#
 
-queries = ([5, 5, 5],  # case box center
-           [1, 5, 5],  # box face
-           [5, -1, 5],  # box face
-           [1, 1, 5],  # box edge
-           [5, -1, 11],  # box edge
-           [1, 1, 1],  # box vertex
-           [1, -1, 11],  # box vertex
-           [21, -31, 1]  # box vertex
+# fractional coordinates for data points
+f_dataset = np.array([[0.2, 0.2, 0.2],  # center of the box
+                      [0.5, 0.5, 0.5],
+                      [0.11, 0.11, 0.11],
+                      [1.1, -1.1, 1.1],  # wrapped to [1, 9, 1]
+                      [2.1, 2.1, 0.3]],  # wrapped to [1, 1, 3]
+                     dtype=np.float32)
+
+radius = 1.5
+
+boxes_2 = ([10, 10, 10, 90, 90, 90],  # ortho
+          [10, 10, 10, 45, 60, 90])  # tri_box
+
+# Find images for a given query vector, here in fractional coordinates
+queries = ([0.5, 0.5, 0.5],  # case box center
+           [0.1, 0.5, 0.5],  # box face
+           [0.5, -0.1, 0.5],  # box face
+           [0.1, 0.1, 0.5],  # box edge
+           [0.5, -0.1, 1.1],  # box edge
+           [0.1, 0.1, 0.1],  # box vertex
+           [0.1, -0.1, 1.1],  # box vertex
+           [2.1, -3.1, 0.1]  # box vertex
            )
-centers = (([5, 5, 5], ),
-           ([1, 5, 5], [11, 5, 5]),  # centers for first case box face
-           ([5, 9, 5], [5, -1, 5]),
-           ([1, 1, 5], [11, 1, 5], [1, 11, 5], [11, 11, 5]),
-           ([5, 9, 1], [5, -1, 1], [5, 9, 11], [5, -1, 11]),
-           ([1, 1, 1], [11, 1, 1], [1, 11, 1], [1, 1, 11],
-            [1, 11, 11], [11, 11, 1], [11, 1, 11], [11, 11, 11]),
-           ([1, 9, 1], [11, 9, 1], [1, -1, 1], [1, 9, 11],
-            [1, -1, 11], [11, -1, 1], [11, 9, 11], [11, -1, 11]),
-           ([1, 9, 1], [11, 9, 1], [1, -1, 1], [1, 9, 11],
-            [1, -1, 11], [11, -1, 1], [11, 9, 11], [11, -1, 11])
+# Images for the previous query vectors, here in fractional coordinates
+centers = (([0.5, 0.5, 0.5], ),
+           ([0.1, 0.5, 0.5], [1.1, 0.5, 0.5]),
+           ([0.5, 0.9, 0.5], [0.5, -0.1, 0.5]),
+           ([0.1, 0.1, 0.5], [1.1, 0.1, 0.5],
+            [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]),
+           ([0.5, 0.9, 0.1], [0.5, -0.1, 0.1],
+            [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]),
+           ([0.1, 0.1, 0.1], [1.1, 0.1, 0.1], [0.1, 1.1, 0.1],
+            [0.1, 0.1, 1.1], [0.1, 1.1, 1.1], [1.1, 1.1, 0.1],
+            [1.1, 0.1, 1.1], [1.1, 1.1, 1.1]),
+           ([0.1, 0.9, 0.1], [1.1, 0.9, 0.1], [0.1, -0.1, 0.1],
+            [0.1, 0.9, 1.1], [0.1, -0.1, 1.1], [1.1, -0.1, 0.1],
+            [1.1, 0.9, 1.1], [1.1, -0.1, 1.1]),
+           ([0.1, 0.9, 0.1], [1.1, 0.9, 0.1], [0.1, -0.1, 0.1],
+            [0.1, 0.9, 1.1], [0.1, -0.1, 1.1], [1.1, -0.1, 0.1],
+            [1.1, 0.9, 1.1], [1.1, -0.1, 1.1])
            )
 
 
-@pytest.mark.parametrize('q, cs', zip(queries, centers))
-def test_find_centers(ptree_ortho, q, cs):
-    q = np.array(q, dtype=np.float32)
-    cs = [np.array(c, dtype=np.float32) for c in cs]
-    assert_equal(ptree_ortho['tree'].find_centers(q,
-                                                  ptree_ortho['radius']), cs)
+@pytest.mark.parametrize('b, qcs', product(boxes_2, zip(queries, centers)))
+def test_find_centers(b, qcs):
+    """
+    Test the generation of images for a given query vector and type of box
+    :param b: box as a list with six items
+    :param qcs: a query vector and a list of expected images
+    """
+    b = np.array(b, dtype=np.float32)
+    q = transform_StoR(np.array(qcs[0], dtype=np.float32), b)
+    tree = PeriodicKDTree(b)
+    coords = transform_StoR(f_dataset, b)
+    tree.set_coords(coords)  # Input real space coordinates
+    cs = np.sort(transform_StoR(np.array(qcs[1], dtype=np.float32), b), axis=0)
+    found_centers = np.sort(tree.find_centers(q, radius), axis=0)
+    assert_almost_equal(found_centers, cs, decimal=6)
 
 
-queries = ([5, 5, 5],  # case box center
-           [-8.5, 11.5, 2.2],  # wrapped to [1.5, 1.5, 2.2]
-           [0, 100, 0.7],  # box face
-           [1, 1, 5],  # box edge
-           [1, 1, 1],  # box vertex
-           [-19, 42, 2],  # box vertex
-           [21, -31, 1]  # box vertex
-           )
-neighbors = (([5, 5, 5], ),
-             ([2, 2, 2], [1.1, 1.1, 1.1], [21, 21, 3]),
-             ([11, -11, 11], ),
-             (),
-             ([1.1, 1.1, 1.1], ),
-             ([2, 2, 2], [1.1, 1.1, 1.1], [21, 21, 3]),
-             ([11, -11, 11], )
-             )
+#
+# Testing for neighbor finding
+#
+
+# Find neighbors for a given query vector, here in fractional coordinates
+q_2 = ([0.5, 0.5, 0.5],  # case box center
+             [-0.85, 1.15, 0.22],  # wrapped to [1.5, 1.5, 2.2]
+             [0, 10, 0.07],  # box face
+             [0.1, 0.1, 0.5],  # box edge
+             [0.1, 0.1, 0.1],  # box vertex
+             [-1.9, 4.2, 0.2],  # box vertex
+             [2.1, -3.1, 0.1]  # box vertex
+            )
+# Expected neighbors for previous queries in the orthogonal box case
+n_o = (([0.5, 0.5, 0.5], ),
+              ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3]),
+              ([1.1, -1.1, 1.1], ),
+              (),
+              ([0.11, 0.11, 0.11], ),
+              ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3]),
+              ([1.1, -1.1, 1.1], )
+              )
+# Expected neighbors for previous queries in the trigonal box case
+n_t = (([0.5, 0.5, 0.5], ),
+              ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3]),
+              ([1.1, -1.1, 1.1], ),
+              (),
+              ([0.11, 0.11, 0.11], ),
+              ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3]),
+              ([1.1, -1.1, 1.1], )
+              )
+
+doublets = list()
+for b, n in zip(boxes_2, (n_o, n_t)):
+    doublets.extend(list(product([b], zip(q_2, n))))
 
 
-@pytest.mark.parametrize('q, ns', zip(queries, neighbors))
-def test_search(ptree_ortho, q, ns):
-    ptree_ortho['tree'].search(np.array(q, dtype=np.float32),
-                               ptree_ortho['radius'])
-    indices = ptree_ortho['tree'].get_indices()
-    found_neighbors = list() if indices is None \
-        else [ptree_ortho['coords'][i] for i in indices]
-    ns = [np.array(n, dtype=np.float32) for n in ns]
-    assert_equal(found_neighbors, ns)
+@pytest.mark.parametrize('b, qns', doublets)
+def test_search(b, qns):
+    """
+    Test finding neighbors for a given query vector and type of box
+    :param b: box as a list with six items
+    :param qns: a query vector and a list of expected neighbors
+    """
+    b = np.array(b, dtype=np.float32)
+    q = transform_StoR(np.array(qns[0], dtype=np.float32), b)
+    tree = PeriodicKDTree(b)
+    coords = transform_StoR(f_dataset, b)
+    tree.set_coords(coords)  # Input real space coordinates
+    tree.search(q, radius)
+    indices = tree.get_indices()
+    if indices:
+        found_neighbors = np.sort(coords[indices], axis=0)
+    else:
+        found_neighbors = list()
+    if qns[1]:
+        expected_neighbors = transform_StoR(np.array(qns[1],dtype=np.float32), b)
+        expected_neighbors = np.sort(expected_neighbors, axis=0)
+    else:
+        expected_neighbors = list()
+    assert_equal(found_neighbors, expected_neighbors)

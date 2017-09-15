@@ -85,8 +85,9 @@ class PeriodicKDTree(object):
         Store box information and define direct and reciprocal box matrices.
         Rows of the direct matrix are the components of the central cell
         vectors. Rows of the reciprocal matrix are the components of the
-        normalized reciprocal lattice vectors. Each represents the vector
-        normal to the unit cell face associated to each axis.
+        normalized reciprocal lattice vectors. Each row of the reciprocal
+        matrix represents the vector normal to the unit cell face
+        associated to each axis.
         For instance, in an orthorhombic cell the YZ-plane is associated to
         the X-axis and its normal vector is (1, 0, 0). In a triclinic cell,
         the plane associated to vector ``\vec{a}`` is perpendicular to the
@@ -210,7 +211,11 @@ class PeriodicKDTree(object):
             new_indices = self.kdt.get_indices()  # returns None or np.array
             if new_indices is not None:
                 self._indices.update(new_indices)
-        self._indices = sorted(list(self._indices))
+        if self._indices:
+            self._indices = sorted(list(self._indices))
+        else:
+            # Bio.KDTree.KDTree.getIndices returns None if no neighbors are found
+            self._indices = None
 
     def get_indices(self):
         return self._indices
