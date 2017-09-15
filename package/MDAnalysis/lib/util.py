@@ -622,6 +622,13 @@ class NamedStream(io.IOBase, PathLike):
 
         .. versionadded:: 0.9.0
         """
+        # constructing the class from an instance of itself has weird behavior
+        # on __del__ and super on python 3. Let's warn the user and ensure the
+        # class works normally.
+        if isinstance(stream, NamedStream):
+            warnings.warn("Constructed NamedStream from a NamedStream",
+                          RuntimeWarning)
+            stream = stream.stream
         self.stream = stream
         self.name = filename
         self.close_stream = close
