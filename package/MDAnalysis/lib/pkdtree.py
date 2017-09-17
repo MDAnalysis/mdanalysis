@@ -211,11 +211,7 @@ class PeriodicKDTree(object):
             new_indices = self.kdt.get_indices()  # returns None or np.array
             if new_indices is not None:
                 self._indices.update(new_indices)
-        if self._indices:
-            self._indices = sorted(list(self._indices))
-        else:
-            # Bio.KDTree.KDTree.getIndices returns None if no neighbors are found
-            self._indices = None
+        self._indices = sorted(list(self._indices))
 
     def get_indices(self):
         return self._indices
