@@ -395,7 +395,7 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A n x 3 array of coordinate data, of type ``np.float32``.
+        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -414,7 +414,11 @@ def transform_RtoS(inputcoords, box, backend="serial"):
        Added *backend* keyword.
     """
     coords = inputcoords.copy('C')
-    numcoords = coords.shape[0]
+
+    is_1d = False  # True if only one vector coordinate
+    if len(coords.shape) == 1:
+        coords = coords.reshape(1, len(coords))
+        is_1d = True
 
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
@@ -435,6 +439,8 @@ def transform_RtoS(inputcoords, box, backend="serial"):
            args=(coords, inv),
            backend=backend)
 
+    if is_1d:
+        coords = coords.reshape(len(coords[0]), )
     return coords
 
 
@@ -448,7 +454,7 @@ def transform_StoR(inputcoords, box, backend="serial"):
     Parameters
     ----------
     inputcoords : array
-        A n x 3 array of coordinate data, of type np.float32
+        A (3,) coordinate or (n x 3) array of coordinates, type ``np.float32``.
     box : array
         The unitcell dimesions for this system.
         The dimensions must be provided in the same format as returned
@@ -468,7 +474,11 @@ def transform_StoR(inputcoords, box, backend="serial"):
        Added *backend* keyword.
     """
     coords = inputcoords.copy('C')
-    numcoords = coords.shape[0]
+
+    is_1d = False  # True if only one vector coordinate
+    if len(coords.shape) == 1:
+        coords = coords.reshape(1, len(coords))
+        is_1d = True
 
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
@@ -483,6 +493,8 @@ def transform_StoR(inputcoords, box, backend="serial"):
            args=(coords, box),
            backend=backend)
 
+    if is_1d:
+        coords = coords.reshape(len(coords[0]),)
     return coords
 
 
@@ -810,9 +822,9 @@ def apply_PBC(incoords, box, backend="serial"):
     # determine boxtype
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
-    if (boxtype == 'tri_box'):
+    if boxtype == 'tri_box':
         box = triclinic_vectors(box)
-    if (boxtype == 'tri_vecs_bad'):
+    if boxtype == 'tri_vecs_bad':
         box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
     box_inv = np.zeros((3), dtype=np.float32)
