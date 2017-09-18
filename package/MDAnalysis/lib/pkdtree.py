@@ -48,8 +48,9 @@ class PeriodicKDTree(object):
     A tree is first constructed with the coordinates wrapped onto the central
     cell. A query for neighbors around a center point is performed first by
     wrapping the center point coordinates to the central cell, then generating
-    images of this wrapped center point and finally searching for neighbors
-    close to the images.
+    images of this wrapped center point (thanks to
+    https://github.com/patvarilly/periodic_kdtree for the idea) and finally
+    searching for neighbors close to the images.
 
     Only the necessary number of center point images is generated for each
     case. For instance, if the wrapped center point lies well within the cell
@@ -146,7 +147,8 @@ class PeriodicKDTree(object):
 
     def find_centers(self, center_point, radius):
         """
-        Find relevant images of a center point.
+        Find relevant images of a center point, inspired by
+        https://github.com/patvarilly/periodic_kdtree
 
         Parameters
         ----------
