@@ -208,6 +208,23 @@ def _check_lengths_match(*arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
 
+
+def distance(a, b, box=None):
+    """calc distances between two points. Uses algorithm from Tuckerman
+
+    """
+    if box is None:
+        return np.linalg.norm(a - b)
+
+    box = triclinic_vectors(box)
+    ibox = np.linalg.inv(box)
+    sa = np.dot(ibox, a)
+    sb = np.dot(ibox, b)
+    s = sa - sb
+    s -= np.round(s)
+    return np.linalg.norm(np.dot(box, s))
+
+
 def distance_array(reference, configuration, box=None, result=None, backend="serial"):
     """Calculate all distances between a reference set and another configuration.
 
