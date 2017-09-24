@@ -345,6 +345,19 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
+    def test_pbc_wrong_wassenaar_distance(self, backend):
+        from MDAnalysis.lib.distances import distance_array
+        box = MDAnalysis.lib.mdamath.triclinic_vectors([2, 2, 2, 60, 60, 60])
+        a, b, c = box
+        point_a = a + b
+        point_b = .5 * point_a
+        dist = distance_array(point_a[np.newaxis, :], point_b[np.newaxis, :],
+                              box=box, backend=backend)
+        assert_almost_equal(dist[0, 0], 1)
+        # check that our distance is different then the wassenaar distance as
+        # expected.
+        assert np.linalg.norm(point_a - point_b) != dist[0, 0]
+
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
