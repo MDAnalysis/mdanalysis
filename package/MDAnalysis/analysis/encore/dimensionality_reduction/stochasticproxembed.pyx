@@ -47,41 +47,31 @@ def StochasticProximityEmbedding(s, double rco, int dim, double maxlam, double m
 
     This class is a Cython wrapper for a C implementation (see spe.c)
 
-    Parameters:
+    Parameters
     ----------
-
     s : encore.utils.TriangularMatrix object
         Triangular matrix containing the distance values for each pair of
         elements in the original space.
-
     rco : float
         neighborhood distance cut-off
-
     dim : int
         number of dimensions for the embedded space
-
     minlam  : float
         final learning parameter
-
     maxlam  : float
         starting learning parameter
-
     ncycle : int
         number of cycles. Each cycle is composed of nstep steps. At the end
         of each cycle, the lerning parameter lambda is updated.
-
     nstep : int
         number of coordinate update steps for each cycle
 
 
-
     Returns
     -------
-
     space : (float, numpy.array)
         float is the final stress obtained; the array are the coordinates of
         the elements in the embedded space
-
     stressfreq : int
         calculate and report stress value every stressfreq cycle
 
