@@ -137,7 +137,7 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
 
         """
         final_stress, coordinates = \
-            stochasticproxembed.StochasticProximityEmbedding().run(
+            stochasticproxembed.StochasticProximityEmbedding(
             s=distance_matrix,
             rco=self.distance_cutoff,
             dim=self.dimension,

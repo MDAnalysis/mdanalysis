@@ -148,7 +148,7 @@ class AffinityPropagationNative(ClusteringMethod):
         numpy.array
             list of cluster indices
         """
-        clusters = affinityprop.AffinityPropagation().run(
+        clusters = affinityprop.AffinityPropagation(
             s=distance_matrix * -1.,   # invert sign
             preference=self.preference,
             lam=self.damping,
