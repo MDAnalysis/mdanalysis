@@ -44,6 +44,8 @@
 #  include <inttypes.h>
 #endif
 
+#include <sys/types.h>
+#include <unistd.h>
 
 #ifdef HAVE_RPC_XDR_H
 #  include <rpc/rpc.h>
