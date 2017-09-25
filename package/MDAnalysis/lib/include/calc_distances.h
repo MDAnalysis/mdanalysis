@@ -51,21 +51,22 @@ static void minimum_image_triclinic(double *dx, coordinate* box)
   // Requires a box
   // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
   double dmin[3], rx[3], ry[3], rz[3];
-  double min = FLT_MAX;
+  double min = FLT_MAX, d;
+  int i, x, y, z;
 
-  for (int x = -1; x < 2; ++x) {
+  for (x = -1; x < 2; ++x) {
     rx[0] = dx[0] + box[0][0] * (float)x;
     rx[1] = dx[1];
     rx[2] = dx[2];
-    for (int y = -1; y < 2; ++y) {
+    for (y = -1; y < 2; ++y) {
       ry[0] = rx[0] + box[1][0] * (float)y;
       ry[1] = rx[1] + box[1][1] * (float)y;
       ry[2] = rx[2];
-      for (int z = -1; z < 2; ++z) {
+      for (z = -1; z < 2; ++z) {
         rz[0] = ry[0] + box[2][0] * (float)z;
         rz[1] = ry[1] + box[2][1] * (float)z;
         rz[2] = ry[2] + box[2][2] * (float)z;
-        const double d = rz[0]*rz[0] + rz[1]*rz[1] + rz[2] * rz[2];
+        d = rz[0]*rz[0] + rz[1]*rz[1] + rz[2] * rz[2];
         if (d < min) {
           for (i=0; i<3; ++i){
             min = d;
@@ -75,7 +76,7 @@ static void minimum_image_triclinic(double *dx, coordinate* box)
       }
     }
   }
-  for (int i =0; i<3; ++i) {
+  for (i =0; i<3; ++i) {
     dx[i] = dmin[i];
   }
 }
