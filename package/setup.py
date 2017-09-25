@@ -259,6 +259,12 @@ def extensions(config):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
 
+    # allow using architecture specific instructions. This allows people to
+    # build optimized versions of MDAnalysis.
+    arch = config.get('march', default=False)
+    if arch:
+        extra_compile_args.append('-march={}'.format(arch))
+
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
     largefile_macros = [
