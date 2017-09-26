@@ -36,78 +36,58 @@ cimport cython
 
 
 @cython.embedsignature(True)
-
-cdef class StochasticProximityEmbedding:
+def StochasticProximityEmbedding(s, double rco, int dim, double maxlam, double minlam, int ncycle, int nstep, int stressfreq):
     """
     Stochastic proximity embedding dimensionality reduction algorithm. The
     algorithm implemented here is described in this paper:
 
-	Dmitrii N. Rassokhin, Dimitris K. Agrafiotis
-	A modified update rule for stochastic proximity embedding
-	Journal of Molecular Graphics and Modelling 22 (2003) 133–140
+    Dmitrii N. Rassokhin, Dimitris K. Agrafiotis
+    A modified update rule for stochastic proximity embedding
+    Journal of Molecular Graphics and Modelling 22 (2003) 133–140
 
     This class is a Cython wrapper for a C implementation (see spe.c)
+
+    Parameters
+    ----------
+    s : encore.utils.TriangularMatrix object
+        Triangular matrix containing the distance values for each pair of
+        elements in the original space.
+    rco : float
+        neighborhood distance cut-off
+    dim : int
+        number of dimensions for the embedded space
+    minlam  : float
+        final learning parameter
+    maxlam  : float
+        starting learning parameter
+    ncycle : int
+        number of cycles. Each cycle is composed of nstep steps. At the end
+        of each cycle, the lerning parameter lambda is updated.
+    nstep : int
+        number of coordinate update steps for each cycle
+
+
+    Returns
+    -------
+    space : (float, numpy.array)
+        float is the final stress obtained; the array are the coordinates of
+        the elements in the embedded space
+    stressfreq : int
+        calculate and report stress value every stressfreq cycle
+
+
     """
 
+    cdef int nelem = s.size
+    cdef double finalstress = 0.0
 
-    def run(self, s, double rco, int dim, double maxlam, double minlam, int ncycle, int nstep, int stressfreq):
-        """
-        Run stochastic proximity embedding.
+    logging.info("Starting Stochastic Proximity Embedding")
 
-	    Parameters:
-	    ----------
+    cdef numpy.ndarray[numpy.float64_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float64)
+    cdef numpy.ndarray[numpy.float64_t,   ndim=1] d_coords   = numpy.zeros((nelem*dim),dtype=numpy.float64)
 
-	    s : encore.utils.TriangularMatrix object
-            Triangular matrix containing the distance values for each pair of
-            elements in the original space.
+    finalstress = cstochasticproxembed.CStochasticProximityEmbedding( <double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
 
-	    rco : float
-	    	neighborhood distance cut-off
+    logging.info("Stochastic Proximity Embedding finished. Residual stress: %.3f" % finalstress)
 
-	    dim : int
-	    	number of dimensions for the embedded space
-
-	    minlam  : float
-	    	final learning parameter
-
-	    maxlam  : float
-	    	starting learning parameter
-
-	    ncycle : int
-	    	number of cycles. Each cycle is composed of nstep steps. At the end
-	    	of each cycle, the lerning parameter lambda is updated.
-
-	    nstep : int
-		    number of coordinate update steps for each cycle
-
-
-
-	    Returns
-	    -------
-
-	    space : (float, numpy.array)
-	    	float is the final stress obtained; the array are the coordinates of
-	    	the elements in the embedded space
-
-	    stressfreq : int
-	    	calculate and report stress value every stressfreq cycle
-
-
-	    """
-
-        cdef int nelem = s.size
-        cdef double finalstress = 0.0
-
-        logging.info("Starting Stochastic Proximity Embedding")
-
-        cdef numpy.ndarray[numpy.float64_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float64)
-        cdef numpy.ndarray[numpy.float64_t,   ndim=1] d_coords   = numpy.zeros((nelem*dim),dtype=numpy.float64)
-
-        finalstress = cstochasticproxembed.CStochasticProximityEmbedding( <double*>matndarray.data, <double*>d_coords.data, rco, nelem, dim, maxlam, minlam, ncycle, nstep, stressfreq)
-
-        logging.info("Stochastic Proximity Embedding finished. Residual stress: %.3f" % finalstress)
-
-        return (finalstress, d_coords.reshape((-1,dim)).T)
-
-    def __call__(self, *args):
-        return self.run(*args)
+    return (finalstress, d_coords.reshape((-1,dim)).T)
