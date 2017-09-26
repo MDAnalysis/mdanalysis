@@ -50,6 +50,7 @@ Fixes
     superimpose groupselections anymore (issue #720)
   * XDR files now avoid offset recalculation on a rewind (PR #1667)
   * Universe creation doesn't Matryoshka NamedStream anymore (PR #1669)
+  * Fixed triclinic unit cell distances for box edges (Issue #1475)
 
 Changes
   * remove deprecated TimeSeriesCollection
