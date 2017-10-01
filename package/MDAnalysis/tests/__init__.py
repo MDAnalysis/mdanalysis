@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -28,7 +28,7 @@ Test cases for MDAnalysis
 
 Test cases are stored in a separate packacge (:mod:`MDAnalysisTests`)
 that has to be installed separately from
-http://www.mdanalysis.org. For more details on the tests see
+https://www.mdanalysis.org. For more details on the tests see
 http://wiki.mdanalysis.org/UnitTests .
 
 We are using the NumPy_ testing frame work; thus, numpy *must* be

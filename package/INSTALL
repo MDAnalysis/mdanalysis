@@ -5,7 +5,7 @@ Installing MDAnalysis
 Quick installation instructions
 ===============================
 
-http://www.mdanalysis.org/pages/installation_quick_start/
+https://www.mdanalysis.org/pages/installation_quick_start/
 
 
 From the Python package index (pip)
@@ -48,7 +48,7 @@ Help
 If you have any problems please read through the files INSTALL (this
 file) and README and check the MDAnalysis project pages at
 
-      http://www.mdanalysis.org
+      https://www.mdanalysis.org
 
 in particular https://github.com/MDAnalysis/mdanalysis/wiki/Install
 and related pages.
