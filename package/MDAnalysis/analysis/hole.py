@@ -564,7 +564,7 @@ class BaseHOLE(object):
         The iterator produces tuples ``(q, profile)``.
         """
         if self.profiles is None:
-            raise StopIteration
+            return
         for q in sorted(self.profiles):
             yield (q, self.profiles[q])
 
