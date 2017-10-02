@@ -438,7 +438,7 @@ class BaseX3DNA(object):
         frame number.
         """
         if self.profiles is None:
-            raise StopIteration
+            return
         for q in sorted(self.profiles):
             yield (q, self.profiles[q])
 
