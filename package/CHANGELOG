@@ -70,6 +70,8 @@ Changes
     the end of the file. Used to raise IOError.
   * Universe.load_new() now returns the universe itself instead of
     tuple (filename_or_array, trajectory_type) (Issue #1613)
+  * docs: URLs to (www|docs).mdanalysis.org now link to SSL-encrypted site
+    (see issue MDAnalysis/MDAnalysis.github.io#61)
 
 
 mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
