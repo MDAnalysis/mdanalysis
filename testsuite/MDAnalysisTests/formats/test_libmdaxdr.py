@@ -20,6 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function, absolute_import
+from six.moves import cPickle as pickle
 
 import numpy as np
 
@@ -114,6 +115,25 @@ class TestCommonAPI(object):
         with xdr(fname, 'w') as f:
             with pytest.raises(IOError):
                 f.read()
+
+    def test_pickle(self, reader):
+        reader.seek(len(reader) - 1)
+        dump = pickle.dumps(reader)
+        new_reader = pickle.loads(dump)
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() == new_reader.tell()
+        assert_almost_equal(reader.offsets, new_reader.offsets)
+
+    def test_pickle_closed(self, reader):
+        reader.seek(len(reader) - 1)
+        reader.close()
+        dump = pickle.dumps(reader)
+        new_reader = pickle.loads(dump)
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() != new_reader.tell()
+
 
 
 @pytest.mark.parametrize("xdrfile, fname, offsets",

@@ -27,6 +27,7 @@ Enhancements
     the `moltype` selection keyword is added (Issue #1555)
   * about 20% speed improvements for GNM analysis. (PR #1579)
   * added support for Tinker TXYZ and ARC files
+  * libmdaxdr classes can now be pickled (PR #1680)
 
 Deprecations
 
