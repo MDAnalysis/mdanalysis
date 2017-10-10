@@ -24,16 +24,18 @@ try:
 except ImportError:
     pass
 
+traj_dict = {'XTC': [XTC, XTCReader],
+             'TRR': [TRR, TRRReader],
+             'DCD': [DCD, DCDReader],
+             'NCDF': [NCDF, NCDFReader]}
+
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
     params = (['XTC', 'TRR', 'DCD', 'NCDF'])
     param_names = ['traj_format']
 
     def setup(self, traj_format):
-        self.traj_dict = {'XTC': [XTC, XTCReader],
-                          'TRR': [TRR, TRRReader],
-                          'DCD': [DCD, DCDReader],
-                          'NCDF': [NCDF, NCDFReader]}
+        self.traj_dict = traj_dict
         self.traj_file, self.traj_reader = self.traj_dict[traj_format]
 
     def time_reads(self, traj_format):
@@ -49,10 +51,7 @@ class TrajReaderIteration(object):
     param_names = ['traj_format']
 
     def setup(self, traj_format):
-        self.traj_dict = {'XTC': [XTC, XTCReader],
-                          'TRR': [TRR, TRRReader],
-                          'DCD': [DCD, DCDReader],
-                          'NCDF': [NCDF, NCDFReader]}
+        self.traj_dict = traj_dict
         self.traj_file, self.traj_reader = self.traj_dict[traj_format]
         self.reader_object = self.traj_reader(self.traj_file)
 
