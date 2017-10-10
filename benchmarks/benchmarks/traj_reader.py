@@ -2,13 +2,27 @@ from __future__ import division, absolute_import, print_function
 
 try:
     from MDAnalysis.coordinates.DCD import DCDReader
-    from MDAnalysis.coordinates.XTC import XTCReader
-    from MDAnalysis.coordinates.TRR import TRRReader
-    from MDAnalysis.coordinates.TRJ import NCDFReader
-    from MDAnalysisTests.datafiles import XTC, TRR, DCD, NCDF
+    from MDAnalysisTests.datafiles import DCD
 except ImportError:
     pass
 
+try:
+    from MDAnalysis.coordinates.XTC import XTCReader
+    from MDAnalysisTests.datafiles import XTC
+except ImportError:
+    pass
+
+try:
+    from MDAnalysis.coordinates.TRR import TRRReader
+    from MDAnalysisTests.datafiles import TRR
+except ImportError:
+    pass
+
+try:
+    from MDAnalysis.coordinates.TRJ import NCDFReader
+    from MDAnalysisTests.datafiles import NCDF
+except ImportError:
+    pass
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
