@@ -42,7 +42,7 @@ these units ((:class:`ResidueGroup`, :class:`SegmentGroup`).
 Classes
 =======
 
-Collections
+CollectionsF
 -----------
 
 .. autoclass:: AtomGroup
@@ -1746,9 +1746,13 @@ class AtomGroup(GroupBase):
         Examples
         --------
         All simple selection listed below support multiple arguments which are
-        implicitly combined. For example
+        implicitly combined with an or operator. For example
 
            >>> sel = universe.select_atoms('resname MET GLY')
+           
+        is equivalent to 
+
+           >>> sel = universe.select_atoms('resname MET or resname GLY')
 
         Will select all atoms with a residue name of either MET or GLY.
 
