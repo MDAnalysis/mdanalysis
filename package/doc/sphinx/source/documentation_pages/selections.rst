@@ -11,7 +11,7 @@ syntax`_)::
 
   >>> kalp = universe.select_atoms("segid KALP")
 
-.. _`CHARMM's atom selection syntax`: 
+.. _`CHARMM's atom selection syntax`:
    http://www.charmm.org/documentation/c37b1/select.html
 
 The :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of a
@@ -25,7 +25,7 @@ which can happen with complicated selections).
 
 One can group subselections using parentheses::
 
- >>> universe.select_atoms("segid DMPC and not (name H* or name O*)")
+ >>> universe.select_atoms("segid DMPC and not (name H* or type OW)")
  <AtomGroup with 3420 atoms>
 
 Almost all the basic CHARMM selections work.
@@ -61,7 +61,7 @@ protein, backbone, nucleic, nucleicbackbone
 
 segid *seg-name*
     select by segid (as given in the topology), e.g. ``segid 4AKE`` or
-    ``segid DMPC`` 
+    ``segid DMPC``
 
 resid *residue-number-range*
     resid can take a single residue number or a range of numbers. A range
@@ -79,30 +79,30 @@ resname *residue-name*
 name *atom-name*
     select by atom name (as given in the topology). Often, this is force
     field dependent. Example: ``name CA`` (for C&alpha; atoms) or ``name
-    OW`` (for SPC water oxygen) 
+    OW`` (for SPC water oxygen)
 
 type *atom-type*
     select by atom type; this is either a string or a number and depends on
     the force field; it is read from the topology file (e.g. the CHARMM PSF
     file contains numeric atom types). It has non-sensical values when a
-    PDB or GRO file is used as a topology. 
+    PDB or GRO file is used as a topology.
 
 atom *seg-name*  *residue-number*  *atom-name*
     a selector for a single atom consisting of segid resid atomname,
     e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the
-    DMPC segment  
+    DMPC segment
 
 Boolean
 -------
 
 not
     all atoms not in the selection, e.g. ``not protein`` selects all atoms
-    that aren't part of a protein 
+    that aren't part of a protein
 
 and, or
     combine two selections according to the rules of boolean algebra,
     e.g. ``protein and not (resname ALA or resname LYS)`` selects all atoms
-    that belong to a protein, but are not in a lysine or alanine residue  
+    that belong to a protein, but are not in a lysine or alanine residue
 
 Geometric
 ---------
@@ -123,7 +123,7 @@ sphzone *externalRadius* *selection*
     selects all atoms within a spherical zone centered in the center of
     geometry (COG) of a given selection, e.g. ``sphzone 6.0 ( protein and (
     resid 130 or resid 80 ) )`` selects the center of geometry of protein,
-    resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.	
+    resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.
 
 cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
     selects all atoms within a cylindric layer centered in the center of
@@ -132,9 +132,9 @@ cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
     cylindrical layer of inner radius 5, external radius 10 centered on the
     COG. In z, the cylinder extends from 10 above the COG to 8
     below. Positive values for *zMin*, or negative ones for *zMax*, are
-    allowed.	
+    allowed.
 
-cyzone *externalRadius* *zMax* *zMin* *selection*    
+cyzone *externalRadius* *zMax* *zMin* *selection*
     selects all atoms within a cylindric zone centered in the center of
     geometry (COG) of a given selection, e.g. ``cyzone 15 4 -8 protein and
     resid 42`` selects the center of geometry of protein and resid 42, and
@@ -142,18 +142,18 @@ cyzone *externalRadius* *zMax* *zMin* *selection*
     cylinder extends from 4 above the COG to 8 below. Positive values for
     *zMin*, or negative ones for *zMax*, are allowed.
 
-    .. versionchanged:: 0.10.0    
+    .. versionchanged:: 0.10.0
        keywords *cyzone* and *cylayer* now take *zMax* and *zMin* to be
        relative to the COG of *selection*, instead of absolute z-values
-       in the box. 
+       in the box.
 
-point *x* *y* *z*  *distance*   
+point *x* *y* *z*  *distance*
     selects all atoms within a cutoff of a point in space, make sure
     coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0 3.5``
     selects all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0,
     5.0)
 
-prop [abs] *property*  *operator*  *value*    
+prop [abs] *property*  *operator*  *value*
     selects atoms based on position, using *property* **x**, **y**, or
     **z** coordinate. Supports the **abs** keyword (for absolute value) and
     the following *operators*: **<, >, <=, >=, ==, !=**. For example,
@@ -225,7 +225,7 @@ global *selection*
     result would be an empty selection since the ``protein`` subselection would
     itself be empty.  When issuing
     :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
-    :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored. 
+    :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
 .. deprecated:: 0.11
    The use of ``fullgroup`` has been deprecated in favor of the equivalent
@@ -313,7 +313,7 @@ Segment selector
    Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead. Note that this
    *always* returns a :class:`SegmentGroup` and *never* a :class:`Segment`
    (unlike the instant selector).
-   
+
 - ``universe.<segid>`` or ``universe.s<segid>`` (if *<segid>* starts with a
   number)
 - returns a :class:`~MDAnalysis.core.groups.Segment`
@@ -327,14 +327,14 @@ Resid selector
 
 .. deprecated:: 0.16.2
    Use ``Segment.residues[N-1]`` instead.
-   
+
 - ``seg.r<N>`` selects residue with number ``<N>``
 - returns a :class:`~MDAnalysis.core.groups.Residue`
 - works for :class:`~MDAnalysis.core.groups.Segment` and :class:`~MDAnalysis.core.groups.SegmentGroup`
 - example
     >>>  u.s4AKE.r100
     <Residue 'GLY', 100>
- 
+
 Residue name selector
 ---------------------
 
@@ -367,7 +367,7 @@ Atom name selector
 
 - ``g.<atomname>`` selects a single atom or a group of atoms with name
   ``<atomname>``
-- returns 
+- returns
     - a :class:`~MDAnalysis.core.groups.Atom` if only a single atom was found,
     - a :class:`~MDAnalysis.core.groups.AtomGroup` if more than one atom was
       found, or
@@ -377,13 +377,13 @@ Atom name selector
 - examples
     >>> u.atoms.CG
     >>> <AtomGroup with 125 atoms>
-    >>> u.s4AKE.CG     
+    >>> u.s4AKE.CG
     <AtomGroup with 125 atoms>
     >>> u.s4AKE.r100.CA
     < Atom 1516: name 'CA' of type '23' of resname 'GLY', resid 100 and segid '4AKE'>
     >>> u.s4AKE.r100.CB
     SelectionError: No atom in residue GLY with name CB
-  
+
 
 .. _ordered-selections-label:
 
@@ -421,4 +421,3 @@ work as one might expect::
  >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]
-

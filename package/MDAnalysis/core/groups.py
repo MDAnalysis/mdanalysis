@@ -1743,23 +1743,35 @@ class AtomGroup(GroupBase):
         are not any duplicates, which can happen with complicated
         selections).
 
-        Existing :class:`AtomGroup` objects can be passed as named arguments,
-        which will then be available to the selection parser.
+        Examples
+        --------
+        All simple selection listed below support multiple arguments which are
+        implicitly combined. For example
+
+           >>> sel = universe.select_atoms('resname MET GLY')
+
+        Will select all atoms with a residue name of either MET or GLY.
 
         Subselections can be grouped with parentheses.
 
-        Selections can be set to update automatically on frame change, by
-        setting the `updating` named argument to `True`.
-
-        Examples
-        --------
-
-           >>> sel = universe.select_atoms("segid DMPC and not ( name H* or name O* )")
+           >>> sel = universe.select_atoms("segid DMPC and not ( name H* O* )")
            >>> sel
            <AtomGroup with 3420 atoms>
 
+
+        Existing :class:`AtomGroup` objects can be passed as named arguments,
+        which will then be available to the selection parser.
+
            >>> universe.select_atoms("around 10 group notHO", notHO=sel)
            <AtomGroup with 1250 atoms>
+
+        Selections can be set to update automatically on frame change, by
+        setting the `updating` keyword argument to `True`.  This will return
+        a :class:`UpdatingAtomGroup` which can represent the solvation shell
+        around another object.
+
+           >>> universe.select_atoms("resname SOL and around 2.0 protein", updating=True)
+           <Updating AtomGroup with 100 atoms>
 
         Notes
         -----
@@ -1838,7 +1850,7 @@ class AtomGroup(GroupBase):
 
             and, or
                 combine two selections according to the rules of boolean
-                algebra, e.g. ``protein and not (resname ALA or resname LYS)``
+                algebra, e.g. ``protein and not resname ALA LYS``
                 selects all atoms that belong to a protein, but are not in a
                 lysine or alanine residue
 
@@ -1874,7 +1886,7 @@ class AtomGroup(GroupBase):
                 selection, e.g. specify the subselection after the byres keyword
             bonded *selection*
                 selects all atoms that are bonded to selection
-                eg: ``select name H bonded name O`` selects only hydrogens
+                eg: ``select name H and bonded name O`` selects only hydrogens
                 bonded to oxygens
 
         **Index**
