@@ -15,6 +15,7 @@
 #
 from __future__ import absolute_import, print_function
 from six.moves import zip
+from six.moves import cPickle as pickle
 
 from collections import namedtuple
 import os
@@ -25,7 +26,7 @@ from hypothesis import example, given
 import numpy as np
 
 from numpy.testing import (assert_array_almost_equal, assert_equal,
-                           assert_array_equal)
+                           assert_array_equal, assert_almost_equal)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
 
@@ -44,9 +45,9 @@ def test_is_periodic(dcdfile, is_periodic):
         assert f.is_periodic == is_periodic
 
 
-@pytest.mark.parametrize("dcdfile, natoms",
-                         [(DCD, 3341), (DCD_NAMD_TRICLINIC, 5545),
-                          (DCD_TRICLINIC, 375)])
+@pytest.mark.parametrize("dcdfile, natoms", [(DCD, 3341), (DCD_NAMD_TRICLINIC,
+                                                           5545),
+                                             (DCD_TRICLINIC, 375)])
 def test_read_coordsshape(dcdfile, natoms):
     # confirm shape of coordinate data against result from previous
     # MDAnalysis implementation of DCD file handling
@@ -82,6 +83,25 @@ def dcd():
         yield dcd
 
 
+def test_pickle(dcd):
+    dcd.seek(len(dcd) - 1)
+    dump = pickle.dumps(dcd)
+    new_dcd = pickle.loads(dump)
+
+    assert dcd.fname == new_dcd.fname
+    assert dcd.tell() == new_dcd.tell()
+
+
+def test_pickle_closed(dcd):
+    dcd.seek(len(dcd) - 1)
+    dcd.close()
+    dump = pickle.dumps(dcd)
+    new_dcd = pickle.loads(dump)
+
+    assert dcd.fname == new_dcd.fname
+    assert dcd.tell() != new_dcd.tell()
+
+
 @pytest.mark.parametrize("new_frame", (10, 42, 21))
 def test_seek_normal(new_frame, dcd):
     # frame seek within range is tested
@@ -115,9 +135,9 @@ def test_zero_based_frames_counting(dcd):
     assert dcd.tell() == 0
 
 
-@pytest.mark.parametrize("dcdfile, natoms",
-                         [(DCD, 3341), (DCD_NAMD_TRICLINIC, 5545),
-                          (DCD_TRICLINIC, 375)])
+@pytest.mark.parametrize("dcdfile, natoms", [(DCD, 3341), (DCD_NAMD_TRICLINIC,
+                                                           5545),
+                                             (DCD_TRICLINIC, 375)])
 def test_natoms(dcdfile, natoms):
     with DCDFile(dcdfile) as dcd:
         assert dcd.header['natoms'] == natoms
@@ -129,9 +149,9 @@ def test_read_closed(dcd):
         dcd.read()
 
 
-@pytest.mark.parametrize("dcdfile, nframes",
-                         [(DCD, 98), (DCD_NAMD_TRICLINIC, 1),
-                          (DCD_TRICLINIC, 10)])
+@pytest.mark.parametrize("dcdfile, nframes", [(DCD, 98), (DCD_NAMD_TRICLINIC,
+                                                          1), (DCD_TRICLINIC,
+                                                               10)])
 def test_length_traj(dcdfile, nframes):
     with DCDFile(dcdfile) as dcd:
         assert len(dcd) == nframes
@@ -158,9 +178,10 @@ DCD_NAMD_TRICLINIC_HEADER = 'Created by DCD pluginREMARKS Created 06 July, 2014 
 DCD_TRICLINIC_HEADER = '* CHARMM TRICLINIC BOX TESTING                                                  * (OLIVER BECKSTEIN 2014)                                                       * BASED ON NPTDYN.INP : SCOTT FELLER, NIH, 7/15/95                              * TEST EXTENDED SYSTEM CONSTANT PRESSURE AND TEMPERATURE                        * DYNAMICS WITH WATER BOX.                                                      *  DATE:     7/ 7/14     13:59:46      CREATED BY USER: oliver                  '
 
 
-@pytest.mark.parametrize("dcdfile, remarks", (
-    (DCD, DCD_HEADER), (DCD_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC_HEADER),
-    (DCD_TRICLINIC, DCD_TRICLINIC_HEADER)))
+@pytest.mark.parametrize("dcdfile, remarks",
+                         ((DCD, DCD_HEADER), (DCD_NAMD_TRICLINIC,
+                                              DCD_NAMD_TRICLINIC_HEADER),
+                          (DCD_TRICLINIC, DCD_TRICLINIC_HEADER)))
 def test_header_remarks(dcdfile, remarks):
     # confirm correct header remarks section reading
     with DCDFile(dcdfile) as f:
@@ -346,8 +367,8 @@ def test_written_unit_cell(written_dcd):
             assert_array_almost_equal(frame.unitcell, o_frame.unitcell)
 
 
-@pytest.mark.parametrize(
-    "dtype", (np.int32, np.int64, np.float32, np.float64, int, float))
+@pytest.mark.parametrize("dtype", (np.int32, np.int64, np.float32, np.float64,
+                                   int, float))
 def test_write_all_dtypes(tmpdir, dtype):
     fname = str(tmpdir.join('foo.dcd'))
     with DCDFile(fname, 'w') as out:
@@ -456,9 +477,9 @@ def test_nframessize_int(dcdfile):
     [([None, None, None], 98), ([0, None, None], 98), ([None, 98, None], 98),
      ([None, None, 1], 98), ([None, None, -1], 98), ([2, 6, 2], 2),
      ([0, 10, None], 10), ([2, 10, None], 8), ([0, 1, 1], 1), ([1, 1, 1], 0),
-     ([1, 2, 1], 1), ([1, 2, 2], 1), ([1, 4, 2], 2), ([1, 4, 4], 1),
-     ([0, 5, 5], 1), ([3, 5, 1], 2), ([4, 0, -1], 4), ([5, 0, -2], 3),
-     ([5, 0, -4], 2)])
+     ([1, 2, 1], 1), ([1, 2, 2], 1), ([1, 4, 2], 2), ([1, 4, 4], 1), ([
+         0, 5, 5
+     ], 1), ([3, 5, 1], 2), ([4, 0, -1], 4), ([5, 0, -2], 3), ([5, 0, -4], 2)])
 def test_readframes_slices(slice, length, dcd):
     start, stop, step = slice
     allframes = dcd.readframes().xyz
@@ -493,8 +514,7 @@ def test_readframes_atomindices(indices, dcd):
 def test_write_random_unitcell(tmpdir):
     testname = str(tmpdir.join('test.dcd'))
     rstate = np.random.RandomState(1178083)
-    random_unitcells = rstate.uniform(
-        high=80, size=(98, 6)).astype(np.float64)
+    random_unitcells = rstate.uniform(high=80, size=(98, 6)).astype(np.float64)
 
     with DCDFile(DCD) as f_in, DCDFile(testname, 'w') as f_out:
         header = f_in.header
@@ -505,5 +525,4 @@ def test_write_random_unitcell(tmpdir):
 
     with DCDFile(testname) as test:
         for index, frame in enumerate(test):
-            assert_array_almost_equal(frame.unitcell,
-                                      random_unitcells[index])
+            assert_array_almost_equal(frame.unitcell, random_unitcells[index])
