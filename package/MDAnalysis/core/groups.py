@@ -42,7 +42,7 @@ these units ((:class:`ResidueGroup`, :class:`SegmentGroup`).
 Classes
 =======
 
-CollectionsF
+Collections
 -----------
 
 .. autoclass:: AtomGroup
