@@ -30,4 +30,7 @@ class SimpleSelectionBench(object):
         """Benchmark simple selections on the protein-based
         standard test GRO file.
         """
-        self.u.select_atoms(selection_string)
+        if hasattr(MDAnalysis.Universe, 'select_atoms'):
+            self.u.select_atoms(selection_string)
+        else:
+            self.u.selectAtoms(selection_string)
