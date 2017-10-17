@@ -18,7 +18,7 @@ class SimpleSelectionBench(object):
               'resid 1:10',
               'resnum 1:10',
               'resname LYS',
-              'name CA'
+              'name CA',
               'bynum 0:10')
 
     param_names = ['selection_string']
