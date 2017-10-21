@@ -198,6 +198,14 @@ class TestRMSD(object):
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 
+    def test_rmsd_atomgroup_selections(self, universe):
+        # see Issue #1684
+        R1 = MDAnalysis.analysis.rms.RMSD(universe.atoms,
+                                          select="resid 1-30").run()
+        R2 = MDAnalysis.analysis.rms.RMSD(universe.atoms.select_atoms("name CA"),
+                                          select="resid 1-30").run()
+        assert not np.allclose(R1.rmsd[:, 2], R2.rmsd[:, 2])
+
     def test_rmsd_single_frame(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             start=5, stop=6).run()
