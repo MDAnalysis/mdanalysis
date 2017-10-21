@@ -1306,7 +1306,7 @@ def get_weights(atoms, weights):
         also raised if ``atoms.masses`` is not defined.
 
     """
-    if weights == "mass":
+    if not iterable(weights) and weights == "mass":
         try:
             weights = atoms.masses
         except AttributeError:

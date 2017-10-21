@@ -510,12 +510,15 @@ class RMSD(AnalysisBase):
         # Explicitly check for "mass" because this option CAN
         # be used with groupselection. (get_weights() returns the mass array
         # for "mass")
-        if self.weights != "mass":
+        if not iterable(self.weights) and self.weights == "mass":
+            pass
+        else:
             self.weights = get_weights(self.mobile_atoms, self.weights)
 
         # cannot use arbitrary weight array (for superposition) with
         # groupselections because arrays will not match
-        if len(self.groupselections) > 0 and self.weights not in ("mass", None):
+        if (len(self.groupselections) > 0 and (
+                iterable(self.weights) or self.weights not in ("mass", None))):
             raise ValueError("groupselections can only be combined with "
                              "weights=None or weights='mass', not a weight "
                              "array.")
@@ -527,7 +530,7 @@ class RMSD(AnalysisBase):
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
-        if self.weights == 'mass':
+        if not iterable(self.weights) and self.weights == 'mass':
             self.weights = self.ref_atoms.masses
         if self.weights is not None:
             self.weights = np.asarray(self.weights, dtype=np.float64) / np.mean(self.weights)
