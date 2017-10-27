@@ -1940,7 +1940,7 @@ class SingleFrameReaderBase(ProtoReader):
 
     def __iter__(self):
         yield self.ts
-        raise StopIteration
+        return
 
     def _read_frame(self, frame):
         if frame != 0:
