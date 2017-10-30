@@ -31,6 +31,7 @@ boundary conditions.
 from __future__ import absolute_import
 from six.moves import range
 
+import itertools
 import numpy as np
 from Bio.KDTree import _CKDTree
 
@@ -145,70 +146,76 @@ class PeriodicKDTree(object):
         self.kdt.set_data(wrapped_data)
         self.built = 1
 
-    def find_centers(self, center_point, radius):
+    def find_images(self, center_points, radius):
         """
-        Find relevant images of a center point, inspired by
+        Find relevant images of a a set of center points, inspired by
         https://github.com/patvarilly/periodic_kdtree
 
         Parameters
         ----------
-        center_point: NumPy.array
-          Coordinates of the query center point
+        center_points: NumPy.array shape=(N,3)
+          Coordinates of the query center points. Must be in centrall cell.
         radius: float
           Maximum distance from center in search for neighbors
 
         Returns
         ------
         :class:`List`
-          wrapped center point and its relevant images
+          images of the center points close to any cell boundary plane
         """
-        wrapped_c = apply_PBC(center_point.reshape(1, 3), self.box)[0]
-        # extents marks the max distance to plane just to consider an image
-        extents = np.array([norm(self._dm[i])/2.0 for i in range(self.dim)])
-        extents = np.where(extents < radius, extents, radius)
-        # displacements are vectors that we add to wrapped_c to
-        # generate images "up" or "down" the central cell along
-        # the axis that we happen to be looking.
-        displacements = list()
-        for i in range(self.dim):
-            # distance to the plane containing the origin
-            if np.dot(wrapped_c, self._rm[i]) < extents[i]:
-                displacements.append(self._dm[i])  # "upper" image
-            # distance to the plane containing point self._dm[i]
-            elif np.dot(self._dm[i] - wrapped_c, self._rm[i]) < extents[i]:
-                displacements.append(-self._dm[i])  # "lower" image
-        # If we have displacements along more than one axis, we have
-        # to combine them. This happens when wrapped_center is close
-        # to any edge or vertex of the central cell.
-        # face, n_displacements==1; no combination
-        # edge, n_displacements==2; combinations produce one extra displacement
-        # vertex, n_displacements==3; five extra displacements
-        n_displacements = len(displacements)
-        if n_displacements > 1:
-            for start in range(n_displacements - 1, -1, -1):
-                for i in range(start+1, len(displacements)):
-                    displacements.append(displacements[start]+displacements[i])
-        return [wrapped_c, ] + [wrapped_c + d for d in displacements]
+        images = list()
 
-    def search(self, center, radius):
-        """Search all points within radius of center and its periodic images.
+        if center_points.shape == (3,):
+            center_points = center_points.reshape((1,3))
+
+        # To-Do: parallel
+        for center_point in center_points:
+            # displacements are vectors we add to center_point to generate
+            # images "up" or "down" the central cell along the axis that we
+            # happen to be looking.
+
+            # distances to cell boundary planes passing through the origin
+            distances = np.dot(self._rm, center_point)
+            displacements = list(self._dm[np.where(distances < radius)[0]])
+            # distances to the remaining three cell boundary planes
+            distances = np.einsum('ij,ij->i', self._rm, self._dm - center_point)
+            displacements.extend(list(-self._dm[np.where(distances < radius)[0]]))
+            # If we have displacements along more than one axis, we have
+            # to combine them. This happens when center_point is close
+            # to any edge or vertex of the central cell.
+            # face case: n_displacements==1; no combination
+            # edge case: n_displacements==2; one extra displacement
+            # vertex case: n_displacements==3; five extra displacements
+            n_displacements = len(displacements)
+            if n_displacements > 1:
+                for start in range(n_displacements - 1, -1, -1):
+                    for i in range(start+1, len(displacements)):
+                        displacements.append(displacements[start]+displacements[i])
+            images.extend([center_point + d for d in displacements])
+        return images
+
+    def search(self, centers, radius):
+        """Search all points within radius of centers and its periodic images.
         Wrapping of center coordinates is enforced to enable comparison to
         wrapped coordinates of points in the tree.
 
         Parameter
         ---------
-        center: NumPy.array
-          origin around which to search for neighbors
+        centers: NumPy.array shape=(N,3)
+          origins around which to search for neighbors
         radius: float
           maximum distance around which to search for neighbors. The search
           radius is half the smallest periodicity if radius exceeds this value
         """
         if not self.built:
             raise RuntimeError('Unbuilt tree. Run tree.set_coords first')
-        if center.shape != (self.dim,):
-            raise ValueError('Expected a ({},) NumPy array'.format(self.dim))
+        if centers.shape == (self.dim, ):
+            centers = centers.reshape((1, self.dim))
+        wrapped_centers = apply_PBC(centers, self.box)
         self._indices = set()  # clear previous search
-        for c in self.find_centers(center, radius):
+        # To-Do: parallel
+        for c in itertools.chain(wrapped_centers,
+                                 self.find_images(wrapped_centers, radius)):
             self.kdt.search_center_radius(c, radius)
             new_indices = self.kdt.get_indices()  # returns None or np.array
             if new_indices is not None:
@@ -216,4 +223,10 @@ class PeriodicKDTree(object):
         self._indices = sorted(list(self._indices))
 
     def get_indices(self):
+        """
+        Returns
+        ------
+        _indices: `List`
+          neighbors for the last query points and search radius
+        """
         return self._indices

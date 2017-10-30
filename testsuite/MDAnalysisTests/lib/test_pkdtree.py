@@ -30,10 +30,11 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.mdamath import triclinic_vectors, triclinic_box
-from MDAnalysis.lib.distances import _box_check, transform_RtoS, transform_StoR
+from MDAnalysis.lib.distances import (_box_check, transform_RtoS,
+                                      transform_StoR, apply_PBC)
 
 #
-# Testing initialization with different boxes
+# Testing initialization with different boxes.
 #
 boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
          np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
@@ -61,7 +62,7 @@ rec_m = (np.array([[1, 0, 0],
 @pytest.mark.parametrize('box, rm', zip(boxes_1, rec_m))
 def test_initialize_bm(box, rm):
     """
-    Assert the construction of the recripocal box matrix
+    Assert the construction of the recripocal box matrix.
     """
     assert_almost_equal(PeriodicKDTree(box)._rm, rm, decimal=7)
 
@@ -76,7 +77,7 @@ def test_set_coords():
                  'coords must be a sequence of 3 dimensional coordinates')
 
 #
-# Testing for correct images generation for a given query point
+# Testing for correct images generation for a given query point.
 #
 
 # fractional coordinates for data points
@@ -92,9 +93,8 @@ radius = 1.5
 boxes_2 = ([10, 10, 10, 90, 90, 90],  # ortho
           [10, 10, 10, 45, 60, 90])  # tri_box
 
-# Find images for a given query vector, here in fractional coordinates
-queries = ([0.5, 0.5, 0.5],  # case box center
-           [0.1, 0.5, 0.5],  # box face
+# Find images for several query points, here in fractional coordinates.
+queries = ([0.1, 0.5, 0.5],  # box face
            [0.5, -0.1, 0.5],  # box face
            [0.1, 0.1, 0.5],  # box edge
            [0.5, -0.1, 1.1],  # box edge
@@ -102,32 +102,29 @@ queries = ([0.5, 0.5, 0.5],  # case box center
            [0.1, -0.1, 1.1],  # box vertex
            [2.1, -3.1, 0.1]  # box vertex
            )
-# Images for the previous query vectors, here in fractional coordinates
-centers = (([0.5, 0.5, 0.5], ),
-           ([0.1, 0.5, 0.5], [1.1, 0.5, 0.5]),
-           ([0.5, 0.9, 0.5], [0.5, -0.1, 0.5]),
-           ([0.1, 0.1, 0.5], [1.1, 0.1, 0.5],
-            [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]),
-           ([0.5, 0.9, 0.1], [0.5, -0.1, 0.1],
-            [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]),
-           ([0.1, 0.1, 0.1], [1.1, 0.1, 0.1], [0.1, 1.1, 0.1],
-            [0.1, 0.1, 1.1], [0.1, 1.1, 1.1], [1.1, 1.1, 0.1],
-            [1.1, 0.1, 1.1], [1.1, 1.1, 1.1]),
-           ([0.1, 0.9, 0.1], [1.1, 0.9, 0.1], [0.1, -0.1, 0.1],
-            [0.1, 0.9, 1.1], [0.1, -0.1, 1.1], [1.1, -0.1, 0.1],
-            [1.1, 0.9, 1.1], [1.1, -0.1, 1.1]),
-           ([0.1, 0.9, 0.1], [1.1, 0.9, 0.1], [0.1, -0.1, 0.1],
-            [0.1, 0.9, 1.1], [0.1, -0.1, 1.1], [1.1, -0.1, 0.1],
-            [1.1, 0.9, 1.1], [1.1, -0.1, 1.1])
-           )
+
+# Images for the previous query vectors, here in fractional coordinates.
+images = (([1.1, 0.5, 0.5],),
+          ([0.5, -0.1, 0.5],),
+          ([1.1, 0.1, 0.5], [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]),
+          ([0.5, -0.1, 0.1], [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]),
+          ([1.1, 0.1, 0.1], [0.1, 1.1, 0.1], [0.1, 0.1, 1.1],
+           [0.1, 1.1, 1.1], [1.1, 1.1, 0.1], [1.1, 0.1, 1.1],
+           [1.1, 1.1, 1.1]),
+          ([1.1, 0.9, 0.1], [0.1, -0.1, 0.1], [0.1, 0.9, 1.1],
+           [0.1, -0.1, 1.1], [1.1, -0.1, 0.1], [1.1, 0.9, 1.1],
+           [1.1, -0.1, 1.1]),
+          ([1.1, 0.9, 0.1], [0.1, -0.1, 0.1], [0.1, 0.9, 1.1],
+           [0.1, -0.1, 1.1], [1.1, -0.1, 0.1], [1.1, 0.9, 1.1],
+           [1.1, -0.1, 1.1]))
 
 
-@pytest.mark.parametrize('b, qcs', product(boxes_2, zip(queries, centers)))
-def test_find_centers(b, qcs):
+@pytest.mark.parametrize('b, qcs', product(boxes_2, zip(queries, images)))
+def test_find_images(b, qcs):
     """
-    Test the generation of images for a given query vector and type of box
-    :param b: box as a list with six items
-    :param qcs: a query vector and a list of expected images
+    Test the generation of images for a given query vector and type of box.
+    :param b: box as a list with six items.
+    :param qcs: a query vector and a list of expected images.
     """
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(qcs[0], dtype=np.float32), b)
@@ -135,59 +132,59 @@ def test_find_centers(b, qcs):
     coords = transform_StoR(f_dataset, b)
     tree.set_coords(coords)  # Input real space coordinates
     cs = np.sort(transform_StoR(np.array(qcs[1], dtype=np.float32), b), axis=0)
-    found_centers = np.sort(tree.find_centers(q, radius), axis=0)
-    assert_almost_equal(found_centers, cs, decimal=6)
+    q_wrapped = apply_PBC(q.reshape((1, 3)), b)
+    found_images = np.sort(tree.find_images(q_wrapped, radius), axis=0)
+    assert_almost_equal(found_images, cs, decimal=6)
 
 
 #
 # Testing for neighbor finding
 #
 
-# Find neighbors for a given query vector, here in fractional coordinates
-q_2 = ([0.5, 0.5, 0.5],  # case box center
-             [-0.85, 1.15, 0.22],  # wrapped to [1.5, 1.5, 2.2]
-             [0, 10, 0.07],  # box face
+# Find neighbors for a given query vector, here in fractional coordinates.
+queries_2 = ([0.5, 0.5, 0.5],  # case box center
+             [0, 1, 0.07],  # box face
              [0.1, 0.1, 0.5],  # box edge
              [0.1, 0.1, 0.1],  # box vertex
-             [-1.9, 4.2, 0.2],  # box vertex
-             [2.1, -3.1, 0.1]  # box vertex
+             ([-1.9, 4.2, 0.2], [2.1, -3.1, 0.1])  # multiple queries
             )
-# Expected neighbors for previous queries in the orthogonal box case
-n_o = (([0.5, 0.5, 0.5], ),
-              ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3]),
-              ([1.1, -1.1, 1.1], ),
-              (),
-              ([0.11, 0.11, 0.11], ),
-              ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3]),
-              ([1.1, -1.1, 1.1], )
-              )
+# Expected neighbors of queries_2 in the orthogonal box case, here in
+# fractional coordinates.
+n_ortho = (([0.5, 0.5, 0.5],),
+           ([1.1, -1.1, 1.1], ),
+           (),
+           ([0.11, 0.11, 0.11], ),
+           ([0.2, 0.2, 0.2], [0.11, 0.11, 0.11], [2.1, 2.1, 0.3],
+               [1.1, -1.1, 1.1])
+           )
 # Expected neighbors for previous queries in the trigonal box case
-n_t = (([0.5, 0.5, 0.5], ),
-              ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3]),
-              ([1.1, -1.1, 1.1], ),
-              (),
-              ([0.11, 0.11, 0.11], ),
-              ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3]),
-              ([1.1, -1.1, 1.1], )
-              )
+n_tric = (([0.5, 0.5, 0.5],),
+          ([1.1, -1.1, 1.1], ),
+          (),
+          ([0.11, 0.11, 0.11], ),
+          ([0.2, 0.2, 0.2], [2.1, 2.1, 0.3], [1.1, -1.1, 1.1])
+          )
 
+# Combinations of boxes, query points, and expected neighbors.
 doublets = list()
-for b, n in zip(boxes_2, (n_o, n_t)):
-    doublets.extend(list(product([b], zip(q_2, n))))
+for b, n in zip(boxes_2, (n_ortho, n_tric)):
+    doublets.extend(list(product([b], zip(queries_2, n))))
 
 
 @pytest.mark.parametrize('b, qns', doublets)
 def test_search(b, qns):
     """
-    Test finding neighbors for a given query vector and type of box
-    :param b: box as a list with six items
-    :param qns: a query vector and a list of expected neighbors
+    Test finding neighbors for a given query vector and type of box.
+    :param b: box as a list with six items.
+    :param qns: a query point and a list of expected neighbors.
     """
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(qns[0], dtype=np.float32), b)
+    # Setting up the periodic tree
     tree = PeriodicKDTree(b)
     coords = transform_StoR(f_dataset, b)
     tree.set_coords(coords)  # Input real space coordinates
+    # Carry out the search and retrieve results
     tree.search(q, radius)
     indices = tree.get_indices()
     if indices:

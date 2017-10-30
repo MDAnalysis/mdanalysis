@@ -63,6 +63,7 @@ class AtomNeighborSearch(object):
         """
         self.atom_group = atom_group
         self._u = atom_group.universe
+        self._box = box
         if box is None:
             self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
         else:
@@ -90,9 +91,12 @@ class AtomNeighborSearch(object):
             positions = atoms.positions
 
         indices = []
-        for pos in positions:
-            self.kdtree.search(pos, radius)
-            indices.append(self.kdtree.get_indices())
+        if self._box:
+            indices = self.kdtree.search(positions, radius)
+        else:
+            for pos in positions:
+                self.kdtree.search(pos, radius)
+                indices.append(self.kdtree.get_indices())
         unique_idx = np.unique([i for l in indices for i in l]).astype(np.int64)
         return self._index2level(unique_idx, level)
 
