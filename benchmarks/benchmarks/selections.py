@@ -52,7 +52,7 @@ class GeoSelectionBench(object):
                'prop z >= 5.0',
                'prop abs z <= 5.0'],
               [True, False], # updating flags
-              [[False, True], [True, False]) # periodic flags
+              [[False, True], [True, False]]) # periodic flags
 
 
     # benchmarks should include static &
