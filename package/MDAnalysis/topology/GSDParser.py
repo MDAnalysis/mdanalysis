@@ -86,45 +86,44 @@ class GSDParser(TopologyReaderBase):
 
         .. versionadded:: 0.17.0
         """
-        t = gsd.hoomd.open(self.filename,mode='rb')
-
-        # Here it is assumed that the particle data does not change in the
-        # trajectory.
-        snap = t[0]
-
-        natoms = snap.particles.N
-
         attrs = {}
 
-        ptypes = snap.particles.types
-        atypes = [ptypes[idx] for idx in snap.particles.typeid]
-        if len(atypes) != natoms:
-            raise IOError("Number of types does not equal natoms.")
-        attrs['types'] = Atomtypes(np.array(atypes, dtype=object))
+        with gsd.hoomd.open(self.filename,mode='rb') as t :
+            # Here it is assumed that the particle data does not change in the
+            # trajectory.
+            snap = t[0]
 
-        # set radii, masses, charges
-        p = snap.particles
-        attrs['diameter'] = Radii (np.array(p.diameter / 2.,dtype=np.float32))
-        attrs['mass'] = Masses (np.array(p.mass,dtype=np.float64))
-        attrs['charge'] = Charges (np.array(p.charge,dtype=np.float32))
+            natoms = snap.particles.N
 
-        # set bonds, angles, dihedrals, impropers
-        for attrname, attr, in (
-                ('bond', Bonds),
-                ('angle', Angles),
-                ('dihedral', Dihedrals),
-                ('improper', Impropers),
-        ):
-            try:
-                val = getattr(snap,attrname)
-                vals = val.group
-            except:
-                pass
-            else:
-                attrs[attrname] = attr(vals)
+
+            ptypes = snap.particles.types
+            atypes = [ptypes[idx] for idx in snap.particles.typeid]
+            if len(atypes) != natoms:
+                raise IOError("Number of types does not equal natoms.")
+            attrs['types'] = Atomtypes(np.array(atypes, dtype=object))
+
+            # set radii, masses, charges
+            p = snap.particles
+            attrs['diameter'] = Radii (np.array(p.diameter / 2.,dtype=np.float32))
+            attrs['mass'] = Masses (np.array(p.mass,dtype=np.float64))
+            attrs['charge'] = Charges (np.array(p.charge,dtype=np.float32))
+
+            # set bonds, angles, dihedrals, impropers
+            for attrname, attr, in (
+                    ('bond', Bonds),
+                    ('angle', Angles),
+                    ('dihedral', Dihedrals),
+                    ('improper', Impropers),
+            ):
+                try:
+                    val = getattr(snap,attrname)
+                    vals = val.group
+                except:
+                    pass
+                else:
+                    attrs[attrname] = attr(vals)
 
         attrs = list(attrs.values())
-
         attrs.append(Atomids(np.arange(natoms) + 1))
         attrs.append(Resids(np.array([1])))
         attrs.append(Resnums(np.array([1])))
