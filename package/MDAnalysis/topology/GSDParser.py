@@ -43,7 +43,10 @@ Classes
 """
 from __future__ import absolute_import
 
-import gsd.hoomd
+try :
+    import gsd.hoomd
+except :
+    pass
 import numpy as np
 
 from . import guessers
