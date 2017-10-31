@@ -86,6 +86,8 @@ class GSDReader(base.ReaderBase):
 
     def _read_next_timestep(self):
         """read next frame in trajectory"""
+        if self._frame == self.n_frames - 1:
+            raise IOError('trying to go over trajectory limit')
         self._frame += 1
         self.n_atoms = self._file[self._frame].particles.N
         # instantiate the Timestep
