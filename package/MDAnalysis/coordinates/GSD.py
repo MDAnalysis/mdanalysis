@@ -86,9 +86,8 @@ class GSDReader(base.ReaderBase):
 
     def _read_next_timestep(self):
         """read next frame in trajectory"""
-        # again here we assume that the number of particles remains fixed during
-        # the trajectory
         self._frame += 1
+        print "reading frame " + str(self._frame)
         self.n_atoms = self._file[self._frame].particles.N
         # instantiate the Timestep
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
