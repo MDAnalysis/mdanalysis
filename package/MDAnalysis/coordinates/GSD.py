@@ -72,7 +72,7 @@ class GSDReader(base.ReaderBase):
 
     def close(self):
         """close reader"""
-        self._file.close()
+        self._file.file.close()
 
     @property
     def n_frames(self):
@@ -102,7 +102,7 @@ class GSDReader(base.ReaderBase):
         # set frame box dimensions
         ts.dimensions = frame.configuration.box
         for i in range(3,6) :
-            ts.dimensions[i] = np.arccos(ts.dimensions[i]) * 90.0 / np.pi / 2.0
+            ts.dimensions[i] = np.arccos(ts.dimensions[i]) * 180.0 / np.pi
 
         # set particle positions
         ts.positions = frame.particles.position
