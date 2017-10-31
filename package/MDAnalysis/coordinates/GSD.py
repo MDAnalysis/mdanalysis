@@ -91,13 +91,13 @@ class GSDReader(base.ReaderBase):
         self._frame += 1
         self.n_atoms = self._file[self._frame].particles.N
         # instantiate the Timestep
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file[self._frame]
-        return self._frame_to_ts(frame, self.ts)
+        return self._frame_to_ts (frame)
 
-    def _frame_to_ts(self, frame, ts):
+    def _frame_to_ts(self, frame):
         """convert a gsd-frame to a :class:`TimeStep`"""
-        ts.frame = self._frame
+        ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        ts.frame = frame.configuration.step
 
         # set frame box dimensions
         ts.dimensions = frame.configuration.box
@@ -107,6 +107,7 @@ class GSDReader(base.ReaderBase):
         # set particle positions
         ts.positions = frame.particles.position
 
+        self.ts = ts
         return ts
 
     @property
@@ -114,3 +115,11 @@ class GSDReader(base.ReaderBase):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
         """
         return self.ts.dimensions
+
+    def __getitem__ (self,frame_numbers) :
+        if isinstance(frame_numbers,slice) :
+            frames_generator = self._file[frame_numbers]
+            return (self._frame_to_ts(frame) for frame in frames_generator)
+        else :
+            self._frame = frame_number
+            return self._frame_to_ts (frame)
