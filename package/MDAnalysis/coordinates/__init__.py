@@ -729,4 +729,5 @@ from . import XYZ
 from . import TXYZ
 from . import memory
 from . import MMTF
+from . import GSD
 from . import null
