@@ -121,5 +121,6 @@ class GSDReader(base.ReaderBase):
             frames_generator = self._file[frame_numbers]
             return (self._frame_to_ts(frame) for frame in frames_generator)
         else :
-            self._frame = frame_number
+            self._frame = frame_numbers
+            frame = self._file[self._frame]
             return self._frame_to_ts (frame)
