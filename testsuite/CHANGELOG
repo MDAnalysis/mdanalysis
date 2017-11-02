@@ -13,6 +13,11 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+11/02/17
+
+  * 0.17.0
+    - GSD file format reader for topology and trajectory (PR #1693)
+
 mm/dd/yy
 
   * 0.16.2 utkbansal
