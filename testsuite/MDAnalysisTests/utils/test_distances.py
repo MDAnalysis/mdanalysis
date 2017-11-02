@@ -648,25 +648,22 @@ class Test_apply_PBC(object):
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 
-        # print box2
-        # print box2.shape
-
         def numpy_PBC(coords, box):
-            coords -= np.array([box[2] * val for val in np.floor(coords[:, 2] / box[2][2])])
-            coords -= np.array([box[1] * val for val in np.floor(coords[:, 1] / box[1][1])])
-            coords -= np.array([box[0] * val for val in np.floor(coords[:, 0] / box[0][0])])
-
-            return coords
+            # move to fractional coordinates
+            fractional = MDAnalysis.lib.distances.transform_RtoS(coords, box)
+            # move fractional coordinates to central cell
+            fractional -= np.floor(fractional)
+            # move back to real coordinates
+            return MDAnalysis.lib.distances.transform_StoR(fractional, box)
 
         cyth1 = apply_PBC(atoms, box1, backend=backend)
         cyth2 = apply_PBC(atoms, box2, backend=backend)
         reference = numpy_PBC(atoms, box2)
 
-        assert_almost_equal(cyth1, reference, self.prec,
+        assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
-        assert_almost_equal(cyth2, reference, self.prec,
-                            err_msg="Trlclinic apply_PBC failed comparison with np")
-
+        assert_almost_equal(cyth2, reference, decimal=4,
+                            err_msg="Triclinic apply_PBC failed comparison with np")
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
