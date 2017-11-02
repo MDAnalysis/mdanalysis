@@ -63,11 +63,13 @@ class GSDReader(base.ReaderBase):
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()
-        self.ts = self._read_next_timestep()
+        self.n_atoms = self._file[0].particles.N
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self._read_next_timestep()
 
     def open_trajectory (self) :
         """opens the trajectory file using gsd.hoomd module"""
-        self._frame = -1
+        # self._frame = -1
         self._file = gsd.hoomd.open (self.filename,mode='rb')
 
     def close(self):
@@ -84,50 +86,38 @@ class GSDReader(base.ReaderBase):
         self.close()
         self.open_trajectory()
 
-    def _read_next_timestep(self):
-        """read next frame in trajectory"""
-        if self._frame == self.n_frames - 1:
-            raise IOError('trying to go over trajectory limit')
-        self._frame += 1
-        self.n_atoms = self._file[self._frame].particles.N
-        # instantiate the Timestep
-        frame = self._file[self._frame]
-        return self._frame_to_ts (frame)
+    def _read_frame (self, frame):
+        try :
+            myframe = self._file[frame]
+        except IndexError :
+            raise IOError
 
-    def _frame_to_ts(self, frame):
-        """convert a gsd-frame to a :class:`TimeStep`"""
-        ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
-        ts.frame = frame.configuration.step
+        # sets the Timestep object
+        self.ts.frame = frame
+        self.ts.data['step'] = myframe.configuration.step
 
         # set frame box dimensions
-        ts.dimensions = frame.configuration.box
+        self.ts.dimensions = myframe.configuration.box
         for i in range(3,6) :
-            ts.dimensions[i] = np.arccos(ts.dimensions[i]) * 180.0 / np.pi
+            self.ts.dimensions[i] = np.arccos(self.ts.dimensions[i]) * 180.0 / np.pi
 
         # set particle positions
-        frame_positions = frame.particles.position
+        frame_positions = myframe.particles.position
         n_atoms_now = frame_positions.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
                 " atoms. MDAnalysis in unable to deal with variable"
-                " topology!"%(self._frame, n_atoms_now, self.n_atoms))
+                " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
-            ts.positions = frame_positions
+            self.ts.positions = frame_positions
+        return self.ts
 
-        self.ts = ts
-        return ts
+    def _read_next_timestep (self) :
+        """read next frame in trajectory"""
+        return self._read_frame (self.frame + 1)
 
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
         """
         return self.ts.dimensions
-
-    def __getitem__ (self,frame_numbers) :
-        if isinstance(frame_numbers,slice) :
-            frames_generator = self._file[frame_numbers]
-            return (self._frame_to_ts(frame) for frame in frames_generator)
-        else :
-            self._frame = frame_numbers
-            frame = self._file[self._frame]
-            return self._frame_to_ts (frame)
