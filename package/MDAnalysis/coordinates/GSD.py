@@ -56,7 +56,6 @@ class GSDReader(base.ReaderBase):
     """
     format = 'GSD'
     units = {'time': None, 'length': None}
-    _Timestep = base.Timestep
 
     def __init__(self, filename, **kwargs):
         """
@@ -79,7 +78,7 @@ class GSDReader(base.ReaderBase):
 
     def open_trajectory (self) :
         """opens the trajectory file using gsd.hoomd module"""
-        # self._frame = -1
+        self._frame = -1
         self._file = gsd.hoomd.open (self.filename,mode='rb')
 
     def close(self):
@@ -101,6 +100,9 @@ class GSDReader(base.ReaderBase):
             myframe = self._file[frame]
         except IndexError :
             raise IOError
+
+        # set frame number
+        self._frame = frame
 
         # sets the Timestep object
         self.ts.frame = frame
@@ -124,10 +126,4 @@ class GSDReader(base.ReaderBase):
 
     def _read_next_timestep (self) :
         """read next frame in trajectory"""
-        return self._read_frame (self.frame + 1)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-        """
-        return self.ts.dimensions
+        return self._read_frame (self._frame + 1)
