@@ -105,7 +105,14 @@ class GSDReader(base.ReaderBase):
             ts.dimensions[i] = np.arccos(ts.dimensions[i]) * 180.0 / np.pi
 
         # set particle positions
-        ts.positions = frame.particles.position
+        frame_positions = frame.particles.position
+        n_atoms_now = frame_positions.shape[0]
+        if n_atoms_now != self.n_atoms :
+            raise ValueError("Frame %d has %d atoms but the initial frame has %d"
+                " atoms. MDAnalysis in unable to deal with variable"
+                " topology!"%(self._frame, n_atoms_now, self.n_atoms))
+        else :
+            ts.positions = frame_positions
 
         self.ts = ts
         return ts
