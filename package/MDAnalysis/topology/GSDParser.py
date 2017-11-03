@@ -28,10 +28,14 @@ GSD topology parser
 
 The :class:`GSDParser` generates a topology from files for the HOOMD_ code.
 
-TODO: write info
+Parser for the HOOMD-blue GSD topology/trajectory format. The GSD file stores
+information on both the topology and the trajectory in the same file, and allows
+for varying atom numbers/identities and topologies during the course of the
+simulation. At the moment MDAnalysis can deal only with the case in which there
+is no variation.
 
 .. _HOOMD: http://codeblue.umich.edu/hoomd-blue/index.html
-.. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
+.. _HOOMD GSD: https://bitbucket.org/glotzer/gsd
 
 Classes
 -------
