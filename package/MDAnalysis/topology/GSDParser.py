@@ -59,6 +59,7 @@ from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomtypes,
+    Atomnames,
     Atomids,
     Angles,
     Bonds,
@@ -131,6 +132,7 @@ class GSDParser(TopologyReaderBase):
                     attrs[attrname] = attr(vals)
 
         attrs = list(attrs.values())
+        attrs.append(Atomnames(np.array(atypes, dtype=object)))
         attrs.append(Atomids(np.arange(natoms) + 1))
         attrs.append(Resids(np.array([1])))
         attrs.append(Resnums(np.array([1])))
