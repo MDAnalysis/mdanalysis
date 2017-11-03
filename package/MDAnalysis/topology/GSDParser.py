@@ -151,7 +151,6 @@ class GSDParser(TopologyReaderBase):
                 blist += abs(m)
             bodies = np.unique(blist).astype(np.int32)
             nbodies = bodies.size
-            print blist
 
         attrs = list(attrs.values())
         attrs.append(Atomnames(np.array(atypes, dtype=object)))
