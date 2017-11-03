@@ -667,7 +667,7 @@ class Test_apply_PBC(object):
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
         r = np.array([[5.75, 0.36066014, 0.75000012]], dtype=np.float32)
-        r_in_cell = list(MDAnalysis.lib.distances.apply_PBC(r, box)[0])
+        r_in_cell = MDAnalysis.lib.distances.apply_PBC(r, box)[0]
         assert_almost_equal([5.74999952, 7.3606596, 0.75000012],
                             r_in_cell, self.prec)
 
@@ -729,7 +729,6 @@ class TestPeriodicAngles(object):
 
         for val in [test1, test2, test3, test4, test5]:
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
-
 
 
 class TestDistanceBackendSelection(object):
