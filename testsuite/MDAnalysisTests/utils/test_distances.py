@@ -666,13 +666,10 @@ class Test_apply_PBC(object):
                             err_msg="Triclinic apply_PBC failed comparison with np")
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
-        s = np.array([0.5, -0.1, 0.5], dtype=np.float32)  # fractional coords
-        r = MDAnalysis.lib.distances.transform_StoR(s.reshape((1,3)), box)
-        r_in_cell = MDAnalysis.lib.distances.apply_PBC(r,box)
-        s_in_cell = np.array([0.5, 0.9, 0.5], dtype=np.float32)
-        v_in_cell = MDAnalysis.lib.distances.transform_StoR(
-            s_in_cell.reshape((1,3)), box)
-        assert_almost_equal(r_in_cell, v_in_cell, decimal=5)
+        r = np.array([[5.75, 0.36066014, 0.75000012]], dtype=np.float32)
+        r_in_cell = list(MDAnalysis.lib.distances.apply_PBC(r, box)[0])
+        assert_almost_equal([5.74999952, 7.3606596, 0.75000012],
+                            r_in_cell, self.prec)
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
