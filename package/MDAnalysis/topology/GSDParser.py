@@ -87,7 +87,14 @@ class GSDParser(TopologyReaderBase):
      - Masses
 
     The GSD file also stores a `body` property in the particles, and the parser
-    uses this information to set the residue names and indices
+    uses this information to set the residue names and indices.
+
+    NOTE: if the `body` index of any particle is negative, the parser will add
+    an integer number (the absolute value of the minimum of all the body
+    indices) to all the body indices. This is because MDAnalysis cannot handle
+    negative residue indices. This means that in that case the residue index in
+    the MDAnalysis.Universe will not correspond to the body index stored in the
+    GSD file.
 
     """
     format = 'GSD'
@@ -135,9 +142,16 @@ class GSDParser(TopologyReaderBase):
                     attrs[attrname] = attr(vals)
 
             # get body ids to set residue number and ids
-            blist = snap.particles.body
-            bodies = np.unique(blist)
+            blist = snap.particles.body.astype(np.int64)
+            bodies = np.unique(blist).astype(np.int32)
+            # this fixes the fact that the Topology constructor gets stuck in an
+            # infinite loop if any resid is negative.
+            if (blist<0).any() :
+                m = blist.min()
+                blist += abs(m)
+            bodies = np.unique(blist).astype(np.int32)
             nbodies = bodies.size
+            print blist
 
         attrs = list(attrs.values())
         attrs.append(Atomnames(np.array(atypes, dtype=object)))
