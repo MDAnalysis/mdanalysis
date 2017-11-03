@@ -665,6 +665,15 @@ class Test_apply_PBC(object):
         assert_almost_equal(cyth2, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
 
+        box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
+        s = np.array([0.5, -0.1, 0.5], dtype=np.float32)  # fractional coords
+        r = MDAnalysis.lib.distances.transform_StoR(s.reshape((1,3)), box)
+        r_in_cell = MDAnalysis.lib.distances.apply_PBC(r,box)
+        s_in_cell = np.array([0.5, 0.9, 0.5], dtype=np.float32)
+        v_in_cell = MDAnalysis.lib.distances.transform_StoR(
+            s_in_cell.reshape((1,3)), box)
+        assert_almost_equal(r_in_cell, v_in_cell, decimal=5)
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
     """Test case for properly considering minimum image convention when calculating angles and dihedrals
