@@ -86,6 +86,9 @@ class GSDParser(TopologyReaderBase):
      - Radii
      - Masses
 
+    The GSD file also stores a `body` property in the particles, and the parser
+    uses this information to set the residue names and indices
+
     """
     format = 'GSD'
 
@@ -131,14 +134,19 @@ class GSDParser(TopologyReaderBase):
                 else:
                     attrs[attrname] = attr(vals)
 
+            # get body ids to set residue number and ids
+            blist = snap.particles.body
+            bodies = np.unique(blist)
+            nbodies = bodies.size
+
         attrs = list(attrs.values())
         attrs.append(Atomnames(np.array(atypes, dtype=object)))
         attrs.append(Atomids(np.arange(natoms) + 1))
-        attrs.append(Resids(np.array([1])))
-        attrs.append(Resnums(np.array([1])))
+        attrs.append(Resids(bodies))
+        attrs.append(Resnums(bodies))
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, nbodies, 1,
+                       attrs=attrs, atom_resindex=blist)
 
         return top
