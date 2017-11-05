@@ -101,23 +101,33 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box
 static void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
 {
   int i, s;
+  // Inverse of matrix box (here called "m")
+  //   [           1/m00                 ,        0      ,   0  ]
+  //   [        -m10/(m00*m11)           ,      1/m11    ,   0  ]
+  //   [(m10*m21/(m00*m11) - m20/m00)/m22, -m21/(m11*m22), 1/m22]
+  float bi00 = box_inverse[0];
+  float bi11 = box_inverse[1];
+  float bi22 = box_inverse[2];
+  float bi01 = -box[1][0]*bi00*bi11;
+  float bi02 = (box[1][0]*box[2][1]*bi11 - box[2][0])*bi00*bi22;
+  float bi12 = -box[2][1]*bi11*bi22;
   // Moves all coordinates to within the box boundaries for a triclinic box
   // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
 #ifdef PARALLEL
 #pragma omp parallel for private(i, s) shared(coords)
 #endif
   for (i=0; i < numcoords; i++){
-    // z
-    s = floor(coords[i][2] * box_inverse[2]);
+    // translate coords[i] to central cell along c-axis
+    s = floor(coords[i][2]*bi22);
     coords[i][2] -= s * box[2][2];
     coords[i][1] -= s * box[2][1];
     coords[i][0] -= s * box[2][0];
-    // y
-    s = floor(coords[i][1] * box_inverse[1]);
+    // translate remainder of coords[i] to central cell along b-axis
+    s = floor(coords[i][1]*bi11 + coords[i][2]*bi12);
     coords[i][1] -= s * box[1][1];
     coords[i][0] -= s * box[1][0];
-    // x
-    s = floor(coords[i][0] * box_inverse[0]);
+    // translate remainder of coords[i] to central cell along a-axis
+    s = floor(coords[i][0]*bi00 + coords[i][1]*bi01 + coords[i][2]*bi02);
     coords[i][0] -= s * box[0][0];
   }
 }

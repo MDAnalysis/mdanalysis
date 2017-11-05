@@ -32,6 +32,7 @@ Enhancements
 Deprecations
 
 Fixes
+  * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
   * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
     (Issue #1565)

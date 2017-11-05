@@ -648,25 +648,28 @@ class Test_apply_PBC(object):
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 
-        # print box2
-        # print box2.shape
-
         def numpy_PBC(coords, box):
-            coords -= np.array([box[2] * val for val in np.floor(coords[:, 2] / box[2][2])])
-            coords -= np.array([box[1] * val for val in np.floor(coords[:, 1] / box[1][1])])
-            coords -= np.array([box[0] * val for val in np.floor(coords[:, 0] / box[0][0])])
-
-            return coords
+            # move to fractional coordinates
+            fractional = MDAnalysis.lib.distances.transform_RtoS(coords, box)
+            # move fractional coordinates to central cell
+            fractional -= np.floor(fractional)
+            # move back to real coordinates
+            return MDAnalysis.lib.distances.transform_StoR(fractional, box)
 
         cyth1 = apply_PBC(atoms, box1, backend=backend)
         cyth2 = apply_PBC(atoms, box2, backend=backend)
         reference = numpy_PBC(atoms, box2)
 
-        assert_almost_equal(cyth1, reference, self.prec,
+        assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
-        assert_almost_equal(cyth2, reference, self.prec,
-                            err_msg="Trlclinic apply_PBC failed comparison with np")
+        assert_almost_equal(cyth2, reference, decimal=4,
+                            err_msg="Triclinic apply_PBC failed comparison with np")
 
+        box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
+        r = np.array([[5.75, 0.36066014, 0.75]], dtype=np.float32)
+        r_in_cell = MDAnalysis.lib.distances.apply_PBC(r, box)[0]
+        assert_almost_equal([5.75, 7.3606596, 0.75],
+                            r_in_cell, self.prec)
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
@@ -726,7 +729,6 @@ class TestPeriodicAngles(object):
 
         for val in [test1, test2, test3, test4, test5]:
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
-
 
 
 class TestDistanceBackendSelection(object):
