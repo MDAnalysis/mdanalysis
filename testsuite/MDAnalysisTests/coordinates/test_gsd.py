@@ -34,5 +34,11 @@ def GSD_U():
     return mda.Universe(GSD)
 
 def test_gsd_positions(GSD_U):
-    assert_almost_equal(TXYZ_U.atoms.positions[0],
-                        [-5.40, -10.2, 10.2])
+    # first frame first particle
+    ts = GSD_U.trajectory[0]
+    assert_almost_equal(GSD_U.atoms.positions[0],
+                        [ -5.4000001 , -10.19999981, -10.19999981])
+    # second frame first particle
+    ts = GSD_U.trajectory[1]
+    assert_almost_equal(GSD_U.atoms.positions[0],
+                        [ -5.58348083,  -9.98546982, -10.17657185])
