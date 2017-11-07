@@ -95,6 +95,7 @@ boxes_2 = ([10, 10, 10, 90, 90, 90],  # ortho
 
 # Find images for several query points, here in fractional coordinates.
 queries = ([0.1, 0.5, 0.5],  # box face
+           [0.5, 0.5, 0.5],  # box center
            [0.5, -0.1, 0.5],  # box face
            [0.1, 0.1, 0.5],  # box edge
            [0.5, -0.1, 1.1],  # box edge
@@ -105,6 +106,7 @@ queries = ([0.1, 0.5, 0.5],  # box face
 
 # Images for the previous query vectors, here in fractional coordinates.
 images = (([1.1, 0.5, 0.5],),
+          (),
           ([0.5, -0.1, 0.5],),
           ([1.1, 0.1, 0.5], [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]),
           ([0.5, -0.1, 0.1], [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]),
