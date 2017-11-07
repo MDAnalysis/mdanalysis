@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU
+         jbarnoud, nestorwendt, mmattaNU, rcortini
 
   * 0.17.0
 
 Enhancements
+  * added support for GSD format topology/trajectory parser (PR #1693)
   * KDTree for neighbor search on periodic systems (PR #1660)
   * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
