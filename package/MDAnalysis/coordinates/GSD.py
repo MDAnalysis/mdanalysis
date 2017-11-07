@@ -76,10 +76,10 @@ class GSDReader(base.ReaderBase):
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._read_next_timestep()
 
-    def open_trajectory (self) :
+    def open_trajectory(self) :
         """opens the trajectory file using gsd.hoomd module"""
         self._frame = -1
-        self._file = gsd.hoomd.open (self.filename,mode='rb')
+        self._file = gsd.hoomd.open(self.filename,mode='rb')
 
     def close(self):
         """close reader"""
@@ -95,7 +95,7 @@ class GSDReader(base.ReaderBase):
         self.close()
         self.open_trajectory()
 
-    def _read_frame (self, frame):
+    def _read_frame(self, frame):
         try :
             myframe = self._file[frame]
         except IndexError :
@@ -124,6 +124,6 @@ class GSDReader(base.ReaderBase):
             self.ts.positions = frame_positions
         return self.ts
 
-    def _read_next_timestep (self) :
+    def _read_next_timestep(self) :
         """read next frame in trajectory"""
-        return self._read_frame (self._frame + 1)
+        return self._read_frame(self._frame + 1)
