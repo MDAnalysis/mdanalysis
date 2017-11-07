@@ -45,3 +45,12 @@ def test_gsd_positions(GSD_U):
 
 def test_gsd_n_frames(GSD_U):
     assert len(GSD_U.trajectory) == 2
+
+def test_gsd_dimensions(GSD_U):
+    ts = GSD_U.trajectory[0]
+    assert_almost_equal(ts.dimensions,
+                        [ 21.60000038,21.60000038,21.60000038,90.,90.,90.])
+
+def test_gsd_data_step(GSD_U):
+    assert GSD_U.trajectory[0].data['step'] == 0
+    assert GSD_U.trajectory[1].data['step'] == 500
