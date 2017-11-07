@@ -70,6 +70,7 @@ from ..core.topologyattrs import (
     Radii,
     Resids,
     Resnums,
+    Resnames,
     Segids,
 )
 
@@ -157,6 +158,7 @@ class GSDParser(TopologyReaderBase):
         attrs.append(Atomids(np.arange(natoms) + 1))
         attrs.append(Resids(bodies))
         attrs.append(Resnums(bodies))
+        attrs.append(Resnames(bodies))
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
         top = Topology(natoms, nbodies, 1,
