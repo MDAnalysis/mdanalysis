@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, rcortini
+         jbarnoud, nestorwendt, mmattaNU, jmborr, rcortini
 
   * 0.17.0
 
@@ -33,6 +33,7 @@ Enhancements
 Deprecations
 
 Fixes
+  * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
   * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
     (Issue #1565)
@@ -78,7 +79,7 @@ Changes
     (see issue MDAnalysis/MDAnalysis.github.io#61)
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
