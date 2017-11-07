@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU
+         jbarnoud, nestorwendt, mmattaNU, jmborr
 
   * 0.17.0
 
@@ -78,7 +78,7 @@ Changes
     (see issue MDAnalysis/MDAnalysis.github.io#61)
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
