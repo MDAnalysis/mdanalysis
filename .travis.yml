@@ -69,6 +69,8 @@ matrix:
     - env: NAME='minimal'
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
+  allow_failures:
+    - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
 
 install:
   # download hole first to use system curl
