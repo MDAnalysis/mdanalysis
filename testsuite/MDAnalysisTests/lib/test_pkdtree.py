@@ -68,13 +68,12 @@ def test_initialize_bm(box, rm):
 
 
 def test_set_coords():
-    with pytest.raises(ValueError) as excinfo:
+    match = 'coords must be a sequence of 3 dimensional coordinates'
+    with pytest.raises(ValueError, match=match):
         xy = np.array([[2, 2], [5, 5], [1.1, 1.1]], dtype=np.float32)
-
         tree = PeriodicKDTree(boxes_1[0])
         tree.set_coords(xy)
-    assert_equal(str(excinfo.value),
-                 'coords must be a sequence of 3 dimensional coordinates')
+
 
 #
 # Testing for correct images generation for a given query point.

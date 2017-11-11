@@ -19,7 +19,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 """
 PeriodicKDTree --- :mod:`MDAnalysis.lib.pkdtree`
 ===============================================================================
@@ -38,7 +37,9 @@ from Bio.KDTree import _CKDTree
 from MDAnalysis.lib.distances import _box_check, _check_array, apply_PBC
 from MDAnalysis.lib.mdamath import norm, triclinic_vectors, triclinic_box
 
-__all__ = ['PeriodicKDTree', ]
+__all__ = [
+    'PeriodicKDTree',
+]
 
 
 class PeriodicKDTree(object):
@@ -106,12 +107,8 @@ class PeriodicKDTree(object):
         box_type = _box_check(box)
         if box_type == 'ortho':
             a, b, c = box[:3]
-            dm = np.array([[a, 0, 0],
-                           [0, b, 0],
-                           [0, 0, c]], dtype=np.float32)
-            rm = np.array([[1, 0, 0],
-                           [0, 1, 0],
-                           [0, 0, 1]], dtype=np.float32)
+            dm = np.array([[a, 0, 0], [0, b, 0], [0, 0, c]], dtype=np.float32)
+            rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float32)
         elif box_type in 'tri_box tri_vecs tri_vecs_bad':
             if box_type == 'tri_box':
                 dm = triclinic_vectors(box)
@@ -166,8 +163,8 @@ class PeriodicKDTree(object):
         images = list()
 
         center_points = np.asanyarray(center_points)
-        if center_points.shape == (3,):
-            center_points = center_points.reshape((1,3))
+        if center_points.shape == (3, ):
+            center_points = center_points.reshape((1, 3))
 
         # Calculating displacement vectors for images of `center_point`
         # possible point for parallel loop version (Benchmark before!)
@@ -176,8 +173,10 @@ class PeriodicKDTree(object):
             distances = np.dot(self._rm, center_point)
             displacements = list(self._dm[np.where(distances < radius)[0]])
             # distances to the remaining three cell boundary planes
-            distances = np.einsum('ij,ij->i', self._rm, self._dm - center_point)
-            displacements.extend(list(-self._dm[np.where(distances < radius)[0]]))
+            distances = np.einsum('ij,ij->i', self._rm,
+                                  self._dm - center_point)
+            displacements.extend(
+                list(-self._dm[np.where(distances < radius)[0]]))
             # If we have displacements along more than one axis, we have
             # to combine them. This happens when center_point is close
             # to any edge or vertex of the central cell.
