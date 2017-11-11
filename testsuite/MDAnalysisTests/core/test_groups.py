@@ -1016,3 +1016,28 @@ class TestInstantSelectorDeprecationWarnings(object):
     def test_SegmentGroup_nowarn_getitem(self, u):
         with no_deprecated_call():
             u.segments[0]
+
+
+class TestAttributeSetting(object):
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])
+    def test_setting_group_fail(self, groupname):
+        u = make_Universe()
+
+        group = getattr(u, groupname)
+        with pytest.raises(AttributeError):
+            group.this = 'that'
+
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])
+    def test_setting_component_fails(self, groupname):
+        u = make_Universe()
+        component = getattr(u, groupname)[0]
+
+        with pytest.raises(AttributeError):
+            component.this = 'that'
+
+    def test_atomgroup_resid(self):
+        # this should fail as you can't set the resid of an AG
+        u = make_Universe(('resids'))
+
+        with pytest.raises(AttributeError):
+            u.atoms.resid = 24

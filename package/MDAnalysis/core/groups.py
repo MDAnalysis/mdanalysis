@@ -153,15 +153,21 @@ def make_classes():
 
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
-    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass()
+    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(singular=False)
+    GBase._SETATTR_WHITELIST = {  # list of Group attributes we can set
+        'positions', 'velocities', 'forces', 'dimensions',
+        'atoms', 'residue', 'residues', 'segment', 'segments',
+    }
     for cls in groups:
-        bases[cls] = GBase._subclass()
-
-    # In the current Group-centered topology scheme no attributes apply only
-    #  to ComponentBase, so no need to have a 'CB' middle man.
-    #CBase = _TopologyAttrContainer(singular=True)
+        bases[cls] = GBase._subclass(singular=False)
+    # CBase for patching all components
+    CBase = bases[ComponentBase] = _TopologyAttrContainer._subclass(singular=True)
+    CBase._SETATTR_WHITELIST = {
+        'position', 'velocity', 'force', 'dimensions',
+        'atoms', 'residue', 'residues', 'segment', 'segments',
+    }
     for cls in components:
-        bases[cls] = _TopologyAttrContainer._subclass(singular=True)
+        bases[cls] = CBase._subclass(singular=True)
 
     # Initializes the class cache.
     for cls in groups + components:
@@ -184,10 +190,8 @@ class _TopologyAttrContainer(object):
       The mixed subclasses become the final container classes specific to each
       :class:`Universe`.
     """
-    _singular = False
-
     @classmethod
-    def _subclass(cls, singular=None):
+    def _subclass(cls, singular):
         """Factory method returning :class:`_TopologyAttrContainer` subclasses.
 
         Parameters
@@ -201,10 +205,7 @@ class _TopologyAttrContainer(object):
         type
             A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
-        if singular is not None:
-            return type(cls.__name__, (cls,), {'_singular': bool(singular)})
-        else:
-            return type(cls.__name__, (cls,), {})
+        return type(cls.__name__, (cls,), {'_singular': bool(singular)})
 
     @classmethod
     def _mix(cls, other):
@@ -255,6 +256,12 @@ class _TopologyAttrContainer(object):
         else:
             setattr(cls, attr.attrname,
                     property(getter, setter, None, attr.groupdoc))
+
+    @classmethod
+    def _whitelist(cls, attr):
+        """Allow an attribute to be set in Groups"""
+        cls._SETATTR_WHITELIST.add(attr.attrname)
+        cls._SETATTR_WHITELIST.add(attr.singular)
 
 
 class _MutableBase(object):
@@ -428,8 +435,22 @@ class GroupBase(_MutableBase):
     def __hash__(self):
         return hash((self._u, self.__class__, tuple(self.ix.tolist())))
 
+    def __setattr__(self, attr, value):
+        # `ag.this = 42` calls setattr(ag, 'this', 42)
+        # we scan 'this' to see if it is either 'private'
+        # or a known attribute (WHITELIST)
+        if (not attr.startswith('_') and
+            type(self) in (self.universe._classes[AtomGroup],
+                           self.universe._classes[ResidueGroup],
+                           self.universe._classes[SegmentGroup])
+            and not attr in self._SETATTR_WHITELIST):
+            raise AttributeError("Cannot set arbitrary attributes to a Group")
+        # if it is, we allow the setattr to proceed by deferring to the super
+        # behaviour (ie do it)
+        super(GroupBase, self).__setattr__(attr, value)
+
     def __len__(self):
-        return len(self._ix)
+        return len(self.ix)
 
     def __getitem__(self, item):
         # supports
@@ -1844,9 +1865,6 @@ class AtomGroup(GroupBase):
                 which is often the case with high-resolution crystal structures
                 e.g. `resid 4 and resname ALA and altloc B` selects only the
                 atoms of ALA-4 that have an altloc B record.
-            moltype *molecule-type*
-                select by molecule type, e.g. ``moltype Protein_A``. At the
-                moment, only the TPR format defines the molecule type.
 
         **Boolean**
 
@@ -2437,6 +2455,20 @@ class ComponentBase(_MutableBase):
         self._ix = ix
         self._u = u
 
+    def __setattr__(self, attr, value):
+        if (not attr.startswith('_') and
+            type(self) in (self.universe._classes[Atom],
+                           self.universe._classes[Residue],
+                           self.universe._classes[Segment]) and
+            not attr in self._SETATTR_WHITELIST):
+            raise AttributeError(
+                "Cannot set arbitrary attributes to a Component")
+        super(ComponentBase, self).__setattr__(attr, value)
+
+    def __repr__(self):
+        return ("<{} {}>"
+                "".format(self.level.name.capitalize(), self.ix))
+
     def __lt__(self, other):
         if self.level != other.level:
             raise TypeError("Can't compare different level objects")
@@ -2780,7 +2812,7 @@ class UpdatingAtomGroup(AtomGroup):
         # its check, no self.attribute access can be made before this line
         self._u = base_group.universe
         self._selections = selections
-        self.selection_strings = strings
+        self._selection_strings = strings
         self._base_group = base_group
         self._lastupdate = None
         self._derived_class = base_group._derived_class
@@ -2858,7 +2890,7 @@ class UpdatingAtomGroup(AtomGroup):
     def __getattribute__(self, name):
         # ALL attribute access goes through here
         # If the requested attribute isn't in the shortcut list, update ourselves
-        if not name in _UAG_SHORTCUT_ATTRS:
+        if not (name.startswith('_') or name in _UAG_SHORTCUT_ATTRS):
             self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
         return object.__getattribute__(self, name)
@@ -2869,13 +2901,13 @@ class UpdatingAtomGroup(AtomGroup):
         # - recreate UAG as created through select_atoms (basegroup and selstrs)
         # even if base_group is a UAG this will work through recursion
         return (_unpickle_uag,
-                (self._base_group.__reduce__(), self._selections, self.selection_strings))
+                (self._base_group.__reduce__(), self._selections, self._selection_strings))
 
     def __repr__(self):
         basestr = super(UpdatingAtomGroup, self).__repr__()
-        if not self.selection_strings:
+        if not self._selection_strings:
             return basestr
-        sels = "'{}'".format("' + '".join(self.selection_strings))
+        sels = "'{}'".format("' + '".join(self._selection_strings))
         # Cheap comparison. Might fail for corner cases but this is
         # mostly cosmetic.
         if self._base_group is self.universe.atoms:
@@ -2884,7 +2916,7 @@ class UpdatingAtomGroup(AtomGroup):
             basegrp = "another AtomGroup."
         # With a shorthand to conditionally append the 's' in 'selections'.
         return "{}, with selection{} {} on {}>".format(basestr[:-1],
-                    "s"[len(self.selection_strings)==1:], sels, basegrp)
+                    "s"[len(self._selection_strings)==1:], sels, basegrp)
 
 # Define relationships between these classes
 # with Level objects
