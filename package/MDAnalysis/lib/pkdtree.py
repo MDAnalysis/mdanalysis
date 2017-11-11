@@ -138,10 +138,10 @@ class PeriodicKDTree(object):
 
         Parameters
         ----------
-        coords: NumPy.array
+        coords: array_like
           Positions of points, shape=(N, 3) for N atoms.
         """
-        _check_array(coords, 'coords')
+        _check_array(np.asanyarray(coords), 'coords')
         wrapped_data = apply_PBC(coords, self.box)
         self.kdt.set_data(wrapped_data)
         self.built = 1
@@ -153,7 +153,7 @@ class PeriodicKDTree(object):
 
         Parameters
         ----------
-        center_points: NumPy.array shape=(N,3)
+        center_points: array_like (N,3)
           Coordinates of the query center points. Must be in centrall cell.
         radius: float
           Maximum distance from center in search for neighbors
@@ -165,15 +165,13 @@ class PeriodicKDTree(object):
         """
         images = list()
 
+        center_points = np.asanyarray(center_points)
         if center_points.shape == (3,):
             center_points = center_points.reshape((1,3))
 
-        # To-Do: parallel
+        # Calculating displacement vectors for images of `center_point`
+        # possible point for parallel loop version (Benchmark before!)
         for center_point in center_points:
-            # displacements are vectors we add to center_point to generate
-            # images "up" or "down" the central cell along the axis that we
-            # happen to be looking.
-
             # distances to cell boundary planes passing through the origin
             distances = np.dot(self._rm, center_point)
             displacements = list(self._dm[np.where(distances < radius)[0]])
@@ -201,19 +199,20 @@ class PeriodicKDTree(object):
 
         Parameter
         ---------
-        centers: NumPy.array shape=(N,3)
+        centers: array_like (N,3)
           origins around which to search for neighbors
         radius: float
           maximum distance around which to search for neighbors. The search
           radius is half the smallest periodicity if radius exceeds this value
         """
         if not self.built:
-            raise RuntimeError('Unbuilt tree. Run tree.set_coords first')
+            raise RuntimeError('Unbuilt tree. Run tree.set_coords(...) first')
+        centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
         wrapped_centers = apply_PBC(centers, self.box)
         self._indices = set()  # clear previous search
-        # To-Do: parallel
+        # possible loop for parallel execution (benchmark before!)
         for c in itertools.chain(wrapped_centers,
                                  self.find_images(wrapped_centers, radius)):
             self.kdt.search_center_radius(c, radius)
@@ -226,7 +225,7 @@ class PeriodicKDTree(object):
         """
         Returns
         ------
-        _indices: `List`
+        indices : list
           neighbors for the last query points and search radius
         """
         return self._indices

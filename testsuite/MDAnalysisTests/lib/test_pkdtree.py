@@ -125,8 +125,13 @@ images = (([1.1, 0.5, 0.5],),
 def test_find_images(b, qcs):
     """
     Test the generation of images for a given query vector and type of box.
-    :param b: box as a list with six items.
-    :param qcs: a query vector and a list of expected images.
+
+    Parameters
+    ----------
+    b : list
+        MDAnalysis dimensions like list
+    qns : tuple
+        a query point and a list of expected neighbors.
     """
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(qcs[0], dtype=np.float32), b)
@@ -177,8 +182,13 @@ for b, n in zip(boxes_2, (n_ortho, n_tric)):
 def test_search(b, qns):
     """
     Test finding neighbors for a given query vector and type of box.
-    :param b: box as a list with six items.
-    :param qns: a query point and a list of expected neighbors.
+
+    Parameters
+    ----------
+    b : list
+        MDAnalysis dimensions like list
+    qns : tuple
+        a query point and a list of expected neighbors.
     """
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(qns[0], dtype=np.float32), b)
