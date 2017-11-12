@@ -468,6 +468,7 @@ class BaseDistanceSelection(object):
     """
 
     methods = [('kdtree', False),
+               ('kdtree', True),
                ('distmat', True),
                ('distmat', False)]
 
@@ -486,11 +487,7 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_around(self, u, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -508,11 +505,7 @@ class BaseDistanceSelection(object):
         ref.difference_update(set(r1.indices))
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_layer(self, u, meth, periodic):
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -527,11 +520,7 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_zone(self, u, meth, periodic):
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -546,11 +535,7 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_point(self, u, meth, periodic):
         sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
