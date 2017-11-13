@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, jmborr
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow
 
   * 0.17.0
 
 Enhancements
+  * added Amber residue names to 'protein' atom selection (PR #1704)
   * KDTree for neighbor search on periodic systems (PR #1660)
   * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)

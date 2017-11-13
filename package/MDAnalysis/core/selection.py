@@ -826,8 +826,6 @@ class ProteinSelection(Selection):
 
       * manually added special CHARMM, OPLS/AA and Amber residue names.
 
-      * still missing: Amber N- and C-terminal residue names
-
     See Also
     --------
     :func:`MDAnalysis.lib.util.convert_aa_code`
@@ -848,11 +846,15 @@ class ProteinSelection(Selection):
         # from Gromacs 4.5.3 gromos53a6.ff/aminoacids.rtp
         'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2',
         # from Gromacs 4.5.3 amber03.ff/aminoacids.rtp
-        # Amber: there are also the C-term aas: 'CALA', 'CGLY', 'CSER', ...
-        # Amber: there are also the N-term aas: 'NALA', 'NGLY', 'NSER', ...
         'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
-        'GLH',
-        'ACE', 'NME',
+        'GLH', 'ACE', 'NME',
+        # from Gromacs 2016.3 amber99sb-star-ildn.ff/aminoacids.rtp
+        'NALA', 'NGLY', 'NSER', 'NTHR', 'NLEU', 'NILE', 'NVAL', 'NASN', 'NGLN',
+        'NARG', 'NHID', 'NHIE', 'NHIP', 'NTRP', 'NPHE', 'NTYR', 'NGLU', 'NASP',
+        'NLYS', 'NPRO', 'NCYS', 'NCYX', 'NMET', 'CALA', 'CGLY', 'CSER', 'CTHR',
+        'CLEU', 'CILE', 'CVAL', 'CASF', 'CASN', 'CGLN', 'CARG', 'CHID', 'CHIE',
+        'CHIP', 'CTRP', 'CPHE', 'CTYR', 'CGLU', 'CASP', 'CLYS', 'CPRO', 'CCYS',
+        'CCYX', 'CMET', 'CME', 'ASF',
     ])
 
     def __init__(self, parser, tokens):
