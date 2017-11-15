@@ -50,6 +50,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
@@ -458,11 +459,15 @@ class PointSelection(DistanceSelection):
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
-        self.ref = np.array([x, y, z])
+        self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
     def _apply_KDTree(self, group):
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = group.dimensions if self.periodic else None
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
