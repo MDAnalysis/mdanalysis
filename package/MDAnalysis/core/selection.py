@@ -266,15 +266,24 @@ class AroundSelection(DistanceSelection):
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys.positions)
-        found_indices = []
-        for atom in sel.positions:
-            kdtree.search(atom, self.cutoff)
-            found_indices.append(kdtree.get_indices())
+        box = group.dimensions if self.periodic else None
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            found_indices = []
+            for atom in sel.positions:
+                kdtree.search(atom, self.cutoff)
+                found_indices.append(kdtree.get_indices())
+            unique_idx = np.unique(np.concatenate(found_indices))
+
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            kdtree.search(sel.positions, self.cutoff)
+            unique_idx = np.asarray(kdtree.get_indices())
+
         # These are the indices from SYS that were seen when
         # probing with SEL
-        unique_idx = np.unique(np.concatenate(found_indices))
         return sys[unique_idx.astype(np.int32)].unique
 
     def _apply_distmat(self, group):
