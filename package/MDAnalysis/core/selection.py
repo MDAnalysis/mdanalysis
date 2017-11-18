@@ -50,6 +50,7 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
@@ -265,15 +266,24 @@ class AroundSelection(DistanceSelection):
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys.positions)
-        found_indices = []
-        for atom in sel.positions:
-            kdtree.search(atom, self.cutoff)
-            found_indices.append(kdtree.get_indices())
+        box = group.dimensions if self.periodic else None
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            found_indices = []
+            for atom in sel.positions:
+                kdtree.search(atom, self.cutoff)
+                found_indices.append(kdtree.get_indices())
+            unique_idx = np.unique(np.concatenate(found_indices))
+
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
+            kdtree.set_coords(sys.positions)
+            kdtree.search(sel.positions, self.cutoff)
+            unique_idx = np.asarray(kdtree.get_indices())
+
         # These are the indices from SYS that were seen when
         # probing with SEL
-        unique_idx = np.unique(np.concatenate(found_indices))
         return sys[unique_idx.astype(np.int32)].unique
 
     def _apply_distmat(self, group):
@@ -458,11 +468,15 @@ class PointSelection(DistanceSelection):
         x = float(tokens.popleft())
         y = float(tokens.popleft())
         z = float(tokens.popleft())
-        self.ref = np.array([x, y, z])
+        self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
     def _apply_KDTree(self, group):
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = group.dimensions if self.periodic else None
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
