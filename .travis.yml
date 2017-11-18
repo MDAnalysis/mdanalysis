@@ -32,6 +32,7 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
+    - PYTEST_VERSION=>3.2
 
   matrix:
     # Run a coverage test
