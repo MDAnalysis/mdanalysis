@@ -260,8 +260,10 @@ class _TopologyAttrContainer(object):
     @classmethod
     def _whitelist(cls, attr):
         """Allow an attribute to be set in Groups"""
-        cls._SETATTR_WHITELIST.add(attr.attrname)
-        cls._SETATTR_WHITELIST.add(attr.singular)
+        if cls._singular:
+            cls._SETATTR_WHITELIST.add(attr.singular)
+        else:
+            cls._SETATTR_WHITELIST.add(attr.attrname)
 
 
 class _MutableBase(object):
