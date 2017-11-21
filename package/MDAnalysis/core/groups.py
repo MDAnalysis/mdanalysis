@@ -268,10 +268,9 @@ class _TopologyAttrContainer(object):
 
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
-        # we scan 'this' to see if it is either 'private'
-        # or a known attribute (WHITELIST)
-        if (not attr.startswith('_') and
-            not attr in self._SETATTR_WHITELIST):
+        if not (attr.startswith('_') or  # 'private' allowed
+                attr in self._SETATTR_WHITELIST or  # known attributes allowed
+                hasattr(self, attr)):  # preexisting (eg properties) allowed
             raise AttributeError(
                 "Cannot set arbitrary attributes to a {}".format(
                     'Component' if self._singular else 'Group'))
