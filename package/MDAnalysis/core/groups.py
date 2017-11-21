@@ -154,18 +154,10 @@ def make_classes():
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
     GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(singular=False)
-    GBase._SETATTR_WHITELIST = {  # list of Group attributes we can set
-        'positions', 'velocities', 'forces', 'dimensions',
-        'atoms', 'residue', 'residues', 'segment', 'segments',
-    }
     for cls in groups:
         bases[cls] = GBase._subclass(singular=False)
     # CBase for patching all components
     CBase = bases[ComponentBase] = _TopologyAttrContainer._subclass(singular=True)
-    CBase._SETATTR_WHITELIST = {
-        'position', 'velocity', 'force', 'dimensions',
-        'atoms', 'residue', 'residues', 'segment', 'segments',
-    }
     for cls in components:
         bases[cls] = CBase._subclass(singular=True)
 
@@ -205,7 +197,19 @@ class _TopologyAttrContainer(object):
         type
             A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
-        return type(cls.__name__, (cls,), {'_singular': bool(singular)})
+        newcls = type(cls.__name__, (cls,), {'_singular': bool(singular)})
+        if singular:
+            newcls._SETATTR_WHITELIST = {
+                'position', 'velocity', 'force', 'dimensions',
+                'atoms', 'residue', 'residues', 'segment', 'segments',
+            }
+        else:
+            newcls._SETATTR_WHITELIST = {
+                'positions', 'velocities', 'forces', 'dimensions',
+                'atoms', 'residue', 'residues', 'segment', 'segments',
+            }
+
+        return newcls
 
     @classmethod
     def _mix(cls, other):
@@ -257,9 +261,6 @@ class _TopologyAttrContainer(object):
             setattr(cls, attr.attrname,
                     property(getter, setter, None, attr.groupdoc))
 
-    @classmethod
-    def _whitelist(cls, attr):
-        """Allow an attribute to be set in Groups"""
         if cls._singular:
             cls._SETATTR_WHITELIST.add(attr.singular)
         else:

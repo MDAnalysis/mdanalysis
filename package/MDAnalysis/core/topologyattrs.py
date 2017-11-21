@@ -166,10 +166,13 @@ def _wronglevel_error(attr, group):
 class TopologyAttr(object):
     """Base class for Topology attributes.
 
-    .. note::   This class is intended to be subclassed, and mostly amounts to
-                a skeleton. The methods here should be present in all
-                :class:`TopologyAttr` child classes, but by default they raise
-                appropriate exceptions.
+    Note
+    ----
+    This class is intended to be subclassed, and mostly amounts to
+    a skeleton. The methods here should be present in all
+    :class:`TopologyAttr` child classes, but by default they raise
+    appropriate exceptions.
+
 
     Attributes
     ----------
@@ -264,7 +267,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
-    target_classes = [Atom]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
 
     def __init__(self):
         self._guessed = False
@@ -296,7 +299,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
     def __init__(self):
         self._guessed = False
@@ -329,7 +332,8 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
 
     def __init__(self):
         self._guessed = False
@@ -355,7 +359,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    target_classes = [Atom]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
 
     def get_atoms(self, ag):
         return self.values[ag.ix]
@@ -605,7 +609,8 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     groupdoc = """Mass of each component in the Group.
@@ -945,7 +950,8 @@ class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
     per_object = 'atom'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def get_residues(self, rg):
@@ -1005,20 +1011,10 @@ class AltLocs(AtomAttr):
     per_object = 'atom'
 
 
-# residue attributes
-
 class ResidueAttr(TopologyAttr):
-    """Base class for Topology attributes.
-
-    .. note::   This class is intended to be subclassed, and mostly amounts to
-                a skeleton. The methods here should be present in all
-                :class:`TopologyAttr` child classes, but by default they raise
-                appropriate exceptions.
-
-    """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    target_classes = [Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Residue]
     per_object = 'residue'
 
     def get_atoms(self, ag):
@@ -1053,14 +1049,14 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
 
 # TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
 
     def getattr__(residuegroup, resname):
@@ -1218,7 +1214,7 @@ class Resnames(ResidueAttr):
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
 
 class ICodes(ResidueAttr):
@@ -1234,7 +1230,7 @@ class Moltypes(ResidueAttr):
     """
     attrname = 'moltypes'
     singular = 'moltype'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
 
 # segment attributes
@@ -1245,7 +1241,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    target_classes = [Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
@@ -1274,7 +1270,8 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     def getattr__(segmentgroup, segid):

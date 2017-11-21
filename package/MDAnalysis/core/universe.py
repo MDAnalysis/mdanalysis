@@ -698,10 +698,6 @@ class Universe(object):
                                  n=n_dict[attr.per_object],
                                  m=len(attr)))
 
-        self._class_bases[GroupBase]._add_prop(attr)
-        self._class_bases[GroupBase]._whitelist(attr)
-        self._class_bases[ComponentBase]._whitelist(attr)
-
         for cls in attr.target_classes:
             self._class_bases[cls]._add_prop(attr)
 
