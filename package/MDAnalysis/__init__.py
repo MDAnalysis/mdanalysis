@@ -164,6 +164,8 @@ _SINGLEFRAME_WRITERS = {}
 _MULTIFRAME_WRITERS = {}
 _PARSERS = {}
 _SELECTION_WRITERS = {}
+# Registry of TopologyAttributes
+_TOPOLOGY_ATTRS = {}
 
 # Storing anchor universes for unpickling groups
 import weakref

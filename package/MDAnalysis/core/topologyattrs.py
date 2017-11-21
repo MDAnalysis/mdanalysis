@@ -31,6 +31,7 @@ TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
 from __future__ import division, absolute_import
+import six
 from six.moves import zip, range
 
 import Bio.Seq
@@ -54,6 +55,7 @@ from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
+from .. import _TOPOLOGY_ATTRS
 
 
 def _check_length(func):
@@ -163,7 +165,20 @@ def _wronglevel_error(attr, group):
     ))
 
 
-class TopologyAttr(object):
+class _TopologyAttrMeta(type):
+    # register TopologyAttrs
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        for attr in ['attrname', 'singular']:
+            try:
+                attrname = classdict[attr]
+            except KeyError:
+                pass
+            else:
+                _TOPOLOGY_ATTRS[attrname] = cls
+
+
+class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
     """Base class for Topology attributes.
 
     Note
