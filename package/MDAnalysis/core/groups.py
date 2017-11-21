@@ -822,11 +822,13 @@ class GroupBase(_MutableBase):
         point = np.asarray(point)
 
         # changes the coordinates (in place)
-        self.translate(-point)
+        if not np.allclose(point, np.zeros(3)):
+            self.translate(-point)
         x = self.atoms.unique.universe.trajectory.ts.positions
         idx = self.atoms.unique.indices
         x[idx] = np.dot(x[idx], R.T)
-        self.translate(point)
+        if not np.allclose(point, np.zeros(3)):
+            self.translate(point)
 
         return self
 
