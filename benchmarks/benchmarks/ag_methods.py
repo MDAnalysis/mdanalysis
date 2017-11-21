@@ -5,6 +5,7 @@ import numpy as np
 
 try:
     from MDAnalysisTests.datafiles import GRO
+    from MDAnalysis.exceptions import NoDataError
 except:
     pass
 
@@ -39,12 +40,6 @@ class AtomGroupMethodsBench(object):
         with pbc inactive.
         """
         self.ag.bbox(pbc=False)
-
-    def time_bond(self, num_atoms):
-        """Benchmark Bond object creation.
-        Requires ag of size 2.
-        """
-        self.ag[:2].bond()
 
     def time_bsphere_pbc(self, num_atoms):
         """Benchmark bounding sphere calculation
@@ -318,3 +313,9 @@ class AtomGroupAttrsBench(object):
         elements in atomgroup.
         """
         self.ag.unique
+
+    def time_bond(self, num_atoms):
+        """Benchmark Bond object creation.
+        Requires ag of size 2.
+        """
+        self.ag[:2].bond
