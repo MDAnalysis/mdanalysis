@@ -58,6 +58,7 @@ Fixes
   * Fixed analysis.rms.RMSD: selections are now applied to atomgroup, not to
     atomgroup.universe
   * Default filename argument for AlignTraj works again (Issue #1713)
+  * Fixed analysis.rms.RMSD failed when selection is unicode (PR #1710)
 
 Changes
   * remove deprecated TimeSeriesCollection
