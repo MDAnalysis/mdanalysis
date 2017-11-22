@@ -79,7 +79,7 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.centroid(pbc=False)
 
-    def time_concat(self, num_atoms):
+    def time_concatenate(self, num_atoms):
         """Benchmark atomgroup concatenation.
         """
         self.ag.concatenate(self.ag)
@@ -96,7 +96,7 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.groupby('resnames')
 
-    def time_guessbonds(self, num_atoms):
+    def time_guess_bonds(self, num_atoms):
         """Benchmark atomgroup bond guessing
         with artificially-seeded vdw values.
         """
@@ -107,42 +107,42 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.intersection(self.ag)
 
-    def time_strict_subset(self, num_atoms):
+    def time_is_strict_subset(self, num_atoms):
         """Benchmark ag strict subset operation.
         """
         self.ag.is_strict_subset(self.ag)
 
-    def time_strict_superset(self, num_atoms):
+    def time_is_strict_superset(self, num_atoms):
         """Benchmark ag strict superset operation.
         """
         self.ag.is_strict_superset(self.ag)
 
-    def time_disjoint(self, num_atoms):
+    def time_isdisjoint(self, num_atoms):
         """Benchmark disjoint operation between
         atomgroups.
         """
         self.ag.isdisjoint(self.ag)
 
-    def time_subset(self, num_atoms):
+    def time_issubset(self, num_atoms):
         """Benchmark subset operation between
         atomgroups.
         """
         self.ag.issubset(self.ag)
 
-    def time_superset(self, num_atoms):
+    def time_issuperset(self, num_atoms):
         """Benchmark superset operation between
         atomgroups.
         """
         self.ag.issuperset(self.ag)
 
-    def time_packing(self, num_atoms):
+    def time_pack_into_box(self, num_atoms):
         """Benchmark shifting atoms of ag
         into primary unit cell, using
         default parameters.
         """
         self.ag.pack_into_box()
 
-    def time_rotation(self, num_atoms):
+    def time_rotate(self, num_atoms):
         """Benchmark simple rotation operation
         on atomgroup.
         """
@@ -167,7 +167,7 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.subtract(self.ag)
 
-    def time_symm_diff(self, num_atoms):
+    def time_symmetric_difference(self, num_atoms):
         """Benchmark ag symmetric difference
         operation.
         """
@@ -220,7 +220,7 @@ class AtomGroupAttrsBench(object):
         self.ag[:3].angle
 
     def time_atoms(self, num_atoms):
-        """Benchmark creation of identical
+        """Benchmark returning of identical
         atomgroup.
         """
         self.ag.atoms
