@@ -198,6 +198,14 @@ class TestRMSD(object):
                                   err_msg="error: rmsd profile should match" +
                                   "test values")
 
+    def test_rmsd_unicode_selection(self, universe, correct_values):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, select=u'name CA',
+                                            step=49)
+        RMSD.run()
+        assert_almost_equal(RMSD.rmsd, correct_values, 4,
+                                  err_msg="error: rmsd profile should match" +
+                                  "test values")
+
     def test_rmsd_atomgroup_selections(self, universe):
         # see Issue #1684
         R1 = MDAnalysis.analysis.rms.RMSD(universe.atoms,
