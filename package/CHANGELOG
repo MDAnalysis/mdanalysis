@@ -28,6 +28,7 @@ Enhancements
   * about 20% speed improvements for GNM analysis. (PR #1579)
   * added support for Tinker TXYZ and ARC files
   * libmdaxdr and libdcd classes can now be pickled (PR #1680)
+  * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
 
 Deprecations
 
