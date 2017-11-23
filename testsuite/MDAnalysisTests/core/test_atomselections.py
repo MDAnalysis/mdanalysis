@@ -75,18 +75,19 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.s4AKE.atoms.indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    def test_protein_all_resnames(self):
+    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    def test_protein_all_resnames(self, resname):
         #  Kain88-de (Nov 17) using parametrize results in a failure on Travis
         #  Python 3.6 in test collection
-        for resname in MDAnalysis.core.selection.ProteinSelection.prot_res:
-            u = make_Universe(('resnames',))
-            # set half the residues' names to the resname we're testing
-            myprot = u.residues[::2]
-            myprot.resnames = resname
-            # select protein
-            sel = u.select_atoms('protein')
-            # check that contents (atom indices) are identical afterwards
-            assert_equal(myprot.atoms.ix, sel.ix)
+        # for resname in MDAnalysis.core.selection.ProteinSelection.prot_res:
+        u = make_Universe(('resnames',))
+        # set half the residues' names to the resname we're testing
+        myprot = u.residues[::2]
+        myprot.resnames = resname
+        # select protein
+        sel = u.select_atoms('protein')
+        # check that contents (atom indices) are identical afterwards
+        assert_equal(myprot.atoms.ix, sel.ix)
 
     def test_backbone(self, universe):
         sel = universe.select_atoms('backbone')
