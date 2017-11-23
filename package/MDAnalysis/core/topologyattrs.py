@@ -215,6 +215,26 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
         self.values = values
         self._guessed = guessed
 
+    @staticmethod
+    def _gen_initial_values(n_atoms, n_residues, n_segments):
+        raise NotImplementedError("No default values")
+
+    @classmethod
+    def from_blank(cls, n_atoms=None, n_residues=None, n_segments=None,
+                   values=None):
+        """Create a blank version of this TopologyAttribute
+
+        Parameters
+        ----------
+        n_atoms, n_residues, n_segments : int, optional
+          Size of the TopologyAttribute
+        values : optional
+          Initial values for the TopologyAttribute
+        """
+        if values is None:
+            values = cls._gen_initial_values(n_atoms, n_residues, n_segments)
+        return cls(values)
+
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
         return len(self.values)
@@ -416,6 +436,10 @@ class Atomids(AtomAttr):
     singular = 'id'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(na) + 1
+
 
 # TODO: update docs to property doc
 class Atomnames(AtomAttr):
@@ -425,6 +449,10 @@ class Atomnames(AtomAttr):
     singular = 'name'
     per_object = 'atom'
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
     def getattr__(atomgroup, name):
         try:
@@ -585,12 +613,20 @@ class Atomtypes(AtomAttr):
     singular = 'type'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
+
 
 # TODO: update docs to property doc
 class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
 
 # TODO: update docs to property doc
@@ -599,6 +635,10 @@ class Radii(AtomAttr):
     attrname = 'radii'
     singular = 'radius'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 class ChainIDs(AtomAttr):
@@ -612,12 +652,20 @@ class ChainIDs(AtomAttr):
     singular = 'chainID'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
+
 
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
     attrname = 'tempfactors'
     singular = 'tempfactor'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 class Masses(AtomAttr):
@@ -641,6 +689,10 @@ class Masses(AtomAttr):
     def __init__(self, values, guessed=False):
         self.values = np.asarray(values, dtype=np.float64)
         self._guessed = guessed
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg.ix)
@@ -969,6 +1021,10 @@ class Charges(AtomAttr):
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
     def get_residues(self, rg):
         resatoms = self.top.tt.residues2atoms_2d(rg.ix)
 
@@ -1010,12 +1066,20 @@ class Bfactors(AtomAttr):
     singular = 'bfactor'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
 
 # TODO: update docs to property doc
 class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 # TODO: update docs to property doc
@@ -1024,6 +1088,10 @@ class AltLocs(AtomAttr):
     attrname = 'altLocs'
     singular = 'altLoc'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
 
 class ResidueAttr(TopologyAttr):
@@ -1066,6 +1134,10 @@ class Resids(ResidueAttr):
     singular = 'resid'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(nr) + 1
+
 
 # TODO: update docs to property doc
 class Resnames(ResidueAttr):
@@ -1073,6 +1145,10 @@ class Resnames(ResidueAttr):
     singular = 'resname'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
 
     def getattr__(residuegroup, resname):
         try:
@@ -1231,11 +1307,19 @@ class Resnums(ResidueAttr):
     singular = 'resnum'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(nr) + 1
+
 
 class ICodes(ResidueAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
 
 
 class Moltypes(ResidueAttr):
@@ -1288,6 +1372,10 @@ class Segids(SegmentAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(ns)], dtype=object)
 
     def getattr__(segmentgroup, segid):
         try:

@@ -93,7 +93,7 @@ import warnings
 import MDAnalysis
 import sys
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
@@ -672,8 +672,37 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    def add_TopologyAttr(self, topologyattr):
-        """Add a new topology attribute."""
+    def add_TopologyAttr(self, topologyattr, values=None):
+        """Add a new topology attribute to the Universe
+
+        Adding a TopologyAttribute to the Universe makes it available to
+        all AtomGroups etc throughout the Universe.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr or string
+          Either a MDAnalysis TopologyAttr object or the name of a possible
+          topology attribute.
+        values : np.ndarray, optional
+          If initiating an attribute from a string, the initial values to
+          use.  If not supplied, the new TopologyAttribute will have empty
+          or zero values.
+        """
+        if isinstance(topologyattr, six.string_types):
+            try:
+                tcls = _TOPOLOGY_ATTRS[topologyattr]
+            except KeyError:
+                raise ValueError(
+                    "Unrecognised topology attribute name: '{}'."
+                    "  Possible values: '{}'".format(
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
+                )
+            else:
+                topologyattr = tcls.from_blank(
+                    n_atoms=self._topology.n_atoms,
+                    n_residues=self._topology.n_residues,
+                    n_segments=self._topology.n_segments,
+                    values=values)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
