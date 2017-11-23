@@ -20,7 +20,7 @@ mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
 
 Enhancements
   * added Amber residue names to 'protein' atom selection (PR #1704)
-  * KDTree for neighbor search on periodic systems (PR #1660)
+  * KDTree for neighbor search on periodic systems (PR #1660, #1692)
   * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
@@ -29,6 +29,7 @@ Enhancements
   * about 20% speed improvements for GNM analysis. (PR #1579)
   * added support for Tinker TXYZ and ARC files
   * libmdaxdr and libdcd classes can now be pickled (PR #1680)
+  * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
 
 Deprecations
 

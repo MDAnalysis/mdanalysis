@@ -63,6 +63,7 @@ class AtomNeighborSearch(object):
         """
         self.atom_group = atom_group
         self._u = atom_group.universe
+        self._box = box
         if box is None:
             self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
         else:
