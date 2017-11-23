@@ -32,6 +32,7 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
+    - PYTEST_VERSION=>3.2
 
   matrix:
     # Run a coverage test
@@ -87,7 +88,7 @@ install:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 4096; fi
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
 

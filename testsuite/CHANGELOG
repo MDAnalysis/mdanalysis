@@ -13,6 +13,10 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+mm/dd/yy sobuelow
+  * 0.17.0
+    - Unit test for residue names in 'protein' atom selection (PR #1704)
+
 mm/dd/yy
 
   * 0.16.2 utkbansal
