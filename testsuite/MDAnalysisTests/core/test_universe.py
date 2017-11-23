@@ -525,3 +525,46 @@ class TestCustomReaders(object):
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                          topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+
+class TestAddTopologyAttr(object):
+    @pytest.fixture()
+    def universe(self):
+        return make_Universe()
+
+    def test_add_TA_fail(self, universe):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('silly')
+
+    def test_nodefault_fail(self, universe):
+        with pytest.raises(NotImplementedError):
+            universe.add_TopologyAttr('bonds')
+
+    @pytest.mark.parametrize(
+        'toadd,attrname,default', (
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['name', 'names', ''], ['names', 'names', ''],
+            ['type', 'types', ''], ['types', 'types', ''],
+            ['element', 'elements', ''], ['elements', 'elements', ''],
+            ['radius', 'radii', 0.0], ['radii', 'radii', 0.0],
+            ['chainID', 'chainIDs', ''], ['chainIDs', 'chainIDs', ''],
+            ['tempfactor', 'tempfactors', 0.0],
+            ['tempfactors', 'tempfactors', 0.0],
+            ['mass', 'masses', 0.0], ['masses', 'masses', 0.0],
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['bfactor', 'bfactors', 0.0], ['bfactors', 'bfactors', 0.0],
+            ['occupancy', 'occupancies', 0.0],
+            ['occupancies', 'occupancies', 0.0],
+            ['altLoc', 'altLocs', ''], ['altLocs', 'altLocs', ''],
+            ['resid', 'resids', 1], ['resids', 'resids', 1],
+            ['resname', 'resnames', ''], ['resnames', 'resnames', ''],
+            ['resnum', 'resnums', 1], ['resnums', 'resnums', 1],
+            ['icode', 'icodes', ''], ['icodes', 'icodes', ''],
+            ['segid', 'segids', ''], ['segids', 'segids', ''],
+        )
+    )
+    def test_add_charges(self, universe, toadd, attrname, default):
+        universe.add_TopologyAttr(toadd)
+
+        assert hasattr(universe.atoms, attrname)
+        assert getattr(universe.atoms, attrname)[0] == default
