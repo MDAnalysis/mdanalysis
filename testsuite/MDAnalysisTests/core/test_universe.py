@@ -25,7 +25,6 @@ from __future__ import absolute_import, print_function
 from six.moves import cPickle
 
 import os
-from unittest import TestCase
 
 try:
     from cStringIO import StringIO
@@ -285,7 +284,7 @@ def test_chainid_quick_select():
     assert len(u.D.atoms) == 7
 
 
-class TestGuessBonds(TestCase):
+class TestGuessBonds(object):
     """Test the AtomGroup methed guess_bonds
 
     This needs to be done both from Universe creation (via kwarg) and AtomGroup
@@ -295,11 +294,9 @@ class TestGuessBonds(TestCase):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    def setUp(self):
-        self.vdw = {'A':1.05, 'B':0.4}
-
-    def tearDown(self):
-        del self.vdw
+    @pytest.fixture()
+    def vdw(self):
+        return {'A': 1.05, 'B': 0.4}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
@@ -325,13 +322,13 @@ class TestGuessBonds(TestCase):
         with pytest.raises(ValueError):
             mda.Universe(two_water_gro_nonames, guess_bonds = True)
 
-    def test_universe_guess_bonds_with_vdwradii(self):
+    def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
         u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                                vdwradii=self.vdw)
+                                vdwradii=vdw)
         self._check_universe(u)
         assert u.kwargs['guess_bonds']
-        assert_equal(self.vdw, u.kwargs['vdwradii'])
+        assert_equal(vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
@@ -372,11 +369,11 @@ class TestGuessBonds(TestCase):
         with pytest.raises(ValueError):
             ag.guess_bonds()
 
-    def test_atomgroup_guess_bonds_with_vdwradii(self):
+    def test_atomgroup_guess_bonds_with_vdwradii(self, vdw):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        ag.guess_bonds(vdwradii=self.vdw)
+        ag.guess_bonds(vdwradii=vdw)
         self._check_atomgroup(ag, u)
 
 
