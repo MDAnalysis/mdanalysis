@@ -189,6 +189,7 @@ import warnings
 import logging
 
 from six.moves import range, zip, zip_longest
+from six import string_types
 
 import numpy as np
 
@@ -497,7 +498,7 @@ def alignto(mobile, reference, select="all", weights=None,
     if subselection is None:
         # mobile_atoms is Universe
         mobile_atoms = mobile.universe.atoms
-    elif isinstance(subselection, str):
+    elif isinstance(subselection, string_types):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
     else:
