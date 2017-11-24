@@ -125,6 +125,12 @@ class TestAlign(object):
         rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
+    def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        x = align.AlignTraj(universe, reference, filename=outfile)
+        assert x.filename == 'rmsfit_align_test.dcd'
+
     def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
