@@ -111,6 +111,7 @@ can be used in downstream processing).
 
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
+from six import string_types
 
 import numpy as np
 import sys
@@ -292,7 +293,7 @@ class Density(Grid):
         length_unit = MDAnalysis.core.flags['length_unit']
 
         parameters = kwargs.pop('parameters', {})
-        if (len(args) > 0 and type(args[0]) is str) or (type(kwargs.get('grid', None) is str)):
+        if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
             # try to be smart: when reading from a file then it is likely that this
             # is a density
             parameters.setdefault('isDensity', True)
