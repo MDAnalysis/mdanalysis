@@ -131,6 +131,22 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference)
         assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
 
+    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        align.AlignTraj(universe, reference, filename=outfile).run()
+        fitted = mda.Universe(PSF, outfile)
+
+        # ensure default file exists
+        with mda.Writer(str(tmpdir.join('rmsfit_align_test.dcd')),
+                        n_atoms=fitted.atoms.n_atoms) as w:
+            w.write(fitted.atoms)
+
+        align.AlignTraj(fitted, reference)
+        # we are careful now. The default does nothing
+        with pytest.raises(IOError):
+            align.AlignTraj(fitted, reference, force=False)
+
     def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -207,6 +223,7 @@ class TestAlign(object):
         reference.trajectory[-1]
         x = align.AlignTraj(universe, reference, filename=outfile,
                             in_memory=True).run()
+        assert x.filename is None
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
