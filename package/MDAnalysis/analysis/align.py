@@ -617,7 +617,7 @@ class AlignTraj(AnalysisBase):
             logger.info("Moved mobile trajectory to in-memory representation")
         else:
             if filename is None:
-                path, fn = os.path.split(self._trajectory.filename)
+                path, fn = os.path.split(mobile.trajectory.filename)
                 filename = os.path.join(path, prefix + fn)
                 logger.info('filename of rms_align with no filename given'
                             ': {0}'.format(filename))

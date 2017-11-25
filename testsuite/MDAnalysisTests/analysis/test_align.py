@@ -24,6 +24,7 @@ from __future__ import absolute_import, print_function
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.rms as rms
+import os
 import numpy as np
 import pytest
 from MDAnalysis import SelectionError
@@ -125,6 +126,27 @@ class TestAlign(object):
         rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
+    def test_AlignTraj_outfile_default(self, universe, reference):
+        reference.trajectory[-1]
+        x = align.AlignTraj(universe, reference)
+        assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
+
+    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        align.AlignTraj(universe, reference, filename=outfile).run()
+        fitted = mda.Universe(PSF, outfile)
+
+        # ensure default file exists
+        with mda.Writer(str(tmpdir.join('rmsfit_align_test.dcd')),
+                        n_atoms=fitted.atoms.n_atoms) as w:
+            w.write(fitted.atoms)
+
+        align.AlignTraj(fitted, reference)
+        # we are careful now. The default does nothing
+        with pytest.raises(IOError):
+            align.AlignTraj(fitted, reference, force=False)
+
     def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -201,6 +223,7 @@ class TestAlign(object):
         reference.trajectory[-1]
         x = align.AlignTraj(universe, reference, filename=outfile,
                             in_memory=True).run()
+        assert x.filename is None
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 

@@ -57,6 +57,7 @@ Fixes
   * Fixed triclinic unit cell distances for box edges (Issue #1475)
   * Fixed analysis.rms.RMSD: selections are now applied to atomgroup, not to
     atomgroup.universe
+  * Default filename argument for AlignTraj works again (Issue #1713)
 
 Changes
   * remove deprecated TimeSeriesCollection
