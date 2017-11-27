@@ -214,6 +214,7 @@ from __future__ import division, absolute_import, print_function
 
 import six
 from six.moves import range, cPickle
+from six import string_types
 
 import numpy as np
 from scipy import spatial, cluster
@@ -1498,8 +1499,8 @@ class PSAnalysis(object):
         step = kwargs.pop('step', None)
         store = kwargs.pop('store', True)
 
-        if type(metric) is str:
-            metric_func = get_path_metric_func(metric)
+        if isinstance(metric, string_types):
+            metric_func = get_path_metric_func(str(metric))
         else:
             metric_func = metric
         numpaths = self.npaths

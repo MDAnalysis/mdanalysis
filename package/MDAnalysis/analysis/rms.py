@@ -136,6 +136,7 @@ Analysis classes
 from __future__ import division, absolute_import
 
 from six.moves import zip
+from six import string_types
 import numpy as np
 import logging
 import warnings
@@ -271,8 +272,8 @@ def process_selection(select):
     :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.
     """
 
-    if type(select) is str:
-        select = {'reference': select, 'mobile': select}
+    if isinstance(select, string_types):
+        select = {'reference': str(select), 'mobile': str(select)}
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
