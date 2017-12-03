@@ -201,7 +201,7 @@ class _TopologyAttrContainer(object):
         if singular:
             newcls._SETATTR_WHITELIST = {
                 'position', 'velocity', 'force', 'dimensions',
-                'atoms', 'residue', 'residues', 'segment', 'segments',
+                'atoms', 'residue', 'residues', 'segment',
             }
         else:
             newcls._SETATTR_WHITELIST = {
