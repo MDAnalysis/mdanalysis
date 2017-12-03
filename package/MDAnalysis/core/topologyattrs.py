@@ -226,8 +226,12 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
 
         Parameters
         ----------
-        n_atoms, n_residues, n_segments : int, optional
-          Size of the TopologyAttribute
+        n_atoms : int, optional
+          Size of the TopologyAttribute atoms
+        n_residues: int, optional
+          Size of the TopologyAttribute residues
+        n_segments : int, optional
+          Size of the TopologyAttribute segments
         values : optional
           Initial values for the TopologyAttribute
         """
