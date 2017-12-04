@@ -661,7 +661,7 @@ class AlignTraj(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
-        index = self._ts.frame
+        index = self._frame_index
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,

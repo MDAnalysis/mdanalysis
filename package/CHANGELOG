@@ -59,6 +59,7 @@ Fixes
     atomgroup.universe
   * Default filename argument for AlignTraj works again (Issue #1713)
   * Fixed analysis.rms.RMSD failed when selection is unicode (PR #1710)
+  * Fixed analysis.align.AlignTraj failed when step > 1 (Issue #1714)
 
 Changes
   * remove deprecated TimeSeriesCollection
