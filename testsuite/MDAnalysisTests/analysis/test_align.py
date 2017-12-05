@@ -147,6 +147,12 @@ class TestAlign(object):
         with pytest.raises(IOError):
             align.AlignTraj(fitted, reference, force=False)
 
+    def test_AlignTraj_step_works(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        # this shouldn't throw an exception
+        align.AlignTraj(universe, reference, filename=outfile, step=10).run()
+
     def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
