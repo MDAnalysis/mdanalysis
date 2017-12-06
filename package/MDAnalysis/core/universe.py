@@ -687,6 +687,15 @@ class Universe(object):
           If initiating an attribute from a string, the initial values to
           use.  If not supplied, the new TopologyAttribute will have empty
           or zero values.
+
+        Example
+        -------
+        For example to add bfactors to a Universe:
+
+        >>> u.add_TopologyAttr('bfactors')
+        >>> u.atoms.bfactors
+        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+
         """
         if isinstance(topologyattr, six.string_types):
             try:
@@ -694,7 +703,9 @@ class Universe(object):
             except KeyError:
                 raise ValueError(
                     "Unrecognised topology attribute name: '{}'."
-                    "  Possible values: '{}'".format(
+                    "  Possible values: '{}'\n"
+                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "".format(
                         topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
                 )
             else:
