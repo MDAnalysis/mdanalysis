@@ -191,7 +191,10 @@ class _TopologyAttrContainer(object):
         ----------
         is_group : bool
             The :attr:`_is_group` of the returned class will be set to
-            *is_group*. It controls the type of :class:`TopologyAttr` addition.
+            *is_group*. This is used to distinguish between Groups (AtomGroup
+            etc.) and Components (Atom etc.) in internal methods when
+            considering actions such as addition between objects, adding
+            TopologyAttributes to them.
 
         Returns
         -------
