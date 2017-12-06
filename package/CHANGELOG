@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, xiki-tempula
 
   * 0.17.0
 
@@ -30,6 +30,7 @@ Enhancements
   * added support for Tinker TXYZ and ARC files
   * libmdaxdr and libdcd classes can now be pickled (PR #1680)
   * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
+  * introduce the water bridge analysis module (PR #1722)
 
 Deprecations
 
