@@ -696,6 +696,10 @@ class Universe(object):
         >>> u.atoms.bfactors
         array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
 
+        .. versionchanged:: 0.17.0
+           Can now also add TopologyAttrs with a string of the name of the
+           attribute to add (eg 'charges'), can also supply initial values
+           using values keyword.
         """
         if isinstance(topologyattr, six.string_types):
             try:
