@@ -969,7 +969,7 @@ Fixes
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-    rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
+          rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
           matthieu.chavent
 
   * 0.8.1
@@ -1484,7 +1484,7 @@ Fixes
     alternative atoms and insertion codes that are not needed for
     handling MD simulation data).
       - The default behaviour of MDAnalysis  can be set through the flag
-  MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
+        MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
       - One can always manually select the PDB reader by providing the
         permissive keyword to Universe; e.g. Universe(...,permissive=False)
         will read the input file with the Bio.PDB reader. This might be
