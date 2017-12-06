@@ -217,6 +217,12 @@ class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
 
     @staticmethod
     def _gen_initial_values(n_atoms, n_residues, n_segments):
+        """Populate an initial empty data structure for this Attribute
+
+        The only provided parameters are the "shape" of the Universe
+
+        Eg for charges, provide np.zeros(n_atoms)
+        """
         raise NotImplementedError("No default values")
 
     @classmethod
@@ -442,7 +448,7 @@ class Atomids(AtomAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.arange(na) + 1
+        return np.arange(1, na + 1)
 
 
 # TODO: update docs to property doc
@@ -1140,7 +1146,7 @@ class Resids(ResidueAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.arange(nr) + 1
+        return np.arange(1, nr + 1)
 
 
 # TODO: update docs to property doc
@@ -1313,7 +1319,7 @@ class Resnums(ResidueAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.arange(nr) + 1
+        return np.arange(1, nr + 1)
 
 
 class ICodes(ResidueAttr):
