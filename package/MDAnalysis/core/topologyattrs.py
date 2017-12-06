@@ -1491,7 +1491,7 @@ class _Connection(AtomAttr):
             unique_bonds = self._bondDict[ag.ix]
         bond_idx, types, guessed, order = np.hsplit(
             np.array(sorted(unique_bonds)), 4)
-        bond_idx = np.array(bond_idx.ravel(), dtype=np.int32)
+        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
