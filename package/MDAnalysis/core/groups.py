@@ -153,13 +153,14 @@ def make_classes():
 
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
-    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(singular=False)
+    GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(is_group=True)
     for cls in groups:
-        bases[cls] = GBase._subclass(singular=False)
+        bases[cls] = GBase._subclass(is_group=True)
     # CBase for patching all components
-    CBase = bases[ComponentBase] = _TopologyAttrContainer._subclass(singular=True)
+    CBase = bases[ComponentBase] = _TopologyAttrContainer._subclass(
+        is_group=False)
     for cls in components:
-        bases[cls] = CBase._subclass(singular=True)
+        bases[cls] = CBase._subclass(is_group=False)
 
     # Initializes the class cache.
     for cls in groups + components:
@@ -183,30 +184,30 @@ class _TopologyAttrContainer(object):
       :class:`Universe`.
     """
     @classmethod
-    def _subclass(cls, singular):
+    def _subclass(cls, is_group):
         """Factory method returning :class:`_TopologyAttrContainer` subclasses.
 
         Parameters
         ----------
-        singular : bool
-            The :attr:`_singular` of the returned class will be set to
-            *singular*. It controls the type of :class:`TopologyAttr` addition.
+        is_group : bool
+            The :attr:`_is_group` of the returned class will be set to
+            *is_group*. It controls the type of :class:`TopologyAttr` addition.
 
         Returns
         -------
         type
             A subclass of :class:`_TopologyAttrContainer`, with the same name.
         """
-        newcls = type(cls.__name__, (cls,), {'_singular': bool(singular)})
-        if singular:
-            newcls._SETATTR_WHITELIST = {
-                'position', 'velocity', 'force', 'dimensions',
-                'atoms', 'residue', 'residues', 'segment',
-            }
-        else:
+        newcls = type(cls.__name__, (cls,), {'_is_group': bool(is_group)})
+        if is_group:
             newcls._SETATTR_WHITELIST = {
                 'positions', 'velocities', 'forces', 'dimensions',
                 'atoms', 'residue', 'residues', 'segment', 'segments',
+            }
+        else:
+            newcls._SETATTR_WHITELIST = {
+                'position', 'velocity', 'force', 'dimensions',
+                'atoms', 'residue', 'residues', 'segment',
             }
 
         return newcls
@@ -254,17 +255,14 @@ class _TopologyAttrContainer(object):
         def setter(self, values):
             return attr.__setitem__(self, values)
 
-        if cls._singular:
-            setattr(cls, attr.singular,
-                    property(getter, setter, None, attr.singledoc))
-        else:
+        if cls._is_group:
             setattr(cls, attr.attrname,
                     property(getter, setter, None, attr.groupdoc))
-
-        if cls._singular:
-            cls._SETATTR_WHITELIST.add(attr.singular)
-        else:
             cls._SETATTR_WHITELIST.add(attr.attrname)
+        else:
+            setattr(cls, attr.singular,
+                    property(getter, setter, None, attr.singledoc))
+            cls._SETATTR_WHITELIST.add(attr.singular)
 
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
@@ -273,7 +271,7 @@ class _TopologyAttrContainer(object):
                 hasattr(self, attr)):  # preexisting (eg properties) allowed
             raise AttributeError(
                 "Cannot set arbitrary attributes to a {}".format(
-                    'Component' if self._singular else 'Group'))
+                    'Group' if self._is_group else 'Component'))
         # if it is, we allow the setattr to proceed by deferring to the super
         # behaviour (ie do it)
         super(_TopologyAttrContainer, self).__setattr__(attr, value)
