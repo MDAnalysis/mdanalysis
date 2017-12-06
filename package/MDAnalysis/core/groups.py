@@ -2877,7 +2877,8 @@ class UpdatingAtomGroup(AtomGroup):
 
     def __getattribute__(self, name):
         # ALL attribute access goes through here
-        # If the requested attribute isn't in the shortcut list, update ourselves
+        # If the requested attribute is public (not starting with '_') and
+        # isn't in the shortcut list, update ourselves
         if not (name.startswith('_') or name in _UAG_SHORTCUT_ATTRS):
             self._ensure_updated()
         # Going via object.__getattribute__ then bypasses this check stage
