@@ -1491,11 +1491,11 @@ class _Connection(AtomAttr):
             unique_bonds = self._bondDict[ag.ix]
         bond_idx, types, guessed, order = np.hsplit(
             np.array(sorted(unique_bonds)), 4)
-        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
+        bond_idx = np.array(bond_idx.ravel(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
-        return TopologyGroup(bond_idx, ag._u,
+        return TopologyGroup(bond_idx, ag.universe,
                              self.singular[:-1],
                              types,
                              guessed,
@@ -1542,7 +1542,7 @@ class Bonds(_Connection):
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""
         idx = [b.partner(self).index for b in self.bonds]
-        return self._u.atoms[idx]
+        return self.universe.atoms[idx]
 
     transplants[Atom].append(
         ('bonded_atoms', property(bonded_atoms, None, None,
