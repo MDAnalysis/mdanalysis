@@ -15,8 +15,8 @@ except:
     pass
 
 class LeafletBench(object):
-    """Benchmarks for MDAnalysis.analysis.leaflet
-    functions.
+    """Benchmarks for MDAnalysis.analysis.leaflet.
+    LeafletFinder
     """
 
     params = ([7.0, 15.0, 23.0],
@@ -32,18 +32,32 @@ class LeafletBench(object):
         """Benchmark LeafletFinder for test lipid
         membrane system.
         """
-        leaflet.LeafletFinder(self.u,
-                              self.headgroup_sel,
-                              cutoff,
-                              pbc,
-                              sparse)
+        leaflet.LeafletFinder(universe=self.u,
+                              selectionstring=self.headgroup_sel,
+                              cutoff=cutoff,
+                              pbc=pbc,
+                              sparse=sparse)
 
-    def time_optimize_cutoff(self, cutoff, sparse, pbc):
+
+class LeafletOptimizeBench(object):
+    """Benchmarks for MDAnalysis.analysis.leaflet.
+    optimize_cutoff
+    """
+
+    params = ([None, True, False],
+              [True, False])
+    param_names = ['sparse', 'pbc']
+
+    def setup(self, sparse, pbc):
+        self.u = MDAnalysis.Universe(Martini_membrane_gro)
+        self.headgroup_sel = 'name PO4'
+
+    def time_optimize_cutoff(self, sparse, pbc):
         """Benchmark optimize_cutoff for test lipid
         membrane system using default network distance
         range.
         """
-        leaflet.optimize_cutoff(self.u,
-                                self.headgroup_sel,
+        leaflet.optimize_cutoff(universe=self.u,
+                                selection=self.headgroup_sel,
                                 pbc=pbc,
                                 sparse=sparse)
