@@ -34,6 +34,7 @@ Enhancements
     to the Universe (Issue #1092, PR #1186)
 
 Deprecations
+  * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0
 
 Fixes
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
