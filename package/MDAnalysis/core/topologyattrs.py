@@ -31,6 +31,7 @@ TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
 from __future__ import division, absolute_import
+import six
 from six.moves import zip, range
 
 import Bio.Seq
@@ -54,6 +55,7 @@ from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
+from .. import _TOPOLOGY_ATTRS
 
 
 def _check_length(func):
@@ -163,13 +165,29 @@ def _wronglevel_error(attr, group):
     ))
 
 
-class TopologyAttr(object):
+class _TopologyAttrMeta(type):
+    # register TopologyAttrs
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        for attr in ['attrname', 'singular']:
+            try:
+                attrname = classdict[attr]
+            except KeyError:
+                pass
+            else:
+                _TOPOLOGY_ATTRS[attrname] = cls
+
+
+class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
     """Base class for Topology attributes.
 
-    .. note::   This class is intended to be subclassed, and mostly amounts to
-                a skeleton. The methods here should be present in all
-                :class:`TopologyAttr` child classes, but by default they raise
-                appropriate exceptions.
+    Note
+    ----
+    This class is intended to be subclassed, and mostly amounts to
+    a skeleton. The methods here should be present in all
+    :class:`TopologyAttr` child classes, but by default they raise
+    appropriate exceptions.
+
 
     Attributes
     ----------
@@ -187,6 +205,8 @@ class TopologyAttr(object):
     singular = 'topologyattr'
     per_object = None  # ie Resids per_object = 'residue'
     top = None  # pointer to Topology object
+    transplants = defaultdict(list)
+    target_classes = []
 
     groupdoc = None
     singledoc = None
@@ -194,6 +214,36 @@ class TopologyAttr(object):
     def __init__(self, values, guessed=False):
         self.values = values
         self._guessed = guessed
+
+    @staticmethod
+    def _gen_initial_values(n_atoms, n_residues, n_segments):
+        """Populate an initial empty data structure for this Attribute
+
+        The only provided parameters are the "shape" of the Universe
+
+        Eg for charges, provide np.zeros(n_atoms)
+        """
+        raise NotImplementedError("No default values")
+
+    @classmethod
+    def from_blank(cls, n_atoms=None, n_residues=None, n_segments=None,
+                   values=None):
+        """Create a blank version of this TopologyAttribute
+
+        Parameters
+        ----------
+        n_atoms : int, optional
+          Size of the TopologyAttribute atoms
+        n_residues: int, optional
+          Size of the TopologyAttribute residues
+        n_segments : int, optional
+          Size of the TopologyAttribute segments
+        values : optional
+          Initial values for the TopologyAttribute
+        """
+        if values is None:
+            values = cls._gen_initial_values(n_atoms, n_residues, n_segments)
+        return cls(values)
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level."""
@@ -262,7 +312,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
-    target_classes = [Atom]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
 
     def __init__(self):
         self._guessed = False
@@ -271,13 +321,13 @@ class Atomindices(TopologyAttr):
         raise AttributeError("Atom indices are fixed; they cannot be reset")
 
     def get_atoms(self, ag):
-        return ag._ix
+        return ag.ix
 
     def get_residues(self, rg):
-        return list(self.top.tt.residues2atoms_2d(rg._ix))
+        return list(self.top.tt.residues2atoms_2d(rg.ix))
 
     def get_segments(self, sg):
-        return list(self.top.tt.segments2atoms_2d(sg._ix))
+        return list(self.top.tt.segments2atoms_2d(sg.ix))
 
 
 class Resindices(TopologyAttr):
@@ -294,22 +344,22 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
     def __init__(self):
         self._guessed = False
 
     def get_atoms(self, ag):
-        return self.top.tt.atoms2residues(ag._ix)
+        return self.top.tt.atoms2residues(ag.ix)
 
     def get_residues(self, rg):
-        return rg._ix
+        return rg.ix
 
     def set_residues(self, rg, values):
         raise AttributeError("Residue indices are fixed; they cannot be reset")
 
     def get_segments(self, sg):
-        return list(self.top.tt.segments2residues_2d(sg._ix))
+        return list(self.top.tt.segments2residues_2d(sg.ix))
 
 
 class Segindices(TopologyAttr):
@@ -327,19 +377,20 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
 
     def __init__(self):
         self._guessed = False
 
     def get_atoms(self, ag):
-        return self.top.tt.atoms2segments(ag._ix)
+        return self.top.tt.atoms2segments(ag.ix)
 
     def get_residues(self, rg):
-        return self.top.tt.residues2segments(rg._ix)
+        return self.top.tt.residues2segments(rg.ix)
 
     def get_segments(self, sg):
-        return sg._ix
+        return sg.ix
 
     def set_segments(self, sg, values):
         raise AttributeError("Segment indices are fixed; they cannot be reset")
@@ -353,14 +404,14 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    target_classes = [Atom]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
 
     def get_atoms(self, ag):
-        return self.values[ag._ix]
+        return self.values[ag.ix]
 
     @_check_length
     def set_atoms(self, ag, values):
-        self.values[ag._ix] = values
+        self.values[ag.ix] = values
 
     def get_residues(self, rg):
         """By default, the values for each atom present in the set of residues
@@ -368,7 +419,7 @@ class AtomAttr(TopologyAttr):
         attributes.
 
         """
-        aixs = self.top.tt.residues2atoms_2d(rg._ix)
+        aixs = self.top.tt.residues2atoms_2d(rg.ix)
         return [self.values[aix] for aix in aixs]
 
     def set_residues(self, rg, values):
@@ -380,7 +431,7 @@ class AtomAttr(TopologyAttr):
         attributes.
 
         """
-        aixs = self.top.tt.segments2atoms_2d(sg._ix)
+        aixs = self.top.tt.segments2atoms_2d(sg.ix)
         return [self.values[aix] for aix in aixs]
 
     def set_segments(self, sg, values):
@@ -395,6 +446,10 @@ class Atomids(AtomAttr):
     singular = 'id'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(1, na + 1)
+
 
 # TODO: update docs to property doc
 class Atomnames(AtomAttr):
@@ -404,6 +459,10 @@ class Atomnames(AtomAttr):
     singular = 'name'
     per_object = 'atom'
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
     def getattr__(atomgroup, name):
         try:
@@ -564,12 +623,20 @@ class Atomtypes(AtomAttr):
     singular = 'type'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
+
 
 # TODO: update docs to property doc
 class Elements(AtomAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
 
 # TODO: update docs to property doc
@@ -578,6 +645,10 @@ class Radii(AtomAttr):
     attrname = 'radii'
     singular = 'radius'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 class ChainIDs(AtomAttr):
@@ -591,6 +662,10 @@ class ChainIDs(AtomAttr):
     singular = 'chainID'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
+
 
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
@@ -598,12 +673,17 @@ class Tempfactors(AtomAttr):
     singular = 'tempfactor'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
 
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
 
     groupdoc = """Mass of each component in the Group.
@@ -620,8 +700,12 @@ class Masses(AtomAttr):
         self.values = np.asarray(values, dtype=np.float64)
         self._guessed = guessed
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
     def get_residues(self, rg):
-        resatoms = self.top.tt.residues2atoms_2d(rg._ix)
+        resatoms = self.top.tt.residues2atoms_2d(rg.ix)
 
         if isinstance(rg._ix, numbers.Integral):
             # for a single residue
@@ -635,7 +719,7 @@ class Masses(AtomAttr):
         return masses
 
     def get_segments(self, sg):
-        segatoms = self.top.tt.segments2atoms_2d(sg._ix)
+        segatoms = self.top.tt.segments2atoms_2d(sg.ix)
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
@@ -943,11 +1027,16 @@ class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
     per_object = 'atom'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
     def get_residues(self, rg):
-        resatoms = self.top.tt.residues2atoms_2d(rg._ix)
+        resatoms = self.top.tt.residues2atoms_2d(rg.ix)
 
         if isinstance(rg._ix, numbers.Integral):
             charges = self.values[resatoms].sum()
@@ -959,7 +1048,7 @@ class Charges(AtomAttr):
         return charges
 
     def get_segments(self, sg):
-        segatoms = self.top.tt.segments2atoms_2d(sg._ix)
+        segatoms = self.top.tt.segments2atoms_2d(sg.ix)
 
         if isinstance(sg._ix, numbers.Integral):
             # for a single segment
@@ -987,12 +1076,20 @@ class Bfactors(AtomAttr):
     singular = 'bfactor'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
 
 # TODO: update docs to property doc
 class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
     per_object = 'atom'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 # TODO: update docs to property doc
@@ -1002,36 +1099,30 @@ class AltLocs(AtomAttr):
     singular = 'altLoc'
     per_object = 'atom'
 
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
 
-# residue attributes
 
 class ResidueAttr(TopologyAttr):
-    """Base class for Topology attributes.
-
-    .. note::   This class is intended to be subclassed, and mostly amounts to
-                a skeleton. The methods here should be present in all
-                :class:`TopologyAttr` child classes, but by default they raise
-                appropriate exceptions.
-
-    """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    target_classes = [Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Residue]
     per_object = 'residue'
 
     def get_atoms(self, ag):
-        rix = self.top.tt.atoms2residues(ag._ix)
+        rix = self.top.tt.atoms2residues(ag.ix)
         return self.values[rix]
 
     def set_atoms(self, ag, values):
         raise _wronglevel_error(self, ag)
 
     def get_residues(self, rg):
-        return self.values[rg._ix]
+        return self.values[rg.ix]
 
     @_check_length
     def set_residues(self, rg, values):
-        self.values[rg._ix] = values
+        self.values[rg.ix] = values
 
     def get_segments(self, sg):
         """By default, the values for each residue present in the set of
@@ -1039,7 +1130,7 @@ class ResidueAttr(TopologyAttr):
         in child attributes.
 
         """
-        rixs = self.top.tt.segments2residues_2d(sg._ix)
+        rixs = self.top.tt.segments2residues_2d(sg.ix)
         return [self.values[rix] for rix in rixs]
 
     def set_segments(self, sg, values):
@@ -1051,15 +1142,23 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(1, nr + 1)
 
 
 # TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
 
     def getattr__(residuegroup, resname):
         try:
@@ -1216,13 +1315,21 @@ class Resnames(ResidueAttr):
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.arange(1, nr + 1)
 
 
 class ICodes(ResidueAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
 
 
 class Moltypes(ResidueAttr):
@@ -1232,7 +1339,7 @@ class Moltypes(ResidueAttr):
     """
     attrname = 'moltypes'
     singular = 'moltype'
-    target_classes = [Atom, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
 
 
 # segment attributes
@@ -1243,37 +1350,42 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    target_classes = [Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
-        six = self.top.tt.atoms2segments(ag._ix)
+        six = self.top.tt.atoms2segments(ag.ix)
         return self.values[six]
 
     def set_atoms(self, ag, values):
         raise _wronglevel_error(self, ag)
 
     def get_residues(self, rg):
-        six = self.top.tt.residues2segments(rg._ix)
+        six = self.top.tt.residues2segments(rg.ix)
         return self.values[six]
 
     def set_residues(self, rg, values):
         raise _wronglevel_error(self, rg)
 
     def get_segments(self, sg):
-        return self.values[sg._ix]
+        return self.values[sg.ix]
 
     @_check_length
     def set_segments(self, sg, values):
-        self.values[sg._ix] = values
+        self.values[sg.ix] = values
 
 
 # TODO: update docs to property doc
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    target_classes = [Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(ns)], dtype=object)
 
     def getattr__(segmentgroup, segid):
         try:
@@ -1373,17 +1485,17 @@ class _Connection(AtomAttr):
     def get_atoms(self, ag):
         try:
             unique_bonds = set(itertools.chain(
-                *[self._bondDict[a] for a in ag._ix]))
+                *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
-            unique_bonds = self._bondDict[ag._ix]
+            unique_bonds = self._bondDict[ag.ix]
         bond_idx, types, guessed, order = np.hsplit(
             np.array(sorted(unique_bonds)), 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
-        return TopologyGroup(bond_idx, ag._u,
+        return TopologyGroup(bond_idx, ag.universe,
                              self.singular[:-1],
                              types,
                              guessed,
@@ -1430,7 +1542,7 @@ class Bonds(_Connection):
     def bonded_atoms(self):
         """An AtomGroup of all atoms bonded to this Atom"""
         idx = [b.partner(self).index for b in self.bonds]
-        return self._u.atoms[idx]
+        return self.universe.atoms[idx]
 
     transplants[Atom].append(
         ('bonded_atoms', property(bonded_atoms, None, None,

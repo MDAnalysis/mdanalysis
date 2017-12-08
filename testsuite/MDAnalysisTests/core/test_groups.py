@@ -1016,3 +1016,77 @@ class TestInstantSelectorDeprecationWarnings(object):
     def test_SegmentGroup_nowarn_getitem(self, u):
         with no_deprecated_call():
             u.segments[0]
+
+
+@pytest.fixture()
+def attr_universe():
+    return make_Universe(('names', 'resids', 'segids'))
+            
+class TestAttributeSetting(object):
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])
+    def test_setting_group_fail(self, attr_universe, groupname):
+        group = getattr(attr_universe, groupname)
+ 
+        with pytest.raises(AttributeError):
+            group.this = 'that'
+
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])
+    def test_setting_component_fails(self, attr_universe, groupname):
+        component = getattr(attr_universe, groupname)[0]
+
+        with pytest.raises(AttributeError):
+            component.this = 'that'
+
+    @pytest.mark.parametrize('attr', ['name', 'resid', 'segid'])
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])    
+    def test_group_set_singular(self, attr_universe, attr, groupname):
+        # this should fail as you can't set the 'name' of a 'ResidueGroup'
+        group = getattr(attr_universe, groupname)
+        with pytest.raises(AttributeError):
+            setattr(group, attr, 24)
+
+    def test_atom_set_name(self, attr_universe):
+        attr_universe.atoms[0].name = 'this'
+        assert attr_universe.atoms[0].name == 'this'
+
+    def test_atom_set_resid(self, attr_universe):
+        with pytest.raises(NotImplementedError):
+            attr_universe.atoms[0].resid = 24
+
+    def test_atom_set_segid(self, attr_universe):
+        with pytest.raises(NotImplementedError):
+            attr_universe.atoms[0].segid = 'this'
+
+    def test_residue_set_name(self, attr_universe):
+        with pytest.raises(AttributeError):
+            attr_universe.residues[0].name = 'this'
+
+    def test_residue_set_resid(self, attr_universe):
+        attr_universe.residues[0].resid = 24
+        assert attr_universe.residues[0].resid == 24
+
+    def test_residue_set_segid(self, attr_universe):
+        with pytest.raises(NotImplementedError):
+            attr_universe.residues[0].segid = 'this'
+
+    def test_segment_set_name(self, attr_universe):
+        with pytest.raises(AttributeError):
+            attr_universe.segments[0].name = 'this'
+
+    def test_segment_set_resid(self, attr_universe):
+        with pytest.raises(AttributeError):
+            attr_universe.segments[0].resid = 24
+
+    def test_segment_set_segid(self, attr_universe):
+        attr_universe.segments[0].segid = 'this'
+        assert attr_universe.segments[0].segid == 'this'
+            
+    @pytest.mark.parametrize('attr', ['names', 'resids', 'segids'])
+    @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])    
+    def test_component_set_plural(self, attr, groupname):
+        # this should fail as you can't set the 'Names' of an 'Atom'
+        u = make_Universe(('names', 'resids', 'segids'))
+        group = getattr(u, groupname)
+        comp = group[0]
+        with pytest.raises(AttributeError):
+            setattr(comp, attr, 24)

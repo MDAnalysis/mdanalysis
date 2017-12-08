@@ -14,13 +14,15 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, jmborr, rcortini
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, rcortini
+
 
   * 0.17.0
 
 Enhancements
   * added support for GSD format topology/trajectory parser (PR #1693)
-  * KDTree for neighbor search on periodic systems (PR #1660)
+  * added Amber residue names to 'protein' atom selection (PR #1704)
+  * KDTree for neighbor search on periodic systems (PR #1660, #1692)
   * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
@@ -29,6 +31,9 @@ Enhancements
   * about 20% speed improvements for GNM analysis. (PR #1579)
   * added support for Tinker TXYZ and ARC files
   * libmdaxdr and libdcd classes can now be pickled (PR #1680)
+  * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
+  * Universe.add_TopologyAttr now accepts strings to add a given attribute
+    to the Universe (Issue #1092, PR #1186)
 
 Deprecations
 
@@ -56,6 +61,9 @@ Fixes
   * Fixed triclinic unit cell distances for box edges (Issue #1475)
   * Fixed analysis.rms.RMSD: selections are now applied to atomgroup, not to
     atomgroup.universe
+  * Default filename argument for AlignTraj works again (Issue #1713)
+  * Fixed analysis.rms.RMSD failed when selection is unicode (PR #1710)
+  * Fixed analysis.align.AlignTraj failed when step > 1 (Issue #1714)
 
 Changes
   * remove deprecated TimeSeriesCollection
@@ -77,6 +85,8 @@ Changes
     tuple (filename_or_array, trajectory_type) (Issue #1613)
   * docs: URLs to (www|docs).mdanalysis.org now link to SSL-encrypted site
     (see issue MDAnalysis/MDAnalysis.github.io#61)
+  * attributes can not be assigned to AtomGroups (and similar objects) unless
+    they are part of the Universe topology (Issue #1092 PR #1186)
 
 
 06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
@@ -961,7 +971,7 @@ Fixes
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
+          rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
           matthieu.chavent
 
   * 0.8.1
@@ -1476,7 +1486,7 @@ Fixes
     alternative atoms and insertion codes that are not needed for
     handling MD simulation data).
       - The default behaviour of MDAnalysis  can be set through the flag
-	MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
+        MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
       - One can always manually select the PDB reader by providing the
         permissive keyword to Universe; e.g. Universe(...,permissive=False)
         will read the input file with the Bio.PDB reader. This might be

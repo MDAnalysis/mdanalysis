@@ -93,14 +93,15 @@ import warnings
 import MDAnalysis
 import sys
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressMeter, _set_verbose
 from ..lib.util import cached, NamedStream, isstream
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
-from .groups import (GroupBase, Atom, Residue, Segment,
+from .groups import (ComponentBase, GroupBase,
+                     Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
@@ -671,8 +672,52 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    def add_TopologyAttr(self, topologyattr):
-        """Add a new topology attribute."""
+    def add_TopologyAttr(self, topologyattr, values=None):
+        """Add a new topology attribute to the Universe
+
+        Adding a TopologyAttribute to the Universe makes it available to
+        all AtomGroups etc throughout the Universe.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr or string
+          Either a MDAnalysis TopologyAttr object or the name of a possible
+          topology attribute.
+        values : np.ndarray, optional
+          If initiating an attribute from a string, the initial values to
+          use.  If not supplied, the new TopologyAttribute will have empty
+          or zero values.
+
+        Example
+        -------
+        For example to add bfactors to a Universe:
+
+        >>> u.add_TopologyAttr('bfactors')
+        >>> u.atoms.bfactors
+        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+
+        .. versionchanged:: 0.17.0
+           Can now also add TopologyAttrs with a string of the name of the
+           attribute to add (eg 'charges'), can also supply initial values
+           using values keyword.
+        """
+        if isinstance(topologyattr, six.string_types):
+            try:
+                tcls = _TOPOLOGY_ATTRS[topologyattr]
+            except KeyError:
+                raise ValueError(
+                    "Unrecognised topology attribute name: '{}'."
+                    "  Possible values: '{}'\n"
+                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "".format(
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))
+                )
+            else:
+                topologyattr = tcls.from_blank(
+                    n_atoms=self._topology.n_atoms,
+                    n_residues=self._topology.n_residues,
+                    n_segments=self._topology.n_segments,
+                    values=values)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
@@ -697,28 +742,18 @@ class Universe(object):
                                  n=n_dict[attr.per_object],
                                  m=len(attr)))
 
-        self._class_bases[GroupBase]._add_prop(attr)
-
         for cls in attr.target_classes:
-            try:
-                self._class_bases[cls]._add_prop(attr)
-            except (KeyError, AttributeError):
-                pass
+            self._class_bases[cls]._add_prop(attr)
 
-        try:
-            transplants = attr.transplants
-        except AttributeError:
-            # not every Attribute will have a transplant dict
-            pass
-        else:
-            # Group transplants
-            for cls in (Atom, Residue, Segment, GroupBase,
-                        AtomGroup, ResidueGroup, SegmentGroup):
-                for funcname, meth in transplants[cls]:
-                    setattr(self._class_bases[cls], funcname, meth)
-            # Universe transplants
-            for funcname, meth in transplants['Universe']:
-                setattr(self.__class__, funcname, meth)
+        # TODO: Try and shove this into cls._add_prop
+        # Group transplants
+        for cls in (Atom, Residue, Segment, GroupBase,
+                    AtomGroup, ResidueGroup, SegmentGroup):
+            for funcname, meth in attr.transplants[cls]:
+                setattr(self._class_bases[cls], funcname, meth)
+        # Universe transplants
+        for funcname, meth in attr.transplants['Universe']:
+            setattr(self.__class__, funcname, meth)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe

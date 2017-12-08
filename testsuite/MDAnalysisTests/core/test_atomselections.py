@@ -75,6 +75,17 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.s4AKE.atoms.indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
+    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    def test_protein_resnames(self, resname):
+        u = make_Universe(('resnames',))
+        # set half the residues' names to the resname we're testing
+        myprot = u.residues[::2]
+        myprot.resnames = resname
+        # select protein
+        sel = u.select_atoms('protein')
+        # check that contents (atom indices) are identical afterwards
+        assert_equal(myprot.atoms.ix, sel.ix)
+
     def test_backbone(self, universe):
         sel = universe.select_atoms('backbone')
         assert_equal(sel.n_atoms, 855)
@@ -468,6 +479,7 @@ class BaseDistanceSelection(object):
     """
 
     methods = [('kdtree', False),
+               ('kdtree', True),
                ('distmat', True),
                ('distmat', False)]
 
@@ -486,11 +498,7 @@ class BaseDistanceSelection(object):
 
         return sel
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_around(self, u, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
@@ -508,12 +516,10 @@ class BaseDistanceSelection(object):
         ref.difference_update(set(r1.indices))
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_layer(self, u, meth, periodic):
+        if meth == 'kdtree' and periodic:
+            pytest.skip("not implemented")
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)
@@ -527,12 +533,10 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_zone(self, u, meth, periodic):
+        if meth == 'kdtree' and periodic:
+            pytest.skip("not implemented")
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)
@@ -546,11 +550,7 @@ class BaseDistanceSelection(object):
 
         assert ref == set(result.indices)
 
-    @pytest.mark.parametrize('meth, periodic', [
-        ('kdtree', False),
-        ('distmat', True),
-        ('distmat', False)
-    ])
+    @pytest.mark.parametrize('meth, periodic', methods)
     def test_point(self, u, meth, periodic):
         sel = Parser.parse('point 5.0 5.0 5.0  3.0', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)

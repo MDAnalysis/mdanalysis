@@ -189,6 +189,7 @@ import warnings
 import logging
 
 from six.moves import range, zip, zip_longest
+from six import string_types
 
 import numpy as np
 
@@ -497,7 +498,7 @@ def alignto(mobile, reference, select="all", weights=None,
     if subselection is None:
         # mobile_atoms is Universe
         mobile_atoms = mobile.universe.atoms
-    elif isinstance(subselection, str):
+    elif isinstance(subselection, string_types):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
     else:
@@ -617,7 +618,7 @@ class AlignTraj(AnalysisBase):
             logger.info("Moved mobile trajectory to in-memory representation")
         else:
             if filename is None:
-                path, fn = os.path.split(self._trajectory.filename)
+                path, fn = os.path.split(mobile.trajectory.filename)
                 filename = os.path.join(path, prefix + fn)
                 logger.info('filename of rms_align with no filename given'
                             ': {0}'.format(filename))
@@ -660,7 +661,7 @@ class AlignTraj(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
-        index = self._ts.frame
+        index = self._frame_index
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
