@@ -45,10 +45,8 @@ from __future__ import absolute_import, division
 
 import numpy as np
 from . import base
-try :
-    import gsd.hoomd
-except :
-    pass
+import gsd.hoomd
+
 
 class GSDReader(base.ReaderBase):
     """Reader for the GSD format.
