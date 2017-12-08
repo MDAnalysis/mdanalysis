@@ -32,6 +32,7 @@ Enhancements
   * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
 
 Deprecations
+  * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0
 
 Fixes
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
