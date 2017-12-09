@@ -235,12 +235,15 @@ logger = logging.getLogger('MDAnalysis.analysis.psa')
 def get_path_metric_func(name):
     """Selects a path metric function by name.
 
-    :Arguments:
-      *name*
-         string, name of path metric
+    Parameters
+    ----------
+    name : str
+        name of path metric
 
-    :Returns:
-      The path metric function specified by *name* (if found).
+    Returns
+    -------
+    path_metric : function
+        The path metric function specified by *name* (if found).
     """
     path_metrics = {
             'hausdorff' : hausdorff,
@@ -676,25 +679,32 @@ def discrete_frechet(P, Q):
         between the two full paths *P* and *Q*  (i.e., the discrete Frechet
         distance) in terms of coupling distances between their partial paths.
 
-        :Arguments:
-          *i*
-             int, partial path of *P* through final frame *i-1*
-          *j*
-             int, partial path of *Q* through final frame *j-1*
+        Parameters
+        ----------
+        i : int
+            partial path of *P* through final frame *i-1*
+        j : int
+            partial path of *Q* through final frame *j-1*
 
-        :Returns:
-          float, the coupling distance between partial paths ``P[0:i]`` and
-          ``Q[0:j]``
+        Returns
+        -------
+        dist : float
+            the coupling distance between partial paths `P[0:i]` and `Q[0:j]`
         """
-        if ca[i,j] != -1 : return ca[i,j]
+        if ca[i,j] != -1 :
+            return ca[i,j]
         if i > 0:
-            if j > 0: ca[i,j] = max( min(c(i-1,j),c(i,j-1),c(i-1,j-1)), d[i,j] )
-            else:     ca[i,j] = max( c(i-1,0), d[i,0] )
-        elif j > 0:   ca[i,j] = max( c(0,j-1), d[0,j] )
-        else:         ca[i,j] = d[0,0]
-        return        ca[i,j]
+            if j > 0:
+                ca[i,j] = max( min(c(i-1,j),c(i,j-1),c(i-1,j-1)), d[i,j] )
+            else:
+                ca[i,j] = max( c(i-1,0), d[i,0] )
+        elif j > 0:
+            ca[i,j] = max( c(0,j-1), d[0,j] )
+        else:
+            ca[i,j] = d[0,0]
+        return ca[i,j]
 
-    return ( c(Np-1, Nq-1) / N )**0.5
+    return (c(Np-1, Nq-1) / N)**0.5
 
 
 def dist_mat_to_vec(N, i, j):
@@ -2090,9 +2100,9 @@ class PSAnalysis(object):
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this method.
 
         Returns
         -------
@@ -2108,9 +2118,10 @@ class PSAnalysis(object):
     def get_paths(self):
         """Return the paths in :class:`PSA`.
 
-        .. note::
-           Must run :meth:`PSAnalysis.generate_paths` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.generate_paths` prior to calling this
+        method.
 
         Returns
         -------
@@ -2127,9 +2138,10 @@ class PSAnalysis(object):
     def get_pairwise_distances(self, vectorform=False, checks=False):
         """Return the distance matrix (or vector) of pairwise path distances.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
-           calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
+        calling this method.
 
         Parameters
         ----------
@@ -2173,9 +2185,10 @@ class PSAnalysis(object):
         using :attr:`PSAPair.hausdorff_pair` with the keys 'frames' and
         'distance'.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
-           method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` prior to calling this
+        method.
 
         """
         if self._psa_pairs is None:
@@ -2195,9 +2208,10 @@ class PSAnalysis(object):
         :attr:`PSAPair.hausdorff_pair` for more information about accessing
         Hausdorff pair data.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` with
-           ``hausdorff_pairs=True`` prior to calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` with
+        ``hausdorff_pairs=True`` prior to calling this method.
 
         """
         if self._HP is None:
@@ -2216,9 +2230,10 @@ class PSAnalysis(object):
         :meth:`PSAnalysis.psa_pairs` and :attr:`PSAPair.nearest_neighbors` for
         more information about accessing nearest neighbor data.
 
-        .. note::
-           Must run :meth:`PSAnalysis.run_pairs_analysis` with
-           ``neighbors=True`` prior to calling this method.
+        Note
+        ----
+        Must run :meth:`PSAnalysis.run_pairs_analysis` with
+        ``neighbors=True`` prior to calling this method.
 
         """
         if self._NN is None:
