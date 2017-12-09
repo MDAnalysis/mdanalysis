@@ -1502,7 +1502,7 @@ class PSAnalysis(object):
         step = kwargs.pop('step', None)
         store = kwargs.pop('store', True)
 
-        if type(metric) is str:
+        if isinstance(metric, six.string_types):
             metric_func = get_path_metric_func(metric)
         else:
             metric_func = metric
@@ -1518,11 +1518,9 @@ class PSAnalysis(object):
         self.D = D
         if store:
             filename = kwargs.pop('filename', metric)
-            if type(metric) is str:
-                self.save_result(filename=filename)
-            else:
-                filename = kwargs.pop('filename', 'custom_metric')
-
+            if not isinstance(metric, six.string_types):
+                filename = 'custom_metric'
+            self.save_result(filename=filename)
 
     def run_pairs_analysis(self, **kwargs):
         """Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique
