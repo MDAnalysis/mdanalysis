@@ -252,9 +252,9 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        err_str = "Path metric {0} not found. Valid selections: ".format(key)
-        err_str += "  ".join(["\"{0}\"".format(name) for name in path_metrics.keys()])
-        raise KeyError(err_str)
+        raise KeyError('Path metric "{}" not found. Valid selections: {}'
+                       ''.format(key, " ".join('"{}"'.format(n)
+                                               for n in path_metrics.keys())))
 
 
 def sqnorm(v, axis=None):
@@ -350,10 +350,10 @@ def get_coord_axes(path):
         N = path.shape[1] / 3
         axis = (1,) # 1st axis: 3N structural coords (x1,y1,z1,...,xN,xN,zN)
     else:
-        err_str = "Path must have 2 or 3 dimensions; the first dimensions (axis"\
-                + " 0) must correspond to frames, axis 1 (and axis 2, if"       \
-                + " present) must contain atomic coordinates."
-        raise ValueError(err_str)
+        raise ValueError("Path must have 2 or 3 dimensions; the first "
+                         "dimensions (axis 0) must correspond to frames, "
+                         "axis 1 (and axis 2, if present) must contain atomic "
+                         "coordinates.")
     return N, axis
 
 
@@ -724,29 +724,27 @@ def dist_mat_to_vec(N, i, j):
 
     if not (isinstance(N, numbers.Integral) and isinstance(i, numbers.Integral)
             and isinstance(j, numbers.Integral)):
-        err_str = "N, i, j all must be of type int"
-        raise ValueError(err_str)
+        raise ValueError("N, i, j all must be of type int")
 
     if i < 0 or j < 0 or N < 2:
-        error_str = "Matrix indices are invalid; i and j must be greater than 0 and N must be greater the 2"
-        raise ValueError(error_str)
+        raise ValueError("Matrix indices are invalid; i and j must be greater "
+                         "than 0 and N must be greater the 2")
 
     if (j > i and (i > N - 1 or j > N)) or (j < i and (i > N or j > N - 1)):
-        err_str = "Matrix indices are out of range; i and j must be less than"  \
-                + " N = {0:d}".format(N)
-        raise ValueError(err_str)
+        raise ValueError("Matrix indices are out of range; i and j must be "
+                         "less than N = {0:d}".format(N))
     if j > i:
-        return (N*i) + j - (i+2)*(i+1)//2  # old-style division for int output
+        return (N*i) + j - (i+2)*(i+1) // 2  # old-style division for int output
     elif j < i:
-        warn_str = "Column index entered (j = {:d} is smaller than row index"   \
-                 + " (i = {:d}). Using symmetric element in upper triangle of"  \
-                 + " distance matrix instead: i --> j, j --> i"
-        warnings.warn(warn_str.format(j, i))
-        return (N*j) + i - (j+2)*(j+1)//2  # old-style division for int output
+        warnings.warn("Column index entered (j = {:d} is smaller than row "
+                      "index (i = {:d}). Using symmetric element in upper "
+                      "triangle of distance matrix instead: i --> j, "
+                      "j --> i".format(j, i))
+        return (N*j) + i - (j+2)*(j+1) // 2  # old-style division for int output
     else:
-        err_str = "Error in processing matrix indices; i and j must be integers"\
-                + " less than integer N = {0:d} such that j >= i+1.".format(N)
-        raise ValueError(err_str)
+        raise ValueError("Error in processing matrix indices; i and j must "
+                         "be integers less than integer N = {0:d} such that"
+                         " j >= i+1.".format(N))
 
 
 class Path(object):
@@ -1146,9 +1144,8 @@ class PSAPair(object):
         the second, with the largest separation distance.
         """
         if self.nearest_neighbors['distances'] is None:
-            err_str = "Nearest neighbors have not been calculated yet;"         \
-                    + " run compute_nearest_neighbors() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Nearest neighbors have not been calculated yet;"
+                              " run compute_nearest_neighbors() first.")
 
         nn_idx_P, nn_idx_Q = self.nearest_neighbors['frames']
         nn_dist_P, nn_dist_Q = self.nearest_neighbors['distances']
@@ -1194,9 +1191,8 @@ class PSAPair(object):
 
         """
         if self.nearest_neighbors['distances'] is None:
-            err_str = "Nearest neighbors have not been calculated yet;"         \
-                    + " run compute_nearest_neighbors() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Nearest neighbors have not been calculated yet;"
+                              " run compute_nearest_neighbors() first.")
 
         if frames:
             if distances:
@@ -1206,11 +1202,9 @@ class PSAPair(object):
         elif distances:
             return self.nearest_neighbors['distances']
         else:
-            err_str = "Need to select Hausdorff pair \"frames\" or"             \
-                + " \"distances\" or both. \"frames\" and \"distances\" cannot" \
-                + " both be set to False."
-            raise NoDataError(err_str)
-
+            raise NoDataError('Need to select Hausdorff pair "frames" or'
+                              ' "distances" or both. "frames" and "distances"'
+                              ' cannot both be set to False.')
 
     def get_hausdorff_pair(self, frames=True, distance=True):
         """Returns the Hausdorff pair of frames indices, the Hausdorff distance,
@@ -1239,9 +1233,8 @@ class PSAPair(object):
              is ``True``, return the Hausdorff distance for this path pair.
         """
         if self.hausdorff_pair['distance'] is None:
-            err_str = "Hausdorff pair has not been calculated yet;"             \
-                    + " run find_hausdorff_pair() first."
-            raise NoDataError(err_str)
+            raise NoDataError("Hausdorff pair has not been calculated yet;"
+                              " run find_hausdorff_pair() first.")
 
         if frames:
             if distance:
@@ -1251,10 +1244,9 @@ class PSAPair(object):
         elif distance:
             return self.hausdorff_pair['distance']
         else:
-            err_str = "Need to select Hausdorff pair \"frames\" or"             \
-                + " \"distance\" or both. \"frames\" and \"distance\" cannot" \
-                + " both be set to False."
-            raise NoDataError(err_str)
+            raise NoDataError('Need to select Hausdorff pair "frames" or'
+                              ' "distance" or both. "frames" and "distance"'
+                              ' cannot both be set to False.')
 
 
 class PSAnalysis(object):
@@ -1700,8 +1692,8 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         npaths = len(self.D)
         dist_matrix = self.D
 
@@ -1837,8 +1829,8 @@ class PSAnalysis(object):
             )
 
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         dist_matrix = self.D
 
         Z, dgram = self.cluster(method=linkage,                                 \
@@ -1948,9 +1940,8 @@ class PSAnalysis(object):
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
         if self._NN is None:
-            err_str = ("No nearest neighbor data; run "
-                       "'PSAnalysis.run_nearest_neighbors()' first.")
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbor data; run "
+                             "'PSAnalysis.run_nearest_neighbors()' first.")
 
         sns.set_style('whitegrid')
 
@@ -2091,8 +2082,8 @@ class PSAnalysis(object):
         method.
         """
         if self.natoms is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.natoms
 
 
@@ -2109,8 +2100,8 @@ class PSAnalysis(object):
            the number of paths in :class:`PSA`
         """
         if self.npaths is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.npaths
 
 
@@ -2128,8 +2119,8 @@ class PSAnalysis(object):
             :class:`PSA`
         """
         if self.paths is None:
-            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.paths
 
 
@@ -2155,8 +2146,8 @@ class PSAnalysis(object):
 
         """
         if self.D is None:
-            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
-            raise ValueError(err_str)
+            raise ValueError(
+                "No distance data; do 'PSAnalysis.run(store=True)' first.")
         if vectorform:
             return spatial.distance.squareform(self.D, force='tovector',
                                                checks=checks)
@@ -2188,9 +2179,8 @@ class PSAnalysis(object):
 
         """
         if self._psa_pairs is None:
-            err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSAnalysis.run_pairs_analysis()' first."
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbors data; do"
+                             " 'PSAnalysis.run_pairs_analysis()' first.")
         return self._psa_pairs
 
 
@@ -2211,10 +2201,9 @@ class PSAnalysis(object):
 
         """
         if self._HP is None:
-            err_str = "No Hausdorff pairs data; do "                            \
-                    + "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "  \
-                    + "first."
-            raise ValueError(err_str)
+            raise ValueError("No Hausdorff pairs data; do "
+                             "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "
+                             "first.")
         return self._HP
 
     @property
@@ -2233,7 +2222,7 @@ class PSAnalysis(object):
 
         """
         if self._NN is None:
-            err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSAnalysis.run_pairs_analysis(neighbors=True)' first."
-            raise ValueError(err_str)
+            raise ValueError("No nearest neighbors data; do"
+                             " 'PSAnalysis.run_pairs_analysis(neighbors=True)'"
+                             " first.")
         return self._NN
