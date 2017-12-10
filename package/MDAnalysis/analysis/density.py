@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -111,6 +111,7 @@ can be used in downstream processing).
 
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
+from six import string_types
 
 import numpy as np
 import sys
@@ -292,7 +293,7 @@ class Density(Grid):
         length_unit = MDAnalysis.core.flags['length_unit']
 
         parameters = kwargs.pop('parameters', {})
-        if (len(args) > 0 and type(args[0]) is str) or (type(kwargs.get('grid', None) is str)):
+        if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
             # try to be smart: when reading from a file then it is likely that this
             # is a density
             parameters.setdefault('isDensity', True)
@@ -363,7 +364,7 @@ class Density(Grid):
 
         if self.parameters['isDensity']:
             msg = "Running make_density() makes no sense: Grid is already a density. Nothing done."
-            logger.warn(msg)
+            logger.warning(msg)
             warnings.warn(msg)
             return
 
@@ -931,7 +932,7 @@ class BfactorDensityCreator(object):
             # with the appropriate B-factor
             if np.any(group.bfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
-                logger.warn(wmsg)
+                logger.warning(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
             rmsf = Bfactor2RMSF(group.bfactors)
             grid *= 0.0  # reset grid

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,13 +20,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_array_equal,
-    assert_equal,
-    assert_raises,
-    assert_warns,
-)
+
+import pytest
+from numpy.testing import assert_equal
 import numpy as np
 
 from MDAnalysis.topology import guessers
@@ -35,29 +31,28 @@ from MDAnalysis.core.topologyattrs import Angles
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
 
+
 class TestGuessMasses(object):
     def test_guess_masses(self):
         out = guessers.guess_masses(['C', 'C', 'H'])
-        
-        assert_(isinstance(out, np.ndarray))
-        assert_array_equal(out,
-                           np.array([12.011, 12.011, 1.008]))
+
+        assert isinstance(out, np.ndarray)
+        assert_equal(out, np.array([12.011, 12.011, 1.008]))
 
     def test_guess_masses_warn(self):
-        assert_warns(UserWarning, guessers.guess_masses, ['X'])
+        with pytest.warns(UserWarning):
+            guessers.guess_masses(['X'])
 
     def test_guess_masses_miss(self):
         out = guessers.guess_masses(['X', 'Z'])
-        assert_array_equal(out, np.array([0.0, 0.0]))
+        assert_equal(out, np.array([0.0, 0.0]))
 
-    def test_get_atom_mass(self):
-        assert_(guessers.get_atom_mass('H') == 1.008)
-
-    def test_get_atom_mass_miss(self):
-        assert_(guessers.get_atom_mass('XYZ') == 0.0)
+    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
+    def test_get_atom_mass(self, element, value):
+        assert guessers.get_atom_mass(element) == value
 
     def test_guess_atom_mass(self):
-        assert_(guessers.guess_atom_mass('1H') == 1.008)
+        assert guessers.guess_atom_mass('1H') == 1.008
 
 
 class TestGuessTypes(object):
@@ -67,30 +62,34 @@ class TestGuessTypes(object):
     def test_guess_types(self):
         out = guessers.guess_types(['MG2+', 'C12'])
 
-        assert_(isinstance(out, np.ndarray))
-        assert_array_equal(out, np.array(['MG', 'C'], dtype=object))
+        assert isinstance(out, np.ndarray)
+        assert_equal(out, np.array(['MG', 'C'], dtype=object))
 
     def test_guess_atom_element(self):
-        assert_(guessers.guess_atom_element('MG2+') == 'MG')
+        assert guessers.guess_atom_element('MG2+') == 'MG'
 
     def test_guess_atom_element_empty(self):
-        assert_(guessers.guess_atom_element('') == '')
+        assert guessers.guess_atom_element('') == ''
 
     def test_guess_atom_element_singledigit(self):
-        assert_(guessers.guess_atom_element('1') == '1')
+        assert guessers.guess_atom_element('1') == '1'
 
     def test_guess_atom_element_1H(self):
-        assert_(guessers.guess_atom_element('1H') == 'H')
-        assert_(guessers.guess_atom_element('2H') == 'H')
+        assert guessers.guess_atom_element('1H') == 'H'
+        assert guessers.guess_atom_element('2H') == 'H'
+
 
 def test_guess_charge():
     # this always returns 0.0
-    assert_(guessers.guess_atom_charge('this') == 0.0)
+    assert guessers.guess_atom_charge('this') == 0.0
+
 
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
-    assert_raises(ValueError, guessers.guess_bonds, u.atoms[:4], u.atoms.positions[:5])
-    
+    with pytest.raises(ValueError):
+        guessers.guess_bonds(u.atoms[:4], u.atoms.positions[:5])
+
+
 def test_guess_impropers():
     u = make_starshape()
 

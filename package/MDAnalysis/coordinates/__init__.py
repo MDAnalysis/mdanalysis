@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -36,6 +36,8 @@ called *"Writers"*. Readers and Writers provide a common interface to the
 underlying coordinate data. This abstraction of coordinate access through an
 object-oriented interface is one of the key capabilities of MDAnalysis.
 
+
+.. _Readers:
 
 Readers
 -------
@@ -81,6 +83,9 @@ alongside a trajectory using
 the :ref:`Auxiliary API`.
 
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
+
+
+.. _writing-trajectories:
 
 Writers
 -------
@@ -177,6 +182,9 @@ also recognized when they are compressed with :program:`gzip` or
    | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | TXYZ [#a]_    |  txyz,    |  r    | Tinker XYZ format.                                   |
+   |               |  arc      |       | Module :mod:`MDAnalysis.coordinates.TXYZ`            |
    +---------------+-----------+-------+------------------------------------------------------+
    | GAMESS        |  gms,     |  r    | Generic semi-formatted GAMESS output log; can be     |
    |               |  log,     |       | compressed (gzip or bzip2). Module                   |
@@ -718,6 +726,7 @@ from . import TRR
 from . import TRZ
 from . import XTC
 from . import XYZ
+from . import TXYZ
 from . import memory
 from . import MMTF
 from . import null

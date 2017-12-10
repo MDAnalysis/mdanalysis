@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,9 +20,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-
-from unittest import TestCase
-
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
@@ -39,127 +36,112 @@ from MDAnalysisTests.datafiles import (
     GRO_large,
 )
 from numpy.testing import (
-    assert_,
     assert_almost_equal,
-    assert_array_almost_equal,
-    dec,
     assert_equal,
-    assert_raises
 )
 import pytest
 
 
-class TestGROReaderOld(TestCase, RefAdK):
+class TestGROReaderOld(RefAdK):
+    # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
+    prec = 2
 
-    __test__ = True
-
-    def setUp(self):
-        self.universe = mda.Universe(GRO)
-        self.ts = self.universe.trajectory.ts
-        # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
-        self.prec = 2
-
-    def tearDown(self):
-        del self.universe
-        del self.ts
+    @pytest.fixture(scope='class')
+    def universe(self):
+        return mda.Universe(GRO)
 
     def test_flag_convert_lengths(self):
         assert_equal(mda.core.flags['convert_lengths'], True,
                      "MDAnalysis.core.flags['convert_lengths'] should be True "
                      "by default")
 
-    def test_load_gro(self):
-        U = self.universe
+    def test_load_gro(self, universe):
+        U = universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
                      "load Universe from small GRO")
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
-    def test_coordinates(self):
-        A10CA = self.universe.atoms.CA[10]
+    def test_coordinates(self, universe):
+        A10CA = universe.atoms.CA[10]
         assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
 
-    def test_distances(self):
+    def test_distances(self, universe):
         # NOTe that the prec is only 1 decimal: subtracting two low precision
         #      coordinates low prec: 9.3455122920041109; high prec (from pdb):
         #      9.3513174
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+        NTERM = universe.atoms.N[0]
+        CTERM = universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
 
-    def test_selection(self):
-        na = self.universe.select_atoms('resname NA+')
+    def test_selection(self, universe):
+        na = universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size,
                      "Atom selection of last atoms in file")
 
-    def test_unitcell(self):
-        assert_array_almost_equal(
-            self.ts.dimensions,
+    def test_unitcell(self, universe):
+        assert_almost_equal(
+            universe.trajectory.ts.dimensions,
             self.ref_unitcell,
             self.prec,
             err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 
-class TestGROReaderNoConversionOld(TestCase, RefAdK):
+class TestGROReaderNoConversionOld(RefAdK):
+    prec = 3
 
-    __test__ = True
+    @pytest.fixture(scope='class')
+    def universe(self):
+        return mda.Universe(GRO, convert_units=False)
 
-    def setUp(self):
-        self.universe = mda.Universe(GRO, convert_units=False)
-        self.ts = self.universe.trajectory.ts
-        self.prec = 3
-
-    def tearDown(self):
-        del self.universe
-        del self.ts
-
-    def test_coordinates(self):
+    def test_coordinates(self, universe):
         # note: these are the native coordinates in nm; for the test to succeed
         # we loaded with convert_units=False
-        A10CA = self.universe.atoms.CA[10]
+        A10CA = universe.atoms.CA[10]
         # coordinates in nm
-        assert_almost_equal(A10CA.position, RefAdK.ref_coordinates['A10CA'] / 10.0,
+        assert_almost_equal(A10CA.position,
+                            RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
                                                "(in nm) for A10:CA")
 
-    def test_distances(self):
+    def test_distances(self, universe):
         # 3 decimals on nm in gro but we compare to the distance
         # computed from the pdb file, so the effective precision is 2 again.
         # (Otherwise the distance test fails:
         #  Arrays are not almost equal distance between M1:N and G214:C
         #    ACTUAL: 0.93455122920041123
         #    DESIRED: 0.93513173999999988
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+        NTERM = universe.atoms.N[0]
+        CTERM = universe.atoms.C[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         # coordinates in nm
         assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
                             self.prec - 1, err_msg="distance between M1:N "
                                                    "and G214:C")
 
-    def test_unitcell(self):
+    def test_unitcell(self, universe):
         # lengths in A : convert to nm
-        assert_array_almost_equal(
-            self.ts.dimensions[:3],
+        assert_almost_equal(
+            universe.trajectory.ts.dimensions[:3],
             self.ref_unitcell[:3] / 10.0,
             self.prec,
             err_msg="unit cell A,B,C (rhombic dodecahedron)")
         # angles should not have changed
-        assert_array_almost_equal(
-            self.ts.dimensions[3:],
+        assert_almost_equal(
+            universe.trajectory.ts.dimensions[3:],
             self.ref_unitcell[3:],
             self.prec,
             err_msg="unit cell alpha,beta,gamma (rhombic dodecahedron)")
 
-    def test_volume(self):
+    def test_volume(self, universe):
         # ref lengths in A (which was originally converted from nm)
         assert_almost_equal(
-            self.ts.volume,
+            universe.trajectory.ts.volume,
             self.ref_volume / 1000.,
             3,
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
@@ -188,7 +170,7 @@ class GROReference(BaseReference):
 
 class TestGROReader(BaseReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROReference()
 
@@ -210,12 +192,10 @@ class TestGROReader(BaseReaderTest):
 
 
 class TestGROWriter(BaseWriterTest):
-
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROReference()
-
 
     def test_write_velocities(self, ref, tempdir):
         u = mda.Universe(ref.topology, ref.trajectory)
@@ -223,10 +203,9 @@ class TestGROWriter(BaseWriterTest):
         u.atoms.write(outfile)
 
         u2 = mda.Universe(outfile)
-        assert_array_almost_equal(u.atoms.velocities,
-                                  u2.atoms.velocities)
+        assert_almost_equal(u.atoms.velocities,
+                            u2.atoms.velocities)
 
-    @dec.slow
     def test_write_no_resnames(self, u_no_resnames, ref, tempdir):
         outfile = self.tmp_file('write-no-resnames-test', ref, tempdir)
         u_no_resnames.atoms.write(outfile)
@@ -234,7 +213,6 @@ class TestGROWriter(BaseWriterTest):
         expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
         assert_equal(u.atoms.resnames, expected)
 
-    @dec.slow
     def test_write_no_resids(self, u_no_resids, ref, tempdir):
         outfile = self.tmp_file('write-no-resids-test', ref, tempdir)
         u_no_resids.atoms.write(outfile)
@@ -242,7 +220,6 @@ class TestGROWriter(BaseWriterTest):
         expected = np.ones((25,))
         assert_equal(u.residues.resids, expected)
 
-    @dec.slow
     def test_writer_no_atom_names(self, u_no_names, ref, tempdir):
         outfile = self.tmp_file('write-no-names-test', ref, tempdir)
         u_no_names.atoms.write(outfile)
@@ -250,7 +227,6 @@ class TestGROWriter(BaseWriterTest):
         expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal(u.atoms.names, expected)
 
-    @dec.slow
     def test_check_coordinate_limits_min(self, ref, tempdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -259,9 +235,9 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
         outfile = self.tmp_file('coordinate-limits-min-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile)
 
-    @dec.slow
     def test_check_coordinate_limits_max(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
@@ -271,9 +247,9 @@ class TestGROWriter(BaseWriterTest):
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
         outfile = self.tmp_file('coordinate-limits-max-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile)
 
-    @dec.slow
     def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) also
         raises exception for convert_units=False"""
@@ -281,8 +257,10 @@ class TestGROWriter(BaseWriterTest):
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
-        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref, tempdir)
-        assert_raises(ValueError, u.atoms.write, outfile, convert_units=False)
+        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref,
+                                tempdir)
+        with pytest.raises(ValueError):
+            u.atoms.write(outfile, convert_units=False)
 
 
 class GRONoConversionReference(GROReference):
@@ -296,12 +274,12 @@ class GRONoConversionReference(GROReference):
 
 class TestGROReaderNoConversion(BaseReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GRONoConversionReference()
 
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def reader(ref):
         reader = ref.reader(ref.trajectory, convert_units=False)
         reader.add_auxiliary('lowf', ref.aux_lowf,
@@ -314,14 +292,13 @@ class TestGROReaderNoConversion(BaseReaderTest):
 
 
 class TestGROWriterNoConversion(BaseWriterTest):
-
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GRONoConversionReference()
 
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def writer(ref):
         return ref.writer(ref.trajectory, convert_units=False)
 
@@ -342,15 +319,14 @@ class GROReaderIncompleteVelocitiesReference(GROReference):
 
 class TestGROReaderIncompleteVelocities(BaseReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROReaderIncompleteVelocitiesReference()
 
 
 class TestGROWriterIncompleteVelocities(BaseWriterTest):
-
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROReaderIncompleteVelocitiesReference()
 
@@ -364,14 +340,14 @@ class GROBZReference(GROReference):
 
 class TestGROBZ2Reader(BaseReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROBZReference()
 
 
 class TestGROBZ2Writer(BaseWriterTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROBZReference()
 
@@ -384,13 +360,11 @@ class GROLargeReference(GROReference):
 
 
 class TestGROLargeWriter(BaseWriterTest):
-
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture(scope='class')
     def ref():
         return GROLargeReference()
 
-    @dec.slow
     def test_writer_large(self, ref, tempdir):
         """
         Test that atom numbers are truncated for large
@@ -409,7 +383,6 @@ class TestGROLargeWriter(BaseWriterTest):
                              err_msg="Writing GRO file with > 100 000 "
                                      "coords does not truncate properly.")
 
-    @dec.slow
     def test_writer_large_residue_count(self, ref, tempdir):
         """
         Ensure large residue number truncation for
@@ -443,7 +416,7 @@ def test_growriter_resid_truncation():
         grofile.readline()
         line = grofile.readline()
     # larger digits should get truncated
-    assert_(line.startswith('56789UNK'))
+    assert line.startswith('56789UNK')
 
 
 class TestGROTimestep(BaseTimestepTest):
@@ -465,4 +438,4 @@ class TestGROTimestep(BaseTimestepTest):
                         0., 0.,  # v2x v2y
                         40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
         ts.dimensions = box
-        assert_array_almost_equal(ts._unitcell, ref, decimal=2)
+        assert_almost_equal(ts._unitcell, ref, decimal=2)

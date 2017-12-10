@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -24,7 +24,7 @@ import six
 import pytest
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_raises
+from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis import units
 from MDAnalysis.core import flags
@@ -64,19 +64,15 @@ class TestConstants(object):
     # (accessed 2015-02-15)
     # Add a reference value to this dict for every entry in
     # units.constants
-    constants_reference = {
-        'N_Avogadro': 6.02214129e+23,          # mol**-1
-        'elementary_charge': 1.602176565e-19,  # As
-        'calorie': 4.184,                      # J
-        }
+    constants_reference = (
+        ('N_Avogadro', 6.02214129e+23),  # mol**-1
+        ('elementary_charge', 1.602176565e-19),  # As
+        ('calorie', 4.184),  # J
+    )
 
-    @pytest.mark.parametrize('name, value', constants_reference.items())
+    @pytest.mark.parametrize('name, value', constants_reference)
     def test_constant(self, name, value):
-        self.check_physical_constant(name, value)
-
-    @staticmethod
-    def check_physical_constant(name, reference):
-        assert_almost_equal(units.constants[name], reference)
+        assert_almost_equal(units.constants[name], value)
 
 
 class TestConversion(object):

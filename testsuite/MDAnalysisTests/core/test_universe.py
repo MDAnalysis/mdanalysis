@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -25,7 +25,6 @@ from __future__ import absolute_import, print_function
 from six.moves import cPickle
 
 import os
-from unittest import TestCase
 
 try:
     from cStringIO import StringIO
@@ -35,12 +34,9 @@ from MDAnalysisTests.tempdir import TempDir
 
 import numpy as np
 from numpy.testing import (
-    dec,
-    assert_,
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_raises,
 )
 import pytest
 
@@ -100,41 +96,43 @@ class TestUniverseCreation(object):
         # universe creation without args should work
         u = mda.Universe()
 
-        assert_(isinstance(u, mda.Universe))
-        assert_(u.atoms == None)
+        assert isinstance(u, mda.Universe)
+        assert u.atoms is None
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
-        assert_raises(TypeError, mda.Universe, StringIO(CHOL_GRO))
+        with pytest.raises(TypeError):
+            mda.Universe(StringIO(CHOL_GRO))
 
     def test_Universe_no_trajectory_AE(self):
         # querying trajectory without a trajectory loaded (only topology)
         u = make_Universe()
-
-        assert_raises(AttributeError, getattr, u, 'trajectory')
+        with pytest.raises(AttributeError):
+            getattr(u, 'trajectory')
 
     def test_Universe_topology_unrecognizedformat_VE(self):
-        assert_raises(ValueError, mda.Universe, 'some.weird.not.pdb.but.converted.xtc')
+        with pytest.raises(ValueError):
+            mda.Universe('some.weird.not.pdb.but.converted.xtc')
 
     def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
             mda.Universe('some.weird.not.pdb.but.converted.xtc')
         except ValueError as e:
-            assert_('isn\'t a valid topology format' in e.args[0])
+            assert 'isn\'t a valid topology format' in e.args[0]
         else:
             raise AssertionError
 
     def test_Universe_topology_IE(self):
-        assert_raises(IOError,
-                      mda.Universe, 'thisfile', topology_format=IOErrorParser)
+        with pytest.raises(IOError):
+            mda.Universe('thisfile', topology_format = IOErrorParser)
 
     def test_Universe_topology_IE_msg(self):
         # should get the original error, as well as Universe error
         try:
             mda.Universe('thisfile', topology_format=IOErrorParser)
         except IOError as e:
-            assert_('Failed to load from the topology file' in e.args[0])
-            assert_('Useful information' in e.args[0])
+            assert 'Failed to load from the topology file' in e.args[0]
+            assert 'Useful information' in e.args[0]
         else:
             raise AssertionError
 
@@ -155,7 +153,7 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'invalid.file.tpr'))
         except IOError as e:
-            assert_('file or cannot be recognized' in e.args[0])
+            assert 'file or cannot be recognized' in e.args[0]
         else:
             raise AssertionError
         finally:
@@ -171,7 +169,7 @@ class TestUniverseCreation(object):
         try:
             mda.Universe(os.path.join(temp_dir.name, 'permission.denied.tpr'))
         except IOError as e:
-            assert_('Permission denied' in e.strerror)
+            assert 'Permission denied' in str(e.strerror)
         else:
             raise AssertionError
         finally:
@@ -180,28 +178,28 @@ class TestUniverseCreation(object):
     def test_load_new_VE(self):
         u = mda.Universe()
 
-        assert_raises(TypeError,
-                      u.load_new, 'thisfile', format='soup')
+        with pytest.raises(TypeError):
+            u.load_new('thisfile', format = 'soup')
 
     def test_universe_kwargs(self):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-        assert_(u.kwargs['fake_kwarg'] is True)
+        assert u.kwargs['fake_kwarg']
 
         # initialize new universe from pieces of existing one
         u2 = mda.Universe(u.filename, u.trajectory.filename,
                           **u.kwargs)
 
-        assert_(u2.kwargs['fake_kwarg'] is True)
+        assert u2.kwargs['fake_kwarg']
         assert_equal(u.kwargs, u2.kwargs)
 
     def test_universe_topology_class_with_coords(self):
         u = mda.Universe(PSF, PDB_small)
         u2 = mda.Universe(u._topology, PDB_small)
-        assert_(isinstance(u2.trajectory, type(u.trajectory)))
+        assert isinstance(u2.trajectory, type(u.trajectory))
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
-        assert_(u2._topology is u._topology)
+        assert u2._topology is u._topology
 
 
 class TestUniverse(object):
@@ -211,12 +209,23 @@ class TestUniverse(object):
         def bad_load():
             return mda.Universe(PSF_BAD, DCD)
 
-        assert_raises(ValueError, bad_load)
+        with pytest.raises(ValueError):
+            bad_load()
 
     def test_load_new(self):
         u = mda.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
+
+    def test_load_new_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(PDB_small)
+        assert result is u
+
+    def test_load_new_None_returns_Universe(self):
+        u = mda.Universe(PSF)
+        result = u.load_new(None)
+        assert result is u
 
     def test_load_new_TypeError(self):
         u = mda.Universe(PSF, DCD)
@@ -224,7 +233,8 @@ class TestUniverse(object):
         def bad_load(uni):
             return uni.load_new('filename.notarealextension')
 
-        assert_raises(TypeError, bad_load, u)
+        with pytest.raises(TypeError):
+            bad_load(u)
 
     def test_load_structure(self):
         # Universe(struct)
@@ -249,7 +259,8 @@ class TestUniverse(object):
 
     def test_pickle_raises_NotImplementedError(self):
         u = mda.Universe(PSF, DCD)
-        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
+        with pytest.raises(NotImplementedError):
+            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
 
     def test_set_dimensions(self):
         u = mda.Universe(PSF, DCD)
@@ -264,16 +275,16 @@ def test_chainid_quick_select():
     u = mda.Universe(PDB_chainidrepeat)
 
     for sg in (u.A, u.B):
-        assert_(isinstance(sg, mda.core.groups.SegmentGroup))
+        assert isinstance(sg, mda.core.groups.SegmentGroup)
     for seg in (u.C, u.D):
-        assert_(isinstance(seg, mda.core.groups.Segment))
-    assert_(len(u.A.atoms) == 10)
-    assert_(len(u.B.atoms) == 10)
-    assert_(len(u.C.atoms) == 5)
-    assert_(len(u.D.atoms) == 7)
+        assert isinstance(seg, mda.core.groups.Segment)
+    assert len(u.A.atoms) == 10
+    assert len(u.B.atoms) == 10
+    assert len(u.C.atoms) == 5
+    assert len(u.D.atoms) == 7
 
 
-class TestGuessBonds(TestCase):
+class TestGuessBonds(object):
     """Test the AtomGroup methed guess_bonds
 
     This needs to be done both from Universe creation (via kwarg) and AtomGroup
@@ -283,11 +294,9 @@ class TestGuessBonds(TestCase):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    def setUp(self):
-        self.vdw = {'A':1.05, 'B':0.4}
-
-    def tearDown(self):
-        del self.vdw
+    @pytest.fixture()
+    def vdw(self):
+        return {'A': 1.05, 'B': 0.4}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
@@ -300,32 +309,33 @@ class TestGuessBonds(TestCase):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
-        assert_('guess_bonds' in u.kwargs)
+        assert 'guess_bonds' in u.kwargs
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = mda.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
+        assert u.kwargs['guess_bonds']
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
-        assert_raises(ValueError, mda.Universe, two_water_gro_nonames, guess_bonds=True)
+        with pytest.raises(ValueError):
+            mda.Universe(two_water_gro_nonames, guess_bonds = True)
 
-    def test_universe_guess_bonds_with_vdwradii(self):
+    def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
         u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                                vdwradii=self.vdw)
+                                vdwradii=vdw)
         self._check_universe(u)
-        assert_(u.kwargs['guess_bonds'] is True)
-        assert_equal(self.vdw, u.kwargs['vdwradii'])
+        assert u.kwargs['guess_bonds']
+        assert_equal(vdw, u.kwargs['vdwradii'])
 
     def test_universe_guess_bonds_off(self):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
 
         for attr in ('bonds', 'angles', 'dihedrals'):
-            assert_(not hasattr(u, attr))
-        assert_(u.kwargs['guess_bonds'] is False)
+            assert not hasattr(u, attr)
+        assert not u.kwargs['guess_bonds']
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -356,13 +366,14 @@ class TestGuessBonds(TestCase):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        assert_raises(ValueError, ag.guess_bonds)
+        with pytest.raises(ValueError):
+            ag.guess_bonds()
 
-    def test_atomgroup_guess_bonds_with_vdwradii(self):
+    def test_atomgroup_guess_bonds_with_vdwradii(self, vdw):
         u = mda.Universe(two_water_gro_nonames)
 
         ag = u.atoms[:3]
-        ag.guess_bonds(vdwradii=self.vdw)
+        ag.guess_bonds(vdwradii=vdw)
         self._check_atomgroup(ag, u)
 
 
@@ -514,3 +525,46 @@ class TestCustomReaders(object):
         u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                          topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+
+class TestAddTopologyAttr(object):
+    @pytest.fixture()
+    def universe(self):
+        return make_Universe()
+
+    def test_add_TA_fail(self, universe):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('silly')
+
+    def test_nodefault_fail(self, universe):
+        with pytest.raises(NotImplementedError):
+            universe.add_TopologyAttr('bonds')
+
+    @pytest.mark.parametrize(
+        'toadd,attrname,default', (
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['name', 'names', ''], ['names', 'names', ''],
+            ['type', 'types', ''], ['types', 'types', ''],
+            ['element', 'elements', ''], ['elements', 'elements', ''],
+            ['radius', 'radii', 0.0], ['radii', 'radii', 0.0],
+            ['chainID', 'chainIDs', ''], ['chainIDs', 'chainIDs', ''],
+            ['tempfactor', 'tempfactors', 0.0],
+            ['tempfactors', 'tempfactors', 0.0],
+            ['mass', 'masses', 0.0], ['masses', 'masses', 0.0],
+            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
+            ['bfactor', 'bfactors', 0.0], ['bfactors', 'bfactors', 0.0],
+            ['occupancy', 'occupancies', 0.0],
+            ['occupancies', 'occupancies', 0.0],
+            ['altLoc', 'altLocs', ''], ['altLocs', 'altLocs', ''],
+            ['resid', 'resids', 1], ['resids', 'resids', 1],
+            ['resname', 'resnames', ''], ['resnames', 'resnames', ''],
+            ['resnum', 'resnums', 1], ['resnums', 'resnums', 1],
+            ['icode', 'icodes', ''], ['icodes', 'icodes', ''],
+            ['segid', 'segids', ''], ['segids', 'segids', ''],
+        )
+    )
+    def test_add_charges(self, universe, toadd, attrname, default):
+        universe.add_TopologyAttr(toadd)
+
+        assert hasattr(universe.atoms, attrname)
+        assert getattr(universe.atoms, attrname)[0] == default

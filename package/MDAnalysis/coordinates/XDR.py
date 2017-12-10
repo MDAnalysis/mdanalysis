@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -214,8 +214,12 @@ class XDRBaseReader(base.ReaderBase):
         """reopen trajectory"""
         self.ts.frame = 0
         self._frame = -1
+        offsets = self._xdr.offsets.copy()
         self._xdr.close()
         self._xdr.open(self.filename.encode('utf-8'), 'r')
+        # only restore in case we actually had offsets
+        if len(offsets) != 0:
+            self._xdr.set_offsets(offsets)
 
     def _read_frame(self, i):
         """read frame i"""

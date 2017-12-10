@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -438,7 +438,7 @@ class BaseX3DNA(object):
         frame number.
         """
         if self.profiles is None:
-            raise StopIteration
+            return
         for q in sorted(self.profiles):
             yield (q, self.profiles[q])
 
@@ -706,7 +706,7 @@ class X3DNA(BaseX3DNA):
         if len(self.profiles) == length:
             logger.info("Collected X3DNA profiles for %d frames", len(self.profiles))
         else:
-            logger.warn("Missing data: Found %d X3DNA profiles from %d frames.", len(self.profiles), length)
+            logger.warning("Missing data: Found %d X3DNA profiles from %d frames.", len(self.profiles), length)
 
     def __del__(self):
         for f in self.tempfiles:

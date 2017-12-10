@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -25,9 +25,8 @@ import numpy as np
 import pytest
 from six.moves import zip, range
 from unittest import TestCase
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           assert_array_almost_equal, raises, assert_allclose,
-                           assert_, dec)
+from numpy.testing import (assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -83,8 +82,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_frame_index_1_raises_IndexError(self):
         def go_to_2(traj=self.universe.trajectory):
             traj[1]
-
-        assert_raises(IndexError, go_to_2)
+        with pytest.raises(IndexError):
+            go_to_2()
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt gives 1.0
@@ -284,8 +283,10 @@ class BaseReaderTest(object):
 
     def test_remove_auxiliary(self, reader):
         reader.remove_auxiliary('lowf')
-        assert_raises(AttributeError, getattr, reader._auxs, 'lowf')
-        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader._auxs, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader.ts.aux, 'lowf')
 
     def test_remove_nonexistant_auxiliary_raises_ValueError(self, reader):
         with pytest.raises(ValueError):
@@ -373,7 +374,8 @@ class MultiframeReaderTest(BaseReaderTest):
         assert_equal(reader.ts.aux.lowf_renamed,
                     ref.aux_lowf_data[0])
         # old name should be removed
-        assert_raises(AttributeError, getattr, reader.ts.aux, 'lowf')
+        with pytest.raises(AttributeError):
+            getattr(reader.ts.aux, 'lowf')
         # new name should be retained
         next(reader)
         assert_equal(reader.ts.aux.lowf_renamed,
@@ -489,9 +491,8 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(
                 copy_ts, orig_ts, decimal=ref.prec)
 
-    @raises(TypeError)
-    def test_write_none(self, ref):
-        outfile = self.tmp_file('write-none')
+    def test_write_none(self, ref, tempdir):
+        outfile = self.tmp_file('write-none', ref, tempdir)
         with pytest.raises(TypeError):
             with ref.writer(outfile, 42) as w:
                 w.write(None)
@@ -501,7 +502,8 @@ class BaseWriterTest(object):
             if ref.container_format:
                 ref.writer('foo')
             else:
-                assert_raises(TypeError, ref.writer, 'foo')
+                with pytest.raises(TypeError):
+                    ref.writer('foo')
 
     def test_write_not_changing_ts(self, ref, reader, tempdir):
         outfile = self.tmp_file('write-not-changing-ts', ref, tempdir)
@@ -552,10 +554,13 @@ class BaseTimestepTest(object):
         assert_equal(ts[-1], self.refpos[-1])
 
     def test_getitem_neg_IE(self, ts):
-        assert_raises(IndexError, ts.__getitem__, -(self.size + 1))
+        with pytest.raises(IndexError):
+            ts.__getitem__(-(self.size + 1))
+
 
     def test_getitem_pos_IE(self, ts):
-        assert_raises(IndexError, ts.__getitem__, (self.size + 1))
+        with pytest.raises(IndexError):
+            ts.__getitem__((self.size + 1))
 
     def test_getitem_slice(self, ts):
         assert_equal(len(ts[:2]), len(self.refpos[:2]))
@@ -571,7 +576,8 @@ class BaseTimestepTest(object):
         assert_allclose(ts[sel], self.refpos[sel])
 
     def test_getitem_TE(self, ts):
-        assert_raises(TypeError, ts.__getitem__, 'string')
+        with pytest.raises(TypeError):
+            ts.__getitem__('string')
 
     def test_len(self, ts):
         assert_equal(len(ts), self.size)
@@ -592,7 +598,8 @@ class BaseTimestepTest(object):
         if self.has_box:
             assert_allclose(ts.dimensions, np.zeros(6, dtype=np.float32))
         else:
-            assert_raises(NotImplementedError, getattr, ts, "dimensions")
+            with pytest.raises(NotImplementedError):
+                getattr(ts, "dimensions")
 
     def test_dimensions_set_box(self, ts):
         if self.set_box:
@@ -609,7 +616,8 @@ class BaseTimestepTest(object):
         elif self.has_box and not self.set_box:
             pass  # How to test volume of box when I don't set unitcell first?
         else:
-            assert_raises(NotImplementedError, getattr, self.ts, "volume")
+            with pytest.raises(NotImplementedError):
+                getattr(self.ts, "volume")
 
     def test_triclinic_vectors(self, ts):
         assert_allclose(ts.triclinic_dimensions,
@@ -632,8 +640,8 @@ class BaseTimestepTest(object):
         # Check that _x _y and _z are read only
         for coordinate in ('_x', '_y', '_z'):
             random_positions = np.arange(self.size).astype(np.float32)
-            assert_raises(AttributeError, setattr,
-                          ts, coordinate, random_positions)
+            with pytest.raises(AttributeError):
+                setattr(ts, coordinate, random_positions)
 
     # n_atoms should be a read only property
     # all Timesteps require this attribute
@@ -641,7 +649,8 @@ class BaseTimestepTest(object):
         assert_equal(ts.n_atoms, ts._n_atoms)
 
     def test_n_atoms_readonly(self, ts):
-        assert_raises(AttributeError, ts.__setattr__, 'n_atoms', 20)
+        with pytest.raises(AttributeError):
+            ts.__setattr__('n_atoms', 20)
 
     def test_n_atoms_presence(self, ts):
         assert_equal(hasattr(ts, '_n_atoms'), True)
@@ -655,7 +664,8 @@ class BaseTimestepTest(object):
 
     def test_allocate_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'velocities')
 
         ts.has_velocities = True
         assert_equal(ts.has_velocities, True)
@@ -663,7 +673,8 @@ class BaseTimestepTest(object):
 
     def test_allocate_forces(self, ts):
         assert_equal(ts.has_forces, False)
-        assert_raises(NoDataError, getattr, ts, 'forces')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'forces')
 
         ts.has_forces = True
         assert_equal(ts.has_forces, True)
@@ -676,7 +687,8 @@ class BaseTimestepTest(object):
 
         ts.has_velocities = False
         assert_equal(ts.has_velocities, False)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'velocities')
 
     def test_forces_remove(self):
         ts = self.Timestep(10, forces=True)
@@ -685,11 +697,12 @@ class BaseTimestepTest(object):
 
         ts.has_forces = False
         assert_equal(ts.has_forces, False)
-        assert_raises(NoDataError, getattr, ts, 'forces')
+        with pytest.raises(NoDataError):
+            getattr(ts, 'forces')
 
-    def _empty_ts(self):
-        assert_raises(ValueError, self.Timestep.from_coordinates,
-                      None, None, None)
+    def test_check_ts(self):
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates(None, None, None)
 
     def _from_coords(self, p, v, f):
         posi = self.refpos if p else None
@@ -700,51 +713,37 @@ class BaseTimestepTest(object):
 
         return ts
 
-    def _check_from_coordinates(self, p, v, f):
+    @pytest.mark.parametrize('p, v, f', filter(any,
+                                               itertools.product([True, False],
+                                                                 repeat=3)))
+    def test_from_coordinates(self, p, v, f):
         ts = self._from_coords(p, v, f)
 
         if p:
             assert_array_almost_equal(ts.positions, self.refpos)
         else:
-            assert_raises(NoDataError, getattr, ts, 'positions')
+            with pytest.raises(NoDataError):
+                getattr(ts, 'positions')
         if v:
             assert_array_almost_equal(ts.velocities, self.refvel)
         else:
-            assert_raises(NoDataError, getattr, ts, 'velocities')
+            with pytest.raises(NoDataError):
+                getattr(ts, 'velocities')
         if f:
             assert_array_almost_equal(ts.forces, self.reffor)
         else:
-            assert_raises(NoDataError, getattr, ts, 'forces')
-
-    def test_from_coordinates(self):
-        # Check all combinations of creating a Timestep from data
-        # 8 possibilites of with and without 3 data categories
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                yield self._empty_ts
-            else:
-                yield self._check_from_coordinates, p, v, f
+            with pytest.raises(NoDataError):
+                getattr(ts, 'forces')
 
     def test_from_coordinates_mismatch(self):
         velo = self.refvel[:2]
 
-        assert_raises(ValueError, self.Timestep.from_coordinates,
-                      self.refpos, velo)
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates(self.refpos, velo)
 
     def test_from_coordinates_nodata(self):
-        assert_raises(ValueError, self.Timestep.from_coordinates)
-
-    def _check_from_timestep(self, p, v, f):
-        ts = self._from_coords(p, v, f)
-        ts2 = self.Timestep.from_timestep(ts)
-
-        assert_timestep_almost_equal(ts, ts2)
-
-    def test_from_timestep(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            yield self._check_from_timestep, p, v, f
+        with pytest.raises(ValueError):
+            self.Timestep.from_coordinates()
 
     # Time related tests
     def test_supply_dt(self):
@@ -851,19 +850,19 @@ class BaseTimestepTest(object):
         # - frame
         # - n_atoms
         # - positions, vels and forces
-        assert_(ref_ts == ts2)
+        assert ref_ts == ts2
 
         assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
                                   decimal=4)
 
         # Check things not covered by eq
         for d in ref_ts.data:
-            assert_(d in ts2.data)
+            assert d in ts2.data
             if isinstance(ref_ts.data[d], np.ndarray):
                 assert_array_almost_equal(
                     ref_ts.data[d], ts2.data[d])
             else:
-                assert_(ref_ts.data[d] == ts2.data[d])
+                assert ref_ts.data[d] == ts2.data[d]
 
     def _check_independent(self, name, ts):
         """Check that copies made are independent"""
@@ -924,60 +923,60 @@ class BaseTimestepTest(object):
         ts = u.trajectory.ts
         func(self, self.name, ts)
 
-    def test_copy_slice(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            ts = self._from_coords(p, v, f)
-            yield self._check_copy, self.name, ts
-            yield self._check_independent, self.name, ts
-            yield self._check_copy_slice_indices, self.name, ts
-            yield self._check_copy_slice_slice, self.name, ts
+    @pytest.fixture(params=filter(any,
+                                  itertools.product([True, False], repeat=3)))
+    def some_ts(self, request):
+        p, v, f = request.param
+        return self._from_coords(p, v, f)
 
-    def _check_bad_slice(self, p, v, f):
-        ts = self._from_coords(p, v, f)
+    @pytest.mark.parametrize('func', [
+        _check_copy,
+        _check_independent,
+        _check_copy_slice_indices,
+        _check_copy_slice_slice,
+        _check_npint_slice
+    ])
+    def test_copy_slice(self, func, some_ts):
+        func(self, self.name, some_ts)
+
+    def test_bad_slice(self, some_ts):
         sl = ['this', 'is', 'silly']
-        assert_raises(TypeError, ts.copy_slice, sl)
+        with pytest.raises(TypeError):
+            some_ts.copy_slice(sl)
 
-    def test_bad_copy_slice(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-            yield self._check_bad_slice, p, v, f
+    def test_from_timestep(self, some_ts):
+        ts = some_ts
+        ts2 = self.Timestep.from_timestep(ts)
+
+        assert_timestep_almost_equal(ts, ts2)
 
     def _get_pos(self):
         # Get generic reference positions
         return np.arange(30).reshape(10, 3) * 1.234
 
-    def _check_ts_equal(self, a, b, err_msg):
-        assert_(a == b, err_msg)
-        assert_(b == a, err_msg)
+    @pytest.mark.parametrize('p, v, f', filter(any,
+                                               itertools.product([True, False],
+                                                                 repeat=3)))
+    def test_check_equal(self, p, v, f):
+        ts1 = self.Timestep(self.size,
+                            positions=p,
+                            velocities=v,
+                            forces=f)
+        ts2 = self.Timestep(self.size,
+                            positions=p,
+                            velocities=v,
+                            forces=f)
+        if p:
+            ts1.positions = self.refpos.copy()
+            ts2.positions = self.refpos.copy()
+        if v:
+            ts1.velocities = self.refvel.copy()
+            ts2.velocities = self.refvel.copy()
+        if f:
+            ts1.forces = self.reffor.copy()
+            ts2.forces = self.reffor.copy()
 
-    def test_check_equal(self):
-        for p, v, f in itertools.product([True, False], repeat=3):
-            if not any([p, v, f]):
-                continue
-
-            ts1 = self.Timestep(self.size,
-                                positions=p,
-                                velocities=v,
-                                forces=f)
-            ts2 = self.Timestep(self.size,
-                                positions=p,
-                                velocities=v,
-                                forces=f)
-            if p:
-                ts1.positions = self.refpos.copy()
-                ts2.positions = self.refpos.copy()
-            if v:
-                ts1.velocities = self.refvel.copy()
-                ts2.velocities = self.refvel.copy()
-            if f:
-                ts1.forces = self.reffor.copy()
-                ts2.forces = self.reffor.copy()
-
-            yield (self._check_ts_equal, ts1, ts2,
-                   'Failed on {0}'.format(self.name))
+        assert_timestep_equal(ts1, ts2)
 
     def test_wrong_class_equality(self):
         ts1 = self.Timestep(self.size)
@@ -985,8 +984,8 @@ class BaseTimestepTest(object):
 
         b = tuple([0, 1, 2, 3])
 
-        assert_(ts1 != b)
-        assert_(b != ts1)
+        assert ts1 != b
+        assert b != ts1
 
     def test_wrong_frame_equality(self):
         ts1 = self.Timestep(self.size)
@@ -996,8 +995,8 @@ class BaseTimestepTest(object):
         ts2.positions = self._get_pos()
         ts2.frame = 987
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_wrong_n_atoms_equality(self):
         ts1 = self.Timestep(self.size)
@@ -1005,8 +1004,8 @@ class BaseTimestepTest(object):
 
         ts3 = self.Timestep(self.size * 2)
 
-        assert_(ts1 != ts3)
-        assert_(ts3 != ts1)
+        assert ts1 != ts3
+        assert ts3 != ts1
 
     def test_wrong_pos_equality(self):
         ts1 = self.Timestep(self.size)
@@ -1015,8 +1014,8 @@ class BaseTimestepTest(object):
         ts2 = self.Timestep(self.size)
         ts2.positions = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1025,8 +1024,8 @@ class BaseTimestepTest(object):
         ts1.velocities = self._get_pos()
         ts2.velocities = self._get_pos()
 
-        assert_(ts1 == ts2)
-        assert_(ts2 == ts1)
+        assert ts1 == ts2
+        assert ts2 == ts1
 
     def test_check_mismatched_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1034,8 +1033,8 @@ class BaseTimestepTest(object):
 
         ts1.velocities = self._get_pos()
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_wrong_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
@@ -1044,8 +1043,8 @@ class BaseTimestepTest(object):
         ts1.velocities = self._get_pos()
         ts2.velocities = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1054,8 +1053,8 @@ class BaseTimestepTest(object):
         ts1.forces = self._get_pos()
         ts2.forces = self._get_pos()
 
-        assert_(ts1 == ts2)
-        assert_(ts2 == ts1)
+        assert ts1 == ts2
+        assert ts2 == ts1
 
     def test_check_mismatched_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1063,8 +1062,8 @@ class BaseTimestepTest(object):
 
         ts1.forces = self._get_pos()
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
 
     def test_check_wrong_forces_equality(self):
         ts1 = self.Timestep(self.size, forces=True)
@@ -1073,8 +1072,15 @@ class BaseTimestepTest(object):
         ts1.forces = self._get_pos()
         ts2.forces = self._get_pos() + 1.0
 
-        assert_(ts1 != ts2)
-        assert_(ts2 != ts1)
+        assert ts1 != ts2
+        assert ts2 != ts1
+
+
+def assert_timestep_equal(A, B, msg=''):
+    """ assert that two timesteps are exactly equal and commutative
+    """
+    assert A == B, msg
+    assert B == A, msg
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):

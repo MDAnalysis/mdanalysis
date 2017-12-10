@@ -14,26 +14,58 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, sseyler
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler
 
   * 0.17.0
 
 Enhancements
+  * added Amber residue names to 'protein' atom selection (PR #1704)
+  * KDTree for neighbor search on periodic systems (PR #1660, #1692)
+  * Python versions 3.4 and upwards are now supported (Issue #260)
   * add low level lib.formats.libdcd module for reading/writing DCD (PR #1372)
   * replace old DCD reader with a Python 3 ready DCD reader (Issue #659)
+  * The TPR parser populate the `moltypes` topology attribute and
+    the `moltype` selection keyword is added (Issue #1555)
+  * about 20% speed improvements for GNM analysis. (PR #1579)
+  * added support for Tinker TXYZ and ARC files
+  * libmdaxdr and libdcd classes can now be pickled (PR #1680)
+  * speed up atomgroup.rotate when point = (0, 0, 0) (Issue #1707)
+  * Universe.add_TopologyAttr now accepts strings to add a given attribute
+    to the Universe (Issue #1092, PR #1186)
 
 Deprecations
 
 Fixes
+<<<<<<< HEAD
   * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
+=======
+  * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
+  * Fixed nuclinfo.tors() not converting delta (Issue #1572)
+  * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
+    (Issue #1565)
+  * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
+>>>>>>> develop
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
   * Fixed type matching and inclusion compilation warnings for the
-  ENCORE analysis package (issue #1390)
+    ENCORE analysis package (issue #1390)
   * Fix extra deprecation warnings for instant segment and residue selectors
     (Issue #1476)
   * Accessing segments from a universe with an instant selector now issues a
     deprecation warning as expected (Issue #1478)
+  * Fixed Angle.angle method return NaN values when angle was very close
+    to 180 degrees (Issue #1556)
+  * Fixed analysis.rms.RMSD failure with select != "all" (Issue #1487)
+  * Fixed analysis.rms.RMSD: group RMSD calculation does not
+    superimpose groupselections anymore (issue #720)
+  * XDR files now avoid offset recalculation on a rewind (PR #1667)
+  * Universe creation doesn't Matryoshka NamedStream anymore (PR #1669)
+  * Fixed triclinic unit cell distances for box edges (Issue #1475)
+  * Fixed analysis.rms.RMSD: selections are now applied to atomgroup, not to
+    atomgroup.universe
+  * Default filename argument for AlignTraj works again (Issue #1713)
+  * Fixed analysis.rms.RMSD failed when selection is unicode (PR #1710)
+  * Fixed analysis.align.AlignTraj failed when step > 1 (Issue #1714)
 
 Changes
   * generate pairwise distance matrix, analysis.psa.PSAnalysis.D, by default
@@ -44,15 +76,24 @@ Changes
   * remove deprecated analysis.contacts.ContactAnalysis1
   * remove deprecated analysis.hbonds.hbond_analysis 1-indexing
   * remove deprecated analysis.rms `target` keyword from functions
+  * remove deprecated analysis.rms.RMSD `mass_weighted` keyword
+  * remove deprecated analysis.align `mass_weighted` keyword from classes
+  * remove deprecated analysis.psa `mass_weighted` keyword from classes
   * use fast scipy.io.netcdf pure python implementation for reading of Amber
     netcdf3 trajctories instead of netCDF4 but use netCDF4 for fast
     writing (if available) or fall back to netcdf (see also Issue #506)
   * libmdaxdr classes now accept more argument types for a write (PR #1442)
   * libmdaxdr classes now raise EOFError when accessing another frame after
-  the end of the file. Used to raise IOError.
+    the end of the file. Used to raise IOError.
+  * Universe.load_new() now returns the universe itself instead of
+    tuple (filename_or_array, trajectory_type) (Issue #1613)
+  * docs: URLs to (www|docs).mdanalysis.org now link to SSL-encrypted site
+    (see issue MDAnalysis/MDAnalysis.github.io#61)
+  * attributes can not be assigned to AtomGroups (and similar objects) unless
+    they are part of the Universe topology (Issue #1092 PR #1186)
 
 
-mm/dd/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
 
   * 0.16.2
 
@@ -934,7 +975,7 @@ Fixes
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
+          rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
           matthieu.chavent
 
   * 0.8.1
@@ -1449,7 +1490,7 @@ Fixes
     alternative atoms and insertion codes that are not needed for
     handling MD simulation data).
       - The default behaviour of MDAnalysis  can be set through the flag
-	MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
+        MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
       - One can always manually select the PDB reader by providing the
         permissive keyword to Universe; e.g. Universe(...,permissive=False)
         will read the input file with the Bio.PDB reader. This might be

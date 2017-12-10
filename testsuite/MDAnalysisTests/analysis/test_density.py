@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -21,84 +21,89 @@
 #
 from __future__ import print_function, division, absolute_import
 
+
 from six.moves import zip
 import numpy as np
-import os
+import pytest
 import sys
 
-from numpy.testing import (TestCase, assert_equal, assert_almost_equal, dec,
-                           assert_raises)
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
+from MDAnalysis.analysis import density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO
-from MDAnalysisTests import module_not_found, tempdir
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
 
-class TestDensity(TestCase):
+class TestDensity(object):
     nbins = 3, 4, 5
     counts = 100
     Lmax = 10.
 
-    def setUp(self):
-        import MDAnalysis.analysis.density
+    @pytest.fixture(scope='class')
+    def bins(self):
+        return [np.linspace(0, self.Lmax, n + 1) for n in self.nbins]
 
-        self.bins = [np.linspace(0, self.Lmax, n+1) for n in self.nbins]
-        h, edges = np.histogramdd(
-            self.Lmax * np.sin(np.linspace(0, 1, self.counts * 3)).reshape(self.counts, 3),
-            bins=self.bins)
-        self.D = MDAnalysis.analysis.density.Density(h, edges,
-                                                     parameters={'isDensity': False},
-                                                     units={'length': 'A'})
-        self.D.make_density()
+    @pytest.fixture()
+    def h_and_edges(self, bins):
+        return np.histogramdd(
+            self.Lmax * np.sin(
+                np.linspace(0, 1,self.counts *3)).reshape(self.counts, 3),
+            bins=bins)
+    
+    @pytest.fixture()
+    def D(self, h_and_edges):
+        h, edges = h_and_edges
+        d = density.Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
+        d.make_density()
+        return d
 
-    def test_shape(self):
-        assert_equal(self.D.grid.shape, self.nbins)
+    def test_shape(self, D):
+        assert D.grid.shape == self.nbins
 
-    def test_edges(self):
-        for dim, (edges, fixture) in enumerate(zip(
-                self.D.edges, self.bins)):
-            assert_almost_equal(edges, fixture,
-                                err_msg="edges[{0}] mismatch".format(dim))
+    def test_edges(self, bins, D):
+        for dim, (edges, fixture) in enumerate(zip(D.edges, bins)):
+            assert_almost_equal(edges, fixture, err_msg="edges[{0}] mismatch".format(dim))
 
-    def test_midpoints(self):
-        midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
-        for dim, (mp, fixture) in enumerate(zip(
-                self.D.midpoints, midpoints)):
-            assert_almost_equal(mp, fixture,
-                                err_msg="midpoints[{0}] mismatch".format(dim))
+    def test_midpoints(self, bins, D):
+        midpoints = [0.5*(b[:-1] + b[1:]) for b in bins]
+        for dim, (mp, fixture) in enumerate(zip(D.midpoints, midpoints)):
+            assert_almost_equal(mp, fixture, err_msg="midpoints[{0}] mismatch".format(dim))
 
-    def test_delta(self):
+    def test_delta(self, D):
         deltas = np.array([self.Lmax])/np.array(self.nbins)
-        assert_almost_equal(self.D.delta, deltas)
+        assert_almost_equal(D.delta, deltas)
 
-    def test_grid(self):
-        dV = self.D.delta.prod()  # orthorhombic grids only!
+    def test_grid(self, D):
+        dV = D.delta.prod()  # orthorhombic grids only!
         # counts = (rho[0] * dV[0] + rho[1] * dV[1] ...) = sum_i rho[i] * dV
-        assert_almost_equal(self.D.grid.sum() * dV, self.counts)
+        assert_almost_equal(D.grid.sum() * dV, self.counts)
 
-    def test_origin(self):
-        midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
+    def test_origin(self, bins, D):
+        midpoints = [0.5*(b[:-1] + b[1:]) for b in bins]
         origin = [m[0] for m in midpoints]
-        assert_almost_equal(self.D.origin, origin)
+        assert_almost_equal(D.origin, origin)
 
-    def test_check_set_unit_keyerror(self):
+    def test_check_set_unit_keyerror(self, D):
         units = {'weight': 'A'}
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            D._check_set_unit(units)
 
-    def test_check_set_unit_attributeError(self):
+    def test_check_set_unit_attributeError(self, D):
         units = []
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            D._check_set_unit(units)
 
-    def test_check_set_unit_nolength(self):
-        del self.D.units['length']
+    def test_check_set_unit_nolength(self, D):
+        del D.units['length']
         units = {'density': 'A^{-3}'}
-        assert_raises(ValueError, self.D._check_set_unit, units)
+        with pytest.raises(ValueError):
+            D._check_set_unit(units)
 
 
-class Test_density_from_Universe(TestCase):
+class Test_density_from_Universe(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
@@ -117,21 +122,19 @@ class Test_density_from_Universe(TestCase):
                   }
     cutoffs = {'notwithin': 4.0, }
     precision = 5
+    outfile = 'density.dx'
+    
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(self.topology, self.trajectory)
 
-    def setUp(self):
-        self.outfile = 'density.dx'
-        self.universe = mda.Universe(self.topology, self.trajectory)
-
-    def tearDown(self):
-        del self.universe
-
-    def check_density_from_Universe(self, atomselection,
-                                    ref_meandensity, **kwargs):
+    def check_density_from_Universe(self, atomselection, ref_meandensity,
+                                    universe, tmpdir, **kwargs):
         import MDAnalysis.analysis.density
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             D = MDAnalysis.analysis.density.density_from_Universe(
-                self.universe, atomselection=atomselection,
+                universe, atomselection=atomselection,
                 delta=self.delta, **kwargs)
             assert_almost_equal(D.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
@@ -143,45 +146,55 @@ class Test_density_from_Universe(TestCase):
                                 err_msg="DX export failed: different grid sizes")
 
 
-    def test_density_from_Universe(self):
+    def test_density_from_Universe(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
-            self.references['static']['meandensity'])
+            self.references['static']['meandensity'],
+            universe=universe,
+            tmpdir=tmpdir
+        )
 
-    def test_density_from_Universe_sliced(self):
+    def test_density_from_Universe_sliced(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_sliced']['meandensity'],
             start=1, stop=-1, step=2,
+            universe=universe,
+            tmpdir=tmpdir
             )
 
-    def test_density_from_Universe_update_selection(self):
+    def test_density_from_Universe_update_selection(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
-            update_selection=True)
+            update_selection=True,
+            universe=universe,
+            tmpdir=tmpdir
+        )
 
-    def test_density_from_Universe_notwithin(self):
+    def test_density_from_Universe_notwithin(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['notwithin']['meandensity'],
             soluteselection=self.selections['solute'],
-            cutoff=self.cutoffs['notwithin'])
+            cutoff=self.cutoffs['notwithin'],
+            universe=universe,
+            tmpdir=tmpdir
+        )
 
 
-class TestGridImport(TestCase):
-
-    def setUp(self):
-        sys.modules.pop('MDAnalysis.analysis.density', None)
+class TestGridImport(object):
 
     @block_import('gridData')
     def test_absence_griddata(self):
+        sys.modules.pop('MDAnalysis.analysis.density', None)
         # if gridData package is missing an ImportError should be raised
         # at the module level of MDAnalysis.analysis.density
-        with assert_raises(ImportError):
+        with pytest.raises(ImportError):
             import MDAnalysis.analysis.density
 
     def test_presence_griddata(self):
+        sys.modules.pop('MDAnalysis.analysis.density', None)
         # no ImportError exception is raised when gridData is properly
         # imported by MDAnalysis.analysis.density
 
@@ -192,31 +205,31 @@ class TestGridImport(TestCase):
             try:
                 import MDAnalysis.analysis.density
             except ImportError:
-                self.fail('''MDAnalysis.analysis.density should not raise
+                pytest.fail(msg='''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
 
 
-class TestNotWithin(TestCase):
+class TestNotWithin(object):
     # tests notwithin_coordinates_factory
     # only checks that KDTree and distance_array give same results
-    def setUp(self):
-        self.u = mda.Universe(GRO)
+    
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return mda.Universe(GRO)
 
-    def tearDown(self):
-        del self.u
-
-    def test_within(self):
+    def test_within(self, u):
         from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
 
-        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=True)()
-        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=False)()
+        vers1 = ncf(u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=True)()
+        vers2 = ncf(u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=False)()
 
         assert_equal(vers1, vers2)
 
-    def test_not_within(self):
+    def test_not_within(self, u):
         from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
 
-        vers1 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=True)()
-        vers2 = ncf(self.u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=False)()
+        vers1 = ncf(u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=True)()
+        vers2 = ncf(u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=False)()
 
         assert_equal(vers1, vers2)

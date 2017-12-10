@@ -48,7 +48,7 @@ test:
     - python -c 'import MDAnalysisTests; MDAnalysisTests.run(label="full", extra_argv=["-v", "--no-open-files"])'
 
 about:
-  home: http://www.mdanalysis.org
+  home: https://www.mdanalysis.org
   license: GPLv2
   license_file: package/LICENSE
   summary: 'MDAnalysis is a Python library to analyze molecular dynamics trajectories.'

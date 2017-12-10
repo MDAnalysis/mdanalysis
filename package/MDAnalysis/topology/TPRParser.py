@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -104,7 +104,7 @@ The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:
 
 * Atoms: number, name, type, resname, resid, segid, mass, charge,
-  [residue, segment, radius, bfactor, resnum]
+  [residue, segment, radius, bfactor, resnum, moltype]
 * Bonds
 * Angels
 * Dihedrals

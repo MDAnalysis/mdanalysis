@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -170,7 +170,7 @@ cdef class _XDRFile:
     cdef str mode
     cdef np.ndarray box
     cdef np.ndarray _offsets
-    cdef int _has_offsets
+    cdef readonly int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -273,6 +273,39 @@ cdef class _XDRFile:
         if not self.is_open:
             raise IOError('No file currently opened')
         return self.offsets.size
+
+    def __reduce__(self):
+        """low level pickle function. It gives instructions for unpickling which class
+        should be created with arguments to `__cinit__` and the current state
+
+        """
+        return (self.__class__, (self.fname.decode(), self.mode),
+                self.__getstate__())
+
+    def __getstate__(self):
+        """
+        current state
+        """
+        return (self.is_open, self.current_frame, self._offsets,
+                self._has_offsets)
+
+    def __setstate__(self, state):
+        """
+        reset state offsets and current frame
+        """
+        is_open = state[0]
+        # by default the file is open
+        if not is_open:
+            self.close()
+            return
+
+        # set them now to avoid recalculation
+        self._offsets = state[2]
+        self._has_offsets = state[3]
+
+        # where was I
+        current_frame = state[1]
+        self.seek(current_frame)
 
     def seek(self, frame):
         """Seek to Frame.
@@ -402,6 +435,11 @@ cdef class TRRFile(_XDRFile):
     >>> with TRRFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
+
+    Notes
+    -----
+    This class can be pickled. The pickle will store filename, mode, current
+    frame and offsets
     """
 
     def _calc_natoms(self, fname):
@@ -614,6 +652,11 @@ cdef class XTCFile(_XDRFile):
     >>> with XTCFile('foo.trr') as f:
     >>>     for frame in f:
     >>>         print(frame.x)
+
+    Notes
+    -----
+    This class can be pickled. The pickle will store filename, mode, current
+    frame and offsets
     """
     cdef float precision
 

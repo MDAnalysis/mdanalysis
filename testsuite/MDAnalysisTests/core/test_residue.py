@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -21,11 +21,7 @@
 #
 from __future__ import absolute_import
 
-from unittest import TestCase
-
 from numpy.testing import (
-    dec,
-    assert_,
     assert_equal,
 )
 import pytest
@@ -35,26 +31,27 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-class TestResidue(TestCase):
-    # Legacy tests from before 363
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.res = self.universe.residues[100]
-
-    def test_type(self):
-        assert_(isinstance(self.res, mda.core.groups.Residue))
-        assert_equal(self.res.resname, "ILE")
-        assert_equal(self.res.resid, 101)
-
-    def test_index(self):
-        atom = self.res.atoms[2]
-        assert_(isinstance(atom, mda.core.groups.Atom))
-        assert_equal(atom.name, "CA")
-        assert_equal(atom.index, 1522)
-        assert_equal(atom.resid, 101)
-
-    def test_atom_order(self):
-        assert_equal(self.res.atoms.indices,
-                     sorted(self.res.atoms.indices))
+# Legacy tests from before 363
+@pytest.fixture()
+def res():
+    universe = mda.Universe(PSF, DCD)
+    return universe.residues[100]
 
 
+def test_type(res):
+    assert isinstance(res, mda.core.groups.Residue)
+    assert_equal(res.resname, "ILE")
+    assert_equal(res.resid, 101)
+
+
+def test_index(res):
+    atom = res.atoms[2]
+    assert isinstance(atom, mda.core.groups.Atom)
+    assert_equal(atom.name, "CA")
+    assert_equal(atom.index, 1522)
+    assert_equal(atom.resid, 101)
+
+
+def test_atom_order(res):
+    assert_equal(res.atoms.indices,
+                 sorted(res.atoms.indices))

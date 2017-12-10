@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -31,25 +31,30 @@ from __future__ import absolute_import
 
 import numpy as np
 from Bio.KDTree import KDTree
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 
 from MDAnalysis.core.groups import AtomGroup, Atom
 
 class AtomNeighborSearch(object):
-    """This class can be used to find all atoms/residues/segements within the
+    """This class can be used to find all atoms/residues/segments within the
     radius of a given query position.
 
-    This class is using the BioPython KDTree for the neighborsearch. This class
-    also does not apply PBC to the distance calculattions. So you have to ensure
-    yourself that the trajectory has been corrected for PBC artifacts.
+    For the neighbor search, this class uses the BioPython KDTree and its
+    wrapper PeriodicKDTree for non-periodic and periodic systems, respectively.
     """
 
-    def __init__(self, atom_group, bucket_size=10):
+    def __init__(self, atom_group, box=None, bucket_size=10):
         """
 
         Parameters
         ----------
         atom_list : AtomGroup
           list of atoms
+        box : array-like or ``None``, optional, default ``None``
+          Simulation cell dimensions in the form of
+          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          periodic boundary conditions should be taken into account for
+          the calculation of contacts.
         bucket_size : int
           Number of entries in leafs of the KDTree. If you suffer poor
           performance you can play around with this number. Increasing the
@@ -58,7 +63,11 @@ class AtomNeighborSearch(object):
         """
         self.atom_group = atom_group
         self._u = atom_group.universe
-        self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        self._box = box
+        if box is None:
+            self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        else:
+            self.kdtree = PeriodicKDTree(box, bucket_size=bucket_size)
         self.kdtree.set_coords(atom_group.positions)
 
     def search(self, atoms, radius, level='A'):

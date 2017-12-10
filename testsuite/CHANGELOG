@@ -13,9 +13,14 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+mm/dd/yy sobuelow
+  * 0.17.0
+    - Unit test for residue names in 'protein' atom selection (PR #1704)
+
 mm/dd/yy
 
   * 0.16.2 utkbansal
+    - Unit tests for pdktree (PR #1660)
     - Port to pytest - removed nose as a dependency (Issue #884)
 
 06/03/17 xiki_tempula

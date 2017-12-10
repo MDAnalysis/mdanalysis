@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,93 +20,73 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, print_function
-import warnings
-import os.path
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.rms as rms
-from MDAnalysis import SelectionError
-
-from numpy.testing import (TestCase, dec,
-                           assert_almost_equal, assert_raises, assert_equal,
-                           assert_array_equal, assert_array_almost_equal,
-                           assert_)
+import os
 import numpy as np
-
+import pytest
+from MDAnalysis import SelectionError
+from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
-from MDAnalysisTests import executable_not_found, tempdir
+from numpy.testing import (
+    assert_almost_equal,
+    assert_equal,
+    assert_array_equal,
+    assert_array_almost_equal,
+)
 
-# I want to catch all warnings in the tests. If this is not set at the start it
-# could cause test that check for warnings to fail.
-warnings.simplefilter('always')
 
+class TestRotationMatrix(object):
+    a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
+    b = np.array([[0.1, 0.1, 0.1], [1.1, 1.1, 1.1]])
+    w = np.array([1.3, 2.3])
 
-class TestRotationMatrix(TestCase):
-    def setUp(self):
-        self.a = np.array([[0.1, 0.2, 0.3],
-                           [1.1, 1.1, 1.1]])
-        self.b = np.array([[0.1, 0.1, 0.1],
-                           [1.1, 1.1, 1.1]])
-        self.w = np.array([1.3, 2.3])
-
-    def test_no_solution_no_weights(self):
-        rot, rmsd = align.rotation_matrix(self.a, self.b)
+    @pytest.mark.parametrize('a, b, weights', (
+            (a, b, None),
+            (a, b, w),
+            (a.astype(np.int), b.astype(np.int), w.astype(np.float32))
+    ))
+    def test_rotation_matrix_input(self, a, b, weights):
+        rot, rmsd = align.rotation_matrix(a, b, weights)
         assert_equal(rot, np.eye(3))
-        assert_equal(rmsd, None)
+        assert rmsd is None
 
-    def test_no_solution_with_weights(self):
-        rot, rmsd = align.rotation_matrix(self.a, self.b, self.w)
-        assert_equal(rot, np.eye(3))
-        assert_equal(rmsd, None)
-
-    def test_wrong_dtype(self):
-        rot, rmsd = align.rotation_matrix(self.a.astype(np.int),
-                                          self.b.astype(np.int),
-                                          self.w.astype(np.float32))
-        assert_equal(rot, np.eye(3))
-        assert_equal(rmsd, None)
-
-    @staticmethod
-    def test_list_args():
-        a = [[0.1, 0.2, 0.3],
-             [1.1, 1.1, 1.1]]
-        b = [[0.1, 0.1, 0.1],
-             [1.1, 1.1, 1.1]]
+    def test_list_args(self):
+        a = [[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]]
+        b = [[0.1, 0.1, 0.1], [1.1, 1.1, 1.1]]
         w = [1.3, 2.3]
         rot, rmsd = align.rotation_matrix(a, b, w)
         assert_equal(rot, np.eye(3))
-        assert_equal(rmsd, None)
+        assert rmsd is None
 
-    @staticmethod
-    def test_exception():
+    def test_exception(self):
         a = [[0.1, 0.2, 0.3],
              [1.1, 1.1, 1.1],
              [2, 2, 2]]
         b = [[0.1, 0.1, 0.1],
              [1.1, 1.1, 1.1]]
-        assert_raises(ValueError, align.rotation_matrix, a, b)
+        with pytest.raises(ValueError):
+            align.rotation_matrix(a, b)
 
 
+class TestAlign(object):
+    @staticmethod
+    @pytest.fixture()
+    def universe():
+        return mda.Universe(PSF, DCD)
 
-class TestAlign(TestCase):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.reference = mda.Universe(PSF, DCD)
-        # output is always same as input (=DCD)
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'align_test.dcd')
+    @staticmethod
+    @pytest.fixture()
+    def reference():
+        return mda.Universe(PSF, DCD)
 
-    def tearDown(self):
-        del self.tempdir
-        del self.universe
-        del self.reference
-
-    def test_rmsd(self):
-        self.universe.trajectory[0]  # ensure first frame
-        bb = self.universe.select_atoms('backbone')
+    def test_rmsd(self, universe, reference):
+        universe.trajectory[0]  # ensure first frame
+        bb = universe.select_atoms('backbone')
         first_frame = bb.positions
-        self.universe.trajectory[-1]
+        universe.trajectory[-1]
         last_frame = bb.positions
         assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
@@ -114,59 +94,72 @@ class TestAlign(TestCase):
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
-        assert_almost_equal(rms.rmsd(last_frame, first_frame,
-                                     superposition=True),
-                            rmsd, 6,
-                            err_msg="error: rmsd() is not symmetric")
+        assert_almost_equal(
+            rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
+            err_msg="error: rmsd() is not symmetric")
         assert_almost_equal(rmsd, 6.820321761927005, 5,
-                            err_msg="RMSD calculation between 1st and last "
-                            "AdK frame gave wrong answer")
+                            err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
         # test masses as weights
-        last_atoms_weight = self.universe.atoms.masses
-        A = self.universe.trajectory[0]
-        B = self.reference.trajectory[-1]
-        rmsd = align.alignto(self.universe, self.reference, weights='mass')
-        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
-                                   center=True, superposition=True)
+        last_atoms_weight = universe.atoms.masses
+        A = universe.trajectory[0]
+        B = reference.trajectory[-1]
+        rmsd = align.alignto(universe, reference, weights='mass')
+        rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
+                                   superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
-    def test_rmsd_deprecated(self):
-        last_atoms_weight = self.universe.atoms.masses
-        A = self.universe.trajectory[0]
-        B = self.reference.trajectory[-1]
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
-            rmsd = align.alignto(self.universe, self.reference, mass_weighted=True)
-        assert_equal(len(warn), 1)
-        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
-                                   center=True, superposition=True)
+    def test_rmsd_custom_mass_weights(self, universe, reference):
+        last_atoms_weight = universe.atoms.masses
+        A = universe.trajectory[0]
+        B = reference.trajectory[-1]
+        rmsd = align.alignto(universe, reference,
+                             weights=reference.atoms.masses)
+        rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
+                                   superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
-    def test_rmsd_custom_mass_weights(self):
-        last_atoms_weight = self.universe.atoms.masses
-        A = self.universe.trajectory[0]
-        B = self.reference.trajectory[-1]
-        rmsd = align.alignto(self.universe, self.reference, weights=self.reference.atoms.masses)
-        rmsd_sup_weight = rms.rmsd(A, B,  weights=last_atoms_weight,
-                                   center=True, superposition=True)
-        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
-
-    def test_rmsd_custom_weights(self):
-        weights = np.zeros(self.universe.atoms.n_atoms)
-        ca = self.universe.atoms.CA
+    def test_rmsd_custom_weights(self, universe, reference):
+        weights = np.zeros(universe.atoms.n_atoms)
+        ca = universe.atoms.CA
         weights[ca.indices] = 1
-        rmsd = align.alignto(self.universe, self.reference, select='name CA')
-        rmsd_weights = align.alignto(self.universe, self.reference, weights=weights)
+        rmsd = align.alignto(universe, reference, select='name CA')
+        rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
+    def test_AlignTraj_outfile_default(self, universe, reference):
+        reference.trajectory[-1]
+        x = align.AlignTraj(universe, reference)
+        assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
 
-    def test_AlignTraj(self):
-        self.reference.trajectory[-1]
-        x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile).run()
-        fitted = mda.Universe(PSF, self.outfile)
+    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        align.AlignTraj(universe, reference, filename=outfile).run()
+        fitted = mda.Universe(PSF, outfile)
 
-        rmsd_outfile = os.path.join(self.tempdir.name, 'rmsd')
+        # ensure default file exists
+        with mda.Writer(str(tmpdir.join('rmsfit_align_test.dcd')),
+                        n_atoms=fitted.atoms.n_atoms) as w:
+            w.write(fitted.atoms)
+
+        align.AlignTraj(fitted, reference)
+        # we are careful now. The default does nothing
+        with pytest.raises(IOError):
+            align.AlignTraj(fitted, reference, force=False)
+
+    def test_AlignTraj_step_works(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        # this shouldn't throw an exception
+        align.AlignTraj(universe, reference, filename=outfile, step=10).run()
+
+    def test_AlignTraj(self, universe, reference, tmpdir):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        x = align.AlignTraj(universe, reference, filename=outfile).run()
+        fitted = mda.Universe(PSF, outfile)
+
+        rmsd_outfile = str(tmpdir.join('rmsd'))
         x.save(rmsd_outfile)
 
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
@@ -175,111 +168,105 @@ class TestAlign(TestCase):
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
         # VMD: 6.9378711
-        self._assert_rmsd(fitted, 0, 6.929083044751061)
-        self._assert_rmsd(fitted, -1, 0.0)
+        self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
+        self._assert_rmsd(reference, fitted, -1, 0.0)
 
         # superficially check saved file rmsd_outfile
         rmsd = np.loadtxt(rmsd_outfile)
         assert_array_almost_equal(rmsd, x.rmsd,
                                   err_msg="saved RMSD not correct")
 
-    def test_AlignTraj_weighted(self):
-        x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, weights='mass').run()
-        fitted = mda.Universe(PSF, self.outfile)
-        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
+    def test_AlignTraj_weighted(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join('align_test.dcd'))
+        x = align.AlignTraj(universe, reference,
+                            filename=outfile, weights='mass').run()
+        fitted = mda.Universe(PSF, outfile)
+        assert_almost_equal(x.rmsd[0], 0, decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
-        self._assert_rmsd(fitted, 0, 0.0,
-                          weights=self.universe.atoms.masses)
-        self._assert_rmsd(fitted, -1, 6.929083032629219,
-                          weights=self.universe.atoms.masses)
+        self._assert_rmsd(reference, fitted, 0, 0.0,
+                          weights=universe.atoms.masses)
+        self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
+                          weights=universe.atoms.masses)
 
-    def test_AlignTraj_custom_weights(self):
-        weights = np.zeros(self.universe.atoms.n_atoms)
-        ca = self.universe.atoms.CA
+    def test_AlignTraj_custom_weights(self, universe, reference, tmpdir):
+        weights = np.zeros(universe.atoms.n_atoms)
+        ca = universe.atoms.CA
         weights[ca.indices] = 1
 
-        x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, select='name CA').run()
-        x_weights = align.AlignTraj(self.universe, self.reference,
-                                    filename=self.outfile, weights=weights).run()
+        outfile = str(tmpdir.join('align_test.dcd'))
+
+        x = align.AlignTraj(universe, reference,
+                            filename=outfile, select='name CA').run()
+        x_weights = align.AlignTraj(universe, reference,
+                                    filename=outfile, weights=weights).run()
 
         assert_array_almost_equal(x.rmsd, x_weights.rmsd)
 
-    def test_AlignTraj_custom_mass_weights(self):
-        x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, weights=self.reference.atoms.masses).run()
-        fitted = mda.Universe(PSF, self.outfile)
-        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
+    def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join('align_test.dcd'))
+        x = align.AlignTraj(universe, reference,
+                            filename=outfile,
+                            weights=reference.atoms.masses).run()
+        fitted = mda.Universe(PSF, outfile)
+        assert_almost_equal(x.rmsd[0], 0, decimal=3)
         assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
 
-        self._assert_rmsd(fitted, 0, 0.0,
-                          weights=self.universe.atoms.masses)
-        self._assert_rmsd(fitted, -1, 6.929083032629219,
-                          weights=self.universe.atoms.masses)
+        self._assert_rmsd(reference, fitted, 0, 0.0,
+                          weights=universe.atoms.masses)
+        self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
+                          weights=universe.atoms.masses)
 
-    def test_AlignTraj_weights_deprecated(self):
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter('always')
-            x = align.AlignTraj(self.universe, self.reference,
-                                filename=self.outfile, mass_weighted=True).run()
-        assert_equal(len(warn), 1)
-        fitted = mda.Universe(PSF, self.outfile)
-        assert_almost_equal(x.rmsd[0], 0,  decimal=3)
-        assert_almost_equal(x.rmsd[-1], 6.9033, decimal=3)
-
-        self._assert_rmsd(fitted, 0, 0.0,
-                          weights=self.universe.atoms.masses)
-        self._assert_rmsd(fitted, -1, 6.929083032629219,
-                          weights=self.universe.atoms.masses)
-
-    def test_AlignTraj_partial_fit(self):
+    def test_AlignTraj_partial_fit(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join('align_test.dcd'))
         # fitting on a partial selection should still write the whole topology
-        align.AlignTraj(self.universe, self.reference, select='resid 1-20',
-                        filename=self.outfile, weights='mass').run()
-        mda.Universe(PSF, self.outfile)
+        align.AlignTraj(universe, reference, select='resid 1-20',
+                        filename=outfile, weights='mass').run()
+        mda.Universe(PSF, outfile)
 
-    def test_AlignTraj_in_memory(self):
-        self.reference.trajectory[-1]
-        x = align.AlignTraj(self.universe, self.reference,
-                            filename=self.outfile, in_memory=True).run()
+    def test_AlignTraj_in_memory(self, universe, reference, tmpdir):
+        outfile = str(tmpdir.join('align_test.dcd'))
+        reference.trajectory[-1]
+        x = align.AlignTraj(universe, reference, filename=outfile,
+                            in_memory=True).run()
+        assert x.filename is None
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
         # check in memory trajectory
-        self._assert_rmsd(self.universe, 0, 6.929083044751061)
-        self._assert_rmsd(self.universe, -1, 0.0)
+        self._assert_rmsd(reference, universe, 0, 6.929083044751061)
+        self._assert_rmsd(reference, universe, -1, 0.0)
 
-    def _assert_rmsd(self, fitted, frame, desired, weights=None):
+    def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
-        rmsd = rms.rmsd(self.reference.atoms.positions,
-                        fitted.atoms.positions, superposition=True)
+        rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
+                        superposition=True)
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame {0:d} of fit does not have "
-                            "expected RMSD".format(frame))
+                                    "expected RMSD".format(frame))
 
-    def test_alignto_checks_selections(self):
+    def test_alignto_checks_selections(self, universe, reference):
         """Testing that alignto() fails if selections do not
         match (Issue 143)"""
-        u = self.universe
+        u = universe
 
         def different_size():
             a = u.atoms[10:100]
             b = u.atoms[10:101]
             return align.alignto(a, b)
 
-        assert_raises(SelectionError, different_size)
+        with pytest.raises(SelectionError):
+            different_size()
 
         def different_atoms():
             a = u.atoms[10:20]
             b = u.atoms[10:17] + u.atoms[18:21]
             return align.alignto(a, b)
 
-        assert_raises(SelectionError, different_atoms)
+        with pytest.raises(SelectionError):
+            different_atoms()
 
-    @staticmethod
-    def test_alignto_partial_universe():
+    def test_alignto_partial_universe(self, universe, reference):
         u_bound = mda.Universe(ALIGN_BOUND)
         u_free = mda.Universe(ALIGN_UNBOUND)
         selection = 'segid B'
@@ -289,43 +276,38 @@ class TestAlign(TestCase):
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        assert_array_almost_equal(segB_bound.positions, segB_free.positions, decimal=3)
+        assert_array_almost_equal(segB_bound.positions, segB_free.positions,
+                                  decimal=3)
 
 
-
-class TestAlignmentProcessing(TestCase):
-    def setUp(self):
-        self.seq = FASTA
-        self.tempdir = tempdir.TempDir()
-        self.alnfile = os.path.join(self.tempdir.name, 'alignmentprocessing.aln')
-        self.treefile = os.path.join(self.tempdir.name, 'alignmentprocessing.dnd')
-
-    def tearDown(self):
-        del self.tempdir
+class TestAlignmentProcessing(object):
+    seq = FASTA
 
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
-        assert_equal(len(sel['reference']), 30623,
-                     err_msg="selection string has unexpected length")
-        assert_equal(len(sel['mobile']), 30623,
-                     err_msg="selection string has unexpected length")
+        assert len(
+            sel['reference']) == 30623, "selection string has unexpected length"
+        assert len(
+            sel['mobile']) == 30623, "selection string has unexpected length"
 
-    @dec.skipif(executable_not_found("clustalw2"),
-                msg="Test skipped because clustalw2 executable not found")
-    def test_fasta2select_ClustalW(self):
+    @pytest.mark.skipif(executable_not_found("clustalw2"),
+                        reason="Test skipped because clustalw2 executable not found")
+    def test_fasta2select_ClustalW(self, tmpdir):
         """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
+        alnfile = str(tmpdir.join('alignmentprocessing.aln'))
+        treefile = str(tmpdir.join('alignmentprocessing.dnd'))
         sel = align.fasta2select(self.seq, is_aligned=False,
-                                 alnfilename=self.alnfile,
-                                 treefilename=self.treefile)
+                                 alnfilename=alnfile, treefilename=treefile)
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
-        assert_equal(len(sel['reference']), 23080,
-                     err_msg="selection string has unexpected length")
-        assert_equal(len(sel['mobile']), 23090,
-                     err_msg="selection string has unexpected length")
+        assert len(
+            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(
+            sel['mobile']) == 23090, "selection string has unexpected length"
+
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)
@@ -333,12 +315,12 @@ def test_sequence_alignment():
     mobile = u.select_atoms("resid 122-159")
     aln = align.sequence_alignment(mobile, reference)
 
-    assert_equal(len(aln), 5, err_msg="return value has wrong tuple size")
+    assert len(aln) == 5, "return value has wrong tuple size"
 
     seqA, seqB, score, begin, end = aln
     assert_equal(seqA, reference.residues.sequence(format="string"),
                  err_msg="reference sequence mismatch")
-    assert_(mobile.residues.sequence(format="string") in seqB,
-            "mobile sequence mismatch")
+    assert mobile.residues.sequence(
+        format="string") in seqB, "mobile sequence mismatch"
     assert_almost_equal(score, 54.6)
     assert_array_equal([begin, end], [0, reference.n_residues])

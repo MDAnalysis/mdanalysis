@@ -101,7 +101,7 @@ def get_reader_for(filename, format=None):
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
             "           {2}\n"
             "           are implemented in MDAnalysis.\n"
-            "           See http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
+            "           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
@@ -234,7 +234,7 @@ def get_parser_for(filename, format=None):
             "   to explicitly specify the format and\n"
             "   override automatic detection. Known FORMATs are:\n"
             "   {1}\n"
-            "   See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+            "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
             "   For missing formats, raise an issue at "
             "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
 

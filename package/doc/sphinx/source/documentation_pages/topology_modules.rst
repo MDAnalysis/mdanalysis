@@ -41,6 +41,7 @@ topology file format in the *topology_format* keyword argument to
    topology/PSFParser
    topology/TOPParser
    topology/TPRParser
+   topology/TXYZParser
    topology/XYZParser
 
 .. rubric:: Topology core modules

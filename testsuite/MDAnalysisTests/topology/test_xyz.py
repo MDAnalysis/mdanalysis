@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -40,24 +41,13 @@ class XYZBase(ParserBase):
 
 
 class TestXYZMini(XYZBase):
-
-    __test__ = True
-
-    filename = XYZ_mini
+    ref_filename = XYZ_mini
     expected_n_atoms = 3
 
 
 class TestXYZParser(XYZBase):
-
-    __test__ = True
-
-    filename = XYZ
     expected_n_atoms = 1284
 
-
-class TestXYZParserBz2(TestXYZParser):
-
-    __test__ = True
-
-    filename = XYZ_bz2
-
+    @pytest.fixture(params=[XYZ, XYZ_bz2])
+    def filename(self, request):
+        return request.param

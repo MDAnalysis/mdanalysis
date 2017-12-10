@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -178,12 +178,13 @@ cdef class DCDFile:
     -----
     DCD is not a well defined format. One consequence of this is that different
     programs like CHARMM and NAMD are using different convention to store the
-    unitcell information. The :class:`DCDFile` will read the unitcell information
-    as is when available. Post processing depending on the program this DCD file
-    was written with is necessary. Have a look at the MDAnalysis DCD reader for
-    possible post processing into a common unitcell data structure. You can also
-    find more information how different programs store unitcell information in DCD
-    on the `mdawiki`_ .
+    unitcell information. The :class:`DCDFile` will read the unitcell
+    information as is when available. Post processing depending on the program
+    this DCD file was written with is necessary. Have a look at the MDAnalysis
+    DCD reader for possible post processing into a common unitcell data
+    structure. You can also find more information how different programs store
+    unitcell information in DCD on the `mdawiki`_ . This class can be pickled.
+    The pickle will store filename, mode, current frame
 
     .. _mdawiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
     """
@@ -248,6 +249,23 @@ cdef class DCDFile:
         if not self.is_open:
             raise IOError('No file currently opened')
         return self.n_frames
+
+    def __reduce__(self):
+        return (self.__class__, (self.fname.decode(), self.mode),
+                self.__getstate__())
+
+    def __getstate__(self):
+        return self.is_open, self.current_frame
+
+    def __setstate__(self, state):
+        is_open = state[0]
+        if not is_open:
+            self.close()
+            return
+
+        current_frame = state[1]
+        self.seek(current_frame)
+
 
     def tell(self):
         """

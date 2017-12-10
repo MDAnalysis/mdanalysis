@@ -1,8 +1,7 @@
 from __future__ import absolute_import
-from numpy.testing import (
-    assert_,
-    assert_array_equal,
-)
+
+import pytest
+from numpy.testing import assert_equal
 import mmtf
 import mock
 
@@ -12,18 +11,15 @@ from MDAnalysis.core.groups import AtomGroup
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz
 
-from unittest import TestCase
-
 
 class TestMMTFParser(ParserBase):
-    __test__ = False
-
     parser = mda.topology.MMTFParser.MMTFParser
-    filename = MMTF
-    expected_attrs = ['ids', 'names', 'types', 'altLocs',
-                      'bfactors', 'occupancies', 'charges', 'names',
-                      'resnames', 'resids', 'resnums', 'icodes',
-                      'segids', 'bonds', 'models']
+    ref_filename = MMTF
+    expected_attrs = [
+        'ids', 'names', 'types', 'altLocs', 'bfactors', 'occupancies',
+        'charges', 'names', 'resnames', 'resids', 'resnums', 'icodes',
+        'segids', 'bonds', 'models'
+    ]
     guessed_attrs = ['masses']
     expected_n_atoms = 512
     expected_n_residues = 124
@@ -31,138 +27,128 @@ class TestMMTFParser(ParserBase):
 
 
 class TestMMTFParser_gz(TestMMTFParser):
-    __test__ = True
-
-    filename = MMTF_gz
+    ref_filename = MMTF_gz
     expected_n_atoms = 1140
     expected_n_residues = 36
     expected_n_segments = 4
 
 
-class TestMMTFUniverse(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(MMTF)
+class TestMMTFUniverse(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(MMTF)
 
-    def tearDown(self):
-        del self.u
+    def test_bonds(self, u):
+        assert len(u.bonds) == 458
 
-    def test_bonds(self):
-        assert_(len(self.u.bonds) == 458)
+    def test_ids(self, u):
+        assert_equal(u.atoms.ids[:3], [1, 2, 3])
 
-    def test_ids(self):
-        assert_array_equal(self.u.atoms.ids[:3], [1, 2, 3])
+    def test_names(self, u):
+        assert_equal(u.atoms.names[:3], ["O5'", "C5'", "C4'"])
 
-    def test_names(self):
-        assert_array_equal(self.u.atoms.names[:3], ["O5'", "C5'", "C4'"])
+    def test_resnames(self, u):
+        assert_equal(u.residues.resnames[:3], ['DG', 'DA', 'DA'])
 
-    def test_altlocs(self):
-        assert_array_equal(self.u.atoms.altLocs[:3], [' ', ' ', ' '])
+    def test_segids(self, u):
+        assert_equal(u.segments[:3].segids, ['A', 'B', 'C'])
 
-    def test_resnames(self):
-        assert_array_equal(self.u.residues.resnames[:3], ['DG', 'DA', 'DA'])
+    def test_resids(self, u):
+        assert_equal(u.residues.resids[-3:], [2008, 2009, 2010])
 
-    def test_segids(self):
-        assert_array_equal(self.u.segments[:3].segids, ['A', 'B', 'C'])
-
-    def test_resids(self):
-        assert_array_equal(self.u.residues.resids[-3:], [2008, 2009, 2010])
-
-    def test_occupancies(self):
+    def test_occupancies(self, u):
         # pylint: disable=unsubscriptable-object
-        assert_array_equal(self.u.atoms.occupancies[:3], [1.0, 1.0, 1.0])
+        assert_equal(u.atoms.occupancies[:3], [1.0, 1.0, 1.0])
 
-    def test_bfactors(self):
-        assert_array_equal(self.u.atoms.bfactors[:3], [9.48, 10.88, 10.88])
+    def test_bfactors(self, u):
+        assert_equal(u.atoms.bfactors[:3], [9.48, 10.88, 10.88])
 
-    def test_types(self):
-        assert_array_equal(self.u.atoms.types[:3], ['O', 'C', 'C'])
+    def test_types(self, u):
+        assert_equal(u.atoms.types[:3], ['O', 'C', 'C'])
 
-    def test_models(self):
-        assert_(all(self.u.atoms.models == 0))
+    def test_models(self, u):
+        assert all(u.atoms.models == 0)
 
-    def test_icodes(self):
-        assert_(all(self.u.atoms.icodes == ''))
+    def test_icodes(self, u):
+        assert all(u.atoms.icodes == '')
 
-    def test_altlocs(self):
-        assert_(all(self.u.atoms.altLocs[:3] == ''))
+    def test_altlocs(self, u):
+        assert all(u.atoms.altLocs[:3] == '')
 
 
 class TestMMTFUniverseFromDecoder(TestMMTFUniverse):
-    def setUp(self):
-        top = mmtf.parse(MMTF)
-        self.u = mda.Universe(top)
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(mmtf.parse(MMTF))
 
 
-class TestMMTFgzUniverse(TestCase):
-    def setUp(self):
-        self.u = mda.Universe(MMTF_gz)
+class TestMMTFgzUniverse(object):
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(MMTF_gz)
 
-    def tearDown(self):
-        del self.u
-
-    def test_models(self):
+    def test_models(self, u):
         # has 2 models
-        assert_array_equal(self.u.segments[:2].models, [0, 0])
-        assert_array_equal(self.u.segments[2:].models, [1, 1])
+        assert_equal(u.segments[:2].models, [0, 0])
+        assert_equal(u.segments[2:].models, [1, 1])
 
-    def test_universe_models(self):
-        u = self.u
-        assert_(len(u.models) == 2)
+    def test_universe_models(self, u):
+        assert len(u.models) == 2
         for m in u.models:
-            assert_(isinstance(m, AtomGroup))
-            assert_(len(m) == 570)
+            assert isinstance(m, AtomGroup)
+            assert len(m) == 570
 
 
 class TestMMTFgzUniverseFromDecoder(TestMMTFgzUniverse):
-    def setUp(self):
+    @pytest.fixture()
+    def u(self):
         top = mmtf.parse_gzip(MMTF_gz)
-        self.u = mda.Universe(top)
+        return mda.Universe(top)
 
 
 class TestMMTFFetch(TestMMTFUniverse):
+    @pytest.fixture()
     @mock.patch('mmtf.fetch')
-    def setUp(self, mock_fetch):
+    def u(self, mock_fetch):
         top = mmtf.parse(MMTF)
         mock_fetch.return_value = top
-        self.u = mda.fetch_mmtf('173D')  # string is irrelevant
+        return mda.fetch_mmtf('173D')  # string is irrelevant
 
 
-class TestSelectModels(TestCase):
-    # tests for 'model' keyword in select_atoms
-    def setUp(self):
-        self.u = mda.Universe(MMTF_gz)
+class TestSelectModels(object):
+    # tests for 'model' keyword in select_atoms   
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(MMTF_gz)
 
-    def tearDown(self):
-        del self.u
+    def test_model_selection(self, u):
+        m1 = u.select_atoms('model 0')
+        m2 = u.select_atoms('model 1')
 
-    def test_model_selection(self):
-        m1 = self.u.select_atoms('model 0')
-        m2 = self.u.select_atoms('model 1')
+        assert len(m1) == 570
+        assert len(m2) == 570
 
-        assert_(len(m1) == 570)
-        assert_(len(m2) == 570)
+    def test_model_multiple(self, u):
+        m2plus = u.select_atoms('model 1-10')
 
-    def test_model_multiple(self):
-        m2plus = self.u.select_atoms('model 1-10')
+        assert len(m2plus) == 570
 
-        assert_(len(m2plus) == 570)
+    def test_model_multiple_2(self, u):
+        m2plus = u.select_atoms('model 1:10')
 
-    def test_model_multiple_2(self):
-        m2plus = self.u.select_atoms('model 1:10')
+        assert len(m2plus) == 570
 
-        assert_(len(m2plus) == 570)
+    def test_model_multiple_3(self, u):
+        m1and2 = u.select_atoms('model 0-1')
 
-    def test_model_multiple_3(self):
-        m1and2 = self.u.select_atoms('model 0-1')
+        assert len(m1and2) == 1140
 
-        assert_(len(m1and2) == 1140)
+    def test_model_multiple_4(self, u):
+        m1and2 = u.select_atoms('model 0:1')
 
-    def test_model_multiple_4(self):
-        m1and2 = self.u.select_atoms('model 0:1')
+        assert len(m1and2) == 1140
 
-        assert_(len(m1and2) == 1140)
+    def test_model_multiple_5(self, u):
+        m1and2 = u.select_atoms('model 0 1')
 
-    def test_model_multiple_5(self):
-        m1and2 = self.u.select_atoms('model 0 1')
-
-        assert_(len(m1and2) == 1140)
+        assert len(m1and2) == 1140

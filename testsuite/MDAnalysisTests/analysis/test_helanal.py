@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -20,20 +20,17 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
-import os
 import re
 
 import numpy as np
-from numpy.testing import (dec, assert_raises, assert_,
-                           assert_equal, assert_array_almost_equal)
-from six.moves import zip
+import pytest
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.helanal
 from MDAnalysis import FinishTimeException
 from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX)
-from MDAnalysisTests import tempdir
 
 # reference data from a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
@@ -69,6 +66,7 @@ HELANAL_SINGLE_DATA = {
                     102.50147247,   97.25154877,  104.54204559,  101.42829895],
                  dtype=np.float32),
     }
+
 
 def read_bending_matrix(fn):
     """Read helanal_bending_matrix.dat into dict of numpy arrays.
@@ -111,42 +109,46 @@ def read_bending_matrix(fn):
     return data
 
 
-def test_helanal_trajectory(reference=HELANAL_BENDING_MATRIX,
+def test_helanal_trajectory(tmpdir, reference=HELANAL_BENDING_MATRIX,
                             outfile="helanal_bending_matrix.dat"):
     u = mda.Universe(PSF, DCD)
-    with tempdir.in_tempdir():
+    with tmpdir.as_cwd():
         # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
-        MDAnalysis.analysis.helanal.helanal_trajectory(u,
-                                                       selection="name CA and resnum 161-187")
+        MDAnalysis.analysis.helanal.helanal_trajectory(
+            u, selection="name CA and resnum 161-187")
         bendingmatrix = read_bending_matrix(outfile)
         ref = read_bending_matrix(reference)
         assert_equal(sorted(bendingmatrix.keys()), sorted(ref.keys()),
                      err_msg="different contents in bending matrix data file")
         for label in ref.keys():
-            assert_array_almost_equal(bendingmatrix[label], ref[label],
-                                      err_msg="bending matrix stats for {0} mismatch".format(label))
+            assert_almost_equal(
+                bendingmatrix[label], ref[label], err_msg="bending matrix "
+                "stats for {0} mismatch".format(label))
+
 
 def test_helanal_main(reference=HELANAL_SINGLE_DATA):
     u = mda.Universe(PDB_small)
     # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
-    data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
-                                                    selection="name CA and resnum 161-187")
+    data = MDAnalysis.analysis.helanal.helanal_main(
+        PDB_small, selection="name CA and resnum 161-187")
     ref = reference
     assert_equal(sorted(data.keys()), sorted(ref.keys()),
                      err_msg="different contents in data dict")
     for label in ref.keys():
-        assert_array_almost_equal(data[label], ref[label], decimal=4,
+        assert_almost_equal(data[label], ref[label], decimal=4,
                                   err_msg="data[{0}] mismatch".format(label))
 
-def test_xtc_striding():
+
+def test_xtc_striding(tmpdir):
     """testing MDAnalysis.analysis.helanal xtc striding: Check for resolution of Issue #188."""
     u = MDAnalysis.Universe(GRO, XTC)
     u.trajectory[1]
 
-    with tempdir.in_tempdir():
-        assert_raises(FinishTimeException,
-                      MDAnalysis.analysis.helanal.helanal_trajectory,
-                      u, selection="name CA", finish=5)
+    with tmpdir.as_cwd():
+        with pytest.raises(FinishTimeException):
+            MDAnalysis.analysis.helanal.helanal_trajectory(
+                u, selection="name CA", finish=5
+            )
 
     #with assert_raises(FinishTimeException):
     #    try:

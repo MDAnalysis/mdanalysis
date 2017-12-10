@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -105,7 +105,7 @@ the attributes they provide.
    TPR [#b]_         tpr       names, types,     Gromacs portable run input reader (limited
                                resids, resnames, experimental support for some of the more recent
                                charges, bonds,   versions of the file format);
-                               masses,           :mod:`MDAnalysis.topology.TPRParser`
+                               masses, moltypes  :mod:`MDAnalysis.topology.TPRParser`
 
    MOL2 [#a]_        mol2      ids, names,       Tripos MOL2 molecular structure format;
                                types, resids,    :mod:`MDAnalysis.topology.MOL2Parser`
@@ -120,6 +120,10 @@ the attributes they provide.
    XYZ [#a]_         xyz       names             XYZ File Parser.  Reads only the labels from atoms
                                                  and constructs minimal topology data.
                                                  :mod:`MDAnalysis.topology.XYZParser`
+
+   TXYZ [#a]_        txyz,     names, atomids,   Tinker XYZ File Parser. Reads atom labels, numbers
+                     arc       masses, types,    and connectivity; masses are guessed from atoms names.                
+                               bonds             :mod:`MDAnalysis.topology.TXYZParser`
 
    GAMESS [#a]_      gms,      names,            GAMESS output parser. Read only atoms of assembly
                      log       atomic charges,   section (atom, elems and coords) and construct
@@ -283,6 +287,7 @@ from . import TPRParser
 from . import MOL2Parser
 from . import LAMMPSParser
 from . import XYZParser
+from . import TXYZParser
 from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser

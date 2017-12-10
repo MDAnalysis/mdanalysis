@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -22,12 +22,11 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import os
+import pytest
 
 from numpy.testing import (
-    assert_,
     assert_almost_equal,
     assert_equal,
-    assert_warns,
 )
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -152,51 +151,50 @@ class TestPQRWriterMissingAttrs(TestCase):
         del self.outfile
         del self.reqd_attributes
 
-    @staticmethod
-    def assert_writing_warns(u, outfile):
-        # write the test universe, and check warning is raised
-        assert_warns(UserWarning, u.atoms.write, outfile)
-
     def test_no_names_writing(self):
         attrs = self.reqd_attributes
         attrs.remove('names')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.names == 'X'))
+        assert all(u2.atoms.names == 'X')
 
     def test_no_resnames_writing(self):
         attrs = self.reqd_attributes
         attrs.remove('resnames')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.residues.resnames == 'UNK'))
+        assert all(u2.residues.resnames == 'UNK')
 
     def test_no_radii_writing(self):
         attrs = self.reqd_attributes
         attrs.remove('radii')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.radii == 1.0))
+        assert all(u2.atoms.radii == 1.0)
 
     def test_no_charges_writing(self):
         attrs = self.reqd_attributes
         attrs.remove('charges')
         u = make_Universe(attrs, trajectory=True)
 
-        self.assert_writing_warns(u, self.outfile)
+        with pytest.warns(UserWarning):
+            u.atoms.write(self.outfile)
 
         u2 = mda.Universe(self.outfile)
 
-        assert_(all(u2.atoms.charges == 0.0))
+        assert all(u2.atoms.charges == 0.0)

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -25,8 +25,7 @@ import MDAnalysis.lib.distances
 
 import numpy as np
 import pytest
-from numpy.testing import (TestCase, dec, raises, assert_,
-                           assert_almost_equal, assert_equal, assert_raises,)
+from numpy.testing import assert_almost_equal, assert_equal
 
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
@@ -44,7 +43,7 @@ def ref_system():
     conf = points[1:]
 
     return box, points, ref, conf
-    
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
@@ -346,6 +345,19 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
+    def test_pbc_wrong_wassenaar_distance(self, backend):
+        from MDAnalysis.lib.distances import distance_array
+        box = MDAnalysis.lib.mdamath.triclinic_vectors([2, 2, 2, 60, 60, 60])
+        a, b, c = box
+        point_a = a + b
+        point_b = .5 * point_a
+        dist = distance_array(point_a[np.newaxis, :], point_b[np.newaxis, :],
+                              box=box, backend=backend)
+        assert_almost_equal(dist[0, 0], 1)
+        # check that our distance is different then the wassenaar distance as
+        # expected.
+        assert np.linalg.norm(point_a - point_b) != dist[0, 0]
+
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -414,30 +426,41 @@ class TestCythonFunctions(object):
     #Bad input checking
     def test_bonds_wrongtype(self, positions, wrongtype, wronglength, backend):
         a, b, c, d = positions
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, a,
-                      wrongtype, backend=backend)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds,
-                      wrongtype, b, backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, a,
-                      wronglength, backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds,
-                      wronglength, b, backend=backend)
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_bonds(a, wrongtype, backend=backend)
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_bonds(wrongtype, b, backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_bonds(a, wronglength, backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_bonds(wronglength, b, backend=
+            backend)
+
 
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
         badboxtype = np.array([10., 10., 10.], dtype=np.float64)
         badboxsize = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
 
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, a,
-                      b, box=badboxsize, backend=backend)  # Bad box data
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, a,
-                      b, box=badboxtype, backend=backend)  # Bad box type
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_bonds(a,
+                                                b, box=badboxsize,
+                                                backend=backend)  # Bad box data
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_bonds(a,
+                                                b, box=badboxtype,
+                                                backend=backend)  # Bad box type
 
     def test_bonds_badresult(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds,
-                      a, b, result=badresult, backend=backend)  # Bad result array
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_bonds(
+                a, b, result=badresult, backend=backend)  # Bad result array
 
     def test_bonds_triclinic(self, positions, triclinic_box, backend):
         a, b, c, d = positions
@@ -464,27 +487,39 @@ class TestCythonFunctions(object):
     # Check data type checks
     def test_angles_wrongtype(self, positions, wrongtype, wronglength, backend):
         a, b, c, d = positions
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
-                      a, wrongtype, c, backend=backend)  # try inputting float64 values
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
-                      wrongtype, b, c, backend=backend)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
-                      a, b, wrongtype, backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
-                      a, wronglength, c,
-                      backend=backend)  # try inputting arrays of different length
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
-                      wronglength, b, c,
-                      backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
-                      a, b, wronglength,
-                      backend=backend)
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_angles(
+                a, wrongtype, c, backend=backend)
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_angles()
+            wrongtype, b, c, backend = backend
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_angles(
+                a, b, wrongtype, backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_angles(
+                a, wronglength, c,
+                backend=backend)  # try inputting arrays of different length
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_angles(
+                wronglength, b, c,
+                backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_angles(
+                a, b, wronglength,
+                backend=backend)
 
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
-                      a, b, c, result=badresult, backend=backend)  # Bad result array
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_angles(
+                a, b, c, result=badresult, backend=backend)  # Bad result array
 
     def test_dihedrals(self, positions, backend):
         a, b, c, d = positions
@@ -493,50 +528,67 @@ class TestCythonFunctions(object):
                                                             backend=backend)
         # Check calculated values
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
-        #        assert_almost_equal(dihedrals[0], 0.0, self.prec, err_msg="Zero length dihedral failed")
-        #        assert_almost_equal(dihedrals[1], 0.0, self.prec, err_msg="Straight line dihedral failed")
+        assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
+        assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
         assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
-        assert_almost_equal(dihedrals[3], 0.50714064, self.prec,
+        assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
     # Check data type checks
     def test_dihedrals_wrongtype(self, positions, wrongtype, backend):
         a, b, c, d = positions
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, wrongtype, c, d,
-                      backend=backend)  # try inputting float64 values
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
-                      wrongtype, b, c, d,
-                      backend=backend)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, b, wrongtype, d,
-                      backend=backend)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, b, c, wrongtype,
-                      backend=backend)
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, wrongtype, c, d,
+                backend=backend)  # try inputting float64 values
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                wrongtype, b, c, d,
+                backend=backend)
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, b, wrongtype, d,
+                backend=backend)
+
+        with pytest.raises(TypeError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, b, c, wrongtype,
+                backend=backend)
 
     def test_dihedrals_wronglength(self, positions, wronglength, backend):
         a, b, c, d = positions
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, wronglength, c, d,
-                      backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
-                      wronglength, b, c, d,
-                      backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, b, wronglength, d,
-                      backend=backend)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, b, c, wronglength,
-                      backend=backend)
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, wronglength, c, d,
+                backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                wronglength, b, c, d,
+                backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, b, wronglength, d,
+                backend=backend)
+
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, b, c, wronglength,
+                backend=backend)
 
     def test_dihedrals_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)
 
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
-                      a, b, c, d, result=badresult,
-                      backend=backend)  # Bad result array
+        with pytest.raises(ValueError):
+            MDAnalysis.lib.distances.calc_dihedrals(
+                a, b, c, d, result=badresult,
+                backend=backend)  # Bad result array
+
+
 
     def test_numpy_compliance(self, positions, backend):
         a, b, c, d = positions
@@ -553,9 +605,9 @@ class TestCythonFunctions(object):
         vec1 = a - b
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
-        ab = b - a
-        bc = c - b
-        cd = d - c
+        ab = a - b
+        bc = b - c
+        cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
 
         assert_almost_equal(bonds, bonds_numpy, self.prec,
@@ -563,8 +615,7 @@ class TestCythonFunctions(object):
         # numpy 0 angle returns NaN rather than 0
         assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
                             err_msg="Cython angles didn't match numpy calcuations")
-        # same issue with first two dihedrals
-        assert_almost_equal(dihedrals[2:], dihedrals_numpy[2:], self.prec,
+        assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
 
@@ -597,25 +648,28 @@ class Test_apply_PBC(object):
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 
-        # print box2
-        # print box2.shape
-
         def numpy_PBC(coords, box):
-            coords -= np.array([box[2] * val for val in np.floor(coords[:, 2] / box[2][2])])
-            coords -= np.array([box[1] * val for val in np.floor(coords[:, 1] / box[1][1])])
-            coords -= np.array([box[0] * val for val in np.floor(coords[:, 0] / box[0][0])])
-
-            return coords
+            # move to fractional coordinates
+            fractional = MDAnalysis.lib.distances.transform_RtoS(coords, box)
+            # move fractional coordinates to central cell
+            fractional -= np.floor(fractional)
+            # move back to real coordinates
+            return MDAnalysis.lib.distances.transform_StoR(fractional, box)
 
         cyth1 = apply_PBC(atoms, box1, backend=backend)
         cyth2 = apply_PBC(atoms, box2, backend=backend)
         reference = numpy_PBC(atoms, box2)
 
-        assert_almost_equal(cyth1, reference, self.prec,
+        assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
-        assert_almost_equal(cyth2, reference, self.prec,
-                            err_msg="Trlclinic apply_PBC failed comparison with np")
+        assert_almost_equal(cyth2, reference, decimal=4,
+                            err_msg="Triclinic apply_PBC failed comparison with np")
 
+        box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
+        r = np.array([[5.75, 0.36066014, 0.75]], dtype=np.float32)
+        r_in_cell = MDAnalysis.lib.distances.apply_PBC(r, box)[0]
+        assert_almost_equal([5.75, 7.3606596, 0.75],
+                            r_in_cell, self.prec)
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestPeriodicAngles(object):
@@ -677,7 +731,6 @@ class TestPeriodicAngles(object):
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
 
 
-
 class TestDistanceBackendSelection(object):
     @staticmethod
     @pytest.fixture()
@@ -709,4 +762,4 @@ class TestDistanceBackendSelection(object):
                                           backend="not implemented stuff")
 
 def test_used_openmpflag():
-    assert_(isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool))
+    assert isinstance(MDAnalysis.lib.distances.USED_OPENMP, bool)

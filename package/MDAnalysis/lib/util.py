@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -122,7 +122,7 @@ Data manipulation and handling
 ------------------------------
 
 .. autofunction:: fixedwidth_bins
-
+.. autofunction:: get_weights
 
 Strings
 -------
@@ -264,7 +264,7 @@ def openany(datasource, mode='rt', reset=True):
     Open a URL and read it::
 
        import urllib2
-       with openany(urllib2.urlopen("http://www.mdanalysis.org/")) as html:
+       with openany(urllib2.urlopen("https://www.mdanalysis.org/")) as html:
            print(html.read())
 
 
@@ -622,6 +622,13 @@ class NamedStream(io.IOBase, PathLike):
 
         .. versionadded:: 0.9.0
         """
+        # constructing the class from an instance of itself has weird behavior
+        # on __del__ and super on python 3. Let's warn the user and ensure the
+        # class works normally.
+        if isinstance(stream, NamedStream):
+            warnings.warn("Constructed NamedStream from a NamedStream",
+                          RuntimeWarning)
+            stream = stream.stream
         self.stream = stream
         self.name = filename
         self.close_stream = close
@@ -1266,6 +1273,58 @@ def fixedwidth_bins(delta, xmin, xmax):
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
     return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
+
+def get_weights(atoms, weights):
+    """Check that a `weights` argument is compatible with `atoms`.
+
+    Parameters
+    ----------
+    atoms : AtomGroup or array_like
+        The atoms that the `weights` should be applied to. Typically this
+        is a :class:`AtomGroup` but because only the length is compared,
+        any sequence for which ``len(atoms)`` is defined is acceptable.
+    weights : {"mass", None} or array_like
+        All MDAnalysis functions or classes understand "mass" and will then
+        use ``atoms.masses``. ``None`` indicates equal weights for all atoms.
+        Using an ``array_like`` assigns a custom weight to each element of
+        `atoms`.
+
+    Returns
+    -------
+    weights : array_like or None
+         If "mass" was selected, ``atoms.masses`` is returned, otherwise the
+         value of `weights` (which can be ``None``).
+
+    Raises
+    ------
+    TypeError
+        If `weights` is not one of the allowed values or if "mass" is
+        selected but ``atoms.masses`` is not available.
+    ValueError
+        If `weights` is not a 1D array with the same length as
+        `atoms`, then the exception is raised.  :exc:`TypeError` is
+        also raised if ``atoms.masses`` is not defined.
+
+    """
+    if not iterable(weights) and weights == "mass":
+        try:
+            weights = atoms.masses
+        except AttributeError:
+            raise TypeError("weights='mass' selected but atoms.masses is missing")
+
+    if iterable(weights):
+        if len(np.asarray(weights).shape) != 1:
+            raise ValueError("weights must be a 1D array, not with shape "
+                            "{0}".format(np.asarray(weights).shape))
+        elif len(weights) != len(atoms):
+            raise ValueError("weights (length {0}) must be of same length as "
+                            "the atoms ({1})".format(
+                                len(weights), len(atoms)))
+    elif weights is not None:
+        raise TypeError("weights must be {'mass', None} or an iterable of the "
+                        "same size as the atomgroup.")
+
+    return weights
 
 
 # String functions

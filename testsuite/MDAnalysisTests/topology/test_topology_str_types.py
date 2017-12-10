@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -21,55 +21,65 @@
 #
 from __future__ import division, absolute_import
 
+
+from six import string_types
 import MDAnalysis
 import pytest
-from six import string_types
 
 from MDAnalysis.tests.datafiles import (
-    CRD, LAMMPSdata,
+    CRD,
+    LAMMPSdata,
     DLP_CONFIG_minimal,
-    GRO, TPR,
-    DMS, GMS_SYMOPT,
-    MMTF,mol2_molecule,
-    PRM7, PDB_small,
+    GRO,
+    TPR,
+    DMS,
+    GMS_SYMOPT,
+    MMTF,
+    mol2_molecule,
+    PRM7,
+    PDB_small,
     PDBQT_input,
-    PQR, PRM,
-    PSF, PRM12,
-    HoomdXMLdata, XPDB_small,
-    XYZ_mini, DLP_HISTORY_minimal,
-)
+    PQR,
+    PRM,
+    PSF,
+    PRM12,
+    HoomdXMLdata,
+    XPDB_small,
+    XYZ_mini,
+    DLP_HISTORY_minimal, )
 
-@pytest.mark.parametrize('prop',
-['name',
- 'resname',
- 'type',
- 'segid',
-]
-)
+
+@pytest.mark.parametrize('prop', [
+    'name',
+    'resname',
+    'type',
+    'segid',
+    'moltype',
+])
 # topology formats curated from values available in
 # MDAnalysis._PARSERS
-@pytest.mark.parametrize('top_format, top',
-	 [('CONFIG', DLP_CONFIG_minimal),
-	 ('CRD', CRD),
-	 ('DATA', LAMMPSdata),
-	 ('DMS', DMS),
-	 ('GMS', GMS_SYMOPT),
-	 ('GRO', GRO),
-	 ('HISTORY', DLP_HISTORY_minimal),
-	 ('MMTF', MMTF),
-	 ('MOL2', mol2_molecule),
-	 ('PARM7',PRM7),
-	 ('PDB', PDB_small),
-	 ('PDBQT', PDBQT_input),
-	 ('PQR', PQR),
-	 ('PRMTOP', PRM),
-	 ('PSF', PSF),
-	 ('TOP', PRM12),
-	 ('TPR', TPR),
-	 ('XML', HoomdXMLdata),
-	 ('XPDB',XPDB_small),
-	 ('XYZ', XYZ_mini)]
-)
+@pytest.mark.parametrize( 'top_format, top', [
+    ('CONFIG', DLP_CONFIG_minimal),
+    ('CRD', CRD),
+    ('DATA', LAMMPSdata),
+    ('DMS', DMS),
+    ('GMS', GMS_SYMOPT),
+    ('GRO', GRO),
+    ('HISTORY', DLP_HISTORY_minimal),
+    ('MMTF', MMTF),
+    ('MOL2', mol2_molecule),
+    ('PARM7', PRM7),
+    ('PDB', PDB_small),
+    ('PDBQT', PDBQT_input),
+    ('PQR', PQR),
+    ('PRMTOP', PRM),
+    ('PSF', PSF),
+    ('TOP', PRM12),
+    ('TPR', TPR),
+    ('XML', HoomdXMLdata),
+    ('XPDB', XPDB_small),
+    ('XYZ', XYZ_mini)
+])
 def test_str_types(top_format, top, prop):
     # Python 2/3 topology string type checking
     # Related to Issue #1336

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -27,7 +27,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.DCD import DCDReader
 from MDAnalysis.exceptions import NoDataError
 
-from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
+from numpy.testing import (assert_equal, assert_array_equal,
                            assert_almost_equal, assert_array_almost_equal)
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
@@ -60,7 +60,8 @@ class TestDCDReader(MultiframeReaderTest):
         return DCDReference()
 
     def test_empty_dcd(self):
-        assert_raises(IOError, mda.Universe, PSF, DCD_empty)
+        with pytest.raises(IOError):
+            mda.Universe(PSF, DCD_empty)
 
     def test_with_statement(self):
 

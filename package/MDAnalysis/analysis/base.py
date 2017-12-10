@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://www.mdanalysis.org
+# MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
@@ -307,8 +307,10 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
     """
     try:
+        # pylint: disable=deprecated-method
         base_argspec = inspect.getfullargspec(AnalysisBase.__init__)
     except AttributeError:
+        # pylint: disable=deprecated-method
         base_argspec = inspect.getargspec(AnalysisBase.__init__)
 
     n_base_defaults = len(base_argspec.defaults)
@@ -317,8 +319,10 @@ def _filter_baseanalysis_kwargs(function, kwargs):
                                         base_argspec.defaults)}
 
     try:
+        # pylint: disable=deprecated-method
         argspec = inspect.getfullargspec(function)
     except AttributeError:
+        # pylint: disable=deprecated-method
         argspec = inspect.getargspec(function)
 
     for base_kw in six.iterkeys(base_kwargs):
