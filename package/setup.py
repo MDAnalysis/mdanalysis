@@ -509,6 +509,7 @@ if __name__ == '__main__':
               'numpy>=1.10.4',
           ],
           install_requires=[
+              'gsd>=1.4.0',
               'numpy>=1.10.4',
               'biopython>=1.59',
               'networkx>=1.0',

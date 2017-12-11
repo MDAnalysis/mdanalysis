@@ -150,6 +150,7 @@ __all__ = [
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
+    "GSD",
 ]
 
 from pkg_resources import resource_filename
@@ -398,6 +399,8 @@ MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
+
+GSD = resource_filename(__name__, 'data/example.gsd')
 
 # This should be the last line: clean up namespace
 del resource_filename

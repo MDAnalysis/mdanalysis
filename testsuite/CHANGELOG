@@ -22,6 +22,7 @@ mm/dd/yy
   * 0.16.2 utkbansal
     - Unit tests for pdktree (PR #1660)
     - Port to pytest - removed nose as a dependency (Issue #884)
+    - Unit tests for GSD file format topology/trajectory (PR #1693)
 
 06/03/17 xiki_tempula
 

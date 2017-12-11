@@ -14,11 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini
+
 
   * 0.17.0
 
 Enhancements
+  * added support for GSD format topology/trajectory parser (PR #1693)
   * added Amber residue names to 'protein' atom selection (PR #1704)
   * KDTree for neighbor search on periodic systems (PR #1660, #1692)
   * Python versions 3.4 and upwards are now supported (Issue #260)
@@ -37,15 +39,12 @@ Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0
 
 Fixes
-<<<<<<< HEAD
   * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
-=======
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
   * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
     (Issue #1565)
   * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
->>>>>>> develop
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
   * Fixed type matching and inclusion compilation warnings for the
