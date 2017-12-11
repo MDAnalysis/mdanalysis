@@ -19,7 +19,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, absolute_import
+from __future__ import division, absolute_import, print_function
+
+import pytest
+from six.moves import range
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.psa as PSA
@@ -30,7 +33,6 @@ from numpy.testing import (assert_array_less,
 import numpy as np
 import scipy
 import scipy.spatial
-import pytest
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 
@@ -44,10 +46,9 @@ class TestPSAnalysis(object):
         universe2 = mda.Universe(PSF, DCD2)
         universe_rev = mda.Universe(PSF, DCD)
 
-
         psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
-                                  path_select='name CA',
-                                  targetdir=str(tmpdir))
+                             path_select='name CA',
+                             targetdir=str(tmpdir))
 
         psa.generate_paths(align=True)
         psa.paths[-1] = psa.paths[-1][::-1, :, :]  # reverse third path
@@ -77,22 +78,45 @@ class TestPSAnalysis(object):
         psa.run(metric='discrete_frechet')
         return psa.plot()
 
+    @pytest.fixture()
+    def hausd_pairs_dists(self, psa):
+        psa.run_pairs_analysis(neighbors=True, hausdorff_pairs=True)
+        hausd_pairs_matrix = psa.get_pairwise_distances()
+
+        return hausd_pairs_matrix[self.iu1]
+
     def test_hausdorff_bound(self, hausd_dists, frech_dists):
-        err_msg = "Some Frechet distances are smaller than corresponding "      \
-                + "Hausdorff distances"
+        """Test whether Frechet distances are smaller than corresponding
+        Hausdorff distances"""
+        err_msg = ("Some Frechet distances are smaller than corresponding "
+                   "Hausdorff distances")
         assert_array_less(hausd_dists, frech_dists, err_msg)
 
+    def test_explicit_metric(self, psa, hausd_dists):
+        """Test whether explicitly specifying Hausdorff metric gives same result
+        as specifying Hausdorff metric with string name"""
+        psa.run(metric=PSA.hausdorff)
+        hausd_matrix_explicit = psa.get_pairwise_distances()
+        hausd_explicit_dists = hausd_matrix_explicit[self.iu1]
+
+        err_msg = ("Specifying Python function for Hausdoff gives different "
+                   "distances than specifying Hausdorff with string name")
+        assert_equal(hausd_dists, hausd_explicit_dists, err_msg)
+
     def test_reversal_hausdorff(self, hausd_matrix):
+        """Test whether Hausdorff distances are invariant to path reversal"""
         err_msg = "Hausdorff distances changed after path reversal"
         assert_array_almost_equal(hausd_matrix[1,2],
                                   hausd_matrix[0,1],
                                   decimal=3, err_msg=err_msg)
 
     def test_reversal_frechet(self, frech_matrix):
+        """Test whether Frechet distances are same/larger after path reversal"""
         err_msg = "Frechet distances did not increase after path reversal"
         assert frech_matrix[1,2] >= frech_matrix[0,1], err_msg
 
     def test_dendrogram_produced(self, plot_data):
+        """Test whether Dendrogram dictionary object was produced"""
         err_msg = "Dendrogram dictionary object was not produced"
         assert isinstance(plot_data[1], dict), err_msg
 
@@ -109,13 +133,48 @@ class TestPSAnalysis(object):
     def test_dist_mat_to_vec_input_numpy_integer_32(self):
         """Test whether inputs are supported as numpy integers rather than normal Integers"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_equal(PSA.dist_mat_to_vec(np.int32(5), np.int32(3), np.int32(4)), np.int32(9), err_msg)
+        assert_equal(
+            PSA.dist_mat_to_vec(np.int32(5), np.int32(3), np.int32(4)), np.int32(9),
+            err_msg)
 
     def test_dist_mat_to_vec_input_numpy_integer_16(self):
         """Test whether inputs are supported as numpy integers rather than normal Integers"""
         err_msg = "dist_mat_to_vec function returning wrong values"
-        assert_equal(PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), np.int16(9), err_msg)
+        assert_equal(
+            PSA.dist_mat_to_vec(np.int16(5), np.int16(3), np.int16(4)), np.int16(9),
+            err_msg)
 
+    def test_hausdorff_pairs_distances(self, hausd_dists, hausd_pairs_dists):
+        """Test whether Hausdorff pairs analysis distances are
+        identical to those from standard Hausdorff metric"""
+        err_msg = ("Some Hausdorff distances from pairs analysis vary "
+                   "significantly from usual Hausdorff calculation")
+        assert_array_almost_equal(hausd_dists, hausd_pairs_dists,
+                                  decimal=6, err_msg=err_msg)
+
+    def test_distances_from_hausdorff_pairs_frames(self, psa):
+        """Test whether actual distances between frames of Hausdorff
+        pairs of a path give the expected Hausdorff distance"""
+        psa.run_pairs_analysis(neighbors=True, hausdorff_pairs=True)
+        hausd_pairs = psa.hausdorff_pairs
+        npairs = int(psa.npaths * (psa.npaths - 1) / 2)
+        hausd_pairs_dists2 = np.array([hausd_pairs[i]['distance']
+                                       for i in range(npairs)])
+
+        
+        err_msg = ("A Hausdorff pair analysis distance when accessed "
+                   "by frame varies from expected Hausdorff distance")
+        dists = np.zeros((psa.npaths, psa.npaths))
+        for i in range(0, psa.npaths-1):
+            for j in range(i+1, psa.npaths):
+                pairidx = PSA.dist_mat_to_vec(psa.npaths, i, j)
+                p, q = hausd_pairs[pairidx]['frames']
+                dists[i,j] = (PSA.sqnorm(psa.paths[i][p,:,:] -
+                                         psa.paths[j][q,:,:]) /
+                                         psa.natoms)**0.5
+        assert_array_almost_equal(hausd_pairs_dists2,
+                                  dists[self.iu1],
+                                  decimal=6, err_msg=err_msg)
 
 class TestPSAExceptions(object):
     '''Tests for exceptions that should be raised
@@ -124,17 +183,13 @@ class TestPSAExceptions(object):
     def test_get_path_metric_func_bad_key(self):
         '''Test that KeyError is caught by
         get_path_metric_func().'''
-
-        try:
-           PSA.get_path_metric_func('123456')
-        except KeyError:
-            pytest.fail('KeyError should be caught')
+        with pytest.raises(KeyError):
+            PSA.get_path_metric_func('123456')
 
     def test_get_coord_axes_bad_dims(self):
         """Test that ValueError is raised when
         numpy array with incorrect dimensions
         is fed to get_coord_axes()."""
-
         with pytest.raises(ValueError):
             PSA.get_coord_axes(np.zeros((5,5,5,5)))
 
@@ -260,8 +315,8 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         return PSA.hausdorff_wavg
 
     def test_asymmetric_weight(self, path_1, path_2, h):
-        '''Test to ensure that increasing N points in one of the paths
-        does NOT increase the weight of its contributions.'''
+        '''Test for WAvg Hausdorff to ensure that increasing N points in one
+        of the paths does NOT increase the weight of its contributions.'''
         inflated_path_1 = np.concatenate((path_1, path_1))
         inflated_path_2 = np.concatenate((path_2, path_2))
         d_inner_inflation = h(inflated_path_1, path_2)
@@ -291,8 +346,8 @@ class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
         inflated_path_2 = np.concatenate((path_2, path_2))
         d_inner_inflation = h(inflated_path_1, path_2)
         d_outer_inflation = h(path_1, inflated_path_2)
-        assert_array_less(d_inner_inflation,
-                          d_outer_inflation)
+
+        assert_array_less(d_inner_inflation, d_outer_inflation)
 
 
 class DiscreteFrechetDistance(object):
