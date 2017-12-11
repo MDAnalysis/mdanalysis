@@ -525,9 +525,8 @@ class BaseDistanceSelection(object):
         result = sel.apply(u.atoms)
 
         r1 = u.select_atoms('resid 1')
-        cog = r1.center_of_geometry().reshape(1, 3)
-
         box = u.dimensions if periodic else None
+        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
@@ -535,16 +534,13 @@ class BaseDistanceSelection(object):
 
     @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_zone(self, u, meth, periodic):
-        if meth == 'kdtree' and periodic:
-            pytest.skip("not implemented")
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)
 
         r1 = u.select_atoms('resid 1')
-        cog = r1.center_of_geometry().reshape(1, 3)
-
         box = u.dimensions if periodic else None
+        cog = r1.center_of_geometry(pbc=periodic).reshape(1, 3)
         d = distance_array(u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
