@@ -518,8 +518,6 @@ class BaseDistanceSelection(object):
 
     @pytest.mark.parametrize('meth, periodic', methods)
     def test_spherical_layer(self, u, meth, periodic):
-        if meth == 'kdtree' and periodic:
-            pytest.skip("not implemented")
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1', u.atoms)
         sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(u.atoms)

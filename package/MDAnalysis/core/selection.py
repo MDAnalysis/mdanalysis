@@ -312,11 +312,13 @@ class SphericalLayerSelection(DistanceSelection):
         """Selection using KDTree but periodic = True not supported.
         """
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry()
-
-        kdtree = KDTree(dim=3, bucket_size=10)
+        box = group.dimensions if self.periodic else None
+        ref = sel.center_of_geometry(pbc=self.periodic)
+        if box is None:
+            kdtree = KDTree(dim=3, bucket_size=10)
+        else:
+            kdtree = PeriodicKDTree(box, bucket_size=10)
         kdtree.set_coords(group.positions)
-
         kdtree.search(ref, self.exRadius)
         found_ExtIndices = kdtree.get_indices()
         kdtree.search(ref, self.inRadius)
@@ -326,8 +328,8 @@ class SphericalLayerSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
-
+        ref = sel.center_of_geometry(pbc=self.periodic).reshape(1, 3).\
+            astype(np.float32)
         box = group.dimensions if self.periodic else None
         d = distances.distance_array(ref,
                                      group.positions,
