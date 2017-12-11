@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/17 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
-         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow
+         jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler
 
   * 0.17.0
 
@@ -37,11 +37,15 @@ Deprecations
   * HydrogenBondAnalysis detect_hydrogens=heuristic is marked for deprecation in 1.0
 
 Fixes
+<<<<<<< HEAD
+  * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
+=======
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
   * Changed _calc_dihedral and Dihedral.value() to match IUPAC convention
     (Issue #1565)
   * Fixed _calc_dihedral returning negative angles as positive (Issue #1554)
+>>>>>>> develop
   * correctly read little-endian TRZ files on big-endian architectures (issue
     #1424)
   * Fixed type matching and inclusion compilation warnings for the
@@ -65,6 +69,8 @@ Fixes
   * Fixed analysis.align.AlignTraj failed when step > 1 (Issue #1714)
 
 Changes
+  * generate pairwise distance matrix, analysis.psa.PSAnalysis.D, by default
+    when analysis.psa.PSAnalysis.run_pairs_analysis is run (Issue #1507)
   * remove deprecated TimeSeriesCollection
   * remove deprecated analysis.align.rms_fit_trj
   * remove deprecated analysis.contacts.ContactAnalysis
